@@ -76,3 +76,43 @@ GitHub/CI validates source and coordination only. Test 3 is complete only with a
 ## First continuation
 
 Re-read current Task Registry generation 82 and this handoff. Reconcile the existing WorkerCoordinator/StegAgents/InTr path against the Test 2 atomic constitutive transition contract before execution. Repair only concrete existing-path defects required to prevent split task/worker state. Then execute the existing targeted one-shot only when that path can authentically produce and custody the combined ACTIVATE(T)+CREATE_AND_BIND(W,T) transition.
+
+
+## First concrete existing-path defect — registry generation 82
+
+Source tracing found a concrete seam violation in the current WorkerCoordinator path before any Test 3 runtime attempt.
+
+Current source order in `heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger` is:
+
+```text
+prepare fresh claim/fence + worker_instance_id
+-> submit WORKERCOORDINATOR_CLAIM_FENCE_BOUND to Master Records
+-> require RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality
+-> mutate task.state = ACTIVE
+-> bind worker_id / worker_instance_id / claim_id
+-> mark worker BUSY
+-> invoke shared worker
+-> only inside StegAgents does TV/TVC verification and StegCore/InTr admission occur
+```
+
+That ordering does not satisfy Test 2's constitutive invariant for Test 3. It permits `ACTIVE T <-> W` to be exposed before StegCore/InTr has admitted and Master Records has closed the required combined `ACTIVATE(T)+CREATE_AND_BIND(W,T)` transition.
+
+The claim/fence custody itself remains valid coordination evidence. The defect is the promotion of the task to ACTIVE and binding of W before transition authority acts.
+
+### Required repair
+
+For the Test 3 atomic-seam path only:
+
+```text
+HANDOFF_READY T + no task-bound W
+-> WorkerCoordinator prepares fresh claim/fence as pending coordination state
+-> Master Records closes claim/fence custody
+-> TV/TVC warrant/policy verification closes
+-> StegCore/InTr evaluates ACTIVATE(T)+CREATE_AND_BIND(W,T)
+-> Master Records closes/reconstructs that constitutive transition
+-> only then is ACTIVE T <-> W exposed and invocation allowed
+```
+
+Do not alter Test 1 or Test 2 evidence and do not weaken other worker paths. Reuse the existing WorkerCoordinator, shared StegAgents worker/process adapter, TV/TVC, StegCore/InTr, and Master Records components.
+
+No authentic Test 3 execution has been attempted yet because the current source path would violate the invariant being tested.

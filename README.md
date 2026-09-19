@@ -760,3 +760,8 @@ Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` carries the comp
 The required constitutive runtime event is one `ACTIVATE(T)+CREATE_AND_BIND(W,T)` transition. Claim/fence and warrant/policy evidence may prepare the transition, but they do not replace it. Invocation is inadmissible until Master Records closes and reconstructs the constitutive transition, and task close must retire the same W with no continued task-bound authority.
 
 Canonical handoff: `docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
+
+
+### Test 3 atomic seam source reconciliation
+
+Test 3 source tracing identified the first concrete existing-path defect: WorkerCoordinator currently closes fresh claim/fence custody and then sets the task ACTIVE and binds its worker before the shared StegAgents path performs TV/TVC verification and StegCore/InTr admission. That ordering does not satisfy the Test 2 atomic seam invariant. Test 3 therefore remains unexecuted while the existing path is repaired so claim/fence preparation stays coordination-only and ACTIVE T <-> W is exposed only after InTr admits and Master Records closes the combined constitutive transition.
