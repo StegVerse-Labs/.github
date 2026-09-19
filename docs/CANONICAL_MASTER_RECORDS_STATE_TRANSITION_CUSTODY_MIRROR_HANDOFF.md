@@ -249,3 +249,19 @@ Exact-head validation on the repaired Site source passed:
 These are source-validation results. Authentic runtime transition evidence remains governed by canonical Master Records receipts and is not inferred from CI.
 
 The next transition under direct evidence trace is `CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED`, followed by RTC-007/008/009 and exact return retention. Missing later receipts are not a wait condition; continue tracing the existing path to the next deterministic defect.
+
+
+## Governed round-trip completion required-evidence repair — 2026-09-19
+
+Continuing the existing EVENT_EPHEMERAL browser path beyond RTC-009 exposed the next deterministic carriage defect at `MIR_GOVERNED_ROUND_TRIP_COMPLETE`. The transition already used the SHA-256 of the full governed-return result as `resulting_state_ref_or_hash`, but its canonical Master Records receipt carried only a three-field summary of that result. Under the required-evidence invariant, the exact object defining the resulting-state hash must itself be retained and reconstructable as required evidence.
+
+Site PR `#1411` repaired that exact existing path and merged as `4ede839f58307175f768e2cab9b4b9e5792a9b95` from exact head `6d2b328e547883b5b73174f48edcdac4302529c4`. The browser activation now binds the full governed-return result as canonical-json required evidence with evidence type `MIR_GOVERNED_RETURN_RESULT`, origin transition `MIR_GOVERNED_ROUND_TRIP_COMPLETE`, and the same exact object whose digest defines the resulting state.
+
+Exact-head source/coordination validation passed:
+
+- MIR SV002 Browser Event Conformance `35426340974`;
+- Site Handoff Orchestrator `35426340984`;
+- Ecosystem Heartbeat Orchestration `35426340978`;
+- Site Bootstrap Validate `35426340982`.
+
+These validate source and repository coordination only. No authentic MIR registered-Node outbox entry, queued-transition Master Records receipt, current ingress receipt, RTC-007/008/009 runtime receipt, governed-return receipt, or complete runtime custody sequence is inferred from the merge. The parent therefore remains ACTIVE and runtime-evidence pending.

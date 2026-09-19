@@ -131,7 +131,15 @@
     "site_browser_heartbeat_run": 35415040363,
     "site_browser_bootstrap_run": 35415040385,
     "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-    "next_transition_under_evidence_trace": "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED"
+    "next_transition_under_evidence_trace": "AUTHENTIC_RUNTIME_SEQUENCE_AND_GOVERNED_RETURN_CUSTODY",
+    "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
+    "mir_governed_round_trip_complete_required_evidence_pr": 1411,
+    "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
+    "mir_governed_round_trip_complete_required_evidence_exact_head": "6d2b328e547883b5b73174f48edcdac4302529c4",
+    "mir_governed_round_trip_complete_mir_conformance_run": 35426340974,
+    "mir_governed_round_trip_complete_handoff_orchestrator_run": 35426340984,
+    "mir_governed_round_trip_complete_heartbeat_run": 35426340978,
+    "mir_governed_round_trip_complete_bootstrap_run": 35426340982
   },
   "completion": {
     "claimed": false,
@@ -199,7 +207,15 @@
         "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED_EXACT_INGRESS_IS_AUTO_CARRIED_AS_REQUIRED_TRANSITION_EVIDENCE"
       ],
       "runtime_execution_claimed": false,
-      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+      "round_trip_complete": {
+        "site_pr": 1411,
+        "merge_commit": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
+        "exact_head": "6d2b328e547883b5b73174f48edcdac4302529c4",
+        "repair": "MIR_GOVERNED_ROUND_TRIP_COMPLETE_BINDS_EXACT_GOVERNED_RETURN_RESULT_AS_REQUIRED_EVIDENCE",
+        "runtime_execution_claimed": false,
+        "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+      }
     }
   },
   "required_evidence_validation": {
