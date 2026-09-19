@@ -132,7 +132,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes the third GOVENED_CLOSE phase for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; require canonical Master Records closure and records-only reconstruction before WorkerCoordinator releases W.",
+    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes the third GOVERNED_CLOSE phase for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; require canonical Master Records closure and records-only reconstruction before WorkerCoordinator releases W.",
     "terminal_when": [
       "authentic_intr_atomic_activation_worker_binding_admission=true",
       "authentic_master_records_constitutive_transition_recorded=true",
