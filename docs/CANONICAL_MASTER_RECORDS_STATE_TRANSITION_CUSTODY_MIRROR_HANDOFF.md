@@ -307,3 +307,12 @@ The repaired `RTC-SDK-RETURN-006` path carries the exact retained SDK Publisher-
 Executable exact-helper validation exercised both the successful closure path and the non-RECORDED fail-closed path before merge. The historical repository validators for this lane are now manual `workflow_dispatch` surfaces and were not represented as automatic PR checks; their absence was not treated as either PASS or failure.
 
 No authentic `RTC-SDK-RETURN-006` runtime execution is claimed by this merge. The next evidence trace is `RTC-STEGVERSE-EGRESS-007` -> Interlock/InTr egress -> far-side terminal transition/caller consequence, with canonical Master Records closure required at every actually observed transition.
+
+
+## RTC007 continuation defect and bounded repair — 2026-09-19
+
+Post-`RTC-SDK-RETURN-006` tracing proved that the reusable downstream pieces already existed but were disconnected: LLM Adapter implements `RTC-STEGVERSE-EGRESS-007`, and StegOS implements the `stegverse.llm-adapter.southbound-intr-egress-handoff/v1` consumer into Universal InTr, but the SDK-return consumer did not carry the newly closed binding into either seam.
+
+The bounded repair reuses both components. `RTC-STEGVERSE-EGRESS-007` now closes through canonical Master Records with the exact transition and predecessor SDK binding as required evidence. The resulting LLM Adapter InTr handoff is then passed to the existing StegOS materialization preparer. The path stops with RTC008 materialization prepared and all admission/far-side/caller/completion predicates false.
+
+The next authentic transition boundary is therefore RTC008 Interlock/InTr admission. If/when it is observed, its exact admission/transport evidence must itself close through canonical Master Records before RTC009 or any caller consequence may advance.
