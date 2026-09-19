@@ -18,5 +18,23 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Bounded request for the existing resident dispatcher to invoke the exact SDK evaluator governance posture entry point over an already-materialized manifest. Source registration is not runtime proof."
+  "note": "Bounded request for the existing resident path to materialize the exact evaluator manifest from committed SDK source inputs when needed, then invoke the existing SDK evaluator governance posture entry point. Materialization grants no authority and source registration is not runtime proof.",
+  "manifest_materialization": {
+    "builder": "stegverse.evaluator_manifest_builder.build_evaluator_governance_manifest",
+    "data_ref": "inspection/examples/elan-relational-state-test1.json",
+    "governance_request_ref": "inspection/examples/elan-governance-request.example.json",
+    "evaluation_declaration_ref": "inspection/examples/elan-evaluation-declaration-test1.json",
+    "source_framework": "ELAN",
+    "source_output_id": "elan-emotional-ambiguity-silence-test-001",
+    "data_class": "elan.relational-state.v1",
+    "return_depth": "full-trace",
+    "created_at": "2026-09-19T00:00:00Z",
+    "security_posture_request": {
+      "selected_tier": null,
+      "selection_present": false,
+      "organization_minimum_tier": "SECURE",
+      "channel": "SDK_RUNTIME_PROOF"
+    },
+    "authority_effect": "NONE_INPUT_MATERIALIZATION_ONLY"
+  }
 }
