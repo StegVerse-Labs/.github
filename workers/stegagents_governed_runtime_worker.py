@@ -589,18 +589,60 @@ def build_state_graph_request(task: Mapping[str, Any], handoff: Mapping[str, Any
     }
 
 
-def validate_state_graph_result(result: Mapping[str, Any]) -> None:
+def _validate_graph_worker_result(row: Any, label: str) -> dict[str, Any]:
+    require(isinstance(row, Mapping), f"{label} governed worker result missing")
+    require(row.get("state") == "GOVERNED_PURPOSE_BOUND_WORKER_RETURNED", f"{label} governed worker state mismatch")
+    binding = validate_warrant_policy_binding(row)
+    require(binding.get("warrant_verified") is True, f"{label} warrant not verified")
+    require(binding.get("policy_bundle_verified") is True, f"{label} policy bundle not verified")
+    _closed_transition(row.get("warrant_policy_master_records_transition"), "TV_TVC_WARRANT_POLICY_VERIFIED")
+    _closed_transition(row.get("intr_admission_master_records_transition"), "STEGCORE_INTR_MATERIALIZATION_ADMITTED")
+    lifecycle = row.get("purpose_bound_worker_result")
+    require(isinstance(lifecycle, Mapping), f"{label} lifecycle missing")
+    transitions = lifecycle.get("canonical_master_records_transitions")
+    require(isinstance(transitions, list) and len(transitions) == 4, f"{label} lifecycle closure count mismatch")
+    for expected, transition in zip(
+        (
+            "PURPOSE_BOUND_WORKER_MATERIALIZED",
+            "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+            "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+            "PURPOSE_BOUND_WORKER_RETIRED",
+        ),
+        transitions,
+    ):
+        _closed_transition(transition, expected)
+    require(row.get("records_only") is True, f"{label} records-only result missing")
+    require(row.get("worker_live_after_close") is False, f"{label} worker remained live")
+    require(row.get("continued_authority_after_retirement") is False, f"{label} retained authority")
+    return dict(binding)
+
+
+def validate_state_graph_result(result: Mapping[str, Any]) -> list[dict[str, Any]]:
     require(result.get("schema") == PURPOSE_GRAPH_RESULT_SCHEMA, "state graph result schema mismatch")
     require(result.get("state") == "GOVERNED_FOUR_CASE_STATE_GRAPH_RETURNED", "state graph result state mismatch")
+    warrant_bindings = []
+    for name, label in (
+        ("case1_result", "CASE_1"),
+        ("case2_result", "CASE_2"),
+        ("case3_result", "CASE_3"),
+    ):
+        warrant_bindings.append(_validate_graph_worker_result(result.get(name), label))
     for name in ("case1_terminal", "case2_terminal", "case3_terminal"):
         _closed_transition(result.get(name), "PURPOSE_BOUND_WORKER_RETIRED")
     _closed_transition(result.get("task4_parent_transition"), "PURPOSE_BOUND_WORKER_TASK4_PARENT_ADMITTED")
+    children = result.get("task4_workers")
+    require(isinstance(children, list) and len(children) == 3, "Task 4 requires three worker results")
+    for index, child in enumerate(children, start=1):
+        require(isinstance(child, Mapping), f"TASK4_{index} worker row missing")
+        warrant_bindings.append(_validate_graph_worker_result(child.get("result"), f"TASK4_{index}"))
+        _closed_transition(child.get("terminal"), "PURPOSE_BOUND_WORKER_RETIRED")
     _closed_transition(result.get("task4_three_way_join"), "PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN")
     require(result.get("task4_simultaneous_overlap_observed") is True, "Task 4 overlap not observed")
     terminal = result.get("records_only_terminal")
     require(isinstance(terminal, Mapping) and terminal.get("records_only") is True, "graph terminal records-only packet missing")
     require(terminal.get("worker_live_after_close") is False, "graph terminal retained live worker")
     require(terminal.get("continued_authority_after_retirement") is False, "graph terminal retained authority")
+    return warrant_bindings
 
 
 def validate_warrant_policy_binding(result: Mapping[str, Any]) -> dict[str, Any]:
@@ -762,8 +804,14 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
         raise RuntimeError("StegAgents governed runtime returned invalid JSON") from exc
     require(isinstance(result, dict), "StegAgents governed result must be object")
     if graph_mode:
-        validate_state_graph_result(result)
-        warrant_policy_binding = {"graph_mode": True, "credential_authority": "TV/TVC"}
+        graph_warrant_bindings = validate_state_graph_result(result)
+        warrant_policy_binding = {
+            "graph_mode": True,
+            "credential_authority": "TV/TVC",
+            "worker_warrant_policy_bindings": graph_warrant_bindings,
+            "all_worker_warrants_verified": all(row.get("warrant_verified") is True for row in graph_warrant_bindings),
+            "all_worker_policy_bundles_verified": all(row.get("policy_bundle_verified") is True for row in graph_warrant_bindings),
+        }
     else:
         _validate_result(profile, result)
         warrant_policy_binding = validate_warrant_policy_binding(result)
