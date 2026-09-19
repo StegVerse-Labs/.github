@@ -21,8 +21,15 @@
     "StegVerse-Labs/.github#1854"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "resident-receipt-reachability",
       "stegbrowser-canonical-work-runtime-consumption-receipt",
@@ -97,7 +104,12 @@
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
   ],
   "runtime_requirements": {
-    "capabilities": ["existing_resident_custody_inspection", "receipt_sha256_validation", "receipt_binding", "native_reachability_transport_repair"],
+    "capabilities": [
+      "existing_resident_custody_inspection",
+      "receipt_sha256_validation",
+      "receipt_binding",
+      "native_reachability_transport_repair"
+    ],
     "environment": "EXISTING_STEGVERSE_RESIDENT_CYCLE_AND_RETAINED_CUSTODY_SURFACE",
     "direction": "INTERNAL",
     "mutation_required": true,
@@ -109,7 +121,12 @@
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
     "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-    "alternate_eligible_substrates": ["ADMITTED-EPHEMERAL-STEGOS-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "STEGOS-CURRENT-DEVICE-NODE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER"],
+    "alternate_eligible_substrates": [
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER"
+    ],
     "remote_or_external_device_disposition": "NOT_APPLICABLE",
     "external_connector_required": false,
     "external_device_required": false,
@@ -117,11 +134,12 @@
     "authority_effect": "NONE"
   },
   "runtime_resolution": {
-    "producer_chain": "existing resident cycle -> standing Healer carrier -> neutral reusable scheduler -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> admitted ephemeral StegOS/Canonical Work -> retained resident receipts",
+    "producer_chain": "stegbrowser_runtime_connection_ingress -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> admitted ephemeral StegOS / Canonical Work -> direct retained StegBrowser receipts",
     "observer_chain": "retained resident custody -> merged non-authorizing receipt verifier -> exact SHA/path/outcome binding -> Master Records where required",
     "external_connector_role": "NONE_NOT_APPLICABLE",
     "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
-    "current_first_unresolved_predicate": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED"
+    "current_first_unresolved_predicate": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED",
+    "routing_correction": "HEALER_CARRIER_REMOVED_AS_ARTIFICIAL_STEGBROWSER_PREREQUISITE"
   },
   "completion": {
     "claimed": false,
@@ -131,8 +149,14 @@
     "next_reachability_defect_remediated": false,
     "parent_completion_claimed": false
   },
-  "allowed_next_transitions": ["INSPECT_EXISTING_STEGVERSE_NATIVE_RESIDENT_RECEIPTS", "BIND_VALID_RECEIPTS", "REMEDIATE_NATIVE_REACHABILITY_DEFECT"],
-  "handoff_projection_refs": ["docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [
+    "INSPECT_EXISTING_STEGVERSE_NATIVE_RESIDENT_RECEIPTS",
+    "BIND_VALID_RECEIPTS",
+    "REMEDIATE_NATIVE_REACHABILITY_DEFECT"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
