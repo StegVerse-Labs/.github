@@ -32,8 +32,24 @@ def test_consumer_requires_exact_request_and_strips_github_authority():
     module=load_consumer()
     value=json.loads(REQUEST.read_text(encoding="utf-8"))
     module.validate_request(value)
-    env=module.clean_env({"PATH":"/usr/bin","GITHUB_TOKEN":"secret","GH_TOKEN":"secret2","STEGVERSE_TV_ROOT":"/tv"})
+    env=module.clean_env({
+        "PATH":"/usr/bin",
+        "GITHUB_TOKEN":"secret",
+        "GH_TOKEN":"secret2",
+        "STEGVERSE_TV_ROOT":"/tv",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT":"http://127.0.0.1:8765",
+        "STEGVERSE_MASTER_RECORDS_TOKEN":"mr-token",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS":"12",
+        "MASTER_RECORDS_DB":"/srv/stegverse/master-records.sqlite",
+        "MASTER_RECORDS_RECEIPT_KEY":"receipt-key",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS":"true",
+    })
     assert "GITHUB_TOKEN" not in env and "GH_TOKEN" not in env
+    assert env["STEGVERSE_MASTER_RECORDS_ENDPOINT"]=="http://127.0.0.1:8765"
+    assert env["STEGVERSE_MASTER_RECORDS_TOKEN"]=="mr-token"
+    assert env["MASTER_RECORDS_DB"]=="/srv/stegverse/master-records.sqlite"
+    assert env["MASTER_RECORDS_RECEIPT_KEY"]=="receipt-key"
+    assert env["MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"]=="true"
     assert env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"]=="NONE"
     assert env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]=="TV/TVC"
 
