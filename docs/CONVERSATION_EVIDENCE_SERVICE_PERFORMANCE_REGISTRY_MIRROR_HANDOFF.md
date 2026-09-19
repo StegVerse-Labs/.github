@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Canonical issue: `#2204`
 Goal Task ID: `CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001`
 COSV ID: `NOT YET ESTABLISHED`
-Status: `ACTIVE / CONTRACT REGISTRATION IN PROGRESS / IMPLEMENTATION NOT STARTED`
+Status: `RETIRED / CONTRACT DESIGNED+REGISTERED+MERGED / IMPLEMENTATION NOT STARTED`
 
 ## Purpose
 
@@ -95,6 +95,19 @@ Master Records remains observed-reality/reconstruction authority.
 TV/TVC remains credential/scoped authority where applicable.
 
 This task registration does not authenticate an existing conversation, identify a wrongdoer, establish legal liability, publish evidence, or authorize enforcement.
+
+## Completion evidence
+
+- Registration/design PR: `StegVerse-Labs/.github#2205`
+- Exact validated PR head: `23992c7cab916581402b76e0a9e79f991d2455b3`
+- Squash merge: `8f9f85d510deb47eec0e70492163c7beb365d03c`
+- Canonical Task Registry registration generation: `85`
+- Post-merge closure generation: `86`
+- The contract-design goal is complete. No Site ingestion/UI, Master Records adapter, publication runtime, provider-response runtime, corroboration runtime, or enforcement-export implementation is claimed.
+
+## Successor implementation boundary
+
+Any implementation must use a new standalone canonical Goal Task that consumes this contract unchanged or explicitly versions it. The successor should implement evidence ingestion/capture first, then Master Records custody/reconstruction, then governed public projection, provider-response/corroboration paths, and finally authorized enforcement export. It must not infer legal guilt, fraud, predation, intent, or liability from publication, payment, recurrence, or nonresponse.
 
 ## Initial completion boundary
 
