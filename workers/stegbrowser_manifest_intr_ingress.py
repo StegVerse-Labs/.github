@@ -7,6 +7,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 SUBJECT_TASK = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 COSV = "40000100100000"
+NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
 ORG_TASK = "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
 ORG_VECTOR = "50000000101000"
 PACKET_ID = "stegbrowser-manifest-intr-ingress"
@@ -55,6 +56,8 @@ def validated_binding(runtime: Path, manifest_sha256: str) -> dict[str, Any]:
     return binding
 
 def packet(source: Path, runtime: Path) -> dict[str, Any]:
+    if str(os.environ.get("STEGVERSE_STEGBROWSER_INVOCATION_NONCE") or "").strip() != NONCE:
+        raise RuntimeError("StegBrowser immutable invocation nonce missing or mismatched")
     manifest_path = source / MANIFEST_REL
     manifest = load(manifest_path)
     raw = manifest_path.read_bytes()
@@ -63,6 +66,7 @@ def packet(source: Path, runtime: Path) -> dict[str, Any]:
     payload = {
         "subject_task_id": SUBJECT_TASK,
         "cosv_task_vector": COSV,
+        "invocation_request_nonce": NONCE,
         "purpose": "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS",
         "manifest_ref": str(MANIFEST_REL),
         "manifest_sha256": manifest_sha256,
@@ -92,7 +96,7 @@ def packet(source: Path, runtime: Path) -> dict[str, Any]:
         "carrier_grants_execution_authority": False,
         "canonical_state_change_authorized": False,
         "authority_effect": "NONE_REQUEST_ONLY",
-        "transition_basis": {"subject_task_id": SUBJECT_TASK, "cosv_task_vector": COSV, "authority_effect": "NONE_EVIDENCE_ONLY"},
+        "transition_basis": {"subject_task_id": SUBJECT_TASK, "cosv_task_vector": COSV, "invocation_request_nonce": NONCE, "authority_effect": "NONE_EVIDENCE_ONLY"},
     }
 
 def verified(receipt: dict[str, Any], expected: dict[str, Any]) -> bool:
@@ -140,6 +144,7 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
         "state":"AUTHENTIC_INTR_INGRESS_OBSERVED",
         "subject_task_id":SUBJECT_TASK,
         "cosv_task_vector":COSV,
+        "invocation_request_nonce":NONCE,
         "executor_task_id":ORG_TASK,
         "organization_local_receipt_ref":str(ORG_RECEIPT_REL),
         "claim_id":receipt["claim_id"],
