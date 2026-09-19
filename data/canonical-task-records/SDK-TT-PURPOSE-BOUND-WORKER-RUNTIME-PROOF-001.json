@@ -71,7 +71,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "AUTHENTIC_RESIDENT_TARGETED_ONE_SHOT_REQUIRED_WITH_SAME_RUN_MASTER_RECORDS_CLOSED_CLAIM_FENCE_TV_TVC_INTR_MATERIALIZED_INVOCATION_COMPLETION_RETIREMENT_POST_RETIREMENT_NO_AUTHORITY_AND_RECORDS_ONLY_RECONSTRUCTION",
+  "remaining_predicate": "AUTHENTIC_TV_TVC_RESIDENT_ED25519_CREDENTIAL_MATERIALIZATION_AND_FRESH_WARRANT_ISSUANCE_THEN_SAME_RUN_TARGETED_ONE_SHOT_WITH_MASTER_RECORDS_CLOSED_CLAIM_FENCE_TV_TVC_INTR_MATERIALIZED_INVOCATION_COMPLETION_RETIREMENT_POST_RETIREMENT_NO_AUTHORITY_AND_RECORDS_ONLY_RECONSTRUCTION",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -106,8 +106,30 @@
       "intr_receipt_is_materialized_predecessor": true,
       "post_retirement_continued_authority_false_present": true,
       "records_only_closeout_present": true,
-      "authorized_resident_execution_surface_available": false,
-      "authentic_runtime_execution_attempted": false
+      "authorized_resident_execution_surface_available": null,
+      "authentic_runtime_execution_attempted": false,
+      "execution_surface_note": "Prior device/Remote Desktop availability check was not an execution prerequisite for TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT and must not be reused as a blocker."
+    },
+    "tv_tvc_execution_warrant_bridge": {
+      "source_repair_complete": true,
+      "tvc_pr": 446,
+      "exact_head": "dd9a20d8d1ef61ac8e05eccf78125035c4cac423",
+      "merge_commit": "fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6",
+      "exact_head_validation": {
+        "run_id": 35464198311,
+        "conclusion": "success"
+      },
+      "issuer_id": "tv.warrant.resident",
+      "public_key_id": "tv.warrant.resident.ed25519.001",
+      "credential_name": "TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM",
+      "resident_loadcredential_only": true,
+      "github_signing_authority": false,
+      "authentic_resident_credential_observed": false,
+      "authentic_warrant_issuance_observed": false,
+      "authentic_public_key_registration_observed": false,
+      "next_runtime_boundary": "MATERIALIZE_EXISTING_TV_TVC_RESIDENT_ED25519_CREDENTIAL_AND_ISSUE_FRESH_STEGAGENTS_WARRANT",
+      "device_dependency": false,
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
     }
   },
   "source_refinement": {
