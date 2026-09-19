@@ -116,3 +116,44 @@ HANDOFF_READY T + no task-bound W
 Do not alter Test 1 or Test 2 evidence and do not weaken other worker paths. Reuse the existing WorkerCoordinator, shared StegAgents worker/process adapter, TV/TVC, StegCore/InTr, and Master Records components.
 
 No authentic Test 3 execution has been attempted yet because the current source path would violate the invariant being tested.
+
+
+## Atomic activation source repair — proposed registry generation 85
+
+The first concrete seam defect is repaired in source without changing Test 1 or Test 2 evidence and without creating a new runtime, scheduler, dispatcher, WorkerCoordinator, transition authority, custody path, or device dependency.
+
+StegAgents PR #25 merged as `7f11c612d105678a7e9d0c0bff953bf8af7cbe4f`. It adds a bounded `PREPARE_ATOMIC_ACTIVATION` consumer to the existing shared StegAgents runtime. That consumer:
+
+- accepts the already-prepared WorkerCoordinator claim/fence and candidate worker_instance_id;
+- keeps authoritative task projection outside the StegAgents consumer;
+- verifies TV/TVC warrant/policy inputs;
+- submits the exact `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` candidate through the existing StegCore/InTr governance route;
+- records that constitutive transition through canonical Master Records from the pre-execution observer;
+- requires `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256==reconstructed_receipt_sha256`;
+- returns evidence stating `authoritative_task_projection_performed=false` and `task_invocation_performed=false`.
+
+The existing WorkerCoordinator path now has a Test-3-only constitutive activation gate. After `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` closes, it builds only a transient pending-task copy carrying the claim/fence and candidate worker identity. The authoritative registry row remains `HANDOFF_READY` with no bound worker while the shared StegAgents adapter performs TV/TVC + InTr + Master Records constitutive admission.
+
+Only after the retained activation proof is verified does WorkerCoordinator atomically project:
+
+```text
+task.state = ACTIVE
+worker_id = stegagents-governed-runtime-worker
+worker_instance_id = exact prepared W
+claim_id = exact prepared claim
+constitutive_activation_proof_ref = retained Test 3 activation receipt
+```
+
+The activation cycle does not invoke the task immediately. Invocation is deferred until the next post-projection worker cycle so the source path cannot execute W before the constitutive transition has closed and the ACTIVE T<->W binding has been projected.
+
+New Test 3 source surfaces:
+
+```text
+handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json
+control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json
+control/task-vectors/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json
+tests/test_sdk_tt_richard_atomic_activation_seam.py
+StegVerse-Labs/StegAgents@7f11c612d105678a7e9d0c0bff953bf8af7cbe4f:src/atomic_task_worker_activation_runtime.py
+```
+
+This remains source readiness only. No authentic Test 3 claim/fence, TV/TVC verification, InTr admission, ACTIVE task/worker projection, or task invocation is claimed by this repair.
