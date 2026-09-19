@@ -250,6 +250,32 @@ def bind_projected_retention_pointer(runtime: Path) -> dict[str, Any]:
     return {"state":"VALIDATED_PROJECTED_RETENTION_POINTER_BOUND","pointer":pointer,"checkpoint_ref":CHECKPOINT_REL.as_posix(),"checkpoint_sha256":file_sha256(checkpoint_path),"packet_sha256":packet_sha256,"authority_effect":"NONE_EVIDENCE_CARRIAGE_ONLY"}
 
 
+
+def completed_healer_cycle_observed(result: dict[str, Any] | None) -> bool:
+    """Recognize the real WorkerCoordinator cycle-envelope completion shape."""
+    if not isinstance(result, dict):
+        return False
+    cycle = result.get("execution_result")
+    if isinstance(cycle, dict):
+        if cycle.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED":
+            return True
+        events = cycle.get("events")
+        if isinstance(events, list):
+            matches = [
+                event for event in events
+                if isinstance(event, dict)
+                and event.get("event_type") == "worker_response"
+                and event.get("task_id") == TARGET_TASK
+                and event.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+                and event.get("response_state") == "HANDOFF_READY"
+            ]
+            if len(matches) > 1:
+                raise RuntimeError("multiple Healer completion events observed in one targeted cycle")
+            if len(matches) == 1:
+                return True
+    return result.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
@@ -319,10 +345,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(values), timeout=1200)
     result = parse_last_json(completed.stdout)
     execution_result = result.get("execution_result") if isinstance(result, dict) else None
-    transition = execution_result.get("transition_id") if isinstance(execution_result, dict) else None
-    if transition is None and isinstance(result, dict):
-        transition = result.get("transition_id")
-    cycle_completed = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    cycle_completed = completed_healer_cycle_observed(result)
     retention_binding = (
         bind_projected_retention_pointer(runtime)
         if cycle_completed
