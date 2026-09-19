@@ -228,7 +228,7 @@ The reported v0.8 1,534-event / 50-checkpoint run remains `COUNTERPART_REPORTED_
 
 The temporary GitHub evidence-fetch workflow was removed by resetting the evidence branch back to current canonical main before this documentation update. No new runtime, scheduler, credential path, custody store, or device dependency was retained.
 
-## Generation 124 state-dependent test contract — 2026-09-19
+## Canonical state-dependent test contract — 2026-09-19
 
 This goal is a **strict state-dependent test**, not an evidence checklist. Every accepted state MUST transition to the next state in order. No state may be satisfied independently, in parallel, out of order, or by evidence that bypasses the immediately preceding closure.
 
