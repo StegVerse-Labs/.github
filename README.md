@@ -713,3 +713,8 @@ Canonical Goal Task `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` remains
 ### SDK evaluator dispatch-transition custody carriage
 
 The existing resident dispatcher now carries an attempted `sdk_evaluator_governance_posture` `RESIDENT_REQUEST_DISPATCH_VISIT` into canonical Master Records custody using the existing `workers/canonical_state_transition_custody.py` client. Required evidence binds selector, consumer, attempted flag, exact task/request identity, and machine-result digest/content. This changes no dispatch authority or execution semantics and does not itself prove runtime execution; progression still requires Master Records RECORDED, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality.
+
+
+## Enterprise host-provider eradication
+
+Active coordination: `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` via `docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md`. The task removes named third-party hosting/provider operational bindings without authorizing a replacement provider; completion remains unclaimed until exact residual search and repository validation close.
