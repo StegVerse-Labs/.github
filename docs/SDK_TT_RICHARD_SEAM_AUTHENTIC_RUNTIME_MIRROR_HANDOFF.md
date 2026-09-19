@@ -199,3 +199,13 @@ source_identity=<exact package identity>
 ```
 
 Only after that authentic source-materialization receipt may Test 3 advance to resident source refresh, selector visit, and one-shot execution.
+
+## Complete Test 3 control-plane delta repair — proposed generation 95
+
+After rechecking current generation 94, the control-plane package still carried only the Test 3 resident request and consumer, not the already-merged atomic seam implementation those files depend on.
+
+The stale-resident bootstrap package therefore could materialize the Test 3 selector/request while leaving an older WorkerCoordinator/shared-worker path in place, reintroducing the exact pre-InTr ACTIVE T <-> W ordering Test 3 is intended to falsify.
+
+The bounded repair extends only the existing RT-CONTROL-PLANE-SOURCE-PACKAGE-001 allowlist with the already-merged Test 3 delta: heartbeat_runtime/worker_runtime_legacy.py, heartbeat_runtime/process_adapter.py, workers/stegagents_governed_runtime_worker.py, the Test 3 executable handoff, and the Test 3 worker-registry fragment. The existing Test 3 request and consumer remain included.
+
+No new runtime, scheduler, dispatcher, transport, WorkerCoordinator, request plane, custody path, or authority plane is introduced. The next runtime predicate remains authentic delivery of the exact resulting package and far-side SOURCE_MATERIALIZED_VERIFIED evidence.
