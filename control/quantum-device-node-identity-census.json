@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.quantum-device-node-identity-census/v1",
+  "goal_id": "QUANTUM-RESILIENCE-001",
+  "issue": "StegVerse-Labs/.github#1022",
+  "inventory_status": "PARTIAL_EXPLICIT",
+  "generated_from": "repository source evidence only; source occurrence does not prove deployment or runtime use",
+  "surfaces": [
+    {
+      "id": "STEGID-CURRENT-PHONE-DEVICE-POSSESSION",
+      "repository": "StegVerse-Labs/StegID",
+      "paths": [
+        "web/device_wallet_bootstrap.js",
+        "docs/PHONE_DEVICE_WALLET_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "STEGID_MIRROR_HANDOFF.md"
+      ],
+      "purpose": "current primary-phone device-possession proof",
+      "primitive": "ECDSA P-256 with SHA-256",
+      "key_custody": "NON_EXPORTABLE_BROWSER_KEY",
+      "identity_role": "DEVICE_POSSESSION",
+      "runtime_status": "SOURCE_IMPLEMENTED_CURRENT_PHONE_FLOW",
+      "quantum_state": "CLASSICAL_ONLY",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED",
+      "migration_priority": "CRITICAL",
+      "authenticity_lifetime": "DEVICE_LIFETIME",
+      "revocation_replacement": "REQUIRED_BY_EXISTING_DEVICE_ADMISSION_CONTINUITY_MODEL; PQ-SPECIFIC PATH NOT YET VALIDATED",
+      "notes": "WebAuthn HUMAN_CONTINUITY is separate; scoped source does not establish a specific WebAuthn attestation/signature primitive for this census."
+    },
+    {
+      "id": "STEGFIN-PHONE-STEGID-DEVICE-POSSESSION-PROJECTION",
+      "repository": "StegVerse-Labs/stegfin-governance",
+      "paths": [
+        "ui/stegid-device-wallet-bootstrap.js",
+        "ui/device-wallet-identity.js",
+        "ui/evidence-export.js"
+      ],
+      "purpose": "phone-side projection/consumption of StegID device admission and possession evidence",
+      "primitive": "ECDSA P-256 with SHA-256",
+      "key_custody": "BROWSER_KEY_IN_PHONE_BOOTSTRAP_PATH",
+      "identity_role": "DEVICE_POSSESSION_CONSUMER_PROJECTION",
+      "runtime_status": "SOURCE_IMPLEMENTED",
+      "quantum_state": "CLASSICAL_ONLY",
+      "migration_target": "FOLLOW_STEGID_DEVICE_POSSESSION_MIGRATION_UNLESS_INDEPENDENT_KEY_ROOT_IS_PROVEN",
+      "migration_priority": "HIGH",
+      "authenticity_lifetime": "DEVICE_ADMISSION_AND_WALLET_CAPABILITY_FRESHNESS_WINDOW",
+      "authority_boundary": "DOES_NOT_GRANT_WALLET_SIGN_OR_BROADCAST; USER_ONLY AUTHORITY PRESERVED",
+      "double_counting_rule": "DO_NOT_COUNT_AS_INDEPENDENT_CREDENTIAL_AUTHORITY_ROOT_WITHOUT_SEPARATE_KEY_CUSTODY_EVIDENCE"
+    },
+    {
+      "id": "SITE-STEGTVC-CLIENT-P256-MATERIAL",
+      "repository": "StegVerse-Labs/Site",
+      "paths": [
+        "docs/stegtvc-client-merkle-enhanced.txt"
+      ],
+      "purpose": "browser client ECDSA key material; device/node identity role not established by scoped source",
+      "primitive": "ECDSA P-256",
+      "key_custody": "BROWSER_GENERATED_EXPORTABILITY_PRESENT_IN_SOURCE",
+      "identity_role": "UNRESOLVED",
+      "runtime_status": "ACTIVE_VS_HISTORICAL_OR_EXAMPLE_UNPROVEN",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_target": "CLASSIFY_ACTIVE_ROLE_FIRST",
+      "migration_priority": "HIGH",
+      "authenticity_lifetime": "UNKNOWN",
+      "required_followup": "StegVerse-Labs/Site#1027 or successor Site-owned active-vs-historical classification"
+    },
+    {
+      "id": "STEGOS-ATTESTATION-SEMANTICS",
+      "repository": "StegVerse-Labs/StegOS",
+      "paths": [
+        "schemas/stegos-volatile-memory-runtime-attestation.v1.schema.json",
+        "docs/ARCHITECTURE.md"
+      ],
+      "purpose": "runtime/node attestation semantics",
+      "primitive": "UNPROVEN",
+      "key_custody": "UNPROVEN",
+      "identity_role": "ATTESTATION_SEMANTICS_ONLY",
+      "runtime_status": "SCHEMA_AND_ARCHITECTURE_EVIDENCE_ONLY",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_target": "INVENTORY_SIGNER_VERIFIER_TRUST_ROOT_IF_CRYPTOGRAPHIC_IMPLEMENTATION_EXISTS",
+      "migration_priority": "CRITICAL_IF_CONSEQUENCE_BEARING",
+      "authenticity_lifetime": "UNKNOWN"
+    },
+    {
+      "id": "STEGLENSES-NODE-ATTESTATION-SEMANTICS",
+      "repository": "StegVerse-Labs/StegLenses",
+      "paths": [
+        "docs/NODE_MODEL.md",
+        "docs/ARCHITECTURE.md",
+        "docs/SIMULATOR.md"
+      ],
+      "purpose": "wearable/body-area node attestation and re-attestation semantics",
+      "primitive": "UNPROVEN",
+      "key_custody": "UNPROVEN",
+      "identity_role": "NODE_ATTESTATION_SEMANTICS_ONLY",
+      "runtime_status": "DOCUMENTED_MODEL; CRYPTOGRAPHIC_IMPLEMENTATION_UNPROVEN",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_target": "INVENTORY_SIGNER_VERIFIER_TRUST_ROOT_IF_CRYPTOGRAPHIC_IMPLEMENTATION_EXISTS",
+      "migration_priority": "CRITICAL_IF_CONSEQUENCE_BEARING",
+      "authenticity_lifetime": "UNKNOWN"
+    }
+  ],
+  "explicit_exclusions": [
+    "SKAP_P256_ECDH_KEY_ESTABLISHMENT",
+    "TLS_WEBPKI_KEYS",
+    "WALLET_TRANSACTION_SIGNATURES",
+    "HASH_ONLY_RECEIPTS_AND_MANIFESTS"
+  ],
+  "remaining_unbounded_scope": [
+    "OTHER_ACTIVE_DEVICE_REGISTRATION_KEYS",
+    "NODE_MEMBERSHIP_KEYS",
+    "PLATFORM_ATTESTATION_TRUST_ROOTS",
+    "DEVICE_OR_NODE_REVOCATION_AND_REPLACEMENT_CRYPTOGRAPHY",
+    "ACTIVE_VS_HISTORICAL_SITE_CLIENT_IDENTITY_ROLE"
+  ],
+  "pqc_validated_surface_count": 0,
+  "hybrid_active_surface_count": 0,
+  "runtime_claim": false,
+  "deployment_claim": false,
+  "completion_rule": "no consequence-bearing device/node identity, possession, registration, membership or attestation surface may remain unbounded; every classical asymmetric root requires an explicit migration disposition"
+}
