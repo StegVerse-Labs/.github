@@ -13,6 +13,7 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime-targeted-request-consumption.latest.json")
+CLOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close.latest.json")
 TARGET_TASK = "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
 TARGET_VECTOR = "20010000110000"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
@@ -114,11 +115,50 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if not entrypoint.is_file():
         raise RuntimeError(f"targeted execution entrypoint missing:{entrypoint}")
     command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", TARGET_TASK, "--cosv-task-vector", TARGET_VECTOR]
-    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
-    result = parse_last_json(completed.stdout)
-    pointer = result.get("cosv_task_pointer") if isinstance(result, dict) else None
-    pointer_verified = bool(isinstance(pointer, dict) and pointer.get("task_id") == TARGET_TASK and pointer.get("vector") == TARGET_VECTOR and pointer.get("binding_verified") is True and pointer.get("authority_effect") == "NONE")
-    valid = bool(isinstance(result, dict) and result.get("mode") == TARGET_MODE and result.get("task_id") == TARGET_TASK and result.get("runtime_execution_attempted") is True and result.get("network_fetch_performed") is False and result.get("github_token_runtime_authority") == "NONE" and result.get("credential_authority") == "TV/TVC" and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY" and pointer_verified)
+    executions: list[dict[str, Any]] = []
+    completed = None
+    result = None
+    pointer_verified = False
+    for cycle_index in range(2):
+        completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
+        result = parse_last_json(completed.stdout)
+        pointer = result.get("cosv_task_pointer") if isinstance(result, dict) else None
+        pointer_verified = bool(
+            isinstance(pointer, dict)
+            and pointer.get("task_id") == TARGET_TASK
+            and pointer.get("vector") == TARGET_VECTOR
+            and pointer.get("binding_verified") is True
+            and pointer.get("authority_effect") == "NONE"
+        )
+        executions.append({
+            "cycle_index": cycle_index,
+            "returncode": completed.returncode,
+            "result": result,
+            "pointer_binding_verified": pointer_verified,
+        })
+        close_path = runtime / CLOSE_LATEST_REL
+        if close_path.is_file():
+            try:
+                close_receipt = load_json(close_path)
+            except Exception:
+                close_receipt = {}
+            if (
+                close_receipt.get("state") == "AUTHENTIC_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY"
+                and close_receipt.get("task_id") == TARGET_TASK
+            ):
+                break
+
+    valid = bool(
+        isinstance(result, dict)
+        and result.get("mode") == TARGET_MODE
+        and result.get("task_id") == TARGET_TASK
+        and result.get("runtime_execution_attempted") is True
+        and result.get("network_fetch_performed") is False
+        and result.get("github_token_runtime_authority") == "NONE"
+        and result.get("credential_authority") == "TV/TVC"
+        and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+        and pointer_verified
+    )
     receipt = {
         "schema": "stegverse.sdk-tt-richard-seam-targeted-consumption/v1",
         "state": "ATTEMPT_RECORDED" if valid else "FAIL_CLOSED",
@@ -128,9 +168,12 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "cosv_task_vector": TARGET_VECTOR,
         "mode": TARGET_MODE,
         "command": command,
-        "execution_returncode": completed.returncode,
+        "execution_returncode": completed.returncode if completed is not None else None,
         "execution_result_observed": isinstance(result, dict),
         "execution_result": result,
+        "targeted_cycle_count": len(executions),
+        "targeted_cycles": executions,
+        "bounded_cycle_limit": 2,
         "pointer_binding_verified_before_execution": pointer_verified,
         "runtime_execution_attempted": True,
         "request_granted_authority": False,
