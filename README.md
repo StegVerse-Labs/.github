@@ -860,3 +860,8 @@ The current executable Test 3 state no longer treats control-plane source-packag
 ### Test 3 targeted one-shot carrier-gate repair
 
 The Test 3 independent targeted path no longer requires `control/heartbeat-carrier-runtime-state.json` before invoking `run_worker_runtime.py --task-id`. Independent task admission remains WorkerCoordinator-owned, while claimed-task resume retains its separate existing-claim/carrier semantics. This closes the concrete carriage defect that prevented the already-REQUESTED Test 3 one-shot from reaching its fresh claim/fence transition; no authentic runtime transition is inferred from the repair itself.
+
+
+### Test 3 same-root resident execution
+
+The existing resident dispatcher passes the resident root as both source and runtime for request-specific consumers. Independent targeted execution now recognizes that already-materialized same-root case and skips the otherwise-invalid self-refresh copy before entering `run_worker_runtime.py --task-id`. This grants no authority and does not replace WorkerCoordinator, TV/TVC, InTr, or Master Records transition requirements.
