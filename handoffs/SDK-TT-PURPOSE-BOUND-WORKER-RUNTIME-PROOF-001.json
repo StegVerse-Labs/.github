@@ -88,7 +88,7 @@
         "--task-id",
         "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
       ],
-      "requires_existing_separated_carrier_reference": true,
+      "requires_existing_separated_carrier_reference": false,
       "heartbeat_grants_execution_authority": false,
       "credential_authority": "TV/TVC",
       "github_token_runtime_authority": "NONE",
@@ -143,7 +143,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Do not attempt execution until the existing resident custody-root and WorkerCoordinator prerequisites are authentically satisfied. Then use this task through the existing WorkerCoordinator and shared StegAgents process adapter.",
+    "next_authorized_action": "Obtain a fresh independent WorkerCoordinator claim/fence for this HANDOFF_READY task, then follow the existing shared StegAgents adapter through TV warrant/policy verification and StegCore/InTr. After every resulting governed state transition, require authoritative Master Records state=RECORDED, reconstruction_status=PASS, required_evidence_validation_status=PASS, and exact receipt/reconstruction digest equality before machine-owned progression.",
     "terminal_when": [
       "authentic_tt_cell_request_hash_observed=true",
       "authentic_workercoordinator_claim_fence_observed=true",
@@ -159,12 +159,12 @@
     ]
   },
   "block": {
-    "block_reason": "Existing runtime owner remains evidence-gated on authentic resident custody-root / WorkerCoordinator prerequisites. Source refinement may merge, but execution is not authorized by source state.",
-    "dependency": "existing STEGAGENTS-GOVERNED-RUNTIME-001 sovereign resident path + resident custody root + WorkerCoordinator + TV warrant/policy + already-local StegAgents/SDK/StegCore/Master Records roots",
-    "observer": "single canonical WorkerCoordinator",
-    "recheck_trigger": "authentic resident/root readiness on existing runtime owner",
-    "next_check": "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json",
-    "escalation_condition": "duplicate runtime/worker/adapter authority, warrant substitution, InTr substitution, provider credential exposure, or second-machine requirement",
+    "block_reason": "No authentic SDK purpose-bound runtime state transition is yet recorded in Master Records. This is not a Healer, resident-root, scheduler, dispatcher, or carrier prerequisite.",
+    "dependency": "fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle -> Master Records per-transition evidence closure",
+    "observer": "single canonical WorkerCoordinator plus authoritative Master Records custody/reconstruction",
+    "recheck_trigger": "next authentic SDK state transition",
+    "next_check": "authoritative Master Records state-transition receipt for SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "escalation_condition": "duplicate runtime/worker/adapter authority, warrant substitution, InTr substitution, provider credential exposure, unsupported Healer/resident-root dependency, or second-machine requirement",
     "block_expires_at": null
   }
 }
