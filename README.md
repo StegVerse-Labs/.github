@@ -963,3 +963,8 @@ Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: P
 ### SDK TT claim-before-warrant ordering correction
 
 The purpose-bound runtime task explicitly preserves the actual merged transition order: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is the first authentic transition. TV/TVC credential materialization and warrant-policy verification occur only after claim/fence Master Records closure. The earlier projection that placed credential materialization first is superseded.
+
+
+### StegBrowser nonce-bound A3 claim/fence correlation
+
+The direct `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path now requires the immutable invocation nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` to survive through the manifest-bound runner, Universal InTr materialization, organization-local ingress packet, and A3/A4 runtime projection. A WorkerCoordinator claim/fence is not promotable as this invocation's evidence unless the returned nonce matches exactly. This is correlation only; it mints no claim/fence and introduces no new runtime or authority path.
