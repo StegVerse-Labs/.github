@@ -489,3 +489,24 @@ Exact-head source validation for PR #30 passed:
 - CI run `35467874709`: SUCCESS for Python 3.11 and 3.12.
 
 This source graph does not add Test3/Richard, another runtime, scheduler, dispatcher, authority plane, custody store, carrier, or device dependency. It does not promote authentic runtime proof. The next authentic boundary remains a fresh WorkerCoordinator claim/fence for Case 1 followed by the same state-dependent graph through TV/TVC, StegCore/InTr, and Master Records.
+
+
+## Task 4 constitutive three-worker binding completion — 2026-09-19
+
+StegAgents PR #31 merged as `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` and completes the Task 4 parent semantics that were still too weak after PR #30.
+
+Task 4 parent admission now uses the action `ADMIT_AND_ATOMICALLY_BIND_TASK4_THREE_WORKERS`. The admitted parent transition carries one exact binding set containing all three distinct WorkerCoordinator claim/fence + worker + worker-instance identities. The transition explicitly requires:
+- exactly three distinct worker-instance bindings;
+- `active_without_all_three_bindings_possible=false`;
+- `child_binding_without_parent_admission_possible=false`;
+- all three child requests to match their parent-carried binding exactly;
+- all three children to consume the same Task 4 parent Master Records closure before their own governed lifecycle begins.
+
+The concurrency barrier remains after binding validation, so W4-A/W4-B/W4-C are siblings from one authenticated parent state rather than a serial chain. The terminal three-way join remains dependent on all three independently RETIRED Master Records closures.
+
+Exact-head validation for PR #31 passed:
+- CI run `35468161886`: SUCCESS.
+- Cross-Agent Authority Validation run `35468161888`: SUCCESS.
+- Test Readiness run `35468161897`: SUCCESS.
+
+No Test3/Richard dependency, alternate runtime, scheduler, dispatcher, authority plane, custody store, carrier, or device dependency was introduced. Authentic runtime execution remains unclaimed until this graph runs through the existing WorkerCoordinator/TV-TVC/StegCore-InTr/Master Records path.
