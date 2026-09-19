@@ -58,8 +58,8 @@ receipts/sovereign-host/resident-request-dispatch.latest.json
 ```text
 Task Registry CONTINUE
 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
--> standing Healer resident scheduler carrier
--> neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> direct stegbrowser_runtime_connection_ingress consumer
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> observed resident custody root
 -> non-authorizing exact receipt reachability classification
 -> SovereignLocalEventRuntimeAdapter
@@ -108,3 +108,8 @@ This task has not met that predicate. It is retired solely because the goal prom
 ## Manual work
 
 None.
+
+
+## Routing correction
+
+Healer is not in the immutable StegBrowser execution lineage. Current observation must follow direct owner-produced retained StegBrowser evidence; Healer may appear only as independently triggered remediation and cannot satisfy or gate StegBrowser runtime predicates.
