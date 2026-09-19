@@ -179,4 +179,97 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             else:
                 sys.modules["canonical_state_transition_custody"]=previous
 
+    def test_rtc007_continuation_closes_master_records_before_rtc008_materialization(self):
+        captured={}
+        binding={
+          "schema":"stegverse.sdk.publisher-return-binding/v1",
+          "communication_state":"READY_FOR_FINAL_STEGVERSE_EGRESS_TRANSITION",
+          "authority_effect":"NONE",
+          "communication_complete":False,
+          "sdk_return_binding_observed":True,
+          "final_stegverse_transition_observed":False,
+          "interlock_intr_egress_observed":False,
+          "far_side_transition_observed":False,
+          "manifest_receipt_id":"MR-"+"D"*64,
+          "egress":{"final_stegverse_transition_surface":"LLM_ADAPTER","transport":"INTERLOCK_INTR","destination_profile":"MIR","far_side_transition_required":True},
+          "binding_sha256":"sha256:"+"b"*64,
+        }
+        llm_pkg=types.ModuleType("llm_adapter")
+        llm=types.ModuleType("llm_adapter.southbound_sdk_return")
+        def prepare_sdk_return_for_intr(binding_bytes,transition_id):
+            self.assertEqual(json.loads(binding_bytes),binding)
+            return {
+              "schema":"stegverse.llm-adapter.southbound-final-transition/v1",
+              "state":"FINAL_STEGVERSE_SIDE_TRANSITION_PREPARED",
+              "transition_surface":"LLM_ADAPTER",
+              "destination_profile":"MIR",
+              "sdk_binding_sha256":consumer.sha(binding_bytes).split(":",1)[1],
+              "final_stegverse_transition_surface_reached":True,
+              "intr_handoff":{"schema":"stegverse.llm-adapter.southbound-intr-egress-handoff/v1"},
+              "authority_effect":"NONE",
+            }
+        llm.prepare_sdk_return_for_intr=prepare_sdk_return_for_intr
+        stegos_pkg=types.ModuleType("stegos")
+        stegos=types.ModuleType("stegos.mir_southbound_intr_consumer")
+        stegos.prepare_mir_southbound_materialization=lambda handoff,payload_ref: {
+          "status":"MIR_SOUTHBOUND_INTR_MATERIALIZATION_READY",
+          "materialization_request":{"schema":"stegverse.universal-intr-materialization-request/v1","state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION"},
+          "interlock_intr_admission_observed":False,
+          "mir_destination_transition_observed":False,
+          "authority_effect":"NONE_REQUEST_ONLY",
+        }
+        custody=types.ModuleType("canonical_state_transition_custody")
+        def build_state_receipt(**kwargs):
+            captured.update(kwargs)
+            return kwargs
+        custody.build_state_receipt=build_state_receipt
+        custody.submit_state_receipt=lambda receipt: {
+          "state":"RECORDED","reconstruction_status":"PASS","required_evidence_validation_status":"PASS",
+          "receipt_sha256":"c"*64,"reconstructed_receipt_sha256":"c"*64,
+        }
+        previous={name:sys.modules.get(name) for name in (
+          "llm_adapter","llm_adapter.southbound_sdk_return","stegos","stegos.mir_southbound_intr_consumer","canonical_state_transition_custody"
+        )}
+        sys.modules["llm_adapter"]=llm_pkg
+        sys.modules["llm_adapter.southbound_sdk_return"]=llm
+        sys.modules["stegos"]=stegos_pkg
+        sys.modules["stegos.mir_southbound_intr_consumer"]=stegos
+        sys.modules["canonical_state_transition_custody"]=custody
+        original_source_root=consumer.source_root
+        consumer.source_root=lambda env_name,repo_name,required: Path("/tmp") 
+        try:
+            with tempfile.TemporaryDirectory() as temp:
+                runtime=Path(temp)
+                output=runtime/consumer.SDK_BINDING_DIR/"sdk-return.json"
+                output.parent.mkdir(parents=True)
+                output.write_text(json.dumps(binding,sort_keys=True,separators=(",",":")),encoding="utf-8")
+                req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                result=consumer._prepare_rtc007_continuation(
+                  runtime,req["materialization_id"],req,output,consumer.sha(binding),
+                  {"receipt_sha256":"a"*64},
+                )
+            self.assertEqual(captured["transition_id"],"RTC-STEGVERSE-EGRESS-007")
+            self.assertEqual(captured["transition_sequence"],2)
+            self.assertEqual(len(captured["required_evidence_manifest"]),2)
+            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"RTC_STEGVERSE_EGRESS_007_TRANSITION")
+            self.assertEqual(captured["required_evidence_manifest"][1]["content"],binding)
+            self.assertEqual(result["rtc007_master_records"]["state"],"RECORDED")
+            self.assertFalse(result["rtc008_admission_observed"])
+            self.assertFalse(result["rtc009_far_side_transition_observed"])
+            self.assertFalse(result["caller_consequence_observed"])
+            self.assertFalse(result["communication_complete"])
+        finally:
+            consumer.source_root=original_source_root
+            for name,value in previous.items():
+                if value is None: sys.modules.pop(name,None)
+                else: sys.modules[name]=value
+
+    def test_rtc007_continuation_fails_closed_when_master_records_does_not_close(self):
+        source=open(consumer.__file__,encoding="utf-8").read()
+        self.assertIn('"RTC-STEGVERSE-EGRESS-007"',source)
+        self.assertIn('"RTC_STEGVERSE_EGRESS_007_TRANSITION"',source)
+        self.assertIn('mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")',source)
+        self.assertIn('"rtc008_admission_observed":False',source)
+        self.assertIn('"rtc009_far_side_transition_observed":False',source)
+
 if __name__=="__main__": unittest.main()
