@@ -39,11 +39,11 @@ def require(condition: bool, message: str) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the executable Test 3 Richard-seam acceptance suite.")
-    parser.add_argument("--stegagents-root", type=Path, required=True)
+    parser.add_argument("--stegagents-root", type=Path)
     parser.add_argument("--json-out", type=Path)
     args = parser.parse_args()
 
-    steagents = args.stegagents_root.resolve()
+    stegagents = args.stegagents_root.resolve() if args.stegagents_root else None
     handoff = json.loads((ROOT / "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json").read_text())
     fragment = json.loads((ROOT / "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json").read_text())
 
@@ -63,8 +63,8 @@ def main() -> int:
     require(validation["atomic_cosv"] == TEST3_COSV, "StegAgents validation COSV mismatch")
     require(validation["result"].startswith("PASS_"), "StegAgents current validation is not PASS")
     require(validation["purpose_bound_test"] == STEGAGENTS_TEST, "StegAgents Test 3 module mismatch")
-    if steagents is not None:
-        steagents_result = run([sys.executable, "-m", "pytest", "-q", STEGAGENTS_TEST], steagents)
+    if stegagents is not None:
+        steagents_result = run([sys.executable, "-m", "pytest", "-q", STEGAGENTS_TEST], stegagents)
         steagents_pass = steagents_result["returncode"] == 0
         steagents_mode = "LIVE_CHECKOUT"
     else:
