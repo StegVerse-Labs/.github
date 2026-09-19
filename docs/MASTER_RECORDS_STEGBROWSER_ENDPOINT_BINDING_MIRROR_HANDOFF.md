@@ -1522,3 +1522,10 @@ The generation-66 check-in found no hard collision and one parent-lineage conver
 Manual work: None.
 
 Validation: retirement consistency and global invariant checks PASS. The optional three-module registry regression sample returned 12 passed / 10 failed identically on unchanged base `2bd5b92ff94ae1f1dbe8e071cb9e2149a037f9fe`; these baseline failures are not represented as green validation and no unrelated source repair is included.
+
+
+## StegBrowser Healer-routing correction — 2026-09-19
+
+The prior model that treated `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json` as the authoritative StegBrowser checkpoint is superseded by `STEG-BROWSER-HEALER-ROUTING-CORRECTION-001`.
+
+The immutable invocation is owned by `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME`. The direct retained evidence surfaces are `stegbrowser-runtime-remediation-boundary.latest.json`, `stegbrowser-runtime-connection-a1-a4.latest.json`, and `stegbrowser-runtime-consumption-evidence-custody.latest.json`. Healer-specific dispatch/checkpoint predicates must not gate StegBrowser custody or reconstruction. Historical Healer analysis remains retained but non-authoritative for current progression.
