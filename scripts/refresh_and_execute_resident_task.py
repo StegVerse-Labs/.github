@@ -327,7 +327,19 @@ def refresh_and_execute(
     if ecosystem_chat_parent and cosv_task_vector is not None:
         raise ValueError("cosv_task_vector applies only to explicit task modes")
 
-    refresh_receipt = refresh(source, runtime)
+    if source == runtime:
+        refresh_receipt = {
+            "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+            "state": "SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED",
+            "source_root": str(source),
+            "runtime_root": str(runtime),
+            "mutable_runtime_state_preserved": True,
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE",
+        }
+    else:
+        refresh_receipt = refresh(source, runtime)
     selected_pointer_task_id = resume_claimed_task_id or task_id
     pointer_receipt = (
         validate_cosv_task_pointer(runtime, str(selected_pointer_task_id), cosv_task_vector)
