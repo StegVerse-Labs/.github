@@ -103,7 +103,7 @@ SDK local console PASS != authentic resident materialization
 
 ## Runtime relationship to STEGAGENTS-GOVERNED-RUNTIME-001
 
-`STEGAGENTS-GOVERNED-RUNTIME-001` currently owns the reusable governed runtime path and remains blocked on authentic resident execution evidence. This successor must converge on that owner rather than bypass it.
+`STEGAGENTS-GOVERNED-RUNTIME-001` owns the reusable StegAgents worker/process-adapter capability. This SDK successor reuses that capability but does not inherit unrelated StegBrowser/Healer resident-root prerequisites unless an authentic preceding Master Records transition for this exact SDK lineage establishes them.
 
 If the existing CodeRepair-specific manifest/process adapter cannot represent the purpose-bound test without source refinement, the smallest allowed refinement is to expose this already-defined purpose-bound worker request through that same governed StegAgents runtime path. Such refinement may not duplicate runtime or authority semantics.
 
@@ -168,7 +168,7 @@ payload.text: StegVerse tracks this arbitrary local worker task.
 
 Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
 
-No authentic runtime execution has been attempted. The existing runtime owner's resident custody-root / WorkerCoordinator prerequisites remain authoritative gates. Source or CI success must not promote any authentic lifecycle predicate.
+No authentic runtime execution has been attempted. The first direct runtime authority boundary for this SDK task is a fresh WorkerCoordinator claim/fence; every resulting governed transition must then close through canonical Master Records custody/reconstruction before machine-owned progression. No Healer or resident-custody-root dependency is established for this SDK lineage.
 
 ## Post-merge source state — 2026-09-18
 
@@ -186,7 +186,7 @@ The successor carries the exact `stegverse.sdk.tt-purpose-bound-worker.v1` reque
 
 GitHub reported PR #2150 mergeable/clean and merged the exact head. This repository exposed no PR workflow runs or commit statuses for that head, so the source record does not promote an automated `.github` CI result that was not observed. Focused regression source is merged; authentic runtime evidence remains entirely unclaimed.
 
-The first remaining runtime prerequisite is inherited from `STEGAGENTS-GOVERNED-RUNTIME-001`: authentic resident custody-root reachability followed by a fresh WorkerCoordinator claim/fence. Until those existing prerequisites are observed, this task must not attempt or claim authentic worker materialization, InTr admission, task execution, retirement, or Master Records reconstruction.
+The first remaining runtime authority boundary is a fresh WorkerCoordinator claim/fence for this HANDOFF_READY task. After that, the exact SDK transition sequence must proceed through TV warrant/policy verification, StegCore/InTr admission, purpose-bound execution, retirement, and per-transition Master Records `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` closure.
 
 
 ## Derived lifetime semantics — Goal Prompt 4
@@ -227,9 +227,24 @@ run: 35402863119
 conclusion: success
 ```
 
-The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression still belongs to the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root / WorkerCoordinator / TV warrant-policy / StegCore-InTr / Master Records chain; source or CI evidence does not satisfy those predicates.
+The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression is the direct SDK WorkerCoordinator / TV warrant-policy / StegCore-InTr / purpose-bound lifecycle / Master Records chain. Source or CI evidence does not satisfy those runtime predicates.
 
 
 ## Coordination hygiene reconciliation — registry generation 64
 
-`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current `STEGAGENTS-GOVERNED-RUNTIME-001` evidence still does not establish an authentic retained resident root, targeted consumption, current WorkerCoordinator claim/fence, or Master Records runtime custody/reconstruction, so authentic purpose-bound execution remains unattempted.
+`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current evidence still does not establish a fresh SDK WorkerCoordinator claim/fence or any authentic SDK lifecycle transition in Master Records, so authentic purpose-bound execution remains unattempted. The separate StegBrowser/Healer resident-root lineage is not an SDK prerequisite.
+
+
+## Runtime dependency correction — registry generation 70
+
+Master Records truth does not establish Healer or a resident-custody-root observation as a predecessor of this SDK task. The executable task is `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` with `carrier_trigger_required=false`. The direct chain is therefore:
+
+```text
+fresh WorkerCoordinator claim/fence
+-> TV warrant/policy verification
+-> StegCore/InTr materialization decision
+-> purpose-bound worker lifecycle
+-> canonical Master Records custody/reconstruction for every resulting transition
+```
+
+For each governed transition, progression requires `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, and PASS reconstruction of every `required_evidence_manifest` item. No Healer, resident-root, scheduler, dispatcher, or alternate runtime dependency may be inferred unless an authentic preceding Master Records transition for this exact lineage requires it.
