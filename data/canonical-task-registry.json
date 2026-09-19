@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 70,
-  "status": "MASTER_RECORDS_REQUIRED_EVIDENCE_BROWSER_CARRIAGE_SOURCE_REPAIRED",
+  "generation": 71,
+  "status": "SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_DEPENDENCY_CORRECTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4451,13 +4451,23 @@
         "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
         "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
       ],
-      "remaining_predicate": "WAIT_FOR_EXISTING_STEGAGENTS_GOVERNED_RUNTIME_RESIDENT_ROOT_AND_WORKERCOORDINATOR_PREREQUISITES_THEN_ATTEMPT_AUTHENTIC_PURPOSE_BOUND_LIFECYCLE",
+      "remaining_predicate": "OBTAIN_FRESH_WORKERCOORDINATOR_CLAIM_FENCE_THEN_ADVANCE_DIRECT_GOVERNED_PURPOSE_BOUND_LIFECYCLE_WITH_PER_TRANSITION_MASTER_RECORDS_CLOSURE",
       "completion": {
         "claimed": false,
         "validated": false,
         "activation_proof_complete": false
       },
       "authority_effect": "NONE_COORDINATION_ONLY",
+      "coordination_hygiene": {
+        "reconciled_against_registry_generation": 70,
+        "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+        "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
+        "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
+        "runtime_prerequisites_satisfied": false,
+        "authentic_runtime_execution_attempted": false,
+        "unsupported_resident_root_dependency_removed": true,
+        "healer_dependency_established_by_master_records": false
+      },
       "source_refinement": {
         "steagents_pr": 21,
         "steagents_merge": "4363333520f381370b7ae8f93b88a98bf8526aeb",
@@ -4523,6 +4533,16 @@
           "budget_extension_requires_new_governed_recalculation": true
         },
         "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
+      },
+      "runtime_dependency_correction": {
+        "corrected_at_registry_generation": 70,
+        "direct_execution_mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+        "first_runtime_authority_boundary": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+        "transition_authority": "StegCore/InTr",
+        "evidence_closure": "MASTER_RECORDS_PER_TRANSITION",
+        "resident_custody_root_required": false,
+        "healer_required": false,
+        "reason": "No authentic preceding Master Records transition establishes Healer or resident-custody-root as a dependency of this SDK task."
       }
     },
     {
