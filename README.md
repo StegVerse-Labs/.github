@@ -748,3 +748,12 @@ HANDOFF_READY task T + manifest-governed capability M
 The test must fail closed for ACTIVE-without-worker, worker-without-ACTIVE-task, mismatched reciprocal binding, pre-created worker, invocation before transition closure, manifest-boundary expansion, completed task with a live bound worker, or residual callable/executor state. This is source/local semantic evidence only and does not claim authentic WorkerCoordinator, TV/TVC, Interlock/InTr, resident runtime, or Master Records execution.
 
 Canonical handoff: `docs/SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md`.
+
+
+## SDK Test 3 - authentic Richard-scenario seam validation
+
+Canonical Goal Task `SDK-TT-RICHARD-SCENARIO-SEAM-RUNTIME-001` asks whether the atomic task/worker seam proven by Test 2 survives authentic StegVerse governance and execution. It preserves Test 1 and Test 2 evidence unchanged and reuses the existing WorkerCoordinator -> TV/TVC -> StegCore/InTr -> StegAgents -> Master Records path.
+
+A pass requires authentic evidence that task activation and task-bound worker creation/binding occur as one governed constitutive transition, that invocation follows its Master Records closure, and that task closure plus worker retirement terminate the same binding with records-only reconstruction. GitHub/CI is non-authorizing and cannot satisfy the runtime predicates.
+
+Canonical handoff: `docs/SDK_TT_RICHARD_SCENARIO_SEAM_RUNTIME_MIRROR_HANDOFF.md`.
