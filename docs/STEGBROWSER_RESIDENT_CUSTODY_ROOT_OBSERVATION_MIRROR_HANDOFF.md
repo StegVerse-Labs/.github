@@ -211,3 +211,12 @@ The consumer now preserves the existing precedence: explicit distinct dispatcher
 After merging #2237, the resident update path was traced one layer earlier. `run_worker_runtime.py::refresh_local_worker_source()` still resolved canonical source only from `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. Therefore a worker service carrying only the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` could know the canonical checkout yet skip source refresh entirely, leaving the resident on the pre-#2237 consumer and recreating the same source-resolution block.
 
 The existing native source refresh now uses the same provider-neutral local precedence: dedicated heartbeat source binding first, then the existing `StegVerse-Labs/.github` repository-map entry. The map is parsed fail-closed, source==runtime remains non-refreshing, and the refresh still performs no network source transport or credential acquisition. This is not a new updater, scheduler, runtime, dispatcher, or authority path; it repairs the existing local refresh locator so merged consumer repairs can actually reach the resident.
+
+
+## Healer routing correction
+
+The generation-70 retention-seam reconciliation incorrectly elevated the first pointer-bearing Healer checkpoint into a required progression gate for the immutable StegBrowser invocation. That was a coordination error: the canonical resident request for nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` binds directly to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and the manifest-bound Browser runtime. It does not require `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`.
+
+The parent now continues directly through the existing Browser execution owner: current WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser runtime evidence -> canonical Master Records custody/reconstruction. The direct receipt surface is `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`; no Healer packet is required before classifying authentic owner-bound evidence.
+
+All prior Healer work is preserved as historical remediation evidence only. Healer role is `TRIGGERED_REMEDIATION_ONLY`; its scheduler/checkpoint/retention pointer is not an execution prerequisite, carrier requirement, transition authority, or Master Records predecessor for this invocation.
