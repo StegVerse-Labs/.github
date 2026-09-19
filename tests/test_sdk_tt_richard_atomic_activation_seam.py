@@ -1,0 +1,122 @@
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+
+from heartbeat_runtime.process_adapter import ProcessWorkerAdapter
+
+ROOT = Path(__file__).resolve().parents[1]
+WORKER_PATH = ROOT / "workers" / "stegagents_governed_runtime_worker.py"
+RUNTIME_PATH = ROOT / "heartbeat_runtime" / "worker_runtime_legacy.py"
+HANDOFF_PATH = ROOT / "handoffs" / "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json"
+FRAGMENT_PATH = ROOT / "control" / "worker-registry.d" / "sdk-tt-richard-seam-authentic-runtime-001.json"
+
+
+def _worker_module():
+    spec = importlib.util.spec_from_file_location("test3_worker_bridge", WORKER_PATH)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pending_adapter_fence_does_not_require_live_task_binding(tmp_path):
+    adapter = ProcessWorkerAdapter(["python", "-c", "print('x')"], cwd=tmp_path)
+    task = {
+        "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+        "state": "HANDOFF_READY",
+        "claim_id": None,
+        "worker_id": None,
+        "worker_instance_id": None,
+        "pending_atomic_activation": {
+            "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+            "fencing_token": 42,
+            "worker_id": "stegagents-governed-runtime-worker",
+            "proposed_worker_instance_id": "stegagents-governed-runtime-worker-HB1-G42",
+        },
+    }
+    claim_id, fence = adapter._validate_fence(task)
+    assert claim_id.endswith("-G42")
+    assert fence == 42
+    assert task["claim_id"] is None
+    assert task["worker_id"] is None
+    assert task["worker_instance_id"] is None
+
+
+def test_pending_adapter_rejects_preactivation_live_binding(tmp_path):
+    adapter = ProcessWorkerAdapter(["python", "-c", "print('x')"], cwd=tmp_path)
+    task = {
+        "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+        "state": "HANDOFF_READY",
+        "claim_id": None,
+        "worker_id": None,
+        "worker_instance_id": "already-live",
+        "pending_atomic_activation": {
+            "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+            "fencing_token": 42,
+        },
+    }
+    try:
+        adapter._validate_fence(task)
+    except RuntimeError as exc:
+        assert "may not expose a live task-bound worker" in str(exc)
+    else:
+        raise AssertionError("preactivation live worker accepted")
+
+
+def test_worker_bridge_accepts_only_pending_test3_preactivation_shape():
+    worker = _worker_module()
+    invocation = {
+        "schema": "stegverse.worker-invocation/v0.1",
+        "task": {
+            "task_id": worker.TEST3_TASK_ID,
+            "state": "HANDOFF_READY",
+            "claim_id": None,
+            "worker_id": None,
+            "worker_instance_id": None,
+            "pending_atomic_activation": {
+                "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+                "fencing_token": 42,
+                "worker_id": worker.WORKER_ID,
+                "proposed_worker_instance_id": "stegagents-governed-runtime-worker-HB1-G42",
+            },
+        },
+        "scope": {
+            "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+            "fencing_token": 42,
+        },
+    }
+    task, mode = worker.validate_test3_invocation(invocation)
+    assert mode == "ATOMIC_ACTIVATION"
+    assert task["state"] == "HANDOFF_READY"
+    assert task["worker_instance_id"] is None
+
+
+def test_workercoordinator_projects_active_only_after_closed_constitutive_receipt():
+    source = RUNTIME_PATH.read_text(encoding="utf-8")
+    branch = source.index('if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":')
+    generic_activation = source.index('registry["generation"] = generation', branch)
+    require_closure = source.index('transition.get("state") == "RECORDED"', branch)
+    require_reconstruction = source.index('transition.get("reconstruction_status") == "PASS"', branch)
+    require_evidence = source.index('transition.get("required_evidence_validation_status") == "PASS"', branch)
+    require_digest = source.index('transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")', branch)
+    projection = source.index('"state": "ACTIVE"', require_digest)
+    invocation = source.index("self._invoke(registry, task, carrier_epoch, cost_log, events)", projection)
+    assert branch < require_closure < require_reconstruction < require_evidence < require_digest < projection < invocation < generic_activation
+
+
+def test_test3_registration_reuses_existing_worker_provider():
+    import json
+    handoff = json.loads(HANDOFF_PATH.read_text(encoding="utf-8"))
+    fragment = json.loads(FRAGMENT_PATH.read_text(encoding="utf-8"))
+    task = fragment["tasks"][0]
+    assert handoff["task"]["task_id"] == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+    assert handoff["activation"]["atomic_task_worker_binding_required"] is True
+    assert task["state"] == "HANDOFF_READY"
+    assert task["claim_id"] is None
+    assert task["worker_id"] is None
+    assert task["worker_instance_id"] is None
+    assert fragment["workers"] == []
+    assert fragment["shared_worker_provider_fragment_refs"] == [
+        "control/worker-registry.d/stegagents-governed-runtime-001.json"
+    ]

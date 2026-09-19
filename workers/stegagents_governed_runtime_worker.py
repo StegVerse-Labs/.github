@@ -20,6 +20,8 @@ OWNER_TASK_ID = "STEGAGENTS-GOVERNED-RUNTIME-001"
 OWNER_COSV = "71000000101001"
 PURPOSE_TASK_ID = "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
 PURPOSE_COSV = "71000000111111"
+TEST3_TASK_ID = "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+TEST3_COSV = "20010000110000"
 TASK_ID = OWNER_TASK_ID  # backwards-compatible constant for existing tests/source refs
 COSV = OWNER_COSV
 AGENT_ID = "CodeRepair-001"
@@ -31,6 +33,10 @@ OWNER_RESULT_REL = Path("receipts/sovereign-host/stegagents-governed-runtime")
 OWNER_LATEST_REL = Path("receipts/sovereign-host/stegagents-governed-runtime.latest.json")
 PURPOSE_RESULT_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof")
 PURPOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json")
+TEST3_ACTIVATION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/activation")
+TEST3_ACTIVATION_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/activation.latest.json")
+TEST3_EXECUTION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/execution")
+TEST3_EXECUTION_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/execution.latest.json")
 PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
@@ -74,6 +80,272 @@ def _profile(task_id: str) -> dict[str, str]:
             "transition_id": "STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED",
         }
     raise RuntimeError("worker invocation task mismatch")
+
+
+def validate_test3_invocation(invocation: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
+    require(invocation.get("schema") == "stegverse.worker-invocation/v0.1", "worker invocation schema mismatch")
+    task = invocation.get("task")
+    scope = invocation.get("scope")
+    require(isinstance(task, Mapping) and isinstance(scope, Mapping), "worker invocation task/scope missing")
+    require(task.get("task_id") == TEST3_TASK_ID, "Test 3 task binding mismatch")
+    if task.get("state") == "HANDOFF_READY":
+        pending = task.get("pending_atomic_activation")
+        require(isinstance(pending, Mapping), "pending atomic activation missing")
+        require(task.get("claim_id") is None and task.get("worker_id") is None and task.get("worker_instance_id") is None, "Test 3 preactivation exposed live task-bound worker state")
+        claim_id = pending.get("claim_id")
+        fence = pending.get("fencing_token")
+        worker_id = pending.get("worker_id")
+        proposed = pending.get("proposed_worker_instance_id")
+        require(isinstance(claim_id, str) and claim_id, "pending claim missing")
+        require(isinstance(fence, int) and fence >= 1, "pending fence missing")
+        require(claim_id.endswith(f"-G{fence}"), "pending claim generation mismatch")
+        require(worker_id == WORKER_ID, "pending worker identity mismatch")
+        require(isinstance(proposed, str) and proposed, "proposed worker instance missing")
+        require(scope.get("claim_id") == claim_id and scope.get("fencing_token") == fence, "pending invocation scope claim/fence mismatch")
+        return dict(task), "ATOMIC_ACTIVATION"
+
+    require(task.get("state") == "ACTIVE", "Test 3 worker invocation task is not ACTIVE")
+    claim_id = task.get("claim_id")
+    timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
+    fence = timing.get("fencing_token")
+    require(isinstance(claim_id, str) and claim_id, "worker claim missing")
+    require(isinstance(fence, int) and fence >= 1, "worker fence missing")
+    require(scope.get("claim_id") == claim_id and scope.get("fencing_token") == fence, "worker invocation scope claim/fence mismatch")
+    require(claim_id.endswith(f"-G{fence}"), "worker claim generation mismatch")
+    require(task.get("worker_id") == WORKER_ID, "worker identity mismatch")
+    require(isinstance(task.get("worker_instance_id"), str) and task.get("worker_instance_id"), "worker_instance_id missing")
+    receipt_ref = task.get("atomic_activation_receipt_ref")
+    require(isinstance(receipt_ref, str) and receipt_ref, "atomic activation receipt ref missing")
+    return dict(task), "TASK_EXECUTION"
+
+
+def build_test3_request(task: Mapping[str, Any], handoff: Mapping[str, Any], mode: str) -> dict[str, Any]:
+    _required_capability(handoff, PURPOSE_CAPABILITY)
+    contract = handoff.get("purpose_bound_worker_request")
+    require(isinstance(contract, Mapping), "purpose-bound worker request missing from Test 3 handoff")
+    candidate = ((contract.get("transition_cell") or {}).get("candidate") if isinstance(contract.get("transition_cell"), Mapping) else None)
+    require(contract.get("schema") == "stegverse.sdk.tt-purpose-bound-worker.v1", "purpose-bound SDK request schema mismatch")
+    require(isinstance(candidate, Mapping) and candidate.get("required_capability") == "text.integrity_summary", "Test 3 capability mismatch")
+    if mode == "ATOMIC_ACTIVATION":
+        pending = task["pending_atomic_activation"]
+        return {
+            "schema": "stegverse.stegagents-atomic-task-worker-activation-request/v1",
+            "task_id": TEST3_TASK_ID,
+            "cosv_task_vector": TEST3_COSV,
+            "parent_agent_id": AGENT_ID,
+            "execution_authority": False,
+            "self_authorization_allowed": False,
+            "credential_material_present": False,
+            "task_pre_state": {
+                "state": "HANDOFF_READY",
+                "claim_id": None,
+                "worker_id": None,
+                "worker_instance_id": None,
+            },
+            "pending_worker_claim": {
+                "claim_id": pending["claim_id"],
+                "fencing_token": pending["fencing_token"],
+                "worker_id": pending["worker_id"],
+                "proposed_worker_instance_id": pending["proposed_worker_instance_id"],
+            },
+            "purpose_bound_worker_request": dict(contract),
+        }
+
+    root = runtime_root()
+    receipt_path = Path(str(task["atomic_activation_receipt_ref"]))
+    if not receipt_path.is_absolute():
+        receipt_path = root / receipt_path
+    require(receipt_path.is_file(), "atomic activation receipt not retained")
+    activation_evidence = json.loads(receipt_path.read_text(encoding="utf-8"))
+    timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
+    return {
+        "schema": "stegverse.stegagents-atomic-task-worker-execution-request/v1",
+        "task_id": TEST3_TASK_ID,
+        "cosv_task_vector": TEST3_COSV,
+        "parent_agent_id": AGENT_ID,
+        "execution_authority": False,
+        "self_authorization_allowed": False,
+        "credential_material_present": False,
+        "worker_claim": {
+            "claim_id": task["claim_id"],
+            "fencing_token": timing["fencing_token"],
+            "worker_id": task["worker_id"],
+            "worker_instance_id": task["worker_instance_id"],
+        },
+        "activation_evidence": activation_evidence,
+        "purpose_bound_worker_request": dict(contract),
+    }
+
+
+def _require_closed_transition(row: Any, transition_id: str) -> None:
+    require(isinstance(row, Mapping), f"{transition_id} transition missing")
+    require(row.get("transition_id") == transition_id, f"{transition_id} transition id mismatch")
+    require(row.get("state") == "RECORDED", f"{transition_id} state not RECORDED")
+    require(row.get("reconstruction_status") == "PASS", f"{transition_id} reconstruction not PASS")
+    require(row.get("required_evidence_validation_status") == "PASS", f"{transition_id} required evidence not PASS")
+    digest = row.get("receipt_sha256")
+    require(isinstance(digest, str) and digest == row.get("reconstructed_receipt_sha256"), f"{transition_id} digest mismatch")
+
+
+def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
+    require(result.get("task_id") == TEST3_TASK_ID, "Test 3 result task mismatch")
+    require(result.get("execution_authority") is False, "Test 3 execution authority invariant violated")
+    require(result.get("self_authorization_allowed") is False, "Test 3 self-authorization invariant violated")
+    require(result.get("provider_operation_required") is False, "unexpected provider operation requirement")
+    require(result.get("credential_authority") == "TV/TVC", "credential authority drift")
+    require(result.get("credential_material_present") is False, "credential material exposed")
+
+    if mode == "ATOMIC_ACTIVATION":
+        require(result.get("state") == "GOVERNED_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED", "atomic activation result state mismatch")
+        validate_warrant_policy_binding(result)
+        _require_closed_transition(result.get("warrant_policy_master_records_transition"), "TV_TVC_WARRANT_POLICY_VERIFIED")
+        _require_closed_transition(result.get("atomic_activation_master_records_transition"), "ACTIVATE_TASK_AND_CREATE_BIND_WORKER")
+        projection = result.get("activation_projection")
+        require(isinstance(projection, Mapping), "activation projection missing")
+        require(projection.get("task_pre_state") == "HANDOFF_READY" and projection.get("task_post_state") == "ACTIVE", "activation projection state mismatch")
+        require(projection.get("worker_bound_task_id") == TEST3_TASK_ID, "activation projection binding mismatch")
+        require(projection.get("invocation_started") is False, "activation projection invoked task")
+        governance = result.get("governance")
+        require(isinstance(governance, Mapping) and governance.get("state") == "ALLOW", "atomic activation governance not ALLOW")
+        require(governance.get("chain_verified") is True and governance.get("master_records_custody_status") == "RECORDED", "atomic activation governance evidence incomplete")
+        reconstruction = result.get("master_records_reconstruction")
+        require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "atomic activation reconstruction missing")
+        return
+
+    require(result.get("state") == "GOVERNED_TASK_RESULT_READY_FOR_CLOSE", "Test 3 execution result state mismatch")
+    _require_closed_transition(result.get("invocation_master_records_transition"), "TASK_BOUND_WORKER_INVOCATION_STARTED")
+    _require_closed_transition(result.get("task_completed_master_records_transition"), "TASK_BOUND_WORKER_TASK_COMPLETED")
+    require(result.get("worker_live") is True, "task-bound worker unexpectedly retired before governed close")
+    require(result.get("governed_close_required") is True, "governed close requirement missing")
+    require(isinstance(result.get("task_result_hash"), str) and result.get("task_result_hash"), "task result hash missing")
+
+
+def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any], result: Mapping[str, Any], manifest_blob_sha: str, mode: str) -> Path:
+    if mode == "ATOMIC_ACTIVATION":
+        pending = request["pending_worker_claim"]
+        claim_id = str(pending["claim_id"])
+        result_rel, latest_rel = TEST3_ACTIVATION_REL, TEST3_ACTIVATION_LATEST_REL
+        state = "AUTHENTIC_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED"
+        worker_claim = dict(pending)
+    else:
+        claim_id = str(request["worker_claim"]["claim_id"])
+        result_rel, latest_rel = TEST3_EXECUTION_REL, TEST3_EXECUTION_LATEST_REL
+        state = "AUTHENTIC_TASK_RESULT_READY_FOR_GOVERNED_CLOSE"
+        worker_claim = dict(request["worker_claim"])
+    receipt = {
+        "schema": "stegverse.stegagents-test3-runtime-receipt/v1",
+        "state": state,
+        "mode": mode,
+        "task_id": TEST3_TASK_ID,
+        "runtime_owner_task_id": OWNER_TASK_ID,
+        "cosv_task_vector": TEST3_COSV,
+        "agent_id": AGENT_ID,
+        "registered_manifest": {
+            "repository": STEGAGENTS_REPO,
+            "path": "agents/governed/CodeRepair-001.manifest.json",
+            "git_blob_sha": manifest_blob_sha,
+            "expected_git_blob_sha": EXPECTED_MANIFEST_GIT_BLOB_SHA,
+            "source_registration_merge": REGISTERED_MANIFEST_SOURCE_MERGE,
+            "exact_merged_manifest_verified": manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA,
+        },
+        "request": dict(request),
+        "request_sha256": sha256_uri(request),
+        "result": dict(result),
+        "result_sha256": sha256_uri(result),
+        "worker_claim": worker_claim,
+        "execution_authority": False,
+        "github_runtime_authority": "NONE",
+        "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
+    }
+    if mode == "ATOMIC_ACTIVATION":
+        receipt["activation_projection"] = result.get("activation_projection")
+        receipt["warrant_policy_binding"] = result.get("warrant_policy_binding")
+        receipt["warrant_policy_master_records_transition"] = result.get("warrant_policy_master_records_transition")
+        receipt["atomic_activation_master_records_transition"] = result.get("atomic_activation_master_records_transition")
+        receipt["master_records_reconstruction"] = result.get("master_records_reconstruction")
+    else:
+        receipt["activation_transition_receipt_sha256"] = result.get("activation_transition_receipt_sha256")
+        receipt["invocation_master_records_transition"] = result.get("invocation_master_records_transition")
+        receipt["task_completed_master_records_transition"] = result.get("task_completed_master_records_transition")
+        receipt["task_result"] = result.get("task_result")
+        receipt["task_result_hash"] = result.get("task_result_hash")
+        receipt["worker_live"] = result.get("worker_live")
+        receipt["governed_close_required"] = result.get("governed_close_required")
+
+    target = root / result_rel / f"{claim_id}.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    raw = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    if target.exists():
+        existing = json.loads(target.read_text(encoding="utf-8"))
+        require(existing == receipt, "write-once Test 3 runtime receipt collision")
+    else:
+        target.write_text(raw, encoding="utf-8")
+    latest = root / latest_rel
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    latest.write_text(raw, encoding="utf-8")
+    return target
+
+
+def run_test3(invocation: Mapping[str, Any]) -> dict[str, Any]:
+    task, mode = validate_test3_invocation(invocation)
+    handoff = invocation.get("handoff") if isinstance(invocation.get("handoff"), Mapping) else {}
+    roots = repo_roots()
+    agents_root = roots.get(STEGAGENTS_REPO)
+    require(agents_root is not None, "already-local StegAgents source root not materialized")
+    manifest = agents_root / "agents/governed/CodeRepair-001.manifest.json"
+    require(manifest.is_file(), "CodeRepair-001 governed manifest missing")
+    manifest_blob_sha = git_blob_sha(manifest)
+    require(manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA, "CodeRepair-001 governed manifest does not match merged registered blob")
+
+    request = build_test3_request(task, handoff, mode)
+    env = dict(os.environ)
+    env.pop("GITHUB_TOKEN", None)
+    env.pop("GH_TOKEN", None)
+    completed = subprocess.run(
+        [sys.executable, "-m", "src.purpose_bound_worker_runtime"],
+        cwd=str(agents_root),
+        input=json.dumps(request),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+        env=env,
+    )
+    require(completed.returncode == 0, "StegAgents Test 3 runtime returned nonzero")
+    try:
+        result = json.loads(completed.stdout)
+    except Exception as exc:
+        raise RuntimeError("StegAgents Test 3 runtime returned invalid JSON") from exc
+    require(isinstance(result, dict), "StegAgents Test 3 result must be object")
+    validate_test3_result(mode, result)
+    receipt = retain_test3_result(runtime_root(), task, request, result, manifest_blob_sha, mode)
+    if mode == "ATOMIC_ACTIVATION":
+        return {
+            "schema": "stegverse.worker-response/v0.1",
+            "state": "ACTIVE",
+            "transition_id": "STEGAGENTS_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED",
+            "transition_sequence": 1,
+            "expected_next_transition": "STEGAGENTS_TASK_BOUND_WORKER_INVOCATION_READY",
+            "expected_next_earliest_epoch": None,
+            "expected_next_latest_epoch": None,
+            "checkpoint_ref": str(receipt),
+            "evidence_refs": [str(receipt)],
+            "cost_observation": {"compute_units": 1, "token_units": 0, "storage_bytes": receipt.stat().st_size, "network_bytes": 0, "operator_seconds": 0, "external_cost_usd": 0, "latency_ms": None, "failure_recovery_units": 0, "services_used": []},
+            "authority_effect": "NONE_ATOMIC_ACTIVATION_ADMISSION_ONLY",
+        }
+    return {
+        "schema": "stegverse.worker-response/v0.1",
+        "state": "ACTIVE",
+        "transition_id": "STEGAGENTS_TASK_RESULT_READY_FOR_GOVERNED_CLOSE",
+        "transition_sequence": 2,
+        "expected_next_transition": "STEGAGENTS_GOVERNED_CLOSE_REQUIRED",
+        "expected_next_earliest_epoch": None,
+        "expected_next_latest_epoch": None,
+        "checkpoint_ref": str(receipt),
+        "evidence_refs": [str(receipt)],
+        "cost_observation": {"compute_units": 1, "token_units": 0, "storage_bytes": receipt.stat().st_size, "network_bytes": 0, "operator_seconds": 0, "external_cost_usd": 0, "latency_ms": None, "failure_recovery_units": 0, "services_used": []},
+        "authority_effect": "NONE_TASK_RESULT_PENDING_GOVERNED_CLOSE",
+    }
 
 
 def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
@@ -291,6 +563,9 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
 
 
 def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
+    raw_task = invocation.get("task") if isinstance(invocation.get("task"), Mapping) else {}
+    if raw_task.get("task_id") == TEST3_TASK_ID:
+        return run_test3(invocation)
     task = validate_invocation(invocation)
     profile = _profile(str(task["task_id"]))
     handoff = invocation.get("handoff") if isinstance(invocation.get("handoff"), Mapping) else {}

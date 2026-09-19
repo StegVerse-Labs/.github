@@ -789,3 +789,8 @@ contracts/conversation-evidence-service-performance-publication-contract.v1.json
 ## StegHealth KV/Interlock production endpoint coordination
 
 Canonical Task Registry tracks `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` as ACTIVE/CHECKED_OUT. The task reuses the existing HeartBeat-separated native WorkerCoordinator, canonical resident dispatcher, Interlock/InTr, TV/TVC, and Master Records paths. Registration is coordination only and does not prove production KV/Interlock execution or satisfy any runtime predicate.
+
+
+### Test 3 seam repair implementation status
+
+StegAgents PR #26 merged as `a847dae9b72b3914b98c33cc94b8d2a87c1a685d` after all exact-head checks passed. The current .github repair branch carries the matching Test-3-only WorkerCoordinator/ProcessWorkerAdapter bridge: claim/fence stays pending while T is HANDOFF_READY with no live task-bound W; InTr plus Master Records must close `ACTIVATE(T)+CREATE_AND_BIND(W,T)` before ACTIVE T<->W is projected; invocation is a separate post-activation phase. Authentic runtime execution is not yet claimed.

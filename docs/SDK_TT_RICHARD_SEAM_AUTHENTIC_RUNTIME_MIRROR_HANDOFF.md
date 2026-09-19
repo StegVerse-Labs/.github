@@ -116,3 +116,24 @@ HANDOFF_READY T + no task-bound W
 Do not alter Test 1 or Test 2 evidence and do not weaken other worker paths. Reuse the existing WorkerCoordinator, shared StegAgents worker/process adapter, TV/TVC, StegCore/InTr, and Master Records components.
 
 No authentic Test 3 execution has been attempted yet because the current source path would violate the invariant being tested.
+
+
+## Source repair implementation — StegAgents merged / .github validation pending
+
+StegAgents PR #26 passed Test Readiness, Cross-Agent Authority Validation, and CI at exact head `bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65` and merged as `a847dae9b72b3914b98c33cc94b8d2a87c1a685d`.
+
+The reconciled .github repair preserves the Test-3-only pending-activation seam:
+
+```text
+HANDOFF_READY T + no authoritative claim_id/worker_id/worker_instance_id
+-> fresh WorkerCoordinator claim/fence retained only in pending_atomic_activation
+-> Master Records closes claim/fence custody
+-> existing ProcessWorkerAdapter invokes shared StegAgents bridge in ATOMIC_ACTIVATION mode
+-> TV/TVC verification
+-> StegCore/InTr evaluates ACTIVATE(T)+CREATE_AND_BIND(W,T)
+-> Master Records must return RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality
+-> only then WorkerCoordinator projects ACTIVE T <-> W
+-> separate TASK_EXECUTION mode may invoke W
+```
+
+No non-Test-3 worker path is intentionally changed. Authentic Test 3 execution remains unclaimed until the .github exact head is validated and merged.
