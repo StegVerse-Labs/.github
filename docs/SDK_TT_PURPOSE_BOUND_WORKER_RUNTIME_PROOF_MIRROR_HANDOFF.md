@@ -310,3 +310,30 @@ validate-deepseek-resident                       run 35417052003  SUCCESS
 ```
 
 This establishes merged source readiness for the corrected direct one-shot admission path only. It does not establish an authentic fresh WorkerCoordinator claim/fence or any downstream TV/TVC, InTr, purpose-bound lifecycle, or Master Records transition evidence. The Goal remains ACTIVE / UNCLAIMED and the next authentic state transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`.
+
+
+## WorkerCoordinator claim/fence Master Records progression gate — Goal Prompt 9
+
+Registry generation 75 and the canonical handoff were re-read after PR #2190 merged the post-#2188 evidence reconciliation.
+
+The existing one-shot path still had one authority-ordering defect relative to this Goal's explicit evidence rule: WorkerCoordinator emitted `worker_assignment_bound_from_independent_task_control` and appended `events/master-records-worker-assignment.jsonl`, but that assignment record was only marked with terminal destination `master-records/orchestration`; it was not synchronously submitted through the canonical state-transition custody client before task activation and worker invocation.
+
+The existing WorkerCoordinator path is repaired so the proposed fresh claim/fence is now fail-closed through canonical Master Records custody before `ACTIVE` state or worker execution:
+
+```text
+HANDOFF_READY
+-> compute next WorkerCoordinator generation / claim_id / fencing_token / worker_instance_id
+-> build exact assignment record
+-> canonical state transition: WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> required evidence: WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT
+-> Master Records state=RECORDED
+-> reconstruction_status=PASS
+-> required_evidence_validation_status=PASS
+-> receipt_sha256 == reconstructed_receipt_sha256
+-> only then commit registry generation + ACTIVE binding
+-> only then invoke existing shared StegAgents worker
+```
+
+If any Master Records predicate fails, WorkerCoordinator emits `worker_assignment_master_records_blocked`, leaves the task unactivated, and does not invoke the worker. The assignment receipt explicitly records that WorkerCoordinator grants no transition authority and Master Records grants no claim authority.
+
+This is a source-level progression repair only. No authentic claim/fence, TV/TVC warrant, InTr admission, purpose-bound lifecycle, or Master Records runtime receipt is promoted until the existing one-shot executes in the resident runtime.
