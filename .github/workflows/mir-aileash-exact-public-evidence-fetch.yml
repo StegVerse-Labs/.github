@@ -1,0 +1,138 @@
+name: MIR AILeash exact public evidence fetch
+
+on:
+  push:
+    branches:
+      - mir-aileash-walk-reset-g84
+    paths:
+      - .github/workflows/mir-aileash-exact-public-evidence-fetch.yml
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-exact-public-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public evidence and verify completeness proofs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          cat > /tmp/fetch.py <<'PY'
+          import hashlib, json, pathlib, ssl, urllib.error, urllib.parse, urllib.request
+          from datetime import datetime, timezone
+
+          BASE = "https://sebbi.pro"
+          OUT = pathlib.Path("evidence")
+          OUT.mkdir(exist_ok=True)
+          ctx = ssl.create_default_context()
+
+          def fetch(label, path, params=None):
+              url = BASE + path
+              if params:
+                  url += "?" + urllib.parse.urlencode(params)
+              req = urllib.request.Request(url, headers={"User-Agent":"StegVerse-public-evidence-verifier/1.0","Accept":"application/json"})
+              status = None
+              body = b""
+              try:
+                  with urllib.request.urlopen(req, context=ctx, timeout=30) as r:
+                      status = r.status
+                      body = r.read()
+              except urllib.error.HTTPError as e:
+                  status = e.code
+                  body = e.read()
+              except Exception as e:
+                  rec={"label":label,"url":url,"fetch_error":type(e).__name__+":"+str(e)}
+                  print("FETCH_ERROR "+json.dumps(rec,sort_keys=True))
+                  (OUT/(label+".error.json")).write_text(json.dumps(rec,sort_keys=True,indent=2))
+                  return None
+              sha = hashlib.sha256(body).hexdigest()
+              (OUT/(label+".json")).write_bytes(body)
+              print("FETCH_META "+json.dumps({"label":label,"url":url,"http_status":status,"bytes":len(body),"sha256":sha},sort_keys=True))
+              try:
+                  doc=json.loads(body)
+              except Exception:
+                  print("FETCH_NONJSON "+label+" "+body[:500].decode("utf-8","replace"))
+                  return None
+              print("FETCH_BODY "+label+" "+json.dumps(doc,sort_keys=True,separators=(",",":"))[:20000])
+              return doc
+
+          LEAF_PREFIX=b"AILEASH-LEAF-v1:"
+          NODE_PREFIX=b"AILEASH-NODE-v1:"
+          def leaf_hash(v):
+              return hashlib.sha256(LEAF_PREFIX+v.encode("utf-8")).hexdigest()
+          def node_hash(l,r):
+              return hashlib.sha256(NODE_PREFIX+l.encode()+r.encode()).hexdigest()
+          def replay(value,proof):
+              cur=leaf_hash(value)
+              for step in proof:
+                  if step.get("side")=="left":
+                      cur=node_hash(step["hash"],cur)
+                  elif step.get("side")=="right":
+                      cur=node_hash(cur,step["hash"])
+                  else:
+                      raise ValueError("bad proof side")
+              return cur
+
+          periods=fetch("periods","/x/complete/periods")
+          spec=fetch("complete-spec","/x/complete/spec")
+          roots={}
+          for kind in ("receipts","subjects"):
+              roots[kind]=fetch("root-2026-08-"+kind,"/x/complete/root",{"period":"2026-08","kind":kind})
+
+          peers=["flavorflowstrategy.uk","red-flag-ai-pro","praesidium","shango"]
+          proofs={}
+          for peer in peers:
+              value="wit:"+peer
+              label="prove-subject-"+peer.replace(".","-")
+              doc=fetch(label,"/x/complete/prove",{"period":"2026-08","kind":"subjects","value":value})
+              proofs[peer]=doc
+              if isinstance(doc,dict) and doc.get("result")=="present":
+                  computed=replay(value,doc.get("proof") or [])
+                  ok=(computed==doc.get("root"))
+                  print("MERKLE_VERIFY "+json.dumps({"peer":peer,"value":value,"result":"present","computed_root":computed,"reported_root":doc.get("root"),"verified":ok,"index":doc.get("index"),"leaf_count":doc.get("leaf_count"),"sealed_in_chain":doc.get("sealed_in_chain"),"block_index":doc.get("block_index")},sort_keys=True))
+              elif isinstance(doc,dict) and doc.get("result")=="absent":
+                  checks=[]
+                  for name,nb in (doc.get("neighbours") or {}).items():
+                      computed=replay(nb["value"],nb.get("proof") or [])
+                      checks.append({"side":name,"value":nb["value"],"index":nb["index"],"computed_root":computed,"verified":computed==doc.get("root")})
+                  print("MERKLE_VERIFY "+json.dumps({"peer":peer,"value":value,"result":"absent","reported_root":doc.get("root"),"neighbour_checks":checks,"leaf_count":doc.get("leaf_count"),"sealed_in_chain":doc.get("sealed_in_chain"),"block_index":doc.get("block_index")},sort_keys=True))
+
+          for kind,doc in roots.items():
+              if not isinstance(doc,dict):
+                  continue
+              seal=doc.get("sealed_in_chain")
+              if not seal:
+                  continue
+              fetch("inclusion-old-commit-"+kind,"/api/inclusion",{"hash":seal})
+              fetch("consistency-ancestor-old-commit-"+kind,"/x/consistency/ancestor",{"tip":seal})
+              fetch("ots-proof-old-commit-"+kind,"/x/ots/proof",{"tip":seal})
+
+          ots=fetch("ots-list-500","/x/ots/list",{"limit":500})
+          if isinstance(ots,dict):
+              anchors=ots.get("anchors") or []
+              parsed=[]
+              for a in anchors:
+                  parsed.append({"stamp_id":a.get("stamp_id"),"tip":a.get("tip"),"stamped_at":a.get("stamped_at"),"ots_written":a.get("ots_written"),"proof_on_disk":a.get("proof_on_disk")})
+              before_reset=[a for a in parsed if str(a.get("stamped_at") or "") < "2026-09-07T00:00:00Z"]
+              print("OTS_LIST_SUMMARY "+json.dumps({"returned":len(parsed),"newest":parsed[:3],"oldest":parsed[-3:],"before_reset_count_in_returned_window":len(before_reset),"before_reset_last5":before_reset[-5:]},sort_keys=True))
+
+          summary={
+              "observed_at":datetime.now(timezone.utc).isoformat(),
+              "periods_count":periods.get("count") if isinstance(periods,dict) else None,
+              "august_roots":{k:({"root":v.get("root"),"leaf_count":v.get("leaf_count"),"sealed_in_chain":v.get("sealed_in_chain"),"block_index":v.get("block_index"),"committed_at":v.get("committed_at")} if isinstance(v,dict) else None) for k,v in roots.items()},
+              "subject_results":{p:({"result":d.get("result"),"root":d.get("root"),"leaf_count":d.get("leaf_count"),"index":d.get("index"),"sealed_in_chain":d.get("sealed_in_chain"),"block_index":d.get("block_index")} if isinstance(d,dict) else None) for p,d in proofs.items()},
+          }
+          (OUT/"summary.json").write_text(json.dumps(summary,sort_keys=True,indent=2))
+          print("FINAL_SUMMARY "+json.dumps(summary,sort_keys=True))
+          PY
+          python /tmp/fetch.py
+
+      - name: Retain exact response bytes
+        uses: actions/upload-artifact@v4
+        with:
+          name: mir-aileash-exact-public-evidence
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
