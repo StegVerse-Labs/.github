@@ -768,3 +768,19 @@ Test 3 source tracing identified the first concrete existing-path defect: Worker
 
 
 SDK-TT purpose-bound worker current-main source gates were re-verified against Task Registry generation 82 with no drift: claim/fence, TV/TVC, InTr pre-consequence admission, four lifecycle Master Records closures, post-retirement no-authority, and records-only closeout remain present. Authentic resident execution remains unclaimed because no authorized execution surface was connected during the verification session.
+
+
+---
+
+## Governed conversation-evidence / service-performance registry
+
+Canonical Goal Task `CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001` defines the evidence semantics for service-performance disputes where the actual conversation is material evidence. The model preserves an immutable Evidence Original, derives an explicit-redaction public record, provides a governed provider-response and independently evidenced corroboration path, and retains an authorized unabridged enforcement export with Master Records reconstruction.
+
+Publication is not adjudication: a complaint, payment, compensation request, recurrence, or lack of response does not by itself establish fault, intent, predation, fraud, or legal liability.
+
+Canonical sources:
+
+```text
+docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md
+contracts/conversation-evidence-service-performance-publication-contract.v1.json
+```
