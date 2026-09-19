@@ -156,6 +156,18 @@
       "authentic_master_records_custody_recorded=true",
       "authentic_master_records_reconstruction_match=true",
       "authentic_records_only_final_packet=true"
+    ],
+    "augmented_terminal_when": [
+      "task_1_low_cost_single_worker_records_only=true",
+      "task_2_median_cost_single_worker_records_only=true",
+      "task_3_high_cost_single_worker_records_only=true",
+      "task_1_lifetime_budget_seconds < task_2_lifetime_budget_seconds < task_3_lifetime_budget_seconds",
+      "task_4_three_workers_overlap_live_intervals=true",
+      "task_4_per_worker_budget_seconds=task_2_median_reference_lifetime_seconds",
+      "task_4_group_wall_clock_budget_seconds=task_2_median_reference_lifetime_seconds",
+      "task_4_all_three_workers_retired=true",
+      "task_4_continued_authority_after_retirement=false",
+      "task_4_records_only_group_packet_reconstructs_all_three_worker_lineages=true"
     ]
   },
   "block": {
@@ -166,5 +178,92 @@
     "next_check": "authoritative Master Records state-transition receipt for SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
     "escalation_condition": "duplicate runtime/worker/adapter authority, warrant substitution, InTr substitution, provider credential exposure, unsupported Healer/resident-root dependency, or second-machine requirement",
     "block_expires_at": null
+  },
+  "augmented_demonstration": {
+    "schema": "stegverse.sdk.purpose-bound-worker-cost-demonstration/v1",
+    "interpretation": "FOURTH_TASK_REQUIRES_THREE_SIMULTANEOUS_WORKERS",
+    "invariant": "WORKER_LIFETIME_DERIVED_FROM_TASK_COST_AND_DELAY_BUDGET; PURPOSE_COMPLETION_RETIRES_EARLY; CONCURRENCY_DOES_NOT_EXTEND_INDIVIDUAL_AUTHORITY",
+    "individual_tasks": [
+      {
+        "demo_task_id": "PBW-DEMO-TASK-1-LOW",
+        "worker_count": 1,
+        "cost_class": "LOW",
+        "expected_compute_units": 1,
+        "time_budget_seconds": {
+          "expected_task_execution": 3,
+          "known_delay": 2,
+          "inferred_unknown_delay_reserve": 3,
+          "records_decomposition": 4,
+          "safety_reserve": 3
+        },
+        "derived_max_lifetime_seconds": 15,
+        "purpose": "Produce a deterministic integrity summary for one bounded UTF-8 payload."
+      },
+      {
+        "demo_task_id": "PBW-DEMO-TASK-2-MEDIAN",
+        "worker_count": 1,
+        "cost_class": "MEDIAN",
+        "expected_compute_units": 3,
+        "time_budget_seconds": {
+          "expected_task_execution": 6,
+          "known_delay": 4,
+          "inferred_unknown_delay_reserve": 8,
+          "records_decomposition": 7,
+          "safety_reserve": 5
+        },
+        "derived_max_lifetime_seconds": 30,
+        "purpose": "Produce integrity summary plus deterministic structural segmentation for one bounded UTF-8 payload."
+      },
+      {
+        "demo_task_id": "PBW-DEMO-TASK-3-HIGH",
+        "worker_count": 1,
+        "cost_class": "HIGH",
+        "expected_compute_units": 9,
+        "time_budget_seconds": {
+          "expected_task_execution": 18,
+          "known_delay": 8,
+          "inferred_unknown_delay_reserve": 14,
+          "records_decomposition": 12,
+          "safety_reserve": 8
+        },
+        "derived_max_lifetime_seconds": 60,
+        "purpose": "Produce integrity summary, segmentation, and deterministic multi-pass verification for one bounded UTF-8 payload."
+      }
+    ],
+    "concurrent_task": {
+      "demo_task_id": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT",
+      "worker_count": 3,
+      "simultaneous_workers_required": true,
+      "aggregate_expected_compute_units": 9,
+      "per_worker_expected_compute_units": 3,
+      "per_worker_time_budget_seconds": {
+        "expected_task_execution": 6,
+        "known_delay": 4,
+        "inferred_unknown_delay_reserve": 8,
+        "records_decomposition": 7,
+        "safety_reserve": 5
+      },
+      "per_worker_derived_max_lifetime_seconds": 30,
+      "median_reference_task_id": "PBW-DEMO-TASK-2-MEDIAN",
+      "median_reference_lifetime_seconds": 30,
+      "group_wall_clock_budget_seconds": 30,
+      "purpose": "Partition one bounded task into three independent deterministic work units, execute all three simultaneously, aggregate only their records outputs, and retire all three workers independently at purpose completion or budget exhaustion.",
+      "required_parallelism_evidence": [
+        "three distinct worker_instance_id values",
+        "same parent demo task identity",
+        "overlapping live intervals",
+        "independent claim/fence lineage per worker or one atomic group claim with three fenced child bindings",
+        "each worker decomposes to records-only state",
+        "no live callable or executor reference remains after group close"
+      ]
+    },
+    "required_comparison": [
+      "TASK_1_LIFETIME_BUDGET_LT_TASK_2_LIFETIME_BUDGET",
+      "TASK_2_LIFETIME_BUDGET_LT_TASK_3_LIFETIME_BUDGET",
+      "TASK_4_THREE_WORKER_PER_WORKER_BUDGET_EQUALS_TASK_2_MEDIAN_REFERENCE",
+      "TASK_4_AGGREGATE_COST_EXCEEDS_TASK_2_WHILE_GROUP_WALL_CLOCK_BUDGET_REMAINS_AT_TASK_2_MEDIAN_REFERENCE",
+      "ALL_WORKERS_RETIRE_EARLY_IF_PURPOSE_COMPLETES_BEFORE_BUDGET",
+      "ALL_FINAL_OUTPUTS_ARE_RECORDS_ONLY_RECONSTRUCTABLE_PACKETS"
+    ]
   }
 }
