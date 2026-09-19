@@ -129,3 +129,21 @@ assignment candidate
 Functional Memory is reconstructable prior state, not narrative history. A retained non-ALLOW pack binds the exact task identity, Task Registry generation, generation-bound COSV identifier, admission predicate matrix + digest, disposition/reasons, assignment request identity, and explicit worker_materialized=false / claim_minted=false / fence_minted=false facts. The next assignment review must reconstruct the retained Master Records receipt with exact digest equality and required-evidence PASS before consuming it. If reconstruction fails, assignment fails closed and no worker authority artifact is minted.
 
 This contract creates no scheduler, runtime, WorkerCoordinator replacement, Interlock/InTr replacement, credential path, or custody store. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains custody/reconstruction authority.
+
+
+## Functional Memory implementation evidence — 2026-09-19
+
+PR #2289 merged the canonical WorkerCoordinator Functional Memory assignment-transition contract as `9c48c12fa38b1bfece448c878843ee352429d83d`.
+
+Exact-head validation evidence:
+- Test 3 Richard Seam Acceptance run `35469405536`: PASS; the run explicitly executed `tests/test_worker_assignment_functional_memory.py` and the bundled .github test set reported 29 passed.
+- Cross-Task Coordination Validation run `35469405509`: PASS.
+
+Merged behavior:
+- assignment review is bound to task identity, canonical Task Registry generation, and task.v1 COSV context;
+- only ALLOW may continue into the existing WorkerCoordinator claim/fence assignment path;
+- every non-ALLOW assignment disposition materializes a Functional Memory records pack through the existing canonical Master Records state-transition custody client;
+- retained Functional Memory must reconstruct with exact receipt digest equality and required-evidence PASS before later assignment review may consume it;
+- the ALLOW branch carries the same task-generation/COSV and prior-memory context into the existing worker-assignment record.
+
+No authentic runtime assignment, non-ALLOW records-pack emission, or later-generation memory reuse is claimed by this source/CI merge alone.
