@@ -11,6 +11,16 @@ GOVERNANCE_ENV = (
     "TV_WARRANT_ISSUER_PUBKEY_B64",
     "TV_WARRANT_MAX_TTL_SECONDS",
 )
+MASTER_RECORDS_ENV = (
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN",
+    "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB",
+    "MASTER_RECORDS_RECEIPT_KEY",
+    "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+)
 
 
 def test_targeted_request_is_non_authorizing_and_exactly_bound():
@@ -56,6 +66,9 @@ def test_governance_warrant_inputs_are_carried_end_to_end_without_becoming_provi
         assert name in portable
         assert name in dispatcher
         assert name in consumer
+        assert name in targeted
+        assert name in env_allowlist
+    for name in MASTER_RECORDS_ENV:
         assert name in targeted
         assert name in env_allowlist
     assert 'warrant_policy_binding' in worker
