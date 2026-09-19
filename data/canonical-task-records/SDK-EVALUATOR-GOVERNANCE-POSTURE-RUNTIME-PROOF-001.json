@@ -6,7 +6,7 @@
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "SOURCE_CONSUMER_IMPLEMENTED_RUNTIME_PROOF_PENDING",
+  "checkout_state": "SOURCE_CONSUMER_IMPLEMENTED_CANONICAL_RUNTIME_SUBSTRATE_RESOLUTION_ACTIVE",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -40,7 +40,9 @@
   ],
   "remaining_predicate": "AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE",
   "adjacent_task_refs": [
-    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
   ],
   "worker_lifecycle_relationship": "DOWNSTREAM_SEPARATE_CONSUMER_NO_RUNTIME_OWNERSHIP_TRANSFER",
   "source_consumer": {
@@ -51,5 +53,30 @@
     "sdk_entrypoint": "stegverse.evaluator_governance_runtime.run_evaluator_governance_manifest",
     "source_implementation_complete": true,
     "authentic_runtime_proof_claimed": false
+  },
+  "runtime_resolution": {
+    "global_invariant_ref": "data/task-registry-global-invariants.json",
+    "remote_runtime_connector_contract_ref": "docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md",
+    "runtime_solution_reuse_ref": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "shared_runtime_evidence_owner_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "substrate_review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "remote_connector_required": false,
+    "zero_connected_remote_devices_is_runtime_blocker": false,
+    "evidence_reachability_may_establish_substrate_unsuitable": false,
+    "first_task_local_unresolved_predicate": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE",
+    "manifest_builder_owner": "StegVerse-org/StegVerse-SDK",
+    "manifest_builder_evidence_ref": "SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
+    "manifest_runtime_ref": "runtime-state/sdk-evaluator-governance-posture/manifest.json",
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_request_path_allowed": false,
+    "new_authority_plane_allowed": false
   }
 }
