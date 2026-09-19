@@ -11,6 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 COSV = "40000100100000"
+NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
 MANIFEST_REL = Path("control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json")
 RUNNER_REL = Path("scripts/run_stegbrowser_runtime_consumption_reusable.py")
 BINDING_RECEIPT_REL = Path("receipts/sovereign-host/stegbrowser-manifest-binding.latest.json")
@@ -116,6 +117,7 @@ def main() -> int:
         "cosv_task_vector":COSV,
         "manifest_ref":str(manifest_path),
         "manifest_sha256":digest,
+        "invocation_request_nonce":NONCE,
         "route_owner":"STEGVERSE",
         "outbound_interlock_intr_endpoint":manifest["outbound"]["interlock_intr_endpoint"],
         "far_end_receiver":manifest["outbound"]["receiver"],
@@ -132,6 +134,7 @@ def main() -> int:
     atomic_json(resident_root / BINDING_RECEIPT_REL, binding)
     env = dict(os.environ)
     env["STEGVERSE_REUSABLE_TASK_INVOCATION_ID"] = f"MANIFEST-{digest[:24]}"
+    env["STEGVERSE_STEGBROWSER_INVOCATION_NONCE"] = NONCE
     env["STEGVERSE_STEGBROWSER_MANIFEST_SHA256"] = digest
     completed = subprocess.run([sys.executable, str(runner_path)], cwd=source, env=env, text=True, capture_output=False, check=False)
     return completed.returncode
