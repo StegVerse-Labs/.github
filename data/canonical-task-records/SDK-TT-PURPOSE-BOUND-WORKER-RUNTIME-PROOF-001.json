@@ -79,7 +79,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 80,
+    "reconciled_against_registry_generation": 82,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -95,7 +95,20 @@
     "runtime_capability_provider_is_completion_dependency": false,
     "shared_worker_provider_resolution_repaired": true,
     "source_lineage_parent_requires_runtime_reconstruction": false,
-    "pre_materialization_master_records_source_gates_complete": true
+    "pre_materialization_master_records_source_gates_complete": true,
+    "current_main_source_reverification": {
+      "verified": true,
+      "workercoordinator_claim_fence_gate_present": true,
+      "tv_tvc_gate_present": true,
+      "stegcore_intr_admission_gate_present": true,
+      "lifecycle_phase_order_present": true,
+      "lifecycle_master_records_closure_before_next_phase": true,
+      "intr_receipt_is_materialized_predecessor": true,
+      "post_retirement_continued_authority_false_present": true,
+      "records_only_closeout_present": true,
+      "authorized_resident_execution_surface_available": false,
+      "authentic_runtime_execution_attempted": false
+    }
   },
   "source_refinement": {
     "steagents_pr": 21,
