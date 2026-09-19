@@ -371,7 +371,7 @@ The Test 3 worker uses the shared `process:stegagents-governed-runtime-v1` adapt
 The existing adapter now carries the same canonical Master Records HTTP or durable-local binding already admitted upstream. TV warrant/policy variables remain unchanged, GitHub runtime authority remains NONE, and no new credential, custody, or transition authority is created.
 
 
-## Governed close/retire phase implemented — generation 107
+## Governed close/retire phase implemented — generation 108
 
 The terminal Test 3 defect was source-level, not evidentiary: after the existing shared StegAgents worker returned `GOVERNED_TASK_RESULT_READY_FOR_CLOSE`, WorkerCoordinator set `test3_waiting_for_governed_close=true` and then emitted a waiting event forever. There was no executable edge to `CLOSE_TASK_AND_RETIRE_WORKER`.
 
