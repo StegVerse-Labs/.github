@@ -36,20 +36,24 @@
     "StegVerse-Labs/.github#1857",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1260",
-    "StegVerse-Labs/StegVerse-Healer#74",
-    "StegVerse-Labs/StegVerse-Healer@41740a6468f7d801b1cad492352c9fc77941fb92",
     "StegVerse-Labs/Site#1305",
     "StegVerse-Labs/Site#1310",
     "StegVerse-Labs/TVC@aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
     "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "resident-runtime-custody-root",
       "stegbrowser-canonical-work-runtime-consumption",
-      "healer-neutral-reusable-scheduler-carrier",
       "workercoordinator-claim-fence",
       "intr-runtime-admission",
       "tvc-primary-runtime-materialization",
@@ -71,13 +75,6 @@
       "state": "RESOLVED",
       "ref": "StegVerse-Labs/.github#1831;RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
       "disposition": "EXECUTABLE_REUSABLE_RUNNER_BOUND_TO_ADMITTED_EPHEMERAL_STEGOS_NODE; SOURCE_BINDING_ONLY"
-    },
-    {
-      "dependency_id": "DEP-HEALER-RUNTIME-ROOT-MARKER-DISCOVERY",
-      "kind": "SOURCE_BINDING",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/StegVerse-Healer#74;StegVerse-Labs/StegVerse-Healer@41740a6468f7d801b1cad492352c9fc77941fb92",
-      "disposition": "HEALER_NEUTRAL_CARRIER_ACCEPTS_STEGBROWSER_REQUEST_SOURCE_PROMOTION_AND_RETAINED_RECEIPT_MARKERS; SOURCE_REACHABILITY_ONLY"
     },
     {
       "dependency_id": "DEP-STEGBROWSER-RUNTIME-RECEIPT-REACHABILITY-VERIFIER",
@@ -117,7 +114,9 @@
     "first_unresolved_successor_predicate": "RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER"
   },
   "allowed_next_transitions": [],
-  "handoff_projection_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -128,5 +127,9 @@
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
     "second_user_operated_device_required": false
+  },
+  "routing_correction": {
+    "current_producer_chain": "stegbrowser_runtime_connection_ingress -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator -> Interlock/InTr -> retained StegBrowser evidence",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY"
   }
 }
