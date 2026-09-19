@@ -1,5 +1,6 @@
 from __future__ import annotations
-import json, unittest
+import json, sys, tempfile, types, unittest
+from pathlib import Path
 
 from scripts import consume_kv_publisher_return_materialization_request as consumer
 from workers import universal_intr_profiled_ingress as ingress
@@ -99,5 +100,83 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         self.assertIn("sdk_return_binding_observed\":True",source)
         self.assertIn("successful_data_transport_round_trip_identified\":False",source)
         self.assertNotIn("communication_complete\":True",source)
+
+    def test_sdk_return_binding_requires_canonical_master_records_before_egress(self):
+        captured={}
+        fake=types.ModuleType("canonical_state_transition_custody")
+        def build_state_receipt(**kwargs):
+            captured.update(kwargs)
+            return {"schema":"stegverse.canonical-state-transition-receipt/v1","transition_id":kwargs["transition_id"]}
+        def submit_state_receipt(receipt):
+            captured["submitted"]=receipt
+            return {
+              "state":"RECORDED",
+              "reconstruction_status":"PASS",
+              "required_evidence_validation_status":"PASS",
+              "receipt_sha256":"a"*64,
+              "reconstructed_receipt_sha256":"a"*64,
+              "required_evidence_count":2,
+            }
+        fake.build_state_receipt=build_state_receipt
+        fake.submit_state_receipt=submit_state_receipt
+        previous=sys.modules.get("canonical_state_transition_custody")
+        sys.modules["canonical_state_transition_custody"]=fake
+        try:
+            with tempfile.TemporaryDirectory() as temp:
+                runtime=Path(temp)
+                output=runtime/consumer.SDK_BINDING_DIR/"sdk-return.json"
+                output.parent.mkdir(parents=True)
+                binding={"schema":"stegverse.sdk.publisher-return-binding/v1","sdk_return_binding_observed":True}
+                output.write_text(json.dumps(binding,sort_keys=True,separators=(",",":")),encoding="utf-8")
+                materialization={
+                  "schema":"stegverse.sdk.publisher-return-materialization-receipt/v1",
+                  "output_sha256":consumer.sha(binding),
+                  "sdk_return_binding_observed":True,
+                }
+                req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                result=consumer._record_sdk_return_binding_custody(
+                    runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
+                )
+            self.assertEqual(captured["transition_id"],"RTC-SDK-RETURN-006")
+            self.assertEqual(captured["resulting_state_ref_or_hash"],consumer.sha(binding))
+            self.assertEqual(len(captured["required_evidence_manifest"]),2)
+            self.assertEqual(captured["required_evidence_manifest"][0]["content"],binding)
+            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"SDK_PUBLISHER_RETURN_BINDING")
+            self.assertEqual(result["state"],"RECORDED")
+            self.assertEqual(result["required_evidence_validation_status"],"PASS")
+        finally:
+            if previous is None:
+                sys.modules.pop("canonical_state_transition_custody",None)
+            else:
+                sys.modules["canonical_state_transition_custody"]=previous
+
+    def test_sdk_return_binding_blocks_when_master_records_does_not_close(self):
+        fake=types.ModuleType("canonical_state_transition_custody")
+        fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
+        fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
+        previous=sys.modules.get("canonical_state_transition_custody")
+        sys.modules["canonical_state_transition_custody"]=fake
+        try:
+            with tempfile.TemporaryDirectory() as temp:
+                runtime=Path(temp)
+                output=runtime/consumer.SDK_BINDING_DIR/"sdk-return.json"
+                output.parent.mkdir(parents=True)
+                binding={"schema":"stegverse.sdk.publisher-return-binding/v1","sdk_return_binding_observed":True}
+                output.write_text(json.dumps(binding,sort_keys=True,separators=(",",":")),encoding="utf-8")
+                materialization={
+                  "schema":"stegverse.sdk.publisher-return-materialization-receipt/v1",
+                  "output_sha256":consumer.sha(binding),
+                  "sdk_return_binding_observed":True,
+                }
+                req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records custody not closed"):
+                    consumer._record_sdk_return_binding_custody(
+                        runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
+                    )
+        finally:
+            if previous is None:
+                sys.modules.pop("canonical_state_transition_custody",None)
+            else:
+                sys.modules["canonical_state_transition_custody"]=previous
 
 if __name__=="__main__": unittest.main()
