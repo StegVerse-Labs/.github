@@ -718,3 +718,6 @@ The existing resident dispatcher now carries an attempted `sdk_evaluator_governa
 ### SDK TT direct WorkerCoordinator admission repair
 
 The purpose-bound runtime goal now follows its generation-71 direct path without Healer/resident-root gating. Targeted independent execution no longer requires a pre-existing separated carrier, source-lineage parentage no longer implies a runtime predecessor reconstruction, the StegAgents runtime owner is treated as a capability provider rather than a completed dependency, and target-scoped fragment loading imports the existing shared StegAgents worker provider without duplicating its definition. Authentic runtime execution and Master Records transition closure remain unclaimed.
+
+
+PR #2188 merged the SDK TT direct WorkerCoordinator admission repair at `76cff35a03ba1950c13d8e438b6f37081a4186d6`; all four exact-head validation workflows passed. This is merged source readiness only. The first authentic runtime transition remains a fresh independent WorkerCoordinator claim/fence, followed by TV/TVC, InTr, and per-transition Master Records closure.

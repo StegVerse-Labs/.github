@@ -72,7 +72,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 72,
+    "reconciled_against_registry_generation": 74,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -167,6 +167,20 @@
     "existing_worker_id": "stegagents-governed-runtime-worker",
     "existing_adapter_ref": "process:stegagents-governed-runtime-v1",
     "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
-    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+    "github_pr": 2188,
+    "exact_head": "5f3b2370fca225c92522992560cd58a44d1facd5",
+    "merge_commit": "76cff35a03ba1950c13d8e438b6f37081a4186d6",
+    "exact_head_validation": {
+      "purpose_bound_worker_run": 35417051857,
+      "purpose_bound_worker_conclusion": "success",
+      "cross_task_coordination_run": 35417051824,
+      "cross_task_coordination_conclusion": "success",
+      "kv_ai_memory_run": 35417051849,
+      "kv_ai_memory_conclusion": "success",
+      "deepseek_resident_run": 35417052003,
+      "deepseek_resident_conclusion": "success"
+    },
+    "source_repair_merged": true
   }
 }
