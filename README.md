@@ -950,3 +950,6 @@ PR #2285 merged the existing RTC006 -> RTC007 continuation seam. The exact SDK r
 ### Task 4 atomic three-worker binding — 2026-09-19
 
 StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4's common-parent semantics: one governed parent admission atomically carries all three distinct child bindings; all three children consume the same parent Master Records closure and then execute concurrently; terminal aggregation still requires the three-way join of all three validated RETIRED closures.
+
+
+SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_TVC_INVOCATION_OBSERVED` is currently admissible; restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, runtime activation, and REQUEST_BOUND custody remain blocked until each immediate predecessor transition is authentically consumed. The neutral reusable scheduler also no longer treats deferred children as an advanced aggregate transition.
