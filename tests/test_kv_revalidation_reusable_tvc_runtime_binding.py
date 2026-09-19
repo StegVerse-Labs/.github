@@ -60,3 +60,11 @@ def test_runner_reuses_released_same_service_activation_delivery():
     assert "install_tvc_primary_runtime_service.py" in source
     assert '"--activate"' in source
     assert '[sys.executable, str(dispatcher), "tvc.primary_runtime_binder.activate"]' not in source
+
+
+def test_neutral_runner_does_not_mint_tvc_activation_authority_or_preflight():
+    source = (ROOT / RUNNER).read_text(encoding="utf-8")
+    assert "STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY" not in source
+    assert "tvc.primary_runtime_binder.preflight" not in source
+    assert "install_tvc_primary_runtime_service.py" in source
+    assert '"--activate"' in source
