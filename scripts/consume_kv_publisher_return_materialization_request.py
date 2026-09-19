@@ -157,6 +157,86 @@ def extract_sdk_materialization_inputs(returned:dict[str,Any])->tuple[dict[str,A
         raise KVPublisherReturnError("original downstream completion capsule missing")
     return manifest,receipt_id,capsule
 
+def _record_sdk_return_binding_custody(
+    runtime:Path,
+    materialization_id:str,
+    request:dict[str,Any],
+    terminal:str,
+    output_path:Path,
+    materialization:dict[str,Any],
+)->dict[str,Any]:
+    try:
+        binding=load(output_path)
+    except Exception as exc:
+        raise KVPublisherReturnError("SDK return binding unavailable for Master Records custody") from exc
+    expected_binding_hash=str(materialization.get("output_sha256") or "")
+    actual_binding_hash=sha(binding)
+    if not expected_binding_hash or actual_binding_hash!=expected_binding_hash:
+        raise KVPublisherReturnError("SDK return binding custody hash mismatch")
+    transition_id="RTC-SDK-RETURN-006"
+    materialization_hash=sha(materialization)
+    required_evidence=[
+      {
+        "evidence_id":"sdk-publisher-return-binding",
+        "evidence_type":"SDK_PUBLISHER_RETURN_BINDING",
+        "origin_transition_id":transition_id,
+        "encoding":"canonical-json",
+        "sha256":actual_binding_hash.split(":",1)[1],
+        "content":binding,
+      },
+      {
+        "evidence_id":"sdk-publisher-return-materialization-receipt",
+        "evidence_type":"SDK_PUBLISHER_RETURN_MATERIALIZATION_RECEIPT",
+        "origin_transition_id":transition_id,
+        "encoding":"canonical-json",
+        "sha256":materialization_hash.split(":",1)[1],
+        "content":materialization,
+      },
+    ]
+    workers_root=ROOT/"workers"
+    if str(workers_root) not in sys.path:
+        sys.path.insert(0,str(workers_root))
+    from canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+    state_receipt=build_state_receipt(
+      transition_id=transition_id,
+      transition_sequence=1,
+      subject_or_correlation_id=str(request.get("operation_id") or materialization_id),
+      transition_outcome="EXECUTED",
+      prior_state_ref_or_hash=terminal,
+      resulting_state_ref_or_hash=actual_binding_hash,
+      governance_decision_ref_where_applicable=None,
+      transition_evidence={
+        "state":"SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS",
+        "materialization_id":materialization_id,
+        "request_hash":request.get("request_hash"),
+        "return_transport_terminal_receipt_hash":terminal,
+        "return_downstream_owner_ref":SDK_DOWNSTREAM_OWNER,
+        "sdk_return_binding_ref":str(output_path.relative_to(runtime)),
+        "sdk_return_binding_sha256":actual_binding_hash,
+        "authority_effect":"NONE",
+      },
+      required_evidence_manifest=required_evidence,
+      proof_scope="RTC_SDK_RETURN_006_ONLY",
+      proof_ceiling="MASTER_RECORDS_VALIDATED_SDK_RETURN_BINDING_ONLY",
+    )
+    mr=submit_state_receipt(state_receipt)
+    if not (
+        mr.get("state")=="RECORDED"
+        and mr.get("reconstruction_status")=="PASS"
+        and mr.get("required_evidence_validation_status")=="PASS"
+        and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
+    ):
+        raise KVPublisherReturnError("SDK return binding Master Records custody not closed")
+    return {
+      "state":mr.get("state"),
+      "reconstruction_status":mr.get("reconstruction_status"),
+      "required_evidence_validation_status":mr.get("required_evidence_validation_status"),
+      "receipt_sha256":mr.get("receipt_sha256"),
+      "reconstructed_receipt_sha256":mr.get("reconstructed_receipt_sha256"),
+      "required_evidence_count":mr.get("required_evidence_count"),
+      "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+
 def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any],raw:bytes,terminal:str)->dict[str,Any]:
     try: returned=json.loads(raw.decode("utf-8"))
     except Exception as exc: raise KVPublisherReturnError("Publisher return JSON invalid") from exc
@@ -176,6 +256,9 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
     )
     if materialization.get("sdk_return_binding_observed") is not True:
         raise KVPublisherReturnError("SDK return binding materialization not observed")
+    master_records=_record_sdk_return_binding_custody(
+        runtime,materialization_id,request,terminal,output_path,materialization
+    )
     for field in ("final_stegverse_transition_observed","interlock_intr_egress_observed","far_side_transition_observed","authentic_external_mir_endpoint_substitution_observed","communication_complete"):
         if materialization.get(field) is not False:
             raise KVPublisherReturnError("SDK materialization promoted downstream predicate:"+field)
@@ -194,6 +277,12 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
       "sdk_return_binding_schema":materialization["binding_schema"],
       "communication_state":materialization["communication_state"],
       "sdk_return_binding_observed":True,
+      "master_records_state":master_records["state"],
+      "master_records_reconstruction_status":master_records["reconstruction_status"],
+      "master_records_required_evidence_validation_status":master_records["required_evidence_validation_status"],
+      "master_records_receipt_sha256":master_records["receipt_sha256"],
+      "master_records_reconstructed_receipt_sha256":master_records["reconstructed_receipt_sha256"],
+      "master_records_required_evidence_count":master_records["required_evidence_count"],
       "final_stegverse_side_egress_transition_observed":False,
       "interlock_intr_egress_observed":False,
       "far_side_transition_observed":False,
