@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 121,
-  "status": "STEGBROWSER_HEALER_ROUTING_VALIDATION_EVIDENCE_RECONCILED",
+  "generation": 122,
+  "status": "SV002_STATE_DEPENDENT_TRANSITION_GRAPH_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4038,8 +4038,7 @@
         "reconciliation_ref": null
       },
       "allowed_next_transitions": [
-        "REQUEST_BOUND_EVIDENCE_OBSERVED",
-        "RETURN_TO_PARENT_RERUN"
+        "REUSABLE_TVC_INVOCATION_OBSERVED"
       ],
       "handoff_projection_refs": [
         "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
@@ -4050,6 +4049,67 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true
+      },
+      "state_transition_graph": {
+        "schema": "stegverse.state-transition-dependency-graph/v1",
+        "invariant": "EVERY_SUCCESSOR_STATE_REQUIRES_AUTHENTIC_CONSUMPTION_OF_ITS_IMMEDIATE_PREDECESSOR_STATE",
+        "current_state": "TVC_SERVICE_OWNED_PREFLIGHT_CARRIAGE_REPAIR_MERGED",
+        "transitions": [
+          {
+            "from": "TVC_SERVICE_OWNED_PREFLIGHT_CARRIAGE_REPAIR_MERGED",
+            "to": "REUSABLE_TVC_INVOCATION_OBSERVED",
+            "predicate": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+            "state": "PENDING"
+          },
+          {
+            "from": "REUSABLE_TVC_INVOCATION_OBSERVED",
+            "to": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+            "predicate": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+            "to": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+            "predicate": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+            "to": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+            "predicate": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+            "to": "C5E6A793_MATERIALIZED",
+            "predicate": "EXACT_STEGVERSE_LABS_GITHUB_C5E6A793_MATERIALIZED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "C5E6A793_MATERIALIZED",
+            "to": "ASTRA_AWARENESS_OBSERVED",
+            "predicate": "ASTRA_CLASS_RESILIENCE_AWARENESS_OBSERVED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "ASTRA_AWARENESS_OBSERVED",
+            "to": "QUANTUM_AWARENESS_OBSERVED",
+            "predicate": "QUANTUM_RESILIENCE_AWARENESS_OBSERVED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "QUANTUM_AWARENESS_OBSERVED",
+            "to": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
+            "predicate": "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          },
+          {
+            "from": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
+            "to": "REQUEST_BOUND_MASTER_RECORDS_RECORDED",
+            "predicate": "REQUEST_BOUND_MASTER_RECORDS_RECORDED_AND_RECONSTRUCTION_PASS_AND_REQUIRED_EVIDENCE_PASS_AND_EXACT_DIGEST_EQUALITY",
+            "state": "BLOCKED_ON_PREDECESSOR"
+          }
+        ]
       }
     },
     {
