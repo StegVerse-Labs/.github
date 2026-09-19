@@ -971,3 +971,6 @@ SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_
 ### StegHealth KV/Interlock Canonical Work carriage repair
 
 `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` has an explicit non-authorizing request in the existing `canonical_work_coordination` resident request set. The task remains `ACTIVE / CHECKED_OUT`; runtime ingress is recorded separately as `runtime_refs.ingress_state=INGRESS_ADMITTED`, preserving coordination state. No second dispatcher, scheduler, WorkerCoordinator, listener, credential authority, connected-device prerequisite, or custody store is introduced. Source and CI do not prove resident consumption, WorkerCoordinator claim/fence, Interlock/InTr consequence admission, Master Records closure, or any production predicate.
+
+
+SDK TT purpose-bound worker runtime proof: TVC PR #448 merged the resident Ed25519 key-materialization repair as `4cb804c625060f52b75afc48d11c8d1dc8dc835a` from exact head `522bfff406f70c7b18091c25916a6f83a23fcec3`; validation run `35469205465` passed. Next authentic transition: `TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION`; remote-device availability is not a canonical predicate.
