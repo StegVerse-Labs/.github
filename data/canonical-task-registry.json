@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 68,
+  "generation": 69,
   "status": "MASTER_RECORDS_REQUIRED_EVIDENCE_RUNTIME_CARRIAGE_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -3823,7 +3823,8 @@
         "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
         "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
         "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
-        "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae"
+        "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
+        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json"
       ],
       "targets": {
         "organizations": [
@@ -3883,6 +3884,13 @@
           "disposition": "EXISTING_TVC_ROOT_SELF_HEAL_NOW_MATERIALIZES_IMMUTABLE_STEGVERSE_LABS_GITHUB_C5E6A793_CURRENT_SV002_CARRIER_SOURCE"
         },
         {
+          "dependency_id": "DEP-SV002-TVC-PRIMARY-RUNTIME-CURRENT-SOURCE-OBSERVATION",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+          "disposition": "REQUIRE_EXISTING_TVC_PRIMARY_RUNTIME_RESTART_AND_CURRENT_SOURCE_LOADED_ON_HOST_BEFORE_C5E6A793_SELF_HEAL_MATERIALIZATION_CAN_BE_TREATED_AS_REACHABLE"
+        },
+        {
           "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNRESOLVED",
@@ -3902,7 +3910,8 @@
         "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
         "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
         "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
-        "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae"
+        "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
+        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json"
       ],
       "expected_evidence_predicates": [
         "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
@@ -3921,7 +3930,10 @@
         "REQUEST_BOUND_EXACT_BYTES_REQUIRED_EVIDENCE_VALIDATED",
         "REQUEST_BOUND_MASTER_RECORDS_RECEIPT_HASH_EQUALITY",
         "TVC_SELF_HEAL_CURRENT_CARRIER_SOURCE_REBIND_MERGED",
-        "TVC_SELF_HEAL_IMMUTABLE_SOURCE_PIN_C5E6A793"
+        "TVC_SELF_HEAL_IMMUTABLE_SOURCE_PIN_C5E6A793",
+        "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE"
       ],
       "runtime_requirements": {
         "capabilities": [
