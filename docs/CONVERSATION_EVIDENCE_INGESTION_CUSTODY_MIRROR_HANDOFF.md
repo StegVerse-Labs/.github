@@ -6,7 +6,7 @@ Canonical issue: `#2258`
 Goal Task ID: `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`
 Parent design task: `CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001`
 COSV ID: `20011000100000`
-Status: `ACTIVE / SOURCE IMPLEMENTATION MERGED+VALIDATED / AUTHENTIC MASTER RECORDS CUSTODY PENDING`
+Status: `ACTIVE / CANONICAL WORK + WORKERCOORDINATOR RUNTIME PATH STAGED / AUTHENTIC MASTER RECORDS CUSTODY PENDING`
 
 ## Contract boundary
 
@@ -57,3 +57,26 @@ These runs prove source/schema/test conformance only. They do not prove an authe
 ## Next boundary
 
 After exact-head source validation and merge, run an authentic synthetic ingestion through the existing Master Records custody surface. Only after that returns the full progression tuple may this phase claim authentic custody completion or derive a later public-projection implementation task.
+
+
+## Runtime path staging — 2026-09-19
+
+The existing runtime chain is now bound for this task without adding another scheduler, dispatcher, authority plane, custody store, or device prerequisite:
+
+```text
+canonical Task Registry
+-> existing generic Canonical Work ingress
+-> fresh WorkerCoordinator independent-task-control claim/fence
+-> process:conversation-evidence-ingestion-custody-v1
+-> workers/conversation_evidence_ingestion_runtime_worker.py
+-> synthetic fixture only
+-> workers/conversation_evidence_ingestion.py
+-> existing canonical_state_transition_custody client
+-> authoritative Master Records
+```
+
+The runtime worker requires the exact task identity, the admitted `conversation_evidence_synthetic_ingestion_custody` capability, the bounded `receipts/conversation-evidence-ingestion/**` namespace, and a fresh WorkerCoordinator claim/fence. It creates no user-derived conversation content: the fixture is hard-coded synthetic evidence.
+
+A worker response may become `COMPLETED` only when the existing custody client returns `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. Any other Master Records result is returned as `BLOCKED` with no publication/adjudication promotion.
+
+Source staging does not prove that the Canonical Work ingress, WorkerCoordinator claim/fence, worker invocation, or Master Records custody has occurred.
