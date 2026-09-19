@@ -26,6 +26,19 @@ mod.STEGBROWSER_RUNTIME_CONSUMPTION_SPEC["task_id"] = ACTIVE_TASK
 if ACTIVE_SHARD not in mod.PRESERVE_IF_PRESENT:
     mod.PRESERVE_IF_PRESENT = tuple(mod.PRESERVE_IF_PRESENT) + (ACTIVE_SHARD,)
 
+# Reuse the same Canonical Work consumer for the already checked-out StegHealth
+# production endpoint task. This stages carriage only; it creates no dispatcher,
+# scheduler, WorkerCoordinator, authority plane, or runtime.
+STEGHEALTH_KV_INTERLOCK_TASK = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+STEGHEALTH_KV_INTERLOCK_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-steghealth-kv-interlock-production-endpoint"),
+    "task_id": STEGHEALTH_KV_INTERLOCK_TASK,
+}
+if not any(spec.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (STEGHEALTH_KV_INTERLOCK_SPEC,)
+
 # Preserve the canonical consumer's public implementation/API surface for existing
 # resident-consumer tests and repair modules. This wrapper does not create a second
 # dispatcher or execution plane.
