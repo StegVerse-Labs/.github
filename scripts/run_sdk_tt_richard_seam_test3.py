@@ -45,10 +45,12 @@ def main() -> int:
 
     stegagents = args.stegagents_root.resolve() if args.stegagents_root else None
     handoff = json.loads((ROOT / "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json").read_text())
+    owner = json.loads((ROOT / "data/canonical-task-records/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json").read_text())
     fragment = json.loads((ROOT / "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json").read_text())
 
     require(handoff["task"]["task_id"] == TEST3_TASK, "Test 3 handoff task mismatch")
-    require(handoff["task"]["cosv_task_vector"] == TEST3_COSV, "Test 3 COSV mismatch")
+    require(owner["task_id"] == TEST3_TASK, "Test 3 owner task mismatch")
+    require(owner["cosv_task_vector"] == TEST3_COSV, "Test 3 COSV mismatch")
     require(handoff["activation"]["atomic_task_worker_binding_required"] is True, "atomic binding requirement missing")
     task = fragment["tasks"][0]
     require(task["task_id"] == TEST3_TASK, "worker-registry Test 3 task mismatch")
