@@ -955,3 +955,6 @@ StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4'
 #### Conversation evidence synthetic runtime proof path
 
 `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` now has an explicit reusable Canonical Work request, WorkerCoordinator registration, process adapter, executable handoff, and synthetic-only runtime worker. The worker accepts only a fresh fenced WorkerCoordinator invocation, writes only `receipts/conversation-evidence-ingestion/**`, and reuses the existing canonical Master Records state-transition custody client. It cannot mark the task complete unless authoritative custody returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality. This staging creates no public Site projection and uses no connected-device inventory or device prerequisite.
+
+
+Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: PR #2291 merged at `e5f40728f92029c8f81fc543c3215e9ad98a0ad5`. Source/runtime binding is validated, but no authentic post-merge WorkerCoordinator claim/fence or Master Records `CONVERSATION_EVIDENCE_INGESTED` receipt is currently retained in canonical evidence. The task remains active on the existing targeted one-shot path; no public Site projection successor has been derived.
