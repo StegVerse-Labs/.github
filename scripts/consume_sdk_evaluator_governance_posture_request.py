@@ -21,6 +21,90 @@ def load_json(path: Path) -> dict[str, Any]:
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def _sdk_relative_path(root: Path, ref: str) -> Path:
+    rel=Path(str(ref))
+    if rel.is_absolute() or ".." in rel.parts:
+        raise RuntimeError("sdk manifest materialization ref must be relative and contained")
+    path=(root/rel).resolve()
+    try:
+        path.relative_to(root.resolve())
+    except ValueError as exc:
+        raise RuntimeError("sdk manifest materialization ref escapes sdk root") from exc
+    return path
+
+def _materialize_exact_manifest(
+    request: dict[str, Any],
+    *,
+    manifest_path: Path,
+    sdk_root: Path,
+) -> dict[str, Any]:
+    spec=request.get("manifest_materialization")
+    if not isinstance(spec,dict):
+        raise RuntimeError("manifest_materialization missing")
+    expected_builder="stegverse.evaluator_manifest_builder.build_evaluator_governance_manifest"
+    if spec.get("builder")!=expected_builder:
+        raise RuntimeError("manifest materialization builder mismatch")
+    if spec.get("authority_effect")!="NONE_INPUT_MATERIALIZATION_ONLY":
+        raise RuntimeError("manifest materialization must be non-authorizing")
+    refs={}
+    for key in ("data_ref","governance_request_ref","evaluation_declaration_ref"):
+        value=spec.get(key)
+        if not isinstance(value,str) or not value.strip():
+            raise RuntimeError(f"manifest materialization {key} missing")
+        path=_sdk_relative_path(sdk_root,value)
+        if not path.is_file():
+            raise RuntimeError(f"manifest materialization source missing:{key}")
+        refs[key]={"ref":value,"sha256":file_sha256(path)}
+    sdk_value=str(sdk_root.resolve())
+    if sdk_value not in sys.path:
+        sys.path.insert(0,sdk_value)
+    from stegverse.evaluator_manifest_builder import build_evaluator_governance_manifest
+    from stegverse.security_posture_request import build_security_posture_request
+
+    data=load_json(_sdk_relative_path(sdk_root,spec["data_ref"]))
+    governance_request=load_json(_sdk_relative_path(sdk_root,spec["governance_request_ref"]))
+    evaluation_declaration=load_json(_sdk_relative_path(sdk_root,spec["evaluation_declaration_ref"]))
+    posture_spec=spec.get("security_posture_request")
+    if not isinstance(posture_spec,dict):
+        raise RuntimeError("manifest materialization security_posture_request missing")
+    data_class=spec.get("data_class")
+    posture_request=build_security_posture_request(
+        task_id=TARGET_TASK,
+        selected_tier=posture_spec.get("selected_tier"),
+        selection_present=posture_spec.get("selection_present",False),
+        organization_minimum_tier=str(posture_spec.get("organization_minimum_tier") or "SECURE"),
+        data_class=str(data_class) if isinstance(data_class,str) else None,
+        channel=str(posture_spec.get("channel")) if posture_spec.get("channel") is not None else None,
+    )
+    manifest=build_evaluator_governance_manifest(
+        data=data,
+        source_framework=str(spec.get("source_framework") or ""),
+        source_output_id=str(spec.get("source_output_id") or ""),
+        governance_request=governance_request,
+        evaluation_declaration=evaluation_declaration,
+        security_posture_request=posture_request,
+        return_depth=str(spec.get("return_depth") or "result+evidence"),
+        data_class=str(data_class) if isinstance(data_class,str) else None,
+        created_at=str(spec.get("created_at")) if spec.get("created_at") is not None else None,
+    )
+    extensions=manifest.get("extensions") if isinstance(manifest,dict) else None
+    posture=(extensions or {}).get("security_posture_request") if isinstance(extensions,dict) else None
+    if not isinstance(posture,dict) or posture.get("task_id")!=TARGET_TASK:
+        raise RuntimeError("materialized manifest task posture binding mismatch")
+    manifest_path.parent.mkdir(parents=True,exist_ok=True)
+    temp=manifest_path.with_name(manifest_path.name+".tmp")
+    temp.write_text(json.dumps(manifest,indent=2,sort_keys=True,ensure_ascii=False)+"\n",encoding="utf-8")
+    temp.replace(manifest_path)
+    return {
+        "state":"MATERIALIZED",
+        "builder":expected_builder,
+        "runtime_ref":request["manifest_ref"],
+        "manifest_file_sha256":file_sha256(manifest_path),
+        "input_refs":refs,
+        "security_posture_task_id":TARGET_TASK,
+        "authority_effect":"NONE_INPUT_MATERIALIZATION_ONLY",
+    }
+
 def validate_request(req: dict[str, Any]) -> None:
     expected={
       "schema":"stegverse.resident-execution-request/v1","state":"REQUESTED",
@@ -37,6 +121,21 @@ def validate_request(req: dict[str, Any]) -> None:
             raise RuntimeError(f"sdk evaluator posture request {key} mismatch")
     if not isinstance(req.get("manifest_ref"),str) or not req["manifest_ref"].strip():
         raise RuntimeError("manifest_ref missing")
+    materialization=req.get("manifest_materialization")
+    if not isinstance(materialization,dict):
+        raise RuntimeError("manifest_materialization missing")
+    expected_materialization={
+      "builder":"stegverse.evaluator_manifest_builder.build_evaluator_governance_manifest",
+      "authority_effect":"NONE_INPUT_MATERIALIZATION_ONLY",
+    }
+    for key,value in expected_materialization.items():
+        if materialization.get(key)!=value:
+            raise RuntimeError(f"sdk evaluator manifest materialization {key} mismatch")
+    for key in ("data_ref","governance_request_ref","evaluation_declaration_ref","source_framework","source_output_id","data_class","return_depth"):
+        if not isinstance(materialization.get(key),str) or not materialization[key].strip():
+            raise RuntimeError(f"sdk evaluator manifest materialization {key} missing")
+    if not isinstance(materialization.get("security_posture_request"),dict):
+        raise RuntimeError("sdk evaluator manifest materialization security_posture_request missing")
 
 def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=None) -> dict[str, Any]:
     source=source_root.expanduser().resolve()
@@ -47,10 +146,24 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     request=load_json(request_path)
     validate_request(request)
     manifest_path=runtime/Path(request["manifest_ref"])
-    if not manifest_path.is_file():
-        return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"manifest","manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
     values=dict(os.environ if env is None else env)
     sdk_root=Path(values.get("STEGVERSE_SDK_SOURCE_ROOT","")).expanduser() if values.get("STEGVERSE_SDK_SOURCE_ROOT") else None
+    manifest_materialization=None
+    if not manifest_path.is_file():
+        if sdk_root is None or not sdk_root.is_dir():
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root_for_manifest_materialization","manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        try:
+            manifest_materialization=_materialize_exact_manifest(request,manifest_path=manifest_path,sdk_root=sdk_root)
+        except Exception as exc:
+            return {
+              "schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+              "state":"INPUT_NOT_MATERIALIZED",
+              "missing":"manifest_materialization",
+              "manifest_ref":request["manifest_ref"],
+              "materialization_error":f"{type(exc).__name__}:{exc}",
+              "runtime_execution_attempted":False,
+              "authority_effect":"NONE",
+            }
     stegos_root=Path(values.get("STEGVERSE_STEGOS_ROOT","")).expanduser() if values.get("STEGVERSE_STEGOS_ROOT") else None
     if sdk_root is None or not sdk_root.is_dir():
         return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root","runtime_execution_attempted":False,"authority_effect":"NONE"}
@@ -85,6 +198,7 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
       "task_id":TARGET_TASK,"request_id":request.get("request_id"),
       "manifest_ref":request["manifest_ref"],"manifest_file_sha256":file_sha256(manifest_path),
       "manifest_sha256":manifest.get("manifest_sha256") if isinstance(manifest,dict) else None,
+      "manifest_materialization":manifest_materialization,
       "graph_sha256":graph.get("graph_sha256") if isinstance(graph,dict) else None,
       "transition_request_sha256":binding.get("transition_request_sha256") if isinstance(binding,dict) else None,
       "payload_sha256":binding.get("payload_sha256") if isinstance(binding,dict) else None,
