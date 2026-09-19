@@ -37,7 +37,10 @@
     "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py",
     "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:scripts/issue_tv_execution_warrant_resident.py",
     "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:deploy/systemd/stegtvc-tv-execution-warrant@.service",
-    "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml"
+    "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml",
+    "StegVerse-Labs/StegAgents@d518935020833b12045483c57d7877520d2a244c:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -91,7 +94,7 @@
     "unsupported_resident_root_prerequisite_removed": true,
     "unsupported_healer_dependency_present": false,
     "master_records_sdk_transition_observed": false,
-    "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+    "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_FOR_CASE_1_THEN_AUTHENTIC_FOUR_CASE_STATE_GRAPH",
     "evidence_progression_rule": "EACH_RESULTING_STATE_TRANSITION_REQUIRES_MASTER_RECORDS_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS",
     "direct_workercoordinator_source_boundary_repaired": true,
     "carrier_reference_required_for_targeted_independent_control": false,
@@ -135,6 +138,26 @@
       "next_runtime_boundary": "MATERIALIZE_EXISTING_TV_TVC_RESIDENT_ED25519_CREDENTIAL_AND_ISSUE_FRESH_STEGAGENTS_WARRANT",
       "device_dependency": false,
       "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+    },
+    "state_dependent_lifecycle_repair": {
+      "source_complete": true,
+      "steagents_pr": 29,
+      "merge_commit": "d518935020833b12045483c57d7877520d2a244c",
+      "each_lifecycle_phase_consumes_prior_master_records_closure": true,
+      "fail_closed_on_missing_predecessor_closure": true,
+      "test3_richard_dependency": false
+    },
+    "four_case_state_graph": {
+      "source_complete": true,
+      "steagents_pr": 30,
+      "merge_commit": "4880f10b9cbfa90df0c0614f10d775e5eef3e317",
+      "case_2_predecessor": "CASE_1_RETIRED_MASTER_RECORDS_CLOSURE",
+      "case_3_predecessor": "CASE_2_RETIRED_MASTER_RECORDS_CLOSURE",
+      "task_4_parent_predecessor": "CASE_3_RETIRED_MASTER_RECORDS_CLOSURE",
+      "task_4_worker_branch": "THREE_WORKERS_FROM_ONE_GOVERNED_PARENT_CLOSURE",
+      "task_4_join": "THREE_WAY_RETIRED_MASTER_RECORDS_JOIN",
+      "authentic_runtime_execution_attempted": false,
+      "authority_effect": "NONE_SOURCE_GRAPH_ONLY"
     }
   },
   "source_refinement": {
