@@ -401,3 +401,27 @@ PURPOSE_BOUND_WORKER_MATERIALIZED
 The first lifecycle transition now uses the successful InTr Master Records receipt as its predecessor. TV/TVC remains credential authority, StegCore/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and Master Records remains custody/reconstruction authority.
 
 No authentic resident execution is promoted by these merges. The resident execution connector was checked after the source repairs and reported no connected device. GitHub/CI therefore remains source validation only. The next authentic predicate is one same-run `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` producing claim/fence, TV/TVC, InTr, all four lifecycle transitions, post-retirement no-authority evidence, and records-only reconstruction from the same execution.
+
+
+## Current-main re-verification — Goal Prompt 11
+
+Task Registry generation 82 was re-read before attempting runtime execution. The SDK TT task remains ACTIVE / UNCLAIMED with the same authentic same-run completion predicate.
+
+Current main was checked directly across WorkerCoordinator, StegAgents, StegCore, and SDK:
+
+```text
+WORKERCOORDINATOR_CLAIM_FENCE_BOUND                    PRESENT
+WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT              PRESENT
+TV_TVC_WARRANT_POLICY_VERIFIED                         PRESENT
+STEGCORE_INTR_MATERIALIZATION_ADMITTED                 PRESENT
+PURPOSE_BOUND_WORKER_<phase> dynamic transition IDs    PRESENT
+MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED order PRESENT
+Master Records closure before each next phase          PRESENT
+InTr Master Records receipt as MATERIALIZED predecessor PRESENT
+continued_authority_after_retirement=false             PRESENT
+records_only=true final packet                         PRESENT
+```
+
+No source repair was required.
+
+The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
