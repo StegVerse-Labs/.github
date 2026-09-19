@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 111,
-  "status": "SDK_TT_RICHARD_SEAM_DISPATCH_MASTER_RECORDS_CARRIAGE_REPAIRED",
+  "generation": 112,
+  "status": "CONVERSATION_EVIDENCE_INGESTION_CUSTODY_IMPLEMENTATION_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6130,6 +6130,114 @@
       ],
       "handoff_projection_refs": [
         "StegVerse-Labs/admissibility-wiki:docs/ADMISSIBILITY_WIKI_PUBLIC_DOMAIN_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "root_correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "parent_task_id": null,
+      "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records custody/reconstruction before any later public Site projection.",
+      "coordination_state": "IN_PROGRESS",
+      "source_refs": [
+        "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
+        "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+        "workers/conversation_evidence_ingestion.py",
+        "tests/test_conversation_evidence_ingestion.py",
+        "schemas/conversation-evidence-ingestion-package.schema.json",
+        "control/task-vectors/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+        "StegVerse-Labs/.github#2258"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "master-records/orchestration"
+        ],
+        "components": [
+          "immutable-conversation-ingestion",
+          "attachment-byte-preservation",
+          "authenticity-envelope",
+          "transaction-performance-binding",
+          "required-evidence-manifest",
+          "canonical-master-records-custody"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY",
+          "kind": "CAPABILITY",
+          "state": "RESOLVED",
+          "ref": "workers/canonical_state_transition_custody.py"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001",
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+      ],
+      "existing_evidence_refs": [
+        "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+        "workers/canonical_state_transition_custody.py"
+      ],
+      "expected_evidence_predicates": [
+        "V1_PUBLICATION_CONTRACT_UNCHANGED",
+        "INGESTION_PACKAGE_SCHEMA_VALID",
+        "ORIGINAL_RECORD_WRITE_ONCE",
+        "MESSAGE_ORDER_AND_MESSAGE_DIGESTS_DETERMINISTIC",
+        "ATTACHMENT_BYTES_AND_DIGESTS_PRESERVED",
+        "AUTHENTICITY_STATE_EXPLICIT",
+        "TRANSACTION_FINDING_DEFAULTS_NOT_EVALUATED",
+        "REQUIRED_EVIDENCE_MANIFEST_BINDS_ORIGINAL_AUTHENTICITY_AND_TRANSACTION",
+        "MASTER_RECORDS_STATE_RECORDED",
+        "MASTER_RECORDS_RECONSTRUCTION_PASS",
+        "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_PASS",
+        "MASTER_RECORDS_EXACT_RECEIPT_DIGEST_EQUALITY",
+        "NO_PUBLICATION_OR_ADJUDICATION_PERFORMED",
+        "README_AND_HANDOFF_CURRENT"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "canonical_artifact_validation",
+          "canonical_master_records_state_transition_custody"
+        ],
+        "environment": "CURRENT_SESSION_PLUS_EXISTING_MASTER_RECORDS_CUSTODY",
+        "direction": "EVIDENCE_CAPTURE_TO_MASTER_RECORDS",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "SOURCE_VALIDATED",
+        "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
+        "COMPLETION_CLAIMED"
+      ],
+      "handoff_projection_refs": [
+        "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
       ],
       "authority_model": {
         "task_registry_mints_execution_authority": false,
