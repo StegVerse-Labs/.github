@@ -877,6 +877,11 @@ Test 3 targeted execution now preserves the existing canonical Master Records HT
 The shared StegAgents process adapter now preserves the existing canonical Master Records custody binding so Test 3 can close its required TV/TVC warrant-policy and atomic InTr transitions through Master Records. This is environment carriage only; it grants no new authority and does not itself prove runtime execution.
 
 
+### StegBrowser Healer routing correction
+
+`STEG-BROWSER-HEALER-ROUTING-CORRECTION-001` / issue #2249 corrects the accidental elevation of `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` from triggered remediation/evidence carriage into a required StegBrowser custody-root dependency. Canonical execution ownership is `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME`; the task restores direct progression through that existing WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records chain and removes Healer prerequisites unless exact invocation lineage proves they belong.
+
+
 ### Test 3 governed close and worker retirement
 
 Test 3 now has an executable terminal edge. After the retained task result, the existing WorkerCoordinator invokes the same shared StegAgents adapter in `GOVERNED_CLOSE` mode. StegCore/InTr must admit `CLOSE_TASK_AND_RETIRE_WORKER`, canonical Master Records must close and reconstruct that exact transition, and only then may the adapter return `COMPLETED` so WorkerCoordinator releases the task-bound worker. Terminal evidence is records-only and must retain neither callable nor executor authority.
