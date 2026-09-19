@@ -220,3 +220,12 @@ Authentic runtime consumption remains required; source repair alone does not est
 
 
 The reusable TVC service-delivery carriage correction merged through StegVerse-Labs/.github PR #2222 at `f5c64120d381842db16ca1a5156bb881c8e383f8`. The existing neutral Healer/reusable-task path now reaches the released same-service installer after preflight instead of bypassing it with direct dispatcher activation. Authentic scheduler/reusable-task consumption and the resulting TVC restart/startup receipt remain unobserved.
+
+
+## 2026-09-19 TVC service-owned preflight correction
+
+After the reusable service-delivery carriage repair, source tracing found that the neutral Healer/reusable runner still executed `tvc.primary_runtime_binder.preflight` before invoking the TVC service installer. That preflight requires `STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC`, while the neutral Healer carrier intentionally does not mint or inject TV/TVC authority. This created an ambient-authority dependency before the execution path could enter the existing TVC-owned service.
+
+The reusable runner now enters the released `install_tvc_primary_runtime_service.py --activate` path directly after resolving already-local TVC source. The restarted `stegtvc-primary-runtime.service` retains `Environment=STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC`, retains the vault-socket `ExecStartPre`, and invokes `tvc.primary_runtime_binder.activate`, whose existing `task_activate` executes `task_preflight` before serving. The neutral carrier therefore neither bypasses TVC preflight nor manufactures TV/TVC authority; the preflight remains inside its existing authority owner.
+
+No runtime predicate is promoted by this source correction.
