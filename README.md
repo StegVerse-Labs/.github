@@ -547,7 +547,7 @@ The same existing bridge is now addressable through reusable identity `RT-CANONI
 
 ## StegBrowser Master Records provider-neutral binding
 
-Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Site PR `#1380` and StegVerse-org/LLM-adapter PR `#344` have merged the applicable source repair: the immutable StegBrowser custody receipt now discovers a hash/health-verified StegVerse gateway rather than assuming the static Site origin hosts Master Records, browser credential material is prohibited, the gateway reuses the existing server-side TV/TVC Master Records credential role, and the sole custody authority remains `master-records/orchestration`.
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `RETIRED / PROMPT_LIMIT_DECOMPOSED`, COSV `40000100100000`. Site PR `#1380` and StegVerse-org/LLM-adapter PR `#344` have merged the applicable source repair: the immutable StegBrowser custody receipt now discovers a hash/health-verified StegVerse gateway rather than assuming the static Site origin hosts Master Records, browser credential material is prohibited, the gateway reuses the existing server-side TV/TVC Master Records credential role, and the sole custody authority remains `master-records/orchestration`.
 
 The browser receipt also uses canonical state-transition outcome `OBSERVED` while retaining the authentic InTr state `INGRESS_ADMITTED` inside transition evidence. The immutable nonce and request count remain unchanged.
 
@@ -593,7 +593,7 @@ Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now has a validated me
 
 ## Master Records StegBrowser endpoint binding
 
-Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 13-14 reconciled all related superseded coordination artifacts: the historical PR lineage is closed, Goal issue #2078 and global runtime-evidence owner issue #1260 remain open by design, and all six superseded related branches—including the #2115 hygiene branch—were force-aligned to final main and verified identical at 0/0 because branch deletion is not exposed by the connected GitHub capability. The authorized resident evidence surface still exposes zero connected devices; `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate and no downstream transition is promoted.
+Historical Goal Prompts 13–14 recorded `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` as `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 13-14 reconciled all related superseded coordination artifacts: the historical PR lineage is closed, Goal issue #2078 and global runtime-evidence owner issue #1260 remain open by design, and all six superseded related branches—including the #2115 hygiene branch—were force-aligned to final main and verified identical at 0/0 because branch deletion is not exposed by the connected GitHub capability. Prompt 15 supersedes the connector-device observation method: device inventory has no runtime-evidence authority. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate.
 
 The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
 
@@ -697,3 +697,8 @@ PR #41 in StegVerse-002 and PR #2165 in this repository close the two source gap
 ### SDK TT purpose-bound worker runtime coordination hygiene
 
 Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` as non-blocking adjacent evidence for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. Surviving purpose-bound branch refs are historical (behind `main`, zero unique commits). Authentic runtime execution remains unattempted because the existing StegAgents retained-root/WorkerCoordinator prerequisites are not satisfied.
+
+
+## StegBrowser endpoint-binding prompt-limit retirement
+
+`MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is RETIRED / PROMPT_LIMIT_DECOMPOSED, with runtime completion unclaimed. Its existing source repairs remain merged; authentic retained carrier/root evidence, exact runtime tuple, and Master Records custody/reconstruction remain unproven. The unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate continues in existing `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / #1860 under the unchanged three-task owner chain. See [terminal handoff](docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md) and [existing successor handoff](docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md). PR #2154 remains closed/unmerged and is not retirement evidence. No successor, runtime, request, or device dependency is added.

@@ -148,3 +148,10 @@ This task does not by itself complete the full parent runtime-consumption chain 
 ## Manual work
 
 None.
+
+
+## Endpoint-binding terminal intake — 2026-09-19
+
+`MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is retired at Goal Prompt 20 with no runtime completion claim. Its unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate is bound here, under the unchanged global/root-observation/materialization owner chain. This is an intake into the existing task and issue #1860, not a new successor, request, invocation, or authority transfer. The retired Goal's `runtime_evidence_terminal_prompt20` and canonical handoff retain the exact immutable invocation, six-field retention seam, Prompt 15 correction, and downstream custody predicates.
+
+Require the authentic exact Healer outcome and six retention fields, with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root, before running the existing non-authorizing classifier. Preserve the checkpoint/outer-envelope distinction documented by the retired Goal. Only then evaluate WorkerCoordinator, Interlock/InTr, and the immutable runtime tuple in order, requiring Master Records RECORDED, required-evidence validation PASS, reconstruction PASS, and exact digest equality. Current runtime predicates remain unproven. No connector-device gate or additional execution path is introduced.
