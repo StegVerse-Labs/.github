@@ -161,3 +161,16 @@ def test_successor_handoff_preserves_authority_boundaries():
     assert authority["second_machine_required"] is False
     assert activation["targeted_execution"]["entrypoint"] == "scripts/run_worker_runtime.py"
     assert activation["targeted_execution"]["heartbeat_grants_execution_authority"] is False
+
+
+def test_purpose_bound_targeted_runtime_reuses_shared_worker_without_runtime_owner_completion_gate() -> None:
+    handoff = json.loads((ROOT / "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json").read_text(encoding="utf-8"))
+    fragment = json.loads((ROOT / "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json").read_text(encoding="utf-8"))
+    assert handoff["task"]["dependencies"] == []
+    assert handoff["task"]["runtime_predecessor_reconstruction_required"] is False
+    assert handoff["task"]["runtime_capability_provider_task_id"] == "STEGAGENTS-GOVERNED-RUNTIME-001"
+    assert handoff["activation"]["targeted_execution"]["requires_existing_separated_carrier_reference"] is False
+    assert fragment["workers"] == []
+    assert fragment["shared_worker_provider_fragment_refs"] == [
+        "control/worker-registry.d/stegagents-governed-runtime-001.json"
+    ]
