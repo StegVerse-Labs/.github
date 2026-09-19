@@ -958,3 +958,6 @@ StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4'
 
 
 Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: PR #2291 merged at `e5f40728f92029c8f81fc543c3215e9ad98a0ad5`. Source/runtime binding is validated, but no authentic post-merge WorkerCoordinator claim/fence or Master Records `CONVERSATION_EVIDENCE_INGESTED` receipt is currently retained in canonical evidence. The task remains active on the existing targeted one-shot path; no public Site projection successor has been derived.
+
+
+SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_TVC_INVOCATION_OBSERVED` is currently admissible; restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, runtime activation, and REQUEST_BOUND custody remain blocked until each immediate predecessor transition is authentically consumed. The neutral reusable scheduler also no longer treats deferred children as an advanced aggregate transition.
