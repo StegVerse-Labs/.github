@@ -907,3 +907,8 @@ The resident request dispatcher now preserves the existing durable-local Master 
 All StegVerse tasks now inherit a strict global invariant: ordinary task progression MUST NOT query or depend on connected-device inventory. Zero connected devices is never a runtime prerequisite failure, blocker, stop condition, evidence gap, fallback trigger, source-repair trigger, or manual-work requirement.
 
 Runtime progression follows the task's actual authority/evidence chain—Task Registry -> WorkerCoordinator -> Interlock/InTr -> TV/TVC where applicable -> Master Records—without a preflight device-availability check. The only permitted exception is a task whose explicit subject is connector/device-inventory management itself.
+
+
+### StegBrowser artificial Healer routing removed
+
+`STEG-BROWSER-HEALER-ROUTING-CORRECTION-001` traced immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` and confirmed the executable StegBrowser chain contains no Healer dependency. The accidental routing was introduced in later evidence/custody modeling. Current ownership is direct: `stegbrowser_runtime_connection_ingress -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator -> Interlock/InTr -> retained StegBrowser evidence -> Master Records`. Healer remains triggered remediation only.
