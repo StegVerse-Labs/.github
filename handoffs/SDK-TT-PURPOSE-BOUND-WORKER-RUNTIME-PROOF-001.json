@@ -29,14 +29,14 @@
       "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
       "StegVerse-Labs/StegAgents:src/purpose_bound_worker_runtime.py"
     ],
-    "dependencies": [
-      "STEGAGENTS-GOVERNED-RUNTIME-001"
-    ],
+    "dependencies": [],
     "coordination_refs": [
       "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
       "STEGAGENTS-GOVERNED-RUNTIME-001"
     ],
-    "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json"
+    "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "runtime_predecessor_reconstruction_required": false,
+    "runtime_capability_provider_task_id": "STEGAGENTS-GOVERNED-RUNTIME-001"
   },
   "execution": {
     "required_capabilities": [
