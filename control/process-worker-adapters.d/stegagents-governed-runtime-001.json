@@ -7,7 +7,8 @@
       "authority_ref": "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json#authority",
       "capabilities": [
         "stegagents_governed_coderepair_roundtrip",
-        "stegagents_purpose_bound_worker_lifecycle"
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_atomic_task_worker_activation"
       ],
       "command": [
         "python",
@@ -31,7 +32,8 @@
         "Carries the existing StegAgents live-run warrant/policy verification inputs into the worker process; these are governance admission inputs, not provider credentials and not execution authority.",
         "Verifies the exact merged governed manifest blob before execution and retains proposal/governance/reconstruction evidence in the resident runtime.",
         "Creates no second WorkerCoordinator, scheduler, InTr implementation, provider route, credential path, agent registry, or consequential execution authority.",
-        "The same worker/process adapter may carry SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 only when its separate executable handoff requires stegagents_purpose_bound_worker_lifecycle; this does not alter the proposal-only owner task."
+        "The same worker/process adapter may carry SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 only when its separate executable handoff requires stegagents_purpose_bound_worker_lifecycle; this does not alter the proposal-only owner task.",
+        "The same existing worker/process adapter may carry SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001 in PREPARE_ATOMIC_ACTIVATION mode; this mode records TV/TVC and StegCore/InTr constitutive admission before WorkerCoordinator projects ACTIVE task state."
       ],
       "timeout_seconds": 300,
       "type": "process_json_v0.1"
