@@ -92,3 +92,22 @@ StegVerse-002/.github PR #40 repaired that exact seam and merged at:
 The merged callable now reuses the existing canonical Master Records state-transition custody client, emits one canonical `SV002_REQUEST_BOUND` receipt bound to the exact Goal/COSV/experiment/operation/invocation_count/packet/request/manifest/frame identity, requires `state=RECORDED` plus `reconstruction_status=PASS`, retains the returned custody/master-record identity, and only then permits the existing federation publication path to continue.
 
 This is source repair only. Authentic resident execution after the merge and authentic Master Records `RECORDED + PASS` for the real rerun remain unobserved. The parent `REQUEST_BOUND` predicate therefore remains unpromoted.
+
+
+## 2026-09-18 canonical resident-carrier binding repair
+
+Tracing the deterministic packet upstream from absent Master Records custody established that the existing canonical resident request had not been reaching the current rerun callable. The already-requested `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001` / selector `sv002_org_runtime_activation` still invoked the retired `StegVerse-org/.github/resident-runtime/run_sv002_self_characterization_roundtrip.py` one-shot path. That path is excluded by the experiment attempt map and cannot produce the current deterministic rerun packet.
+
+The existing request has therefore been retained in place and rebound to:
+
+```text
+Goal: STEGVERSE-002-EXPERIMENT-RERUN-001
+COSV: 50000000107000
+operation: REQUEST_SELF_CHARACTERIZATION
+packet: SV002-RERUN-C796D0BFD181CEC5D99E4C23
+callable: StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py
+```
+
+The same `sv002_org_runtime_activation` consumer now invokes that current callable through the existing HeartBeat-separated native WorkerCoordinator/dispatcher. The dispatcher also preserves the already-defined canonical Master Records endpoint/token/local-source bindings and existing federation gateway/root bindings needed by that callable, while GitHub credentials remain excluded.
+
+No new resident request, scheduler, dispatcher, WorkerCoordinator, resident executor, custody authority, transition authority, Site path, or user-operated device is introduced. Authentic runtime consumption remains unclaimed until the existing carrier emits its real request-consumption/custody evidence.
