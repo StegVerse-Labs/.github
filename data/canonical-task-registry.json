@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 106,
-  "status": "SDK_TT_RICHARD_SEAM_STEGAGENTS_MASTER_RECORDS_ENV_REPAIRED",
+  "generation": 107,
+  "status": "SDK_TT_RICHARD_SEAM_GOVERNED_CLOSE_PATH_IMPLEMENTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5301,7 +5301,7 @@
         "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json",
         "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json",
         "tests/test_sdk_tt_richard_atomic_activation_seam.py",
-        "StegVerse-Labs/StegAgents@a847dae9b72b3914b98c33cc94b8d2a87c1a685d:src/purpose_bound_worker_runtime.py",
+        "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py",
         "control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json",
         "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py",
         "tests/test_sdk_tt_richard_seam_resident_carriage.py",
@@ -5563,6 +5563,29 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_ENV_CARRIAGE_ONLY"
+      },
+      "execution_path_repair_governed_close": {
+        "defect": "TEST3_GOVERNED_CLOSE_EDGE_ABSENT",
+        "prior_terminal_behavior": "TASK_COMPLETED -> STEGAGENTS_TASK_RESULT_READY_FOR_GOVERNED_CLOSE -> test3_waiting_for_governed_close with no executable CLOSE_TASK_AND_RETIRE_WORKER edge",
+        "repaired_stegagents_commit": "eae52ac20b06846bc0fca55980d778d57108ef9f",
+        "repaired_workercoordinator_path": "same existing process:stegagents-governed-runtime-v1 adapter invoked in GOVERNED_CLOSE mode on next targeted cycle",
+        "close_transition": "CLOSE_TASK_AND_RETIRE_WORKER",
+        "master_records_gate": [
+          "RECORDED",
+          "reconstruction_status=PASS",
+          "required_evidence_validation_status=PASS",
+          "receipt_sha256==reconstructed_receipt_sha256"
+        ],
+        "worker_release_after_close_only": true,
+        "required_terminal_state": {
+          "records_only": true,
+          "worker_live_after_close": false,
+          "continued_authority_after_retirement": false,
+          "callable_retained": false,
+          "executor_reference_retained": false
+        },
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_EXISTING_PATH_REPAIR_ONLY"
       }
     },
     {
