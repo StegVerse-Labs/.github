@@ -114,7 +114,7 @@ No authentic current registered-Node MIR outbox entry, current MIR `INGRESS_ADMI
 
 The source-level false positive has been removed: browser-local IndexedDB no longer qualifies as authoritative Master Records custody.
 
-The next authentic execution therefore begins at the existing `/mir-roundtrip/` browser event. If authoritative Master Records submission for `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED` does not return `RECORDED + PASS`, that is the first real custody boundary to repair. If it does return PASS, continue without reinterpretation to authentic `INGRESS_ADMITTED`, RTC-007/008/009, exact return retention, and governed return.
+The canonical sequence still begins with `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED`. Absence of an authentic retained runtime receipt is not a reason to stop. Trace the existing path to the first deterministic defect, repair only that boundary, and continue forward from the repaired evidence trail.
 
 ## Prohibited regressions
 
@@ -179,7 +179,7 @@ The existing `master-records/orchestration` canonical state-transition custody s
 - returns per-item validation status and overall `required_evidence_validation_status`;
 - fails closed if any required item is missing, malformed, misbound, digest-mismatched, or unreconstructable.
 
-This does **not** mean Master Records replaces every domain-specific semantic validator. When a lane requires specialized semantic validation, that validator's result artifact is itself required evidence and must be included in the manifest. Master Records then validates that exact validator artifact's transition binding, digest, custody, and reconstruction as part of the canonical evidence closure.
+Any validation required by a governed transition executes on that existing transition path before evidence closure. Its output is required transition evidence and must enter the manifest. The existence of another validation function is never a reason to wait, defer, or stop tracing the evidence path.
 
 The existing separation of powers remains unchanged: Interlock/InTr authorizes transitions; TV/TVC holds credential authority where required; Master Records validates/retains/reconstructs observed evidence and grants no transition, execution, governance, credential, publication, deployment, or release authority.
 
@@ -193,3 +193,29 @@ During this required-evidence refinement, the canonical task shard and handoff w
 The proposed registry generation advances exactly one generation from the then-current value and carries the existing task's COSV `50000000100000`, parent/root relationships, authority boundaries, and required-evidence validation contract unchanged.
 
 This is coordination repair only. It does not create a second custody service, transition engine, scheduler, dispatcher, WorkerCoordinator plane, credential authority, runtime, or device dependency.
+
+
+## First required-evidence carriage defect and repair — 2026-09-18
+
+Master Records repository evidence was searched for an authentic post-contract transition result containing all three required progression fields:
+
+```text
+state=RECORDED
+reconstruction_status=PASS
+required_evidence_validation_status=PASS
+```
+
+No authentic runtime receipt carrying that complete result was present in the repository evidence. That did not become a waiting condition. The existing transition source was traced from the first canonical MIR transition forward.
+
+The first deterministic defect was found at `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED`: the materialization request was persisted and referenced by the transition evidence, but the exact materialization object was not included as a `required_evidence_manifest` item. Because the materialization request is a direct result of that transition, the new Master Records invariant requires it to be validated and reconstructed.
+
+The existing driver now binds the exact materialization object as canonical-json required evidence with:
+
+- evidence type `MIR_MATERIALIZATION_REQUEST`;
+- origin transition `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED`;
+- exact canonical SHA-256;
+- exact structured content.
+
+The downstream StegOS transition-custody protocol was also repaired on the existing path. PR `StegVerse-Labs/StegOS#395` merged as `3e60f6f5ef0f8516c66ba51a1bb2c78f8b13f3e7`. Every observed MIR transition carried through `retain_observed_transition` now supplies its exact transition-evidence object to Master Records as required evidence and refuses progression unless Master Records returns all three progression predicates above.
+
+No second validator, custody store, runtime, scheduler, dispatcher, transition authority, credential path, or device dependency was created.
