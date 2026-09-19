@@ -63,3 +63,21 @@ Discovery never mints WorkerCoordinator claim/fence, Interlock/InTr admission, c
 Canonical runtime authority remains with the existing runtime lifecycle and state-transition authorities. Remote tooling cannot grant execution authority, user-verification authority, credentials, claims/fences, or Interlock/InTr admission.
 
 KV/SKAP Vault remains the sole user-verification authority. StegOS devices remain interchangeable execution/transport nodes rather than user verifiers.
+
+
+## Canonical no-device-inventory progression rule
+
+For ordinary StegVerse task execution, connected-device inventory is not part of the runtime dependency model.
+
+```text
+query_connected_device_inventory_for_task_progression = PROHIBITED
+connected_device_inventory_as_runtime_prerequisite = PROHIBITED
+connected_device_inventory_as_blocker = PROHIBITED
+connected_device_inventory_as_fallback_condition = PROHIBITED
+zero_connected_devices_as_stop_condition = PROHIBITED
+zero_connected_devices_as_manual_work = PROHIBITED
+```
+
+A task must proceed through its actual canonical authorities and evidence path—Task Registry coordination, WorkerCoordinator claim/fence, Interlock/InTr transition authority, TV/TVC credential authority where applicable, and Master Records custody/reconstruction—without first checking whether a remote connector reports a device.
+
+The only exception is a task whose explicit subject is connector/device-inventory management itself. Incidental knowledge that a connector has zero attached devices has no task-state meaning and must be ignored.
