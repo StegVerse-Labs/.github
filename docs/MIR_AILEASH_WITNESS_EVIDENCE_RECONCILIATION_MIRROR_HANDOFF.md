@@ -116,3 +116,25 @@ Separately, preserve the unresolved historical A.2 R10 publication question unti
 ## Session continuation record — 2026-09-19
 
 Session Prompt Count: 1. Goal Prompt Count: 5/20 from the supplied recovery count of 4/20; no later cumulative counter was present in the inspected child record or handoff. PR #2119 already contains a counterpart report of a 1,534-event / 50-checkpoint rerun; this session preserves that existing PR provenance without claiming to have independently inspected its underlying screenshots or run artifacts. No matching authentic rerun bundle was retrieved, and no rerun was executed. The 784-record / 30-commitment run remains historical only. No message was sent to a counterpart.
+
+## Targeted artifact acquisition — 2026-09-19, Session Prompt 2 / Goal Prompt 6
+
+The child remains ACTIVE. Registry generation 67 was re-read before inspection; main subsequently advanced from the prior merge to `0470412d1745391c42cd9904ec323424d4df0606`, whose registry was re-read and verified at generation 68 before the documentation update. No historical commitment was substituted with a current witness tip, and no run was synthesized or executed.
+
+### Retrieval observations
+
+- The public [sebbi.pro witness roster](https://sebbi.pro/x/witness/peers) was independently readable and exposes MIR's bound URL as `https://mir.events/v1/transparency/tip`. This establishes a retrieval locator, not historical commitment coverage or rerun verification.
+- The ordinary web reader did not retrieve MIR's home/tip or sebbi.pro's requested historical peer route. Browser navigation to MIR's home and `/x/witness/history?peer=red-flag-ai-pro` returned `net::ERR_BLOCKED_BY_CLIENT`. This is a retrieval limitation in this environment; no service-down, bot-block, missing-evidence, or failed-runtime conclusion follows.
+- Published AILeash source at `b119e2d91cd37a4929d2c69367fcba51cb7a292f` explicitly marks [full audit block reads](https://github.com/justrightdecorators-ops/aileash/blob/b119e2d91cd37a4929d2c69367fcba51cb7a292f/modules/blocks.py) as keyed with an empty PUBLIC set. [Evidence-pack preview](https://github.com/justrightdecorators-ops/aileash/blob/b119e2d91cd37a4929d2c69367fcba51cb7a292f/modules/pack.py) is also keyed; only its spec is public. No credentials were requested or access controls bypassed.
+- Focused public GitHub searches under `MIR-2025` for `1534`, `4714`, and `clean-room` returned no matches. The inspected `MIR-2025/mirprotocol` tree `d8bd04d1e7cd956ef1f7fdf294adad78dc39893e` contains protocol/SDK conformance fixtures, not the reported production export package. Search absence does not establish that the package does not exist.
+
+### Exact inputs that make the next verification executable
+
+| Lane | Authentic artifact needed | Check to perform after acquisition |
+|---|---|---|
+| Historical A.2 R10 | Operator-selected disputed pre-rename sealed block(s), preserving original event, result, timestamp, previous hash and audit hash; block/sequence identity, witness version and source/export provenance; the applicable historical vocabulary/scheme publication reference and any retained timing evidence | Recompute the original seal using the recovered scheme; inspect the sealed version/term; bind that exact record to revision `2d6715868bb2812b98d874ab17890ff89ece30d5` or the actually applicable historical revision. Separate semantic agreement from evidence of publication coverage at sealing. |
+| Reported v0.8 rerun | Original 1,534-event / 50-checkpoint export bundle, bundle digest, checkpoint chain and inclusion paths, checkpoint 4714 raw OTS proof, independently obtained/pinned public-key record, verifier source/version and invocation, raw traces for all three runs, adversarial fixtures and negative-control outputs, and retained Bitcoin/explorer references | Check artifact identity before counting; recompute leaves, inclusion, chain continuity, proof-derived order and key pinning; independently check the OTS/Bitcoin path and negative controls. Reproduce offline verification only from these authentic inputs. |
+
+User action if those artifacts are not publicly retrievable: attach the operator-provided historical block export and the original v0.8 verification package, or supply their exact downloadable links and separately obtained public-key fingerprint/provenance. Do not provide passwords, API keys or private signing keys. Sending a request to Richard/Justin has not been authorized or performed.
+
+R10 remains operator-disclosed NOT MET; no independent failure or compliance verdict is promoted. The 784-record / 30-commitment run remains historical only; the newer rerun remains COUNTERPART_REPORTED_COMPLETE. Normative R1–R10 and custodian naming remain settled. The next step is artifact acquisition at the recorded locators or from the operator, followed by the table's exact checks; repeating broad searches or re-reading the same source does not advance either predicate.
