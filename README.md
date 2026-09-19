@@ -730,3 +730,21 @@ StegAgents PR #23 merged at `0ba84d159a3a501cb0e13d600638cae63be6b14e`, adding f
 
 
 Goal Prompt 12 completed the first full business-day GP10 response recheck on 2026-09-18 at 23:55 CDT. Exact-subject, organization/domain, and sender-specific Outlook searches found no inbound response from POVA/Western Rail, Integrity Rail Services, Panhandle Northern/OmniTRAX, or Progress Rail. All commercial predicates remain false. One bounded follow-up using the user-observed live GP10 page as explanatory context is now justified but was not sent; alternative-revenue comparison remains gated pending that follow-up and a reasonable response opportunity or explicit negative-fit evidence.
+
+
+## SDK Test 2 — atomic task-worker binding
+
+Canonical Goal Task `SDK-TT-ATOMIC-TASK-WORKER-BINDING-001` is the replayable semantic successor to the completed purpose-bound worker console proof. It tests one specific seam invariant for the executable-task class: task activation and creation/binding of the task-specific worker are one constitutive transition, not independent state changes.
+
+```text
+HANDOFF_READY task T + manifest-governed capability M
+-> ACTIVATE(T)+CREATE_AND_BIND(W,T)
+-> transition evidence closure
+-> invocation/result
+-> CLOSE(T)+RETIRE(W,T)
+-> records-only reconstruction
+```
+
+The test must fail closed for ACTIVE-without-worker, worker-without-ACTIVE-task, mismatched reciprocal binding, pre-created worker, invocation before transition closure, manifest-boundary expansion, completed task with a live bound worker, or residual callable/executor state. This is source/local semantic evidence only and does not claim authentic WorkerCoordinator, TV/TVC, Interlock/InTr, resident runtime, or Master Records execution.
+
+Canonical handoff: `docs/SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md`.
