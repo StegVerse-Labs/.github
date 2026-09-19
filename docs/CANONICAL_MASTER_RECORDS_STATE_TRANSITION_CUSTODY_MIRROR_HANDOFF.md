@@ -296,3 +296,14 @@ After the post-return reconciliation merged in canonical PR #2219, the source tr
 The bounded repair on branch `canonical-mr-sdk-return-binding-custody-20260919` reuses `workers/canonical_state_transition_custody.py`. It carries both the exact retained `stegverse.sdk.publisher-return-binding/v1` and exact materialization receipt as required evidence, binds reverse-transport continuity as prior state, binds the exact SDK return object digest as resulting state, and fails closed unless Master Records returns `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact receipt/reconstruction digest equality.
 
 No later egress predicate is promoted by this source repair. `RTC-STEGVERSE-EGRESS-007`, Interlock/InTr egress, far-side terminal transition/caller consequence, authentic external MIR substitution, and communication completion remain unobserved.
+
+
+## RTC-SDK-RETURN-006 merged custody repair — 2026-09-19
+
+PR `#2230` merged as `20f5ccc966d3d9e3165c9302e55bb335337f01e8` from exact repaired head `7da7591625b493380ebca5ca0409af559f55d806`.
+
+The repaired `RTC-SDK-RETURN-006` path carries the exact retained SDK Publisher-return binding and exact SDK materialization receipt as required evidence through canonical Master Records before `sdk_return_binding_observed=true` can be exposed to downstream egress. Progression fails closed unless Master Records returns `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality.
+
+Executable exact-helper validation exercised both the successful closure path and the non-RECORDED fail-closed path before merge. The historical repository validators for this lane are now manual `workflow_dispatch` surfaces and were not represented as automatic PR checks; their absence was not treated as either PASS or failure.
+
+No authentic `RTC-SDK-RETURN-006` runtime execution is claimed by this merge. The next evidence trace is `RTC-STEGVERSE-EGRESS-007` -> Interlock/InTr egress -> far-side terminal transition/caller consequence, with canonical Master Records closure required at every actually observed transition.

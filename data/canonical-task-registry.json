@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 117,
+  "generation": 118,
   "status": "SDK_TT_TV_TVC_ED25519_WARRANT_AUTHORITY_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -4889,7 +4889,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "POST_RETURN_SDK_PROCESSING_THEN_AUTHENTIC_FAR_SIDE_INTR_TERMINAL_TRANSITION_AND_CALLER_CONSEQUENCE",
+        "next_transition_under_evidence_trace": "RTC-STEGVERSE-EGRESS-007_THEN_INTERLOCK_INTR_EGRESS_THEN_FAR_SIDE_TERMINAL_CALLER_CONSEQUENCE",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -4912,7 +4912,17 @@
         "site_cosv_terminalization_computed_active_claims": 51,
         "site_cosv_terminalization_computed_active_task_ids": 51,
         "site_cosv_terminalization_computed_unindexed_active_task_ids": 46,
-        "site_cosv_index_reconciliation_owner_task": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001"
+        "site_cosv_index_reconciliation_owner_task": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001",
+        "rtc_sdk_return_006_custody_source_repair_merged": true,
+        "rtc_sdk_return_006_custody_pr": 2230,
+        "rtc_sdk_return_006_custody_merge": "20f5ccc966d3d9e3165c9302e55bb335337f01e8",
+        "rtc_sdk_return_006_exact_validated_head": "7da7591625b493380ebca5ca0409af559f55d806",
+        "rtc_sdk_return_006_exact_helper_validation_passed": true,
+        "rtc_sdk_return_006_required_evidence_types": [
+          "SDK_PUBLISHER_RETURN_BINDING",
+          "SDK_PUBLISHER_RETURN_MATERIALIZATION_RECEIPT"
+        ],
+        "rtc_sdk_return_006_runtime_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5001,6 +5011,24 @@
               "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
             }
           }
+        },
+        "rtc_sdk_return_006": {
+          "state": "SOURCE_REPAIR_MERGED",
+          "pull_request": 2230,
+          "exact_validated_head": "7da7591625b493380ebca5ca0409af559f55d806",
+          "merge_commit": "20f5ccc966d3d9e3165c9302e55bb335337f01e8",
+          "master_records_gate": [
+            "state=RECORDED",
+            "reconstruction_status=PASS",
+            "required_evidence_validation_status=PASS",
+            "receipt_sha256==reconstructed_receipt_sha256"
+          ],
+          "required_evidence_types": [
+            "SDK_PUBLISHER_RETURN_BINDING",
+            "SDK_PUBLISHER_RETURN_MATERIALIZATION_RECEIPT"
+          ],
+          "runtime_execution_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
         }
       },
       "required_evidence_validation": {
