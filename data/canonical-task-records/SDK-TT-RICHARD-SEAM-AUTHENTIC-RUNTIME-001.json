@@ -35,7 +35,10 @@
     "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:scripts/execute_control_plane_source_package_relay.py",
     "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:stegos/control_plane_source_package_relay.py",
     "tests/test_sdk_tt_richard_seam_control_plane_package.py",
-    ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml"
+    ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
+    "scripts/run_sdk_tt_richard_seam_test3.py",
+    "tests/test_sdk_tt_richard_seam_test3_runner.py",
+    ".github/workflows/test3-richard-seam-acceptance.yml"
   ],
   "adjacent_task_refs": [
     "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -118,7 +121,7 @@
     "authentic_runtime_execution_complete": false,
     "seam_holds_authentically": false
   },
-  "remaining_predicate": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION_REQUIRED_BEFORE_RESIDENT_DISPATCH_VISIT",
+  "remaining_predicate": "MERGE_RUNNABLE_TEST3_ACCEPTANCE",
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
     "observed_registry_generation_before_mutation": 81,
@@ -126,7 +129,7 @@
     "test_1_evidence_modified": false,
     "test_2_evidence_modified": false,
     "authentic_runtime_execution_attempted": false,
-    "reconciled_against_registry_generation": 98,
+    "reconciled_against_registry_generation": 99,
     "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
     "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
     "observed_sequence": [
@@ -136,7 +139,7 @@
       "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
     ],
     "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-    "next_actual_transition": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED",
+    "next_actual_transition": "MERGE_RUNNABLE_TEST3_ACCEPTANCE",
     "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
     "stegagents_source_repair_pr": 26,
     "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -206,6 +209,16 @@
     "suite_test3_focused_repair_job": 105916988257,
     "suite_test3_focused_repair_result": "PASS_12_FOCUSED_TESTS",
     "suite_test3_existing_runtime_path_tests": "PASS_6_TESTS",
-    "suite_harness_repair_validated": true
+    "suite_harness_repair_validated": true,
+    "dedicated_test3_runner_added": true,
+    "dedicated_test3_workflow_added": true,
+    "dedicated_test3_execution_requested": true,
+    "dedicated_test3_result": "PASS",
+    "dedicated_test3_run": 35452133634,
+    "dedicated_test3_job": 105920780352,
+    "dedicated_test3_exact_head": "3ca8123da7a00f2b50748418edb476d4bd510d01",
+    "dedicated_test3_dotgithub_result": "PASS_18_TESTS",
+    "dedicated_test3_stegagents_result": "PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12",
+    "dedicated_test3_marker": "TEST3_RICHARD_SEAM_ACCEPTANCE_PASS"
   }
 }
