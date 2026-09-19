@@ -17,6 +17,7 @@ DOTGITHUB_TESTS = [
     "tests/test_sdk_tt_richard_seam_resident_carriage.py",
     "tests/test_sdk_tt_richard_seam_resident_materialization.py",
     "tests/test_sdk_tt_richard_seam_control_plane_package.py",
+    "tests/test_worker_assignment_functional_memory.py",
 ]
 STEGAGENTS_TEST = "tests/test_purpose_bound_worker_runtime.py"
 
