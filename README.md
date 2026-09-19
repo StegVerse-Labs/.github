@@ -813,3 +813,8 @@ Test 3 source-delivery tracing found that the existing StegOS control-plane sour
 ### Canonical Master Records MIR post-return completion boundary
 
 The canonical custody goal now distinguishes successful governed MIR return from terminal communication completion. Site PR #1413 keeps `communication_complete=false` after governed return until the authentic far-side Interlock/InTr terminal transition and required caller consequence are observed; Site PR #1414 released the temporary repair claim. The bounded Site denominator observation after release is 51 active claims / 51 active task IDs / 46 unindexed active task IDs and remains owned for persistent reconciliation by `SITE-COSV-REPOSITORY-WIDE-ADOPTION-001`. Source validation is green, but authentic MIR runtime custody remains unclaimed and the parent task remains ACTIVE.
+
+
+## Enterprise host-provider eradication
+
+Canonical Goal Task `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` is ACTIVE / CHECKED_OUT. The task removes operational third-party hosting/provider dependencies and provider-identifying active references from current/default source without authorizing a replacement third-party host. Historical Git provenance and ordinary programming uses of rendering terminology are outside the eradication target. Current detailed state is maintained in `docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md`.
