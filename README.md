@@ -981,3 +981,8 @@ SDK TT purpose-bound worker runtime proof: TVC PR #448 merged the resident Ed255
 Worker assignment now retains reconstructable Functional Memory through the existing WorkerCoordinator and Master Records path. `ALLOW` continues into the existing claim/fence assignment flow; any non-`ALLOW` result is retained as a Master Records Functional Memory pack carrying task identity, Task Registry generation, COSV context, admissibility predicates, disposition, and reasons. Later assignment review must reconstruct that retained state before reuse.
 
 PR #2289 merged the source contract as `9c48c12fa38b1bfece448c878843ee352429d83d`. Exact-head Test 3 acceptance run `35469405536` executed the focused Functional Memory test and passed; Cross-Task validation run `35469405509` also passed. These are source/validation results only and do not claim authentic runtime assignment or Functional Memory emission.
+
+
+### Purpose-bound four-case authentic resident request staged — 2026-09-19
+
+The existing targeted WorkerCoordinator resident path now carries the canonical four-case state graph. StegAgents graph CLI merge 34faa1ec8e4bc7427beb65adb10b2292109c5ca9 and .github PR #2311 merge d776570c84b6f2a09f2e41071ca89e57da15b18e stage the exact purpose-task request through the existing resident consumer. Authentic runtime completion is not claimed until the resident request is consumed and the fresh Case 1 claim/fence through final three-way join is retained by Master Records.
