@@ -144,6 +144,16 @@
       "runtime_completion_claimed": false,
       "downstream_promotion_allowed": false,
       "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-19",
+      "transition": "HEALER_REAL_WORKERCOORDINATOR_CYCLE_ENVELOPE_REPAIR_IMPLEMENTED",
+      "goal_prompt_count": "12/20",
+      "defect": "POINTER_CARRIAGE_GATED_BY_SYNTHETIC_TOP_LEVEL_TRANSITION_SHAPE_NOT_REAL_WORKERCOORDINATOR_EVENT_ENVELOPE",
+      "repair": "RECOGNIZE_EXACTLY_ONE_TARGETED_WORKER_RESPONSE_EVENT_AND_ACCEPT_CYCLE_COMPLETED_IN_DISPATCHER",
+      "runtime_completion_claimed": false,
+      "downstream_promotion_allowed": false,
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -272,7 +282,16 @@
         "PACKET_SHA256_EXACT",
         "PACKET_STATE_EXACT",
         "RETAINED_UNDER_ROOT_EXACT"
-      ]
+      ],
+      "cycle_completion_detection": "EXACT_WORKER_RESPONSE_EVENT_IN_STEGVERSE_WORKER_RUNTIME_CYCLE_RESULT_V1",
+      "required_completion_event": {
+        "event_type": "worker_response",
+        "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+        "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED",
+        "response_state": "HANDOFF_READY",
+        "required_match_count": 1
+      },
+      "dispatcher_success_state": "CYCLE_COMPLETED"
     },
     "required_root_count": 1,
     "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
