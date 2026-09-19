@@ -172,3 +172,23 @@ Current exact evidence state:
 - No duplicate task, invocation, scheduler, dispatcher, runtime plane, device dependency, or source-side repair was created.
 
 Master Records promotion remains gated on authentic runtime evidence and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.
+
+
+## Prompt 11/20 — existing Healer carrier seam repaired
+
+The repeated observation loop is replaced by a concrete existing-path repair. The fenced ProcessWorkerAdapter checkpoint remains the first authoritative pointer-bearing resident artifact, but the already-existing resident Healer consumer now carries that verified pointer forward into its already-existing consumption receipt instead of discarding it at the WorkerResponse metadata boundary.
+
+Implemented in `scripts/consume_healer_sovereign_scheduler_request.py`:
+
+- reads only the already-projected resident checkpoint `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json` after the existing targeted WorkerCoordinator cycle returns;
+- extracts `child_receipt.resident_custody_root_observation_retention`;
+- requires all six canonical fields: `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`;
+- requires the retained packet path to be exactly `receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json`;
+- independently hashes the retained packet and requires exact `packet_sha256` equality;
+- requires retained packet `state` to equal `packet_state`;
+- requires `retained_under_root` to equal the actual resident runtime root;
+- then attaches only the validated pointer to the existing outer receipt at the already-canonical path `execution_result.resident_custody_root_observation_retention`.
+
+A missing checkpoint remains non-promoting and produces no synthetic pointer. A present but malformed, mismatched-path, mismatched-root, mismatched-state, or mismatched-hash pointer fails closed. The repair adds no task, invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, or device dependency.
+
+Targeted tests cover successful carriage and fail-closed packet-hash mismatch. Source validation is required before merge. Authentic runtime promotion still requires a subsequent existing Healer cycle to produce the checkpoint and exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` pointer; source correctness alone is not runtime proof.
