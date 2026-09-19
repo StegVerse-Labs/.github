@@ -966,3 +966,6 @@ The purpose-bound runtime task explicitly preserves the actual merged transition
 
 
 SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_TVC_INVOCATION_OBSERVED` is currently admissible; restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, runtime activation, and REQUEST_BOUND custody remain blocked until each immediate predecessor transition is authentically consumed. The neutral reusable scheduler also no longer treats deferred children as an advanced aggregate transition.
+
+
+SDK TT purpose-bound worker runtime proof: TVC PR #448 merged the missing resident Ed25519 key-materialization step as `4cb804c625060f52b75afc48d11c8d1dc8dc835a` from exact head `522bfff406f70c7b18091c25916a6f83a23fcec3`; validation run `35469205465` passed. The next authentic transition is TV/TVC resident key activation, followed by fresh warrant issuance, real public-key registration, and the existing targeted one-shot. Remote-device availability is not a canonical predicate.
