@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 100,
+  "generation": 101,
   "status": "ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5397,7 +5397,7 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "MERGE_RUNNABLE_TEST3_ACCEPTANCE",
+      "remaining_predicate": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION_REQUIRED_BEFORE_RESIDENT_DISPATCH_VISIT",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
@@ -5405,7 +5405,7 @@
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
         "authentic_runtime_execution_attempted": false,
-        "reconciled_against_registry_generation": 99,
+        "reconciled_against_registry_generation": 100,
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
@@ -5415,7 +5415,7 @@
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
         "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        "next_actual_transition": "MERGE_RUNNABLE_TEST3_ACCEPTANCE",
+        "next_actual_transition": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -5495,7 +5495,16 @@
         "dedicated_test3_exact_head": "3ca8123da7a00f2b50748418edb476d4bd510d01",
         "dedicated_test3_dotgithub_result": "PASS_18_TESTS",
         "dedicated_test3_stegagents_result": "PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12",
-        "dedicated_test3_marker": "TEST3_RICHARD_SEAM_ACCEPTANCE_PASS"
+        "dedicated_test3_marker": "TEST3_RICHARD_SEAM_ACCEPTANCE_PASS",
+        "runnable_test3_acceptance_pr": 2242,
+        "runnable_test3_acceptance_merge": "0b5ea1c76cae7f96b481fe38b339071f34235957",
+        "runnable_test3_acceptance_exact_head": "c22e45d1054b80b3c2835a2fbea8fec0bb74f433",
+        "runnable_test3_acceptance_run": 35452251194,
+        "runnable_test3_acceptance_result": "PASS",
+        "runnable_test3_dotgithub_tests": "18_PASS",
+        "runnable_test3_stegagents_validation": "PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12",
+        "runnable_test3_marker": "TEST3_RICHARD_SEAM_ACCEPTANCE_PASS",
+        "dedicated_test3_runner_merged": true
       }
     },
     {
