@@ -116,3 +116,27 @@ HANDOFF_READY T + no task-bound W
 Do not alter Test 1 or Test 2 evidence and do not weaken other worker paths. Reuse the existing WorkerCoordinator, shared StegAgents worker/process adapter, TV/TVC, StegCore/InTr, and Master Records components.
 
 No authentic Test 3 execution has been attempted yet because the current source path would violate the invariant being tested.
+
+
+## Test-3-only atomic activation source repair — proposed generation 85
+
+The existing WorkerCoordinator/shared-Ste gAgents path is now repaired on the feature branch without changing the ordinary owner or purpose-bound worker semantics.
+
+The Test 3 path now keeps the authoritative task in `HANDOFF_READY` with `claim_id=null`, `worker_id=null`, and `worker_instance_id=null` after fresh claim/fence custody. The proposed claim/fence and worker-instance identifier are carried only in a `pending_atomic_activation` envelope through the existing `ProcessWorkerAdapter`.
+
+The shared StegAgents bridge recognizes this Test-3-only preactivation mode and invokes the existing `src.purpose_bound_worker_runtime` using the new atomic activation request. That runtime performs TV/TVC verification, submits the exact `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` candidate through the existing StegCore/InTr path, and requires Master Records:
+
+```text
+state=RECORDED
+reconstruction_status=PASS
+required_evidence_validation_status=PASS
+receipt_sha256 == reconstructed_receipt_sha256
+```
+
+before returning an activation projection with `invocation_started=false`.
+
+WorkerCoordinator independently re-validates that retained activation evidence before atomically projecting `ACTIVE T <-> W`. Only after that projection does it invoke the separate post-activation execution request, which itself requires the exact closed constitutive activation evidence before recording `TASK_BOUND_WORKER_INVOCATION_STARTED` and `TASK_BOUND_WORKER_TASK_COMPLETED`.
+
+A dedicated executable handoff and worker-registry fragment were added for Test 3. They import the existing `stegagents-governed-runtime-worker` provider; no worker, runtime, scheduler, dispatcher, WorkerCoordinator, custody path, transition authority, credential plane, or device dependency was added.
+
+Authentic runtime execution remains unattempted until exact-head validation passes and the source repair is merged.
