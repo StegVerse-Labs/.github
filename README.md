@@ -835,3 +835,8 @@ Canonical Task Registry tracks `ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001` a
 ### StegBrowser Healer repo-map source resolution
 
 Goal Prompt 13 repairs the native-cycle source-resolution gap: the Healer resident consumer now reuses the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` local source when the dispatcher runs with source==runtime and no explicit `STEGVERSE_HEARTBEAT_SOURCE_ROOT` is present. The existing worker service preserves the repo map and the dispatcher forwards it; the consumer was the missing reader. The mapped source must be distinct, local, and contain the canonical targeted execution entrypoint. No new discovery, runtime, scheduler, dispatcher, authority, host, or device path is introduced.
+
+
+### StegBrowser native source-refresh repo-map repair
+
+Prompt 13 also closes the update catch-22 ahead of the Healer consumer: `run_worker_runtime.py` now lets the existing local source-refresh pass resolve `StegVerse-Labs/.github` from `STEGVERSE_REPO_ROOTS_JSON` when the dedicated `STEGVERSE_HEARTBEAT_SOURCE_ROOT` binding is absent. This allows the merged Healer consumer repairs to reach a resident that already has the canonical local repository map. The refresh remains local-only, credential-free, non-authorizing, and separate from mutable resident state.
