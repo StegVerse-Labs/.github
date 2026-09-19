@@ -208,3 +208,12 @@ Future continuation must inspect the neutral scheduler/reusable-task receipt sur
 ## Manual work
 
 None.
+
+
+## 2026-09-19 TVC reusable service-delivery carriage correction
+
+The existing neutral Healer/reusable-task path remained callable but its local TVC runner bypassed the released service-delivery leg: after preflight it called `tvc.primary_runtime_binder.activate` directly. That direct call cannot establish the post-#445 invariant requiring a same-service restart correlated to a new startup-source receipt.
+
+The existing `scripts/run_tvc_runtime_boundary_reusable.py` is corrected in place to retain preflight, invoke `StegVerse-Labs/TVC:scripts/install_tvc_primary_runtime_service.py --activate` against the already-local TVC checkout, and then run the existing runtime observer. This follows `RT-TVC-PRIMARY-RUNTIME-BINDING-001`'s already-declared runner templates and creates no second scheduler, selector, runtime, host, listener, credential route, or device dependency.
+
+Authentic runtime consumption remains required; source repair alone does not establish `SERVICE_INSTALLED_VERIFIED` or any frozen-corpus materialization predicate.
