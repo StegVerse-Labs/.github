@@ -20,6 +20,8 @@ OWNER_TASK_ID = "STEGAGENTS-GOVERNED-RUNTIME-001"
 OWNER_COSV = "71000000101001"
 PURPOSE_TASK_ID = "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
 PURPOSE_COSV = "71000000111111"
+TEST3_TASK_ID = "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+TEST3_COSV = "20010000110000"
 TASK_ID = OWNER_TASK_ID  # backwards-compatible constant for existing tests/source refs
 COSV = OWNER_COSV
 AGENT_ID = "CodeRepair-001"
@@ -31,7 +33,10 @@ OWNER_RESULT_REL = Path("receipts/sovereign-host/stegagents-governed-runtime")
 OWNER_LATEST_REL = Path("receipts/sovereign-host/stegagents-governed-runtime.latest.json")
 PURPOSE_RESULT_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof")
 PURPOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json")
+TEST3_RESULT_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime")
+TEST3_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime.latest.json")
 PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
+TEST3_CAPABILITY = "stegagents_atomic_task_worker_activation"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
 
@@ -73,6 +78,15 @@ def _profile(task_id: str) -> dict[str, str]:
             "result_state": "GOVERNED_PURPOSE_BOUND_WORKER_RETURNED",
             "transition_id": "STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED",
         }
+    if task_id == TEST3_TASK_ID:
+        return {
+            "task_id": TEST3_TASK_ID,
+            "cosv": TEST3_COSV,
+            "capability": TEST3_CAPABILITY,
+            "runtime_module": "src.atomic_task_worker_activation_runtime",
+            "result_state": "GOVERNED_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED",
+            "transition_id": "STEGAGENTS_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED",
+        }
     raise RuntimeError("worker invocation task mismatch")
 
 
@@ -82,7 +96,11 @@ def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
     scope = invocation.get("scope")
     require(isinstance(task, Mapping) and isinstance(scope, Mapping), "worker invocation task/scope missing")
     profile = _profile(str(task.get("task_id") or ""))
-    require(task.get("state") == "ACTIVE", "worker invocation task is not ACTIVE")
+    if profile["task_id"] == TEST3_TASK_ID:
+        require(task.get("state") == "HANDOFF_READY", "Test 3 preactivation task must remain HANDOFF_READY")
+        require(task.get("constitutive_activation_phase") == "PREPARE_ATOMIC_ACTIVATION", "Test 3 preactivation phase missing")
+    else:
+        require(task.get("state") == "ACTIVE", "worker invocation task is not ACTIVE")
     claim_id = task.get("claim_id")
     timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
     fence = timing.get("fencing_token")
@@ -91,9 +109,9 @@ def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(scope.get("claim_id") == claim_id and scope.get("fencing_token") == fence, "worker invocation scope claim/fence mismatch")
     require(claim_id.endswith(f"-G{fence}"), "worker claim generation mismatch")
     require(task.get("worker_id") == WORKER_ID, "worker identity mismatch")
-    if profile["task_id"] == PURPOSE_TASK_ID:
+    if profile["task_id"] in {PURPOSE_TASK_ID, TEST3_TASK_ID}:
         instance = task.get("worker_instance_id")
-        require(isinstance(instance, str) and instance, "purpose-bound worker requires WorkerCoordinator worker_instance_id")
+        require(isinstance(instance, str) and instance, "task-bound worker requires WorkerCoordinator worker_instance_id")
     return dict(task)
 
 
@@ -166,6 +184,19 @@ def build_request(task: Mapping[str, Any], handoff: Mapping[str, Any] | None = N
     lifetime = candidate.get("max_lifetime_seconds")
     require(isinstance(lifetime, int) and not isinstance(lifetime, bool) and lifetime > 0, "purpose-bound lifetime invalid")
     claim["worker_instance_id"] = task.get("worker_instance_id")
+    if task_id == TEST3_TASK_ID:
+        return {
+            "schema": "stegverse.stegagents-atomic-task-worker-request/v1",
+            "task_id": TEST3_TASK_ID,
+            "cosv_task_vector": TEST3_COSV,
+            "parent_agent_id": AGENT_ID,
+            "operation_mode": "PREPARE_ATOMIC_ACTIVATION",
+            "execution_authority": False,
+            "self_authorization_allowed": False,
+            "credential_material_present": False,
+            "worker_claim": claim,
+            "purpose_bound_worker_request": dict(contract),
+        }
     return {
         "schema": "stegverse.stegagents-purpose-bound-worker-request/v1",
         "task_id": PURPOSE_TASK_ID,
@@ -198,6 +229,26 @@ def validate_warrant_policy_binding(result: Mapping[str, Any]) -> dict[str, Any]
 
 
 def _validate_result(profile: Mapping[str, str], result: Mapping[str, Any]) -> None:
+    if profile["task_id"] == TEST3_TASK_ID:
+        require(result.get("state") == profile["result_state"], "Test 3 activation result state mismatch")
+        require(result.get("execution_authority") is False, "Test 3 execution authority invariant violated")
+        require(result.get("self_authorization_allowed") is False, "Test 3 self-authorization invariant violated")
+        require(result.get("credential_authority") == "TV/TVC", "Test 3 credential authority drift")
+        require(result.get("credential_material_present") is False, "Test 3 credential material exposed")
+        require(result.get("authoritative_task_projection_performed") is False, "Test 3 worker projected ACTIVE state before WorkerCoordinator")
+        require(result.get("task_invocation_performed") is False, "Test 3 task invoked during activation preparation")
+        transition = result.get("constitutive_activation_master_records_transition")
+        require(isinstance(transition, Mapping), "Test 3 constitutive transition proof missing")
+        require(transition.get("transition_id") == "ACTIVATE_TASK_AND_CREATE_BIND_WORKER", "Test 3 transition id mismatch")
+        require(transition.get("state") == "RECORDED", "Test 3 constitutive transition not RECORDED")
+        require(transition.get("reconstruction_status") == "PASS", "Test 3 constitutive reconstruction not PASS")
+        require(transition.get("required_evidence_validation_status") == "PASS", "Test 3 constitutive evidence not PASS")
+        receipt_sha = transition.get("receipt_sha256")
+        require(isinstance(receipt_sha, str) and receipt_sha == transition.get("reconstructed_receipt_sha256"), "Test 3 constitutive digest mismatch")
+        reconstruction = result.get("master_records_reconstruction")
+        require(isinstance(reconstruction, Mapping), "Test 3 reconstruction missing")
+        require(reconstruction.get("operation_transition_custody_status") == "RECORDED", "Test 3 reconstruction custody missing")
+        return
     require(result.get("state") == profile["result_state"], "governed runtime result state mismatch")
     require(result.get("execution_authority") is False, "agent execution authority invariant violated")
     require(result.get("self_authorization_allowed") is False, "agent self-authorization invariant violated")
@@ -233,9 +284,10 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
     profile = _profile(str(task["task_id"]))
     claim_id = str(task["claim_id"])
     purpose = profile["task_id"] == PURPOSE_TASK_ID
+    test3 = profile["task_id"] == TEST3_TASK_ID
     receipt = {
-        "schema": "stegverse.stegagents-governed-runtime-receipt/v1" if not purpose else "stegverse.stegagents-purpose-bound-worker-runtime-receipt/v1",
-        "state": "AUTHENTIC_GOVERNED_ROUNDTRIP_OBSERVED" if not purpose else "AUTHENTIC_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED",
+        "schema": "stegverse.stegagents-atomic-task-worker-activation-receipt/v1" if test3 else ("stegverse.stegagents-governed-runtime-receipt/v1" if not purpose else "stegverse.stegagents-purpose-bound-worker-runtime-receipt/v1"),
+        "state": "AUTHENTIC_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED" if test3 else ("AUTHENTIC_GOVERNED_ROUNDTRIP_OBSERVED" if not purpose else "AUTHENTIC_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED"),
         "task_id": profile["task_id"],
         "runtime_owner_task_id": OWNER_TASK_ID,
         "cosv_task_vector": profile["cosv"],
@@ -264,7 +316,14 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         "master_records_reconstruction": result.get("master_records_reconstruction"),
         "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
     }
-    if purpose:
+    if test3:
+        receipt.update({
+            "authoritative_task_projection_performed": result.get("authoritative_task_projection_performed"),
+            "task_invocation_performed": result.get("task_invocation_performed"),
+            "constitutive_activation_master_records_transition": result.get("constitutive_activation_master_records_transition"),
+        })
+        result_rel, latest_rel = TEST3_RESULT_REL, TEST3_LATEST_REL
+    elif purpose:
         receipt.update({
             "records_only": result.get("records_only"),
             "worker_live_after_close": result.get("worker_live_after_close"),
@@ -327,7 +386,7 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     receipt = retain_result(runtime_root(), task, request, result, manifest_blob_sha, warrant_policy_binding)
     return {
         "schema": "stegverse.worker-response/v0.1",
-        "state": "COMPLETED",
+        "state": "HANDOFF_READY" if profile["task_id"] == TEST3_TASK_ID else "COMPLETED",
         "transition_id": profile["transition_id"],
         "transition_sequence": 1,
         "expected_next_transition": None,
