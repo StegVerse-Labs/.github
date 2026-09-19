@@ -983,6 +983,6 @@ Worker assignment now retains reconstructable Functional Memory through the exis
 PR #2289 merged the source contract as `9c48c12fa38b1bfece448c878843ee352429d83d`. Exact-head Test 3 acceptance run `35469405536` executed the focused Functional Memory test and passed; Cross-Task validation run `35469405509` also passed. These are source/validation results only and do not claim authentic runtime assignment or Functional Memory emission.
 
 
-### Purpose-bound four-case authentic resident request staged — 2026-09-19
+### StegBrowser nonce-bound A3 claim/fence correlation
 
-The existing targeted WorkerCoordinator resident path now carries the canonical four-case state graph. StegAgents graph CLI merge 34faa1ec8e4bc7427beb65adb10b2292109c5ca9 and .github PR #2311 merge d776570c84b6f2a09f2e41071ca89e57da15b18e stage the exact purpose-task request through the existing resident consumer. Authentic runtime completion is not claimed until the resident request is consumed and the fresh Case 1 claim/fence through final three-way join is retained by Master Records.
+The direct `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path now requires the immutable invocation nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` to survive through the manifest-bound runner, Universal InTr materialization, organization-local ingress packet, and A3/A4 runtime projection. A WorkerCoordinator claim/fence is not promotable as this invocation's evidence unless the returned nonce matches exactly. This is correlation only; it mints no claim/fence and introduces no new runtime or authority path.
