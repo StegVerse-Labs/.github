@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 91,
+  "generation": 92,
   "status": "STEGHEALTH_KV_INTERLOCK_PRODUCTION_ENDPOINT_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5359,7 +5359,7 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "MERGE_TEST3_RESIDENT_MATERIALIZATION_REPAIR_THEN_FOLLOW_AUTHENTIC_RESIDENT_DISPATCH_VISIT",
+      "remaining_predicate": "AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT_AND_TEST3_ONE_SHOT_EVIDENCE_REQUIRED",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
@@ -5367,7 +5367,7 @@
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
         "authentic_runtime_execution_attempted": false,
-        "reconciled_against_registry_generation": 90,
+        "reconciled_against_registry_generation": 91,
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
@@ -5377,7 +5377,7 @@
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
         "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        "next_actual_transition": "EXACT_HEAD_VALIDATE_AND_MERGE_RESIDENT_MATERIALIZATION",
+        "next_actual_transition": "AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -5395,7 +5395,14 @@
         "resident_request_carriage_validated": true,
         "resident_consumer_materialization_defect_identified": true,
         "resident_consumer_added_to_local_source_refresh": true,
-        "resident_request_and_consumer_added_to_control_plane_delta": true
+        "resident_request_and_consumer_added_to_control_plane_delta": true,
+        "resident_materialization_pr": 2216,
+        "resident_materialization_merge": "9244d419e9a5a071dbab9072b4705ab19535c58c",
+        "resident_request_carriage_source_complete": true,
+        "resident_materialization_source_complete": true,
+        "control_plane_source_package_carries_test3_request_and_consumer": true,
+        "local_source_refresh_carries_test3_consumer": true,
+        "authentic_resident_dispatch_receipt_observed": false
       }
     },
     {

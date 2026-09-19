@@ -164,3 +164,20 @@ Repair:
 - do not add a new transporter, runtime, scheduler, dispatcher, or authority path.
 
 Authentic runtime evidence remains unclaimed until a resident source carrying these bytes produces the exact selector visit and one-shot receipts.
+
+
+## Post-materialization reconciliation — proposed generation 92
+
+Resident request carriage PR #2215 merged as `65ab90acb1bca5f911ac4cd2f5046c4c26180f58`.
+
+Resident materialization PR #2216 merged as `9244d419e9a5a071dbab9072b4705ab19535c58c` after all exact-head checks passed. The existing local source-refresh static allowlist now carries the Test 3 request-specific consumer, and the existing bootstrap-critical control-plane source package carries both the Test 3 request and consumer.
+
+Therefore the Test 3 source path from canonical source -> existing resident source materialization -> existing resident dispatcher is source-complete. No authentic runtime predicate is promoted from those merges.
+
+The next actual evidence transition is now:
+
+```text
+AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+for selector `sdk_tt_richard_seam_authentic_runtime`, followed by the already-defined targeted one-shot and its fresh claim/fence, TV/TVC, InTr, Master Records, T/W invocation/result, close/retire, and records-only evidence.
