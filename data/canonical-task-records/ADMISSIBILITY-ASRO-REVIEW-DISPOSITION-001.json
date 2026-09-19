@@ -1,0 +1,162 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001",
+  "correlation_id": "ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001",
+  "root_correlation_id": "ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001",
+  "parent_task_id": null,
+  "goal": "Preserve and reconcile the ASRO review disposition, historical provenance correction, bounded public-source pin, contribution ledger, accountable-party declaration, immutable-input validation, and external evidentiary-role clarification without inferring ASRO transition-execution authority, legal-entity status, reciprocal execution, reviewer standing, or bilateral issuance.",
+  "coordination_state": "CLOSED",
+  "source_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/asro-response-disposition-2026-09-19.md",
+    "StegVerse-Labs/admissibility-wiki:static/data/framework-evaluations/asro/contribution-ledger.jsonl",
+    "control/task-vectors/ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001.json",
+    "StegVerse-Labs/admissibility-wiki#50",
+    "StegVerse-Labs/admissibility-wiki#144",
+    "StegVerse-Labs/admissibility-wiki/actions/runs/35431151992"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/admissibility-wiki",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "asro-review-disposition",
+      "asro-provenance-correction",
+      "asro-historical-public-source-pin",
+      "asro-contribution-ledger",
+      "asro-accountable-party-declaration",
+      "asro-immutable-input-validation",
+      "task-registry-continuity"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/admissibility-wiki#144@df60a74904df20939a969a82390a6dbc3e27ba16",
+    "StegVerse-Labs/admissibility-wiki/actions/runs/35430656241",
+    "StegVerse-Labs/admissibility-wiki/actions/runs/35431151992",
+    "StegVerse-Labs/admissibility-wiki#50",
+    "control/task-vectors/ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001.json"
+  ],
+  "expected_evidence_predicates": [
+    "FOUR_STEGVERSE_SIDE_PRECONDITIONS_EXTERNALLY_ACKNOWLEDGED_CLOSED",
+    "ASRO_ROLE_PRESERVED_AS_EVIDENTIARY_NOT_TRANSITION_EXECUTION_AUTHORITY",
+    "FUTURE_BOUNDED_ASRO_EXERCISE_PRESERVED_AS_ASRO_SIDE_DEFERRED",
+    "CONTRIBUTOR_PROTOCOL_PRESERVED_PROPOSED_NOT_BILATERALLY_AUTHORIZED",
+    "LEGAL_COUNTERPARTY_AND_AUTHORITY_SCOPE_NOT_INFERRED",
+    "INDEPENDENT_REVIEWER_ISSUER_PRESERVED_UNRESOLVED",
+    "RECIPROCAL_EXECUTION_PRESERVED_NOT_AUTHORIZED",
+    "BILATERAL_SEAM_COMPARISON_RECORD_PRESERVED_NOT_ISSUED_OR_AUTHORIZED",
+    "SEPTEMBER_19_APPEND_ONLY_LEDGER_SUCCESSOR_IMMUTABLE_INPUT_BUNDLE_VALIDATED",
+    "CANONICAL_MAIN_VALIDATION_PASS",
+    "ISSUE_50_ASRO_TRACK_RECONCILED_CLOSED",
+    "README_AND_CANONICAL_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "canonical_artifact_validation",
+      "task_registry_reconciliation"
+    ],
+    "environment": "SOURCE_RECONCILIATION_ONLY",
+    "direction": "INTERNAL",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": null,
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md@080c575f6970ca129f961105f6618784b447e164"
+  },
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
