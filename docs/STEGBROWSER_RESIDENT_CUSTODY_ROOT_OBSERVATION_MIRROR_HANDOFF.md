@@ -172,3 +172,10 @@ Current exact evidence state:
 - No duplicate task, invocation, scheduler, dispatcher, runtime plane, device dependency, or source-side repair was created.
 
 Master Records promotion remains gated on authentic runtime evidence and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.
+
+
+## Prompt 11/20 — existing Healer carrier seam repaired
+
+The repeated observation loop is replaced by a concrete existing-path repair. After the existing completed targeted Healer cycle, `scripts/consume_healer_sovereign_scheduler_request.py` reads the already-projected fenced checkpoint `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, extracts `child_receipt.resident_custody_root_observation_retention`, requires all six canonical fields, verifies the retained packet path, packet SHA-256, packet state, and resident root, then carries only that validated pointer into the existing resident consumption receipt at `execution_result.resident_custody_root_observation_retention`.
+
+Missing checkpoint evidence does not synthesize a pointer. A malformed pointer or path/hash/state/root mismatch fails closed. No new task, invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, or device dependency is introduced. Authentic promotion still requires a real existing Healer cycle and exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root; source correctness is not runtime proof.

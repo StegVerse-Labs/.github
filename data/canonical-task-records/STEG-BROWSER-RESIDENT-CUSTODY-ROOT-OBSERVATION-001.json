@@ -134,6 +134,16 @@
       ],
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_RECONCILIATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-19",
+      "transition": "HEALER_RETENTION_POINTER_CARRIAGE_REPAIR_IMPLEMENTED",
+      "goal_prompt_count": "11/20",
+      "defect": "FENCED_CHECKPOINT_RETENTION_POINTER_DROPPED_AT_WORKER_RESPONSE_METADATA_BOUNDARY",
+      "repair": "VALIDATE_PROJECTED_CHECKPOINT_AND_CARRY_SIX_FIELD_POINTER_INTO_EXISTING_RESIDENT_CONSUMPTION_RECEIPT",
+      "runtime_completion_claimed": false,
+      "downstream_promotion_allowed": false,
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -248,7 +258,21 @@
       "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
       "predicate_satisfied": false,
       "source_side_repair_required": false,
-      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT",
+      "prior_source_side_repair_required_assessment": false,
+      "source_side_carriage_repair_required": true,
+      "source_side_carriage_repair_status": "IMPLEMENTED_PENDING_EXACT_HEAD_VALIDATION_AND_AUTHENTIC_RESIDENT_CYCLE",
+      "carriage_repair_consumer": "scripts/consume_healer_sovereign_scheduler_request.py",
+      "carriage_repair_checkpoint_path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "carriage_repair_pointer_path": "child_receipt.resident_custody_root_observation_retention",
+      "carriage_repair_output_path": "execution_result.resident_custody_root_observation_retention",
+      "carriage_repair_validation": [
+        "ALL_SIX_POINTER_FIELDS_PRESENT",
+        "PACKET_RELATIVE_PATH_EXACT",
+        "PACKET_SHA256_EXACT",
+        "PACKET_STATE_EXACT",
+        "RETAINED_UNDER_ROOT_EXACT"
+      ]
     },
     "required_root_count": 1,
     "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
