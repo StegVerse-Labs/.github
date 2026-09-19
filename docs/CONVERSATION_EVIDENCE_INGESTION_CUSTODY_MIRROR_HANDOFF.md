@@ -6,7 +6,7 @@ Canonical issue: `#2258`
 Goal Task ID: `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`
 Parent design task: `CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001`
 COSV ID: `20011000100000`
-Status: `ACTIVE / FIRST BOUNDED IMPLEMENTATION PHASE`
+Status: `ACTIVE / SOURCE IMPLEMENTATION MERGED+VALIDATED / AUTHENTIC MASTER RECORDS CUSTODY PENDING`
 
 ## Contract boundary
 
@@ -39,6 +39,20 @@ Source tests may prove the consumer enforces this contract; only an authentic Ma
 No source conversation is committed by this task. Test fixtures are synthetic.
 The ingestion transition records evidence only. It performs no publication and no adjudication.
 Interlock/InTr transition authority and Master Records custody/reconstruction authority remain unchanged.
+
+## Source implementation evidence
+
+- Implementation PR: `StegVerse-Labs/.github#2261`
+- Exact validated head: `fac9947d5f074ebc07987cfb927644cf0ac79daa`
+- Squash merge: `d62823ece61a3fe9613a353c1d91c8d24ce5416e`
+- Focused ingestion validation: workflow run `35463861019` — PASS
+- Cross-Task Coordination Validation: workflow run `35463860957` — PASS
+- DeepSeek resident validation: workflow run `35463860968` — PASS
+- Purpose-Bound Worker Derived Lifetime validation: workflow run `35463860945` — PASS
+- KV AI Memory Resident Binding validation: workflow run `35463860946` — PASS
+- The initial Cross-Task failure on run `35463745877` was traced to the missing mandatory `execution_substrate_resolution` metadata for a runtime-capable task. The task now declares every device/runtime substrate `NOT_APPLICABLE` for this source phase, with `external_device_required=false` and `second_user_operated_device_allowed=false`. No connected-device inventory is queried or used as task state.
+
+These runs prove source/schema/test conformance only. They do not prove an authentic `CONVERSATION_EVIDENCE_INGESTED` transition reached Master Records.
 
 ## Next boundary
 
