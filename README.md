@@ -900,3 +900,10 @@ The resident request dispatcher now preserves the existing durable-local Master 
 ### AILeash pre-reset commitment verification
 
 `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now has independently retrieved pre-reset August completeness evidence. The historical subjects commitment at old-chain block 1895 was Merkle-verified for retained witness subjects, and its exact OpenTimestamps proof was independently upgraded to Bitcoin attestations whose block Merkle roots matched both Blockstream and mempool.space. This strengthens the historical commitment/anchoring evidence without changing R10: the exact disputed witness record preimage and sealed historical version/term are still required before binding it to the recovered v1.1 revision. The v0.8 1,534/50 rerun remains counterpart-reported; the earlier 784/30 run remains historical and settled.
+
+
+### Conversation evidence ingestion and custody
+
+Canonical Goal Task `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` implements the first bounded phase of the governed service-performance evidence registry. It consumes the v1 publication contract unchanged, materializes write-once conversation/attachment evidence packages with explicit authenticity and transaction bindings, and routes the resulting evidence through the existing canonical Master Records state-transition custody client. Public Site projection and adjudicative conclusions remain outside this phase.
+
+Canonical handoff: `docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md`.
