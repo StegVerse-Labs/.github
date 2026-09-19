@@ -563,3 +563,14 @@ The existing targeted resident consumer now accepts this task/vector through the
 Exact-head purpose-bound validation for the final PR #2311 head passed in run 35470220082.
 
 This establishes executable resident carriage, not authentic execution proof. No retained resident consumption receipt, fresh Case 1 claim/fence receipt, or final three-way graph terminal receipt has yet been observed in repository evidence. Do not promote any authentic runtime predicate until those receipts are observed. No Test3/Richard dependency, new scheduler, dispatcher, runtime, authority plane, custody store, carrier, or device dependency was introduced.
+
+
+## Resident consumption observation after canonical reconciliation — 2026-09-19
+
+Canonical reconciliation PR #2312 merged as 42b56d3cdeb2a708f0b0bb4e6b19072e99bec189 after exact-head purpose-bound validation run 35476568790 passed.
+
+Post-merge inspection confirms the exact resident request RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 is present on canonical main, the existing resident dispatcher still includes selector stegagents_governed_runtime_targeted, and that existing consumer resolves the purpose task/vector to refresh_and_execute_resident_task.py -> run_worker_runtime.py --task-id.
+
+No repository-retained receipts were observed at receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json, receipts/sovereign-host/resident-targeted-execution.latest.json, or receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json. Repository search also found no retained PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN receipt. The source worker registry does not establish a fresh Case 1 claim/fence for this task. Therefore the request has not been promoted as consumed and no downstream authentic runtime predicate is promoted.
+
+The execution frontier remains the existing resident path only: staged request -> resident consumer -> targeted WorkerCoordinator one-shot -> Case 1 claim/fence Master Records closure -> state-dependent graph. No substitute GitHub Actions run, Test3/Richard route, scheduler, dispatcher, authority plane, custody store, carrier, or device prerequisite is authorized.
