@@ -78,3 +78,13 @@ def test_first_mir_transition_carries_materialization_as_required_evidence() -> 
     assert '"origin_transition_id": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED"' in driver
     assert '"content": materialization' in driver
     assert 'required_evidence_manifest=[materialization_evidence]' in driver
+
+
+def test_required_evidence_contract_is_non_deferrable() -> None:
+    import json
+    contract = json.loads((ROOT / "control/canonical-master-records-state-transition-custody-contract.json").read_text())
+    reusable = json.loads((ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text())
+    semantics = contract["required_evidence_semantics"]
+    assert "WAIT_OR_DEFER_CONDITION" in semantics["validation_execution_semantics"]
+    assert "FIRST_DETERMINISTIC_SOURCE_OR_RUNTIME_BOUNDARY" in semantics["no_wait_on_missing_runtime_receipt"]
+    assert "never a wait/defer condition" in reusable["reuse_instructions"]
