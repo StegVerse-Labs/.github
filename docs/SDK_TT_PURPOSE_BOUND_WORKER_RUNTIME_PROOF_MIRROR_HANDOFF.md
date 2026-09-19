@@ -425,3 +425,21 @@ records_only=true final packet                         PRESENT
 No source repair was required.
 
 The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
+
+
+## Augmented cost/lifetime and concurrent-worker demonstration — 2026-09-19
+
+This remains `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`; it has no Test 3/Richard-seam dependency.
+
+The SDK local semantic layer is now implemented and merged by StegVerse-SDK PR #275 at `a79d7f39e870c72e66d0d7ab458414b5bfb192e1`. Exact-head workflow run `35463403840` completed SUCCESS and executed the new four-case manifest with marker `TT_PURPOSE_BOUND_WORKER_COST_DEMO_PASS`.
+
+| Case | Workers | Compute units | Derived maximum |
+| --- | ---: | ---: | ---: |
+| PBW-DEMO-TASK-1-LOW | 1 | 1 | 15 s |
+| PBW-DEMO-TASK-2-MEDIAN | 1 | 3 | 30 s |
+| PBW-DEMO-TASK-3-HIGH | 1 | 9 | 60 s |
+| PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT | 3 simultaneous | 9 aggregate / 3 each | 30 s each / 30 s group budget |
+
+Task 2 is the median single-worker reference. The fourth task deliberately has the aggregate cost of three median-cost workers but keeps each worker's authority budget and the group wall-clock budget at 30 seconds. The SDK demonstration proves three distinct worker identities, overlapping execution intervals, retirement, and records-only decomposition. Those SDK-local facts are semantic/source evidence only; authentic WorkerCoordinator/InTr/Master Records runtime evidence remains required for the canonical runtime goal.
+
+The authentic runtime demonstration must preserve the same comparison: three single-worker tiers with strictly increasing derived budgets, followed by one parent task that creates three simultaneous task-bound workers, proves overlapping live intervals and independent binding/retirement, and reconstructs one aggregate records-only packet after all three workers have ceased to be live.
