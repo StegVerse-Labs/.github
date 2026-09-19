@@ -327,3 +327,14 @@ The post-`RTC-SDK-RETURN-006` continuation now reuses the existing LLM Adapter `
 Only after RTC007 closure is the existing StegOS MIR southbound consumer invoked to prepare the existing Universal InTr materialization request for `RTC-INTERLOCK-INTR-TRANSPORT-008`. That prepared request is source evidence only: authentic Interlock/InTr admission, `RTC-FARSIDE-FINAL-009`, caller consequence, and communication completion remain unobserved.
 
 Exact-helper executable validation covered both the successful RTC007 Master Records closure path and the fail-closed non-RECORDED path. No new runtime, scheduler, dispatcher, transport, custody store, transition authority, or credential authority was introduced.
+
+
+## RTC-INTERLOCK-INTR-TRANSPORT-008 admission custody repair — 2026-09-19
+
+Continuing from merged RTC007 preparation exposed the next concrete source defect in the existing shared Universal InTr listener: the prepared `EXTERNAL_SYSTEM / MIR:NODE_MIRROR` materialization request had no MIR southbound profile and therefore could not represent the RTC008 admission boundary through the shared `/intr/materialization` surface.
+
+PR `#2290` repaired that existing listener and merged as `3a3032375e745fb955dfd4e86c8b63eb192b08e4`. The repair accepts the exact RTC008 request only through `TVC_RELAY_EGRESS`, persists the exact write-once MIR southbound `INGRESS_ADMITTED` receipt, and submits both the exact Universal InTr materialization request and exact admission receipt as required evidence to canonical Master Records. Progression fails closed unless Master Records returns `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality.
+
+Exact source validation ran on head `ecc1bf4843922c02f4f15fd3e4218fee3ee7593e` in GitHub Actions run `35468924006`; the focused suite returned `2 passed`, covering both successful three-part closure and fail-closed behavior when Master Records does not record the transition.
+
+This is source/admission-custody repair only. No authentic RTC008 runtime admission, RTC009 far-side transition, caller consequence, communication completion, new runtime, scheduler, dispatcher, listener, custody store, transition authority, credential path, host dependency, or device dependency is claimed. The next trace proceeds to `RTC-FARSIDE-FINAL-009` only after an authentic RTC008 execution closes through canonical Master Records.
