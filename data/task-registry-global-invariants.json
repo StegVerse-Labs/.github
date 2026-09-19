@@ -68,7 +68,17 @@
       "EXTERNAL_PROVIDER_OBSERVED",
       "MASTER_RECORDS_RECONSTRUCTED",
       "END_TO_END"
-    ]
+    ],
+    "connected_device_inventory_task_progression_role": "NONE_PROHIBITED",
+    "connected_device_inventory_runtime_dependency_role": "NONE_PROHIBITED",
+    "connected_device_inventory_blocker_role": "NONE_PROHIBITED",
+    "connected_device_inventory_fallback_role": "NONE_PROHIBITED",
+    "connected_device_inventory_query_required_for_runtime_tasks": false,
+    "zero_connected_devices_may_be_reported_as_task_blocker": false,
+    "zero_connected_devices_may_be_used_to_stop_task_progression": false,
+    "zero_connected_devices_may_trigger_source_repair": false,
+    "zero_connected_devices_may_create_manual_work": false,
+    "connected_device_inventory_exception": "ONLY_WHEN_THE_TASK_EXPLICITLY_TARGETS_CONNECTOR_OR_DEVICE_INVENTORY_MANAGEMENT_ITSELF"
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
@@ -82,7 +92,9 @@
     "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement.",
     "completion_evidence_class": "Every affirmative completion statement must identify the exact evidence class proven. Source implementation, merge, CI validation, sandbox runtime observation, external/provider observation, Master Records reconstruction, and end-to-end completion are distinct states and may not be collapsed.",
     "completion_promotion": "A stronger evidence class may be asserted only from evidence native to that class. Lower classes never imply higher classes. User-facing unqualified complete/completed is prohibited unless the declared terminal evidence class is satisfied.",
-    "legacy_completion": "Historical unqualified completion claims remain provenance only. Without contract v1, an explicit evidence class, and evidence references they cannot satisfy a current terminal predicate, promote task state, or support user-facing complete/completed language."
+    "legacy_completion": "Historical unqualified completion claims remain provenance only. Without contract v1, an explicit evidence class, and evidence references they cannot satisfy a current terminal predicate, promote task state, or support user-facing complete/completed language.",
+    "connected_device_inventory": "Ordinary StegVerse task progression MUST NOT query, inspect, depend on, or report connected-device inventory. Connector/device inventory is outside the runtime dependency model and cannot be used as a blocker, completion gate, execution-surface prerequisite, fallback condition, manual-work requirement, or reason to stop progression. The only exception is a task whose explicit subject is connector/device-inventory management itself.",
+    "zero_connected_devices": "Zero connected devices has no StegVerse task-state meaning. It must not be checked for ordinary runtime tasks and, if incidentally known, must be ignored for task progression."
   },
   "prohibitions": [
     "NO_SECONDARY_USER_VERIFIER_OUTSIDE_KV_SKAP_VAULT",
@@ -108,7 +120,12 @@
     "NO_RUNTIME_OBSERVED_AS_MASTER_RECORDS_RECONSTRUCTED",
     "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
     "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE",
-    "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF"
+    "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF",
+    "NO_CONNECTED_DEVICE_INVENTORY_QUERY_FOR_ORDINARY_TASK_PROGRESSION",
+    "NO_CONNECTED_DEVICE_INVENTORY_AS_RUNTIME_PREREQUISITE",
+    "NO_ZERO_CONNECTED_DEVICES_AS_BLOCKER_OR_STOP_CONDITION",
+    "NO_ZERO_CONNECTED_DEVICES_AS_MANUAL_WORK_REQUIREMENT",
+    "NO_DEVICE_CONNECTOR_AVAILABILITY_CHECK_BEFORE_WORKERCOORDINATOR_INTR_OR_MASTER_RECORDS_PROGRESSION"
   ],
   "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
 }
