@@ -100,8 +100,8 @@ It may classify only an existing resident custody root as missing, invalid, or v
 Task Registry CONTINUE
 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
 -> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 while root observation remains post-repair pending
--> standing Healer resident scheduler carrier
--> neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> direct stegbrowser_runtime_connection_ingress consumer
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> emitted resident_custody_root_observation packet
 -> observed resident custody root, if packet state proves it
 -> non-authorizing exact receipt reachability classification
@@ -211,3 +211,23 @@ The consumer now preserves the existing precedence: explicit distinct dispatcher
 After merging #2237, the resident update path was traced one layer earlier. `run_worker_runtime.py::refresh_local_worker_source()` still resolved canonical source only from `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. Therefore a worker service carrying only the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` could know the canonical checkout yet skip source refresh entirely, leaving the resident on the pre-#2237 consumer and recreating the same source-resolution block.
 
 The existing native source refresh now uses the same provider-neutral local precedence: dedicated heartbeat source binding first, then the existing `StegVerse-Labs/.github` repository-map entry. The map is parsed fail-closed, source==runtime remains non-refreshing, and the refresh still performs no network source transport or credential acquisition. This is not a new updater, scheduler, runtime, dispatcher, or authority path; it repairs the existing local refresh locator so merged consumer repairs can actually reach the resident.
+
+
+## Routing correction — 2026-09-19
+
+The prior Healer carrier dependency is superseded. Exact source trace of immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` shows the executable path contains no Healer call. The current canonical chain is:
+
+```text
+scripts/consume_stegbrowser_runtime_connection_ingress_request.py
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> scripts/run_stegbrowser_manifest_bound_runtime.py
+-> scripts/run_stegbrowser_runtime_consumption_reusable.py
+-> WorkerCoordinator claim/fence
+-> Interlock/InTr
+-> receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+-> receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
+-> receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
+-> Master Records
+```
+
+Historical Healer observations remain preserved as superseded analysis only. `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` is not a StegBrowser execution prerequisite or evidence carrier and remains `TRIGGERED_REMEDIATION_ONLY`.
