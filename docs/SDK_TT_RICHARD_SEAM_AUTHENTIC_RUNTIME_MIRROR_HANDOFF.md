@@ -344,3 +344,12 @@ The first concrete post-generation-102 execution defect was in `scripts/refresh_
 The repair removes the carrier prerequisite for independent `--task-id` execution while preserving the historical carrier requirement only for `--resume-claimed-task-id`, where an existing claim/fence is being resumed. Regression coverage proves the Test 3 task reaches the targeted runner without a carrier file.
 
 This is a source-path repair only. It does not claim that the fresh claim/fence transition has already occurred. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`, followed immediately by Master Records custody and the existing TV/TVC -> InTr atomic activation sequence.
+
+
+## Same-root resident execution repair — generation 104
+
+After the carrier gate was removed, tracing the actual resident dispatcher argument flow found the next concrete defect: the native WorkerCoordinator dispatcher invokes resident consumers with the resident root as both `source_root` and `runtime_root`. The Test 3 consumer correctly forwards those values into `refresh_and_execute_resident_task.py`, but the refresh helper rejects identical roots because its copy-refresh operation is designed only for distinct canonical-source and resident-runtime trees.
+
+For an already-materialized resident source tree, copying the tree onto itself is unnecessary and is not a state-transition prerequisite. The targeted bridge now treats `source_root == runtime_root` as `SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED`, preserves mutable runtime state in place, performs no network fetch or credential acquisition, and proceeds directly to the existing targeted WorkerCoordinator runner. Distinct roots retain the existing refresh behavior.
+
+Regression coverage executes the Test 3 independent task with one same root, no carrier file, and verifies that the targeted runner is reached. Authentic claim/fence evidence remains required before progression.
