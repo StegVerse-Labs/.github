@@ -870,3 +870,8 @@ The existing resident dispatcher passes the resident root as both source and run
 ### Test 3 Master Records custody binding
 
 Test 3 targeted execution now preserves the existing canonical Master Records HTTP or durable-local custody binding through the request-consumer and targeted-execution environment sanitizers. This closes the source defect that otherwise forced `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE` before a fresh WorkerCoordinator claim/fence could satisfy its required Master Records closure. GitHub runtime authority remains NONE and no new custody authority is introduced.
+
+
+### Test 3 StegAgents custody environment
+
+The shared StegAgents process adapter now preserves the existing canonical Master Records custody binding so Test 3 can close its required TV/TVC warrant-policy and atomic InTr transitions through Master Records. This is environment carriage only; it grants no new authority and does not itself prove runtime execution.
