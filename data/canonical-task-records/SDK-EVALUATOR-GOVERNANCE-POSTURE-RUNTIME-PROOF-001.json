@@ -6,7 +6,7 @@
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "DISPATCH_VISIT_MASTER_RECORDS_CARRIAGE_SOURCE_REPAIRED_RUNTIME_PROOF_PENDING",
+  "checkout_state": "MANIFEST_MATERIALIZATION_SOURCE_PATH_REPAIRED_RUNTIME_PROOF_PENDING",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -118,7 +118,41 @@
       "dispatch_authority_effect": "NONE_DISPATCH_ONLY",
       "custody_authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
       "source_repair_complete": true,
-      "authentic_runtime_transition_claimed": false
+      "authentic_runtime_transition_claimed": false,
+      "used_as_predecessor": false
+    },
+    "pre_drift_recovery": {
+      "recovered_boundary": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE",
+      "dispatch_visit_used_as_predecessor": false,
+      "missing_surfaced_master_records_evidence_proves_nonoccurrence": false,
+      "recovery_basis": [
+        "data/task-coordination-policy.json:MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE",
+        "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+        "StegVerse-org/StegVerse-SDK:SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md"
+      ]
+    },
+    "exact_manifest_materialization": {
+      "source_repair_complete": true,
+      "authentic_runtime_materialization_claimed": false,
+      "master_records_reconstruction_claimed": false,
+      "runtime_ref": "runtime-state/sdk-evaluator-governance-posture/manifest.json",
+      "builder": "stegverse.evaluator_manifest_builder.build_evaluator_governance_manifest",
+      "builder_owner": "StegVerse-org/StegVerse-SDK",
+      "input_refs": [
+        "inspection/examples/elan-relational-state-test1.json",
+        "inspection/examples/elan-governance-request.example.json",
+        "inspection/examples/elan-evaluation-declaration-test1.json"
+      ],
+      "security_posture_task_binding": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+      "materialization_authority_effect": "NONE_INPUT_MATERIALIZATION_ONLY",
+      "existing_consumer": "scripts/consume_sdk_evaluator_governance_posture_request.py",
+      "no_new_runtime": true,
+      "no_new_scheduler": true,
+      "no_new_dispatcher": true,
+      "no_new_request_path": true,
+      "no_new_authority_plane": true,
+      "no_new_custody_store": true,
+      "no_new_device_dependency": true
     }
   }
 }
