@@ -824,3 +824,8 @@ The Test 3 control-plane package now carries not only its resident request/consu
 ### StegBrowser Healer cycle-envelope repair
 
 The post-carriage defect is repaired on current main by PR #2227 / `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The Healer resident consumer now recognizes completion from the actual WorkerCoordinator `worker_response` event in `stegverse.worker-runtime-cycle-result/v1`, requires exactly one `SHWP-HEALER-SOVEREIGN-SCHEDULER-001 / HEALER_SOVEREIGN_SCHEDULER_COMPLETED / HANDOFF_READY` event before validating and carrying the six-field retained-root pointer, and the resident dispatcher accepts `CYCLE_COMPLETED` as a successful result. Runtime promotion still requires an authentic post-repair resident cycle.
+
+
+### SDK return binding canonical custody
+
+The existing Publisher-return consumer now treats `RTC-SDK-RETURN-006` as a canonical Master Records custody boundary. The exact SDK return binding and materialization receipt must reconstruct through Master Records before the result may become ready for final StegVerse-side egress. This changes no transport or transition authority and does not promote any later egress/runtime predicate.
