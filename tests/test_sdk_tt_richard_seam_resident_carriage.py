@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,3 +89,61 @@ def test_dispatcher_preserves_test3_master_records_custody_binding():
     assert env["MASTER_RECORDS_RECEIPT_KEY"] == "receipt-key"
     assert env["MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"] == "true"
     assert "GITHUB_TOKEN" not in env
+
+
+def test_consumer_drives_bounded_two_cycle_test3_one_shot(tmp_path):
+    module = load_consumer()
+    source = tmp_path / "source"
+    runtime = tmp_path / "runtime"
+    source.mkdir()
+    (runtime / "control/resident-execution-request.d").mkdir(parents=True)
+    (runtime / "scripts").mkdir(parents=True)
+    request = json.loads(REQUEST.read_text(encoding="utf-8"))
+    (runtime / module.REQUEST_REL).write_text(json.dumps(request), encoding="utf-8")
+    (runtime / module.TARGET_ENTRYPOINT).write_text("# fixture\n", encoding="utf-8")
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        result = {
+            "mode": module.TARGET_MODE,
+            "task_id": module.TARGET_TASK,
+            "runtime_execution_attempted": True,
+            "network_fetch_performed": False,
+            "github_token_runtime_authority": "NONE",
+            "credential_authority": "TV/TVC",
+            "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
+            "cosv_task_pointer": {
+                "task_id": module.TARGET_TASK,
+                "vector": module.TARGET_VECTOR,
+                "binding_verified": True,
+                "authority_effect": "NONE",
+            },
+        }
+        if len(calls) == 2:
+            close_path = runtime / module.CLOSE_LATEST_REL
+            close_path.parent.mkdir(parents=True, exist_ok=True)
+            close_path.write_text(json.dumps({
+                "state": "AUTHENTIC_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY",
+                "task_id": module.TARGET_TASK,
+            }), encoding="utf-8")
+        return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result) + "\n", stderr="")
+
+    receipt = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin", "HOME": "/home/stegverse"})
+    assert receipt["state"] == "ATTEMPT_RECORDED"
+    assert receipt["targeted_cycle_count"] == 2
+    assert receipt["bounded_cycle_limit"] == 2
+    assert len(calls) == 2
+    assert all(module.TARGET_TASK in call for call in calls)
+
+
+def test_native_runtime_prioritizes_exact_test3_selector_before_global_dispatch():
+    source = (ROOT / "scripts/run_worker_runtime.py").read_text(encoding="utf-8")
+    function_start = source.index("def dispatch_local_resident_requests(")
+    function_end = source.index("\ndef maybe_dispatch_machine_continuation(", function_start)
+    body = source[function_start:function_end]
+    priority = body.index('"--only-consumer", TEST3_CONSUMER_SELECTOR')
+    global_dispatch = body.index('"--runtime-root", str(root),\n        ],', priority + 1)
+    assert priority < global_dispatch
+    assert 'test3_request = root / TEST3_REQUEST_REL' in body
+    assert '"priority_test3_dispatch": priority_result' in body
