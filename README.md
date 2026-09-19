@@ -799,3 +799,8 @@ StegAgents PR #26 merged as `a847dae9b72b3914b98c33cc94b8d2a87c1a685d` after all
 ### Test 3 resident request carriage
 
 Test 3 now has a non-authorizing request-specific resident carriage into the existing targeted WorkerCoordinator path. The exact selector `sdk_tt_richard_seam_authentic_runtime` invokes the existing `refresh_and_execute_resident_task.py` entrypoint for `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` with COSV `20010000110000`; it grants no authority, carries no GitHub runtime authority, requires no second machine, and validates the returned canonical COSV pointer before accepting the attempt.
+
+
+### Test 3 resident materialization correction
+
+After the Test 3 resident request-carriage binding merged, source tracing found that the request-specific consumer was not yet in the existing sovereign worker source-refresh static allowlist. The current repair adds that consumer to the normal local source refresh and adds both the Test 3 request and consumer to the existing bootstrap-critical control-plane source package. No new runtime or transport mechanism is introduced.
