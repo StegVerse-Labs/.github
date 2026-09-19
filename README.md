@@ -919,3 +919,6 @@ Canonical handoff: `docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.
 ### Test 3 targeted one-shot drive
 
 When the canonical Test 3 resident request is present, the native resident dispatcher now invokes its existing exact selector before the global 51-consumer pass. The Test 3 consumer drives at most two targeted WorkerCoordinator cycles in that one request consumption, sufficient for activation/execution followed by governed close, and stops early on an already-retained terminal close receipt.
+
+
+SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.

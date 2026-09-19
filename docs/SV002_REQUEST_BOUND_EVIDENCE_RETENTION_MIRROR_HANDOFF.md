@@ -255,3 +255,10 @@ After the reusable service-delivery carriage repair, source tracing found that t
 The reusable runner now enters the released `install_tvc_primary_runtime_service.py --activate` path directly after resolving already-local TVC source. The restarted `stegtvc-primary-runtime.service` retains `Environment=STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC`, retains the vault-socket `ExecStartPre`, and invokes `tvc.primary_runtime_binder.activate`, whose existing `task_activate` executes `task_preflight` before serving. The neutral carrier therefore neither bypasses TVC preflight nor manufactures TV/TVC authority; the preflight remains inside its existing authority owner.
 
 No runtime predicate is promoted by this source correction.
+
+
+## 2026-09-19 PR #2236 canonical reconciliation
+
+StegVerse-Labs/.github PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`. The existing neutral reusable TVC runner now enters the released same-service installer directly and leaves the activation-authority declaration, vault-socket guard, and `task_activate -> task_preflight` sequence inside the existing TVC-owned `stegtvc-primary-runtime.service`.
+
+This is source/carriage evidence only. `root_primary_runtime_restart_observed=false` and `current_source_loaded_on_host_observed=false` remain unchanged until authentic execution produces the required restart/startup correlation.
