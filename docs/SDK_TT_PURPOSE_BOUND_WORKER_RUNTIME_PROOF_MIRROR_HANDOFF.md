@@ -294,3 +294,19 @@ Targeted independent control now uses the canonical independent oscillator only 
 The SDK handoff keeps `STEGAGENTS-GOVERNED-RUNTIME-001` as the runtime capability provider but removes it from completed-task dependencies. It also marks the completed console parent as source/semantic lineage rather than a runtime predecessor requiring reconstruction. The SDK fragment remains `workers: []` and imports `control/worker-registry.d/stegagents-governed-runtime-001.json` as an explicit shared-worker provider, preserving a single worker definition.
 
 This source repair does not claim a fresh claim/fence, TV/TVC warrant verification, InTr admission, purpose-bound worker materialization, lifecycle result, retirement, or Master Records state. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`; every resulting governed transition must satisfy `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + exact receipt/reconstruction digest equality` before further machine-owned progression.
+
+
+## Direct admission post-merge validation
+
+PR #2188 merged the direct WorkerCoordinator admission repair as `76cff35a03ba1950c13d8e438b6f37081a4186d6` from exact head `5f3b2370fca225c92522992560cd58a44d1facd5`.
+
+Exact-head validations all completed successfully:
+
+```text
+Validate Purpose-Bound Worker Derived Lifetime  run 35417051857  SUCCESS
+Cross-Task Coordination Validation             run 35417051824  SUCCESS
+Validate KV AI Memory Resident Binding          run 35417051849  SUCCESS
+validate-deepseek-resident                       run 35417052003  SUCCESS
+```
+
+This establishes merged source readiness for the corrected direct one-shot admission path only. It does not establish an authentic fresh WorkerCoordinator claim/fence or any downstream TV/TVC, InTr, purpose-bound lifecycle, or Master Records transition evidence. The Goal remains ACTIVE / UNCLAIMED and the next authentic state transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`.
