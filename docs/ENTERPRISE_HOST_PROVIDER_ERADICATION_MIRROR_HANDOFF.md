@@ -83,7 +83,11 @@ StegVerse-org/LLM-adapter#334 -> merged previously
 
 Those merges removed important provider defaults but do not yet satisfy enterprise completion because residual provider-identifying source/config/workflow/docs remain.
 
-Current `master-records/orchestration` remediation branch `enterprise-host-provider-eradication-001` removes provider-specific deployment blueprints, provider deployment authorization/receipt state, hosted heartbeat binding, provider-specific custody discovery fields, and provider-identifying active handoff/task references. It replaces them with the existing provider-neutral persistent-storage profile and explicit no-host-selection semantics. This branch is not yet merged and must pass repository validation before promotion.
+`master-records/orchestration#103` merged at `ce44d916e68422aa4c7e0d6afe28e0fad1f59e4f` after nine commit-associated workflows completed successfully, including Runtime Evidence Validation. The merge removed provider-specific deployment blueprints, hosted heartbeat authorization/receipt state, provider-selected custody discovery fields, and provider-identifying active coordination references in favor of the existing provider-neutral persistent-storage contract.
+
+`StegVerse-Labs/StegVerse-SCW#50` is the reconciled follow-up for residual SCW cleanup. The branch removes provider-owned deployment workflows/config, provider-specific endpoint examples, provider secret/environment identifiers, provider deployment regeneration paths, and provider-specific ops surfaces. Exact-head CI first failed only on lint debt exposed in changed legacy files; that demonstrated failure was repaired. Fresh exact-head validation remains required before merge.
+
+The latest enterprise search still finds active provider-specific residual classes primarily in `StegVerse-Labs/Site` and `StegVerse-Labs/StegCore`, including provider service origins/compatibility fallbacks, provider workspace/service identifiers, and provider-bound live/fallback status or capacity-watch state. Defensive deny-list checks must be distinguished from operational bindings; deny-lists may remain only when they cannot select, authorize, discover, configure, deploy, or require the named provider.
 
 ## Completion predicates
 
