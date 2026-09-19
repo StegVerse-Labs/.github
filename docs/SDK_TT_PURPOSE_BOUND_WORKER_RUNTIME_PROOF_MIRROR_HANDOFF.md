@@ -425,3 +425,8 @@ records_only=true final packet                         PRESENT
 No source repair was required.
 
 The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
+
+
+## Augmented cost/lifetime and concurrent-worker demonstration — 2026-09-19
+
+This remains `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`; it has no Test 3/Richard-seam dependency. StegVerse-SDK PR #275 merged as `a79d7f39e870c72e66d0d7ab458414b5bfb192e1`; exact-head workflow `35463403840` passed `TT_PURPOSE_BOUND_WORKER_COST_DEMO_PASS`. The validated SDK matrix is 15s / 30s / 60s for the three single-worker tiers, followed by one fourth task with three simultaneous workers at 3 compute units and 30s derived maximum each (9 aggregate compute units, 30s group wall-clock budget). Authentic governed runtime evidence remains required.
