@@ -56,3 +56,10 @@ Full immutable source links, object IDs, source-method details and remaining com
 ## Targeted acquisition status — 2026-09-19
 
 No exact disputed historical sealed block or authentic 1,534-event / 50-checkpoint rerun package was retrieved in this continuation. The public roster identifies MIR's transparency-tip locator; full sebbi.pro block/export routes are keyed in published source. Browser retrieval returned ERR_BLOCKED_BY_CLIENT, which is not evidence that either service or artifact is absent. Focused MIR-2025 public-source searches returned no matching package. Exact artifact inputs and verification steps are recorded in the canonical handoff's targeted acquisition section. R10 classification and all prior proof ceilings remain unchanged.
+
+
+## Generation 70 reconciliation note — 2026-09-19
+
+Task Registry generation 70 was re-read from canonical main `67d082eb648a65f4b1a3dc61b639354de7c3b933`; the task remains ACTIVE. Complete-tree inspection of AILeash revision `2d6715868bb2812b98d874ab17890ff89ece30d5` confirms co-location of v1.1 witness vocabulary/legend and chain commitment implementation, but did not yield an authentic historical sealed-block/export corpus. Consequently no exact disputed commitment has yet been bound to that revision, and A.2 R10 remains operator-disclosed rather than independently promoted.
+
+Fresh public GitHub searches for the v0.8 run's distinctive counts/identifiers did not retrieve the underlying 1,534-event / 50-checkpoint package or checkpoint-4714 proof material. The rerun therefore remains `COUNTERPART_REPORTED_COMPLETE`. The prior 784-record / 30-commitment run remains historical and settled; no classification or custodian-naming change is made here.
