@@ -369,3 +369,16 @@ The next authentic state remains a fresh WorkerCoordinator claim/fence followed 
 The Test 3 worker uses the shared `process:stegagents-governed-runtime-v1` adapter. After generation 105 preserved the canonical Master Records binding into `run_worker_runtime.py`, the adapter's own `env_allowlist` still dropped that binding before launching `workers/stegagents_governed_runtime_worker.py`. Test 3 atomic activation requires the StegAgents runtime to return closed `TV_TVC_WARRANT_POLICY_VERIFIED` and `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` Master Records transitions, so stripping the binding made those required transitions unreachable.
 
 The existing adapter now carries the same canonical Master Records HTTP or durable-local binding already admitted upstream. TV warrant/policy variables remain unchanged, GitHub runtime authority remains NONE, and no new credential, custody, or transition authority is created.
+
+
+## Governed close/retire phase implemented — generation 107
+
+The terminal Test 3 defect was source-level, not evidentiary: after the existing shared StegAgents worker returned `GOVERNED_TASK_RESULT_READY_FOR_CLOSE`, WorkerCoordinator set `test3_waiting_for_governed_close=true` and then emitted a waiting event forever. There was no executable edge to `CLOSE_TASK_AND_RETIRE_WORKER`.
+
+That edge now exists without adding another runtime, scheduler, dispatcher, WorkerCoordinator, transition authority, or custody plane. StegAgents merge `eae52ac20b06846bc0fca55980d778d57108ef9f` adds the third request mode `stegverse.stegagents-atomic-task-worker-close-request/v1`. The existing WorkerCoordinator invokes the same `process:stegagents-governed-runtime-v1` adapter in `GOVERNED_CLOSE` mode on the next targeted cycle.
+
+The close phase requires the same task, worker, claim, fence, and worker-instance lineage as activation and execution; requires the already-recorded `TASK_BOUND_WORKER_TASK_COMPLETED` receipt; submits `CLOSE_TASK_AND_RETIRE_WORKER` through StegCore/InTr; and refuses terminal projection unless canonical Master Records returns `RECORDED`, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality.
+
+Only after that closure does the worker return `COMPLETED` to WorkerCoordinator. The records-only result must prove `worker_live_after_close=false`, `continued_authority_after_retirement=false`, `callable_retained=false`, and `executor_reference_retained=false`. WorkerCoordinator then releases W through its existing completed-response semantics.
+
+This generation implements the previously missing state-machine edge. It does not claim that the already-REQUESTED authentic one-shot has yet produced the runtime receipts. The next authentic predicate remains a fresh WorkerCoordinator claim/fence.
