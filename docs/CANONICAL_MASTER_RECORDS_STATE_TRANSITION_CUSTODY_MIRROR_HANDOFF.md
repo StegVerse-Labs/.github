@@ -316,3 +316,14 @@ Post-`RTC-SDK-RETURN-006` tracing proved that the reusable downstream pieces alr
 The bounded repair reuses both components. `RTC-STEGVERSE-EGRESS-007` now closes through canonical Master Records with the exact transition and predecessor SDK binding as required evidence. The resulting LLM Adapter InTr handoff is then passed to the existing StegOS materialization preparer. The path stops with RTC008 materialization prepared and all admission/far-side/caller/completion predicates false.
 
 The next authentic transition boundary is therefore RTC008 Interlock/InTr admission. If/when it is observed, its exact admission/transport evidence must itself close through canonical Master Records before RTC009 or any caller consequence may advance.
+
+
+## RTC-STEGVERSE-EGRESS-007 continuation merged — 2026-09-19
+
+PR `#2285` merged as `83e1ef20b28c2fd033f242c12cd2320cbe95871f` from exact repaired head `528b0e6938eb6367af34a9d16522ac41d06d64e7`.
+
+The post-`RTC-SDK-RETURN-006` continuation now reuses the existing LLM Adapter `RTC-STEGVERSE-EGRESS-007` implementation and requires canonical Master Records closure for that transition before continuing. Required evidence includes the exact LLM Adapter transition object and the exact predecessor SDK return binding. Closure requires `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality.
+
+Only after RTC007 closure is the existing StegOS MIR southbound consumer invoked to prepare the existing Universal InTr materialization request for `RTC-INTERLOCK-INTR-TRANSPORT-008`. That prepared request is source evidence only: authentic Interlock/InTr admission, `RTC-FARSIDE-FINAL-009`, caller consequence, and communication completion remain unobserved.
+
+Exact-helper executable validation covered both the successful RTC007 Master Records closure path and the fail-closed non-RECORDED path. No new runtime, scheduler, dispatcher, transport, custody store, transition authority, or credential authority was introduced.
