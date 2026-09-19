@@ -262,3 +262,12 @@ No runtime predicate is promoted by this source correction.
 StegVerse-Labs/.github PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`. The existing neutral reusable TVC runner now enters the released same-service installer directly and leaves the activation-authority declaration, vault-socket guard, and `task_activate -> task_preflight` sequence inside the existing TVC-owned `stegtvc-primary-runtime.service`.
 
 This is source/carriage evidence only. `root_primary_runtime_restart_observed=false` and `current_source_loaded_on_host_observed=false` remain unchanged until authentic execution produces the required restart/startup correlation.
+
+
+## 2026-09-19 strict state-transition dependency correction
+
+The execution chain is now represented as a strict predecessor/successor graph rather than a set of independently satisfiable predicates. Every successor is admissible only after authentic evidence consumes its immediate predecessor state.
+
+The neutral reusable scheduler also no longer reports `ALL_DUE_REUSABLE_TASKS_ADVANCED_TO_COMPLETION_OR_AUTHENTIC_BOUNDARY` unconditionally. A due child in `DEFERRED` or any other non-advanced state keeps the scheduler successor transition inadmissible, clears scheduler completion predicates, records the blocking child state, and returns non-success so the existing reusable trigger retains the boundary instead of projecting a later state.
+
+For this SV002 path, the only currently admissible successor is `REUSABLE_TVC_INVOCATION_OBSERVED`. Restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, SV002 runtime activation, and REQUEST_BOUND custody are all explicitly `BLOCKED_ON_PREDECESSOR`.
