@@ -33,7 +33,8 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
             manifest={"schema":"x","manifest_sha256":"sha256:m","extensions":{"governance_reference_graph":{"graph_sha256":"sha256:g"}}}
             mp.write_text(json.dumps(manifest,sort_keys=True))
             result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)})
-            self.assertEqual(result["state"],"COMPLETED")
+            self.assertEqual(result["state"],"MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED")
+            self.assertEqual(result["master_records_reason"],"CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE")
             self.assertTrue(result["posture_bound_execution"])
             self.assertFalse(result["sdk_resolved_posture"])
             self.assertEqual(result["resolution_authority"],"INTERLOCK_INTR")
