@@ -751,3 +751,12 @@ Canonical handoff: `docs/SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md`.
 
 
 SDK-TT purpose-bound worker source progression now includes canonical Master Records closure for verified TV/TVC warrant-policy evidence and the post-ALLOW/pre-consequence StegCore/InTr admission. StegCore PR #224, rebased SDK PR #273, and StegAgents PR #24 are merged and exact-head validated. Authentic resident execution is still unclaimed; GitHub validation is not runtime authority.
+
+
+## SDK Test 3 - authentic Richard-scenario seam validation
+
+Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` carries the completed Test 2 atomic task-worker seam into authentic StegVerse governance. It preserves Test 1 and Test 2 evidence unchanged and asks whether the same seam holds when a short-lived task-bound actor is actually created and retired through the existing WorkerCoordinator, TV/TVC, StegCore/InTr, StegAgents, and Master Records path.
+
+The required constitutive runtime event is one `ACTIVATE(T)+CREATE_AND_BIND(W,T)` transition. Claim/fence and warrant/policy evidence may prepare the transition, but they do not replace it. Invocation is inadmissible until Master Records closes and reconstructs the constitutive transition, and task close must retire the same W with no continued task-bound authority.
+
+Canonical handoff: `docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
