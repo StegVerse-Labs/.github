@@ -634,7 +634,7 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
-Current TVC activation-owner reconciliation: PR #444 merged at `576943af53fce4952a4d2d9f10c432875908123a`, adding retained process-local startup/source evidence to the existing primary-runtime path without promoting runtime predicates. Authentic restart plus current-source host evidence is still required before SV002 can advance.
+Current TVC activation-owner reconciliation: PR #445 merged at `4c303fbaf03edd1c7d82e38a0352b094147ddc31`, making the existing activation path fail closed unless the same-service restart is correlated to a new process-local startup-source receipt. Authentic host execution is still required before either runtime predicate may advance.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
 

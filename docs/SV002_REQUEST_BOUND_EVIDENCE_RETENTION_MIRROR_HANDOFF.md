@@ -197,3 +197,25 @@ current_source_loaded_on_host_observed = false
 ```
 
 The next authentic observation must correlate the existing service restart with a startup-source receipt whose TVC source contains merge `35247b583b363f84c2edb5c77474bced729190ae`. Only then may the existing self-heal supervisor be followed toward exact `StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b` materialization.
+
+
+## 2026-09-19 TVC restart/startup correlation repair
+
+No authentic host observation was available from repository/Master Records evidence, and no connected authorized remote device was online for direct inspection. The next concrete failure was therefore the existing activation path's inability to bind a successful service restart to the process-local startup-source receipt emitted by that same restarted runtime.
+
+StegVerse-Labs/TVC PR #445 repaired only that evidence seam and merged at:
+
+```text
+StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31
+```
+
+The existing `scripts/install_tvc_primary_runtime_service.py --activate` path now snapshots the prior startup-receipt identity, restarts the same `stegtvc-primary-runtime.service`, and fails closed unless a new `PRIMARY_RUNTIME_SOURCE_IMPORTED` receipt appears with a new identity, non-null process ID, and non-null repository HEAD. No new runtime, service, dispatcher, listener, scheduler, bridge, source-promotion request, credential path, Site path, device prerequisite, custody authority, or transition authority was added.
+
+Runtime predicates remain unpromoted:
+
+```text
+root_primary_runtime_restart_observed = false
+current_source_loaded_on_host_observed = false
+```
+
+The next authentic host execution must produce the correlated receipt and show that its `repo_head` contains TVC merge `35247b583b363f84c2edb5c77474bced729190ae`. Only then may this dependency resolve and the existing self-heal supervisor be followed toward exact `StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b` materialization.
