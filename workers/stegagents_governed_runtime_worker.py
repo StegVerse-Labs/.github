@@ -37,6 +37,8 @@ TEST3_ACTIVATION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authent
 TEST3_ACTIVATION_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/activation.latest.json")
 TEST3_EXECUTION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/execution")
 TEST3_EXECUTION_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/execution.latest.json")
+TEST3_CLOSE_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close")
+TEST3_CLOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close.latest.json")
 PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
@@ -116,6 +118,9 @@ def validate_test3_invocation(invocation: Mapping[str, Any]) -> tuple[dict[str, 
     require(isinstance(task.get("worker_instance_id"), str) and task.get("worker_instance_id"), "worker_instance_id missing")
     receipt_ref = task.get("atomic_activation_receipt_ref")
     require(isinstance(receipt_ref, str) and receipt_ref, "atomic activation receipt ref missing")
+    if task.get("test3_waiting_for_governed_close") is True:
+        require(isinstance(task.get("last_checkpoint_ref"), str) and task.get("last_checkpoint_ref"), "Test 3 execution receipt ref missing before governed close")
+        return dict(task), "GOVERNED_CLOSE"
     return dict(task), "TASK_EXECUTION"
 
 
@@ -158,6 +163,31 @@ def build_test3_request(task: Mapping[str, Any], handoff: Mapping[str, Any], mod
     require(receipt_path.is_file(), "atomic activation receipt not retained")
     activation_evidence = json.loads(receipt_path.read_text(encoding="utf-8"))
     timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
+    if mode == "GOVERNED_CLOSE":
+        execution_ref = Path(str(task["last_checkpoint_ref"]))
+        if not execution_ref.is_absolute():
+            execution_ref = root / execution_ref
+        require(execution_ref.is_file(), "Test 3 execution receipt not retained")
+        execution_evidence = json.loads(execution_ref.read_text(encoding="utf-8"))
+        return {
+            "schema": "stegverse.stegagents-atomic-task-worker-close-request/v1",
+            "task_id": TEST3_TASK_ID,
+            "cosv_task_vector": TEST3_COSV,
+            "parent_agent_id": AGENT_ID,
+            "execution_authority": False,
+            "self_authorization_allowed": False,
+            "credential_material_present": False,
+            "worker_claim": {
+                "claim_id": task["claim_id"],
+                "fencing_token": timing["fencing_token"],
+                "worker_id": task["worker_id"],
+                "worker_instance_id": task["worker_instance_id"],
+            },
+            "activation_evidence": activation_evidence,
+            "execution_evidence": execution_evidence,
+            "purpose_bound_worker_request": dict(contract),
+        }
+
     return {
         "schema": "stegverse.stegagents-atomic-task-worker-execution-request/v1",
         "task_id": TEST3_TASK_ID,
@@ -212,6 +242,18 @@ def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
         require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "atomic activation reconstruction missing")
         return
 
+    if mode == "GOVERNED_CLOSE":
+        require(result.get("state") == "GOVERNED_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY", "Test 3 governed-close result state mismatch")
+        _require_closed_transition(result.get("close_master_records_transition"), "CLOSE_TASK_AND_RETIRE_WORKER")
+        require(result.get("records_only") is True, "records-only terminal result missing")
+        require(result.get("worker_live_after_close") is False, "worker remained live after close")
+        require(result.get("continued_authority_after_retirement") is False, "continued authority after retirement")
+        require(result.get("callable_retained") is False, "records-only result retained callable")
+        require(result.get("executor_reference_retained") is False, "records-only result retained executor reference")
+        reconstruction = result.get("records_only_reconstruction")
+        require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "records-only reconstruction missing")
+        return
+
     require(result.get("state") == "GOVERNED_TASK_RESULT_READY_FOR_CLOSE", "Test 3 execution result state mismatch")
     _require_closed_transition(result.get("invocation_master_records_transition"), "TASK_BOUND_WORKER_INVOCATION_STARTED")
     _require_closed_transition(result.get("task_completed_master_records_transition"), "TASK_BOUND_WORKER_TASK_COMPLETED")
@@ -227,6 +269,11 @@ def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[st
         result_rel, latest_rel = TEST3_ACTIVATION_REL, TEST3_ACTIVATION_LATEST_REL
         state = "AUTHENTIC_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED"
         worker_claim = dict(pending)
+    elif mode == "GOVERNED_CLOSE":
+        claim_id = str(request["worker_claim"]["claim_id"])
+        result_rel, latest_rel = TEST3_CLOSE_REL, TEST3_CLOSE_LATEST_REL
+        state = "AUTHENTIC_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY"
+        worker_claim = dict(request["worker_claim"])
     else:
         claim_id = str(request["worker_claim"]["claim_id"])
         result_rel, latest_rel = TEST3_EXECUTION_REL, TEST3_EXECUTION_LATEST_REL
@@ -263,6 +310,15 @@ def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[st
         receipt["warrant_policy_master_records_transition"] = result.get("warrant_policy_master_records_transition")
         receipt["atomic_activation_master_records_transition"] = result.get("atomic_activation_master_records_transition")
         receipt["master_records_reconstruction"] = result.get("master_records_reconstruction")
+    elif mode == "GOVERNED_CLOSE":
+        receipt["close_master_records_transition"] = result.get("close_master_records_transition")
+        receipt["records_only_result"] = result.get("records_only_result")
+        receipt["records_only_reconstruction"] = result.get("records_only_reconstruction")
+        receipt["records_only"] = result.get("records_only")
+        receipt["worker_live_after_close"] = result.get("worker_live_after_close")
+        receipt["continued_authority_after_retirement"] = result.get("continued_authority_after_retirement")
+        receipt["callable_retained"] = result.get("callable_retained")
+        receipt["executor_reference_retained"] = result.get("executor_reference_retained")
     else:
         receipt["activation_transition_receipt_sha256"] = result.get("activation_transition_receipt_sha256")
         receipt["invocation_master_records_transition"] = result.get("invocation_master_records_transition")
@@ -332,6 +388,20 @@ def run_test3(invocation: Mapping[str, Any]) -> dict[str, Any]:
             "evidence_refs": [str(receipt)],
             "cost_observation": {"compute_units": 1, "token_units": 0, "storage_bytes": receipt.stat().st_size, "network_bytes": 0, "operator_seconds": 0, "external_cost_usd": 0, "latency_ms": None, "failure_recovery_units": 0, "services_used": []},
             "authority_effect": "NONE_ATOMIC_ACTIVATION_ADMISSION_ONLY",
+        }
+    if mode == "GOVERNED_CLOSE":
+        return {
+            "schema": "stegverse.worker-response/v0.1",
+            "state": "COMPLETED",
+            "transition_id": "STEGAGENTS_GOVERNED_CLOSE_RETIRED",
+            "transition_sequence": 3,
+            "expected_next_transition": None,
+            "expected_next_earliest_epoch": None,
+            "expected_next_latest_epoch": None,
+            "checkpoint_ref": str(receipt),
+            "evidence_refs": [str(receipt)],
+            "cost_observation": {"compute_units": 1, "token_units": 0, "storage_bytes": receipt.stat().st_size, "network_bytes": 0, "operator_seconds": 0, "external_cost_usd": 0, "latency_ms": None, "failure_recovery_units": 0, "services_used": []},
+            "authority_effect": "NONE_GOVERNED_CLOSE_RECORDS_ONLY",
         }
     return {
         "schema": "stegverse.worker-response/v0.1",
