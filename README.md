@@ -768,3 +768,8 @@ Test 3 source tracing identified the first concrete existing-path defect: Worker
 
 
 SDK-TT purpose-bound worker current-main source gates were re-verified against Task Registry generation 82 with no drift: claim/fence, TV/TVC, InTr pre-consequence admission, four lifecycle Master Records closures, post-retirement no-authority, and records-only closeout remain present. Authentic resident execution remains unclaimed because no authorized execution surface was connected during the verification session.
+
+
+### Test 3 atomic activation seam repair
+
+The Test-3-only path now keeps fresh WorkerCoordinator claim/fence data pending while T remains HANDOFF_READY with no authoritative task-bound W. The existing shared StegAgents bridge carries that pending envelope through TV/TVC and StegCore/InTr, requires Master Records closure and exact reconstruction equality for ACTIVATE_TASK_AND_CREATE_BIND_WORKER, and only then permits WorkerCoordinator to project ACTIVE T<->W and invoke the separate post-activation task-execution path. Existing non-Test-3 worker paths remain on their prior semantics. Authentic Test 3 runtime execution remains unclaimed pending exact-head validation and merge.
