@@ -98,6 +98,7 @@ STATIC_FILES = (
     Path("scripts/consume_sv011_phase5_resident_execution_request.py"),
     Path("scripts/consume_glm53_sovereign_lane_request.py"),
     Path("scripts/consume_stegagents_governed_runtime_targeted_request.py"),
+    Path("scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"),
     Path("scripts/consume_erl_ai_economic_transparency_review_request.py"),
     Path("scripts/consume_ibc_intr_resident_request.py"),
     Path("scripts/activate_resident_stack.py"),

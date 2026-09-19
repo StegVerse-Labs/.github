@@ -152,3 +152,15 @@ Added:
 The request/consumer is non-authorizing and invokes only the existing `scripts/refresh_and_execute_resident_task.py` path with the exact Task ID and COSV `20010000110000`. It requires the returned canonical COSV pointer binding and retains GitHub runtime authority NONE, TV/TVC credential authority, no network source fetch, and no second-machine dependency.
 
 Authentic Test 3 evidence must come from the resident dispatch/one-shot result after this source is merged; source/CI does not satisfy any runtime predicate.
+
+
+## Resident materialization correction — proposed generation 91
+
+After resident-carriage PR #2215 merged as `65ab90acb1bca5f911ac4cd2f5046c4c26180f58`, the next concrete source defect was found in the existing source-materialization path: the new request lived under `control/resident-execution-request.d` and would be copied by the directory refresh, but the new request-specific consumer was not yet present in `refresh_sovereign_worker_runtime_source.py`'s static script allowlist. A refreshed resident could therefore receive the request and dispatcher selector while still lacking the consumer executable.
+
+Repair:
+- add the Test 3 consumer to the existing resident local-source refresh allowlist;
+- add the Test 3 request and consumer to the existing bootstrap-critical control-plane source package allowlist;
+- do not add a new transporter, runtime, scheduler, dispatcher, or authority path.
+
+Authentic runtime evidence remains unclaimed until a resident source carrying these bytes produces the exact selector visit and one-shot receipts.
