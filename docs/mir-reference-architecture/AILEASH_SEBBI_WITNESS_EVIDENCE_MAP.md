@@ -52,3 +52,7 @@ Purpose: reconcile prior observations with the Evidence Custody Seam Appendix A 
 ## Historical-source recovery — 2026-09-19
 
 Full immutable source links, object IDs, source-method details and remaining commitment-binding predicates are retained in [the canonical handoff](../MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md#r6-linked-historical-publication-inspection--corrected-2026-09-19). The v0.8 run report above is preserved from existing PR #2119; this continuation did not retrieve the underlying run artifacts and does not promote the report to independent verification.
+
+## Targeted acquisition status — 2026-09-19
+
+No exact disputed historical sealed block or authentic 1,534-event / 50-checkpoint rerun package was retrieved in this continuation. The public roster identifies MIR's transparency-tip locator; full sebbi.pro block/export routes are keyed in published source. Browser retrieval returned ERR_BLOCKED_BY_CLIENT, which is not evidence that either service or artifact is absent. Focused MIR-2025 public-source searches returned no matching package. Exact artifact inputs and verification steps are recorded in the canonical handoff's targeted acquisition section. R10 classification and all prior proof ceilings remain unchanged.

@@ -29,3 +29,5 @@ Current discipline:
 - witness count is not control/failure-domain independence;
 - AgentEnvelope construction-bound derived authority is recorded as external corroborating architecture, not imported StegVerse authority; deterministic derivation does not by itself prove temporal ordering or governed transition execution;
 - AgentEnvelope deterministic re-derivation reconciliation is complete: current Master Records canonical-object/self-hash verification and reconstruction semantics already represent recomputation from canonical inputs, so the disposition is `NO_SOURCE_MUTATION_REQUIRED`; no new evidence authority or schema was added.
+
+The 2026-09-19 targeted acquisition pass identified the MIR transparency locator and authenticated sebbi.pro block/export boundary, but retrieved neither exact disputed blocks nor the authentic v0.8 package. See the [canonical handoff](../MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md) for the exact operator export/package inputs and subsequent verification checks. Retrieval limitations do not change evidence classifications.
