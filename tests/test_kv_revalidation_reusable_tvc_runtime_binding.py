@@ -53,3 +53,10 @@ def test_existing_kv_process_adapter_remains_unchanged_and_enabled():
     assert "runtime_observation" in adapter["capabilities"]
     assert "bounded_process_execution" in adapter["capabilities"]
     assert "private_kv_state_reconciliation" in adapter["capabilities"]
+
+
+def test_runner_reuses_released_same_service_activation_delivery():
+    source = (ROOT / RUNNER).read_text(encoding="utf-8")
+    assert "install_tvc_primary_runtime_service.py" in source
+    assert '"--activate"' in source
+    assert '[sys.executable, str(dispatcher), "tvc.primary_runtime_binder.activate"]' not in source

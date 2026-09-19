@@ -219,3 +219,21 @@ current_source_loaded_on_host_observed = false
 ```
 
 The next authentic host execution must produce the correlated receipt and show that its `repo_head` contains TVC merge `35247b583b363f84c2edb5c77474bced729190ae`. Only then may this dependency resolve and the existing self-heal supervisor be followed toward exact `StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b` materialization.
+
+
+## 2026-09-19 reusable TVC service-delivery carriage repair
+
+Post-PR #445 runtime review found the next concrete execution defect in the already-existing SV002-adjacent TVC reusable path. `scripts/run_tvc_runtime_boundary_reusable.py` performed TVC preflight and then invoked `tvc.primary_runtime_binder.activate` directly. That bypassed `TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006`'s approved `scripts/install_tvc_primary_runtime_service.py --activate` leg, so the same-service restart and the new post-#445 restart/startup receipt correlation could never be produced by this reusable carrier.
+
+The repair keeps the existing Healer/reusable-task/TVC path and changes only that carriage:
+
+```text
+existing reusable TVC runner
+-> tvc.primary_runtime_binder.preflight
+-> existing install_tvc_primary_runtime_service.py --activate
+-> same stegtvc-primary-runtime.service restart
+-> correlated PRIMARY_RUNTIME_SOURCE_IMPORTED receipt required by TVC PR #445
+-> existing TVC runtime-boundary observer
+```
+
+No new request, scheduler, runtime, service, dispatcher, listener, bridge, credential path, source-promotion request, Site path, device prerequisite, custody authority, or transition authority is introduced. Runtime predicates remain unpromoted until this repaired path executes authentically.
