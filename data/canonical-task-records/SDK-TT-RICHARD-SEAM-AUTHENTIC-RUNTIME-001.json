@@ -310,5 +310,19 @@
     },
     "authentic_runtime_transition_observed": false,
     "authority_effect": "NONE_EXISTING_PATH_REPAIR_ONLY"
+  },
+  "execution_path_repair_dispatch_master_records": {
+    "defect": "RESIDENT_DISPATCHER_STRIPPED_DURABLE_MASTER_RECORDS_BINDING",
+    "defect_effect": "Test 3 REQUESTED consumer could be invoked but durable-local Master Records custody inputs were removed before the consumer/targeted WorkerCoordinator path",
+    "repaired_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "carried_inputs": [
+      "MASTER_RECORDS_DB",
+      "MASTER_RECORDS_RECEIPT_KEY",
+      "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
+    ],
+    "existing_http_binding_preserved": true,
+    "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+    "authentic_runtime_transition_observed": false,
+    "authority_effect": "NONE_ENV_CARRIAGE_ONLY"
   }
 }

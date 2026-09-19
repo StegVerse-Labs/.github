@@ -64,3 +64,27 @@ def test_dispatcher_has_exactly_one_test3_selector():
     source=DISPATCHER.read_text(encoding="utf-8")
     row='("sdk_tt_richard_seam_authentic_runtime", "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py")'
     assert source.count(row)==1
+
+
+def test_dispatcher_preserves_test3_master_records_custody_binding():
+    spec = importlib.util.spec_from_file_location("test3_dispatcher", DISPATCHER)
+    assert spec is not None and spec.loader is not None
+    dispatcher = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dispatcher)
+    env = dispatcher.clean_exec_env({
+        "PATH": "/usr/bin",
+        "HOME": "/home/stegverse",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+        "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "12",
+        "MASTER_RECORDS_DB": "/srv/stegverse/master-records.sqlite",
+        "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+        "GITHUB_TOKEN": "forbidden",
+    })
+    assert env["STEGVERSE_MASTER_RECORDS_ENDPOINT"] == "http://127.0.0.1:8765"
+    assert env["STEGVERSE_MASTER_RECORDS_TOKEN"] == "mr-token"
+    assert env["MASTER_RECORDS_DB"] == "/srv/stegverse/master-records.sqlite"
+    assert env["MASTER_RECORDS_RECEIPT_KEY"] == "receipt-key"
+    assert env["MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"] == "true"
+    assert "GITHUB_TOKEN" not in env
