@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 110,
+  "generation": 111,
   "status": "ADMISSIBILITY_WIKI_PUBLIC_DOMAIN_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2276,25 +2276,32 @@
       },
       "dependencies": [
         {
+          "dependency_id": "DEP-STEG-BROWSER-DIRECT-RUNTIME-CONNECTION-INGRESS",
+          "kind": "EXACT_RUNTIME_EXECUTION_TRANSITION",
+          "state": "PENDING_AUTHENTIC_DIRECT_OWNER_EVIDENCE",
+          "ref": "scripts/consume_stegbrowser_runtime_connection_ingress_request.py;receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json",
+          "disposition": "FOLLOW_THE_IMMUTABLE_STEGBROWSER_NONCE_THROUGH_THE_DIRECT_RUNTIME_CONNECTION_INGRESS_AND_SELECTED_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001_OWNER"
+        },
+        {
           "dependency_id": "DEP-STEG-BROWSER-RESIDENT-REQUEST-DISPATCH-VISIT",
           "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
-          "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
+          "state": "SUPERSEDED_HEALER_SPECIFIC_DISPATCH_GATE",
           "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
-          "disposition": "Terminal prompt-limit reconciliation: RESIDENT_REQUEST_DISPATCH_VISIT remains first unsatisfied. Existing successor STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 / #1860 owns authentic retained carrier/root evidence; no runtime completion claimed and no new successor created."
+          "disposition": "GENERIC_RESIDENT_DISPATCH_MAY_CARRY_INDEPENDENT_WORK_BUT_HEALER_CONSUMER_VISIT_IS_NOT_A_STEGBROWSER_PREREQUISITE"
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
           "kind": "EXACT_RUNTIME_EVIDENCE_CHECKPOINT",
-          "state": "DOWNSTREAM_OF_PENDING_RESIDENT_REQUEST_DISPATCH_VISIT",
+          "state": "SUPERSEDED_ROUTING_ERROR",
           "ref": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json;workers/healer_sovereign_scheduler_worker.py;heartbeat_runtime/process_adapter.py",
-          "disposition": "Prompt 8 identifies RESIDENT_REQUEST_DISPATCH_VISIT as the first missing authentic pre-projection transition. Do not attempt to bind the Healer worker checkpoint until authentic resident-request-dispatch evidence proves the existing healer consumer was actually invoked and subsequent machine-owned transitions are observed in order."
+          "disposition": "SUPERSEDED_BY_STEG_BROWSER_HEALER_ROUTING_CORRECTION_001; HEALER_CHECKPOINT_IS_NOT_IN_THE_IMMUTABLE_STEGBROWSER_EXECUTION_LINEAGE"
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-RESIDENT-CARRIER-CONSUMPTION-POINTER",
           "kind": "EXACT_RUNTIME_EVIDENCE_POINTER",
-          "state": "STRUCTURAL_POINTER_SURFACE_RECONCILED_RUNTIME_EVIDENCE_PENDING",
+          "state": "SUPERSEDED_ROUTING_ERROR",
           "ref": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001;data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
-          "disposition": "Field-by-field trace shows the outer resident request-consumption receipt contains the targeted WorkerCoordinator cycle envelope, not the Healer child retention object inline. Preserve it as dispatch/attempt evidence only. The first existing pointer-bearing authoritative resident surface is the fenced Healer worker checkpoint after ProcessWorkerAdapter ALLOW projection."
+          "disposition": "SUPERSEDED_AS_STEGBROWSER_EXECUTION_GATE; DIRECT_STEGBROWSER_OWNER_EVIDENCE_SURFACES_REPLACE_HEALER_CARRIER_POINTER"
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION",
@@ -3332,6 +3339,17 @@
           "convergence_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
           "resolution": "Parent handoff and required-evidence contract reviewed and preserved; retirement changes coordination only; parent runtime/custody implementation and predicates untouched."
         }
+      },
+      "routing_correction": {
+        "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+        "result": "HEALER_DEPENDENCY_SUPERSEDED",
+        "canonical_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+        "direct_evidence_refs": [
+          "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json",
+          "receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json",
+          "receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json"
+        ],
+        "historical_healer_analysis_preserved": true
       }
     },
     {
@@ -5928,26 +5946,72 @@
       "correlation_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
       "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
       "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-      "goal": "Remove the accidental Healer routing dependency from the immutable StegBrowser custody-root progression and restore the invocation to its actual RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime execution owner and direct WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records path.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CHECKED_OUT",
+      "goal": "Correct the accidental routing that made SHWP-HEALER-SOVEREIGN-SCHEDULER-001 a required dependency/carrier for the immutable StegBrowser custody-root progression, restoring the invocation to its actual existing execution owner and direct WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records chain.",
+      "coordination_state": "COMPLETE",
+      "checkout_state": "RELEASE_READY",
       "cosv_task_vector": "40000100100000",
-      "handoff_ref": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
-      "source_refs": [
-        "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
-        "data/canonical-task-records/STEG-BROWSER-HEALER-ROUTING-CORRECTION-001.json",
-        "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
-        "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
-        "scripts/run_stegbrowser_manifest_bound_runtime.py",
-        "scripts/run_stegbrowser_runtime_consumption_reusable.py",
-        "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json"
-      ],
       "issue_ref": "StegVerse-Labs/.github#2249",
-      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
-      "canonical_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
-      "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+      "handoff_ref": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+      "immutable_invocation": {
+        "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "requested_invocation_count": 1,
+        "second_request_allowed": false
+      },
+      "canonical_execution_owner": {
+        "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+        "execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+        "runtime_entrypoint": "run_stegbrowser_manifest_bound_runtime",
+        "healer_role": "TRIGGERED_REMEDIATION_ONLY"
+      },
+      "defect": {
+        "class": "ARTIFICIAL_HEALER_ROUTING_DEPENDENCY",
+        "description": "Healer evidence-carriage/remediation machinery was elevated into a required StegBrowser execution progression dependency without exact invocation-lineage proof."
+      },
+      "required_outcomes": [
+        "EXACT_STEGBROWSER_EXECUTION_OWNER_TRACED",
+        "ARTIFICIAL_HEALER_PREREQUISITES_REMOVED",
+        "DIRECT_WORKERCOORDINATOR_CLAIM_FENCE_PATH_RESTORED",
+        "DIRECT_INTERLOCK_INTR_PROGRESS_PATH_RESTORED",
+        "RETAINED_EVIDENCE_PATH_BOUND_TO_ACTUAL_OWNER",
+        "MASTER_RECORDS_CUSTODY_PATH_BOUND_TO_ACTUAL_OWNER",
+        "PARENT_TASK_RECONCILED"
+      ],
+      "prohibited": [
+        "NEW_RUNTIME",
+        "NEW_SCHEDULER",
+        "NEW_DISPATCHER",
+        "NEW_CUSTODY_STORE",
+        "NEW_AUTHORITY_PLANE",
+        "NEW_CREDENTIAL_PATH",
+        "SECOND_STEGBROWSER_INVOCATION",
+        "SECOND_USER_OPERATED_DEVICE_DEPENDENCY"
+      ],
       "runtime_completion_claimed": false,
-      "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
+      "authority_effect": "NONE_ROUTING_CORRECTION_COMPLETE",
+      "trace_result": {
+        "immutable_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "exact_insertion_point": "MASTER_RECORDS_AND_SUCCESSOR_EVIDENCE_MODELING_AFTER_THE_EXECUTABLE_STEGBROWSER_CHAIN",
+        "executable_chain_contains_healer": false,
+        "direct_chain": [
+          "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+          "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+          "scripts/run_stegbrowser_manifest_bound_runtime.py",
+          "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+          "WorkerCoordinator claim/fence",
+          "Interlock/InTr",
+          "direct retained StegBrowser evidence",
+          "Master Records"
+        ],
+        "corrected_records": [
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+          "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+          "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+          "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001"
+        ],
+        "healer_role_after_correction": "TRIGGERED_REMEDIATION_ONLY"
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
