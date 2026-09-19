@@ -976,8 +976,8 @@ SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_
 SDK TT purpose-bound worker runtime proof: TVC PR #448 merged the resident Ed25519 key-materialization repair as `4cb804c625060f52b75afc48d11c8d1dc8dc835a` from exact head `522bfff406f70c7b18091c25916a6f83a23fcec3`; validation run `35469205465` passed. Next authentic transition: `TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION`; remote-device availability is not a canonical predicate.
 
 
-## UK JCHR Human Rights and AI external-policy reconciliation
+### WorkerCoordinator Functional Memory
 
-Canonical task `ERL-UK-JCHR-HUMAN-RIGHTS-AI-RECONCILIATION-001` registers a source-bounded ERL comparison of the UK Parliament Joint Committee on Human Rights report *Human Rights and the Regulation of AI* against existing StegVerse separation-of-powers and evidence architecture. The task is documentary/research-only: no StegOS execution substrate is selected, authority effect is `NONE`, and no UK legal applicability, compliance, endorsement, runtime execution, publication or policy-quality finding is inferred.
+Worker assignment now retains reconstructable Functional Memory through the existing WorkerCoordinator and Master Records path. `ALLOW` continues into the existing claim/fence assignment flow; any non-`ALLOW` result is retained as a Master Records Functional Memory pack carrying task identity, Task Registry generation, COSV context, admissibility predicates, disposition, and reasons. Later assignment review must reconstruct that retained state before reuse.
 
-Canonical handoff: `StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md`.
+PR #2289 merged the source contract as `9c48c12fa38b1bfece448c878843ee352429d83d`. Exact-head Test 3 acceptance run `35469405536` executed the focused Functional Memory test and passed; Cross-Task validation run `35469405509` also passed. These are source/validation results only and do not claim authentic runtime assignment or Functional Memory emission.
