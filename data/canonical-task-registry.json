@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 71,
-  "status": "SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_DEPENDENCY_CORRECTED",
+  "generation": 72,
+  "status": "SITE_COSV_REPOSITORY_WIDE_ADOPTION_SUCCESSOR_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4854,6 +4854,92 @@
       },
       "remaining_predicate": null,
       "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001",
+      "correlation_id": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001",
+      "root_correlation_id": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001",
+      "parent_task_id": null,
+      "goal": "Close the StegVerse-Labs/Site repository-wide COSV adoption denominator by classifying every effective active Site claim/task through its existing owner as an evidence-backed active vector, terminal vector, or explicit exemption, safely retiring stale ownership only when its release predicates are already evidenced, while preserving authentic blockers and withholding repository VECTOR_PRESENT until the effective unindexed active task-ID count reaches zero.",
+      "coordination_state": "ACTIVE",
+      "source_refs": [
+        "StegVerse-Labs/Site:docs/COSV_SITE_ADOPTION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site:data/cosv/task-vector-index.json",
+        "StegVerse-Labs/Site:data/session-work-claims.json",
+        "StegVerse-Labs/Site:data/session-work-claims.d",
+        "StegVerse-Labs/Site:scripts/check_session_work_claims.py",
+        "StegVerse-Labs/Site:scripts/check_cosv_task_projection.py"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Site"
+        ],
+        "components": [
+          "site-cosv-task-projection",
+          "site-effective-claim-denominator",
+          "site-stale-claim-terminalization",
+          "site-repository-vector-present-gate"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/Site:docs/COSV_SITE_ADOPTION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site:data/cosv/task-vector-index.json"
+      ],
+      "expected_evidence_predicates": [
+        "EFFECTIVE_SITE_CLAIM_DENOMINATOR_RECOMPUTED",
+        "EACH_ACTIVE_TASK_CLASSIFIED_WITH_EXISTING_OWNER_SEMANTICS",
+        "STALE_TERMINALIZATIONS_HAVE_AUTHENTIC_RELEASE_EVIDENCE",
+        "SITE_COSV_VALIDATION_PASSES",
+        "REPOSITORY_VECTOR_PRESENT_ONLY_WHEN_UNINDEXED_ACTIVE_TASK_COUNT_ZERO"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "github_repository_reconciliation",
+          "site_claim_registry_validation",
+          "cosv_task_projection_validation"
+        ],
+        "environment": "GITHUB_COORDINATION",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "StegVerse-Labs/Site:docs/COSV_SITE_ADOPTION_MIRROR_HANDOFF.md"
+      },
+      "allowed_next_transitions": [
+        "CLAIMED_IMPLEMENTATION",
+        "MACHINE_OWNED",
+        "COMPLETE"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/Site:docs/COSV_SITE_ADOPTION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": false
+      }
     }
   ],
   "human_actions": [],
