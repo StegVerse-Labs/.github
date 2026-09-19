@@ -73,7 +73,7 @@ Therefore:
 
 ## R6-linked historical publication inspection — corrected 2026-09-19
 
-Current-main recovery used `dccf6638510fe5907cef614a45a9ac33f6ae6eab`, Task Registry generation 67, and the canonical child record, which remains ACTIVE with COSV `50000000100000`. This is documentary/source reconciliation; no runtime, custody receipt, or conformance completion is asserted.
+Current-main recovery originally used `dccf6638510fe5907cef614a45a9ac33f6ae6eab`, Task Registry generation 67. This continuation re-read canonical main at `67d082eb648a65f4b1a3dc61b639354de7c3b933`, Task Registry generation 70, and the canonical child record, which remains ACTIVE with COSV `50000000100000`. This is documentary/source reconciliation; no runtime, custody receipt, or conformance completion is asserted.
 
 ### Corrected object identity
 
@@ -138,3 +138,20 @@ The child remains ACTIVE. Registry generation 67 was re-read before inspection; 
 User action if those artifacts are not publicly retrievable: attach the operator-provided historical block export and the original v0.8 verification package, or supply their exact downloadable links and separately obtained public-key fingerprint/provenance. Do not provide passwords, API keys or private signing keys. Sending a request to Richard/Justin has not been authorized or performed.
 
 R10 remains operator-disclosed NOT MET; no independent failure or compliance verdict is promoted. The 784-record / 30-commitment run remains historical only; the newer rerun remains COUNTERPART_REPORTED_COMPLETE. Normative R1–R10 and custodian naming remain settled. The next step is artifact acquisition at the recorded locators or from the operator, followed by the table's exact checks; repeating broad searches or re-reading the same source does not advance either predicate.
+
+
+## Generation 70 commitment-binding / rerun artifact reconciliation — 2026-09-19
+
+Canonical main was re-read at `67d082eb648a65f4b1a3dc61b639354de7c3b933`; Task Registry generation is `70`, and `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` remains `ACTIVE` with COSV `50000000100000`.
+
+The recovered v1.1 source tree at `2d6715868bb2812b98d874ab17890ff89ece30d5` was inspected as a complete Git tree. It contains the witness vocabulary/legend source (`modules/witness.py`, blob `e6093a954837a418ceef99e6e474bcd61c59704f`), the chain hash/seal/verification implementation (`server.py`, blob `99718aa051dc09448ade1a6700abc738ebc38a13`), and generic spec/discovery source, but no retained historical sealed-block/export corpus from which a disputed commitment can be authenticated and tied to that revision. Therefore the recovered source revision is a valid semantic/scheme publication candidate, not by itself proof that any specific disputed historical commitment was covered by that publication when sealed.
+
+A fresh public GitHub search for the reported v0.8 identifiers and statistics (`1534`, `50 checkpoints`, checkpoint `4714`, `1406`, the `2453-day` adversarial displacement, plus the reported historical-run counts) did not retrieve an authentic production export bundle, checkpoint-chain package, raw OTS proof, inclusion-proof set, pinned-key record, syscall traces, adversarial fixtures, or negative-control outputs. Broad search collisions with unrelated repositories were discarded. Search absence is not evidence that the run package does not exist.
+
+Evidence dispositions are unchanged:
+
+- A.2 R10 remains operator-disclosed `NOT MET`; neither blanket independent failure nor blanket compliance is promoted until an authentic disputed commitment is bound to the actually applicable historical publication path and its publication timing/provenance is evidenced.
+- The reported 1,534-event / 50-checkpoint submitter-removed rerun remains `COUNTERPART_REPORTED_COMPLETE`, not independently verified.
+- The 784-record / 30-commitment run remains historical and settled under its prior R1-R10/custodian-naming treatment; it is not replaced or reinterpreted by the newer counterpart report.
+
+Next executable step: acquire one authentic disputed pre-rename sealed record/export with immutable block/sequence identity and provenance, then recompute its seal and bind its witness version/term to `2d6715868bb2812b98d874ab17890ff89ece30d5` or the actually applicable revision. In parallel, only an authentic v0.8 package should be used to verify the 1,534/50 claims. Do not repeat broad GitHub absence searches unless a new locator or artifact identifier is supplied.
