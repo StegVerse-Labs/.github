@@ -34,6 +34,11 @@ on:
       - 'tests/test_session_build_preflight.py'
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
+      - 'scripts/run_canonical_work_event_bootstrap.py'
+      - 'scripts/apply_admitted_canonical_work_projection.py'
+      - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -67,6 +72,11 @@ on:
       - 'tests/test_session_build_preflight.py'
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
+      - 'scripts/run_canonical_work_event_bootstrap.py'
+      - 'scripts/apply_admitted_canonical_work_projection.py'
+      - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -96,7 +106,8 @@ jobs:
             tests.test_task_registry_collision_checkin \
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_ai_session_ingress \
-            tests.test_task_registry_general_checkin_surface_gate
+            tests.test_task_registry_general_checkin_surface_gate \
+            tests.test_steghealth_kv_interlock_canonical_work_ingress
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py
       - name: Validate coordination source

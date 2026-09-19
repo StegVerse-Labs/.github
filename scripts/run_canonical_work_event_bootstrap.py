@@ -43,7 +43,9 @@ def validate_target_task(*, registry: Path, registry_shards: Path, task_id: str)
     require(task.get("task_id") == task_id, "canonical_task_identity_must_resolve_exactly_once")
     correlation_id = task.get("correlation_id")
     require(isinstance(correlation_id, str) and bool(correlation_id), "canonical_task_correlation_missing")
-    require(task.get("coordination_state") == "PROPOSED", "canonical_task_not_proposed_for_ingress")
+    coordination_state = task.get("coordination_state")
+    active_checked_out = coordination_state == "ACTIVE" and task.get("checkout_state") == "CHECKED_OUT"
+    require(coordination_state == "PROPOSED" or active_checked_out, "canonical_task_not_ingress_projectable")
     require("INGRESS_ADMITTED" in task.get("allowed_next_transitions", []), "canonical_task_ingress_not_allowed")
     claim = task.get("worker_claim", {})
     require(claim.get("authority") == "WORKERCOORDINATOR", "canonical_task_workercoordinator_authority_missing")
@@ -153,15 +155,28 @@ def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ing
         cwd=str(ROOT),
         check=True,
     )
+    def runtime_ingress_state(task: dict[str, Any]) -> str | None:
+        refs = task.get("runtime_refs")
+        return refs.get("ingress_state") if isinstance(refs, dict) else None
+
+    def valid_projected_state(task: dict[str, Any]) -> bool:
+        if task.get("coordination_state") == "INGRESS_ADMITTED":
+            return True
+        return (
+            task.get("coordination_state") == "ACTIVE"
+            and task.get("checkout_state") == "CHECKED_OUT"
+            and runtime_ingress_state(task) == "INGRESS_ADMITTED"
+        )
+
     registry_value = load(registry)
     matches = [task for task in registry_value.get("tasks", []) if task.get("task_id") == task_id]
     if matches:
-        require(len(matches) == 1 and matches[0].get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_registry_invalid")
+        require(len(matches) == 1 and valid_projected_state(matches[0]), "persisted_post_ingress_registry_invalid")
         return registry
     shard = registry_shards / f"{task_id}.json"
     require(shard.is_file(), "persisted_post_ingress_task_shard_missing")
     projected = load(shard)
-    require(projected.get("task_id") == task_id and projected.get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_shard_invalid")
+    require(projected.get("task_id") == task_id and valid_projected_state(projected), "persisted_post_ingress_shard_invalid")
     return shard
 
 
