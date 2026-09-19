@@ -63,3 +63,10 @@ No exact disputed historical sealed block or authentic 1,534-event / 50-checkpoi
 Task Registry generation 70 was re-read from canonical main `67d082eb648a65f4b1a3dc61b639354de7c3b933`; the task remains ACTIVE. Complete-tree inspection of AILeash revision `2d6715868bb2812b98d874ab17890ff89ece30d5` confirms co-location of v1.1 witness vocabulary/legend and chain commitment implementation, but did not yield an authentic historical sealed-block/export corpus. Consequently no exact disputed commitment has yet been bound to that revision, and A.2 R10 remains operator-disclosed rather than independently promoted.
 
 Fresh public GitHub searches for the v0.8 run's distinctive counts/identifiers did not retrieve the underlying 1,534-event / 50-checkpoint package or checkpoint-4714 proof material. The rerun therefore remains `COUNTERPART_REPORTED_COMPLETE`. The prior 784-record / 30-commitment run remains historical and settled; no classification or custodian-naming change is made here.
+
+
+## Generation 86 new walk/reset-disclosure source — 2026-09-19
+
+Upstream AILeash main `8edfe2b97e489c3d1f1a576505f95bfbe6c1b7d7` now contains a public current-chain walk source and a reset-disclosure source. `modules/walk.py` v1.1.0 publishes a genesis-to-tip traversal contract for the **post-2026-09-07** chain and exact preimage recomputation for public blocks. `modules/disclosure.py` v1.0.0 explicitly states that pre-reset blocks belong to an earlier chain and cannot be verified against the current chain; its source leaves the previous chain's final tip and height unrecorded in the disclosure.
+
+This narrows the unresolved R10 evidence question: current-chain walkability does not bridge the historical chain. No disputed pre-reset commitment was authenticated or bound to v1.1 by this source, so R10 remains operator-disclosed `NOT MET` without independent blanket failure/compliance promotion. The v0.8 1,534/50 package remains counterpart-reported complete, and the historical 784/30 run remains settled.
