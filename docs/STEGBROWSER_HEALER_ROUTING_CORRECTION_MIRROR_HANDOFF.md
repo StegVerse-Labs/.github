@@ -5,7 +5,7 @@ Goal Task ID: `STEG-BROWSER-HEALER-ROUTING-CORRECTION-001`
 Issue: `StegVerse-Labs/.github#2249`
 Parent context: `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`
 COSV: `40000100100000`
-Status: ACTIVE / CHECKED_OUT
+Status: CLOSED / RELEASED
 
 ## Defect
 
@@ -53,3 +53,8 @@ The corrected progression is:
 Healer remains available only as `TRIGGERED_REMEDIATION_ONLY`. Existing Healer source repairs/checkpoints remain historical evidence and may be used when independently triggered for remediation, but they are not prerequisites, carriers, authority sources, or completion gates for the immutable StegBrowser invocation.
 
 No second invocation was issued and no runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, or second-device dependency was added.
+
+
+## Canonical completion evidence
+
+Canonical correction PR `#2278` merged as `cc13725c6b056481e8ec5d2a33c75c6bca3ceee8` after exact-head validations passed. Task Registry generation `119` records `STEG-BROWSER-HEALER-ROUTING-CORRECTION-001` as `CLOSED / RELEASED`. Issue `#2249` is closed completed. Duplicate PRs `#2262`, `#2266`, and `#2279` were closed as superseded. The parent task must continue through direct `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` ownership; Healer remains `TRIGGERED_REMEDIATION_ONLY`.
