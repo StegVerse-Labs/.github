@@ -155,3 +155,32 @@ Evidence dispositions are unchanged:
 - The 784-record / 30-commitment run remains historical and settled under its prior R1-R10/custodian-naming treatment; it is not replaced or reinterpreted by the newer counterpart report.
 
 Next executable step: acquire one authentic disputed pre-rename sealed record/export with immutable block/sequence identity and provenance, then recompute its seal and bind its witness version/term to `2d6715868bb2812b98d874ab17890ff89ece30d5` or the actually applicable revision. In parallel, only an authentic v0.8 package should be used to verify the 1,534/50 claims. Do not repeat broad GitHub absence searches unless a new locator or artifact identifier is supplied.
+
+
+## Generation 86 newly published public-walk/reset-disclosure source — 2026-09-19
+
+Canonical Task Registry generation 86 was re-read before this continuation. The child task remains `ACTIVE` with COSV `50000000100000`.
+
+A new exact AILeash source locator was discovered without repeating the prior broad searches. Upstream main `8edfe2b97e489c3d1f1a576505f95bfbe6c1b7d7` contains `modules/walk.py` v1.1.0 (blob `4d221287de5356d42d9fff83ecd7373b7da60a24`) and `modules/disclosure.py` v1.0.0 (introduced by `7de6e4d09944533bbc0548af27820a7aef7d4eac`).
+
+### Source-inspected effect
+
+`walk.py` publishes a public current-chain traversal contract at `/x/walk/*` and gives the exact seal formula and preimage-recomputation procedure for public blocks. However, it explicitly states that the audit chain restarted from `GENESIS` on 2026-09-07 and that a block index quoted before that date belongs to the earlier chain.
+
+`disclosure.py` makes that reset boundary explicit and seals a fixed statement into the current chain. Its source states that pre-reset blocks are not part of the current chain and cannot be verified against it. The source also leaves `PREVIOUS_CHAIN_FINAL_TIP` and `PREVIOUS_CHAIN_FINAL_HEIGHT` empty; the resulting disclosure text therefore records those values as `not recorded in this disclosure` unless the source is changed before deployment. The statement further acknowledges that some records kept outside the chain, including completeness-period commitments, still quote block indexes from the earlier chain.
+
+This is material evidence because it establishes a concrete historical-chain discontinuity in the operator's current source. It does **not** itself establish the identity, contents, final tip, height, or v1.1 vocabulary binding of any disputed pre-reset commitment.
+
+### Evidence disposition
+
+- Current-chain public-walk capability: `SOURCE_INSPECTED_NEW_PUBLIC_VERIFICATION_SURFACE`.
+- 2026-09-07 reset and pre-reset/current-chain separation: `SOURCE_INSPECTED_OPERATOR_DISCLOSURE_CONTRACT`.
+- Previous-chain final tip/height: `NOT_RETAINED_IN_DISCLOSURE_SOURCE`.
+- Historical disputed commitment binding to `2d6715868bb2812b98d874ab17890ff89ece30d5`: still `NOT_ESTABLISHED`.
+- A.2 R10 remains operator-disclosed `NOT MET`; neither independent blanket failure nor compliance is promoted.
+- The 1,534-event / 50-checkpoint v0.8 rerun remains `COUNTERPART_REPORTED_COMPLETE`; no authentic package was surfaced by this new locator.
+- The 784-record / 30-commitment run remains historical and settled without reinterpretation.
+
+The public runtime endpoints named by the source (`https://sebbi.pro/x/walk/*` and `https://sebbi.pro/x/disclosure/*`) were not retrievable through the available web reader in this continuation, so no runtime response, sealed reset block, current-chain arithmetic, or live deployment is claimed. The source evidence alone is retained with that limitation.
+
+Next executable historical action: obtain an authentic pre-reset sealed block/export or an operator-retained prior-chain tip/height plus the exact block/sequence provenance needed to bridge the old chain. Only then recompute the historical seal and test whether its witness version/term binds to `2d6715868bb2812b98d874ab17890ff89ece30d5` or another applicable revision. Do not substitute current `/x/walk` blocks for pre-reset evidence.
