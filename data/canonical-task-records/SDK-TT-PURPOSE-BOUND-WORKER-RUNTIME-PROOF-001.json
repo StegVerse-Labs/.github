@@ -40,7 +40,8 @@
     "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml",
     "StegVerse-Labs/StegAgents@d518935020833b12045483c57d7877520d2a244c:src/purpose_bound_worker_runtime.py",
     "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:src/purpose_bound_worker_state_graph.py",
-    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py"
+    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@d6bb9e04d87c4b17d1fa1036c345becc62fe5bce:src/purpose_bound_worker_state_graph.py"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -157,7 +158,18 @@
       "task_4_worker_branch": "THREE_WORKERS_FROM_ONE_GOVERNED_PARENT_CLOSURE",
       "task_4_join": "THREE_WAY_RETIRED_MASTER_RECORDS_JOIN",
       "authentic_runtime_execution_attempted": false,
-      "authority_effect": "NONE_SOURCE_GRAPH_ONLY"
+      "authority_effect": "NONE_SOURCE_GRAPH_ONLY",
+      "atomic_task4_three_worker_binding": {
+        "source_complete": true,
+        "steagents_pr": 31,
+        "merge_commit": "d6bb9e04d87c4b17d1fa1036c345becc62fe5bce",
+        "action": "ADMIT_AND_ATOMICALLY_BIND_TASK4_THREE_WORKERS",
+        "exactly_three_distinct_bindings_required": true,
+        "active_without_all_three_bindings_possible": false,
+        "child_binding_without_parent_admission_possible": false,
+        "all_children_consume_same_parent_master_records_closure": true,
+        "true_concurrency_preserved": true
+      }
     }
   },
   "source_refinement": {
