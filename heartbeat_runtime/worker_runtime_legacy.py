@@ -16,6 +16,7 @@ import time
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .independent_oscillator import current_reference
+from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -153,6 +154,63 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         self.assignment_record_path.parent.mkdir(parents=True, exist_ok=True)
         with self.assignment_record_path.open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(record, sort_keys=True) + "\n")
+
+
+    def _custody_assignment_transition(
+        self,
+        *,
+        task: dict[str, Any],
+        trigger: dict[str, Any],
+        record: dict[str, Any],
+        claim_id: str,
+        fencing_token: int,
+        worker_instance_id: str,
+    ) -> dict[str, Any]:
+        transition_id = "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
+        evidence_sha = sha256_uri(record).split(":", 1)[1]
+        required_evidence = {
+            "evidence_id": f"workercoordinator-assignment:{claim_id}",
+            "evidence_type": "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT",
+            "origin_transition_id": transition_id,
+            "encoding": "canonical-json",
+            "sha256": evidence_sha,
+            "content": dict(record),
+        }
+        receipt = build_state_receipt(
+            transition_id=transition_id,
+            transition_sequence=1,
+            subject_or_correlation_id=str(task.get("task_id") or ""),
+            transition_outcome="OBSERVED",
+            prior_state_ref_or_hash=task.get("last_checkpoint_ref"),
+            resulting_state_ref_or_hash=sha256_uri(record),
+            governance_decision_ref_where_applicable=None,
+            transition_evidence={
+                "task_id": task.get("task_id"),
+                "claim_id": claim_id,
+                "fencing_token": fencing_token,
+                "worker_instance_id": worker_instance_id,
+                "packet_id": trigger.get("packet_id"),
+                "trigger_source": trigger.get("source"),
+                "workercoordinator_grants_transition_authority": False,
+                "master_records_grants_claim_authority": False,
+            },
+            required_evidence_manifest=[required_evidence],
+            proof_scope="WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT_ONLY",
+            proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_CUSTODY_ONLY",
+        )
+        result = submit_state_receipt(receipt)
+        return {
+            "state": result.get("state"),
+            "reason": result.get("reason"),
+            "transition_id": transition_id,
+            "receipt_sha256": result.get("receipt_sha256"),
+            "reconstructed_receipt_sha256": result.get("reconstructed_receipt_sha256"),
+            "reconstruction_status": result.get("reconstruction_status"),
+            "required_evidence_validation_status": result.get("required_evidence_validation_status"),
+            "required_evidence_count": result.get("required_evidence_count"),
+            "master_record_ref": result.get("master_record_ref"),
+            "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+        }
 
     def _semantic_state_preclaim(self, task: dict[str, Any]) -> tuple[bool, str]:
         """Revalidate tasks bound to either semantic or operational state vectors.
@@ -302,11 +360,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             self._event(events, carrier_epoch, "assignment_trigger_deferred", task_id=task_id, packet_id=trigger.get("packet_id"), reason="EXECUTOR_NOT_RESOLVED", authority_effect=False)
             return False
 
-        generation = int(registry.get("generation", 0)) + 1
+        previous_generation = int(registry.get("generation", 0))
+        generation = previous_generation + 1
         minimum_fence = admission.get("minimum_fencing_token_exclusive") if independent else None
         if independent and isinstance(minimum_fence, int) and generation <= minimum_fence:
             generation = minimum_fence + 1
-        registry["generation"] = generation
         claim_id = f"SHWP-{task_id}-G{generation}"
         worker_instance_id = f"{worker['worker_id']}-HB{carrier_epoch}-G{generation}"
         timer, record = bind_assignment_from_trigger(
@@ -318,6 +376,51 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             allocated_hb_units=int(budget),
             expiry_basis=expiry_basis,
         )
+        if independent:
+            record["source_admission_ref"] = admission.get("authority_source")
+            record["source_carrier_event_ref"] = None
+        else:
+            record["source_carrier_event_ref"] = f"events/heartbeat-runtime.jsonl#packet_id={trigger.get('packet_id')}"
+        record["worker_runtime_event_ref"] = f"events/worker-runtime.jsonl#claim_id={claim_id}"
+        record["terminal_destination"] = "master-records/orchestration"
+
+        assignment_custody = self._custody_assignment_transition(
+            task=task,
+            trigger=trigger,
+            record=record,
+            claim_id=claim_id,
+            fencing_token=generation,
+            worker_instance_id=worker_instance_id,
+        )
+        assignment_custody_complete = (
+            assignment_custody.get("state") == "RECORDED"
+            and assignment_custody.get("reconstruction_status") == "PASS"
+            and assignment_custody.get("required_evidence_validation_status") == "PASS"
+            and isinstance(assignment_custody.get("receipt_sha256"), str)
+            and assignment_custody.get("receipt_sha256") == assignment_custody.get("reconstructed_receipt_sha256")
+        )
+        if not assignment_custody_complete:
+            self._event(
+                events,
+                carrier_epoch,
+                "worker_assignment_master_records_blocked",
+                task_id=task_id,
+                claim_id=claim_id,
+                fencing_token=generation,
+                packet_id=trigger.get("packet_id"),
+                master_records_state=assignment_custody.get("state"),
+                master_records_reason=assignment_custody.get("reason"),
+                reconstruction_status=assignment_custody.get("reconstruction_status"),
+                required_evidence_validation_status=assignment_custody.get("required_evidence_validation_status"),
+                receipt_sha256=assignment_custody.get("receipt_sha256"),
+                reconstructed_receipt_sha256=assignment_custody.get("reconstructed_receipt_sha256"),
+                authority_effect=False,
+            )
+            task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"
+            task["reconciliation_reason"] = str(assignment_custody.get("reason") or "WORKER_ASSIGNMENT_MASTER_RECORDS_CUSTODY_INCOMPLETE")
+            return False
+
+        registry["generation"] = generation
         task.update({
             "state": "ACTIVE",
             "executor_binding": "BOUND",
@@ -345,13 +448,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         })
         worker["status"] = "BUSY"
         worker["last_seen_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-        if independent:
-            record["source_admission_ref"] = admission.get("authority_source")
-            record["source_carrier_event_ref"] = None
-        else:
-            record["source_carrier_event_ref"] = f"events/heartbeat-runtime.jsonl#packet_id={trigger.get('packet_id')}"
-        record["worker_runtime_event_ref"] = f"events/worker-runtime.jsonl#claim_id={claim_id}"
-        record["terminal_destination"] = "master-records/orchestration"
+        record["canonical_master_records_transition"] = assignment_custody
         self._append_assignment_record(record)
         evidence_ref = f"events/master-records-worker-assignment.jsonl#packet_id={trigger.get('packet_id')}"
         if evidence_ref not in task.setdefault("evidence_refs", []):
@@ -368,6 +465,10 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             packet_id=trigger.get("packet_id"),
             assignment_timer_units=budget,
             master_records_binding_ref=evidence_ref,
+            master_records_transition_id=assignment_custody.get("transition_id"),
+            master_records_receipt_sha256=assignment_custody.get("receipt_sha256"),
+            master_records_reconstruction_status=assignment_custody.get("reconstruction_status"),
+            master_records_required_evidence_validation_status=assignment_custody.get("required_evidence_validation_status"),
             independent_task_control=independent,
             carrier_granted_authority=False,
             authority_effect=False,
