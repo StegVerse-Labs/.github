@@ -1,0 +1,162 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+  "authority": {
+    "authority_source": "data/canonical-task-records/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json + existing STEGAGENTS-GOVERNED-RUNTIME-001 runtime owner + TV warrant/policy + StegCore/InTr",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "credential_value_available_to_worker": false,
+    "github_token_required": false,
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "request_grants_execution_authority": false,
+    "second_machine_required": false,
+    "policy_version": "sdk-tt-richard-seam-authentic-runtime-v0.1"
+  },
+  "task": {
+    "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "data/canonical-task-records/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json",
+    "canonical_lineage_key": "sdk:tt-richard-seam:authentic-runtime",
+    "parent_task_id": "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+    "derivation_depth": 1,
+    "derivation_reason": "Authentic governed execution of the short-lived actor seam proven semantically by Test 2.",
+    "priority": "runtime",
+    "source_refs": [
+      "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+      "workers/stegagents_governed_runtime_worker.py",
+      "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+      "StegVerse-Labs/StegAgents:src/atomic_task_worker_activation_runtime.py"
+    ],
+    "dependencies": [],
+    "coordination_refs": [
+      "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+      "STEGAGENTS-GOVERNED-RUNTIME-001"
+    ],
+    "source_state_vector_ref": "control/task-vectors/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json",
+    "runtime_predecessor_reconstruction_required": false,
+    "runtime_capability_provider_task_id": "STEGAGENTS-GOVERNED-RUNTIME-001"
+  },
+  "execution": {
+    "required_capabilities": [
+      "stegagents_atomic_task_worker_activation"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/*.json",
+      "receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime.latest.json",
+      "receipts/stegagents-governed-runtime/master-records.sqlite"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 1,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "stegagents_governed_runtime"
+  },
+  "runtime_routing": {
+    "map_ref": "control/runtime-profile-map.json",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "canonical-work-coordination-runtime-v1"
+    ],
+    "routing_ready_for_workercoordinator_review": true,
+    "selection_grants_authority": false,
+    "authority_effect": "NONE_ROUTING_READINESS_ONLY"
+  },
+  "activation": {
+    "carrier": "heartbeat_reference_only",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json#authority",
+    "checkout_policy": "fresh_independent_workercoordinator_claim_then_atomic_constitutive_activation",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier_trigger_required": false,
+    "constitutive_transition_required": true,
+    "constitutive_transition_id": "ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
+    "project_active_only_after_master_records_closure": true,
+    "invoke_immediately_after_projection": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+      ],
+      "requires_existing_separated_carrier_reference": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime.latest.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "purpose_bound_worker_request": {
+    "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+    "transition_cell": {
+      "cell_id": "tt-cell-purpose-worker-001",
+      "protocol_version": "local-demo-v1",
+      "pre_state": {
+        "worker_live": false
+      },
+      "candidate": {
+        "operation_id": "tracked-task-001",
+        "operation_class": "ARBITRARY_TRACKED_TASK",
+        "purpose": "Analyze a supplied text payload for a tracked integrity summary.",
+        "required_capability": "text.integrity_summary",
+        "max_lifetime_seconds": 30,
+        "payload": {
+          "text": "StegVerse tracks this arbitrary local worker task."
+        },
+        "lifetime_policy": {
+          "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+          "profile": "DEMONSTRATION",
+          "cost_analysis": {
+            "task_cost_basis": "deterministic local integrity summary",
+            "expected_compute_units": 1,
+            "external_cost_usd_ceiling": 0
+          },
+          "time_budget_seconds": {
+            "expected_task_execution": 6,
+            "known_delay": 4,
+            "inferred_unknown_delay_reserve": 8,
+            "records_decomposition": 7,
+            "safety_reserve": 5
+          },
+          "derived_max_lifetime_seconds": 30,
+          "production_recompute_required": true,
+          "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+          "decomposition_target": "RECORDS_ENABLED_PACKET",
+          "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+        }
+      }
+    }
+  },
+  "completion": {
+    "next_authorized_action": "Prepare and custody a fresh WorkerCoordinator claim/fence while T remains HANDOFF_READY, then use the existing StegAgents consumer to obtain TV/TVC verification and StegCore/InTr admission of ACTIVATE_TASK_AND_CREATE_BIND_WORKER. Only after Master Records closes that constitutive transition may WorkerCoordinator project ACTIVE T<->W.",
+    "terminal_when": [
+      "authentic_prestate_task_handoff_ready_and_worker_absent=true",
+      "authentic_fresh_workercoordinator_claim_fence_observed=true",
+      "authentic_required_warrant_policy_verified=true",
+      "authentic_intr_atomic_activation_worker_binding_admission=true",
+      "authentic_master_records_constitutive_transition_recorded=true",
+      "authentic_master_records_constitutive_reconstruction_match=true",
+      "active_task_and_new_worker_bound_in_same_transition=true"
+    ]
+  },
+  "block": {
+    "block_reason": "Authentic Test 3 one-shot has not yet run. Source must first prevent pre-InTr ACTIVE task/worker exposure.",
+    "dependency": "fresh WorkerCoordinator claim/fence -> TV/TVC -> StegCore/InTr ACTIVATE_TASK_AND_CREATE_BIND_WORKER -> Master Records closure -> ACTIVE projection",
+    "observer": "single canonical WorkerCoordinator plus authoritative Master Records custody/reconstruction",
+    "recheck_trigger": "next authentic Test 3 state transition",
+    "next_check": "authoritative Master Records constitutive transition receipt",
+    "escalation_condition": "duplicate runtime/worker/adapter authority, pre-InTr ACTIVE projection, provider credential exposure, or second-machine requirement",
+    "block_expires_at": null
+  }
+}
