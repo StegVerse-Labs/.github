@@ -692,3 +692,8 @@ The existing `sv002_org_runtime_activation` request/selector is being repaired i
 ### SV002 REQUEST_BOUND canonical carrier reconciliation
 
 PR #41 in StegVerse-002 and PR #2165 in this repository close the two source gaps that prevented the current deterministic rerun from reaching canonical Master Records: exact REQUEST_BOUND bytes are now required evidence, and the existing `sv002_org_runtime_activation` WorkerCoordinator consumer now invokes the current rerun callable instead of the retired one-shot path. Runtime proof remains pending authentic consumption on the existing carrier.
+
+
+### SDK TT purpose-bound worker runtime coordination hygiene
+
+Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` as non-blocking adjacent evidence for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. Surviving purpose-bound branch refs are historical (behind `main`, zero unique commits). Authentic runtime execution remains unattempted because the existing StegAgents retained-root/WorkerCoordinator prerequisites are not satisfied.
