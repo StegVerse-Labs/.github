@@ -91,6 +91,8 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertIn('TARGETED = Path("scripts/refresh_and_execute_resident_task.py")', source)
         self.assertIn('claim.endswith(f"-G{fence}")', source)
         self.assertIn('"workercoordinator_claim_fence_observed":True', source)
+        self.assertIn('STEGVERSE_STEGBROWSER_INVOCATION_NONCE', source)
+        self.assertIn('"invocation_request_nonce": NONCE', source)
         self.assertIn('"organization_local_intr_ingress_receipt_verified":True', source)
         self.assertIn('"node_interlock_lease_runtime_correlation_verified":True', source)
         for key in ("manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "lease_id", "runtime_id", "state_root_binding"):
@@ -104,6 +106,8 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertIn('organization_local_intr_ingress_receipt_verified', source)
         self.assertIn('authentic_intr_ingress_observed', source)
         self.assertIn('node_interlock_lease_runtime_correlation_verified', source)
+        manifest_runner = (ROOT / "scripts/run_stegbrowser_manifest_bound_runtime.py").read_text()
+        self.assertIn('STEGVERSE_STEGBROWSER_INVOCATION_NONCE', manifest_runner)
         self.assertNotIn('Remote_Desktop', source)
         self.assertNotIn('RENDER', source)
 
