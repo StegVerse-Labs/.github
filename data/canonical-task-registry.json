@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 63,
+  "generation": 64,
   "status": "SDK_PRODUCT_PROCESSING_PROVENANCE_RETIRED_COMPLETE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -3752,7 +3752,7 @@
       "correlation_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
       "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
       "parent_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
-      "goal": "Determine from authentic existing resident outputs whether the frozen v0.3 rerun callable was never invoked or wrote RERUN_REQUEST_BOUND.json before a later failure, preserve the exact validated request-bound identity through the existing callable/executor evidence path, and promote the parent REQUEST_BOUND predicate only from authentic same-execution bytes.",
+      "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes validated and reconstructed through canonical Master Records custody, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
       "coordination_state": "IN_PROGRESS",
       "source_refs": [
         "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
@@ -3760,7 +3760,9 @@
         "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
         "StegVerse-002/.github:resident-runtime/resident_executor.py",
         "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
-        "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
+        "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
+        "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
+        "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f"
       ],
       "targets": {
         "organizations": [
@@ -3800,10 +3802,23 @@
           "ref": "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
         },
         {
+          "dependency_id": "DEP-SV002-REQUEST-BOUND-REQUIRED-EVIDENCE-REPAIR",
+          "kind": "EVIDENCE",
+          "state": "RESOLVED",
+          "ref": "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f"
+        },
+        {
+          "dependency_id": "DEP-SV002-CANONICAL-CARRIER-RERUN-BINDING",
+          "kind": "EVIDENCE",
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f"
+        },
+        {
           "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNRESOLVED",
-          "ref": "StegVerse-002/.github:resident-runtime/state/resident-executor.latest.json"
+          "ref": "StegVerse-Labs/.github:receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
+          "disposition": "REQUIRE_EXISTING_CANONICAL_RESIDENT_REQUEST_CONSUMPTION_OF_CURRENT_RERUN_CALLABLE_AND_REQUEST_BOUND_CUSTODY"
         }
       ],
       "blockers": [],
@@ -3815,12 +3830,12 @@
         "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
         "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
         "master-records/orchestration:SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_MIRROR_HANDOFF.md",
-        "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
+        "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
+        "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
+        "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f"
       ],
       "expected_evidence_predicates": [
         "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
-        "AUTHENTIC_RESIDENT_EXECUTOR_HEARTBEAT_OBSERVED",
-        "SV002_CALLABLE_ATTEMPT_STATE_OBSERVED",
         "REQUEST_BOUND_EXACT_BYTES_OBSERVED",
         "REQUEST_BOUND_FIELDS_VALIDATED",
         "REQUEST_BOUND_SAME_EXECUTION_CORRELATED",
@@ -3828,7 +3843,13 @@
         "NO_NEW_RUNTIME_OR_AUTHORITY_SURFACE",
         "REQUEST_BOUND_CANONICAL_STATE_RECEIPT_EMITTED",
         "REQUEST_BOUND_MASTER_RECORDS_RECORDED",
-        "REQUEST_BOUND_MASTER_RECORDS_RECONSTRUCTION_PASS"
+        "REQUEST_BOUND_MASTER_RECORDS_RECONSTRUCTION_PASS",
+        "CANONICAL_RESIDENT_REQUEST_BOUND_TO_CURRENT_RERUN_CALLABLE",
+        "AUTHENTIC_CANONICAL_RESIDENT_REQUEST_DISPATCH_OBSERVED",
+        "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
+        "SV002_CURRENT_RERUN_CALLABLE_ATTEMPT_OBSERVED",
+        "REQUEST_BOUND_EXACT_BYTES_REQUIRED_EVIDENCE_VALIDATED",
+        "REQUEST_BOUND_MASTER_RECORDS_RECEIPT_HASH_EQUALITY"
       ],
       "runtime_requirements": {
         "capabilities": [
