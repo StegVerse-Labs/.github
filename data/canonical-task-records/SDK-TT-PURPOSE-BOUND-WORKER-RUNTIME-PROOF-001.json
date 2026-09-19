@@ -34,7 +34,10 @@
     "StegVerse-Labs/StegCore@68b7e38f40e8a31fbd8cd5953bcf87199619f6cd:src/stegcore/transaction_lifecycle.py",
     "StegVerse-org/StegVerse-SDK@9de805315872b9b615d55f62a5d853acc6c0765a:stegverse/sovereign_validation_runtime.py",
     "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:src/purpose_bound_worker_runtime.py",
-    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py"
+    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:scripts/issue_tv_execution_warrant_resident.py",
+    "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:deploy/systemd/stegtvc-tv-execution-warrant@.service",
+    "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -71,7 +74,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "AUTHENTIC_RESIDENT_TARGETED_ONE_SHOT_REQUIRED_WITH_SAME_RUN_MASTER_RECORDS_CLOSED_CLAIM_FENCE_TV_TVC_INTR_MATERIALIZED_INVOCATION_COMPLETION_RETIREMENT_POST_RETIREMENT_NO_AUTHORITY_AND_RECORDS_ONLY_RECONSTRUCTION",
+  "remaining_predicate": "AUTHENTIC_TVC_RESIDENT_ED25519_CREDENTIAL_PRESENT_THEN_FRESH_WARRANT_ISSUED_AND_SAME_RUN_TARGETED_ONE_SHOT_MASTER_RECORDS_CHAIN_COMPLETE",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -79,7 +82,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 83,
+    "reconciled_against_registry_generation": 116,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -106,9 +109,11 @@
       "intr_receipt_is_materialized_predecessor": true,
       "post_retirement_continued_authority_false_present": true,
       "records_only_closeout_present": true,
-      "authorized_resident_execution_surface_available": false,
-      "authentic_runtime_execution_attempted": false
-    }
+      "authorized_resident_execution_surface_available": null,
+      "authentic_runtime_execution_attempted": false,
+      "remote_desktop_device_is_runtime_prerequisite": false
+    },
+    "execution_warrant_authority_repair_complete": true
   },
   "source_refinement": {
     "steagents_pr": 21,
@@ -322,5 +327,32 @@
     "custody_authority": "MASTER_RECORDS",
     "github_runtime_authority": "NONE",
     "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+  },
+  "execution_warrant_authority_repair": {
+    "credential_authority": "TV/TVC",
+    "tv_pr": 19,
+    "tv_merge": "b1ab19b3c688075c6f408f409f04c037e179ab9f",
+    "tvc_pr": 446,
+    "tvc_merge": "fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6",
+    "issuer_id": "tv.warrant.resident",
+    "public_key_id": "tv.warrant.resident.ed25519.001",
+    "credential_transport": "SYSTEMD_LOADCREDENTIAL",
+    "credential_name": "TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM",
+    "github_runtime_authority": "NONE",
+    "source_validation": {
+      "tv_exact_head": "c133e61e1bc4645760c110830077866198c99d0a",
+      "tv_runs": [
+        35464038144,
+        35464038097,
+        35464038094,
+        35464038256
+      ],
+      "tv_all_success": true,
+      "tvc_exact_head": "dd9a20d8d1ef61ac8e05eccf78125035c4cac423",
+      "tvc_run": 35464198311,
+      "tvc_success": true
+    },
+    "remaining_authentic_boundary": "RESIDENT_ED25519_SIGNING_CREDENTIAL_MATERIALIZATION_AND_WARRANT_ISSUANCE",
+    "authentic_warrant_issued": false
   }
 }
