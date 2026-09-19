@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TASK = "STEGAGENTS-GOVERNED-RUNTIME-001"
 COSV = "71000000101001"
+PURPOSE_TASK = "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+PURPOSE_COSV = "71000000111111"
 SELECTOR = "stegagents_governed_runtime_targeted"
 GOVERNANCE_ENV = (
     "STEGVERSE_WARRANT_JSON",
@@ -75,3 +77,18 @@ def test_governance_warrant_inputs_are_carried_end_to_end_without_becoming_provi
     assert 'warrant_verified' in worker
     assert 'policy_bundle_verified' in worker
     assert 'provider credential material exposed to StegAgents' in worker
+
+
+def test_purpose_bound_graph_request_reuses_same_targeted_resident_consumer():
+    request = json.loads((ROOT / "control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json").read_text())
+    assert request["task_id"] == PURPOSE_TASK
+    assert request["cosv_task_vector"] == PURPOSE_COSV
+    assert request["mode"] == "TARGETED_INDEPENDENT_TASK_CONTROL"
+    assert request["argv"] == ["--task-id", PURPOSE_TASK, "--cosv-task-vector", PURPOSE_COSV]
+    assert request["request_granted_authority"] is False
+    assert request["heartbeat_grants_execution_authority"] is False
+    assert request["second_machine_required"] is False
+    consumer = (ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py").read_text()
+    assert "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001" in consumer
+    assert "71000000111111" in consumer
+    assert "PURPOSE_REQUEST_REL" in consumer

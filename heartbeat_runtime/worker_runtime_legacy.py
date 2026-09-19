@@ -480,6 +480,44 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         record["worker_runtime_event_ref"] = f"events/worker-runtime.jsonl#claim_id={claim_id}"
         record["terminal_destination"] = "master-records/orchestration"
 
+        purpose_graph_claim_bundle = None
+        graph_contract = handoff.get("state_dependent_graph") if isinstance(handoff.get("state_dependent_graph"), dict) else None
+        if (
+            task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+            and isinstance(graph_contract, dict)
+            and graph_contract.get("enabled") is True
+        ):
+            labels = ("CASE_1", "CASE_2", "CASE_3", "TASK4_A", "TASK4_B", "TASK4_C")
+            claims = []
+            for label in labels:
+                if label == "CASE_1":
+                    child_claim_id = claim_id
+                    child_instance_id = worker_instance_id
+                else:
+                    child_claim_id = f"SHWP-{task_id}-{label}-G{generation}"
+                    child_instance_id = f"{worker['worker_id']}-HB{carrier_epoch}-{label}-G{generation}"
+                claims.append({
+                    "label": label,
+                    "claim_id": child_claim_id,
+                    "fencing_token": generation,
+                    "worker_id": worker["worker_id"],
+                    "worker_instance_id": child_instance_id,
+                })
+            purpose_graph_claim_bundle = {
+                "schema": "stegverse.workercoordinator-purpose-bound-state-graph-claim-bundle/v1",
+                "task_id": task_id,
+                "cosv_task_vector": ((task.get("machine_readable_state") or {}).get("cosv") or {}).get("vector"),
+                "group_claim_id": claim_id,
+                "group_fencing_token": generation,
+                "claims": claims,
+                "case1_is_outer_assignment": True,
+                "case2_case3_admission_requires_predecessor_master_records_closure": True,
+                "task4_atomic_three_child_binding_required": True,
+                "claim_authority": "WORKERCOORDINATOR",
+                "authority_effect": "EXISTING_WORKERCOORDINATOR_CLAIM_AUTHORITY_ONLY",
+            }
+            record["purpose_bound_state_graph_claim_bundle"] = purpose_graph_claim_bundle
+
         assignment_custody = self._custody_assignment_transition(
             task=task,
             trigger=trigger,
@@ -742,6 +780,9 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             return True
 
         registry["generation"] = generation
+        if purpose_graph_claim_bundle is not None:
+            task["purpose_bound_state_graph_claim_bundle"] = purpose_graph_claim_bundle
+            task["claim_fence_master_records_transition"] = dict(assignment_custody)
         task.update({
             "state": "ACTIVE",
             "executor_binding": "BOUND",

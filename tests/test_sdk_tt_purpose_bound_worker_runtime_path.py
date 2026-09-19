@@ -174,3 +174,24 @@ def test_purpose_bound_targeted_runtime_reuses_shared_worker_without_runtime_own
     assert fragment["shared_worker_provider_fragment_refs"] == [
         "control/worker-registry.d/stegagents-governed-runtime-001.json"
     ]
+
+
+def test_four_case_graph_is_wired_through_existing_workercoordinator_and_worker():
+    runtime = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text()
+    worker = (ROOT / "workers/stegagents_governed_runtime_worker.py").read_text()
+    handoff = json.loads((ROOT / "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json").read_text())
+
+    assert "purpose_bound_state_graph_claim_bundle" in runtime
+    assert "claim_authority" in runtime and "WORKERCOORDINATOR" in runtime
+    assert "CASE_1" in runtime and "CASE_2" in runtime and "CASE_3" in runtime
+    assert "TASK4_A" in runtime and "TASK4_B" in runtime and "TASK4_C" in runtime
+    assert "claim_fence_master_records_transition" in runtime
+
+    assert "build_state_graph_request" in worker
+    assert "src.purpose_bound_worker_state_graph" in worker
+    assert "WORKERCOORDINATOR_CLAIM_FENCE_BOUND" in worker
+    assert "PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN" in worker
+    assert handoff["state_dependent_graph"]["enabled"] is True
+    assert len(handoff["state_dependent_graph"]["single_worker_requests"]) == 3
+    assert len(handoff["state_dependent_graph"]["task4_worker_requests"]) == 3
+    assert handoff["state_dependent_graph"]["task4"]["worker_count"] == 3
