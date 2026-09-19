@@ -850,3 +850,8 @@ The existing Purpose-Bound Worker validation workflow now runs the four focused 
 ### Runnable Test 3 acceptance
 
 Test 3 has a dedicated executable entrypoint at `scripts/run_sdk_tt_richard_seam_test3.py` and a dedicated `Test 3 Richard Seam Acceptance` workflow. It runs the current .github Test 3/runtime-path modules together with the current StegAgents purpose-bound runtime module and emits one machine-readable PASS/FAIL result.
+
+
+### Test 3 current runtime dependency
+
+The current executable Test 3 state no longer treats control-plane source-package relay/materialization as a runtime predecessor. The authoritative executable handoff has no task dependencies, requires no carrier trigger, and the Test 3 WorkerCoordinator fragment identifies `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T` as the next actual transition. Each subsequent governed state change remains gated by canonical Master Records `RECORDED`, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality before machine-owned progression.

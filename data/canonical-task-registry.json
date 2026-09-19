@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 101,
-  "status": "ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTERED",
+  "generation": 102,
+  "status": "SDK_TT_RICHARD_SEAM_RUNTIME_DEPENDENCY_CORRECTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5397,7 +5397,7 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION_REQUIRED_BEFORE_RESIDENT_DISPATCH_VISIT",
+      "remaining_predicate": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
@@ -5415,7 +5415,7 @@
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
         "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        "next_actual_transition": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED",
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -5504,7 +5504,15 @@
         "runnable_test3_dotgithub_tests": "18_PASS",
         "runnable_test3_stegagents_validation": "PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12",
         "runnable_test3_marker": "TEST3_RICHARD_SEAM_ACCEPTANCE_PASS",
-        "dedicated_test3_runner_merged": true
+        "dedicated_test3_runner_merged": true,
+        "source_package_relay_is_current_runtime_predecessor": false,
+        "runtime_dependency_reconciled_from_executable_handoff": true,
+        "runtime_dependency_reconciliation_basis": [
+          "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json#task.dependencies=[]",
+          "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json#activation.carrier_trigger_required=false",
+          "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json#completion.next_authorized_action",
+          "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json#admissible_existence.runtime_dependency_correction.next_actual_transition"
+        ]
       }
     },
     {
