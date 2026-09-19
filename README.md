@@ -784,3 +784,8 @@ Canonical sources:
 docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md
 contracts/conversation-evidence-service-performance-publication-contract.v1.json
 ```
+
+
+## StegHealth KV/Interlock production endpoint coordination
+
+Canonical Task Registry tracks `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` as ACTIVE/CHECKED_OUT. The task reuses the existing HeartBeat-separated native WorkerCoordinator, canonical resident dispatcher, Interlock/InTr, TV/TVC, and Master Records paths. Registration is coordination only and does not prove production KV/Interlock execution or satisfy any runtime predicate.
