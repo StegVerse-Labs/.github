@@ -950,3 +950,8 @@ PR #2285 merged the existing RTC006 -> RTC007 continuation seam. The exact SDK r
 ### Task 4 atomic three-worker binding — 2026-09-19
 
 StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4's common-parent semantics: one governed parent admission atomically carries all three distinct child bindings; all three children consume the same parent Master Records closure and then execute concurrently; terminal aggregation still requires the three-way join of all three validated RETIRED closures.
+
+
+#### Conversation evidence synthetic runtime proof path
+
+`CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` now has an explicit reusable Canonical Work request, WorkerCoordinator registration, process adapter, executable handoff, and synthetic-only runtime worker. The worker accepts only a fresh fenced WorkerCoordinator invocation, writes only `receipts/conversation-evidence-ingestion/**`, and reuses the existing canonical Master Records state-transition custody client. It cannot mark the task complete unless authoritative custody returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality. This staging creates no public Site projection and uses no connected-device inventory or device prerequisite.
