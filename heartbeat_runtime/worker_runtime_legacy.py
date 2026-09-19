@@ -11,9 +11,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 import json
+import time
 
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
+from .independent_oscillator import current_reference
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -422,7 +424,19 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         self._persist = write
         self._acquire()
         try:
-            carrier_epoch, carrier_generation = self._carrier_reference()
+            targeted = target_task_id is not None
+            carrier_reference_observed = self.carrier_state_path.exists()
+            if carrier_reference_observed:
+                carrier_epoch, carrier_generation = self._carrier_reference()
+                coordination_reference_source = "SEPARATED_HEARTBEAT_CARRIER"
+            elif targeted:
+                reference = current_reference(now_ns=time.time_ns())
+                carrier_epoch = int(reference["epoch"])
+                carrier_generation = int(reference["generation"])
+                coordination_reference_source = "INDEPENDENT_OSCILLATOR_REFERENCE_ONLY"
+            else:
+                carrier_epoch, carrier_generation = self._carrier_reference()
+                coordination_reference_source = "SEPARATED_HEARTBEAT_CARRIER"
             registry = self._load(self.registry_path)
             registry_fragments_applied = self._apply_registry_fragments(registry, task_id_filter=target_task_id)
             cost_log = self._load(self.cost_log_path) if self.cost_log_path.exists() else {
@@ -432,8 +446,9 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             }
             state = self._load_runtime_state()
             state["runtime_tick"] = int(state.get("runtime_tick", 0)) + 1
-            state["last_observed_carrier_epoch"] = carrier_epoch
-            state["last_observed_carrier_generation"] = carrier_generation
+            if carrier_reference_observed:
+                state["last_observed_carrier_epoch"] = carrier_epoch
+                state["last_observed_carrier_generation"] = carrier_generation
             state["carrier_controls_timer"] = False
             seen = set(str(item) for item in state.get("seen_assignment_packet_ids", []))
             now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -441,7 +456,6 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
 
             if registry_fragments_applied:
                 self._event(events, carrier_epoch, "worker_registry_fragments_applied", fragment_refs=registry_fragments_applied, fragment_count=len(registry_fragments_applied), authority_effect=False, github_token_required=False)
-            targeted = target_task_id is not None
             reconciled = [] if targeted else self._reconcile_orphan_recovery_quarantines(registry, carrier_epoch, events)
 
             for task in list(registry.get("tasks", [])):
@@ -468,8 +482,12 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             result = {
                 "schema": "stegverse.worker-runtime-cycle-result/v1",
                 "worker_runtime_tick": state["runtime_tick"],
-                "observed_carrier_epoch": carrier_epoch,
-                "observed_carrier_generation": carrier_generation,
+                "observed_carrier_epoch": carrier_epoch if carrier_reference_observed else None,
+                "observed_carrier_generation": carrier_generation if carrier_reference_observed else None,
+                "coordination_reference_epoch": carrier_epoch,
+                "coordination_reference_generation": carrier_generation,
+                "coordination_reference_source": coordination_reference_source,
+                "carrier_reference_observed": carrier_reference_observed,
                 "carrier_epoch_advanced_by_worker_runtime": False,
                 "assignment_packets_observed": len(packets),
                 "independent_task_control_activations": independent_activated,

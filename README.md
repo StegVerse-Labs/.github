@@ -713,3 +713,8 @@ Canonical Goal Task `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` remains
 ### SDK evaluator dispatch-transition custody carriage
 
 The existing resident dispatcher now carries an attempted `sdk_evaluator_governance_posture` `RESIDENT_REQUEST_DISPATCH_VISIT` into canonical Master Records custody using the existing `workers/canonical_state_transition_custody.py` client. Required evidence binds selector, consumer, attempted flag, exact task/request identity, and machine-result digest/content. This changes no dispatch authority or execution semantics and does not itself prove runtime execution; progression still requires Master Records RECORDED, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality.
+
+
+### SDK TT direct WorkerCoordinator admission repair
+
+The purpose-bound runtime goal now follows its generation-71 direct path without Healer/resident-root gating. Targeted independent execution no longer requires a pre-existing separated carrier, source-lineage parentage no longer implies a runtime predecessor reconstruction, the StegAgents runtime owner is treated as a capability provider rather than a completed dependency, and target-scoped fragment loading imports the existing shared StegAgents worker provider without duplicating its definition. Authentic runtime execution and Master Records transition closure remain unclaimed.
