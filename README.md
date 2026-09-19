@@ -922,3 +922,6 @@ When the canonical Test 3 resident request is present, the native resident dispa
 
 
 SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.
+
+
+SDK TT purpose-bound runtime: the missing TV/TVC Ed25519 execution-warrant issuer path is repaired through TVC PR #446 and TV PR #19. Credential authority remains TV/TVC and signing remains resident-only through systemd LoadCredential. Authentic progression now requires actual resident Ed25519 credential presence, fresh exact-commit warrant issuance, then the existing targeted one-shot; Remote Desktop/device presence is not a task prerequisite.
