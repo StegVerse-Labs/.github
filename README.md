@@ -547,7 +547,7 @@ The same existing bridge is now addressable through reusable identity `RT-CANONI
 
 ## StegBrowser Master Records provider-neutral binding
 
-Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Site PR `#1380` and StegVerse-org/LLM-adapter PR `#344` have merged the applicable source repair: the immutable StegBrowser custody receipt now discovers a hash/health-verified StegVerse gateway rather than assuming the static Site origin hosts Master Records, browser credential material is prohibited, the gateway reuses the existing server-side TV/TVC Master Records credential role, and the sole custody authority remains `master-records/orchestration`.
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `RETIRED / PROMPT_LIMIT_DECOMPOSED`, COSV `40000100100000`. Site PR `#1380` and StegVerse-org/LLM-adapter PR `#344` have merged the applicable source repair: the immutable StegBrowser custody receipt now discovers a hash/health-verified StegVerse gateway rather than assuming the static Site origin hosts Master Records, browser credential material is prohibited, the gateway reuses the existing server-side TV/TVC Master Records credential role, and the sole custody authority remains `master-records/orchestration`.
 
 The browser receipt also uses canonical state-transition outcome `OBSERVED` while retaining the authentic InTr state `INGRESS_ADMITTED` inside transition evidence. The immutable nonce and request count remain unchanged.
 
@@ -593,7 +593,7 @@ Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now has a validated me
 
 ## Master Records StegBrowser endpoint binding
 
-Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 13-14 reconciled all related superseded coordination artifacts: the historical PR lineage is closed, Goal issue #2078 and global runtime-evidence owner issue #1260 remain open by design, and all six superseded related branches—including the #2115 hygiene branch—were force-aligned to final main and verified identical at 0/0 because branch deletion is not exposed by the connected GitHub capability. The authorized resident evidence surface still exposes zero connected devices; `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate and no downstream transition is promoted.
+Historical Goal Prompts 13–14 recorded `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` as `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 13-14 reconciled all related superseded coordination artifacts: the historical PR lineage is closed, Goal issue #2078 and global runtime-evidence owner issue #1260 remain open by design, and all six superseded related branches—including the #2115 hygiene branch—were force-aligned to final main and verified identical at 0/0 because branch deletion is not exposed by the connected GitHub capability. Prompt 15 supersedes the connector-device observation method: device inventory has no runtime-evidence authority. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate.
 
 The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
 
@@ -604,3 +604,101 @@ Canonical Goal Task `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001` / COSV `710000001
 
 
 Goal Prompt 18 advances `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` through the recognized-GRG source/console projection seam. SDK PR #263 merged validated `HAS_SCOPED_AUTHORITY` projection to the existing StegCore authority-basis owner, `REQUIRES_CONSTRAINT` routing to the existing StegCore policy-shape owner without duplicating policy semantics, and preservation of unknown relations as hash-bound non-authorizing evidence. Exact validated head `ec0b97c34fe22b871e1cf647df5b06ce75cff823` passed Manifest Builder run 35383377531, Evaluator Contract Console run 35383377401, Evaluator Manifest run 35383377483, Structured Authority run 35383377471, and Package Artifact run 35383377513; merge `c89de8a91d5f9872d42477e324eb03e7727a6f0b`. Documentation closeout PR #264 merged as `897a3483c20006086f7e81e0e2cf9f75cd0dff2d`. These are source/console proofs only: the parent remains ACTIVE and `AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE` remains unsatisfied.
+
+### SDK TT purpose-bound worker console
+
+
+
+## Task Registry session coordination generation fence
+
+Canonical Task Registry check-in now carries a monotonically increasing coordination-generation fence. A production session must bind the exact `data/canonical-task-registry.json#generation` it observed before mutation. Missing, stale, or divergent generation fails closed before ordinary collision evaluation. Until the session re-reads current GitHub canonical state and checks in again, source writes, pull-request create/update, pull-request merge, and new handoff claims are non-admissible through the canonical coordination path.
+
+This fence is coordination-only. It does not mint WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credentials, or Master Records reality. It also does not claim GitHub platform-level protection against an administrator or other out-of-band bypass; repository ruleset/branch-protection administration is a separate enforcement layer.
+
+
+### TT purpose-bound worker console closeout and runtime successor
+
+Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is `RETIRED / COMPLETED`. SDK PR #266 merged the local console path as `f0c3296650018d9cf298fa392c48315331a575fe`; dedicated validation proved the deterministic `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` chain, records-only output, and `worker_live_after_close=false`. This completion is source/local semantic proof only and claims no authentic resident worker materialization.
+
+The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. Its minimum source refinement is merged: StegAgents PR #21 (`4363333520f381370b7ae8f93b88a98bf8526aeb`) plus `.github` PR #2150 (`00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29`) reuse the existing `stegagents-governed-runtime-worker` and `process:stegagents-governed-runtime-v1` path for exact TT purpose/capability/lifetime carriage and records-only lifecycle validation. Authentic resident execution remains pending the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root/WorkerCoordinator prerequisites; no competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency is introduced. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
+
+Worker lifetime is derived per intended purpose rather than globally fixed. The 30-second deterministic demonstration is a computed example from expected task execution + known delay + inferred unknown-delay reserve + records-enabled packet decomposition + safety reserve. Production must recompute those inputs from the task/cost analysis; purpose completion may retire earlier, and extending an exhausted budget requires a new governed recalculation. StegAgents PR #22 (`19b83dda96cf3c1d2fd5435daf8fce67a90c6228`) enforces the derivation fail closed. Lifetime calculation itself is non-authorizing.
+
+
+## Healer state-transition custody requirement
+
+The standing Healer sovereign scheduler handoff now requires canonical Master Records custody for every observed governed Healer state transition. The worker checkpoint remains `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, but checkpoint persistence alone is not sufficient for machine-owned progression: the existing canonical state-transition custody contract must record the transition in Master Records and exact reconstruction must return PASS. Interlock/InTr remains transition authority; Master Records remains custody/reconstruction only.
+
+
+## SV002 REQUEST_BOUND evidence-retention successor — 2026-09-18
+
+`SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
+
+StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+## Canonical Master Records local adapter repair
+
+`CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` replaces the invalid canonical-state-receipt -> reusable-task-lifecycle-ingester fallback with a direct call to the already-authoritative `master-records/orchestration` state-transition custody implementation. The local path requires explicit durable Master Records database/key configuration, preserves the exact canonical receipt contract and reconstruction hashes, fails closed when the authoritative local surface is unavailable, and adds no second custody store or authority. Interlock/InTr transition authority and TV/TVC credential authority are unchanged. Prior focused validation passed 3/3 plus py_compile; the generation-45 rebased exact head must revalidate before merge. Authentic runtime Master Records custody is not claimed.
+
+
+## ERL White House press-access precedent research
+
+Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the September 18, 2026 White House CNN/MS NOW/Politico access-exclusion event as a bounded ERL active-research subject. It reuses the existing ERL recurring-discovery and active-acquisition architecture, preserves primary executive/legal chronology and White House access-surface distinctions, and keeps finding/publication, partisan evaluation, motive, and final constitutional judgment authority false. Canonical ERL owner: issue #177 and `docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md`. COSV remains `40000100100000`.
+
+
+The canonical Master Records local-adapter child repair is merged on main via PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and reconciled back into parent `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`. This closes the source-contract defect only; authentic runtime Master Records custody remains unclaimed and pending under the parent path.
+
+
+Canonical Master Records local-adapter source repair is merged by PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and retired under `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001`. The parent custody Goal remains ACTIVE for authentic runtime `RECORDED + reconstruction_status=PASS` evidence; source merge and CI do not satisfy that runtime predicate.
+
+### User-action surface anti-collision identity
+
+The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
+
+This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.
+
+
+### Master Records required-evidence closure
+
+Every governed StegVerse state transition must produce a canonical state-transition receipt and declare the complete set of additional required evidence resulting from that transition. The receipt's `required_evidence_manifest` may be empty only when no additional required evidence exists.
+
+Master Records is the canonical evidence-validation/custody/reconstruction authority for that transition evidence set. Before machine-owned progression may treat the transition as evidence-complete, the canonical custody result must be `RECORDED`, receipt reconstruction must be `PASS`, and `required_evidence_validation_status` must be `PASS` for every required evidence item. Missing, malformed, misbound, digest-mismatched, or unreconstructable required evidence fails closed.
+
+Specialized domain validators are not replaced. When a transition requires a domain-specific validation result, that result artifact becomes required evidence and is itself bound, digest-validated, retained, and reconstructed by Master Records. Interlock/InTr remains transition authority; TV/TVC remains credential authority where required; Master Records validation grants no execution, transition, governance, publication, deployment, or release authority.
+
+
+### SV002 REQUEST_BOUND custody correction — 2026-09-18
+
+The bounded child `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` now includes the canonical Master Records custody seam for the first runtime transition. Master Records tracing showed the deterministic rerun packet `SV002-RERUN-C796D0BFD181CEC5D99E4C23` was absent because `REQUEST_BOUND` had been retained only as resident-local evidence. StegVerse-002/.github PR #40, merged at `70d5179f543b6954b6c574d66fcd9675fcbec79c`, reuses the existing canonical state-transition custody client and requires `RECORDED + reconstruction_status=PASS` before federation submission. This does not itself prove resident execution or promote the parent runtime predicate.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, reusing the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains a separate downstream consumer.
+
+The SDK evaluator governance-posture runtime-proof successor reuses the canonical resident request dispatcher through the bounded `sdk_evaluator_governance_posture` consumer. It accepts only an already-materialized exact evaluator manifest, invokes `run_evaluator_governance_manifest`, and retains Interlock/InTr posture-binding evidence; source registration and GitHub validation do not prove resident execution.
+
+### SDK product-processing provenance
+
+Canonical Goal Task `SDK-PRODUCT-PROCESSING-PROVENANCE-001` / COSV `71000000101000` is `RETIRED / COMPLETED_SOURCE_VALIDATED_MERGED`. SDK PR #268 merged the generic non-authorizing product-attribution contract as `b40daac9fc5aaf244bb083433d88a9b835d2cfec`, and SDK PR #269 merged the canonical closeout handoff as `125a85c8d359d4ed9a9dc52089341b9612462c79`. The contract projects per-product processing scope, input/output bindings, evidence refs, authority effect, and explicit `NOT_OBSERVED`/`NOT_PROCESSED` states without creating a second evaluator, runtime, Interlock/InTr plane, worker, custody store, or credential authority. Canonical handoff: `StegVerse-org/StegVerse-SDK/SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md`.
+
+
+### SV002 canonical carrier -> current rerun binding — 2026-09-18
+
+The existing `sv002_org_runtime_activation` request/selector is being repaired in place so it invokes the current deterministic rerun callable rather than the retired StegVerse-org one-shot roundtrip. The same canonical WorkerCoordinator and resident dispatcher are retained; no second request or executor is added. The dispatcher preserves the existing Master Records custody and federation publication bindings required by the current callable while continuing to strip GitHub runtime credentials.
+
+
+### SV002 REQUEST_BOUND canonical carrier reconciliation
+
+PR #41 in StegVerse-002 and PR #2165 in this repository close the two source gaps that prevented the current deterministic rerun from reaching canonical Master Records: exact REQUEST_BOUND bytes are now required evidence, and the existing `sv002_org_runtime_activation` WorkerCoordinator consumer now invokes the current rerun callable instead of the retired one-shot path. Runtime proof remains pending authentic consumption on the existing carrier.
+
+
+### SDK TT purpose-bound worker runtime coordination hygiene
+
+Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` as non-blocking adjacent evidence for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. Surviving purpose-bound branch refs are historical (behind `main`, zero unique commits). Authentic runtime execution remains unattempted because the existing StegAgents retained-root/WorkerCoordinator prerequisites are not satisfied.
+
+
+## StegBrowser endpoint-binding prompt-limit retirement
+
+`MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is RETIRED / PROMPT_LIMIT_DECOMPOSED, with runtime completion unclaimed. Its existing source repairs remain merged; authentic retained carrier/root evidence, exact runtime tuple, and Master Records custody/reconstruction remain unproven. The unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate continues in existing `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / #1860 under the unchanged three-task owner chain. See [terminal handoff](docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md) and [existing successor handoff](docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md). PR #2154 remains closed/unmerged and is not retirement evidence. No successor, runtime, request, or device dependency is added.

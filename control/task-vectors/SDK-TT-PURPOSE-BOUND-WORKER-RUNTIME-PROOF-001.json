@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "identity": "StegVerse-Labs/.github:task:SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "profile": "task.v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "vector": "71000000111111",
+  "level": "task",
+  "repository": "StegVerse-Labs/.github",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+  "evidence_refs": [
+    "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}

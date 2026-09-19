@@ -1,10 +1,10 @@
 # MIR / AILeash witness evidence reconciliation mirror handoff
 
-Updated: 2026-09-18
+Updated: 2026-09-19
 Goal Task ID: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.7 USER-SUPPLIED SHARED ARTIFACT REVIEWED / V0.8 COUNTERPART RUN REPORT OBSERVED / SUBMITTER-REMOVED RUN CLAIMED COMPLETE BUT ARTIFACT NOT YET INDEPENDENTLY RETRIEVED / PER-ROW EVIDENCE CLASS PRESENT / A.2 R10 BASIS NARROWED / A.1 R2 LIMITATION EXPLICIT / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / R6-LINKED PUBLICATION PATH INSPECTED WITHOUT FULL HISTORICAL PROMOTION / OTS PROOF RETAINED PENDING`
+Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.7 USER-SUPPLIED SHARED ARTIFACT REVIEWED / V0.8 COUNTERPART RUN REPORT OBSERVED / SUBMITTER-REMOVED RUN CLAIMED COMPLETE BUT ARTIFACT NOT YET INDEPENDENTLY RETRIEVED / PER-ROW EVIDENCE CLASS PRESENT / A.2 R10 BASIS NARROWED / A.1 R2 LIMITATION EXPLICIT / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / HISTORICAL V1.1 VOCABULARY AND SCHEME SOURCE RECOVERED / BLOB-COMMIT MISCLASSIFICATION CORRECTED / OTS PROOF RETAINED PENDING`
 
 ## Goal
 
@@ -71,16 +71,33 @@ Therefore:
 - do not promote the reported run statistics, Bitcoin-anchor checks, offline OTS binding, chain walk, syscall trace, negative controls, or order reconstruction to independently verified until the underlying artifacts are retrievable and checked;
 - preserve Richard's explicit self-corrections as part of the run record rather than smoothing them away.
 
-## R6-linked historical publication inspection
+## R6-linked historical publication inspection — corrected 2026-09-19
 
-Inspection of the current sebbi.pro witness source remains unchanged:
+Current-main recovery used `dccf6638510fe5907cef614a45a9ac33f6ae6eab`, Task Registry generation 67, and the canonical child record, which remains ACTIVE with COSV `50000000100000`. This is documentary/source reconciliation; no runtime, custody receipt, or conformance completion is asserted.
 
-- current upstream source at `justrightdecorators-ops/aileash@b119e2d91cd37a4929d2c69367fcba51cb7a292f` says blocks through witness v1.1 used `confirmed`, v1.2 renamed the same check to `self-consistent`, and the older blocks cannot be altered;
-- `/x/witness/spec` and consolidated reader-facing vocabulary were added only in witness v1.3;
-- current live `/x/witness/peers` publishes both legacy and current definitions;
-- the historical publication record still does not exclude every other durable external publication surface.
+### Corrected object identity
 
-Bound conclusion: the source strongly corroborates the operator-disclosed historical vocabulary/spec publication gap, but StegVerse still does not independently promote a blanket R10 conformance verdict beyond the evidence actually inspected.
+The earlier inspection treated `f824ac83c5843053bdeca7eba53b77afa99465f5` as a commit ref and described the historical source as unavailable. That conclusion was incorrect: it is the Git **blob SHA** of witness v1.4, retrievable through the [Git blob endpoint](https://api.github.com/repos/justrightdecorators-ops/aileash/git/blobs/f824ac83c5843053bdeca7eba53b77afa99465f5) and through [modules/witness.py at commit 4c78cdff](https://github.com/justrightdecorators-ops/aileash/blob/4c78cdff5695d5f1ff8b141f2f3befc45dce1bbe/modules/witness.py). Failure to resolve a blob as a commit is not publication loss.
+
+### Recovered historical source
+
+| Source revision | Witness version / blob | Independently inspected fact |
+|---|---|---|
+| `2d6715868bb2812b98d874ab17890ff89ece30d5` | v1.1 / `e6093a954837a418ceef99e6e474bcd61c59704f` | Docstring defines `confirmed` as endpoint/submitted-tip equality; `_check_liveness` implements that check; `_peers` emits its meaning in a legend. |
+| `2cac24a11ceeef32e9d347b8915922dbe696b204` | v1.2 / `9b4c26efa7566288969c562c35ade937e3162310` | Source explains the rename to `self-consistent`, preserves the legacy `confirmed` value, and reconciles both meanings. |
+| `4c78cdff5695d5f1ff8b141f2f3befc45dce1bbe` | v1.4 / `f824ac83c5843053bdeca7eba53b77afa99465f5` | Later vocabulary attachment and witness-specific spec route remain inspectable. |
+
+The [v1.1 vocabulary source](https://github.com/justrightdecorators-ops/aileash/blob/2d6715868bb2812b98d874ab17890ff89ece30d5/modules/witness.py) is retained in the same Git revision as [server.py](https://github.com/justrightdecorators-ops/aileash/blob/2d6715868bb2812b98d874ab17890ff89ece30d5/server.py), blob `99718aa051dc09448ade1a6700abc738ebc38a13`. The latter publishes the chain hash shape and implements `sha`, `seal`, and `verify_chain`: SHA-256 over sorted-key JSON containing `prev_hash`, `ts`, `event`, and `result`. The witness payload passes its version, liveness and name-status values to the supplied seal function, without embedding the vocabulary definitions.
+
+The same revision's [modules/spec.py](https://github.com/justrightdecorators-ops/aileash/blob/2d6715868bb2812b98d874ab17890ff89ece30d5/modules/spec.py), blob `982e37b001dcdcad48ed12d9e78804f2ea88e0a1`, contains an existing generic spec/discovery surface and describes all modules sealing into one chain. Its discovery routine extracts summaries, endpoint lines and versions; it does not export the complete vocabulary docstring.
+
+### Bound conclusion
+
+Historical vocabulary and commitment-scheme implementation are now independently retrievable together at a pre-rename source revision. The witness-specific `/x/witness/spec` route arriving in v1.3 therefore cannot establish that vocabulary publication began in v1.3. This corrects the earlier inference of a historical publication gap; it does not erase the source-inspected artifact-portability gap.
+
+Appendix A.2 R10 `NOT MET` remains **operator-disclosed**, with the recovered v1.1 source as material evidence requiring reconciliation before any independent MUST-failure verdict. Do not promote either blanket failure or blanket compliance: the exact disputed commitments, their sealing/version interval, and their binding to this retained scheme/vocabulary revision have not been established. Git commit metadata alone is not an external-time proof of when a source revision was publicly available.
+
+Next R6 action: bind the actual disputed historical commitment(s) to the applicable v1.1 scheme/vocabulary source and inspect any operator answer against that concrete publication path. Do not reopen normative R1–R10 or custodian naming.
 
 ## Naming resolution
 
@@ -95,3 +112,7 @@ Canonical evidence map: `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_E
 Retrieve the authentic v0.8 submitter-removed run artifacts if Richard/MIRegistry publishes or shares them: the production export bundle, checkpoint-chain material, checkpoint 4714 OpenTimestamps proof, inclusion proofs, pinned key record, explorer evidence, syscall traces, adversarial fixtures, and negative-control results. Recompute the run claims independently before promoting any row from counterpart-reported/demonstrated to third-party-checkable or independently established.
 
 Separately, preserve the unresolved historical A.2 R10 publication question until Justin's answer or an independently retrievable historical publication record resolves it.
+
+## Session continuation record — 2026-09-19
+
+Session Prompt Count: 1. Goal Prompt Count: 5/20 from the supplied recovery count of 4/20; no later cumulative counter was present in the inspected child record or handoff. PR #2119 already contains a counterpart report of a 1,534-event / 50-checkpoint rerun; this session preserves that existing PR provenance without claiming to have independently inspected its underlying screenshots or run artifacts. No matching authentic rerun bundle was retrieved, and no rerun was executed. The 784-record / 30-commitment run remains historical only. No message was sent to a counterpart.

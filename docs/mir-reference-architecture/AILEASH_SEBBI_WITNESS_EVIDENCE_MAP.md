@@ -1,6 +1,6 @@
 # AILeash / sebbi.pro witness evidence map
 
-Updated: 2026-09-18
+Updated: 2026-09-19
 Goal Task: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV: `50000000100000`
@@ -13,7 +13,8 @@ Purpose: reconcile prior observations with the Evidence Custody Seam Appendix A 
 |---|---|---|---|
 | sebbi.pro historical witness artifacts do not self-carry vocabulary definitions | `SOURCE_INSPECTED` | Public `modules/witness.py` shows pre-v1.2 blocks retain `confirmed`, current code uses `self-consistent`, the sealed payload carries version/term values but not the vocabulary definitions, and current read routes attach vocabulary after lookup. | The artifact-portability gap is independently source-inspected. |
 | sebbi.pro fails R10 as a complete conformance predicate | `COUNTERPART_REPORTED` + `PARTIALLY_SOURCE_INSPECTED` | Justin Dobson disclosed the failure. Source inspection verifies the historical portability problem, but no complete audit excludes every durable R6-linked historical vocabulary publication. | Preserve the operator's `NOT MET` disclosure, but do not present the blanket conformance failure as independently established. |
-| historical witness protocol/spec publication existed alongside v1.1 `confirmed` commitments | `NOT_ESTABLISHED` + `CURRENT_SOURCE_CORROBORATION` | Current source says `/x/witness/spec` and reader-facing vocabulary consolidation were added in v1.3, after v1.1 commitments and the v1.2 rename. | Strongly corroborates a later repair but does not exclude every other historical publication surface. |
+| historical vocabulary and commitment-scheme source coexist before the rename | `INDEPENDENTLY_RETRIEVED_HISTORICAL_SOURCE` | Commit `2d6715868bb2812b98d874ab17890ff89ece30d5` contains witness v1.1 definitions and peer legend (`e6093a954837a418ceef99e6e474bcd61c59704f`) alongside server chain hashing/sealing/verification (`99718aa051dc09448ade1a6700abc738ebc38a13`). | Corrects the inference that the later witness-specific spec route establishes absence of earlier publication. Exact historical commitment coverage and public-availability timing remain unresolved; neither blanket R10 failure nor compliance is promoted. |
+| previously unavailable historical source ref | `OBJECT_TYPE_ERROR_CORRECTED` | `f824ac83c5843053bdeca7eba53b77afa99465f5` is a retrievable v1.4 Git blob, not a commit. It resolves as `modules/witness.py` at commit `4c78cdff5695d5f1ff8b141f2f3befc45dce1bbe`. | An invalid commit lookup did not establish loss of historical publication. |
 | current sebbi.pro live vocabulary publication repairs readability going forward | `INDEPENDENTLY_OBSERVED_PUBLIC_RESPONSE` + `SOURCE_INSPECTED` | Live `/x/witness/peers` identifies current witness vocabulary for both legacy and current terms; current source attaches vocabulary to reader-facing responses. | Current readability is established; later repair does not retroactively prove historical publication alongside R6. |
 | Appendix evidence class is explicit per row in v0.7 | `USER_SUPPLIED_SHARED_DOCUMENT_REVIEWED` | v0.7 defines `Operator-disclosed`, `Demonstrated`, and `Third-party checkable` and places an evidence class on every A.1/A.2 row. | The v0.6 presentation defect is repaired. |
 | v0.7 A.2 R10 reason is narrowed to the artifact condition | `USER_SUPPLIED_SHARED_DOCUMENT_REVIEWED` | A.2 states that sealed records do not carry the vocabulary statement, while the full `NOT MET` remains operator-disclosed and the R6-linked publication question remains open. | The text now matches the evidence boundary. |
@@ -47,3 +48,7 @@ Purpose: reconcile prior observations with the Evidence Custody Seam Appendix A 
 - Failure of R10's SHOULD alone does not establish failure of the MUST if durable scheme-linked publication exists elsewhere.
 - Missing proof remains missing; it does not imply the event did not happen.
 - Corrections and failed intermediate analyses are part of the evidence record and must not be erased from provenance.
+
+## Historical-source recovery — 2026-09-19
+
+Full immutable source links, object IDs, source-method details and remaining commitment-binding predicates are retained in [the canonical handoff](../MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md#r6-linked-historical-publication-inspection--corrected-2026-09-19). The v0.8 run report above is preserved from existing PR #2119; this continuation did not retrieve the underlying run artifacts and does not promote the report to independent verification.

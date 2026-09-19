@@ -171,5 +171,48 @@
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
     "second_user_operated_device_required": false
+  },
+  "endpoint_binding_terminal_intake": {
+    "retired_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+    "retired_handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "retirement_reason": "PROMPT_LIMIT_20_EXISTING_SUCCESSOR_REUSED",
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "immutable_invocation": {
+      "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "requested_invocation_count": 1,
+      "second_request_allowed": false,
+      "request_mutation_allowed": false,
+      "destination": "StegBrowser:ManifestInvocation"
+    },
+    "retention_seam": {
+      "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "required_pointer_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "predicate_satisfied": false,
+      "source_side_repair_required": false,
+      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+    },
+    "required_root_count": 1,
+    "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+    "master_records_required": [
+      "RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256 == reconstructed_receipt_sha256"
+    ],
+    "runtime_completion_claimed": false,
+    "authority_transfer": "NONE",
+    "new_successor_created": false
   }
 }

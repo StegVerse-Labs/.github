@@ -15,7 +15,9 @@
   "canonical_client_ref": "workers/canonical_state_transition_custody.py",
   "master_records_api_refs": [
     "master-records/orchestration:services/canonical_state_transition_custody.py",
-    "master-records/orchestration:services/canonical_master_records_api.py"
+    "master-records/orchestration:services/canonical_master_records_api.py",
+    "master-records/orchestration#101",
+    "master-records/orchestration@32d89da201c4653413c85510bec629124b2e3a25"
   ],
   "stegos_protocol_ref": "StegVerse-Labs/StegOS:stegos/state_transition_custody.py",
   "sv002_initiation_preflight_ref": "receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json",
@@ -38,7 +40,13 @@
     "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
     "SV002_SEMANTICS_PRESERVED",
     "MIR_INITIATION_REUSES_VALIDATED_BROWSER_EVENT_SURFACE",
-    "CURRENT_INTR_ADMISSION_PRECEDES_MIR_EVENT_RUNTIME"
+    "CURRENT_INTR_ADMISSION_PRECEDES_MIR_EVENT_RUNTIME",
+    "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_DECLARED",
+    "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_SUBMITTED_TO_MASTER_RECORDS",
+    "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_BOUND_TO_ORIGIN_TRANSITION",
+    "ALL_REQUIRED_TRANSITION_EVIDENCE_DIGESTS_VALIDATE",
+    "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTS_PASS",
+    "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP"
   ],
   "current_truth": {
     "ecosystem_inventory_materialized": true,
@@ -81,18 +89,39 @@
     "authentic_rtc_008_observed": false,
     "authentic_rtc_009_observed": false,
     "authentic_governed_return_observed": false,
-    "canonical_runtime_custody_sequence_observed": false
+    "canonical_runtime_custody_sequence_observed": false,
+    "canonical_local_adapter_source_repair_complete": true,
+    "canonical_local_adapter_child_task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+    "canonical_local_adapter_merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+    "canonical_local_adapter_pr": 2136,
+    "canonical_local_adapter_exact_validated_blob_identity_preserved": true,
+    "authentic_local_adapter_runtime_custody_observed": false,
+    "local_adapter_source_repair_complete": true,
+    "local_adapter_source_repair_task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+    "local_adapter_source_repair_merge": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+    "local_adapter_authentic_runtime_custody_observed": false,
+    "required_evidence_manifest_contract_materialized": true,
+    "canonical_client_carries_required_evidence_manifest": true,
+    "master_records_required_evidence_validation_source_merged": true,
+    "master_records_required_evidence_validation_pr": 101,
+    "master_records_required_evidence_validation_merge": "32d89da201c4653413c85510bec629124b2e3a25",
+    "master_records_required_evidence_validation_runtime_observed": false
   },
   "completion": {
     "claimed": false,
     "validated": false,
     "source_adoption_complete_for_master_records_custody": true,
     "mir_final_browser_event_activation_adoption_pending": false,
-    "runtime_completion_pending": true
+    "runtime_completion_pending": true,
+    "local_adapter_source_defect_pending": false,
+    "local_adapter_child_reconciled": true,
+    "required_evidence_validation_source_adoption_complete": true,
+    "required_evidence_validation_runtime_pending": true
   },
   "allowed_next_transitions": [
     "OBSERVE_EXACT_REGISTERED_NODE_OUTBOX_ENTRY",
     "OBSERVE_AUTHENTIC_CURRENT_MIR_INGRESS_ADMITTED",
+    "OBSERVE_AUTHENTIC_REQUIRED_EVIDENCE_VALIDATION_PASS",
     "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_ORDER",
     "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
     "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
@@ -112,5 +141,43 @@
     "diagnostic_receipt_implies_transition": false,
     "missing_transition_may_be_fabricated": false,
     "github_actions_runtime_authority": "NONE"
+  },
+  "source_reconciliation": {
+    "local_adapter_child": {
+      "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "status": "RETIRED_SOURCE_REPAIR_VALIDATED_COMPLETE_MERGED",
+      "merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+      "pr": 2136,
+      "runtime_custody_claimed": false
+    }
+  },
+  "required_evidence_validation": {
+    "invariant": "ALL_REQUIRED_EVIDENCE_RESULTING_FROM_A_GOVERNED_STATE_TRANSITION_MUST_BE_VALIDATED_BY_MASTER_RECORDS",
+    "manifest_field": "required_evidence_manifest",
+    "empty_manifest_allowed_only_when_no_additional_required_evidence_results": true,
+    "required_item_fields": [
+      "evidence_id",
+      "evidence_type",
+      "origin_transition_id",
+      "encoding",
+      "sha256",
+      "content"
+    ],
+    "master_records_validation_scope": [
+      "manifest_completeness",
+      "same_transition_binding",
+      "exact_digest",
+      "durable_custody",
+      "exact_reconstruction"
+    ],
+    "specialized_semantic_validation": "SPECIALIZED_VALIDATOR_OUTPUT_IS_ITSELF_REQUIRED_EVIDENCE_WHEN_THE_LANE_REQUIRES_DOMAIN_SEMANTIC_VALIDATION",
+    "progression_gate": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS"
+    ],
+    "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC_WHERE_REQUIRED"
   }
 }

@@ -1,6 +1,6 @@
 # Master Records StegBrowser Endpoint Binding Mirror Handoff
 
-Updated: 2026-09-17
+Updated: 2026-09-19
 Repository: `StegVerse-Labs/.github`
 
 ## Task pointer
@@ -10,7 +10,7 @@ Repository: `StegVerse-Labs/.github`
 - Decomposed from: `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` at Goal Prompt Count `20/20`
 - Issue: `StegVerse-Labs/.github#2078`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / PROVIDER-NEUTRAL BROWSER+GATEWAY SOURCE BINDING MERGED+VALIDATED / AUTHENTIC RECORDED+PASS PENDING`
+- Status: `RETIRED / PROMPT_LIMIT_DECOMPOSED / EXISTING_SUCCESSOR_BOUND / AUTHENTIC RUNTIME AND CUSTODY UNPROVEN`
 
 ## Scope
 
@@ -1290,3 +1290,235 @@ This correction advances Task Registry generation 40 to generation 41.
 ## Manual work
 
 None.
+
+
+## Goal prompt 16: exact machine-owned receipt-path observation
+
+Session Prompt Count: 6. Goal Prompt Count: 16/20.
+
+Task Registry generation 42, the Prompt 15 runtime-evidence invariant correction, this handoff, and the three existing owner records were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+The superseded connector-device observation method was not repeated.
+
+The exact canonical receipt path was checked directly:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+```
+
+The canonical GitHub repository returned `NOT_FOUND / 404` for that exact path. This is repository reachability only. It is not evidence that the machine-owned resident receipt does not exist and it has no runtime authority effect.
+
+No authentic receipt with schema `stegverse.resident-request-dispatch/v1` was observed. Therefore `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate and no downstream transition may be promoted.
+
+The required authentic receipt still must prove exactly one relevant outcome with:
+
+```text
+consumer = healer_sovereign_scheduler
+consumer_ref = scripts/consume_healer_sovereign_scheduler_request.py
+attempted = true
+result = authentic machine result
+```
+
+A narrow related-branch hygiene comparison found no new branch ahead of or divergent from main. Existing related refs were behind-only with `ahead=0`, so the completed superseded-ref cleanup was not reopened.
+
+No broad source search, connector-device poll, alternate observer/exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was introduced.
+
+This candidate advances Task Registry generation 42 to generation 43 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
+
+
+## Goal prompt 17: exact existing owner-level evidence-retention seam
+
+Session Prompt Count: 7. Goal Prompt Count: 17/20.
+
+Current Task Registry generation 45, this handoff, Prompt 15's controlling invariant correction, and the three existing runtime-evidence owner records were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+No connector-visible device state was consulted and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+The existing remediation owner's canonical classification artifact was inspected directly:
+
+```text
+data/runtime-materialization-remediation/
+STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json
+```
+
+It already identifies the exact owner-level retention seam:
+
+```text
+classification:
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+
+carrier consumption:
+receipts/sovereign-host/
+healer-sovereign-scheduler-request-consumption.latest.json
+
+embedded pointer:
+execution_result.resident_custody_root_observation_retention
+
+retained packet:
+receipts/sovereign-host/
+stegbrowser-resident-custody-root-observation.latest.json
+```
+
+The embedded retention pointer is defined to carry `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`.
+
+The canonical classification explicitly records `source_side_fixable=false`, `source_side_repair_required=false`, and `classifier_action=NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT`.
+
+Exact checks of the already-referenced retained artifact paths were repository-unreachable (`404 / NOT_FOUND`). Those results are repository reachability only and are not interpreted as machine-runtime absence.
+
+No authentic retained dispatch/carrier/root evidence was observed. Therefore:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+remains the first unsatisfied predicate. No `HEALER_RESIDENT_CONSUMER_INVOKED`, WorkerCoordinator cycle, Worker Task Admission, claim/fence, Interlock/InTr admission, Healer fenced checkpoint, ProcessWorkerAdapter projection, retained-root binding, classifier run, immutable runtime tuple, Gateway state, Master Records state, digest equality, or A1-A4 handback was promoted.
+
+No observer, exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was created.
+
+This candidate advances Task Registry generation 45 to generation 46 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
+
+
+## Goal prompt 18: coordination reconciliation and retained-runtime seam re-verification
+
+Session Prompt Count: 8. Goal Prompt Count: 18/20.
+
+Task Registry generation 48, Prompt 15, this handoff, the three existing owner records, and the canonical runtime-materialization classification were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+### Superseded coordination artifacts
+
+Canonical predecessor `STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001` is `RETIRED / PROMPT_LIMIT_DECOMPOSED` and explicitly delegates its unresolved runtime predicate to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / issue #1860. Stale issue #1857 was therefore closed as duplicate/superseded.
+
+Issues #1260, #1860, and #2078 remain open intentionally because their canonical tasks remain active. Issue #1866 remains closed for its completed original source-side remediation scope; its canonical task record remains in the required owner chain and was not mutated.
+
+Recent Goal PRs through #2131 are closed. All exact Goal-specific stale branches were force-aligned to current main because branch deletion is not exposed by the connected GitHub capability. No adjacent StegBrowser task branch was flattened merely because it shares the StegBrowser name.
+
+### Existing retention seam
+
+The canonical remediation classification remains:
+
+```text
+classification = RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+predicate_satisfied = false
+source_side_repair_required = false
+classifier_action = NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT
+```
+
+The only admissible existing retention seam remains:
+
+```text
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+-> receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+The retention pointer must bind:
+
+```text
+packet_ref
+packet_relative_path
+packet_sha256
+retained_under_root
+retained_under_root_source
+packet_state
+```
+
+No authentic retained carrier/root evidence is newly recorded by the existing owners. Therefore `RESIDENT_REQUEST_DISPATCH_VISIT` remains first unsatisfied. The non-authorizing classifier was not run and no WorkerCoordinator, Interlock/InTr, runtime tuple, Gateway, Master Records, digest-equality, or A1-A4 predicate was promoted.
+
+No connector-device gate, observer, exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was created.
+
+This candidate advances Task Registry generation 48 to generation 49 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
+
+
+## Goal prompt 19: retention seam re-verification without reopening coordination cleanup
+
+Session Prompt Count: 9. Goal Prompt Count: 19/20.
+
+Current Task Registry generation 53, Prompt 15, this handoff, the three owner records, and the canonical runtime-materialization classification were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+Issue/PR/branch reconciliation remains complete. A narrow comparison of the exact Goal-specific branches found every known branch behind-only with `ahead=0`; no genuinely new divergent Goal-specific artifact exists, so cleanup was not reopened.
+
+The existing runtime-bound retention seam remains:
+
+```text
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+-> receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+Canonical state remains:
+
+```text
+classification = RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+predicate_satisfied = false
+source_side_repair_required = false
+classifier_action = NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT
+```
+
+No repository-only absence check was repeated as a runtime blocker. No authentic retained carrier evidence is recorded by the existing owners, so the exact `healer_sovereign_scheduler` outcome cannot yet be validated and the embedded retention pointer cannot yet be bound. No authentic root with `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` is observed.
+
+Therefore `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate. The existing non-authorizing classifier was not run and no WorkerCoordinator, Interlock/InTr, immutable runtime tuple, Gateway, Master Records, digest-equality, or A1-A4 predicate was evaluated or promoted.
+
+No source repair, observer, exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was introduced.
+
+This candidate advances Task Registry generation 53 to generation 54 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
+
+
+## Terminal Goal Prompt 20 reconciliation — 2026-09-19
+
+Session Prompt Count: 1. Goal Prompt Count: 20/20 (terminal reconciliation of the already-exhausted Goal; no renewed execution budget).
+
+Current main at `e5e878391feed7f879b897ee7303399a41755d1c`, registry generation 66, was re-read with Prompt 15 and all three existing owner handoffs/records. PR #2154 is closed and unmerged; it supplies no merged retirement evidence. This reconciliation advances generation 66 to 67.
+
+The canonical retention classification remains `RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND`, with `predicate_satisfied=false`, `source_side_repair_required=false`, and `classifier_action=NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT`. No authentic retained carrier/root evidence was available in the existing records. The exact receipt paths are not repository-retained; that observation does not establish runtime absence. No connector-device inventory was consulted.
+
+`RESIDENT_REQUEST_DISPATCH_VISIT` remains first unsatisfied. The exact Healer outcome, six-field pointer, and exactly one `RESIDENT_CUSTODY_ROOT_OBSERVED` root remain unproven. No classifier, WorkerCoordinator/InTr/runtime tuple, Gateway, Master Records, digest-equality, or A1–A4 predicate was promoted.
+
+The Goal is retired solely at the prompt limit, with completion.claimed=false and completion.validated=false. Its unresolved predicate is bound to the already-existing `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / issue #1860 / `docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md`. The owner chain remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 -> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`. No new successor or registry duplicate is created.
+
+Continue only under that existing successor. Follow `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json -> execution_result.resident_custody_root_observation_retention -> receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json`; require exact `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`. Preserve the existing fenced Healer checkpoint pointer trace documented in Prompts 7–8; do not assume the outer envelope has an inline child pointer. Run the existing non-authorizing classifier only after exactly one authentic root is proven, then evaluate downstream predicates in order. Every resulting governed transition and its required evidence must receive Master Records `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact digest equality.
+
+The generation-66 check-in found no hard collision and one parent-lineage convergence candidate. The parent custody handoff was reviewed; its required-evidence contract and active work remain unchanged. This change is coordination retirement only and grants no runtime authority. No source repair, observer/exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host requirement, or device dependency is introduced.
+
+Manual work: None.
+
+Validation: retirement consistency and global invariant checks PASS. The optional three-module registry regression sample returned 12 passed / 10 failed identically on unchanged base `2bd5b92ff94ae1f1dbe8e071cb9e2149a037f9fe`; these baseline failures are not represented as green validation and no unrelated source repair is included.

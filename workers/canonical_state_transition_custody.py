@@ -7,9 +7,10 @@ transition, execution, credential, routing, or publication authority.
 
 The preferred path is the canonical Master Records state-transition API. When a
 resident execution is operating with the canonical Master Records repository
-mounted locally, the existing exact-byte lifecycle ingest/reconstruction scripts
-are an admissible local adapter to the same custody authority; they are not a
-second custody authority or a task-specific diagnostic path.
+mounted locally, the local adapter calls the repository's existing canonical
+state-transition custody implementation against an explicitly configured durable
+Master Records database. It does not use the reusable-task lifecycle ingester or
+create a second custody store.
 """
 from __future__ import annotations
 
@@ -51,6 +52,7 @@ def build_state_receipt(
     resulting_state_ref_or_hash: str | None,
     governance_decision_ref_where_applicable: str | None,
     transition_evidence: Mapping[str, Any],
+    required_evidence_manifest: list[Mapping[str, Any]] | None = None,
     proof_scope: str = "THIS_TRANSITION_ONLY",
     proof_ceiling: str = "OBSERVED_STATE_TRANSITION_AND_CUSTODY_ONLY",
     recorded_at: str | None = None,
@@ -63,6 +65,14 @@ def build_state_receipt(
         raise ValueError("transition_outcome_invalid")
     if not isinstance(transition_evidence, Mapping):
         raise ValueError("transition_evidence_required")
+    manifest = []
+    for entry in required_evidence_manifest or []:
+        if not isinstance(entry, Mapping):
+            raise ValueError("required_evidence_manifest_entry_invalid")
+        row = dict(entry)
+        if row.get("origin_transition_id") != transition_id:
+            raise ValueError("required_evidence_transition_binding_invalid")
+        manifest.append(row)
     return {
         "schema": RECEIPT_SCHEMA,
         "transition_id": transition_id,
@@ -72,6 +82,7 @@ def build_state_receipt(
         "resulting_state_ref_or_hash": resulting_state_ref_or_hash,
         "governance_decision_ref_where_applicable": governance_decision_ref_where_applicable,
         "transition_evidence": dict(transition_evidence),
+        "required_evidence_manifest": manifest,
         "recorded_at": recorded_at or now(),
         "transition_outcome": transition_outcome,
         "authority_effect": "NONE_STATE_RECEIPT_ONLY",
@@ -138,80 +149,93 @@ def _repo_roots() -> dict[str, str]:
     return value if isinstance(value, dict) else {}
 
 
-def _local_binding() -> tuple[Path, Path] | None:
+def _local_binding() -> Path | None:
     roots = _repo_roots()
     raw = (
         (os.getenv("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") or "").strip()
         or (os.getenv("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT") or "").strip()
         or str(roots.get("master-records/orchestration") or "")
     )
-    runtime_raw = (os.getenv("STEGVERSE_HEARTBEAT_ROOT") or "").strip()
-    if not raw or not runtime_raw:
+    db_raw = (os.getenv("MASTER_RECORDS_DB") or "").strip()
+    receipt_key = (os.getenv("MASTER_RECORDS_RECEIPT_KEY") or "").strip()
+    durable = (os.getenv("MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS") or "").strip().lower() == "true"
+    if not raw or not db_raw or not receipt_key or not durable:
         return None
     mr_root = Path(raw).expanduser().resolve()
-    runtime_root = Path(runtime_raw).expanduser().resolve()
-    if not (mr_root / "scripts/ingest_reusable_task_lifecycle.py").is_file():
+    db_path = Path(db_raw).expanduser()
+    if not db_path.is_absolute():
         return None
-    if not (mr_root / "scripts/reconstruct_reusable_task_lifecycle.py").is_file():
+    db_path = db_path.resolve()
+    try:
+        db_path.relative_to(Path("/tmp"))
         return None
-    return mr_root, runtime_root / "master-records" / "canonical-state-transitions"
-
-
-def _atomic_text(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name("." + path.name + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
+    except ValueError:
+        pass
+    if not (mr_root / "services" / "master_records_custody_api.py").is_file():
+        return None
+    if not (mr_root / "services" / "canonical_state_transition_custody.py").is_file():
+        return None
+    return mr_root
 
 
 def _submit_local(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
-    binding = _local_binding()
-    if binding is None:
+    mr_root = _local_binding()
+    if mr_root is None:
         return None
-    mr_root, custody_root = binding
-    canonical = canonical_json(dict(receipt)) + "\n"
-    digest = hashlib.sha256(canonical_json(dict(receipt)).encode("utf-8")).hexdigest()
-    subject = hashlib.sha256(str(receipt["subject_or_correlation_id"]).encode("utf-8")).hexdigest()[:16]
-    request_path = custody_root / "requests" / subject / f"{int(receipt['transition_sequence']):06d}-{digest}.json"
-    reconstructed = request_path.with_name(request_path.stem + ".reconstructed.json")
-    _atomic_text(request_path, canonical)
-    env = {key: os.environ[key] for key in ("PATH","PYTHONPATH","LANG","LC_ALL") if key in os.environ}
-    ingest = subprocess.run(
-        [sys.executable, str(mr_root / "scripts/ingest_reusable_task_lifecycle.py"), "--request", str(request_path), "--custody-root", str(custody_root)],
-        cwd=mr_root, env=env, capture_output=True, text=True, check=False, timeout=60,
-    )
-    if ingest.returncode != 0:
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_LOCAL_INGEST_FAILED","stderr_tail":ingest.stderr[-1000:],"authority_effect":"NONE"}
-    try:
-        ingest_result = json.loads(ingest.stdout.strip().splitlines()[-1])
-        custody_ref = Path(str(ingest_result["custody_ref"]))
-    except Exception:
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_LOCAL_INGEST_RESULT_INVALID","authority_effect":"NONE"}
-    reconstruction = subprocess.run(
-        [sys.executable, str(mr_root / "scripts/reconstruct_reusable_task_lifecycle.py"), "--record", str(custody_ref), "--custody-root", str(custody_root), "--output", str(reconstructed)],
-        cwd=mr_root, env=env, capture_output=True, text=True, check=False, timeout=60,
-    )
-    if reconstruction.returncode != 0 or not reconstructed.is_file():
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_LOCAL_RECONSTRUCTION_FAILED","stderr_tail":reconstruction.stderr[-1000:],"authority_effect":"NONE"}
-    if reconstructed.read_bytes() != request_path.read_bytes():
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_LOCAL_RECONSTRUCTION_BYTES_MISMATCH","authority_effect":"NONE"}
-    return {
-        "schema":"stegverse.master-records.state-transition-custody-receipt/local-v1",
-        "state":"RECORDED",
-        "transition_id":receipt["transition_id"],
-        "transition_sequence":receipt["transition_sequence"],
-        "subject_or_correlation_id":receipt["subject_or_correlation_id"],
-        "receipt_sha256":digest,
-        "reconstructed_receipt_sha256":digest,
-        "custody_ref":str(custody_ref),
-        "reconstructed_ref":str(reconstructed),
-        "reconstruction_status":"PASS",
-        "custody_adapter":"MASTER_RECORDS_LOCAL_EXACT_BYTE_LIFECYCLE",
-        "master_records_grants_transition_authority":False,
-        "master_records_grants_execution_authority":False,
-        "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    env = {
+        key: os.environ[key]
+        for key in (
+            "PATH",
+            "LANG",
+            "LC_ALL",
+            "MASTER_RECORDS_DB",
+            "MASTER_RECORDS_RECEIPT_KEY",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+        )
+        if key in os.environ
     }
-
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
+    authority_call = (
+        "import json,sys\n"
+        "from services import master_records_custody_api as base\n"
+        "from services.canonical_state_transition_custody import record_receipt\n"
+        "receipt=json.loads(sys.stdin.read())\n"
+        "result=record_receipt(base, receipt)\n"
+        "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", authority_call],
+        cwd=mr_root,
+        env=env,
+        input=canonical_json(dict(receipt)),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    if completed.returncode != 0:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_CALL_FAILED",
+            "stderr_tail": completed.stderr[-1000:],
+            "authority_effect": "NONE",
+        }
+    try:
+        result = json.loads(completed.stdout.strip().splitlines()[-1])
+    except Exception:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_RESULT_INVALID",
+            "authority_effect": "NONE",
+        }
+    if not isinstance(result, dict):
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_RESULT_INVALID",
+            "authority_effect": "NONE",
+        }
+    return result
 
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     """Submit one canonical receipt and require exact reconstruction."""
@@ -227,6 +251,8 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     expected_hash = sha256_uri(dict(receipt)).split(":", 1)[1]
     if payload.get("state") != "RECORDED" or payload.get("reconstruction_status") != "PASS":
         return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_CUSTODY_NOT_RECORDED","response":payload,"authority_effect":"NONE"}
+    if payload.get("required_evidence_validation_status") != "PASS":
+        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED","response":payload,"authority_effect":"NONE"}
     if payload.get("receipt_sha256") != expected_hash or payload.get("reconstructed_receipt_sha256") != expected_hash:
         return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH","response":payload,"authority_effect":"NONE"}
     if payload.get("master_records_grants_transition_authority") is not False:
@@ -252,6 +278,7 @@ class CanonicalTransitionCustody:
         evidence: Mapping[str, Any],
         resulting_state_ref_or_hash: str | None = None,
         governance_decision_ref: str | None = None,
+        required_evidence_manifest: list[Mapping[str, Any]] | None = None,
         require_return: bool = True,
     ) -> dict[str, Any]:
         self.sequence += 1
@@ -264,6 +291,7 @@ class CanonicalTransitionCustody:
             resulting_state_ref_or_hash=resulting_state_ref_or_hash,
             governance_decision_ref_where_applicable=governance_decision_ref,
             transition_evidence=evidence,
+            required_evidence_manifest=required_evidence_manifest,
         )
         result = submit_state_receipt(receipt)
         row = {"receipt":receipt, "master_records":result}

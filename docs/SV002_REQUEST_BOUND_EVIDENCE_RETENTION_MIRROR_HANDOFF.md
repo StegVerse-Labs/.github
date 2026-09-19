@@ -1,0 +1,157 @@
+# SV002 REQUEST_BOUND Evidence Retention Mirror Handoff
+
+Goal Task ID: `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001`
+Parent Goal Task ID: `STEGVERSE-002-EXPERIMENT-RERUN-001`
+Root experiment: `STEGVERSE-002-SELF-CHARACTERIZATION-001`
+COSV: `50000000107000`
+Status: `IN_PROGRESS / SOURCE REPAIR MERGED / AUTHENTIC RESIDENT EVIDENCE PENDING`
+
+## Bounded goal
+
+Close only the isolated first-receipt evidence-loss seam for the frozen v0.3 rerun. Determine from authentic existing resident outputs whether the canonical callable was never invoked or whether it wrote `RERUN_REQUEST_BOUND.json` and then failed later, without adding another request, runtime, scheduler, dispatcher, listener, bridge, Site path, device prerequisite, workflow runtime, or authority plane.
+
+## Parent evidence tail
+
+Direct Master Records review established that the parent rerun has not entered Master Records. The first unproven runtime transition is `REQUEST_BOUND`.
+
+The current resident callable writes:
+
+```text
+~/.stegverse/self-characterization-001/RERUN_REQUEST_BOUND.json
+~/.stegverse/self-characterization-001/RERUN_REQUEST_SUBMISSION.json
+```
+
+and the existing resident executor writes:
+
+```text
+resident-runtime/state/resident-executor.latest.json
+```
+
+## Isolated defect and repair
+
+Source review found an evidence-loss defect inside the existing callable/executor path:
+
+1. `invoke_sv002_experiment_rerun.py` writes `RERUN_REQUEST_BOUND.json` before federation submission.
+2. If federation publication then fails, the prior exception result reported `request_bound_claimed=false` regardless of the already-written bound receipt.
+3. `resident_executor.py` then raised on the nonzero child return code and discarded the structured child result before writing its existing heartbeat.
+
+This made “callable invoked + request bound + later publication failure” indistinguishable in the executor heartbeat from a pre-binding failure.
+
+StegVerse-002/.github PR #39 repairs only that evidence loss and merged at:
+
+`3a0033742b1ff311bde6c210681ab47df6b734cd`
+
+The repair preserves validated Goal/COSV/experiment/operation/invocation_count/packet/frame identity in the existing blocked callable result and existing resident executor heartbeat. No new evidence path or execution path is created.
+
+## Runtime nonclaim
+
+The merged source repair does not prove a resident process executed after the repair.
+
+```text
+authentic resident executor heartbeat after repair: NOT OBSERVED
+authentic RERUN_REQUEST_BOUND.json bytes after repair: NOT OBSERVED
+REQUEST_BOUND parent predicate: NOT PROMOTED
+downstream parent rerun predicates: NOT ADVANCED
+```
+
+## Decision rule
+
+When authentic resident evidence becomes available:
+
+- `sv002_callable_attempted=false` or no callable attempt evidence -> classify invocation-side failure;
+- `sv002_callable_attempted=true` plus validated `request_bound_claimed=true` / `sv002_request_bound_observed=true` -> classify binding as successful and failure downstream of REQUEST_BOUND;
+- malformed or mismatched Goal/COSV/experiment/operation/invocation_count/packet/frame -> fail closed at the mismatch;
+- no authentic resident heartbeat -> outcome remains unresolved.
+
+Only exact authentic bytes may promote the parent `REQUEST_BOUND` predicate.
+
+## Authority
+
+WorkerCoordinator remains execution claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential authority. Master Records remains observed-reality/custody/reconstruction authority. GitHub/CI/source grants no runtime authority.
+
+## Manual work
+
+None.
+
+
+## 2026-09-18 Master Records chain remediation
+
+Direct receipt-chain review resolved the prior observation-only ambiguity. The deterministic current rerun identity is:
+
+```text
+packet_id: SV002-RERUN-C796D0BFD181CEC5D99E4C23
+manifest_sha256: 29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828
+```
+
+Neither identity existed in canonical Master Records custody. The canonical custody contract requires every observed governed state transition to emit a canonical state receipt and every state receipt to be submitted to Master Records, while the SV002 rerun callable had retained `REQUEST_BOUND` only as resident-local evidence.
+
+StegVerse-002/.github PR #40 repaired that exact seam and merged at:
+
+`70d5179f543b6954b6c574d66fcd9675fcbec79c`
+
+The merged callable now reuses the existing canonical Master Records state-transition custody client, emits one canonical `SV002_REQUEST_BOUND` receipt bound to the exact Goal/COSV/experiment/operation/invocation_count/packet/request/manifest/frame identity, requires `state=RECORDED` plus `reconstruction_status=PASS`, retains the returned custody/master-record identity, and only then permits the existing federation publication path to continue.
+
+This is source repair only. Authentic resident execution after the merge and authentic Master Records `RECORDED + PASS` for the real rerun remain unobserved. The parent `REQUEST_BOUND` predicate therefore remains unpromoted.
+
+
+## 2026-09-18 canonical resident-carrier binding repair
+
+Tracing the deterministic packet upstream from absent Master Records custody established that the existing canonical resident request had not been reaching the current rerun callable. The already-requested `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001` / selector `sv002_org_runtime_activation` still invoked the retired `StegVerse-org/.github/resident-runtime/run_sv002_self_characterization_roundtrip.py` one-shot path. That path is excluded by the experiment attempt map and cannot produce the current deterministic rerun packet.
+
+The existing request has therefore been retained in place and rebound to:
+
+```text
+Goal: STEGVERSE-002-EXPERIMENT-RERUN-001
+COSV: 50000000107000
+operation: REQUEST_SELF_CHARACTERIZATION
+packet: SV002-RERUN-C796D0BFD181CEC5D99E4C23
+callable: StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py
+```
+
+The same `sv002_org_runtime_activation` consumer now invokes that current callable through the existing HeartBeat-separated native WorkerCoordinator/dispatcher. The dispatcher also preserves the already-defined canonical Master Records endpoint/token/local-source bindings and existing federation gateway/root bindings needed by that callable, while GitHub credentials remain excluded.
+
+No new resident request, scheduler, dispatcher, WorkerCoordinator, resident executor, custody authority, transition authority, Site path, or user-operated device is introduced. Authentic runtime consumption remains unclaimed until the existing carrier emits its real request-consumption/custody evidence.
+
+
+## 2026-09-18 canonical carrier reconciliation after source merges
+
+Two source repairs are now immutable:
+
+```text
+StegVerse-002/.github PR #41
+merge: 9d79719995edb30ef60f6764331d97506977522f
+effect: exact RERUN_REQUEST_BOUND.json bytes are required evidence in canonical Master Records custody
+
+StegVerse-Labs/.github PR #2165
+merge: b50c124aca3ec12a7e1d8734a268b81c61b1650f
+effect: the existing RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001 request/selector invokes the current deterministic rerun callable rather than the retired one-shot path
+```
+
+The child runtime observation owner is therefore the existing canonical HeartBeat-separated WorkerCoordinator request-consumption path, not a second StegVerse-002 persistent resident executor. The first authentic evidence now required is the existing `sv002_org_runtime_activation` consumption/dispatch evidence carrying the exact current Goal/COSV/packet and Master Records REQUEST_BOUND custody result.
+
+Runtime completion remains unclaimed until that authentic consumption exists.
+
+
+## 2026-09-18 TVC self-heal current-source repair
+
+Tracing the canonical WorkerCoordinator chain one level further upstream found that the existing TVC root self-heal still pinned its immutable `StegVerse-Labs/.github` runtime source to historical `a5d69cdd0c0c039a6ec48c5c7fda800384089a16`. That source predates the current `sv002_org_runtime_activation` -> deterministic rerun callable repair, so a healthy self-heal cycle could refresh the resident with stale source and never expose the current rerun to the existing dispatcher.
+
+TVC PR #443 repaired only that existing private-source/self-heal seam and merged at:
+
+```text
+StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae
+target immutable runtime source:
+StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b
+```
+
+The existing three-selector sequence remains unchanged:
+
+```text
+astra_class_resilience_awareness
+quantum_resilience_awareness
+sv002_org_runtime_activation
+```
+
+No new request, self-heal supervisor, runtime, dispatcher, WorkerCoordinator, scheduler, credential path, custody authority, transition authority, or device dependency was introduced.
+
+Authentic runtime evidence is still required. The source repair does not prove that TVC materialized the new immutable source, that the resident dispatcher ran, that the current callable executed, or that REQUEST_BOUND reached Master Records.

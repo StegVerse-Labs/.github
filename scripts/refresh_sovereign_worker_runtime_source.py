@@ -53,6 +53,7 @@ STATIC_FILES = (
     Path("scripts/consume_g18_resident_execution_request.py"),
     Path("scripts/consume_hil_resident_execution_request.py"),
     Path("scripts/consume_evaluator_intr_resident_execution_request.py"),
+    Path("scripts/consume_sdk_evaluator_governance_posture_request.py"),
     Path("scripts/materialize_evaluator_intr_route_config.py"),
     Path("scripts/consume_sv002_public_observation_request.py"),
     Path("scripts/materialize_sv002_observation_route_config.py"),

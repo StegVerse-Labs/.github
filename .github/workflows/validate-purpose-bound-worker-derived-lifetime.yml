@@ -1,0 +1,46 @@
+name: Validate Purpose-Bound Worker Derived Lifetime
+
+on:
+  pull_request:
+    paths:
+      - 'handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
+      - 'tests/test_sdk_tt_purpose_bound_worker_runtime_path.py'
+      - 'data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
+      - 'data/canonical-task-registry.json'
+      - 'docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md'
+      - '.github/workflows/validate-purpose-bound-worker-derived-lifetime.yml'
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pytest
+      - name: Validate exact runtime-path contract
+        run: python -m pytest -q tests/test_sdk_tt_purpose_bound_worker_runtime_path.py
+      - name: Validate derived lifetime invariants
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          h=json.loads(Path('handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json').read_text())
+          c=h['purpose_bound_worker_request']['transition_cell']['candidate']
+          p=c['lifetime_policy']
+          assert p['mode']=='DERIVED_COST_TASK_DELAY_BUDGET'
+          assert p['production_recompute_required'] is True
+          assert h['execution']['lifetime_semantics']['demo_value_is_production_default'] is False
+          assert sum(p['time_budget_seconds'].values())==p['derived_max_lifetime_seconds']==c['max_lifetime_seconds']==30
+          assert p['decomposition_target']=='RECORDS_ENABLED_PACKET'
+          assert h['execution']['lifetime_semantics']['extension_requires_new_governed_recalculation'] is True
+          reg=json.loads(Path('data/canonical-task-registry.json').read_text())
+          assert reg['generation']>=56  # feature registration floor; canonical generation is monotonic
+          task=next(x for x in reg['tasks'] if x['task_id']=='SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001')
+          assert task['lifetime_model']['demonstration']['production_default'] is False
+          assert task['lifetime_model']['production']['recompute_per_task'] is True
+          print('DERIVED_LIFETIME_CONTRACT_PASS')
+          PY

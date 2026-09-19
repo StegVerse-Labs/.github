@@ -99,6 +99,62 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
         self.assertIn("changed_task_records", source)
         self.assertNotIn("added_task_records(base_ref)", source)
 
+    def test_pr_base_resolution_prefers_synthetic_merge_first_parent(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('["git", "cat-file", "-p", "HEAD"]', source)
+        self.assertIn("current_merge_base = parents[0]", source)
+        self.assertIn("pull_request.base.sha can lag current main", source)
+
+
+
+    def test_user_action_surface_registration_accepts_exact_owner_and_exclusive_semantics(self):
+        record = {
+            "task_id": "TEST-RUNTIME-TASK-001",
+            "user_action_surfaces": [{
+                "surface_id": "iphone-launch",
+                "url_route": "https://stegverse.org/runtime/launch",
+                "device_browser_context_class": "CURRENT_USER_IPHONE_SAFARI",
+                "runtime_surface": "SITE_SERVICE_WORKER",
+                "action_type": "OPEN_AND_INVOKE",
+                "owner_task_id": "TEST-RUNTIME-TASK-001",
+                "request_id": "request-1",
+                "sharing": "EXCLUSIVE",
+            }],
+        }
+        module.validate_user_action_surfaces(record)
+
+    def test_user_action_surface_registration_rejects_wrong_owner(self):
+        record = {
+            "task_id": "TEST-RUNTIME-TASK-001",
+            "user_action_surfaces": [{
+                "surface_id": "iphone-launch",
+                "url_route": "https://stegverse.org/runtime/launch",
+                "device_browser_context_class": "CURRENT_USER_IPHONE_SAFARI",
+                "runtime_surface": "SITE_SERVICE_WORKER",
+                "action_type": "OPEN_AND_INVOKE",
+                "owner_task_id": "OTHER-TASK",
+                "sharing": "EXCLUSIVE",
+            }],
+        }
+        with self.assertRaisesRegex(ValueError, "owner_task_id must equal task_id"):
+            module.validate_user_action_surfaces(record)
+
+    def test_user_action_surface_registration_rejects_invalid_sharing(self):
+        record = {
+            "task_id": "TEST-RUNTIME-TASK-001",
+            "user_action_surfaces": [{
+                "surface_id": "iphone-launch",
+                "url_route": "https://stegverse.org/runtime/launch",
+                "device_browser_context_class": "CURRENT_USER_IPHONE_SAFARI",
+                "runtime_surface": "SITE_SERVICE_WORKER",
+                "action_type": "OPEN_AND_INVOKE",
+                "owner_task_id": "TEST-RUNTIME-TASK-001",
+                "sharing": "MAYBE",
+            }],
+        }
+        with self.assertRaisesRegex(ValueError, "sharing must be SHAREABLE or EXCLUSIVE"):
+            module.validate_user_action_surfaces(record)
+
     def test_non_runtime_task_is_grandfather_compatible(self):
         module.validate_resolution({"task_id": "DOCS-ONLY-001"})
 

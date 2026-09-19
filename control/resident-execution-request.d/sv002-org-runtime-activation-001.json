@@ -13,5 +13,12 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Activate the frozen SV002 SDK query through the StegVerse-org resident executor and StegVerse-002-owned principal boundary. Do not execute the target principal from StegVerse-Labs."
+  "note": "Consume the existing requested SV002 activation through the current StegVerse-002 rerun callable on the canonical HeartBeat-separated native WorkerCoordinator carrier. Do not use the retired StegVerse-org one-shot roundtrip or create a second resident executor/request.",
+  "goal_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+  "cosv_task_vector": "50000000107000",
+  "operation": "REQUEST_SELF_CHARACTERIZATION",
+  "deterministic_packet_id": "SV002-RERUN-C796D0BFD181CEC5D99E4C23",
+  "current_callable_ref": "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
+  "request_bound_master_records_required": true,
+  "request_bound_required_evidence_exact_bytes": true
 }
