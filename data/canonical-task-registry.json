@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 71,
-  "status": "SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_DEPENDENCY_CORRECTED",
+  "generation": 72,
+  "status": "SV002_TVC_PRIMARY_RUNTIME_STARTUP_SOURCE_EVIDENCE_RETENTION_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -3824,7 +3824,8 @@
         "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
         "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
         "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
-        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json"
+        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+        "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a"
       ],
       "targets": {
         "organizations": [
@@ -3888,7 +3889,7 @@
           "kind": "RUNTIME_PREDICATE",
           "state": "UNRESOLVED",
           "ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
-          "disposition": "REQUIRE_EXISTING_TVC_PRIMARY_RUNTIME_RESTART_AND_CURRENT_SOURCE_LOADED_ON_HOST_BEFORE_C5E6A793_SELF_HEAL_MATERIALIZATION_CAN_BE_TREATED_AS_REACHABLE"
+          "disposition": "EXISTING_TVC_PRIMARY_RUNTIME_NOW_RETAINS_PROCESS_LOCAL_STARTUP_SOURCE_RECEIPT_AFTER_PREFLIGHT; STILL REQUIRE_AUTHENTIC_SERVICE_RESTART_PLUS_RECEIPT_SHOWING_CURRENT_TVC_SOURCE_CONTAINING_35247B58 BEFORE C5E6A793 SELF_HEAL MATERIALIZATION IS REACHABLE"
         },
         {
           "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
@@ -3911,7 +3912,8 @@
         "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
         "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
         "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
-        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json"
+        "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+        "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a"
       ],
       "expected_evidence_predicates": [
         "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
@@ -3933,7 +3935,8 @@
         "TVC_SELF_HEAL_IMMUTABLE_SOURCE_PIN_C5E6A793",
         "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
         "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
-        "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE"
+        "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+        "TVC_PRIMARY_RUNTIME_STARTUP_SOURCE_RECEIPT_RETAINED"
       ],
       "runtime_requirements": {
         "capabilities": [
