@@ -91,6 +91,12 @@ STEGAGENTS_GOVERNED_RUNTIME_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-stegagents-governed-runtime"),
     "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
 }
+CONVERSATION_EVIDENCE_INGESTION_CUSTODY_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-conversation-evidence-ingestion-custody-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-conversation-evidence-ingestion-custody"),
+    "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -102,6 +108,7 @@ REQUEST_SPECS = (
     GLOBAL_MEASUREMENT_SPEC,
     AUTONOMOUS_PROGRESSION_SPEC,
     STEGAGENTS_GOVERNED_RUNTIME_SPEC,
+    CONVERSATION_EVIDENCE_INGESTION_CUSTODY_SPEC,
 )
 
 MATERIALIZE = (
@@ -127,6 +134,7 @@ MATERIALIZE = (
 PRESERVE_IF_PRESENT = (
     Path("data/canonical-task-registry.json"),
     Path("data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json"),
+    Path("data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json"),
 )
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = (
