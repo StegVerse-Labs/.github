@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "correlation_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "root_correlation_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "parent_task_id": null,
+  "goal": "Formalize, validate, and publish the Reconstructable Singularity as the minimum continuity-resolving perspective threshold for unique admissibility-consistent reconstruction, superseding the older separate Site Reconstructive Singularity paper while preserving historical provenance and explicit non-claims.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/RECONSTRUCTABLE_SINGULARITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/reconstructable-singularity.md",
+    "StegVerse-Labs/admissibility-wiki:static/formalisms/reconstructable-singularity.v0.1.schema.json",
+    "StegVerse-Labs/admissibility-wiki:static/formalisms/reconstructable-singularity.v0.1.example.json",
+    "StegVerse-Labs/admissibility-wiki:scripts/check_reconstructable_singularity.py",
+    "StegVerse-Labs/admissibility-wiki#143",
+    "StegVerse-Labs/Site:docs/RECONSTRUCTABLE_SINGULARITY_SITE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1410",
+    "docs/ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTRATION_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/admissibility-wiki", "StegVerse-Labs/Site"],
+    "components": ["canonical-task-registration", "reconstructable-singularity-formalism", "research-paper-supersession", "public-paper-index", "formalism-validation"]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-RECONSTRUCTABLE-SINGULARITY-WIKI-VALIDATION",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/admissibility-wiki#143"
+    },
+    {
+      "dependency_id": "DEP-RECONSTRUCTABLE-SINGULARITY-SITE-SUPERSESSION",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/Site#1410"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/reconstructable-singularity.md",
+    "StegVerse-Labs/Site:reconstructive-singularity.html",
+    "StegVerse-Labs/Site:docs/RECONSTRUCTIVE_SINGULARITY_SITE_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTRATION_VALID",
+    "RECONSTRUCTABLE_SINGULARITY_FORMALISM_VALIDATION_PASS",
+    "OLDER_RECONSTRUCTIVE_SINGULARITY_REMOVED_AS_SEPARATE_CURRENT_PAPER",
+    "LEGACY_ROUTE_REDIRECTS_TO_SUPERSEDING_RECONSTRUCTABLE_PAPER",
+    "HISTORICAL_PROVENANCE_PRESERVED",
+    "SITE_PUBLICATION_VALIDATION_PASS",
+    "PUBLIC_ROUTE_OBSERVED_BEFORE_DEPLOYMENT_CLAIM",
+    "EMPIRICAL_OR_RUNTIME_AUTHORITY_NOT_OVERSTATED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["canonical_artifact_validation"],
+    "environment": null,
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": [
+    "docs/ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/RECONSTRUCTABLE_SINGULARITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/RECONSTRUCTABLE_SINGULARITY_SITE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
