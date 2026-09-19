@@ -808,3 +808,7 @@ After the Test 3 resident request-carriage binding merged, source tracing found 
 ### Test 3 control-plane source delivery
 
 Test 3 source-delivery tracing found that the existing StegOS control-plane source-package relay profile had no production invocation surface outside tests. StegOS PR #396 merged a bounded CLI around the existing TVC-authorized relay/profile composition. The next runtime predicate is an authentic `SOURCE_MATERIALIZED_VERIFIED` ingress receipt for the exact current control-plane source identity; source/CI alone does not satisfy it.
+
+### Test 3 complete atomic-seam source delta
+
+The Test 3 control-plane package now carries not only its resident request/consumer, but also the already-merged WorkerCoordinator, ProcessWorkerAdapter, shared StegAgents bridge, executable handoff, and worker-registry fragment required to preserve the atomic `ACTIVATE(T)+CREATE_AND_BIND(W,T)` seam on a stale resident source root. Runtime completion still requires authentic source-package relay/materialization evidence.
