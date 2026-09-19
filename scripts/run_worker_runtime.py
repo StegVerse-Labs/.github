@@ -673,8 +673,6 @@ def main() -> int:
     root = Path(args.root).resolve()
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     bootstrap_result = None
-    if args.task_id and not (root / INITIAL_CARRIER_REL).is_file():
-        raise SystemExit("targeted independent execution requires an existing separated carrier reference; it may not bootstrap G18")
     if not args.task_id and not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
         bootstrap_result = bootstrap_initial_carrier(root, runtime)
     control_projection = None
