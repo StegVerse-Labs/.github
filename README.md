@@ -914,3 +914,6 @@ Runtime progression follows the task's actual authority/evidence chain—Task Re
 Canonical Goal Task `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` implements the first bounded phase of the governed service-performance evidence registry. It consumes the v1 publication contract unchanged, materializes write-once conversation/attachment evidence packages with explicit authenticity and transaction bindings, and routes the resulting evidence through the existing canonical Master Records state-transition custody client. Public Site projection and adjudicative conclusions remain outside this phase.
 
 Canonical handoff: `docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md`.
+
+
+SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.
