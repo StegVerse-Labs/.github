@@ -965,6 +965,9 @@ Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: P
 The purpose-bound runtime task explicitly preserves the actual merged transition order: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is the first authentic transition. TV/TVC credential materialization and warrant-policy verification occur only after claim/fence Master Records closure. The earlier projection that placed credential materialization first is superseded.
 
 
+SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_TVC_INVOCATION_OBSERVED` is currently admissible; restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, runtime activation, and REQUEST_BOUND custody remain blocked until each immediate predecessor transition is authentically consumed. The neutral reusable scheduler also no longer treats deferred children as an advanced aggregate transition.
+
+
 ### WorkerCoordinator Functional Memory
 
 Worker assignment is a governed state transition. The existing WorkerCoordinator admission review now binds each assignment determination to the canonical Task Registry generation and task COSV state. An `ADMIT` result maps to `ALLOW` and may continue into the existing claim/fence assignment path. Any non-`ALLOW` result is materialized as a Functional Memory records pack and submitted through the existing canonical Master Records state-transition custody client.
