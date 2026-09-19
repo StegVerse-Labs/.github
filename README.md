@@ -958,3 +958,12 @@ StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4'
 
 
 Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: PR #2291 merged at `e5f40728f92029c8f81fc543c3215e9ad98a0ad5`. Source/runtime binding is validated, but no authentic post-merge WorkerCoordinator claim/fence or Master Records `CONVERSATION_EVIDENCE_INGESTED` receipt is currently retained in canonical evidence. The task remains active on the existing targeted one-shot path; no public Site projection successor has been derived.
+
+
+### WorkerCoordinator Functional Memory
+
+Worker assignment is a governed state transition. The existing WorkerCoordinator admission review now binds each assignment determination to the canonical Task Registry generation and task COSV state. An `ADMIT` result maps to `ALLOW` and may continue into the existing claim/fence assignment path. Any non-`ALLOW` result is materialized as a Functional Memory records pack and submitted through the existing canonical Master Records state-transition custody client.
+
+Functional Memory is not a new runtime, scheduler, authority plane, or custody store. It is reconstructable prior assignment state retained by Master Records and consumed before a later assignment review. Prior Functional Memory must reconstruct with exact receipt digest equality and required-evidence PASS before it may participate in the next WorkerCoordinator determination. The retained pack binds task identity, canonical Task Registry generation, generation-bound COSV, admission predicate matrix and digest, disposition/reasons, and the fact that no worker/claim/fence was materialized.
+
+The ALLOW branch carries the same Functional Memory context into the existing worker assignment record, so Master Records can reconstruct why a worker was permitted after a previous DENY/DEFER state without treating ordinary registry advancement as a failure or creating a duplicate worker path.
