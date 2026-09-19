@@ -24,7 +24,12 @@
     "master-records/orchestration:scripts/verify_sv002_self_characterization_reconstruction.py"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-002", "Admissible-Existence", "master-records"],
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "Admissible-Existence",
+      "master-records"
+    ],
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/TVC",
@@ -93,7 +98,7 @@
     {
       "blocker_id": "SV002-TVC-REUSABLE-INVOCATION-RUNTIME-RECEIPT",
       "state": "ACTIVE",
-      "reason": "The previously missing callable invocation source path is repaired and merged. The remaining first boundary is authentic consumption by an existing sovereign Healer cycle: no retained neutral scheduler/reusable-task receipt for this Goal/COSV has yet been observed, therefore SERVICE_INSTALLED_VERIFIED, resident state, credential presence, staged request consumption, and the four immutable exact-SHA materialization receipts remain unproven."
+      "reason": "State-dependent chain is now explicit. The immediate predecessor is CALLABLE_TVC_PATH_SOURCE_COMPLETE and the only admissible successor is REUSABLE_TVC_INVOCATION_OBSERVED. No retained neutral scheduler/reusable-task receipt for this Goal/COSV has yet been observed; every later transition remains BLOCKED_ON_PREDECESSOR."
     }
   ],
   "expected_evidence_predicates": [
@@ -131,13 +136,11 @@
     "goal_2_closed": false
   },
   "allowed_next_transitions": [
-    "REUSABLE_TVC_INVOCATION_OBSERVED",
-    "FROZEN_CORPUS_MATERIALIZED",
-    "NATIVE_BUNDLE_VERIFIED",
-    "FULL_CHAIN_REEXECUTED",
-    "GOAL_EVIDENCE_RECONCILED"
+    "REUSABLE_TVC_INVOCATION_OBSERVED"
   ],
-  "handoff_projection_refs": ["docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -151,5 +154,60 @@
     "second_scheduler_created": false,
     "remote_desktop_required": false,
     "second_user_operated_device_required": false
+  },
+  "state_transition_graph": {
+    "schema": "stegverse.state-transition-dependency-graph/v1",
+    "invariant": "EVERY_SUCCESSOR_STATE_REQUIRES_AUTHENTIC_CONSUMPTION_OF_ITS_IMMEDIATE_PREDECESSOR_STATE",
+    "current_state": "CALLABLE_TVC_PATH_SOURCE_COMPLETE",
+    "transitions": [
+      {
+        "from": "CALLABLE_TVC_PATH_SOURCE_COMPLETE",
+        "to": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "predicate": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+        "state": "PENDING"
+      },
+      {
+        "from": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "to": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "predicate": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "to": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "predicate": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "to": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "predicate": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "to": "FROZEN_CORPUS_MATERIALIZED",
+        "predicate": "TT_RTG_GTG_AE_IMMUTABLE_COMPLETE_RECEIPTS_AND_TREE_BYTE_COMPLETENESS",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "FROZEN_CORPUS_MATERIALIZED",
+        "to": "NATIVE_BUNDLE_VERIFIED",
+        "predicate": "SV002_NATIVE_RESOURCE_BUNDLE_VERIFIED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "NATIVE_BUNDLE_VERIFIED",
+        "to": "FULL_CHAIN_REEXECUTED",
+        "predicate": "REAL_NATIVE_POLICY_EXECUTED_AGAINST_COMPLETE_FROZEN_BUNDLE",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "FULL_CHAIN_REEXECUTED",
+        "to": "GOAL_EVIDENCE_RECONCILED",
+        "predicate": "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS_AND_ORIGIN_RETURN_DELIVERED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      }
+    ]
   }
 }
