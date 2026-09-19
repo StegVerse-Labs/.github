@@ -784,3 +784,8 @@ Canonical sources:
 docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md
 contracts/conversation-evidence-service-performance-publication-contract.v1.json
 ```
+
+
+### StegBrowser Healer retention-pointer carriage repair
+
+Goal Prompt 11 replaces repeated observation with an existing-path repair. After fenced ProcessWorkerAdapter projection, the Healer resident consumer validates the projected six-field retained-root pointer against the retained packet path, SHA-256, state, and resident root, then carries it into the existing consumption receipt at `execution_result.resident_custody_root_observation_retention`. Missing evidence does not synthesize a pointer; mismatches fail closed. Source repair merged in PR #2212 as `025dcf8f5c7dbb596042bc213b2e2c42c532c18a`. No new runtime, scheduler, dispatcher, authority, store, invocation, host, or device dependency is introduced.
