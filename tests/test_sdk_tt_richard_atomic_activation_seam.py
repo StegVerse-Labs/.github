@@ -131,3 +131,52 @@ def test_test3_registration_reuses_existing_worker_provider():
     assert fragment["shared_worker_provider_fragment_refs"] == [
         "control/worker-registry.d/stegagents-governed-runtime-001.json"
     ]
+
+
+def test_worker_bridge_routes_waiting_test3_task_to_governed_close():
+    worker = _worker_module()
+    invocation = {
+        "schema": "stegverse.worker-invocation/v0.1",
+        "task": {
+            "task_id": worker.TEST3_TASK_ID,
+            "state": "ACTIVE",
+            "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+            "worker_id": worker.WORKER_ID,
+            "worker_instance_id": "stegagents-governed-runtime-worker-HB1-G42",
+            "atomic_activation_receipt_ref": "activation.json",
+            "last_checkpoint_ref": "execution.json",
+            "test3_waiting_for_governed_close": True,
+            "heartbeat_timing": {"fencing_token": 42},
+        },
+        "scope": {
+            "claim_id": "SHWP-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001-G42",
+            "fencing_token": 42,
+        },
+    }
+    task, mode = worker.validate_test3_invocation(invocation)
+    assert mode == "GOVERNED_CLOSE"
+    assert task["test3_waiting_for_governed_close"] is True
+
+
+def test_worker_bridge_requires_terminal_master_records_and_records_only_result():
+    source = WORKER_PATH.read_text(encoding="utf-8")
+    assert '"stegverse.stegagents-atomic-task-worker-close-request/v1"' in source
+    assert '"GOVERNED_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY"' in source
+    assert '_require_closed_transition(result.get("close_master_records_transition"), "CLOSE_TASK_AND_RETIRE_WORKER")' in source
+    assert 'result.get("worker_live_after_close") is False' in source
+    assert 'result.get("continued_authority_after_retirement") is False' in source
+    assert 'result.get("callable_retained") is False' in source
+    assert 'result.get("executor_reference_retained") is False' in source
+    assert '"state": "COMPLETED"' in source
+    assert '"transition_id": "STEGAGENTS_GOVERNED_CLOSE_RETIRED"' in source
+
+
+def test_workercoordinator_invokes_governed_close_and_releases_only_on_completed():
+    source = RUNTIME_PATH.read_text(encoding="utf-8")
+    start = source.index('if task.get("test3_waiting_for_governed_close") is True:')
+    invoke = source.index("self._invoke(registry, task, carrier_epoch, cost_log, events)", start)
+    completed = source.index('if task.get("state") == "COMPLETED":', invoke)
+    clear = source.index('task["test3_waiting_for_governed_close"] = False', completed)
+    end = source.index("            return", clear)
+    assert start < invoke < completed < clear < end
+    assert '"test3_governed_close_invoked"' in source[start:end]
