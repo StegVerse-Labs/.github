@@ -54,7 +54,6 @@
         ],
         "activation_proof_ref": null,
         "blockers": [
-          "AUTHENTIC_RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
           "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
           "AUTHENTIC_TV_WARRANT_POLICY_BINDING_NOT_OBSERVED",
           "CURRENT_STEGCORE_INTR_MATERIALIZATION_DISPOSITION_NOT_OBSERVED",
@@ -66,7 +65,13 @@
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "reuses_runtime_capability",
-        "target_phase": "ACTIVATED"
+        "target_phase": "ACTIVATED",
+        "runtime_dependency_correction": {
+          "unsupported_healer_dependency_present": false,
+          "unsupported_resident_root_prerequisite_present": false,
+          "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+          "master_records_progression_required": true
+        }
       },
       "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
       "machine_readable_state": {
