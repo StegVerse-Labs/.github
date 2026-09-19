@@ -118,6 +118,13 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
       and result.get("goal_task_id")=="STEGVERSE-002-EXPERIMENT-RERUN-001"
       and result.get("cosv_id")=="50000000107000"
       and result.get("packet_id")=="SV002-RERUN-C796D0BFD181CEC5D99E4C23"
+      and result.get("experiment_id")=="STEGVERSE-002-SELF-CHARACTERIZATION-001"
+      and result.get("operation")=="REQUEST_SELF_CHARACTERIZATION"
+      and result.get("invocation_count")==1
+      and result.get("manifest_sha256")=="29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828"
+      and isinstance(result.get("packet_sha256"),str) and bool(result.get("packet_sha256"))
+      and isinstance(result.get("request_sha256"),str) and bool(result.get("request_sha256"))
+      and isinstance(result.get("frame_sha256"),str) and bool(result.get("frame_sha256"))
       and result.get("request_bound_claimed") is True
       and result.get("request_bound_master_records_state")=="RECORDED"
       and result.get("request_bound_master_records_reconstruction_status")=="PASS"
