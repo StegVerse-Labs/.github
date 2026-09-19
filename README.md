@@ -808,3 +808,8 @@ After the Test 3 resident request-carriage binding merged, source tracing found 
 ### Test 3 control-plane source delivery
 
 Test 3 source-delivery tracing found that the existing StegOS control-plane source-package relay profile had no production invocation surface outside tests. StegOS PR #396 merged a bounded CLI around the existing TVC-authorized relay/profile composition. The next runtime predicate is an authentic `SOURCE_MATERIALIZED_VERIFIED` ingress receipt for the exact current control-plane source identity; source/CI alone does not satisfy it.
+
+
+### StegBrowser Healer cycle-envelope repair
+
+Goal Prompt 12 fixes the next concrete post-carriage defect: the Healer consumer now recognizes completion from the real WorkerCoordinator `worker_response` event inside `stegverse.worker-runtime-cycle-result/v1`, rather than a synthetic top-level `transition_id`. Exactly one `HEALER_SOVEREIGN_SCHEDULER_COMPLETED / HANDOFF_READY` event for the Healer task gates retained-root pointer validation and carriage. The resident dispatcher now treats `CYCLE_COMPLETED` as a successful Healer result. No new execution or authority path is introduced.
