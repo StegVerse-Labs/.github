@@ -835,12 +835,15 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             self._event(
                 events,
                 carrier_epoch,
-                "test3_governed_close_required",
+                "test3_governed_close_invoked",
                 task_id=task.get("task_id"),
                 worker_id=task.get("worker_id"),
                 claim_id=task.get("claim_id"),
                 authority_effect=False,
             )
+            self._invoke(registry, task, carrier_epoch, cost_log, events)
+            if task.get("state") == "COMPLETED":
+                task["test3_waiting_for_governed_close"] = False
             return
         timer = self._timer_from_task(task, carrier_epoch)
         if timer is None:
