@@ -958,3 +958,6 @@ StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4'
 
 
 Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: PR #2291 merged at `e5f40728f92029c8f81fc543c3215e9ad98a0ad5`. Source/runtime binding is validated, but no authentic post-merge WorkerCoordinator claim/fence or Master Records `CONVERSATION_EVIDENCE_INGESTED` receipt is currently retained in canonical evidence. The task remains active on the existing targeted one-shot path; no public Site projection successor has been derived.
+
+
+Canonical Master Records RTC008 source custody is repaired by PR #2290 / merge `3a3032375e745fb955dfd4e86c8b63eb192b08e4`. The existing shared Universal InTr listener now recognizes the prepared MIR southbound RTC008 request and requires canonical Master Records `RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality` before evidence completion. Focused exact-head validation run `35468924006` returned 2 PASS tests. Authentic RTC008 runtime admission, RTC009, and caller consequence remain unclaimed.
