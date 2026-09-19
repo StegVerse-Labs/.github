@@ -211,3 +211,15 @@ The consumer now preserves the existing precedence: explicit distinct dispatcher
 After merging #2237, the resident update path was traced one layer earlier. `run_worker_runtime.py::refresh_local_worker_source()` still resolved canonical source only from `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. Therefore a worker service carrying only the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` could know the canonical checkout yet skip source refresh entirely, leaving the resident on the pre-#2237 consumer and recreating the same source-resolution block.
 
 The existing native source refresh now uses the same provider-neutral local precedence: dedicated heartbeat source binding first, then the existing `StegVerse-Labs/.github` repository-map entry. The map is parsed fail-closed, source==runtime remains non-refreshing, and the refresh still performs no network source transport or credential acquisition. This is not a new updater, scheduler, runtime, dispatcher, or authority path; it repairs the existing local refresh locator so merged consumer repairs can actually reach the resident.
+
+
+## Prompt 13 merge reconciliation
+
+Both existing-path source-delivery repairs are merged on current main:
+
+- Healer consumer canonical-source resolution from the existing resident repository map: `.github#2237@543933b228e9db63b2a8f0d6d96f1b0c3c0b6583`.
+- Native WorkerCoordinator local source-refresh resolution from the same repository map, closing the update catch-22: `.github#2238@9759461f5f76df9dd2793db6e970e7a78f032a39`.
+
+Canonical Task Registry generation observed after these merges is `98`. The resident refresh set was re-read: `workers/`, `handoffs/`, `authorizations/`, `control/worker-registry.d/`, `control/process-worker-adapters.d/`, the shared process-adapter registry, the Healer consumer, dispatcher, and targeted execution bridge are all carried by the existing local refresh contract. The earlier string-level check that suggested individual Healer worker/control files were absent was corrected because those paths are delivered through whole-directory refresh.
+
+No authentic post-merge `CYCLE_COMPLETED` Healer resident receipt, validated six-field root pointer, or exactly-one `RESIDENT_CUSTODY_ROOT_OBSERVED` packet has surfaced through the available evidence paths. The non-authorizing classifier therefore remains unrun. The remaining boundary is the next machine-owned resident refresh + dispatch + WorkerCoordinator claim/fence + Healer worker cycle; no additional source/runtime/scheduler/dispatcher/authority path is justified by current evidence.
