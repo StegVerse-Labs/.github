@@ -890,3 +890,8 @@ Test 3 now has an executable terminal edge. After the retained task result, the 
 ## Admissibility Wiki public hostname coordination
 
 `ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001` tracks migration of the existing Admissibility Wiki public hostname to `https://admissibility.stegverse.org`. The wiki repository remains canonical source. GitHub Pages remains the hosting mechanism. The task does not create a second wiki, runtime, execution authority, or publication authority. Account-level Pages custom-domain and DNS CNAME changes remain explicit human-action dependencies until observed.
+
+
+### SDK purpose-bound worker cost/lifetime demonstration augmentation — 2026-09-19
+
+`SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` now defines three single-worker demonstration tiers (15 s / 30 s / 60 s derived maximum lifetimes from increasing task cost bases) plus a fourth task requiring three simultaneous workers. The fourth task carries 9 aggregate compute units but assigns each worker the median 3-unit / 30-second cost-lifetime budget, so concurrency is expected to keep the group wall-clock authority window at the median single-worker reference rather than multiplying it serially. All workers remain purpose-bound, retire early on completion, and must decompose to records-only reconstructable packets with no continued authority.
