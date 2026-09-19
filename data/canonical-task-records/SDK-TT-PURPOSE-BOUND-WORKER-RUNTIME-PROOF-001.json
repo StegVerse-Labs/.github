@@ -29,7 +29,12 @@
     "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
     "tests/test_sdk_tt_purpose_bound_worker_runtime_path.py",
     "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:src/purpose_bound_worker_runtime.py",
-    "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:tests/test_purpose_bound_worker_runtime.py"
+    "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:tests/test_purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegCore@68b7e38f40e8a31fbd8cd5953bcf87199619f6cd:src/stegcore/steggate_runtime.py",
+    "StegVerse-Labs/StegCore@68b7e38f40e8a31fbd8cd5953bcf87199619f6cd:src/stegcore/transaction_lifecycle.py",
+    "StegVerse-org/StegVerse-SDK@9de805315872b9b615d55f62a5d853acc6c0765a:stegverse/sovereign_validation_runtime.py",
+    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -66,7 +71,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "AUTHENTIC_RESIDENT_TARGETED_ONE_SHOT_REQUIRED_WITH_MASTER_RECORDS_CLOSED_CLAIM_FENCE_AND_PER_PHASE_LIFECYCLE_TRANSITIONS",
+  "remaining_predicate": "AUTHENTIC_RESIDENT_TARGETED_ONE_SHOT_REQUIRED_WITH_SAME_RUN_MASTER_RECORDS_CLOSED_CLAIM_FENCE_TV_TVC_INTR_MATERIALIZED_INVOCATION_COMPLETION_RETIREMENT_POST_RETIREMENT_NO_AUTHORITY_AND_RECORDS_ONLY_RECONSTRUCTION",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -74,7 +79,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 76,
+    "reconciled_against_registry_generation": 80,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -89,7 +94,8 @@
     "carrier_reference_required_for_targeted_independent_control": false,
     "runtime_capability_provider_is_completion_dependency": false,
     "shared_worker_provider_resolution_repaired": true,
-    "source_lineage_parent_requires_runtime_reconstruction": false
+    "source_lineage_parent_requires_runtime_reconstruction": false,
+    "pre_materialization_master_records_source_gates_complete": true
   },
   "source_refinement": {
     "steagents_pr": 21,
@@ -230,6 +236,78 @@
       "receipt_sha256==reconstructed_receipt_sha256"
     ],
     "authentic_runtime_execution_attempted": false,
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+  },
+  "pre_materialization_master_records_gate": {
+    "source_repair_complete": true,
+    "authentic_runtime_execution_attempted": false,
+    "stegcore": {
+      "pr": 224,
+      "exact_head": "cbe952057306081c46db076f9e9fc7e47825ae97",
+      "merge_commit": "68b7e38f40e8a31fbd8cd5953bcf87199619f6cd",
+      "validations": {
+        "spe_standing_run": 35419511997,
+        "spe_standing_conclusion": "success",
+        "stegverse_001_002_run": 35419512024,
+        "stegverse_001_002_conclusion": "success",
+        "credential_authority_gate_run": 35419512017,
+        "credential_authority_gate_conclusion": "skipped"
+      },
+      "behavior": "NON_AUTHORIZING_POST_ALLOW_PRE_EXECUTOR_OBSERVER_FAILS_CLOSED_BEFORE_EXECUTOR"
+    },
+    "sdk": {
+      "superseded_pr": 270,
+      "merged_pr": 273,
+      "exact_head": "bb66529864e2a240aa5cc3be4c1a83c9b77faed2",
+      "merge_commit": "9de805315872b9b615d55f62a5d853acc6c0765a",
+      "validations": {
+        "package_run": 35426131209,
+        "package_conclusion": "success",
+        "mcp_source_run": 35426131200,
+        "mcp_source_conclusion": "success",
+        "standing_context_run": 35426131190,
+        "standing_context_conclusion": "success",
+        "evaluator_manifest_run": 35426131199,
+        "evaluator_manifest_conclusion": "success"
+      },
+      "behavior": "PASSES_PRE_EXECUTION_OBSERVER_UNCHANGED_TO_EXISTING_STEGCORE_TRANSACTION_LIFECYCLE"
+    },
+    "steagents": {
+      "pr": 24,
+      "exact_head": "f92e39fece9351aa7c6730adbcc50fffefc7a7b0",
+      "merge_commit": "53d7162805cf077cb7eb0a443a1ce31f41ec078e",
+      "validations": {
+        "ci_run": 35426525234,
+        "ci_conclusion": "success",
+        "test_readiness_run": 35426525228,
+        "test_readiness_conclusion": "success",
+        "cross_agent_authority_run": 35426525243,
+        "cross_agent_authority_conclusion": "success"
+      }
+    },
+    "transitions": [
+      {
+        "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+        "sequence": 2,
+        "required_evidence_type": "TV_TVC_WARRANT_POLICY_VERIFICATION"
+      },
+      {
+        "transition_id": "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+        "sequence": 3,
+        "required_evidence_type": "STEGCORE_INTR_PRE_CONSEQUENCE_ADMISSION"
+      }
+    ],
+    "progression_requires": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "materialized_predecessor": "STEGCORE_INTR_MATERIALIZATION_ADMITTED_MASTER_RECORDS_RECEIPT",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "StegCore/InTr",
+    "custody_authority": "MASTER_RECORDS",
+    "github_runtime_authority": "NONE",
     "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
   }
 }
