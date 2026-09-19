@@ -287,3 +287,12 @@ The temporary repair claim was terminalized through Site PR `#1414`, merged as `
 No authentic registered-Node MIR runtime instance was surfaced by the reconciliation search. Therefore the parent remains ACTIVE; no runtime transition, Master Records custody sequence, Interlock/InTr terminal transition, or caller consequence is promoted from source or CI evidence.
 
 The next source/evidence trace continues through the existing returned SDK-processing handoff and then the authentic far-side Interlock/InTr terminal transition/caller consequence. Every observed governed transition must still return Master Records `RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality before progression.
+
+
+## SDK return binding custody gap — 2026-09-19
+
+After the post-return reconciliation merged in canonical PR #2219, the source trace continued through the existing Publisher -> SDK return path. The first concrete custody defect is at `RTC-SDK-RETURN-006`: the existing reverse Publisher-return consumer materializes the exact SDK return binding and emits `SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS`, but previously did not submit that transition to canonical Master Records before exposing `sdk_return_binding_observed=true`.
+
+The bounded repair on branch `canonical-mr-sdk-return-binding-custody-20260919` reuses `workers/canonical_state_transition_custody.py`. It carries both the exact retained `stegverse.sdk.publisher-return-binding/v1` and exact materialization receipt as required evidence, binds reverse-transport continuity as prior state, binds the exact SDK return object digest as resulting state, and fails closed unless Master Records returns `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact receipt/reconstruction digest equality.
+
+No later egress predicate is promoted by this source repair. `RTC-STEGVERSE-EGRESS-007`, Interlock/InTr egress, far-side terminal transition/caller consequence, authentic external MIR substitution, and communication completion remain unobserved.
