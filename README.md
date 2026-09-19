@@ -707,3 +707,8 @@ Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIAT
 ### StegBrowser resident custody-root observation
 
 Canonical Goal Task `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` remains ACTIVE at Task Registry generation 70. The controlling Healer retention seam is the fenced worker checkpoint child receipt, not the outer scheduler-consumption envelope. No authentic checkpoint, six-field retention pointer, or exactly-one `RESIDENT_CUSTODY_ROOT_OBSERVED` root is currently recorded, so the non-authorizing classifier and all downstream WorkerCoordinator / Interlock-InTr / TVC / Master Records progression remain unpromoted. No second task, invocation, runtime, scheduler, dispatcher, or device dependency has been introduced.
+
+
+### SDK TT purpose-bound worker — Healer checkpoint Master Records identity carriage
+
+The existing Healer resident consumer now closes the source-level identity gap between the fenced projected checkpoint and canonical Master Records custody. It binds the projected checkpoint's current WorkerCoordinator claim/fence/transition identity, submits the exact checkpoint as required evidence through the existing canonical state-transition custody client, requires RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality, and retains transition_id / receipt_sha256 / master_record_ref in the existing consumption receipt. This is source carriage only; authentic retained-root and purpose-bound runtime predicates remain unproven.
