@@ -950,3 +950,8 @@ PR #2285 merged the existing RTC006 -> RTC007 continuation seam. The exact SDK r
 ### Task 4 atomic three-worker binding — 2026-09-19
 
 StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4's common-parent semantics: one governed parent admission atomically carries all three distinct child bindings; all three children consume the same parent Master Records closure and then execute concurrently; terminal aggregation still requires the three-way join of all three validated RETIRED closures.
+
+
+### StegBrowser nonce-bound A3 claim/fence correlation
+
+The direct `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path now requires the immutable invocation nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` to survive through the manifest-bound runner, Universal InTr materialization, organization-local ingress packet, and A3/A4 runtime projection. A WorkerCoordinator claim/fence is not promotable as this invocation's evidence unless the returned nonce matches exactly. This is correlation only; it mints no claim/fence and introduces no new runtime or authority path.
