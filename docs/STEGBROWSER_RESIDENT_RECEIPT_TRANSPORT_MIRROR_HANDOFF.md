@@ -20,9 +20,7 @@ This task does **not** discover, connect to, or depend on an external device con
 The production evidence path is entirely StegVerse-native:
 
 ```text
-existing resident cycle
--> standing Healer carrier
--> neutral reusable scheduler
+existing StegBrowser runtime-connection ingress
 -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> admitted ephemeral StegOS / Canonical Work
 -> authentic resident receipts retained under the resident custody surface
@@ -102,3 +100,8 @@ The parent runtime-consumption lineage remains incomplete until its full authent
 ## Manual work
 
 None.
+
+
+## Routing correction
+
+The previous standing-Healer producer chain is superseded. The resident receipt transport owner is the direct StegBrowser reusable-runtime chain. No Healer checkpoint or scheduler cycle is required to produce or retain the StegBrowser evidence receipts.
