@@ -682,3 +682,8 @@ The SDK evaluator governance-posture runtime-proof successor reuses the canonica
 ### SDK product-processing provenance
 
 Canonical Goal Task `SDK-PRODUCT-PROCESSING-PROVENANCE-001` / COSV `71000000101000` is `RETIRED / COMPLETED_SOURCE_VALIDATED_MERGED`. SDK PR #268 merged the generic non-authorizing product-attribution contract as `b40daac9fc5aaf244bb083433d88a9b835d2cfec`, and SDK PR #269 merged the canonical closeout handoff as `125a85c8d359d4ed9a9dc52089341b9612462c79`. The contract projects per-product processing scope, input/output bindings, evidence refs, authority effect, and explicit `NOT_OBSERVED`/`NOT_PROCESSED` states without creating a second evaluator, runtime, Interlock/InTr plane, worker, custody store, or credential authority. Canonical handoff: `StegVerse-org/StegVerse-SDK/SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md`.
+
+
+### SV002 canonical carrier -> current rerun binding — 2026-09-18
+
+The existing `sv002_org_runtime_activation` request/selector is being repaired in place so it invokes the current deterministic rerun callable rather than the retired StegVerse-org one-shot roundtrip. The same canonical WorkerCoordinator and resident dispatcher are retained; no second request or executor is added. The dispatcher preserves the existing Master Records custody and federation publication bindings required by the current callable while continuing to strip GitHub runtime credentials.
