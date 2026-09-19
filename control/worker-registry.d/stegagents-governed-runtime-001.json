@@ -87,7 +87,8 @@
       "authority_source": "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json#authority",
       "capabilities": [
         "stegagents_governed_coderepair_roundtrip",
-        "stegagents_purpose_bound_worker_lifecycle"
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_atomic_task_worker_activation"
       ],
       "executor_type": "repository_worker",
       "last_seen_at": null,
