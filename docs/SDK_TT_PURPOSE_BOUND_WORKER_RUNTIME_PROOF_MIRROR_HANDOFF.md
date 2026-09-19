@@ -262,3 +262,35 @@ every required_evidence_manifest item bound to the same transition and individua
 ```
 
 No Healer, resident-root, scheduler, dispatcher, carrier, new runtime, new custody store, or device dependency may be inferred unless an authentic preceding Master Records transition explicitly requires it.
+
+
+## Direct WorkerCoordinator admission repair — Goal Prompt 8
+
+Registry generation 72 was re-read after the generation-71 dependency correction. The Healer/resident-root lineage remains explicitly non-prerequisite for this SDK goal. No staged Healer custody change is merged or relied upon here.
+
+Tracing the canonical next transition, `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`, exposed four source-level admission mismatches on the existing one-shot path:
+
+```text
+1. run_worker_runtime.py still required an existing separated carrier for --task-id
+2. WorkerCoordinator.cycle() unconditionally required that carrier before independent admission
+3. task.dependencies still required STEGAGENTS-GOVERNED-RUNTIME-001 to be COMPLETED although it is a capability provider
+4. target-scoped registry-fragment loading skipped the owner fragment that defines the already-existing shared StegAgents worker
+5. source-lineage parent_task_id triggered runtime predecessor reconstruction even though the completed console parent grants no runtime authority
+```
+
+The existing path is repaired without adding a runtime, worker, adapter, scheduler, dispatcher, carrier, authority plane, or device dependency:
+
+```text
+HANDOFF_READY SDK task
+-> explicit target fragment
+-> explicit shared worker provider fragment
+-> existing stegagents-governed-runtime-worker
+-> existing process:stegagents-governed-runtime-v1
+-> fresh independent WorkerCoordinator claim/fence
+```
+
+Targeted independent control now uses the canonical independent oscillator only as a non-authorizing coordination reference when no separated carrier file exists. Non-targeted WorkerCoordinator operation still requires the actual separated carrier. The result records whether a real carrier reference was observed and separately records the coordination-reference source.
+
+The SDK handoff keeps `STEGAGENTS-GOVERNED-RUNTIME-001` as the runtime capability provider but removes it from completed-task dependencies. It also marks the completed console parent as source/semantic lineage rather than a runtime predecessor requiring reconstruction. The SDK fragment remains `workers: []` and imports `control/worker-registry.d/stegagents-governed-runtime-001.json` as an explicit shared-worker provider, preserving a single worker definition.
+
+This source repair does not claim a fresh claim/fence, TV/TVC warrant verification, InTr admission, purpose-bound worker materialization, lifecycle result, retirement, or Master Records state. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`; every resulting governed transition must satisfy `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + exact receipt/reconstruction digest equality` before further machine-owned progression.
