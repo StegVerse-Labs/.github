@@ -531,3 +531,40 @@ HANDOFF_READY
 ```
 
 TV/TVC credential materialization is an input to the warrant-policy transition, not a precondition for the first WorkerCoordinator transition. No authentic transition for this exact SDK lineage is retained in Master Records, so the next authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`.
+
+
+## Resident Ed25519 key materialization repair — Goal Prompt 19
+
+TVC PR #448 repaired the remaining credential-materialization source defect and merged as:
+
+```text
+exact head: 522bfff406f70c7b18091c25916a6f83a23fcec3
+merge:      4cb804c625060f52b75afc48d11c8d1dc8dc835a
+validation: Validate TV Execution Warrant Resident Bridge
+run:        35469205465
+result:     SUCCESS
+```
+
+The repair reuses the existing TV/TVC resident credential root and existing resident key-activation pattern. It adds a one-shot TV/TVC-owned key activator and installer/service that:
+- materializes only `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` under `/run/stegverse/tv-tvc-credentials/`;
+- reuses an existing valid Ed25519 key without rotation;
+- creates a new Ed25519 key only when that exact credential is absent;
+- requires TV/TVC resident/root authority in production mode;
+- emits only a secret-free activation receipt with issuer/public-key identity;
+- exposes no private key to GitHub, model, device, request, or receipt;
+- adds no new credential authority, runtime, scheduler, dispatcher, carrier, or device prerequisite.
+
+An executable validation found and repaired one pre-merge testability defect: the temporary-path test seam was initially rejected even with `require_root=False`. Production/default execution remains strict to the TV/TVC credential root; only explicit non-root test mode relaxes that path check.
+
+No authentic resident key activation receipt has yet been observed. Therefore the real issuer public key remains unclaimed and the TV issuer placeholder must not be replaced yet. The next canonical transition is:
+
+```text
+TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION
+-> secret-free activation receipt with real issuer_pubkey_b64
+-> execution-warrant issuance for exact current StegAgents commit + runtime policy bundle
+-> real TV issuer registry update from that receipt
+-> TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT
+-> same-run Master Records-closed lifecycle
+```
+
+Remote execution connectivity is not a prerequisite or state predicate for this goal and must not be used as a substitute boundary.
