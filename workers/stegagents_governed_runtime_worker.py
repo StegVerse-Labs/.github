@@ -40,6 +40,9 @@ TEST3_EXECUTION_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-a
 TEST3_CLOSE_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close")
 TEST3_CLOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close.latest.json")
 PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
+PURPOSE_GRAPH_CAPABILITY = "stegagents_purpose_bound_worker_state_graph"
+PURPOSE_GRAPH_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph/v1"
+PURPOSE_GRAPH_RESULT_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph-result/v1"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
 
@@ -521,6 +524,85 @@ def build_request(task: Mapping[str, Any], handoff: Mapping[str, Any] | None = N
     }
 
 
+def _closed_transition(row: Any, transition_id: str) -> dict[str, Any]:
+    require(isinstance(row, Mapping), f"{transition_id} transition missing")
+    require(row.get("transition_id") == transition_id, f"{transition_id} transition mismatch")
+    require(row.get("state") == "RECORDED", f"{transition_id} state not RECORDED")
+    require(row.get("reconstruction_status") == "PASS", f"{transition_id} reconstruction not PASS")
+    require(row.get("required_evidence_validation_status") == "PASS", f"{transition_id} required evidence not PASS")
+    digest = row.get("receipt_sha256")
+    require(isinstance(digest, str) and digest == row.get("reconstructed_receipt_sha256"), f"{transition_id} digest mismatch")
+    return dict(row)
+
+
+def build_state_graph_request(task: Mapping[str, Any], handoff: Mapping[str, Any]) -> dict[str, Any]:
+    graph = handoff.get("state_dependent_graph")
+    require(isinstance(graph, Mapping) and graph.get("enabled") is True, "state-dependent graph contract missing")
+    bundle = task.get("purpose_bound_state_graph_claim_bundle")
+    require(isinstance(bundle, Mapping), "WorkerCoordinator graph claim bundle missing")
+    require(bundle.get("claim_authority") == "WORKERCOORDINATOR", "graph claim authority mismatch")
+    claims = bundle.get("claims")
+    require(isinstance(claims, list) and len(claims) == 6, "exact six-claim graph bundle required")
+    by_label = {row.get("label"): row for row in claims if isinstance(row, Mapping)}
+    require(set(by_label) == {"CASE_1","CASE_2","CASE_3","TASK4_A","TASK4_B","TASK4_C"}, "graph claim labels mismatch")
+    assignment = _closed_transition(task.get("claim_fence_master_records_transition"), "WORKERCOORDINATOR_CLAIM_FENCE_BOUND")
+
+    def wrap(label: str, contract: Mapping[str, Any], predecessor: Mapping[str, Any] | None = None) -> dict[str, Any]:
+        claim = by_label[label]
+        require(isinstance(contract, Mapping), f"{label} purpose request missing")
+        row = {
+            "schema": "stegverse.stegagents-purpose-bound-worker-request/v1",
+            "task_id": PURPOSE_TASK_ID,
+            "cosv_task_vector": PURPOSE_COSV,
+            "parent_agent_id": AGENT_ID,
+            "execution_authority": False,
+            "self_authorization_allowed": False,
+            "credential_material_present": False,
+            "worker_claim": {
+                "claim_id": claim["claim_id"],
+                "fencing_token": claim["fencing_token"],
+                "worker_id": claim["worker_id"],
+                "worker_instance_id": claim["worker_instance_id"],
+            },
+            "purpose_bound_worker_request": dict(contract),
+        }
+        if predecessor is not None:
+            row["graph_predecessor_master_records_transition"] = dict(predecessor)
+        return row
+
+    singles = graph.get("single_worker_requests")
+    task4 = graph.get("task4_worker_requests")
+    require(isinstance(singles, list) and len(singles) == 3, "graph single-worker request count mismatch")
+    require(isinstance(task4, list) and len(task4) == 3, "graph Task 4 request count mismatch")
+    return {
+        "schema": PURPOSE_GRAPH_SCHEMA,
+        "single_worker_requests": [
+            wrap("CASE_1", singles[0], assignment),
+            wrap("CASE_2", singles[1]),
+            wrap("CASE_3", singles[2]),
+        ],
+        "task4_worker_requests": [
+            wrap("TASK4_A", task4[0]),
+            wrap("TASK4_B", task4[1]),
+            wrap("TASK4_C", task4[2]),
+        ],
+    }
+
+
+def validate_state_graph_result(result: Mapping[str, Any]) -> None:
+    require(result.get("schema") == PURPOSE_GRAPH_RESULT_SCHEMA, "state graph result schema mismatch")
+    require(result.get("state") == "GOVERNED_FOUR_CASE_STATE_GRAPH_RETURNED", "state graph result state mismatch")
+    for name in ("case1_terminal", "case2_terminal", "case3_terminal"):
+        _closed_transition(result.get(name), "PURPOSE_BOUND_WORKER_RETIRED")
+    _closed_transition(result.get("task4_parent_transition"), "PURPOSE_BOUND_WORKER_TASK4_PARENT_ADMITTED")
+    _closed_transition(result.get("task4_three_way_join"), "PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN")
+    require(result.get("task4_simultaneous_overlap_observed") is True, "Task 4 overlap not observed")
+    terminal = result.get("records_only_terminal")
+    require(isinstance(terminal, Mapping) and terminal.get("records_only") is True, "graph terminal records-only packet missing")
+    require(terminal.get("worker_live_after_close") is False, "graph terminal retained live worker")
+    require(terminal.get("continued_authority_after_retirement") is False, "graph terminal retained authority")
+
+
 def validate_warrant_policy_binding(result: Mapping[str, Any]) -> dict[str, Any]:
     binding = result.get("warrant_policy_binding")
     require(isinstance(binding, Mapping), "warrant/policy verification binding missing")
@@ -607,12 +689,23 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
     }
     if purpose:
-        receipt.update({
-            "records_only": result.get("records_only"),
-            "worker_live_after_close": result.get("worker_live_after_close"),
-            "continued_authority_after_retirement": result.get("continued_authority_after_retirement"),
-            "purpose_bound_worker_result": result.get("purpose_bound_worker_result"),
-        })
+        if result.get("schema") == PURPOSE_GRAPH_RESULT_SCHEMA:
+            terminal = result.get("records_only_terminal") if isinstance(result.get("records_only_terminal"), Mapping) else {}
+            receipt.update({
+                "state_graph_result": dict(result),
+                "records_only": terminal.get("records_only"),
+                "worker_live_after_close": terminal.get("worker_live_after_close"),
+                "continued_authority_after_retirement": terminal.get("continued_authority_after_retirement"),
+                "purpose_bound_state_graph_claim_bundle": task.get("purpose_bound_state_graph_claim_bundle"),
+                "claim_fence_master_records_transition": task.get("claim_fence_master_records_transition"),
+            })
+        else:
+            receipt.update({
+                "records_only": result.get("records_only"),
+                "worker_live_after_close": result.get("worker_live_after_close"),
+                "continued_authority_after_retirement": result.get("continued_authority_after_retirement"),
+                "purpose_bound_worker_result": result.get("purpose_bound_worker_result"),
+            })
         result_rel, latest_rel = PURPOSE_RESULT_REL, PURPOSE_LATEST_REL
     else:
         receipt["proposal_only"] = result.get("proposal_only") is True
@@ -647,12 +740,13 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     manifest_blob_sha = git_blob_sha(manifest)
     require(manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA, "CodeRepair-001 governed manifest does not match merged registered blob")
 
-    request = build_request(task, handoff)
+    graph_mode = bool(profile["task_id"] == PURPOSE_TASK_ID and isinstance(handoff.get("state_dependent_graph"), Mapping) and handoff["state_dependent_graph"].get("enabled") is True)
+    request = build_state_graph_request(task, handoff) if graph_mode else build_request(task, handoff)
     env = dict(os.environ)
     env.pop("GITHUB_TOKEN", None)
     env.pop("GH_TOKEN", None)
     completed = subprocess.run(
-        [sys.executable, "-m", profile["runtime_module"]],
+        [sys.executable, "-m", ("src.purpose_bound_worker_state_graph" if graph_mode else profile["runtime_module"])],
         cwd=str(agents_root),
         input=json.dumps(request),
         capture_output=True,
@@ -667,8 +761,12 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     except Exception as exc:
         raise RuntimeError("StegAgents governed runtime returned invalid JSON") from exc
     require(isinstance(result, dict), "StegAgents governed result must be object")
-    _validate_result(profile, result)
-    warrant_policy_binding = validate_warrant_policy_binding(result)
+    if graph_mode:
+        validate_state_graph_result(result)
+        warrant_policy_binding = {"graph_mode": True, "credential_authority": "TV/TVC"}
+    else:
+        _validate_result(profile, result)
+        warrant_policy_binding = validate_warrant_policy_binding(result)
     receipt = retain_result(runtime_root(), task, request, result, manifest_blob_sha, warrant_policy_binding)
     return {
         "schema": "stegverse.worker-response/v0.1",
