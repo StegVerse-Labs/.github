@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 93,
+  "generation": 94,
   "status": "STEGHEALTH_KV_INTERLOCK_PRODUCTION_ENDPOINT_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -4850,7 +4850,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "AUTHENTIC_RUNTIME_SEQUENCE_AND_GOVERNED_RETURN_CUSTODY",
+        "next_transition_under_evidence_trace": "POST_RETURN_SDK_PROCESSING_THEN_AUTHENTIC_FAR_SIDE_INTR_TERMINAL_TRANSITION_AND_CALLER_CONSEQUENCE",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -4858,7 +4858,22 @@
         "mir_governed_round_trip_complete_mir_conformance_run": 35426340974,
         "mir_governed_round_trip_complete_handoff_orchestrator_run": 35426340984,
         "mir_governed_round_trip_complete_heartbeat_run": 35426340978,
-        "mir_governed_round_trip_complete_bootstrap_run": 35426340982
+        "mir_governed_round_trip_complete_bootstrap_run": 35426340982,
+        "mir_post_return_completion_semantics_source_repair_complete": true,
+        "mir_post_return_completion_semantics_pr": 1413,
+        "mir_post_return_completion_semantics_merge": "bd9d7d6856ed768bcd62f29e9d11eb35357ab19c",
+        "mir_post_return_completion_semantics_exact_head": "6a66708a22cc608ce08b87209cefc2fd4c4e92d4",
+        "mir_post_return_completion_mir_conformance_run": 35431292823,
+        "mir_post_return_completion_handoff_orchestrator_run": 35431292747,
+        "mir_post_return_completion_heartbeat_run": 35431292705,
+        "mir_post_return_completion_bootstrap_run": 35431292724,
+        "mir_post_return_completion_claim_terminalized": true,
+        "mir_post_return_completion_claim_terminalization_pr": 1414,
+        "mir_post_return_completion_claim_terminalization_merge": "2378bad3477c2e252e34b146d32caa316e8a1eb7",
+        "site_cosv_terminalization_computed_active_claims": 51,
+        "site_cosv_terminalization_computed_active_task_ids": 51,
+        "site_cosv_terminalization_computed_unindexed_active_task_ids": 46,
+        "site_cosv_index_reconciliation_owner_task": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001"
       },
       "completion": {
         "claimed": false,
@@ -4880,7 +4895,8 @@
         "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
         "CONTINUE_THROUGH_RTC_007_008_009",
         "ADMIT_GOVERNED_RETURN_AND_RECORD_CANONICAL_RETURN_EXIT",
-        "PROPAGATE_CANONICAL_CUSTODY_TO_REMAINING_CONSUMERS"
+        "PROPAGATE_CANONICAL_CUSTODY_TO_REMAINING_CONSUMERS",
+        "CONTINUE_POST_RETURN_SDK_PROCESSING_AND_TERMINAL_EGRESS"
       ],
       "authority_model": {
         "interlock_intr_grants_transition_authority": true,
@@ -4933,7 +4949,18 @@
             "exact_head": "6d2b328e547883b5b73174f48edcdac4302529c4",
             "repair": "MIR_GOVERNED_ROUND_TRIP_COMPLETE_BINDS_EXACT_GOVERNED_RETURN_RESULT_AS_REQUIRED_EVIDENCE",
             "runtime_execution_claimed": false,
-            "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+            "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+            "post_return_completion": {
+              "site_pr": 1413,
+              "merge_commit": "bd9d7d6856ed768bcd62f29e9d11eb35357ab19c",
+              "exact_head": "6a66708a22cc608ce08b87209cefc2fd4c4e92d4",
+              "repair": "GOVERNED_RETURN_NO_LONGER_PREMATURELY_ASSERTS_COMMUNICATION_COMPLETE",
+              "completion_pending_reason": "AUTHENTIC_FAR_SIDE_INTR_TERMINAL_TRANSITION_AND_CALLER_CONSEQUENCE_NOT_YET_OBSERVED",
+              "claim_terminalization_pr": 1414,
+              "claim_terminalization_merge": "2378bad3477c2e252e34b146d32caa316e8a1eb7",
+              "runtime_execution_claimed": false,
+              "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+            }
           }
         }
       },
