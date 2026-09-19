@@ -907,3 +907,10 @@ The resident request dispatcher now preserves the existing durable-local Master 
 All StegVerse tasks now inherit a strict global invariant: ordinary task progression MUST NOT query or depend on connected-device inventory. Zero connected devices is never a runtime prerequisite failure, blocker, stop condition, evidence gap, fallback trigger, source-repair trigger, or manual-work requirement.
 
 Runtime progression follows the task's actual authority/evidence chain—Task Registry -> WorkerCoordinator -> Interlock/InTr -> TV/TVC where applicable -> Master Records—without a preflight device-availability check. The only permitted exception is a task whose explicit subject is connector/device-inventory management itself.
+
+
+### Conversation evidence ingestion and custody
+
+Canonical Goal Task `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` implements the first bounded phase of the governed service-performance evidence registry. It consumes the v1 publication contract unchanged, materializes write-once conversation/attachment evidence packages with explicit authenticity and transaction bindings, and routes the resulting evidence through the existing canonical Master Records state-transition custody client. Public Site projection and adjudicative conclusions remain outside this phase.
+
+Canonical handoff: `docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md`.

@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "20011000100000",
+  "evidence_refs": [
+    "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
+    "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+    "workers/conversation_evidence_ingestion.py",
+    "tests/test_conversation_evidence_ingestion.py",
+    "StegVerse-Labs/.github#2258"
+  ],
+  "observed_at": "2026-09-19T19:11:53Z",
+  "exact_metrics": {
+    "lifecycle": "CLAIMED_IMPLEMENTATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 1,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}
