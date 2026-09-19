@@ -277,3 +277,18 @@ Entrypoint:
 `python scripts/run_sdk_tt_richard_seam_test3.py --stegagents-root <StegAgents checkout> --json-out <result.json>`
 
 The runner validates the exact Test 3 task/COSV/prestate contract, executes the five current .github Test 3/runtime-path modules, executes the StegAgents purpose-bound runtime Test 3 module, and emits one machine-readable `stegverse.sdk-tt-richard-seam-test3-acceptance/v1` result. A dedicated `Test 3 Richard Seam Acceptance` workflow runs the same entrypoint against current .github and current StegAgents source.
+
+
+### Dedicated Test 3 run result
+
+Exact-head run `35452133634` / job `105920780352` executed `scripts/run_sdk_tt_richard_seam_test3.py`.
+
+Result:
+
+```text
+state=PASS
+dotgithub=18 passed
+StegAgents validation=PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12
+constitutive_transition=ACTIVATE_TASK_AND_CREATE_BIND_WORKER
+TEST3_RICHARD_SEAM_ACCEPTANCE_PASS
+```
