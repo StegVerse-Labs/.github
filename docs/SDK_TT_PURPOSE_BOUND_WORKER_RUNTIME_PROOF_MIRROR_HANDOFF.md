@@ -233,3 +233,51 @@ The source/lifetime refinement is therefore complete. No authentic resident exec
 ## Coordination hygiene reconciliation — registry generation 64
 
 `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current `STEGAGENTS-GOVERNED-RUNTIME-001` evidence still does not establish an authentic retained resident root, targeted consumption, current WorkerCoordinator claim/fence, or Master Records runtime custody/reconstruction, so authentic purpose-bound execution remains unattempted.
+
+
+## Healer checkpoint Master Records identity carriage repair — Goal Prompt 8
+
+Current Task Registry generation 70 and this handoff were re-read before source mutation. The Goal remains ACTIVE and authentic purpose-bound lifecycle execution remains unattempted.
+
+Tracing the existing Healer path exposed a concrete source defect after the already-documented fenced ProcessWorkerAdapter projection. The executable Healer handoff requires canonical Master Records custody, but `scripts/consume_healer_sovereign_scheduler_request.py` did not submit the projected checkpoint through `workers/canonical_state_transition_custody.py` and therefore did not retain either canonical Master Records lookup identity:
+
+```text
+transition_id
+receipt_sha256
+```
+
+The existing consumer path is repaired without adding an API, custody store, scheduler, dispatcher, runtime, authority plane, or device dependency. After the existing targeted WorkerCoordinator execution returns, the consumer now:
+
+```text
+reads receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json
+-> requires task_id + claim_id + fencing_token + transition_id
+-> binds claim/fence/transition identity to the current WorkerCoordinator cycle
+-> submits the exact checkpoint as canonical-json required evidence
+-> uses the existing canonical state-transition custody client
+-> requires RECORDED
+-> requires reconstruction_status=PASS
+-> requires required_evidence_validation_status=PASS
+-> requires receipt_sha256 == reconstructed_receipt_sha256
+-> retains transition_id + receipt_sha256 + master_record_ref in the existing consumption receipt
+```
+
+The required evidence item is `HEALER_FENCED_CHECKPOINT` and is bound to the checkpoint's existing worker transition ID. The checkpoint's exact canonical SHA-256 is both retained in transition evidence and used as the resulting state reference. This supplies the lookup identity needed by the existing Master Records read contract; it does not create a separate lookup/index API.
+
+The existing consumption receipt fails closed as `MASTER_RECORDS_BOUNDARY` when custody/reconstruction is unavailable, incomplete, required evidence does not validate, or receipt/reconstruction digests differ. Source repair does not prove that a resident Healer cycle has run with this code.
+
+Authentic continuation remains ordered:
+
+```text
+existing resident Healer cycle
+-> fenced ProcessWorkerAdapter checkpoint projection
+-> canonical Master Records RECORDED + reconstruction PASS + required-evidence PASS + digest equality
+-> reconstruct exact checkpoint using carried receipt_sha256
+-> validate child_receipt.resident_custody_root_observation_retention
+-> require exactly one packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED root
+-> fresh WorkerCoordinator claim/fence
+-> TV/TVC warrant/policy
+-> InTr admission
+-> existing purpose-bound lifecycle
+```
+
+No retained-root pointer, authentic Master Records receipt, WorkerCoordinator claim/fence for the purpose-bound task, TV/TVC warrant, InTr admission, worker materialization, task result, retirement, or records-only final packet is promoted by this source repair.
