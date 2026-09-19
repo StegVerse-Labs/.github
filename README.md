@@ -922,3 +922,8 @@ When the canonical Test 3 resident request is present, the native resident dispa
 
 
 SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.
+
+
+### SDK return binding canonical custody
+
+The existing Publisher-return consumer now treats `RTC-SDK-RETURN-006` as a canonical Master Records custody boundary. The exact SDK return binding and materialization receipt must reconstruct through Master Records before the result may become ready for final StegVerse-side egress. This changes no transport or transition authority and does not promote any later egress/runtime predicate.
