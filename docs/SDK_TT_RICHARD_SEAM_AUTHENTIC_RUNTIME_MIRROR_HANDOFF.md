@@ -237,3 +237,32 @@ Master Records closure predicates
 ```
 
 The assertion is repaired to bind those exact boundaries, and the existing Purpose-Bound Worker workflow is extended to execute the focused Test 3 modules whenever their source/test surfaces change. No runtime authority or authentic Test 3 completion is inferred from CI.
+
+
+### Current-main suite result
+
+The requested current-main suite completed with the following source/semantic results:
+
+```text
+Test 1 / SDK TT Purpose-Bound Worker Console
+run 35450287407 / job 105916138211
+4 unit tests PASS
+TT_PURPOSE_BOUND_WORKER_CONSOLE_PASS
+
+Test 2 / SDK TT Atomic Task-Worker Binding
+run 35450287467 / job 105916138352
+4 unit tests PASS
+TT_ATOMIC_TASK_WORKER_BINDING_PASS
+
+Test 3 / StegAgents full source suite
+run 35450310351
+Python 3.11 job 105916200537: 119 passed + 34 subtests passed
+Python 3.12 job 105916200664: 119 passed + 34 subtests passed
+
+Test 3 / .github focused seam suite after harness repair
+run 35450612281 / job 105916988257
+existing runtime-path tests: 6 passed
+focused Richard-seam modules: 12 passed
+```
+
+The initial focused Test 3 run's single failure was the test-harness boundary-labeling defect described above; the repaired exact-head suite is green. These are source/semantic tests only. Test 3's authentic runtime completion remains pending the existing `SOURCE_MATERIALIZED_VERIFIED` -> resident one-shot evidence chain.
