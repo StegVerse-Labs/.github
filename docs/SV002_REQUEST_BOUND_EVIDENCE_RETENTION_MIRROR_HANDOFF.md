@@ -155,3 +155,23 @@ sv002_org_runtime_activation
 No new request, self-heal supervisor, runtime, dispatcher, WorkerCoordinator, scheduler, credential path, custody authority, transition authority, or device dependency was introduced.
 
 Authentic runtime evidence is still required. The source repair does not prove that TVC materialized the new immutable source, that the resident dispatcher ran, that the current callable executed, or that REQUEST_BOUND reached Master Records.
+
+
+## 2026-09-18 first unresolved runtime owner corrected
+
+After the TVC self-heal source rebind, no authentic `c5e6a7939db85063f49fc0b3010bd6462d13006b` materialization was found in TVC, Labs, or Master Records. Tracing one transition earlier established that the existing owner is already canonical:
+
+```text
+TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006
+owner: TV/TVC runtime authority
+service: stegtvc-primary-runtime.service
+required before self-heal materialization:
+  root_primary_runtime_restart_observed = true
+  current_source_loaded_on_host_observed = true
+```
+
+The TVC activation-delivery handoff currently records both predicates as false/unobserved. Therefore the correct first unresolved boundary is not Astra/quantum or the SV002 callable. It is the existing root primary runtime loading the current TVC checkout that contains merged TVC self-heal repair `35247b583b363f84c2edb5c77474bced729190ae`.
+
+The existing source-level restart repair already exists: `scripts/install_tvc_primary_runtime_service.py --activate` restarts the same fixed `stegtvc-primary-runtime.service`. No second service/runtime is needed. The StegBrowser exact-source promotion request is task-scoped to a separate immutable SHA and is not reused or mutated for SV002.
+
+No authentic runtime restart/current-source receipt is claimed by this reconciliation.
