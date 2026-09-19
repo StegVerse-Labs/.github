@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+  "correlation_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "goal": "Correct the accidental routing that made SHWP-HEALER-SOVEREIGN-SCHEDULER-001 a required dependency/carrier for the immutable StegBrowser custody-root progression, restoring the invocation to its actual existing execution owner and direct WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records chain.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "issue_ref": "StegVerse-Labs/.github#2249",
+  "handoff_ref": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+  "immutable_invocation": {
+    "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false
+  },
+  "canonical_execution_owner": {
+    "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+    "runtime_entrypoint": "run_stegbrowser_manifest_bound_runtime",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY"
+  },
+  "defect": {
+    "class": "ARTIFICIAL_HEALER_ROUTING_DEPENDENCY",
+    "description": "Healer evidence-carriage/remediation machinery was elevated into a required StegBrowser execution progression dependency without exact invocation-lineage proof."
+  },
+  "required_outcomes": [
+    "EXACT_STEGBROWSER_EXECUTION_OWNER_TRACED",
+    "ARTIFICIAL_HEALER_PREREQUISITES_REMOVED",
+    "DIRECT_WORKERCOORDINATOR_CLAIM_FENCE_PATH_RESTORED",
+    "DIRECT_INTERLOCK_INTR_PROGRESS_PATH_RESTORED",
+    "RETAINED_EVIDENCE_PATH_BOUND_TO_ACTUAL_OWNER",
+    "MASTER_RECORDS_CUSTODY_PATH_BOUND_TO_ACTUAL_OWNER",
+    "PARENT_TASK_RECONCILED"
+  ],
+  "prohibited": [
+    "NEW_RUNTIME",
+    "NEW_SCHEDULER",
+    "NEW_DISPATCHER",
+    "NEW_CUSTODY_STORE",
+    "NEW_AUTHORITY_PLANE",
+    "NEW_CREDENTIAL_PATH",
+    "SECOND_STEGBROWSER_INVOCATION",
+    "SECOND_USER_OPERATED_DEVICE_DEPENDENCY"
+  ],
+  "runtime_completion_claimed": false,
+  "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
+}
