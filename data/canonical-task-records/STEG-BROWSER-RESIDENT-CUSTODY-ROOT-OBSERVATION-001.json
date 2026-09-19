@@ -10,7 +10,7 @@
   "successor_issue_refs": [
     "StegVerse-Labs/.github#1866"
   ],
-  "goal": "Observe an authentic resident custody root for the existing StegBrowser Canonical Work reusable task path and classify retained receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
+  "goal": "Observe authentic retained evidence for the immutable StegBrowser Canonical Work invocation through its direct RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 execution owner and classify receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
   "cosv_task_vector": "40000100100000",
@@ -26,10 +26,7 @@
     "StegVerse-Labs/.github#1862",
     "StegVerse-Labs/.github#1863",
     "StegVerse-Labs/.github#1864",
-    "StegVerse-Labs/.github#1866",
-    "StegVerse-Labs/StegVerse-Healer#75",
-    "StegVerse-Labs/StegVerse-Healer#81",
-    "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6"
+    "StegVerse-Labs/.github#1866"
   ],
   "targets": {
     "organizations": [
@@ -37,7 +34,6 @@
     ],
     "repositories": [
       "StegVerse-Labs/.github",
-      "StegVerse-Labs/StegVerse-Healer",
       "StegVerse-Labs/StegOS",
       "StegVerse-Labs/Site",
       "StegVerse-Labs/TVC"
@@ -45,7 +41,6 @@
     "components": [
       "resident-runtime-custody-root",
       "stegbrowser-canonical-work-runtime-consumption",
-      "healer-neutral-reusable-scheduler-carrier",
       "exact-receipt-reachability-classifier",
       "workercoordinator-claim-fence",
       "intr-runtime-admission",
@@ -177,36 +172,46 @@
       "runtime_completion_claimed": false,
       "downstream_promotion_allowed": false,
       "authority_effect": "NONE_LOCAL_SOURCE_REFRESH_LOCATOR_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-19",
+      "transition": "ARTIFICIAL_HEALER_ROUTING_SUPERSEDED",
+      "defect_origin": "MASTER_RECORDS_AND_SUCCESSOR_EVIDENCE_MODEL_PROMOTED_HEALER_CHECKPOINT_TO_AUTHORITATIVE_STEGBROWSER_PATH",
+      "canonical_execution_trace": [
+        "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+        "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+        "scripts/run_stegbrowser_manifest_bound_runtime.py",
+        "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+        "WorkerCoordinator claim/fence",
+        "Interlock/InTr",
+        "direct retained StegBrowser evidence",
+        "Master Records"
+      ],
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
     }
   ],
   "dependencies": [
+    {
+      "dependency_id": "DEP-DIRECT-STEGBROWSER-RUNTIME-EXECUTION",
+      "kind": "EXACT_RUNTIME_EXECUTION_OWNER",
+      "state": "PENDING_AUTHENTIC_RUNTIME_EXECUTION",
+      "ref": "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json;source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json;scripts/run_stegbrowser_manifest_bound_runtime.py;scripts/run_stegbrowser_runtime_consumption_reusable.py",
+      "disposition": "FOLLOW_IMMUTABLE_NONCE_DIRECTLY_THROUGH_STEGBROWSER_RUNTIME_CONNECTION_INGRESS_AND_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001; HEALER_IS_NOT_A_PREREQUISITE_OR_CARRIER"
+    },
+    {
+      "dependency_id": "DEP-DIRECT-STEGBROWSER-RETAINED-EVIDENCE",
+      "kind": "EXACT_RUNTIME_EVIDENCE",
+      "state": "PENDING_AUTHENTIC_DIRECT_OWNER_EVIDENCE",
+      "ref": "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json;receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json;receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json",
+      "disposition": "REQUIRE_DIRECT_OWNER_PRODUCED_RUNTIME_EVIDENCE_BOUND_TO_THE_IMMUTABLE_NONCE_BEFORE_CLASSIFICATION_OR_DOWNSTREAM_PROMOTION"
+    },
     {
       "dependency_id": "DEP-PARENT-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION",
       "kind": "PROMPT_LIMIT_DECOMPOSITION",
       "state": "INHERITED_UNRESOLVED",
       "ref": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001;StegVerse-Labs/.github#1857",
       "disposition": "PARENT_REACHED_GOAL_PROMPT_COUNT_20_WITH_RUNTIME_CONSUMPTION_NOT_OBSERVED"
-    },
-    {
-      "dependency_id": "DEP-HEALER-NEUTRAL-SCHEDULE-BINDING",
-      "kind": "SOURCE_CONFIGURATION",
-      "state": "RESOLVED_CONTEXT_ONLY",
-      "ref": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
-      "disposition": "RT_STEGBROWSER_RUNTIME_CONSUMPTION_ENABLED_HOURLY_BUT_NOT_RUNTIME_PROOF"
-    },
-    {
-      "dependency_id": "DEP-HEALER-RESIDENT-ROOT-OBSERVATION-PACKET",
-      "kind": "SOURCE_REPAIR",
-      "state": "RESOLVED_SOURCE_ONLY",
-      "ref": "StegVerse-Labs/StegVerse-Healer#81;StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
-      "disposition": "EXISTING_HEALER_CARRIER_NOW_EMITS_TASK_BOUND_NON_AUTHORIZING_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET"
-    },
-    {
-      "dependency_id": "DEP-RESIDENT-CUSTODY-ROOT-OBSERVATION",
-      "kind": "RUNTIME_EVIDENCE",
-      "state": "PENDING_POST_REPAIR_CARRIER_OBSERVATION",
-      "ref": "resident_custody_root_observation",
-      "disposition": "OBSERVE_POST_MERGE_HEALER_CARRIER_OUTPUT_AND_BIND_PACKET_STATE"
     },
     {
       "dependency_id": "DEP-CANONICAL-WORK-RECEIPT-REACHABILITY",
@@ -343,5 +348,16 @@
     "runtime_completion_claimed": false,
     "authority_transfer": "NONE",
     "new_successor_created": false
+  },
+  "routing_correction": {
+    "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+    "issue_ref": "StegVerse-Labs/.github#2249",
+    "classification": "ARTIFICIAL_HEALER_ROUTING_REMOVED",
+    "canonical_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+    "direct_ingress_consumer": "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+    "direct_runtime_runner": "scripts/run_stegbrowser_manifest_bound_runtime.py",
+    "direct_reusable_runner": "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY_NOT_STEGBROWSER_EXECUTION_PREREQUISITE",
+    "historical_healer_observations_preserved_as_superseded": true
   }
 }
