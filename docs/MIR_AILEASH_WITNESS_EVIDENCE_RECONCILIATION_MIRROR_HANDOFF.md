@@ -227,3 +227,47 @@ A.2 R10 remains operator-disclosed `NOT MET`. The stronger commitment/anchoring 
 The reported v0.8 1,534-event / 50-checkpoint run remains `COUNTERPART_REPORTED_COMPLETE`; no authentic run package surfaced during this exact-locator continuation. The prior 784-record / 30-commitment run remains historical and settled, including its existing R1-R10 treatment and `custodian` naming.
 
 The temporary GitHub evidence-fetch workflow was removed by resetting the evidence branch back to current canonical main before this documentation update. No new runtime, scheduler, credential path, custody store, or device dependency was retained.
+
+## Generation 121 state-dependent test contract — 2026-09-19
+
+This goal is a **strict state-dependent test**, not an evidence checklist. Every accepted state MUST transition to the next state in order. No state may be satisfied independently, in parallel, out of order, or by evidence that bypasses the immediately preceding closure.
+
+Every transition edge requires the predecessor to exist in canonical Master Records with all four predicates satisfied simultaneously:
+
+- `state=RECORDED`;
+- `reconstruction_status=PASS`;
+- `required_evidence_validation_status=PASS`;
+- exact receipt/reconstruction digest equality.
+
+The ordered state graph is:
+
+1. `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED`
+   - retains the independently retrieved August subjects commitment at old-chain block 1895, root `5a34b9af...`, chain seal `4a99a3b5...`, verified subject-membership proofs, and independently upgraded-copy Bitcoin anchoring.
+   - this state is the sole predecessor for state 2.
+
+2. `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`
+   - may be admitted only by consuming state 1's exact Master Records closure.
+   - requires one authentic individual pre-reset witness record with immutable identity/provenance and the original `event`, `result`, `timestamp`, and `prev_hash` material needed by the historical seal contract.
+   - this state is the sole predecessor for state 3.
+
+3. `HISTORICAL_WITNESS_SEAL_RECOMPUTED`
+   - may be admitted only by consuming state 2's exact Master Records closure.
+   - recomputes the historical audit seal from the retained preimage and requires exact equality with the historical retained seal.
+   - this state is the sole predecessor for state 4.
+
+4. `HISTORICAL_WITNESS_VERSION_TERM_BOUND`
+   - may be admitted only by consuming state 3's exact Master Records closure.
+   - requires the sealed historical witness version and liveness term and binds that exact record to revision `2d6715868bb2812b98d874ab17890ff89ece30d5` or the actually applicable immutable revision.
+   - this state is the sole predecessor for state 5.
+
+5. `R10_DISPOSITION_RECONCILED`
+   - may be admitted only by consuming state 4's exact Master Records closure.
+   - R10 disposition is derived here and nowhere earlier.
+
+Current chain position: `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED`.
+
+Current successor pending: `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`.
+
+R10 remains operator-disclosed `NOT MET` until the entire predecessor chain closes through state 4 and admits state 5. The independently verified `4a99a3b5...` commitment is therefore not a parallel proof that can independently modify R10; it is predecessor state 1 and must be consumed by state 2.
+
+The v0.8 1,534-event / 50-checkpoint rerun remains `COUNTERPART_REPORTED_COMPLETE` and does not form an alternate path around this state graph. The historical 784-record / 30-commitment run remains settled and historical.

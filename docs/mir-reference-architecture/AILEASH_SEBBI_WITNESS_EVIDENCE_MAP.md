@@ -79,3 +79,17 @@ A one-shot public-evidence transport recovered authentic retained August 2026 co
 The exact retained OTS proof for `4a99a3b5...` (original proof SHA-256 `275186cb44c66ef366181d10f26daa9df0afec6a44e996a491061e352604d38f`) was independently upgraded. Corrected run `35463311073` established Bitcoin attestations at heights `965082` and `965103`; proof-derived Merkle roots matched both Blockstream and mempool.space at both heights. This advances the August subjects commitment to independently verified external timestamp anchoring.
 
 This does not reconstruct block 1895's original chain preimage or expose an exact disputed historical witness record's sealed `witness_version`/liveness term. Therefore historical binding to `2d6715868bb2812b98d874ab17890ff89ece30d5` remains unresolved and A.2 R10 remains operator-disclosed `NOT MET`. The v0.8 1,534/50 package remains counterpart-reported complete; the historical 784/30 run remains settled.
+
+## Generation 121 strict state-dependent progression — 2026-09-19
+
+This evidence map is now explicitly ordered rather than checkpoint-based. The canonical progression is:
+
+`PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED`
+→ `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`
+→ `HISTORICAL_WITNESS_SEAL_RECOMPUTED`
+→ `HISTORICAL_WITNESS_VERSION_TERM_BOUND`
+→ `R10_DISPOSITION_RECONCILED`.
+
+Each successor MUST consume the immediately preceding Master Records closure, and that predecessor closure must be `RECORDED` with reconstruction PASS, required-evidence-validation PASS, and exact receipt/reconstruction digest equality. No independent observation, later artifact, parallel checkpoint, or stronger side evidence may skip a predecessor, satisfy a later state directly, or alter R10 before the ordered chain reaches the terminal disposition state.
+
+Current canonical position is state 1: the independently retrieved and Bitcoin-anchored `4a99a3b5...` pre-reset subjects commitment. The only admissible successor is individual historical witness-record reconstruction. R10 remains operator-disclosed `NOT MET` until all intermediate states close in order.
