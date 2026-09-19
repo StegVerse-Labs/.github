@@ -4,7 +4,9 @@
   "correlation_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "successor_task_ids": ["STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"],
+  "successor_task_ids": [
+    "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
+  ],
   "goal": "Observe and close the authentic retained resident StegBrowser runtime receipt path after source/configuration repairs, without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
   "coordination_state": "RETIRED",
   "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
@@ -20,17 +22,21 @@
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1852",
     "StegVerse-Labs/.github@f89e3160d5d1a9f2706b38a7c2e788f777b17a38",
-    "StegVerse-Labs/StegVerse-Healer#74",
-    "StegVerse-Labs/StegVerse-Healer@41740a6468f7d801b1cad492352c9fc77941fb92",
     "StegVerse-Labs/.github#1853",
     "StegVerse-Labs/.github@07ed3d6b07f861ab83e862826642b17fdb777c7c"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "stegbrowser-canonical-work-runtime-consumption",
-      "healer-neutral-reusable-scheduler-carrier",
       "resident-runtime-custody-root",
       "workercoordinator-claim-fence",
       "intr-runtime-admission",
@@ -40,18 +46,85 @@
     ]
   },
   "dependencies": [
-    {"dependency_id": "DEP-SOURCE-REACHABILITY-VERIFIER", "kind": "SOURCE_VALIDATION", "state": "RESOLVED", "ref": "StegVerse-Labs/.github#1852;StegVerse-Labs/.github@f89e3160d5d1a9f2706b38a7c2e788f777b17a38", "disposition": "NON_AUTHORIZING_EXACT_RECEIPT_REACHABILITY_VERIFIER_MERGED"},
-    {"dependency_id": "DEP-HEALER-RUNTIME-ROOT-MARKER-DISCOVERY", "kind": "SOURCE_REPAIR", "state": "RESOLVED", "ref": "StegVerse-Labs/StegVerse-Healer#74;StegVerse-Labs/StegVerse-Healer@41740a6468f7d801b1cad492352c9fc77941fb92", "disposition": "HEALER_CARRIER_ACCEPTS_STEGBROWSER_RESIDENT_MARKERS_WITHOUT_ADDING_SCHEDULER_OR_AUTHORITY"},
-    {"dependency_id": "DEP-PROMPT-LIMIT-DECOMPOSITION", "kind": "COORDINATION", "state": "RESOLVED_BY_SUCCESSOR", "ref": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860", "disposition": "PARENT_RETIRED_AT_GOAL_PROMPT_COUNT_20_WITH_FIRST_UNRESOLVED_RUNTIME_DEFECT_DECOMPOSED"},
-    {"dependency_id": "DEP-CANONICAL-WORK-RESIDENT-CONSUMPTION", "kind": "RUNTIME_EVIDENCE", "state": "UNRESOLVED_IN_SUCCESSOR", "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json", "disposition": "REQUIRE_AUTHENTIC_RETAINED_RESIDENT_CONSUMPTION_RECEIPT_AFTER_RESIDENT_CUSTODY_ROOT_OBSERVATION"},
-    {"dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE", "kind": "RUNTIME_EVIDENCE", "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN", "ref": "STEGVERSE-CANONICAL-WORK-COORDINATION-001", "disposition": "REQUIRE_CURRENT_CLAIM_AND_FENCE_BOUND_TO_TASK_REQUEST_COSV_RUNTIME_SUBJECT"},
-    {"dependency_id": "DEP-INTR-ADMISSION", "kind": "GOVERNED_RUNTIME_ADMISSION", "state": "READY_FOR_INGRESS_IN_SUCCESSOR_CHAIN", "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md", "disposition": "USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"},
-    {"dependency_id": "DEP-TVC-SOURCE-PROMOTION", "kind": "RUNTIME_EVIDENCE", "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN", "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json", "disposition": "REQUIRE_CURRENT_DISPATCH_BOUND_STAGED_CONSUMPTION_FOR_AEF6B6F5"},
-    {"dependency_id": "DEP-OWNER-INGRESS-READY", "kind": "RUNTIME_EVIDENCE", "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN", "ref": "control/source-bindings/stegbrowser-tvc-runtime-observer.json", "disposition": "REQUIRE_IMMUTABLE_OBSERVER_4C78F865_TO_REPORT_OWNER_INGRESS_READY_OBSERVED"}
+    {
+      "dependency_id": "DEP-SOURCE-REACHABILITY-VERIFIER",
+      "kind": "SOURCE_VALIDATION",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/.github#1852;StegVerse-Labs/.github@f89e3160d5d1a9f2706b38a7c2e788f777b17a38",
+      "disposition": "NON_AUTHORIZING_EXACT_RECEIPT_REACHABILITY_VERIFIER_MERGED"
+    },
+    {
+      "dependency_id": "DEP-PROMPT-LIMIT-DECOMPOSITION",
+      "kind": "COORDINATION",
+      "state": "RESOLVED_BY_SUCCESSOR",
+      "ref": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860",
+      "disposition": "PARENT_RETIRED_AT_GOAL_PROMPT_COUNT_20_WITH_FIRST_UNRESOLVED_RUNTIME_DEFECT_DECOMPOSED"
+    },
+    {
+      "dependency_id": "DEP-CANONICAL-WORK-RESIDENT-CONSUMPTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED_IN_SUCCESSOR",
+      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+      "disposition": "REQUIRE_AUTHENTIC_RETAINED_RESIDENT_CONSUMPTION_RECEIPT_AFTER_RESIDENT_CUSTODY_ROOT_OBSERVATION"
+    },
+    {
+      "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN",
+      "ref": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "disposition": "REQUIRE_CURRENT_CLAIM_AND_FENCE_BOUND_TO_TASK_REQUEST_COSV_RUNTIME_SUBJECT"
+    },
+    {
+      "dependency_id": "DEP-INTR-ADMISSION",
+      "kind": "GOVERNED_RUNTIME_ADMISSION",
+      "state": "READY_FOR_INGRESS_IN_SUCCESSOR_CHAIN",
+      "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+      "disposition": "USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"
+    },
+    {
+      "dependency_id": "DEP-TVC-SOURCE-PROMOTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN",
+      "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json",
+      "disposition": "REQUIRE_CURRENT_DISPATCH_BOUND_STAGED_CONSUMPTION_FOR_AEF6B6F5"
+    },
+    {
+      "dependency_id": "DEP-OWNER-INGRESS-READY",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED_IN_SUCCESSOR_CHAIN",
+      "ref": "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
+      "disposition": "REQUIRE_IMMUTABLE_OBSERVER_4C78F865_TO_REPORT_OWNER_INGRESS_READY_OBSERVED"
+    }
   ],
   "blockers": [],
-  "allowed_next_transitions": ["CONTINUE_SUCCESSOR_STEG_BROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION"],
-  "handoff_projection_refs": ["docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"],
-  "completion": {"claimed": false, "validated": false, "runtime_consumption_observed": false, "resident_custody_root_observed": false, "owner_ingress_ready_observed": false, "master_records_reconstruction_observed": false, "retired_by_prompt_limit_decomposition": true},
-  "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "github_runtime_authority": "NONE", "worker_claim_authority": "WORKERCOORDINATOR", "interlock_intr_required_for_governed_ingress_egress": true, "credential_authority": "TV/TVC", "master_records_reality_authority": true, "second_user_operated_device_required": false}
+  "allowed_next_transitions": [
+    "CONTINUE_SUCCESSOR_STEG_BROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_consumption_observed": false,
+    "resident_custody_root_observed": false,
+    "owner_ingress_ready_observed": false,
+    "master_records_reconstruction_observed": false,
+    "retired_by_prompt_limit_decomposition": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  },
+  "routing_correction": {
+    "current_observation_chain": "direct RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 owner-produced retained evidence -> receipt classification -> governed downstream progression",
+    "healer_prerequisite": false
+  }
 }
