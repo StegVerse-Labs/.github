@@ -930,3 +930,6 @@ When the canonical Test 3 resident request is present, the native resident dispa
 
 
 SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.
+
+
+SDK TT purpose-bound worker runtime proof: the missing TV/TVC resident Ed25519 execution-warrant bridge is merged in TVC PR #446 (`fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6`; exact-head validation run `35464198311` SUCCESS). The remaining authentic boundary is resident materialization of the TV/TVC Ed25519 credential and issuance of a fresh StegAgents-bound warrant; no device, carrier, Healer, scheduler, dispatcher, or replacement credential authority is a prerequisite.
