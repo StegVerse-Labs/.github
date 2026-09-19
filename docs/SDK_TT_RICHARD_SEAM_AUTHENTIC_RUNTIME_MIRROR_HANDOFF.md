@@ -382,3 +382,10 @@ The close phase requires the same task, worker, claim, fence, and worker-instanc
 Only after that closure does the worker return `COMPLETED` to WorkerCoordinator. The records-only result must prove `worker_live_after_close=false`, `continued_authority_after_retirement=false`, `callable_retained=false`, and `executor_reference_retained=false`. WorkerCoordinator then releases W through its existing completed-response semantics.
 
 This generation implements the previously missing state-machine edge. It does not claim that the already-REQUESTED authentic one-shot has yet produced the runtime receipts. The next authentic predicate remains a fresh WorkerCoordinator claim/fence.
+
+
+## Resident dispatcher Master Records carriage repair — generation 111
+
+The first concrete remaining `REQUESTED -> WorkerCoordinator` defect was in `scripts/dispatch_resident_execution_requests.py`. Its environment sanitizer preserved the canonical Master Records HTTP endpoint/token/timeout but dropped the durable-local binding variables `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, and `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS` before invoking the Test 3 consumer. That made the downstream generation-105/106 custody-carriage fixes unreachable for resident installations using the durable local Master Records binding.
+
+The existing dispatcher now preserves those three canonical custody inputs. No runtime, scheduler, dispatcher, authority plane, source relay, carrier dependency, or device prerequisite was added. The next authentic transition remains the fresh WorkerCoordinator claim/fence and canonical Master Records closure.
