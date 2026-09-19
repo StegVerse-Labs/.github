@@ -79,7 +79,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 82,
+    "reconciled_against_registry_generation": 83,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
