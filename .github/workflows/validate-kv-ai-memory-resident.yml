@@ -76,6 +76,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: validate-kv-ai-memory-resident-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   PYTHONPATH: ${{ github.workspace }}
 
