@@ -58,14 +58,29 @@
         "scripts/run_sovereign_ephemeral_console.py",
         "scripts/bootstrap_sovereign_runtime.py source eligibility",
         "scripts/install_sovereign_heartbeat_service.py materialization parity",
-        "scripts/refresh_sovereign_worker_runtime_source.py local refresh parity"
+        "scripts/refresh_sovereign_worker_runtime_source.py local refresh parity",
+        "receipts/sovereign-host/worker-source-refresh.latest.json canonical source/runtime binding"
       ],
       "canonical_fix_refs": [
         "72e80ce645858c02877277845ffe624cd71ec1e6",
-        "9910cf76e0bd171d0166d14d4b1f765bba887667"
+        "9910cf76e0bd171d0166d14d4b1f765bba887667",
+        "3648f0a80317e611fd71bdfc1056616977cea255"
       ],
-      "resolution": "attempt the existing same-host ephemeral fallback after incomplete native proof; resident source eligibility, fresh materialization, and local source refresh must all guarantee the fallback script before reporting the recovery surface complete",
+      "resolution": "attempt the existing same-host ephemeral fallback after incomplete native proof; resident source eligibility, fresh materialization, and local source refresh must guarantee the fallback script, and the G18 worker must preserve the already-local canonical source/runtime distinction so recovery executes from canonical source while mutable resident runtime/proof/state remain resident-local",
       "do_not_create": ["second-user-machine", "hosted-runtime-authority", "new-workercoordinator-plane", "duplicate-runtime-recovery-path"]
+    },
+    {
+      "problem_class": "G18_RECOVERY_LOSES_CANONICAL_SOURCE_RUNTIME_SEPARATION",
+      "reuse": "existing G18 worker canonical-source binding from worker-source-refresh receipt",
+      "support": [
+        "receipts/sovereign-host/worker-source-refresh.latest.json",
+        "workers/sovereign_runtime_activation_worker.py",
+        "scripts/bootstrap_sovereign_runtime.py",
+        "scripts/run_sovereign_ephemeral_console.py"
+      ],
+      "canonical_fix_refs": ["3648f0a80317e611fd71bdfc1056616977cea255"],
+      "resolution": "validate the existing no-network/no-credential worker-source-refresh receipt and preserve distinct canonical source and mutable resident runtime roots across native bootstrap and same-host fallback",
+      "do_not_create": ["duplicate-source-transport", "network-fetch", "hosted-runtime", "second-workercoordinator", "manual-runtime-copy"]
     },
     {
       "problem_class": "TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
