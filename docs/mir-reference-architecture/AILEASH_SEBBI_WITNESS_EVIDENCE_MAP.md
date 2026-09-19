@@ -80,7 +80,7 @@ The exact retained OTS proof for `4a99a3b5...` (original proof SHA-256 `275186cb
 
 This does not reconstruct block 1895's original chain preimage or expose an exact disputed historical witness record's sealed `witness_version`/liveness term. Therefore historical binding to `2d6715868bb2812b98d874ab17890ff89ece30d5` remains unresolved and A.2 R10 remains operator-disclosed `NOT MET`. The v0.8 1,534/50 package remains counterpart-reported complete; the historical 784/30 run remains settled.
 
-## Generation 124 strict state-dependent progression — 2026-09-19
+## Canonical strict state-dependent progression — 2026-09-19
 
 This evidence map is now explicitly ordered rather than checkpoint-based. The canonical progression is:
 
