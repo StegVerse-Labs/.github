@@ -244,7 +244,7 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
                 ecosystem_chat_parent=True,
             )
 
-    def test_generic_refresh_then_execute_requires_preserved_carrier(self) -> None:
+    def test_independent_targeted_execution_does_not_require_carrier(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             source = base / "source"
@@ -252,20 +252,43 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
             source.mkdir()
             (runtime / "scripts").mkdir(parents=True)
             (runtime / "scripts/run_worker_runtime.py").write_text("# runner\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    stdout='{"state":"HANDOFF_READY","transition_id":"FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T"}\n',
+                    stderr="",
+                )
+
             with mock.patch.object(
                 mod,
                 "refresh",
                 return_value={
                     "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
                     "mutable_runtime_state_preserved": True,
+                    "network_fetch_performed": False,
                 },
             ):
-                with self.assertRaisesRegex(RuntimeError, "preserved separated carrier"):
-                    mod.refresh_and_execute(
-                        source,
-                        runtime,
-                        task_id="COSV-LIVE-PACKET-AUTOMATION-006",
-                    )
+                receipt = mod.refresh_and_execute(
+                    source,
+                    runtime,
+                    task_id="SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": "/home/stegverse"},
+                )
+
+            self.assertEqual(len(calls), 1)
+            self.assertIn("--task-id", calls[0][0])
+            self.assertIn("SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001", calls[0][0])
+            self.assertFalse((runtime / mod.CARRIER_REF).exists())
+            self.assertTrue(receipt["runtime_execution_attempted"])
+            self.assertEqual(
+                receipt["execution_result"]["transition_id"],
+                "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+            )
 
     def test_generic_refresh_then_execute_writes_secret_free_attempt_receipt(self) -> None:
         with tempfile.TemporaryDirectory() as td:

@@ -237,5 +237,15 @@
       "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json#completion.next_authorized_action",
       "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json#admissible_existence.runtime_dependency_correction.next_actual_transition"
     ]
+  },
+  "execution_path_repair": {
+    "defect": "REFRESH_AND_EXECUTE_RESIDENT_TASK_STALE_CARRIER_GATE",
+    "defect_effect": "TARGETED_INDEPENDENT_TASK_CONTROL blocked before WorkerCoordinator despite executable handoff carrier_trigger_required=false",
+    "repaired_path": "scripts/refresh_and_execute_resident_task.py --task-id",
+    "independent_task_id_requires_carrier_reference": false,
+    "resume_claimed_task_preserves_carrier_requirement": true,
+    "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+    "authentic_runtime_transition_observed": false,
+    "authority_effect": "NONE_SOURCE_PATH_REPAIR_ONLY"
   }
 }

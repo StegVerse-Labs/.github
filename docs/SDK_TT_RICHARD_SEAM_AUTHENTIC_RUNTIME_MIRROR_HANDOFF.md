@@ -335,3 +335,12 @@ HANDOFF_READY T + no task-bound W
 ```
 
 No source-package relay, connected-device discovery, carrier trigger, second runtime, or new authority plane is a prerequisite for this progression. Historical source-delivery work remains preserved and is not rewritten as runtime evidence.
+
+
+## Targeted one-shot carrier-gate repair — generation 103
+
+The first concrete post-generation-102 execution defect was in `scripts/refresh_and_execute_resident_task.py`: after refreshing already-local source, it rejected every non-Ecosystem-Chat targeted invocation unless `control/heartbeat-carrier-runtime-state.json` existed. That guard contradicted the Test 3 executable handoff (`carrier_trigger_required=false`) and the targeted `run_worker_runtime.py --task-id` path, which already performs independent WorkerCoordinator admission without carrier bootstrap.
+
+The repair removes the carrier prerequisite for independent `--task-id` execution while preserving the historical carrier requirement only for `--resume-claimed-task-id`, where an existing claim/fence is being resumed. Regression coverage proves the Test 3 task reaches the targeted runner without a carrier file.
+
+This is a source-path repair only. It does not claim that the fresh claim/fence transition has already occurred. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`, followed immediately by Master Records custody and the existing TV/TVC -> InTr atomic activation sequence.

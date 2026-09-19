@@ -855,3 +855,8 @@ Test 3 has a dedicated executable entrypoint at `scripts/run_sdk_tt_richard_seam
 ### Test 3 current runtime dependency
 
 The current executable Test 3 state no longer treats control-plane source-package relay/materialization as a runtime predecessor. The authoritative executable handoff has no task dependencies, requires no carrier trigger, and the Test 3 WorkerCoordinator fragment identifies `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T` as the next actual transition. Each subsequent governed state change remains gated by canonical Master Records `RECORDED`, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality before machine-owned progression.
+
+
+### Test 3 targeted one-shot carrier-gate repair
+
+The Test 3 independent targeted path no longer requires `control/heartbeat-carrier-runtime-state.json` before invoking `run_worker_runtime.py --task-id`. Independent task admission remains WorkerCoordinator-owned, while claimed-task resume retains its separate existing-claim/carrier semantics. This closes the concrete carriage defect that prevented the already-REQUESTED Test 3 one-shot from reaching its fresh claim/fence transition; no authentic runtime transition is inferred from the repair itself.
