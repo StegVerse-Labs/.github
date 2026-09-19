@@ -51,6 +51,8 @@ RENDEZVOUS_RECEIPT_REL = Path("receipts/sovereign-host/resident-rendezvous-consu
 RENDEZVOUS_POLL_INTERVAL_SECONDS = 30.0
 LOCAL_REQUEST_DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 LOCAL_REQUEST_DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+TEST3_REQUEST_REL = Path("control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json")
+TEST3_CONSUMER_SELECTOR = "sdk_tt_richard_seam_authentic_runtime"
 LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS = 100
 LOCAL_SOURCE_REFRESH_REL = Path("scripts/refresh_sovereign_worker_runtime_source.py")
 LOCAL_SOURCE_REFRESH_INTERVAL_TICKS = 100
@@ -567,6 +569,30 @@ def dispatch_local_resident_requests(
             "heartbeat_grants_execution_authority": False,
             "authority_effect": "NONE",
         }
+    priority_result = None
+    test3_request = root / TEST3_REQUEST_REL
+    if test3_request.is_file():
+        priority_completed = runner(
+            [
+                sys.executable,
+                str(dispatcher),
+                "--source-root", str(root),
+                "--runtime-root", str(root),
+                "--only-consumer", TEST3_CONSUMER_SELECTOR,
+            ],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+        )
+        priority_result = {
+            "returncode": priority_completed.returncode,
+            "result": _parse_last_json(priority_completed.stdout),
+            "selector": TEST3_CONSUMER_SELECTOR,
+            "request_present": True,
+        }
+
     completed = runner(
         [
             sys.executable,
@@ -595,6 +621,7 @@ def dispatch_local_resident_requests(
         ),
         "returncode": completed.returncode,
         "receipt": receipt,
+        "priority_test3_dispatch": priority_result,
         "runtime_execution_attempted": True,
         "request_dispatch_grants_authority": False,
         "heartbeat_grants_execution_authority": False,
