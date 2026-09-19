@@ -62,8 +62,19 @@ class HealerResidentRequestTests(unittest.TestCase):
     @staticmethod
     def completed_cycle():
         return Completed({
-            "schema": "stegverse.resident-refresh-targeted-execution/v2",
-            "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
+            "schema": "stegverse.resident-refresh-targeted-execution/v3",
+            "execution_result": {
+                "schema": "stegverse.worker-runtime-cycle-result/v1",
+                "target_task_id": consumer.TARGET_TASK,
+                "targeted_independent_task_control": True,
+                "events": [{
+                    "event_type": "worker_response",
+                    "task_id": consumer.TARGET_TASK,
+                    "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED",
+                    "transition_sequence": 1,
+                    "response_state": "HANDOFF_READY",
+                }],
+            },
         })
 
     def test_missing_runtime_request_self_materializes_from_canonical_source(self):
@@ -252,6 +263,15 @@ class HealerResidentRequestTests(unittest.TestCase):
             self.assertTrue(result["retry_allowed"])
         finally:
             td.cleanup()
+
+    def test_real_workercoordinator_cycle_envelope_is_recognized_as_completed(self):
+        result = json.loads(self.completed_cycle().stdout)
+        self.assertTrue(consumer.completed_healer_cycle_observed(result))
+
+    def test_dispatcher_accepts_cycle_completed_as_successful_consumer_state(self):
+        import inspect
+        source = inspect.getsource(dispatcher.dispatch)
+        self.assertIn('"CYCLE_COMPLETED"', source)
 
     def test_dispatcher_has_exact_healer_selector(self):
         selected = dispatcher.select_consumers(("healer_sovereign_scheduler",))

@@ -179,3 +179,19 @@ Master Records promotion remains gated on authentic runtime evidence and, for ev
 The repeated observation loop is replaced by a concrete existing-path repair. After the existing completed targeted Healer cycle, `scripts/consume_healer_sovereign_scheduler_request.py` reads the already-projected fenced checkpoint `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, extracts `child_receipt.resident_custody_root_observation_retention`, requires all six canonical fields, verifies the retained packet path, packet SHA-256, packet state, and resident root, then carries only that validated pointer into the existing resident consumption receipt at `execution_result.resident_custody_root_observation_retention`.
 
 Missing checkpoint evidence does not synthesize a pointer. A malformed pointer or path/hash/state/root mismatch fails closed. No new task, invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, or device dependency is introduced. Authentic promotion still requires a real existing Healer cycle and exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root; source correctness is not runtime proof.
+
+
+## Prompt 12/20 — real WorkerCoordinator cycle-envelope completion repair
+
+Post-PR #2212 inspection found the next concrete existing-path defect. The pointer-carriage repair was correctly gated on a completed current Healer cycle, but the consumer detected completion using a top-level `transition_id` shape that the actual WorkerCoordinator does not emit. The authentic targeted cycle result is `stegverse.worker-runtime-cycle-result/v1`; the Healer worker completion appears inside `execution_result.events[]` as exactly one `worker_response` event for `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` with `transition_id=HEALER_SOVEREIGN_SCHEDULER_COMPLETED` and `response_state=HANDOFF_READY`.
+
+The consumer now recognizes that real envelope, fails closed if more than one matching completion event exists, and only then validates/carries the already-projected six-field retained-root pointer. The resident dispatcher also accepts `CYCLE_COMPLETED` as a successful Healer consumer state rather than incorrectly marking a successful cycle as a request failure.
+
+The unit fixture now uses the real WorkerCoordinator event envelope, preventing the prior synthetic top-level transition shape from hiding this defect. No new invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, device dependency, or task identity is introduced. Authentic runtime promotion is still not claimed until a post-repair resident cycle produces exactly one validated `RESIDENT_CUSTODY_ROOT_OBSERVED` pointer.
+
+
+## Prompt 12 merge reconciliation
+
+The real WorkerCoordinator cycle-envelope repair merged through PR #2227 as `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The source defect that prevented the post-#2212 pointer carriage gate from ever opening is therefore repaired on current main. Canonical Task Registry generation observed after merge is `96`.
+
+Runtime promotion remains deliberately unclaimed. The next authentic existing Healer resident cycle must now expose exactly one matching `worker_response` completion event and, after checkpoint validation, all six retained-root fields with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root. Only then may the existing classifier and downstream governed progression run.
