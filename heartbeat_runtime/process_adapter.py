@@ -146,9 +146,18 @@ class ProcessWorkerAdapter:
         return False
 
     def _validate_fence(self, task: dict[str, Any]) -> tuple[str, int]:
-        claim_id = task.get("claim_id")
-        timing = task.get("heartbeat_timing") or {}
-        fence = timing.get("fencing_token")
+        pending = task.get("pending_atomic_activation")
+        if isinstance(pending, dict):
+            if task.get("state") != "HANDOFF_READY":
+                raise RuntimeError("pending atomic activation requires HANDOFF_READY task")
+            if any(task.get(name) not in (None, "") for name in ("claim_id", "worker_id", "worker_instance_id")):
+                raise RuntimeError("pending atomic activation may not expose a live task-bound worker")
+            claim_id = pending.get("claim_id")
+            fence = pending.get("fencing_token")
+        else:
+            claim_id = task.get("claim_id")
+            timing = task.get("heartbeat_timing") or {}
+            fence = timing.get("fencing_token")
         if not isinstance(claim_id, str) or not claim_id or not isinstance(fence, int) or fence < 1:
             raise RuntimeError("mutation-capable process worker requires a current fenced claim")
         if not claim_id.endswith(f"-G{fence}"):
