@@ -448,7 +448,7 @@ TV head c133e61e1bc4645760c110830077866198c99d0a
   tvc-artifact-exchange-integration-validation 35464038256 SUCCESS
 ```
 
-No authentic warrant is claimed. Current source/repository evidence does not establish that the resident credential `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` has been materialized in admitted TVC credential custody. That is now the first authentic boundary. It must not be replaced with a generated chat key, GitHub secret, HMAC token, Remote Desktop device, carrier, Healer, scheduler, dispatcher, or another runtime.
+No authentic warrant is claimed. The TV/TVC resident credential remains required for the warrant-policy transition, but it is not a predecessor to WorkerCoordinator claim/fence creation. The first authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; after its Master Records closure, the same execution proceeds to TV/TVC warrant-policy verification.
 
 
 ## TV/TVC Ed25519 execution-warrant bridge — Goal Prompt 18
@@ -465,7 +465,7 @@ validation: 35464198311 SUCCESS
 
 The merged bridge reuses TV/TVC resident `systemd LoadCredential` custody, issues only bounded Ed25519 `run_agent` warrants for `StegVerse-Labs/StegAgents`, binds the exact commit and runtime policy-bundle bytes, and exports only a secret-free warrant/public-key/policy receipt. It creates no GitHub signing authority, scheduler, dispatcher, runtime, device dependency, or replacement credential authority.
 
-No authentic resident `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` credential or issuance receipt has yet been observed. Therefore no real issuer public key or fresh StegAgents warrant is claimed. The next authentic boundary is resident TV/TVC credential materialization -> issuance -> real public-key registration -> existing targeted one-shot -> same-run Master Records closure.
+No authentic TV/TVC warrant issuance receipt has yet been observed. That does not move warrant issuance ahead of the WorkerCoordinator claim/fence transition. The canonical order is fresh claim/fence -> Master Records closure -> TV/TVC warrant-policy verification -> Master Records closure -> StegCore/InTr -> lifecycle transitions.
 
 
 ## Fully state-dependent four-case governed graph source — 2026-09-19
@@ -510,3 +510,24 @@ Exact-head validation for PR #31 passed:
 - Test Readiness run `35468161897`: SUCCESS.
 
 No Test3/Richard dependency, alternate runtime, scheduler, dispatcher, authority plane, custody store, carrier, or device dependency was introduced. Authentic runtime execution remains unclaimed until this graph runs through the existing WorkerCoordinator/TV-TVC/StegCore-InTr/Master Records path.
+
+
+## Runtime transition-order correction — registry generation 123
+
+The canonical task projection had drifted from the executable handoff and merged runtime path by placing TV/TVC credential materialization ahead of WorkerCoordinator claim/fence creation. The authoritative order is:
+
+```text
+HANDOFF_READY
+-> WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> Master Records RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality
+-> TV_TVC_WARRANT_POLICY_VERIFIED
+-> Master Records closure
+-> STEGCORE_INTR_MATERIALIZATION_ADMITTED
+-> Master Records closure
+-> PURPOSE_BOUND_WORKER_MATERIALIZED
+-> PURPOSE_BOUND_WORKER_INVOCATION_STARTED
+-> PURPOSE_BOUND_WORKER_TASK_COMPLETED
+-> PURPOSE_BOUND_WORKER_RETIRED
+```
+
+TV/TVC credential materialization is an input to the warrant-policy transition, not a precondition for the first WorkerCoordinator transition. Master Records contains no authentic transition for this exact SDK lineage, so the next authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`.
