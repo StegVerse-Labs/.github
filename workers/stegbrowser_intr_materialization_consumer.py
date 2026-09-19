@@ -205,6 +205,7 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     child = scrubbed_env(env)
     child["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"] = json.dumps(params, sort_keys=True, separators=(",", ":"))
     child["STEGVERSE_REUSABLE_TASK_INVOCATION_ID"] = materialization_id
+    child["STEGVERSE_STEGBROWSER_INVOCATION_NONCE"] = NONCE
     child["STEGVERSE_STEGBROWSER_MANIFEST_SHA256"] = str(binding["manifest_sha256"])
     completed = runner([sys.executable, str(runner_path)], cwd=str(source), env=child, check=False, capture_output=True, text=True, timeout=1800)
 
