@@ -479,6 +479,14 @@ GP10's already-implemented paid field-validation/evidence-review service remains
 Canonical state: `docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md`.
 
 
+### ASRO review-disposition terminal continuity
+
+Canonical Goal Task `ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001` is restored into the Task Registry as terminal `CLOSED`. The repair is continuity-only and non-authorizing.
+
+The bounded goal is complete on StegVerse's side: Admissibility Wiki PR #144 merged, exact-head validation run `35430656241` passed, main validation run `35431151992` passed at `080c575f6970ca129f961105f6618784b447e164`, and issue #50 Track 2 is closed. COSV `71000000100100` denotes COMPLETE / archive-ready / evidence-complete source state without runtime activation or propagation.
+
+Preserved external boundaries remain external: exact historical ASRO source path unresolved; Contributor Protocol proposed/not bilaterally authorized pending a legal counterparty and authority scope; independent reviewer/issuer unresolved; reciprocal execution unauthorized; bilateral Seam Comparison Record not issued or authorized.
+
 ### Task Registry / handoff reconciliation gate
 
 A surviving mirror handoff is not, by itself, sufficient proof that work is currently selectable by the ecosystem. Before StegVerse work is treated as active canonical work, resolve the Goal Task ID in `data/canonical-task-registry.json` and reconcile that row with the applicable `*_MIRROR_HANDOFF.md`, WorkerCoordinator claim/fence state, COSV pointer, and Interlock/InTr admission state. If a pre-registry handoff has no Task Registry row, treat that mismatch as a continuity defect and restore the existing task identity as non-authorizing source state before downstream mutation.
