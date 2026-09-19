@@ -80,3 +80,28 @@ The runtime worker requires the exact task identity, the admitted `conversation_
 A worker response may become `COMPLETED` only when the existing custody client returns `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. Any other Master Records result is returned as `BLOCKED` with no publication/adjudication promotion.
 
 Source staging does not prove that the Canonical Work ingress, WorkerCoordinator claim/fence, worker invocation, or Master Records custody has occurred.
+
+
+## Runtime-path merge and authentic evidence check — 2026-09-19
+
+PR `#2291` merged at `e5f40728f92029c8f81fc543c3215e9ad98a0ad5`. Exact-head focused validation run `35468718570` passed together with Cross-Task Coordination, DeepSeek resident, Purpose-Bound Worker, and KV AI Memory repository gates.
+
+After merge, the canonical .github and `master-records/orchestration` evidence surfaces were searched for:
+- `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`;
+- `CONVERSATION_EVIDENCE_INGESTED`;
+- a current WorkerCoordinator `claim_id` + `fencing_token`;
+- `receipt_sha256` + `reconstructed_receipt_sha256`.
+
+No authentic post-merge runtime receipt was present. Therefore none of the runtime predicates are promoted. In particular:
+- WorkerCoordinator claim/fence observed = false;
+- Master Records `RECORDED` observed = false;
+- reconstruction PASS observed = false;
+- required-evidence PASS observed = false;
+- exact digest equality observed = false;
+- public Site projection successor derived = false.
+
+The remediation path remains the already-merged targeted one-shot:
+```text
+python scripts/run_worker_runtime.py --task-id CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001
+```
+through the existing Canonical Work -> WorkerCoordinator -> process adapter -> canonical Master Records path. No device inventory query, second machine prerequisite, alternate runtime, scheduler, dispatcher, or custody plane is introduced.
