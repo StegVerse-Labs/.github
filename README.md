@@ -900,3 +900,8 @@ The resident request dispatcher now preserves the existing durable-local Master 
 ### AILeash pre-reset commitment verification
 
 `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now has independently retrieved pre-reset August completeness evidence. The historical subjects commitment at old-chain block 1895 was Merkle-verified for retained witness subjects, and its exact OpenTimestamps proof was independently upgraded to Bitcoin attestations whose block Merkle roots matched both Blockstream and mempool.space. This strengthens the historical commitment/anchoring evidence without changing R10: the exact disputed witness record preimage and sealed historical version/term are still required before binding it to the recovered v1.1 revision. The v0.8 1,534/50 rerun remains counterpart-reported; the earlier 784/30 run remains historical and settled.
+
+
+### SDK purpose-bound worker cost/lifetime demonstration augmentation — 2026-09-19
+
+The canonical purpose-bound runtime proof now carries a validated SDK matrix: 15s, 30s, and 60s single-worker derived maxima, then a fourth task with three simultaneous median-cost workers (9 aggregate compute units, 30s per-worker and group budget). SDK PR #275 / merge `a79d7f39e870c72e66d0d7ab458414b5bfb192e1` / run `35463403840` validated the local semantic demonstration. Authentic governed runtime proof remains pending.
