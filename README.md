@@ -974,3 +974,10 @@ SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_
 
 
 SDK TT purpose-bound worker runtime proof: TVC PR #448 merged the resident Ed25519 key-materialization repair as `4cb804c625060f52b75afc48d11c8d1dc8dc835a` from exact head `522bfff406f70c7b18091c25916a6f83a23fcec3`; validation run `35469205465` passed. Next authentic transition: `TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION`; remote-device availability is not a canonical predicate.
+
+
+### WorkerCoordinator Functional Memory
+
+Worker assignment now retains reconstructable Functional Memory through the existing WorkerCoordinator and Master Records path. `ALLOW` continues into the existing claim/fence assignment flow; any non-`ALLOW` result is retained as a Master Records Functional Memory pack carrying task identity, Task Registry generation, COSV context, admissibility predicates, disposition, and reasons. Later assignment review must reconstruct that retained state before reuse.
+
+PR #2289 merged the source contract as `9c48c12fa38b1bfece448c878843ee352429d83d`. Exact-head Test 3 acceptance run `35469405536` executed the focused Functional Memory test and passed; Cross-Task validation run `35469405509` also passed. These are source/validation results only and do not claim authentic runtime assignment or Functional Memory emission.
