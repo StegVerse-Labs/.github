@@ -890,3 +890,8 @@ Test 3 now has an executable terminal edge. After the retained task result, the 
 ## Admissibility Wiki public hostname coordination
 
 `ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001` tracks migration of the existing Admissibility Wiki public hostname to `https://admissibility.stegverse.org`. The wiki repository remains canonical source. GitHub Pages remains the hosting mechanism. The task does not create a second wiki, runtime, execution authority, or publication authority. Account-level Pages custom-domain and DNS CNAME changes remain explicit human-action dependencies until observed.
+
+
+### Test 3 resident dispatcher custody carriage
+
+The resident request dispatcher now preserves the existing durable-local Master Records binding before invoking Test 3's request consumer. This closes the remaining dispatcher-level environment-carriage defect on the canonical `REQUESTED -> WorkerCoordinator` path; it grants no authority and does not itself prove the claim/fence transition occurred.
