@@ -687,3 +687,8 @@ Canonical Goal Task `SDK-PRODUCT-PROCESSING-PROVENANCE-001` / COSV `710000001010
 ### SV002 canonical carrier -> current rerun binding — 2026-09-18
 
 The existing `sv002_org_runtime_activation` request/selector is being repaired in place so it invokes the current deterministic rerun callable rather than the retired StegVerse-org one-shot roundtrip. The same canonical WorkerCoordinator and resident dispatcher are retained; no second request or executor is added. The dispatcher preserves the existing Master Records custody and federation publication bindings required by the current callable while continuing to strip GitHub runtime credentials.
+
+
+### SV002 REQUEST_BOUND canonical carrier reconciliation
+
+PR #41 in StegVerse-002 and PR #2165 in this repository close the two source gaps that prevented the current deterministic rerun from reaching canonical Master Records: exact REQUEST_BOUND bytes are now required evidence, and the existing `sv002_org_runtime_activation` WorkerCoordinator consumer now invokes the current rerun callable instead of the retired one-shot path. Runtime proof remains pending authentic consumption on the existing carrier.
