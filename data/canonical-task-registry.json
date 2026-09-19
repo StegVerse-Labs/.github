@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 122,
-  "status": "CONVERSATION_EVIDENCE_SYNTHETIC_RUNTIME_PATH_BOUND",
+  "generation": 123,
+  "status": "CONVERSATION_EVIDENCE_RUNTIME_PATH_MERGED_AUTHENTIC_CUSTODY_UNOBSERVED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6373,7 +6373,29 @@
         "deployment_required": false,
         "current_observation_required": true
       },
-      "runtime_resolution": null,
+      "runtime_resolution": {
+        "state": "AUTHENTIC_RUNTIME_CUSTODY_NOT_YET_OBSERVED",
+        "source_runtime_path_merge": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+        "canonical_work_request_ref": "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
+        "workercoordinator_registration_ref": "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
+        "process_adapter_ref": "control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json",
+        "executable_handoff_ref": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+        "targeted_execution": [
+          "python",
+          "scripts/run_worker_runtime.py",
+          "--task-id",
+          "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+        ],
+        "current_condition": "NO_AUTHENTIC_POST_MERGE_WORKERCOORDINATOR_CLAIM_FENCE_OR_MASTER_RECORDS_RECEIPT_OBSERVED_IN_CANONICAL_EVIDENCE",
+        "remediation_path": "CONTINUE_EXISTING_TARGETED_ONE_SHOT_ON_NEXT_AUTHENTIC_RESIDENT_EXECUTION_OPPORTUNITY",
+        "connected_device_inventory_role": "NONE_PROHIBITED",
+        "second_runtime_created": false,
+        "second_scheduler_created": false,
+        "second_dispatcher_created": false,
+        "second_custody_plane_created": false,
+        "public_site_successor_allowed": false,
+        "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY"
+      },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
@@ -6384,7 +6406,7 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "reconciliation_ref": null
+        "reconciliation_ref": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
       },
       "allowed_next_transitions": [
         "CANONICAL_WORK_INGRESS_ADMITTED",
