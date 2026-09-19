@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 82,
+  "generation": 83,
   "status": "SDK_TT_PRE_MATERIALIZATION_MASTER_RECORDS_GATES_MERGED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5333,14 +5333,25 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "AUTHENTIC_TEST_3_ONE_SHOT_WITH_ATOMIC_TASK_ACTIVATION_WORKER_CREATION_AND_RECORDS_ONLY_RECONSTRUCTION_REQUIRED",
+      "remaining_predicate": "REPAIR_EXISTING_WORKERCOORDINATOR_STEGAGENTS_PATH_SO_TEST3_CANNOT_EXPOSE_ACTIVE_T_OR_TASK_BOUND_W_BEFORE_INTR_ATOMIC_CONSTITUTIVE_TRANSITION_CLOSURE",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
         "generation_fence_satisfied": true,
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
-        "authentic_runtime_execution_attempted": false
+        "authentic_runtime_execution_attempted": false,
+        "reconciled_against_registry_generation": 82,
+        "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
+        "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
+        "observed_sequence": [
+          "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+          "TASK_STATE_SET_ACTIVE_AND_WORKER_INSTANCE_BOUND",
+          "WORKER_INVOKED",
+          "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
+        ],
+        "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
+        "next_actual_transition": "SOURCE_REPAIR_ATOMIC_CONSTITUTIVE_ACTIVATION_BEFORE_AUTHENTIC_ONE_SHOT"
       }
     }
   ],
