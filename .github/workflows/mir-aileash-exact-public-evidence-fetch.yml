@@ -1,4 +1,4 @@
-name: MIR AILeash OTS copy upgrade verification
+name: MIR AILeash OTS Bitcoin attestation verification
 
 on:
   push:
@@ -11,75 +11,83 @@ permissions:
   contents: read
 
 jobs:
-  verify-ots-copy:
+  verify-bitcoin-attestations:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch exact old-chain subjects proof
+      - name: Upgrade copied proof and compare attestation roots to two explorers
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p evidence
-          python - <<'PY'
-          import base64, hashlib, json, pathlib, ssl, urllib.parse, urllib.request
-          tip="4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260"
-          url="https://sebbi.pro/x/ots/proof?"+urllib.parse.urlencode({"tip":tip})
-          req=urllib.request.Request(url,headers={"User-Agent":"StegVerse-public-evidence-verifier/1.0","Accept":"application/json"})
-          with urllib.request.urlopen(req,context=ssl.create_default_context(),timeout=30) as r:
-              raw=r.read()
-              status=r.status
-          doc=json.loads(raw)
-          pathlib.Path("evidence/ots-proof-response.json").write_bytes(raw)
-          proof=base64.b64decode(doc["ots_base64"])
-          pathlib.Path("evidence/subject.original.ots").write_bytes(proof)
-          pathlib.Path("evidence/subject.ots").write_bytes(proof)
-          pathlib.Path("evidence/tip.bin").write_bytes(bytes.fromhex(tip))
-          print("OTS_FETCH "+json.dumps({"url":url,"http_status":status,"response_sha256":hashlib.sha256(raw).hexdigest(),"tip":tip,"stamp_id":doc.get("stamp_id"),"stamped_at":doc.get("stamped_at"),"reported_state":doc.get("state"),"proof_sha256_reported":doc.get("proof_sha256"),"proof_sha256_recomputed":hashlib.sha256(proof).hexdigest(),"proof_bytes":len(proof),"bitcoin_block_heights":doc.get("bitcoin_block_heights"),"pending_calendars":doc.get("pending_calendars")},sort_keys=True))
-          PY
-
-      - name: Upgrade and verify copied proof with standard client
-        shell: bash
-        run: |
-          set -u
           python -m pip install --disable-pip-version-check --quiet opentimestamps-client
-          {
-            echo "ORIGINAL_SHA256 $(sha256sum evidence/subject.original.ots | awk '{print $1}')"
-            echo "ORIGINAL_INFO_BEGIN"
-            ots info evidence/subject.original.ots || true
-            echo "ORIGINAL_INFO_END"
-          } | tee evidence/original-info.txt
-          set +e
-          ots upgrade evidence/subject.ots > evidence/upgrade.txt 2>&1
-          upgrade_rc=$?
-          ots info evidence/subject.ots > evidence/upgraded-info.txt 2>&1
-          info_rc=$?
-          ots verify -f evidence/tip.bin evidence/subject.ots > evidence/verify.txt 2>&1
-          verify_rc=$?
-          set -e
-          echo "UPGRADED_SHA256 $(sha256sum evidence/subject.ots | awk '{print $1}')"
-          echo "UPGRADE_RC $upgrade_rc"
-          cat evidence/upgrade.txt
-          echo "INFO_RC $info_rc"
-          cat evidence/upgraded-info.txt
-          echo "VERIFY_RC $verify_rc"
-          cat evidence/verify.txt
-          python - "$upgrade_rc" "$info_rc" "$verify_rc" <<'PY'
-          import hashlib,json,pathlib,sys
-          summary={
-            "original_sha256":hashlib.sha256(pathlib.Path("evidence/subject.original.ots").read_bytes()).hexdigest(),
-            "upgraded_sha256":hashlib.sha256(pathlib.Path("evidence/subject.ots").read_bytes()).hexdigest(),
-            "upgrade_rc":int(sys.argv[1]),"info_rc":int(sys.argv[2]),"verify_rc":int(sys.argv[3]),
-            "upgrade_output":pathlib.Path("evidence/upgrade.txt").read_text(errors="replace")[:10000],
-            "info_output":pathlib.Path("evidence/upgraded-info.txt").read_text(errors="replace")[:10000],
-            "verify_output":pathlib.Path("evidence/verify.txt").read_text(errors="replace")[:10000],
-          }
-          pathlib.Path("evidence/ots-copy-verification-summary.json").write_text(json.dumps(summary,sort_keys=True,indent=2))
-          print("OTS_COPY_RESULT "+json.dumps(summary,sort_keys=True))
+          python - <<'PY'
+          import base64, hashlib, json, pathlib, ssl, subprocess, urllib.parse, urllib.request
+          from opentimestamps.core.serialize import BytesDeserializationContext
+          from opentimestamps.core.timestamp import DetachedTimestampFile
+          from opentimestamps.core.notary import BitcoinBlockHeaderAttestation
+
+          OUT=pathlib.Path("evidence")
+          tip="4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260"
+          def get_bytes(url, accept="application/json"):
+              req=urllib.request.Request(url,headers={"User-Agent":"StegVerse-public-evidence-verifier/1.0","Accept":accept})
+              with urllib.request.urlopen(req,context=ssl.create_default_context(),timeout=30) as r:
+                  b=r.read()
+                  return r.status,b
+
+          url="https://sebbi.pro/x/ots/proof?"+urllib.parse.urlencode({"tip":tip})
+          st,raw=get_bytes(url)
+          doc=json.loads(raw)
+          proof=base64.b64decode(doc["ots_base64"])
+          original=OUT/"subject.original.ots"; upgraded=OUT/"subject.upgraded.ots"
+          original.write_bytes(proof); upgraded.write_bytes(proof)
+          up=subprocess.run(["ots","upgrade",str(upgraded)],capture_output=True,text=True)
+          print("UPGRADE "+json.dumps({"rc":up.returncode,"stdout":up.stdout,"stderr":up.stderr,"original_sha256":hashlib.sha256(proof).hexdigest(),"upgraded_sha256":hashlib.sha256(upgraded.read_bytes()).hexdigest()},sort_keys=True))
+          if up.returncode != 0:
+              raise SystemExit("ots upgrade failed")
+
+          ctx=BytesDeserializationContext(upgraded.read_bytes())
+          det=DetachedTimestampFile.deserialize(ctx)
+          print("DETACHED_START "+json.dumps({"file_hash_op":str(det.file_hash_op),"timestamp_msg":det.timestamp.msg.hex(),"matches_tip":det.timestamp.msg.hex()==tip},sort_keys=True))
+          found=[]
+          def walk(ts):
+              for att in ts.attestations:
+                  if isinstance(att,BitcoinBlockHeaderAttestation):
+                      found.append({"height":att.height,"merkle_root":ts.msg.hex()})
+              for _op,child in ts.ops.items():
+                  walk(child)
+          walk(det.timestamp)
+          found=sorted(found,key=lambda x:x["height"])
+          print("ATTESTATIONS "+json.dumps(found,sort_keys=True))
+          if not found:
+              raise SystemExit("no bitcoin attestations")
+
+          results=[]
+          for item in found:
+              h=item["height"]; expected=item["merkle_root"]
+              per={"height":h,"proof_merkle_root":expected,"explorers":[]}
+              for name,base in [("blockstream","https://blockstream.info/api"),("mempool","https://mempool.space/api")]:
+                  s1,bhraw=get_bytes(base+"/block-height/"+str(h),"text/plain")
+                  bh=bhraw.decode().strip()
+                  s2,braw=get_bytes(base+"/block/"+bh)
+                  bdoc=json.loads(braw)
+                  rec={"name":name,"height_status":s1,"block_status":s2,"block_hash":bh,"block_json_sha256":hashlib.sha256(braw).hexdigest(),"reported_height":bdoc.get("height"),"timestamp":bdoc.get("timestamp"),"merkle_root":bdoc.get("merkle_root"),"matches_proof_root":str(bdoc.get("merkle_root")).lower()==expected.lower()}
+                  per["explorers"].append(rec)
+                  (OUT/(f"{name}-block-{h}.json")).write_bytes(braw)
+              per["both_match"]=all(e["matches_proof_root"] for e in per["explorers"]) and len(per["explorers"])==2
+              results.append(per)
+              print("BITCOIN_COMPARE "+json.dumps(per,sort_keys=True))
+
+          summary={"tip":tip,"original_response_sha256":hashlib.sha256(raw).hexdigest(),"original_proof_sha256":hashlib.sha256(proof).hexdigest(),"upgraded_proof_sha256":hashlib.sha256(upgraded.read_bytes()).hexdigest(),"attestations":results,"all_attestations_match_two_explorers":all(x["both_match"] for x in results)}
+          (OUT/"bitcoin-attestation-summary.json").write_text(json.dumps(summary,sort_keys=True,indent=2))
+          print("FINAL_BITCOIN_SUMMARY "+json.dumps(summary,sort_keys=True))
+          if not summary["all_attestations_match_two_explorers"]:
+              raise SystemExit("bitcoin merkle root mismatch")
           PY
 
-      - name: Retain OTS copy verification bytes
+      - name: Retain Bitcoin verification bytes
         uses: actions/upload-artifact@v4
         with:
-          name: mir-aileash-ots-copy-verification
+          name: mir-aileash-bitcoin-attestation-verification
           path: evidence/
           if-no-files-found: error
           retention-days: 30
