@@ -237,3 +237,16 @@ existing reusable TVC runner
 ```
 
 No new request, scheduler, runtime, service, dispatcher, listener, bridge, credential path, source-promotion request, Site path, device prerequisite, custody authority, or transition authority is introduced. Runtime predicates remain unpromoted until this repaired path executes authentically.
+
+
+## 2026-09-19 reusable TVC service-delivery repair merged
+
+StegVerse-Labs/.github PR #2222 merged at:
+
+```text
+f5c64120d381842db16ca1a5156bb881c8e383f8
+```
+
+The existing SV002-adjacent `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` runner now performs the released TVC preflight, invokes the existing `install_tvc_primary_runtime_service.py --activate` service-delivery leg against already-local TVC source, and only then runs the existing runtime observer. The former direct dispatcher activation bypass is removed from this reusable carrier.
+
+This merge makes TVC PR #445's same-service restart/startup-source correlation reachable through the already-existing Healer/reusable-task path. It is source/carriage evidence only: `root_primary_runtime_restart_observed=false` and `current_source_loaded_on_host_observed=false` remain unchanged until authentic runtime execution produces the correlated receipt and proves the loaded TVC source contains merge `35247b583b363f84c2edb5c77474bced729190ae`.
