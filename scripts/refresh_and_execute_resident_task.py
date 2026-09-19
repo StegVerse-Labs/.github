@@ -349,9 +349,12 @@ def refresh_and_execute(
     executable = Path(command[1])
     if not executable.is_file():
         raise RuntimeError(f"refreshed execution entrypoint missing: {executable}")
-    if not ecosystem_chat_parent and not (runtime / CARRIER_REF).is_file():
+    # Independent --task-id execution is admitted directly by WorkerCoordinator and
+    # must not be gated by a separated carrier reference. Resume mode preserves an
+    # already-existing claim/fence and retains its historical carrier requirement.
+    if resume_claimed_task_id is not None and not (runtime / CARRIER_REF).is_file():
         raise RuntimeError(
-            "targeted resident execution requires the preserved separated carrier reference"
+            "claimed-task resume requires the preserved separated carrier reference"
         )
 
     completed = runner(
