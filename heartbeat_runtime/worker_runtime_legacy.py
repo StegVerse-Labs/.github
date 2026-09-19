@@ -420,6 +420,142 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             task["reconciliation_reason"] = str(assignment_custody.get("reason") or "WORKER_ASSIGNMENT_MASTER_RECORDS_CUSTODY_INCOMPLETE")
             return False
 
+        if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":
+            pending = {
+                "schema": "stegverse.pending-atomic-task-worker-activation/v1",
+                "claim_id": claim_id,
+                "fencing_token": generation,
+                "worker_id": worker["worker_id"],
+                "proposed_worker_instance_id": worker_instance_id,
+                "assignment_master_records_transition": dict(assignment_custody),
+                "assignment_timer": timer.as_dict(),
+                "authority_effect": "NONE_PENDING_COORDINATION_ONLY",
+            }
+            task["pending_atomic_activation"] = pending
+            adapter_ref = worker.get("adapter_ref")
+            adapter = self.adapters.get(adapter_ref) if adapter_ref else None
+            if adapter is None:
+                task.pop("pending_atomic_activation", None)
+                self._event(events, carrier_epoch, "test3_atomic_activation_adapter_missing", task_id=task_id, authority_effect=False)
+                return False
+
+            activation_response = adapter(task, handoff, carrier_epoch)
+            activation_ready = (
+                activation_response.state == "ACTIVE"
+                and activation_response.transition_id == "STEGAGENTS_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED"
+                and isinstance(activation_response.checkpoint_ref, str)
+                and bool(activation_response.checkpoint_ref)
+            )
+            if not activation_ready:
+                task.pop("pending_atomic_activation", None)
+                self._event(
+                    events,
+                    carrier_epoch,
+                    "test3_atomic_activation_fail_closed",
+                    task_id=task_id,
+                    claim_id=claim_id,
+                    fencing_token=generation,
+                    transition_id=activation_response.transition_id,
+                    response_state=activation_response.state,
+                    authority_effect=False,
+                )
+                return False
+
+            activation_path = Path(activation_response.checkpoint_ref)
+            if not activation_path.is_absolute():
+                activation_path = self.root / activation_path
+            if not activation_path.is_file():
+                task.pop("pending_atomic_activation", None)
+                self._event(events, carrier_epoch, "test3_atomic_activation_receipt_missing", task_id=task_id, claim_id=claim_id, authority_effect=False)
+                return False
+            activation_receipt = self._load(activation_path)
+            activation_result = activation_receipt.get("result") if isinstance(activation_receipt, dict) else None
+            transition = activation_result.get("atomic_activation_master_records_transition") if isinstance(activation_result, dict) else None
+            projection = activation_result.get("activation_projection") if isinstance(activation_result, dict) else None
+            closure_complete = (
+                activation_receipt.get("state") == "AUTHENTIC_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED"
+                and isinstance(transition, dict)
+                and transition.get("transition_id") == "ACTIVATE_TASK_AND_CREATE_BIND_WORKER"
+                and transition.get("state") == "RECORDED"
+                and transition.get("reconstruction_status") == "PASS"
+                and transition.get("required_evidence_validation_status") == "PASS"
+                and isinstance(transition.get("receipt_sha256"), str)
+                and transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")
+                and isinstance(projection, dict)
+                and projection.get("task_pre_state") == "HANDOFF_READY"
+                and projection.get("task_post_state") == "ACTIVE"
+                and projection.get("worker_bound_task_id") == task_id
+                and projection.get("worker_instance_id") == worker_instance_id
+                and projection.get("claim_id") == claim_id
+                and projection.get("fencing_token") == generation
+                and projection.get("invocation_started") is False
+            )
+            if not closure_complete:
+                task.pop("pending_atomic_activation", None)
+                self._event(
+                    events,
+                    carrier_epoch,
+                    "test3_atomic_activation_master_records_blocked",
+                    task_id=task_id,
+                    claim_id=claim_id,
+                    fencing_token=generation,
+                    authority_effect=False,
+                )
+                return False
+
+            registry["generation"] = generation
+            task.update({
+                "state": "ACTIVE",
+                "executor_binding": "BOUND",
+                "worker_id": worker["worker_id"],
+                "worker_instance_id": worker_instance_id,
+                "claim_id": claim_id,
+                "archive_eligible": False,
+                "archive_reason_codes": [],
+                "block_ref": None,
+                "assignment_timer": timer.as_dict(),
+                "atomic_activation_receipt_ref": activation_response.checkpoint_ref,
+                "heartbeat_timing": {
+                    "start_epoch": carrier_epoch,
+                    "last_response_epoch": carrier_epoch,
+                    "last_transition_epoch": carrier_epoch,
+                    "current_transition": "ATOMIC_ACTIVATION_CLOSED",
+                    "transition_sequence": 1,
+                    "expected_next_transition": "STEGAGENTS_TASK_BOUND_WORKER_INVOCATION_READY",
+                    "expected_next_earliest_epoch": None,
+                    "expected_next_latest_epoch": None,
+                    "max_missing_response_beats": max(1, min(10, int(budget))),
+                    "expiry_epoch": None,
+                    "expiry_basis": "WORKER_RUNTIME_ASSIGNMENT_TIMER",
+                    "fencing_token": generation,
+                },
+            })
+            task.pop("pending_atomic_activation", None)
+            worker["status"] = "BUSY"
+            worker["last_seen_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+            record["canonical_master_records_transition"] = assignment_custody
+            record["constitutive_activation_master_records_transition"] = dict(transition)
+            self._append_assignment_record(record)
+            for ref in activation_response.evidence_refs:
+                if ref not in task.setdefault("evidence_refs", []):
+                    task["evidence_refs"].append(ref)
+            self._event(
+                events,
+                carrier_epoch,
+                "test3_atomic_task_worker_binding_projected",
+                task_id=task_id,
+                worker_id=worker["worker_id"],
+                worker_instance_id=worker_instance_id,
+                claim_id=claim_id,
+                fencing_token=generation,
+                constitutive_transition_id=transition.get("transition_id"),
+                constitutive_receipt_sha256=transition.get("receipt_sha256"),
+                invocation_started=False,
+                authority_effect=False,
+            )
+            self._invoke(registry, task, carrier_epoch, cost_log, events)
+            return True
+
         registry["generation"] = generation
         task.update({
             "state": "ACTIVE",
