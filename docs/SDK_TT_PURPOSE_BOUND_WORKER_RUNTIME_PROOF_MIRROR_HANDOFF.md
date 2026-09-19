@@ -466,3 +466,26 @@ validation: 35464198311 SUCCESS
 The merged bridge reuses TV/TVC resident `systemd LoadCredential` custody, issues only bounded Ed25519 `run_agent` warrants for `StegVerse-Labs/StegAgents`, binds the exact commit and runtime policy-bundle bytes, and exports only a secret-free warrant/public-key/policy receipt. It creates no GitHub signing authority, scheduler, dispatcher, runtime, device dependency, or replacement credential authority.
 
 No authentic resident `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` credential or issuance receipt has yet been observed. Therefore no real issuer public key or fresh StegAgents warrant is claimed. The next authentic boundary is resident TV/TVC credential materialization -> issuance -> real public-key registration -> existing targeted one-shot -> same-run Master Records closure.
+
+
+## Fully state-dependent four-case governed graph source — 2026-09-19
+
+The direct purpose-bound path was audited specifically for authoritative predecessor dependence rather than chronological ordering.
+
+StegAgents PR #29 merged as `d518935020833b12045483c57d7877520d2a244c`. Each lifecycle phase now consumes the exact Master Records closure receipt from the immediately preceding phase. `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` therefore stops fail-closed when any predecessor closure is absent, not RECORDED, fails reconstruction, fails required-evidence validation, or has receipt/reconstruction digest mismatch.
+
+StegAgents PR #30 merged as `4880f10b9cbfa90df0c0614f10d775e5eef3e317`. It adds one explicit four-case state graph on the existing runtime:
+- Case 1 runs first.
+- Case 2 admission consumes Case 1's terminal RETIRED Master Records closure.
+- Case 3 admission consumes Case 2's terminal RETIRED Master Records closure.
+- Task 4 parent admission consumes Case 3's terminal closure through StegCore/InTr and Master Records.
+- Three distinct Task 4 worker requests branch simultaneously from that one parent closure.
+- Each Task 4 worker preserves the same per-phase Master Records predecessor rule.
+- The aggregate terminal result is not produced until a governed three-way join consumes all three worker RETIRED closures, with each closure requiring RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality.
+
+Exact-head source validation for PR #30 passed:
+- Test Readiness run `35467874716`: SUCCESS.
+- Cross-Agent Authority Validation run `35467874717`: SUCCESS.
+- CI run `35467874709`: SUCCESS for Python 3.11 and 3.12.
+
+This source graph does not add Test3/Richard, another runtime, scheduler, dispatcher, authority plane, custody store, carrier, or device dependency. It does not promote authentic runtime proof. The next authentic boundary remains a fresh WorkerCoordinator claim/fence for Case 1 followed by the same state-dependent graph through TV/TVC, StegCore/InTr, and Master Records.
