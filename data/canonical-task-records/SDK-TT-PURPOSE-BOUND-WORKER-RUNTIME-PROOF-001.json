@@ -31,7 +31,8 @@
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
-    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+    "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
   ],
   "reuse_requirements": {
     "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -70,6 +71,14 @@
     "activation_proof_complete": false
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
+  "coordination_hygiene": {
+    "reconciled_against_registry_generation": 64,
+    "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+    "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
+    "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
+    "runtime_prerequisites_satisfied": false,
+    "authentic_runtime_execution_attempted": false
+  },
   "source_refinement": {
     "steagents_pr": 21,
     "steagents_merge": "4363333520f381370b7ae8f93b88a98bf8526aeb",
