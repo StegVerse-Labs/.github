@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 104,
-  "status": "SDK_TT_RICHARD_SEAM_SAME_ROOT_TARGETED_REPAIRED",
+  "generation": 105,
+  "status": "SDK_TT_RICHARD_SEAM_MASTER_RECORDS_CUSTODY_CARRIAGE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5533,6 +5533,27 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE"
+      },
+      "execution_path_repair_master_records_custody": {
+        "defect": "TEST3_TARGETED_ENV_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
+        "defect_effect": "fresh WorkerCoordinator claim/fence could be prepared but canonical custody client would see neither HTTP nor durable-local Master Records binding and fail CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE",
+        "repaired_http_inputs": [
+          "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+          "STEGVERSE_MASTER_RECORDS_TOKEN",
+          "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS"
+        ],
+        "repaired_local_inputs": [
+          "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+          "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+          "MASTER_RECORDS_DB",
+          "MASTER_RECORDS_RECEIPT_KEY",
+          "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
+        ],
+        "github_runtime_authority": "NONE",
+        "credential_authority": "TV/TVC",
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_CUSTODY_BINDING_CARRIAGE_ONLY"
       }
     },
     {

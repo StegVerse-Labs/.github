@@ -72,6 +72,26 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
         self.assertNotIn("GITHUB_ACTIONS", env)
         self.assertNotIn("ZEROEX_API_KEY", env)
 
+    def test_clean_exec_env_preserves_master_records_custody_binding(self) -> None:
+        env = mod.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/home/stegverse",
+            "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+            "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+            "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "12",
+            "MASTER_RECORDS_DB": "/srv/stegverse/master-records.sqlite",
+            "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+            "GITHUB_TOKEN": "forbidden",
+        })
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_ENDPOINT"], "http://127.0.0.1:8765")
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_TOKEN"], "mr-token")
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS"], "12")
+        self.assertEqual(env["MASTER_RECORDS_DB"], "/srv/stegverse/master-records.sqlite")
+        self.assertEqual(env["MASTER_RECORDS_RECEIPT_KEY"], "receipt-key")
+        self.assertEqual(env["MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"], "true")
+        self.assertNotIn("GITHUB_TOKEN", env)
+
     def test_clean_exec_env_preserves_direct_stegindex_root(self) -> None:
         env = mod.clean_exec_env({
             "PATH": "/bin",

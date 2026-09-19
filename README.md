@@ -865,3 +865,8 @@ The Test 3 independent targeted path no longer requires `control/heartbeat-carri
 ### Test 3 same-root resident execution
 
 The existing resident dispatcher passes the resident root as both source and runtime for request-specific consumers. Independent targeted execution now recognizes that already-materialized same-root case and skips the otherwise-invalid self-refresh copy before entering `run_worker_runtime.py --task-id`. This grants no authority and does not replace WorkerCoordinator, TV/TVC, InTr, or Master Records transition requirements.
+
+
+### Test 3 Master Records custody binding
+
+Test 3 targeted execution now preserves the existing canonical Master Records HTTP or durable-local custody binding through the request-consumer and targeted-execution environment sanitizers. This closes the source defect that otherwise forced `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE` before a fresh WorkerCoordinator claim/fence could satisfy its required Master Records closure. GitHub runtime authority remains NONE and no new custody authority is introduced.

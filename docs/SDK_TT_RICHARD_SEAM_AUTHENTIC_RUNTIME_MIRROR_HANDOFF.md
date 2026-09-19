@@ -353,3 +353,12 @@ After the carrier gate was removed, tracing the actual resident dispatcher argum
 For an already-materialized resident source tree, copying the tree onto itself is unnecessary and is not a state-transition prerequisite. The targeted bridge now treats `source_root == runtime_root` as `SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED`, preserves mutable runtime state in place, performs no network fetch or credential acquisition, and proceeds directly to the existing targeted WorkerCoordinator runner. Distinct roots retain the existing refresh behavior.
 
 Regression coverage executes the Test 3 independent task with one same root, no carrier file, and verifies that the targeted runner is reached. Authentic claim/fence evidence remains required before progression.
+
+
+## Master Records custody-binding carriage repair — generation 105
+
+Tracing the first post-WorkerCoordinator transition found that the Test 3 request consumer and targeted bridge sanitized the environment before `run_worker_runtime.py`, but did not preserve the variables consumed by `workers/canonical_state_transition_custody.py`. As a result, even a correctly prepared fresh claim/fence would reach `submit_state_receipt()` with neither a configured canonical Master Records HTTP custody surface nor the durable local Master Records binding, forcing `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE` before progression.
+
+The existing path now preserves the canonical Master Records custody binding through both sanitization boundaries. Supported carriage includes the existing HTTP endpoint/token/timeout and the existing durable local database/receipt-key/storage-durability tuple plus the already-supported Master Records repository roots. GitHub credentials remain stripped, no new custody store or authority plane is created, and Master Records still grants no transition authority.
+
+The next authentic state remains a fresh WorkerCoordinator claim/fence followed by Master Records `RECORDED`, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality. Only that closure permits TV/TVC and InTr progression.
