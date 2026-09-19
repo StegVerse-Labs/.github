@@ -193,6 +193,7 @@ def test_consumer_dispatches_existing_manifest_runner_only_after_exact_binding()
         assert observed["command"][1].endswith("run_stegbrowser_manifest_bound_runtime.py")
         params = json.loads(observed["env"]["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"])
         assert params["node_genesis_receipt"] == str(node_path)
+        assert observed["env"]["STEGVERSE_STEGBROWSER_INVOCATION_NONCE"] == consumer.NONCE
         assert receipt["workercoordinator_claim_fence_observed"] is True
         assert receipt["authentic_intr_ingress_observed"] is True
         assert receipt["round_trip_1_started"] is False
