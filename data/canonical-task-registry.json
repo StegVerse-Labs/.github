@@ -6028,7 +6028,7 @@
       },
       "completion": {
         "claimed": true,
-        "validated": false,
+        "validated": true,
         "runtime_completion_claimed": false,
         "parent_reconciled": true,
         "second_invocation_issued": false,
@@ -6038,7 +6038,17 @@
         "new_custody_store_created": false,
         "new_authority_plane_created": false,
         "new_credential_path_created": false,
-        "second_device_dependency_created": false
+        "second_device_dependency_created": false,
+        "validation_evidence": {
+          "pr_number": 2278,
+          "exact_head": "19637e0130875c5bf46d1f318a7b773aab0bd0c8",
+          "checks": [
+            "Cross-Task Coordination Validation - Non-Authorizing:SUCCESS",
+            "Validate KV AI Memory Resident Binding:SUCCESS",
+            "validate-deepseek-resident:SUCCESS",
+            "Validate Purpose-Bound Worker Derived Lifetime:SUCCESS"
+          ]
+        }
       }
     },
     {
