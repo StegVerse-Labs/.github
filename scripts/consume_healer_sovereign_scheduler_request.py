@@ -14,6 +14,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/healer-sovereign-scheduler-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json")
+CHECKPOINT_REL = Path("receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json")
+ROOT_OBSERVATION_REL = Path("receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json")
+RETENTION_POINTER_FIELDS = ("packet_ref", "packet_relative_path", "packet_sha256", "retained_under_root", "retained_under_root_source", "packet_state")
 TARGET_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
@@ -214,6 +217,55 @@ def ensure_neutral_scheduler_materialized(
     }
 
 
+
+def bind_projected_retention_pointer(runtime: Path) -> dict[str, Any]:
+    """Read and verify the already-projected Healer checkpoint retention pointer.
+
+    This is evidence carriage only. It does not invoke the worker, mint authority,
+    or infer a resident custody-root state from source/CI.
+    """
+    checkpoint_path = runtime / CHECKPOINT_REL
+    if not checkpoint_path.is_file():
+        return {
+            "state": "CHECKPOINT_NOT_PRESENT",
+            "pointer": None,
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "authority_effect": "NONE_EVIDENCE_CARRIAGE_ONLY",
+        }
+    checkpoint = load_json(checkpoint_path)
+    child = checkpoint.get("child_receipt")
+    if not isinstance(child, dict):
+        raise RuntimeError("projected Healer checkpoint child_receipt missing")
+    raw = child.get("resident_custody_root_observation_retention")
+    if not isinstance(raw, dict):
+        raise RuntimeError("projected Healer checkpoint retention pointer missing")
+    pointer = {field: raw.get(field) for field in RETENTION_POINTER_FIELDS}
+    missing = [field for field, value in pointer.items() if value in (None, "")]
+    if missing:
+        raise RuntimeError("projected Healer checkpoint retention pointer incomplete:" + ",".join(missing))
+    if pointer["packet_relative_path"] != ROOT_OBSERVATION_REL.as_posix():
+        raise RuntimeError("projected Healer checkpoint retained packet path mismatch")
+    packet_path = runtime / ROOT_OBSERVATION_REL
+    if not packet_path.is_file():
+        raise RuntimeError("projected Healer checkpoint retained packet missing")
+    packet_sha256 = file_sha256(packet_path)
+    if pointer["packet_sha256"] != packet_sha256:
+        raise RuntimeError("projected Healer checkpoint retained packet sha256 mismatch")
+    packet = load_json(packet_path)
+    if packet.get("state") != pointer["packet_state"]:
+        raise RuntimeError("projected Healer checkpoint retained packet state mismatch")
+    if Path(str(pointer["retained_under_root"])).expanduser().resolve() != runtime:
+        raise RuntimeError("projected Healer checkpoint retained root mismatch")
+    return {
+        "state": "VALIDATED_PROJECTED_RETENTION_POINTER_BOUND",
+        "pointer": pointer,
+        "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+        "checkpoint_sha256": file_sha256(checkpoint_path),
+        "packet_sha256": packet_sha256,
+        "authority_effect": "NONE_EVIDENCE_CARRIAGE_ONLY",
+    }
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
@@ -287,6 +339,20 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if transition is None and isinstance(result, dict):
         transition = result.get("transition_id")
     cycle_completed = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    retention_binding = (
+        bind_projected_retention_pointer(runtime)
+        if cycle_completed
+        else {
+            "state": "CURRENT_CYCLE_NOT_COMPLETED",
+            "pointer": None,
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "authority_effect": "NONE_EVIDENCE_CARRIAGE_ONLY",
+        }
+    )
+    if isinstance(result, dict):
+        result = dict(result)
+        result["resident_custody_root_observation_retention"] = retention_binding.get("pointer")
+        result["resident_custody_root_observation_retention_binding"] = {key: value for key, value in retention_binding.items() if key != "pointer"}
 
     receipt = {
         "schema": "stegverse.healer-resident-request-consumption/v1",
