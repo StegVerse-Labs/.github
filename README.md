@@ -819,3 +819,8 @@ The canonical custody goal now distinguishes successful governed MIR return from
 ### Test 3 complete atomic-seam source delta
 
 The Test 3 control-plane package now carries not only its resident request/consumer, but also the already-merged WorkerCoordinator, ProcessWorkerAdapter, shared StegAgents bridge, executable handoff, and worker-registry fragment required to preserve the atomic ACTIVATE(T)+CREATE_AND_BIND(W,T) seam on a stale resident source root. Runtime completion still requires authentic source-package relay/materialization evidence.
+
+
+## Reconstructable Singularity canonical coordination
+
+Canonical Task Registry tracks `ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001` as a source/publication coordination task. The canonical formalism lives in `StegVerse-Labs/admissibility-wiki`; Site/Papers is a lightweight directory projection only, and the former Reconstructive Singularity Site URL is compatibility-only. Registration carries no COSV, runtime requirement, WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, or Master Records execution/custody claim. Completion remains dependent on direct public observation of the intended wiki and Site projections.
