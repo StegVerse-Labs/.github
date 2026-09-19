@@ -71,3 +71,22 @@ No authentic post-repair same-execution MIR Publisher return addressed to the SD
 ## Next transition
 
 Validate the exact branch head through the repository's existing checks and merge only if those checks pass. Then inspect the authorized resident carrier again for an authentic same-execution SDK-owned MIR Publisher return. Only authentic execution of the merged SDK materialization transition may enable `RTC-STEGVERSE-EGRESS-007`.
+
+
+## 2026-09-19 canonical Master Records custody repair
+
+The next concrete custody defect was identified after the SDK return materialization source had already been merged: `consume_kv_publisher_return_materialization_request.py` retained the exact `stegverse.sdk.publisher-return-binding/v1` and emitted `SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS`, but that observed `RTC-SDK-RETURN-006` transition was not submitted through canonical Master Records before the result exposed `sdk_return_binding_observed=true`.
+
+The existing consumer now uses the already-established `workers/canonical_state_transition_custody.py` seam. It binds:
+
+- transition `RTC-SDK-RETURN-006`;
+- the exact retained SDK Publisher-return binding as required evidence;
+- the exact SDK Publisher-return materialization receipt as required evidence;
+- the reverse transport terminal receipt as prior-state continuity;
+- the exact SDK return binding digest as resulting state;
+- the existing operation/materialization correlation;
+- authority effect `NONE`.
+
+The consumer fails closed unless the canonical Master Records response is `RECORDED`, reconstruction is `PASS`, required-evidence validation is `PASS`, and the receipt/reconstruction digests are equal. Only after that closure may the local consumption result expose `sdk_return_binding_observed=true`. All later predicates remain false: final StegVerse-side egress, Interlock/InTr egress, far-side transition, authentic external MIR substitution, and communication completion.
+
+This repair adds no runtime, transport, scheduler, dispatcher, custody store, transition authority, or credential authority. It closes only the custody gap on the existing SDK-return materialization transition.
