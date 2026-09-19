@@ -808,3 +808,8 @@ After the Test 3 resident request-carriage binding merged, source tracing found 
 ### Test 3 control-plane source delivery
 
 Test 3 source-delivery tracing found that the existing StegOS control-plane source-package relay profile had no production invocation surface outside tests. StegOS PR #396 merged a bounded CLI around the existing TVC-authorized relay/profile composition. The next runtime predicate is an authentic `SOURCE_MATERIALIZED_VERIFIED` ingress receipt for the exact current control-plane source identity; source/CI alone does not satisfy it.
+
+
+### Canonical Master Records MIR post-return completion boundary
+
+The canonical custody goal now distinguishes successful governed MIR return from terminal communication completion. Site PR #1413 keeps `communication_complete=false` after governed return until the authentic far-side Interlock/InTr terminal transition and required caller consequence are observed; Site PR #1414 released the temporary repair claim. The bounded Site denominator observation after release is 51 active claims / 51 active task IDs / 46 unindexed active task IDs and remains owned for persistent reconciliation by `SITE-COSV-REPOSITORY-WIDE-ADOPTION-001`. Source validation is green, but authentic MIR runtime custody remains unclaimed and the parent task remains ACTIVE.

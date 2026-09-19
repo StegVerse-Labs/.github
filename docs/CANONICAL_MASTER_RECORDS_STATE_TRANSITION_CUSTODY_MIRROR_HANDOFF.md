@@ -265,3 +265,25 @@ Exact-head source/coordination validation passed:
 - Site Bootstrap Validate `35426340982`.
 
 These validate source and repository coordination only. No authentic MIR registered-Node outbox entry, queued-transition Master Records receipt, current ingress receipt, RTC-007/008/009 runtime receipt, governed-return receipt, or complete runtime custody sequence is inferred from the merge. The parent therefore remains ACTIVE and runtime-evidence pending.
+
+
+## Post-return completion semantics repair — 2026-09-19
+
+The canonical reconciliation was resumed after the registry had advanced independently from generation 88 to generation 93. The stale 88 -> 89 mutation was not replayed. The same bounded custody evidence is rebased onto current canonical state and will advance the registry exactly once from the current generation.
+
+The merged Site path was traced beyond `STEGVERSE_RETURN_EXIT` and `MIR_GOVERNED_ROUND_TRIP_COMPLETE`. The next concrete defect was a premature terminal projection: `communication_complete=true` was set immediately after governed return even though the returned object carried an SDK-processing handoff whose next required transition remained `EXECUTE_MANIFEST_SELECTED_SDK_PROCESSING_AFTER_EVALUATOR_INGRESS`.
+
+Site PR `#1413` repaired the existing path and merged as `bd9d7d6856ed768bcd62f29e9d11eb35357ab19c` from exact head `6a66708a22cc608ce08b87209cefc2fd4c4e92d4`. Governed return may establish `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED`, but `communication_complete` now remains false until the authentic far-side Interlock/InTr terminal transition and required caller consequence are observed.
+
+Exact-head validation passed:
+
+- MIR SV002 Browser Event Conformance `35431292823`;
+- Site Handoff Orchestrator `35431292747`;
+- Ecosystem Heartbeat Orchestration `35431292705`;
+- Site Bootstrap Validate `35431292724`.
+
+The temporary repair claim was terminalized through Site PR `#1414`, merged as `2378bad3477c2e252e34b146d32caa316e8a1eb7`. Its resulting effective Site counts were computed as 51 active claims / 51 active task IDs / 46 unindexed active task IDs. Persistent denominator mutation remains owned by the already-active `SITE-COSV-REPOSITORY-WIDE-ADOPTION-001` lane and was not written from this custody task.
+
+No authentic registered-Node MIR runtime instance was surfaced by the reconciliation search. Therefore the parent remains ACTIVE; no runtime transition, Master Records custody sequence, Interlock/InTr terminal transition, or caller consequence is promoted from source or CI evidence.
+
+The next source/evidence trace continues through the existing returned SDK-processing handoff and then the authentic far-side Interlock/InTr terminal transition/caller consequence. Every observed governed transition must still return Master Records `RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality before progression.
