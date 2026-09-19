@@ -1,0 +1,180 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-UK-JCHR-HUMAN-RIGHTS-AI-RECONCILIATION-001",
+  "correlation_id": "ERL-UK-JCHR-HUMAN-RIGHTS-AI-RECONCILIATION-001",
+  "root_correlation_id": "ERL-UK-JCHR-HUMAN-RIGHTS-AI-RECONCILIATION-001",
+  "parent_task_id": null,
+  "goal": "Preserve a neutral, source-bounded reconciliation of the UK Parliament Joint Committee on Human Rights report Human Rights and the Regulation of AI against existing StegVerse separation-of-powers, transition-admission, evidence-custody, reconstruction, transparency, challenge and remedy concepts, with explicit missing predicates and no UK applicability, compliance, endorsement or political-policy judgment.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#187",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/assessments/evidence/2026-09-19-uk-jchr-human-rights-ai-stegverse-reconciliation.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#187",
+    "https://publications.parliament.uk/pa/jt5902/jtselect/jtrights/160/report.html",
+    "data/canonical-task-records/MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001.json",
+    "data/canonical-task-records/CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json",
+    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "uk-jchr-ai-human-rights-report",
+      "external-policy-reconciliation",
+      "separation-of-powers",
+      "transition-admission",
+      "evidence-custody-reconstruction",
+      "transparency",
+      "meaningful-human-intervention",
+      "challenge-remedy",
+      "oversight-boundary"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "ERL-AI-EMERGENCY-CLARITY-AUTHORITY-BOUNDARY-001"
+  ],
+  "expected_evidence_predicates": [
+    "JCHR_PRIMARY_REPORT_SOURCE_RETAINED",
+    "RECOMMENDATION_TO_STEGVERSE_MATRIX_PRESENT",
+    "LIFECYCLE_AND_SUPPLY_CHAIN_MAPPING_BOUNDED",
+    "HIGH_RISK_PRIOR_APPROVAL_MAPPING_BOUNDED",
+    "DUE_DILIGENCE_AND_RIGHTS_IMPACT_GAP_EXPLICIT",
+    "TRANSPARENCY_AND_INDIVIDUAL_NOTICE_GAP_EXPLICIT",
+    "MEANINGFUL_HUMAN_INTERVENTION_GAP_EXPLICIT",
+    "INDIVIDUAL_CHALLENGE_AND_REMEDY_GAP_EXPLICIT",
+    "INDEPENDENT_OVERSIGHT_NOT_CONFLATED_WITH_MASTER_RECORDS",
+    "NO_UK_APPLICABILITY_COMPLIANCE_ENDORSEMENT_OR_POLICY_JUDGMENT",
+    "README_AND_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "public_web_research"
+    ],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_WEB_RESEARCH",
+    "direction": "PRIMARY_PUBLIC_POLICY_SOURCE_TO_NEUTRAL_ARCHITECTURE_RECONCILIATION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#187",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "INDEPENDENT_REVIEW",
+    "TRACK_GOVERNMENT_RESPONSE_OR_RESULTING_LEGISLATION",
+    "DERIVE_SEPARATE_REMEDIATION_TASK_IF_REQUESTED"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/UK_JCHR_HUMAN_RIGHTS_AI_STEGVERSE_RECONCILIATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_uk_legal_applicability": false,
+    "source_state_proves_uk_legal_compliance": false,
+    "source_state_proves_endorsement": false,
+    "source_state_proves_runtime_execution": false,
+    "master_records_is_regulator": false,
+    "publication_authorized": false,
+    "finding_authorized": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "1/20",
+    "split_merely_to_reset_counter": false
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": true,
+    "readme_path": "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md"
+  }
+}
