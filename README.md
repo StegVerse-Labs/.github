@@ -794,3 +794,8 @@ Canonical Task Registry tracks `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001`
 ### Test 3 seam repair implementation status
 
 StegAgents PR #26 merged as `a847dae9b72b3914b98c33cc94b8d2a87c1a685d` after all exact-head checks passed. The current .github repair branch carries the matching Test-3-only WorkerCoordinator/ProcessWorkerAdapter bridge: claim/fence stays pending while T is HANDOFF_READY with no live task-bound W; InTr plus Master Records must close `ACTIVATE(T)+CREATE_AND_BIND(W,T)` before ACTIVE T<->W is projected; invocation is a separate post-activation phase. Authentic runtime execution is not yet claimed.
+
+
+### Test 3 resident request carriage
+
+Test 3 now has a non-authorizing request-specific resident carriage into the existing targeted WorkerCoordinator path. The exact selector `sdk_tt_richard_seam_authentic_runtime` invokes the existing `refresh_and_execute_resident_task.py` entrypoint for `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` with COSV `20010000110000`; it grants no authority, carries no GitHub runtime authority, requires no second machine, and validates the returned canonical COSV pointer before accepting the attempt.

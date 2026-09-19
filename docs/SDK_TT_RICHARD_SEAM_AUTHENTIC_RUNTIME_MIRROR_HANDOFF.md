@@ -137,3 +137,18 @@ HANDOFF_READY T + no authoritative claim_id/worker_id/worker_instance_id
 ```
 
 No non-Test-3 worker path is intentionally changed. Authentic Test 3 execution remains unclaimed until the .github exact head is validated and merged.
+
+
+## Resident request-carriage repair — proposed generation 90
+
+The missing Test 3 resident carriage binding is now implemented without adding a runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, or device dependency.
+
+Added:
+- `control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json`
+- `scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py`
+- exactly one `sdk_tt_richard_seam_authentic_runtime` selector in the existing resident dispatcher
+- focused request/COSV/authority-boundary tests.
+
+The request/consumer is non-authorizing and invokes only the existing `scripts/refresh_and_execute_resident_task.py` path with the exact Task ID and COSV `20010000110000`. It requires the returned canonical COSV pointer binding and retains GitHub runtime authority NONE, TV/TVC credential authority, no network source fetch, and no second-machine dependency.
+
+Authentic Test 3 evidence must come from the resident dispatch/one-shot result after this source is merged; source/CI does not satisfy any runtime predicate.

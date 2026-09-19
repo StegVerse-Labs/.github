@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+  "state": "REQUESTED",
+  "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "20010000110000",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "argv": [
+    "--task-id",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "--cosv-task-vector",
+    "20010000110000"
+  ],
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Non-authorizing carriage request into the existing resident targeted WorkerCoordinator path; grants no claim, fence, credential, heartbeat, InTr, or runtime authority."
+}
