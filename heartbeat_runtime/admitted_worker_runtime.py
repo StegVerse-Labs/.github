@@ -9,6 +9,12 @@ from .coordination_graph import review_coordination_preflight
 from .coordination_ledger import load_composed_coordination_ledger
 from .worker_runtime_legacy import WorkerCoordinator as LegacySeparatedWorkerCoordinator, ProcessWorkerAdapter
 from .worker_task_admission import persist_admission_receipt, review_worker_task_admission
+from .worker_assignment_functional_memory import (
+    allow_manifest_context,
+    bind_assignment_review,
+    record_non_allow_functional_memory,
+    reconstruct_prior_functional_memory,
+)
 
 
 class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
@@ -235,6 +241,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
         execution_authorized = self._execution_authorized(handoff)
         worker_resolved = self._worker_for(task, registry) is not None
         source = str(trigger.get("source") or "HEARTBEAT_CARRIER_OBSERVATION")
+        prior_memory, prior_memory_valid, prior_memory_reason = reconstruct_prior_functional_memory(task)
 
         packet = review_worker_task_admission(
             root=Path(self.root),
@@ -247,6 +254,14 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             dependencies_complete=dependencies_complete,
             worker_resolved=worker_resolved,
             semantic_state_current=state_current,
+        )
+        packet = bind_assignment_review(
+            root=Path(self.root),
+            task=task,
+            packet=packet,
+            prior_memory=prior_memory,
+            prior_memory_valid=prior_memory_valid,
+            prior_memory_reason=prior_memory_reason,
         )
         receipt_ref = None
         if self._persist:
@@ -263,7 +278,9 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             admission_packet_sha256=packet["packet_sha256"],
             admission_receipt_ref=receipt_ref,
             verdict=verdict,
+            admissibility_resolution=packet["assignment_transition"]["admissibility_resolution"],
             reasons=packet["review"]["reasons"],
+            functional_memory_consumed=packet["assignment_transition"]["prior_functional_memory_consumed"],
             authority_effect=False,
         )
         task["last_worker_task_admission"] = {
@@ -271,13 +288,47 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             "packet_sha256": packet["packet_sha256"],
             "heartbeat_id": packet["heartbeat_id"],
             "receipt_ref": receipt_ref,
+            "assignment_transition": packet["assignment_transition"],
             "authority_effect": "NONE",
         }
         if verdict != "ADMIT":
+            memory = record_non_allow_functional_memory(task=task, trigger=trigger, packet=packet)
             task["reconciliation_disposition"] = verdict
             task["reconciliation_reason"] = ",".join(packet["review"]["reasons"])
+            if memory.get("state") != "RECORDED":
+                task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"
+                task["reconciliation_reason"] = str(memory.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_CUSTODY_INCOMPLETE")
+                self._event(
+                    events,
+                    carrier_epoch,
+                    "worker_assignment_functional_memory_blocked",
+                    task_id=task_id,
+                    packet_id=trigger.get("packet_id"),
+                    verdict=verdict,
+                    admissibility_resolution=packet["assignment_transition"]["admissibility_resolution"],
+                    reason=task["reconciliation_reason"],
+                    authority_effect=False,
+                )
+                return False
+            task["functional_memory"] = memory
+            self._event(
+                events,
+                carrier_epoch,
+                "worker_assignment_functional_memory_recorded",
+                task_id=task_id,
+                packet_id=trigger.get("packet_id"),
+                verdict=verdict,
+                admissibility_resolution=memory.get("admissibility_resolution"),
+                task_registry_generation=memory.get("task_registry_generation"),
+                generation_bound_cosv_id=memory.get("generation_bound_cosv_id"),
+                master_records_receipt_sha256=memory.get("receipt_sha256"),
+                master_record_ref=memory.get("master_record_ref"),
+                authority_effect=False,
+            )
             return False
 
+        trigger = dict(trigger)
+        trigger["functional_memory_context"] = allow_manifest_context(packet, task)
         return super()._activate_from_trigger(registry, trigger, carrier_epoch, cost_log, events)
 
 
