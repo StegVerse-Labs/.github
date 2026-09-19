@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 69,
-  "status": "MASTER_RECORDS_REQUIRED_EVIDENCE_RUNTIME_CARRIAGE_SOURCE_REPAIRED",
+  "generation": 70,
+  "status": "MASTER_RECORDS_REQUIRED_EVIDENCE_BROWSER_CARRIAGE_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4643,10 +4643,22 @@
         "stegos_transition_evidence_carriage_source_repair_complete": true,
         "stegos_transition_evidence_carriage_pr": 395,
         "stegos_transition_evidence_carriage_merge": "3e60f6f5ef0f8516c66ba51a1bb2c78f8b13f3e7",
-        "first_mir_materialization_required_evidence_source_repair_pending_merge": true,
+        "first_mir_materialization_required_evidence_source_repair_pending_merge": false,
         "master_records_no_wait_semantics_merged": true,
         "master_records_no_wait_semantics_pr": 102,
-        "master_records_no_wait_semantics_merge": "2d1e18ae26182aedd6fa3c10bd594b7e64d1e865"
+        "master_records_no_wait_semantics_merge": "2d1e18ae26182aedd6fa3c10bd594b7e64d1e865",
+        "github_required_evidence_carriage_pr": 2167,
+        "github_required_evidence_carriage_merge": "0470412d1745391c42cd9904ec323424d4df0606",
+        "site_browser_required_evidence_carriage_source_repair_complete": true,
+        "site_browser_required_evidence_carriage_pr": 1404,
+        "site_browser_required_evidence_carriage_merge": "25f4812ffc7eab59cd4d99406ce67867cc2d0539",
+        "site_browser_required_evidence_exact_head": "2862968f14295c1bc25a20afa310265a28b3a92f",
+        "site_browser_mir_conformance_run": 35415040309,
+        "site_browser_handoff_orchestrator_run": 35415040376,
+        "site_browser_heartbeat_run": 35415040363,
+        "site_browser_bootstrap_run": 35415040385,
+        "current_intr_ingress_required_evidence_carriage_source_materialized": true,
+        "next_transition_under_evidence_trace": "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED"
       },
       "completion": {
         "claimed": false,
@@ -4697,6 +4709,23 @@
           "first_defect_transition": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
           "stegos_merge": "3e60f6f5ef0f8516c66ba51a1bb2c78f8b13f3e7",
           "github_driver_branch": "canonical-master-records-required-evidence-runtime-carriage-001",
+          "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+        },
+        "required_evidence_browser_carriage": {
+          "site_pr": 1404,
+          "merge_commit": "25f4812ffc7eab59cd4d99406ce67867cc2d0539",
+          "exact_head": "2862968f14295c1bc25a20afa310265a28b3a92f",
+          "mir_conformance_run": 35415040309,
+          "handoff_orchestrator_run": 35415040376,
+          "heartbeat_run": 35415040363,
+          "bootstrap_run": 35415040385,
+          "repairs": [
+            "BROWSER_CUSTODY_EMITS_REQUIRED_EVIDENCE_MANIFEST",
+            "BROWSER_CUSTODY_REQUIRES_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+            "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED_BINDS_EXACT_NODE_OUTBOX_ENTRY",
+            "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED_EXACT_INGRESS_IS_AUTO_CARRIED_AS_REQUIRED_TRANSITION_EVIDENCE"
+          ],
+          "runtime_execution_claimed": false,
           "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
         }
       },
