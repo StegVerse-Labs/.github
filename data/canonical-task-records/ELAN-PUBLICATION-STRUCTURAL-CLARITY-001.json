@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-PUBLICATION-STRUCTURAL-CLARITY-001",
+  "correlation_id": "ELAN-PUBLICATION-STRUCTURAL-CLARITY-001",
+  "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "parent_task_id": "PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001",
+  "goal": "Correct the cumulative ELAN publication structure so Original Run 1 is explicitly distinguished from the Run 2 controlled baseline, Section 2 presents a three-column experiment matrix, Run 1 has an explicit process and boundary-result section, and the later controlled comparison is scoped only to the two Run 2 conditions.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100100",
+    "source_state_vector_ref": "control/task-vectors/ELAN-PUBLICATION-STRUCTURAL-CLARITY-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_PUBLICATION_STRUCTURAL_CLARITY_MIRROR_HANDOFF.md",
+    "ELAN-CUMULATIVE-PUBLICATION-001",
+    "PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001",
+    "StegVerse-org/StegVerse-SDK/actions/runs/34565152578"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "GCAT-BCAT-Engine"],
+    "repositories": ["StegVerse-Labs/.github", "GCAT-BCAT-Engine/Publisher"],
+    "components": ["elan-experiment-matrix", "run1-boundary-result", "run2-controlled-comparison", "universal-document-structure"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-ELAN-VISUAL-COMPLETE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001 terminal COSV 71000000100110"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001"],
+  "expected_evidence_predicates": [
+    "ORIGINAL_RUN1_DISTINCT_FROM_RUN2_CONTROL_BASELINE",
+    "SECTION2_THREE_COLUMN_EXPERIMENT_MATRIX_PRESENT",
+    "RUN1_PROCESS_AND_BOUNDARY_RESULT_EXPLICIT",
+    "RUN1_GOVERNANCE_DISPOSITION_NOT_PRODUCED",
+    "RUN2_COMPARISON_SCOPED_TO_RUN2_CONTROL_AND_OBSERVED_SILENCE",
+    "PDF_AND_DOCX_VISUAL_QA_PASS"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "publisher_document_rendering"],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLISHER",
+    "direction": "EVIDENCE_TO_STRUCTURAL_CLARITY",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["UPDATE_PUBLISHER_SOURCE", "VALIDATE_REVISION", "MERGE", "CLOSE"],
+  "handoff_projection_refs": ["docs/ELAN_PUBLICATION_STRUCTURAL_CLARITY_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "publisher_rendering_mints_publication_authority": false,
+    "run1_may_be_recast_as_run2_control_baseline": false
+  }
+}
