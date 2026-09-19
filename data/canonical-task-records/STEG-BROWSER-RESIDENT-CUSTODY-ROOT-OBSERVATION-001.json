@@ -4,8 +4,12 @@
   "correlation_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
-  "successor_task_ids": ["STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"],
-  "successor_issue_refs": ["StegVerse-Labs/.github#1866"],
+  "successor_task_ids": [
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+  ],
+  "successor_issue_refs": [
+    "StegVerse-Labs/.github#1866"
+  ],
   "goal": "Observe an authentic resident custody root for the existing StegBrowser Canonical Work reusable task path and classify retained receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
@@ -28,8 +32,16 @@
     "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegVerse-Healer",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "resident-runtime-custody-root",
       "stegbrowser-canonical-work-runtime-consumption",
@@ -87,6 +99,41 @@
       "successor_predicates": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
       "authority_effect": "NONE_REMEDIATION_PATH_BINDING_ONLY",
       "runtime_completion_claimed": false
+    },
+    {
+      "observed_at": "2026-09-18",
+      "transition": "GENERATION_70_RETENTION_SEAM_RECONCILIATION",
+      "registry_generation": 70,
+      "owner_chain": [
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+        "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+      ],
+      "first_pointer_bearing_transition": "FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION",
+      "first_pointer_bearing_resident_path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "first_pointer_bearing_field": "child_receipt.resident_custody_root_observation_retention",
+      "outer_consumption_receipt_inline_pointer_structurally_carried": false,
+      "authentic_healer_worker_checkpoint_observed": false,
+      "required_pointer_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "resident_custody_root_observed_count": 0,
+      "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+      "classifier_run": false,
+      "downstream_promotion_allowed": false,
+      "master_records_required": [
+        "RECORDED",
+        "required_evidence_validation_status=PASS",
+        "reconstruction_status=PASS",
+        "receipt_sha256 == reconstructed_receipt_sha256"
+      ],
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_RECONCILIATION_ONLY"
     }
   ],
   "dependencies": [

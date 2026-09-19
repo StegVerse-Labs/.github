@@ -155,3 +155,20 @@ None.
 `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is retired at Goal Prompt 20 with no runtime completion claim. Its unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate is bound here, under the unchanged global/root-observation/materialization owner chain. This is an intake into the existing task and issue #1860, not a new successor, request, invocation, or authority transfer. The retired Goal's `runtime_evidence_terminal_prompt20` and canonical handoff retain the exact immutable invocation, six-field retention seam, Prompt 15 correction, and downstream custody predicates.
 
 Require the authentic exact Healer outcome and six retention fields, with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root, before running the existing non-authorizing classifier. Preserve the checkpoint/outer-envelope distinction documented by the retired Goal. Only then evaluate WorkerCoordinator, Interlock/InTr, and the immutable runtime tuple in order, requiring Master Records RECORDED, required-evidence validation PASS, reconstruction PASS, and exact digest equality. Current runtime predicates remain unproven. No connector-device gate or additional execution path is introduced.
+
+
+## Prompt 5/20 continuation — generation 70 retention-seam reconciliation
+
+Re-read against Task Registry generation `70`, issue `#1860`, the standalone canonical task record, the runtime-materialization remediation record/classification, and the retired endpoint-binding evidence report.
+
+Current exact evidence state:
+
+- The unchanged owner chain remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 -> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`.
+- The retired predecessor `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains retired and contributed no new invocation, runtime, or authority path.
+- The first pointer-bearing Healer transition is the fenced worker checkpoint receipt `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, field `child_receipt.resident_custody_root_observation_retention`; the outer `healer-sovereign-scheduler-request-consumption.latest.json` envelope does not structurally carry that pointer inline.
+- No authentic Healer worker checkpoint has been observed, so none of the six required retention fields (`packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, `packet_state`) is currently bound from authentic runtime evidence.
+- Observed authentic resident-root count remains `0`; `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` has not been proved for exactly one root.
+- The non-authorizing StegBrowser receipt classifier remains correctly not run. WorkerCoordinator, Interlock/InTr, TVC, owner-ingress, and Master Records downstream progression remain prohibited until the root predicate is satisfied.
+- No duplicate task, invocation, scheduler, dispatcher, runtime plane, device dependency, or source-side repair was created.
+
+Master Records promotion remains gated on authentic runtime evidence and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.

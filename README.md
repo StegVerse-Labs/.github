@@ -702,3 +702,8 @@ Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIAT
 ## StegBrowser endpoint-binding prompt-limit retirement
 
 `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is RETIRED / PROMPT_LIMIT_DECOMPOSED, with runtime completion unclaimed. Its existing source repairs remain merged; authentic retained carrier/root evidence, exact runtime tuple, and Master Records custody/reconstruction remain unproven. The unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate continues in existing `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / #1860 under the unchanged three-task owner chain. See [terminal handoff](docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md) and [existing successor handoff](docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md). PR #2154 remains closed/unmerged and is not retirement evidence. No successor, runtime, request, or device dependency is added.
+
+
+### StegBrowser resident custody-root observation
+
+Canonical Goal Task `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` remains ACTIVE at Task Registry generation 70. The controlling Healer retention seam is the fenced worker checkpoint child receipt, not the outer scheduler-consumption envelope. No authentic checkpoint, six-field retention pointer, or exactly-one `RESIDENT_CUSTODY_ROOT_OBSERVED` root is currently recorded, so the non-authorizing classifier and all downstream WorkerCoordinator / Interlock-InTr / TVC / Master Records progression remain unpromoted. No second task, invocation, runtime, scheduler, dispatcher, or device dependency has been introduced.
