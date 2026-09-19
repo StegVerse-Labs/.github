@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 75,
-  "status": "SDK_TT_DIRECT_WORKERCOORDINATOR_ADMISSION_MERGED_VALIDATED",
+  "generation": 76,
+  "status": "SDK_TT_WORKERCOORDINATOR_CLAIM_FENCE_MASTER_RECORDS_GATE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4454,7 +4454,7 @@
         "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
         "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
       ],
-      "remaining_predicate": "EXECUTE_FRESH_TARGETED_INDEPENDENT_WORKERCOORDINATOR_CLAIM_FENCE_THEN_REQUIRE_MASTER_RECORDS_EVIDENCE_CLOSURE_FOR_EACH_RESULTING_SDK_TRANSITION",
+      "remaining_predicate": "RUN_EXISTING_TARGETED_ONE_SHOT_AND_REQUIRE_MASTER_RECORDS_CLOSED_WORKERCOORDINATOR_CLAIM_FENCE_BEFORE_TV_TVC_INTR_AND_PURPOSE_BOUND_LIFECYCLE",
       "completion": {
         "claimed": false,
         "validated": false,
@@ -4462,7 +4462,7 @@
       },
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
-        "reconciled_against_registry_generation": 74,
+        "reconciled_against_registry_generation": 75,
         "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
         "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
         "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -4572,6 +4572,24 @@
           "deepseek_resident_conclusion": "success"
         },
         "source_repair_merged": true
+      },
+      "claim_fence_master_records_gate": {
+        "source_repair_complete": true,
+        "authentic_runtime_execution_attempted": false,
+        "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "required_evidence_type": "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT",
+        "progression_requires": [
+          "state=RECORDED",
+          "reconstruction_status=PASS",
+          "required_evidence_validation_status=PASS",
+          "receipt_sha256==reconstructed_receipt_sha256"
+        ],
+        "activation_occurs_only_after_custody_pass": true,
+        "worker_invocation_occurs_only_after_custody_pass": true,
+        "claim_authority": "WORKERCOORDINATOR",
+        "custody_authority": "MASTER_RECORDS",
+        "transition_authority": "INTERLOCK_INTR",
+        "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
       }
     },
     {
