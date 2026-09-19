@@ -50,16 +50,11 @@ def main() -> int:
         print(json.dumps({"state":"BOUNDARY_RECORDED","reason":"TVC_LOCAL_SOURCE_MISSING","authority_effect":"NONE"}, sort_keys=True))
         return 3
     tvc_root = Path(tvc_raw).expanduser().resolve()
-    dispatcher = tvc_root / "tools" / "task_dispatcher.py"
     observer = tvc_root / "scripts" / "observe_tvc_runtime_boundary.py"
     installer = tvc_root / "scripts" / "install_tvc_primary_runtime_service.py"
-    if not dispatcher.is_file() or not observer.is_file() or not installer.is_file():
+    if not observer.is_file() or not installer.is_file():
         print(json.dumps({"state":"BOUNDARY_RECORDED","reason":"TVC_DECLARED_RUNNER_DEPENDENCY_MISSING","authority_effect":"NONE"}, sort_keys=True))
         return 3
-
-    preflight = run([sys.executable, str(dispatcher), "tvc.primary_runtime_binder.preflight"], cwd=tvc_root)
-    if preflight.returncode != 0:
-        return preflight.returncode
 
     activation_delivery = run(
         [sys.executable, str(installer), "--repo-root", str(tvc_root), "--activate"],
