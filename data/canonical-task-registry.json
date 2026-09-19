@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 95,
+  "generation": 96,
   "status": "STEGHEALTH_KV_INTERLOCK_PRODUCTION_ENDPOINT_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5389,7 +5389,7 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "MERGE_COMPLETE_TEST3_ATOMIC_SEAM_CONTROL_PLANE_DELTA_THEN_REQUIRE_AUTHENTIC_SOURCE_MATERIALIZATION",
+      "remaining_predicate": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION_REQUIRED_BEFORE_RESIDENT_DISPATCH_VISIT",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
@@ -5397,7 +5397,7 @@
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
         "authentic_runtime_execution_attempted": false,
-        "reconciled_against_registry_generation": 94,
+        "reconciled_against_registry_generation": 95,
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
@@ -5407,7 +5407,7 @@
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
         "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        "next_actual_transition": "EXACT_HEAD_VALIDATE_AND_MERGE_COMPLETE_TEST3_CONTROL_PLANE_DELTA",
+        "next_actual_transition": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -5450,7 +5450,10 @@
           "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json",
           "control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json",
           "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"
-        ]
+        ],
+        "control_plane_complete_test3_delta_pr": 2223,
+        "control_plane_complete_test3_delta_merge": "4696d4b0898c504fa0f601f8b879551ba2614903",
+        "control_plane_complete_test3_delta_validated": true
       }
     },
     {
