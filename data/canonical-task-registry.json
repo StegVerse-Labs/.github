@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 65,
-  "status": "SDK_TT_PURPOSE_BOUND_WORKER_COORDINATION_HYGIENE_RECONCILED",
+  "generation": 66,
+  "status": "MASTER_RECORDS_REQUIRED_EVIDENCE_RUNTIME_CARRIAGE_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4460,7 +4460,9 @@
         "master-records/orchestration:services/canonical_state_transition_custody.py",
         "master-records/orchestration:services/canonical_master_records_api.py",
         "master-records/orchestration#101",
-        "master-records/orchestration@32d89da201c4653413c85510bec629124b2e3a25"
+        "master-records/orchestration@32d89da201c4653413c85510bec629124b2e3a25",
+        "master-records/orchestration#102",
+        "master-records/orchestration@2d1e18ae26182aedd6fa3c10bd594b7e64d1e865"
       ],
       "stegos_protocol_ref": "StegVerse-Labs/StegOS:stegos/state_transition_custody.py",
       "sv002_initiation_preflight_ref": "receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json",
@@ -4548,7 +4550,19 @@
         "master_records_required_evidence_validation_source_merged": true,
         "master_records_required_evidence_validation_pr": 101,
         "master_records_required_evidence_validation_merge": "32d89da201c4653413c85510bec629124b2e3a25",
-        "master_records_required_evidence_validation_runtime_observed": false
+        "master_records_required_evidence_validation_runtime_observed": false,
+        "required_evidence_receipt_search_performed": true,
+        "authentic_required_evidence_runtime_receipt_found_in_master_records_repository": false,
+        "first_required_evidence_carriage_defect_identified": true,
+        "first_required_evidence_carriage_defect_transition": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
+        "first_required_evidence_carriage_defect": "MATERIALIZATION_REQUEST_WAS_PERSISTED_AS_TRANSITION_OUTPUT_BUT_NOT_INCLUDED_AS_REQUIRED_EVIDENCE_MANIFEST_ITEM",
+        "stegos_transition_evidence_carriage_source_repair_complete": true,
+        "stegos_transition_evidence_carriage_pr": 395,
+        "stegos_transition_evidence_carriage_merge": "3e60f6f5ef0f8516c66ba51a1bb2c78f8b13f3e7",
+        "first_mir_materialization_required_evidence_source_repair_pending_merge": true,
+        "master_records_no_wait_semantics_merged": true,
+        "master_records_no_wait_semantics_pr": 102,
+        "master_records_no_wait_semantics_merge": "2d1e18ae26182aedd6fa3c10bd594b7e64d1e865"
       },
       "completion": {
         "claimed": false,
@@ -4592,6 +4606,14 @@
           "merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
           "pr": 2136,
           "runtime_custody_claimed": false
+        },
+        "required_evidence_carriage": {
+          "master_records_receipt_search_result": "NO_AUTHENTIC_REQUIRED_EVIDENCE_RUNTIME_RECEIPT_SURFACED_IN_REPOSITORY_EVIDENCE",
+          "action_taken": "CONTINUED_EXISTING_PATH_SOURCE_TRACE_INSTEAD_OF_WAITING",
+          "first_defect_transition": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
+          "stegos_merge": "3e60f6f5ef0f8516c66ba51a1bb2c78f8b13f3e7",
+          "github_driver_branch": "canonical-master-records-required-evidence-runtime-carriage-001",
+          "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
         }
       },
       "required_evidence_validation": {
@@ -4613,7 +4635,6 @@
           "durable_custody",
           "exact_reconstruction"
         ],
-        "specialized_semantic_validation": "SPECIALIZED_VALIDATOR_OUTPUT_IS_ITSELF_REQUIRED_EVIDENCE_WHEN_THE_LANE_REQUIRES_DOMAIN_SEMANTIC_VALIDATION",
         "progression_gate": [
           "state=RECORDED",
           "reconstruction_status=PASS",
@@ -4621,7 +4642,8 @@
         ],
         "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
         "transition_authority": "INTERLOCK_INTR",
-        "credential_authority": "TV/TVC_WHERE_REQUIRED"
+        "credential_authority": "TV/TVC_WHERE_REQUIRED",
+        "validation_execution_semantics": "ANY_VALIDATION_REQUIRED_BY_THE_TRANSITION_MUST_EXECUTE_AS_PART_OF_THE_EXISTING_TRANSITION_PATH_BEFORE_EVIDENCE_CLOSURE_AND_ITS_OUTPUT_MUST_ENTER_REQUIRED_EVIDENCE_MANIFEST; VALIDATOR_EXISTENCE_IS_NOT_A_WAIT_OR_DEFER_CONDITION"
       }
     },
     {
@@ -4756,6 +4778,8 @@
     "USER_ACTION_SURFACE_COLLISION_SORTING_IS_COORDINATION_ONLY",
     "USER_ACTION_SURFACE_IDENTITY_DOES_NOT_GRANT_BROWSER_RUNTIME_OR_TRANSITION_AUTHORITY",
     "ALL_REQUIRED_EVIDENCE_RESULTING_FROM_A_GOVERNED_STATE_TRANSITION_MUST_BE_VALIDATED_BY_MASTER_RECORDS",
-    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_DOES_NOT_GRANT_TRANSITION_OR_EXECUTION_AUTHORITY"
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_DOES_NOT_GRANT_TRANSITION_OR_EXECUTION_AUTHORITY",
+    "MISSING_AUTHENTIC_RUNTIME_RECEIPT_IS_NOT_A_WAIT_CONDITION",
+    "TRACE_EXISTING_PATH_TO_FIRST_DETERMINISTIC_DEFECT_AND_REPAIR_ONLY_THAT_BOUNDARY"
   ]
 }

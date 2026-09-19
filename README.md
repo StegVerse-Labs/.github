@@ -665,7 +665,7 @@ Every governed StegVerse state transition must produce a canonical state-transit
 
 Master Records is the canonical evidence-validation/custody/reconstruction authority for that transition evidence set. Before machine-owned progression may treat the transition as evidence-complete, the canonical custody result must be `RECORDED`, receipt reconstruction must be `PASS`, and `required_evidence_validation_status` must be `PASS` for every required evidence item. Missing, malformed, misbound, digest-mismatched, or unreconstructable required evidence fails closed.
 
-Specialized domain validators are not replaced. When a transition requires a domain-specific validation result, that result artifact becomes required evidence and is itself bound, digest-validated, retained, and reconstructed by Master Records. Interlock/InTr remains transition authority; TV/TVC remains credential authority where required; Master Records validation grants no execution, transition, governance, publication, deployment, or release authority.
+Any validation required by a transition executes on the existing transition path before evidence closure, and its result becomes required evidence for Master Records validation/reconstruction. A validation dependency is not a wait/defer condition. When an authentic runtime receipt is absent, the existing path is traced to the first deterministic defect instead of pausing. Interlock/InTr remains transition authority; TV/TVC remains credential authority where required; Master Records validation grants no execution, transition, governance, publication, deployment, or release authority.
 
 
 ### SV002 REQUEST_BOUND custody correction — 2026-09-18
