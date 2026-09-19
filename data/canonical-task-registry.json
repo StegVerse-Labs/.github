@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 95,
-  "status": "STEGHEALTH_KV_INTERLOCK_PRODUCTION_ENDPOINT_REGISTERED",
+  "generation": 96,
+  "status": "SV002_TVC_REUSABLE_SERVICE_DELIVERY_CARRIAGE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -3826,7 +3826,8 @@
         "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
         "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
         "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a",
-        "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31"
+        "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31",
+        "StegVerse-Labs/.github@f5c64120d381842db16ca1a5156bb881c8e383f8"
       ],
       "targets": {
         "organizations": [
@@ -3890,7 +3891,7 @@
           "kind": "RUNTIME_PREDICATE",
           "state": "UNRESOLVED",
           "ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
-          "disposition": "EXISTING_TVC_PRIMARY_RUNTIME_ACTIVATION_NOW_FAILS_CLOSED_UNLESS THE SAME SERVICE RESTART IS CORRELATED TO A NEW PRIMARY_RUNTIME_SOURCE_IMPORTED RECEIPT WITH NEW IDENTITY, PROCESS_ID, AND REPO_HEAD; STILL REQUIRE AUTHENTIC HOST EXECUTION AND PROOF THAT CORRELATED REPO_HEAD CONTAINS TVC MERGE 35247B58"
+          "disposition": "EXISTING_SV002_REUSABLE_TVC_RUNNER_NOW_TRAVERSES_RELEASED_TVC_PRIMARY_RUNTIME_SERVICE_DELIVERY_INSTALLER_AFTER_PREFLIGHT, MAKING PR445 SAME_SERVICE_RESTART_STARTUP_CORRELATION REACHABLE; STILL REQUIRE AUTHENTIC EXECUTION, NEW CORRELATED STARTUP RECEIPT, AND PROOF ITS REPO_HEAD CONTAINS TVC MERGE 35247B58"
         },
         {
           "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
@@ -3903,7 +3904,8 @@
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": [
-        "STEGVERSE-002-EXPERIMENT-RERUN-001"
+        "STEGVERSE-002-EXPERIMENT-RERUN-001",
+        "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001"
       ],
       "existing_evidence_refs": [
         "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
@@ -3915,7 +3917,8 @@
         "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
         "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
         "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a",
-        "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31"
+        "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31",
+        "StegVerse-Labs/.github@f5c64120d381842db16ca1a5156bb881c8e383f8"
       ],
       "expected_evidence_predicates": [
         "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
@@ -3939,7 +3942,8 @@
         "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
         "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
         "TVC_PRIMARY_RUNTIME_STARTUP_SOURCE_RECEIPT_RETAINED",
-        "TVC_PRIMARY_RUNTIME_RESTART_STARTUP_CORRELATION_REPAIR_MERGED"
+        "TVC_PRIMARY_RUNTIME_RESTART_STARTUP_CORRELATION_REPAIR_MERGED",
+        "TVC_REUSABLE_SERVICE_DELIVERY_CARRIAGE_REPAIR_MERGED"
       ],
       "runtime_requirements": {
         "capabilities": [
