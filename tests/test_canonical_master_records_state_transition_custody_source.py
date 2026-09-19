@@ -69,3 +69,12 @@ def test_canonical_custody_goal_is_projected_into_monolithic_registry() -> None:
         "reconstruction_status=PASS",
         "required_evidence_validation_status=PASS",
     ]
+
+
+def test_first_mir_transition_carries_materialization_as_required_evidence() -> None:
+    driver = (ROOT / "scripts/execute_mir_event_driven_roundtrip.py").read_text()
+    assert '"MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED:materialization-request"' in driver
+    assert '"evidence_type": "MIR_MATERIALIZATION_REQUEST"' in driver
+    assert '"origin_transition_id": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED"' in driver
+    assert '"content": materialization' in driver
+    assert 'required_evidence_manifest=[materialization_evidence]' in driver
