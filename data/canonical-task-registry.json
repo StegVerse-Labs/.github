@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 121,
-  "status": "STEGBROWSER_HEALER_ROUTING_VALIDATION_EVIDENCE_RECONCILED",
+  "generation": 122,
+  "status": "CONVERSATION_EVIDENCE_SYNTHETIC_RUNTIME_PATH_BOUND",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6300,7 +6300,13 @@
         "tests/test_conversation_evidence_ingestion.py",
         "schemas/conversation-evidence-ingestion-package.schema.json",
         "control/task-vectors/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
-        "StegVerse-Labs/.github#2258"
+        "StegVerse-Labs/.github#2258",
+        "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+        "workers/conversation_evidence_ingestion_runtime_worker.py",
+        "control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json",
+        "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
+        "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
+        "tests/test_conversation_evidence_ingestion_runtime.py"
       ],
       "targets": {
         "organizations": [
@@ -6356,20 +6362,23 @@
       "runtime_requirements": {
         "capabilities": [
           "canonical_artifact_validation",
-          "canonical_master_records_state_transition_custody"
+          "canonical_master_records_state_transition_custody",
+          "canonical_work_ingress",
+          "workercoordinator_targeted_one_shot",
+          "conversation_evidence_synthetic_ingestion_custody"
         ],
-        "environment": "CURRENT_SESSION_PLUS_EXISTING_MASTER_RECORDS_CUSTODY",
+        "environment": "EXISTING_CANONICAL_WORK_PLUS_WORKERCOORDINATOR_PLUS_MASTER_RECORDS",
         "direction": "EVIDENCE_CAPTURE_TO_MASTER_RECORDS",
         "mutation_required": true,
         "deployment_required": false,
-        "current_observation_required": false
+        "current_observation_required": true
       },
       "runtime_resolution": null,
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
         "fence_ref": null,
-        "projection_only": true
+        "projection_only": false
       },
       "human_action_ref": null,
       "completion": {
@@ -6378,7 +6387,8 @@
         "reconciliation_ref": null
       },
       "allowed_next_transitions": [
-        "SOURCE_VALIDATED",
+        "CANONICAL_WORK_INGRESS_ADMITTED",
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
         "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
         "COMPLETION_CLAIMED"
       ],
