@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 98,
+  "generation": 99,
   "status": "ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5310,7 +5310,8 @@
         "tests/test_sdk_tt_richard_seam_resident_materialization.py",
         "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:scripts/execute_control_plane_source_package_relay.py",
         "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:stegos/control_plane_source_package_relay.py",
-        "tests/test_sdk_tt_richard_seam_control_plane_package.py"
+        "tests/test_sdk_tt_richard_seam_control_plane_package.py",
+        ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml"
       ],
       "adjacent_task_refs": [
         "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -5393,7 +5394,7 @@
         "authentic_runtime_execution_complete": false,
         "seam_holds_authentically": false
       },
-      "remaining_predicate": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION_REQUIRED_BEFORE_RESIDENT_DISPATCH_VISIT",
+      "remaining_predicate": "EXACT_HEAD_SUITE_HARNESS_REPAIR_VALIDATION_THEN_AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_SOURCE_MATERIALIZATION",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
         "observed_registry_generation_before_mutation": 81,
@@ -5401,7 +5402,7 @@
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
         "authentic_runtime_execution_attempted": false,
-        "reconciled_against_registry_generation": 95,
+        "reconciled_against_registry_generation": 98,
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
@@ -5411,7 +5412,7 @@
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
         "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        "next_actual_transition": "AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED",
+        "next_actual_transition": "EXACT_HEAD_VALIDATE_SUITE_HARNESS_REPAIR_THEN_CONTINUE_AUTHENTIC_SOURCE_MATERIALIZATION",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
@@ -5457,7 +5458,16 @@
         ],
         "control_plane_complete_test3_delta_pr": 2223,
         "control_plane_complete_test3_delta_merge": "4696d4b0898c504fa0f601f8b879551ba2614903",
-        "control_plane_complete_test3_delta_validated": true
+        "control_plane_complete_test3_delta_validated": true,
+        "suite_run_requested": true,
+        "suite_test1_current_main_validation_pr": 274,
+        "suite_test3_stegagents_current_main_validation_pr": 27,
+        "suite_test3_focused_validation_pr": 2239,
+        "suite_test3_focused_initial_result": "11_PASS_1_FAIL",
+        "suite_test3_failure_classification": "TEST_HARNESS_BOUNDARY_LABELING_DEFECT_NOT_RUNTIME_SEAM_FAILURE",
+        "suite_test3_ordering_source_observed": "MASTER_RECORDS_CLOSURE_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
+        "suite_harness_repair_implemented": true,
+        "suite_harness_existing_workflow_extended": true
       }
     },
     {
