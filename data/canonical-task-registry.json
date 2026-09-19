@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 122,
-  "status": "CONVERSATION_EVIDENCE_SYNTHETIC_RUNTIME_PATH_BOUND",
+  "generation": 123,
+  "status": "SDK_TT_CLAIM_BEFORE_WARRANT_ORDER_CORRECTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4437,7 +4437,11 @@
         "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py",
         "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:scripts/issue_tv_execution_warrant_resident.py",
         "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:deploy/systemd/stegtvc-tv-execution-warrant@.service",
-        "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml"
+        "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml",
+        "StegVerse-Labs/StegAgents@d518935020833b12045483c57d7877520d2a244c:src/purpose_bound_worker_runtime.py",
+        "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:src/purpose_bound_worker_state_graph.py",
+        "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py",
+        "StegVerse-Labs/StegAgents@d6bb9e04d87c4b17d1fa1036c345becc62fe5bce:src/purpose_bound_worker_state_graph.py"
       ],
       "adjacent_task_refs": [
         "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -4474,7 +4478,7 @@
         "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
         "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
       ],
-      "remaining_predicate": "AUTHENTIC_TVC_RESIDENT_ED25519_CREDENTIAL_PRESENT_THEN_FRESH_WARRANT_ISSUED_AND_SAME_RUN_TARGETED_ONE_SHOT_MASTER_RECORDS_CHAIN_COMPLETE",
+      "remaining_predicate": "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_FOR_CASE_1_THEN_TV_TVC_WARRANT_POLICY_VERIFICATION_THEN_STATE_DEPENDENT_FOUR_CASE_GRAPH_WITH_PER_TRANSITION_MASTER_RECORDS_CLOSURE",
       "completion": {
         "claimed": false,
         "validated": false,
@@ -4491,7 +4495,7 @@
         "unsupported_resident_root_prerequisite_removed": true,
         "unsupported_healer_dependency_present": false,
         "master_records_sdk_transition_observed": false,
-        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_FOR_CASE_1",
         "evidence_progression_rule": "EACH_RESULTING_STATE_TRANSITION_REQUIRES_MASTER_RECORDS_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS",
         "direct_workercoordinator_source_boundary_repaired": true,
         "carrier_reference_required_for_targeted_independent_control": false,
@@ -4511,9 +4515,62 @@
           "records_only_closeout_present": true,
           "authorized_resident_execution_surface_available": null,
           "authentic_runtime_execution_attempted": false,
-          "remote_desktop_device_is_runtime_prerequisite": false
+          "remote_desktop_device_is_runtime_prerequisite": false,
+          "execution_surface_note": "Prior device/Remote Desktop availability check was not an execution prerequisite for TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT and must not be reused as a blocker."
         },
-        "execution_warrant_authority_repair_complete": true
+        "execution_warrant_authority_repair_complete": true,
+        "tv_tvc_execution_warrant_bridge": {
+          "source_repair_complete": true,
+          "tvc_pr": 446,
+          "exact_head": "dd9a20d8d1ef61ac8e05eccf78125035c4cac423",
+          "merge_commit": "fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6",
+          "exact_head_validation": {
+            "run_id": 35464198311,
+            "conclusion": "success"
+          },
+          "issuer_id": "tv.warrant.resident",
+          "public_key_id": "tv.warrant.resident.ed25519.001",
+          "credential_name": "TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM",
+          "resident_loadcredential_only": true,
+          "github_signing_authority": false,
+          "authentic_resident_credential_observed": false,
+          "authentic_warrant_issuance_observed": false,
+          "authentic_public_key_registration_observed": false,
+          "next_runtime_boundary": "AFTER_CLAIM_FENCE_MASTER_RECORDS_CLOSURE_VERIFY_OR_ISSUE_FRESH_TV_TVC_WARRANT",
+          "device_dependency": false,
+          "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+        },
+        "state_dependent_lifecycle_repair": {
+          "source_complete": true,
+          "steagents_pr": 29,
+          "merge_commit": "d518935020833b12045483c57d7877520d2a244c",
+          "each_lifecycle_phase_consumes_prior_master_records_closure": true,
+          "fail_closed_on_missing_predecessor_closure": true,
+          "test3_richard_dependency": false
+        },
+        "four_case_state_graph": {
+          "source_complete": true,
+          "steagents_pr": 30,
+          "merge_commit": "4880f10b9cbfa90df0c0614f10d775e5eef3e317",
+          "case_2_predecessor": "CASE_1_RETIRED_MASTER_RECORDS_CLOSURE",
+          "case_3_predecessor": "CASE_2_RETIRED_MASTER_RECORDS_CLOSURE",
+          "task_4_parent_predecessor": "CASE_3_RETIRED_MASTER_RECORDS_CLOSURE",
+          "task_4_worker_branch": "THREE_WORKERS_FROM_ONE_GOVERNED_PARENT_CLOSURE",
+          "task_4_join": "THREE_WAY_RETIRED_MASTER_RECORDS_JOIN",
+          "authentic_runtime_execution_attempted": false,
+          "authority_effect": "NONE_SOURCE_GRAPH_ONLY",
+          "atomic_task4_three_worker_binding": {
+            "source_complete": true,
+            "steagents_pr": 31,
+            "merge_commit": "d6bb9e04d87c4b17d1fa1036c345becc62fe5bce",
+            "action": "ADMIT_AND_ATOMICALLY_BIND_TASK4_THREE_WORKERS",
+            "exactly_three_distinct_bindings_required": true,
+            "active_without_all_three_bindings_possible": false,
+            "child_binding_without_parent_admission_possible": false,
+            "all_children_consume_same_parent_master_records_closure": true,
+            "true_concurrency_preserved": true
+          }
+        }
       },
       "source_refinement": {
         "steagents_pr": 21,
@@ -4754,6 +4811,22 @@
         },
         "remaining_authentic_boundary": "RESIDENT_ED25519_SIGNING_CREDENTIAL_MATERIALIZATION_AND_WARRANT_ISSUANCE",
         "authentic_warrant_issued": false
+      },
+      "runtime_transition_order_correction": {
+        "corrected_against_registry_generation": 122,
+        "authoritative_sequence": [
+          "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+          "TV_TVC_WARRANT_POLICY_VERIFIED",
+          "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+          "PURPOSE_BOUND_WORKER_MATERIALIZED",
+          "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+          "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+          "PURPOSE_BOUND_WORKER_RETIRED"
+        ],
+        "warrant_materialization_is_preclaim_dependency": false,
+        "claim_fence_is_first_authentic_transition": true,
+        "master_records_required_after_every_transition": true,
+        "authority_effect": "NONE_ORDERING_CORRECTION_ONLY"
       }
     },
     {
