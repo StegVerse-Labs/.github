@@ -292,3 +292,24 @@ StegAgents validation=PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12
 constitutive_transition=ACTIVATE_TASK_AND_CREATE_BIND_WORKER
 TEST3_RICHARD_SEAM_ACCEPTANCE_PASS
 ```
+
+
+## Runnable Test 3 closeout — proposed generation 101
+
+PR #2242 passed all exact-head validations, including dedicated `Test 3 Richard Seam Acceptance` run `35452251194`, and merged as `0b5ea1c76cae7f96b481fe38b339071f34235957`.
+
+The dedicated runner is now on main:
+
+`python scripts/run_sdk_tt_richard_seam_test3.py --json-out <result.json>`
+
+Exact-head result:
+
+```text
+state=PASS
+dotgithub=18 passed
+StegAgents current validation=PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12
+constitutive_transition=ACTIVATE_TASK_AND_CREATE_BIND_WORKER
+TEST3_RICHARD_SEAM_ACCEPTANCE_PASS
+```
+
+The runnable acceptance portion is complete and merged.
