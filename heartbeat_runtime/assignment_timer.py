@@ -182,6 +182,9 @@ def bind_assignment_from_trigger(
         "carrier_controls_timer": False,
         "authority_effect": "NONE_FROM_CARRIER",
     }
+    functional_context = trigger.get("functional_memory_context")
+    if isinstance(functional_context, dict):
+        record["functional_memory_context"] = dict(functional_context)
     record["record_sha256"] = _sha256(record)
     return timer, record
 
