@@ -932,12 +932,6 @@ When the canonical Test 3 resident request is present, the native resident dispa
 SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral reusable TVC carrier now enters the released same-service installer directly while TV/TVC-owned activation authority, vault-socket enforcement, and preflight remain inside `stegtvc-primary-runtime.service`. Runtime predicates remain unpromoted pending authentic restart/startup correlation.
 
 
-SDK TT purpose-bound runtime: the missing TV/TVC Ed25519 execution-warrant issuer path is repaired through TVC PR #446 and TV PR #19. Credential authority remains TV/TVC and signing remains resident-only through systemd LoadCredential. Authentic progression now requires actual resident Ed25519 credential presence, fresh exact-commit warrant issuance, then the existing targeted one-shot; Remote Desktop/device presence is not a task prerequisite.
+### StegBrowser Healer routing correction
 
-
-SDK TT purpose-bound worker runtime proof: TVC PR #446 merged the missing resident Ed25519 execution-warrant bridge at `fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6` (validation run `35464198311` SUCCESS). Remaining authentic boundary: TV/TVC resident Ed25519 credential materialization and fresh StegAgents warrant issuance. No device, carrier, Healer, scheduler, dispatcher, or replacement credential authority is a prerequisite.
-
-
-### RTC-SDK-RETURN-006 canonical custody
-
-PR #2230 merged the existing SDK return-binding path's Master Records custody gate. The exact SDK return binding and exact SDK materialization receipt must be RECORDED, reconstruct with PASS, validate required evidence with PASS, and return matching receipt/reconstruction digests before the result can become ready for final StegVerse-side egress. Authentic runtime execution and all later egress predicates remain unclaimed.
+For immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`, `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` is not part of the execution lineage. The canonical path is `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser evidence -> Master Records`. Healer is retained only as `TRIGGERED_REMEDIATION_ONLY`; generation-70 retention-pointer work must not gate Browser progression.
