@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 106,
+  "generation": 107,
   "status": "SDK_TT_RICHARD_SEAM_STEGAGENTS_MASTER_RECORDS_ENV_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5898,6 +5898,33 @@
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+      "correlation_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "goal": "Remove the accidental Healer routing dependency from the immutable StegBrowser custody-root progression and restore the invocation to its actual RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime execution owner and direct WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records path.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "handoff_ref": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+      "source_refs": [
+        "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/STEG-BROWSER-HEALER-ROUTING-CORRECTION-001.json",
+        "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+        "scripts/run_stegbrowser_manifest_bound_runtime.py",
+        "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+        "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json"
+      ],
+      "issue_ref": "StegVerse-Labs/.github#2249",
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "canonical_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+      "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
     }
   ],
   "human_actions": [],
