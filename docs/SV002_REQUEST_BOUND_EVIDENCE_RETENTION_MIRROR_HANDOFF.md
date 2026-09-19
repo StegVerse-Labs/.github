@@ -175,3 +175,25 @@ The TVC activation-delivery handoff currently records both predicates as false/u
 The existing source-level restart repair already exists: `scripts/install_tvc_primary_runtime_service.py --activate` restarts the same fixed `stegtvc-primary-runtime.service`. No second service/runtime is needed. The StegBrowser exact-source promotion request is task-scoped to a separate immutable SHA and is not reused or mutated for SV002.
 
 No authentic runtime restart/current-source receipt is claimed by this reconciliation.
+
+
+## 2026-09-18 retained TVC startup-source evidence repair
+
+The existing TVC activation owner had one retained-evidence defect after the current-source reload source repair: a legitimate restart could enter `tvc_primary_runtime_activation_task.py` without retaining the exact checkout/source identity imported by that running process. That prevented canonical observation of `current_source_loaded_on_host_observed` from the existing path.
+
+StegVerse-Labs/TVC PR #444 repaired only that evidence gap and merged at:
+
+```text
+StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a
+```
+
+The existing activation task now retains `reports/runtime/primary-runtime-startup.latest.json` after the existing TV/TVC preflight passes, binding the same `stegtvc-primary-runtime.service`, runtime/process identity, repository root, Git HEAD when available, activation-source path/SHA-256, and timestamp. This does not create another runtime, service, dispatcher, source-promotion request, credential path, scheduler, custody authority, transition authority, Site path, or device prerequisite.
+
+This source repair does not promote runtime truth. Canonical predicates remain:
+
+```text
+root_primary_runtime_restart_observed = false
+current_source_loaded_on_host_observed = false
+```
+
+The next authentic observation must correlate the existing service restart with a startup-source receipt whose TVC source contains merge `35247b583b363f84c2edb5c77474bced729190ae`. Only then may the existing self-heal supervisor be followed toward exact `StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b` materialization.
