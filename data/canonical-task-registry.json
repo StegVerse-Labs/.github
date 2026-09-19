@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 119,
-  "status": "STEGBROWSER_HEALER_ARTIFICIAL_ROUTING_REMOVED",
+  "generation": 120,
+  "status": "STEGBROWSER_HEALER_ROUTING_VALIDATION_EVIDENCE_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6068,8 +6068,9 @@
         "new_credential_path_created": false,
         "second_device_dependency_created": false,
         "validation_evidence": {
-          "pr_number": 2278,
-          "exact_head": "19637e0130875c5bf46d1f318a7b773aab0bd0c8",
+          "pr_number": 2281,
+          "exact_head": "a56ea42f3c3d7da09db7c8aa78f1f43f8a9a395a",
+          "merge_commit": "cc13725c6b056481e8ec5d2a33c75c6bca3ceee8",
           "checks": [
             "Cross-Task Coordination Validation - Non-Authorizing:SUCCESS",
             "Validate KV AI Memory Resident Binding:SUCCESS",
