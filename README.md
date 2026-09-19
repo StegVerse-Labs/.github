@@ -966,3 +966,8 @@ The purpose-bound runtime task explicitly preserves the actual merged transition
 
 
 SV002 state progression is now explicitly predecessor-dependent: only `REUSABLE_TVC_INVOCATION_OBSERVED` is currently admissible; restart, loaded-source, self-heal, exact c5e6a793 materialization, Astra, quantum, runtime activation, and REQUEST_BOUND custody remain blocked until each immediate predecessor transition is authentically consumed. The neutral reusable scheduler also no longer treats deferred children as an advanced aggregate transition.
+
+
+### StegHealth KV/Interlock Canonical Work carriage repair
+
+`STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` has an explicit non-authorizing request in the existing `canonical_work_coordination` resident request set. The task remains `ACTIVE / CHECKED_OUT`; runtime ingress is recorded separately as `runtime_refs.ingress_state=INGRESS_ADMITTED`, preserving coordination state. No second dispatcher, scheduler, WorkerCoordinator, listener, credential authority, connected-device prerequisite, or custody store is introduced. Source and CI do not prove resident consumption, WorkerCoordinator claim/fence, Interlock/InTr consequence admission, Master Records closure, or any production predicate.

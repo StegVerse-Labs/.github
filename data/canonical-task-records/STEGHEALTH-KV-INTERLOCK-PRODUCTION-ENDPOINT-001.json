@@ -20,7 +20,12 @@
     "StegVerse-Labs/continuity-vault-kit#79",
     "StegVerse-Labs/StegOS#21",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-    "scripts/dispatch_resident_execution_requests.py"
+    "scripts/dispatch_resident_execution_requests.py",
+    "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
+    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "scripts/run_canonical_work_event_bootstrap.py",
+    "scripts/apply_admitted_canonical_work_projection.py",
+    "tests/test_steghealth_kv_interlock_canonical_work_ingress.py"
   ],
   "adjacent_task_refs": [
     "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001"
@@ -148,6 +153,17 @@
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true
   },
-  "remaining_predicate": "FIRST_AUTHENTIC_KV_INTERLOCK_RUNTIME_TRANSITION_ON_EXISTING_CANONICAL_RESIDENT_PATH",
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "remaining_predicate": "AUTHENTIC_CANONICAL_WORK_REQUEST_CONSUMPTION_THEN_FRESH_WORKERCOORDINATOR_CLAIM_FENCE_AND_GOVERNED_MASTER_RECORDS_CLOSED_TRANSITION",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "carriage_repair": {
+    "state": "SOURCE_REPAIRED_AWAITING_AUTHENTIC_RESIDENT_CONSUMPTION",
+    "defect": "ACTIVE_CHECKED_OUT_TASK_WAS_NOT_REACHABLE_BY_PROPOSED_ONLY_REGISTRY_SELECTION_OR_PROPOSED_ONLY_INGRESS_PROJECTION",
+    "repair": "EXPLICIT_REQUEST_REUSES_CANONICAL_WORK_CONSUMER_AND_PRESERVES_ACTIVE_CHECKOUT_COORDINATION_WHILE_RECORDING_RUNTIME_INGRESS_SEPARATELY",
+    "request_ref": "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
+    "selector": "canonical_work_coordination",
+    "second_dispatcher_created": false,
+    "second_scheduler_created": false,
+    "second_workercoordinator_created": false,
+    "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY"
+  }
 }

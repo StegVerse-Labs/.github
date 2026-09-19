@@ -135,3 +135,8 @@ None currently required for this source/request work. Any later human/device evi
 ## Archive readiness
 
 All unique continuation state is preserved here. This runtime workstream remains open until authentic end-to-end lifecycle evidence is observed.
+
+
+## 2026-09-19 ACTIVE/CHECKED_OUT carriage repair
+
+`STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` is already `ACTIVE / CHECKED_OUT`, so PROPOSED-only registry selection could not carry it to Canonical Work and the shared bootstrap also rejected it. The repair stays inside the existing `canonical_work_coordination` selector and consumer: an exact non-authorizing request reaches the shared Canonical Work bootstrap; ACTIVE/CHECKED_OUT is accepted only when `INGRESS_ADMITTED` is explicitly allowed, no WorkerCoordinator claim/fence is projected, and the authority model remains intact. Runtime ingress is recorded as `runtime_refs.ingress_state=INGRESS_ADMITTED` without demoting canonical coordination state. Focused regression coverage is `tests/test_steghealth_kv_interlock_canonical_work_ingress.py`. Authentic runtime remains unclaimed until exact request-consumption and nested ingress/consumption/bootstrap evidence are observed.
