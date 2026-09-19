@@ -550,3 +550,16 @@ The repair reuses the existing TV/TVC resident credential root and resident key-
 An executable pre-merge validation found and repaired one testability defect: temporary-path test execution was initially rejected despite `require_root=False`. Production/default execution remains strict to the TV/TVC credential root.
 
 No authentic resident key-activation receipt has yet been observed. The real issuer public key therefore remains unclaimed and the TV issuer placeholder must not be replaced until that receipt exists. The next canonical transition is `TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION`, followed by fresh warrant issuance, real public-key registration, and the existing targeted one-shot. Remote-device availability is not a canonical state predicate.
+
+
+## Authentic four-case resident one-shot wiring — 2026-09-19
+
+StegAgents PR #32 merged as 34faa1ec8e4bc7427beb65adb10b2292109c5ca9, exposing the already-merged four-case state graph as a fail-closed resident module without adding a runtime or authority surface.
+
+The existing .github targeted resident path was then extended and merged through PR #2311 as d776570c84b6f2a09f2e41071ca89e57da15b18e. The existing WorkerCoordinator remains the sole claim/fence authority and carries one six-claim graph bundle in the Case 1 assignment lineage. The Case 1 outer claim/fence must close through canonical Master Records before graph construction. The existing shared StegAgents worker translates that WorkerCoordinator bundle plus this canonical handoff into the exact Case 1 / Case 2 / Case 3 / Task 4 A-B-C graph request and invokes src.purpose_bound_worker_state_graph. Every one of the six worker results must expose authentic TV/TVC warrant+policy verification, a closed TV_TVC_WARRANT_POLICY_VERIFIED Master Records transition, a closed STEGCORE_INTR_MATERIALIZATION_ADMITTED transition, four closed lifecycle transitions, records-only terminal state, and no post-retirement authority.
+
+The existing targeted resident consumer now accepts this task/vector through the same refresh_and_execute_resident_task.py -> run_worker_runtime.py --task-id path. The non-authorizing resident request RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 is staged in control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json.
+
+Exact-head purpose-bound validation for the final PR #2311 head passed in run 35470220082.
+
+This establishes executable resident carriage, not authentic execution proof. No retained resident consumption receipt, fresh Case 1 claim/fence receipt, or final three-way graph terminal receipt has yet been observed in repository evidence. Do not promote any authentic runtime predicate until those receipts are observed. No Test3/Richard dependency, new scheduler, dispatcher, runtime, authority plane, custody store, carrier, or device dependency was introduced.

@@ -41,7 +41,11 @@
     "StegVerse-Labs/StegAgents@d518935020833b12045483c57d7877520d2a244c:src/purpose_bound_worker_runtime.py",
     "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:src/purpose_bound_worker_state_graph.py",
     "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py",
-    "StegVerse-Labs/StegAgents@d6bb9e04d87c4b17d1fa1036c345becc62fe5bce:src/purpose_bound_worker_state_graph.py"
+    "StegVerse-Labs/StegAgents@d6bb9e04d87c4b17d1fa1036c345becc62fe5bce:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@34faa1ec8e4bc7427beb65adb10b2292109c5ca9:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:heartbeat_runtime/worker_runtime_legacy.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:workers/stegagents_governed_runtime_worker.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -95,7 +99,7 @@
     "unsupported_resident_root_prerequisite_removed": true,
     "unsupported_healer_dependency_present": false,
     "master_records_sdk_transition_observed": false,
-    "next_actual_transition": "TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION",
+    "next_actual_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST_THEN_FRESH_CASE1_WORKERCOORDINATOR_CLAIM_FENCE",
     "evidence_progression_rule": "EACH_RESULTING_STATE_TRANSITION_REQUIRES_MASTER_RECORDS_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS",
     "direct_workercoordinator_source_boundary_repaired": true,
     "carrier_reference_required_for_targeted_independent_control": false,
@@ -180,6 +184,22 @@
         "all_children_consume_same_parent_master_records_closure": true,
         "true_concurrency_preserved": true
       }
+    },
+    "authentic_four_case_resident_wiring": {
+      "source_complete": true,
+      "steagents_graph_cli_merge": "34faa1ec8e4bc7427beb65adb10b2292109c5ca9",
+      "github_pr": 2311,
+      "github_merge": "d776570c84b6f2a09f2e41071ca89e57da15b18e",
+      "workercoordinator_six_claim_bundle": true,
+      "case1_outer_claim_fence_master_records_closure_required": true,
+      "per_worker_tv_tvc_and_intr_closure_validation": true,
+      "targeted_resident_request_staged": true,
+      "resident_request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "authentic_runtime_execution_observed": false,
+      "authentic_graph_terminal_observed": false,
+      "no_test3_dependency": true,
+      "no_device_dependency": true,
+      "authority_effect": "NONE_SOURCE_AND_REQUEST_STAGING_ONLY"
     }
   },
   "source_refinement": {
