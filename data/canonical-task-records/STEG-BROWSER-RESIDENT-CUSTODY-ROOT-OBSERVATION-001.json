@@ -177,6 +177,16 @@
       "runtime_completion_claimed": false,
       "downstream_promotion_allowed": false,
       "authority_effect": "NONE_LOCAL_SOURCE_REFRESH_LOCATOR_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-19",
+      "transition": "DIRECT_OWNER_NONCE_BOUND_CLAIM_FENCE_SOURCE_REPAIR_IMPLEMENTED",
+      "global_registry_generation_observed": 121,
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "defect": "WORKERCOORDINATOR_CLAIM_FENCE_EVIDENCE_NOT_BOUND_TO_IMMUTABLE_INVOCATION_NONCE",
+      "repair": "CARRY_DEDICATED_NON_AUTHORIZING_INVOCATION_NONCE_AND_REQUIRE_EXACT_NONCE_BEFORE_A3_A4_RUNTIME_PROJECTION",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_SOURCE_CORRELATION_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -370,5 +380,7 @@
     "healer_required_for_progression": false,
     "second_invocation_issued": false,
     "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
-  }
+  },
+  "first_unresolved_predicate": "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+  "next_direct_runtime_predicate": "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"
 }
