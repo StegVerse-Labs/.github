@@ -885,3 +885,8 @@ The shared StegAgents process adapter now preserves the existing canonical Maste
 ### Test 3 governed close and worker retirement
 
 Test 3 now has an executable terminal edge. After the retained task result, the existing WorkerCoordinator invokes the same shared StegAgents adapter in `GOVERNED_CLOSE` mode. StegCore/InTr must admit `CLOSE_TASK_AND_RETIRE_WORKER`, canonical Master Records must close and reconstruct that exact transition, and only then may the adapter return `COMPLETED` so WorkerCoordinator releases the task-bound worker. Terminal evidence is records-only and must retain neither callable nor executor authority.
+
+
+## Admissibility Wiki public hostname coordination
+
+`ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001` tracks migration of the existing Admissibility Wiki public hostname to `https://admissibility.stegverse.org`. The wiki repository remains canonical source. GitHub Pages remains the hosting mechanism. The task does not create a second wiki, runtime, execution authority, or publication authority. Account-level Pages custom-domain and DNS CNAME changes remain explicit human-action dependencies until observed.
