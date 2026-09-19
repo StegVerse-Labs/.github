@@ -784,3 +784,8 @@ Canonical sources:
 docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md
 contracts/conversation-evidence-service-performance-publication-contract.v1.json
 ```
+
+
+## Enterprise host-provider eradication
+
+Canonical Goal Task `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` is ACTIVE / CHECKED_OUT. The task removes operational third-party hosting/provider dependencies and provider-identifying active references from current/default source without authorizing a replacement third-party host. Historical Git provenance and ordinary programming uses of rendering terminology are outside the eradication target. Current detailed state is maintained in `docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md`.
