@@ -244,6 +244,45 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
                 ecosystem_chat_parent=True,
             )
 
+    def test_same_root_independent_targeted_execution_skips_refresh_and_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            (runtime / "scripts").mkdir(parents=True)
+            (runtime / "scripts/run_worker_runtime.py").write_text("# runner\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    stdout='{"state":"HANDOFF_READY","transition_id":"FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T"}\n',
+                    stderr="",
+                )
+
+            refresh_mock = mock.Mock(side_effect=AssertionError("same-root execution must not refresh-copy itself"))
+            with mock.patch.object(mod, "refresh", refresh_mock):
+                receipt = mod.refresh_and_execute(
+                    runtime,
+                    runtime,
+                    task_id="SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": "/home/stegverse"},
+                )
+
+            refresh_mock.assert_not_called()
+            self.assertEqual(len(calls), 1)
+            self.assertFalse((runtime / mod.CARRIER_REF).exists())
+            self.assertEqual(
+                receipt["refresh_receipt"]["state"],
+                "SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED",
+            )
+            self.assertTrue(receipt["runtime_execution_attempted"])
+            self.assertEqual(
+                receipt["execution_result"]["transition_id"],
+                "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+            )
+
     def test_independent_targeted_execution_does_not_require_carrier(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
