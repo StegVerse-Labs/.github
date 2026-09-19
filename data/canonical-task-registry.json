@@ -2313,9 +2313,9 @@
         {
           "dependency_id": "DEP-STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-SEAM",
           "kind": "EXACT_RUNTIME_EVIDENCE_OBSERVATION_OWNER",
-          "state": "PENDING_AUTHENTIC_PACKET_AND_ROOT",
+          "state": "SUPERSEDED_ROUTING_ERROR",
           "ref": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860;receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
-          "disposition": "Existing exact StegBrowser observation seam. Observe the already-defined retained packet/root and classify the existing Canonical Work receipt only if an authentic root is exposed. No second observer/exporter/runtime owner may be created."
+          "disposition": "SUPERSEDED_AS_A_STEGBROWSER_PROGRESS_GATE; DIRECT_OWNER_RETAINED_EVIDENCE_AND_MASTER_RECORDS_CUSTODY_REPLACE_THE_HEALER_DERIVED_RESIDENT_ROOT_SEAM"
         },
         {
           "dependency_id": "DEP-GLOBAL-SHARED-RUNTIME-EVIDENCE-OWNER",
