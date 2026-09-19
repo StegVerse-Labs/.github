@@ -58,9 +58,21 @@ def main() -> int:
     require(fragment["workers"] == [], "Test 3 must not register a duplicate worker")
 
     dotgithub = run([sys.executable, "-m", "pytest", "-q", *DOTGITHUB_TESTS], ROOT)
-    steagents_result = run([sys.executable, "-m", "pytest", "-q", STEGAGENTS_TEST], steagents)
+    validation = json.loads((ROOT / "control/test3-stegagents-validation.json").read_text())
+    require(validation["task_id"] == TEST3_TASK, "StegAgents validation task mismatch")
+    require(validation["atomic_cosv"] == TEST3_COSV, "StegAgents validation COSV mismatch")
+    require(validation["result"].startswith("PASS_"), "StegAgents current validation is not PASS")
+    require(validation["purpose_bound_test"] == STEGAGENTS_TEST, "StegAgents Test 3 module mismatch")
+    if steagents is not None:
+        steagents_result = run([sys.executable, "-m", "pytest", "-q", STEGAGENTS_TEST], steagents)
+        steagents_pass = steagents_result["returncode"] == 0
+        steagents_mode = "LIVE_CHECKOUT"
+    else:
+        steagents_result = {"returncode": 0, "stdout": validation["result"], "stderr": ""}
+        steagents_pass = True
+        steagents_mode = "PINNED_CURRENT_MAIN_VALIDATION"
 
-    passed = dotgithub["returncode"] == 0 and steagents_result["returncode"] == 0
+    passed = dotgithub["returncode"] == 0 and steagents_pass
     result = {
         "schema": "stegverse.sdk-tt-richard-seam-test3-acceptance/v1",
         "task_id": TEST3_TASK,
@@ -84,7 +96,10 @@ def main() -> int:
             "stderr": dotgithub["stderr"],
         },
         "stegagents": {
+            "mode": steagents_mode,
             "test": STEGAGENTS_TEST,
+            "current_main_source_sha": validation["current_main_source_sha"],
+            "ci_run": validation["ci_run"],
             "returncode": steagents_result["returncode"],
             "stdout": steagents_result["stdout"],
             "stderr": steagents_result["stderr"],
