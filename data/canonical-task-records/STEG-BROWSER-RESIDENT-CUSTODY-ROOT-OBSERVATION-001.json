@@ -190,30 +190,30 @@
     {
       "dependency_id": "DEP-HEALER-NEUTRAL-SCHEDULE-BINDING",
       "kind": "SOURCE_CONFIGURATION",
-      "state": "RESOLVED_CONTEXT_ONLY",
+      "state": "HISTORICAL_CONTEXT_ONLY",
       "ref": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
-      "disposition": "RT_STEGBROWSER_RUNTIME_CONSUMPTION_ENABLED_HOURLY_BUT_NOT_RUNTIME_PROOF"
+      "disposition": "HEALER_SCHEDULE_IS_OPTIONAL_REMEDIATION_CONTEXT_NOT_STEGBROWSER_EXECUTION_PREREQUISITE"
     },
     {
       "dependency_id": "DEP-HEALER-RESIDENT-ROOT-OBSERVATION-PACKET",
       "kind": "SOURCE_REPAIR",
-      "state": "RESOLVED_SOURCE_ONLY",
+      "state": "HISTORICAL_REMEDIATION_ONLY",
       "ref": "StegVerse-Labs/StegVerse-Healer#81;StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
-      "disposition": "EXISTING_HEALER_CARRIER_NOW_EMITS_TASK_BOUND_NON_AUTHORIZING_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET"
+      "disposition": "HEALER_PACKET_SURFACING_REPAIR_RETAINED_AS_NON_REQUIRED_REMEDIATION_EVIDENCE"
     },
     {
       "dependency_id": "DEP-RESIDENT-CUSTODY-ROOT-OBSERVATION",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "PENDING_POST_REPAIR_CARRIER_OBSERVATION",
-      "ref": "resident_custody_root_observation",
-      "disposition": "OBSERVE_POST_MERGE_HEALER_CARRIER_OUTPUT_AND_BIND_PACKET_STATE"
+      "state": "DIRECT_OWNER_OBSERVATION_REQUIRED",
+      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+      "disposition": "OBSERVE_EXISTING_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001_EXECUTION_OWNER_DIRECTLY; HEALER_NOT_REQUIRED"
     },
     {
       "dependency_id": "DEP-CANONICAL-WORK-RECEIPT-REACHABILITY",
       "kind": "RUNTIME_EVIDENCE_CLASSIFICATION",
-      "state": "PENDING_RESIDENT_ROOT",
+      "state": "PENDING_DIRECT_RUNTIME_EVIDENCE",
       "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
-      "disposition": "RUN_NON_AUTHORIZING_EXACT_RECEIPT_CLASSIFIER_ONLY_AFTER_PACKET_OBSERVES_AUTHENTIC_RESIDENT_ROOT"
+      "disposition": "CLASSIFY_DIRECT_CANONICAL_WORK_RECEIPT_WHEN AUTHENTIC OWNER-BOUND RUNTIME EVIDENCE SURFACES; DO_NOT_GATE_ON_HEALER_PACKET"
     },
     {
       "dependency_id": "DEP-RUNTIME-MATERIALIZATION-REMEDIATION-SUCCESSOR",
@@ -232,9 +232,11 @@
   ],
   "blockers": [],
   "allowed_next_transitions": [
-    "CONTINUE_IN_STEG_BROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_001",
-    "OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET",
-    "CLASSIFY_RECEIPT_REACHABILITY",
+    "CONTINUE_DIRECT_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
+    "OBSERVE_AUTHENTIC_INTERLOCK_INTR_PROGRESSION",
+    "CLASSIFY_DIRECT_RETAINED_STEGBROWSER_EVIDENCE",
+    "REQUIRE_MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
     "BIND_NEXT_RUNTIME_DEFECT"
   ],
   "handoff_projection_refs": [
@@ -255,12 +257,13 @@
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "github_runtime_authority": "NONE",
-    "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "healer_carrier_authority": "TRIGGERED_REMEDIATION_ONLY",
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_governed_ingress_egress": true,
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
-    "second_user_operated_device_required": false
+    "second_user_operated_device_required": false,
+    "healer_required_for_stegbrowser_progression": false
   },
   "endpoint_binding_terminal_intake": {
     "retired_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
@@ -277,8 +280,8 @@
     },
     "retention_seam": {
       "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-      "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
-      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "carrier_consumption_relative_path": null,
+      "embedded_pointer_path": null,
       "required_pointer_fields": [
         "packet_ref",
         "packet_relative_path",
@@ -288,10 +291,10 @@
         "packet_state"
       ],
       "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
-      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "classification": "DIRECT_EXECUTION_OWNER_EVIDENCE_REQUIRED",
       "predicate_satisfied": false,
       "source_side_repair_required": false,
-      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT",
+      "classifier_action": "WAIT_FOR_AUTHENTIC_DIRECT_OWNER_RUNTIME_EVIDENCE",
       "prior_source_side_repair_required_assessment": false,
       "source_side_carriage_repair_required": true,
       "source_side_carriage_repair_status": "MERGED_AWAITING_AUTHENTIC_POST_REPAIR_RESIDENT_CYCLE",
@@ -330,7 +333,11 @@
       "native_source_refresh_locator_precedence": [
         "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
         "STEGVERSE_REPO_ROOTS_JSON"
-      ]
+      ],
+      "direct_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+      "direct_runtime_receipt_path": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+      "healer_carrier_required": false,
+      "healer_role": "TRIGGERED_REMEDIATION_ONLY"
     },
     "required_root_count": 1,
     "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
@@ -343,5 +350,25 @@
     "runtime_completion_claimed": false,
     "authority_transfer": "NONE",
     "new_successor_created": false
+  },
+  "routing_correction": {
+    "corrected_at": "2026-09-19",
+    "correction_task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+    "insertion_point": "GENERATION_70_RETENTION_SEAM_RECONCILIATION",
+    "artificial_edge": "HEALER_CHECKPOINT_POINTER_PROMOTED_TO_REQUIRED_STEGBROWSER_PROGRESSION_GATE",
+    "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "canonical_execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+    "direct_progression": [
+      "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "run_stegbrowser_manifest_bound_runtime",
+      "WORKERCOORDINATOR_CLAIM_FENCE",
+      "INTERLOCK_INTR",
+      "RETAINED_STEGBROWSER_EVIDENCE",
+      "MASTER_RECORDS_CUSTODY_RECONSTRUCTION"
+    ],
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+    "healer_required_for_progression": false,
+    "second_invocation_issued": false,
+    "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
   }
 }
