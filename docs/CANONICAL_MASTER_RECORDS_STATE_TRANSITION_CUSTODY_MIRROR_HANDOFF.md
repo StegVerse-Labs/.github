@@ -224,3 +224,28 @@ No second validator, custody store, runtime, scheduler, dispatcher, transition a
 ## Master Records no-wait semantics merge
 
 The repository-level wording was reconciled in master-records/orchestration PR #102, merged as `2d1e18ae26182aedd6fa3c10bd594b7e64d1e865`. Required validation on the existing transition path is non-deferrable; missing later runtime receipts do not justify waiting when an earlier deterministic source/runtime boundary can be traced and repaired.
+
+
+## Browser required-evidence carriage reconciliation — 2026-09-18
+
+The active browser EVENT_EPHEMERAL path was traced past `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED` rather than stopping at the absence of a later runtime receipt.
+
+The next concrete source defect was in `assets/canonical-master-records-transition-custody-browser.js`: the browser custody client submitted canonical transition receipts without `required_evidence_manifest` and did not require `required_evidence_validation_status=PASS`. That meant the browser path could satisfy receipt reconstruction while omitting the new required-evidence closure invariant.
+
+Site PR `#1404` repaired the existing path and merged as `25f4812ffc7eab59cd4d99406ce67867cc2d0539` from exact head `2862968f14295c1bc25a20afa310265a28b3a92f`. The existing browser custody client now:
+
+- emits the exact transition-evidence object as canonical-json required evidence for every recorded transition;
+- requires Master Records `required_evidence_validation_status=PASS` before progression;
+- binds the exact queued StegVerse Node outbox entry as additional required evidence for `MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED`;
+- automatically carries the exact `CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED` ingress receipt as required transition evidence on the next transition.
+
+Exact-head validation on the repaired Site source passed:
+
+- MIR SV002 Browser Event Conformance `35415040309`;
+- Site Handoff Orchestrator `35415040376`;
+- Ecosystem Heartbeat Orchestration `35415040363`;
+- Site Bootstrap Validate `35415040385`.
+
+These are source-validation results. Authentic runtime transition evidence remains governed by canonical Master Records receipts and is not inferred from CI.
+
+The next transition under direct evidence trace is `CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED`, followed by RTC-007/008/009 and exact return retention. Missing later receipts are not a wait condition; continue tracing the existing path to the next deterministic defect.
