@@ -945,3 +945,8 @@ PR #2285 merged the existing RTC006 -> RTC007 continuation seam. The exact SDK r
 ### Purpose-bound worker four-case state graph — 2026-09-19
 
 `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` now has a merged state-dependent source graph in StegAgents PR #30 / `4880f10b9cbfa90df0c0614f10d775e5eef3e317`. Cases 1→2→3 consume the immediately preceding terminal Master Records closure; Task 4 admits one common parent from Case 3, branches three simultaneous workers from that parent, and permits aggregate closeout only after a three-way join of all three independently validated RETIRED closures. Authentic runtime execution remains pending.
+
+
+### Task 4 atomic three-worker binding — 2026-09-19
+
+StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4's common-parent semantics: one governed parent admission atomically carries all three distinct child bindings; all three children consume the same parent Master Records closure and then execute concurrently; terminal aggregation still requires the three-way join of all three validated RETIRED closures.
