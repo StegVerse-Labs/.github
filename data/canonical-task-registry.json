@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 76,
-  "status": "SDK_TT_WORKERCOORDINATOR_CLAIM_FENCE_MASTER_RECORDS_GATE_REPAIRED",
+  "generation": 77,
+  "status": "SDK_TT_PURPOSE_BOUND_LIFECYCLE_MASTER_RECORDS_GATE_MERGED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4417,7 +4417,9 @@
         "control/worker-registry.d/stegagents-governed-runtime-001.json",
         "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json",
         "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
-        "tests/test_sdk_tt_purpose_bound_worker_runtime_path.py"
+        "tests/test_sdk_tt_purpose_bound_worker_runtime_path.py",
+        "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:src/purpose_bound_worker_runtime.py",
+        "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:tests/test_purpose_bound_worker_runtime.py"
       ],
       "adjacent_task_refs": [
         "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -4454,7 +4456,7 @@
         "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
         "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
       ],
-      "remaining_predicate": "RUN_EXISTING_TARGETED_ONE_SHOT_AND_REQUIRE_MASTER_RECORDS_CLOSED_WORKERCOORDINATOR_CLAIM_FENCE_BEFORE_TV_TVC_INTR_AND_PURPOSE_BOUND_LIFECYCLE",
+      "remaining_predicate": "AUTHENTIC_RESIDENT_TARGETED_ONE_SHOT_REQUIRED_WITH_MASTER_RECORDS_CLOSED_CLAIM_FENCE_AND_PER_PHASE_LIFECYCLE_TRANSITIONS",
       "completion": {
         "claimed": false,
         "validated": false,
@@ -4462,7 +4464,7 @@
       },
       "authority_effect": "NONE_COORDINATION_ONLY",
       "coordination_hygiene": {
-        "reconciled_against_registry_generation": 75,
+        "reconciled_against_registry_generation": 76,
         "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
         "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
         "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -4589,6 +4591,35 @@
         "claim_authority": "WORKERCOORDINATOR",
         "custody_authority": "MASTER_RECORDS",
         "transition_authority": "INTERLOCK_INTR",
+        "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+      },
+      "purpose_bound_lifecycle_master_records_gate": {
+        "source_repair_complete": true,
+        "steagents_pr": 23,
+        "steagents_merge": "0ba84d159a3a501cb0e13d600638cae63be6b14e",
+        "exact_head": "a5d872ff62f94cf94bc42a3e6db4c2d8aa85cbbd",
+        "exact_head_validation": {
+          "ci_run": 35419064991,
+          "ci_conclusion": "success",
+          "test_readiness_run": 35419065008,
+          "test_readiness_conclusion": "success",
+          "cross_agent_authority_run": 35419064969,
+          "cross_agent_authority_conclusion": "success"
+        },
+        "lifecycle_transitions": [
+          "PURPOSE_BOUND_WORKER_MATERIALIZED",
+          "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+          "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+          "PURPOSE_BOUND_WORKER_RETIRED"
+        ],
+        "required_evidence_type": "PURPOSE_BOUND_WORKER_LIFECYCLE_RECEIPT",
+        "progression_requires": [
+          "state=RECORDED",
+          "reconstruction_status=PASS",
+          "required_evidence_validation_status=PASS",
+          "receipt_sha256==reconstructed_receipt_sha256"
+        ],
+        "authentic_runtime_execution_attempted": false,
         "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
       }
     },
