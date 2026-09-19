@@ -819,3 +819,7 @@ The canonical custody goal now distinguishes successful governed MIR return from
 ### Test 3 complete atomic-seam source delta
 
 The Test 3 control-plane package now carries not only its resident request/consumer, but also the already-merged WorkerCoordinator, ProcessWorkerAdapter, shared StegAgents bridge, executable handoff, and worker-registry fragment required to preserve the atomic ACTIVATE(T)+CREATE_AND_BIND(W,T) seam on a stale resident source root. Runtime completion still requires authentic source-package relay/materialization evidence.
+
+### SDK evaluator runtime manifest materialization
+
+The SDK evaluator runtime-proof path now materializes its declared `runtime-state/sdk-evaluator-governance-posture/manifest.json` through the existing SDK evaluator-manifest builder when that runtime input is absent, using exact committed source inputs declared by the existing resident request. The materializer is non-authorizing, binds the current Goal Task ID into the security-posture request, and then returns to the existing consumer/Interlock-InTr path. This closes a source-path materialization defect only; authentic substrate execution and Master Records reconstruction remain evidence-gated, and missing surfaced evidence is not treated as proof of non-occurrence.
