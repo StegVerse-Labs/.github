@@ -459,13 +459,40 @@ def refresh_local_worker_source(
     """
     values = dict(os.environ if env is None else env)
     raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    source_resolution = "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
     if not raw:
-        return None
+        roots_raw = str(values.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+        if not roots_raw:
+            return None
+        try:
+            roots = json.loads(roots_raw)
+        except Exception:
+            return {
+                "state": "REPO_ROOTS_JSON_INVALID",
+                "attempted": False,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+                "authority_effect": "NONE",
+            }
+        if not isinstance(roots, dict):
+            return {
+                "state": "REPO_ROOTS_JSON_INVALID",
+                "attempted": False,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+                "authority_effect": "NONE",
+            }
+        mapped = roots.get("StegVerse-Labs/.github")
+        raw = str(mapped or "").strip() if isinstance(mapped, str) else ""
+        if not raw:
+            return None
+        source_resolution = "STEGVERSE_REPO_ROOTS_JSON"
     source = Path(raw).expanduser().resolve()
     if source == root.resolve():
         return {
             "state": "SOURCE_EQUALS_RUNTIME_SKIPPED",
             "attempted": False,
+            "source_resolution": source_resolution,
             "network_fetch_performed": False,
             "credential_read_or_acquired": False,
             "authority_effect": "NONE",
@@ -510,6 +537,7 @@ def refresh_local_worker_source(
         "attempted": True,
         "returncode": completed.returncode,
         "source_root": str(source),
+        "source_resolution": source_resolution,
         "receipt": receipt,
         "network_fetch_performed": False,
         "credential_read_or_acquired": False,
