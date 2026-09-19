@@ -963,3 +963,6 @@ Runtime path merge evidence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: P
 ### SDK TT claim-before-warrant ordering correction
 
 The purpose-bound runtime task explicitly preserves the actual merged transition order: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is the first authentic transition. TV/TVC credential materialization and warrant-policy verification occur only after claim/fence Master Records closure. The earlier projection that placed credential materialization first is superseded.
+
+
+Canonical Master Records RTC008 source custody is repaired by PR #2290 / merge `3a3032375e745fb955dfd4e86c8b63eb192b08e4`. The existing shared Universal InTr listener now recognizes the prepared MIR southbound RTC008 request and requires canonical Master Records `RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality` before evidence completion. Focused exact-head validation run `35468924006` returned 2 PASS tests. Authentic RTC008 runtime admission, RTC009, and caller consequence remain unclaimed.
