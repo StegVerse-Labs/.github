@@ -12,7 +12,12 @@
     "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
     "data/task-coordination-policy.json",
     "management/COSV_PROFILE_V1.json",
-    "receipts/preflight/STEGVERSE-CANONICAL-WORK-COORDINATION-COSV-POINTER-001.json"
+    "receipts/preflight/STEGVERSE-CANONICAL-WORK-COORDINATION-COSV-POINTER-001.json",
+    "heartbeat_runtime/worker_assignment_functional_memory.py",
+    "tests/test_worker_assignment_functional_memory.py",
+    "github-pr:2289@9c48c12fa38b1bfece448c878843ee352429d83d",
+    "github-actions:35469405536",
+    "github-actions:35469405509"
   ],
   "observed_at": "2026-09-07T10:49:00-05:00",
   "exact_metrics": {
@@ -30,6 +35,10 @@
     "blocker_count": 0,
     "evidence_complete": false,
     "activated": false,
-    "propagated": false
+    "propagated": false,
+    "functional_memory_assignment_contract": "SOURCE_VALIDATED_MERGED",
+    "functional_memory_non_allow_master_records_pack": true,
+    "functional_memory_prior_state_reconstruction_required": true,
+    "functional_memory_worker_materialization_only_on_allow": true
   }
 }
