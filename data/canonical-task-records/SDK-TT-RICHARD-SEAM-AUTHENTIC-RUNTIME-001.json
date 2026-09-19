@@ -21,7 +21,10 @@
     "StegVerse-org/StegVerse-SDK@79da01e219342e982406d257d1a417a4aeb05814:inspection/examples/tt-atomic-task-worker-binding.example.json",
     "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
     "workers/stegagents_governed_runtime_worker.py",
-    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json"
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+    "handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json",
+    "control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json",
+    "tests/test_sdk_tt_richard_atomic_activation_seam.py"
   ],
   "adjacent_task_refs": [
     "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -104,7 +107,7 @@
     "authentic_runtime_execution_complete": false,
     "seam_holds_authentically": false
   },
-  "remaining_predicate": "REPAIR_EXISTING_WORKERCOORDINATOR_STEGAGENTS_PATH_SO_TEST3_CANNOT_EXPOSE_ACTIVE_T_OR_TASK_BOUND_W_BEFORE_INTR_ATOMIC_CONSTITUTIVE_TRANSITION_CLOSURE",
+  "remaining_predicate": "EXACT_HEAD_SOURCE_VALIDATION_AND_MERGE_REQUIRED_BEFORE_AUTHENTIC_TEST3_ONE_SHOT",
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
     "observed_registry_generation_before_mutation": 81,
@@ -112,7 +115,7 @@
     "test_1_evidence_modified": false,
     "test_2_evidence_modified": false,
     "authentic_runtime_execution_attempted": false,
-    "reconciled_against_registry_generation": 82,
+    "reconciled_against_registry_generation": 84,
     "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
     "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
     "observed_sequence": [
@@ -122,6 +125,12 @@
       "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
     ],
     "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-    "next_actual_transition": "SOURCE_REPAIR_ATOMIC_CONSTITUTIVE_ACTIVATION_BEFORE_AUTHENTIC_ONE_SHOT"
+    "next_actual_transition": "EXACT_HEAD_VALIDATE_AND_MERGE_SOURCE_REPAIR",
+    "source_repair_implemented_on_branch": true,
+    "test3_pending_claim_fence_preserves_handoff_ready_prestate": true,
+    "test3_intr_constitutive_transition_required_before_active_projection": true,
+    "test3_master_records_closure_required_before_active_projection": true,
+    "test3_post_activation_invocation_separated": true,
+    "non_test3_worker_paths_intended_unchanged": true
   }
 }
