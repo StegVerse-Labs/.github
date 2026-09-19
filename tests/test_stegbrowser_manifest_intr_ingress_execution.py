@@ -106,6 +106,8 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertIn('organization_local_intr_ingress_receipt_verified', source)
         self.assertIn('authentic_intr_ingress_observed', source)
         self.assertIn('node_interlock_lease_runtime_correlation_verified', source)
+        self.assertIn('workercoordinator_claim_fence_invocation_nonce_mismatch', source)
+        self.assertIn('"invocation_request_nonce":NONCE', source)
         manifest_runner = (ROOT / "scripts/run_stegbrowser_manifest_bound_runtime.py").read_text()
         self.assertIn('STEGVERSE_STEGBROWSER_INVOCATION_NONCE', manifest_runner)
         self.assertNotIn('Remote_Desktop', source)
