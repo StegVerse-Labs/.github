@@ -17,3 +17,12 @@ Historical device-specific observations remain historical transport observations
 ## Current correction
 
 `SS-EVIDENCE-COMPARISON-001` and StegSocials PR #48 are being corrected accordingly: standard-flow evidence validation binds to canonical KV admission/readback and KV/SKAP authority semantics, with no device-verification gate.
+
+
+## Connected-device inventory prohibition
+
+Device interchangeability also means ordinary StegVerse work must not ask whether any device is currently connected before progressing.
+
+Connected-device inventory is not a runtime prerequisite, execution gate, evidence gate, fallback condition, blocker, or manual-work condition. A zero-device result has no canonical task-state meaning and must not stop WorkerCoordinator, Interlock/InTr, TV/TVC, Master Records, or other task-native progression.
+
+Only work whose explicit subject is connector/device-inventory administration may inspect such inventory.
