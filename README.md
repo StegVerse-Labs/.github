@@ -748,3 +748,6 @@ HANDOFF_READY task T + manifest-governed capability M
 The test must fail closed for ACTIVE-without-worker, worker-without-ACTIVE-task, mismatched reciprocal binding, pre-created worker, invocation before transition closure, manifest-boundary expansion, completed task with a live bound worker, or residual callable/executor state. This is source/local semantic evidence only and does not claim authentic WorkerCoordinator, TV/TVC, Interlock/InTr, resident runtime, or Master Records execution.
 
 Canonical handoff: `docs/SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md`.
+
+
+SDK-TT purpose-bound worker source progression now includes canonical Master Records closure for verified TV/TVC warrant-policy evidence and the post-ALLOW/pre-consequence StegCore/InTr admission. StegCore PR #224, rebased SDK PR #273, and StegAgents PR #24 are merged and exact-head validated. Authentic resident execution is still unclaimed; GitHub validation is not runtime authority.

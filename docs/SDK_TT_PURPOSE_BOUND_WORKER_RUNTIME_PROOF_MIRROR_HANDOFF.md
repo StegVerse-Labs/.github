@@ -367,3 +367,37 @@ PURPOSE_BOUND_WORKER_RETIRED
 Each exact lifecycle receipt is submitted as `PURPOSE_BOUND_WORKER_LIFECYCLE_RECEIPT` required evidence. No second custody implementation, API, store, scheduler, WorkerCoordinator, InTr implementation, worker, adapter, or device dependency was added.
 
 No authentic resident one-shot was executed in this session because the available execution connector reports no connected device. GitHub Actions remain source validation only and are not promoted as runtime evidence. The next authentic predicate is therefore an actual resident `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` that returns a fresh claim/fence Master Records receipt and the four per-phase Master Records receipts from the same governed lifecycle.
+
+
+## Pre-materialization canonical custody gates merged — Goal Prompt 10
+
+Current canonical base was reconciled at Task Registry generation 80.
+
+StegCore PR #224 merged as `68b7e38f40e8a31fbd8cd5953bcf87199619f6cd` from exact head `cbe952057306081c46db076f9e9fc7e47825ae97`. It adds only an optional non-authorizing observer after canonical StegGate ALLOW, present-state validation, and coherence ALLOW, immediately before the existing executor. Observer failure leaves `executor_invoked=false`. Exact-head validations: SPE Standing Canonical Binding run 35419511997 SUCCESS; StegVerse 001/002 Validator run 35419512024 SUCCESS; the unrelated credential-authority gate run 35419512017 was SKIPPED, not failed.
+
+SDK PR #270 became stale after concurrent SDK Test 2 merges and was closed as superseded. Its exact two-file observer plumbing was rebased onto then-current SDK main as PR #273, exact head `bb66529864e2a240aa5cc3be4c1a83c9b77faed2`, and merged as `9de805315872b9b615d55f62a5d853acc6c0765a`. Exact-head source/package validations 35426131209, 35426131200, 35426131190, and 35426131199 all completed SUCCESS.
+
+StegAgents PR #24 merged as `53d7162805cf077cb7eb0a443a1ce31f41ec078e` from corrected exact head `f92e39fece9351aa7c6730adbcc50fffefc7a7b0`. Exact-head CI run 35426525234, Test Readiness run 35426525228, and Cross-Agent Authority run 35426525243 all completed SUCCESS.
+
+The canonical source progression is now:
+
+```text
+WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> Master Records closure
+TV_TVC_WARRANT_POLICY_VERIFIED
+-> required evidence TV_TVC_WARRANT_POLICY_VERIFICATION
+-> Master Records RECORDED + reconstruction PASS + required-evidence PASS + digest equality
+StegCore/InTr ALLOW + present-state + coherence
+-> non-authorizing pre-execution observer
+STEGCORE_INTR_MATERIALIZATION_ADMITTED
+-> required evidence STEGCORE_INTR_PRE_CONSEQUENCE_ADMISSION
+-> Master Records RECORDED + reconstruction PASS + required-evidence PASS + digest equality
+PURPOSE_BOUND_WORKER_MATERIALIZED
+-> INVOCATION_STARTED
+-> TASK_COMPLETED
+-> RETIRED
+```
+
+The first lifecycle transition now uses the successful InTr Master Records receipt as its predecessor. TV/TVC remains credential authority, StegCore/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and Master Records remains custody/reconstruction authority.
+
+No authentic resident execution is promoted by these merges. The resident execution connector was checked after the source repairs and reported no connected device. GitHub/CI therefore remains source validation only. The next authentic predicate is one same-run `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` producing claim/fence, TV/TVC, InTr, all four lifecycle transitions, post-retirement no-authority evidence, and records-only reconstruction from the same execution.
