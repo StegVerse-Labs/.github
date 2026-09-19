@@ -181,6 +181,14 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     materialization_path = persist_materialization_request(runtime, materialization)
 
     custody = CanonicalTransitionCustody(correlation_id)
+    materialization_evidence = {
+        "evidence_id": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED:materialization-request",
+        "evidence_type": "MIR_MATERIALIZATION_REQUEST",
+        "origin_transition_id": "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
+        "encoding": "canonical-json",
+        "sha256": stable_hash(materialization).split(":", 1)[1],
+        "content": materialization,
+    }
     custody.record(
         "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
         outcome="OBSERVED",
@@ -194,6 +202,7 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
             "claim_or_fence_minted": False,
             "request_grants_execution_authority": False,
         },
+        required_evidence_manifest=[materialization_evidence],
         resulting_state_ref_or_hash=str(materialization["request_hash"]),
     )
 
