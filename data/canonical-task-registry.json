@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 103,
-  "status": "SDK_TT_RICHARD_SEAM_TARGETED_CARRIER_GATE_REPAIRED",
+  "generation": 104,
+  "status": "SDK_TT_RICHARD_SEAM_SAME_ROOT_TARGETED_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5523,6 +5523,16 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_SOURCE_PATH_REPAIR_ONLY"
+      },
+      "execution_path_repair_same_root": {
+        "defect": "RESIDENT_DISPATCHER_PASSES_SOURCE_ROOT_EQUALS_RUNTIME_ROOT",
+        "defect_effect": "Test 3 consumer reached refresh_and_execute_resident_task but refresh rejected same-root already-materialized resident source before WorkerCoordinator",
+        "repaired_behavior": "skip copy-refresh when source_root == runtime_root and execute against already-materialized resident source",
+        "distinct_root_refresh_preserved": true,
+        "network_fetch_performed": false,
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE"
       }
     },
     {
