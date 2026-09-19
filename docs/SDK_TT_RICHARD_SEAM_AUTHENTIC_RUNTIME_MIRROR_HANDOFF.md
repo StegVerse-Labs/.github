@@ -389,3 +389,12 @@ This generation implements the previously missing state-machine edge. It does no
 The first concrete remaining `REQUESTED -> WorkerCoordinator` defect was in `scripts/dispatch_resident_execution_requests.py`. Its environment sanitizer preserved the canonical Master Records HTTP endpoint/token/timeout but dropped the durable-local binding variables `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, and `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS` before invoking the Test 3 consumer. That made the downstream generation-105/106 custody-carriage fixes unreachable for resident installations using the durable local Master Records binding.
 
 The existing dispatcher now preserves those three canonical custody inputs. No runtime, scheduler, dispatcher, authority plane, source relay, carrier dependency, or device prerequisite was added. The next authentic transition remains the fresh WorkerCoordinator claim/fence and canonical Master Records closure.
+
+
+## Targeted one-shot dispatch/drive repair — generation 112
+
+Tracing the already-REQUESTED request after the dispatcher custody fix exposed why the Test 3 one-shot was still not being driven promptly. The native worker process invoked the resident dispatcher only every 100 ticks in global sequential mode; Test 3 was consumer 35 of 51. In addition, the Test 3 consumer invoked exactly one targeted WorkerCoordinator cycle, while the repaired lifecycle requires a second targeted cycle to consume `test3_waiting_for_governed_close` and execute `GOVERNED_CLOSE`.
+
+The existing native dispatcher path now invokes the already-registered exact selector `sdk_tt_richard_seam_authentic_runtime` first whenever the canonical Test 3 request is present, then preserves the normal global dispatcher pass so unrelated resident work is not suppressed. The Test 3 consumer now drives a maximum of two targeted WorkerCoordinator cycles in the same request consumption, stopping early if the authentic terminal close receipt already exists.
+
+This adds no runtime, scheduler, dispatcher, authority plane, carrier requirement, source relay, or device prerequisite. It makes the existing `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` behave as one bounded Test 3 request rather than a globally delayed multi-visit sequence.
