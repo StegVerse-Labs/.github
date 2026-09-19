@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 81,
+  "generation": 82,
   "status": "SDK_TT_PRE_MATERIALIZATION_MASTER_RECORDS_GATES_MERGED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5225,6 +5225,122 @@
         "test_1_preserved_unchanged": true,
         "reconciled_against_registry_generation": 78,
         "next_successor_class": "TEST_3_AUTHENTIC_RICHARD_SCENARIO_SEAM_VALIDATION"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+      "correlation_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+      "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+      "parent_task_id": "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+      "goal": "Authentically validate Richard's short-lived-actor seam scenario through the existing StegVerse governed runtime by proving that a registered HANDOFF_READY task and manifest-governed capability undergo one governed ACTIVATE(T)+CREATE_AND_BIND(W,T) transition before invocation, that the same T/W lineage carries the result, that CLOSE(T)+RETIRE(W,T) ends the binding, and that Master Records reconstructs the complete lifecycle after W disappears.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "20010000110000"
+      },
+      "cosv_task_vector": "20010000110000",
+      "source_refs": [
+        "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/SDK-TT-ATOMIC-TASK-WORKER-BINDING-001.json",
+        "StegVerse-org/StegVerse-SDK@79da01e219342e982406d257d1a417a4aeb05814:stegverse/atomic_task_worker_binding.py",
+        "StegVerse-org/StegVerse-SDK@79da01e219342e982406d257d1a417a4aeb05814:inspection/examples/tt-atomic-task-worker-binding.example.json",
+        "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+        "workers/stegagents_governed_runtime_worker.py",
+        "control/process-worker-adapters.d/stegagents-governed-runtime-001.json"
+      ],
+      "adjacent_task_refs": [
+        "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+        "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+        "STEGAGENTS-GOVERNED-RUNTIME-001",
+        "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
+      ],
+      "test_contract": {
+        "test_number": 3,
+        "class": "AUTHENTIC_RICHARD_SCENARIO_SEAM_VALIDATION",
+        "question": "DOES_THE_SEAM_HOLD_UNDER_AUTHENTIC_GOVERNED_EXECUTION_FOR_A_SHORT_LIVED_TASK_BOUND_ACTOR",
+        "preserved_test_1": true,
+        "preserved_test_2": true,
+        "same_substantive_task_payload_as_test_2": true,
+        "semantic_reference_records_packet_hash": "b5bbb5476350805a55f365cd27fc0fa8145c75d4cb5b27338d5299d328ca5890",
+        "scenario_property": "SHORT_LIVED_ACTOR_CREATED_AND_DESTROYED_WITHIN_ONE_BOUNDED_COMMITMENT_WINDOW",
+        "required_constitutive_transition": "ACTIVATE_TASK_AND_CREATE_BIND_WORKER"
+      },
+      "reuse_requirements": {
+        "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "transition_authority": "StegCore/InTr",
+        "credential_warrant_authority": "TV/TVC",
+        "observed_reality_custody": "Master Records",
+        "github_runtime_authority": "NONE",
+        "new_runtime_allowed": false,
+        "new_scheduler_allowed": false,
+        "new_dispatcher_allowed": false,
+        "new_workercoordinator_allowed": false,
+        "second_user_operated_device_allowed": false
+      },
+      "required_authentic_sequence": [
+        "HANDOFF_READY_T_AND_NO_TASK_BOUND_W",
+        "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+        "REQUIRED_TV_TVC_WARRANT_POLICY_VERIFIED",
+        "INTR_ADMITS_SINGLE_ACTIVATE_T_CREATE_AND_BIND_W_T_TRANSITION",
+        "MASTER_RECORDS_CLOSES_CONSTITUTIVE_TRANSITION",
+        "INVOCATION_STARTED_ONLY_AFTER_CONSTITUTIVE_CLOSURE",
+        "TASK_RESULT_BOUND_TO_SAME_T_W_CLAIM_FENCE",
+        "INTR_ADMITS_CLOSE_T_RETIRE_W_T",
+        "MASTER_RECORDS_CLOSES_RETIREMENT_TRANSITION",
+        "POST_RETIREMENT_NO_LIVE_TASK_BOUND_AUTHORITY",
+        "RECORDS_ONLY_RECONSTRUCTION_MATCHES_AUTHENTIC_RECEIPTS"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHENTIC_PRESTATE_TASK_HANDOFF_READY_AND_WORKER_ABSENT",
+        "AUTHENTIC_MANIFEST_CAPABILITY_OBSERVED",
+        "AUTHENTIC_FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "AUTHENTIC_REQUIRED_WARRANT_POLICY_VERIFIED",
+        "AUTHENTIC_INTR_ATOMIC_ACTIVATION_WORKER_BINDING_ADMISSION",
+        "AUTHENTIC_ACTIVE_TASK_AND_NEW_WORKER_BOUND_IN_SAME_TRANSITION",
+        "AUTHENTIC_MASTER_RECORDS_CONSTITUTIVE_TRANSITION_RECORDED",
+        "AUTHENTIC_MASTER_RECORDS_CONSTITUTIVE_RECONSTRUCTION_MATCH",
+        "AUTHENTIC_INVOCATION_AFTER_CONSTITUTIVE_TRANSITION",
+        "AUTHENTIC_RESULT_BOUND_TO_SAME_TASK_WORKER_LINEAGE",
+        "AUTHENTIC_CLOSE_TASK_RETIRE_WORKER_TRANSITION",
+        "AUTHENTIC_POST_RETIREMENT_CONTINUED_AUTHORITY_FALSE",
+        "AUTHENTIC_RECORDS_ONLY_FINAL_RECONSTRUCTION",
+        "AUTHENTIC_NO_SPLIT_TASK_WORKER_STATE_OBSERVED"
+      ],
+      "falsification_requirements": [
+        "ACTIVE_WITHOUT_WORKER_MUST_FAIL_CLOSED",
+        "WORKER_WITHOUT_ACTIVE_TASK_MUST_FAIL_CLOSED",
+        "MISMATCHED_TASK_WORKER_BINDING_MUST_FAIL_CLOSED",
+        "PREACTIVATION_TASK_BOUND_WORKER_MUST_FAIL_CLOSED",
+        "INVOCATION_BEFORE_CONSTITUTIVE_CLOSURE_MUST_FAIL_CLOSED",
+        "MANIFEST_BOUNDARY_EXPANSION_MUST_FAIL_CLOSED",
+        "TASK_COMPLETE_WITH_WORKER_STILL_LIVE_MUST_FAIL_CLOSED",
+        "RECORDS_ONLY_WITH_EXECUTOR_REFERENCE_MUST_FAIL_CLOSED"
+      ],
+      "master_records_progression_rule": [
+        "state=RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+        "receipt_sha256==reconstructed_receipt_sha256"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authentic_runtime_execution_complete": false,
+        "seam_holds_authentically": false
+      },
+      "remaining_predicate": "AUTHENTIC_TEST_3_ONE_SHOT_WITH_ATOMIC_TASK_ACTIVATION_WORKER_CREATION_AND_RECORDS_ONLY_RECONSTRUCTION_REQUIRED",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "coordination_hygiene": {
+        "observed_registry_generation_before_mutation": 81,
+        "generation_fence_satisfied": true,
+        "test_1_evidence_modified": false,
+        "test_2_evidence_modified": false,
+        "authentic_runtime_execution_attempted": false
       }
     }
   ],
