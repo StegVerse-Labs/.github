@@ -6,7 +6,7 @@
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "SOURCE_CONSUMER_IMPLEMENTED_CANONICAL_RUNTIME_SUBSTRATE_RESOLUTION_ACTIVE",
+  "checkout_state": "SOURCE_CONSUMER_MASTER_RECORDS_TRANSITION_CUSTODY_BOUND_RUNTIME_PROOF_PENDING",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -36,7 +36,11 @@
     "SDK_MANIFEST_EXACT_HASH_BINDING_OBSERVED",
     "STEGOS_INTR_POSTURE_RESOLUTION_OBSERVED",
     "POSTURE_BOUND_EXECUTION_OBSERVED",
-    "AUTHENTIC_RETAINED_RUNTIME_RECEIPT_OBSERVED"
+    "AUTHENTIC_RETAINED_RUNTIME_RECEIPT_OBSERVED",
+    "MASTER_RECORDS_STATE_RECORDED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_PASS",
+    "MASTER_RECORDS_RECEIPT_RECONSTRUCTION_DIGEST_EQUAL"
   ],
   "remaining_predicate": "AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE",
   "adjacent_task_refs": [
@@ -77,6 +81,18 @@
     "new_runtime_allowed": false,
     "new_scheduler_allowed": false,
     "new_request_path_allowed": false,
-    "new_authority_plane_allowed": false
+    "new_authority_plane_allowed": false,
+    "master_records_verification": {
+      "authority": "master-records/orchestration",
+      "client_ref": "workers/canonical_state_transition_custody.py",
+      "progression_gate": [
+        "state=RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+        "receipt_sha256=reconstructed_receipt_sha256"
+      ],
+      "source_of_success_failure_truth": true,
+      "transition_authority": false
+    }
   }
 }
