@@ -38,3 +38,22 @@ Do not create another runtime, scheduler, dispatcher, custody store, authority p
 ## Completion
 
 Complete only when source routing, Task Registry state, handoffs, and runtime lineage agree on the same actual StegBrowser execution owner; no Healer prerequisite remains unless exact lineage evidence proves it belongs there; and the parent task can continue directly through its canonical execution chain.
+
+
+## Trace result — correction complete
+
+Source trace confirms that neither `scripts/run_stegbrowser_manifest_bound_runtime.py` nor `scripts/run_stegbrowser_runtime_consumption_reusable.py` invokes Healer. The artificial insertion occurred later in Master Records/successor evidence modeling when the Healer checkpoint was promoted to an authoritative StegBrowser evidence surface.
+
+Corrected current chain:
+
+```text
+stegbrowser_runtime_connection_ingress
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> run_stegbrowser_manifest_bound_runtime
+-> WorkerCoordinator claim/fence
+-> Interlock/InTr
+-> direct retained StegBrowser evidence
+-> Master Records
+```
+
+`SHWP-HEALER-SOVEREIGN-SCHEDULER-001` remains `TRIGGERED_REMEDIATION_ONLY`. No second invocation, runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, or device dependency was created.
