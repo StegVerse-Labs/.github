@@ -707,3 +707,7 @@ Registry generation 65 restores `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIAT
 ### StegBrowser resident custody-root observation
 
 Canonical Goal Task `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` remains ACTIVE at Task Registry generation 70. The controlling Healer retention seam is the fenced worker checkpoint child receipt, not the outer scheduler-consumption envelope. No authentic checkpoint, six-field retention pointer, or exactly-one `RESIDENT_CUSTODY_ROOT_OBSERVED` root is currently recorded, so the non-authorizing classifier and all downstream WorkerCoordinator / Interlock-InTr / TVC / Master Records progression remain unpromoted. No second task, invocation, runtime, scheduler, dispatcher, or device dependency has been introduced.
+
+### SDK evaluator dispatch-transition custody carriage
+
+The existing resident dispatcher now carries an attempted `sdk_evaluator_governance_posture` `RESIDENT_REQUEST_DISPATCH_VISIT` into canonical Master Records custody using the existing `workers/canonical_state_transition_custody.py` client. Required evidence binds selector, consumer, attempted flag, exact task/request identity, and machine-result digest/content. This changes no dispatch authority or execution semantics and does not itself prove runtime execution; progression still requires Master Records RECORDED, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality.
