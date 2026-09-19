@@ -895,3 +895,8 @@ Test 3 now has an executable terminal edge. After the retained task result, the 
 ### Test 3 resident dispatcher custody carriage
 
 The resident request dispatcher now preserves the existing durable-local Master Records binding before invoking Test 3's request consumer. This closes the remaining dispatcher-level environment-carriage defect on the canonical `REQUESTED -> WorkerCoordinator` path; it grants no authority and does not itself prove the claim/fence transition occurred.
+
+
+### SDK purpose-bound worker cost/lifetime demonstration augmentation — 2026-09-19
+
+`SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` now carries a validated SDK semantic matrix: 15-second low-cost, 30-second median-cost, and 60-second high-cost single-worker derived maxima, plus a fourth task with three simultaneous median-cost workers. StegVerse-SDK PR #275 merged as `a79d7f39e870c72e66d0d7ab458414b5bfb192e1`; workflow run `35463403840` passed the four-case manifest and concurrent-overlap assertions. Authentic governed runtime execution remains a separate outstanding predicate.
