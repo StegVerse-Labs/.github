@@ -130,3 +130,28 @@ effect: the existing RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001 request/sele
 The child runtime observation owner is therefore the existing canonical HeartBeat-separated WorkerCoordinator request-consumption path, not a second StegVerse-002 persistent resident executor. The first authentic evidence now required is the existing `sv002_org_runtime_activation` consumption/dispatch evidence carrying the exact current Goal/COSV/packet and Master Records REQUEST_BOUND custody result.
 
 Runtime completion remains unclaimed until that authentic consumption exists.
+
+
+## 2026-09-18 TVC self-heal current-source repair
+
+Tracing the canonical WorkerCoordinator chain one level further upstream found that the existing TVC root self-heal still pinned its immutable `StegVerse-Labs/.github` runtime source to historical `a5d69cdd0c0c039a6ec48c5c7fda800384089a16`. That source predates the current `sv002_org_runtime_activation` -> deterministic rerun callable repair, so a healthy self-heal cycle could refresh the resident with stale source and never expose the current rerun to the existing dispatcher.
+
+TVC PR #443 repaired only that existing private-source/self-heal seam and merged at:
+
+```text
+StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae
+target immutable runtime source:
+StegVerse-Labs/.github@c5e6a7939db85063f49fc0b3010bd6462d13006b
+```
+
+The existing three-selector sequence remains unchanged:
+
+```text
+astra_class_resilience_awareness
+quantum_resilience_awareness
+sv002_org_runtime_activation
+```
+
+No new request, self-heal supervisor, runtime, dispatcher, WorkerCoordinator, scheduler, credential path, custody authority, transition authority, or device dependency was introduced.
+
+Authentic runtime evidence is still required. The source repair does not prove that TVC materialized the new immutable source, that the resident dispatcher ran, that the current callable executed, or that REQUEST_BOUND reached Master Records.
