@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 105,
-  "status": "SDK_TT_RICHARD_SEAM_MASTER_RECORDS_CUSTODY_CARRIAGE_REPAIRED",
+  "generation": 106,
+  "status": "SDK_TT_RICHARD_SEAM_STEGAGENTS_MASTER_RECORDS_ENV_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5554,6 +5554,15 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_CUSTODY_BINDING_CARRIAGE_ONLY"
+      },
+      "execution_path_repair_stegagents_master_records_env": {
+        "defect": "STEGAGENTS_PROCESS_ADAPTER_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
+        "defect_effect": "after claim/fence custody, Test 3 atomic activation worker could launch without the Master Records binding required for TV_TVC_WARRANT_POLICY_VERIFIED and ACTIVATE_TASK_AND_CREATE_BIND_WORKER closure",
+        "repaired_adapter": "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+        "master_records_binding_carried": true,
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_ENV_CARRIAGE_ONLY"
       }
     },
     {
