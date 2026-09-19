@@ -890,3 +890,8 @@ Test 3 now has an executable terminal edge. After the retained task result, the 
 ## Admissibility Wiki public hostname coordination
 
 `ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001` tracks migration of the existing Admissibility Wiki public hostname to `https://admissibility.stegverse.org`. The wiki repository remains canonical source. GitHub Pages remains the hosting mechanism. The task does not create a second wiki, runtime, execution authority, or publication authority. Account-level Pages custom-domain and DNS CNAME changes remain explicit human-action dependencies until observed.
+
+
+### StegBrowser artificial Healer routing removed
+
+`STEG-BROWSER-HEALER-ROUTING-CORRECTION-001` traced immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` and confirmed the executable StegBrowser chain contains no Healer dependency. The accidental routing was introduced in later evidence/custody modeling. Current ownership is direct: `stegbrowser_runtime_connection_ingress -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator -> Interlock/InTr -> retained StegBrowser evidence -> Master Records`. Healer remains triggered remediation only.
