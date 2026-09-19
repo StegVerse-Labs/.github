@@ -70,3 +70,12 @@ Fresh public GitHub searches for the v0.8 run's distinctive counts/identifiers d
 Upstream AILeash main `8edfe2b97e489c3d1f1a576505f95bfbe6c1b7d7` now contains a public current-chain walk source and a reset-disclosure source. `modules/walk.py` v1.1.0 publishes a genesis-to-tip traversal contract for the **post-2026-09-07** chain and exact preimage recomputation for public blocks. `modules/disclosure.py` v1.0.0 explicitly states that pre-reset blocks belong to an earlier chain and cannot be verified against the current chain; its source leaves the previous chain's final tip and height unrecorded in the disclosure.
 
 This narrows the unresolved R10 evidence question: current-chain walkability does not bridge the historical chain. No disputed pre-reset commitment was authenticated or bound to v1.1 by this source, so R10 remains operator-disclosed `NOT MET` without independent blanket failure/compliance promotion. The v0.8 1,534/50 package remains counterpart-reported complete, and the historical 784/30 run remains settled.
+
+
+## Generation 111 pre-reset completeness / Bitcoin verification — 2026-09-19
+
+A one-shot public-evidence transport recovered authentic retained August 2026 completeness commitments from sebbi.pro. The subjects commitment is old-chain block `1895`, root `5a34b9af7ab85de4d2b9b3d18c238c4aaa632333f4fedeb4c5fe1d5c6953abff`, chain seal `4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260`, with 30 leaves. Independent Merkle replay verified membership of `wit:flavorflowstrategy.uk`, `wit:praesidium`, and `wit:red-flag-ai-pro` in that retained pre-reset set.
+
+The exact retained OTS proof for `4a99a3b5...` (original proof SHA-256 `275186cb44c66ef366181d10f26daa9df0afec6a44e996a491061e352604d38f`) was independently upgraded. Corrected run `35463311073` established Bitcoin attestations at heights `965082` and `965103`; proof-derived Merkle roots matched both Blockstream and mempool.space at both heights. This advances the August subjects commitment to independently verified external timestamp anchoring.
+
+This does not reconstruct block 1895's original chain preimage or expose an exact disputed historical witness record's sealed `witness_version`/liveness term. Therefore historical binding to `2d6715868bb2812b98d874ab17890ff89ece30d5` remains unresolved and A.2 R10 remains operator-disclosed `NOT MET`. The v0.8 1,534/50 package remains counterpart-reported complete; the historical 784/30 run remains settled.

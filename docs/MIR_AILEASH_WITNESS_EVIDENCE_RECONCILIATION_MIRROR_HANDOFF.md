@@ -184,3 +184,46 @@ This is material evidence because it establishes a concrete historical-chain dis
 The public runtime endpoints named by the source (`https://sebbi.pro/x/walk/*` and `https://sebbi.pro/x/disclosure/*`) were not retrievable through the available web reader in this continuation, so no runtime response, sealed reset block, current-chain arithmetic, or live deployment is claimed. The source evidence alone is retained with that limitation.
 
 Next executable historical action: obtain an authentic pre-reset sealed block/export or an operator-retained prior-chain tip/height plus the exact block/sequence provenance needed to bridge the old chain. Only then recompute the historical seal and test whether its witness version/term binds to `2d6715868bb2812b98d874ab17890ff89ece30d5` or another applicable revision. Do not substitute current `/x/walk` blocks for pre-reset evidence.
+
+
+## Generation 111 retained pre-reset completeness and Bitcoin anchoring verification — 2026-09-19
+
+Canonical Task Registry generation 111 was re-read before documentation reconciliation. The child task remains `ACTIVE` with COSV `50000000100000`.
+
+### Retained pre-reset commitments independently retrieved
+
+The public `/x/complete/periods` and `/x/complete/root` surfaces were retrieved through a one-shot GitHub Actions evidence-transport run, preserving exact response bytes. The August 2026 deployment-wide commitments are:
+
+- receipts: block index `1894`, 1,844 leaves, root `040fc1b82362da2449f453b5de3bfef95a7c054e8df8911bcc4168c885ded1f1`, chain seal `65d63926b6a32f69244607d6953a427b0a01bd9df4dc32a6ae3fbbfe0aa4a3e3`;
+- subjects: block index `1895`, 30 leaves, root `5a34b9af7ab85de4d2b9b3d18c238c4aaa632333f4fedeb4c5fe1d5c6953abff`, chain seal `4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260`.
+
+Both pre-date the disclosed 2026-09-07 chain reset. Current-chain inclusion and consistency endpoints report those exact historical seals as not members of the chain currently served, which is consistent with the disclosed reset and independently confirms that current-chain traversal cannot reconstruct these historical blocks.
+
+The public completeness proof for `wit:flavorflowstrategy.uk` recomputed independently to the exact August subjects root at index 26. The same independent recomputation succeeded for `wit:praesidium` at index 27 and `wit:red-flag-ai-pro` at index 28. A query for `wit:shango` returned a valid absence proof bounded by independently verified adjacent leaves `wit:red-flag-ai-pro` and `wit:shango.in`; this is a spelling/identity distinction and is not promoted as evidence that Shango was absent.
+
+### Historical subjects commitment OpenTimestamps verification
+
+The exact public OTS artifact for historical subjects seal `4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260` was retrieved with original proof SHA-256 `275186cb44c66ef366181d10f26daa9df0afec6a44e996a491061e352604d38f`, stamp ID `1788293244`, stamped at `2026-09-01T20:07:24Z`. The retained server copy was still reported as pending.
+
+A copy of that exact proof was upgraded using the standard OpenTimestamps client. The corrected verification run is GitHub Actions run `35463311073` at commit `66fa946fb9441ee8f5df06a65bdf60b8a3da27ef`. It verified that the proof starts from SHA-256 digest `4a99a3b5...` and yielded Bitcoin block attestations:
+
+- height `965082`, proof-derived Bitcoin block Merkle root `f2bd1ec41da3c464a39074b6e1d8db35f1ab489dfa36a8e228ddcf8068f7d25a`;
+- height `965103`, proof-derived Bitcoin block Merkle root `b3a444da6e952ba00431ad67770ade15b70672c714571d0c35e9b37d4868e7ec`.
+
+For both heights, Blockstream and mempool.space independently returned the same block hash, height, and Merkle root as the proof-derived values. The corrected run completed `success` with `all_two_explorer_matches=true`.
+
+A prior verification attempt, run `35449567326` at commit `46752f34ad6ad8cbd093fb0ec6e00befa6f9529e`, failed because the verifier incorrectly compared the internal timestamp message immediately before the Bitcoin attestation with the block header Merkle root. That verifier defect was corrected rather than interpreted as failed evidence.
+
+Evidence classification for the historical subjects commitment is therefore advanced narrowly to:
+
+`INDEPENDENTLY_RETRIEVED_PRE_RESET_COMPLETENESS_COMMITMENT / INDEPENDENT_MERKLE_MEMBERSHIP_VERIFIED / OTS_PROOF_COPY_UPGRADED / BITCOIN_BLOCK_ATTESTATIONS_MATCHED_BY_TWO_INDEPENDENT_EXPLORERS`.
+
+This proves that the retained August subjects commitment hash was incorporated into an OpenTimestamps proof that resolves to independently confirmed Bitcoin blocks. It does **not** by itself reconstruct block 1895's original chain preimage, prove the complete old-chain predecessor path, or reveal the exact historical witness record's sealed `witness_version` / liveness term.
+
+### R10 and rerun disposition
+
+A.2 R10 remains operator-disclosed `NOT MET`. The stronger commitment/anchoring evidence does not yet bind a disputed historical witness record to `2d6715868bb2812b98d874ab17890ff89ece30d5` or another exact historical revision because the necessary original sealed-record preimage and per-record historical version/term remain unavailable.
+
+The reported v0.8 1,534-event / 50-checkpoint run remains `COUNTERPART_REPORTED_COMPLETE`; no authentic run package surfaced during this exact-locator continuation. The prior 784-record / 30-commitment run remains historical and settled, including its existing R1-R10 treatment and `custodian` naming.
+
+The temporary GitHub evidence-fetch workflow was removed by resetting the evidence branch back to current canonical main before this documentation update. No new runtime, scheduler, credential path, custody store, or device dependency was retained.
