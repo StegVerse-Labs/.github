@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 111,
-  "status": "SDK_TT_RICHARD_SEAM_DISPATCH_MASTER_RECORDS_CARRIAGE_REPAIRED",
+  "generation": 112,
+  "status": "SDK_TT_RICHARD_SEAM_TARGETED_ONE_SHOT_DRIVE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5600,6 +5600,19 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_ENV_CARRIAGE_ONLY"
+      },
+      "execution_path_repair_one_shot_drive": {
+        "defect": "TEST3_TARGETED_REQUEST_SERIALIZED_BEHIND_GLOBAL_DISPATCH_AND_SINGLE_CYCLE_ONLY",
+        "defect_effect": "native resident dispatcher visited Test 3 as consumer 35 of 51 only every 100 ticks, while one consumer invocation ran only one WorkerCoordinator cycle even though governed close requires the next targeted cycle",
+        "repaired_behavior": {
+          "priority_exact_selector": "sdk_tt_richard_seam_authentic_runtime",
+          "global_dispatch_preserved": true,
+          "bounded_targeted_cycles_per_request": 2,
+          "stop_early_on_terminal_close_receipt": true
+        },
+        "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_EXISTING_DISPATCH_AND_WORKERCOORDINATOR_ONLY"
       }
     },
     {
