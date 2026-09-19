@@ -90,3 +90,14 @@ The existing consumer now uses the already-established `workers/canonical_state_
 The consumer fails closed unless the canonical Master Records response is `RECORDED`, reconstruction is `PASS`, required-evidence validation is `PASS`, and the receipt/reconstruction digests are equal. Only after that closure may the local consumption result expose `sdk_return_binding_observed=true`. All later predicates remain false: final StegVerse-side egress, Interlock/InTr egress, far-side transition, authentic external MIR substitution, and communication completion.
 
 This repair adds no runtime, transport, scheduler, dispatcher, custody store, transition authority, or credential authority. It closes only the custody gap on the existing SDK-return materialization transition.
+
+
+## RTC007 continuation binding — 2026-09-19
+
+After `RTC-SDK-RETURN-006` canonical custody closes, the existing Publisher-return consumer now continues the exact retained SDK return binding through the already-merged LLM Adapter `prepare_sdk_return_for_intr()` implementation for `RTC-STEGVERSE-EGRESS-007`.
+
+The exact LLM Adapter transition object and exact predecessor SDK binding are required evidence for `RTC-STEGVERSE-EGRESS-007`. Master Records must return `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality before the path may proceed.
+
+Only after RTC007 closure does the consumer invoke the already-existing StegOS `prepare_mir_southbound_materialization()` seam. That produces the existing Universal InTr materialization request for RTC008; it does not claim Interlock/InTr admission, RTC009 far-side transition, caller consequence, or communication completion.
+
+No runtime, scheduler, dispatcher, transport, custody store, transition authority, or credential authority is added.
