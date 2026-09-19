@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "correlation_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "root_correlation_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "parent_task_id": null,
+  "supersedes_task_id": "ENTERPRISE-RENDER-ERADICATION-001",
+  "goal": "Remove named third-party hosting-provider dependencies and provider-identifying active references from current StegVerse enterprise source and coordination surfaces.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md",
+  "issue_ref": "StegVerse-Labs/.github#1703",
+  "source_refs": [
+    "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/ENTERPRISE-HOST-PROVIDER-ERADICATION-001.json",
+    "control/task-vectors/ENTERPRISE-HOST-PROVIDER-ERADICATION-001.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/StegVerse-SCW",
+      "StegVerse-Labs/StegPay",
+      "StegVerse-Labs/StegSports-CFP",
+      "StegVerse-Labs/Continuity",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-org/LLM-adapter",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "third-party-host-eradication",
+      "provider-fallback-removal",
+      "provider-config-removal",
+      "provider-secret-identifier-removal",
+      "enterprise-default-branch-sweep"
+    ]
+  },
+  "replacement_third_party_provider_authorized": false,
+  "runtime_device_invariant": {
+    "remote_device_connector_optional": true,
+    "connected_remote_device_required": false,
+    "zero_connected_devices_is_runtime_blocker": false,
+    "always_on_user_machine_required": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "source_inventory_complete": false,
+    "provider_dependency_removed": false,
+    "runtime_claimed": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_transition_authority": true,
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE"
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
