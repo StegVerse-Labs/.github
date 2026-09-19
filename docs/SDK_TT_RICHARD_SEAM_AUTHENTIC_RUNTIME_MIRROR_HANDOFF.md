@@ -209,3 +209,11 @@ The stale-resident bootstrap package therefore could materialize the Test 3 sele
 The bounded repair extends only the existing RT-CONTROL-PLANE-SOURCE-PACKAGE-001 allowlist with the already-merged Test 3 delta: heartbeat_runtime/worker_runtime_legacy.py, heartbeat_runtime/process_adapter.py, workers/stegagents_governed_runtime_worker.py, the Test 3 executable handoff, and the Test 3 worker-registry fragment. The existing Test 3 request and consumer remain included.
 
 No new runtime, scheduler, dispatcher, transport, WorkerCoordinator, request plane, custody path, or authority plane is introduced. The next runtime predicate remains authentic delivery of the exact resulting package and far-side SOURCE_MATERIALIZED_VERIFIED evidence.
+
+## Package-delta closeout — proposed generation 96
+
+PR #2223 passed exact-head Cross-Task Coordination, Purpose-Bound Worker, KV AI Memory, and DeepSeek resident validation and merged as `4696d4b0898c504fa0f601f8b879551ba2614903`.
+
+The control-plane package now carries the complete `.github` Test 3 atomic-seam delta required for stale-resident recovery. No authentic source-package relay or far-side materialization receipt has been observed yet, so runtime predicates remain unchanged.
+
+Next actual transition: `AUTHENTIC_CONTROL_PLANE_SOURCE_PACKAGE_RELAY_TO_SOURCE_MATERIALIZED_VERIFIED`.
