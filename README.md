@@ -900,3 +900,10 @@ The resident request dispatcher now preserves the existing durable-local Master 
 ### AILeash pre-reset commitment verification
 
 `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now has independently retrieved pre-reset August completeness evidence. The historical subjects commitment at old-chain block 1895 was Merkle-verified for retained witness subjects, and its exact OpenTimestamps proof was independently upgraded to Bitcoin attestations whose block Merkle roots matched both Blockstream and mempool.space. This strengthens the historical commitment/anchoring evidence without changing R10: the exact disputed witness record preimage and sealed historical version/term are still required before binding it to the recovered v1.1 revision. The v0.8 1,534/50 rerun remains counterpart-reported; the earlier 784/30 run remains historical and settled.
+
+
+## Canonical connected-device independence
+
+All StegVerse tasks now inherit a strict global invariant: ordinary task progression MUST NOT query or depend on connected-device inventory. Zero connected devices is never a runtime prerequisite failure, blocker, stop condition, evidence gap, fallback trigger, source-repair trigger, or manual-work requirement.
+
+Runtime progression follows the task's actual authority/evidence chain—Task Registry -> WorkerCoordinator -> Interlock/InTr -> TV/TVC where applicable -> Master Records—without a preflight device-availability check. The only permitted exception is a task whose explicit subject is connector/device-inventory management itself.
