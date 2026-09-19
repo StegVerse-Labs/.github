@@ -875,3 +875,8 @@ Test 3 targeted execution now preserves the existing canonical Master Records HT
 ### Test 3 StegAgents custody environment
 
 The shared StegAgents process adapter now preserves the existing canonical Master Records custody binding so Test 3 can close its required TV/TVC warrant-policy and atomic InTr transitions through Master Records. This is environment carriage only; it grants no new authority and does not itself prove runtime execution.
+
+
+### Test 3 governed close and worker retirement
+
+Test 3 now has an executable terminal edge. After the retained task result, the existing WorkerCoordinator invokes the same shared StegAgents adapter in `GOVERNED_CLOSE` mode. StegCore/InTr must admit `CLOSE_TASK_AND_RETIRE_WORKER`, canonical Master Records must close and reconstruct that exact transition, and only then may the adapter return `COMPLETED` so WorkerCoordinator releases the task-bound worker. Terminal evidence is records-only and must retain neither callable nor executor authority.
