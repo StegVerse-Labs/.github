@@ -95,14 +95,15 @@ def test_worker_bridge_accepts_only_pending_test3_preactivation_shape():
 def test_workercoordinator_projects_active_only_after_closed_constitutive_receipt():
     source = RUNTIME_PATH.read_text(encoding="utf-8")
     branch = source.index('if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":')
-    generic_activation = source.index('registry["generation"] = generation', branch)
     require_closure = source.index('transition.get("state") == "RECORDED"', branch)
     require_reconstruction = source.index('transition.get("reconstruction_status") == "PASS"', branch)
     require_evidence = source.index('transition.get("required_evidence_validation_status") == "PASS"', branch)
     require_digest = source.index('transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")', branch)
     projection = source.index('"state": "ACTIVE"', require_digest)
     invocation = source.index("self._invoke(registry, task, carrier_epoch, cost_log, events)", projection)
-    assert branch < require_closure < require_reconstruction < require_evidence < require_digest < projection < invocation < generic_activation
+    test3_return = source.index("            return True", invocation)
+    generic_branch = source.index("        if self._atomic_constitutive_activation_required(handoff):", test3_return)
+    assert branch < require_closure < require_reconstruction < require_evidence < require_digest < projection < invocation < test3_return < generic_branch
 
 
 def test_test3_registration_reuses_existing_worker_provider():
