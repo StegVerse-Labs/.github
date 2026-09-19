@@ -101,7 +101,10 @@ class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
         source = (Path(__file__).resolve().parents[1] / "scripts" / "run_worker_runtime.py").read_text()
         self.assertIn('parser.add_argument("--task-id"', source)
         self.assertIn("--task-id requires exactly one non-continuous worker-runtime cycle", source)
-        self.assertIn("targeted independent execution requires an existing separated carrier reference", source)
+        self.assertNotIn("targeted independent execution requires an existing separated carrier reference", source)
+        runtime_source = (Path(__file__).resolve().parents[1] / "heartbeat_runtime" / "worker_runtime_legacy.py").read_text()
+        self.assertIn('"INDEPENDENT_OSCILLATOR_REFERENCE_ONLY"', runtime_source)
+        self.assertIn('"carrier_reference_observed": carrier_reference_observed', runtime_source)
         self.assertIn("target_task_id=args.task_id", source)
         self.assertIn("if not args.task_id and not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file()", source)
         self.assertIn("if not args.task_id and not args.dry_run:", source)
@@ -187,3 +190,17 @@ class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    def test_source_lineage_parent_may_explicitly_decline_runtime_predecessor_reconstruction(self):
+        source = inspect.getsource(LegacyWorkerCoordinator._successor_reconstruction)
+        self.assertIn('runtime_predecessor_reconstruction_required', source)
+        runtime = LegacyWorkerCoordinator.__new__(LegacyWorkerCoordinator)
+        handoff = {
+            "task": {
+                "task_id": "CHILD",
+                "parent_task_id": "SOURCE-PARENT",
+                "runtime_predecessor_reconstruction_required": False,
+            }
+        }
+        self.assertEqual(runtime._successor_reconstruction({"generation": 1}, handoff), (True, None, None))
