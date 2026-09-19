@@ -425,3 +425,26 @@ records_only=true final packet                         PRESENT
 No source repair was required.
 
 The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
+
+
+## Augmented cost/lifetime and concurrent-worker demonstration — 2026-09-19
+
+The demonstration now contains four cases under the same canonical Goal Task. This is not a dependency on the separate Richard/Test 3 workstream.
+
+| Case | Workers | Cost class | Compute units | Derived max lifetime | Purpose |
+| --- | ---: | --- | ---: | ---: | --- |
+| PBW-DEMO-TASK-1-LOW | 1 | LOW | 1 | 15 s | deterministic integrity summary |
+| PBW-DEMO-TASK-2-MEDIAN | 1 | MEDIAN | 3 | 30 s | integrity summary + deterministic segmentation |
+| PBW-DEMO-TASK-3-HIGH | 1 | HIGH | 9 | 60 s | integrity summary + segmentation + deterministic multi-pass verification |
+| PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT | 3 simultaneous | aggregate HIGH / per-worker MEDIAN | 9 aggregate / 3 each | 30 s per worker / 30 s group wall-clock budget | three-way partition, parallel execution, records-only aggregation |
+
+The individual cases deliberately establish a visible lifetime demarcation: 15 s < 30 s < 60 s. These are maximum derived demonstration budgets, not minimum residence times; purpose completion retires a worker early.
+
+The fourth case demonstrates the different effect of concurrency. The aggregate task has 9 expected compute units, but its three simultaneous workers each carry the median worker cost basis and 30-second derived maximum. The group wall-clock budget is therefore 30 seconds rather than a serial 90-second authority window. Each worker must have a distinct worker instance and reconstructable lineage, overlap the other two live intervals, retire independently, and decompose into records-only state. Group completion is valid only when all three are retired and the aggregate records packet reconstructs all three lineages with no callable/executor reference retained.
+
+Required evidence additionally includes:
+- authentic observation of all three single-worker cost tiers and their distinct derived lifetimes;
+- authentic simultaneous existence of three task-bound workers for the fourth task;
+- proof that concurrency preserved the per-worker median lifetime budget rather than multiplying worker authority duration;
+- independent close/retire evidence for every worker;
+- final records-only reconstruction for all four demonstration cases.
