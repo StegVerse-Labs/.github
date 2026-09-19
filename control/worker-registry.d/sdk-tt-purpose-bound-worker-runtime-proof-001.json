@@ -90,5 +90,8 @@
   "workers": [],
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "credential_authority": "TV/TVC",
-  "github_token_required": false
+  "github_token_required": false,
+  "shared_worker_provider_fragment_refs": [
+    "control/worker-registry.d/stegagents-governed-runtime-001.json"
+  ]
 }
