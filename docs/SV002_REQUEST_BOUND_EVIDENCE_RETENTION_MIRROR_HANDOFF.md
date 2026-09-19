@@ -111,3 +111,22 @@ callable: StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.p
 The same `sv002_org_runtime_activation` consumer now invokes that current callable through the existing HeartBeat-separated native WorkerCoordinator/dispatcher. The dispatcher also preserves the already-defined canonical Master Records endpoint/token/local-source bindings and existing federation gateway/root bindings needed by that callable, while GitHub credentials remain excluded.
 
 No new resident request, scheduler, dispatcher, WorkerCoordinator, resident executor, custody authority, transition authority, Site path, or user-operated device is introduced. Authentic runtime consumption remains unclaimed until the existing carrier emits its real request-consumption/custody evidence.
+
+
+## 2026-09-18 canonical carrier reconciliation after source merges
+
+Two source repairs are now immutable:
+
+```text
+StegVerse-002/.github PR #41
+merge: 9d79719995edb30ef60f6764331d97506977522f
+effect: exact RERUN_REQUEST_BOUND.json bytes are required evidence in canonical Master Records custody
+
+StegVerse-Labs/.github PR #2165
+merge: b50c124aca3ec12a7e1d8734a268b81c61b1650f
+effect: the existing RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001 request/selector invokes the current deterministic rerun callable rather than the retired one-shot path
+```
+
+The child runtime observation owner is therefore the existing canonical HeartBeat-separated WorkerCoordinator request-consumption path, not a second StegVerse-002 persistent resident executor. The first authentic evidence now required is the existing `sv002_org_runtime_activation` consumption/dispatch evidence carrying the exact current Goal/COSV/packet and Master Records REQUEST_BOUND custody result.
+
+Runtime completion remains unclaimed until that authentic consumption exists.
