@@ -153,7 +153,8 @@
       "repair": "RECOGNIZE_EXACTLY_ONE_TARGETED_WORKER_RESPONSE_EVENT_AND_ACCEPT_CYCLE_COMPLETED_IN_DISPATCHER",
       "runtime_completion_claimed": false,
       "downstream_promotion_allowed": false,
-      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+      "merge_ref": "StegVerse-Labs/.github#2227@9801b58ed194fb6488523594ee1c2e824a84cb3c"
     }
   ],
   "dependencies": [
@@ -271,7 +272,7 @@
       "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT",
       "prior_source_side_repair_required_assessment": false,
       "source_side_carriage_repair_required": true,
-      "source_side_carriage_repair_status": "IMPLEMENTED_PENDING_EXACT_HEAD_VALIDATION_AND_AUTHENTIC_RESIDENT_CYCLE",
+      "source_side_carriage_repair_status": "MERGED_AWAITING_AUTHENTIC_POST_REPAIR_RESIDENT_CYCLE",
       "carriage_repair_consumer": "scripts/consume_healer_sovereign_scheduler_request.py",
       "carriage_repair_checkpoint_path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
       "carriage_repair_pointer_path": "child_receipt.resident_custody_root_observation_retention",
@@ -291,7 +292,9 @@
         "response_state": "HANDOFF_READY",
         "required_match_count": 1
       },
-      "dispatcher_success_state": "CYCLE_COMPLETED"
+      "dispatcher_success_state": "CYCLE_COMPLETED",
+      "cycle_envelope_repair_merge_ref": "StegVerse-Labs/.github#2227@9801b58ed194fb6488523594ee1c2e824a84cb3c",
+      "registry_generation_after_merge": 96
     },
     "required_root_count": 1,
     "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",

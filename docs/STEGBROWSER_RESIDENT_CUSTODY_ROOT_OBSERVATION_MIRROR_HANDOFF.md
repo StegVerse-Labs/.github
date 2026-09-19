@@ -188,3 +188,10 @@ Post-PR #2212 inspection found the next concrete existing-path defect. The point
 The consumer now recognizes that real envelope, fails closed if more than one matching completion event exists, and only then validates/carries the already-projected six-field retained-root pointer. The resident dispatcher also accepts `CYCLE_COMPLETED` as a successful Healer consumer state rather than incorrectly marking a successful cycle as a request failure.
 
 The unit fixture now uses the real WorkerCoordinator event envelope, preventing the prior synthetic top-level transition shape from hiding this defect. No new invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, device dependency, or task identity is introduced. Authentic runtime promotion is still not claimed until a post-repair resident cycle produces exactly one validated `RESIDENT_CUSTODY_ROOT_OBSERVED` pointer.
+
+
+## Prompt 12 merge reconciliation
+
+The real WorkerCoordinator cycle-envelope repair merged through PR #2227 as `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The source defect that prevented the post-#2212 pointer carriage gate from ever opening is therefore repaired on current main. Canonical Task Registry generation observed after merge is `96`.
+
+Runtime promotion remains deliberately unclaimed. The next authentic existing Healer resident cycle must now expose exactly one matching `worker_response` completion event and, after checkpoint validation, all six retained-root fields with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root. Only then may the existing classifier and downstream governed progression run.
