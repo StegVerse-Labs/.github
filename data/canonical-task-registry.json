@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 98,
+  "generation": 99,
   "status": "ADMISSIBILITY_RECONSTRUCTABLE_SINGULARITY_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5310,7 +5310,8 @@
         "tests/test_sdk_tt_richard_seam_resident_materialization.py",
         "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:scripts/execute_control_plane_source_package_relay.py",
         "StegVerse-Labs/StegOS@4a1aa89b14292267a4dcff3131900af86083840c:stegos/control_plane_source_package_relay.py",
-        "tests/test_sdk_tt_richard_seam_control_plane_package.py"
+        "tests/test_sdk_tt_richard_seam_control_plane_package.py",
+        ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml"
       ],
       "adjacent_task_refs": [
         "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -5401,7 +5402,7 @@
         "test_1_evidence_modified": false,
         "test_2_evidence_modified": false,
         "authentic_runtime_execution_attempted": false,
-        "reconciled_against_registry_generation": 95,
+        "reconciled_against_registry_generation": 98,
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
@@ -5457,7 +5458,31 @@
         ],
         "control_plane_complete_test3_delta_pr": 2223,
         "control_plane_complete_test3_delta_merge": "4696d4b0898c504fa0f601f8b879551ba2614903",
-        "control_plane_complete_test3_delta_validated": true
+        "control_plane_complete_test3_delta_validated": true,
+        "suite_run_requested": true,
+        "suite_test1_current_main_validation_pr": 274,
+        "suite_test3_stegagents_current_main_validation_pr": 27,
+        "suite_test3_focused_validation_pr": 2239,
+        "suite_test3_focused_initial_result": "11_PASS_1_FAIL",
+        "suite_test3_failure_classification": "TEST_HARNESS_BOUNDARY_LABELING_DEFECT_NOT_RUNTIME_SEAM_FAILURE",
+        "suite_test3_ordering_source_observed": "MASTER_RECORDS_CLOSURE_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
+        "suite_harness_repair_implemented": true,
+        "suite_harness_existing_workflow_extended": true,
+        "suite_test1_current_main_run": 35450287407,
+        "suite_test1_job": 105916138211,
+        "suite_test1_result": "PASS_4_UNIT_TESTS_PLUS_TT_PURPOSE_BOUND_WORKER_CONSOLE_PASS",
+        "suite_test2_current_main_run": 35450287467,
+        "suite_test2_job": 105916138352,
+        "suite_test2_result": "PASS_4_UNIT_TESTS_PLUS_TT_ATOMIC_TASK_WORKER_BINDING_PASS",
+        "suite_test3_stegagents_ci_run": 35450310351,
+        "suite_test3_stegagents_python311_job": 105916200537,
+        "suite_test3_stegagents_python312_job": 105916200664,
+        "suite_test3_stegagents_result": "PASS_119_TESTS_PLUS_34_SUBTESTS_ON_PYTHON_3_11_AND_3_12",
+        "suite_test3_focused_repair_run": 35450612281,
+        "suite_test3_focused_repair_job": 105916988257,
+        "suite_test3_focused_repair_result": "PASS_12_FOCUSED_TESTS",
+        "suite_test3_existing_runtime_path_tests": "PASS_6_TESTS",
+        "suite_harness_repair_validated": true
       }
     },
     {
