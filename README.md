@@ -721,3 +721,6 @@ The purpose-bound runtime goal now follows its generation-71 direct path without
 
 
 PR #2188 merged the SDK TT direct WorkerCoordinator admission repair at `76cff35a03ba1950c13d8e438b6f37081a4186d6`; all four exact-head validation workflows passed. This is merged source readiness only. The first authentic runtime transition remains a fresh independent WorkerCoordinator claim/fence, followed by TV/TVC, InTr, and per-transition Master Records closure.
+
+
+The SDK TT one-shot WorkerCoordinator path now fails closed on canonical Master Records custody of the fresh claim/fence assignment itself before committing ACTIVE state or invoking the shared StegAgents worker. The exact assignment is required evidence for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; progression requires RECORDED, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality. This remains source readiness until an authentic resident one-shot runs.

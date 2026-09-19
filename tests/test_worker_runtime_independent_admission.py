@@ -204,3 +204,18 @@ if __name__ == "__main__":
             }
         }
         self.assertEqual(runtime._successor_reconstruction({"generation": 1}, handoff), (True, None, None))
+
+
+    def test_independent_assignment_requires_master_records_closure_before_activation(self):
+        source = inspect.getsource(LegacyWorkerCoordinator._activate_from_trigger)
+        custody = inspect.getsource(LegacyWorkerCoordinator._custody_assignment_transition)
+        assert source.index("_custody_assignment_transition") < source.index('task.update({')
+        assert 'assignment_custody.get("state") == "RECORDED"' in source
+        assert 'assignment_custody.get("reconstruction_status") == "PASS"' in source
+        assert 'assignment_custody.get("required_evidence_validation_status") == "PASS"' in source
+        assert 'assignment_custody.get("receipt_sha256") == assignment_custody.get("reconstructed_receipt_sha256")' in source
+        assert '"worker_assignment_master_records_blocked"' in source
+        assert '"WORKERCOORDINATOR_CLAIM_FENCE_BOUND"' in custody
+        assert '"WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT"' in custody
+        assert "required_evidence_manifest=[required_evidence]" in custody
+        assert '"master_records_grants_claim_authority": False' in custody
