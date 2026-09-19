@@ -40,10 +40,7 @@ This task MUST reuse the existing governed worker/runtime chain owned by:
 
 ```text
 STEGAGENTS-GOVERNED-RUNTIME-001
--> existing resident source refresh
--> existing resident dispatcher
--> existing targeted StegAgents consumer
--> existing WorkerCoordinator claim/fence
+-> fresh existing WorkerCoordinator claim/fence
 -> existing StegAgents governed worker/process adapter
 -> existing StegCore/InTr admission
 -> TV/TVC warrant/policy or credential semantics where required
@@ -168,7 +165,7 @@ payload.text: StegVerse tracks this arbitrary local worker task.
 
 Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
 
-No authentic runtime execution has been attempted. The existing runtime owner's resident custody-root / WorkerCoordinator prerequisites remain authoritative gates. Source or CI success must not promote any authentic lifecycle predicate.
+No authentic runtime execution has been attempted. The next actual SDK runtime transition is a fresh WorkerCoordinator claim/fence for the HANDOFF_READY task; no Healer or resident-custody-root transition has been established by Master Records as an SDK prerequisite. Source or CI success must not promote any authentic lifecycle predicate.
 
 ## Post-merge source state — 2026-09-18
 
@@ -186,7 +183,7 @@ The successor carries the exact `stegverse.sdk.tt-purpose-bound-worker.v1` reque
 
 GitHub reported PR #2150 mergeable/clean and merged the exact head. This repository exposed no PR workflow runs or commit statuses for that head, so the source record does not promote an automated `.github` CI result that was not observed. Focused regression source is merged; authentic runtime evidence remains entirely unclaimed.
 
-The first remaining runtime prerequisite is inherited from `STEGAGENTS-GOVERNED-RUNTIME-001`: authentic resident custody-root reachability followed by a fresh WorkerCoordinator claim/fence. Until those existing prerequisites are observed, this task must not attempt or claim authentic worker materialization, InTr admission, task execution, retirement, or Master Records reconstruction.
+The first remaining runtime transition is the SDK task's own fresh WorkerCoordinator claim/fence. The StegBrowser/Healer resident-custody-root observation lineage is not an SDK prerequisite unless an authentic preceding Master Records state-transition receipt explicitly binds it as required evidence. Each resulting SDK transition must be submitted to Master Records and return `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact receipt/reconstruction digest equality before further machine-owned progression.
 
 
 ## Derived lifetime semantics — Goal Prompt 4
@@ -227,9 +224,41 @@ run: 35402863119
 conclusion: success
 ```
 
-The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression still belongs to the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root / WorkerCoordinator / TV warrant-policy / StegCore-InTr / Master Records chain; source or CI evidence does not satisfy those predicates.
+The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression is `fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle`, with authoritative Master Records evidence closure after every resulting state transition. The separate resident-root/Healer lineage is not part of this SDK dependency chain absent an authentic Master Records transition that explicitly requires it.
 
 
 ## Coordination hygiene reconciliation — registry generation 64
 
-`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current `STEGAGENTS-GOVERNED-RUNTIME-001` evidence still does not establish an authentic retained resident root, targeted consumption, current WorkerCoordinator claim/fence, or Master Records runtime custody/reconstruction, so authentic purpose-bound execution remains unattempted.
+`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current evidence still does not establish a fresh SDK WorkerCoordinator claim/fence or any subsequent SDK Master Records state-transition custody/reconstruction, so authentic purpose-bound execution remains unattempted. Absence of a separate Healer/resident-root observation is not an SDK blocker.
+
+
+## Runtime dependency correction — registry generation 70
+
+Reconciliation against the canonical Master Records state-transition custody contract removes the inherited StegBrowser/Healer resident-custody-root prerequisite from this SDK goal. No authentic Master Records transition for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` or `STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED` was found in repository-retained Master Records evidence, and no SDK failure/remediation transition binds StegHealer to this goal.
+
+The direct execution path remains:
+
+```text
+HANDOFF_READY SDK task
+-> fresh WorkerCoordinator claim/fence
+-> existing shared stegagents-governed-runtime-worker / process:stegagents-governed-runtime-v1
+-> TV warrant/policy verification
+-> StegCore/InTr governed disposition
+-> purpose-bound MATERIALIZED
+-> INVOCATION_STARTED
+-> TASK_COMPLETED
+-> RETIRED
+-> records-only closeout
+```
+
+For every resulting governed state transition, the canonical progression requirement is:
+
+```text
+Master Records state=RECORDED
+reconstruction_status=PASS
+required_evidence_validation_status=PASS
+receipt_sha256 == reconstructed_receipt_sha256
+every required_evidence_manifest item bound to the same transition and individually reconstructed PASS
+```
+
+No Healer, resident-root, scheduler, dispatcher, carrier, new runtime, new custody store, or device dependency may be inferred unless an authentic preceding Master Records transition explicitly requires it.
