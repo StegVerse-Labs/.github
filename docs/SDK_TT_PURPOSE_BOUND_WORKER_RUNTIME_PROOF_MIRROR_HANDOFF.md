@@ -425,3 +425,27 @@ records_only=true final packet                         PRESENT
 No source repair was required.
 
 The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
+
+
+## TV/TVC Ed25519 execution-warrant authority repair — Goal Prompt 16
+
+Tracing the StegAgents live warrant dependency exposed a real TV/TVC authority-path defect: TV registered `tv.warrant.github.ci` with `REPLACE_WITH_BASE64_ED25519_PUBLIC_KEY`, while neither TV nor TVC contained an Ed25519 execution-warrant producer. Remote Desktop/device presence is not and must not be a prerequisite for this targeted task.
+
+The existing TV/TVC authority path was repaired without creating another credential authority:
+- TVC PR #446 merged as `fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6`.
+- TV PR #19 merged as `b1ab19b3c688075c6f408f409f04c037e179ab9f`.
+
+TVC now provides a resident-only Ed25519 warrant issuer using systemd `LoadCredential=TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM`, exact runtime policy-bundle byte hashing, exact StegAgents repository/commit binding, and TTL <= 900 seconds. Its secret-free receipt returns only the warrant, issuer public key, policy SHA, and payload SHA. TV now registers `tv.warrant.resident` / `tv.warrant.resident.ed25519.001` and explicitly identifies TVC resident LoadCredential custody.
+
+Exact-head source validation:
+```text
+TVC head dd9a20d8d1ef61ac8e05eccf78125035c4cac423
+  Validate TV Execution Warrant Resident Bridge 35464198311 SUCCESS
+TV head c133e61e1bc4645760c110830077866198c99d0a
+  Test Readiness 35464038144 SUCCESS
+  Architecture Guard 35464038097 SUCCESS
+  TV Operational Proof Source Validation 35464038094 SUCCESS
+  tvc-artifact-exchange-integration-validation 35464038256 SUCCESS
+```
+
+No authentic warrant is claimed. Current source/repository evidence does not establish that the resident credential `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` has been materialized in admitted TVC credential custody. That is now the first authentic boundary. It must not be replaced with a generated chat key, GitHub secret, HMAC token, Remote Desktop device, carrier, Healer, scheduler, dispatcher, or another runtime.
