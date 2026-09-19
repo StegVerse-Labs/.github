@@ -14,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/healer-sovereign-scheduler-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json")
+CHECKPOINT_REL = Path("receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json")
 TARGET_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
@@ -214,6 +215,118 @@ def ensure_neutral_scheduler_materialized(
     }
 
 
+
+def _identity_observed(value: Any, claim_id: str, fencing_token: int, transition_id: str) -> bool:
+    if isinstance(value, dict):
+        same_task = value.get("task_id") in (None, TARGET_TASK)
+        claim_match = value.get("claim_id") == claim_id
+        fence_match = value.get("fencing_token") == fencing_token
+        transition_match = value.get("transition_id") == transition_id
+        if same_task and claim_match and fence_match:
+            return True
+        if same_task and transition_match and (claim_match or fence_match):
+            return True
+        return any(_identity_observed(item, claim_id, fencing_token, transition_id) for item in value.values())
+    if isinstance(value, list):
+        return any(_identity_observed(item, claim_id, fencing_token, transition_id) for item in value)
+    return False
+
+
+def custody_projected_checkpoint(source: Path, runtime: Path, execution_receipt: dict[str, Any] | None) -> dict[str, Any]:
+    """Submit the exact fenced resident checkpoint through existing canonical Master Records custody."""
+    path = runtime / CHECKPOINT_REL
+    if not path.is_file():
+        return {
+            "state": "BOUNDARY",
+            "reason": "PROJECTED_HEALER_CHECKPOINT_NOT_OBSERVED",
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "authority_effect": "NONE",
+        }
+    checkpoint = load_json(path)
+    transition_id = checkpoint.get("transition_id")
+    claim_id = checkpoint.get("claim_id")
+    fencing_token = checkpoint.get("fencing_token")
+    if (
+        checkpoint.get("task_id") != TARGET_TASK
+        or not isinstance(transition_id, str)
+        or not transition_id
+        or not isinstance(claim_id, str)
+        or not claim_id
+        or not isinstance(fencing_token, int)
+    ):
+        return {
+            "state": "BOUNDARY",
+            "reason": "PROJECTED_HEALER_CHECKPOINT_IDENTITY_INVALID",
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "authority_effect": "NONE",
+        }
+    if not isinstance(execution_receipt, dict) or not _identity_observed(
+        execution_receipt, claim_id, fencing_token, transition_id
+    ):
+        return {
+            "state": "BOUNDARY",
+            "reason": "PROJECTED_HEALER_CHECKPOINT_FENCE_NOT_BOUND_TO_CURRENT_CYCLE",
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "transition_id": transition_id,
+            "claim_id": claim_id,
+            "fencing_token": fencing_token,
+            "authority_effect": "NONE",
+        }
+
+    workers_root = source / "workers"
+    if str(workers_root) not in sys.path:
+        sys.path.insert(0, str(workers_root))
+    from canonical_state_transition_custody import build_state_receipt, canonical_json, submit_state_receipt
+
+    canonical_checkpoint = canonical_json(checkpoint).encode("utf-8")
+    checkpoint_sha256 = hashlib.sha256(canonical_checkpoint).hexdigest()
+    evidence = {
+        "evidence_id": f"healer-fenced-checkpoint:{claim_id}:{fencing_token}",
+        "evidence_type": "HEALER_FENCED_CHECKPOINT",
+        "origin_transition_id": transition_id,
+        "encoding": "canonical-json",
+        "sha256": checkpoint_sha256,
+        "content": checkpoint,
+    }
+    state_receipt = build_state_receipt(
+        transition_id=transition_id,
+        transition_sequence=int(checkpoint.get("transition_sequence") or 1),
+        subject_or_correlation_id=TARGET_TASK,
+        transition_outcome="OBSERVED",
+        prior_state_ref_or_hash=f"worker-claim:{claim_id}:fence:{fencing_token}",
+        resulting_state_ref_or_hash="sha256:" + checkpoint_sha256,
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={
+            "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+            "checkpoint_sha256": checkpoint_sha256,
+            "claim_id": claim_id,
+            "fencing_token": fencing_token,
+            "worker_state": checkpoint.get("state"),
+            "projected_after_fenced_process_adapter_allow": True,
+        },
+        required_evidence_manifest=[evidence],
+        proof_scope="HEALER_FENCED_CHECKPOINT_PROJECTION_ONLY",
+        proof_ceiling="OBSERVED_PROJECTED_CHECKPOINT_AND_MASTER_RECORDS_CUSTODY_ONLY",
+    )
+    result = submit_state_receipt(state_receipt)
+    return {
+        "state": result.get("state"),
+        "reason": result.get("reason"),
+        "checkpoint_ref": CHECKPOINT_REL.as_posix(),
+        "checkpoint_sha256": checkpoint_sha256,
+        "transition_id": transition_id,
+        "transition_sequence": state_receipt["transition_sequence"],
+        "claim_id": claim_id,
+        "fencing_token": fencing_token,
+        "required_evidence_validation_status": result.get("required_evidence_validation_status"),
+        "reconstruction_status": result.get("reconstruction_status"),
+        "receipt_sha256": result.get("receipt_sha256"),
+        "reconstructed_receipt_sha256": result.get("reconstructed_receipt_sha256"),
+        "master_record_ref": result.get("master_record_ref"),
+        "custody_receipt_id": result.get("custody_receipt_id"),
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
@@ -287,10 +400,18 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if transition is None and isinstance(result, dict):
         transition = result.get("transition_id")
     cycle_completed = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    master_records = custody_projected_checkpoint(source, runtime, result if isinstance(result, dict) else None)
+    custody_complete = (
+        master_records.get("state") == "RECORDED"
+        and master_records.get("reconstruction_status") == "PASS"
+        and master_records.get("required_evidence_validation_status") == "PASS"
+        and isinstance(master_records.get("receipt_sha256"), str)
+        and master_records.get("receipt_sha256") == master_records.get("reconstructed_receipt_sha256")
+    )
 
     receipt = {
         "schema": "stegverse.healer-resident-request-consumption/v1",
-        "state": "CYCLE_COMPLETED" if cycle_completed else "ATTEMPT_RECORDED",
+        "state": "CYCLE_COMPLETED" if cycle_completed and custody_complete else ("MASTER_RECORDS_BOUNDARY" if not custody_complete else "ATTEMPT_RECORDED"),
         "request_id": request["request_id"],
         "request_sha256": request_hash,
         "request_materialization": request_materialization,
@@ -308,6 +429,13 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
         "execution_result": result,
+        "master_records_checkpoint_custody": master_records,
+        "master_records_checkpoint_identity": {
+            "transition_id": master_records.get("transition_id"),
+            "receipt_sha256": master_records.get("receipt_sha256"),
+            "master_record_ref": master_records.get("master_record_ref"),
+        },
+        "master_records_checkpoint_custody_complete": custody_complete,
         "runtime_execution_attempted": True,
         "scheduler_cycle_completion_observed": cycle_completed,
         "terminal_scheduler_completion_observed": False,
