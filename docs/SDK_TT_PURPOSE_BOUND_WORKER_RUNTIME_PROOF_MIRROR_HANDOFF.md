@@ -337,3 +337,33 @@ HANDOFF_READY
 If any Master Records predicate fails, WorkerCoordinator emits `worker_assignment_master_records_blocked`, leaves the task unactivated, and does not invoke the worker. The assignment receipt explicitly records that WorkerCoordinator grants no transition authority and Master Records grants no claim authority.
 
 This is a source-level progression repair only. No authentic claim/fence, TV/TVC warrant, InTr admission, purpose-bound lifecycle, or Master Records runtime receipt is promoted until the existing one-shot executes in the resident runtime.
+
+
+## Purpose-bound lifecycle Master Records gate merged — Goal Prompt 9
+
+StegAgents PR #23 merged as `0ba84d159a3a501cb0e13d600638cae63be6b14e` from exact head `a5d872ff62f94cf94bc42a3e6db4c2d8aa85cbbd`.
+
+Exact-head validation:
+
+```text
+CI                               run 35419064991  SUCCESS
+Test Readiness                   run 35419065008  SUCCESS
+Cross-Agent Authority Validation run 35419064969  SUCCESS
+```
+
+The existing purpose-bound StegAgents consequence now closes each lifecycle transition through the already-local canonical state-transition custody client before constructing the next phase:
+
+```text
+PURPOSE_BOUND_WORKER_MATERIALIZED
+-> Master Records RECORDED + reconstruction PASS + required-evidence PASS + digest equality
+PURPOSE_BOUND_WORKER_INVOCATION_STARTED
+-> same closure
+PURPOSE_BOUND_WORKER_TASK_COMPLETED
+-> same closure
+PURPOSE_BOUND_WORKER_RETIRED
+-> same closure
+```
+
+Each exact lifecycle receipt is submitted as `PURPOSE_BOUND_WORKER_LIFECYCLE_RECEIPT` required evidence. No second custody implementation, API, store, scheduler, WorkerCoordinator, InTr implementation, worker, adapter, or device dependency was added.
+
+No authentic resident one-shot was executed in this session because the available execution connector reports no connected device. GitHub Actions remain source validation only and are not promoted as runtime evidence. The next authentic predicate is therefore an actual resident `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` that returns a fresh claim/fence Master Records receipt and the four per-phase Master Records receipts from the same governed lifecycle.
