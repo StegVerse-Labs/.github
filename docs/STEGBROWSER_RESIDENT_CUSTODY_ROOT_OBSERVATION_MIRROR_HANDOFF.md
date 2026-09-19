@@ -195,3 +195,12 @@ The unit fixture now uses the real WorkerCoordinator event envelope, preventing 
 The real WorkerCoordinator cycle-envelope repair merged through PR #2227 as `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The source defect that prevented the post-#2212 pointer carriage gate from ever opening is therefore repaired on current main. Canonical Task Registry generation observed after merge is `96`.
 
 Runtime promotion remains deliberately unclaimed. The next authentic existing Healer resident cycle must now expose exactly one matching `worker_response` completion event and, after checkpoint validation, all six retained-root fields with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root. Only then may the existing classifier and downstream governed progression run.
+
+
+## Prompt 13/20 — existing resident repo-map source-resolution repair
+
+Current Task Registry generation is `97`. No authentic post-#2227 Healer resident cycle/root has yet surfaced through the available evidence path, so the classifier remains unrun and no runtime promotion is claimed.
+
+Tracing the native automatic cycle found the next concrete existing-path defect: `run_worker_runtime.py` invokes the resident dispatcher with `source_root == runtime_root`; the installed worker service preserves both `STEGVERSE_HEARTBEAT_SOURCE_ROOT` and the already-standard `STEGVERSE_REPO_ROOTS_JSON`, and the dispatcher forwards both. However, `consume_healer_sovereign_scheduler_request.py::resolve_source_root()` consumed only the heartbeat-specific source variable and ignored the existing repository-root map. Therefore a resident with a valid already-local `StegVerse-Labs/.github` source in the canonical repo map could still fail closed as `DISTINCT_SOURCE_ROOT_NOT_PROVIDED`, preventing the targeted WorkerCoordinator cycle before the repaired completion/pointer gate.
+
+The consumer now preserves the existing precedence: explicit distinct dispatcher source -> explicit `STEGVERSE_HEARTBEAT_SOURCE_ROOT` -> existing `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]`. The mapped root must remain distinct from runtime, exist locally, and contain the canonical targeted execution entrypoint. Invalid JSON, same-root, missing-root, or incomplete-root cases fail closed. No network source discovery, new scheduler, runtime, dispatcher, invocation, authority plane, credential path, host, or device dependency is introduced.
