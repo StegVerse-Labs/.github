@@ -933,3 +933,6 @@ SV002 PR #2236 merged at `bf0e936c7da481e7935e7accd959034471def69b`: the neutral
 
 
 SDK TT purpose-bound runtime: the missing TV/TVC Ed25519 execution-warrant issuer path is repaired through TVC PR #446 and TV PR #19. Credential authority remains TV/TVC and signing remains resident-only through systemd LoadCredential. Authentic progression now requires actual resident Ed25519 credential presence, fresh exact-commit warrant issuance, then the existing targeted one-shot; Remote Desktop/device presence is not a task prerequisite.
+
+
+SDK TT purpose-bound worker runtime proof: TVC PR #446 merged the missing resident Ed25519 execution-warrant bridge at `fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6` (validation run `35464198311` SUCCESS). Remaining authentic boundary: TV/TVC resident Ed25519 credential materialization and fresh StegAgents warrant issuance. No device, carrier, Healer, scheduler, dispatcher, or replacement credential authority is a prerequisite.
