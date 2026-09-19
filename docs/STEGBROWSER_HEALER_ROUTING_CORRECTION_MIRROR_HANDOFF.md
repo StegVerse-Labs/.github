@@ -38,3 +38,18 @@ Do not create another runtime, scheduler, dispatcher, custody store, authority p
 ## Completion
 
 Complete only when source routing, Task Registry state, handoffs, and runtime lineage agree on the same actual StegBrowser execution owner; no Healer prerequisite remains unless exact lineage evidence proves it belongs there; and the parent task can continue directly through its canonical execution chain.
+
+
+## Routing trace result
+
+The immutable invocation nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` is bound by the canonical resident request directly to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, `scripts/trigger_reusable_task.py`, `scripts/run_stegbrowser_runtime_consumption_reusable.py`, and the manifest-bound runtime entrypoint `scripts/run_stegbrowser_manifest_bound_runtime.py`. That request contains no Healer prerequisite.
+
+The artificial Healer edge was introduced later during the generation-70 retention-seam reconciliation. At that point the first pointer-bearing Healer checkpoint was treated as the required route to prove the resident custody root, and the parent task was rewritten around `PENDING_POST_REPAIR_CARRIER_OBSERVATION` / `OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET`. This elevated remediation/evidence carriage into execution progression without immutable-invocation lineage support.
+
+The corrected progression is:
+
+`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser evidence -> Master Records custody/reconstruction`.
+
+Healer remains available only as `TRIGGERED_REMEDIATION_ONLY`. Existing Healer source repairs/checkpoints remain historical evidence and may be used when independently triggered for remediation, but they are not prerequisites, carriers, authority sources, or completion gates for the immutable StegBrowser invocation.
+
+No second invocation was issued and no runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, or second-device dependency was added.
