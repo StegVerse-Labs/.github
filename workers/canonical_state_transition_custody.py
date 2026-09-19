@@ -237,6 +237,113 @@ def _submit_local(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
         }
     return result
 
+
+def _reconstruct_http(receipt_sha256: str) -> dict[str, Any] | None:
+    endpoint, token, timeout = _configuration()
+    if not endpoint or not token or not _endpoint_allowed(endpoint):
+        return None
+    url = endpoint.rstrip("/") + f"/{receipt_sha256}/reconstruction"
+    request = Request(url, method="GET", headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": f"CANONICAL_MASTER_RECORDS_RECONSTRUCTION_FAILED:{type(exc).__name__}",
+            "authority_effect": "NONE",
+        }
+
+
+def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
+    mr_root = _local_binding()
+    if mr_root is None:
+        return None
+    env = {
+        key: os.environ[key]
+        for key in (
+            "PATH",
+            "LANG",
+            "LC_ALL",
+            "MASTER_RECORDS_DB",
+            "MASTER_RECORDS_RECEIPT_KEY",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+        )
+        if key in os.environ
+    }
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
+    authority_call = (
+        "import hashlib,json,sys\n"
+        "from services import master_records_custody_api as base\n"
+        "from services import canonical_state_transition_custody as canonical\n"
+        "receipt_sha256=sys.argv[1]\n"
+        "canonical._initialize(base)\n"
+        "with base._LOCK, base._connect() as connection:\n"
+        " row=connection.execute('SELECT * FROM canonical_state_transition_receipts WHERE receipt_sha256 = ?', (receipt_sha256,)).fetchone()\n"
+        "if row is None:\n"
+        " sys.stdout.write(json.dumps({'state':'BOUNDARY','reason':'state_transition_receipt_not_found','authority_effect':'NONE'})+'\\n'); raise SystemExit(0)\n"
+        "receipt=json.loads(row['canonical_receipt_json'])\n"
+        "raw=canonical._canonical(receipt)\n"
+        "rebuilt=hashlib.sha256(raw).hexdigest()\n"
+        "required=canonical._require_evidence_manifest(receipt)\n"
+        "with base._LOCK, base._connect() as connection:\n"
+        " rows=connection.execute('SELECT canonical_entry_json,evidence_sha256 FROM canonical_state_transition_required_evidence WHERE receipt_sha256 = ? ORDER BY evidence_id', (receipt_sha256,)).fetchall()\n"
+        "evidence_pass=len(rows)==len(required)\n"
+        "for item in rows:\n"
+        " entry=json.loads(item['canonical_entry_json']); evidence_pass=evidence_pass and hashlib.sha256(canonical._evidence_bytes(entry)).hexdigest()==item['evidence_sha256']\n"
+        "state='PASS' if rebuilt==receipt_sha256 and evidence_pass else 'FAIL_CLOSED'\n"
+        "result={'state':state,'receipt_sha256':receipt_sha256,'reconstructed_receipt_sha256':rebuilt,'receipt':receipt,'required_evidence_validation_status':'PASS' if evidence_pass else 'FAIL_CLOSED','master_record_ref':row['master_record_ref'],'custody_receipt_id':row['custody_receipt_id'],'master_records_grants_transition_authority':False,'authority_effect':'NONE_RECONSTRUCTION_ONLY'}\n"
+        "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", authority_call, receipt_sha256],
+        cwd=mr_root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    if completed.returncode != 0:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_RECONSTRUCTION_CALL_FAILED",
+            "stderr_tail": completed.stderr[-1000:],
+            "authority_effect": "NONE",
+        }
+    try:
+        result = json.loads(completed.stdout.strip().splitlines()[-1])
+    except Exception:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_RECONSTRUCTION_RESULT_INVALID",
+            "authority_effect": "NONE",
+        }
+    return result if isinstance(result, dict) else None
+
+
+def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
+    """Reconstruct a retained canonical transition receipt by exact digest."""
+    if not isinstance(receipt_sha256, str) or len(receipt_sha256) != 64:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_RECEIPT_SHA_INVALID", "authority_effect": "NONE"}
+    payload = _reconstruct_http(receipt_sha256)
+    if payload is None:
+        payload = _reconstruct_local(receipt_sha256)
+    if payload is None:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_RECONSTRUCTION_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
+    if payload.get("state") == "BOUNDARY":
+        return payload
+    if payload.get("state") != "PASS":
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_RECONSTRUCTION_NOT_PASS", "response": payload, "authority_effect": "NONE"}
+    if payload.get("receipt_sha256") != receipt_sha256 or payload.get("reconstructed_receipt_sha256") != receipt_sha256:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH", "response": payload, "authority_effect": "NONE"}
+    if payload.get("required_evidence_validation_status") != "PASS":
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED", "response": payload, "authority_effect": "NONE"}
+    if payload.get("master_records_grants_transition_authority") is not False:
+        return {"state": "BOUNDARY", "reason": "MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED", "authority_effect": "NONE"}
+    return {**payload, "authority_effect": "NONE_RECONSTRUCTION_ONLY"}
+
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     """Submit one canonical receipt and require exact reconstruction."""
     if receipt.get("schema") != RECEIPT_SCHEMA:
@@ -303,4 +410,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
