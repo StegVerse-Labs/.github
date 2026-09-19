@@ -940,3 +940,8 @@ For immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T1
 ### RTC-STEGVERSE-EGRESS-007 continuation custody
 
 PR #2285 merged the existing RTC006 -> RTC007 continuation seam. The exact SDK return binding is carried through the existing LLM Adapter final StegVerse-side transition, RTC007 must close through canonical Master Records, and only then is the existing RTC008 Universal InTr materialization request prepared. RTC008 admission, RTC009 far-side transition, caller consequence, and communication completion remain unclaimed.
+
+
+### Purpose-bound worker four-case state graph — 2026-09-19
+
+`SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` now has a merged state-dependent source graph in StegAgents PR #30 / `4880f10b9cbfa90df0c0614f10d775e5eef3e317`. Cases 1→2→3 consume the immediately preceding terminal Master Records closure; Task 4 admits one common parent from Case 3, branches three simultaneous workers from that parent, and permits aggregate closeout only after a three-way join of all three independently validated RETIRED closures. Authentic runtime execution remains pending.
