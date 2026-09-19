@@ -824,3 +824,8 @@ The Test 3 control-plane package now carries not only its resident request/consu
 ### StegBrowser Healer cycle-envelope repair
 
 The post-carriage defect is repaired on current main by PR #2227 / `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The Healer resident consumer now recognizes completion from the actual WorkerCoordinator `worker_response` event in `stegverse.worker-runtime-cycle-result/v1`, requires exactly one `SHWP-HEALER-SOVEREIGN-SCHEDULER-001 / HEALER_SOVEREIGN_SCHEDULER_COMPLETED / HANDOFF_READY` event before validating and carrying the six-field retained-root pointer, and the resident dispatcher accepts `CYCLE_COMPLETED` as a successful result. Runtime promotion still requires an authentic post-repair resident cycle.
+
+
+## Reconstructable Singularity canonical coordination
+
+Canonical Task Registry tracks `ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001` as a source/publication coordination task. The canonical formalism lives in `StegVerse-Labs/admissibility-wiki`; Site/Papers is a lightweight directory projection only, and the former Reconstructive Singularity Site URL is compatibility-only. Registration carries no COSV, runtime requirement, WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, or Master Records execution/custody claim. Completion remains dependent on direct public observation of the intended wiki and Site projections.
