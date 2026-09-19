@@ -246,3 +246,12 @@ StegVerse-Labs/.github PR #2222 merged at `f5c64120d381842db16ca1a5156bb881c8e38
 The existing SV002-adjacent `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` runner now retains the released TVC preflight, invokes the existing `install_tvc_primary_runtime_service.py --activate` service-delivery leg against already-local TVC source, and only then runs the existing runtime observer. The former direct dispatcher-activation bypass is removed from this reusable carrier.
 
 This makes TVC PR #445's same-service restart/startup-source correlation reachable through the existing Healer/reusable-task path. It is source/carriage evidence only: `root_primary_runtime_restart_observed=false` and `current_source_loaded_on_host_observed=false` remain unchanged until authentic execution produces the correlated receipt and proves the loaded TVC source contains merge `35247b583b363f84c2edb5c77474bced729190ae`.
+
+
+## 2026-09-19 TVC service-owned preflight correction
+
+After the reusable service-delivery carriage repair, source tracing found that the neutral Healer/reusable runner still executed `tvc.primary_runtime_binder.preflight` before invoking the TVC service installer. That preflight requires `STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC`, while the neutral Healer carrier intentionally does not mint or inject TV/TVC authority. This created an ambient-authority dependency before the execution path could enter the existing TVC-owned service.
+
+The reusable runner now enters the released `install_tvc_primary_runtime_service.py --activate` path directly after resolving already-local TVC source. The restarted `stegtvc-primary-runtime.service` retains `Environment=STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC`, retains the vault-socket `ExecStartPre`, and invokes `tvc.primary_runtime_binder.activate`, whose existing `task_activate` executes `task_preflight` before serving. The neutral carrier therefore neither bypasses TVC preflight nor manufactures TV/TVC authority; the preflight remains inside its existing authority owner.
+
+No runtime predicate is promoted by this source correction.
