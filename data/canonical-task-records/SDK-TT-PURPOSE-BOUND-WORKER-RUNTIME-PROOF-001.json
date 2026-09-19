@@ -99,7 +99,7 @@
     "unsupported_resident_root_prerequisite_removed": true,
     "unsupported_healer_dependency_present": false,
     "master_records_sdk_transition_observed": false,
-    "next_actual_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST_THEN_FRESH_CASE1_WORKERCOORDINATOR_CLAIM_FENCE",
+    "next_actual_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST",
     "evidence_progression_rule": "EACH_RESULTING_STATE_TRANSITION_REQUIRES_MASTER_RECORDS_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS",
     "direct_workercoordinator_source_boundary_repaired": true,
     "carrier_reference_required_for_targeted_independent_control": false,
@@ -200,6 +200,22 @@
       "no_test3_dependency": true,
       "no_device_dependency": true,
       "authority_effect": "NONE_SOURCE_AND_REQUEST_STAGING_ONLY"
+    },
+    "authentic_resident_consumption_observation": {
+      "observed_at": "2026-09-19",
+      "canonical_reconciliation_merge": "42b56d3cdeb2a708f0b0bb4e6b19072e99bec189",
+      "request_present_on_main": true,
+      "request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "dispatcher_selector_present": "stegagents_governed_runtime_targeted",
+      "consumer_accepts_purpose_task": true,
+      "repository_retained_consumption_receipt_observed": false,
+      "repository_retained_targeted_execution_receipt_observed": false,
+      "repository_retained_purpose_graph_receipt_observed": false,
+      "repository_retained_task4_three_way_join_observed": false,
+      "source_worker_registry_fresh_case1_claim_observed": false,
+      "authentic_runtime_predicates_promoted": false,
+      "next_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST",
+      "authority_effect": "NONE_OBSERVATION_ONLY"
     }
   },
   "source_refinement": {
