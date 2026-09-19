@@ -181,3 +181,21 @@ AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT
 ```
 
 for selector `sdk_tt_richard_seam_authentic_runtime`, followed by the already-defined targeted one-shot and its fresh claim/fence, TV/TVC, InTr, Master Records, T/W invocation/result, close/retire, and records-only evidence.
+
+## Source-delivery relay invocation repair — proposed generation 93
+
+After nine hours with no background execution, canonical state was re-read and remained at generation 92 with no authentic Test 3 resident dispatch or consumption receipt.
+
+Tracing the already-required `RT-CONTROL-PLANE-SOURCE-PACKAGE-001 -> RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC relay` path found the next concrete source-delivery defect: StegOS already contained the correct `ControlPlaneSourcePackageIngressTransport` profile adapter, but `execute_control_plane_source_package_relay()` was referenced only by its module and tests. The generic relay CLI cannot select the control-plane JSON ingress profile, so the exact content-addressed package had no bounded production invocation surface.
+
+StegOS PR #396 added only `scripts/execute_control_plane_source_package_relay.py`, which consumes an already-issued TVC authorization, already-admitted relay binding, and exact `stegverse.control-plane` package and invokes the existing profile adapter. It creates no authorization, binding, transport, runtime, scheduler, dispatcher, credential path, or transition authority. StegOS CI and GADI boundary validation passed and PR #396 merged as `4a1aa89b14292267a4dcff3131900af86083840c`.
+
+The next authentic evidence transition is now the existing bounded relay invocation producing:
+
+```text
+stegverse.control-plane-source-package-ingress/v1
+state=SOURCE_MATERIALIZED_VERIFIED
+source_identity=<exact package identity>
+```
+
+Only after that authentic source-materialization receipt may Test 3 advance to resident source refresh, selector visit, and one-shot execution.

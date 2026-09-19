@@ -804,3 +804,7 @@ Test 3 now has a non-authorizing request-specific resident carriage into the exi
 ### Test 3 resident materialization correction
 
 After the Test 3 resident request-carriage binding merged, source tracing found that the request-specific consumer was not yet in the existing sovereign worker source-refresh static allowlist. The current repair adds that consumer to the normal local source refresh and adds both the Test 3 request and consumer to the existing bootstrap-critical control-plane source package. No new runtime or transport mechanism is introduced.
+
+### Test 3 control-plane source delivery
+
+Test 3 source-delivery tracing found that the existing StegOS control-plane source-package relay profile had no production invocation surface outside tests. StegOS PR #396 merged a bounded CLI around the existing TVC-authorized relay/profile composition. The next runtime predicate is an authentic `SOURCE_MATERIALIZED_VERIFIED` ingress receipt for the exact current control-plane source identity; source/CI alone does not satisfy it.
