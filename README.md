@@ -840,3 +840,8 @@ Goal Prompt 13 repairs the native-cycle source-resolution gap: the Healer reside
 ### StegBrowser native source-refresh repo-map repair
 
 Prompt 13 also closes the update catch-22 ahead of the Healer consumer: `run_worker_runtime.py` now lets the existing local source-refresh pass resolve `StegVerse-Labs/.github` from `STEGVERSE_REPO_ROOTS_JSON` when the dedicated `STEGVERSE_HEARTBEAT_SOURCE_ROOT` binding is absent. This allows the merged Healer consumer repairs to reach a resident that already has the canonical local repository map. The refresh remains local-only, credential-free, non-authorizing, and separate from mutable resident state.
+
+
+### Test 3 focused suite integration
+
+Current Test 1 and Test 2 validations pass, and StegAgents Test 3 CI passes. The first focused Test 3 `.github` run exposed a test-order assertion defect rather than a runtime-source defect. The assertion is corrected and the focused Test 3 modules are now part of the existing Purpose-Bound Worker validation workflow for future relevant changes.
