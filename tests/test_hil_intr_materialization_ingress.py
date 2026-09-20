@@ -36,6 +36,22 @@ def request(materialization_id: str = "INTR-MAT-" + "c" * 24) -> dict:
     return {**body, "request_hash": consumer.digest_uri(body)}
 
 
+
+def tvc_request(materialization_id: str = "INTR-MAT-" + "e" * 24) -> dict:
+    body = {
+        "schema": "stegverse.universal-intr-materialization-request/v1", "materialization_id": materialization_id,
+        "state": "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION", "transport_schema": "stegverse.universal-intr-transport/v1", "transport_protocol": "InTr",
+        "transport_intent_hash": "sha256:" + "5" * 64, "operation_id": "HIL-UPLOAD-INGRESS-001:TVC_HIL_LIFECYCLE", "packet_id": "INTR-" + "f" * 24,
+        "payload_hash": "sha256:" + "6" * 64, "payload_ref": "data:application/vnd.stegverse.hil-tvc-lifecycle-bundle+json;base64,AAAA",
+        "destination": {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "TVC:HIL-Lifecycle"}, "boundary_path": ["STEGOS_ECOSYSTEM"],
+        "downstream_owner_ref": "StegVerse-Labs/TVC", "event_triggered": True, "always_on_receiver_required": False, "second_user_device_required": False,
+        "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION", "exact_packet_transport_retry_allowed": True,
+        "blind_consequence_retry_allowed": False, "interlock_required": True, "request_grants_execution_authority": False, "claim_or_fence_minted": False,
+        "transport_grants_execution_authority": False, "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE",
+        "authority_transfer": False, "authority_effect": "NONE_REQUEST_ONLY",
+    }
+    return {**body, "request_hash": consumer.digest_uri(body)}
+
 def encoded(value: dict) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
@@ -91,6 +107,17 @@ class HILInTrMaterializationIngressTests(unittest.TestCase):
             self.assertEqual(receipt["transport_origin"], mod.ORIGIN_NODE); self.assertIsNone(receipt["transport_authorization_id"])
             self.assertEqual(receipt["node_id"], trigger["node_id"]); self.assertEqual(receipt["interlock_id"], trigger["interlock_id"])
             self.assertEqual(receipt["outbox_entry_hash"], trigger["outbox_entry_hash"]); self.assertTrue(receipt["write_once_persisted"])
+
+
+    def test_tvc_lifecycle_node_outbox_trigger_is_admitted_without_authority(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime=Path(td); req=tvc_request(); entry=node_entry(req); trigger=node_trigger(entry); body=encoded(trigger)
+            receipt=mod.admit_materialization(runtime_root=runtime,body=body,headers=node_headers(body))
+            self.assertEqual(receipt["state"],"INGRESS_ADMITTED")
+            self.assertEqual(receipt["payload_hash"],req["payload_hash"])
+            self.assertFalse(receipt["runtime_execution_attempted"])
+            queued=json.loads((runtime/mod.REQUEST_DIR_REL/f"{req['materialization_id']}.json").read_text())
+            self.assertEqual(queued["destination"],mod.TVC_DESTINATION)
 
     def test_node_trigger_cannot_claim_tvc_authorization(self) -> None:
         body = encoded(node_trigger()); bad = node_headers(body); bad["X-StegVerse-Authorization-Id"] = "NOT-A-TVC-GRANT"
