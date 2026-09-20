@@ -201,7 +201,8 @@ def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str
         receipt_ref=queue.get("receiver_receipt_ref")
         if not isinstance(receipt_ref,str) or not receipt_ref:
             failures.append({"queue":str(queue_path),"reason":"receiver_receipt_ref_missing"}); continue
-        receipt_path=Path(receipt_ref).expanduser().resolve()
+        receipt_candidate=Path(receipt_ref).expanduser()
+        receipt_path=(durable/receipt_candidate).resolve() if event_root is not None and not receipt_candidate.is_absolute() else receipt_candidate.resolve()
         if not _inside(receipt_path,durable/"receiver-receipts") or not receipt_path.is_file():
             failures.append({"queue":str(queue_path),"reason":"receiver_receipt_ref_invalid"}); continue
         command=[
@@ -210,6 +211,8 @@ def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str
             "--receiver-receipt",str(receipt_path),
             "--output-root",str(output_root),
         ]
+        if event_root is not None:
+            command += ["--artifact-root",str(durable)]
         completed=runner(command,cwd=tvc_root,capture_output=True,text=True,check=False,timeout=900,env=safe)
         result=_last_json(completed.stdout)
         admitted=bool(
