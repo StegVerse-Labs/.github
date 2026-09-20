@@ -161,3 +161,21 @@ Runtime-path investigation established:
 - Direct invocation of the authorized resident command surface was unavailable to this session before any command executed. This is an execution-surface limitation only; it is not recorded as a Task Registry predicate, connected-device dependency, blocker, or reason to alter task state.
 
 Therefore no claim/fence, worker, task state, Functional Memory pack, or Master Records state was fabricated or advanced. The next authentic proof remains: run one already-registered generic WorkerCoordinator task whose current canonical matrix resolves non-ALLOW, require Functional Memory custody `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256==reconstructed_receipt_sha256`, then change only the real same-task predicate that caused the non-ALLOW result and re-evaluate that same task so the retained Functional Memory is reconstructed before any subsequent ALLOW worker materialization.
+
+
+## Functional Memory generic manifest-assignment repair — 2026-09-20
+
+While continuing authentic Functional Memory proof, the first generic manifest-driven assignment defect was isolated before any runtime state was changed:
+
+- manifest-bound task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` correctly references shared provider fragment `control/worker-registry.d/stegagents-governed-runtime-001.json`;
+- targeted WorkerCoordinator fragment loading already composes that provider fragment;
+- the provider row had no `capability_profile_ref`, so canonical non-fixture `_worker_for` necessarily returned no eligible worker;
+- after adding the canonical profile, exact-head validation exposed the next directly coupled defect: the manifest requires both `stegagents_purpose_bound_worker_lifecycle` and `stegagents_purpose_bound_worker_state_graph`, while the provider advertised only the lifecycle capability.
+
+PR #2348 repaired only that generic provider-registration seam and merged as `d7cdfec8f61bff06be4b05b69f788bd01e071daf` from exact head `da1d35d343dd53d2443763eb939c2fcc95ff4ca3`. Validation run `35528296653` PASS proves the manifest-bound task and shared provider now resolve through the real WorkerCoordinator eligibility loader with no claim/fence created by capability matching.
+
+The repair adds no Functional Memory implementation, worker runtime, scheduler, authority plane, credential path, custody store, or task-specific executor.
+
+Post-merge canonical evidence search found no authentic `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW`, `stegverse.worker-assignment-functional-memory/v1`, or `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. A direct resident targeted invocation was attempted after merge, but the authorized command surface was unavailable before command execution. This condition is not a Task Registry predicate or task blocker and does not alter the task state.
+
+The remaining authentic predicate is unchanged: execute the existing targeted WorkerCoordinator task on an authorized resident surface; if its current admissibility matrix resolves non-ALLOW, require Functional Memory Master Records custody with no worker/claim/fence; then modify only the exact same-task predicate that caused the non-ALLOW state and re-evaluate the same task, requiring prior Functional Memory reconstruction before any ALLOW materialization.
