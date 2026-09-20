@@ -202,9 +202,12 @@ def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str
     excluded = excluded_task_ids or set()
     if task_id == PROGRESSION_CONTROLLER_TASK_ID or task_id in excluded:
         return False
-    if record.get("coordination_state") != "PROPOSED":
+    coordination_state = str(record.get("coordination_state") or "").upper()
+    checkout_state = str(record.get("checkout_state") or "").upper()
+    active_checked_out = coordination_state == "ACTIVE" and checkout_state == "CHECKED_OUT"
+    if coordination_state != "PROPOSED" and not active_checked_out:
         return False
-    if record.get("checkout_state") in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
+    if checkout_state in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
         return False
     if "INGRESS_ADMITTED" not in (record.get("allowed_next_transitions") or []):
         return False
