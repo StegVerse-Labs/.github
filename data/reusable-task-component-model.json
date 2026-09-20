@@ -15,7 +15,7 @@
     "framework_provider_adapter": "TASK_SPECIFIC_TRANSLATOR_PLUS_REUSABLE_PROTOCOL_COMPONENT",
     "callback_correlation": "REUSABLE_COMPONENT_CANDIDATE",
     "release_propagation": "data/reusable-publisher-kv-completion-notification-component-contract.json",
-    "failure_remediation_classification": "REUSABLE_COMPONENT_CANDIDATE",
+    "failure_remediation_classification": "StegVerse-Labs/StegHealth:specs/steghealth-reusable-remediation-pattern-index.v1.json",
     "terminal_cleanup_entropy_recovery": "data/reusable-task-ephemeral-construct-contract.json"
   },
   "goal_task_contract": {
@@ -59,6 +59,7 @@
     "task_specific_adapter_duplicates_generic_transport",
     "one_component_becomes_permanent_scheduler_or_hidden_runtime",
     "device_or_transport_identity_becomes_user_verifier",
-    "optional_component_is_forced_into_unrelated_tasks"
+    "optional_component_is_forced_into_unrelated_tasks",
+    "runtime_observation_blocker_declared_before_reusable_failure_pattern_search"
   ]
 }
