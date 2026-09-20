@@ -36,15 +36,49 @@
       "deterministic_pre_a3_runtime_failure_observed": false,
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_NONCE_LOOKUP_DEFECT_TRACED_AND_REPAIRED",
+      "goal_prompt_count": "1/20",
+      "registry_generation_entering": 137,
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "authoritative_evidence_location": "master-records/orchestration canonical_state_transition_receipts",
+      "expected_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "prior_defect": "MASTER_RECORDS_READ_API_REQUIRED_ALREADY_KNOWN_RECEIPT_SHA256_DESPITE_STORING_AND_INDEXING_SUBJECT_OR_CORRELATION_ID",
+      "repair": "ADDED_AUTHENTICATED_NON_AUTHORIZING_QUERY_BY_SUBJECT_OR_CORRELATION_ID_WITH_OPTIONAL_TRANSITION_ID_FILTER",
+      "master_records_repo": "master-records/orchestration",
+      "repair_pr": "master-records/orchestration#105",
+      "exact_head": "2c4ab1a058a288cc4645ffbcb5750d98188a7ef3",
+      "merge_commit": "e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+      "validation": {
+        "runtime_evidence_validation_run": 35526500242,
+        "orchestration_and_custody_service_tests": "PASS",
+        "all_exact_head_workflows": "PASS"
+      },
+      "query_path": "/api/master-records/state-transitions/query",
+      "query_subject": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "query_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "classification": "READ_PATH_REPAIRED_AUTHENTIC_MASTER_RECORDS_QUERY_REQUIRED",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_READ_PATH_REPAIR_ONLY"
     }
   ],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-NONCE-QUERY",
+      "kind": "AUTHENTIC_CUSTODY_READ_PATH",
+      "state": "SOURCE_REPAIRED_MERGED_RUNTIME_QUERY_REQUIRED",
+      "ref": "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+      "disposition": "QUERY_CANONICAL_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND; EMPTY_AUTHORITATIVE_RESULT_MEANS_NO_CUSTODIED_A3_TRANSITION_FOR_THIS_SUBJECT"
+    }
+  ],
   "blockers": [],
   "allowed_next_transitions": [
-    "OBSERVE_AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE",
-    "CONTINUE_SAME_LINEAGE_THROUGH_INTERLOCK_INTR",
-    "REQUIRE_CANONICAL_MASTER_RECORDS_CLOSURE_AT_EACH_SUCCESSOR",
-    "REPAIR_FIRST_ACTUAL_DETERMINISTIC_PRE_A3_FAILURE_AND_RERUN_SAME_REQUEST"
+    "QUERY_AUTHENTIC_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "IF_MATCH_REQUIRE_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
+    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH",
+    "IF_PRE_A3_FAILURE_RECORD_EXISTS_REPAIR_FIRST_DETERMINISTIC_FAILURE_AND_RERUN_SAME_REQUEST"
   ],
   "completion": {
     "claimed": false,
@@ -67,7 +101,11 @@
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
-    "goal_prompt_count": "0/20",
+    "goal_prompt_count": "1/20",
     "split_merely_to_reset_counter": false
-  }
+  },
+  "source_refs": [
+    "master-records/orchestration#105",
+    "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c"
+  ]
 }

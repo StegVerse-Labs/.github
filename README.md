@@ -998,3 +998,8 @@ StegDB, Master Records, and StegHealth remain a coordinated consistency/remediat
 ### StegBrowser immutable nonce A3 observation continuation — 2026-09-20
 
 `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` reached Goal Prompt `20/20` without authentic nonce-bound WorkerCoordinator claim/fence evidence and without an actual deterministic pre-A3 runtime failure. It is retired without a runtime-completion claim. The sole unresolved observation continues under `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001` / `.github#2338`; the immutable nonce and single requested invocation are unchanged, absence is not failure, and no second invocation or alternate runtime/authority path is authorized.
+
+
+### StegBrowser A3 Master Records nonce lookup — 2026-09-20
+
+For `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`, the authoritative claim/fence evidence location is canonical Master Records. `master-records/orchestration#105` merged as `e88be99fdfa678b19b3d0c52d120d15a60c9557c`, adding authenticated non-authorizing lookup of canonical state-transition custody by `subject_or_correlation_id` with an optional exact `transition_id`. The immutable StegBrowser nonce can therefore be queried directly for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; an authoritative empty result is actionable custody state rather than generic "not observed" wording. Runtime execution remains unclaimed until the actual canonical Master Records store is queried and its returned closure is validated.
