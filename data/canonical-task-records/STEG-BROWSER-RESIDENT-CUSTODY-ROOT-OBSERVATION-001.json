@@ -5,14 +5,16 @@
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
   "successor_task_ids": [
-    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001"
   ],
   "successor_issue_refs": [
-    "StegVerse-Labs/.github#1866"
+    "StegVerse-Labs/.github#1866",
+    "StegVerse-Labs/.github#2338"
   ],
   "goal": "Observe an authentic resident custody root for the existing StegBrowser Canonical Work reusable task path and classify retained receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
+  "coordination_state": "RETIRED",
+  "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
@@ -177,6 +179,22 @@
       "runtime_completion_claimed": false,
       "downstream_promotion_allowed": false,
       "authority_effect": "NONE_LOCAL_SOURCE_REFRESH_LOCATOR_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "GOAL_PROMPT_20_FINAL_EXACT_NONCE_INSPECTION_AND_TERMINAL_RECONCILIATION",
+      "registry_generation_observed": 135,
+      "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "authentic_nonce_bound_workercoordinator_claim_id_observed": false,
+      "authentic_nonce_bound_fencing_token_observed": false,
+      "deterministic_pre_a3_runtime_failure_observed": false,
+      "classification": "A3_NOT_OBSERVED_NOT_FAILED",
+      "source_or_declaration_matches_only": true,
+      "second_invocation_issued": false,
+      "runtime_completion_claimed": false,
+      "continuation_task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "continuation_issue": "StegVerse-Labs/.github#2338",
+      "authority_effect": "NONE_PROMPT_LIMIT_DECOMPOSITION_ONLY"
     }
   ],
   "dependencies": [
@@ -231,14 +249,7 @@
     }
   ],
   "blockers": [],
-  "allowed_next_transitions": [
-    "CONTINUE_DIRECT_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
-    "OBSERVE_AUTHENTIC_INTERLOCK_INTR_PROGRESSION",
-    "CLASSIFY_DIRECT_RETAINED_STEGBROWSER_EVIDENCE",
-    "REQUIRE_MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
-    "BIND_NEXT_RUNTIME_DEFECT"
-  ],
+  "allowed_next_transitions": [],
   "handoff_projection_refs": [
     "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
@@ -251,7 +262,10 @@
     "runtime_consumption_observed": false,
     "owner_ingress_ready_observed": false,
     "master_records_reconstruction_observed": false,
-    "runtime_materialization_remediation_successor_bound": true
+    "runtime_materialization_remediation_successor_bound": true,
+    "runtime_completion_observed": false,
+    "prompt_limit_terminal_reconciliation": true,
+    "continuation_task_bound": true
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -370,5 +384,13 @@
     "healer_required_for_progression": false,
     "second_invocation_issued": false,
     "authority_effect": "NONE_ROUTING_CORRECTION_ONLY"
+  },
+  "continuation_task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "prompt_limit_reached": true,
+    "further_parent_prompts_allowed": false,
+    "continuation_task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+    "split_merely_to_reset_counter": false
   }
 }
