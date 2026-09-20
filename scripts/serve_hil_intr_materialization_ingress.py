@@ -37,6 +37,8 @@ CREDENTIAL_AUTHORITY = "TV/TVC"
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 ORIGIN_NODE = "STEGOS_NODE_OUTBOX"
 ORIGIN_RELAY = "TVC_RELAY_EGRESS"
+TVC_DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "TVC:HIL-Lifecycle"}
+TVC_DOWNSTREAM_OWNER = "StegVerse-Labs/TVC"
 
 
 class HILInTrIngressError(ValueError):
@@ -141,7 +143,36 @@ def _validate_node_outbox_entry(entry: Mapping[str, Any]) -> dict[str, Any]:
     _require(claimed == _sha256_uri(body), "node_outbox_entry_hash_mismatch")
     request = entry.get("materialization_request")
     _require(isinstance(request, dict), "node_outbox_materialization_request_required")
-    validate_request(request)
+    if request.get("destination") == TVC_DESTINATION:
+        expected = {
+            "schema": "stegverse.universal-intr-materialization-request/v1",
+            "state": "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
+            "transport_schema": "stegverse.universal-intr-transport/v1",
+            "transport_protocol": "InTr",
+            "destination": TVC_DESTINATION,
+            "downstream_owner_ref": TVC_DOWNSTREAM_OWNER,
+            "boundary_path": ["STEGOS_ECOSYSTEM"],
+            "event_triggered": True,
+            "always_on_receiver_required": False,
+            "second_user_device_required": False,
+            "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+            "exact_packet_transport_retry_allowed": True,
+            "blind_consequence_retry_allowed": False,
+            "interlock_required": True,
+            "request_grants_execution_authority": False,
+            "claim_or_fence_minted": False,
+            "transport_grants_execution_authority": False,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "authority_transfer": False,
+            "authority_effect": "NONE_REQUEST_ONLY",
+        }
+        for key, value in expected.items():
+            _require(request.get(key) == value, f"tvc_materialization_{key}_mismatch")
+        body = dict(request); claimed = body.pop("request_hash", None)
+        _require(claimed == _sha256_uri(body), "tvc_materialization_request_hash_mismatch")
+    else:
+        validate_request(request)
     _require(entry.get("materialization_id") == request.get("materialization_id"), "node_outbox_materialization_id_mismatch")
     _require(entry.get("request_hash") == request.get("request_hash"), "node_outbox_request_hash_mismatch")
     _require(entry.get("transport_intent_hash") == request.get("transport_intent_hash"), "node_outbox_transport_intent_hash_mismatch")
