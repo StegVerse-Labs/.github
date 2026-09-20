@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -108,3 +109,119 @@ def test_rtc008_admission_fails_closed_without_master_records_pass(monkeypatch, 
     raw = canonical(req)
     with pytest.raises(ValueError, match="rtc008_master_records_not_recorded"):
         ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
+
+
+def _load_return_consumer():
+    path = Path(__file__).resolve().parents[1] / "scripts" / "consume_kv_publisher_return_materialization_request.py"
+    spec = importlib.util.spec_from_file_location("rtc008_return_consumer", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class _Response:
+    def __init__(self, value):
+        self.raw = json.dumps(value, sort_keys=True).encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_args):
+        return False
+
+    def read(self):
+        return self.raw
+
+
+def test_rtc007_continuation_submits_exact_rtc008_to_existing_shared_ingress():
+    consumer = _load_return_consumer()
+    req = request()
+    expected = {
+        "schema": consumer.MIR_RTC008_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": req["materialization_id"],
+        "request_hash": req["request_hash"],
+        "transport_intent_hash": req["transport_intent_hash"],
+        "payload_hash": req["payload_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
+        "transport_origin": "TVC_RELAY_EGRESS",
+        "transport_authorization_id": "TVC-RTC008-ALLOW-001",
+        "master_records_state": "RECORDED",
+        "master_records_reconstruction_status": "PASS",
+        "master_records_required_evidence_validation_status": "PASS",
+        "master_records_receipt_sha256": "a" * 64,
+        "master_records_reconstructed_receipt_sha256": "a" * 64,
+        "rtc008_evidence_complete": True,
+        "far_side_transition_observed": False,
+        "caller_consequence_observed": False,
+    }
+    captured = {}
+
+    def opener(http_request, timeout):
+        captured["url"] = http_request.full_url
+        captured["data"] = http_request.data
+        captured["headers"] = dict(http_request.header_items())
+        captured["timeout"] = timeout
+        return _Response(expected)
+
+    result = consumer._submit_rtc008_materialization(
+        req,
+        env={
+            consumer.MIR_RTC008_INGRESS_ENV: "http://127.0.0.1:8765/intr/materialization",
+            consumer.MIR_RTC008_AUTH_ENV: "TVC-RTC008-ALLOW-001",
+        },
+        opener=opener,
+    )
+    assert result == expected
+    assert captured["data"] == consumer.canonical(req)
+    assert captured["url"] == "http://127.0.0.1:8765/intr/materialization"
+    assert captured["headers"]["X-stegverse-transport-origin"] == "TVC_RELAY_EGRESS"
+    assert captured["headers"]["X-stegverse-authorization-id"] == "TVC-RTC008-ALLOW-001"
+    assert captured["headers"]["X-stegverse-payload-sha256"] == hashlib.sha256(consumer.canonical(req)).hexdigest()
+    assert captured["timeout"] == 10.0
+
+
+def test_rtc008_submission_fails_closed_without_existing_authorization():
+    consumer = _load_return_consumer()
+    with pytest.raises(consumer.KVPublisherReturnError, match="existing TVC relay authorization missing"):
+        consumer._submit_rtc008_materialization(
+            request(),
+            env={consumer.MIR_RTC008_INGRESS_ENV: "http://127.0.0.1:8765/intr/materialization"},
+            opener=lambda *_args, **_kwargs: None,
+        )
+
+
+def test_rtc008_submission_fails_closed_on_master_records_digest_mismatch():
+    consumer = _load_return_consumer()
+    req = request()
+    response = {
+        "schema": consumer.MIR_RTC008_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": req["materialization_id"],
+        "request_hash": req["request_hash"],
+        "transport_intent_hash": req["transport_intent_hash"],
+        "payload_hash": req["payload_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
+        "transport_origin": "TVC_RELAY_EGRESS",
+        "transport_authorization_id": "TVC-RTC008-ALLOW-001",
+        "master_records_state": "RECORDED",
+        "master_records_reconstruction_status": "PASS",
+        "master_records_required_evidence_validation_status": "PASS",
+        "master_records_receipt_sha256": "a" * 64,
+        "master_records_reconstructed_receipt_sha256": "b" * 64,
+        "rtc008_evidence_complete": True,
+        "far_side_transition_observed": False,
+        "caller_consequence_observed": False,
+    }
+    with pytest.raises(consumer.KVPublisherReturnError, match="RTC008 Master Records digest mismatch"):
+        consumer._submit_rtc008_materialization(
+            req,
+            env={
+                consumer.MIR_RTC008_INGRESS_ENV: "http://localhost:8765/intr/materialization",
+                consumer.MIR_RTC008_AUTH_ENV: "TVC-RTC008-ALLOW-001",
+            },
+            opener=lambda *_args, **_kwargs: _Response(response),
+        )

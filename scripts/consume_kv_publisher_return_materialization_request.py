@@ -9,7 +9,9 @@ never grants transport, credential, governance, publication, or egress authority
 from __future__ import annotations
 import argparse, hashlib, json, os, sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 ROOT=Path(__file__).resolve().parents[1]
 REQUEST_DIR=Path("intr-materialization")
@@ -27,6 +29,9 @@ SDK_COMPLETION_CAPSULE_PROFILE="stegverse.sdk.downstream-completion-capsule/v1"
 HOSTED_ENV=("GITHUB_ACTIONS","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 CREDENTIAL_ENV=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 POST_SDK_FALSE_FLAGS=("final_stegverse_side_egress_transition_observed","interlock_intr_egress_observed","far_side_transition_observed","authentic_external_mir_endpoint_substitution_observed","communication_complete")
+MIR_RTC008_INGRESS_ENV="STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"
+MIR_RTC008_AUTH_ENV="STEGVERSE_TVC_RELAY_AUTHORIZATION_ID"
+MIR_RTC008_RECEIPT_SCHEMA="stegverse.mir-southbound-intr-materialization-ingress/v1"
 
 class _PublisherReturnOwnerMatcher:
     """Compatibility matcher used by the existing universal-ingress discriminator.
@@ -246,6 +251,69 @@ def _record_sdk_return_binding_custody(
       "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
     }
 
+def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str]|None=None, opener=urlopen)->dict[str,Any]:
+    """Submit the exact prepared RTC008 request to the existing shared InTr listener.
+
+    This consumes an already-issued TVC relay authorization identifier. It does
+    not create a credential, listener, runtime, scheduler, dispatcher, custody
+    store, or transition authority.
+    """
+    values=dict(os.environ if env is None else env)
+    ingress_url=str(values.get(MIR_RTC008_INGRESS_ENV) or "").strip()
+    authorization_id=str(values.get(MIR_RTC008_AUTH_ENV) or "").strip()
+    if not ingress_url:
+        raise KVPublisherReturnError("RTC008 shared Universal InTr ingress URL missing")
+    if not authorization_id:
+        raise KVPublisherReturnError("RTC008 existing TVC relay authorization missing")
+    parsed=urlparse(ingress_url)
+    if parsed.scheme!="http" or (parsed.hostname or "").lower() not in {"127.0.0.1","localhost","::1"} or parsed.path!="/intr/materialization":
+        raise KVPublisherReturnError("RTC008 ingress URL must be existing loopback /intr/materialization")
+    if parsed.username is not None or parsed.password is not None:
+        raise KVPublisherReturnError("RTC008 ingress URL credentials forbidden")
+    raw=canonical(request)
+    req=Request(
+        ingress_url,
+        data=raw,
+        method="POST",
+        headers={
+          "Content-Type":"application/json",
+          "X-StegVerse-Transport":"InTr",
+          "X-StegVerse-Transport-Origin":"TVC_RELAY_EGRESS",
+          "X-StegVerse-Authorization-Id":authorization_id,
+          "X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest(),
+        },
+    )
+    with opener(req,timeout=10.0) as response:
+        payload=response.read()
+    admitted=json.loads(payload.decode("utf-8"))
+    if not isinstance(admitted,dict):
+        raise KVPublisherReturnError("RTC008 ingress response object required")
+    expected={
+      "schema":MIR_RTC008_RECEIPT_SCHEMA,
+      "state":"INGRESS_ADMITTED",
+      "materialization_id":request.get("materialization_id"),
+      "request_hash":request.get("request_hash"),
+      "transport_intent_hash":request.get("transport_intent_hash"),
+      "payload_hash":request.get("payload_hash"),
+      "operation_id":request.get("operation_id"),
+      "packet_id":request.get("packet_id"),
+      "transport_origin":"TVC_RELAY_EGRESS",
+      "transport_authorization_id":authorization_id,
+      "master_records_state":"RECORDED",
+      "master_records_reconstruction_status":"PASS",
+      "master_records_required_evidence_validation_status":"PASS",
+      "rtc008_evidence_complete":True,
+      "far_side_transition_observed":False,
+      "caller_consequence_observed":False,
+    }
+    for key,value in expected.items():
+        if admitted.get(key)!=value:
+            raise KVPublisherReturnError("RTC008 admission mismatch:"+key)
+    if admitted.get("master_records_receipt_sha256")!=admitted.get("master_records_reconstructed_receipt_sha256"):
+        raise KVPublisherReturnError("RTC008 Master Records digest mismatch")
+    return admitted
+
+
 def _prepare_rtc007_continuation(
     runtime:Path,
     materialization_id:str,
@@ -328,6 +396,7 @@ def _prepare_rtc007_continuation(
         handoff,
         payload_ref="runtime://"+str(output_path.relative_to(runtime)),
     )
+    rtc008=_submit_rtc008_materialization(prepared["materialization_request"])
     return {
       "rtc007_transition":transition,
       "rtc007_master_records":{
@@ -338,7 +407,8 @@ def _prepare_rtc007_continuation(
         "reconstructed_receipt_sha256":mr.get("reconstructed_receipt_sha256"),
       },
       "rtc008_materialization_prepared":prepared,
-      "rtc008_admission_observed":False,
+      "rtc008_admission":rtc008,
+      "rtc008_admission_observed":True,
       "rtc009_far_side_transition_observed":False,
       "caller_consequence_observed":False,
       "communication_complete":False,
@@ -401,8 +471,14 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
       "rtc007_master_records_receipt_sha256":continuation["rtc007_master_records"]["receipt_sha256"],
       "rtc007_master_records_reconstructed_receipt_sha256":continuation["rtc007_master_records"]["reconstructed_receipt_sha256"],
       "rtc008_materialization_request":continuation["rtc008_materialization_prepared"]["materialization_request"],
+      "rtc008_ingress_receipt":continuation["rtc008_admission"],
+      "rtc008_master_records_state":continuation["rtc008_admission"]["master_records_state"],
+      "rtc008_master_records_reconstruction_status":continuation["rtc008_admission"]["master_records_reconstruction_status"],
+      "rtc008_master_records_required_evidence_validation_status":continuation["rtc008_admission"]["master_records_required_evidence_validation_status"],
+      "rtc008_master_records_receipt_sha256":continuation["rtc008_admission"]["master_records_receipt_sha256"],
+      "rtc008_master_records_reconstructed_receipt_sha256":continuation["rtc008_admission"]["master_records_reconstructed_receipt_sha256"],
       "final_stegverse_side_egress_transition_observed":True,
-      "interlock_intr_egress_observed":False,
+      "interlock_intr_egress_observed":True,
       "far_side_transition_observed":False,
       "return_record_durably_recorded":False,
       "final_allowed_transport_exit_transition_observed":False,
