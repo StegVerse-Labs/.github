@@ -330,6 +330,8 @@ def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
         governance = result.get("governance")
         require(isinstance(governance, Mapping) and governance.get("state") == "ALLOW", "atomic activation governance not ALLOW")
         require(governance.get("chain_verified") is True and governance.get("master_records_custody_status") == "RECORDED", "atomic activation governance evidence incomplete")
+        replay = result.get("master_records_replay")
+        require(isinstance(replay, Mapping) and replay.get("deterministic_disposition_match") is True and replay.get("consequence_reexecuted") is False and replay.get("operation_transition_custody_status") == "RECORDED", "atomic activation replay missing")
         reconstruction = result.get("master_records_reconstruction")
         require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "atomic activation reconstruction missing")
         return
@@ -342,6 +344,8 @@ def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
         require(result.get("continued_authority_after_retirement") is False, "continued authority after retirement")
         require(result.get("callable_retained") is False, "records-only result retained callable")
         require(result.get("executor_reference_retained") is False, "records-only result retained executor reference")
+        replay = result.get("records_only_replay")
+        require(isinstance(replay, Mapping) and replay.get("deterministic_disposition_match") is True and replay.get("consequence_reexecuted") is False and replay.get("operation_transition_custody_status") == "RECORDED", "records-only replay missing")
         reconstruction = result.get("records_only_reconstruction")
         require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "records-only reconstruction missing")
         return
@@ -408,10 +412,12 @@ def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[st
         receipt["warrant_policy_binding"] = result.get("warrant_policy_binding")
         receipt["warrant_policy_master_records_transition"] = result.get("warrant_policy_master_records_transition")
         receipt["atomic_activation_master_records_transition"] = result.get("atomic_activation_master_records_transition")
+        receipt["master_records_replay"] = result.get("master_records_replay")
         receipt["master_records_reconstruction"] = result.get("master_records_reconstruction")
     elif mode == "GOVERNED_CLOSE":
         receipt["close_master_records_transition"] = result.get("close_master_records_transition")
         receipt["records_only_result"] = result.get("records_only_result")
+        receipt["records_only_replay"] = result.get("records_only_replay")
         receipt["records_only_reconstruction"] = result.get("records_only_reconstruction")
         receipt["records_only"] = result.get("records_only")
         receipt["worker_live_after_close"] = result.get("worker_live_after_close")
@@ -772,6 +778,11 @@ def _validate_result(profile: Mapping[str, str], result: Mapping[str, Any]) -> N
     require(governance.get("transaction_identity_continuous") is True, "governance transaction continuity missing")
     require(governance.get("master_records_custody_status") == "RECORDED", "Master Records custody missing")
     require(governance.get("external_side_effect") is False, "unexpected external side effect")
+    replay = result.get("master_records_replay")
+    require(isinstance(replay, Mapping), "Master Records replay missing")
+    require(replay.get("deterministic_disposition_match") is True, "Master Records replay deterministic match failed")
+    require(replay.get("consequence_reexecuted") is False, "Master Records replay reexecuted consequence")
+    require(replay.get("operation_transition_custody_status") == "RECORDED", "Master Records replay custody missing")
     reconstruction = result.get("master_records_reconstruction")
     require(isinstance(reconstruction, Mapping), "Master Records reconstruction missing")
     require(reconstruction.get("operation_transition_custody_status") == "RECORDED", "reconstruction custody missing")
@@ -823,6 +834,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         "credential_material_present": result.get("credential_material_present"),
         "github_runtime_authority": "NONE",
         "external_side_effect": ((result.get("governance") or {}).get("external_side_effect")),
+        "master_records_replay": result.get("master_records_replay"),
         "master_records_reconstruction": result.get("master_records_reconstruction"),
         "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
     }
