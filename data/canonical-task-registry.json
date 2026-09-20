@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 145,
+  "generation": 146,
   "status": "CANONICAL_MASTER_RECORDS_TARGETED_CUSTODY_CARRIAGE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -60,7 +60,12 @@
         "control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py",
         "control/resident-execution-request.d/runtime-profile-map-governance-review-001.json",
         "control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py",
-        "scripts/dispatch_resident_execution_requests.py"
+        "scripts/dispatch_resident_execution_requests.py",
+        "heartbeat_runtime/worker_assignment_functional_memory.py",
+        "heartbeat_runtime/admitted_worker_runtime.py",
+        "workers/canonical_state_transition_custody.py",
+        "tests/test_worker_assignment_functional_memory.py",
+        "github-pr:2367@57415095b055ba04451207fc659bee98855f587a"
       ],
       "targets": {
         "organizations": [
@@ -119,7 +124,11 @@
         "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
         "scripts/evaluate_task_runtime_routing_readiness.py",
         "scripts/evaluate_runtime_profile_map_transition_readiness.py",
-        "scripts/build_runtime_profile_map_governance_review.py"
+        "scripts/build_runtime_profile_map_governance_review.py",
+        "github-actions:35539091949",
+        "github-actions:35539091944",
+        "github-actions:35539091952",
+        "github-actions:35539091988"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
@@ -128,7 +137,11 @@
         "EVERY_GOVERNED_TRANSITION_REQUIRED_EVIDENCE_VALIDATION_PASS",
         "EVERY_GOVERNED_TRANSITION_RECEIPT_RECONSTRUCTION_DIGEST_EQUAL",
         "TERMINAL_CANONICAL_STATE_REACHED",
-        "STEGDB_MASTER_RECORDS_STEGHEALTH_RECONCILIATION_CONSISTENT_OR_REMEDIATED"
+        "STEGDB_MASTER_RECORDS_STEGHEALTH_RECONCILIATION_CONSISTENT_OR_REMEDIATED",
+        "FUNCTIONAL_MEMORY_IMMEDIATE_PREDECESSOR_RECONSTRUCTION_REQUIRED",
+        "FUNCTIONAL_MEMORY_UNRECONSTRUCTABLE_PREDECESSOR_EMITS_NO_SUCCESSOR",
+        "FUNCTIONAL_MEMORY_POINTER_RECOVERABLE_FROM_MASTER_RECORDS",
+        "FUNCTIONAL_MEMORY_RECOVERY_SEQUENCE_AND_PREDECESSOR_CHAIN_VALIDATED"
       ],
       "runtime_requirements": {
         "capabilities": [

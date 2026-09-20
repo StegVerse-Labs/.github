@@ -1036,3 +1036,6 @@ The existing StegAgents targeted resident consumer now preserves the canonical M
 ### Functional Memory immediate-predecessor enforcement — 2026-09-20
 
 WorkerCoordinator Functional Memory now enforces state-dependent predecessor closure before any successor non-ALLOW memory can be created. An unreconstructable retained predecessor stops at a fail-closed Functional Memory reconstruction boundary with no new Functional Memory sequence, receipt, worker, claim, or fence. When the mutable local pointer is absent, the existing canonical Master Records query path may recover the latest same-task `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` pointer only after exact reconstruction, required-evidence PASS, contiguous sequence validation, and receipt-to-receipt predecessor-chain validation.
+
+
+Functional Memory predecessor enforcement is merged in PR #2367 as `57415095b055ba04451207fc659bee98855f587a`. Exact-head Richard seam, DeepSeek resident, KV AI Memory resident-binding, and cross-task coordination validations all passed. The runtime now fails closed before successor Functional Memory creation when prior reconstruction is invalid, and missing mutable pointers may be recovered only from fully reconstructed, ordered canonical Master Records history.
