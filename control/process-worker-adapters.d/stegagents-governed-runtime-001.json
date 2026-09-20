@@ -7,7 +7,8 @@
       "authority_ref": "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json#authority",
       "capabilities": [
         "stegagents_governed_coderepair_roundtrip",
-        "stegagents_purpose_bound_worker_lifecycle"
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_purpose_bound_worker_state_graph"
       ],
       "command": [
         "python",
