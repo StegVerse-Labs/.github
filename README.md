@@ -1012,3 +1012,8 @@ Goal `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001` traced the existin
 ### SDK Test 1 authentic purpose-worker runtime continuation
 
 Goal Prompt 20 retires `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` as source/integration-complete but runtime-incomplete, and transfers only authentic Test 1 closure to `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001` / COSV `71000000111111`. Shared Universal InTr PR #2341 merged as `746d077e126e3452ccb40685907f141c839fb851`; SDK Test-1-only PR #288 merged as `ec989d1e2075b975c7cc138ceec4ee0fabdd1d50`. GitHub Test 1 run `35527445140` reached the expected non-runtime boundary `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED`; the successor must use the existing resident Universal InTr endpoint and existing `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` binding, then close the exact ordered WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records lineage. Tests 2 and 3 remain out of scope until Test 1 closes.
+
+
+## Lifecycle-aware email failure remediation — 2026-09-20
+
+Canonical Task Registry generation 141 registers seven lifecycle-aware failure-remediation identities under `docs/EMAIL_FAILURE_REMEDIATION_LIFECYCLE_MIRROR_HANDOFF.md` while preserving all generation-140 state. Closed/terminal source tasks produce new remediation tasks; open/nonterminal source tasks produce fresh child remediation tasks; duplicate notifications attach to the same active remediation incident; recurrence after closure creates a new sibling. Archived email is not remediation evidence.
