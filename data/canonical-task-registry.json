@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 130,
+  "generation": 131,
   "status": "ERL_UK_JCHR_INDEPENDENT_REVIEW_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5965,7 +5965,6 @@
         "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001"
       ],
       "expected_evidence_predicates": [
-        "AUTHENTIC_STEGHEALTH_KV_INTERLOCK_RUNTIME_TRANSITION_OBSERVED",
         "INTERLOCK_INTR_CURRENT_DECISION_OBSERVED",
         "MASTER_RECORDS_STATE_RECORDED",
         "MASTER_RECORDS_RECONSTRUCTION_PASS",
@@ -5993,7 +5992,7 @@
         "direction": "INTERNAL",
         "mutation_required": true,
         "deployment_required": true,
-        "current_observation_required": true
+        "current_observation_required": false
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -6069,7 +6068,10 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "reconciliation_ref": "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md"
+        "reconciliation_ref": "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
+        "duplicate_runtime_proof_required": false,
+        "separate_authentic_runtime_evidence_class_required": false,
+        "terminal_state_is_completion_truth": true
       },
       "allowed_next_transitions": [
         "INGRESS_ADMITTED",
@@ -6085,12 +6087,15 @@
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "interlock_intr_is_transition_path_not_precondition": true,
+        "master_records_is_transition_custody_not_precondition": true,
+        "separate_runtime_observer_is_completion_authority": false
       },
-      "remaining_predicate": "AUTHENTIC_CANONICAL_WORK_REQUEST_CONSUMPTION_THEN_FRESH_WORKERCOORDINATOR_CLAIM_FENCE_AND_GOVERNED_MASTER_RECORDS_CLOSED_TRANSITION",
+      "remaining_predicate": "INGRESS_ADMITTED",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "carriage_repair": {
-        "state": "SOURCE_REPAIRED_AWAITING_AUTHENTIC_RESIDENT_CONSUMPTION",
+        "state": "STATE_TRIGGERABLE_INGRESS_READY",
         "defect": "ACTIVE_CHECKED_OUT_TASK_WAS_NOT_REACHABLE_BY_PROPOSED_ONLY_REGISTRY_SELECTION_OR_PROPOSED_ONLY_INGRESS_PROJECTION",
         "repair": "EXPLICIT_REQUEST_REUSES_CANONICAL_WORK_CONSUMER_AND_PRESERVES_ACTIVE_CHECKOUT_COORDINATION_WHILE_RECORDING_RUNTIME_INGRESS_SEPARATELY",
         "request_ref": "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
@@ -6098,7 +6103,9 @@
         "second_dispatcher_created": false,
         "second_scheduler_created": false,
         "second_workercoordinator_created": false,
-        "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY"
+        "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
+        "separate_authentic_runtime_gate_required": false,
+        "transition_truth_source": "MASTER_RECORDS_GOVERNED_TRANSITION_CLOSURE"
       }
     },
     {
