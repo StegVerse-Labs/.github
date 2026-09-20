@@ -23,17 +23,48 @@
     "sha256:c807f2f4ab2479c5edb0a820d877ff53018bad690e5a249c8e9eec8e8ff2ecf2"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "GCAT-BCAT-Engine", "StegVerse-org"],
-    "repositories": ["StegVerse-Labs/.github", "GCAT-BCAT-Engine/Publisher", "StegVerse-org/StegVerse-SDK"],
-    "components": ["publisher-visual-evidence-contract", "elan-run2-screenshot-sequence", "universal-document-revision", "render-receipt-revision"]
+    "organizations": [
+      "StegVerse-Labs",
+      "GCAT-BCAT-Engine",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "GCAT-BCAT-Engine/Publisher",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "publisher-visual-evidence-contract",
+      "elan-run2-screenshot-sequence",
+      "universal-document-revision",
+      "render-receipt-revision"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-ELAN-CUMULATIVE-COMPLETE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"ELAN-CUMULATIVE-PUBLICATION-001 terminal COSV 71000000100100"},
-    {"dependency_id":"DEP-ELAN-RUN2-ARTIFACT","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"workflow run 34565152578 artifact elan-local-sdk-governance-observed-silence sha256:2187e46441f3fc2018daf6b624ea81eb18f27353359fa99655e3a3a1febde91f"},
-    {"dependency_id":"DEP-PUBLISHER-VISUAL-RULE","kind":"IMPLEMENTATION","state":"AVAILABLE_VALIDATED","ref":"GCAT-BCAT-Engine/Publisher@228bd19aa28fe387270fce034d5c820842cc34dd"}
+    {
+      "dependency_id": "DEP-ELAN-CUMULATIVE-COMPLETE",
+      "kind": "EVIDENCE",
+      "state": "AVAILABLE_VALIDATED",
+      "ref": "ELAN-CUMULATIVE-PUBLICATION-001 terminal COSV 71000000100100"
+    },
+    {
+      "dependency_id": "DEP-ELAN-RUN2-ARTIFACT",
+      "kind": "EVIDENCE",
+      "state": "AVAILABLE_VALIDATED",
+      "ref": "workflow run 34565152578 artifact elan-local-sdk-governance-observed-silence sha256:2187e46441f3fc2018daf6b624ea81eb18f27353359fa99655e3a3a1febde91f"
+    },
+    {
+      "dependency_id": "DEP-PUBLISHER-VISUAL-RULE",
+      "kind": "IMPLEMENTATION",
+      "state": "AVAILABLE_VALIDATED",
+      "ref": "GCAT-BCAT-Engine/Publisher@228bd19aa28fe387270fce034d5c820842cc34dd"
+    }
   ],
   "blockers": [],
-  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"],
+  "adjacent_task_refs": [
+    "ELAN-CUMULATIVE-PUBLICATION-001",
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+  ],
   "expected_evidence_predicates": [
     "PUBLISHER_VISUAL_EVIDENCE_RULE_DOCUMENTED",
     "RUN2_SCREENSHOTS_DERIVED_FROM_AUTHENTIC_RETAINED_ARTIFACTS",
@@ -45,21 +76,32 @@
     "REVISED_RENDER_RECEIPT_HASH_BINDS_NEW_PACKAGE"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_pull_request_write", "publisher_document_rendering"],
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "publisher_document_rendering"
+    ],
     "environment": "CURRENT_SESSION_GITHUB_AND_PUBLISHER",
     "direction": "AUTHENTIC_EVIDENCE_TO_VISUAL_PUBLICATION",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": false
   },
-  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "completion": {
     "claimed": true,
     "validated": true,
     "reconciliation_ref": "GCAT-BCAT-Engine/Publisher:data/elan-cumulative-publication-visual-revision.json"
   },
   "allowed_next_transitions": [],
-  "handoff_projection_refs": ["docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "publisher_rendering_mints_publication_authority": false,
