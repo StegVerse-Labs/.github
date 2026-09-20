@@ -26,14 +26,28 @@
     "https://support.google.com/a/answer/11112794"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegLearn"],
-    "components": ["youtube-player-for-education-partner-evaluation", "google-for-education-partner-advantage-entry", "classroom-of-one-media-capability-matrix", "provider-neutral-learning-media-adapter", "google-specialist-outreach-package", "google-managed-identity-reconciliation"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegLearn"
+    ],
+    "components": [
+      "youtube-player-for-education-partner-evaluation",
+      "google-for-education-partner-advantage-entry",
+      "classroom-of-one-media-capability-matrix",
+      "provider-neutral-learning-media-adapter",
+      "google-specialist-outreach-package",
+      "google-managed-identity-reconciliation"
+    ]
   },
   "dependencies": [],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["STEGLEARN-SITE-PUBLICATION-001"],
+  "adjacent_task_refs": [
+    "STEGLEARN-SITE-PUBLICATION-001"
+  ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegLearn@135d1c7fb6090d58c7be828d5f4241b4b4ab9d19",
     "StegVerse-Labs/StegLearn/actions/runs/35047418641",
@@ -64,7 +78,13 @@
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_repository_write", "public_web_research", "connected_gmail_search", "google_admin_console_human_access"],
+    "capabilities": [
+      "github_repository_read",
+      "github_repository_write",
+      "public_web_research",
+      "connected_gmail_search",
+      "google_admin_console_human_access"
+    ],
     "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB_PLUS_CONNECTED_GMAIL_PLUS_OWNER_GOOGLE_ADMIN_CONSOLE",
     "direction": "AUTHORIZED_EXTERNAL_OUTREACH_TO_MANAGED_IDENTITY_RECONCILIATION_TO_EVIDENCE_RECONCILIATION",
     "mutation_required": true,
@@ -73,25 +93,92 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"
+        ]
+      }
     ],
     "selected_substrate_id": null,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "human_action_ref": "Sign in at admin.google.com with Rige1Randoloh@stegverse.org; observe Billing > Subscriptions and classify Rigel@stegverse.org as managed, unmanaged/conflicting, or absent before any user creation; reconcile through the applicable minimum-risk path; then retry Partner Network enrollment and preserve the resulting acknowledgement or blocker condition.",
-  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
-  "allowed_next_transitions": ["RECONCILE_GOOGLE_MANAGED_IDENTITY", "RETRY_PARTNER_NETWORK_ENROLLMENT", "RECORD_GOOGLE_ACKNOWLEDGEMENT", "RECORD_GOOGLE_ROUTING_RESPONSE", "RECORD_GOOGLE_TECHNICAL_RESPONSE", "EVALUATE_NEGOTIATED_CAPABILITY_GAPS"],
-  "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "RECONCILE_GOOGLE_MANAGED_IDENTITY",
+    "RETRY_PARTNER_NETWORK_ENROLLMENT",
+    "RECORD_GOOGLE_ACKNOWLEDGEMENT",
+    "RECORD_GOOGLE_ROUTING_RESPONSE",
+    "RECORD_GOOGLE_TECHNICAL_RESPONSE",
+    "EVALUATE_NEGOTIATED_CAPABILITY_GAPS"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -127,5 +214,9 @@
     "n_concurrent_bidirectional_classrooms_of_one": "UNRESOLVED_NEGOTIATION_OR_APPROVED_ADJACENT_GOOGLE_TRANSPORT_REQUIRED",
     "education_minor_privacy_profile_for_bidirectional_lane": "UNRESOLVED_NEGOTIATION_REQUIRED"
   },
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": true, "readme_path":"StegVerse-Labs/StegLearn:README.md"}
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": true,
+    "readme_path": "StegVerse-Labs/StegLearn:README.md"
+  }
 }
