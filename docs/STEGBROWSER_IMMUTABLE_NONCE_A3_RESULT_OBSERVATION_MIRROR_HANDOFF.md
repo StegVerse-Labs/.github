@@ -121,3 +121,77 @@ GET /api/master-records/state-transitions/query
 against that actual durable canonical store. Only that result may classify A3 custody.
 
 Manual work: None.
+
+
+## Goal Prompt 3/20 — durable materialization source provenance repaired
+
+The existing canonical durable materialization/source-refresh chain is:
+
+```text
+master-records/orchestration local source
+-> scripts/package_sovereign_control_plane_bundle.py
+-> vendor/master-records-orchestration
+-> StegDeploy verified materialization
+-> STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT / STEGVERSE_MASTER_RECORDS_ROOT
+-> existing resident consumers/runtime
+```
+
+The first concrete defect was in the **existing bundle producer's Master Records source proof**.
+
+Before this prompt, `master_records_source_proof()` accepted any clean local source whose history merely contained the old SV001 floor:
+
+```text
+8e33b3e95d3d9e34387fe393031f44bebcdb5d57
+```
+
+Its protected-path set also omitted:
+
+```text
+services/canonical_state_transition_custody.py
+services/canonical_master_records_api.py
+```
+
+Therefore a resident source bundle could legitimately emit:
+
+```text
+state=VERIFIED_LOCAL_GIT_SOURCE
+```
+
+without proving that its Master Records tree contained the nonce-query repair and canonical-app runtime lineage through:
+
+```text
+8804762fb5da5d212aa7c9c448dfcdabac734715
+```
+
+That is why no authentic resident/durable advertisement could be interpreted as proving the repaired Master Records source was loaded: the producer's own provenance predicate was too weak.
+
+The defect was repaired on the same existing materialization path in `StegVerse-Labs/.github#2354`, merged as:
+
+```text
+5b37c88a0ec6dcb9d5d8289b025e8d80418106cf
+```
+
+The Master Records resident source floor is now:
+
+```text
+8804762fb5da5d212aa7c9c448dfcdabac734715
+```
+
+and the canonical state-transition custody/API source files are included in the protected path set. A local Master Records tree older than the required floor must therefore fail source verification instead of being packaged as verified resident source.
+
+Exact-head validation for PR #2354:
+
+```text
+head: 0cd5890163399e0dd96b9d8f28dd435aa995f418
+Validate KV AI Memory Resident Binding run 35528815067: PASS
+validate-deepseek-resident run 35528814989: PASS
+mergeability before merge: true
+```
+
+No new fetcher, service, host, deployment plane, runtime, credential path, custody store, scheduler, dispatcher, device dependency, or invocation was created.
+
+This prompt does **not** claim the resident bundle has subsequently refreshed, that StegDeploy has materialized a new bundle, that an authentic Master Records runtime advertisement is present, or that the durable nonce query has executed. Those are the next state-dependent observations.
+
+The next concrete evidence must come from the existing resident materialization chain and prove the materialized Master Records source is at or above `8804762f...` before the durable canonical store is queried.
+
+Manual work: None.
