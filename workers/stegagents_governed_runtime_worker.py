@@ -604,8 +604,9 @@ def build_request(task: Mapping[str, Any], handoff: Mapping[str, Any] | None = N
 
     require(isinstance(handoff, Mapping), "purpose-bound worker executable handoff required")
     _required_capability(handoff, profile["capability"])
-    contract = handoff.get("purpose_bound_worker_request")
-    require(isinstance(contract, Mapping), "purpose_bound worker request missing from executable handoff")
+    manifested = _sdk_manifest_contract("purpose_bound_worker")
+    contract = manifested["purpose_bound_worker_request"] if manifested is not None else handoff.get("purpose_bound_worker_request")
+    require(isinstance(contract, Mapping), "purpose-bound worker request missing from executable handoff")
     candidate = ((contract.get("transition_cell") or {}).get("candidate") if isinstance(contract.get("transition_cell"), Mapping) else None)
     require(contract.get("schema") == "stegverse.sdk.tt-purpose-bound-worker.v1", "purpose-bound SDK request schema mismatch")
     require(isinstance(candidate, Mapping), "purpose-bound candidate missing")
