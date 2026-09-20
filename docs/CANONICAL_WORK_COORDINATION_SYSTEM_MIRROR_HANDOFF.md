@@ -1,6 +1,6 @@
 # Canonical Work Coordination System Mirror Handoff
 
-Updated: 2026-09-13
+Updated: 2026-09-19
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
@@ -20,7 +20,7 @@ This file is the bounded continuation record for the StegVerse Canonical Work Co
 - `control/worker-registry.json`
 - `master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md`
 
-Current Task Registry generation observed from canonical `main`: `19`.
+Current Task Registry generation observed from canonical `main`: `129`.
 Current WorkerCoordinator registry generation observed from canonical `main`: `22`.
 
 ## Authority model
@@ -120,6 +120,37 @@ Current important boundaries:
 
 Do not create a second runtime-presence projector, WorkerCoordinator, scheduler, request dispatcher, claim/fence path, or credential path to advance this workstream.
 
+
+## 2026-09-19 regression reconstruction and execution-spine repairs
+
+The execution spine was reconstructed against repository history rather than forward-patched. The reconstruction established that no single historical whole-system commit simultaneously implemented all current invariants, so recovery is selective: preserve independently correct authority boundaries, remove identified regressions, and repair only missing composition seams.
+
+Merged repairs from this continuation:
+
+- `a390eebb027a0cbbe045817ef71f5cff838dc845` / PR #2319 — regression reconstruction and guards. Preserves HB non-authority, WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, Master Records custody/reconstruction authority, and coordinated StegDB/Master Records/StegHealth classification. No runtime behavior was added by this merge.
+- `44669fca70bd3b71bd9279eded933869820231ad` / PR #2321 — canonical work selection now distinguishes state-dependent, already-admitted independent WorkerCoordinator work from work whose declared next edge is still `INGRESS_ADMITTED`. The existing `run_worker_runtime.py --task-id` path is reused; no second scheduler/runtime/authority plane is created.
+- `3244ac7e91543920e499a49c0c92ba068aa0e3b2` / PR #2322 — the already-existing HB carrier loop now treats activity on both canonical HB/AU sub-signal persistence families as a non-authorizing cue to run the already-existing WorkerCoordinator-presence supervision check. Covered surfaces are the exact-byte derived-carrier event log and retained `control/heartbeat-subsignals.json` state. The existing 100-reference periodic carrier supervision remains the fallback. Sub-signals still grant no task, claim/fence, admission, transition, credential, routing, custody, or execution authority.
+
+These repairs restore composition between existing components; they do not create a new ecosystem chain. Test-specific SDK fixtures may be used diagnostically, but no named test scenario is a canonical ecosystem dependency or completion gate.
+
+The generic state-dependent execution invariant remains:
+
+```text
+predecessor canonical closure
+-> evaluate declared successor
+-> WorkerCoordinator claim/fence when executable work is required
+-> Interlock/InTr governed transition admission
+-> execution on the existing substrate
+-> Master Records custody/reconstruction of the successor
+-> coordinated StegDB/Master Records/StegHealth consistency/remediation classification
+-> next successor evaluation
+-> terminal closure
+```
+
+HB and all HB/AU sub-signals participate only as non-authorizing carrier/runtime-environment initiation for work that has no predecessor-state trigger, including restoration of WorkerCoordinator process presence. They are not inserted between valid state-dependent predecessor/successor edges.
+
+Current source after these merges does **not** establish an authentic generic end-to-end lifecycle receipt. Repository-visible searches show source/contract declarations for existing SDK diagnostic fixtures but no new authentic claim/fence Master Records closure produced by this repair sequence. Therefore completion predicate 14 remains PENDING and source/merge evidence must not be promoted to runtime truth.
+
 ## Completion predicates
 
 1. Stable canonical task identity, dependency, blocker, adjacency, evidence, and claim-reference semantics exist. **SOURCE COMPLETE**
@@ -162,9 +193,7 @@ The runtime-presence shared predicate remains deferred until authentic evidence 
 
 ## README completeness
 
-This reconciliation is **NON-MATERIAL**. It updates an outdated continuation record to current canonical registry/worker generations and does not change repository function, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.
-
-No README update is required for this reconciliation.
+This continuation includes **MATERIAL runtime-composition repairs** in PR #2321 and PR #2322. README is updated in the same reconciliation lineage to document state-dependent WorkerCoordinator delegation and HB/all-sub-signal reuse of the existing non-authorizing WorkerCoordinator-presence supervision path. No authority boundary is changed.
 
 Preflight:
 
