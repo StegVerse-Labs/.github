@@ -43,6 +43,11 @@ PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
 PURPOSE_GRAPH_CAPABILITY = "stegagents_purpose_bound_worker_state_graph"
 PURPOSE_GRAPH_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph/v1"
 PURPOSE_GRAPH_RESULT_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph-result/v1"
+SDK_MANIFEST_ENV = "STEGVERSE_SDK_INGRESS_MANIFEST_PATH"
+SDK_PURPOSE_ROUTE = "stegverse.route.purpose-bound-worker.v1"
+SDK_ATOMIC_ROUTE = "stegverse.route.atomic-task-worker.v1"
+SDK_PURPOSE_EXTENSION = "stegverse_purpose_bound_worker_request"
+SDK_ATOMIC_EXTENSION = "stegverse_atomic_task_worker_request"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
 
@@ -87,6 +92,89 @@ def _profile(task_id: str) -> dict[str, str]:
     raise RuntimeError("worker invocation task mismatch")
 
 
+def _sdk_manifest_contract(expected_capability: str) -> dict[str, Any] | None:
+    raw = str(os.getenv(SDK_MANIFEST_ENV) or "").strip()
+    if not raw:
+        return None
+    path = Path(raw).expanduser().resolve()
+    require(path.is_file(), "SDK ingress manifest override missing")
+    roots = repo_roots()
+    sdk_root = roots.get("StegVerse-org/StegVerse-SDK")
+    require(sdk_root is not None, "SDK source root unavailable for manifested runtime input")
+    if str(sdk_root) not in sys.path:
+        sys.path.insert(0, str(sdk_root))
+    from stegverse.manifest_contract import validate_ingress_manifest
+
+    value = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(value, Mapping), "SDK ingress manifest must be object")
+    canonical = validate_ingress_manifest(value)
+    processing = canonical.get("processing") if isinstance(canonical.get("processing"), Mapping) else {}
+    require(processing.get("capability") == expected_capability, "SDK manifest processing capability mismatch")
+    expected_route = SDK_PURPOSE_ROUTE if expected_capability == "purpose_bound_worker" else SDK_ATOMIC_ROUTE
+    require(processing.get("route_id") == expected_route, "SDK manifest processing route mismatch")
+    payload = canonical.get("payload")
+    require(isinstance(payload, Mapping) and isinstance(payload.get("text"), str), "SDK manifest payload.text required")
+    extensions = canonical.get("extensions") if isinstance(canonical.get("extensions"), Mapping) else {}
+
+    if expected_capability == "purpose_bound_worker":
+        request = extensions.get(SDK_PURPOSE_EXTENSION)
+        require(isinstance(request, Mapping), "purpose-bound processor request missing from SDK manifest")
+        policy = request.get("lifetime_policy")
+        require(isinstance(policy, Mapping), "purpose-bound lifetime policy missing")
+        lifetime = policy.get("derived_max_lifetime_seconds")
+        require(isinstance(lifetime, int) and lifetime > 0, "purpose-bound derived lifetime invalid")
+        test_id = str(request.get("test_id") or "").strip()
+        require(bool(test_id), "purpose-bound test_id missing")
+        purpose = str(request.get("purpose") or "").strip()
+        capability = str(request.get("required_capability") or "").strip()
+    else:
+        request = extensions.get(SDK_ATOMIC_EXTENSION)
+        require(isinstance(request, Mapping), "atomic task/worker processor request missing from SDK manifest")
+        task = request.get("task")
+        require(isinstance(task, Mapping), "atomic task descriptor missing")
+        policy = task.get("lifetime_policy")
+        require(isinstance(policy, Mapping), "atomic task lifetime policy missing")
+        lifetime = policy.get("derived_max_lifetime_seconds")
+        require(isinstance(lifetime, int) and lifetime > 0, "atomic task derived lifetime invalid")
+        test_id = str(request.get("test_id") or task.get("task_id") or "").strip()
+        require(bool(test_id), "atomic task test_id missing")
+        purpose = str(task.get("purpose") or "").strip()
+        capability = str(task.get("required_capability") or "").strip()
+
+    require(bool(purpose), "manifested purpose missing")
+    require(capability == "text.integrity_summary", "manifested capability unsupported")
+    budget = policy.get("time_budget_seconds") if isinstance(policy.get("time_budget_seconds"), Mapping) else {}
+    required_budget = ("expected_task_execution", "known_delay", "inferred_unknown_delay_reserve", "records_decomposition", "safety_reserve")
+    require(all(isinstance(budget.get(k), int) and budget.get(k) >= 0 for k in required_budget), "manifested lifetime budget incomplete")
+    require(sum(int(budget[k]) for k in required_budget) == lifetime, "manifested derived lifetime budget mismatch")
+    contract = {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+            "cell_id": test_id,
+            "protocol_version": "manifest-builder-v1",
+            "pre_state": {"worker_live": False},
+            "candidate": {
+                "operation_id": test_id,
+                "operation_class": "ARBITRARY_TRACKED_TASK",
+                "purpose": purpose,
+                "required_capability": capability,
+                "max_lifetime_seconds": lifetime,
+                "payload": dict(payload),
+                "lifetime_policy": dict(policy),
+            },
+        },
+    }
+    return {
+        "manifest": canonical,
+        "manifest_sha256": canonical.get("canonical_manifest_sha256"),
+        "purpose_bound_worker_request": contract,
+        "expected_evidence_fields": list(request.get("expected_evidence_fields") or []),
+        "test_id": test_id,
+        "scenario": request.get("scenario"),
+        "test_number": request.get("test_number"),
+    }
+
+
 def validate_test3_invocation(invocation: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
     require(invocation.get("schema") == "stegverse.worker-invocation/v0.1", "worker invocation schema mismatch")
     task = invocation.get("task")
@@ -129,7 +217,8 @@ def validate_test3_invocation(invocation: Mapping[str, Any]) -> tuple[dict[str, 
 
 def build_test3_request(task: Mapping[str, Any], handoff: Mapping[str, Any], mode: str) -> dict[str, Any]:
     _required_capability(handoff, PURPOSE_CAPABILITY)
-    contract = handoff.get("purpose_bound_worker_request")
+    manifested = _sdk_manifest_contract("atomic_task_worker")
+    contract = manifested["purpose_bound_worker_request"] if manifested is not None else handoff.get("purpose_bound_worker_request")
     require(isinstance(contract, Mapping), "purpose-bound worker request missing from Test 3 handoff")
     candidate = ((contract.get("transition_cell") or {}).get("candidate") if isinstance(contract.get("transition_cell"), Mapping) else None)
     require(contract.get("schema") == "stegverse.sdk.tt-purpose-bound-worker.v1", "purpose-bound SDK request schema mismatch")
@@ -307,6 +396,13 @@ def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[st
         "github_runtime_authority": "NONE",
         "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
     }
+    manifested = _sdk_manifest_contract("atomic_task_worker")
+    if manifested is not None:
+        receipt["sdk_ingress_manifest_sha256"] = manifested["manifest_sha256"]
+        receipt["sdk_evaluator_test_id"] = manifested["test_id"]
+        receipt["sdk_evaluator_test_number"] = manifested["test_number"]
+        receipt["sdk_evaluator_scenario"] = manifested["scenario"]
+        receipt["sdk_expected_evidence_fields"] = manifested["expected_evidence_fields"]
     if mode == "ATOMIC_ACTIVATION":
         receipt["activation_projection"] = result.get("activation_projection")
         receipt["warrant_policy_binding"] = result.get("warrant_policy_binding")
