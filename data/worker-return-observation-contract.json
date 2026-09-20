@@ -49,7 +49,7 @@
       "StegDB",
       "StegHealth"
     ],
-    "condition": "EXPECTED_WORKER_RETURN_OBLIGATION_EXISTS_AND_MATCHING_MASTER_RECORDS_RETURN_IS_ABSENT_AFTER_GOVERNED_EXPECTATION",
+    "condition": "EXPECTED_WORKER_RETURN_OBLIGATION_EXISTS_AND_MATCHING_MASTER_RECORDS_RETURN_IS_ABSENT_AFTER_GOVERNED_EXPECTATION_AND_STEGDB_INDEPENDENTLY_CLASSIFIES_THE_SAME_BOUND_RETURN",
     "worker_self_report_not_required_to_detect_missing_report": true,
     "absence_requires_expected_return_obligation": true,
     "silence_without_a_bound_expectation_is_not_failure_proof": true
@@ -58,7 +58,7 @@
     "HEALTHY": "Expected worker return is present and canonically recorded.",
     "RETRYING": "Worker remains within bounded resilience attempts before expiry/return expectation is violated.",
     "RETURN_PENDING": "Worker work has not yet reached the governed expiry/return expectation point.",
-    "RETURN_OVERDUE": "Expected return is past due and no matching Master Records record exists.",
+    "RETURN_OVERDUE": "Expected return is past due, no matching Master Records record exists, and StegDB independently classifies the same bound return as missing.",
     "WORKER_NONREPORT": "Independent observation confirms the worker return obligation was not fulfilled.",
     "RECONCILIATION_REQUIRED": "Conflicting or partial evidence prevents a safe determination.",
     "UNKNOWN": "No sufficient bound expectation/evidence exists to classify."
@@ -73,7 +73,8 @@
     "WORK_HISTORY_AND_EVIDENCE_OUTLIVE_WORKER_EXPIRY",
     "MASTER_RECORDS_RECORDS_OBSERVED_RETURNED_HISTORY",
     "RETRY_COUNTERS_ADD_RESILIENCE_BUT_DO_NOT_CREATE_CANONICAL_REALITY",
-    "MISSING_WORKER_REPORT_IS_DERIVED_FROM_EXPECTED_RETURN_VERSUS_MASTER_RECORDS_OBSERVATION",
+    "MISSING_WORKER_REPORT_IS_DERIVED_FROM_EXPECTED_RETURN_VERSUS_MASTER_RECORDS_OBSERVATION_WITH_COORDINATED_STEGDB_COMPARISON",
+    "MASTER_RECORDS_ABSENCE_WITHOUT_STEGDB_COMPARISON_REMAINS_RECONCILIATION_REQUIRED",
     "NO_EXPECTED_RETURN_OBLIGATION_MEANS_NO_NONREPORT_CLAIM",
     "STEGINDEX_STEGDB_AND_STEGHEALTH_MAY_DETECT_NONREPORT_WITHOUT_WORKER_COOPERATION",
     "RETIRED_REMAINS_TERMINAL_AND_IS_NOT_REOPENED_BY_MONITORING"
