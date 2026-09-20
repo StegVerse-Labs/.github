@@ -84,10 +84,10 @@
     "current_observation_required": true
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796 + GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
