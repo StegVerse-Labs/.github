@@ -92,7 +92,8 @@
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
-      "worker_id": "stegagents-governed-runtime-worker"
+      "worker_id": "stegagents-governed-runtime-worker",
+      "capability_profile_ref": "control/worker-capability-profiles.json#stegagents-governed-runtime-v1"
     }
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
