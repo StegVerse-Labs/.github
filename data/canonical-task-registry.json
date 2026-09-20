@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 129,
+  "generation": 130,
   "status": "ERL_UK_JCHR_INDEPENDENT_REVIEW_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1174,10 +1174,10 @@
         "unattended_runtime": false
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": "Authentic current-iPhone preparation/save/readback is remaining evidence collection for the standard lane; provider/account authorization is required only when a real live premium publication is attempted.",
       "completion": {
@@ -1308,10 +1308,10 @@
         "current_observation_required": true
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796 + GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -1480,10 +1480,10 @@
         "authority_effect": "NONE"
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/StegBusiness-Ops#1",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -2145,7 +2145,13 @@
         "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
         "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
         "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
-      ]
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -3517,10 +3523,10 @@
         "current_observation_required": true
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#63",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -3540,7 +3546,7 @@
       "authority_model": {
         "task_registry_mints_execution_authority": false,
         "source_state_proves_physical_flow": false,
-        "worker_claim_authority": "CURRENT_SESSION",
+        "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
@@ -4243,10 +4249,10 @@
         "authority_effect": "NONE"
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#172",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -4264,7 +4270,7 @@
       "authority_model": {
         "task_registry_mints_execution_authority": false,
         "source_state_proves_legislative_status_only_to_cited_sources": false,
-        "worker_claim_authority": "CURRENT_SESSION",
+        "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
@@ -4411,10 +4417,10 @@
         "disposition": "REUSE_EXISTING_ERL_RECURRING_DISCOVERY_AND_ACTIVE_RESEARCH_DISPATCH"
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#177",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -4887,6 +4893,12 @@
         "claim_fence_is_first_authentic_transition": true,
         "master_records_required_after_every_transition": true,
         "authority_effect": "NONE_ORDERING_CORRECTION_ONLY"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
       }
     },
     {
@@ -5221,6 +5233,12 @@
         "transition_authority": "INTERLOCK_INTR",
         "credential_authority": "TV/TVC_WHERE_REQUIRED",
         "validation_execution_semantics": "ANY_VALIDATION_REQUIRED_BY_THE_TRANSITION_MUST_EXECUTE_AS_PART_OF_THE_EXISTING_TRANSITION_PATH_BEFORE_EVIDENCE_CLOSURE_AND_ITS_OUTPUT_MUST_ENTER_REQUIRED_EVIDENCE_MANIFEST; VALIDATOR_EXISTENCE_IS_NOT_A_WAIT_OR_DEFER_CONDITION"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
       }
     },
     {
@@ -5307,7 +5325,13 @@
         "release_or_downstream_activation_claimed": false
       },
       "remaining_predicate": null,
-      "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md"
+      "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md",
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -5501,6 +5525,12 @@
         "test_1_preserved_unchanged": true,
         "reconciled_against_registry_generation": 78,
         "next_successor_class": "TEST_3_AUTHENTIC_RICHARD_SCENARIO_SEAM_VALIDATION"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
       }
     },
     {
@@ -5842,6 +5872,12 @@
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_EXISTING_DISPATCH_AND_WORKERCOORDINATOR_ONLY"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
       }
     },
     {
@@ -6260,6 +6296,12 @@
             "Validate Purpose-Bound Worker Derived Lifetime:SUCCESS"
           ]
         }
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
       }
     },
     {
@@ -6553,7 +6595,7 @@
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
@@ -6955,10 +6997,10 @@
         "authority_effect": "NONE"
       },
       "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#187",
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
         "fence_ref": null,
-        "projection_only": false
+        "projection_only": true
       },
       "human_action_ref": null,
       "completion": {
