@@ -327,3 +327,23 @@ The post-`RTC-SDK-RETURN-006` continuation now reuses the existing LLM Adapter `
 Only after RTC007 closure is the existing StegOS MIR southbound consumer invoked to prepare the existing Universal InTr materialization request for `RTC-INTERLOCK-INTR-TRANSPORT-008`. That prepared request is source evidence only: authentic Interlock/InTr admission, `RTC-FARSIDE-FINAL-009`, caller consequence, and communication completion remain unobserved.
 
 Exact-helper executable validation covered both the successful RTC007 Master Records closure path and the fail-closed non-RECORDED path. No new runtime, scheduler, dispatcher, transport, custody store, transition authority, or credential authority was introduced.
+
+
+## Targeted StegAgents Master Records custody carriage repair — 2026-09-20
+
+Functional Memory was used only as the reference implementation for canonical custody transport: its non-ALLOW path calls the shared `submit_state_receipt(...)` client, which succeeds only when either the canonical HTTP Master Records binding or the durable-local Master Records binding is present.
+
+Tracing the SDK purpose-bound targeted resident consumer exposed a deterministic carriage defect in `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)`. The dispatcher, portable refresh path, targeted execution wrapper, and StegAgents process-worker adapter already carried the canonical Master Records configuration, but this intermediate consumer stripped both supported custody transports before invoking `refresh_and_execute_resident_task.py`.
+
+The repair preserves these existing bindings without introducing a new runtime or custody path:
+
+- `STEGVERSE_MASTER_RECORDS_ENDPOINT`
+- `STEGVERSE_MASTER_RECORDS_TOKEN`
+- `STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS`
+- `MASTER_RECORDS_DB`
+- `MASTER_RECORDS_RECEIPT_KEY`
+- `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`
+
+The existing Master Records source-root bindings remain unchanged. GitHub/provider credentials remain forbidden and stripped. Focused regression coverage now executes `clean_env(...)` directly and requires every canonical custody binding to survive while `GITHUB_TOKEN` and provider API keys remain absent.
+
+This is a source carriage repair only. It does not itself prove an authentic runtime state transition or Master Records receipt.
