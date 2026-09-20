@@ -211,10 +211,10 @@
     "unattended_runtime": false
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": "Authentic KV preparation/save/readback remains the standard-lane evidence step and may occur on any eligible StegOS transport node; no device identity, verification, or attestation is required. Provider/account authorization is required only when a real live premium publication is attempted.",
   "completion": {
