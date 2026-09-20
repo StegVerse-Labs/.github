@@ -20,6 +20,91 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
         self.assertIn("resident_worker_presence", source)
         self.assertIn("The pulse already exists before this check", source)
 
+    def test_new_hb_au_subsignal_requests_existing_worker_presence_supervision(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            event_path = root / carrier.DERIVED_SUBSIGNAL_EVENT_LOG_REL
+            event_path.parent.mkdir(parents=True, exist_ok=True)
+            event_path.write_text("", encoding="utf-8")
+            baseline = carrier._subsignal_activity_snapshot(root)
+            event_path.write_text('{"event":"HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL"}\n', encoding="utf-8")
+            expected = {
+                "state": "WORKER_ALREADY_PRESENT",
+                "heartbeat_grants_execution_authority": False,
+                "worker_coordinator_retains_admission_authority": True,
+                "authority_effect": "NONE_SUPERVISION_ONLY",
+            }
+            supervisor = mock.Mock(return_value=expected)
+            current, result = carrier._observe_hb_subsignal_worker_presence(
+                root,
+                previous_snapshot=baseline,
+                carrier_pid=111,
+                interval_ms=10.0,
+                supervisor=supervisor,
+            )
+            self.assertNotEqual(current, baseline)
+            self.assertEqual(result, expected)
+            supervisor.assert_called_once_with(root, carrier_pid=111, interval_ms=10.0)
+
+    def test_retained_heartbeat_subsignal_state_also_requests_existing_supervision(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state_path = root / carrier.LEGACY_SUBSIGNAL_STATE_REL
+            state_path.parent.mkdir(parents=True, exist_ok=True)
+            state_path.write_text(json.dumps({
+                "schema": "stegverse.heartbeat-subsignals/v1",
+                "generation": 1,
+                "subsignals": {"worker_coordination": {"state": "IDLE"}},
+            }) + "\n", encoding="utf-8")
+            baseline = carrier._subsignal_activity_snapshot(root)
+            state_path.write_text(json.dumps({
+                "schema": "stegverse.heartbeat-subsignals/v1",
+                "generation": 2,
+                "subsignals": {
+                    "worker_coordination": {"state": "ACTIVE"},
+                    "organization_federation": {"state": "ACTIVE"},
+                    "steggate_transport_lease": {"state": "ACTIVE"},
+                },
+            }) + "\n", encoding="utf-8")
+            supervisor = mock.Mock(return_value={"state": "WORKER_ALREADY_PRESENT", "authority_effect": "NONE_SUPERVISION_ONLY"})
+            current, result = carrier._observe_hb_subsignal_worker_presence(
+                root,
+                previous_snapshot=baseline,
+                carrier_pid=111,
+                interval_ms=10.0,
+                supervisor=supervisor,
+            )
+            self.assertNotEqual(current, baseline)
+            self.assertIsNotNone(result)
+            supervisor.assert_called_once_with(root, carrier_pid=111, interval_ms=10.0)
+
+    def test_no_new_subsignal_does_not_duplicate_supervision(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            event_path = root / carrier.DERIVED_SUBSIGNAL_EVENT_LOG_REL
+            event_path.parent.mkdir(parents=True, exist_ok=True)
+            event_path.write_text('{"event":"HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL"}\n', encoding="utf-8")
+            baseline = carrier._subsignal_activity_snapshot(root)
+            supervisor = mock.Mock()
+            current, result = carrier._observe_hb_subsignal_worker_presence(
+                root,
+                previous_snapshot=baseline,
+                carrier_pid=111,
+                interval_ms=10.0,
+                supervisor=supervisor,
+            )
+            self.assertEqual(current, baseline)
+            self.assertIsNone(result)
+            supervisor.assert_not_called()
+
+    def test_subsignal_supervision_preserves_periodic_fallback_and_authority_boundary(self):
+        source = Path(carrier.__file__).read_text(encoding="utf-8")
+        self.assertIn('"HB_AU_SUBSIGNAL_ACTIVITY"', source)
+        self.assertIn('"PERIODIC_CARRIER_FALLBACK"', source)
+        self.assertIn("produced % WORKER_SUPERVISION_INTERVAL_REFERENCES == 0", source)
+        self.assertIn("grants no task, claim/fence", source)
+        self.assertNotIn("claim_or_fence_minted = True", source)
+
     def test_self_healed_worker_preserves_canonical_local_bindings(self):
         self.assertTrue(set(service.WORKER_SAFE_LOCAL_BINDINGS).issubset(repair.SAFE_ENV))
         with tempfile.TemporaryDirectory() as td:
