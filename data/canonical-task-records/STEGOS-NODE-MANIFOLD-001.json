@@ -14,9 +14,25 @@
     "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/continuity-vault-kit"],
-    "components": ["retained-stegos-node", "node-genesis", "network-manifold", "universal-intr", "service-root-kv-topology", "ecosystem-chat-service-kv", "physical-peer-evidence", "replay-reconstruction"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/continuity-vault-kit"
+    ],
+    "components": [
+      "retained-stegos-node",
+      "node-genesis",
+      "network-manifold",
+      "universal-intr",
+      "service-root-kv-topology",
+      "ecosystem-chat-service-kv",
+      "physical-peer-evidence",
+      "replay-reconstruction"
+    ]
   },
   "adjacent_task_refs": [
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
@@ -32,8 +48,9 @@
     "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
   ],
   "worker_claim": {
-    "authority": "CURRENT_SESSION_COORDINATION_ONLY",
-    "claim_ref": "StegVerse-Labs/StegOS#23",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
     "projection_only": true
   },
   "completion": {
