@@ -68,7 +68,9 @@
     "AISI_STATUTORY_REVIEW_RECOMMENDATIONS_MAPPED",
     "DATED_SUCCESSOR_STATUS_CHECK_PRESENT",
     "NO_FORMAL_GOVERNMENT_RESPONSE_OBSERVED_2026_09_19",
-    "NO_RESULTING_LEGISLATION_OR_REGULATION_ATTRIBUTED_2026_09_19"
+    "NO_RESULTING_LEGISLATION_OR_REGULATION_ATTRIBUTED_2026_09_19",
+    "SUCCESSOR_SURFACES_RECHECKED_2026_09_20",
+    "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -161,7 +163,9 @@
     "independent_review_complete": true,
     "successor_status_check_complete": true,
     "finding_authorized": false,
-    "publication_authorized": false
+    "publication_authorized": false,
+    "successor_status_checked_through": "2026-09-20",
+    "qualifying_successor_development_observed": false
   },
   "allowed_next_transitions": [
     "TRACK_FORMAL_GOVERNMENT_RESPONSE",
@@ -184,7 +188,7 @@
     "finding_authorized": false
   },
   "prompt_budget": {
-    "goal_prompt_count": "2/20",
+    "goal_prompt_count": "3/20",
     "split_merely_to_reset_counter": false
   },
   "readme_impact": {
