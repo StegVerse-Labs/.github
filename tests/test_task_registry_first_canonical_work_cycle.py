@@ -218,6 +218,69 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
         self.assertTrue(request["stop_autonomous_progression"])
         self.assertFalse(request["select_successor_before_notification"])
 
+    def test_active_checked_out_independent_task_routes_to_existing_workercoordinator(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fragments = root / "worker-registry.d"
+            fragments.mkdir()
+            task_id = "STATE-DEPENDENT-WORK-001"
+            (fragments / "state-dependent-work-001.json").write_text(json.dumps({
+                "schema": "stegverse.worker-registry-fragment/v0.1",
+                "fragment_id": task_id,
+                "tasks": [{
+                    "task_id": task_id,
+                    "state": "HANDOFF_READY",
+                    "claim_id": None,
+                    "worker_id": None,
+                    "worker_instance_id": None,
+                    "admission": {
+                        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+                        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+                        "carrier_trigger_required": False,
+                    },
+                }],
+                "workers": [],
+            }), encoding="utf-8")
+            row = record(task_id, state="ACTIVE", checkout="CHECKED_OUT")
+            row["allowed_next_transitions"] = []
+            self.assertTrue(module.workercoordinator_target_candidate(row, fragments))
+
+    def test_workercoordinator_state_transition_requires_existing_admission_not_hb(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fragments = root / "worker-registry.d"
+            fragments.mkdir()
+            task_id = "STATE-DEPENDENT-WORK-001"
+            base = {
+                "schema": "stegverse.worker-registry-fragment/v0.1",
+                "fragment_id": task_id,
+                "tasks": [{
+                    "task_id": task_id,
+                    "state": "HANDOFF_READY",
+                    "claim_id": None,
+                    "worker_id": None,
+                    "worker_instance_id": None,
+                    "admission": {
+                        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+                        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+                        "carrier_trigger_required": True,
+                    },
+                }],
+                "workers": [],
+            }
+            (fragments / "state-dependent-work-001.json").write_text(json.dumps(base), encoding="utf-8")
+            row = record(task_id, state="ACTIVE", checkout="CHECKED_OUT")
+            row["allowed_next_transitions"] = []
+            self.assertFalse(module.workercoordinator_target_candidate(row, fragments))
+
+    def test_state_dependent_delegation_reuses_existing_targeted_worker_runtime(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('WORKER_RUNTIME = ROOT / "scripts" / "run_worker_runtime.py"', text)
+        self.assertIn('"WORKERCOORDINATOR_TARGETED_STATE_TRANSITION"', text)
+        self.assertIn('str(WORKER_RUNTIME)', text)
+        self.assertIn('"--task-id"', text)
+        self.assertNotIn("new WorkerCoordinator", text)
+
     def test_selection_does_not_mint_claim_or_transition_authority(self):
         text = SCRIPT.read_text(encoding="utf-8")
         self.assertIn('"workercoordinator_claim_or_fence_minted": False', text)
