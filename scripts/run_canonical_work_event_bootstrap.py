@@ -137,6 +137,53 @@ def wait_for_consumption(*, runtime: Path, materialization_id: str, timeout_seco
     raise SystemExit("FAIL_CLOSED: canonical_work_consumption_receipt_timeout")
 
 
+def invoke_immediate_successor(*, task_id: str, runtime: Path) -> dict[str, Any]:
+    """Immediately evaluate the admitted task through the existing WorkerCoordinator.
+
+    This is the state-dependent continuation edge. It creates no scheduler,
+    dispatcher, heartbeat authority, claim authority, or transition authority.
+    The existing targeted WorkerCoordinator path performs all ordinary
+    admission/claim/fence/InTr/Master Records checks.
+    """
+    command = [
+        sys.executable,
+        str(ROOT / "scripts" / "run_worker_runtime.py"),
+        "--root",
+        str(runtime),
+        "--task-id",
+        task_id,
+    ]
+    completed = subprocess.run(
+        command,
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=1200,
+    )
+    result = None
+    for line in reversed([line.strip() for line in completed.stdout.splitlines() if line.strip()]):
+        try:
+            candidate = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(candidate, dict):
+            result = candidate
+            break
+    return {
+        "attempted": True,
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "stderr_tail": completed.stderr[-2000:],
+        "carrier_trigger_required": False,
+        "workercoordinator_remains_claim_fence_authority": True,
+        "interlock_intr_remains_transition_authority": True,
+        "master_records_remains_custody_reconstruction_authority": True,
+        "authority_effect": "NONE_STATE_DEPENDENT_CONTINUATION_CALL_ONLY",
+    }
+
+
 def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ingress_path: Path, consumption_path: Path) -> Path:
     subprocess.run(
         [
@@ -217,6 +264,10 @@ def main() -> int:
         ingress_path=ingress_path,
         consumption_path=consumption_path,
     )
+    immediate_successor = invoke_immediate_successor(
+        task_id=args.task_id,
+        runtime=runtime,
+    )
 
     receipt = {
         "schema": "stegverse.canonical-work-event-bootstrap-receipt/v1",
@@ -235,9 +286,16 @@ def main() -> int:
         "oscillator_advanced_by_bootstrap": False,
         "shared_listener_implementation": "workers.universal_intr_profiled_ingress.Server",
         "second_listener_implementation_created": False,
-        "workercoordinator_claim_or_fence_observed": False,
+        "immediate_successor_evaluation": immediate_successor,
+        "workercoordinator_claim_or_fence_observed": bool(
+            isinstance(immediate_successor.get("result"), dict)
+            and immediate_successor["result"].get("activated_count", 0)
+        ),
         "master_records_reconciliation_observed": False,
-        "task_execution_observed": False,
+        "task_execution_observed": bool(
+            isinstance(immediate_successor.get("result"), dict)
+            and immediate_successor["result"].get("activated_count", 0)
+        ),
         "task_egress_or_closure_observed": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
