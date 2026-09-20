@@ -473,5 +473,11 @@
     "claim_fence_is_first_authentic_transition": true,
     "master_records_required_after_every_transition": true,
     "authority_effect": "NONE_ORDERING_CORRECTION_ONLY"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
   }
 }
