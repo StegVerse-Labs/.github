@@ -62,6 +62,41 @@
       "classification": "READ_PATH_REPAIRED_AUTHENTIC_MASTER_RECORDS_QUERY_REQUIRED",
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_READ_PATH_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RUNTIME_ENTRYPOINT_DEFECT_REPAIRED",
+      "goal_prompt_count": "2/20",
+      "registry_generation_entering": 138,
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "requested_query": {
+        "path": "/api/master-records/state-transitions/query",
+        "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
+      },
+      "actual_runtime_query_executed": false,
+      "reason_not_executed": "NO_AUTHENTIC_DURABLE_CANONICAL_MASTER_RECORDS_ENDPOINT_OR_RUNTIME_ADVERTISEMENT_IS_CURRENTLY_EVIDENCED; EXISTING_RUNTIME_EVIDENCE_WORKFLOW_WAS ALSO_LOADING_BASE_APP_WITHOUT_CANONICAL_STATE_TRANSITION_ROUTES",
+      "first_concrete_runtime_loading_defect": "RUNTIME_EVIDENCE_VALIDATION_LAUNCHED_services.master_records_custody_api:app_INSTEAD_OF_services.canonical_master_records_api:app",
+      "repair_pr": "master-records/orchestration#106",
+      "exact_head": "8f891a271ebc070cdd8fb1cb9e7f19d5ba8ff817",
+      "merge_commit": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "validation": {
+        "runtime_evidence_validation_run": 35527681406,
+        "start_owned_authenticated_custody_service": "PASS",
+        "wait_for_owned_authenticated_custody_service": "PASS",
+        "authenticated_custody_and_readback": "PASS",
+        "orchestration_and_custody_service_tests": "PASS",
+        "all_exact_head_workflows": "PASS"
+      },
+      "production_runtime_evidence": {
+        "durable_canonical_endpoint_observed": false,
+        "public_or_internal_runtime_advertisement_observed": false,
+        "production_endpoint_deployed_claimed": false,
+        "source_only_or_workflow_local_runtime_is_not_target_store": true
+      },
+      "classification": "CANONICAL_ROUTE_LOADING_REPAIRED_DURABLE_RUNTIME_ENDPOINT_STILL_UNOBSERVED",
+      "a3_custody_classified": false,
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_RUNTIME_ENTRYPOINT_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -71,14 +106,22 @@
       "state": "SOURCE_REPAIRED_MERGED_RUNTIME_QUERY_REQUIRED",
       "ref": "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
       "disposition": "QUERY_CANONICAL_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND; EMPTY_AUTHORITATIVE_RESULT_MEANS_NO_CUSTODIED_A3_TRANSITION_FOR_THIS_SUBJECT"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RUNTIME-ENTRYPOINT",
+      "kind": "CANONICAL_RUNTIME_LOADING",
+      "state": "SOURCE_REPAIRED_MERGED_AUTHENTIC_DURABLE_RUNTIME_MATERIALIZATION_REQUIRED",
+      "ref": "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "disposition": "THE_EXISTING_MASTER_RECORDS_RUNTIME_MUST_LOAD_services.canonical_master_records_api:app_AND_EXPOSE_THE_MERGED_QUERY_AGAINST_ITS_DURABLE_CUSTODY_DB; WORKFLOW_LOCAL_RUNTIME_DOES_NOT_SUBSTITUTE_FOR_THE_AUTHENTIC_TARGET_STORE"
     }
   ],
   "blockers": [],
   "allowed_next_transitions": [
-    "QUERY_AUTHENTIC_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "TRACE_EXISTING_MASTER_RECORDS_DURABLE_RUNTIME_MATERIALIZATION_AND_SOURCE_REFRESH_PATH",
+    "OBSERVE_AUTHENTIC_MASTER_RECORDS_RUNTIME_LOADING_MERGE_8804762F",
+    "EXECUTE_AUTHENTIC_NONCE_QUERY_AGAINST_DURABLE_CANONICAL_STORE",
     "IF_MATCH_REQUIRE_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
-    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH",
-    "IF_PRE_A3_FAILURE_RECORD_EXISTS_REPAIR_FIRST_DETERMINISTIC_FAILURE_AND_RERUN_SAME_REQUEST"
+    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH"
   ],
   "completion": {
     "claimed": false,
@@ -101,11 +144,13 @@
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
-    "goal_prompt_count": "1/20",
+    "goal_prompt_count": "2/20",
     "split_merely_to_reset_counter": false
   },
   "source_refs": [
     "master-records/orchestration#105",
-    "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c"
+    "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+    "master-records/orchestration#106",
+    "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715"
   ]
 }

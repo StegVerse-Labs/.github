@@ -1003,3 +1003,8 @@ StegDB, Master Records, and StegHealth remain a coordinated consistency/remediat
 ### StegBrowser A3 Master Records nonce lookup — 2026-09-20
 
 For `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`, the authoritative claim/fence evidence location is canonical Master Records. `master-records/orchestration#105` merged as `e88be99fdfa678b19b3d0c52d120d15a60c9557c`, adding authenticated non-authorizing lookup of canonical state-transition custody by `subject_or_correlation_id` with an optional exact `transition_id`. The immutable StegBrowser nonce can therefore be queried directly for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; an authoritative empty result is actionable custody state rather than generic "not observed" wording. Runtime execution remains unclaimed until the actual canonical Master Records store is queried and its returned closure is validated.
+
+
+### StegBrowser A3 Master Records runtime loading — 2026-09-20
+
+Goal `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001` traced the existing Master Records runtime before attempting the authoritative nonce query. `master-records/orchestration#106` merged as `8804762fb5da5d212aa7c9c448dfcdabac734715`, replacing the base-only Runtime Evidence Validation entrypoint with `services.canonical_master_records_api:app` so canonical state-transition custody/reconstruction/query routes are actually loaded on the existing service. Exact-head Runtime Evidence Validation run `35527681406` passed. This does not claim an authentic durable production endpoint; the remaining action is to materialize/refresh the existing canonical runtime and query its durable custody store by the immutable StegBrowser nonce.
