@@ -289,13 +289,10 @@ def main() -> int:
         "immediate_successor_evaluation": immediate_successor,
         "workercoordinator_claim_or_fence_observed": bool(
             isinstance(immediate_successor.get("result"), dict)
-            and immediate_successor["result"].get("activated_count", 0)
+            and immediate_successor["result"].get("workers_activated", 0)
         ),
         "master_records_reconciliation_observed": False,
-        "task_execution_observed": bool(
-            isinstance(immediate_successor.get("result"), dict)
-            and immediate_successor["result"].get("activated_count", 0)
-        ),
+        "task_execution_observed": False,
         "task_egress_or_closure_observed": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
