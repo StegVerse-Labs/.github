@@ -1,0 +1,30 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "60000000111000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
+    "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
+    "management/COSV_PROFILE_V1.json"
+  ],
+  "observed_at": "2026-09-20T12:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "BLOCKED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
