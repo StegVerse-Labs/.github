@@ -347,3 +347,8 @@ The repair preserves these existing bindings without introducing a new runtime o
 The existing Master Records source-root bindings remain unchanged. GitHub/provider credentials remain forbidden and stripped. Focused regression coverage now executes `clean_env(...)` directly and requires every canonical custody binding to survive while `GITHUB_TOKEN` and provider API keys remain absent.
 
 This is a source carriage repair only. It does not itself prove an authentic runtime state transition or Master Records receipt.
+
+
+### Merge reconciliation
+
+PR #2363 merged as `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed, including the exact `Validate targeted Master Records custody carriage` step. Canonical Task Registry reconciliation advances generation 144 -> 145 and records this as a source-carriage repair only; authentic runtime custody remains unclaimed.

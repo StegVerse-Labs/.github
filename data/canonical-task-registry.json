@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 144,
-  "status": "SDK_TEST1_REGRESSION_REPAIRED_AND_VALIDATED",
+  "generation": 145,
+  "status": "CANONICAL_MASTER_RECORDS_TARGETED_CUSTODY_CARRIAGE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5126,7 +5126,11 @@
         "rtc008_materialization_request_source_prepared": true,
         "rtc008_interlock_intr_admission_observed": false,
         "rtc009_far_side_transition_observed": false,
-        "caller_consequence_observed": false
+        "caller_consequence_observed": false,
+        "targeted_stegagents_master_records_custody_env_carriage_repaired": true,
+        "targeted_stegagents_master_records_custody_env_carriage_pr": 2363,
+        "targeted_stegagents_master_records_custody_env_carriage_merge": "7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df",
+        "targeted_stegagents_master_records_custody_env_carriage_validation_run": 35536016433
       },
       "completion": {
         "claimed": false,
@@ -5252,6 +5256,23 @@
           "rtc009_far_side_claimed": false,
           "caller_consequence_claimed": false,
           "authority_effect": "NONE_CONTINUATION_REQUEST_ONLY"
+        },
+        "targeted_stegagents_master_records_custody_env_carriage": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "pull_request": 2363,
+          "merge_commit": "7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df",
+          "validation_run": 35536016433,
+          "repaired_inputs": [
+            "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+            "STEGVERSE_MASTER_RECORDS_TOKEN",
+            "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+            "MASTER_RECORDS_DB",
+            "MASTER_RECORDS_RECEIPT_KEY",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
+          ],
+          "defect": "TARGETED_RESIDENT_CONSUMER_CLEAN_ENV_STRIPPED_BOTH_SUPPORTED_MASTER_RECORDS_CUSTODY_TRANSPORT_BINDINGS",
+          "runtime_custody_claimed": false,
+          "authority_effect": "NONE_SOURCE_CARRIAGE_REPAIR_ONLY"
         }
       },
       "required_evidence_validation": {
