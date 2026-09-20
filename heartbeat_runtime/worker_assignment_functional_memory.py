@@ -15,6 +15,7 @@ import json
 
 from workers.canonical_state_transition_custody import (
     build_state_receipt,
+    query_state_receipts,
     reconstruct_state_receipt,
     sha256_uri,
     submit_state_receipt,
@@ -69,26 +70,104 @@ def canonical_task_context(root: Path, task: dict[str, Any], packet: dict[str, A
     }
 
 
+def _memory_from_reconstruction(
+    task_id: str,
+    result: dict[str, Any],
+    *,
+    expected_receipt_sha256: str | None = None,
+) -> tuple[dict[str, Any] | None, str | None]:
+    receipt_sha256 = result.get("receipt_sha256")
+    if (
+        result.get("state") != "PASS"
+        or not isinstance(receipt_sha256, str)
+        or (expected_receipt_sha256 is not None and receipt_sha256 != expected_receipt_sha256)
+        or result.get("reconstructed_receipt_sha256") != receipt_sha256
+        or result.get("required_evidence_validation_status") != "PASS"
+    ):
+        return None, str(result.get("reason") or "FUNCTIONAL_MEMORY_RECONSTRUCTION_FAILED")
+    receipt = result.get("receipt")
+    if not isinstance(receipt, dict):
+        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_RECEIPT_INVALID"
+    if receipt.get("transition_id") != TRANSITION_ID or receipt.get("subject_or_correlation_id") != task_id:
+        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_IDENTITY_INVALID"
+    evidence = receipt.get("transition_evidence")
+    memory = evidence.get("functional_memory") if isinstance(evidence, dict) else None
+    if not isinstance(memory, dict) or memory.get("schema") != SCHEMA or memory.get("task_id") != task_id:
+        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_CONTENT_INVALID"
+    sequence = receipt.get("transition_sequence")
+    if not isinstance(sequence, int) or sequence < 1 or memory.get("sequence") != sequence:
+        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_SEQUENCE_INVALID"
+    return dict(memory), None
+
+
+def _recover_pointer_from_master_records(task: dict[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None, bool, str | None]:
+    task_id = str(task.get("task_id") or "")
+    if not task_id:
+        return None, None, False, "FUNCTIONAL_MEMORY_TASK_ID_INVALID"
+    query = query_state_receipts(task_id, TRANSITION_ID)
+    if query.get("state") != "PASS":
+        return None, None, False, str(query.get("reason") or "FUNCTIONAL_MEMORY_DISCOVERY_FAILED")
+    records = query.get("records")
+    if not isinstance(records, list):
+        return None, None, False, "FUNCTIONAL_MEMORY_DISCOVERY_RESULT_INVALID"
+    if not records:
+        return None, None, True, None
+
+    previous_receipt_sha256 = None
+    expected_sequence = 1
+    latest_memory = None
+    latest_pointer = None
+    for result in records:
+        if not isinstance(result, dict):
+            return None, None, False, "FUNCTIONAL_MEMORY_DISCOVERY_RECORD_INVALID"
+        memory, reason = _memory_from_reconstruction(task_id, result)
+        if memory is None:
+            return None, None, False, reason
+        receipt = result.get("receipt")
+        sequence = receipt.get("transition_sequence") if isinstance(receipt, dict) else None
+        if sequence != expected_sequence:
+            return None, None, False, "FUNCTIONAL_MEMORY_SEQUENCE_GAP_OR_REORDER"
+        expected_prior = None if previous_receipt_sha256 is None else f"sha256:{previous_receipt_sha256}"
+        if receipt.get("prior_state_ref_or_hash") != expected_prior:
+            return None, None, False, "FUNCTIONAL_MEMORY_PREDECESSOR_CHAIN_INVALID"
+        receipt_sha256 = result.get("receipt_sha256")
+        latest_memory = memory
+        latest_pointer = {
+            "schema": SCHEMA,
+            "state": "RECORDED",
+            "sequence": sequence,
+            "admissibility_resolution": memory.get("admissibility_resolution"),
+            "task_registry_generation": memory.get("task_registry_generation"),
+            "generation_bound_cosv_id": memory.get("generation_bound_cosv_id"),
+            "receipt_sha256": receipt_sha256,
+            "master_record_ref": result.get("master_record_ref"),
+            "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "pointer_recovered_from_master_records": True,
+            "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+        }
+        previous_receipt_sha256 = receipt_sha256
+        expected_sequence += 1
+    return latest_memory, latest_pointer, True, None
+
+
 def reconstruct_prior_functional_memory(task: dict[str, Any]) -> tuple[dict[str, Any] | None, bool, str | None]:
     pointer = task.get("functional_memory")
     if not isinstance(pointer, dict):
-        return None, True, None
+        memory, recovered_pointer, valid, reason = _recover_pointer_from_master_records(task)
+        if not valid:
+            return None, False, reason
+        if recovered_pointer is not None:
+            task["functional_memory"] = recovered_pointer
+        return memory, True, None
+
     receipt_sha256 = pointer.get("receipt_sha256")
     if not isinstance(receipt_sha256, str) or not receipt_sha256:
         return None, False, "FUNCTIONAL_MEMORY_RECEIPT_POINTER_INVALID"
     result = reconstruct_state_receipt(receipt_sha256)
-    if (
-        result.get("state") != "PASS"
-        or result.get("receipt_sha256") != receipt_sha256
-        or result.get("reconstructed_receipt_sha256") != receipt_sha256
-        or result.get("required_evidence_validation_status") != "PASS"
-    ):
-        return None, False, str(result.get("reason") or "FUNCTIONAL_MEMORY_RECONSTRUCTION_FAILED")
-    receipt = result.get("receipt")
-    evidence = receipt.get("transition_evidence") if isinstance(receipt, dict) else None
-    memory = evidence.get("functional_memory") if isinstance(evidence, dict) else None
-    if not isinstance(memory, dict) or memory.get("schema") != SCHEMA:
-        return None, False, "FUNCTIONAL_MEMORY_RECONSTRUCTED_CONTENT_INVALID"
+    memory, reason = _memory_from_reconstruction(str(task.get("task_id") or ""), result, expected_receipt_sha256=receipt_sha256)
+    if memory is None:
+        return None, False, reason
     return memory, True, None
 
 
@@ -143,6 +222,13 @@ def record_non_allow_functional_memory(
         raise ValueError("ALLOW assignment must not emit a non-ALLOW functional-memory pack")
 
     previous = task.get("functional_memory")
+    if isinstance(previous, dict):
+        if transition.get("prior_functional_memory_valid") is not True or transition.get("prior_functional_memory_consumed") is not True:
+            return {
+                "state": "BOUNDARY",
+                "reason": "FUNCTIONAL_MEMORY_PREDECESSOR_NOT_RECONSTRUCTED",
+                "authority_effect": "NONE",
+            }
     previous_sequence = previous.get("sequence") if isinstance(previous, dict) else 0
     sequence = int(previous_sequence) + 1 if isinstance(previous_sequence, int) else 1
     pack = {

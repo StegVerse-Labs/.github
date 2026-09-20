@@ -242,6 +242,23 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
         worker_resolved = self._worker_for(task, registry) is not None
         source = str(trigger.get("source") or "HEARTBEAT_CARRIER_OBSERVATION")
         prior_memory, prior_memory_valid, prior_memory_reason = reconstruct_prior_functional_memory(task)
+        if not prior_memory_valid:
+            task["reconciliation_disposition"] = "FUNCTIONAL_MEMORY_RECONSTRUCTION_BOUNDARY"
+            task["reconciliation_reason"] = str(prior_memory_reason or "FUNCTIONAL_MEMORY_RECONSTRUCTION_FAILED")
+            self._event(
+                events,
+                carrier_epoch,
+                "worker_assignment_functional_memory_reconstruction_blocked",
+                task_id=task_id,
+                packet_id=trigger.get("packet_id"),
+                reason=task["reconciliation_reason"],
+                successor_functional_memory_emitted=False,
+                worker_materialized=False,
+                claim_minted=False,
+                fence_minted=False,
+                authority_effect=False,
+            )
+            return False
 
         packet = review_worker_task_admission(
             root=Path(self.root),

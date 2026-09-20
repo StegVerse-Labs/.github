@@ -1031,3 +1031,8 @@ Generation 140 confirms `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001
 ## 2026-09-20 targeted Master Records custody carriage repair
 
 The existing StegAgents targeted resident consumer now preserves the canonical Master Records HTTP and durable-local custody bindings when sanitizing its execution environment. This closes the deterministic gap where downstream `submit_state_receipt(...)` could reach the canonical custody client with neither supported Master Records transport configured. GitHub/provider secrets remain stripped; no new custody service, runtime, dispatcher, scheduler, or authority plane is introduced.
+
+
+### Functional Memory immediate-predecessor enforcement — 2026-09-20
+
+WorkerCoordinator Functional Memory now enforces state-dependent predecessor closure before any successor non-ALLOW memory can be created. An unreconstructable retained predecessor stops at a fail-closed Functional Memory reconstruction boundary with no new Functional Memory sequence, receipt, worker, claim, or fence. When the mutable local pointer is absent, the existing canonical Master Records query path may recover the latest same-task `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` pointer only after exact reconstruction, required-evidence PASS, contiguous sequence validation, and receipt-to-receipt predecessor-chain validation.
