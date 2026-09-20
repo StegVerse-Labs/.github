@@ -43,6 +43,13 @@ def request():
         "github_token_runtime_authority": "NONE",
         "authority_transfer": False,
         "authority_effect": "NONE_REQUEST_ONLY",
+        "predecessor_transition_id": "RTC-STEGVERSE-EGRESS-007",
+        "predecessor_master_records_state": "RECORDED",
+        "predecessor_master_records_reconstruction_status": "PASS",
+        "predecessor_master_records_required_evidence_validation_status": "PASS",
+        "predecessor_master_records_receipt_sha256": "5" * 64,
+        "predecessor_master_records_reconstructed_receipt_sha256": "5" * 64,
+        "predecessor_master_records_digest_equal": True,
     }
     body["request_hash"] = ingress.sha_uri(body)
     return body
@@ -89,7 +96,9 @@ def test_rtc008_admission_is_canonically_custodied(monkeypatch, tmp_path: Path):
     assert receipt["transition_id"] == "RTC-INTERLOCK-INTR-TRANSPORT-008"
     assert receipt["transition_sequence"] == 8
     assert receipt["transition_outcome"] == "COMPLETED"
+    assert receipt["prior_state_ref_or_hash"] == "5" * 64
     assert [x["evidence_type"] for x in receipt["required_evidence_manifest"]] == [
+        "RTC007_MASTER_RECORDS_CLOSURE",
         "UNIVERSAL_INTR_MATERIALIZATION_REQUEST",
         "MIR_SOUTHBOUND_INTR_ADMISSION_RECEIPT",
     ]
@@ -225,3 +234,13 @@ def test_rtc008_submission_fails_closed_on_master_records_digest_mismatch():
             },
             opener=lambda *_args, **_kwargs: _Response(response),
         )
+
+
+def test_rtc008_rejects_nonclosed_rtc007_predecessor(monkeypatch, tmp_path: Path):
+    req = request()
+    req["predecessor_master_records_required_evidence_validation_status"] = "FAIL"
+    req.pop("request_hash")
+    req["request_hash"] = ingress.sha_uri(req)
+    raw = canonical(req)
+    with pytest.raises(ValueError, match="mir_southbound_predecessor_required_evidence_not_pass"):
+        ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
