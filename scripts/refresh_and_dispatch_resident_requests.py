@@ -40,6 +40,7 @@ STEG_BROWSER_TVC_EXACT_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
 STEG_BROWSER_TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT_SOURCE"}
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
 REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
+REUSABLE_SDK_TT_PURPOSE_TASK_ID = "RT-SDK-TT-PURPOSE-BOUND-RESIDENT-CONSUMPTION-001"
 REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
 REUSABLE_TASK_PARAMETERS_ENV = "STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"
 ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
@@ -90,13 +91,14 @@ NONSECRET_FORWARD = (
 )
 
 
-def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> dict[str, str] | None:
+def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> dict[str, str | None] | None:
     values = dict(os.environ if env is None else env)
     reusable_task_id = str(values.get(REUSABLE_TASK_ID_ENV) or "").strip()
     raw = str(values.get(REUSABLE_TASK_PARAMETERS_ENV) or "").strip()
     if not reusable_task_id and not raw:
         return None
-    if reusable_task_id != REUSABLE_CANONICAL_WORK_TASK_ID:
+    admitted = {REUSABLE_CANONICAL_WORK_TASK_ID, REUSABLE_SDK_TT_PURPOSE_TASK_ID}
+    if reusable_task_id not in admitted:
         raise RuntimeError("portable bridge reusable invocation identity mismatch")
     if not raw:
         raise RuntimeError("portable bridge reusable invocation parameters missing")
@@ -106,17 +108,33 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
         raise RuntimeError("portable bridge reusable invocation parameters invalid JSON") from exc
     if not isinstance(parsed, dict):
         raise RuntimeError("portable bridge reusable invocation parameters must be an object")
-    allowed = {"source_root", "runtime_root", "only_consumer", "goal_task_id"}
+
+    if reusable_task_id == REUSABLE_CANONICAL_WORK_TASK_ID:
+        allowed = {"source_root", "runtime_root", "only_consumer", "goal_task_id"}
+        required_selector = "canonical_work_coordination"
+        require_goal = True
+    else:
+        allowed = {"source_root", "runtime_root", "only_consumer"}
+        required_selector = "stegagents_governed_runtime_targeted"
+        require_goal = False
+
     unknown = sorted(set(parsed) - allowed)
     if unknown:
         raise RuntimeError("portable bridge reusable invocation contains unsupported parameters: " + ",".join(unknown))
-    normalized = {key: str(parsed.get(key) or "").strip() for key in allowed}
+    normalized: dict[str, str | None] = {
+        "source_root": str(parsed.get("source_root") or "").strip(),
+        "runtime_root": str(parsed.get("runtime_root") or "").strip(),
+        "only_consumer": str(parsed.get("only_consumer") or "").strip(),
+        "goal_task_id": str(parsed.get("goal_task_id") or "").strip() or None,
+    }
     if not normalized["source_root"] or not normalized["runtime_root"]:
         raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
-    if normalized["only_consumer"] != "canonical_work_coordination":
-        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector")
-    if not normalized["goal_task_id"]:
+    if normalized["only_consumer"] != required_selector:
+        raise RuntimeError(f"portable bridge reusable invocation requires exact {required_selector} selector")
+    if require_goal and not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
+    if not require_goal and normalized["goal_task_id"] is not None:
+        raise RuntimeError("SDK TT purpose-bound reusable invocation may not carry canonical-work goal context")
     return normalized
 
 
