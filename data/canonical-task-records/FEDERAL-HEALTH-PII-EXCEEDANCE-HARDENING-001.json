@@ -23,8 +23,17 @@
     "StegVerse-Labs/Site/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-org"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/TVC", "StegVerse-Labs/Site"],
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/Site"
+    ],
     "components": [
       "minimum-necessary-sensitive-data-admission",
       "versioned-security-posture",
@@ -101,7 +110,14 @@
     "CONTINUOUS_MACHINE_READABLE_CONTROL_ASSESSMENT_AVAILABLE"
   ],
   "runtime_requirements": {
-    "capabilities": ["sensitive_data_admission", "security_posture", "intr_posture_resolution", "intr_exact_binding", "tvc_skap_posture_verification", "audit_and_disposition_evidence"],
+    "capabilities": [
+      "sensitive_data_admission",
+      "security_posture",
+      "intr_posture_resolution",
+      "intr_exact_binding",
+      "tvc_skap_posture_verification",
+      "audit_and_disposition_evidence"
+    ],
     "environment": "SOURCE_CONTROL_AND_SOVEREIGN_INTR_BOUNDARY",
     "direction": "SDK_POSTURE_INPUT_TO_INTR_RESOLUTION_TO_TVC_SKAP_VERIFICATION_TO_AUDIT_AND_DISPOSITION",
     "mutation_required": true,
@@ -114,10 +130,10 @@
     "unattended_runtime": false
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
