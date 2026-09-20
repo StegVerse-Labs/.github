@@ -112,3 +112,21 @@ def test_generic_canonical_work_consumer_registers_request_spec():
     assert "CONVERSATION_EVIDENCE_INGESTION_CUSTODY_SPEC" in source
     assert "canonical-work-conversation-evidence-ingestion-custody-001.json" in source
     assert '"task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"' in source
+
+
+def test_canonical_registry_prohibits_connected_device_runtime_gate():
+    registry = json.loads((ROOT / "data/canonical-task-registry.json").read_text())
+    task = next(row for row in registry["tasks"] if row["task_id"] == worker.TASK_ID)
+    assert task["runtime_requirements"]["current_observation_required"] is False
+    resolution = task["runtime_resolution"]
+    assert resolution["connected_device_inventory_role"] == "NONE_PROHIBITED"
+    assert resolution["remote_connected_device_requirement"] == "PROHIBITED"
+    assert resolution["wait_for_resident_execution_opportunity"] is False
+    assert resolution["separate_runtime_presence_gate_required"] is False
+    assert resolution["carrier_trigger_required"] is False
+
+    invariants = json.loads((ROOT / "data/task-registry-global-invariants.json").read_text())
+    values = invariants["invariants"]
+    assert values["connected_device_inventory_task_progression_role"] == "NONE_PROHIBITED"
+    assert values["connected_device_inventory_runtime_dependency_role"] == "NONE_PROHIBITED"
+    assert values["zero_connected_devices_may_be_used_to_stop_task_progression"] is False
