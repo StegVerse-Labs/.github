@@ -18,8 +18,12 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger/task-state/ERL-SPURLOCK-CPD-ENTRY-001.json"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/Executive_Rhetoric_Ledger"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger"
+    ],
     "components": [
       "research-candidate",
       "pre-entry-knowledge-state-reconstruction",
@@ -44,7 +48,11 @@
     "NO_UNSUPPORTED_DECEPTION_MOTIVE_SUICIDALITY_MURDER_OR_JUSTIFICATION_FINDING"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_pull_request_write", "public_record_research"],
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "public_record_research"
+    ],
     "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_RECORD_RESEARCH",
     "direction": "EXTERNAL_PUBLIC_RECORDS_TO_ERL_RESEARCH_CANDIDATE",
     "mutation_required": true,
@@ -52,10 +60,10 @@
     "current_observation_required": true
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
@@ -75,7 +83,7 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
-    "worker_claim_authority": "CURRENT_SESSION",
+    "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true
   },
