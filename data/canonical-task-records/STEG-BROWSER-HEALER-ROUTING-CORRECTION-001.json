@@ -87,5 +87,11 @@
         "Validate Purpose-Bound Worker Derived Lifetime:SUCCESS"
       ]
     }
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
   }
 }
