@@ -61,8 +61,11 @@ def selected(row: dict[str, Any], scope: str) -> bool:
     return scope in {identity, repository} or scope in aliases
 
 
-def slot_id(task_id: str, now: datetime) -> str:
-    compact = task_id.replace("RT-", "rt-").lower()
+def slot_id(task_id: str, now: datetime, invocation_key: str | None = None) -> str:
+    identity = str(invocation_key or task_id).strip()
+    if not identity:
+        raise RuntimeError("reusable scheduler invocation identity must be non-empty")
+    compact = identity.replace("RT-", "rt-").lower().replace("_", "-")
     return f"{compact}-{now.strftime('%Y%m%dT%H')}Z"
 
 
@@ -124,6 +127,7 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
         "tracking_task_id": row.get("tracking_task_id"),
         "cosv_task_vector": row.get("cosv_task_vector"),
         "repository": repository,
+        "invocation_key": str(row.get("invocation_key") or "").strip() or None,
         "retry_interval_minutes": interval,
         "max_attempts_per_slot": maximum,
     }
@@ -136,7 +140,8 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
     if not trigger.is_file():
         return {**base, "state": "BOUNDARY_RECORDED", "boundary": "REUSABLE_TASK_TRIGGER_NOT_MATERIALIZED", "slot_satisfied": False}
 
-    invocation_id = slot_id(child_id, now)
+    invocation_key = str(row.get("invocation_key") or "").strip() or None
+    invocation_id = slot_id(child_id, now, invocation_key)
     receipt_path = runtime_root / "receipts" / "reusable-task" / f"{invocation_id}.latest.json"
     retry_path = retry_state_path(runtime_root, invocation_id)
     prior = load_json(receipt_path) if receipt_path.is_file() else None
