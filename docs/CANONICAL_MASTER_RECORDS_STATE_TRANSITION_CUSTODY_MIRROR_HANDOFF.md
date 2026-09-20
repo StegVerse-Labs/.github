@@ -352,3 +352,12 @@ This is a source carriage repair only. It does not itself prove an authentic run
 ### Merge reconciliation
 
 PR #2363 merged as `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed, including the exact `Validate targeted Master Records custody carriage` step. Canonical Task Registry reconciliation advances generation 144 -> 145 and records this as a source-carriage repair only; authentic runtime custody remains unclaimed.
+
+
+## WorkerCoordinator claim/fence canonical-custody integration validation — 2026-09-20
+
+After the targeted consumer custody-environment carriage repair, the next concrete governed transition on the existing purpose-bound targeted path is `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`. Source inspection confirms WorkerCoordinator builds the exact assignment receipt and calls the shared `submit_state_receipt(...)` synchronously before projecting the task ACTIVE or invoking the StegAgents process adapter.
+
+A focused integration validation now exercises that exact `WorkerCoordinator._custody_assignment_transition(...)` method against the pinned canonical `master-records/orchestration` source at `2d1e18ae26182aedd6fa3c10bd594b7e64d1e865`, using the existing durable-local Master Records binding. The test requires `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, exact receipt/reconstruction digest equality, canonical `master_record_ref`, and subsequent reconstruction of the same receipt and exact `WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT` required-evidence object.
+
+This validation is deliberately not classified as authentic resident execution. It proves the existing receipt-bearing WorkerCoordinator -> shared custody client -> canonical Master Records implementation boundary without introducing another custody path or authority.
