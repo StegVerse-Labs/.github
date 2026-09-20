@@ -10,6 +10,8 @@ on:
     paths:
       - "scripts/run_reusable_task_scheduler.py"
       - "tests/test_neutral_reusable_task_scheduler.py"
+      - "scripts/package_sovereign_control_plane_bundle.py"
+      - "tests/test_package_sovereign_control_plane_bundle.py"
       - "control/task-vectors/**"
       - "control/task-vector-index.d/**"
       - ".github/workflows/deterministic-suite-diagnostics.yml"
@@ -62,6 +64,7 @@ jobs:
             python -m unittest -v \
               tests.test_neutral_reusable_task_scheduler \
               tests.test_steghealth_reusable_portable_dispatch_binding \
+              tests.test_package_sovereign_control_plane_bundle \
               2>&1 | tee ci-evidence/deterministic-suite.log
           else
             python -m unittest discover -v tests 2>&1 | tee ci-evidence/deterministic-suite.log
@@ -91,7 +94,7 @@ jobs:
 
           payload = {
               'schema': 'stegverse.validation-diagnostic-evidence/v1',
-              'suite': 'focused reusable-scheduler/COSV binding tests' if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request' else 'python -m unittest discover -v tests',
+              'suite': 'focused reusable-scheduler/COSV/bundle-source binding tests' if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request' else 'python -m unittest discover -v tests',
               'status': 'PASS' if os.environ['SUITE_STATUS'] == '0' else 'FAIL',
               'exit_code': int(os.environ['SUITE_STATUS']),
               'tested_commit': tested_commit,
