@@ -179,3 +179,21 @@ The repair adds no Functional Memory implementation, worker runtime, scheduler, 
 Post-merge canonical evidence search found no authentic `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW`, `stegverse.worker-assignment-functional-memory/v1`, or `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. A direct resident targeted invocation was attempted after merge, but the authorized command surface was unavailable before command execution. This condition is not a Task Registry predicate or task blocker and does not alter the task state.
 
 The remaining authentic predicate is unchanged: execute the existing targeted WorkerCoordinator task on an authorized resident surface; if its current admissibility matrix resolves non-ALLOW, require Functional Memory Master Records custody with no worker/claim/fence; then modify only the exact same-task predicate that caused the non-ALLOW state and re-evaluate the same task, requiring prior Functional Memory reconstruction before any ALLOW materialization.
+
+
+## Functional Memory authentic assignment result — 2026-09-20 continuation
+
+Continuation after merged generic manifest-provider repair `d7cdfec8f61bff06be4b05b69f788bd01e071daf` verified that:
+- `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains canonically ACTIVE / UNCLAIMED;
+- its exact resident request `RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains `REQUESTED`;
+- the existing request targets `scripts/refresh_and_execute_resident_task.py --task-id SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 --cosv-task-vector 71000000111111`;
+- no canonical Master Records evidence was found for `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW`, `stegverse.worker-assignment-functional-memory/v1`, or an authentic assignment-review result for this exact task;
+- no repository-retained prior `activation_deferred`, worker-task-admission, or assignment-review record for this exact task was found.
+
+A direct targeted invocation of the existing resident path was attempted after the provider repair, but the authorized command surface was unavailable before command execution. Therefore no actual assignment matrix result exists from this continuation and no ALLOW/non-ALLOW disposition is inferred from source state.
+
+No worker, claim, fence, task state, Functional Memory pack, Master Records receipt, or runtime predicate was created or promoted. The absence of an available command surface in this session is not a Task Registry predicate, task blocker, connected-device requirement, or authority condition.
+
+The authentic next transition remains exactly one existing targeted WorkerCoordinator execution for this task. The first observed matrix disposition controls the branch:
+- non-ALLOW -> zero worker/claim/fence materialization + Functional Memory Master Records custody and exact reconstruction;
+- ALLOW -> do not manufacture a negative control; search only for an authentic prior same-task non-ALLOW disposition, and if none exists retain the conclusion that authentic non-ALLOW Functional Memory runtime proof has not yet occurred.
