@@ -100,5 +100,11 @@
     "test_1_preserved_unchanged": true,
     "reconciled_against_registry_generation": 78,
     "next_successor_class": "TEST_3_AUTHENTIC_RICHARD_SCENARIO_SEAM_VALIDATION"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
   }
 }
