@@ -352,3 +352,22 @@ This is a source carriage repair only. It does not itself prove an authentic run
 ### Merge reconciliation
 
 PR #2363 merged as `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed, including the exact `Validate targeted Master Records custody carriage` step. Canonical Task Registry reconciliation advances generation 144 -> 145 and records this as a source-carriage repair only; authentic runtime custody remains unclaimed.
+
+
+## WorkerCoordinator claim/fence canonical-custody validation — 2026-09-20
+
+After the targeted resident consumer repair preserved the existing Master Records custody bindings, the next receipt-bearing governed transition was traced to the existing WorkerCoordinator producer: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`. `heartbeat_runtime/worker_runtime_legacy.py::_custody_assignment_transition(...)` builds the exact assignment state receipt with required evidence type `WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT` and synchronously calls the shared `submit_state_receipt(...)` before the task is projected ACTIVE.
+
+The first integration attempt in public .github PR #2365 correctly failed before test execution because `master-records/orchestration` is private and a public-repository Actions token had no cross-private contents authority. No credential path was added. PR #2365 was closed unmerged.
+
+The validation was relocated to the existing private Master Records repository, where canonical custody source is already local and only public StegVerse WorkerCoordinator source is checked out. `master-records/orchestration` PR #107 merged as `273b55cda7903dfa0f4daed35d3a410b565b3e49`. Exact validation run `35539058509` passed the `Validate exact WorkerCoordinator claim/fence custody closure` step.
+
+That integration exercised the existing WorkerCoordinator claim/fence producer through the shared .github custody client into the real canonical Master Records SQLite custody implementation and then reconstructed the same retained digest. The test required and observed:
+- `state=RECORDED`;
+- `reconstruction_status=PASS`;
+- `required_evidence_validation_status=PASS`;
+- exact `receipt_sha256 == reconstructed_receipt_sha256`;
+- canonical `master_record_ref`;
+- reconstruction of the exact `WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT` evidence object.
+
+This establishes source/integration validity of the exact receipt-bearing boundary. It is not promoted to authentic resident execution and does not establish that the staged SDK purpose-bound request has actually minted a fresh production claim/fence.
