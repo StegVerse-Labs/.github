@@ -37,6 +37,18 @@ class StegHealthKvInterlockCanonicalWorkIngressTests(unittest.TestCase):
         self.assertEqual(projected["runtime_refs"]["ingress_state"], "INGRESS_ADMITTED")
         self.assertEqual(projected["allowed_next_transitions"], task["allowed_next_transitions"])
 
+    def test_task_no_longer_waits_for_separate_authentic_runtime_proof(self):
+        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        task = next(row for row in registry["tasks"] if row["task_id"] == "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001")
+        self.assertEqual(task["remaining_predicate"], "INGRESS_ADMITTED")
+        self.assertEqual(task["dependencies"], task.get("dependencies", []))
+        self.assertFalse(task["runtime_requirements"]["current_observation_required"])
+        self.assertFalse(task["completion"]["duplicate_runtime_proof_required"])
+        self.assertFalse(task["completion"]["separate_authentic_runtime_evidence_class_required"])
+        self.assertTrue(task["completion"]["terminal_state_is_completion_truth"])
+        self.assertEqual(task["carriage_repair"]["state"], "STATE_TRIGGERABLE_INGRESS_READY")
+        self.assertNotIn("AUTHENTIC_STEGHEALTH_KV_INTERLOCK_RUNTIME_TRANSITION_OBSERVED", task["expected_evidence_predicates"])
+
     def test_bootstrap_explicitly_accepts_active_checked_out_ingress(self):
         source = BOOTSTRAP.read_text(encoding="utf-8")
         self.assertIn('"ACTIVE"', source)
