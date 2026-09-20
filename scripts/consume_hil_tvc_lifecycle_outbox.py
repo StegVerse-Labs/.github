@@ -164,16 +164,23 @@ def _last_json(stdout:str)->dict[str,Any]|None:
         if isinstance(value,dict): return value
     return None
 
-def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None)->dict[str,Any]:
+def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None,event_root:Path|None=None)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
-    worker_path=runtime/WORKER_RECEIPT_REL
-    if not worker_path.is_file():
-        return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
-    worker=_load(worker_path)
-    if worker.get("receiver_ready") is not True: raise PredicatePending("HIL_RECEIVER_NOT_READY")
-    durable_raw=worker.get("durable_state_root")
-    if not isinstance(durable_raw,str) or not durable_raw: raise RuntimeError("hil_durable_state_root_missing")
-    durable=Path(durable_raw).expanduser().resolve()
+    if event_root is not None:
+        durable=event_root.expanduser().resolve()
+        try:
+            durable.relative_to(runtime)
+        except ValueError as exc:
+            raise RuntimeError("hil_tvc_event_root_outside_runtime") from exc
+    else:
+        worker_path=runtime/WORKER_RECEIPT_REL
+        if not worker_path.is_file():
+            return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
+        worker=_load(worker_path)
+        if worker.get("receiver_ready") is not True: raise PredicatePending("HIL_RECEIVER_NOT_READY")
+        durable_raw=worker.get("durable_state_root")
+        if not isinstance(durable_raw,str) or not durable_raw: raise RuntimeError("hil_durable_state_root_missing")
+        durable=Path(durable_raw).expanduser().resolve()
     outbox=durable/"intr-outbox/tvc-hil-lifecycle"
     if not outbox.is_dir():
         return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
@@ -256,8 +263,9 @@ def main()->int:
     p=argparse.ArgumentParser()
     p.add_argument("--source-root",type=Path)
     p.add_argument("--runtime-root",type=Path,required=True)
+    p.add_argument("--event-root",type=Path)
     args=p.parse_args()
-    try: result=consume(args.runtime_root)
+    try: result=consume(args.runtime_root,event_root=args.event_root)
     except PredicatePending as exc:
         result={"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"PREDICATE_PENDING","reason":str(exc),"credential_authority":"TV/TVC","authority_effect":"NONE"}
         print(json.dumps(result,sort_keys=True)); return 0
