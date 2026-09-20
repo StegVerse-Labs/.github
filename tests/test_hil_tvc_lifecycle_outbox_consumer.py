@@ -1,4 +1,5 @@
 from __future__ import annotations
+import base64
 import hashlib
 import json
 from pathlib import Path
@@ -45,6 +46,62 @@ class HILTVCConsumerTests(unittest.TestCase):
             self.assertFalse(result["private_review_completed"])
             self.assertTrue((runtime/mod.CONSUMPTION_REL).is_file())
 
+
+    def test_consumes_admitted_tvc_materialization_bundle(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); runtime=root/"runtime"; runtime.mkdir()
+            tvc=root/"TVC"; (tvc/"tools").mkdir(parents=True)
+            (tvc/"tools/hil_intr_lifecycle_intake.py").write_text("# test\n")
+            for rel in mod.TVC_PROTECTED_PATHS:
+                p=tvc/rel; p.parent.mkdir(parents=True,exist_ok=True); p.touch(exist_ok=True)
+            queue={
+                "schema":"stegverse.hil.tvc_interlock_queue/v1","state":"READY_FOR_INTERLOCK_ADMISSION",
+                "submission_id":"S1","payload_hash":"sha256:"+"2"*64,"prior_receipt_hash":"sha256:"+"3"*64,
+                "transport_intent":{"operation_id":"OP:TVC"},"response_artifact_ref":"response.pdf","provenance_artifact_ref":"provenance.json",
+                "transport_protocol":"InTr","interlock_required":True,"authority_transfer":False,
+                "tvc_admission_completed":False,"blind_consequence_retry_allowed":False,
+            }
+            queue["queue_hash"]="sha256:"+"4"*64
+            receiver={
+                "schema_version":"HIL-RECEIVER-RECEIPT-v2","submission_id":"S1","intr_tvc_queue_hash":queue["queue_hash"],
+                "intr_receipt_chain":{"next_interlock_intent":queue["transport_intent"]},
+            }
+            bundle={
+                "schema":"stegverse.hil.tvc-lifecycle-materialization-bundle/v1",
+                "queue":queue,"receiver_receipt":receiver,
+                "response_bytes_base64":base64.b64encode(b"%PDF-1.7\nX\n%%EOF\n").decode(),
+                "provenance_manifest":{"schema_version":"HIL-RESPONSE-PROVENANCE-v1.1"},
+                "credential_authority":"TV/TVC","authority_effect":"NONE_TRANSPORT_ONLY",
+            }
+            payload=base64.b64encode(json.dumps(bundle,separators=(",",":"),sort_keys=True).encode()).decode()
+            request={
+                "materialization_id":"INTR-MAT-"+"e"*24,
+                "request_hash":"sha256:"+"1"*64,
+                "destination":mod.TVC_DESTINATION,
+                "downstream_owner_ref":mod.TVC_OWNER,
+                "payload_ref":mod.BUNDLE_PREFIX+payload,
+            }
+            reqdir=runtime/mod.MATERIALIZATION_REQUEST_DIR_REL; reqdir.mkdir(parents=True)
+            (reqdir/(request["materialization_id"]+".json")).write_text(json.dumps(request))
+            recdir=runtime/mod.MATERIALIZATION_INGRESS_DIR_REL; recdir.mkdir(parents=True)
+            (recdir/(request["materialization_id"]+".json")).write_text(json.dumps({
+                "state":"INGRESS_ADMITTED","materialization_id":request["materialization_id"],"request_hash":request["request_hash"]
+            }))
+            seen={}
+            def runner(cmd,**kwargs):
+                if cmd[0]=="git":
+                    return subprocess.CompletedProcess(cmd,0,"","")
+                seen["cmd"]=cmd
+                payload={"state":"ADMITTED_TO_TVC_HIL_LIFECYCLE","admission_hash":"sha256:admit",
+                         "tvc_interlock_receipt":{"receipt_hash":"sha256:hop"},"next_required_transition":"TVC_HIL_PRIVATE_REVIEW_INTERLOCK"}
+                return subprocess.CompletedProcess(cmd,0,json.dumps(payload)+"\n","")
+            result=mod.consume(runtime,runner=runner,env={"STEGVERSE_TVC_ROOT":str(tvc)})
+            self.assertEqual(result["state"],"ADMITTED_TO_TVC_HIL_LIFECYCLE")
+            self.assertEqual(result["materialization_event_count"],1)
+            self.assertIn("--artifact-root",seen["cmd"])
+            materialized=runtime/mod.MATERIALIZED_BUNDLE_DIR_REL/request["materialization_id"]
+            self.assertTrue((materialized/"response.pdf").is_file())
+            self.assertTrue((materialized/"provenance.json").is_file())
 
     def test_discovers_verified_portable_tvc_bundle_without_git_checkout(self):
         with tempfile.TemporaryDirectory() as td:
