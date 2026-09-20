@@ -1008,3 +1008,8 @@ For `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`, the authoritative 
 ### StegBrowser A3 Master Records runtime loading — 2026-09-20
 
 Goal `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001` traced the existing Master Records runtime before attempting the authoritative nonce query. `master-records/orchestration#106` merged as `8804762fb5da5d212aa7c9c448dfcdabac734715`, replacing the base-only Runtime Evidence Validation entrypoint with `services.canonical_master_records_api:app` so canonical state-transition custody/reconstruction/query routes are actually loaded on the existing service. Exact-head Runtime Evidence Validation run `35527681406` passed. This does not claim an authentic durable production endpoint; the remaining action is to materialize/refresh the existing canonical runtime and query its durable custody store by the immutable StegBrowser nonce.
+
+### SDK TT purpose-bound resident-consumption reusable binding — 2026-09-20
+
+The existing portable resident bridge now has a bounded reusable identity, `RT-SDK-TT-PURPOSE-BOUND-RESIDENT-CONSUMPTION-001`, for exact `stegagents_governed_runtime_targeted` dispatch of the already-staged SDK TT purpose-bound request. This closes an invocation-binding gap only: the consumer, dispatcher, WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records authority paths remain unchanged. Authentic resident consumption and all downstream state-transition closures remain evidence-gated and unclaimed.
+
