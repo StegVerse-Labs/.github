@@ -1,0 +1,27 @@
+{
+  "reusable_task_id": "RT-SDK-TT-PURPOSE-BOUND-RESIDENT-CONSUMPTION-001",
+  "name": "SDK TT Purpose-Bound Resident Consumption",
+  "purpose": "Invoke the existing already-local source refresh plus exact stegagents_governed_runtime_targeted resident dispatch bridge for the already-staged SDK TT purpose-bound request, without creating another runtime, scheduler, dispatcher, request identity, WorkerCoordinator, authority plane, credential path, or custody store.",
+  "trigger": "the staged request RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 must be consumed through the existing StegAgents targeted resident path",
+  "scope": "one invocation-bound local source root, one invocation-bound sovereign runtime root, and exact stegagents_governed_runtime_targeted selector",
+  "parameter_keys": [
+    "source_root",
+    "runtime_root",
+    "only_consumer"
+  ],
+  "runner_templates": [
+    "scripts/refresh_and_dispatch_resident_requests.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "EXACT_STEGAGENTS_GOVERNED_RUNTIME_TARGETED_SELECTOR_BOUND",
+    "EXACT_EXISTING_STAGED_PURPOSE_REQUEST_CONSUMPTION_ATTEMPTED",
+    "NO_NEW_RUNTIME_SCHEDULER_DISPATCHER_REQUEST_IDENTITY_OR_AUTHORITY_PLANE_CREATED"
+  ],
+  "authority_effect": "NONE_ORCHESTRATION_ONLY",
+  "reuse_instructions": "Trigger through scripts/trigger_reusable_task.py using the existing request RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001. Parameters must bind source_root, runtime_root, and only_consumer=stegagents_governed_runtime_targeted. The existing consumer remains responsible for exact task/COSV/request validation and for invoking refresh_and_execute_resident_task.py. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, and Master Records remains custody/reconstruction authority. Trigger or source success does not prove resident consumption or downstream state closure."
+}
