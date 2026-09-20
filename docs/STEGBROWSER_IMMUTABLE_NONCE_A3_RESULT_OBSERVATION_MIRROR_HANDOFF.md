@@ -68,3 +68,56 @@ This supersedes the vague phrasing "no claim/fence evidence surfaced." The next 
 The source repair itself does not prove the authentic runtime store has been queried or that A3 executed.
 
 Manual work: None.
+
+
+## Goal Prompt 2/20 — canonical runtime loading repaired; target durable store still not evidenced
+
+The requested authenticated nonce query was **not** executed against a substitute GitHub/CI database. Current canonical evidence does not expose an authentic durable Master Records endpoint or runtime advertisement for the target custody store, and the existing Runtime Evidence Validation lane explicitly does not claim a production endpoint.
+
+Tracing the existing Master Records runtime-loading path found the first concrete defect before any authoritative query could be trusted: the workflow launched:
+
+```text
+services.master_records_custody_api:app
+```
+
+That base app does not install the canonical state-transition custody module, so neither the hash-addressed reconstruction route nor the merged subject/nonce query route from PR #105 was loaded.
+
+The existing service entrypoint was repaired in `master-records/orchestration#106` to launch:
+
+```text
+services.canonical_master_records_api:app
+```
+
+This reuses the same base Master Records app/store and installs the existing canonical state-transition routes; no second service, runtime, custody store, credential path, or authority plane was introduced. The orchestration contract checker now fails closed if the base-only entrypoint returns.
+
+Exact validation:
+
+```text
+PR #106 exact head: 8f891a271ebc070cdd8fb1cb9e7f19d5ba8ff817
+Runtime Evidence Validation: run 35527681406 PASS
+Start owned authenticated custody service: PASS
+Authenticated custody/readback: PASS
+Orchestration/custody tests: PASS
+all exact-head workflows: PASS
+merge: 8804762fb5da5d212aa7c9c448dfcdabac734715
+```
+
+The workflow-local service proves the canonical app can load and existing custody behavior remains intact. It does **not** answer the StegBrowser query because that workflow starts a fresh run-scoped database and explicitly does not claim production deployment.
+
+The remaining actionable condition is therefore not "evidence has not surfaced." It is:
+
+```text
+AUTHENTIC_DURABLE_CANONICAL_MASTER_RECORDS_RUNTIME_ENDPOINT_NOT_YET_EVIDENCED
+```
+
+The next execution path is to trace the existing Master Records durable runtime materialization/source-refresh path, require it to load merge `8804762fb5da5d212aa7c9c448dfcdabac734715`, then execute:
+
+```text
+GET /api/master-records/state-transitions/query
+  ?subject_or_correlation_id=STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+  &transition_id=WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+```
+
+against that actual durable canonical store. Only that result may classify A3 custody.
+
+Manual work: None.
