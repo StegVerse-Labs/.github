@@ -38,40 +38,48 @@ from scripts.run_worker_runtime import _read_registry, adapter_entries as _worke
 CARRIER_STATE = Path("control/heartbeat-carrier-runtime-state.json")
 MATERIALIZATION_RECEIPT = Path("receipts/sovereign-host/materialization.latest.json")
 WORKER_SUPERVISION_INTERVAL_REFERENCES = 100
+LEGACY_SUBSIGNAL_STATE_REL = Path("control/heartbeat-subsignals.json")
 
 
-def _derived_subsignal_event_size(root: Path) -> int:
-    path = root / DERIVED_SUBSIGNAL_EVENT_LOG_REL
-    try:
-        return int(path.stat().st_size)
-    except OSError:
-        return 0
+def _subsignal_activity_snapshot(root: Path) -> tuple[tuple[str, int, int], ...]:
+    """Observe canonical HB/AU sub-signal persistence surfaces without interpreting them."""
+    rows: list[tuple[str, int, int]] = []
+    for rel in (DERIVED_SUBSIGNAL_EVENT_LOG_REL, LEGACY_SUBSIGNAL_STATE_REL):
+        path = root / rel
+        try:
+            stat = path.stat()
+            rows.append((str(rel), int(stat.st_size), int(stat.st_mtime_ns)))
+        except OSError:
+            rows.append((str(rel), 0, 0))
+    return tuple(rows)
 
 
-def _observe_derived_subsignal_worker_presence(
+def _observe_hb_subsignal_worker_presence(
     root: Path,
     *,
-    previous_event_size: int,
+    previous_snapshot: tuple[tuple[str, int, int], ...],
     carrier_pid: int,
     interval_ms: float,
     supervisor=ensure_worker_presence,
-) -> tuple[int, dict | None]:
-    """Use newly persisted HB/AU sub-signal activity only as a supervision cue.
+) -> tuple[tuple[tuple[str, int, int], ...], dict | None]:
+    """Use any newly persisted HB/AU sub-signal activity only as a supervision cue.
 
-    This does not interpret packet semantics and grants no task, claim/fence,
-    admission, transition, credential, or execution authority. It merely asks
-    the already-existing carrier-side supervision path to ensure the existing
-    WorkerCoordinator process is present.
+    The canonical denominator includes both the shared exact-byte HB-derived
+    carrier event surface and the retained heartbeat-subsignals state surface.
+    This does not interpret packet/sub-signal semantics and grants no task,
+    claim/fence, admission, transition, credential, routing, custody, or
+    execution authority. It merely asks the already-existing carrier-side
+    supervision path to ensure the existing WorkerCoordinator process is present.
     """
-    current_size = _derived_subsignal_event_size(root)
-    if current_size <= previous_event_size:
-        return current_size, None
+    current = _subsignal_activity_snapshot(root)
+    if current == previous_snapshot:
+        return current, None
     result = supervisor(
         root,
         carrier_pid=carrier_pid,
         interval_ms=interval_ms,
     )
-    return current_size, result
+    return current, result
 
 
 def _adapter_entries(root: Path):
@@ -168,7 +176,7 @@ def main() -> int:
         raise SystemExit("oscillator-produced runtime requires persisted oscillator-backed carrier state")
 
     observed_results: list[dict] = []
-    derived_subsignal_event_size = _derived_subsignal_event_size(root)
+    subsignal_activity_snapshot = _subsignal_activity_snapshot(root)
 
     def observe(batch) -> None:
         # The batch already exists by oscillator phase. cycle() only materializes
@@ -204,9 +212,9 @@ def main() -> int:
         # immediately; it grants no authority and does not select a task.
         supervised_this_reference = False
         if args.continuous:
-            derived_subsignal_event_size, subsignal_presence = _observe_derived_subsignal_worker_presence(
+            subsignal_activity_snapshot, subsignal_presence = _observe_hb_subsignal_worker_presence(
                 root,
-                previous_event_size=derived_subsignal_event_size,
+                previous_snapshot=subsignal_activity_snapshot,
                 carrier_pid=os.getpid(),
                 interval_ms=args.interval_ms,
             )
