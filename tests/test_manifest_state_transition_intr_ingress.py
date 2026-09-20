@@ -136,6 +136,9 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         self.assertEqual(validated["request_sha256"], value["request_sha256"])
         tampered = copy.deepcopy(value)
         tampered["canonical_manifest"]["payload"]["text"] = "changed"
+        tampered_without_request_hash = dict(tampered)
+        tampered_without_request_hash.pop("request_sha256")
+        tampered["request_sha256"] = mod.sha256(tampered_without_request_hash)
         with self.assertRaisesRegex(ValueError, "canonical_manifest_sha256_recompute_mismatch"):
             mod.validate_request(tampered)
 
