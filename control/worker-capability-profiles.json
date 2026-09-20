@@ -220,6 +220,23 @@
         "Governance, Interlock, InTr, HB and Master Records custody grant no execution or credential authority.",
         "Target consequence authority remains separately validated and TV/TVC remains credential authority."
       ]
+    },
+    {
+      "profile_id": "stegagents-governed-runtime-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "governed_stegagents_runtime",
+      "allowed_capabilities": [
+        "stegagents_governed_coderepair_roundtrip",
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_purpose_bound_worker_state_graph"
+      ],
+      "mutation_allowed": false,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "Capability eligibility only. WorkerCoordinator, StegCore/InTr, TV/TVC, and Master Records retain their existing authority boundaries."
+      ]
     }
   ]
 }
