@@ -31,6 +31,8 @@ class WorkerSourceRefreshTaskWatchTests(unittest.TestCase):
                 source_package_root=packages,
             )
             self.assertIn(f"PathChanged={source / 'tasks'}", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-registry.json'}", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-records'}", path_unit)
             self.assertIn("dispatch_resident_execution_requests.py", service)
             self.assertNotIn("GITHUB_TOKEN", service)
             self.assertNotIn("git fetch", service)

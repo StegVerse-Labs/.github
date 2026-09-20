@@ -189,6 +189,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/task-vector-index.json", path_unit)
             self.assertIn("control/resident-execution-request.json", path_unit)
             self.assertIn("control/resident-execution-request.d", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-registry.json'}", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-records'}", path_unit)
             self.assertIn("dispatch_resident_execution_requests.py", service)
             self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
