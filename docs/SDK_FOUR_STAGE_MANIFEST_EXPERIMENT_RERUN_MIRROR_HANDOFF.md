@@ -4,7 +4,7 @@ Updated: 2026-09-20
 Goal Task ID: `SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001`
 Parent Goal Task ID: `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001`
 COSV ID: `71000000111111`
-Status: ACTIVE / CHECKED OUT
+Status: RETIRED / COMPLETED / VALIDATED
 
 ## Purpose
 
@@ -39,3 +39,24 @@ No test-specific runtime, scheduler, dispatcher, authority plane, credential pat
 Current SDK main observed at task registration: `33dc1b9df68a3a5d18a977aca09fddb6037cd043` (SDK 1.3.0 closeout). The historical experiment workflow is still frozen to `4c8b72b317fdb4fb5f5e6879dd028c04ee89bb97` and therefore must be replaced for this rerun.
 
 Task 4 currently records `started_ns` before the barrier wait, so the existing `simultaneous_overlap_observed` result is not evidence of overlapping execution. Repair that generic observation before establishing the new freeze.
+
+
+## Final closure - 2026-09-20
+
+The repaired experiment completed end to end against exact SDK head `0f74d3b1ec2226d6cf668a6bd011b3e8cf104985` in GitHub Actions run `35545606808`. All four stages passed and all 12 applicable exact-head SDK validation workflows passed.
+
+SDK PR #298 merged as `310c9fe7988a659c22764f4e16e2086f7cb22b12`. The tested head and merged main commit share exact Git tree `56d6d64b4f887130792e7dd0e4cfe1553e0b12fc`, preserving the tested source bytes.
+
+Retained workflow artifact:
+- artifact ID: `10616772029`
+- artifact SHA-256: `05a45ba5feb820a26106d6c2e112dd8571d9da9a61abad482de0e2e58297df21`
+
+Delivered documentation/evidence bundle SHA-256:
+`91e4034b20c399a78a757103c650a5faa16a18c66ea14815f003d7ddf2448ef7`
+
+Final interpretation boundaries:
+- Test 3 is a same-route invariance/person-neutrality test using the installed `atomic_task_worker` processor; it does not claim a separate Test-3 runtime.
+- Task 4 proves overlapping concurrent worker invocation lifetimes. It explicitly does not claim CPU-parallel instruction execution.
+- Raw manifests/results/source-index/metadata/hash inventory accompany the PDFs, so the reports no longer depend on unavailable retained files.
+
+No remaining experiment predicate is open.
