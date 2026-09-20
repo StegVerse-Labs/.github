@@ -464,6 +464,63 @@ def runtime_root() -> Path:
     return root
 
 
+def _manifest_state_transition_request(task_id: str) -> dict[str, Any] | None:
+    path = runtime_root() / "runtime-state" / "sdk-manifest-state-transition" / f"{task_id}.latest.json"
+    if not path.is_file():
+        return None
+    value = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(value, dict), "manifest state-transition request must be an object")
+    require(value.get("schema") == "stegverse.sdk.manifest-state-transition-request/v1", "manifest state-transition request schema mismatch")
+    require(value.get("canonical_task_id") == task_id, "manifest state-transition task binding mismatch")
+    require(value.get("request_grants_authority") is False, "manifest state-transition request authority drift")
+    require(value.get("claim_fence_authority") == "WORKERCOORDINATOR", "manifest state-transition claim authority drift")
+    require(value.get("transition_authority") == "INTERLOCK_INTR", "manifest state-transition transition authority drift")
+    require(value.get("credential_authority") == "TV/TVC", "manifest state-transition credential authority drift")
+    require(value.get("custody_replay_reconstruction_authority") == "MASTER_RECORDS", "manifest state-transition custody authority drift")
+    graph = value.get("state_graph")
+    require(isinstance(graph, Mapping), "manifest state-transition graph missing")
+    require(graph.get("canonical_task_id") == task_id, "manifest state-transition graph task mismatch")
+    return dict(value)
+
+
+def build_manifest_bound_purpose_request(task: Mapping[str, Any], runtime_request: Mapping[str, Any]) -> dict[str, Any]:
+    graph = runtime_request.get("state_graph")
+    require(isinstance(graph, Mapping), "manifest state-transition graph missing")
+    contract = graph.get("request")
+    require(isinstance(contract, Mapping), "manifest state-transition purpose request missing")
+    require(contract.get("schema") == "stegverse.sdk.tt-purpose-bound-worker.v1", "manifest purpose request schema mismatch")
+    transition_cell = contract.get("transition_cell")
+    candidate = transition_cell.get("candidate") if isinstance(transition_cell, Mapping) else None
+    require(isinstance(candidate, Mapping), "manifest purpose candidate missing")
+    require(isinstance(candidate.get("required_capability"), str) and candidate.get("required_capability"), "manifest purpose capability missing")
+    timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
+    claim = {
+        "claim_id": task["claim_id"],
+        "fencing_token": timing["fencing_token"],
+        "worker_id": task.get("worker_id"),
+        "worker_instance_id": task.get("worker_instance_id"),
+    }
+    return {
+        "schema": "stegverse.stegagents-purpose-bound-worker-request/v1",
+        "task_id": PURPOSE_TASK_ID,
+        "cosv_task_vector": PURPOSE_COSV,
+        "parent_agent_id": AGENT_ID,
+        "execution_authority": False,
+        "self_authorization_allowed": False,
+        "credential_material_present": False,
+        "worker_claim": claim,
+        "purpose_bound_worker_request": dict(contract),
+        "sdk_manifest_state_transition_binding": {
+            "canonical_manifest_sha256": runtime_request.get("canonical_manifest_sha256"),
+            "graph_id": runtime_request.get("graph_id"),
+            "processing_capability": runtime_request.get("processing_capability"),
+            "route_id": runtime_request.get("route_id"),
+            "request_sha256": runtime_request.get("request_sha256"),
+            "authority_effect": "NONE_INPUT_BINDING_ONLY",
+        },
+    }
+
+
 def _required_capability(handoff: Mapping[str, Any], capability: str) -> None:
     execution = handoff.get("execution") if isinstance(handoff.get("execution"), Mapping) else {}
     required = execution.get("required_capabilities")
@@ -747,6 +804,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
                 "worker_live_after_close": result.get("worker_live_after_close"),
                 "continued_authority_after_retirement": result.get("continued_authority_after_retirement"),
                 "purpose_bound_worker_result": result.get("purpose_bound_worker_result"),
+                "claim_fence_master_records_transition": task.get("claim_fence_master_records_transition"),
             })
         result_rel, latest_rel = PURPOSE_RESULT_REL, PURPOSE_LATEST_REL
     else:
@@ -782,8 +840,19 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     manifest_blob_sha = git_blob_sha(manifest)
     require(manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA, "CodeRepair-001 governed manifest does not match merged registered blob")
 
-    graph_mode = bool(profile["task_id"] == PURPOSE_TASK_ID and isinstance(handoff.get("state_dependent_graph"), Mapping) and handoff["state_dependent_graph"].get("enabled") is True)
-    request = build_state_graph_request(task, handoff) if graph_mode else build_request(task, handoff)
+    manifest_runtime_request = _manifest_state_transition_request(str(task["task_id"])) if profile["task_id"] == PURPOSE_TASK_ID else None
+    manifest_runtime_mode = isinstance(manifest_runtime_request, Mapping)
+    graph_mode = bool(
+        profile["task_id"] == PURPOSE_TASK_ID
+        and not manifest_runtime_mode
+        and isinstance(handoff.get("state_dependent_graph"), Mapping)
+        and handoff["state_dependent_graph"].get("enabled") is True
+    )
+    request = (
+        build_manifest_bound_purpose_request(task, manifest_runtime_request)
+        if manifest_runtime_mode
+        else (build_state_graph_request(task, handoff) if graph_mode else build_request(task, handoff))
+    )
     env = dict(os.environ)
     env.pop("GITHUB_TOKEN", None)
     env.pop("GH_TOKEN", None)
