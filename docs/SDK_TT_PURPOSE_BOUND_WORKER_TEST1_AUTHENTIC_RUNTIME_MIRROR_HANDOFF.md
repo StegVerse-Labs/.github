@@ -61,3 +61,15 @@ The shared SDK ingress is the existing `SDK:ManifestStateTransition` profile at 
 
 No source defect was identified in the Test 1 chain, no Test 2/3 execution occurred, and no substitute invocation was issued. The exact next authentic transition remains `AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION`, after which the existing WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records sequence must close state-dependently.
 
+## Test 1 regression diagnosis and repair — 2026-09-20
+
+The prior resident-Universal-InTr requirement for Evaluator Test 1 was traced to a regression, not to the original Test 1 contract.
+
+Last known good behavior was SDK merge `a3a2039f907fe6499f32b79c7112c6be9495f5a4`: Manifest Builder produced the manifest, `run-manifest` selected `purpose_bound_worker_processor.execute_manifest`, that processor called the installed `run_purpose_bound_worker`, and the returned result contained the complete Test 1 lifecycle `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` with `records_only=true` and `worker_live_after_close=false`.
+
+SDK PR #285 was the first behavior-breaking change. It deliberately classified that working result as a false semantic PASS and changed public `run-manifest` to fail with `AUTHENTIC_GOVERNED_RUNTIME_BINDING_REQUIRED`. PR #286 then rebound the purpose-bound route to `manifest_state_transition_runtime.execute_manifest`, making an external `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` mandatory. Those changes caused the observed Test 1 regression.
+
+SDK PR #289 restored Test 1 only to the working manifest-selected processor path while leaving the newer generic universal runtime code available for other work. Exact-head Test 1 run `35534933752` passed and required the assembled lifecycle result; SDK package run `35534933786` also passed. PR #289 merged as `3948fbcb7fd4deb185bf6eb815b3410f8abf6fee`.
+
+Canonical Test 1 success is therefore again: manifest is the only variable input -> Manifest Builder -> `run-manifest` -> installed purpose-bound processor -> assembled lifecycle result. An external resident Universal InTr endpoint is not a Test 1 success criterion. Tests 2 and 3 were not executed by this repair.
+
