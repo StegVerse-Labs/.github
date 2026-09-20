@@ -99,6 +99,13 @@ def main() -> int:
         claim = task.get("worker_claim", {})
         require(claim.get("authority") == "WORKERCOORDINATOR", f"{task_id}: claim authority drift")
         require(claim.get("projection_only") is True, f"{task_id}: registry claim must be projection-only")
+        claim_ref = claim.get("claim_ref")
+        fence_ref = claim.get("fence_ref")
+        require(bool(claim_ref) == bool(fence_ref), f"{task_id}: claim/fence projection must be paired")
+        require(
+            not isinstance(claim_ref, str) or "CURRENT_SESSION" not in claim_ref.upper(),
+            f"{task_id}: session coordination leaked into WorkerCoordinator claim projection",
+        )
 
         requirements = task.get("runtime_requirements")
         require(isinstance(requirements, dict), f"{task_id}: runtime requirements missing")
