@@ -21,9 +21,23 @@
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/Site", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/.github", "StegVerse-Labs/StegSocials"],
-    "components": ["stegos-node-v1", "DEVICE_KV", "Node continuity", "IndexedDB schema migration", "StegBrowser runtime observation", "ERL standard-flow admission"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/StegBrowser",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegSocials"
+    ],
+    "components": [
+      "stegos-node-v1",
+      "DEVICE_KV",
+      "Node continuity",
+      "IndexedDB schema migration",
+      "StegBrowser runtime observation",
+      "ERL standard-flow admission"
+    ]
   },
   "dependencies": [
     {
@@ -56,7 +70,9 @@
     }
   ],
   "blockers": [],
-  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001"],
+  "adjacent_task_refs": [
+    "SS-EVIDENCE-COMPARISON-001"
+  ],
   "existing_evidence_refs": [
     "StegVerse-Labs/Site/issues/1233",
     "StegVerse-Labs/Site/pull/1235",
@@ -85,7 +101,11 @@
     "AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_NO_MISSING_OBJECT_STORE_FAILURE"
   ],
   "runtime_requirements": {
-    "capabilities": ["indexeddb_schema_migration", "device_kv_query", "node_continuity"],
+    "capabilities": [
+      "indexeddb_schema_migration",
+      "device_kv_query",
+      "node_continuity"
+    ],
     "environment": "ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_BROWSER_NODE_SITE_ORIGIN",
     "direction": "PRESERVE_NODE_IDENTITY_THEN_RESTORE_DEVICE_KV_ADMISSION",
     "mutation_required": true,
@@ -97,14 +117,17 @@
     "authority_basis": "canonical task/COSV plus merged Site repair plus non-authorizing live-source observation; StegOS node identity grants no user-verification authority",
     "unattended_runtime": false,
     "prepared_execution_path": "StegVerse-Labs/StegBrowser/.github/workflows/indexeddb-migration-runtime-observation.yml",
-    "required_runner_labels": ["self-hosted", "stegos-browser-node"],
+    "required_runner_labels": [
+      "self-hosted",
+      "stegos-browser-node"
+    ],
     "current_remote_desktop_device_count": 0
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": "No device-specific human action is required. Authentic runtime evidence may be produced by any compatible interchangeable StegOS execution node; device/node identity grants no user-verification authority.",
   "completion": {
