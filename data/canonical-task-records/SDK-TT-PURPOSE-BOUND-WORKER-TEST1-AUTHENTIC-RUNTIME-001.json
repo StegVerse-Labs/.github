@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "correlation_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "goal": "Close Evaluator Test 1 through the already-existing universal Manifest Builder -> run-manifest -> shared Universal InTr -> WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records path, preserving exact manifested lineage and immediate-predecessor Master Records closure semantics without adding another runtime, listener, scheduler, dispatcher, credential path, custody store, repository subprocess bridge, test-specific execution lane, or device dependency.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000111111"
+  },
+  "cosv_task_vector": "71000000111111",
+  "execution_lineage_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "source_refs": [
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2341",
+    "StegVerse-Labs/.github@746d077e126e3452ccb40685907f141c839fb851",
+    "StegVerse-org/StegVerse-SDK#288",
+    "StegVerse-org/StegVerse-SDK@ec989d1e2075b975c7cc138ceec4ee0fabdd1d50",
+    "workers/manifest_state_transition_intr_ingress.py",
+    "workers/universal_intr_profiled_ingress.py",
+    "heartbeat_runtime/worker_runtime_legacy.py"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SDK-TEST1-AUTHENTIC-RESIDENT-UNIVERSAL-INTR",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "PENDING_AUTHENTIC_EXECUTION",
+      "ref": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "disposition": "RUN_EXACT_TEST1_MANIFEST_LINEAGE_ON_EXISTING_RESIDENT_UNIVERSAL_INTR_PATH; GITHUB_CI_UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED_IS_NON_AUTHORIZING_BOUNDARY_EVIDENCE_NOT_A_RUNTIME_FAILURE"
+    }
+  ],
+  "authoritative_sequence": [
+    "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "TV_TVC_WARRANT_POLICY_VERIFIED",
+    "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+    "PURPOSE_BOUND_WORKER_MATERIALIZED",
+    "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+    "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+    "PURPOSE_BOUND_WORKER_RETIRED"
+  ],
+  "progression_requires": [
+    "state=RECORDED",
+    "reconstruction_status=PASS",
+    "required_evidence_validation_status=PASS",
+    "receipt_sha256==reconstructed_receipt_sha256"
+  ],
+  "remaining_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION_THEN_FULL_ORDERED_STATE_GRAPH_MASTER_RECORDS_CLOSURE_REPLAY_RECONSTRUCTION_RECORDS_ONLY_TERMINAL_AND_CONTINUED_AUTHORITY_FALSE",
+  "runtime_boundary": {
+    "sdk_test1_only_run_id": 35527445140,
+    "sdk_test1_only_run_conclusion": "success",
+    "github_ci_first_failure": "UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED",
+    "github_runtime_authority": "NONE",
+    "canonical_resident_ingress_env": "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",
+    "canonical_resident_tvc_authorization_env": "STEGVERSE_TVC_RELAY_AUTHORIZATION_ID",
+    "shared_intr_profile_merge": "746d077e126e3452ccb40685907f141c839fb851",
+    "sdk_binding_merge": "ec989d1e2075b975c7cc138ceec4ee0fabdd1d50",
+    "test2_or_test3_execution_allowed_before_test1_close": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_test1_runtime_complete": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "request_grants_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "INTERLOCK_INTR",
+    "execution_authority": "STEGAGENTS_DOMAIN_COMPONENT",
+    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "second_user_operated_device_required": false
+  }
+}
