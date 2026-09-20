@@ -1017,3 +1017,8 @@ Goal Prompt 20 retires `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` as source
 ### Master Records resident source floor — 2026-09-20
 
 The existing sovereign control-plane bundle now requires local `master-records/orchestration` source to contain merge `8804762fb5da5d212aa7c9c448dfcdabac734715` before it can be classified `VERIFIED_LOCAL_GIT_SOURCE`. Canonical state-transition custody and canonical API source files are protected by the same verification contract. This closes the provenance gap where resident materialization could accept a pre-query/pre-canonical-entrypoint Master Records tree while still reporting verified source.
+
+
+### StegBrowser A3 durable Master Records materialization provenance — 2026-09-20
+
+Goal `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001` Goal Prompt 3/20 traced the existing resident source path through the sovereign control-plane bundle and StegDeploy. The first defect was a stale Master Records source floor: the bundle could classify a pre-`8804762f...` tree as `VERIFIED_LOCAL_GIT_SOURCE`. PR #2354, merged as `5b37c88a0ec6dcb9d5d8289b025e8d80418106cf`, now requires `8804762fb5da5d212aa7c9c448dfcdabac734715` in Master Records history and protects the canonical state-transition custody/API files. Authentic resident refresh/materialization and durable-store query remain unclaimed.
