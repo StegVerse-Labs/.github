@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "correlation_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "root_correlation_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "goal": "Repair the generic four-stage manifest-only SDK experiment, rerun all four stages against one current frozen SDK source identity with the manifest as the only per-stage execution input, and retain independently replayable documentation plus raw evidence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_FOUR_STAGE_MANIFEST_EXPERIMENT_RERUN_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "manifest_only_per_stage_variable_input": true,
+    "one_frozen_sdk_source_identity_for_all_four_stages": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "documentation_bundle_complete": false
+  }
+}
