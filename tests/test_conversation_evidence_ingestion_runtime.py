@@ -99,6 +99,8 @@ def test_canonical_work_request_and_workercoordinator_bindings_exist():
     assert request["task_id"] == worker.TASK_ID
     assert request["second_machine_required"] is False
     assert handoff["activation"]["targeted_execution"]["argv"][-1] == worker.TASK_ID
+    assert handoff["activation"]["targeted_execution"]["requires_existing_separated_carrier_reference"] is False
+    assert handoff["activation"]["targeted_execution"]["state_triggered_after_canonical_work_ingress"] is True
     assert handoff["continuity"]["master_records_required"] is True
     assert registry["tasks"][0]["state"] == "HANDOFF_READY"
     assert registry["tasks"][0]["admission"]["fresh_fence_required"] is True
