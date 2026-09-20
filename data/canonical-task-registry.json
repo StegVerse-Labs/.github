@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 135,
+  "generation": 136,
   "status": "ERL_UK_JCHR_SUCCESSOR_CHECK_2026_09_20_THIRD_PASS_NO_CHANGE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -7013,6 +7013,114 @@
         "material_function_change": false,
         "readme_updated_in_change_set": true,
         "readme_path": "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "correlation_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "goal": "Observe the authentic execution result for the one existing immutable StegBrowser invocation through the exact nonce-bound A3 WorkerCoordinator claim/fence boundary, then continue only the same state lineage or repair only the first actual deterministic pre-A3 failure.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "handoff_ref": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
+      "canonical_issue": "StegVerse-Labs/.github#2338",
+      "source_refs": [
+        "data/canonical-task-records/STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001.json",
+        "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+        "StegVerse-Labs/.github#2338",
+        "StegVerse-Labs/.github@febd6251c1eea9cbaeb03298802654157623e573"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "stegbrowser-immutable-invocation",
+          "workercoordinator-claim-fence",
+          "interlock-intr",
+          "master-records-custody-reconstruction"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
+      ],
+      "existing_evidence_refs": [
+        "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "StegVerse-Labs/.github@febd6251c1eea9cbaeb03298802654157623e573"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_ID_OBSERVED",
+        "AUTHENTIC_NONCE_BOUND_FENCING_TOKEN_OBSERVED",
+        "SAME_LINEAGE_INTERLOCK_INTR_SUCCESSOR_ONLY",
+        "MASTER_RECORDS_STATE_RECORDED",
+        "MASTER_RECORDS_RECONSTRUCTION_STATUS_PASS",
+        "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+        "MASTER_RECORDS_RECEIPT_DIGEST_EQUALS_RECONSTRUCTED_DIGEST"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "canonical_runtime_evidence_observation",
+          "workercoordinator_claim_fence_observation",
+          "master_records_reconstruction_verification"
+        ],
+        "environment": "EXISTING_STEGBROWSER_RUNTIME_PATH_ONLY",
+        "direction": "INTERNAL",
+        "mutation_required": false,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "immutable_invocation": {
+        "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "requested_invocation_count": 1,
+        "second_request_allowed": false,
+        "request_mutation_allowed": false
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "a3_claim_fence_observed": false,
+        "deterministic_pre_a3_failure_observed": false,
+        "runtime_completion_claimed": false
+      },
+      "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE",
+        "CONTINUE_SAME_LINEAGE_THROUGH_INTERLOCK_INTR",
+        "REQUIRE_CANONICAL_MASTER_RECORDS_CLOSURE_AT_EACH_SUCCESSOR",
+        "REPAIR_FIRST_ACTUAL_DETERMINISTIC_PRE_A3_FAILURE_AND_RERUN_SAME_REQUEST"
+      ],
+      "handoff_projection_refs": [
+        "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "master_records_reality_authority": true
+      },
+      "prompt_budget": {
+        "goal_prompt_count": "0/20",
+        "split_merely_to_reset_counter": false
       }
     }
   ],
