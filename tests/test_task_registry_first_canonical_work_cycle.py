@@ -245,6 +245,33 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
             row["allowed_next_transitions"] = []
             self.assertTrue(module.workercoordinator_target_candidate(row, fragments))
 
+    def test_ingress_admitted_edge_remains_on_existing_canonical_work_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fragments = root / "worker-registry.d"
+            fragments.mkdir()
+            task_id = "INGRESS-FIRST-WORK-001"
+            (fragments / "ingress-first-work-001.json").write_text(json.dumps({
+                "schema": "stegverse.worker-registry-fragment/v0.1",
+                "fragment_id": task_id,
+                "tasks": [{
+                    "task_id": task_id,
+                    "state": "HANDOFF_READY",
+                    "claim_id": None,
+                    "worker_id": None,
+                    "worker_instance_id": None,
+                    "admission": {
+                        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+                        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+                        "carrier_trigger_required": False,
+                    },
+                }],
+                "workers": [],
+            }), encoding="utf-8")
+            row = record(task_id, state="ACTIVE", checkout="CHECKED_OUT")
+            self.assertFalse(module.workercoordinator_target_candidate(row, fragments))
+            self.assertTrue(module.machine_ingress_candidate(row))
+
     def test_workercoordinator_state_transition_requires_existing_admission_not_hb(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
