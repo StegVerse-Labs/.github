@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegagents_governed_runtime",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "INITIAL_BOUNDED_ESTIMATE"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 4194304,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+    "workers/stegagents_governed_runtime_worker.py",
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json"
+  ],
+  "notes": [
+    "Initial bounded assignment timer estimate for the existing shared StegAgents governed runtime.",
+    "HB provides timing units only and grants no execution or transition authority.",
+    "External cost is zero; credential authority remains TV/TVC."
+  ]
+}
