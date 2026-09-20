@@ -804,6 +804,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
                 "worker_live_after_close": result.get("worker_live_after_close"),
                 "continued_authority_after_retirement": result.get("continued_authority_after_retirement"),
                 "purpose_bound_worker_result": result.get("purpose_bound_worker_result"),
+                "claim_fence_master_records_transition": task.get("claim_fence_master_records_transition"),
             })
         result_rel, latest_rel = PURPOSE_RESULT_REL, PURPOSE_LATEST_REL
     else:
