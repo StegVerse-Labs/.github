@@ -574,3 +574,12 @@ Post-merge inspection confirms the exact resident request RESIDENT-EXEC-SDK-TT-P
 No repository-retained receipts were observed at receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json, receipts/sovereign-host/resident-targeted-execution.latest.json, or receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json. Repository search also found no retained PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN receipt. The source worker registry does not establish a fresh Case 1 claim/fence for this task. Therefore the request has not been promoted as consumed and no downstream authentic runtime predicate is promoted.
 
 The execution frontier remains the existing resident path only: staged request -> resident consumer -> targeted WorkerCoordinator one-shot -> Case 1 claim/fence Master Records closure -> state-dependent graph. No substitute GitHub Actions run, Test3/Richard route, scheduler, dispatcher, authority plane, custody store, carrier, or device prerequisite is authorized.
+
+
+## SDK Test One manifest-only ingress reconciliation — 2026-09-19
+
+StegVerse-org/StegVerse-SDK PR #276 merged as `a3a2039f907fe6499f32b79c7112c6be9495f5a4` after exact-head `572b91544ecf6ca5856fb7637db506c1b9bb5306` passed all PR gates. Dedicated Test One console run `35480600026` executed Manifest Builder -> canonical ingress manifest -> installed `purpose_bound_worker` route -> `run-manifest` -> manifest-derived TT worker request and returned the ordered local lifecycle `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED`, `records_only=true`, and `worker_live_after_close=false`.
+
+Manifest Builder Source Validation `35480599985` and Evaluator Manifest Source Validation `35480599958` passed at the same exact head. The evaluator no longer supplies a separate worker request for Test One; after source-native input and processor-request construction, the canonical manifest is the sole variable execution input to the SDK processor route.
+
+Evidence ceiling remains unchanged: this is merged SDK/source execution evidence. It does not promote the authentic resident predicates for WorkerCoordinator claim/fence, TV/TVC warrant-policy verification, Interlock/InTr materialization admission, resident StegAgents execution, or per-transition canonical Master Records closure. The runtime frontier remains the existing authentic resident path.
