@@ -701,13 +701,39 @@ def _validate_mir_southbound_request(request: Mapping[str, Any]) -> None:
         require(request.get(key) == value, "mir_southbound_" + key + "_mismatch")
     for key in ("materialization_id", "request_hash", "transport_intent_hash", "payload_hash", "operation_id", "packet_id", "payload_ref"):
         require(isinstance(request.get(key), str) and bool(request.get(key)), "mir_southbound_" + key + "_required")
+    require(request.get("predecessor_transition_id") == "RTC-STEGVERSE-EGRESS-007", "mir_southbound_predecessor_transition_mismatch")
+    require(request.get("predecessor_master_records_state") == "RECORDED", "mir_southbound_predecessor_master_records_not_recorded")
+    require(request.get("predecessor_master_records_reconstruction_status") == "PASS", "mir_southbound_predecessor_reconstruction_not_pass")
+    require(request.get("predecessor_master_records_required_evidence_validation_status") == "PASS", "mir_southbound_predecessor_required_evidence_not_pass")
+    require(request.get("predecessor_master_records_digest_equal") is True, "mir_southbound_predecessor_digest_not_equal")
+    predecessor = request.get("predecessor_master_records_receipt_sha256")
+    reconstructed = request.get("predecessor_master_records_reconstructed_receipt_sha256")
+    require(isinstance(predecessor, str) and bool(predecessor), "mir_southbound_predecessor_receipt_required")
+    require(predecessor == reconstructed, "mir_southbound_predecessor_receipt_digest_mismatch")
     body = dict(request)
     claimed = body.pop("request_hash", None)
     require(claimed == sha_uri(body), "mir_southbound_request_hash_mismatch")
 
 
 def _rtc008_required_evidence(request: Mapping[str, Any], ingress_receipt: Mapping[str, Any]) -> list[dict[str, Any]]:
+    predecessor = {
+        "transition_id": request["predecessor_transition_id"],
+        "state": request["predecessor_master_records_state"],
+        "reconstruction_status": request["predecessor_master_records_reconstruction_status"],
+        "required_evidence_validation_status": request["predecessor_master_records_required_evidence_validation_status"],
+        "receipt_sha256": request["predecessor_master_records_receipt_sha256"],
+        "reconstructed_receipt_sha256": request["predecessor_master_records_reconstructed_receipt_sha256"],
+        "digest_equal": request["predecessor_master_records_digest_equal"],
+    }
     return [
+        {
+            "evidence_id": "rtc008-rtc007-master-records-closure",
+            "evidence_type": "RTC007_MASTER_RECORDS_CLOSURE",
+            "origin_transition_id": RTC008_TRANSITION_ID,
+            "encoding": "canonical-json",
+            "sha256": sha_uri(predecessor).split(":", 1)[1],
+            "content": predecessor,
+        },
         {
             "evidence_id": "rtc008-universal-intr-materialization-request",
             "evidence_type": "UNIVERSAL_INTR_MATERIALIZATION_REQUEST",
@@ -733,7 +759,7 @@ def _record_rtc008_custody(request: Mapping[str, Any], ingress_receipt: Mapping[
         transition_sequence=8,
         subject_or_correlation_id=str(request["materialization_id"]),
         transition_outcome="COMPLETED",
-        prior_state_ref_or_hash=str(request["transport_intent_hash"]),
+        prior_state_ref_or_hash=str(request["predecessor_master_records_receipt_sha256"]),
         resulting_state_ref_or_hash=sha_uri(dict(ingress_receipt)),
         governance_decision_ref_where_applicable=str(ingress_receipt.get("transport_authorization_id") or "") or None,
         transition_evidence=dict(ingress_receipt),
