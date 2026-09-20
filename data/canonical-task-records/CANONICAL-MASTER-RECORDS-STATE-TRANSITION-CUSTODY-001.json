@@ -330,5 +330,11 @@
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC_WHERE_REQUIRED",
     "validation_execution_semantics": "ANY_VALIDATION_REQUIRED_BY_THE_TRANSITION_MUST_EXECUTE_AS_PART_OF_THE_EXISTING_TRANSITION_PATH_BEFORE_EVIDENCE_CLOSURE_AND_ITS_OUTPUT_MUST_ENTER_REQUIRED_EVIDENCE_MANIFEST; VALIDATOR_EXISTENCE_IS_NOT_A_WAIT_OR_DEFER_CONDITION"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
   }
 }
