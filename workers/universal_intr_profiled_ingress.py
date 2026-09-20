@@ -71,6 +71,11 @@ from workers.canonical_state_transition_custody import (  # noqa: E402
     build_state_receipt,
     submit_state_receipt,
 )
+from workers.manifest_state_transition_intr_ingress import (  # noqa: E402
+    PROFILE as MANIFEST_STATE_TRANSITION_PROFILE,
+    admit as admit_manifest_state_transition,
+    is_manifest_state_transition,
+)
 
 
 PROFILE_PATH = "/intr/profile"
@@ -812,7 +817,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "device_kv_result_path": DEVICE_KV_RESULT_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport", "MIR:SouthboundRTC008"],
+        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport", "MIR:SouthboundRTC008", MANIFEST_STATE_TRANSITION_PROFILE],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
@@ -867,7 +872,7 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))))
+                receipt = admit_manifest_state_transition(runtime_root=self.server.runtime_root, body=body, headers=self.headers, transport_validator=hil.validate_transport_headers) if is_manifest_state_transition(payload) else (admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
