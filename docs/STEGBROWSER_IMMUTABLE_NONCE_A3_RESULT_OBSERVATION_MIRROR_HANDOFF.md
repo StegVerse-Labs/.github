@@ -32,3 +32,39 @@ Complete only when either (a) the authentic nonce-bound A3 claim/fence is observ
 ## Manual work
 
 None.
+
+
+## Goal Prompt 1/20 — Master Records made directly actionable
+
+The controlling evidence question is now explicit: the authoritative A3 evidence belongs in canonical Master Records, not in a broad GitHub evidence search. WorkerCoordinator's existing assignment path creates transition `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` and synchronously submits that claim/fence transition to canonical Master Records before task activation can proceed.
+
+Inspection of `master-records/orchestration` found a concrete read-path defect. The custody table already stores and indexes `subject_or_correlation_id`, but the API exposed reconstruction only by an already-known `receipt_sha256`. Therefore the system could custody a transition yet provide no direct way to ask, "what records exist for this immutable nonce?"
+
+That defect is repaired and merged:
+
+```text
+master-records/orchestration#105
+exact head: 2c4ab1a058a288cc4645ffbcb5750d98188a7ef3
+merge: e88be99fdfa678b19b3d0c52d120d15a60c9557c
+Runtime Evidence Validation: 35526500242 PASS
+orchestration/custody tests: PASS
+```
+
+The existing custody API now supports the authenticated, non-authorizing query:
+
+```text
+GET /api/master-records/state-transitions/query
+  ?subject_or_correlation_id=STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+  &transition_id=WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+```
+
+Each returned record is reconstructed from the existing custody store and carries the canonical receipt/reconstruction digest and required-evidence validation results. No second store, API authority, runtime, credential path, invocation, scheduler, dispatcher, or custody plane was created.
+
+This supersedes the vague phrasing "no claim/fence evidence surfaced." The next classification must come from the authoritative Master Records query:
+- one or more matching records -> validate `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256 == reconstructed_receipt_sha256`, then continue the same lineage;
+- zero matching records -> actionable fact: no `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` transition for this immutable nonce is present in the queried canonical custody store; trace the existing producer path to the first missing transition;
+- a retained pre-A3 failure record -> repair only that exact first deterministic failure and rerun through the same original request.
+
+The source repair itself does not prove the authentic runtime store has been queried or that A3 executed.
+
+Manual work: None.
