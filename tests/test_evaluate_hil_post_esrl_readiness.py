@@ -21,6 +21,21 @@ def esrl():
     }
 
 
+
+def consumption_ready():
+    return {
+        "schema": "stegverse.hil-resident-execution-request-consumption/v1",
+        "state": "COMPLETED",
+        "task_id": mod.TASK_ID,
+        "terminal_hil_transition_observed": True,
+        "terminal_hil_transition": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+        "runtime_execution_attempted": True,
+        "runtime_execution_surface": "CURRENT_USER_IPHONE_BROWSER",
+        "second_machine_required": False,
+        "claim_id": "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25",
+        "fencing_token": 25,
+    }
+
 def worker():
     return {
         "schema": mod.WORKER_SCHEMA,
@@ -57,6 +72,15 @@ def test_accepted_esrl_advances_only_to_receiver_ready(tmp_path):
     value = mod.evaluate(repo_root=tmp_path, esrl_intake=ep)
     assert value["first_unresolved_stage"] == "HIL_RECEIVER_READY_AND_CUSTODY"
     assert value["remaining_parent_blockers"] == list(mod.PARENT_BLOCKERS[1:])
+
+
+def test_retained_resident_consumption_satisfies_receiver_ready_but_not_custody(tmp_path):
+    ep = write(tmp_path, Path("esrl.json"), esrl())
+    write(tmp_path, mod.CONSUMPTION_REL, consumption_ready())
+    value = mod.evaluate(repo_root=tmp_path, esrl_intake=ep)
+    assert value["first_unresolved_stage"] == "HIL_RECEIVER_CUSTODY"
+    assert "receiver READY is retained" in value["reason"]
+    assert value["second_user_device_required"] is False
 
 
 def test_receiver_ready_does_not_imply_restart_proof(tmp_path):
