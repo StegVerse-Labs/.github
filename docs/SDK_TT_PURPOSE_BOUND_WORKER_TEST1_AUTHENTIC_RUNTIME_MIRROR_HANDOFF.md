@@ -52,3 +52,12 @@ Every successor transition requires the immediately preceding Master Records clo
 ## Execution rule
 
 Run Test 1 only. Do not advance to Test 2 or Test 3 until authentic Test 1 completion closes end to end. If the resident execution returns a concrete failure, retain the exact first failure and repair only that same existing canonical path. Absence of a GitHub resident endpoint is not a runtime defect and must not be repaired by adding GitHub runtime authority.
+
+## Authentic runtime observation — 2026-09-20
+
+Canonical generation 140 was re-read after the parent retirement/successor registration merged. The parent coordination record is RETIRED, while the preserved execution lineage remains independently executable: `control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json` is still `HANDOFF_READY` with `claim_state=AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM`, and the exact resident request `RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains staged.
+
+The shared SDK ingress is the existing `SDK:ManifestStateTransition` profile at `/intr/materialization`. Resident Universal InTr is intentionally loopback-only; no public endpoint or GitHub Actions path may substitute. The available authorized remote-control connector reported zero connected devices, and repository evidence still contains no retained authentic Test 1 purpose-runtime receipt. This is recorded only as a control-surface observation, not as a StegVerse device prerequisite or runtime failure.
+
+No source defect was identified in the Test 1 chain, no Test 2/3 execution occurred, and no substitute invocation was issued. The exact next authentic transition remains `AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION`, after which the existing WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records sequence must close state-dependently.
+

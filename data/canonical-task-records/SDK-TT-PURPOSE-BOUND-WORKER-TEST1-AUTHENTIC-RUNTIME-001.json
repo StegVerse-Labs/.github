@@ -65,7 +65,9 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "authentic_test1_runtime_complete": false
+    "authentic_test1_runtime_complete": false,
+    "source_path_ready": true,
+    "authentic_runtime_invocation_observed": false
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -77,5 +79,25 @@
     "execution_authority": "STEGAGENTS_DOMAIN_COMPONENT",
     "custody_replay_reconstruction_authority": "MASTER_RECORDS",
     "second_user_operated_device_required": false
+  },
+  "runtime_observation_2026_09_20": {
+    "canonical_registry_generation_observed": 140,
+    "parent_coordination_state": "RETIRED",
+    "successor_coordination_state": "ACTIVE",
+    "execution_lineage_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "execution_fragment_state": "HANDOFF_READY",
+    "execution_fragment_claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "exact_resident_request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "shared_intr_profile": "SDK:ManifestStateTransition",
+    "shared_intr_path": "/intr/materialization",
+    "resident_endpoint_scope": "LOOPBACK_ONLY",
+    "authorized_remote_control_surface_observed": false,
+    "remote_desktop_connected_devices": 0,
+    "repository_retained_test1_runtime_receipt_observed": false,
+    "github_runtime_authority": "NONE",
+    "test2_or_test3_executed": false,
+    "source_defect_observed": false,
+    "next_authentic_transition": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION",
+    "disposition": "EXACT_EXECUTION_LINEAGE_READY; AUTHENTIC_LOOPBACK_RUNTIME_INVOCATION_NOT_OBSERVED_FROM_AVAILABLE_CONTROL_SURFACE; DO_NOT SUBSTITUTE_GITHUB_OR_PUBLIC_INGRESS"
   }
 }
