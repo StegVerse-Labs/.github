@@ -40,6 +40,8 @@ def write_registry(path: Path, rows):
 class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
     def test_candidate_requires_machine_ingress_contract(self):
         self.assertTrue(module.machine_ingress_candidate(record("A-001")))
+        self.assertTrue(module.machine_ingress_candidate(record("A-001", state="ACTIVE", checkout="CHECKED_OUT")))
+        self.assertFalse(module.machine_ingress_candidate(record("A-001", state="ACTIVE", checkout="UNCLAIMED")))
         self.assertFalse(module.machine_ingress_candidate(record("A-001", state="INGRESS_ADMITTED")))
         self.assertFalse(module.machine_ingress_candidate(record("A-001", human_action="USER_ONLY")))
 
