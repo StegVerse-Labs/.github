@@ -121,3 +121,26 @@ GET /api/master-records/state-transitions/query
 against that actual durable canonical store. Only that result may classify A3 custody.
 
 Manual work: None.
+
+
+## Goal Prompt 3/20 — resident Master Records source refresh repaired
+
+Tracing the existing durable materialization/source-refresh chain found a specific source-refresh defect:
+
+- StegDeploy already materializes `vendor/master-records-orchestration`.
+- the rootless resident source-refresh watcher already watches the canonical local package path for `stegverse-master-records`;
+- but the watcher only refreshed `.github` WorkerCoordinator/control-plane source and never materialized the changed Master Records package into the existing resident vendor root.
+
+That meant a resident runtime could remain on stale Master Records source even after `master-records/orchestration` main advanced through `8804762fb5da5d212aa7c9c448dfcdabac734715`.
+
+The defect was repaired on the existing refresh service in `StegVerse-Labs/.github#2352`. The watcher now validates the already-local `stegverse.source-package/v1` object for `stegverse.master-records` and atomically replaces only the existing runtime source projection at `vendor/master-records-orchestration` before resident request dispatch. It performs no network fetch and creates no new runtime, service, scheduler, credential path, custody store, host, or invocation.
+
+Validation history:
+- first exact-head run `35528771460`: failed on a concrete missing `tempfile` import;
+- defect repaired on the same branch;
+- exact-head run `35528813844`: PASS;
+- merged as `e3a0f31c1b31b2d0133969bd1409a6218d693e65`.
+
+This repairs the path that is supposed to move current Master Records source into the already-existing resident runtime. It does not itself prove that a resident refresh cycle has consumed the current package or that the durable Master Records process has restarted/reloaded that source. No authoritative nonce query is claimed yet.
+
+Manual work: None.
