@@ -1036,3 +1036,8 @@ The existing StegAgents targeted resident consumer now preserves the canonical M
 ### Functional Memory immediate-predecessor enforcement — 2026-09-20
 
 WorkerCoordinator Functional Memory now enforces state-dependent predecessor closure before any successor non-ALLOW memory can be created. An unreconstructable retained predecessor stops at a fail-closed Functional Memory reconstruction boundary with no new Functional Memory sequence, receipt, worker, claim, or fence. When the mutable local pointer is absent, the existing canonical Master Records query path may recover the latest same-task `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` pointer only after exact reconstruction, required-evidence PASS, contiguous sequence validation, and receipt-to-receipt predecessor-chain validation.
+
+
+## 2026-09-20 WorkerCoordinator claim/fence canonical custody validation
+
+The existing `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` producer was integration-tested against the real canonical Master Records custody implementation in private `master-records/orchestration` PR #107. Run `35539058509` required RECORDED, reconstruction PASS, required-evidence PASS, exact receipt/reconstruction digest equality, canonical Master Records reference, and reconstruction of the exact assignment evidence. The validation is non-authorizing and does not claim authentic resident execution.
