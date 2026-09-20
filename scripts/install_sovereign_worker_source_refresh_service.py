@@ -18,6 +18,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Mapping
 
