@@ -479,13 +479,19 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             record["source_carrier_event_ref"] = f"events/heartbeat-runtime.jsonl#packet_id={trigger.get('packet_id')}"
         record["worker_runtime_event_ref"] = f"events/worker-runtime.jsonl#claim_id={claim_id}"
         record["terminal_destination"] = "master-records/orchestration"
+        if manifest_runtime_request_present:
+            record["manifest_state_transition_request_ref"] = str(manifest_runtime_request_path)
+            record["manifest_state_transition_request_grants_authority"] = False
 
         purpose_graph_claim_bundle = None
         graph_contract = handoff.get("state_dependent_graph") if isinstance(handoff.get("state_dependent_graph"), dict) else None
+        manifest_runtime_request_path = self.root / "runtime-state" / "sdk-manifest-state-transition" / f"{task_id}.latest.json"
+        manifest_runtime_request_present = manifest_runtime_request_path.is_file()
         if (
             task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
             and isinstance(graph_contract, dict)
             and graph_contract.get("enabled") is True
+            and not manifest_runtime_request_present
         ):
             labels = ("CASE_1", "CASE_2", "CASE_3", "TASK4_A", "TASK4_B", "TASK4_C")
             claims = []
