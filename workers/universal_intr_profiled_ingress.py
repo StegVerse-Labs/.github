@@ -99,6 +99,10 @@ AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 MIR_SOUTHBOUND_DESTINATION = {"boundary": "EXTERNAL_SYSTEM", "subsystem": "MIR:NODE_MIRROR"}
 MIR_SOUTHBOUND_OWNER = "StegVerse-Labs/StegOS#389"
 MIR_SOUTHBOUND_RECEIPT_SCHEMA = "stegverse.mir-southbound-intr-materialization-ingress/v1"
+HIL_TVC_RECEIPT_SCHEMA = "stegverse.hil-tvc-lifecycle-intr-materialization-ingress/v1"
+HIL_TVC_DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "TVC:HIL-Lifecycle"}
+HIL_TVC_OWNER = "StegVerse-Labs/TVC"
+HIL_TVC_CONSUMER = ROOT / "scripts/consume_hil_tvc_lifecycle_outbox.py"
 MIR_SOUTHBOUND_RECEIPT_DIR = Path("receipts/sovereign-network/mir-southbound-intr-ingress")
 MIR_SOUTHBOUND_LATEST = Path("receipts/sovereign-network/mir-southbound-intr-ingress.latest.json")
 RTC008_TRANSITION_ID = "RTC-INTERLOCK-INTR-TRANSPORT-008"
@@ -804,6 +808,68 @@ def admit_mir_southbound(*, runtime_root: Path, body: bytes, headers: Mapping[st
     }
 
 
+
+def _is_hil_tvc_lifecycle(payload: Mapping[str, Any]) -> bool:
+    if isinstance(payload, dict) and payload.get("destination") == HIL_TVC_DESTINATION and payload.get("downstream_owner_ref") == HIL_TVC_OWNER:
+        return True
+    entry = payload.get("node_outbox_entry") if isinstance(payload, dict) else None
+    request = entry.get("materialization_request") if isinstance(entry, dict) else None
+    return isinstance(request, dict) and request.get("destination") == HIL_TVC_DESTINATION and request.get("downstream_owner_ref") == HIL_TVC_OWNER
+
+
+def admit_hil_tvc_lifecycle(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    payload, transport = _decode_payload(body=body, headers=headers)
+    entry = payload.get("node_outbox_entry") if isinstance(payload, dict) else None
+    request = entry.get("materialization_request") if isinstance(entry, dict) else None
+    require(isinstance(entry, dict) and isinstance(request, dict), "hil_tvc_node_outbox_required")
+    _validate_node_outbox_entry(entry)
+    require(request.get("destination") == HIL_TVC_DESTINATION and request.get("downstream_owner_ref") == HIL_TVC_OWNER, "hil_tvc_destination_owner_invalid")
+    materialization_id = safe_id(str(request["materialization_id"]))
+    request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
+    request_raw = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+    hil._write_once(request_path, request_raw)
+    receipt = {
+        "schema": HIL_TVC_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": materialization_id,
+        "request_hash": request["request_hash"],
+        "transport_intent_hash": request["transport_intent_hash"],
+        "payload_hash": request["payload_hash"],
+        "transport_origin": transport["origin"],
+        "transport_authorization_id": transport["authorization_id"],
+        "node_id": entry.get("node_id"),
+        "interlock_id": entry.get("interlock_id"),
+        "outbox_entry_hash": entry.get("outbox_entry_hash"),
+        "transport_payload_sha256": transport["payload_sha256"],
+        "exact_request_validated": True,
+        "write_once_persisted": True,
+        "runtime_execution_attempted": False,
+        "consumer_dispatch_attempted": False,
+        "claim_or_fence_minted": False,
+        "g18_required": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": AUTHORITY_EFFECT,
+        "admitted_at": now(),
+    }
+    process = subprocess.Popen(
+        [sys.executable, str(HIL_TVC_CONSUMER), "--runtime-root", str(runtime_root)],
+        cwd=ROOT,
+        env=_clean_runtime_env(),
+        start_new_session=True,
+    )
+    return {
+        **receipt,
+        "dispatch": {
+            "consumer_dispatch_attempted": True,
+            "consumer_pid": process.pid,
+            "consumer_execution_authority": False,
+            "consumer_claim_or_fence_minted_by_ingress": False,
+            "authority_effect": "NONE_DISPATCH_ONLY",
+        },
+    }
+
+
 def profile(tls_enabled: bool) -> dict[str, Any]:
     return {
         "schema": "stegverse.universal-intr-profiled-ingress/v1",
@@ -812,7 +878,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "device_kv_result_path": DEVICE_KV_RESULT_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport", "MIR:SouthboundRTC008"],
+        "profiles": ["HIL:Ingress", "TVC:HIL-Lifecycle", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport", "MIR:SouthboundRTC008"],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
@@ -867,7 +933,7 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))))
+                receipt = admit_hil_tvc_lifecycle(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_hil_tvc_lifecycle(payload) else (admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
