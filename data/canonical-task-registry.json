@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 129,
+  "generation": 130,
   "status": "ERL_UK_JCHR_INDEPENDENT_REVIEW_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -99,20 +99,7 @@
           "governance-review-packaging"
         ]
       },
-      "dependencies": [
-        {
-          "dependency_id": "DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME",
-          "kind": "RUNTIME_PREDICATE",
-          "state": "UNRESOLVED",
-          "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md"
-        },
-        {
-          "dependency_id": "DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME",
-          "kind": "RUNTIME_PREDICATE",
-          "state": "UNRESOLVED",
-          "ref": "master-records/orchestration"
-        }
-      ],
+      "dependencies": [],
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": [
@@ -135,15 +122,13 @@
         "scripts/build_runtime_profile_map_governance_review.py"
       ],
       "expected_evidence_predicates": [
-        "SOURCE_SCHEMA_VALID",
-        "TASK_REGISTRY_WORKERCOORDINATOR_AUTHORITY_SEPARATION_VALID",
-        "TASK_MASTER_RECORDS_RECONCILIATION_SOURCE_VALID",
-        "COSV_TASK_POINTER_POLICY_VALID",
-        "HB32_OSCILLATOR_RUNTIME_PROFILE_VALID",
-        "AUTHENTIC_TASK_INGRESS_OBSERVED",
-        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
-        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+        "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
+        "EVERY_GOVERNED_TRANSITION_MASTER_RECORDS_RECORDED",
+        "EVERY_GOVERNED_TRANSITION_RECONSTRUCTION_PASS",
+        "EVERY_GOVERNED_TRANSITION_REQUIRED_EVIDENCE_VALIDATION_PASS",
+        "EVERY_GOVERNED_TRANSITION_RECEIPT_RECONSTRUCTION_DIGEST_EQUAL",
+        "TERMINAL_CANONICAL_STATE_REACHED",
+        "STEGDB_MASTER_RECORDS_STEGHEALTH_RECONCILIATION_CONSISTENT_OR_REMEDIATED"
       ],
       "runtime_requirements": {
         "capabilities": [
@@ -171,7 +156,11 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "reconciliation_ref": null
+        "reconciliation_ref": null,
+        "completion_semantics": "TERMINAL_CANONICAL_STATE_WITH_MASTER_RECORDS_TRANSITION_CLOSURE",
+        "duplicate_runtime_proof_required": false,
+        "separate_authentic_runtime_evidence_class_required": false,
+        "terminal_state_is_completion_truth": true
       },
       "allowed_next_transitions": [
         "INGRESS_ADMITTED"
@@ -186,7 +175,10 @@
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "interlock_intr_is_transition_path_not_precondition": true,
+        "master_records_is_transition_custody_not_precondition": true,
+        "separate_runtime_observer_is_completion_authority": false
       }
     },
     {
