@@ -26,7 +26,7 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             event_path = root / carrier.DERIVED_SUBSIGNAL_EVENT_LOG_REL
             event_path.parent.mkdir(parents=True, exist_ok=True)
             event_path.write_text("", encoding="utf-8")
-            baseline = carrier._derived_subsignal_event_size(root)
+            baseline = carrier._subsignal_activity_snapshot(root)
             event_path.write_text('{"event":"HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL"}\n', encoding="utf-8")
             expected = {
                 "state": "WORKER_ALREADY_PRESENT",
@@ -35,15 +35,47 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
                 "authority_effect": "NONE_SUPERVISION_ONLY",
             }
             supervisor = mock.Mock(return_value=expected)
-            current, result = carrier._observe_derived_subsignal_worker_presence(
+            current, result = carrier._observe_hb_subsignal_worker_presence(
                 root,
-                previous_event_size=baseline,
+                previous_snapshot=baseline,
                 carrier_pid=111,
                 interval_ms=10.0,
                 supervisor=supervisor,
             )
-            self.assertGreater(current, baseline)
+            self.assertNotEqual(current, baseline)
             self.assertEqual(result, expected)
+            supervisor.assert_called_once_with(root, carrier_pid=111, interval_ms=10.0)
+
+    def test_retained_heartbeat_subsignal_state_also_requests_existing_supervision(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state_path = root / carrier.LEGACY_SUBSIGNAL_STATE_REL
+            state_path.parent.mkdir(parents=True, exist_ok=True)
+            state_path.write_text(json.dumps({
+                "schema": "stegverse.heartbeat-subsignals/v1",
+                "generation": 1,
+                "subsignals": {"worker_coordination": {"state": "IDLE"}},
+            }) + "\n", encoding="utf-8")
+            baseline = carrier._subsignal_activity_snapshot(root)
+            state_path.write_text(json.dumps({
+                "schema": "stegverse.heartbeat-subsignals/v1",
+                "generation": 2,
+                "subsignals": {
+                    "worker_coordination": {"state": "ACTIVE"},
+                    "organization_federation": {"state": "ACTIVE"},
+                    "steggate_transport_lease": {"state": "ACTIVE"},
+                },
+            }) + "\n", encoding="utf-8")
+            supervisor = mock.Mock(return_value={"state": "WORKER_ALREADY_PRESENT", "authority_effect": "NONE_SUPERVISION_ONLY"})
+            current, result = carrier._observe_hb_subsignal_worker_presence(
+                root,
+                previous_snapshot=baseline,
+                carrier_pid=111,
+                interval_ms=10.0,
+                supervisor=supervisor,
+            )
+            self.assertNotEqual(current, baseline)
+            self.assertIsNotNone(result)
             supervisor.assert_called_once_with(root, carrier_pid=111, interval_ms=10.0)
 
     def test_no_new_subsignal_does_not_duplicate_supervision(self):
@@ -52,11 +84,11 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             event_path = root / carrier.DERIVED_SUBSIGNAL_EVENT_LOG_REL
             event_path.parent.mkdir(parents=True, exist_ok=True)
             event_path.write_text('{"event":"HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL"}\n', encoding="utf-8")
-            baseline = carrier._derived_subsignal_event_size(root)
+            baseline = carrier._subsignal_activity_snapshot(root)
             supervisor = mock.Mock()
-            current, result = carrier._observe_derived_subsignal_worker_presence(
+            current, result = carrier._observe_hb_subsignal_worker_presence(
                 root,
-                previous_event_size=baseline,
+                previous_snapshot=baseline,
                 carrier_pid=111,
                 interval_ms=10.0,
                 supervisor=supervisor,
