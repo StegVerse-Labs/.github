@@ -23,6 +23,7 @@ RESULT_SCHEMA = "stegverse.sdk.manifest-state-transition-result/v1"
 PROFILE = "SDK:ManifestStateTransition"
 REQUEST_DIR = Path("runtime-state/sdk-manifest-state-transition")
 LATEST_SUFFIX = ".latest.json"
+IMMUTABLE_DIR = "requests"
 
 REQUIRED_AUTHORITIES = {
     "credential_authority": "TV/TVC",
@@ -87,16 +88,27 @@ def _request_path(runtime_root: Path, task_id: str) -> Path:
     return runtime_root / REQUEST_DIR / (task_id + LATEST_SUFFIX)
 
 def persist_request(runtime_root: Path, request: Mapping[str, Any]) -> Path:
+    """Retain immutable request bytes and advance only the non-authorizing latest pointer.
+
+    Re-running the same canonical task with a newly manifested input must not collide
+    with prior history. Every request remains content-addressed by request_sha256;
+    the existing worker reads only the latest pointer for the current invocation.
+    """
     task_id = str(request.get("canonical_task_id") or request["graph_id"])
-    path = _request_path(runtime_root, task_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    request_hash = str(request["request_sha256"])
+    root = runtime_root / REQUEST_DIR
+    immutable = root / IMMUTABLE_DIR / task_id / f"{request_hash}.json"
+    latest = _request_path(runtime_root, task_id)
     raw = json.dumps(dict(request), indent=2, sort_keys=True) + "\n"
-    if path.exists():
-        existing = json.loads(path.read_text(encoding="utf-8"))
-        require(existing.get("request_sha256") == request.get("request_sha256"), "manifest_state_transition_write_once_collision")
+    immutable.parent.mkdir(parents=True, exist_ok=True)
+    if immutable.exists():
+        existing = json.loads(immutable.read_text(encoding="utf-8"))
+        require(existing == dict(request), "manifest_state_transition_immutable_request_collision")
     else:
-        path.write_text(raw, encoding="utf-8")
-    return path
+        immutable.write_text(raw, encoding="utf-8")
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    latest.write_text(raw, encoding="utf-8")
+    return latest
 
 def _closed(row: Any, transition_id: str | None = None) -> dict[str, Any]:
     require(isinstance(row, Mapping), "master_records_transition_missing")
@@ -150,8 +162,8 @@ def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, A
         "replay_status": "PASS",
         "reconstruction_status": "PASS",
         "terminal_state": {
-            "records_only": result.get("records_only") is True,
-            "continued_authority": result.get("continued_authority_after_retirement") is True,
+            "records_only": result.get("records_only"),
+            "continued_authority": result.get("continued_authority_after_retirement"),
             "worker_live_after_close": result.get("worker_live_after_close"),
         },
         "manifest_receipt_id": manifest_receipt_id,
