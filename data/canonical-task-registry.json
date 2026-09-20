@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 136,
-  "status": "ERL_UK_JCHR_SUCCESSOR_CHECK_2026_09_20_THIRD_PASS_NO_CHANGE",
+  "generation": 137,
+  "status": "ERL_UK_JCHR_SUCCESSOR_CHECK_2026_09_20_FOURTH_PASS_NO_CHANGE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6887,7 +6887,10 @@
         "ICO_ADM_GUIDANCE_DRAFT_STATUS_REVIEWED_NONQUALIFYING",
         "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_SECOND_PASS",
         "SUCCESSOR_SURFACES_RECHECKED_2026_09_20_THIRD_PASS",
-        "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_THIRD_PASS"
+        "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_THIRD_PASS",
+        "SUCCESSOR_SURFACES_RECHECKED_2026_09_20_FOURTH_PASS",
+        "JCHR_GOVERNMENT_RESPONSE_DUE_2026_11_14",
+        "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_FOURTH_PASS"
       ],
       "runtime_requirements": {
         "capabilities": [
@@ -6983,7 +6986,7 @@
         "publication_authorized": false,
         "successor_status_checked_through": "2026-09-20",
         "qualifying_successor_development_observed": false,
-        "latest_successor_check_note": "THIRD_PASS_NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_NO_ARTIFACT_CREATED"
+        "latest_successor_check_note": "FOURTH_PASS_NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_NO_ARTIFACT_CREATED_RESPONSE_DUE_2026_11_14"
       },
       "allowed_next_transitions": [
         "TRACK_FORMAL_GOVERNMENT_RESPONSE",
@@ -7006,7 +7009,7 @@
         "finding_authorized": false
       },
       "prompt_budget": {
-        "goal_prompt_count": "5/20",
+        "goal_prompt_count": "6/20",
         "split_merely_to_reset_counter": false
       },
       "readme_impact": {
