@@ -1129,3 +1129,19 @@ lane-11 activation/evidence: NOT CLAIMED
 ```
 
 The merged bridge is source/control readiness only. The authentic private GLM execution remains resident-machine owned.
+
+
+## 2026-09-20 Master Records durable runtime source-floor repair
+
+The sovereign control-plane bundle is the existing source-materialization path that carries `master-records/orchestration` into resident StegDeploy as `vendor/master-records-orchestration`, then exposes that exact materialized source through `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` / `STEGVERSE_MASTER_RECORDS_ROOT`.
+
+A provenance defect was found in the producer: Master Records verification still accepted any clean descendant of the old SV001 floor `8e33b3e95d3d9e34387fe393031f44bebcdb5d57`, and its protected paths did not include the canonical state-transition API/query files. That allowed a resident bundle to report `VERIFIED_LOCAL_GIT_SOURCE` without proving the source contained the merged nonce-query and canonical-app lineage.
+
+The existing source-floor is now `8804762fb5da5d212aa7c9c448dfcdabac734715`. The protected source set also includes:
+
+```text
+services/canonical_state_transition_custody.py
+services/canonical_master_records_api.py
+```
+
+This changes only the source identity predicate on the existing bundle path. It creates no fetcher, runtime, service, host, scheduler, dispatcher, credential path, custody store, or authority plane.

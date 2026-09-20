@@ -200,6 +200,51 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertIn("vendor/TVC/scripts/activate_coinbase_intr_resident.py", names)
 
 
+    def test_master_records_runtime_floor_is_canonical_query_entrypoint_merge(self) -> None:
+        self.assertEqual(
+            module.MASTER_RECORDS_SV001_SOURCE_FLOOR,
+            "8804762fb5da5d212aa7c9c448dfcdabac734715",
+        )
+        self.assertIn(
+            "services/canonical_state_transition_custody.py",
+            module.MASTER_RECORDS_SV001_PROTECTED_PATHS,
+        )
+        self.assertIn(
+            "services/canonical_master_records_api.py",
+            module.MASTER_RECORDS_SV001_PROTECTED_PATHS,
+        )
+
+    def test_master_records_source_proof_rejects_source_older_than_required_floor(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            mr = Path(tmp) / "orchestration"
+            mr.mkdir()
+            subprocess.run(["git", "init", str(mr)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.name", "Test"], check=True)
+            for rel in module.MASTER_RECORDS_SV001_PROTECTED_PATHS:
+                path = mr / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "old runtime source"], check=True, capture_output=True)
+            old = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            (mr / "README.md").write_text("runtime floor\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "required runtime floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            subprocess.run(["git", "-C", str(mr), "checkout", "--detach", old], check=True, capture_output=True)
+
+            proof = module.master_records_source_proof(mr, source_floor=floor)
+
+            self.assertEqual(proof["state"], "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT")
+            self.assertEqual(proof["head"], old)
+
     def test_master_records_source_proof_verifies_clean_floor_and_protected_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             mr = Path(tmp) / "orchestration"
