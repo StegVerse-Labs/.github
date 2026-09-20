@@ -144,3 +144,19 @@ Validation history:
 This repairs the path that is supposed to move current Master Records source into the already-existing resident runtime. It does not itself prove that a resident refresh cycle has consumed the current package or that the durable Master Records process has restarted/reloaded that source. No authoritative nonce query is claimed yet.
 
 Manual work: None.
+
+
+### Goal Prompt 3/20 supplemental provenance hardening
+
+Concurrent canonical reconciliation established the first existing-path defect for this prompt as the resident source-refresh watcher failing to materialize the watched `stegverse-master-records` package into `vendor/master-records-orchestration`; that repair remains canonical via PR #2352 / `e3a0f31c1b31b2d0133969bd1409a6218d693e65`.
+
+A second, adjacent provenance weakness was repaired without changing that first-defect ordering. The existing sovereign bundle producer still accepted Master Records source if it merely descended from the old SV001 floor `8e33b3e95d3d9e34387fe393031f44bebcdb5d57`, and the protected path set omitted the canonical state-transition custody/API files. Thus a refreshed resident source could still be labelled `VERIFIED_LOCAL_GIT_SOURCE` without proving it contained the query/canonical-app lineage through `8804762fb5da5d212aa7c9c448dfcdabac734715`.
+
+PR #2354, merged as `5b37c88a0ec6dcb9d5d8289b025e8d80418106cf`, hardens the same existing source-proof path by:
+- requiring Master Records source history to contain `8804762fb5da5d212aa7c9c448dfcdabac734715`;
+- protecting `services/canonical_state_transition_custody.py`;
+- protecting `services/canonical_master_records_api.py`.
+
+Exact-head validations passed: KV AI Memory Resident Binding run `35528815067`; DeepSeek resident run `35528814989`.
+
+This supplemental repair does not create a new runtime or change the Goal Prompt count. Authentic resident refresh/materialization, durable runtime advertisement, and the authoritative nonce query remain unobserved.
