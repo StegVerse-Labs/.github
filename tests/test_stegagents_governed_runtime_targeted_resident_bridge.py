@@ -71,6 +71,7 @@ def test_governance_warrant_inputs_are_carried_end_to_end_without_becoming_provi
         assert name in targeted
         assert name in env_allowlist
     for name in MASTER_RECORDS_ENV:
+        assert name in consumer
         assert name in targeted
         assert name in env_allowlist
     assert 'warrant_policy_binding' in worker
@@ -92,3 +93,33 @@ def test_purpose_bound_graph_request_reuses_same_targeted_resident_consumer():
     assert "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001" in consumer
     assert "71000000111111" in consumer
     assert "PURPOSE_REQUEST_REL" in consumer
+
+
+def test_targeted_consumer_preserves_master_records_custody_transport_inputs():
+    import importlib.util
+    module_path = ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py"
+    spec = importlib.util.spec_from_file_location("targeted_consumer", module_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    source = {
+        "PATH": "/bin",
+        "HOME": "/home/stegverse",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT": "/srv/master-records/orchestration",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "/srv/master-records/orchestration",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+        "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "12",
+        "MASTER_RECORDS_DB": "/srv/stegverse/master-records.sqlite",
+        "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+        "GITHUB_TOKEN": "must-not-survive",
+        "OPENAI_API_KEY": "must-not-survive",
+    }
+    env = module.clean_env(source)
+    for name in MASTER_RECORDS_ENV:
+        assert env[name] == source[name]
+    assert "GITHUB_TOKEN" not in env
+    assert "OPENAI_API_KEY" not in env
+    assert env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] == "TV/TVC"
+    assert env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] == "NONE"
