@@ -74,3 +74,8 @@ Source registration does not prove that a resident invocation occurred. The requ
 PR #2092 merged `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` and its existing-bridge manifest binding as `c8ae6b6e83eb046319170d6a939f675f7d9ffd97` from exact head `0b8f0f540fdd76d5c4cffa68320f4315d11bf30f`. The merge creates no new runtime/scheduler/dispatcher implementation; the sole runner remains `scripts/refresh_and_dispatch_resident_requests.py`.
 
 Exact-head PR validations passed, including Python compilation of the modified bridge. Authentic reusable/resident execution remains separately evidence-gated; no runtime completion, Task Registry `CONTINUE`, WorkerCoordinator claim/fence, or Interlock/InTr admission is inferred from the merge.
+
+## SDK TT exact StegAgents targeted resident binding — 2026-09-20
+
+`RT-SDK-TT-PURPOSE-BOUND-RESIDENT-CONSUMPTION-001` binds the existing neutral reusable-task trigger to the existing portable bridge with exact selector `stegagents_governed_runtime_targeted`. It exists only to reach the already-staged `RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` through the already-implemented resident consumer. The runner remains `scripts/refresh_and_dispatch_resident_requests.py`; no new scheduler, dispatcher, runtime, request identity, authority plane, credential path, or custody store is created. Source/trigger success does not establish authentic resident consumption.
+
