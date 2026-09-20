@@ -29,6 +29,8 @@ RECORDS = ROOT / "data" / "canonical-task-records"
 REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
+WORKER_RUNTIME = ROOT / "scripts" / "run_worker_runtime.py"
+WORKER_REGISTRY_FRAGMENTS = ROOT / "control" / "worker-registry.d"
 CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
 PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 NOTIFICATION_REL = Path("requests/tv-tvc/goal-task-completion-github-notification.latest.json")
@@ -228,6 +230,55 @@ def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str
     return True
 
 
+def workercoordinator_target_candidate(
+    record: dict[str, Any],
+    fragments_dir: Path = WORKER_REGISTRY_FRAGMENTS,
+) -> bool:
+    """Return true only for an already-admitted state-triggerable WorkerCoordinator task."""
+    if str(record.get("coordination_state") or "").upper() != "ACTIVE":
+        return False
+    if str(record.get("checkout_state") or "").upper() != "CHECKED_OUT":
+        return False
+    if record.get("human_action_ref") not in {None, ""}:
+        return False
+    if "INGRESS_ADMITTED" in (record.get("allowed_next_transitions") or []):
+        return False
+    task_id = str(record.get("task_id") or "").strip()
+    if not task_id or not fragments_dir.is_dir():
+        return False
+
+    matches: list[dict[str, Any]] = []
+    for path in sorted(fragments_dir.glob("*.json")):
+        fragment = load(path)
+        if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
+            continue
+        for declared in fragment.get("tasks", []):
+            if isinstance(declared, dict) and declared.get("task_id") == task_id:
+                matches.append(declared)
+    if len(matches) != 1:
+        return False
+
+    task = matches[0]
+    admission = task.get("admission") or {}
+    return (
+        task.get("state") == "HANDOFF_READY"
+        and not task.get("claim_id")
+        and not task.get("worker_id")
+        and not task.get("worker_instance_id")
+        and admission.get("authority_domain") == "INDEPENDENT_TASK_CONTROL"
+        and admission.get("claim_state") == "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+        and admission.get("carrier_trigger_required") is False
+    )
+
+
+def delegation_mode(record: dict[str, Any]) -> str | None:
+    if workercoordinator_target_candidate(record):
+        return "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION"
+    if machine_ingress_candidate(record):
+        return "CANONICAL_WORK_INGRESS"
+    return None
+
+
 def ecosystem_priority_class(record: dict[str, Any]) -> str:
     explicit = str(record.get("work_priority_class") or "").strip().upper()
     if explicit in REPAIR_PRIORITY_CLASSES:
@@ -267,7 +318,7 @@ def load_candidates(
         if goal_task_id and root_id != goal_task_id:
             continue
         record = registry_candidate_projection(registry_record, records_dir)
-        if machine_ingress_candidate(record, excluded_task_ids):
+        if delegation_mode(record) is not None and task_id not in (excluded_task_ids or set()):
             rows.append(record)
     rows.sort(key=candidate_sort_key)
     return rows
@@ -309,6 +360,7 @@ def select_task(
             "task_id": task_id,
             "priority_class": ecosystem_priority_class(record),
             "checkout_state": record.get("checkout_state"),
+            "delegation_mode": delegation_mode(record),
             "disposition": checkin.get("disposition"),
             "collision_candidates": checkin.get("collision_candidates") or [],
         })
@@ -391,6 +443,7 @@ def main() -> int:
         "progression_controller_excluded_from_work_selection": True,
         "explicit_request_task_ids_excluded": sorted(excluded_task_ids),
         "selected_task_id": selected.get("task_id") if selected else None,
+        "selected_delegation_mode": delegation_mode(selected) if selected else None,
         "candidate_count": len(candidates),
         "considered": considered,
         "workercoordinator_claim_or_fence_minted": False,
@@ -413,17 +466,31 @@ def main() -> int:
     if args.runtime_root is None:
         raise SystemExit("--runtime-root is required unless --select-only is used")
 
-    command = [
-        sys.executable,
-        str(BOOTSTRAP),
-        "--task-id",
-        str(selected["task_id"]),
-        "--runtime-root",
-        str(args.runtime_root.expanduser().resolve()),
-    ]
+    mode = delegation_mode(selected)
+    if mode == "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION":
+        command = [
+            sys.executable,
+            str(WORKER_RUNTIME),
+            "--task-id",
+            str(selected["task_id"]),
+        ]
+    else:
+        command = [
+            sys.executable,
+            str(BOOTSTRAP),
+            "--task-id",
+            str(selected["task_id"]),
+            "--runtime-root",
+            str(args.runtime_root.expanduser().resolve()),
+        ]
     completed = subprocess.run(command, cwd=str(ROOT), text=True, capture_output=True, check=False)
+    delegated_state = (
+        "DELEGATED_TO_EXISTING_WORKERCOORDINATOR_STATE_TRANSITION"
+        if mode == "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION"
+        else "DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH"
+    )
     receipt.update({
-        "state": "DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH" if completed.returncode == 0 else "CANONICAL_WORK_DELEGATION_RECORDED_FAILURE",
+        "state": delegated_state if completed.returncode == 0 else "EXISTING_PATH_DELEGATION_RECORDED_FAILURE",
         "delegation_returncode": completed.returncode,
         "delegation_command": command,
         "delegation_stdout": completed.stdout,
