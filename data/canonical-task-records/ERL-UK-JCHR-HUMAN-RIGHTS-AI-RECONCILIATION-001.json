@@ -148,10 +148,10 @@
     "authority_effect": "NONE"
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#187",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
