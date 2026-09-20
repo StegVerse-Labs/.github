@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 131,
-  "status": "ERL_UK_JCHR_INDEPENDENT_REVIEW_RECONCILED",
+  "generation": 132,
+  "status": "CONVERSATION_EVIDENCE_STATE_TRIGGERED_RUNTIME_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6523,10 +6523,10 @@
         "direction": "EVIDENCE_CAPTURE_TO_MASTER_RECORDS",
         "mutation_required": true,
         "deployment_required": false,
-        "current_observation_required": true
+        "current_observation_required": false
       },
       "runtime_resolution": {
-        "state": "AUTHENTIC_RUNTIME_CUSTODY_NOT_YET_OBSERVED",
+        "state": "STATE_TRIGGERED_IMMEDIATE_SUCCESSOR_PATH_READY",
         "source_runtime_path_merge": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
         "canonical_work_request_ref": "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
         "workercoordinator_registration_ref": "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
@@ -6538,15 +6538,20 @@
           "--task-id",
           "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
         ],
-        "current_condition": "NO_AUTHENTIC_POST_MERGE_WORKERCOORDINATOR_CLAIM_FENCE_OR_MASTER_RECORDS_RECEIPT_OBSERVED_IN_CANONICAL_EVIDENCE",
-        "remediation_path": "CONTINUE_EXISTING_TARGETED_ONE_SHOT_ON_NEXT_AUTHENTIC_RESIDENT_EXECUTION_OPPORTUNITY",
+        "current_condition": "CANONICAL_WORK_INGRESS_IMMEDIATELY_INVOKES_EXISTING_TARGETED_WORKERCOORDINATOR",
+        "remediation_path": "CANONICAL_WORK_INGRESS_CLOSURE_TO_EXISTING_TARGETED_WORKERCOORDINATOR_ONE_SHOT_NO_CARRIER_WAIT",
         "connected_device_inventory_role": "NONE_PROHIBITED",
         "second_runtime_created": false,
         "second_scheduler_created": false,
         "second_dispatcher_created": false,
         "second_custody_plane_created": false,
         "public_site_successor_allowed": false,
-        "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY"
+        "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY",
+        "separate_runtime_presence_gate_required": false,
+        "carrier_trigger_required": false,
+        "authentic_completion_still_requires_master_records_closure": true,
+        "remote_connected_device_requirement": "PROHIBITED",
+        "wait_for_resident_execution_opportunity": false
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
