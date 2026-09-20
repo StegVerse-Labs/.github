@@ -97,6 +97,29 @@
       "a3_custody_classified": false,
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_RUNTIME_ENTRYPOINT_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RESIDENT_SOURCE_REFRESH_DEFECT_REPAIRED",
+      "goal_prompt_count": "3/20",
+      "registry_generation_entering": 140,
+      "defect": "EXISTING_RESIDENT_SOURCE_REFRESH_WATCHER_WATCHED_stegverse-master-records_PACKAGE_BUT_DID_NOT_MATERIALIZE_IT_INTO_vendor/master-records-orchestration",
+      "repair_pr": "StegVerse-Labs/.github#2352",
+      "repair_merge": "e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+      "repair_behavior": "VALIDATE_ALREADY_LOCAL_stegverse.source-package/v1_FOR_stegverse.master-records_AND_ATOMICALLY_REFRESH_EXISTING_RUNTIME_VENDOR_ROOT_BEFORE_REQUEST_DISPATCH",
+      "validation": {
+        "first_run": 35528771460,
+        "first_failure": "NameError tempfile missing",
+        "repaired_run": 35528813844,
+        "repaired_run_status": "PASS"
+      },
+      "network_fetch_performed": false,
+      "new_runtime_created": false,
+      "new_service_created": false,
+      "new_invocation_issued": false,
+      "durable_runtime_endpoint_observed": false,
+      "authentic_nonce_query_executed": false,
+      "classification": "RESIDENT_MASTER_RECORDS_SOURCE_REFRESH_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED"
     }
   ],
   "dependencies": [
@@ -113,15 +136,23 @@
       "state": "SOURCE_REPAIRED_MERGED_AUTHENTIC_DURABLE_RUNTIME_MATERIALIZATION_REQUIRED",
       "ref": "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
       "disposition": "THE_EXISTING_MASTER_RECORDS_RUNTIME_MUST_LOAD_services.canonical_master_records_api:app_AND_EXPOSE_THE_MERGED_QUERY_AGAINST_ITS_DURABLE_CUSTODY_DB; WORKFLOW_LOCAL_RUNTIME_DOES_NOT_SUBSTITUTE_FOR_THE_AUTHENTIC_TARGET_STORE"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-REFRESH",
+      "kind": "EXISTING_RESIDENT_SOURCE_REFRESH",
+      "state": "REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+      "disposition": "OBSERVE_EXISTING_RESIDENT_REFRESH_CONSUMING_CURRENT_stegverse-master-records_SOURCE_PACKAGE_AND_MATERIALIZING_VENDOR_SOURCE_THEN_QUERY_DURABLE_STORE"
     }
   ],
   "blockers": [],
   "allowed_next_transitions": [
-    "TRACE_EXISTING_MASTER_RECORDS_DURABLE_RUNTIME_MATERIALIZATION_AND_SOURCE_REFRESH_PATH",
-    "OBSERVE_AUTHENTIC_MASTER_RECORDS_RUNTIME_LOADING_MERGE_8804762F",
+    "OBSERVE_EXISTING_RESIDENT_SOURCE_REFRESH_CONSUMING_CURRENT_MASTER_RECORDS_PACKAGE",
+    "VERIFY_MATERIALIZED_MASTER_RECORDS_SOURCE_CONTAINS_8804762F_OR_LATER",
+    "OBSERVE_AUTHENTIC_DURABLE_MASTER_RECORDS_RUNTIME_USING_MATERIALIZED_SOURCE",
     "EXECUTE_AUTHENTIC_NONCE_QUERY_AGAINST_DURABLE_CANONICAL_STORE",
-    "IF_MATCH_REQUIRE_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
-    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH"
+    "IF_MATCH_VALIDATE_AND_CONTINUE_SAME_LINEAGE",
+    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION"
   ],
   "completion": {
     "claimed": false,
@@ -144,13 +175,15 @@
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
-    "goal_prompt_count": "2/20",
+    "goal_prompt_count": "3/20",
     "split_merely_to_reset_counter": false
   },
   "source_refs": [
     "master-records/orchestration#105",
     "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
     "master-records/orchestration#106",
-    "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715"
+    "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715",
+    "StegVerse-Labs/.github#2352",
+    "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65"
   ]
 }
