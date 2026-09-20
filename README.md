@@ -1031,3 +1031,8 @@ Generation 140 confirms `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001
 ## 2026-09-20 targeted Master Records custody carriage repair
 
 The existing StegAgents targeted resident consumer now preserves the canonical Master Records HTTP and durable-local custody bindings when sanitizing its execution environment. This closes the deterministic gap where downstream `submit_state_receipt(...)` could reach the canonical custody client with neither supported Master Records transport configured. GitHub/provider secrets remain stripped; no new custody service, runtime, dispatcher, scheduler, or authority plane is introduced.
+
+
+## 2026-09-20 WorkerCoordinator canonical-custody integration validation
+
+The exact `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` producer is now covered by an integration validation against the pinned canonical `master-records/orchestration` state-transition custody implementation. The test uses the existing WorkerCoordinator assignment method and shared custody client, requires full RECORDED/PASS/digest-equality closure, and reconstructs the same retained claim/fence receipt. This is validation evidence only, not authentic resident runtime execution.
