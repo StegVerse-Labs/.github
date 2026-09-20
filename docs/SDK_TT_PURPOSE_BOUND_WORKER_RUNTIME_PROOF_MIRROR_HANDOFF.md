@@ -583,3 +583,16 @@ StegVerse-org/StegVerse-SDK PR #276 merged as `a3a2039f907fe6499f32b79c7112c6be9
 Manifest Builder Source Validation `35480599985` and Evaluator Manifest Source Validation `35480599958` passed at the same exact head. The evaluator no longer supplies a separate worker request for Test One; after source-native input and processor-request construction, the canonical manifest is the sole variable execution input to the SDK processor route.
 
 Evidence ceiling remains unchanged: this is merged SDK/source execution evidence. It does not promote the authentic resident predicates for WorkerCoordinator claim/fence, TV/TVC warrant-policy verification, Interlock/InTr materialization admission, resident StegAgents execution, or per-transition canonical Master Records closure. The runtime frontier remains the existing authentic resident path.
+
+## Goal Prompt 20 — first deterministic resident-consumption invocation defect
+
+Canonical Task Registry generation 139 was reconciled before this repair. The parent Goal remains ACTIVE at intake, with exact staged request `RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` and COSV `71000000111111`.
+
+Tracing the existing path eliminated request, refresh, consumer, and dispatcher defects: the sovereign source refresh carries `control/resident-execution-request.d/` wholesale; `dispatch_resident_execution_requests.py` registers `stegagents_governed_runtime_targeted`; and `consume_stegagents_governed_runtime_targeted_request.py` prioritizes and validates the SDK purpose request before invoking the existing `refresh_and_execute_resident_task.py -> run_worker_runtime.py --task-id` path.
+
+The first deterministic gap was one layer above those surfaces. The existing portable bridge already admitted `stegagents_governed_runtime_targeted`, but its neutral reusable-task binding accepted only `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` and failed closed unless `only_consumer=canonical_work_coordination`. Therefore the existing reusable invocation mechanism could not bind the already-implemented exact StegAgents selector for this staged request.
+
+Branch `repair/sdk-tt-purpose-resident-consumption-binding-20260920` repairs only that binding. New reusable identity `RT-SDK-TT-PURPOSE-BOUND-RESIDENT-CONSUMPTION-001` points to the same `scripts/refresh_and_dispatch_resident_requests.py` runner and requires exact `only_consumer=stegagents_governed_runtime_targeted`. It creates no scheduler, dispatcher, runtime, resident request identity, WorkerCoordinator, credential authority, transition authority, custody authority, carrier, Healer, Test3/Richard path, or device prerequisite.
+
+Source repair is not authentic consumption proof. The next admissible evidence remains the exact staged request's authentic retained consumption transition. That closure must be the immediate predecessor of `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; every successor must consume the immediately preceding canonical Master Records closure with `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality.
+
