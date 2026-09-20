@@ -1022,3 +1022,7 @@ The existing sovereign control-plane bundle now requires local `master-records/o
 ### StegBrowser A3 resident Master Records source refresh — 2026-09-20
 
 The existing source-refresh watcher already watched `stegverse-master-records` but did not project that package into `vendor/master-records-orchestration`. PR #2352 repaired the existing path to validate and atomically refresh the resident Master Records vendor source from the already-local package, with no network fetch or new runtime/authority plane. Exact-head validation passed after repairing a missing import; merge: `e3a0f31c1b31b2d0133969bd1409a6218d693e65`. Authentic resident refresh consumption, durable runtime source reload, and the immutable-nonce Master Records query remain unclaimed.
+
+### SDK Test 1 authentic runtime observation boundary
+
+Generation 140 confirms `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001` is ACTIVE while the original execution fragment remains `HANDOFF_READY` and authorized for a fresh independent WorkerCoordinator claim. The shared Universal InTr endpoint is resident loopback-only, no connected authorized remote-control surface was observable in this session, and no authentic Test 1 runtime receipt has been retained. GitHub/public execution is not a substitute; Tests 2/3 remain unexecuted.
