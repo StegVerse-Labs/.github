@@ -5,8 +5,8 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
   "goal": "Prove through the existing governed StegAgents/WorkerCoordinator/StegCore-InTr/Master Records path that one TT transition cell can cause an actual purpose-bound worker to be materialized for a declared bounded purpose, perform one tracked arbitrary task, retire or transform at purpose completion, and leave a reconstructable records-only lifecycle without creating duplicate runtime or authority surfaces.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -86,7 +86,10 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "activation_proof_complete": false
+    "activation_proof_complete": false,
+    "source_and_shared_intr_integration_complete": true,
+    "authentic_test1_runtime_complete": false,
+    "prompt_limit_decomposed": true
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
@@ -473,5 +476,25 @@
     "claim_fence_is_first_authentic_transition": true,
     "master_records_required_after_every_transition": true,
     "authority_effect": "NONE_ORDERING_CORRECTION_ONLY"
-  }
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_TEST1_RUNTIME_CLOSURE_ABSENT; SOURCE_AND_SHARED_INTR_INTEGRATION_COMPLETE; CONTINUATION_TRANSFERRED_TO_SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_001",
+  "successor_task_ids": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001"
+  ],
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false,
+    "continuation_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+    "split_merely_to_reset_counter": false
+  },
+  "decomposition": {
+    "required": true,
+    "reason": "AUTHENTIC_TEST1_GOVERNED_RUNTIME_EVIDENCE_ABSENT_AT_PARENT_GOAL_PROMPT_LIMIT_AFTER_SOURCE_AND_SHARED_INTR_INTEGRATION_CLOSED",
+    "canonical_successor_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+    "canonical_successor_handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+    "canonical_successor_task_record": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
+    "first_unresolved_successor_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION"
+  },
+  "allowed_next_transitions": []
 }

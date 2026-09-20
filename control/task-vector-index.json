@@ -918,6 +918,15 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
+      "vector": "71000000111111",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {

@@ -1,0 +1,54 @@
+# SDK TT Purpose-Bound Worker Test 1 Authentic Runtime Mirror Handoff
+
+Updated: 2026-09-20
+Goal Task ID: `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001`
+Parent Goal Task ID: `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`
+Root Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
+COSV ID: `71000000111111`
+Status: ACTIVE / UNCLAIMED
+Canonical Task Registry generation: 139
+
+## Purpose
+
+Close Evaluator Test 1 through the already-existing universal Manifest Builder -> run-manifest -> shared Universal InTr -> WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records path. This successor observes and closes the original execution lineage; it does not create a new runtime task identity, listener, scheduler, dispatcher, WorkerCoordinator, credential path, custody store, repository subprocess bridge, test-specific execution lane, or device dependency.
+
+## Inherited source closure
+
+- Shared Universal InTr profile: .github PR #2341, merge `746d077e126e3452ccb40685907f141c839fb851`; validation run `35526393070` SUCCESS.
+- SDK universal runtime and Test-1-only validation: SDK PR #288, merge `ec989d1e2075b975c7cc138ceec4ee0fabdd1d50`; Test 1 run `35527445140` SUCCESS; package run `35527445139` SUCCESS.
+- Test 1 CI first boundary: `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED`, exit 2. This is GitHub non-runtime boundary evidence, not a resident runtime failure.
+- Canonical resident endpoint binding: `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`.
+- Canonical existing TVC transport authorization binding: `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`.
+- Request grants no authority. WorkerCoordinator remains claim/fence authority; TV/TVC remains credential/warrant authority; Interlock/InTr remains transition authority; StegAgents remains domain execution; Master Records remains custody/replay/reconstruction authority.
+
+## Required exact execution lineage
+
+The execution target remains `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` because the manifest/state graph is already bound to that canonical task lineage. The successor task coordinates and verifies closure only.
+
+```text
+Manifest Builder -> run-manifest
+-> shared /intr/materialization SDK:ManifestStateTransition
+-> WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> Master Records closure
+-> TV_TVC_WARRANT_POLICY_VERIFIED
+-> Master Records closure
+-> STEGCORE_INTR_MATERIALIZATION_ADMITTED
+-> Master Records closure
+-> PURPOSE_BOUND_WORKER_MATERIALIZED
+-> Master Records closure
+-> PURPOSE_BOUND_WORKER_INVOCATION_STARTED
+-> Master Records closure
+-> PURPOSE_BOUND_WORKER_TASK_COMPLETED
+-> Master Records closure
+-> PURPOSE_BOUND_WORKER_RETIRED
+-> Master Records closure
+-> replay PASS + reconstruction PASS
+-> records_only=true + continued_authority=false
+-> exact manifest_receipt_id bound to original manifest lineage
+```
+
+Every successor transition requires the immediately preceding Master Records closure with `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256`.
+
+## Execution rule
+
+Run Test 1 only. Do not advance to Test 2 or Test 3 until authentic Test 1 completion closes end to end. If the resident execution returns a concrete failure, retain the exact first failure and repair only that same existing canonical path. Absence of a GitHub resident endpoint is not a runtime defect and must not be repaired by adding GitHub runtime authority.
