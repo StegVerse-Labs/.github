@@ -114,6 +114,12 @@ def test_purpose_result_requires_ordered_retirement_and_records_only_closeout():
             "master_records_custody_status": "RECORDED",
             "external_side_effect": False,
         },
+        "master_records_replay": {
+            "operation_transition_custody_status": "RECORDED",
+            "operation_receipt_ids": ["RP1"],
+            "deterministic_disposition_match": True,
+            "consequence_reexecuted": False,
+        },
         "master_records_reconstruction": {
             "operation_transition_custody_status": "RECORDED",
             "operation_receipt_ids": ["OR1"],
