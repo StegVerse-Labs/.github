@@ -878,7 +878,12 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     manifest_blob_sha = git_blob_sha(manifest)
     require(manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA, "CodeRepair-001 governed manifest does not match merged registered blob")
 
-    graph_mode = bool(profile["task_id"] == PURPOSE_TASK_ID and isinstance(handoff.get("state_dependent_graph"), Mapping) and handoff["state_dependent_graph"].get("enabled") is True)
+    graph_mode = bool(
+        profile["task_id"] == PURPOSE_TASK_ID
+        and not str(os.getenv(SDK_MANIFEST_ENV) or "").strip()
+        and isinstance(handoff.get("state_dependent_graph"), Mapping)
+        and handoff["state_dependent_graph"].get("enabled") is True
+    )
     request = build_state_graph_request(task, handoff) if graph_mode else build_request(task, handoff)
     env = dict(os.environ)
     env.pop("GITHUB_TOKEN", None)
