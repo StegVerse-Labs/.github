@@ -4,7 +4,7 @@ Updated: 2026-09-19
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `SOURCE_STACK_IMPLEMENTED / AUTHENTIC_END_TO_END_LIFECYCLE_PENDING`
+Status: `STATE_TRANSITION_COMPLETION_SEMANTICS_CORRECTED / TERMINAL_STATE_PENDING`
 
 ## Source of truth
 
@@ -151,6 +151,28 @@ HB and all HB/AU sub-signals participate only as non-authorizing carrier/runtime
 
 Current source after these merges does **not** establish an authentic generic end-to-end lifecycle receipt. Repository-visible searches show source/contract declarations for existing SDK diagnostic fixtures but no new authentic claim/fence Master Records closure produced by this repair sequence. Therefore completion predicate 14 remains PENDING and source/merge evidence must not be promoted to runtime truth.
 
+## 2026-09-19 completion-semantics correction
+
+The prior handoff and Task Registry row incorrectly retained a second proof layer above governed state transitions: separate `AUTHENTIC_*_OBSERVED` predicates and unresolved runtime predicates could keep the Goal open after the transition machinery itself had already produced the only canonical truth that matters.
+
+That model is removed.
+
+For this Goal:
+
+```text
+State A
+-> governed transition attempt
+-> ALLOW / DENY / FAIL_CLOSED result
+-> resulting state retained by Master Records
+-> reconstruction + required-evidence validation + exact digest equality
+-> StegDB/Master Records/StegHealth consistency/remediation reconciliation
+-> declared next state evaluated
+```
+
+There is no separate post-transition requirement to prove that an "authentic runtime" happened. If Master Records has the governed transition closure, the transition happened. If it does not, either the transition did not complete or custody/reconstruction failed; the system must follow that exact failure rather than wait for another observation class.
+
+The prior `DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME` and `DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME` entries are removed as prerequisites. Interlock/InTr is the transition path itself; Master Records is the custody/reconstruction consequence of that path. Neither is a pre-transition runtime gate for `PROPOSED -> INGRESS_ADMITTED`.
+
 ## Completion predicates
 
 1. Stable canonical task identity, dependency, blocker, adjacency, evidence, and claim-reference semantics exist. **SOURCE COMPLETE**
@@ -166,7 +188,7 @@ Current source after these merges does **not** establish an authentic generic en
 11. Master Records runtime-profile custody/reconciliation source exists. **SOURCE COMPLETE; AUTHENTIC INPUT PENDING**
 12. Runtime-presence custody source exists with fail-closed non-reuse semantics until exact subject binding. **SOURCE COMPLETE; AUTHENTIC INPUT / SUBJECT BINDING PENDING**
 13. Runtime-profile discovery/routing-readiness/governance-review source stack exists. **SOURCE COMPLETE; AUTHENTIC RESIDENT CYCLE PENDING**
-14. One authentic end-to-end canonical task lifecycle demonstrates ingress -> WorkerCoordinator claim/fence -> governed execution -> evidence custody -> reconciliation -> egress/closure. **PENDING**
+14. The canonical Goal reaches its terminal state through its declared governed state transitions; each transition is retained by Master Records with reconstruction PASS, required-evidence validation PASS, and exact receipt/reconstruction digest equality. No separate runtime-observation proof class exists above those transition closures. **PENDING**
 
 ## Exact remaining machine work
 
@@ -180,16 +202,14 @@ Current machine work is:
 4. preserve exact request/task/runtime subject binding for every runtime predicate;
 5. promote shared runtime-presence evidence only after authentic `runtime_root` / `resident.node_id` / canonical WorkerCoordinator identity proves the exact shared subject;
 6. continue runtime-profile custody -> reconciliation -> transition-readiness -> governance-review only when the required authentic upstream receipts exist;
-7. prove one authentic canonical task end-to-end lifecycle through governed closure;
-8. evaluate release/tag only after the canonical completion predicates are actually satisfied.
+7. drive the Goal's own declared state transitions until a terminal canonical state is reached; each successor consumes the immediately preceding Master Records closure;
+8. evaluate release/tag only after the terminal canonical state and its transition closures are satisfied.
 
 Do not recreate completed source paths merely because authentic runtime evidence is still absent.
 
 ## Current authentic evidence boundary
 
-Repository/source state does not currently establish the missing authentic lifecycle predicates. In particular, absence of the expected resident receipts must remain absence/unknown rather than being replaced by source, CI, heartbeat, custody, or handoff evidence.
-
-The runtime-presence shared predicate remains deferred until authentic evidence establishes stable resident subject identity.
+The Goal is incomplete only because its declared state-transition sequence has not yet reached a terminal canonical state. A transition is complete when its governed result is retained by Master Records with reconstruction PASS, required-evidence validation PASS, and exact receipt/reconstruction digest equality. If that closure is absent, the transition did not complete or its custody/reconstruction failed; there is no separate `authentic runtime evidence` layer to wait for afterward.
 
 ## README completeness
 
@@ -206,7 +226,7 @@ The source stack is substantially implemented, but the workstream is not complet
 A handoff is continuity evidence only. It is not proof that remaining machine work has executed automatically.
 
 Current goal completion: `FALSE`.
-Authentic end-to-end lifecycle complete: `FALSE`.
+Terminal canonical state reached: `FALSE`.
 Thread archive-ready from this handoff alone: `FALSE`.
 
 ## Human action
