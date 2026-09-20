@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import importlib.util
 import json
+import tempfile
 import unittest
 from pathlib import Path
 from scripts.apply_admitted_canonical_work_projection import project_task
@@ -8,6 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUEST = ROOT / "control" / "resident-execution-request.d" / "canonical-work-steghealth-kv-interlock-production-endpoint-001.json"
 CONSUMER = ROOT / "control" / "resident-execution-request.d" / "consume-canonical-work-coordination-bootstrap.py"
 BOOTSTRAP = ROOT / "scripts" / "run_canonical_work_event_bootstrap.py"
+LEGACY_CONSUMER = ROOT / "control" / "resident-execution-request.d" / "consume-canonical-work-coordination-bootstrap.legacy.py"
+
+def load_legacy_consumer():
+    spec = importlib.util.spec_from_file_location("canonical_work_legacy_exception_retention_test", LEGACY_CONSUMER)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 class StegHealthKvInterlockCanonicalWorkIngressTests(unittest.TestCase):
     def test_request_reuses_existing_non_authorizing_canonical_work_path(self):
@@ -48,6 +58,29 @@ class StegHealthKvInterlockCanonicalWorkIngressTests(unittest.TestCase):
         self.assertTrue(task["completion"]["terminal_state_is_completion_truth"])
         self.assertEqual(task["carriage_repair"]["state"], "STATE_TRIGGERABLE_INGRESS_READY")
         self.assertNotIn("AUTHENTIC_STEGHEALTH_KV_INTERLOCK_RUNTIME_TRANSITION_OBSERVED", task["expected_evidence_predicates"])
+
+    def test_pre_receipt_exception_is_retained_at_task_specific_consumption_path(self):
+        legacy = load_legacy_consumer()
+        with tempfile.TemporaryDirectory() as tmp:
+            runtime = Path(tmp)
+            spec = {
+                "request_rel": Path("control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json"),
+                "consumption_rel": Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json"),
+                "bootstrap_runtime_rel": Path("runtime/canonical-work-steghealth-kv-interlock-production-endpoint"),
+                "task_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+            }
+            request_path = runtime / spec["request_rel"]
+            request_path.parent.mkdir(parents=True, exist_ok=True)
+            request_path.write_text(json.dumps({"request_id": "RESIDENT-EXEC-STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"}) + "\n", encoding="utf-8")
+            receipt = legacy.retain_request_consumption_exception(runtime, spec, RuntimeError("deterministic-test-boundary"))
+            retained = json.loads((runtime / spec["consumption_rel"]).read_text(encoding="utf-8"))
+            self.assertEqual(receipt, retained)
+            self.assertEqual(retained["state"], "REQUEST_CONSUMPTION_EXCEPTION")
+            self.assertEqual(retained["task_id"], spec["task_id"])
+            self.assertTrue(retained["attempted"])
+            self.assertTrue(retained["retained_failure_evidence"])
+            self.assertEqual(retained["error"], "deterministic-test-boundary")
+            self.assertEqual(retained["authority_effect"], "NONE_FAIL_CLOSED")
 
     def test_bootstrap_explicitly_accepts_active_checked_out_ingress(self):
         source = BOOTSTRAP.read_text(encoding="utf-8")
