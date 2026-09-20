@@ -489,6 +489,51 @@ def run_registry_cycle(
     return receipt
 
 
+def retain_request_consumption_exception(
+    runtime_root: Path,
+    spec: Mapping[str, Any],
+    exc: Exception,
+) -> dict[str, Any]:
+    """Retain a task-specific fail-closed receipt for pre-receipt consumer exceptions."""
+    validate_spec(spec)
+    runtime = runtime_root.expanduser().resolve()
+    request_path = runtime / spec["request_rel"]
+    request_id = None
+    request_hash = None
+    if request_path.is_file():
+        try:
+            request = load_json(request_path)
+            request_id = request.get("request_id")
+            request_hash = stable_hash(request)
+        except Exception:
+            request_id = None
+            request_hash = None
+    consumption_path = runtime / spec["consumption_rel"]
+    receipt = {
+        "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+        "state": "REQUEST_CONSUMPTION_EXCEPTION",
+        "request_id": request_id,
+        "request_sha256": request_hash,
+        "task_id": spec["task_id"],
+        "request_ref": str(spec["request_rel"]),
+        "consumption_ref": str(spec["consumption_rel"]),
+        "error_type": type(exc).__name__,
+        "error": str(exc),
+        "attempted": True,
+        "retained_failure_evidence": True,
+        "network_source_fetch_performed": False,
+        "credential_material_present": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "request_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_FAIL_CLOSED",
+    }
+    atomic_json(consumption_path, receipt)
+    return receipt
+
+
 def consume_all(
     source_root: Path,
     runtime_root: Path,
@@ -502,7 +547,20 @@ def consume_all(
         try:
             outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
         except Exception as exc:
-            outcomes.append({"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "REQUEST_CONSUMPTION_EXCEPTION", "task_id": spec["task_id"], "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"})
+            try:
+                outcomes.append(retain_request_consumption_exception(runtime_root, spec, exc))
+            except Exception as retention_exc:
+                outcomes.append({
+                    "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                    "state": "REQUEST_CONSUMPTION_EXCEPTION",
+                    "task_id": spec.get("task_id"),
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                    "retention_error_type": type(retention_exc).__name__,
+                    "retention_error": str(retention_exc),
+                    "retained_failure_evidence": False,
+                    "authority_effect": "NONE_FAIL_CLOSED",
+                })
     try:
         registry_cycle = run_registry_cycle(
             source_root,
