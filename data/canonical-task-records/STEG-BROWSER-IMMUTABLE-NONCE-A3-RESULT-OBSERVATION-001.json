@@ -120,6 +120,32 @@
       "durable_runtime_endpoint_observed": false,
       "authentic_nonce_query_executed": false,
       "classification": "RESIDENT_MASTER_RECORDS_SOURCE_REFRESH_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RESIDENT_SOURCE_PROOF_HARDENED",
+      "goal_prompt_count": "3/20",
+      "supplemental_to": "MASTER_RECORDS_RESIDENT_SOURCE_REFRESH_DEFECT_REPAIRED",
+      "canonical_first_defect_remains": "EXISTING_RESIDENT_SOURCE_REFRESH_WATCHER_DID_NOT_MATERIALIZE_MASTER_RECORDS_PACKAGE",
+      "hardening_defect": "MASTER_RECORDS_BUNDLE_SOURCE_PROOF_STILL_ACCEPTED_DESCENDANTS_OF_OLD_SV001_FLOOR_AND_DID_NOT_PROTECT_CANONICAL_STATE_TRANSITION_API_FILES",
+      "repair_pr": "StegVerse-Labs/.github#2354",
+      "repair_merge": "5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+      "required_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "protected_paths_added": [
+        "services/canonical_state_transition_custody.py",
+        "services/canonical_master_records_api.py"
+      ],
+      "validation": {
+        "exact_head": "0cd5890163399e0dd96b9d8f28dd435aa995f418",
+        "kv_ai_memory_binding_run": 35528815067,
+        "kv_ai_memory_binding": "PASS",
+        "deepseek_resident_run": 35528814989,
+        "deepseek_resident": "PASS"
+      },
+      "authentic_runtime_refresh_observed": false,
+      "durable_runtime_endpoint_observed": false,
+      "nonce_query_executed": false,
+      "authority_effect": "NONE_SOURCE_PROOF_HARDENING_ONLY"
     }
   ],
   "dependencies": [
@@ -143,6 +169,13 @@
       "state": "REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
       "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
       "disposition": "OBSERVE_EXISTING_RESIDENT_REFRESH_CONSUMING_CURRENT_stegverse-master-records_SOURCE_PACKAGE_AND_MATERIALIZING_VENDOR_SOURCE_THEN_QUERY_DURABLE_STORE"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-PROOF",
+      "kind": "EXISTING_RESIDENT_SOURCE_PROVENANCE",
+      "state": "HARDENED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+      "disposition": "AFTER_THE_EXISTING_REFRESH_WATCHER_CONSUMES_THE_CURRENT_MASTER_RECORDS_PACKAGE_REQUIRE_THE_MATERIALIZED_SOURCE_PROOF_TO_SHOW_8804762F_OR_DESCENDANT_BEFORE_TRUSTING_ANY_RUNTIME_ADVERTISEMENT"
     }
   ],
   "blockers": [],
@@ -184,6 +217,8 @@
     "master-records/orchestration#106",
     "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715",
     "StegVerse-Labs/.github#2352",
-    "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65"
+    "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+    "StegVerse-Labs/.github#2354",
+    "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf"
   ]
 }
