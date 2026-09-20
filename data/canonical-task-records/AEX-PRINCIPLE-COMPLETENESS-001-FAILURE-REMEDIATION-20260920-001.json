@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001",
+  "correlation_id": "AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001",
+  "root_correlation_id": "AEX-PRINCIPLE-COMPLETENESS-001",
+  "parent_task_id": "AEX-PRINCIPLE-COMPLETENESS-001",
+  "goal": "Remediate the newly observed AEX principle-completeness worker and mathematical-audit failures as a fresh child of the still-open AEX principle-completeness task.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/StegHealth",
+  "handoff": "docs/EMAIL_FAILURE_REMEDIATION_LIFECYCLE_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000111000"
+  },
+  "cosv_task_vector": "10100000111000",
+  "source_refs": [
+    "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json",
+    "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:docs/remediation/EMAIL_FAILURE_REMEDIATION_CHILDREN_20260920.md",
+    "StegVerse-Labs/StegHealth#97",
+    "docs/EMAIL_FAILURE_REMEDIATION_LIFECYCLE_MIRROR_HANDOFF.md"
+  ],
+  "remediation_identity_rule": "OPEN_PARENT_CREATES_FRESH_CHILD",
+  "issue_ref": "StegVerse-Labs/StegHealth#97",
+  "expected_evidence_predicates": [
+    "FIRST_DETERMINISTIC_DEFECT_IDENTIFIED",
+    "BOUNDED_REPAIR_APPLIED_OR_EXACT_RECOVERY_EVIDENCE_BOUND",
+    "EXACT_HEAD_OR_CURRENT_OWNER_VALIDATION_PASS",
+    "PARENT_OR_FAILURE_PROVENANCE_RECONCILED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_effect": "NONE_REMEDIATION_COORDINATION_ONLY"
+}
