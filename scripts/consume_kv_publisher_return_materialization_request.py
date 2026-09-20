@@ -396,7 +396,23 @@ def _prepare_rtc007_continuation(
         handoff,
         payload_ref="runtime://"+str(output_path.relative_to(runtime)),
     )
-    rtc008=_submit_rtc008_materialization(prepared["materialization_request"])
+    rtc008_request=dict(prepared["materialization_request"])
+    rtc008_request.update({
+      "predecessor_transition_id":"RTC-STEGVERSE-EGRESS-007",
+      "predecessor_master_records_state":mr.get("state"),
+      "predecessor_master_records_reconstruction_status":mr.get("reconstruction_status"),
+      "predecessor_master_records_required_evidence_validation_status":mr.get("required_evidence_validation_status"),
+      "predecessor_master_records_receipt_sha256":mr.get("receipt_sha256"),
+      "predecessor_master_records_reconstructed_receipt_sha256":mr.get("reconstructed_receipt_sha256"),
+    })
+    rtc008_request["predecessor_master_records_digest_equal"]=(
+      rtc008_request["predecessor_master_records_receipt_sha256"]
+      == rtc008_request["predecessor_master_records_reconstructed_receipt_sha256"]
+    )
+    rtc008_request.pop("request_hash",None)
+    rtc008_request["request_hash"]=sha(rtc008_request)
+    prepared={**prepared,"materialization_request":rtc008_request}
+    rtc008=_submit_rtc008_materialization(rtc008_request)
     return {
       "rtc007_transition":transition,
       "rtc007_master_records":{
