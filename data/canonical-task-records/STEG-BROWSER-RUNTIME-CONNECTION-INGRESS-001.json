@@ -231,5 +231,11 @@
     "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
     "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
     "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
-  ]
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  }
 }
