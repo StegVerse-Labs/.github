@@ -73,7 +73,10 @@
     "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "master-records"],
+    "organizations": [
+      "StegVerse-Labs",
+      "master-records"
+    ],
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/Executive_Rhetoric_Ledger",
@@ -195,10 +198,10 @@
     "unattended_runtime": false
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION_INTEGRATION_ONLY",
-    "claim_ref": "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
