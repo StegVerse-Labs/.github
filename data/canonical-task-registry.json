@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 142,
-  "status": "SDK_TEST1_AUTHENTIC_RUNTIME_OBSERVATION_BOUNDARY_RECORDED",
+  "generation": 143,
+  "status": "CANONICAL_MASTER_RECORDS_RTC008_SOURCE_LINEAGE_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5083,7 +5083,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "RTC-INTERLOCK-INTR-TRANSPORT-008_AUTHENTIC_ADMISSION_THEN_RTC-FARSIDE-FINAL-009_THEN_CALLER_CONSEQUENCE",
+        "next_transition_under_evidence_trace": "RTC008_ADMITTED_STATE_TO_EXISTING_EVENT_EPHEMERAL_SUCCESSOR_WITHOUT_REPLAY_THEN_RTC-FARSIDE-FINAL-009_THEN_CALLER_CONSEQUENCE",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5126,7 +5126,33 @@
         "rtc008_materialization_request_source_prepared": true,
         "rtc008_interlock_intr_admission_observed": false,
         "rtc009_far_side_transition_observed": false,
-        "caller_consequence_observed": false
+        "caller_consequence_observed": false,
+        "rtc008_admission_custody_source_repair_merged": true,
+        "rtc008_admission_custody_pr": 2290,
+        "rtc008_admission_custody_merge": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
+        "rtc008_admission_custody_exact_validated_head": "ecc1bf4843922c02f4f15fd3e4218fee3ee7593e",
+        "rtc008_admission_custody_validation_run": 35468924006,
+        "rtc008_carriage_source_repair_merged": true,
+        "rtc008_carriage_pr": 2349,
+        "rtc008_carriage_merge": "44cc82910c1116a096cca475402c76ebcb1f657f",
+        "rtc008_carriage_exact_validated_head": "9c3dbd1d2c6700085e57e0dfa1582ac0ffb68b7c",
+        "rtc008_carriage_validation_run": 35528495975,
+        "rtc008_predecessor_closure_source_repair_merged": true,
+        "rtc008_predecessor_closure_pr": 2356,
+        "rtc008_predecessor_closure_merge": "f81444cd6d40fb32d9e083fc198fe09c254cdc2f",
+        "rtc008_predecessor_closure_exact_validated_head": "dd61d82303230aa1c6b82c37718b5e1c2fca71da",
+        "rtc008_predecessor_closure_validation_runs": [
+          35528990341,
+          35528990299
+        ],
+        "rtc008_predecessor_transition_id": "RTC-STEGVERSE-EGRESS-007",
+        "rtc008_prior_state_binding": "RTC007_MASTER_RECORDS_RECEIPT_SHA256",
+        "rtc008_required_evidence_types": [
+          "RTC007_MASTER_RECORDS_CLOSURE",
+          "UNIVERSAL_INTR_MATERIALIZATION_REQUEST",
+          "MIR_SOUTHBOUND_INTR_ADMISSION_RECEIPT"
+        ],
+        "rtc009_first_deterministic_defect": "SHARED_RTC008_INGRESS_CLOSES_CUSTODY_BUT_DOES_NOT_MATERIALIZE_THE_EXISTING_EVENT_EPHEMERAL_SUCCESSOR;_LEGACY_EVENT_DRIVER_WOULD_REPLAY_RTC007_AND_RTC008"
       },
       "completion": {
         "claimed": false,
@@ -5252,6 +5278,41 @@
           "rtc009_far_side_claimed": false,
           "caller_consequence_claimed": false,
           "authority_effect": "NONE_CONTINUATION_REQUEST_ONLY"
+        },
+        "rtc008_admission_custody": {
+          "state": "SOURCE_REPAIR_MERGED",
+          "pull_request": 2290,
+          "exact_validated_head": "ecc1bf4843922c02f4f15fd3e4218fee3ee7593e",
+          "validation_run": 35468924006,
+          "merge_commit": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
+          "master_records_gate": [
+            "state=RECORDED",
+            "reconstruction_status=PASS",
+            "required_evidence_validation_status=PASS",
+            "receipt_sha256==reconstructed_receipt_sha256"
+          ],
+          "runtime_execution_claimed": false,
+          "rtc009_far_side_claimed": false,
+          "caller_consequence_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "rtc008_carriage_and_predecessor_closure": {
+          "state": "SOURCE_REPAIRS_MERGED",
+          "carriage_pr": 2349,
+          "carriage_merge_commit": "44cc82910c1116a096cca475402c76ebcb1f657f",
+          "carriage_validation_run": 35528495975,
+          "predecessor_closure_pr": 2356,
+          "predecessor_closure_merge_commit": "f81444cd6d40fb32d9e083fc198fe09c254cdc2f",
+          "predecessor_closure_validation_runs": [
+            35528990341,
+            35528990299
+          ],
+          "predecessor_transition_id": "RTC-STEGVERSE-EGRESS-007",
+          "prior_state_ref_contract": "RTC007_MASTER_RECORDS_RECEIPT_SHA256",
+          "runtime_execution_claimed": false,
+          "rtc009_far_side_claimed": false,
+          "caller_consequence_claimed": false,
+          "authority_effect": "NONE_SOURCE_AND_CUSTODY_BINDING_ONLY"
         }
       },
       "required_evidence_validation": {
