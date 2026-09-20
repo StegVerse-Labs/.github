@@ -25,43 +25,194 @@
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegVerse-Healer"],
-    "components": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-INTERLOCK-INTR-TRANSPORT-008", "execution_materialization:data/reusable-task-ephemeral-construct-contract.json", "RTC-FARSIDE-FINAL-009", "RTC-EVIDENCE-CUSTODY-004", "resident-neutral-reusable-task-carrier-binding"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/StegVerse-Healer"
+    ],
+    "components": [
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "execution_materialization:data/reusable-task-ephemeral-construct-contract.json",
+      "RTC-FARSIDE-FINAL-009",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "resident-neutral-reusable-task-carrier-binding"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-AI-PREEXECUTION-STEGOS-SOURCE","kind":"SOURCE_BINDING","state":"AVAILABLE_VALIDATED","ref":"StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"},
-    {"dependency_id":"DEP-AI-PREEXECUTION-EPHEMERAL-NODE","kind":"RUNTIME_SUBSTRATE","state":"AVAILABLE_REUSABLE_PATH","ref":"ADMITTED-EPHEMERAL-STEGOS-NODE"},
-    {"dependency_id":"DEP-AI-PREEXECUTION-AUTHENTIC-AI","kind":"RUNTIME_EVIDENCE","state":"PROPOSAL_PRESERVED_RUNTIME_OBSERVATION_PENDING","ref":"evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"},
-    {"dependency_id":"DEP-AI-PREEXECUTION-HEALER-CARRIER-BINDING","kind":"RUNTIME_REACHABILITY_SOURCE_BINDING","state":"RESOLVED_SOURCE_ONLY","ref":"StegVerse-Labs/StegVerse-Healer#85;StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a;actions:34891751182","disposition":"EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_NOW_CARRIES_RT_STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_001; NO_SECOND_SCHEDULER_RUNTIME_CREDENTIAL_PATH_REMOTE_DESKTOP_OR_SECOND_USER_DEVICE"},
-    {"dependency_id":"DEP-AI-PREEXECUTION-AUTHENTIC-ADMITTED-STEGOS-RUNTIME","kind":"RUNTIME_EVIDENCE_GATE","state":"PENDING_AUTHENTIC_ADMITTED_STEGOS_RUNTIME","ref":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"FIRST_UNRESOLVED_PREDICATE_AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK; ANY ELIGIBLE STEGOS SURFACE MAY SATISFY AFTER KV/SKAP CONTINUITY WHERE APPLICABLE, WORKERCOORDINATOR CLAIM/FENCE, AND INTERLOCK/INTR ADMISSION; PHYSICAL DEVICE IDENTITY GATE PROHIBITED"}
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-STEGOS-SOURCE",
+      "kind": "SOURCE_BINDING",
+      "state": "AVAILABLE_VALIDATED",
+      "ref": "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-EPHEMERAL-NODE",
+      "kind": "RUNTIME_SUBSTRATE",
+      "state": "AVAILABLE_REUSABLE_PATH",
+      "ref": "ADMITTED-EPHEMERAL-STEGOS-NODE"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-HEALER-CARRIER-BINDING",
+      "kind": "RUNTIME_REACHABILITY_SOURCE_BINDING",
+      "state": "RESOLVED_SOURCE_ONLY",
+      "ref": "StegVerse-Labs/StegVerse-Healer#85;StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a;actions:34891751182",
+      "disposition": "EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_NOW_CARRIES_RT_STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_001; NO_SECOND_SCHEDULER_RUNTIME_CREDENTIAL_PATH_REMOTE_DESKTOP_OR_SECOND_USER_DEVICE"
+    }
   ],
   "blockers": [],
-  "adjacent_task_refs": ["STEG-BROWSER-RUNTIME-CONSUMPTION-001", "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001", "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002", "STEGOS-ESRL-001"],
-  "expected_evidence_predicates": ["EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED", "CANONICAL_WORK_INTR_ADMISSION_OBSERVED", "ALLOW_TARGET_STATE_CHANGED", "DENY_TARGET_STATE_UNCHANGED", "BYPASS_TARGET_STATE_UNCHANGED", "MODEL_OUTPUT_AUTHORITY_REMAINS_NONE", "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED", "NO_SECOND_RUNTIME_SCHEDULER_OR_CREDENTIAL_PATH", "AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED"],
-  "runtime_requirements": {"capabilities":["canonical_portable_execution","event_ephemeral_stegos_node","universal_intr_profiled_ingress","bounded_loopback_network_consequence","target_state_readback"],"environment":"ADMITTED-EPHEMERAL-STEGOS-NODE","direction":"AI_PROPOSAL_TO_STEGOS_GOVERNANCE_TO_NETWORK_TARGET","mutation_required":true,"deployment_required":false,"current_observation_required":true,"physical_device_identity_required":false,"second_user_operated_device_required":false},
-  "execution_substrate_resolution": {
-    "schema":"stegverse.execution-substrate-resolution/v1",
-    "review_order":["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
-    "reviews":[
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"NONE","evidence_refs":["docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"NONE","evidence_refs":["data/task-registry-global-invariants.json"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"PLATFORM","evidence_refs":["docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json","StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+  "adjacent_task_refs": [
+    "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+    "STEGOS-ESRL-001"
+  ],
+  "expected_evidence_predicates": [
+    "EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED",
+    "CANONICAL_WORK_INTR_ADMISSION_OBSERVED",
+    "ALLOW_TARGET_STATE_CHANGED",
+    "DENY_TARGET_STATE_UNCHANGED",
+    "BYPASS_TARGET_STATE_UNCHANGED",
+    "MODEL_OUTPUT_AUTHORITY_REMAINS_NONE",
+    "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+    "NO_SECOND_RUNTIME_SCHEDULER_OR_CREDENTIAL_PATH",
+    "AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_portable_execution",
+      "event_ephemeral_stegos_node",
+      "universal_intr_profiled_ingress",
+      "bounded_loopback_network_consequence",
+      "target_state_readback"
     ],
-    "selected_substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "physical_device_identity_required":false,
-    "external_device_required":false,
-    "second_user_operated_device_allowed":false,
-    "authority_effect":"NONE"
+    "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "direction": "AI_PROPOSAL_TO_STEGOS_GOVERNANCE_TO_NETWORK_TARGET",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false,
+    "physical_device_identity_required": false,
+    "second_user_operated_device_required": false
   },
-  "runtime_resolution": {"current_executor":"standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test","unresolved_classification":"HEALER_CARRIER_BOUND_AUTHENTIC_ADMITTED_STEGOS_EXECUTION_NOT_OBSERVED","reachability_source_binding":"RESOLVED_HEALER_85","shared_runtime_evidence_owner_task_id":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001","current_first_unresolved_reachability_predicate":"AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK","next_admissible_transition":"INGRESS_ADMITTED","proposal_evidence_ref":"evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json","proposal_sha256":"cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb"},
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "data/reusable-task-ephemeral-construct-contract.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+          "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "physical_device_identity_required": false,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "runtime_resolution": {
+    "current_executor": "standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
+    "unresolved_classification": "STATE_TRIGGERABLE_INGRESS_READY",
+    "reachability_source_binding": "RESOLVED_HEALER_85",
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "current_first_unresolved_reachability_predicate": "INGRESS_ADMITTED",
+    "next_admissible_transition": "INGRESS_ADMITTED",
+    "proposal_evidence_ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
+    "proposal_sha256": "cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb",
+    "separate_authentic_runtime_gate_required": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false,"carrier_binding_repaired_source_only":true,"reconciliation_ref":"docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md"},
-  "allowed_next_transitions": ["INGRESS_ADMITTED","MATERIALIZE_EPHEMERAL_STEGOS_NODE","RUN_ALLOW_DENY_BYPASS_NETWORK_TEST","OBSERVE_AUTHENTIC_AI_PROPOSAL","SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS"],
-  "handoff_projection_refs": ["docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md","StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md","StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"healer_carrier_authority":"SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY","neutral_reusable_scheduler_authority":"NONE_SCHEDULING_ONLY","workercoordinator_remains_claim_fence_authority":true,"interlock_intr_remains_transition_authority":true,"tvc_remains_credential_provider_release_authority":true,"master_records_remains_custody_reconstruction_authority":true,"model_output_grants_execution_authority":false,"physical_device_identity_grants_authority":false,"github_runtime_authority":"NONE"}
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false,
+    "carrier_binding_repaired_source_only": true,
+    "reconciliation_ref": "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "separate_authentic_runtime_evidence_class_required": false,
+    "terminal_state_is_completion_truth": true
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED",
+    "MATERIALIZE_EPHEMERAL_STEGOS_NODE",
+    "RUN_ALLOW_DENY_BYPASS_NETWORK_TEST",
+    "OBSERVE_AUTHENTIC_AI_PROPOSAL",
+    "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "neutral_reusable_scheduler_authority": "NONE_SCHEDULING_ONLY",
+    "workercoordinator_remains_claim_fence_authority": true,
+    "interlock_intr_remains_transition_authority": true,
+    "tvc_remains_credential_provider_release_authority": true,
+    "master_records_remains_custody_reconstruction_authority": true,
+    "model_output_grants_execution_authority": false,
+    "physical_device_identity_grants_authority": false,
+    "github_runtime_authority": "NONE"
+  }
 }
