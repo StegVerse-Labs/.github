@@ -136,9 +136,15 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             "receipt_sha256": "b" * 64,
             "reconstructed_receipt_sha256": "b" * 64,
             "required_evidence_validation_status": "PASS",
-            "receipt": {"transition_evidence": {"functional_memory": memory}},
+            "receipt": {
+                "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+                "transition_sequence": 1,
+                "subject_or_correlation_id": "TASK-1",
+                "prior_state_ref_or_hash": None,
+                "transition_evidence": {"functional_memory": memory},
+            },
         }
-        task = {"functional_memory": {"receipt_sha256": "b" * 64}}
+        task = {"task_id": "TASK-1", "functional_memory": {"receipt_sha256": "b" * 64}}
         with patch(
             "heartbeat_runtime.worker_assignment_functional_memory.reconstruct_state_receipt",
             return_value=reconstruction,
