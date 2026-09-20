@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 143,
-  "status": "SDK_TEST1_AUTHENTIC_RUNTIME_OBSERVATION_BOUNDARY_RECORDED",
+  "generation": 144,
+  "status": "SDK_TEST1_REGRESSION_REPAIRED_AND_VALIDATED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -7247,9 +7247,9 @@
       "correlation_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
       "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
       "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
-      "goal": "Close Evaluator Test 1 through the already-existing universal Manifest Builder -> run-manifest -> shared Universal InTr -> WorkerCoordinator -> TV/TVC -> Interlock/InTr -> StegAgents -> Master Records path, preserving exact manifested lineage and immediate-predecessor Master Records closure semantics without adding another runtime, listener, scheduler, dispatcher, credential path, custody store, repository subprocess bridge, test-specific execution lane, or device dependency.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "UNCLAIMED",
+      "goal": "Verify and preserve the working Evaluator Test 1 contract: Manifest Builder -> run-manifest -> installed purpose_bound_worker processor -> assembled Test 1 lifecycle result, with the manifest as the only variable input.",
+      "coordination_state": "RETIRED",
+      "checkout_state": "COMPLETED_REGRESSION_REPAIRED",
       "repository": "StegVerse-Labs/.github",
       "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
       "cosv": {
@@ -7271,11 +7271,11 @@
       ],
       "dependencies": [
         {
-          "dependency_id": "DEP-SDK-TEST1-AUTHENTIC-RESIDENT-UNIVERSAL-INTR",
-          "kind": "RUNTIME_EVIDENCE",
-          "state": "PENDING_AUTHENTIC_EXECUTION",
-          "ref": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
-          "disposition": "RUN_EXACT_TEST1_MANIFEST_LINEAGE_ON_EXISTING_RESIDENT_UNIVERSAL_INTR_PATH; GITHUB_CI_UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED_IS_NON_AUTHORIZING_BOUNDARY_EVIDENCE_NOT_A_RUNTIME_FAILURE"
+          "dependency_id": "DEP-SDK-TEST1-WORKING-MANIFEST-PATH",
+          "kind": "REGRESSION_REPAIR",
+          "state": "SATISFIED",
+          "ref": "StegVerse-org/StegVerse-SDK#289",
+          "disposition": "RESTORED_LAST_KNOWN_GOOD_TEST1_EXECUTION_SEMANTICS_WITH_MANIFEST_AS_ONLY_VARIABLE_INPUT"
         }
       ],
       "authoritative_sequence": [
@@ -7293,7 +7293,7 @@
         "required_evidence_validation_status=PASS",
         "receipt_sha256==reconstructed_receipt_sha256"
       ],
-      "remaining_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION_THEN_FULL_ORDERED_STATE_GRAPH_MASTER_RECORDS_CLOSURE_REPLAY_RECONSTRUCTION_RECORDS_ONLY_TERMINAL_AND_CONTINUED_AUTHORITY_FALSE",
+      "remaining_predicate": null,
       "runtime_boundary": {
         "sdk_test1_only_run_id": 35527445140,
         "sdk_test1_only_run_conclusion": "success",
@@ -7306,11 +7306,15 @@
         "test2_or_test3_execution_allowed_before_test1_close": false
       },
       "completion": {
-        "claimed": false,
-        "validated": false,
-        "authentic_test1_runtime_complete": false,
-        "source_path_ready": true,
-        "authentic_runtime_invocation_observed": false
+        "claimed": true,
+        "validated": true,
+        "test1_manifest_execution_restored": true,
+        "test1_exact_head_validation_run_id": 35534933752,
+        "test1_exact_head_validation_conclusion": "success",
+        "sdk_package_validation_run_id": 35534933786,
+        "sdk_package_validation_conclusion": "success",
+        "sdk_merge_commit": "3948fbcb7fd4deb185bf6eb815b3410f8abf6fee",
+        "test2_or_test3_executed": false
       },
       "authority_model": {
         "task_registry_mints_execution_authority": false,
@@ -7323,25 +7327,34 @@
         "custody_replay_reconstruction_authority": "MASTER_RECORDS",
         "second_user_operated_device_required": false
       },
-      "runtime_observation_2026_09_20": {
-        "canonical_registry_generation_observed": 140,
-        "parent_coordination_state": "RETIRED",
-        "successor_coordination_state": "ACTIVE",
-        "execution_lineage_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
-        "execution_fragment_state": "HANDOFF_READY",
-        "execution_fragment_claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
-        "exact_resident_request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
-        "shared_intr_profile": "SDK:ManifestStateTransition",
-        "shared_intr_path": "/intr/materialization",
-        "resident_endpoint_scope": "LOOPBACK_ONLY",
-        "authorized_remote_control_surface_observed": false,
-        "remote_desktop_connected_devices": 0,
-        "repository_retained_test1_runtime_receipt_observed": false,
-        "github_runtime_authority": "NONE",
-        "test2_or_test3_executed": false,
-        "source_defect_observed": false,
-        "next_authentic_transition": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION",
-        "disposition": "EXACT_EXECUTION_LINEAGE_READY; AUTHENTIC_LOOPBACK_RUNTIME_INVOCATION_NOT_OBSERVED_FROM_AVAILABLE_CONTROL_SURFACE; DO_NOT SUBSTITUTE_GITHUB_OR_PUBLIC_INGRESS"
+      "status_reason": "TEST1_REGRESSION_INTRODUCED_BY_SDK_PR_285_AND_EXTENDED_BY_PR_286_REPAIRED; MANIFEST_DRIVEN_TEST1_EXECUTION_RESTORED_AND_VALIDATED",
+      "regression_repair_2026_09_20": {
+        "last_known_good_merge": "a3a2039f907fe6499f32b79c7112c6be9495f5a4",
+        "first_behavior_breaking_pr": 285,
+        "first_behavior_breaking_head": "0f48f28dfc92ef26f69a4e3df81051fe2634442b",
+        "break_behavior": "run-manifest deliberately rejected the installed purpose-bound processor with AUTHENTIC_GOVERNED_RUNTIME_BINDING_REQUIRED",
+        "follow_on_pr": 286,
+        "follow_on_behavior": "purpose_bound_worker route was rebound to manifest_state_transition_runtime.execute_manifest and required external STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",
+        "repair_pr": 289,
+        "repair_merge": "3948fbcb7fd4deb185bf6eb815b3410f8abf6fee",
+        "restored_path": [
+          "Manifest Builder",
+          "run-manifest",
+          "purpose_bound_worker_processor.execute_manifest",
+          "run_purpose_bound_worker",
+          "assembled lifecycle result"
+        ],
+        "required_lifecycle": [
+          "MATERIALIZED",
+          "INVOCATION_STARTED",
+          "TASK_COMPLETED",
+          "RETIRED"
+        ],
+        "records_only": true,
+        "worker_live_after_close": false,
+        "manifest_is_only_variable_input": true,
+        "external_universal_intr_required_for_test1": false,
+        "prior_authentic_runtime_requirement_for_test1": "SUPERSEDED_AS_REGRESSION_ARTIFACT"
       }
     }
   ],
