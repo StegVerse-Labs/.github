@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 142,
+  "generation": 143,
   "status": "SDK_TEST1_AUTHENTIC_RUNTIME_OBSERVATION_BOUNDARY_RECORDED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -7105,7 +7105,9 @@
         "master-records/orchestration#106",
         "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715",
         "StegVerse-Labs/.github#2352",
-        "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65"
+        "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+        "StegVerse-Labs/.github#2354",
+        "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf"
       ],
       "targets": {
         "organizations": [
@@ -7145,6 +7147,13 @@
           "state": "REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
           "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
           "disposition": "OBSERVE_EXISTING_RESIDENT_REFRESH_CONSUMING_CURRENT_stegverse-master-records_SOURCE_PACKAGE_AND_MATERIALIZING_VENDOR_SOURCE_THEN_QUERY_DURABLE_STORE"
+        },
+        {
+          "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-PROOF",
+          "kind": "EXISTING_RESIDENT_SOURCE_PROVENANCE",
+          "state": "HARDENED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
+          "ref": "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+          "disposition": "AFTER_THE_EXISTING_REFRESH_WATCHER_CONSUMES_THE_CURRENT_MASTER_RECORDS_PACKAGE_REQUIRE_THE_MATERIALIZED_SOURCE_PROOF_TO_SHOW_8804762F_OR_DESCENDANT_BEFORE_TRUSTING_ANY_RUNTIME_ADVERTISEMENT"
         }
       ],
       "blockers": [],
@@ -7159,7 +7168,8 @@
         "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
         "master-records/orchestration workflow run 35527681406",
         "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
-        "workflow-run:35528813844:PASS"
+        "workflow-run:35528813844:PASS",
+        "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf"
       ],
       "expected_evidence_predicates": [
         "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_ID_OBSERVED",
@@ -7173,7 +7183,8 @@
         "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CUSTODY_CLASSIFIED",
         "AUTHENTIC_DURABLE_MASTER_RECORDS_RUNTIME_ENDPOINT_OBSERVED",
         "AUTHENTIC_MASTER_RECORDS_RUNTIME_LOADED_CANONICAL_APP",
-        "AUTHENTIC_MASTER_RECORDS_RUNTIME_INCLUDES_QUERY_REPAIR"
+        "AUTHENTIC_MASTER_RECORDS_RUNTIME_INCLUDES_QUERY_REPAIR",
+        "MATERIALIZED_MASTER_RECORDS_SOURCE_PROOF_REQUIRES_8804762F_OR_DESCENDANT"
       ],
       "runtime_requirements": {
         "capabilities": [
