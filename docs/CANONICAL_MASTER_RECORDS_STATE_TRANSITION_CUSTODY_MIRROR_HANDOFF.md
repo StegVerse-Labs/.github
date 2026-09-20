@@ -327,3 +327,16 @@ The post-`RTC-SDK-RETURN-006` continuation now reuses the existing LLM Adapter `
 Only after RTC007 closure is the existing StegOS MIR southbound consumer invoked to prepare the existing Universal InTr materialization request for `RTC-INTERLOCK-INTR-TRANSPORT-008`. That prepared request is source evidence only: authentic Interlock/InTr admission, `RTC-FARSIDE-FINAL-009`, caller consequence, and communication completion remain unobserved.
 
 Exact-helper executable validation covered both the successful RTC007 Master Records closure path and the fail-closed non-RECORDED path. No new runtime, scheduler, dispatcher, transport, custody store, transition authority, or credential authority was introduced.
+
+
+## RTC008 carriage and predecessor-closure reconciliation — 2026-09-20
+
+The RTC008 source sequence has now been repaired through the state-dependent predecessor boundary.
+
+- PR #2290 merged as `3a3032375e745fb955dfd4e86c8b63eb192b08e4`, adding MIR southbound admission to the existing shared Universal InTr listener and canonical Master Records closure.
+- PR #2349 merged as `44cc82910c1116a096cca475402c76ebcb1f657f` from exact validated head `9c3dbd1d2c6700085e57e0dfa1582ac0ffb68b7c`; validation run `35528495975` passed. RTC007 now submits the exact RTC008 materialization request to the existing shared loopback `/intr/materialization` path using only an already-issued TVC relay authorization identifier and promotes no RTC008 predicate until the returned Master Records closure passes.
+- PR #2356 merged as `f81444cd6d40fb32d9e083fc198fe09c254cdc2f` from exact validated head `dd61d82303230aa1c6b82c37718b5e1c2fca71da`; focused run `35528990341` and shared runtime-path run `35528990299` both passed. RTC008 now consumes the immediately preceding `RTC-STEGVERSE-EGRESS-007` Master Records closure, requires `RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality`, retains that closure as required evidence, and uses the RTC007 Master Records receipt digest as `prior_state_ref_or_hash`.
+
+These are source and exact-head validation facts only; no authentic RTC008, RTC009, or caller-consequence transition is inferred from CI.
+
+The next deterministic source boundary is after RTC008 custody: the shared RTC008 ingress returns after closure and does not yet materialize the existing MIR EVENT_EPHEMERAL successor. The legacy `scripts/execute_mir_event_driven_roundtrip.py` can produce RTC009 but starts earlier in the graph and would replay RTC007/RTC008, so it must not be used as the successor from this state. Continue by binding the already-admitted RTC008 state into the existing EVENT_EPHEMERAL MIR execution owner without replaying predecessor transitions, then require RTC009 and every later caller consequence to close through canonical Master Records before progression.
