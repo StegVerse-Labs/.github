@@ -249,3 +249,22 @@ If predecessor reconstruction fails, the admitted WorkerCoordinator now stops at
 The existing canonical Master Records subject/transition query is also used as a non-authorizing recovery index when the mutable task pointer is absent. Recovery is accepted only when every retained `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` record reconstructs successfully, sequences are contiguous from 1, and each successor receipt's `prior_state_ref_or_hash` exactly names the preceding receipt digest. Only after that full chain passes is `task.functional_memory` restored as a convenience pointer to the latest retained record.
 
 Master Records remains the custody/reconstruction authority; the recovered task pointer grants no authority.
+
+
+### Functional Memory lineage repair merged and validated
+
+The immediate-predecessor enforcement repair merged in `StegVerse-Labs/.github#2367` as:
+
+```text
+57415095b055ba04451207fc659bee98855f587a
+```
+
+Exact-head validation on `4bb4964d7135af4472543975690effba0b75514d`:
+- Test 3 Richard Seam Acceptance run `35539091949`: PASS;
+- validate-deepseek-resident run `35539091944`: PASS;
+- Validate KV AI Memory Resident Binding run `35539091952`: PASS;
+- Cross-Task Coordination Validation run `35539091988`: PASS.
+
+The regression suite now proves an unreconstructable predecessor cannot call `submit_state_receipt` for a successor Functional Memory transition, cannot advance sequence, and cannot mint worker/claim/fence consequences. Pointer recovery is accepted only from the existing canonical Master Records query/reconstruction path after contiguous sequence and predecessor-digest-chain validation.
+
+This merge is source/contract validation. It does not claim that an authentic runtime Functional Memory predecessor or successor transition executed.
