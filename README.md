@@ -1026,3 +1026,8 @@ The existing source-refresh watcher already watched `stegverse-master-records` b
 ### SDK Test 1 authentic runtime observation boundary
 
 Generation 140 confirms `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001` is ACTIVE while the original execution fragment remains `HANDOFF_READY` and authorized for a fresh independent WorkerCoordinator claim. The shared Universal InTr endpoint is resident loopback-only, no connected authorized remote-control surface was observable in this session, and no authentic Test 1 runtime receipt has been retained. GitHub/public execution is not a substitute; Tests 2/3 remain unexecuted.
+
+
+### RTC008 state-dependent custody lineage
+
+The canonical MIR RTC008 source path now carries the exact `RTC-STEGVERSE-EGRESS-007` Master Records closure into the existing shared Universal InTr admission. RTC008 fails closed unless the predecessor is `RECORDED`, reconstructed `PASS`, required-evidence validation `PASS`, and the receipt/reconstruction digests are identical. PR #2349 binds the exact prepared RTC008 request into the existing shared ingress; PR #2356 makes the RTC007 Master Records receipt digest the RTC008 prior-state reference. The next source trace is the already-admitted RTC008 state into the existing MIR EVENT_EPHEMERAL successor; replaying the legacy full event driver from RTC007 is not an admissible substitute.
