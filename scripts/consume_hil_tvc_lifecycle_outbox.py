@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import os
@@ -22,6 +23,12 @@ TVC_PROTECTED_PATHS = (
 WORKER_RECEIPT_REL = Path("receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
 CONSUMPTION_REL = Path("receipts/hil-sovereign-receiver/tvc-lifecycle-outbox-consumption.latest.json")
 CREDENTIAL_AUTHORITY = "TV/TVC"
+MATERIALIZATION_REQUEST_DIR_REL = Path("intr-materialization")
+MATERIALIZATION_INGRESS_DIR_REL = Path("receipts/sovereign-network/hil-intr-ingress")
+MATERIALIZED_BUNDLE_DIR_REL = Path("hil-tvc-lifecycle-materialized")
+TVC_DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "TVC:HIL-Lifecycle"}
+TVC_OWNER = "StegVerse-Labs/TVC"
+BUNDLE_PREFIX = "data:application/vnd.stegverse.hil-tvc-lifecycle-bundle+json;base64,"
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 
@@ -164,8 +171,123 @@ def _last_json(stdout:str)->dict[str,Any]|None:
         if isinstance(value,dict): return value
     return None
 
+
+def _write_once(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        if path.read_bytes() != data:
+            raise RuntimeError("hil_tvc_materialized_write_once_collision")
+        return
+    path.write_bytes(data)
+    if path.read_bytes() != data:
+        raise RuntimeError("hil_tvc_materialized_readback_mismatch")
+
+
+def _materialization_events(runtime: Path) -> list[tuple[dict[str,Any], Path]]:
+    request_dir=runtime/MATERIALIZATION_REQUEST_DIR_REL
+    if not request_dir.is_dir():
+        return []
+    rows=[]
+    for path in sorted(request_dir.glob("*.json")):
+        try:
+            request=_load(path)
+        except Exception:
+            continue
+        if request.get("destination")!=TVC_DESTINATION or request.get("downstream_owner_ref")!=TVC_OWNER:
+            continue
+        receipt_path=runtime/MATERIALIZATION_INGRESS_DIR_REL/f"{request.get('materialization_id')}.json"
+        if not receipt_path.is_file():
+            raise PredicatePending("HIL_TVC_MATERIALIZATION_INGRESS_RECEIPT_NOT_AVAILABLE")
+        receipt=_load(receipt_path)
+        if receipt.get("state")!="INGRESS_ADMITTED" or receipt.get("materialization_id")!=request.get("materialization_id") or receipt.get("request_hash")!=request.get("request_hash"):
+            raise RuntimeError("hil_tvc_materialization_ingress_binding_invalid")
+        rows.append((request,path))
+    return rows
+
+
+def _decode_bundle(request: Mapping[str,Any]) -> dict[str,Any]:
+    ref=str(request.get("payload_ref") or "")
+    if not ref.startswith(BUNDLE_PREFIX):
+        raise RuntimeError("hil_tvc_materialization_bundle_ref_invalid")
+    try:
+        raw=base64.b64decode(ref[len(BUNDLE_PREFIX):],validate=True)
+        bundle=json.loads(raw.decode("utf-8"))
+    except Exception as exc:
+        raise RuntimeError("hil_tvc_materialization_bundle_decode_invalid") from exc
+    if not isinstance(bundle,dict) or bundle.get("schema")!="stegverse.hil.tvc-lifecycle-materialization-bundle/v1":
+        raise RuntimeError("hil_tvc_materialization_bundle_schema_invalid")
+    if bundle.get("authority_effect")!="NONE_TRANSPORT_ONLY" or bundle.get("credential_authority")!="TV/TVC":
+        raise RuntimeError("hil_tvc_materialization_bundle_authority_invalid")
+    return bundle
+
+
+def _consume_materialization_events(runtime: Path, tvc_root: Path, *, runner: Runner, safe: Mapping[str,str]) -> list[dict[str,Any]]:
+    output_root=runtime/"hil-tvc-lifecycle-admission"
+    results=[]
+    for request,_request_path in _materialization_events(runtime):
+        bundle=_decode_bundle(request)
+        queue=bundle.get("queue"); receiver=bundle.get("receiver_receipt"); provenance=bundle.get("provenance_manifest")
+        response_b64=bundle.get("response_bytes_base64")
+        if not isinstance(queue,dict) or not isinstance(receiver,dict) or not isinstance(provenance,dict) or not isinstance(response_b64,str):
+            raise RuntimeError("hil_tvc_materialization_bundle_fields_missing")
+        if queue.get("transport_intent")!=(receiver.get("intr_receipt_chain") or {}).get("next_interlock_intent"):
+            raise RuntimeError("hil_tvc_materialization_bundle_intent_binding_invalid")
+        try:
+            response=base64.b64decode(response_b64,validate=True)
+        except Exception as exc:
+            raise RuntimeError("hil_tvc_materialization_response_decode_invalid") from exc
+        bundle_root=runtime/MATERIALIZED_BUNDLE_DIR_REL/str(request["materialization_id"])
+        _write_once(bundle_root/"response.pdf",response)
+        _write_once(bundle_root/"provenance.json",(json.dumps(provenance,sort_keys=True,separators=(",",":"))+"\n").encode())
+        _write_once(bundle_root/"queue.json",(json.dumps(queue,sort_keys=True,separators=(",",":"))+"\n").encode())
+        _write_once(bundle_root/"receiver.json",(json.dumps(receiver,sort_keys=True,separators=(",",":"))+"\n").encode())
+        command=[
+            sys.executable,str(tvc_root/"tools/hil_intr_lifecycle_intake.py"),
+            "--queue",str(bundle_root/"queue.json"),
+            "--receiver-receipt",str(bundle_root/"receiver.json"),
+            "--artifact-root",str(bundle_root),
+            "--output-root",str(output_root),
+        ]
+        completed=runner(command,cwd=tvc_root,capture_output=True,text=True,check=False,timeout=900,env=dict(safe))
+        result=_last_json(completed.stdout)
+        admitted=bool(completed.returncode==0 and isinstance(result,dict) and result.get("state")=="ADMITTED_TO_TVC_HIL_LIFECYCLE")
+        results.append({
+            "materialization_id":request.get("materialization_id"),
+            "submission_id":receiver.get("submission_id"),
+            "returncode":completed.returncode,
+            "admitted":admitted,
+            "tvc_admission_hash":result.get("admission_hash") if isinstance(result,dict) else None,
+            "tvc_interlock_receipt_hash":((result.get("tvc_interlock_receipt") or {}).get("receipt_hash") if isinstance(result,dict) else None),
+            "next_required_transition":result.get("next_required_transition") if isinstance(result,dict) else None,
+        })
+    return results
+
+
 def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
+    values=dict(os.environ if env is None else env)
+    materialization_events=_materialization_events(runtime)
+    if materialization_events:
+        tvc_root,tvc_source_validation_mode=discover_tvc_root(values,runner=runner)
+        safe=_clean_env(values)
+        materialization_results=_consume_materialization_events(runtime,tvc_root,runner=runner,safe=safe)
+        failures=[r for r in materialization_results if not r["admitted"]]
+        state="ADMITTED_TO_TVC_HIL_LIFECYCLE" if materialization_results and not failures else "FAIL_CLOSED"
+        receipt={
+            "schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":state,
+            "runtime_root":str(runtime),"tvc_source_floor":TVC_SOURCE_FLOOR,
+            "tvc_source_validation_mode":tvc_source_validation_mode,
+            "materialization_event_count":len(materialization_results),"queue_count":0,
+            "results":materialization_results,"failures":failures,
+            "credential_authority":CREDENTIAL_AUTHORITY,"credential_value_exposed":False,
+            "github_token_runtime_authority":"NONE","private_review_completed":False,
+            "publication_authorized":False,"master_record_authorized":False,
+            "second_user_device_required":False,"g18_completion_required":False,
+            "authority_effect":"NONE_TRANSPORT_TRIGGER_ONLY",
+        }
+        path=runtime/CONSUMPTION_REL; path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+        return receipt
     worker_path=runtime/WORKER_RECEIPT_REL
     if not worker_path.is_file():
         return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
@@ -181,7 +303,6 @@ def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str
     if not queues:
         return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
 
-    values=dict(os.environ if env is None else env)
     tvc_root,tvc_source_validation_mode=discover_tvc_root(values,runner=runner)
     safe=_clean_env(values)
     output_root=durable/"tvc-lifecycle-admission"
