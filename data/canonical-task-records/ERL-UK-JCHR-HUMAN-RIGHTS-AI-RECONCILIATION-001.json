@@ -74,7 +74,9 @@
     "SUCCESSOR_SURFACES_RECHECKED_2026_09_20_SECOND_PASS",
     "AISI_2026_09_18_ANSWER_REVIEWED_NONQUALIFYING",
     "ICO_ADM_GUIDANCE_DRAFT_STATUS_REVIEWED_NONQUALIFYING",
-    "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_SECOND_PASS"
+    "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_SECOND_PASS",
+    "SUCCESSOR_SURFACES_RECHECKED_2026_09_20_THIRD_PASS",
+    "NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_OBSERVED_2026_09_20_THIRD_PASS"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -170,7 +172,7 @@
     "publication_authorized": false,
     "successor_status_checked_through": "2026-09-20",
     "qualifying_successor_development_observed": false,
-    "latest_successor_check_note": "SECOND_PASS_REVIEWED_AISI_2026_09_18_AND_ICO_ADM_GUIDANCE_DRAFT_NONQUALIFYING"
+    "latest_successor_check_note": "THIRD_PASS_NO_QUALIFYING_SUCCESSOR_DEVELOPMENT_NO_ARTIFACT_CREATED"
   },
   "allowed_next_transitions": [
     "TRACK_FORMAL_GOVERNMENT_RESPONSE",
@@ -193,7 +195,7 @@
     "finding_authorized": false
   },
   "prompt_budget": {
-    "goal_prompt_count": "4/20",
+    "goal_prompt_count": "5/20",
     "split_merely_to_reset_counter": false
   },
   "readme_impact": {
