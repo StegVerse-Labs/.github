@@ -129,10 +129,10 @@
     "authority_effect": "NONE"
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#172",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
@@ -150,7 +150,7 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_legislative_status_only_to_cited_sources": false,
-    "worker_claim_authority": "CURRENT_SESSION",
+    "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
