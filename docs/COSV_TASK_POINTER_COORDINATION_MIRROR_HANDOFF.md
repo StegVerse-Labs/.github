@@ -212,3 +212,19 @@ A canonical evidence check immediately afterward found no new:
 - retained resident-targeted execution receipt for this exact task.
 
 Therefore no ALLOW/non-ALLOW disposition is inferred, no negative control is manufactured, and no worker/claim/fence/task state/Functional Memory/Master Records predicate is promoted. The execution-surface unavailability remains external to task semantics and is not a Task Registry blocker or dependency.
+
+
+## Functional Memory canonical custody transport verification — 2026-09-20
+
+End-to-end inspection confirms Functional Memory uses the same canonical state-transition custody path as other WorkerCoordinator transitions:
+
+- `heartbeat_runtime/worker_assignment_functional_memory.py` builds `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` with `build_state_receipt(...)` and submits it with the shared `workers/canonical_state_transition_custody.py::submit_state_receipt(...)`.
+- `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` in `heartbeat_runtime/worker_runtime_legacy.py` uses the same `submit_state_receipt(...)` client.
+- HTTP custody posts the common `stegverse.master-records.state-transition-submission/v1` envelope to `POST /api/master-records/state-transitions`; local custody invokes the same Master Records `record_receipt(...)` implementation.
+- Master Records stores every canonical transition receipt in `canonical_state_transition_receipts` keyed by exact canonical receipt SHA-256 and stores required evidence in `canonical_state_transition_required_evidence`.
+- `record_receipt(...)` re-reads canonical receipt bytes and evidence bytes immediately after persistence, returns `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, `master_record_ref`, and exact `receipt_sha256/reconstructed_receipt_sha256`.
+- Later `reconstruct_state_receipt(receipt_sha256)` uses the same HTTP reconstruction endpoint or local canonical tables and requires exact receipt digest equality plus required-evidence PASS before Functional Memory is reusable.
+
+The inspection also identified the first concrete current resident-carriage defect: `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` preserves Master Records source-root discovery variables but strips both supported custody transports' runtime configuration. It does not preserve HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT` / `STEGVERSE_MASTER_RECORDS_TOKEN`, and it does not preserve local-binding `MASTER_RECORDS_DB` / `MASTER_RECORDS_RECEIPT_KEY` / `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Therefore the existing targeted SDK consumer can reach `submit_state_receipt(...)` with neither canonical custody transport configured, causing `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE`.
+
+This is a transport-carriage defect in the existing targeted consumer, not a Functional Memory schema/storage divergence and not a new runtime/custody requirement.
