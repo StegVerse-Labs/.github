@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 146,
-  "status": "CANONICAL_MASTER_RECORDS_TARGETED_CUSTODY_CARRIAGE_REPAIRED",
+  "generation": 147,
+  "status": "CANONICAL_MASTER_RECORDS_WORKERCOORDINATOR_CLAIM_FENCE_CUSTODY_VALIDATED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5143,7 +5143,12 @@
         "targeted_stegagents_master_records_custody_env_carriage_repaired": true,
         "targeted_stegagents_master_records_custody_env_carriage_pr": 2363,
         "targeted_stegagents_master_records_custody_env_carriage_merge": "7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df",
-        "targeted_stegagents_master_records_custody_env_carriage_validation_run": 35536016433
+        "targeted_stegagents_master_records_custody_env_carriage_validation_run": 35536016433,
+        "workercoordinator_claim_fence_real_master_records_integration_validated": true,
+        "workercoordinator_claim_fence_real_master_records_validation_repo": "master-records/orchestration",
+        "workercoordinator_claim_fence_real_master_records_validation_pr": 107,
+        "workercoordinator_claim_fence_real_master_records_validation_merge": "273b55cda7903dfa0f4daed35d3a410b565b3e49",
+        "workercoordinator_claim_fence_real_master_records_validation_run": 35539058509
       },
       "completion": {
         "claimed": false,
@@ -5286,6 +5291,23 @@
           "defect": "TARGETED_RESIDENT_CONSUMER_CLEAN_ENV_STRIPPED_BOTH_SUPPORTED_MASTER_RECORDS_CUSTODY_TRANSPORT_BINDINGS",
           "runtime_custody_claimed": false,
           "authority_effect": "NONE_SOURCE_CARRIAGE_REPAIR_ONLY"
+        },
+        "workercoordinator_claim_fence_canonical_custody_integration": {
+          "state": "VALIDATED_MERGED",
+          "validation_repository": "master-records/orchestration",
+          "pull_request": 107,
+          "merge_commit": "273b55cda7903dfa0f4daed35d3a410b565b3e49",
+          "validation_run": 35539058509,
+          "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+          "required_evidence_type": "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT",
+          "required_closure": [
+            "state=RECORDED",
+            "reconstruction_status=PASS",
+            "required_evidence_validation_status=PASS",
+            "receipt_sha256==reconstructed_receipt_sha256"
+          ],
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_INTEGRATION_VALIDATION_ONLY"
         }
       },
       "required_evidence_validation": {
