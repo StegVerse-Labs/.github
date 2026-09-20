@@ -197,3 +197,18 @@ No worker, claim, fence, task state, Functional Memory pack, Master Records rece
 The authentic next transition remains exactly one existing targeted WorkerCoordinator execution for this task. The first observed matrix disposition controls the branch:
 - non-ALLOW -> zero worker/claim/fence materialization + Functional Memory Master Records custody and exact reconstruction;
 - ALLOW -> do not manufacture a negative control; search only for an authentic prior same-task non-ALLOW disposition, and if none exists retain the conclusion that authentic non-ALLOW Functional Memory runtime proof has not yet occurred.
+
+
+## Functional Memory authentic assignment attempt — 2026-09-20 14:18 CDT
+
+After canonical handoff commit `3810500dc7eb2a34bff5a6aef860eaac69da0ada`, the already-staged targeted request for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` was invoked again through the authorized resident command surface using the existing `refresh_and_execute_resident_task.py` entrypoint and exact COSV vector `71000000111111`.
+
+The command surface rejected the request before command execution. No WorkerCoordinator assignment review ran, so no authentic assignment matrix result exists from this attempt.
+
+A canonical evidence check immediately afterward found no new:
+- `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW`;
+- `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`;
+- `stegverse.worker-assignment-functional-memory/v1`;
+- retained resident-targeted execution receipt for this exact task.
+
+Therefore no ALLOW/non-ALLOW disposition is inferred, no negative control is manufactured, and no worker/claim/fence/task state/Functional Memory/Master Records predicate is promoted. The execution-surface unavailability remains external to task semantics and is not a Task Registry blocker or dependency.
