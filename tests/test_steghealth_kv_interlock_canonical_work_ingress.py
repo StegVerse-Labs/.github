@@ -41,7 +41,7 @@ class StegHealthKvInterlockCanonicalWorkIngressTests(unittest.TestCase):
         registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
         task = next(row for row in registry["tasks"] if row["task_id"] == "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001")
         self.assertEqual(task["remaining_predicate"], "INGRESS_ADMITTED")
-        self.assertEqual(task["dependencies"], task.get("dependencies", []))
+        self.assertEqual(task.get("dependencies", []), [])
         self.assertFalse(task["runtime_requirements"]["current_observation_required"])
         self.assertFalse(task["completion"]["duplicate_runtime_proof_required"])
         self.assertFalse(task["completion"]["separate_authentic_runtime_evidence_class_required"])
