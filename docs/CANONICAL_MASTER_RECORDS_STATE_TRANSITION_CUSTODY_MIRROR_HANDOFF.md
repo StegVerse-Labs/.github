@@ -352,3 +352,14 @@ This is a source carriage repair only. It does not itself prove an authentic run
 ### Merge reconciliation
 
 PR #2363 merged as `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed, including the exact `Validate targeted Master Records custody carriage` step. Canonical Task Registry reconciliation advances generation 144 -> 145 and records this as a source-carriage repair only; authentic runtime custody remains unclaimed.
+
+
+## WorkerCoordinator claim/fence canonical-custody integration validation — 2026-09-20
+
+The existing targeted receipt-bearing path was traced to `heartbeat_runtime/worker_runtime_legacy.py::_custody_assignment_transition(...)`, which emits `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` with required evidence `WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT` and synchronously calls the shared `submit_state_receipt(...)` before task activation.
+
+Public .github PR #2365 attempted to validate that boundary by checking out private `master-records/orchestration`; the checkout correctly failed because the public-repository Actions token had no cross-private repository read authority. No credential path was added and #2365 was closed unmerged.
+
+Validation was instead executed inside the existing private Master Records repository, where canonical custody source is local and the public StegVerse WorkerCoordinator source can be read without a new credential path. `master-records/orchestration` PR #107 merged as `273b55cda7903dfa0f4daed35d3a410b565b3e49`. Exact run `35539058509` passed `Validate exact WorkerCoordinator claim/fence custody closure`, requiring and observing `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, canonical `master_record_ref`, and reconstruction of the exact assignment evidence.
+
+This proves the existing WorkerCoordinator -> shared custody client -> canonical Master Records boundary at integration level. It does not claim that the staged resident SDK purpose-bound request has actually executed or minted a fresh production claim/fence.
