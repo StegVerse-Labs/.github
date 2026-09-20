@@ -113,7 +113,7 @@
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
