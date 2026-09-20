@@ -27,6 +27,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from heartbeat_runtime import CarrierHeartbeatRuntime
 from heartbeat_runtime.oscillator_producer import OscillatorProducer
+from heartbeat_runtime.intr_subsignal_runtime import EVENT_LOG_REL as DERIVED_SUBSIGNAL_EVENT_LOG_REL
 from scripts.repair_resident_worker_presence import ensure_worker_presence
 
 # Deprecated compatibility exports for callers/tests that historically imported
@@ -37,6 +38,40 @@ from scripts.run_worker_runtime import _read_registry, adapter_entries as _worke
 CARRIER_STATE = Path("control/heartbeat-carrier-runtime-state.json")
 MATERIALIZATION_RECEIPT = Path("receipts/sovereign-host/materialization.latest.json")
 WORKER_SUPERVISION_INTERVAL_REFERENCES = 100
+
+
+def _derived_subsignal_event_size(root: Path) -> int:
+    path = root / DERIVED_SUBSIGNAL_EVENT_LOG_REL
+    try:
+        return int(path.stat().st_size)
+    except OSError:
+        return 0
+
+
+def _observe_derived_subsignal_worker_presence(
+    root: Path,
+    *,
+    previous_event_size: int,
+    carrier_pid: int,
+    interval_ms: float,
+    supervisor=ensure_worker_presence,
+) -> tuple[int, dict | None]:
+    """Use newly persisted HB/AU sub-signal activity only as a supervision cue.
+
+    This does not interpret packet semantics and grants no task, claim/fence,
+    admission, transition, credential, or execution authority. It merely asks
+    the already-existing carrier-side supervision path to ensure the existing
+    WorkerCoordinator process is present.
+    """
+    current_size = _derived_subsignal_event_size(root)
+    if current_size <= previous_event_size:
+        return current_size, None
+    result = supervisor(
+        root,
+        carrier_pid=carrier_pid,
+        interval_ms=interval_ms,
+    )
+    return current_size, result
 
 
 def _adapter_entries(root: Path):
@@ -133,6 +168,7 @@ def main() -> int:
         raise SystemExit("oscillator-produced runtime requires persisted oscillator-backed carrier state")
 
     observed_results: list[dict] = []
+    derived_subsignal_event_size = _derived_subsignal_event_size(root)
 
     def observe(batch) -> None:
         # The batch already exists by oscillator phase. cycle() only materializes
@@ -163,17 +199,36 @@ def main() -> int:
         produced += 1
 
         # Process supervision is intentionally downstream of carrier production.
-        # The pulse already exists before this check. Every 100 observed references
-        # (~1 second at 100 Hz), a live carrier can repair a missing resident worker
-        # process. The repair only restores WorkerCoordinator presence; it cannot
-        # admit or authorize any task. The restored WorkerCoordinator immediately
-        # visits the resident request dispatcher on its own first logical tick.
-        if args.continuous and produced % WORKER_SUPERVISION_INTERVAL_REFERENCES == 0:
+        # The pulse already exists before this check. Newly persisted HB/AU
+        # sub-signal activity can request the same existing supervision check
+        # immediately; it grants no authority and does not select a task.
+        supervised_this_reference = False
+        if args.continuous:
+            derived_subsignal_event_size, subsignal_presence = _observe_derived_subsignal_worker_presence(
+                root,
+                previous_event_size=derived_subsignal_event_size,
+                carrier_pid=os.getpid(),
+                interval_ms=args.interval_ms,
+            )
+            if subsignal_presence is not None:
+                payload["resident_worker_presence"] = subsignal_presence
+                payload["resident_worker_presence_trigger"] = "HB_AU_SUBSIGNAL_ACTIVITY"
+                supervised_this_reference = True
+
+        # Preserve the existing periodic supervision as fallback. Every 100
+        # observed references (~1 second at 100 Hz), a live carrier can repair
+        # a missing resident worker process even when no sub-signal was emitted.
+        if (
+            args.continuous
+            and not supervised_this_reference
+            and produced % WORKER_SUPERVISION_INTERVAL_REFERENCES == 0
+        ):
             payload["resident_worker_presence"] = ensure_worker_presence(
                 root,
                 carrier_pid=os.getpid(),
                 interval_ms=args.interval_ms,
             )
+            payload["resident_worker_presence_trigger"] = "PERIODIC_CARRIER_FALLBACK"
 
         print(json.dumps(payload, sort_keys=True), flush=True)
 
