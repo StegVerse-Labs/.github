@@ -228,3 +228,24 @@ End-to-end inspection confirms Functional Memory uses the same canonical state-t
 The inspection also identified the first concrete current resident-carriage defect: `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` preserves Master Records source-root discovery variables but strips both supported custody transports' runtime configuration. It does not preserve HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT` / `STEGVERSE_MASTER_RECORDS_TOKEN`, and it does not preserve local-binding `MASTER_RECORDS_DB` / `MASTER_RECORDS_RECEIPT_KEY` / `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Therefore the existing targeted SDK consumer can reach `submit_state_receipt(...)` with neither canonical custody transport configured, causing `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE`.
 
 This is a transport-carriage defect in the existing targeted consumer, not a Functional Memory schema/storage divergence and not a new runtime/custody requirement.
+
+
+## Functional Memory immediate-predecessor lineage enforcement — 2026-09-20
+
+Review of the merged Functional Memory path found a fail-closed ordering defect: when a retained `task.functional_memory.receipt_sha256` could not be reconstructed, assignment review was forced to BLOCK/DENY but the non-ALLOW recorder could still create a successor `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` receipt pointing at the unreconstructable predecessor.
+
+The existing path is repaired without adding a runtime, scheduler, WorkerCoordinator, authority plane, credential path, or custody store:
+
+```text
+retained Functional Memory pointer
+-> exact Master Records reconstruction
+-> RECORDED/PASS/evidence PASS/digest equality required
+-> only then assignment review
+-> only then ALLOW or a successor non-ALLOW Functional Memory transition
+```
+
+If predecessor reconstruction fails, the admitted WorkerCoordinator now stops at `FUNCTIONAL_MEMORY_RECONSTRUCTION_BOUNDARY` before creating a new admission consequence or Functional Memory sequence. The Functional Memory recorder independently rejects any successor write when a prior pointer exists but the assignment transition does not prove that prior memory was validly reconstructed and consumed.
+
+The existing canonical Master Records subject/transition query is also used as a non-authorizing recovery index when the mutable task pointer is absent. Recovery is accepted only when every retained `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` record reconstructs successfully, sequences are contiguous from 1, and each successor receipt's `prior_state_ref_or_hash` exactly names the preceding receipt digest. Only after that full chain passes is `task.functional_memory` restored as a convenience pointer to the latest retained record.
+
+Master Records remains the custody/reconstruction authority; the recovered task pointer grants no authority.
