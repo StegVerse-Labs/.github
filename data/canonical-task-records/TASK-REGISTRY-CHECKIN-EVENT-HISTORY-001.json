@@ -15,8 +15,12 @@
     "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
     "components": [
       "task-registry-checkin-event-history",
       "recent-session-collision-window",
@@ -52,7 +56,11 @@
     "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV"
   ],
   "runtime_requirements": {
-    "capabilities": ["task_registry_reconciliation", "coordination_event_retention", "recent_collision_window"],
+    "capabilities": [
+      "task_registry_reconciliation",
+      "coordination_event_retention",
+      "recent_collision_window"
+    ],
     "environment": "SOURCE_CONTROL_AND_SOVEREIGN_COORDINATION_RUNTIME",
     "direction": "INTERNAL",
     "mutation_required": true,
@@ -65,10 +73,10 @@
     "unattended_runtime": false
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION",
-    "claim_ref": "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
     "fence_ref": null,
-    "projection_only": false
+    "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
@@ -76,8 +84,12 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["IMPLEMENT_COORDINATION_EVENT_SCHEMA_AND_STORE"],
-  "handoff_projection_refs": ["docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [
+    "IMPLEMENT_COORDINATION_EVENT_SCHEMA_AND_STORE"
+  ],
+  "handoff_projection_refs": [
+    "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "event_history_grants_execution_authority": false,
