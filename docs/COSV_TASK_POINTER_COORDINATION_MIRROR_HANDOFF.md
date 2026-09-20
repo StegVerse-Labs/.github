@@ -147,3 +147,17 @@ Merged behavior:
 - the ALLOW branch carries the same task-generation/COSV and prior-memory context into the existing worker-assignment record.
 
 No authentic runtime assignment, non-ALLOW records-pack emission, or later-generation memory reuse is claimed by this source/CI merge alone.
+
+
+## Functional Memory authentic runtime exercise boundary — 2026-09-20
+
+The source contract remains merged and validated, but this session did not obtain an authentic WorkerCoordinator/Master Records runtime result.
+
+Runtime-path investigation established:
+- `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001` is registered in the canonical Task Registry and resident request dispatcher but is not present in the checked-in WorkerCoordinator registry, so using it would fail before the assignment/admissibility seam and would not exercise Functional Memory.
+- `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` is HANDOFF_READY but its canonical handoff explicitly uses the dedicated independent parent executor rather than the generic WorkerCoordinator assignment seam where Functional Memory is implemented.
+- `STEGFIN-LIVE-ENTRY-003` is a genuine generic WorkerCoordinator candidate whose current dependency state would produce non-ALLOW, but advancing its predecessor would require substantive StegFin/runtime work unrelated to this Functional Memory proof; no StegFin state was modified.
+- No canonical Master Records receipt matching `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` or `stegverse.worker-assignment-functional-memory/v1` was found for the candidate tasks.
+- Direct invocation of the authorized resident command surface was unavailable to this session before any command executed. This is an execution-surface limitation only; it is not recorded as a Task Registry predicate, connected-device dependency, blocker, or reason to alter task state.
+
+Therefore no claim/fence, worker, task state, Functional Memory pack, or Master Records state was fabricated or advanced. The next authentic proof remains: run one already-registered generic WorkerCoordinator task whose current canonical matrix resolves non-ALLOW, require Functional Memory custody `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256==reconstructed_receipt_sha256`, then change only the real same-task predicate that caused the non-ALLOW result and re-evaluate that same task so the retained Functional Memory is reconstructed before any subsequent ALLOW worker materialization.
