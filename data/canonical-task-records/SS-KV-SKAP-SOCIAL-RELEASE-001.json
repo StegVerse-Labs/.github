@@ -35,8 +35,19 @@
     "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "master-records"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegSocials", "StegVerse-Labs/Site", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegOS", "StegVerse-Labs/TVC", "master-records/orchestration"],
+    "organizations": [
+      "StegVerse-Labs",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegSocials",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/StegBrowser",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/TVC",
+      "master-records/orchestration"
+    ],
     "components": [
       "personal-kv-private-draft-reference",
       "single-use-public-release-grant",
@@ -58,11 +69,41 @@
     ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-SS-SOCIAL-INTR","kind":"GOVERNED_RUNTIME_ADMISSION","state":"SOURCE_CANONICAL_RECEIVED_INGRESS_VALIDATED_AUTHENTIC_ADMISSION_PENDING","ref":"StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d","disposition":"A READY bounded use now projects through the secret-free InTr intent into the canonical Universal Work Interlock v1 INGRESS/RECEIVED record with stable work/correlation/source/dependency/convergence/authority binding. Submit that record through authentic Interlock/InTr and retain only real ADMITTED evidence returned by the runtime boundary."},
-    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."},
-    {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"TV/TVC SKAP social credential lease","disposition":"Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."},
-    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09","disposition":"After authentic InTr admission and TV/TVC-SKAP session materialization, the bounded event may enter the existing Facebook/LinkedIn native StegBrowser callers. Returned provider execution is reconciled before the exact Site CAS request is projected; authentic provider execution remains pending."},
-    {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"Import and reconstruct after authentic publication and state-transition receipts exist."}
+    {
+      "dependency_id": "DEP-SS-SOCIAL-INTR",
+      "kind": "GOVERNED_RUNTIME_ADMISSION",
+      "state": "SOURCE_CANONICAL_RECEIVED_INGRESS_VALIDATED_AUTHENTIC_ADMISSION_PENDING",
+      "ref": "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d",
+      "disposition": "A READY bounded use now projects through the secret-free InTr intent into the canonical Universal Work Interlock v1 INGRESS/RECEIVED record with stable work/correlation/source/dependency/convergence/authority binding. Submit that record through authentic Interlock/InTr and retain only real ADMITTED evidence returned by the runtime boundary."
+    },
+    {
+      "dependency_id": "DEP-SS-SOCIAL-KV",
+      "kind": "STORAGE",
+      "state": "SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING",
+      "ref": "Personal-KV/StegSocials/PostGroupState",
+      "disposition": "DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."
+    },
+    {
+      "dependency_id": "DEP-SS-SOCIAL-SKAP",
+      "kind": "CREDENTIAL_CUSTODY",
+      "state": "EVENT_EXECUTION_EVIDENCE_PENDING",
+      "ref": "TV/TVC SKAP social credential lease",
+      "disposition": "Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."
+    },
+    {
+      "dependency_id": "DEP-SS-SOCIAL-STEGBROWSER",
+      "kind": "EVENT_EPHEMERAL_TRANSPORT",
+      "state": "SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING",
+      "ref": "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09",
+      "disposition": "After authentic InTr admission and TV/TVC-SKAP session materialization, the bounded event may enter the existing Facebook/LinkedIn native StegBrowser callers. Returned provider execution is reconciled before the exact Site CAS request is projected; authentic provider execution remains pending."
+    },
+    {
+      "dependency_id": "DEP-SS-SOCIAL-CUSTODY",
+      "kind": "CUSTODY",
+      "state": "IMPLEMENTED_PENDING_REAL_RECEIPT",
+      "ref": "MR-STEGSOCIALS-RECEIPT-CUSTODY-001",
+      "disposition": "Import and reconstruct after authentic publication and state-transition receipts exist."
+    }
   ],
   "blockers": [
     "AUTHENTIC_BOUNDED_SOCIAL_INTR_EXECUTION_NOT_YET_OBSERVED",
@@ -71,7 +112,12 @@
     "AUTHENTIC_TWO_POST_BOUNDED_GROUP_AND_KV_CUSTODY_NOT_YET_OBSERVED"
   ],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001", "SS-EVIDENCE-COMPARISON-001", "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"],
+  "adjacent_task_refs": [
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "SS-EVIDENCE-COMPARISON-001",
+    "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"
+  ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4:bounded-post-group-source-and-validation-merged",
     "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c:atomic-bounded-group-state-store-and-validation-merged",
@@ -117,7 +163,17 @@
     "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
   ],
   "runtime_requirements": {
-    "capabilities": ["personal_kv_read", "personal_kv_conditional_write", "skap_credential_custody", "intr_event_admission", "stegbrowser_event_ephemeral_execute", "platform_publish", "publication_receipt", "kv_write", "custody_reconstruction"],
+    "capabilities": [
+      "personal_kv_read",
+      "personal_kv_conditional_write",
+      "skap_credential_custody",
+      "intr_event_admission",
+      "stegbrowser_event_ephemeral_execute",
+      "platform_publish",
+      "publication_receipt",
+      "kv_write",
+      "custody_reconstruction"
+    ],
     "environment": "SOVEREIGN_BOUNDED_EVENT_EPHEMERAL_STEGOS_NODE_SOCIAL_INVOCATION",
     "direction": "PERSONAL_KV_TO_INTR_TO_TV_TVC_SKAP_TO_STEGBROWSER_TO_PLATFORM_TO_KV_TO_MASTER_RECORDS",
     "mutation_required": true,
@@ -135,10 +191,10 @@
     "bounded_group_unattended_execution_allowed": true
   },
   "worker_claim": {
-    "authority": "CURRENT_SESSION_PLUS_PREAUTHORIZED_BOUNDED_GROUP",
-    "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
-    "fence_ref": "bounded group envelope plus canonical Universal Work Interlock RECEIVED record plus authentic InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
-    "projection_only": false
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
   },
   "componentization": {
     "model_ref": "data/reusable-task-component-model.json",
@@ -149,8 +205,19 @@
     "transport_profile_ref": "data/goal-task-transport-profiles/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
     "component_handoff_ref": "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "runtime_handoff_remains_runtime_truth": true,
-    "selected_transport_components": ["RTC-MANIFEST-001","RTC-GOVERNED-PROCESSING-002","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-PUBLISHER-005","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],
-    "omitted_transport_components": ["RTC-SDK-RETURN-006"],
+    "selected_transport_components": [
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-PUBLISHER-005",
+      "RTC-STEGVERSE-EGRESS-007",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "RTC-FARSIDE-FINAL-009"
+    ],
+    "omitted_transport_components": [
+      "RTC-SDK-RETURN-006"
+    ],
     "execution_materialization_ref": "data/reusable-task-ephemeral-construct-contract.json",
     "callback_correlation_status": "REUSABLE_COMPONENT_CANDIDATE_CURRENT_TASK_BINDING_REMAINS_EXISTING_RECONCILER",
     "new_goal_task_created": false,
