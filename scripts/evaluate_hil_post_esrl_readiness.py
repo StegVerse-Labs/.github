@@ -19,6 +19,7 @@ RESTART_SCHEMA = "stegverse.hil.post-restart-reconstruction/v1"
 TVC_SCHEMA = "stegverse.hil.tvc-lifecycle-outbox-consumption/v1"
 
 WORKER_REL = Path("receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
+CONSUMPTION_REL = Path("receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json")
 RESTART_REL = Path("receipts/hil-sovereign-receiver/post-restart-reconstruction.latest.json")
 TVC_REL = Path("receipts/hil-sovereign-receiver/tvc-lifecycle-outbox-consumption.latest.json")
 
@@ -59,11 +60,13 @@ def evaluate(*, repo_root: Path, esrl_intake: Path | None = None) -> dict[str, A
     root = repo_root.resolve()
     esrl = _load(esrl_intake.resolve()) if esrl_intake is not None else None
     worker_path = root / WORKER_REL
+    consumption_path = root / CONSUMPTION_REL
     restart_path = root / RESTART_REL
     tvc_path = root / TVC_REL
     refs: dict[str, str | None] = {
         "esrl_intake": str(esrl_intake.resolve()) if esrl_intake is not None else None,
         "worker_receipt": str(WORKER_REL),
+        "resident_consumption_receipt": str(CONSUMPTION_REL),
         "post_restart_receipt": str(RESTART_REL),
         "tvc_lifecycle_receipt": str(TVC_REL),
     }
@@ -74,9 +77,38 @@ def evaluate(*, repo_root: Path, esrl_intake: Path | None = None) -> dict[str, A
         return _result("ESRL_LEASE_OPEN", "ESRL intake subject/state binding invalid", list(PARENT_BLOCKERS), refs)
 
     worker = _load(worker_path)
+    consumption = _load(consumption_path)
     remaining = [PARENT_BLOCKERS[1], PARENT_BLOCKERS[2]]
-    if not worker or worker.get("schema") != WORKER_SCHEMA or worker.get("task_id") != TASK_ID or worker.get("receiver_ready") is not True:
-        return _result("HIL_RECEIVER_READY_AND_CUSTODY", "authentic receiver READY receipt not present", remaining, refs)
+
+    worker_ready = bool(
+        worker
+        and worker.get("schema") == WORKER_SCHEMA
+        and worker.get("task_id") == TASK_ID
+        and worker.get("receiver_ready") is True
+    )
+    consumption_ready = bool(
+        consumption
+        and consumption.get("schema") == "stegverse.hil-resident-execution-request-consumption/v1"
+        and consumption.get("state") == "COMPLETED"
+        and consumption.get("task_id") == TASK_ID
+        and consumption.get("terminal_hil_transition_observed") is True
+        and consumption.get("terminal_hil_transition") == "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED"
+        and consumption.get("runtime_execution_attempted") is True
+        and consumption.get("runtime_execution_surface") == "CURRENT_USER_IPHONE_BROWSER"
+        and consumption.get("second_machine_required") is False
+        and isinstance(consumption.get("claim_id"), str)
+        and isinstance(consumption.get("fencing_token"), int)
+    )
+    if not worker_ready and not consumption_ready:
+        return _result("HIL_RECEIVER_READY", "retained receiver READY transition not present", remaining, refs)
+
+    if not worker_ready:
+        return _result(
+            "HIL_RECEIVER_CUSTODY",
+            "receiver READY is retained in canonical resident consumption, but receiver custody receipt is not present",
+            remaining,
+            refs,
+        )
 
     restart = _load(restart_path)
     if not restart or restart.get("schema") != RESTART_SCHEMA or restart.get("state") != "PASS" or restart.get("receiver_restart_reconstruction_observed") is not True or restart.get("reconstruction_state") != "EXACT_BYTES_HASH_VERIFIED":
