@@ -82,5 +82,11 @@
     "release_or_downstream_activation_claimed": false
   },
   "remaining_predicate": null,
-  "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md"
+  "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md",
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  }
 }
