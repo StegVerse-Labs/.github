@@ -11,7 +11,7 @@ Updated: 2026-09-14
 - Canonical task record: `data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json`
 - Successor remediation: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` / `StegVerse-Labs/.github#1866`
 - Successor handoff: `docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md`
-- Status: `ACTIVE / CHECKED_OUT / SUCCESSOR_REMEDIATION_BOUND`
+- Status: `RETIRED / PROMPT_LIMIT_DECOMPOSED`
 - External/second user-operated device required: `false`
 
 ## Why this exists
@@ -231,3 +231,19 @@ The first concrete source defect is exact-lineage correlation: the immutable req
 The existing path now carries a dedicated non-authorizing `STEGVERSE_STEGBROWSER_INVOCATION_NONCE` through the manifest-bound runner and Universal InTr materialization consumer. `workers/stegbrowser_manifest_intr_ingress.py` requires that exact nonce, includes it in the hashed organization-local ingress packet and transition basis, and returns it with claim/fence evidence. `scripts/run_stegbrowser_runtime_consumption_reusable.py` refuses A3/A4 projection unless the returned nonce exactly matches the immutable request.
 
 No claim/fence is minted by this repair, no second invocation is issued, and no runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, Healer prerequisite, or device dependency is introduced. The next authentic predicate is exactly `AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`, followed by the same InTr and Master Records progression.
+
+## Prompt 20/20 terminal reconciliation — 2026-09-20
+
+A final exact-nonce inspection was performed against current canonical GitHub evidence for `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`. No authentic runtime result was found that binds the nonce to a WorkerCoordinator `claim_id` plus `fencing_token`. No actual cycle result recorded a deterministic pre-A3 failure. Matches remained limited to implementation, tests, task records, and handoff/source declarations.
+
+Therefore A3 remains `NOT_OBSERVED`, not `FAILED`. No second invocation was issued, no source repair was justified, and runtime completion remains unclaimed.
+
+This Goal is retired at its `20/20` prompt boundary and the genuinely unresolved authentic-result observation is transferred to exactly one narrow continuation:
+
+- `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`
+- `StegVerse-Labs/.github#2338`
+- `docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md`
+
+The successor may only observe the same immutable request. If the authentic nonce-bound claim/fence surfaces, it must continue the same state lineage through Interlock/InTr and canonical Master Records, requiring `RECORDED`, reconstruction PASS, required-evidence validation PASS, and exact receipt/reconstruction digest equality at every successor. If an actual pre-A3 deterministic runtime failure surfaces, repair only that first existing-path defect and rerun through the same original request.
+
+Manual work: None.
