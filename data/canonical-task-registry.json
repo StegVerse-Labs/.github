@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 138,
+  "generation": 139,
   "status": "ERL_UK_JCHR_SUCCESSOR_CHECK_2026_09_20_FOURTH_PASS_NO_CHANGE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -7032,7 +7032,9 @@
       "canonical_issue": "StegVerse-Labs/.github#2338",
       "source_refs": [
         "master-records/orchestration#105",
-        "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c"
+        "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+        "master-records/orchestration#106",
+        "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715"
       ],
       "targets": {
         "organizations": [
@@ -7058,6 +7060,13 @@
           "state": "SOURCE_REPAIRED_MERGED_RUNTIME_QUERY_REQUIRED",
           "ref": "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
           "disposition": "QUERY_CANONICAL_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND; EMPTY_AUTHORITATIVE_RESULT_MEANS_NO_CUSTODIED_A3_TRANSITION_FOR_THIS_SUBJECT"
+        },
+        {
+          "dependency_id": "DEP-MASTER-RECORDS-RUNTIME-ENTRYPOINT",
+          "kind": "CANONICAL_RUNTIME_LOADING",
+          "state": "SOURCE_REPAIRED_MERGED_AUTHENTIC_DURABLE_RUNTIME_MATERIALIZATION_REQUIRED",
+          "ref": "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
+          "disposition": "THE_EXISTING_MASTER_RECORDS_RUNTIME_MUST_LOAD_services.canonical_master_records_api:app_AND_EXPOSE_THE_MERGED_QUERY_AGAINST_ITS_DURABLE_CUSTODY_DB; WORKFLOW_LOCAL_RUNTIME_DOES_NOT_SUBSTITUTE_FOR_THE_AUTHENTIC_TARGET_STORE"
         }
       ],
       "blockers": [],
@@ -7068,7 +7077,9 @@
       "existing_evidence_refs": [
         "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
         "StegVerse-Labs/.github@febd6251c1eea9cbaeb03298802654157623e573",
-        "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c"
+        "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+        "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
+        "master-records/orchestration workflow run 35527681406"
       ],
       "expected_evidence_predicates": [
         "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_ID_OBSERVED",
@@ -7079,7 +7090,10 @@
         "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
         "MASTER_RECORDS_RECEIPT_DIGEST_EQUALS_RECONSTRUCTED_DIGEST",
         "AUTHENTIC_MASTER_RECORDS_QUERY_BY_IMMUTABLE_NONCE_EXECUTED",
-        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CUSTODY_CLASSIFIED"
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CUSTODY_CLASSIFIED",
+        "AUTHENTIC_DURABLE_MASTER_RECORDS_RUNTIME_ENDPOINT_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RUNTIME_LOADED_CANONICAL_APP",
+        "AUTHENTIC_MASTER_RECORDS_RUNTIME_INCLUDES_QUERY_REPAIR"
       ],
       "runtime_requirements": {
         "capabilities": [
@@ -7114,10 +7128,11 @@
         "runtime_completion_claimed": false
       },
       "allowed_next_transitions": [
-        "QUERY_AUTHENTIC_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "TRACE_EXISTING_MASTER_RECORDS_DURABLE_RUNTIME_MATERIALIZATION_AND_SOURCE_REFRESH_PATH",
+        "OBSERVE_AUTHENTIC_MASTER_RECORDS_RUNTIME_LOADING_MERGE_8804762F",
+        "EXECUTE_AUTHENTIC_NONCE_QUERY_AGAINST_DURABLE_CANONICAL_STORE",
         "IF_MATCH_REQUIRE_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
-        "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH",
-        "IF_PRE_A3_FAILURE_RECORD_EXISTS_REPAIR_FIRST_DETERMINISTIC_FAILURE_AND_RERUN_SAME_REQUEST"
+        "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION_ON_EXISTING_PATH"
       ],
       "handoff_projection_refs": [
         "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md"
@@ -7130,7 +7145,7 @@
         "master_records_reality_authority": true
       },
       "prompt_budget": {
-        "goal_prompt_count": "1/20",
+        "goal_prompt_count": "2/20",
         "split_merely_to_reset_counter": false
       }
     }
