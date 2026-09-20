@@ -1026,3 +1026,8 @@ The existing source-refresh watcher already watched `stegverse-master-records` b
 ### SDK Test 1 authentic runtime observation boundary
 
 Generation 140 confirms `SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001` is ACTIVE while the original execution fragment remains `HANDOFF_READY` and authorized for a fresh independent WorkerCoordinator claim. The shared Universal InTr endpoint is resident loopback-only, no connected authorized remote-control surface was observable in this session, and no authentic Test 1 runtime receipt has been retained. GitHub/public execution is not a substitute; Tests 2/3 remain unexecuted.
+
+
+## 2026-09-20 targeted Master Records custody carriage repair
+
+The existing StegAgents targeted resident consumer now preserves the canonical Master Records HTTP and durable-local custody bindings when sanitizing its execution environment. This closes the deterministic gap where downstream `submit_state_receipt(...)` could reach the canonical custody client with neither supported Master Records transport configured. GitHub/provider secrets remain stripped; no new custody service, runtime, dispatcher, scheduler, or authority plane is introduced.
