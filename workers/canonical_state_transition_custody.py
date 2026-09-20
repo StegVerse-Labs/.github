@@ -22,7 +22,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
 RECEIPT_SCHEMA = "stegverse.canonical-state-transition-receipt/v1"
@@ -323,6 +323,126 @@ def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
     return result if isinstance(result, dict) else None
 
 
+def _query_http(subject_or_correlation_id: str, transition_id: str | None) -> dict[str, Any] | None:
+    endpoint, token, timeout = _configuration()
+    if not endpoint or not token or not _endpoint_allowed(endpoint):
+        return None
+    params = {"subject_or_correlation_id": subject_or_correlation_id}
+    if transition_id:
+        params["transition_id"] = transition_id
+    url = endpoint.rstrip("/") + "/query?" + urlencode(params)
+    request = Request(url, method="GET", headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": f"CANONICAL_MASTER_RECORDS_QUERY_FAILED:{type(exc).__name__}",
+            "authority_effect": "NONE",
+        }
+
+
+def _query_local(subject_or_correlation_id: str, transition_id: str | None) -> dict[str, Any] | None:
+    mr_root = _local_binding()
+    if mr_root is None:
+        return None
+    env = {
+        key: os.environ[key]
+        for key in (
+            "PATH",
+            "LANG",
+            "LC_ALL",
+            "MASTER_RECORDS_DB",
+            "MASTER_RECORDS_RECEIPT_KEY",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+        )
+        if key in os.environ
+    }
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
+    authority_call = (
+        "import json,sys\n"
+        "from services import master_records_custody_api as base\n"
+        "from services import canonical_state_transition_custody as canonical\n"
+        "subject=sys.argv[1]; transition=sys.argv[2] or None\n"
+        "canonical._initialize(base)\n"
+        "with base._LOCK, base._connect() as connection:\n"
+        " rows=connection.execute('SELECT receipt_sha256 FROM canonical_state_transition_receipts WHERE subject_or_correlation_id = ? AND (? IS NULL OR transition_id = ?) ORDER BY transition_sequence, recorded_at, receipt_sha256', (subject, transition, transition)).fetchall()\n"
+        "sys.stdout.write(json.dumps({'schema':'stegverse.master-records.state-transition-query/v1','subject_or_correlation_id':subject,'transition_id':transition,'receipt_sha256s':[row['receipt_sha256'] for row in rows],'master_records_grants_transition_authority':False,'authority_effect':'NONE_QUERY_ONLY'}, sort_keys=True)+'\\n')\n"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", authority_call, subject_or_correlation_id, transition_id or ""],
+        cwd=mr_root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    if completed.returncode != 0:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_QUERY_CALL_FAILED",
+            "stderr_tail": completed.stderr[-1000:],
+            "authority_effect": "NONE",
+        }
+    try:
+        result = json.loads(completed.stdout.strip().splitlines()[-1])
+    except Exception:
+        return {
+            "state": "BOUNDARY",
+            "reason": "CANONICAL_MASTER_RECORDS_LOCAL_QUERY_RESULT_INVALID",
+            "authority_effect": "NONE",
+        }
+    return result if isinstance(result, dict) else None
+
+
+def query_state_receipts(subject_or_correlation_id: str, transition_id: str | None = None) -> dict[str, Any]:
+    """Discover retained receipt identities without granting any transition authority."""
+    if not isinstance(subject_or_correlation_id, str) or not subject_or_correlation_id:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_QUERY_SUBJECT_INVALID", "authority_effect": "NONE"}
+    payload = _query_http(subject_or_correlation_id, transition_id)
+    if payload is None:
+        payload = _query_local(subject_or_correlation_id, transition_id)
+    if payload is None:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_QUERY_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
+    if payload.get("state") == "BOUNDARY":
+        return payload
+    if payload.get("master_records_grants_transition_authority") is not False:
+        return {"state": "BOUNDARY", "reason": "MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED", "authority_effect": "NONE"}
+
+    hashes = payload.get("receipt_sha256s")
+    if hashes is None:
+        records = payload.get("records")
+        if not isinstance(records, list):
+            return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_QUERY_RESULT_INVALID", "authority_effect": "NONE"}
+        hashes = [row.get("receipt_sha256") for row in records if isinstance(row, dict)]
+    if not isinstance(hashes, list) or any(not isinstance(value, str) or len(value) != 64 for value in hashes):
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_QUERY_RECEIPT_IDENTITIES_INVALID", "authority_effect": "NONE"}
+
+    reconstructed = []
+    for receipt_sha256 in hashes:
+        row = reconstruct_state_receipt(receipt_sha256)
+        if row.get("state") != "PASS":
+            return {
+                "state": "BOUNDARY",
+                "reason": str(row.get("reason") or "CANONICAL_MASTER_RECORDS_QUERY_RECONSTRUCTION_FAILED"),
+                "receipt_sha256": receipt_sha256,
+                "authority_effect": "NONE",
+            }
+        reconstructed.append(row)
+    return {
+        "state": "PASS",
+        "subject_or_correlation_id": subject_or_correlation_id,
+        "transition_id": transition_id,
+        "count": len(reconstructed),
+        "records": reconstructed,
+        "master_records_grants_transition_authority": False,
+        "authority_effect": "NONE_QUERY_RECONSTRUCTION_ONLY",
+    }
+
+
 def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
     """Reconstruct a retained canonical transition receipt by exact digest."""
     if not isinstance(receipt_sha256, str) or len(receipt_sha256) != 64:
@@ -410,4 +530,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
