@@ -20,6 +20,10 @@ HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
 UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
 UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
+HEALER_STEGHEALTH_SOURCE_FLOOR = "8683611f035d684ea295020e2f55971d5797655b"
+HEALER_STEGHEALTH_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+HEALER_STEGHEALTH_REUSABLE_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
+CONTROL_BUNDLE_MANIFEST = "stegverse-control-plane-manifest.json"
 
 CANONICAL_REPO_BASES = (
     Path.home() / ".stegverse" / "repos",
@@ -37,6 +41,110 @@ def _complete_healer_root(path: Path) -> bool:
         and (root / "data" / "orchestrator_targets.json").is_file()
         and (root / "docs" / "HEALER_MIRROR_HANDOFF.md").is_file()
     )
+
+
+
+def _required_steghealth_schedule_binding(root: Path) -> tuple[bool, str]:
+    path = root / "data" / "reusable_task_schedule.json"
+    if not path.is_file():
+        return False, "REQUIRED_SCHEDULE_MISSING"
+    try:
+        schedule = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return False, "REQUIRED_SCHEDULE_INVALID"
+    rows = [
+        row for row in schedule.get("tasks", [])
+        if isinstance(row, dict)
+        and row.get("reusable_task_id") == HEALER_STEGHEALTH_REUSABLE_TASK_ID
+        and row.get("tracking_task_id") == HEALER_STEGHEALTH_TASK_ID
+    ] if isinstance(schedule, dict) else []
+    if len(rows) != 1:
+        return False, "REQUIRED_STEGHEALTH_BINDING_MISSING"
+    row = rows[0]
+    if (
+        row.get("cosv_task_vector") != "60000000111000"
+        or row.get("repository") != "StegVerse-Labs/.github"
+        or row.get("enabled") is not True
+        or row.get("invocation_key") != HEALER_STEGHEALTH_TASK_ID
+        or row.get("parameters") != {
+            "only_consumer": "canonical_work_coordination",
+            "goal_task_id": HEALER_STEGHEALTH_TASK_ID,
+        }
+    ):
+        return False, "REQUIRED_STEGHEALTH_BINDING_MISMATCH"
+    return True, "REQUIRED_STEGHEALTH_BINDING_PRESENT"
+
+
+def verify_healer_source_freshness(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    bound, binding_state = _required_steghealth_schedule_binding(root)
+    base = {
+        "required_source_floor": HEALER_STEGHEALTH_SOURCE_FLOOR,
+        "required_task_id": HEALER_STEGHEALTH_TASK_ID,
+        "required_reusable_task_id": HEALER_STEGHEALTH_REUSABLE_TASK_ID,
+        "schedule_binding_state": binding_state,
+        "network_fetch_performed": False,
+        "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
+    }
+    if not bound:
+        return {**base, "state": "STALE_OR_INCOMPLETE", "source_mode": "UNKNOWN"}
+
+    git_dir = root / ".git"
+    if git_dir.is_dir():
+        head = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=False, timeout=30,
+            env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", str(Path.home()))},
+        )
+        ancestor = subprocess.run(
+            ["git", "-C", str(root), "merge-base", "--is-ancestor", HEALER_STEGHEALTH_SOURCE_FLOOR, "HEAD"],
+            capture_output=True, text=True, check=False, timeout=30,
+            env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", str(Path.home()))},
+        )
+        if head.returncode == 0 and ancestor.returncode == 0:
+            return {
+                **base,
+                "state": "CURRENT",
+                "source_mode": "LOCAL_GIT_DESCENDANT",
+                "head": head.stdout.strip().lower(),
+                "source_floor_present": True,
+            }
+        return {
+            **base,
+            "state": "STALE_OR_INCOMPLETE",
+            "source_mode": "LOCAL_GIT_DESCENDANT",
+            "head": head.stdout.strip().lower() if head.returncode == 0 else None,
+            "source_floor_present": False,
+        }
+
+    manifest_path = root.parent.parent / CONTROL_BUNDLE_MANIFEST
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except Exception:
+            manifest = {}
+        proofs = manifest.get("vendor_source_proofs") if isinstance(manifest, dict) else None
+        proof = proofs.get("StegVerse-Healer") if isinstance(proofs, dict) else None
+        valid = bool(
+            isinstance(proof, dict)
+            and proof.get("state") == "VERIFIED_LOCAL_GIT_SOURCE"
+            and proof.get("source_floor") == HEALER_STEGHEALTH_SOURCE_FLOOR
+            and proof.get("source_floor_present") is True
+            and proof.get("required_steghealth_binding_present") is True
+            and proof.get("required_schedule_task_id") == HEALER_STEGHEALTH_TASK_ID
+            and proof.get("clean_worktree_at_packaging") is True
+            and proof.get("network_fetch_performed") is False
+        )
+        return {
+            **base,
+            "state": "CURRENT" if valid else "STALE_OR_INCOMPLETE",
+            "source_mode": "VERIFIED_CONTROL_BUNDLE",
+            "source_floor_present": bool(valid),
+            "manifest_ref": str(manifest_path),
+            "proof": proof if isinstance(proof, dict) else None,
+        }
+
+    return {**base, "state": "STALE_OR_INCOMPLETE", "source_mode": "UNVERIFIED_LOCAL_TREE"}
 
 
 def discover_healer_root(explicit: str = "") -> tuple[Path | None, str]:
@@ -329,6 +437,10 @@ def main() -> int:
     repo_roots, repo_roots_source = discover_repo_roots(os.getenv("STEGVERSE_REPO_ROOTS_JSON", ""))
     repo_roots = merge_named_repository_roots(repo_roots)
     roots_json = json.dumps(repo_roots, sort_keys=True, separators=(",", ":")) if repo_roots else ""
+    healer_source_freshness = verify_healer_source_freshness(healer_root) if healer_root is not None else {
+        "state": "NOT_CHECKED",
+        "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
+    }
     blocker = None
     child_receipt: dict = {}
     state = "BLOCKED"
@@ -351,6 +463,15 @@ def main() -> int:
             "may_remain_blocked": True,
             "next_solution_action": "MATERIALIZE_UNIQUE_LOCAL_STEGVERSE_HEALER_ROOT",
             "discovery_state": healer_root_source,
+        }
+    elif healer_source_freshness.get("state") != "CURRENT":
+        blocker = {
+            "dependency_class": "LOCAL_SOURCE_FRESHNESS",
+            "problem_statement": "The discovered StegVerse-Healer source does not prove the required StegHealth schedule source floor and exact portable-dispatch binding.",
+            "solution_required": True,
+            "may_remain_blocked": True,
+            "next_solution_action": "REUSE_EXISTING_ONE_SHOT_RESIDENT_STACK_ACTIVATION",
+            "source_freshness": healer_source_freshness,
         }
     elif not roots_json:
         blocker = {
@@ -431,6 +552,7 @@ def main() -> int:
         "child_receipt": child_receipt,
         "healer_root": str(healer_root) if healer_root is not None else None,
         "healer_root_source": healer_root_source,
+        "healer_source_freshness": healer_source_freshness,
         "repository_root_count": len(repo_roots),
         "repository_roots_source": repo_roots_source,
         "blocker": blocker,
