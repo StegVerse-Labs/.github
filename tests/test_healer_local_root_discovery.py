@@ -141,7 +141,13 @@ class HealerLocalRootDiscoveryTests(unittest.TestCase):
     def test_vendored_healer_source_accepts_verified_bundle_manifest(self):
         with tempfile.TemporaryDirectory() as td:
             control = Path(td) / "control"
-            healer = make_healer(control / "vendor")
+            healer = control / "vendor" / "StegVerse-Healer"
+            (healer / "app").mkdir(parents=True)
+            (healer / "data").mkdir(parents=True)
+            (healer / "docs").mkdir(parents=True)
+            (healer / "app" / "dispatch_orchestrators.py").write_text("# dispatcher\n")
+            (healer / "data" / "orchestrator_targets.json").write_text("{}\n")
+            (healer / "docs" / "HEALER_MIRROR_HANDOFF.md").write_text("# handoff\n")
             schedule = {
                 "schema": "stegverse.reusable-task-schedule/v1",
                 "tasks": [{
