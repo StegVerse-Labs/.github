@@ -241,6 +241,8 @@ def workercoordinator_target_candidate(
         return False
     if record.get("human_action_ref") not in {None, ""}:
         return False
+    if "INGRESS_ADMITTED" in (record.get("allowed_next_transitions") or []):
+        return False
     task_id = str(record.get("task_id") or "").strip()
     if not task_id or not fragments_dir.is_dir():
         return False
