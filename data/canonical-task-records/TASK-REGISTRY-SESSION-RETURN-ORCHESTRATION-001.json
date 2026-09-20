@@ -6,7 +6,12 @@
   "goal": "Bind normal voluntary session/task close to the merged Task Registry hash-linked RETURNED/CHECK_OUT event protocol so session handoff/footer orchestration cannot relinquish work without durable coordination history.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
-  "worker_claim": "CURRENT_SESSION",
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "source_refs": [
     "docs/TASK_REGISTRY_SESSION_RETURN_ORCHESTRATION_MIRROR_HANDOFF.md",
     "scripts/materialize_task_session_close.py",
@@ -15,12 +20,25 @@
     "StegVerse-Labs/.github#1411"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github"],
-    "components": ["canonical-task-registry", "session-close", "handoff-footer", "recent-collision-history"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "canonical-task-registry",
+      "session-close",
+      "handoff-footer",
+      "recent-collision-history"
+    ]
   },
-  "dependencies": ["TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"],
-  "adjacent_task_refs": ["TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"],
+  "dependencies": [
+    "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+  ],
+  "adjacent_task_refs": [
+    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+  ],
   "authority": {
     "task_registry": "COORDINATION_ONLY",
     "workercoordinator": "CLAIM_FENCE",
