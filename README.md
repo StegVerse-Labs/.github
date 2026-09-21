@@ -1211,3 +1211,7 @@ The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-ret
 ### TVC hygiene retirement routing batch 2 — 2026-09-21
 
 TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready refs and zero invalid approvals after PR #457 merged. Only the ten newly approved batch-2 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` in `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json`; no branch deletion was performed.
+
+### SDK evaluator exact reconstruction checkpoint
+
+The runtime-proof task remains at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Exact parent source hashes were reconciled against accessible retained-runtime and Master Records projections; they currently remain source/CI evidence only and do not promote authentic runtime materialization. The state is `UNKNOWN_NOT_FALSE`, with no source/runtime defect inferred and no `RESIDENT_REQUEST_DISPATCH_VISIT` substitution.
