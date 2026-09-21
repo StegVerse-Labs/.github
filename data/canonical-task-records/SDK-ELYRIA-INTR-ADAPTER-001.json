@@ -158,5 +158,24 @@
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false
+  },
+  "service_gateway_lineage_trace_20260921": {
+    "owner_task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+    "tvc_cmc029_task_id": "TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029",
+    "machine_owner_state": "HANDOFF_READY",
+    "source_carriage_check": "PASS",
+    "bootstrap_nonsecret_binding_carriage": "PRESERVED",
+    "adapter_env_allowlist_check": "PASS",
+    "credential_scrub_preserves_nonsecret_gateway_kv_tls_bindings": true,
+    "first_concrete_predecessor_condition": "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
+    "runtime_receipt_for_resident_storage_binding_failure_observed": false,
+    "source_defect_found": false,
+    "repair_performed": false,
+    "downstream_public_route_predicate": "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
+    "downstream_tls_predicate": "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED",
+    "cmc029_live_issuance_observed": false,
+    "cmc029_public_https_observed": false,
+    "elyria_transport_eligible": false,
+    "disposition": "REQUIRE_AUTHENTIC_EXISTING_MACHINE_OWNER_EXECUTION_WITH_REAL_GATEWAY_AND_KV_BINDINGS_BEFORE_CMC029_TLS_OR_PUBLIC_ROUTE_CAN_ADVANCE"
   }
 }
