@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "correlation_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "root_correlation_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "parent_task_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "goal": "Produce a successor independently verifiable four-stage SDK evidence package from the post-lineage-repair source identity, preserving the prior experiment bundle as immutable history and proving the repaired run-manifest result lineage in fresh raw results and post-test documentation.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_VALIDATED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_FOUR_STAGE_POST_LINEAGE_EVIDENCE_PACKAGE_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "prior_bundles_immutable": true,
+    "manifest_only_per_stage_variable_input": true,
+    "exact_source_identity_required": true,
+    "fresh_post_lineage_results_required": true,
+    "pretest_interpretation_before_result_docs": true,
+    "posttest_docs_only_after_execution": true,
+    "raw_evidence_and_hash_inventory_required": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE"
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "package_complete": true
+  },
+  "evidence": {
+    "pretest_pdf_sha256": "37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7",
+    "preregistration_commit": "0127082e415fb220c709962ab7d0645e06105a4c",
+    "workflow_run": 35547155843,
+    "workflow_run_attempt": 2,
+    "workflow_job_id": 106178872342,
+    "workflow_artifact_id": 10617582192,
+    "workflow_artifact_sha256": "30838d6c6446d183c833a2023eed1323fe849432ca1ebb66887b85e537c584e1",
+    "tested_head": "18a5f30b61557bf557b563797fccb241628f4b2d",
+    "merged_main": "69921971106ffb4008bf5914c34b34bc51745ff0",
+    "tested_and_merged_tree": "6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6",
+    "sdk_source_index_sha256": "0c5adaa179b3cbaf5d66c9e984fa9674f0fb88daae61aad0d9795b95a3389a07",
+    "successor_package_sha256": "da628137640b26d2eae9124e94d4f02719552628877ca2b73d21051a634461e6",
+    "lineage_verification": "PASS_ALL_FOUR",
+    "test1": "PASS",
+    "test2": "PASS",
+    "test3": "PASS_NEUTRAL_INVARIANCE_SCENARIO",
+    "task4": "PASS_CONCURRENT_INVOCATION_LIFETIME_OVERLAP_NOT_CPU_PARALLELISM"
+  },
+  "remaining_predicate": null
+}
