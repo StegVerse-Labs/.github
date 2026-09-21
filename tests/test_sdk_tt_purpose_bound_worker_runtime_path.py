@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -286,3 +288,91 @@ def test_workercoordinator_does_not_project_purpose_task_active_before_governed_
     assert 'task_active_projected_before_governed_activation=False' in purpose_body
     assert 'task.update({\n                "state": "ACTIVE",' not in purpose_body
 
+def test_purpose_post_claim_issues_fresh_tvc_warrant_through_existing_service():
+    m = load_worker()
+    claim_id = "SHWP-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-G42"
+    task = {
+        "task_id": m.PURPOSE_TASK_ID,
+        "claim_id": claim_id,
+        "claim_fence_master_records_transition": {
+            "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+            "state": "RECORDED",
+            "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": "a" * 64,
+            "reconstructed_receipt_sha256": "a" * 64,
+        },
+    }
+    commit_sha = "b" * 40
+    calls = []
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        agents = root / "StegAgents"
+        agents.mkdir()
+        request_root = root / "requests"
+        receipt_root = root / "receipts"
+
+        def runner(command, **kwargs):
+            calls.append(command)
+            if command[0] == "git":
+                return subprocess.CompletedProcess(command, 0, stdout=commit_sha + "\n", stderr="")
+            assert command == ["systemctl", "start", m.TVC_WARRANT_SERVICE_TEMPLATE.format(instance=claim_id)]
+            request = json.loads((request_root / f"{claim_id}.json").read_text(encoding="utf-8"))
+            assert request["task_id"] == m.PURPOSE_TASK_ID
+            assert request["commit_sha"] == commit_sha
+            warrant = {
+                "warrant_id": f"tvc:{claim_id}",
+                "issuer": "tv.warrant.resident",
+                "issued_at": "2026-09-21T00:00:00Z",
+                "expires_at": "2026-09-21T00:15:00Z",
+                "policy": {"bundle_sha256": "c" * 64},
+                "claims": {"repo": m.STEGAGENTS_REPO, "commit_sha": commit_sha, "task_id": m.PURPOSE_TASK_ID},
+                "scope": {"action": "run_agent", "module": m.STEGAGENTS_REPO},
+                "signature": {"alg": "ed25519", "public_key_id": "tv.warrant.resident.ed25519.001", "sig_b64": "sig"},
+            }
+            receipt_root.mkdir(parents=True, exist_ok=True)
+            (receipt_root / f"{claim_id}.json").write_text(json.dumps({
+                "schema": "stegverse.tvc.execution-warrant-issuance/v1",
+                "state": "ISSUED",
+                "credential_authority": "TV/TVC",
+                "issuer_pubkey_b64": "pubkey",
+                "policy_bundle_sha256": "c" * 64,
+                "max_ttl_seconds": 900,
+                "warrant": warrant,
+                "private_key_exposed": False,
+                "private_key_persisted": False,
+            }), encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+        env = m._fresh_tvc_warrant_env(
+            task=task,
+            agents_root=agents,
+            runner=runner,
+            request_root=request_root,
+            receipt_root=receipt_root,
+        )
+
+    assert calls[0][:3] == ["git", "-C", str(agents)]
+    assert calls[1][0:2] == ["systemctl", "start"]
+    assert json.loads(env["STEGVERSE_WARRANT_JSON"])["claims"]["commit_sha"] == commit_sha
+    assert env["TV_POLICY_BUNDLE_SHA256"] == "c" * 64
+    assert env["TV_WARRANT_ISSUER_PUBKEY_B64"] == "pubkey"
+    assert env["TV_WARRANT_MAX_TTL_SECONDS"] == "900"
+
+
+def test_purpose_post_claim_warrant_bridge_requires_closed_claim_fence():
+    m = load_worker()
+    task = {"task_id": m.PURPOSE_TASK_ID, "claim_id": "claim", "claim_fence_master_records_transition": {}}
+    with tempfile.TemporaryDirectory() as td:
+        try:
+            m._fresh_tvc_warrant_env(
+                task=task,
+                agents_root=Path(td),
+                runner=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("runner must not execute")),
+                request_root=Path(td) / "requests",
+                receipt_root=Path(td) / "receipts",
+            )
+        except RuntimeError as exc:
+            assert "transition missing" in str(exc)
+        else:
+            raise AssertionError("TVC issuance ran without closed claim/fence")
