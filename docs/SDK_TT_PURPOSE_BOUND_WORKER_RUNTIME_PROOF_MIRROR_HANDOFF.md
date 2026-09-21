@@ -598,3 +598,22 @@ Source/integration closure completed in this terminal prompt:
 The source graph and shared ingress are therefore closed. Authentic completion remains false. The successor must execute the exact Test 1 manifest lineage through the existing resident `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` + `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` path and require, in order, `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, `TV_TVC_WARRANT_POLICY_VERIFIED`, `STEGCORE_INTR_MATERIALIZATION_ADMITTED`, and all four purpose-bound lifecycle transitions, with a Master Records closure after every transition satisfying RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality. Completion additionally requires replay PASS, reconstruction PASS, records-only terminal state, `continued_authority=false`, and a manifest receipt bound to the exact original manifest lineage.
 
 Successor handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
+
+
+## Preserved execution-lineage WorkerCoordinator repair — 2026-09-21
+
+Current canonical generation 150 was re-read before mutation. This parent Goal remains `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT`; its preserved execution lineage remains `HANDOFF_READY` because the successor observes the already-bound original runtime task identity.
+
+Tracing that exact `HANDOFF_READY -> WorkerCoordinator` path exposed the first deterministic source defect before claim/fence custody:
+
+```text
+record["terminal_destination"] = "master-records/orchestration"
+if manifest_runtime_request_present:      # read
+    ...
+manifest_runtime_request_path = ...
+manifest_runtime_request_present = ...   # initialized later
+```
+
+Therefore a targeted admission can raise an unbound-local error before `_custody_assignment_transition(...)` is reached, preventing `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` from being produced at all.
+
+The repair only reorders initialization of the already-existing manifest-request path/presence values ahead of their optional assignment-record binding. It changes no claim authority, transition authority, credential authority, custody authority, scheduler, dispatcher, runtime, carrier, or task identity. A focused regression test now requires initialization before use and before claim/fence custody.
