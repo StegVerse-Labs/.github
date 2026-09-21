@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "correlation_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "root_correlation_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "parent_task_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "goal": "Produce a successor independently verifiable four-stage SDK evidence package from the post-lineage-repair source identity, preserving the prior experiment bundle as immutable history and proving the repaired run-manifest result lineage in fresh raw results and post-test documentation.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_FOUR_STAGE_POST_LINEAGE_EVIDENCE_PACKAGE_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "prior_bundles_immutable": true,
+    "manifest_only_per_stage_variable_input": true,
+    "exact_source_identity_required": true,
+    "fresh_post_lineage_results_required": true,
+    "pretest_interpretation_before_result_docs": true,
+    "posttest_docs_only_after_execution": true,
+    "raw_evidence_and_hash_inventory_required": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "package_complete": false
+  }
+}
