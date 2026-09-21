@@ -274,7 +274,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             runtime = base / "runtime"
             with mock.patch.object(install_mod, "materialize_master_records_source_package", return_value={"state": "PACKAGE_NOT_PRESENT"}) as materialize, mock.patch.object(install_mod, "install") as install_call, mock.patch.object(sys, "argv", ["install_sovereign_worker_source_refresh_service.py", "--runtime-root", str(runtime), "--source-package-root", str(package_root), "--materialize-master-records-only"]):
                 self.assertEqual(install_mod.main(), 0)
-            materialize.assert_not_called()
+            materialize.assert_called_once_with(package_root, runtime)
             retained = runtime / install_mod.MASTER_RECORDS_REFRESH_RECEIPT_REL
             self.assertTrue(retained.is_file())
             install_call.assert_not_called()
