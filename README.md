@@ -1100,6 +1100,9 @@ For `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`, the resident-dispatch initiat
 The shared canonical custody helper now makes the immediately preceding Master Records closure the actual predecessor for a successor transition. A successor recorded through `CanonicalTransitionCustody` receives `prior_state_ref_or_hash=sha256:<prior Master Records receipt>` and automatically carries the exact `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. Progression occurs only after `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality. Domain state/result hashes remain transition evidence and do not replace canonical custody closure as progression authority.
 
 
+Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` again confirms `RESIDENT_REQUEST_DISPATCH_VISIT` as the first missing authentic transition. Retained worker state remains historical and all native post-repair runtime receipts remain absent; no downstream state is promoted.
+
+
 ### SDK TT WorkerCoordinator expiry-basis repair
 
 The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
@@ -1123,9 +1126,12 @@ The purpose-bound WorkerCoordinator path now has a bounded repair in progress fo
 
 The existing content-addressed control-plane source package now carries the canonical WorkerCoordinator wrapper, admitted WorkerCoordinator, Functional Memory bridge, shared canonical Master Records custody client, and corrected StegFin worker fragment as one allowlisted delta. This closes the source-delivery gap where the existing relay could materialize a source tree that still lacked the merged Functional Memory assignment repair.
 
+### SDK evaluator pre-drift runtime-proof boundary
 
+`SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
 
 
 ### Elyria dependency reconciliation — 2026-09-21
 
 `SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is Coinbase-specific infrastructure with Coinbase Gateway/KV bindings and TVC-specific readiness semantics; its earlier use as an Elyria dependency path is superseded. Elyria now resumes strictly on the existing SDK -> Interlock/InTr -> external Elyria endpoint -> Master Records path.
+
