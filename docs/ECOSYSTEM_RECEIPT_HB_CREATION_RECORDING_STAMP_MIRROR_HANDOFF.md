@@ -466,3 +466,37 @@ PR #2480 merged as `70300377311b9a949fd0f126cf1f31dacaaf55cd`. Exact head `dde5f
 This closes the second source-level process-startup defect on the carrier-first path: the carrier process now receives the same already-declared safe local worker bindings needed by its existing `ensure_worker_presence(...)` self-heal path to launch WorkerCoordinator with canonical Master Records custody connectivity.
 
 The evidence boundary remains execution-specific. Canonical retained state is still historical; no fresh post-merge carrier/worker process cycle is retained here. Therefore execution reaching `build_state_receipt(...)`, any receipt SHA/HB creation reference, Master Records recording metadata, reconstruction equality, or bounded receipt-set root remains unclaimed.
+
+
+## Actual carrier/service/process execution boundary — generation 173
+
+The carrier/service/process path was traced from current canonical main after the merged carrier self-heal binding repair.
+
+The exact existing path is:
+
+```text
+HEARTBEAT-OSCILLATOR-RESIDENT-START-012
+-> scripts/install_sovereign_heartbeat_carrier.py
+-> native OS carrier registration/start
+-> carrier-activation.latest.json
+-> oscillator-backed carrier progression
+-> scripts/run_heartbeat_runtime.py --continuous
+-> ensure_worker_presence(...)
+-> scripts/run_worker_runtime.py --continuous
+-> first task-capable WorkerCoordinator cycle
+-> first governed transition
+-> build_state_receipt(...)
+```
+
+Current retained evidence does not contain `receipts/sovereign-host/carrier-activation.latest.json`, a fresh runtime-presence receipt, or a fresh task-capable worker cycle. The canonical resident-start task remains `HANDOFF_READY` with `claim_id=null`, `worker_id=null`, and direct carrier-only installation still explicitly authorized without WorkerCoordinator as a startup prerequisite.
+
+That establishes the first execution break precisely: **the post-repair carrier-only native installer has not been shown to execute on an admitted resident host.** There is no retained evidence of an activation command failure, carrier crash, oscillator failure, self-heal failure, or worker startup failure after the merged repair because the execution predecessor itself is absent.
+
+No additional source repair is justified at this boundary. Creating another runtime, hosted substitute, scheduler, dispatcher, or WorkerCoordinator path would violate the existing carrier-first contract and would manufacture a different execution path instead of testing the canonical one.
+
+The current session has no authorized connected resident machine surface; therefore it cannot execute or inspect the native OS service manager. This is a session reachability limitation only and is not reclassified as a StegVerse architecture blocker.
+
+Next execution must use the already-authorized carrier-only installer on the admitted resident host. Once it runs, the first retained machine result must be consumed directly:
+- if `carrier_active=false`, repair the exact activation/service failure reported there;
+- if `carrier_active=true` but no task-capable worker cycle follows, trace `ensure_worker_presence(...)` and its retained supervision result;
+- if the worker cycle exists, continue immediately to the first governed transition and canonical HB-stamped receipt.
