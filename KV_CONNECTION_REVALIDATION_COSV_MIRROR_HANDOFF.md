@@ -295,3 +295,58 @@ receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNT
 ```
 
 Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, Master Records custody, or deployed query-secret-safe ingress observation is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
+
+
+## Post-schedule resident cadence trace — 2026-09-21
+
+After StegVerse-Healer merge `585cf38aad95fda69dbcbd0150c1256571f90feb`, source tracing found no further task-specific scheduler or Canonical Work source defect for this Goal.
+
+Verified existing path:
+
+```text
+RT-REUSABLE-TASK-SCHEDULER-001
+-> Healer app/reusable_task_scheduler.py
+-> RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+-> scripts/refresh_and_dispatch_resident_requests.py
+-> exact selector canonical_work_coordination
+-> control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py
+-> KV-CONNECTION-REVALIDATION-WORKER-001 explicit request spec
+```
+
+The neutral scheduler:
+- selects the new row under scope=all;
+- injects the already-local source_root and runtime_root;
+- retains child trigger receipt and per-slot retry state under the resident runtime root;
+- returns COMPLETE or BOUNDARY_RECORDED without minting WorkerCoordinator, Interlock/InTr, credential, provider, or runtime authority.
+
+The standing Healer worker already retains the full scheduler child result under:
+
+`receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json -> child_receipt`
+
+and the resident request dispatcher/consumer path retains the outer visit evidence under:
+
+`receipts/sovereign-host/resident-request-dispatch.latest.json`
+
+plus the existing Healer scheduler request-consumption envelope.
+
+No authentic post-repair resident copy of `resident-request-dispatch.latest.json` is currently exposed showing an attempted `healer_sovereign_scheduler` outcome after the KV schedule repair. No authentic fenced Healer checkpoint carrying a KV scheduler child outcome is exposed either.
+
+Therefore the first unresolved authentic machine-owned transition is:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+selector = healer_sovereign_scheduler
+consumer = scripts/consume_healer_sovereign_scheduler_request.py
+post-repair source lineage includes StegVerse-Healer merge 585cf38aad95fda69dbcbd0150c1256571f90feb
+```
+
+Until that visit is authentically retained, do not promote:
+- neutral scheduler child execution for KV-CONNECTION-REVALIDATION-WORKER-001;
+- canonical-work-kv-connection-revalidation-tvc-runtime request consumption;
+- reusable TVC trigger/result;
+- TVC runtime binding;
+- Interlock/InTr admission;
+- Master Records custody;
+- deployed query-secret-safe ingress.
+
+No new scheduler, dispatcher, runtime, worker, request, invocation, device prerequisite, Google consent, CONNECT/VERIFY, or KV #2 materialization is required or authorized at this boundary.
