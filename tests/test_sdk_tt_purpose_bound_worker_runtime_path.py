@@ -290,7 +290,7 @@ def test_workercoordinator_does_not_project_purpose_task_active_before_governed_
 
 def test_purpose_bound_worker_cost_basis_resolves_existing_expiry_gate():
     from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator
-    from heartbeat_runtime.adapters import load_adapters
+    from scripts.run_worker_runtime import load_adapters
 
     purpose = json.loads(PURPOSE_FRAGMENT.read_text(encoding="utf-8"))
     task = purpose["tasks"][0]
