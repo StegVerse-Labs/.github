@@ -496,5 +496,15 @@
     "canonical_successor_task_record": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
     "first_unresolved_successor_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION"
   },
-  "allowed_next_transitions": []
+  "allowed_next_transitions": [],
+  "preserved_execution_lineage_expiry_basis_repair_2026_09_21": {
+    "affected_boundary": "HANDOFF_READY_TO_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "defect": "DANGLING_COST_BASIS_REF_CAUSED_EXPIRY_BASIS_UNAVAILABLE",
+    "cost_basis_ref": "cost-basis/worker-runtime/stegagents-governed-runtime.json",
+    "expiry_candidate_beats": 4096,
+    "source": "EXISTING_EXECUTABLE_HANDOFF_RUNTIME_WINDOW_BEATS",
+    "authentic_claim_fence_observed": false,
+    "next_execution_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "authority_effect": "NONE_EXISTING_PATH_SOURCE_REPAIR_ONLY"
+  }
 }
