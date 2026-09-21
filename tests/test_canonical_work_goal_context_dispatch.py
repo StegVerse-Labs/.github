@@ -204,5 +204,151 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
         self.assertIsNone(goal)
 
 
+    def test_steghealth_goal_requires_task_specific_consumption_receipt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            runtime = root / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            dispatcher = runtime / BRIDGE.DISPATCHER_REL
+            dispatcher.parent.mkdir(parents=True, exist_ok=True)
+            dispatcher.write_text("# dispatcher\n", encoding="utf-8")
+            task_id = BRIDGE.STEGHEALTH_KV_INTERLOCK_TASK_ID
+
+            def runner(command, **kwargs):
+                receipt = runtime / BRIDGE.DISPATCH_RECEIPT_REL
+                receipt.parent.mkdir(parents=True, exist_ok=True)
+                receipt.write_text(json.dumps({
+                    "schema": "stegverse.resident-request-dispatch/v1",
+                    "state": "DISPATCH_COMPLETE",
+                    "consumer_count": 1,
+                    "selected_consumers": ["canonical_work_coordination"],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "current_goal_task_id": task_id,
+                    "goal_context_forwarded_to": "canonical_work_coordination",
+                    "request_failures": [],
+                    "outcomes": [{
+                        "consumer": "canonical_work_coordination",
+                        "attempted": True,
+                        "state": "COMPLETED",
+                        "returncode": 0,
+                        "result": {
+                            "schema": "stegverse.canonical-work-bootstrap-plus-mir-request-consumption/v1",
+                            "state": "COMPLETED",
+                            "canonical_work_request_set": {
+                                "outcomes": [{
+                                    "task_id": task_id,
+                                    "state": "COMPLETED",
+                                    "request_sha256": "abc",
+                                    "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                                }]
+                            },
+                        },
+                    }],
+                }) + "\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            refresh_receipt = {
+                "mutable_runtime_state_preserved": True,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+            }
+            with mock.patch.object(BRIDGE, "refresh", return_value=refresh_receipt):
+                result = BRIDGE.refresh_and_dispatch(
+                    source,
+                    runtime,
+                    target_consumer="canonical_work_coordination",
+                    goal_task_id=task_id,
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+
+            self.assertEqual(result["state"], "REFRESH_COMPLETE_DISPATCH_INCOMPLETE")
+            self.assertTrue(result["target_consumption_evidence_required"])
+            self.assertFalse(result["target_consumption_receipt_observed"])
+            self.assertFalse(result["exact_target_consumption_evidence_observed"])
+
+    def test_steghealth_goal_accepts_only_matching_current_consumption_receipt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            runtime = root / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            dispatcher = runtime / BRIDGE.DISPATCHER_REL
+            dispatcher.parent.mkdir(parents=True, exist_ok=True)
+            dispatcher.write_text("# dispatcher\n", encoding="utf-8")
+            task_id = BRIDGE.STEGHEALTH_KV_INTERLOCK_TASK_ID
+            consumption = {
+                "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                "state": "COMPLETED",
+                "task_id": task_id,
+                "request_sha256": "abc",
+                "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                "credential_material_present": False,
+                "network_source_fetch_performed": False,
+            }
+
+            def runner(command, **kwargs):
+                consumption_path = runtime / BRIDGE.STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL
+                consumption_path.parent.mkdir(parents=True, exist_ok=True)
+                consumption_path.write_text(json.dumps(consumption) + "\n", encoding="utf-8")
+                dispatch = runtime / BRIDGE.DISPATCH_RECEIPT_REL
+                dispatch.write_text(json.dumps({
+                    "schema": "stegverse.resident-request-dispatch/v1",
+                    "state": "DISPATCH_COMPLETE",
+                    "consumer_count": 1,
+                    "selected_consumers": ["canonical_work_coordination"],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "current_goal_task_id": task_id,
+                    "goal_context_forwarded_to": "canonical_work_coordination",
+                    "request_failures": [],
+                    "outcomes": [{
+                        "consumer": "canonical_work_coordination",
+                        "attempted": True,
+                        "state": "COMPLETED",
+                        "returncode": 0,
+                        "result": {
+                            "schema": "stegverse.canonical-work-bootstrap-plus-mir-request-consumption/v1",
+                            "state": "COMPLETED",
+                            "canonical_work_request_set": {
+                                "outcomes": [{
+                                    "task_id": task_id,
+                                    "state": "COMPLETED",
+                                    "request_sha256": "abc",
+                                    "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                                }]
+                            },
+                        },
+                    }],
+                }) + "\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            refresh_receipt = {
+                "mutable_runtime_state_preserved": True,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+            }
+            with mock.patch.object(BRIDGE, "refresh", return_value=refresh_receipt):
+                result = BRIDGE.refresh_and_dispatch(
+                    source,
+                    runtime,
+                    target_consumer="canonical_work_coordination",
+                    goal_task_id=task_id,
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+
+            self.assertEqual(result["state"], "REFRESH_AND_DISPATCH_COMPLETE")
+            self.assertTrue(result["target_consumption_receipt_observed"])
+            self.assertTrue(result["target_consumption_matches_current_dispatch_result"])
+            self.assertTrue(result["exact_target_consumption_evidence_observed"])
+            self.assertEqual(
+                result["target_consumption_receipt_path"],
+                str(BRIDGE.STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL),
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
