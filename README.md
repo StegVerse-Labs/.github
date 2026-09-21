@@ -1098,3 +1098,8 @@ For `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`, the resident-dispatch initiat
 ### Canonical predecessor closure for state-dependent successors
 
 The shared canonical custody helper now makes the immediately preceding Master Records closure the actual predecessor for a successor transition. A successor recorded through `CanonicalTransitionCustody` receives `prior_state_ref_or_hash=sha256:<prior Master Records receipt>` and automatically carries the exact `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. Progression occurs only after `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality. Domain state/result hashes remain transition evidence and do not replace canonical custody closure as progression authority.
+
+
+### SDK TT WorkerCoordinator expiry-basis repair
+
+The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact now uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
