@@ -39,6 +39,20 @@ STEGHEALTH_KV_INTERLOCK_SPEC = {
 if not any(spec.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK for spec in mod.REQUEST_SPECS):
     mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (STEGHEALTH_KV_INTERLOCK_SPEC,)
 
+# Reuse the same Canonical Work consumer for the existing KV connection
+# revalidation TVC runtime-observation request. This only makes the already-staged
+# request visitable by the existing consumer cadence; it creates no second
+# dispatcher, scheduler, runtime, WorkerCoordinator, or credential path.
+KV_CONNECTION_REVALIDATION_TASK = "KV-CONNECTION-REVALIDATION-WORKER-001"
+KV_CONNECTION_REVALIDATION_TVC_RUNTIME_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-kv-connection-revalidation-tvc-runtime"),
+    "task_id": KV_CONNECTION_REVALIDATION_TASK,
+}
+if not any(spec.get("task_id") == KV_CONNECTION_REVALIDATION_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (KV_CONNECTION_REVALIDATION_TVC_RUNTIME_SPEC,)
+
 # Preserve the canonical consumer's public implementation/API surface for existing
 # resident-consumer tests and repair modules. This wrapper does not create a second
 # dispatcher or execution plane.
