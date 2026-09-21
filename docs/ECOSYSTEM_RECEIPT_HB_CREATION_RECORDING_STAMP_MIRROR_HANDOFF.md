@@ -377,3 +377,17 @@ Do not advance `NODE_KV_WITNESS_RECEIPTS_BIND_EXACT_CHECKPOINT_COMMITMENT`, exte
 `AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED`
 
 with the exact receipt identity, both HB references, Master Records root, and checkpoint commitment.
+
+
+## Authentic checkpoint observer source merge closure — generation 160 reconciliation
+
+PR #2423 merged the generation-158 authentic-checkpoint observation repair as `dc5381a0faefc578f38b1d98b86b44b0a6f60a80` from exact head `76ff00a877659241ec80bccf59936c106c939be2`. The focused `Validate Ecosystem Receipt HB Successor` run `35598970335` passed `9 passed`; every other observed applicable exact-head workflow also completed SUCCESS.
+
+Canonical main subsequently advanced independently through adjacent Master Records reconciliation to generation 160. This Goal remains `ACTIVE / CHECKED_OUT` and the merged observer/source changes remain present on current main.
+
+The merged source now guarantees that the next native resident dispatch can do exactly one of two things:
+
+1. return `WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR` when canonical Master Records has no authentic HB-bound successor custody ordinal 1; or
+2. return `AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED` only after the exact retained receipt reconstructs with both creation/recording HB references, required-evidence PASS, exact receipt/reconstruction digest equality, exact recording identity, stable successor ordinal 1, deterministic Master Records range root, and the derived HB checkpoint commitment.
+
+No authentic runtime checkpoint receipt was observed from this session. No Node/KV witness edge, external anchor state, or external temporal-bound inheritance was advanced.
