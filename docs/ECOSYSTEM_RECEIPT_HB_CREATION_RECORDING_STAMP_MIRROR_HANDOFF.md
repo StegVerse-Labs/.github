@@ -147,3 +147,34 @@ Implement the source-level evidence contract without changing HB or Master Recor
 5. keep external provider adapters separate from the provider-neutral contract.
 
 Do not run the MIR interoperability experiment merely because this source contract exists. That experiment should remain separate until authentic runtime evidence demonstrates the new commitment path or the experiment explicitly targets the current correlation-only boundary.
+
+
+## Decentralized StegVerse observation fabric clarification
+
+The existing StegVerse user-owned topology is directly relevant to the externalized-signal problem, but it must be classified by evidence role rather than by the word "node."
+
+Current source establishes several distinct ingredients:
+
+- KV/SKAP remains the user-verification authority; devices are interchangeable transport/execution nodes, not identity/governance authority.
+- retained StegVerse Nodes can carry append-only state commitments and receipt/transition lineage;
+- EVENT_EPHEMERAL StegOS nodes can materialize bounded runtime work and produce receipts without becoming always-on infrastructure;
+- node/KV continuity already preserves exact Node-KV state-root equality in specific continuity lanes;
+- HB-derived carrier packets already bind packet/receipt hashes to an HB reference while explicitly granting no admission/execution/credential/routing/transition authority.
+
+These are architecturally similar to the desired externalized signal tracking because independent user-owned nodes can observe, retain, relay, and cross-commit evidence generated elsewhere in the system.
+
+However, three evidence classes must remain separate:
+
+1. **Distributed internal witness** — another KV/device/Node controlled by StegVerse or the same user retains a cryptographic commitment. This improves redundancy, fork detection, and cross-node consistency, but by itself does not establish an independently trusted historical time bound.
+2. **Independent failure-domain witness** — a commitment is retained by a separately administered KV/provider/participant/node whose state cannot be rewritten by the originating runtime alone. This materially strengthens historical integrity and decentralization, but still does not automatically provide public time.
+3. **External time/notary anchor** — the exact checkpoint digest is committed to an independently observable system with its own verification rules. This provides the external historical bound discussed in the MIR/AILeash review.
+
+EVENT_EPHEMERAL nodes are useful as transient witnesses/transport/materialization surfaces, but their evidentiary value survives only if their exact output commitment is durably retained by a KV, Master Records, another persistent Node, or an external anchor. Ephemerality itself is not an anchor.
+
+Therefore the preferred StegVerse design should not treat a third-party timestamp service as the only externalization mechanism. The provider-neutral checkpoint contract should support a **witness set** of user-owned or independently administered StegVerse Nodes/KVs plus zero or more external notarization/time-anchor adapters. A checkpoint can accumulate stronger evidence classes without any witness becoming transition, execution, custody, credential, or governance authority.
+
+Potential progression:
+
+`Master Records root -> HB checkpoint commitment -> distributed Node/KV witness receipts -> optional independent/public time anchor`
+
+This preserves decentralization and permits StegVerse users themselves to contribute independent evidence surfaces while leaving the strongest temporal claim dependent on an actually independent anchor when that claim is required.
