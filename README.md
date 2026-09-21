@@ -1069,3 +1069,8 @@ The admitted WorkerCoordinator may reconcile stale static capability/profile met
 
 
 The conversation-evidence ingestion Goal now also has source reachability through the existing Healer reusable carrier: StegVerse-Healer PR #93 / merge `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` binds `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` with exact `canonical_work_coordination` + Goal context. This is carrier configuration only; WorkerCoordinator claim/fence and Master Records custody remain the completion authority.
+
+
+## 2026-09-21 SDK Test 1 exact Master Records predecessor repair
+
+PR #2400 fixed the manifest-bound purpose-worker lineage so the exact closed `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records transition is retained and forwarded as the immediate predecessor of `TV_TVC_WARRANT_POLICY_VERIFIED`. The existing StegAgents runtime then validates the predecessor closure and uses its receipt SHA as the next transition's `prior_state_ref_or_hash`. Exact-head runs `35568188445` and `35568188426` passed; merge `25e996510619ed0cb75d4f69750e038eede5a209`. This is source-path proof only; no production claim/fence receipt is claimed.
