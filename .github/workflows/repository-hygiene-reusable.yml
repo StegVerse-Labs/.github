@@ -39,11 +39,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Fetch every caller branch with read-only source access
-        run: |
-          set -euo pipefail
-          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
-
       - name: Acquire canonical classifier without caller credentials
         run: |
           set -euo pipefail
