@@ -162,7 +162,16 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "runtime_resolution": null,
+  "runtime_resolution": {
+    "map_ref": "control/runtime-profile-map.json",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "canonical-work-coordination-runtime-v1"
+    ],
+    "resolved_at": "2026-09-21T13:15:10Z",
+    "projection_only": true,
+    "selection_grants_authority": false
+  },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
