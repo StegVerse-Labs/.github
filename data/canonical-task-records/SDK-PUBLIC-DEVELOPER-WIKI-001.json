@@ -5,7 +5,7 @@
   "root_correlation_id": "SDK-PUBLIC-DEVELOPER-WIKI-001",
   "parent_task_id": null,
   "goal": "Publish a developer-facing SDK wiki at sdk.stegverse.org directly from the canonical StegVerse-org/StegVerse-SDK repository, exposing manifested-data ingress, processing/governance route selection, schemas, examples, demos, receipt navigation, replay/reconstruction, external-framework integration, current implementation status, and explicit authority boundaries without creating a duplicate SDK authority or allowing documentation publication to grant execution or transition authority.",
-  "coordination_state": "PROPOSED",
+  "coordination_state": "ACTIVE",
   "source_refs": [
     "StegVerse-org/StegVerse-SDK:README.md",
     "StegVerse-org/StegVerse-SDK:SDK_MIRROR_HANDOFF.md",
@@ -49,7 +49,10 @@
   "existing_evidence_refs": [
     "StegVerse-org/StegVerse-SDK README generic manifested-data processing contract",
     "StegVerse-org/StegVerse-SDK manifest receipt navigation documentation",
-    "StegVerse-org/StegVerse-SDK canonical ingress schema and external-framework example"
+    "StegVerse-org/StegVerse-SDK canonical ingress schema and external-framework example",
+    "StegVerse-org/StegVerse-SDK#300 merged e454dfa9042884939a0e6cde3c15a2fd2e386be5",
+    "StegVerse-org/StegVerse-SDK Publish SDK Developer Wiki main run success",
+    "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
