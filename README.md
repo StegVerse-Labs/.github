@@ -1201,3 +1201,8 @@ The reusable hygiene classifier now distinguishes real default-branch source ref
 ### TVC hygiene retirement routing — 2026-09-21
 
 The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-retirement-ready` with zero invalid approvals and is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT`. Exact routing evidence is `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch1.json`; no branch deletion was performed by the classification lane.
+
+
+### Ecosystem HB runtime progression correction — generation 181 candidate
+
+`ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` now follows the global Task Registry runtime invariant: connected-device inventory is prohibited from ordinary task progression and zero connected devices has no task-state meaning. `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` is an optional sampler/persistence observer, not a mandatory HB or runtime progression gate. The Goal proceeds from the next authentic governed transition through canonical `build_state_receipt(...)` / `submit_state_receipt(...)`, Master Records `hb_recording_reference`, exact reconstruction equality, and the existing non-authorizing HB checkpoint observer. No alternate runtime, scheduler, dispatcher, WorkerCoordinator, observer, or hosted substitute is introduced.

@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 180,
-  "status": "SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_COMPLETED_SUCCESSOR_REUSE_IDENTIFIED",
+  "generation": 181,
+  "status": "ECOSYSTEM_HB_RUNTIME_INVARIANT_CORRECTION_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8234,6 +8234,30 @@
         "external_device_required": false,
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE"
+      },
+      "runtime_progression_contract": {
+        "global_invariant_ref": "data/task-registry-global-invariants.json",
+        "remote_runtime_connector_contract_ref": "docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md",
+        "heartbeat_runtime_separation_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+        "heartbeat_carrier_signal_ref": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+        "connected_device_inventory_query_for_progression": "PROHIBITED",
+        "connected_device_inventory_runtime_dependency": false,
+        "zero_connected_devices_task_state_effect": "NONE",
+        "remote_connector_required": false,
+        "second_user_operated_device_required": false,
+        "resident_start_012_role": "OPTIONAL_RESIDENT_SAMPLER_PERSISTENCE_OBSERVER",
+        "resident_start_012_is_progression_gate": false,
+        "canonical_next_runtime_predecessor": "FIRST_AUTHENTIC_GOVERNED_TRANSITION_USING_CANONICAL_STATE_TRANSITION_CUSTODY",
+        "canonical_runtime_path": [
+          "WORKERCOORDINATOR_CLAIM_FENCE_WHERE_APPLICABLE",
+          "INTERLOCK_INTR_GOVERNED_TRANSITION",
+          "BUILD_STATE_RECEIPT_WITH_HB_CREATION_REFERENCE",
+          "SUBMIT_STATE_RECEIPT_TO_MASTER_RECORDS",
+          "MASTER_RECORDS_HB_RECORDING_REFERENCE",
+          "EXACT_RECONSTRUCTION_EQUALITY",
+          "ECOSYSTEM_RECEIPT_HB_CHECKPOINT_CONSUMES_SUCCESSOR_ORDINAL_1"
+        ],
+        "authority_effect": "NONE_RUNTIME_ROUTING_CORRECTION_ONLY"
       }
     },
     {
