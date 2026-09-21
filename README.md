@@ -1125,3 +1125,8 @@ StegOS PR #397 merged the post-admission MIR continuation. Authentic RTC008 admi
 ### SDK purpose-bound post-claim TVC warrant bridge
 
 The purpose-bound WorkerCoordinator path now has a bounded repair in progress for the deterministic seam immediately after canonical claim/fence custody: the existing StegAgents adapter must obtain a fresh signed warrant from the already-installed TVC `stegtvc-tv-execution-warrant@.service` after the claim/fence closure rather than requiring a pre-existing warrant environment. The bridge carries only the secret-free warrant/public-key/policy verification tuple and refuses progression unless the claim/fence closure is exact. No new runtime, credential path, authority plane, custody store, or device dependency is introduced; authentic runtime execution remains unclaimed.
+
+
+### HB receipt native execution trace — 2026-09-21
+
+The first post-update break was execution, not passive evidence discovery. Retained carrier/worker state is historical and does not prove a fresh resident transition reached `build_state_receipt(...)`. PR #2453 repaired the existing carrier self-heal and direct worker-service launch paths so the canonical Master Records custody configuration survives into `run_worker_runtime.py`; clean native materialization also carries the existing HB checkpoint consumer. This is source-path closure only, not runtime receipt evidence.
