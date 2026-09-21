@@ -194,3 +194,6 @@ parent completion admissible: false
 ```
 
 No direct child remediation, alternate scheduler, alternate dispatcher, replacement host, second runtime, new authority plane, or synthetic corrective evidence was introduced by this re-observation.
+
+
+Generation fence note: canonical Task Registry advanced from observed generation `150` to `151` before PR creation. This branch does not modify the registry or task record; it records only parent handoff evidence and therefore does not overwrite or reorder generation-151 coordination state.
