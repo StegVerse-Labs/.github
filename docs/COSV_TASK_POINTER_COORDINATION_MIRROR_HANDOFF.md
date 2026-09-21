@@ -348,3 +348,12 @@ Exact-head validation:
 - Test 3 Richard Seam Acceptance `35602677880`: PASS.
 
 The existing content-addressed control-plane source package now carries the minimum complete Functional Memory execution delta plus the corrected `STEGFIN-LIVE-ENTRY-003` fragment. No authentic post-repair relay/materialization/source-refresh/assignment result is claimed by this merge. The next admissible state transition must come from the existing TVC-authorized control-plane relay and far-side source materialization, followed by the existing source refresh and WorkerCoordinator cycle.
+
+
+### Existing control-plane relay continuation seam — 2026-09-21
+
+Tracing `RT-CONTROL-PLANE-SOURCE-PACKAGE-001 -> RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC relay` after the five-file carriage repair found the next deterministic break: the reusable package runner intentionally stopped after writing `outbox/control-plane-source-package/<source_identity>.json`. The bounded StegOS relay CLI existed, but no production caller consumed that outbox.
+
+The repair keeps the same reusable task invocation and, only when the already-retained `STEGVERSE_RELAY_EGRESS_AUTHORIZATION`, `STEGVERSE_RELAY_EGRESS_BINDING`, and `STEGVERSE_STEGOS_ROOT` inputs are present, continues through the existing `scripts/execute_control_plane_source_package_relay.py`. It issues no authorization, creates no binding or transport, and adds no scheduler/dispatcher/runtime.
+
+Acceptance is fail-closed: the packaged manifest must include all five Functional Memory/StegFin files with exact digests, the far-side receipt must return `SOURCE_MATERIALIZED_VERIFIED` for the exact `source_identity`, and `source_materialization.files[]` must reproduce the exact packaged digest and size for every required file before the continuation receipt is retained.
