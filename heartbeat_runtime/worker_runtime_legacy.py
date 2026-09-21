@@ -16,7 +16,7 @@ import time
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .independent_oscillator import current_reference
-from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, require_predecessor_master_records_closure, sha256_uri, submit_state_receipt
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -176,12 +176,18 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             "sha256": evidence_sha,
             "content": dict(record),
         }
+        functional_context = record.get("functional_memory_context") if isinstance(record.get("functional_memory_context"), dict) else {}
+        predecessor_receipt_sha256 = functional_context.get("prior_functional_memory_receipt_sha256")
+        prior_state_ref, predecessor_evidence = require_predecessor_master_records_closure(
+            predecessor_receipt_sha256,
+            successor_transition_id=transition_id,
+        )
         receipt = build_state_receipt(
             transition_id=transition_id,
             transition_sequence=1,
             subject_or_correlation_id=str(task.get("task_id") or ""),
             transition_outcome="OBSERVED",
-            prior_state_ref_or_hash=task.get("last_checkpoint_ref"),
+            prior_state_ref_or_hash=prior_state_ref,
             resulting_state_ref_or_hash=sha256_uri(record),
             governance_decision_ref_where_applicable=None,
             transition_evidence={
@@ -194,7 +200,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 "workercoordinator_grants_transition_authority": False,
                 "master_records_grants_claim_authority": False,
             },
-            required_evidence_manifest=[required_evidence],
+            required_evidence_manifest=[*predecessor_evidence, required_evidence],
             proof_scope="WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT_ONLY",
             proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_CUSTODY_ONLY",
         )
