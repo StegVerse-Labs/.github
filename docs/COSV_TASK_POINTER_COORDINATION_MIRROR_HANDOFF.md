@@ -288,11 +288,19 @@ The bounded repair extends the already-existing unclaimed-`HANDOFF_READY` precla
 
 This repair addresses only the first concrete existing-path failure before the Functional Memory assignment seam. It does not claim that a fresh resident assignment disposition has yet occurred.
 
-## Targeted Master Records custody-carriage reconciliation — 2026-09-21
 
-The previously identified transport-carriage defect in `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` is closed by merged PR `#2363` at `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed the exact `Validate targeted Master Records custody carriage` step.
+### Functional Memory authentic-path repair merge — 2026-09-21
 
-The sanitized targeted child environment preserves only the existing canonical Master Records custody bindings required by the existing transports: HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT`, `STEGVERSE_MASTER_RECORDS_TOKEN`, `STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS`; and durable-local `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Existing source-root discovery remains unchanged; GitHub/provider credentials remain stripped; TV/TVC remains credential authority.
+The first retained authentic failure for the only current generic unclaimed WorkerCoordinator candidate, `STEGFIN-LIVE-ENTRY-003`, remained `activation_deferred / EXECUTOR_NOT_RESOLVED` at heartbeat epoch 29. No later authentic assignment review or `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` receipt was found after source inspection.
 
-No endpoint, token source, database, custody store, runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, or device dependency was added. This is source-carriage closure only and does not itself claim an authentic resident Functional Memory or claim/fence Master Records transition. Further authentic custody/runtime progression is owned by the existing `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` lane and `docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md`.
+The bounded preclaim worker-registration repair was rebased onto current canonical main and merged through PR #2392 as `b0cd6274bbd7e536a91322a0f42f2f58df747aac` from exact head `57b626a548ee97b14d3d9e80ed0202aa70745ca1`.
 
+Exact-head validation:
+- Test 3 Richard Seam Acceptance `35567657664`: PASS;
+- Cross-Task Coordination Validation `35567657698`: PASS;
+- Validate KV AI Memory Resident Binding `35567657662`: PASS;
+- validate-deepseek-resident `35567657765`: PASS.
+
+The repair reuses the existing preclaim reconciliation seam and changes no live claim/fence/timing/lease state. It refreshes only static capability/profile metadata for the already-existing AVAILABLE worker when identity, adapter, executor type, and authority source are unchanged and the refreshed fragment satisfies the canonical handoff.
+
+A fresh authentic assignment disposition has not yet been observed after the merge. Therefore the requested non-ALLOW/ALLOW branch and the controlled missing-local-pointer recovery exercise are not advanced yet. The pointer-recovery exercise must retain a real same-task canonical Master Records Functional Memory history; manufacturing that predecessor would violate the requested authentic-state-dependent sequence.
