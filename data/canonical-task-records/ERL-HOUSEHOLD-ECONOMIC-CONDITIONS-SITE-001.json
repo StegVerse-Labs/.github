@@ -19,7 +19,10 @@
     "StegVerse-Labs/stegfin-governance#110",
     "StegVerse-Labs/stegfin-governance#111",
     "StegVerse-Labs/Site#1368",
-    "StegVerse-Labs/Site/Household-Economic-Conditions.html"
+    "StegVerse-Labs/Site/Household-Economic-Conditions.html",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#199",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#200",
+    "StegVerse-Labs/.github#2443"
   ],
   "targets": {
     "organizations": [
@@ -90,7 +93,13 @@
   "existing_evidence_refs": [
     "StegVerse-Labs/Executive_Rhetoric_Ledger#166",
     "StegVerse-Labs/Executive_Rhetoric_Ledger#167",
-    "StegVerse-Labs/.github#2384"
+    "StegVerse-Labs/.github#2384",
+    "StegVerse-Labs/TVC#451 merge d7bbb9024ace0c1c41be35cda3269008139cae6f",
+    "StegVerse-Labs/stegfin-governance#111 merge a06ff7b6811128481bdc4b94f08f1a5540cc1c67",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#199 merge 0281a717e720d111b76898232985f8f357d1af33",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#200 merge 46bfe423472bc0b56072581bece0c8618f7e99eb",
+    "StegVerse-Labs/.github#2443 merge c0b93e6c4ff88a038b6af32f45aae1afee34c3ba",
+    "ERL Observe Household Economic Current Candidates run 35601531123 SUCCESS"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_WORK_INTR_INGRESS_ADMITTED",
@@ -194,7 +203,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "StegVerse-Labs/.github#2384; runtime registry semantics corrected 2026-09-21; authentic runtime progression pending"
+    "reconciliation_ref": "TVC#451@d7bbb9024ace0c1c41be35cda3269008139cae6f+stegfin-governance#111@a06ff7b6811128481bdc4b94f08f1a5540cc1c67+ERL#199@0281a717e720d111b76898232985f8f357d1af33+ERL#200@46bfe423472bc0b56072581bece0c8618f7e99eb+.github#2443@c0b93e6c4ff88a038b6af32f45aae1afee34c3ba; authentic runtime progression pending"
   },
   "allowed_next_transitions": [
     "INGRESS_ADMITTED"
