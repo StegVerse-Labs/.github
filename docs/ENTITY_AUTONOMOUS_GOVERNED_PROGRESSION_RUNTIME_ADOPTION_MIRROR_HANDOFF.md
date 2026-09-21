@@ -121,6 +121,44 @@ The runtime resolver and routing-readiness evaluator already resolve this identi
 
 The existing applier is now extended fail-closed: aggregate tasks retain the existing registry-generation projection behavior; a task absent from the aggregate registry may persist only into an already-existing exact standalone canonical shard with matching task identity, correlation identity, runtime requirements, map generation, and known candidate profiles. The operation does not insert an aggregate task, change coordination/completion/claim state, mint claim/fence, grant admission, or prove execution.
 
+
+
+## Healer portable Canonical Work carrier binding — 2026-09-21
+
+The post-routing reachability trace found one concrete source defect after runtime-profile resolution/persistence: the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` definition and `canonical_work_coordination` bridge were already present, but the standing sovereign Healer carrier had no task-scoped schedule row for `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`.
+
+That addressability defect is repaired in `StegVerse-Labs/StegVerse-Healer` PR #96, merged as `b23cac0cc4c44057d7e3466e58f1a0b83b526f6f`. Exact head `b58e7aa5347626814589b82e95780aadbda333de` passed both push and pull-request Test Readiness. The existing neutral schedule now binds:
+
+```text
+RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+-> invocation_key=ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001
+-> only_consumer=canonical_work_coordination
+-> goal_task_id=ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001
+-> COSV 10100000100000
+```
+
+The existing `RT-SOVEREIGN-SOURCE-REFRESH-001` row precedes this binding. No new scheduler, runtime, dispatcher, WorkerCoordinator, credential path, authority plane, carrier, or device prerequisite was created.
+
+Post-merge repository observation still finds no authentic `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, no Healer resident request-consumption receipt, and no task-specific Canonical Work consumption/`INGRESS_ADMITTED` receipt. Therefore source addressability is closed but authentic execution remains unproven.
+
+The current first authentic transition is:
+
+```text
+existing Healer standing request
+-> fresh WorkerCoordinator admission / claim / fence for SHWP-HEALER-SOVEREIGN-SCHEDULER-001
+-> neutral reusable-task scheduler visits the new task-scoped portable Canonical Work row
+-> exact canonical_work_coordination consumer
+-> authentic Canonical Work INGRESS_ADMITTED + consumption + admitted projection
+-> existing immediate carrier-independent WorkerCoordinator successor
+-> Interlock/InTr governed transition
+-> execution or retained DENY
+-> Master Records closure/reconstruction
+-> returned-state re-ingestion
+-> automatic continuation
+```
+
+Absence of those receipts is not converted into a connected-device prerequisite or permission to create another runtime.
+
 ## Runtime-adoption completion predicate
 
 Source implementation is complete. Authentic runtime adoption remains unproven until a current goal chain produces evidence that demonstrates together:
