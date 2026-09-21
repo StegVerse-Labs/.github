@@ -263,3 +263,26 @@ def test_manifest_bound_test1_predecessor_is_exact_master_records_closure():
     assert predecessor["reconstruction_status"] == "PASS"
     assert predecessor["required_evidence_validation_status"] == "PASS"
     assert predecessor["receipt_sha256"] == predecessor["reconstructed_receipt_sha256"] == "a" * 64
+
+def test_workercoordinator_does_not_project_purpose_task_active_before_governed_activation():
+    runtime = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text(encoding="utf-8")
+    function_start = runtime.index("    def _activate_from_trigger(")
+    function_end = runtime.index("\n    def ", function_start + 10)
+    body = runtime[function_start:function_end]
+
+    custody_call = 'assignment_custody = self._custody_assignment_transition('
+    purpose_branch = 'if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":'
+    provisional = '"state": "ACTIVE",'
+    terminal_projection = '"state": "COMPLETED",'
+    generic_active_projection = '        task.update({\n            "state": "ACTIVE",'
+
+    purpose_start = body.index(purpose_branch, body.index(custody_call))
+    generic_start = body.index(generic_active_projection, purpose_start)
+    purpose_body = body[purpose_start:generic_start]
+
+    assert body.index(custody_call) < purpose_start
+    assert provisional in purpose_body
+    assert terminal_projection in purpose_body
+    assert 'task_active_projected_before_governed_activation=False' in purpose_body
+    assert 'task.update({\n                "state": "ACTIVE",' not in purpose_body
+
