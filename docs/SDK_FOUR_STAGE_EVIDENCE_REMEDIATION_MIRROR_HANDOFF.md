@@ -4,7 +4,7 @@ Updated: 2026-09-21
 Goal Task ID: `SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001`
 Parent Goal Task ID: `SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001`
 COSV ID: `71000000111111`
-Status: ACTIVE / CHECKED_OUT
+Status: RETIRED / COMPLETED / VALIDATED
 
 ## Purpose
 
@@ -38,3 +38,33 @@ After Option A is merged and validated, derive a separate Goal Task for custody-
 ## Generation fence
 
 Registration read canonical Task Registry generation 177 and advances this branch to generation 178.
+
+
+## Completion — 2026-09-21
+
+SDK PR #304 exact head `0bc31804750c224257409e2774fe918e3c797c10` passed all 13 applicable exact-head workflows and merged to main as `e1116e9cb5f5043c9198505d64560b710c517e88`.
+
+Four-stage validation run `35648276053` passed every stage, including:
+- Test 1, Test 2, Test 3, and Task 4 execution;
+- explicit Test-2/Test-3 differential invariance projection;
+- serialized Task-4 negative control proving measured overlap can be falsified;
+- exact partition reconstruction;
+- recomputed group-result binding;
+- unchanged-source proof and complete retained evidence inventory.
+
+Retained artifact `10661081336` has SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5`.
+
+The repaired Task-4 contract no longer forces a positive overlap claim. `simultaneous_overlap_observed` is an honest measured boolean; `overlap_measurement_available` is the required predicate, and the serialized control must report false. This avoids manufacturing concurrency for a tiny local semantic workload.
+
+F6 is canonically corrected. Preregistration commit `0127082e415fb220c709962ab7d0645e06105a4c` predates attempt-2 execution and binds PDF SHA-256 `37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7`. GitHub also confirms run `35547155843` attempt 1 concluded SUCCESS.
+
+## Option-C successor reconciliation
+
+Do not create a duplicate retained-standing/retirement task. Existing canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` already owns the authentic sequence:
+`HANDOFF_READY -> fresh WorkerCoordinator claim/fence -> TV/TVC -> InTr ACTIVATE+CREATE_AND_BIND -> Master Records closure -> invocation/result -> InTr CLOSE+RETIRE -> Master Records closure -> records-only reconstruction`.
+
+The v2 review contributes one additional falsification predicate that should be made explicit when that existing checked-out task is next reconciled:
+
+`POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED`.
+
+That refusal must be retained/reconstructable evidence; HB may stamp chronology but remains non-authorizing. No second runtime, scheduler, dispatcher, WorkerCoordinator, custody store, or duplicate Goal Task should be created.
