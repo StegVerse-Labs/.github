@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 173,
-  "status": "WIKI_BRANDED_PUBLICATION_SITE_PROPAGATION_REGISTERED",
+  "generation": 174,
+  "status": "GOVERNED_PUBLIC_WIKI_SUBMISSION_PUBLICATION_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8675,6 +8675,164 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001",
+      "correlation_id": "PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001",
+      "root_correlation_id": "PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001",
+      "parent_task_id": null,
+      "goal": "Connect the existing public External Chat compatibility/review lifecycle to a governed, reconstructable wiki publication transition: compatibility receipt -> cooperative review package -> delegated review/correction receipt -> publication-transition candidate -> SDK/manifest ingress -> Interlock/InTr governed decision -> Master Records retained/reconstructable closure -> Publisher mutation, while preserving the invariant that submitters cannot directly mutate any wiki.",
+      "coordination_state": "PROPOSED",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "71000000100100",
+        "source_state_vector_ref": "control/task-vectors/PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001.json",
+        "authority_effect": "NONE"
+      },
+      "source_refs": [
+        "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/schemas/external-chat-publication-transition.schema.json",
+        "StegVerse-Labs/admissibility-wiki:scripts/check_external_chat_review_packets.py",
+        "StegVerse-Labs/admissibility-wiki:docs/governance/visibility-vs-authority.md",
+        "StegVerse-Labs/Site:docs/EXTERNAL_CHAT_MIRROR_HANDOFF.md",
+        "StegVerse-org/StegVerse-SDK:README.md",
+        "StegVerse-org/StegVerse-SDK:stegverse/publisher_return_binding.py",
+        "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_MIRROR_HANDOFF.md",
+        "master-records/orchestration"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "StegVerse-org",
+          "GCAT-BCAT-Engine",
+          "master-records"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/admissibility-wiki",
+          "StegVerse-Labs/Site",
+          "StegVerse-org/StegVerse-SDK",
+          "GCAT-BCAT-Engine/Publisher",
+          "master-records/orchestration"
+        ],
+        "components": [
+          "external-chat-publication-transition-candidate",
+          "sdk-manifest-ingress",
+          "interlock-intr-publication-decision",
+          "master-records-publication-closure",
+          "publisher-governed-wiki-mutation",
+          "reusable-public-knowledge-surface-publication"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "EXISTING_EXTERNAL_CHAT_COMPATIBILITY_REVIEW_LIFECYCLE",
+          "kind": "IMPLEMENTATION",
+          "state": "AVAILABLE",
+          "ref": "StegVerse-Labs/Site:docs/EXTERNAL_CHAT_MIRROR_HANDOFF.md"
+        },
+        {
+          "dependency_id": "EXISTING_PUBLICATION_CANDIDATE_CONTRACT",
+          "kind": "IMPLEMENTATION",
+          "state": "AVAILABLE",
+          "ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/schemas/external-chat-publication-transition.schema.json"
+        },
+        {
+          "dependency_id": "EXISTING_SDK_GOVERNED_INGRESS",
+          "kind": "IMPLEMENTATION",
+          "state": "AVAILABLE",
+          "ref": "StegVerse-org/StegVerse-SDK"
+        },
+        {
+          "dependency_id": "EXISTING_MASTER_RECORDS_CUSTODY",
+          "kind": "IMPLEMENTATION",
+          "state": "AVAILABLE",
+          "ref": "master-records/orchestration"
+        },
+        {
+          "dependency_id": "EXISTING_PUBLISHER_CONSEQUENTIAL_MUTATION",
+          "kind": "IMPLEMENTATION",
+          "state": "AVAILABLE",
+          "ref": "GCAT-BCAT-Engine/Publisher"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+        "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003"
+      ],
+      "existing_evidence_refs": [
+        "external_framework_wiki_publication_transition requires publication_executed=false",
+        "Publisher documented as consequential publication enforcement",
+        "SDK documented as declaration/authority-transition and Interlock/InTr ingress/egress path",
+        "Master Records documented as custody/reconstruction without authority creation"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_REGISTRATION_MERGED",
+        "PUBLICATION_CANDIDATE_BINDS_COMPATIBILITY_AND_CORRECTION_RECEIPTS",
+        "SUBMITTER_DIRECT_WIKI_MUTATION_PATH_ABSENT",
+        "SDK_MANIFEST_INGRESS_ACCEPTS_PUBLICATION_CANDIDATE_WITHOUT_GRANTING_PUBLICATION_AUTHORITY",
+        "INTERLOCK_INTR_PUBLICATION_DECISION_RETAINED",
+        "PUBLICATION_DECISION_MASTER_RECORDS_STATE_RECORDED",
+        "PUBLICATION_DECISION_RECONSTRUCTION_STATUS_PASS",
+        "PUBLICATION_DECISION_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+        "PUBLICATION_DECISION_RECEIPT_RECONSTRUCTION_DIGEST_EQUAL",
+        "PUBLISHER_MUTATION_REQUIRES_EXACT_PREDECESSOR_CLOSURE",
+        "PUBLISHER_MUTATION_RECEIPT_RETAINED_AND_RECONSTRUCTABLE",
+        "DENY_AND_REVIEW_REQUIRED_PRODUCE_ZERO_REPOSITORY_MUTATION",
+        "ADMISSIBILITY_WIKI_FIRST_END_TO_END_PUBLICATION_PASS",
+        "REUSABLE_TARGET_PROFILE_SUPPORTS_STEGGUARDIAN_STEGTALK_AND_FUTURE_WIKI_SURFACES"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "sdk_manifest_ingress",
+          "interlock_intr_governed_transition",
+          "master_records_custody",
+          "publisher_repository_mutation"
+        ],
+        "environment": "SOVEREIGN_RESIDENT",
+        "direction": "PUBLIC_SUBMISSION_TO_GOVERNED_PUBLICATION",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "docs/PUBLIC_WIKI_GOVERNED_SUBMISSION_PUBLICATION_MIRROR_HANDOFF.md",
+        "completion_semantics": "END_TO_END_GOVERNED_PUBLICATION_WITH_MASTER_RECORDS_CLOSURE_AND_PUBLISHER_MUTATION",
+        "duplicate_runtime_proof_required": false,
+        "separate_authentic_runtime_evidence_class_required": true,
+        "terminal_state_is_completion_truth": true
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "docs/PUBLIC_WIKI_GOVERNED_SUBMISSION_PUBLICATION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "interlock_intr_is_transition_path_not_precondition": true,
+        "master_records_is_transition_custody_not_precondition": true,
+        "submitter_direct_repository_write_authority": false,
+        "publication_candidate_grants_publication_authority": false,
+        "publisher_may_mutate_only_after_exact_governed_closure": true
       }
     }
   ],
