@@ -386,3 +386,16 @@ manifest request path materialized
 -> `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` submitted through canonical `submit_state_receipt(...)`.
 
 No authentic production claim/fence receipt is claimed from this source repair. The next authentic state remains the same targeted request reaching this repaired assignment cycle and returning a Master Records closure satisfying `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256 == reconstructed_receipt_sha256`. Only after that exact closure may the immediately subsequent governed transition proceed.
+
+
+## SDK Test 1 exact claim/fence predecessor binding — 2026-09-21
+
+After the pre-claim initialization repair, the next deterministic state-lineage defect was in the existing manifest-bound purpose-worker path. `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` could close through canonical Master Records, but `heartbeat_runtime/worker_runtime_legacy.py` only copied that closure onto the task when `purpose_graph_claim_bundle` existed. Manifest-bound Test 1 intentionally does not use that four-case bundle, so the exact assignment closure was dropped before StegAgents built the immediately subsequent `TV_TVC_WARRANT_POLICY_VERIFIED` request.
+
+The existing StegAgents runtime already supports the correct state-dependent behavior: when `graph_predecessor_master_records_transition` is present, it validates `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, and then uses that predecessor receipt SHA as `prior_state_ref_or_hash` for `TV_TVC_WARRANT_POLICY_VERIFIED`.
+
+PR #2400 repairs only the missing carriage seam: the exact claim/fence closure is retained on the purpose task in both graph and manifest modes; the manifest-bound worker bridge requires that exact `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` closure; the exact closure is forwarded as `graph_predecessor_master_records_transition`; and the existing StegAgents transition recorder therefore binds `TV_TVC_WARRANT_POLICY_VERIFIED` to the exact prior receipt rather than a bare worker-claim reference.
+
+Exact-head `Validate Purpose-Bound Worker Derived Lifetime` run `35568188445` and `Test 3 Richard Seam Acceptance` run `35568188426` both passed. PR #2400 merged as `25e996510619ed0cb75d4f69750e038eede5a209`.
+
+No authentic production claim/fence receipt is inferred from this source repair. The next authentic requirement remains: the staged resident request must produce a real `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` closure satisfying all four Master Records predicates. Only that exact receipt may serve as the immediate predecessor of `TV_TVC_WARRANT_POLICY_VERIFIED`.
