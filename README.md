@@ -1098,3 +1098,8 @@ For `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`, the resident-dispatch initiat
 ### Canonical predecessor closure for state-dependent successors
 
 The shared canonical custody helper now makes the immediately preceding Master Records closure the actual predecessor for a successor transition. A successor recorded through `CanonicalTransitionCustody` receives `prior_state_ref_or_hash=sha256:<prior Master Records receipt>` and automatically carries the exact `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. Progression occurs only after `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality. Domain state/result hashes remain transition evidence and do not replace canonical custody closure as progression authority.
+
+
+### Elyria Service Gateway predecessor trace — 2026-09-21
+
+For `SDK-ELYRIA-INTR-ADAPTER-001`, the existing shared Service Gateway / TVC CMC-029 lineage was traced to its first concrete predecessor condition. The canonical machine owner `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is already `HANDOFF_READY`; its bootstrap and WorkerCoordinator adapter preserve the existing non-secret Gateway/KV/TLS bindings while scrubbing credentials. No source carriage defect was found. The first unresolved condition is authentic observation of real resident Gateway and KV storage bindings; no retained authentic execution receipt currently shows that boundary being reached. CMC-029 live issuance/public HTTPS and the public sovereign Gateway route therefore remain unobserved. No code repair, alternate gateway/runtime, credential path, custody store, or second user-operated device was introduced, and Elyria public transport remains unresolved.
