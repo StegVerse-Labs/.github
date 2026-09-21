@@ -1072,3 +1072,8 @@ The conversation-evidence ingestion Goal now also has source reachability throug
 
 
 Conversation-evidence runtime reachability was further repaired in StegVerse-Healer PR #94 / merge `2e3d41e44c28f0c116b190c6d5a38d094d29a588`: the existing sovereign source-refresh reusable child now precedes the conversation-evidence Canonical Work child in the same neutral scheduler, eliminating the deterministic resident-root ordering failure. The remaining boundary is an authentic post-repair visit of the already-existing Healer standing resident request; no claim/fence or Master Records ingestion closure is inferred from source configuration.
+
+
+### SDK Elyria authentic public transport re-observation — 2026-09-21
+
+`SDK-ELYRIA-INTR-ADAPTER-001` / COSV `71000000100112` remains ACTIVE with exactly one unresolved predicate: `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED`. Fresh public discovery found no owner-operated Elyria assessment base URL. Existing StegVerse candidate surfaces were re-observed and none is yet eligible: evaluator InTr still lacks sovereign public TLS plus authentic browser round-trip proof; SV002 public observation still lacks a runtime receipt and public round trip; the retired StegBrowser Master Records endpoint-binding task did not complete runtime custody and continues through its existing successor; shared Service Gateway/public TLS state still lacks an observed public sovereign route and TLS adoption. No Elyria round trip or Master Records Elyria custody is claimed, and no alternate runtime, protocol, credential flow, custody store, or second user-operated machine is introduced.
