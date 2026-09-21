@@ -65,3 +65,34 @@ Current evidence was re-read against the Task Registry invariant `MISSING_EVIDEN
 Accordingly, no source/runtime defect is inferred and no source implementation is changed in this reconciliation. The task may advance only if authentic Master Records reconstruction or exact retained runtime evidence proves the evaluator manifest was materialized on an admitted canonical substrate. If that evidence appears, continue through the existing `sdk_evaluator_governance_posture -> run_evaluator_governance_manifest -> Interlock/InTr -> retained runtime receipt -> Master Records` lineage.
 
 The prior `RESIDENT_REQUEST_DISPATCH_VISIT` carriage section remains historical provenance for already-merged work but is explicitly superseded as a progression basis. It is not the predecessor for this continuation and must not replace the manifest-materialization predicate.
+
+## Exact manifest-materialization reconstruction review — 2026-09-21
+
+Canonical generation 181 was reconciled before this review. The active pre-drift predicate remains `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`.
+
+The exact lineage reviewed was:
+
+```text
+root: SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003
+parent: SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001
+task: SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001
+request: RESIDENT-EXEC-SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001
+runtime manifest locator: runtime-state/sdk-evaluator-governance-posture/manifest.json
+```
+
+The parent source/CI record exposes one exact evidence set:
+
+```text
+workflow_run_id: 34539775942
+manifest_sha256: 1f2b204fc55a22fe0ba533a1825d2bc11a8a1427d70fa8191776c71f4c323bc3
+transition_request_sha256: 3d06812c7d1c1967cdded761c1245db4cc4587b275c5944b6de89bb0ac67909b
+intr_posture_binding_sha256: 9c0df3c370b6a1927af25e8318bc2ea38e0608e6f5eeb3bed2451c11a1a429a1
+governance_execution: FAIL_CLOSED_MISSING_CANONICAL_RUNTIME_PACKAGES
+authentic_live_stegos_intr_proven: false
+```
+
+Those exact hashes were searched across the currently accessible Master Records, runtime, SDK, StegOS, Site, StegCore, StegAgents, TVC, and canonical coordination projections. They currently surface only in the parent source/CI task record and do not surface as an authentic retained-runtime or Master Records reconstruction binding.
+
+Per `MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE`, the result is `UNKNOWN_NOT_FALSE`. Manifest materialization is not promoted and non-occurrence is not asserted. No source/runtime defect is inferred, no source/runtime mutation is authorized by this review, and `RESIDENT_REQUEST_DISPATCH_VISIT` remains excluded as a substitute predecessor.
+
+The next admissible progression is only authentic Master Records or exact retained-runtime reconstruction that binds the materialized manifest to the task/request/root lineage. Only after that may the existing `sdk_evaluator_governance_posture -> run_evaluator_governance_manifest -> WorkerCoordinator/Interlock/InTr -> retained SDK runtime receipt -> Master Records` chain be followed.
