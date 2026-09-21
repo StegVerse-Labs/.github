@@ -130,7 +130,11 @@
     "mykv_public_install_shell_sha256": "93b63188b69ba2f80030b76e620dc885957bd4e883ab27c8450d67e4382d82af",
     "mykv_public_manifest_sha256": "f0ab7bdc2d86a82113ccbee353ab20d4afaaae07d462f8e35bd52c00230fda94",
     "mykv_public_node_continuity_loader_sha256": "ee23a94de59b82f57cc98b4c9725f69bd8575ea457d9ff11133892322e4bf193",
-    "upgrade_executor_merge_commit": "4c426925a354a5f2d71b8becd92896917247e74f"
+    "upgrade_executor_merge_commit": "4c426925a354a5f2d71b8becd92896917247e74f",
+    "current_iphone_mykv_install_state": "NOT_INSTALLED_NEVER_INSTALLED",
+    "current_iphone_mykv_first_launch_state": "NOT_LAUNCHED",
+    "current_iphone_resident_health_result_state": "NO_AUTHENTIC_RESULT",
+    "owner_reported_install_truth": "MyKV is not installed on the current iPhone and has never been installed there."
   },
   "worker_claim": {"authority":"OWNER_CURRENT_IPHONE_MYKV_INSTALL_READY","claim_ref":"docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
   "human_action_ref": "INSTALL_MYKV_ON_CURRENT_IPHONE",
@@ -153,6 +157,8 @@
     "mykv_is_not_kv_or_storage_host": true,
     "live_vault_overwrite_prohibited": true,
     "private_content_must_not_be_uploaded_to_repository": true,
-    "all_state_changing_operations_require_governed_receipts": true
+    "all_state_changing_operations_require_governed_receipts": true,
+    "current_iphone_mykv_installed": false,
+    "current_iphone_mykv_installation_must_not_be_inferred_from_owner_install_ready": true
   }
 }
