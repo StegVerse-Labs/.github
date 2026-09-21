@@ -724,3 +724,8 @@ The first StegHealth hosted inventory run `35633357556` failed at caller checkou
 ### Private-repository fetch refinement — 2026-09-21
 
 StegHealth run `35633664041` proved the read-only checkout succeeded, but the subsequent explicit all-branch fetch failed after `persist-credentials: false` removed checkout credentials. The redundant fetch step is removed at `739a611afd70bbe5b8e598b03180e62624fb8459`: `actions/checkout@v4` with `fetch-depth: 0` supplies full history/refs while credentials are not persisted for later commands. No write authority is introduced.
+
+
+### StegHealth first-adopter validation — 2026-09-21
+
+StegHealth is now the first validated consumer of the reusable hygiene surface. Run `35633822799` completed SUCCESS using exact shared revision `739a611afd70bbe5b8e598b03180e62624fb8459`; artifact `10654903766`, digest `sha256:e1f3c4b5986bbe39cb938f892f401f52b5aa22eba09bc223a6381f8d9e3b543a`. The machine census inspected 80 branches: 28 retirement candidates requiring owner clearance, 51 review-required, and 1 protected/retained. No approval manifest entries existed and no branch, PR, or issue mutation occurred. This validates reusable private-repository inventory/classification transport; actual ref retirement remains separately authority-owned.
