@@ -146,6 +146,35 @@
       "durable_runtime_endpoint_observed": false,
       "nonce_query_executed": false,
       "authority_effect": "NONE_SOURCE_PROOF_HARDENING_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "MASTER_RECORDS_RECURRING_SOURCE_PACKAGE_MATERIALIZATION_DEFECT_REPAIRED",
+      "goal_prompt_count": "4/20",
+      "registry_generation_entering": 163,
+      "defect": "PATH_TRIGGERED_SOURCE_REFRESH_WATCHED_stegverse-master-records_BUT_ONLY_MATERIALIZED_MASTER_RECORDS_PACKAGE_DURING_WATCHER_INSTALLATION",
+      "repair_pr": "StegVerse-Labs/.github#2436",
+      "repair_exact_head": "0af38b780416b786dee9a4965af547577f811d86",
+      "repair_merge": "00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
+      "validation": {
+        "workflow": "Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)",
+        "run_id": 35600016501,
+        "conclusion": "success"
+      },
+      "repair_behavior": "PATH_TRIGGERED_REFRESH_CYCLE_REUSES_EXISTING_MATERIALIZER_IN_MATERIALIZE_ONLY_MODE_BEFORE_RESIDENT_REQUEST_DISPATCH",
+      "new_runtime_created": false,
+      "new_scheduler_created": false,
+      "new_dispatcher_created": false,
+      "new_observer_created": false,
+      "new_device_prerequisite": false,
+      "new_credential_path": false,
+      "new_custody_authority": false,
+      "authentic_resident_refresh_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "a3_claim_fence_observed": false,
+      "classification": "RECURRING_MASTER_RECORDS_SOURCE_MATERIALIZATION_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED",
+      "authority_effect": "NONE_SOURCE_PATH_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -166,9 +195,9 @@
     {
       "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-REFRESH",
       "kind": "EXISTING_RESIDENT_SOURCE_REFRESH",
-      "state": "REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
-      "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
-      "disposition": "OBSERVE_EXISTING_RESIDENT_REFRESH_CONSUMING_CURRENT_stegverse-master-records_SOURCE_PACKAGE_AND_MATERIALIZING_VENDOR_SOURCE_THEN_QUERY_DURABLE_STORE"
+      "state": "REPAIRED_MERGED_RECURRING_MATERIALIZATION_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65;StegVerse-Labs/.github#2436@00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
+      "disposition": "OBSERVE_EXISTING_PATH_TRIGGERED_REFRESH_CONSUMING_CURRENT_stegverse-master-records_PACKAGE_AND_MATERIALIZING_vendor/master-records-orchestration_BEFORE_RESIDENT_DISPATCH_THEN_QUERY_DURABLE_STORE"
     },
     {
       "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-PROOF",
@@ -208,7 +237,7 @@
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
-    "goal_prompt_count": "3/20",
+    "goal_prompt_count": "4/20",
     "split_merely_to_reset_counter": false
   },
   "source_refs": [
@@ -219,6 +248,8 @@
     "StegVerse-Labs/.github#2352",
     "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
     "StegVerse-Labs/.github#2354",
-    "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf"
+    "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+    "StegVerse-Labs/.github#2436",
+    "StegVerse-Labs/.github@00c44a53ab684a1c5abde5cf23cb93be6daa37e3"
   ]
 }
