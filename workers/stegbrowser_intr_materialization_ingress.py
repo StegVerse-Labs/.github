@@ -24,6 +24,7 @@ from workers.stegbrowser_intr_materialization_consumer import (  # noqa: E402
 RECEIPT_SCHEMA = "stegverse.stegbrowser-intr-materialization-ingress/v1"
 RECEIPT_DIR = Path("receipts/sovereign-network/stegbrowser-intr-ingress")
 LATEST_REL = Path("receipts/sovereign-network/stegbrowser-intr-ingress.latest.json")
+BINDING_DIR_REL = Path("intr-payloads/stegbrowser-manifest-invocation")
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 
 
@@ -52,7 +53,7 @@ def is_stegbrowser(payload: Any) -> bool:
     return False
 
 
-def _request_from_node_trigger(payload: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+def _request_from_node_trigger(payload: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any] | None]:
     require(isinstance(payload, dict) and payload.get("schema") == hil.NODE_TRIGGER_SCHEMA, "node_trigger_schema_invalid")
     require(payload.get("transport_origin") == hil.ORIGIN_NODE, "node_trigger_origin_invalid")
     require(payload.get("authority_effect") == "NONE_TRIGGER_ONLY", "node_trigger_authority_effect_invalid")
@@ -75,11 +76,17 @@ def _request_from_node_trigger(payload: Any) -> tuple[dict[str, Any], dict[str, 
     trigger_body = dict(payload)
     claimed_trigger = trigger_body.pop("trigger_sha256", None)
     require(claimed_trigger == sha_uri(trigger_body), "node_trigger_hash_mismatch")
+    binding = entry.get("stegbrowser_invocation")
+    if binding is not None:
+        require(isinstance(binding, dict), "stegbrowser_invocation_binding_invalid")
+        require(request.get("payload_hash") == sha_uri(binding), "stegbrowser_invocation_binding_payload_hash_mismatch")
+        opaque_ref = "opaque://stegbrowser-manifest-invocation/" + str(request["payload_hash"])[7:]
+        require(request.get("payload_ref") == opaque_ref, "stegbrowser_invocation_binding_payload_ref_mismatch")
     return dict(request), {
         "node_id": entry.get("node_id"),
         "interlock_id": entry.get("interlock_id"),
         "outbox_entry_hash": entry.get("outbox_entry_hash"),
-    }
+    }, dict(binding) if isinstance(binding, dict) else None
 
 
 def _dispatch(*, runtime_root: Path, materialization_id: str) -> dict[str, Any]:
@@ -121,8 +128,14 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
         payload = json.loads(body.decode("utf-8"))
     except Exception as exc:
         raise ValueError("request_json_invalid") from exc
-    request, source = _request_from_node_trigger(payload)
+    request, source, binding = _request_from_node_trigger(payload)
     materialization_id = str(request["materialization_id"])
+    binding_path = None
+    if binding is not None:
+        binding_digest = str(request["payload_hash"])[7:]
+        binding_path = runtime_root / BINDING_DIR_REL / f"{binding_digest}.json"
+        binding_raw = json.dumps(binding, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+        hil._write_once(binding_path, binding_raw)
     request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
     request_raw = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
     hil._write_once(request_path, request_raw)
@@ -147,6 +160,8 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
         "outbox_entry_hash": source["outbox_entry_hash"],
         "transport_payload_sha256": transport["payload_sha256"],
         "queue_ref": str(request_path),
+        "binding_payload_ref": request["payload_ref"] if binding is not None else None,
+        "binding_custody_ref": str(binding_path) if binding_path is not None else None,
         "exact_request_validated": True,
         "write_once_persisted": True,
         "runtime_execution_attempted": False,
