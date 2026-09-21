@@ -1106,3 +1106,8 @@ For `SDK-ELYRIA-INTR-ADAPTER-001`, the existing shared Service Gateway / TVC CMC
 
 
 Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` again confirms `RESIDENT_REQUEST_DISPATCH_VISIT` as the first missing authentic transition. Retained worker state remains historical and all native post-repair runtime receipts remain absent; no downstream state is promoted.
+
+
+### SDK TT WorkerCoordinator expiry-basis repair
+
+The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
