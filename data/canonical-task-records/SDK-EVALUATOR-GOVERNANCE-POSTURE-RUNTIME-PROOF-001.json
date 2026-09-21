@@ -131,7 +131,29 @@
       "shared_runtime_selected_substrate_id": null,
       "shared_runtime_measurement_entered": false,
       "progression_rule": "DO_NOT_ADVANCE_BEYOND_MANIFEST_MATERIALIZATION_WITHOUT_AUTHENTIC_RECONSTRUCTED_EVIDENCE",
-      "source_repair_authorized": false
+      "source_repair_authorized": false,
+      "reconstruction_review_20260921": {
+        "canonical_generation_observed": 181,
+        "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+        "request_id": "RESIDENT-EXEC-SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+        "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+        "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+        "exact_parent_source_evidence": {
+          "workflow_run_id": 34539775942,
+          "manifest_sha256": "1f2b204fc55a22fe0ba533a1825d2bc11a8a1427d70fa8191776c71f4c323bc3",
+          "transition_request_sha256": "3d06812c7d1c1967cdded761c1245db4cc4587b275c5944b6de89bb0ac67909b",
+          "intr_posture_binding_sha256": "9c0df3c370b6a1927af25e8318bc2ea38e0608e6f5eeb3bed2451c11a1a429a1",
+          "governance_execution": "FAIL_CLOSED_MISSING_CANONICAL_RUNTIME_PACKAGES",
+          "authentic_live_stegos_intr_proven": false,
+          "proof_class": "SOURCE_CI_EVIDENCE_ONLY"
+        },
+        "exact_hash_reappearance_in_accessible_authentic_runtime_or_master_records_projection": "NOT_SURFACED",
+        "interpretation": "UNKNOWN_NOT_FALSE",
+        "materialization_promoted": false,
+        "source_or_runtime_defect_inferred": false,
+        "resident_request_dispatch_visit_used_as_predecessor": false,
+        "next_allowed_progression": "AUTHENTIC_MASTER_RECORDS_OR_RETAINED_RUNTIME_RECONSTRUCTION_OF_EXACT_MANIFEST_MATERIALIZATION"
+      }
     }
   }
 }

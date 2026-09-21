@@ -1212,3 +1212,6 @@ TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready r
 
 `SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. The canonical external-framework endpoint-binding registry already exists in admissibility-wiki and its evidence-qualified endpoint overlay is intentionally empty. The current Elyria boundary is therefore `EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE`: no independently observed callable Elyria runtime endpoint can yet be lawfully bound. The prior Coinbase/TVC Service Gateway lineage is superseded for Elyria and must not gate or diagnose this task.
 
+### SDK evaluator exact reconstruction checkpoint
+
+The runtime-proof task remains at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Exact parent source hashes were reconciled against accessible retained-runtime and Master Records projections; they currently remain source/CI evidence only and do not promote authentic runtime materialization. The state is `UNKNOWN_NOT_FALSE`, with no source/runtime defect inferred and no `RESIDENT_REQUEST_DISPATCH_VISIT` substitution.
