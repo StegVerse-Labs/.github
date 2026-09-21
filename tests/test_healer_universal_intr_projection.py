@@ -69,3 +69,55 @@ class HealerUniversalInTrProjectionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_hil_receiver_gateway_projection_uses_only_retained_g25_machine_receiver(tmp_path, monkeypatch):
+    runtime = tmp_path
+    receipt = runtime / mod.HIL_RECEIVER_WORKER_RECEIPT_REL
+    receipt.parent.mkdir(parents=True)
+    durable = tmp_path / "hil-durable"
+    durable.mkdir()
+    receipt.write_text(json.dumps({
+        "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
+        "task_id": mod.HIL_RECEIVER_TASK_ID,
+        "claim_id": mod.HIL_RECEIVER_CLAIM_ID,
+        "fencing_token": mod.HIL_RECEIVER_FENCE,
+        "receiver_ready": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+        "base_url": "http://127.0.0.1:8877",
+        "durable_state_root": str(durable),
+    }) + "\n", encoding="utf-8")
+    monkeypatch.setattr(mod, "ROOT", runtime)
+    assert mod.hil_receiver_gateway_projection() == {
+        "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED": "true",
+        "STEGVERSE_HIL_RECEIVER_UPSTREAM": "http://127.0.0.1:8877",
+    }
+
+
+def test_hil_receiver_gateway_projection_rejects_wrong_fence_or_intr_path(tmp_path, monkeypatch):
+    runtime = tmp_path
+    receipt = runtime / mod.HIL_RECEIVER_WORKER_RECEIPT_REL
+    receipt.parent.mkdir(parents=True)
+    durable = tmp_path / "hil-durable"
+    durable.mkdir()
+    base = {
+        "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
+        "task_id": mod.HIL_RECEIVER_TASK_ID,
+        "claim_id": mod.HIL_RECEIVER_CLAIM_ID,
+        "fencing_token": 24,
+        "receiver_ready": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+        "base_url": "http://127.0.0.1:8877",
+        "durable_state_root": str(durable),
+    }
+    receipt.write_text(json.dumps(base) + "\n", encoding="utf-8")
+    monkeypatch.setattr(mod, "ROOT", runtime)
+    assert mod.hil_receiver_gateway_projection()["STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"] == "false"
+    base["fencing_token"] = mod.HIL_RECEIVER_FENCE
+    base["base_url"] = "http://127.0.0.1:8877/intr/materialization"
+    receipt.write_text(json.dumps(base) + "\n", encoding="utf-8")
+    assert mod.hil_receiver_gateway_projection()["STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"] == "false"
