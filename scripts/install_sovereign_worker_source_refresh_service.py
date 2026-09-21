@@ -39,6 +39,7 @@ SOURCE_PACKAGE_COMPONENT_SLUGS = (
 MASTER_RECORDS_PACKAGE_SLUG = "stegverse-master-records"
 MASTER_RECORDS_COMPONENT_ID = "stegverse.master-records"
 MASTER_RECORDS_VENDOR_REL = Path("vendor/master-records-orchestration")
+MASTER_RECORDS_REFRESH_RECEIPT_REL = Path("receipts/sovereign-host/master-records-source-refresh.latest.json")
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -136,8 +137,35 @@ def materialize_master_records_source_package(source_package_root: Path, runtime
         "network_source_fetch_performed": False,
         "credential_read_or_acquired": False,
         "materialization_performed": True,
+        "package_provenance": package.get("provenance"),
         "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
     }
+
+
+
+def materialize_master_records_source_package_and_retain(source_package_root: Path, runtime_root: Path) -> dict[str, Any]:
+    runtime = runtime_root.expanduser().resolve()
+    result = materialize_master_records_source_package(source_package_root, runtime)
+    receipt = {
+        "schema": "stegverse.master-records-resident-source-refresh/v1",
+        "state": result.get("state"),
+        "source_identity": result.get("source_identity"),
+        "package_path": result.get("package_path"),
+        "target_root": result.get("target_root"),
+        "file_count": result.get("file_count"),
+        "canonical_master_records_api_loaded_from_package": result.get("canonical_master_records_api_loaded_from_package", False),
+        "materialization_performed": result.get("materialization_performed", False),
+        "network_source_fetch_performed": result.get("network_source_fetch_performed", False),
+        "credential_read_or_acquired": result.get("credential_read_or_acquired", False),
+        "package_provenance": result.get("package_provenance"),
+        "dispatch_authority_granted": False,
+        "runtime_authority_granted": False,
+        "authority_effect": "NONE_SOURCE_REFRESH_EVIDENCE_ONLY",
+    }
+    path = runtime / MASTER_RECORDS_REFRESH_RECEIPT_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
 
 
 def default_source_package_root(env: dict[str, str] | None = None) -> Path:
@@ -281,7 +309,7 @@ def install(
     runtime = runtime_root.expanduser().resolve()
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     refresh_receipt = refresh(source, runtime)
-    master_records_source_refresh = materialize_master_records_source_package(packages, runtime)
+    master_records_source_refresh = materialize_master_records_source_package_and_retain(packages, runtime)
 
     immediate_dispatch = {
         "attempted": False,
