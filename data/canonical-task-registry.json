@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 177,
-  "status": "SDK_PUBLIC_DEVELOPER_WIKI_ACTIVE_PUBLIC_SUBRESOURCE_OBSERVATION_PENDING",
+  "generation": 178,
+  "status": "SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8895,6 +8895,52 @@
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+      "correlation_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+      "root_correlation_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+      "parent_task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+      "goal": "Repair the four-stage SDK evidence experiment claims and falsifiability defects identified by the validated v2 post-lineage review while preserving the retired package as immutable history, then produce a clean bounded basis for a separate retained-standing/retirement custody task.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "handoff": "docs/SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_MIRROR_HANDOFF.md",
+      "cosv_task_vector": "71000000111111",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "constraints": {
+        "retired_parent_history_immutable": true,
+        "option_a_scope_only": true,
+        "no_claim_of_authentic_governed_runtime_from_local_semantic_execution": true,
+        "no_new_runtime_scheduler_dispatcher_workercoordinator_or_custody_store": true,
+        "github_runtime_authority": "NONE",
+        "credential_authority": "TV/TVC",
+        "separate_retained_standing_retirement_goal_required_after_option_a": true
+      },
+      "review_reconciliation": {
+        "review": "SDK Four Stage Post Lineage Review v2",
+        "f1_overlap_non_falsifiable": "CONFIRMED_CURRENT_MAIN",
+        "f2_partition_is_tagged_replication": "CONFIRMED_CURRENT_MAIN",
+        "f3_standing_retirement_group_binding_derived_not_observed": "CONFIRMED_SCOPE_SPLIT",
+        "f4_local_semantic_guard_empty": "CONFIRMED_CURRENT_MAIN",
+        "f5_test3_no_differential_invariance_assertion": "CONFIRMED_CURRENT_MAIN",
+        "f6_preregistration_unanchored": "CORRECTED",
+        "preregistration_commit": "0127082e415fb220c709962ab7d0645e06105a4c",
+        "preregistration_pdf_sha256": "37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7",
+        "successor_run": 35547155843,
+        "successor_attempt": 2
+      },
+      "remaining_predicates": [
+        "TASK4_OVERLAP_MEASUREMENT_FALSIFIABLE_WITH_SERIALIZED_NEGATIVE_CONTROL",
+        "TASK4_PARTITION_SEMANTICS_GENUINE_OR_EXPLICITLY_RELABELED_REPLICATION",
+        "GROUP_RESULT_BINDING_RECOMPUTED_FROM_PER_WORKER_BINDINGS",
+        "GOVERNED_RUNTIME_LOCAL_SEMANTIC_BOUNDARY_ENFORCED",
+        "TEST2_TEST3_DIFFERENTIAL_INVARIANCE_ASSERTION",
+        "PROVENANCE_EXHIBIT_INVENTORY_HYGIENE_REPAIRED",
+        "EXACT_HEAD_VALIDATION_PASS",
+        "MERGED_DEFAULT_BRANCH_EVIDENCE"
+      ]
     }
   ],
   "human_actions": [],
