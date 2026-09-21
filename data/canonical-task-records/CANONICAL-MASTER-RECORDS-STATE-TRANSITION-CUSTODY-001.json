@@ -174,7 +174,19 @@
     "rtc008_materialization_request_source_prepared": true,
     "rtc008_interlock_intr_admission_observed": false,
     "rtc009_far_side_transition_observed": false,
-    "caller_consequence_observed": false
+    "caller_consequence_observed": false,
+    "purpose_bound_post_claim_successor_order_defect_identified": true,
+    "purpose_bound_post_claim_successor_order_repaired": true,
+    "purpose_bound_post_claim_successor_order_repair_pr": 2417,
+    "purpose_bound_post_claim_successor_order_repair_merge": "c3d61dacd18d54ef191766754ddd906ce59fb12f",
+    "purpose_bound_post_claim_successor_order_exact_head": "f121bf2ca14b81885ee9249a69b359b69fbeb540",
+    "purpose_bound_post_claim_successor_order_validation_runs": [
+      35569145956,
+      35569145818,
+      35569145834,
+      35569145993
+    ],
+    "authentic_production_purpose_bound_post_claim_runtime_observed": false
   },
   "completion": {
     "claimed": false,
@@ -300,6 +312,30 @@
       "rtc009_far_side_claimed": false,
       "caller_consequence_claimed": false,
       "authority_effect": "NONE_CONTINUATION_REQUEST_ONLY"
+    },
+    "purpose_bound_post_claim_successor_order": {
+      "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+      "defect": "PURPOSE_BOUND_TASK_CANONICAL_ACTIVE_AND_WORKER_BINDING_PROJECTED_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_GOVERNED_TV_TVC_INTR_LIFECYCLE_CLOSURE",
+      "effect": "CANONICAL_SUCCESSOR_STATE_COULD_ADVANCE_BEFORE_EXISTING_GOVERNED_SUCCESSOR_TRANSITIONS_CLOSED",
+      "pull_request": 2417,
+      "superseded_pull_request": 2414,
+      "exact_head": "f121bf2ca14b81885ee9249a69b359b69fbeb540",
+      "merge_commit": "c3d61dacd18d54ef191766754ddd906ce59fb12f",
+      "validation_runs": [
+        35569145956,
+        35569145818,
+        35569145834,
+        35569145993
+      ],
+      "repaired_order": [
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+        "CANONICAL_TASK_REMAINS_HANDOFF_READY_UNBOUND",
+        "EXISTING_TV_TVC_INTR_PURPOSE_BOUND_LIFECYCLE_EXECUTES_WITH_PROVISIONAL_CLAIM_BOUND_VIEW",
+        "RECORDS_ONLY_TERMINAL_CLOSURE_RETAINED",
+        "CANONICAL_TASK_TERMINAL_PROJECTION"
+      ],
+      "authentic_resident_runtime_execution_claimed": false,
+      "authority_effect": "NONE_SOURCE_ORDERING_REPAIR_ONLY"
     }
   },
   "required_evidence_validation": {
