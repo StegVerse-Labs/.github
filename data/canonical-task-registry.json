@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 181,
-  "status": "ECOSYSTEM_HB_RUNTIME_INVARIANT_CORRECTION_ACTIVE",
+  "generation": 182,
+  "status": "STEGBROWSER_A3_POST_REPAIR_REFRESH_EVIDENCE_NOT_OBSERVED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -7782,6 +7782,39 @@
           "round_trip_1_entered": false,
           "classification": "MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_FLOOR_PROVENANCE_SOURCE_PATH_REPAIRED_AUTHENTIC_RESIDENT_CYCLE_EVIDENCE_PENDING",
           "authority_effect": "NONE_SOURCE_AND_EVIDENCE_RETENTION_REPAIR_ONLY"
+        },
+        {
+          "observed_at": "2026-09-21",
+          "transition": "POST_REPAIR_AUTHENTIC_MASTER_RECORDS_REFRESH_EVIDENCE_REOBSERVED",
+          "goal_prompt_count": "6/20",
+          "registry_generation_entering": 181,
+          "canonical_main_entering": "453a05fb0c08f5a4563e65cad6f4dee5ff197e02",
+          "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+          "required_schema": "stegverse.master-records-resident-source-refresh/v1",
+          "required_receipt_predicates": {
+            "state": "MATERIALIZED_VERIFIED",
+            "materialization_performed": true,
+            "canonical_master_records_api_loaded_from_package": true,
+            "source_proof_state": "VERIFIED_LOCAL_GIT_SOURCE",
+            "source_proof_repository": "master-records/orchestration",
+            "source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+            "source_floor_present": true,
+            "valid_descendant_head_required": true
+          },
+          "authentic_retained_refresh_receipt_observed": false,
+          "authentic_source_package_artifact_observed": false,
+          "durable_master_records_endpoint_advertisement_observed": false,
+          "authentic_nonce_bound_claim_fence_observed": false,
+          "repository_hits_classification": "IMPLEMENTATION_TEST_AND_HANDOFF_ONLY",
+          "authorized_resident_command_surface_available": false,
+          "surface_unavailability_is_runtime_absence_evidence": false,
+          "device_prerequisite_added": false,
+          "deterministic_pre_a3_failure_observed": false,
+          "source_change_performed": false,
+          "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+          "classification": "EVIDENCE_NOT_OBSERVED_NO_DETERMINISTIC_EXISTING_PATH_FAILURE_RETAINED",
+          "runtime_completion_claimed": false,
+          "authority_effect": "NONE_OBSERVATION_ONLY"
         }
       ],
       "dependencies": [
@@ -7844,7 +7877,7 @@
         "github_runtime_authority": "NONE"
       },
       "prompt_budget": {
-        "goal_prompt_count": "5/20",
+        "goal_prompt_count": "6/20",
         "split_merely_to_reset_counter": false
       },
       "source_refs": [
