@@ -1212,3 +1212,7 @@ TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready r
 
 `SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. The canonical external-framework endpoint-binding registry already exists in admissibility-wiki and its evidence-qualified endpoint overlay is intentionally empty. The current Elyria boundary is therefore `EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE`: no independently observed callable Elyria runtime endpoint can yet be lawfully bound. The prior Coinbase/TVC Service Gateway lineage is superseded for Elyria and must not gate or diagnose this task.
 
+### SDK TVC warrant-service self-heal installation
+
+TVC PR #458 is merged and validated. The existing root TVC resident self-heal now reconciles the existing execution-warrant service for each discovered user sovereign runtime owner and performs daemon reload after successful installation; private-key custody remains LoadCredential-only. Authentic installation, assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
+
