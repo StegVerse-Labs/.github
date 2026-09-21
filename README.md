@@ -1143,3 +1143,8 @@ PR #2456 is merged and validated. The existing purpose-bound WorkerCoordinator p
 ### Carrier-first HB receipt execution binding — 2026-09-21
 
 Carrier-first bootstrap restores WorkerCoordinator through the existing carrier-side self-heal path. The carrier registration now carries the same already-declared safe local worker bindings as the direct worker registration, allowing the self-healed WorkerCoordinator to retain its canonical Master Records custody configuration. This changes environment carriage only; HeartBeat remains non-authorizing.
+
+
+### Existing control-plane relay continuation
+
+The reusable control-plane package lifecycle now continues through the already-existing StegOS control-plane relay when an already-issued TVC authorization and already-admitted relay binding are present. It does not mint relay authority. Completion requires exact far-side materialization digest parity for the five Functional Memory/StegFin carriage files.

@@ -5,6 +5,8 @@ import json
 import os
 import tempfile
 import unittest
+
+from workers import hil_intr_profiled_ingress as ingress
 from pathlib import Path
 from unittest import mock
 
@@ -36,7 +38,7 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
         paths = {row["path"] for row in package["manifest"]["files"]}
         self.assertIn("scripts/build_control_plane_source_package_reusable.py", paths)
         self.assertIn("source-bundles/reusable-task-registry.d/RT-CONTROL-PLANE-SOURCE-PACKAGE-001.json", paths)
-        self.assertLessEqual(len(rendered), 512 * 1024)
+        self.assertLessEqual(len(rendered), ingress.SOURCE_PACKAGE_MAX_BYTES)
         self.assertFalse(package["credential_material_included"])
         self.assertEqual(package["authority_effect"], "NONE_SOURCE_TRANSPORT_ONLY")
 
@@ -52,6 +54,74 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
         self.assertEqual(request["requested_test_scope"], "A0_A4_SINGLE_INVOCATION")
         self.assertEqual(request["requested_goal_task_id"], "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001")
         self.assertEqual(request["authority_effect"], "NONE_REQUEST_ONLY")
+
+    def test_default_package_carries_complete_functional_memory_relay_delta(self) -> None:
+        package = builder.build(ROOT, builder.DEFAULT_PATHS)
+        rows = {row["path"]: row for row in package["manifest"]["files"]}
+        for rel in subject.REQUIRED_FUNCTIONAL_MEMORY_PATHS:
+            self.assertIn(rel, rows)
+            self.assertRegex(rows[rel]["sha256"], r"^[0-9a-f]{64}$")
+
+    def test_existing_relay_continuation_is_not_attempted_without_existing_inputs(self) -> None:
+        package = builder.build(ROOT, builder.DEFAULT_PATHS)
+        with tempfile.TemporaryDirectory() as td, mock.patch.dict(os.environ, {
+            subject.RELAY_AUTH_ENV: "",
+            subject.RELAY_BINDING_ENV: "",
+            subject.STEGOS_ROOT_ENV: "",
+        }, clear=False):
+            result = subject._relay_existing_authorized_package(
+                package=package,
+                package_path=Path(td) / "package.json",
+                runtime_root=Path(td),
+            )
+        self.assertEqual(result["state"], "EXISTING_RELAY_INPUTS_NOT_CONFIGURED")
+        self.assertFalse(result["attempted"])
+        self.assertEqual(result["authority_effect"], "NONE_EXISTING_RELAY_NOT_INVOKED")
+
+    def test_existing_relay_continuation_requires_exact_far_side_file_digests(self) -> None:
+        package = builder.build(ROOT, builder.DEFAULT_PATHS)
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_path = base / "package.json"
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            auth = base / "authorization.json"; auth.write_text("{}")
+            binding = base / "binding.json"; binding.write_text("{}")
+            stegos = base / "StegOS"; (stegos / "scripts").mkdir(parents=True)
+            relay_script = stegos / "scripts/execute_control_plane_source_package_relay.py"
+            relay_script.write_text("# placeholder\n")
+            packaged = {row["path"]: row for row in package["manifest"]["files"]}
+            materialized = [
+                {"path": rel, "sha256": packaged[rel]["sha256"], "size": packaged[rel]["size"]}
+                for rel in subject.REQUIRED_FUNCTIONAL_MEMORY_PATHS
+            ]
+            output = {
+                "state": "SOURCE_MATERIALIZED_VERIFIED",
+                "source_package_ingress_verified": True,
+                "result": {
+                    "source_package_ingress_receipt": {
+                        "source_identity": package["source_identity"],
+                        "source_materialization": {"files": materialized},
+                    }
+                },
+            }
+            completed = mock.Mock(returncode=0, stdout=json.dumps(output) + "\n", stderr="")
+            env = {
+                subject.RELAY_AUTH_ENV: str(auth),
+                subject.RELAY_BINDING_ENV: str(binding),
+                subject.STEGOS_ROOT_ENV: str(stegos),
+            }
+            with mock.patch.dict(os.environ, env, clear=False), mock.patch.object(subject.subprocess, "run", return_value=completed):
+                result = subject._relay_existing_authorized_package(
+                    package=package,
+                    package_path=package_path,
+                    runtime_root=base / "runtime",
+                )
+            self.assertEqual(result["state"], "SOURCE_MATERIALIZED_VERIFIED")
+            self.assertTrue(result["far_side_materialization_verified"])
+            self.assertFalse(result["new_authorization_issued"])
+            self.assertFalse(result["new_binding_created"])
+            self.assertFalse(result["new_transport_created"])
+            self.assertTrue((base / "runtime" / subject.RELAY_RECEIPT_REL).is_file())
 
     def test_reusable_runner_retains_exact_content_addressed_package(self) -> None:
         with tempfile.TemporaryDirectory() as td:
