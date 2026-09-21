@@ -29,6 +29,8 @@ HEALER_STEGHEALTH_SOURCE_FLOOR = "585cf38aad95fda69dbcbd0150c1256571f90feb"
 HEALER_STEGHEALTH_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
 HEALER_STEGHEALTH_REUSABLE_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 CONTROL_BUNDLE_MANIFEST = "stegverse-control-plane-manifest.json"
+HEALER_HIL_RECEIVER_GATEWAY_MERGE = "f2db0edf3af99816d3f134ba66b3398788485d08"
+LLM_HIL_RECEIVER_GATEWAY_MERGE = "c1b2442acda6612a0360a2fad9238bc1579b415c"
 
 CANONICAL_REPO_BASES = (
     Path.home() / ".stegverse" / "repos",
@@ -151,6 +153,35 @@ def verify_healer_source_freshness(root: Path) -> dict:
 
     return {**base, "state": "STALE_OR_INCOMPLETE", "source_mode": "UNVERIFIED_LOCAL_TREE"}
 
+
+
+def verify_healer_hil_receiver_gateway_source(root: Path) -> dict:
+    path = root.expanduser().resolve() / "app" / "coinbase_stegdeploy_gateway.py"
+    base = {
+        "required_healer_merge": HEALER_HIL_RECEIVER_GATEWAY_MERGE,
+        "required_llm_gateway_merge": LLM_HIL_RECEIVER_GATEWAY_MERGE,
+        "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
+    }
+    if not path.is_file():
+        return {**base, "state": "STALE_OR_INCOMPLETE", "reason": "GATEWAY_SOURCE_MISSING"}
+    try:
+        source = path.read_text(encoding="utf-8")
+    except Exception:
+        return {**base, "state": "STALE_OR_INCOMPLETE", "reason": "GATEWAY_SOURCE_UNREADABLE"}
+    required_markers = (
+        'HIL_RECEIVER_PROXY_ENABLED_ENV = "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"',
+        'HIL_RECEIVER_UPSTREAM_ENV = "STEGVERSE_HIL_RECEIVER_UPSTREAM"',
+        f'MINIMUM_HIL_RECEIVER_GATEWAY_COMMIT = "{LLM_HIL_RECEIVER_GATEWAY_MERGE}"',
+        "validate_hil_receiver_gateway_readiness",
+        "LLM_ADAPTER_HIL_RECEIVER_GATEWAY_SOURCE_STALE",
+    )
+    missing = [marker for marker in required_markers if marker not in source]
+    return {
+        **base,
+        "state": "CURRENT" if not missing else "STALE_OR_INCOMPLETE",
+        "source_ref": str(path),
+        "missing_markers": missing,
+    }
 
 def discover_healer_root(explicit: str = "") -> tuple[Path | None, str]:
     if explicit.strip():
@@ -494,6 +525,12 @@ def main() -> int:
         "state": "NOT_CHECKED",
         "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
     }
+    hil_receiver_projection = hil_receiver_gateway_projection()
+    healer_hil_receiver_gateway_source = (
+        verify_healer_hil_receiver_gateway_source(healer_root)
+        if healer_root is not None and hil_receiver_projection.get("STEGVERSE_HIL_RECEIVER_PROXY_ENABLED") == "true"
+        else {"state": "NOT_REQUIRED", "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY"}
+    )
     blocker = None
     child_receipt: dict = {}
     state = "BLOCKED"
@@ -525,6 +562,15 @@ def main() -> int:
             "may_remain_blocked": True,
             "next_solution_action": "REUSE_EXISTING_ONE_SHOT_RESIDENT_STACK_ACTIVATION",
             "source_freshness": healer_source_freshness,
+        }
+    elif healer_hil_receiver_gateway_source.get("state") == "STALE_OR_INCOMPLETE":
+        blocker = {
+            "dependency_class": "LOCAL_SOURCE_FRESHNESS",
+            "problem_statement": "The discovered StegVerse-Healer source predates the machine-owned HIL receiver Gateway projection contract.",
+            "solution_required": True,
+            "may_remain_blocked": True,
+            "next_solution_action": "REFRESH_EXISTING_LOCAL_HEALER_SOURCE_THROUGH_CANONICAL_SOURCE_TRANSPORT",
+            "source_freshness": healer_hil_receiver_gateway_source,
         }
     elif not roots_json:
         blocker = {
@@ -606,6 +652,8 @@ def main() -> int:
         "healer_root": str(healer_root) if healer_root is not None else None,
         "healer_root_source": healer_root_source,
         "healer_source_freshness": healer_source_freshness,
+        "healer_hil_receiver_gateway_source": healer_hil_receiver_gateway_source,
+        "hil_receiver_gateway_projection_enabled": hil_receiver_projection.get("STEGVERSE_HIL_RECEIVER_PROXY_ENABLED") == "true",
         "repository_root_count": len(repo_roots),
         "repository_roots_source": repo_roots_source,
         "blocker": blocker,
