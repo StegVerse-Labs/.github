@@ -350,3 +350,55 @@ Until that visit is authentically retained, do not promote:
 - deployed query-secret-safe ingress.
 
 No new scheduler, dispatcher, runtime, worker, request, invocation, device prerequisite, Google consent, CONNECT/VERIFY, or KV #2 materialization is required or authorized at this boundary.
+
+
+## Healer post-KV source-lineage freshness repair — 2026-09-21
+
+Re-observation after the task-scoped Healer schedule merge still found no authentic post-repair:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json
+receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json
+```
+
+Tracing the existing resident cadence identified one concrete source-lineage defect before another authentic Healer visit could be accepted as post-repair evidence.
+
+The standing Healer worker freshness gate, one-shot resident-stack activation consumer, and portable control-bundle proof still accepted Healer source floor:
+
+`8683611f035d684ea295020e2f55971d5797655b`
+
+That floor is five commits behind StegVerse-Healer merge:
+
+`585cf38aad95fda69dbcbd0150c1256571f90feb`
+
+which introduced the exact `KV-CONNECTION-REVALIDATION-WORKER-001` task-scoped `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` schedule row. Therefore stale local Healer source could have passed freshness while lacking the KV schedule binding, making a future dispatch visit non-probative for this Goal.
+
+PR #2459 repaired only the existing freshness contract by advancing the Healer source floor to the KV schedule merge in:
+
+```text
+workers/healer_sovereign_scheduler_worker.py
+scripts/consume_one_shot_resident_stack_activation_request.py
+scripts/package_sovereign_control_plane_bundle.py
+```
+
+with focused regression coverage.
+
+```text
+validated head = fb7f99430d5d980df60f0bc987fe6a768890f3f9
+merge = 00cb32192ac9175e818eca96560d8d45a8d5baab
+Deterministic Repository Suite - Diagnostic Evidence Only = SUCCESS
+```
+
+No new runtime, scheduler, dispatcher, worker, request, invocation, source fetch, credential path, connected-device prerequisite, Google consent, CONNECT/VERIFY, or KV #2 materialization was added.
+
+Post-merge repository observation still contains no authentic resident dispatch/checkpoint/consumption evidence. The first unresolved authentic machine-owned transition therefore remains:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+selector = healer_sovereign_scheduler
+consumer = scripts/consume_healer_sovereign_scheduler_request.py
+required Healer source lineage >= 585cf38aad95fda69dbcbd0150c1256571f90feb
+```
+
+Only an authentic retained visit produced by the existing resident cadence under that source lineage may control progression.
