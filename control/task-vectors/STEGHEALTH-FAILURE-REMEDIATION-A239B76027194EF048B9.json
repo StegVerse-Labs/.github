@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "identity": "StegVerse-Labs/.github:task:STEGHEALTH-FAILURE-REMEDIATION-A239B76027194EF048B9",
+  "profile": "task.v1",
+  "task_id": "STEGHEALTH-FAILURE-REMEDIATION-A239B76027194EF048B9",
+  "vector": "10100000111000",
+  "level": "task",
+  "repository": "StegVerse-Labs/StegHealth",
+  "parent_task_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGHEALTH-FAILURE-REMEDIATION-A239B76027194EF048B9.json",
+    "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegHealth@b655ba23f405f23f9c7e3a0bb02dd05165318cba:tasks/failure-remediation/STEGHEALTH-FAILURE-REMEDIATION-A239B76027194EF048B9.json",
+    "StegVerse-Labs/StegHealth#84"
+  ],
+  "authority_effect": "NONE"
+}
