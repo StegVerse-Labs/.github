@@ -316,11 +316,14 @@ def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
         "required=canonical._require_evidence_manifest(receipt)\n"
         "with base._LOCK, base._connect() as connection:\n"
         " rows=connection.execute('SELECT canonical_entry_json,evidence_sha256 FROM canonical_state_transition_required_evidence WHERE receipt_sha256 = ? ORDER BY evidence_id', (receipt_sha256,)).fetchall()\n"
+        " metadata=connection.execute('SELECT * FROM canonical_state_transition_hb_recording_metadata WHERE receipt_sha256 = ?', (receipt_sha256,)).fetchone()\n"
         "evidence_pass=len(rows)==len(required)\n"
         "for item in rows:\n"
         " entry=json.loads(item['canonical_entry_json']); evidence_pass=evidence_pass and hashlib.sha256(canonical._evidence_bytes(entry)).hexdigest()==item['evidence_sha256']\n"
+        "hb_recording=json.loads(metadata['hb_recording_reference_json']) if metadata is not None else None\n"
+        "if hb_recording is not None: canonical.validate_hb_reference(hb_recording)\n"
         "state='PASS' if rebuilt==receipt_sha256 and evidence_pass else 'FAIL_CLOSED'\n"
-        "result={'state':state,'receipt_sha256':receipt_sha256,'reconstructed_receipt_sha256':rebuilt,'receipt':receipt,'required_evidence_validation_status':'PASS' if evidence_pass else 'FAIL_CLOSED','master_record_ref':row['master_record_ref'],'custody_receipt_id':row['custody_receipt_id'],'master_records_grants_transition_authority':False,'authority_effect':'NONE_RECONSTRUCTION_ONLY'}\n"
+        "result={'state':state,'receipt_sha256':receipt_sha256,'reconstructed_receipt_sha256':rebuilt,'receipt':receipt,'required_evidence_validation_status':'PASS' if evidence_pass else 'FAIL_CLOSED','master_record_ref':row['master_record_ref'],'custody_receipt_id':row['custody_receipt_id'],'hb_recording_reference':hb_recording,'hb_recording_protocol':metadata['hb_recording_protocol'] if metadata is not None else None,'master_records_custody_ordinal':int(metadata['custody_ordinal']) if metadata is not None else None,'recorded_receipt_sha256':metadata['recorded_receipt_sha256'] if metadata is not None else None,'hb_evidence_class':'HB_BOUND_SUCCESSOR' if metadata is not None else 'SYSTEM_RELATIVE_CONTINUITY_ONLY','master_records_grants_transition_authority':False,'authority_effect':'NONE_RECONSTRUCTION_ONLY'}\n"
         "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
     )
     completed = subprocess.run(
@@ -348,6 +351,95 @@ def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
             "authority_effect": "NONE",
         }
     return result if isinstance(result, dict) else None
+
+
+def _checkpoint_set_http(floor: int, ceiling: int) -> dict[str, Any] | None:
+    endpoint, token, timeout = _configuration()
+    if not endpoint or not token or not _endpoint_allowed(endpoint):
+        return None
+    url = endpoint.rstrip("/") + "/checkpoint-set?" + urlencode({"floor": floor, "ceiling": ceiling})
+    request = Request(url, method="GET", headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": f"CANONICAL_MASTER_RECORDS_CHECKPOINT_SET_FAILED:{type(exc).__name__}",
+            "authority_effect": "NONE",
+        }
+
+
+def _checkpoint_set_local(floor: int, ceiling: int) -> dict[str, Any] | None:
+    mr_root = _local_binding()
+    if mr_root is None:
+        return None
+    env = {
+        key: os.environ[key]
+        for key in (
+            "PATH",
+            "LANG",
+            "LC_ALL",
+            "MASTER_RECORDS_DB",
+            "MASTER_RECORDS_RECEIPT_KEY",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+        )
+        if key in os.environ
+    }
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
+    authority_call = (
+        "import json,sys\n"
+        "from services import master_records_custody_api as base\n"
+        "from services.canonical_state_transition_custody import build_receipt_set_commitment\n"
+        "result=build_receipt_set_commitment(base, int(sys.argv[1]), int(sys.argv[2]))\n"
+        "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", authority_call, str(floor), str(ceiling)],
+        cwd=mr_root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    if completed.returncode != 0:
+        stderr = completed.stderr[-1000:]
+        reason = "CANONICAL_MASTER_RECORDS_LOCAL_CHECKPOINT_SET_CALL_FAILED"
+        if "checkpoint_receipt_range_not_contiguous" in stderr or "checkpoint_receipt_set_empty" in stderr:
+            reason = "CANONICAL_MASTER_RECORDS_HB_SUCCESSOR_RANGE_NOT_AVAILABLE"
+        return {"state": "BOUNDARY", "reason": reason, "stderr_tail": stderr, "authority_effect": "NONE"}
+    try:
+        result = json.loads(completed.stdout.strip().splitlines()[-1])
+    except Exception:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_LOCAL_CHECKPOINT_SET_RESULT_INVALID", "authority_effect": "NONE"}
+    return result if isinstance(result, dict) else None
+
+
+def build_master_records_receipt_set_commitment(floor: int, ceiling: int) -> dict[str, Any]:
+    """Return an exact non-authorizing bounded Master Records successor projection."""
+    if not isinstance(floor, int) or not isinstance(ceiling, int) or floor < 1 or ceiling < floor:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_BOUNDS_INVALID", "authority_effect": "NONE"}
+    payload = _checkpoint_set_http(floor, ceiling)
+    if payload is None:
+        payload = _checkpoint_set_local(floor, ceiling)
+    if payload is None:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
+    if payload.get("state") == "BOUNDARY":
+        return payload
+    if payload.get("schema") != "stegverse.master-records.receipt-set-commitment/v1":
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_SCHEMA_INVALID", "authority_effect": "NONE"}
+    if payload.get("master_records_commitment_profile") != "ORDERED_CANONICAL_RECEIPT_SHA256_BOUNDED_RANGE_V1":
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_PROFILE_INVALID", "authority_effect": "NONE"}
+    if payload.get("master_records_query_floor") != floor or payload.get("master_records_query_ceiling") != ceiling:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_BOUNDS_MISMATCH", "authority_effect": "NONE"}
+    if payload.get("master_records_receipt_count") != ceiling - floor + 1:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_COUNT_MISMATCH", "authority_effect": "NONE"}
+    identities = payload.get("ordered_receipt_identities")
+    if not isinstance(identities, list) or len(identities) != payload.get("master_records_receipt_count"):
+        return {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_CHECKPOINT_IDENTITIES_INVALID", "authority_effect": "NONE"}
+    return {**payload, "state": "PASS", "authority_effect": "NONE_CUSTODY_COMMITMENT_ONLY"}
 
 
 def _query_http(subject_or_correlation_id: str, transition_id: str | None) -> dict[str, Any] | None:
@@ -603,4 +695,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
