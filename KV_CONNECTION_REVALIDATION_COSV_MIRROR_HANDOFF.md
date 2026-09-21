@@ -244,3 +244,54 @@ The immediate machine-owned successor is now the authentic task-specific Canonic
 `receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json`
 
 Only after that exact receipt exists from the existing resident cadence may the same invocation's reusable trigger/runner boundary be promoted. Source merge does not satisfy either predicate.
+
+
+## Existing neutral-scheduler addressability repair — 2026-09-21
+
+After the explicit Canonical Work consumer registration repair, the next concrete machine-owned source defect was in the existing neutral reusable-task scheduler configuration.
+
+`StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` had no task-scoped row binding this Goal to the already-existing portable Canonical Work dispatch identity. Therefore the standing Healer carrier could not select:
+
+```text
+RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+-> only_consumer=canonical_work_coordination
+-> goal_task_id=KV-CONNECTION-REVALIDATION-WORKER-001
+```
+
+The portable-dispatch reusable definition already owns the existing already-local source refresh plus exact `canonical_work_coordination` dispatch bridge and receives `source_root` / `runtime_root` from the neutral scheduler. No second source-refresh mechanism was required.
+
+StegVerse-Healer PR #95 repaired only the missing task-scoped schedule addressability and merged as:
+
+```text
+validated head = a7979ebed5921301eba77c2bace66f5e7577d67e
+merge = 585cf38aad95fda69dbcbd0150c1256571f90feb
+Test Readiness = SUCCESS
+```
+
+The merged schedule row binds:
+
+```text
+reusable_task_id = RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+tracking_task_id = KV-CONNECTION-REVALIDATION-WORKER-001
+COSV = 50000000102000
+repository = StegVerse-Labs/.github
+invocation_key = KV-CONNECTION-REVALIDATION-WORKER-001
+only_consumer = canonical_work_coordination
+goal_task_id = KV-CONNECTION-REVALIDATION-WORKER-001
+run_hours_utc = 0..23
+retry_interval_minutes = 15
+max_attempts_per_slot = 4
+```
+
+This creates no scheduler, dispatcher, runtime, request, reusable invocation, WorkerCoordinator, credential route, authority plane, or device prerequisite.
+
+Post-merge evidence inspection still finds no authentic retained:
+
+```text
+receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json
+same-lineage neutral-scheduler child result for KV-CONNECTION-REVALIDATION-WORKER-001
+receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.latest.json
+receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.runner-result.json
+```
+
+Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, Master Records custody, or deployed query-secret-safe ingress observation is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
