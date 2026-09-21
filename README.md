@@ -1072,3 +1072,8 @@ The conversation-evidence ingestion Goal now also has source reachability throug
 
 
 Conversation-evidence runtime reachability was further repaired in StegVerse-Healer PR #94 / merge `2e3d41e44c28f0c116b190c6d5a38d094d29a588`: the existing sovereign source-refresh reusable child now precedes the conversation-evidence Canonical Work child in the same neutral scheduler, eliminating the deterministic resident-root ordering failure. The remaining boundary is an authentic post-repair visit of the already-existing Healer standing resident request; no claim/fence or Master Records ingestion closure is inferred from source configuration.
+
+
+## 2026-09-21 SDK Test 1 exact Master Records predecessor repair
+
+PR #2400 fixed the manifest-bound purpose-worker lineage so the exact closed `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records transition is retained and forwarded as the immediate predecessor of `TV_TVC_WARRANT_POLICY_VERIFIED`. The existing StegAgents runtime then validates the predecessor closure and uses its receipt SHA as the next transition's `prior_state_ref_or_hash`. Exact-head runs `35568188445` and `35568188426` passed; merge `25e996510619ed0cb75d4f69750e038eede5a209`. This is source-path proof only; no production claim/fence receipt is claimed.
