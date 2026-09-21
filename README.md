@@ -1211,3 +1211,8 @@ The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-ret
 ### TVC hygiene retirement routing batch 2 — 2026-09-21
 
 TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready refs and zero invalid approvals after PR #457 merged. Only the ten newly approved batch-2 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` in `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json`; no branch deletion was performed.
+
+### SDK TVC warrant-service self-heal installation
+
+TVC PR #458 is merged and validated. The existing root TVC resident self-heal now reconciles the existing execution-warrant service for each discovered user sovereign runtime owner and performs daemon reload after successful installation; private-key custody remains LoadCredential-only. Authentic installation, assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
+
