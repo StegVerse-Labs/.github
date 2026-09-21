@@ -4,6 +4,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "scripts/build_control_plane_source_package.py"
 
 REQUIRED = {
+    "heartbeat_runtime/worker_runtime.py",
+    "heartbeat_runtime/admitted_worker_runtime.py",
+    "heartbeat_runtime/worker_assignment_functional_memory.py",
+    "workers/canonical_state_transition_custody.py",
+    "control/worker-registry.d/stegfin-live-entry-003.json",
     "heartbeat_runtime/worker_runtime_legacy.py",
     "heartbeat_runtime/process_adapter.py",
     "workers/stegagents_governed_runtime_worker.py",
