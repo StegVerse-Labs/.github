@@ -196,3 +196,51 @@ The TVC observer is diagnostic only. Even a `READY_PRIMARY_RUNTIME_PROVIDER_OPER
 ## Manual work
 
 None. Do not wait for or check an idle connected device. Do not emit another reusable invocation or Google Drive KV request. Do not initiate Google consent, CONNECT/VERIFY, or KV #2 materialization until the exact deployed-ingress predicate passes.
+
+
+## Canonical Work explicit-request consumption repair — 2026-09-21
+
+The first deterministic existing-path defect after reusable-runtime source reconciliation was identified in the one existing Canonical Work resident consumer.
+
+The already-standing request:
+
+`control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json`
+
+was valid and manifest-bound, but `KV-CONNECTION-REVALIDATION-WORKER-001` was absent from the existing Canonical Work consumer's explicit `REQUEST_SPECS`. Therefore the request could not produce its task-specific explicit-consumption receipt through the intended existing request cadence.
+
+PR #2404 repaired only that seam and merged as:
+
+```text
+validated head = 1f71ee7c236c42a343e689f16ca6a7eaf2a9db5e
+merge = 4d9c40b9d2d42cbacda004cc2720f76a4bbd3a09
+Cross-Task Coordination Validation - Non-Authorizing = SUCCESS
+```
+
+The repair adds exactly one explicit spec to the existing consumer:
+
+```text
+task_id = KV-CONNECTION-REVALIDATION-WORKER-001
+request = control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json
+consumption = receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json
+bootstrap runtime = runtime/canonical-work-kv-connection-revalidation-tvc-runtime
+```
+
+No new request, reusable invocation, dispatcher, scheduler, runtime, WorkerCoordinator, credential path, provider authority, or device prerequisite was added.
+
+Current same-lineage authentic evidence remains fail-closed:
+
+```text
+CANONICAL_WORK_KV_TVC_RUNTIME_REQUEST_CONSUMPTION_OBSERVED = false
+REUSABLE_TRIGGER_RECEIPT_OBSERVED = false
+REUSABLE_RUNNER_RESULT_OBSERVED = false
+TVC_RUNTIME_BINDING_EVIDENCE_OBSERVED = false
+INTERLOCK_INTR_ADMISSION_OBSERVED = false
+MASTER_RECORDS_CUSTODY_OBSERVED = false
+DEPLOYED_QUERY_SECRET_SAFE_INGRESS_OBSERVED = false
+```
+
+The immediate machine-owned successor is now the authentic task-specific Canonical Work consumption receipt:
+
+`receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json`
+
+Only after that exact receipt exists from the existing resident cadence may the same invocation's reusable trigger/runner boundary be promoted. Source merge does not satisfy either predicate.
