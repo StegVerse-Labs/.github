@@ -755,3 +755,10 @@ Wave-0 handling remains bounded: repo-standards is not given a new hosted caller
 TVC post-approval run `35650322213` failed closed with 10 invalid approvals because the reusable classifier counted branch names written into `.github/repository-hygiene-approved-retirements.txt` and `evidence/repository-hygiene/*` as default-branch source references. That made valid approval evidence self-invalidating.
 
 The shared classifier is repaired to ignore branch-name matches only inside explicit canonical hygiene-control paths: the approval manifest, repository-hygiene evidence/control records, and canonical hygiene handoffs. All matches outside those paths remain retention evidence and continue to block retirement. The report now records both `default_branch_source_refs` and `ignored_hygiene_control_refs` per branch. Authority effect remains NONE; this repair cannot delete refs.
+
+
+### TVC Wave-1 retirement routing batch 1 — 2026-09-21
+
+TVC run `35651085752` completed SUCCESS against repaired shared classifier `3928394653f3be42e58bb0e791b56956de3506d4`: 426 branches inspected, 162 structural retirement candidates, **10 approved-retirement-ready**, and **0 invalid approvals**. Artifact `10662600248`, digest `sha256:2937914a669d74b5f502e621d09ff45837924fd3018ebd317c655eea09ca4241`.
+
+The exact ten-ref set is now routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch1.json`. Routing is authority input only: no ref deletion occurred and the retirement authority must revalidate current repository state before any mutation.
