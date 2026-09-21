@@ -598,3 +598,18 @@ Source/integration closure completed in this terminal prompt:
 The source graph and shared ingress are therefore closed. Authentic completion remains false. The successor must execute the exact Test 1 manifest lineage through the existing resident `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` + `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` path and require, in order, `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, `TV_TVC_WARRANT_POLICY_VERIFIED`, `STEGCORE_INTR_MATERIALIZATION_ADMITTED`, and all four purpose-bound lifecycle transitions, with a Master Records closure after every transition satisfying RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality. Completion additionally requires replay PASS, reconstruction PASS, records-only terminal state, `continued_authority=false`, and a manifest receipt bound to the exact original manifest lineage.
 
 Successor handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
+
+
+## Preserved execution-lineage expiry-basis repair — 2026-09-21
+
+After the preclaim manifest-request ordering repair, the next deterministic gate on the preserved `HANDOFF_READY -> WorkerCoordinator` path was `_expiry_budget(task)`.
+
+The preserved task and shared StegAgents provider both referenced:
+
+`cost-basis/worker-runtime/stegagents-governed-runtime.json`
+
+but canonical main did not contain that file. The inherited `_expiry_budget()` implementation returns `None` for a missing cost-basis path, and `_activate_from_trigger()` therefore emits `EXPIRY_BASIS_UNAVAILABLE` and returns before claim/fence creation.
+
+The repair materializes that already-referenced cost-basis artifact only. Its finite expiry candidate is exactly the existing executable handoff's `runtime_window_beats=4096`; it introduces no new lease policy, runtime, scheduler, dispatcher, authority, credential path, or custody store. A focused regression test requires the referenced cost basis to exist and `WorkerCoordinator._expiry_budget()` to resolve `(4096, "TASK_CLASS_COST_BASIS")`.
+
+No authentic `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt is inferred from this source repair.
