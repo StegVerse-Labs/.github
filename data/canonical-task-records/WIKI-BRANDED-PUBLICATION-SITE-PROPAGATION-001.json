@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+  "correlation_id": "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+  "root_correlation_id": "ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001",
+  "parent_task_id": "ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001",
+  "goal": "Establish branded public hostnames for the existing StegGuardian and StegTalk wikis, preserve their current repositories and GitHub Actions Pages deployments as canonical publication sources, and propagate all three branded wiki entry points (Admissibility, StegGuardian, StegTalk) to Site as lightweight directory/bridge links without duplicating wiki content or creating new authority surfaces.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "StegVerse-002/stegguardian-wiki:.github/workflows/pages.yml",
+    "StegVerse-002/stegguardian-wiki:STEGGUARDIAN_WIKI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegtalk-wiki:.github/workflows/pages.yml",
+    "StegVerse-Labs/stegtalk-wiki:STEGTALK_WIKI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:data/wiki-public-links.json",
+    "StegVerse-Labs/Site:docs/wiki-links.md",
+    "StegVerse-Labs/Site:Papers.html"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002"
+    ],
+    "repositories": [
+      "StegVerse-002/stegguardian-wiki",
+      "StegVerse-Labs/stegtalk-wiki",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "stegguardian-branded-public-hostname",
+      "stegtalk-branded-public-hostname",
+      "site-wiki-directory-projection",
+      "ecosystem-chat-wiki-navigation"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "ADMISSIBILITY_BRANDED_HOST_CUTOVER",
+      "kind": "TASK",
+      "state": "IN_PROGRESS",
+      "ref": "ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001"
+    },
+    {
+      "dependency_id": "STEGGUARDIAN_GITHUB_PAGES_CUSTOM_DOMAIN",
+      "kind": "HUMAN_ACTION",
+      "state": "SATISFIED_USER_EVIDENCE",
+      "ref": "stegguardian.stegverse.org"
+    },
+    {
+      "dependency_id": "STEGTALK_GITHUB_PAGES_CUSTOM_DOMAIN",
+      "kind": "HUMAN_ACTION",
+      "state": "SATISFIED_USER_EVIDENCE",
+      "ref": "stegtalk.stegverse.org"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "ADMISSIBILITY-WIKI-PUBLIC-DOMAIN-001"
+  ],
+  "existing_evidence_refs": [
+    "user-supplied GitHub Pages screenshots showing stegtalk.stegverse.org DNS check successful and HTTPS enforced",
+    "user-supplied GitHub Pages screenshot showing stegguardian.stegverse.org DNS check successful"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTRATION_MERGED",
+    "STEGGUARDIAN_ACTIVE_PUBLIC_ORIGIN_CONTRACT_USES_BRANDED_HOSTNAME",
+    "STEGTALK_ACTIVE_PUBLIC_ORIGIN_CONTRACT_USES_BRANDED_HOSTNAME",
+    "STEGGUARDIAN_EXACT_HEAD_VALIDATION_PASS",
+    "STEGTALK_EXACT_HEAD_VALIDATION_PASS",
+    "STEGGUARDIAN_PUBLIC_ROOT_HTTPS_OBSERVED",
+    "STEGTALK_PUBLIC_ROOT_HTTPS_OBSERVED",
+    "SITE_WIKI_PUBLIC_LINKS_USE_BRANDED_HOSTNAMES",
+    "SITE_PUBLIC_WIKI_DIRECTORY_EXPOSES_ADMISSIBILITY_STEGGUARDIAN_STEGTALK",
+    "SITE_EXACT_HEAD_VALIDATION_PASS",
+    "SITE_PUBLIC_PROJECTION_OBSERVED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/Site:docs/WIKI_BRANDED_PUBLICATION_SITE_PROPAGATION_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "COMPLETION_CLAIMED",
+    "CLOSED"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-002/stegguardian-wiki:STEGGUARDIAN_WIKI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegtalk-wiki:STEGTALK_WIKI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/WIKI_BRANDED_PUBLICATION_SITE_PROPAGATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

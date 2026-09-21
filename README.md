@@ -1152,3 +1152,8 @@ The reusable control-plane package lifecycle now continues through the already-e
 ### SDK TVC resident caller bridge
 
 TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator runtime now has group-scoped access to the existing TVC warrant request/secret-free receipt interface and start-only authorization for the existing warrant oneshot; the TVC private key remains root-owned and LoadCredential-only. Authentic assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
+
+
+## Branded wiki publication and Site propagation
+
+`WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001` coordinates branded public hostnames for the existing StegGuardian and StegTalk wikis and lightweight Site propagation for Admissibility, StegGuardian, and StegTalk. Existing wiki repositories and GitHub Actions Pages deployments remain canonical publication sources. Site remains a directory/bridge projection only. No COSV, runtime, custody, execution authority, or duplicate wiki is created.
