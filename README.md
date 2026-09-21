@@ -1111,3 +1111,8 @@ Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` 
 ### SDK TT WorkerCoordinator expiry-basis repair
 
 The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
+
+
+### Canonical predecessor closure for direct receipt callers
+
+Direct state-transition producers that do not use `CanonicalTransitionCustody` must still consume the immediately preceding canonical Master Records closure. The first repaired direct caller is WorkerCoordinator claim/fence custody: prior Functional Memory is reconstructed through Master Records and carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`; legacy checkpoint references cannot substitute for canonical predecessor state.

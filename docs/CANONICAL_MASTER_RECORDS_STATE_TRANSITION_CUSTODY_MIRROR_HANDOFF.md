@@ -431,3 +431,19 @@ PR #2400 / merge `25e996510619ed0cb75d4f69750e038eede5a209` is now explicitly re
 That repair established, for the manifest-bound SDK Test 1 path, that the exact closed `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records record must be retained, validated, and forwarded as `graph_predecessor_master_records_transition` so `TV_TVC_WARRANT_POLICY_VERIFIED` uses the exact predecessor receipt SHA rather than a bare worker-claim reference.
 
 Later merged repairs #2417 and #2421 generalize and supersede the narrow SDK-only expression of this principle. Therefore #2400 is retained here as conformance provenance, not as a rollback of the active ecosystem-wide generic predecessor-closure trace. No authentic resident execution is claimed by this reconciliation.
+
+
+## Generic direct-caller predecessor closure repair — 2026-09-21
+
+After PR #2421 repaired `CanonicalTransitionCustody`, the next ecosystem-wide inventory found a direct caller that still bypassed the shared predecessor-closure contract: `heartbeat_runtime/worker_runtime_legacy.py::_custody_assignment_transition(...)` built and submitted `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` directly and used `task.last_checkpoint_ref` as `prior_state_ref_or_hash`.
+
+PR #2441 merged as `32bdae7ce39fe76a345fcfd1c5383b968dcf7dbb` from exact head `891ea5065edd21db2effcd7024499e43b7aa1c95`. Exact-head validation runs passed:
+
+- direct-caller predecessor closure: `35600612937`
+- ecosystem receipt HB successor: `35600612845`
+- Test 3 Richard Seam Acceptance: `35600612909`
+- purpose-bound worker derived lifetime: `35600612989`
+
+The direct caller now reuses the shared `require_predecessor_master_records_closure(...)` contract. When the admitted assignment carries prior Functional Memory, its exact Master Records receipt must reconstruct with `state=PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality before the claim/fence transition can use it. The resulting canonical predecessor closure is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence and becomes the exact `prior_state_ref_or_hash`. Legacy `task.last_checkpoint_ref` is no longer accepted as predecessor state. When no predecessor receipt exists, none is synthesized.
+
+This repair adds no runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, credential route, host dependency, device dependency, or MIR-specific execution behavior. The next generic action is to continue inventorying remaining direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers and repair only the next machine-owned successor that can bypass canonical predecessor closure.
