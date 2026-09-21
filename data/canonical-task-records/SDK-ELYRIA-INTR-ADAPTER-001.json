@@ -192,13 +192,33 @@
     "endpoint_binding_in_sdk_observed": false,
     "endpoint_binding_in_canonical_coordination_observed": false,
     "owner_operated_public_elyria_assessment_url_observed": false,
-    "first_missing_predicate": "REACHABLE_AUTHORIZED_PUBLIC_ELYRIA_ENDPOINT_BINDING",
+    "first_missing_predicate": "EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE",
     "workercoordinator_required_only_if_resident_worker_execution_is_used": true,
     "coinbase_required": false,
     "kv_required": false,
     "cmc029_required": false,
     "master_records_stage": "AFTER_AUTHENTIC_TRANSPORT_EVIDENCE_EXISTS",
     "authentic_round_trip_observed": false,
-    "authority_effect": "NONE_COORDINATION_ONLY"
+    "authority_effect": "NONE_COORDINATION_ONLY",
+    "endpoint_binding_registry": {
+      "registry_repository": "StegVerse-Labs/admissibility-wiki",
+      "registry_ref": "docs/external-frameworks/index.json",
+      "overlay_ref": "data/external-framework-roundtrip-endpoints.json",
+      "overlay_schema": "stegverse.external-framework-roundtrip-endpoint-overlay/v1",
+      "overlay_binding_count_observed": 0,
+      "registry_implementation_present": true,
+      "framework_binding_slots_present": true,
+      "evidence_qualification_present": true,
+      "required_fields": [
+        "runtime_endpoint_ref",
+        "endpoint_evidence_ref",
+        "endpoint_observed_at",
+        "endpoint_evidence_class"
+      ],
+      "source_defect_found": false,
+      "first_concrete_defect_class": "MISSING_EXTERNAL_ENDPOINT_PUBLICATION_OR_INDEPENDENT_OBSERVATION",
+      "missing_configuration": false,
+      "missing_transport_binding_implementation": false
+    }
   }
 }
