@@ -1069,3 +1069,8 @@ The admitted WorkerCoordinator may reconcile stale static capability/profile met
 
 
 The conversation-evidence ingestion Goal now also has source reachability through the existing Healer reusable carrier: StegVerse-Healer PR #93 / merge `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` binds `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` with exact `canonical_work_coordination` + Goal context. This is carrier configuration only; WorkerCoordinator claim/fence and Master Records custody remain the completion authority.
+
+
+### StegHealth Canonical Work consumption-retention gate — 2026-09-21
+
+For `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001`, the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` bridge now requires the task-specific resident consumption receipt `receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json` to be retained as `COMPLETED` and correlated to the current exact `canonical_work_coordination` dispatch before the bridge can return `REFRESH_AND_DISPATCH_COMPLETE`. This repairs a slot-satisfaction defect where generic dispatcher completion could let the reusable trigger reach `AUTOMATABLE_STEPS_EXHAUSTED` and suppress retries while the required StegHealth receipt remained absent. No new scheduler, runtime, dispatcher, WorkerCoordinator, credential path, authority plane, or custody store is introduced.
