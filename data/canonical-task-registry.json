@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 160,
+  "generation": 161,
   "status": "CANONICAL_MASTER_RECORDS_GENERIC_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5213,7 +5213,14 @@
           "reconstruction_status=PASS",
           "required_evidence_validation_status=PASS",
           "receipt_sha256==reconstructed_receipt_sha256"
-        ]
+        ],
+        "sdk_test1_exact_predecessor_repair_pr": 2400,
+        "sdk_test1_exact_predecessor_repair_merge": "25e996510619ed0cb75d4f69750e038eede5a209",
+        "sdk_test1_exact_predecessor_validation_runs": [
+          35568188445,
+          35568188426
+        ],
+        "sdk_test1_exact_predecessor_reconciled_as_historical_conformance_provenance": true
       },
       "completion": {
         "claimed": false,
@@ -5396,6 +5403,28 @@
           ],
           "runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "sdk_test1_exact_predecessor_repair": {
+          "state": "MERGED_VALIDATED_RECONCILED_AS_CONFORMANCE_PROVENANCE",
+          "pull_request": 2400,
+          "merge_commit": "25e996510619ed0cb75d4f69750e038eede5a209",
+          "validation_runs": [
+            35568188445,
+            35568188426
+          ],
+          "defect": "MANIFEST_BOUND_PURPOSE_TASK_DROPPED_CLAIM_FENCE_MASTER_RECORDS_CLOSURE_BEFORE_SUCCESSOR_REQUEST",
+          "repaired_contract": [
+            "RETAIN_EXACT_WORKERCOORDINATOR_CLAIM_FENCE_MASTER_RECORDS_CLOSURE",
+            "VALIDATE_CLOSURE_BEFORE_MANIFEST_BOUND_SUCCESSOR_REQUEST",
+            "FORWARD_EXACT_CLOSURE_AS_GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION",
+            "TV_TVC_WARRANT_POLICY_VERIFIED_USES_EXACT_PREDECESSOR_RECEIPT_SHA"
+          ],
+          "later_generic_superseding_repairs": [
+            "PR_2417_PURPOSE_BOUND_POST_CLAIM_SUCCESSOR_ORDER",
+            "PR_2421_GENERIC_PREDECESSOR_CLOSURE_SUCCESSOR_CONTRACT"
+          ],
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_PROVENANCE_ONLY"
         }
       },
       "required_evidence_validation": {
