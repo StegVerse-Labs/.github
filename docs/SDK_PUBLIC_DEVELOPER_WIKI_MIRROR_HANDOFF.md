@@ -113,6 +113,6 @@ Observed served-body SHA-256 values:
 - receipt-navigation document: `b70702184d02196dec7df1b6d8c5d90d393bf53763e5702f6d8d1bfe26d2d3dd`;
 - Site `wikis.html`: `b3f40d8f52d825ccf66812a67f7df0a10bc6e26062daf66b2acbb4422973afd3`.
 
-SDK observation harness PR #305 merged as `e63aa7929e9ebac7a3c6c9d856cd4be9218cbb38`. Site closure PR #1447 merged as `d40a70e73c17f77205cf8c2884bc38d227e67a40`. Site terminalization PR #1448 merged as `570c2917369d8b634d33a79f63cf327b9158b45d`, releasing `SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921` and removing its active COSV projection.
+SDK observation harness PR #305 merged as `e63aa7929e9ebac7a3c6c9d856cd4be9218cbb38`. Site closure PR #1447 merged as `d40a70e73c17f77205cf8c2884bc38d227e67a40`. Site terminalization PR #1448 merged as `570c2917369d8b634d33a79f63cf327b9158b45d`, releasing `SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921` and removing its active COSV projection. SDK repository-local terminal documentation PR #306 then passed exact-head validation and merged as `96f434a2cda2c8c544b76d2feacbd501c8e5d783`.
 
 No SDK, governance, execution, transition, credential, custody, evidence, processor-selection, or publication-transition authority is created by this closure.
