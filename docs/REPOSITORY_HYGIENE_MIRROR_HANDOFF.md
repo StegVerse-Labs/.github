@@ -774,3 +774,10 @@ Only the ten newly validated batch-2 refs are routed non-destructively to `HYGIE
 ### Bounded TVC routing claim release — 2026-09-21
 
 The bounded `HYGIENE-CAUSAL-ROOTS-VALIDATION` TVC owner-clearance/routing claim is released on issue #165 after batch-2 routing evidence was durably recorded. Current session claim state returns to `RELEASED_TO_CANONICAL_CONTROL_PLANE`. No ref deletion authority transferred to the validation lane; `HYGIENE-BRANCH-REF-RETIREMENT` remains authority-owned/fail-closed.
+
+
+### TVC Wave-1 retirement routing batch 3 — 2026-09-21
+
+TVC PR `#459` exact head `429f1a6da2dae46b1b1a5d67e76adefc160d8856` passed all three TVC validations and merged as `23b8642f6cea1531877e37feabfd3c281165cb66`. Triggered hygiene run `35668559325` completed SUCCESS: 429 branches inspected, 163 structural retirement candidates, **27 approved-retirement-ready**, **0 invalid approvals**, 262 review-required, and 4 protected/retained. Artifact `10670521199`, digest `sha256:6e2d9307f2e7e4e85a9aadbe7dfd34413c69e0b8687423a328e71f94dcc1fa98`.
+
+Only the seven newly validated historical CMC reconciliation refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`. The census structural-candidate count rose from 162 to 163 because the merged batch-3 implementation branch itself is now a fully-main-contained unapproved ref; therefore 136 structural candidates remain unapproved. No ref deletion occurred.
