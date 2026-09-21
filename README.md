@@ -1130,8 +1130,85 @@ The existing content-addressed control-plane source package now carries the cano
 
 `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
 
+### SDK purpose-bound post-claim TVC warrant bridge reconciliation
+
+PR #2456 is merged and validated. The existing purpose-bound WorkerCoordinator path now invokes the existing TVC execution-warrant oneshot only after canonical claim/fence custody closes, and carries only the secret-free warrant/public-key/policy verification tuple onward. Authentic assignment disposition, warrant issuance, and resident runtime execution remain evidence-gated.
+
+
+### Carrier-first HB receipt execution binding — 2026-09-21
+
+Carrier-first bootstrap restores WorkerCoordinator through the existing carrier-side self-heal path. The carrier registration now carries the same already-declared safe local worker bindings as the direct worker registration, allowing the self-healed WorkerCoordinator to retain its canonical Master Records custody configuration. This changes environment carriage only; HeartBeat remains non-authorizing.
+
+
+### Existing control-plane relay continuation
+
+The reusable control-plane package lifecycle now continues through the already-existing StegOS control-plane relay when an already-issued TVC authorization and already-admitted relay binding are present. It does not mint relay authority. Completion requires exact far-side materialization digest parity for the five Functional Memory/StegFin carriage files.
+
+### SDK TVC resident caller bridge
+
+TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator runtime now has group-scoped access to the existing TVC warrant request/secret-free receipt interface and start-only authorization for the existing warrant oneshot; the TVC private key remains root-owned and LoadCredential-only. Authentic assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
+
+
+## Branded wiki publication and Site propagation
+
+`WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001` coordinates branded public hostnames for the existing StegGuardian and StegTalk wikis and lightweight Site propagation for Admissibility, StegGuardian, and StegTalk. Existing wiki repositories and GitHub Actions Pages deployments remain canonical publication sources. Site remains a directory/bridge projection only. No COSV, runtime, custody, execution authority, or duplicate wiki is created.
+
+
+## Reusable repository hygiene inventory
+
+`HYGIENE-CAUSAL-ROOTS-001` now owns an organization-reusable branch inventory/classification surface at `.github/workflows/repository-hygiene-reusable.yml`, backed by `scripts/repository_hygiene_inventory.py`. Callers receive ancestry, age, ahead/behind, and exact default-branch source-reference evidence. The reusable workflow is non-authorizing: it uses anonymous source fetches with `permissions: {}`, never deletes refs or closes PRs/issues, and treats age/name only as review metadata. Retirement candidates still require repository-local owner/evidence clearance and the separate canonical ref-retirement authority.
+
+
+## SDK public developer wiki
+
+`SDK-PUBLIC-DEVELOPER-WIKI-001` establishes `sdk.stegverse.org` as a developer-facing documentation projection sourced directly from `StegVerse-org/StegVerse-SDK`. The public surface is intended to expose the real manifest ingress, processing/route selection, schemas, examples, receipt navigation, replay/reconstruction, external-framework integration, and authority boundaries already present in the SDK. The SDK repository remains canonical; the wiki is presentation/navigation only and grants no governance, execution, transition, credential, custody, or evidence authority.
+
+Canonical handoff: `docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md`.
+
+
+### Actual carrier execution boundary — 2026-09-21
+
+The HB receipt path now distinguishes source readiness from native execution. The canonical carrier-only installer is the next execution predecessor; no source fallback should be added merely because a post-repair `carrier-activation.latest.json` has not yet been retained. Once native activation runs, any reported carrier/service failure is repaired at that exact boundary before WorkerCoordinator or receipt custody is considered.
+
+Canonical state: `RETIRED / COMPLETE / PUBLICLY OBSERVED`. Independent run `35649334318` verified HTTP 200 and required served-body markers for the SDK ingress schema, external-framework example, receipt-navigation document, and Site SDK-wiki directory link; Site claim/COSV terminalization merged in PR #1448.
+
+## Governed wiki publication transition
+
+`GOVERNED-WIKI-PUBLICATION-TRANSITION-001` closes the gap between reviewed wiki-publication candidates and repository mutation. It reuses the existing SDK external-manifest runtime, Interlock/InTr, canonical Master Records closure, and publication mutation adapter. Direct submitter repository writes remain prohibited, and no new runtime, custody store, publisher, or authority plane is created.
+
+
+## Wave-1 repository hygiene propagation — 2026-09-21
+
+`HYGIENE-CAUSAL-ROOTS-001` now has hosted-successful reusable inventory consumers in TVC, LLM-adapter, TV, master-records/orchestration, and micro-node-runtime. The five runs inspected 1,100 branches and identified 280 retirement candidates requiring owner clearance, but zero candidates had repository-local retirement approval, so zero refs were routed for deletion. Canonical routing evidence is `control/repository-hygiene-wave1-routing-20260921.json`; actual ref retirement remains separately authority-owned.
+
+
+Canonical Goal Task `SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001` / COSV `71000000111111` is RETIRED / COMPLETED / VALIDATED at canonical Task Registry generation 179. It preserves `SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001` as immutable retired history and implements only the validated v2 review Option-A repairs: falsifiable Task-4 overlap with serialized negative control, genuine partition semantics or explicit replication labeling, recomputed group binding, enforced governed-runtime/local-semantic boundary, Test-2/Test-3 differential invariance, and provenance/exhibit/inventory hygiene. F6 is corrected: preregistration SHA-256 `37363e0d…` was anchored by canonical commit `0127082e415fb220c709962ab7d0645e06105a4c` before attempt-2 execution. Canonical handoff: `docs/SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_MIRROR_HANDOFF.md`.
+
+
+SDK four-stage remediation completion: SDK PR #304 merged as `e1116e9cb5f5043c9198505d64560b710c517e88` after 13 exact-head workflows passed. Four-stage run `35648276053` and artifact `10661081336` / SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5` validate the repaired falsifiable overlap measurement, serialized negative control, exact partition reconstruction, group-binding recomputation, local-semantic route boundary, Test-2/Test-3 differential invariance, and provenance inventory. The authentic standing/retirement successor reuses existing `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001`; no duplicate Goal Task is created.
+
+
+### Repository hygiene self-reference correction — 2026-09-21
+
+The reusable hygiene classifier now distinguishes real default-branch source references from branch-name occurrences inside canonical hygiene-control records. The approval manifest, repository-hygiene evidence/control records, and canonical hygiene handoffs may document a retirement candidate without thereby converting that candidate into a source-referenced retain. Matches outside those explicit hygiene-control paths still block retirement. Reports now expose `ignored_hygiene_control_refs` per branch; this correction grants no deletion authority.
+
+
+### TVC hygiene retirement routing — 2026-09-21
+
+The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-retirement-ready` with zero invalid approvals and is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT`. Exact routing evidence is `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch1.json`; no branch deletion was performed by the classification lane.
+
+
+### Ecosystem HB runtime progression correction — generation 181 candidate
+
+`ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` now follows the global Task Registry runtime invariant: connected-device inventory is prohibited from ordinary task progression and zero connected devices has no task-state meaning. `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` is an optional sampler/persistence observer, not a mandatory HB or runtime progression gate. The Goal proceeds from the next authentic governed transition through canonical `build_state_receipt(...)` / `submit_state_receipt(...)`, Master Records `hb_recording_reference`, exact reconstruction equality, and the existing non-authorizing HB checkpoint observer. No alternate runtime, scheduler, dispatcher, WorkerCoordinator, observer, or hosted substitute is introduced.
+
+
+### TVC hygiene retirement routing batch 2 — 2026-09-21
+
+TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready refs and zero invalid approvals after PR #457 merged. Only the ten newly approved batch-2 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` in `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json`; no branch deletion was performed.
+
 
 ### Elyria dependency reconciliation — 2026-09-21
 
-`SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is Coinbase-specific infrastructure with Coinbase Gateway/KV bindings and TVC-specific readiness semantics; its earlier use as an Elyria dependency path is superseded. Elyria now resumes strictly on the existing SDK -> Interlock/InTr -> external Elyria endpoint -> Master Records path.
+`SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. The canonical external-framework endpoint-binding registry already exists in admissibility-wiki and its evidence-qualified endpoint overlay is intentionally empty. The current Elyria boundary is therefore `EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE`: no independently observed callable Elyria runtime endpoint can yet be lawfully bound. The prior Coinbase/TVC Service Gateway lineage is superseded for Elyria and must not gate or diagnose this task.
 
