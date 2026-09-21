@@ -214,3 +214,24 @@ Source, merge, CI, heartbeat progression, or a prior archive pass does not satis
 ## Human action
 
 No human re-entry of Task ID/COSV is required between ordinary iterations. Human action is required only if an actual provider/authority path reaches a genuine human boundary such as owner-present Google reauthorization. No provider credential, refresh token, OAuth client secret, or access token may be entered into chat, GitHub, repository files, workflow secrets, argv, or ordinary environment variables.
+
+## 2026-09-21 lifecycle-registration reconciliation
+
+The following failure-map remediation evidence is now bound into this handoff:
+
+- Site RTG private-source transport remediation: Site PR #1431 rebased onto current Site main, all ten exact-head gates succeeded, and merged as `6f132058ef87ab63784bbac838e34682d2574275`.
+- Administrations deterministic ERL adapter fixture repair: PR #4 merged as `8996115802f1d6c3930d6cfbab8266a1656e973c` after fixing only the context-manager test fixture defect.
+- AEX principle-completeness remediation child: StegHealth #97 retained nonterminal status with exact fail-closed evidence bound: 26 formalism-worker blockers, mathematical-completeness matrix not ready, and evidence-coverage gaps explicitly not treated as mathematical invalidity.
+- ERL producer-adapter discovery: malformed `schemas/producer-adapter.schema.json` reproduced at scheduled run `35517891320`, repaired only at the missing closing-brace defect, merged via ERL PR #197 as `e67cb7c65f10253a6ce559505b923596d9cd67c2`, and post-merge `Discover Producer Adapters` run `35528983717` completed successfully.
+- Canonical lifecycle registration: .github PR #2334 was rebuilt from the then-current canonical generation 158 state, advanced only the seven lifecycle-aware remediation registrations to generation 159, recomputed task-vector coverage to 106 indexed/vectorized tasks / 106 local COSV record tasks / 0 external-owner projection tasks, passed fresh exact-head validation, and merged as `6c6233e44374aff7ad7a4c1162b75228d1b61938`.
+
+Fresh #2334 exact-head validation at `bb63124a31deed839be9b8ef9895fee55bb7531e`:
+
+- `validate-deepseek-resident` — run `35598595726` — success;
+- `Cross-Task Coordination Validation - Non-Authorizing` — run `35598595811` — success;
+- `Deterministic Repository Suite - Diagnostic Evidence Only` — run `35598595876` — success;
+- `Validate KV AI Memory Resident Binding` — run `35598595806` — success;
+- `Validate Purpose-Bound Worker Derived Lifetime` — run `35598595837` — success;
+- push `Validate KV AI Memory Resident Binding` — run `35598592667` — success.
+
+The final merge fence observed canonical main generation 158 with status `CONVERSATION_EVIDENCE_NATIVE_RESIDENT_INITIATION_SOURCE_COMPLETE_RUNTIME_EVIDENCE_PENDING`; the registration merge produced generation 159 with status `EMAIL_FAILURE_REMEDIATION_LIFECYCLE_REGISTERED`. No intervening canonical task state was overwritten, and no new runtime, scheduler, dispatcher, authority plane, credential path, custody store, or device dependency was introduced.
