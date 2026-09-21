@@ -446,3 +446,30 @@ The deterministic conclusion is now explicit:
 - no receipt location, Master Records row, reconstruction result, bounded root, or HB checkpoint is inferred until the existing carrier/worker path actually executes and returns the exact machine result.
 
 The next continuation must inspect the first actual post-merge resident worker execution result. If no fresh worker cycle occurred, that is the state-transition failure. If a fresh cycle occurred, trace its exact transition through `build_state_receipt(...)` and `submit_state_receipt(...)` to the actual Master Records result without substituting passive evidence search.
+
+
+## Carrier-to-worker execution trace — generation 168
+
+The exact carrier -> self-heal -> WorkerCoordinator process path was traced after the merged worker-launch custody repair.
+
+Retained canonical runtime state is still historical, so there is still no factual basis to claim that a post-repair worker process started or reached a task-capable cycle. The trace therefore continued into the launch environment itself.
+
+A second concrete process-startup defect was found at the immediate predecessor:
+
+```text
+install_sovereign_heartbeat_carrier.py
+-> install_sovereign_heartbeat_service.materialize_service(...)
+-> carrier OS service/process
+-> run_heartbeat_runtime.py --continuous
+-> ensure_worker_presence(...)
+-> _clean_env(...)
+-> run_worker_runtime.py --continuous
+```
+
+Carrier-first bootstrap intentionally starts only the HeartBeat carrier and relies on the already-existing carrier-side `ensure_worker_presence(...)` path to restore WorkerCoordinator. The service renderer carried the canonical local/Master Records bindings only into the separately registered worker service, not into the carrier process. Therefore the carrier process did not possess those bindings for `ensure_worker_presence(...)` to pass into the self-healed WorkerCoordinator. The prior `_clean_env(...)` repair was necessary but insufficient on the carrier-first path.
+
+The bounded repair changes only environment carriage on the existing carrier registration. Linux systemd, macOS launchd, and Windows scheduled-task launch material now carry the same already-declared `WORKER_SAFE_LOCAL_BINDINGS` into the carrier process so that its existing self-heal can pass them to `run_worker_runtime.py`. HeartBeat still grants no execution, transition, custody, or credential authority; the carrier does not consume the bindings as authority.
+
+No new runtime, scheduler, WorkerCoordinator, dispatcher, custody store, credential source, or host dependency is introduced.
+
+Until deployment-local execution occurs, no post-repair task-capable worker cycle, `build_state_receipt(...)`, receipt SHA, HB creation stamp, Master Records row, HB recording stamp, reconstruction equality, or bounded root is claimed.
