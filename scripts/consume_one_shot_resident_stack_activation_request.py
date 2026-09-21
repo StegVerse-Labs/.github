@@ -9,7 +9,7 @@ RECEIPT_REL=Path("receipts/sovereign-host/one-shot-resident-stack-activation-req
 FENCE_REL=Path("control/one-shot-resident-stack-activation.in-progress.json")
 PROGRESSION_REL=Path("scripts/run_stegverse001_activation_progression.py")
 TASK_ID="SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
-HEALER_STEGHEALTH_SOURCE_FLOOR="8683611f035d684ea295020e2f55971d5797655b"
+HEALER_STEGHEALTH_SOURCE_FLOOR="585cf38aad95fda69dbcbd0150c1256571f90feb"
 HEALER_STEGHEALTH_TASK_ID="STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
 Runner=Callable[...,subprocess.CompletedProcess[str]]
 
