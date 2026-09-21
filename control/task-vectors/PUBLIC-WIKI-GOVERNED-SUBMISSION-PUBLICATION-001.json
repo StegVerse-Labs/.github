@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "task_id": "PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001",
+  "profile": "task.v1",
+  "vector": "71000000100100",
+  "source_state": "PUBLICATION_TRANSITION_SEAM_REGISTERED_IMPLEMENTATION_PENDING",
+  "authority_effect": "NONE",
+  "ingress_authority": "INTERLOCK_INTR",
+  "execution_claim_authority": "WORKERCOORDINATOR",
+  "observed_reality_authority": "MASTER_RECORDS",
+  "consequential_mutation_owner": "GCAT-BCAT-Engine/Publisher",
+  "submitter_direct_repository_write_authority": false,
+  "publication_candidate_grants_publication_authority": false
+}
