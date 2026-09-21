@@ -531,3 +531,35 @@ authorized resident surface becomes available
 ```
 
 No receipt, state transition, Master Records row, or bounded receipt-set root is claimed at this boundary.
+
+
+## Runtime invariant correction — generation 180 review
+
+This section supersedes the generation-173/175 execution-boundary language that treated a connected resident-machine surface and `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` as mandatory progression predecessors.
+
+Canonical Task Registry runtime documentation now controls this lane:
+
+- `data/task-registry-global-invariants.json` applies to every canonical task and prohibits connected-device inventory from ordinary task progression, runtime prerequisites, blocker classification, fallback selection, manual-work requirements, or stop conditions. Zero connected devices has no task-state meaning.
+- `docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md` defines remote/desktop connectors as optional observation or execution tooling only; no attached endpoint is required for canonical runtime materialization.
+- `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md`, `docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md`, and `control/heartbeat-live-status.json` classify `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` as an optional resident sampler/persistence observer. It is not a heartbeat existence gate, progression gate, or mandatory predecessor for HB reference derivation.
+
+Therefore this Goal MUST NOT query or wait for connected-device inventory and MUST NOT require resident-start 012 before progressing. The canonical runtime path is the next authentic governed transition already using `workers/canonical_state_transition_custody.py`:
+
+```text
+existing canonical task/runtime execution
+-> WorkerCoordinator claim/fence where applicable
+-> contemporaneous Interlock/InTr governed transition
+-> build_state_receipt(...)
+-> freeze exact hb_creation_reference from independent oscillator reference derivation
+-> submit_state_receipt(...)
+-> Master Records RECORDED custody + hb_recording_reference
+-> reconstruction_status=PASS
+-> required_evidence_validation_status=PASS
+-> receipt_sha256 == reconstructed_receipt_sha256
+-> ecosystem_receipt_hb_checkpoint observer consumes authentic successor ordinal 1
+-> deterministic bounded Master Records root/checkpoint commitment
+```
+
+`HEARTBEAT-OSCILLATOR-RESIDENT-START-012` may still run independently when persistent sampler/observer evidence is desired, but its absence cannot stop this Goal. No alternate runtime, scheduler, dispatcher, WorkerCoordinator, observer, or hosted substitute is introduced by this correction.
+
+Current proof ceiling remains unchanged: no fresh authentic HB-stamped governed transition, Master Records row with `hb_recording_reference`, exact reconstruction closure, or bounded successor checkpoint is claimed until native evidence from the existing runtime path is retained.
