@@ -23,6 +23,7 @@ def _load_custody_module():
     spec = importlib.util.spec_from_file_location("canonical_state_transition_custody_under_test", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
