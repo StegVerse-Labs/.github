@@ -90,7 +90,7 @@
       "path": ".github/workflows/repository-hygiene-reusable.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "HYGIENE-CAUSAL-ROOTS-001 / .github#165",
-      "reason": "organization-reusable, non-authorizing branch inventory/classification surface; anonymous checkout, permissions empty, no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
+      "reason": "organization-reusable, non-authorizing branch inventory/classification surface; caller source checkout is read-only with persist-credentials=false so private repositories are supported; no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
