@@ -422,3 +422,12 @@ observed governed transition
 The prior implementation advanced `last_state_ref` to the domain/result state hash. That allowed a caller using the generic helper to advance without the prior canonical custody closure being the actual predecessor dependency. Domain/result hashes remain evidence, but they no longer replace the custody closure as the generic progression reference.
 
 This repair does not claim an authentic resident transition. The next generic trace is limited to machine-owned successor paths that call `build_state_receipt(...)` / `submit_state_receipt(...)` directly and therefore may bypass `CanonicalTransitionCustody`. Repair only the first such generic bypass if it permits progression without consuming the immediately preceding closure. Do not continue MIR-specific RTC009 execution under this goal.
+
+
+## SDK Test 1 exact-predecessor repair provenance reconciliation — 2026-09-21
+
+PR #2400 / merge `25e996510619ed0cb75d4f69750e038eede5a209` is now explicitly reconciled into this Goal's canonical provenance without changing the current ecosystem-wide scope. Exact-head validation runs were `35568188445` and `35568188426`.
+
+That repair established, for the manifest-bound SDK Test 1 path, that the exact closed `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records record must be retained, validated, and forwarded as `graph_predecessor_master_records_transition` so `TV_TVC_WARRANT_POLICY_VERIFIED` uses the exact predecessor receipt SHA rather than a bare worker-claim reference.
+
+Later merged repairs #2417 and #2421 generalize and supersede the narrow SDK-only expression of this principle. Therefore #2400 is retained here as conformance provenance, not as a rollback of the active ecosystem-wide generic predecessor-closure trace. No authentic resident execution is claimed by this reconciliation.
