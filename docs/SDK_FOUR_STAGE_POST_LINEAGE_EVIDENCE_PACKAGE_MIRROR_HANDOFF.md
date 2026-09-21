@@ -30,3 +30,15 @@ Exact validated PR head: `18a5f30b61557bf557b563797fccb241628f4b2d`.
 Tested and merged Git tree: `6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6`.
 
 The exact-head four-stage workflow run `35547155843` passed after the lineage repair. Its artifact may be used as the fresh successor execution evidence only if its retained raw manifests/results prove all required intrinsic lineage fields and exact source binding.
+
+## Pre-test interpretation preregistration
+
+Before the successor workflow re-execution, the package pre-test interpretation was generated and visually verified with no successor outcomes asserted.
+
+- filename: `0_StegVerse_SDK_Four_Stage_Experiment_Interpretation_PreTest_POST_LINEAGE.pdf`
+- SHA-256: `37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7`
+- frozen tested head: `18a5f30b61557bf557b563797fccb241628f4b2d`
+- merged main identity with the same tested tree: `69921971106ffb4008bf5914c34b34bc51745ff0`
+- shared tree: `6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6`
+
+The next execution must be a fresh re-execution of the existing four-stage workflow job on that frozen source after this preregistration commit.
