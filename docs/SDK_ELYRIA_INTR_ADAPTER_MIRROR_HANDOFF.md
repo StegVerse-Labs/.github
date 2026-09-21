@@ -53,7 +53,7 @@ Existing candidate surfaces were re-observed rather than replaced:
 - `SHWP-EVALUATOR-INTR-READ-RUNTIME-001`: not eligible; canonical coverage still records `SOVEREIGN_PUBLIC_ROUTE_TLS_NOT_YET_OBSERVED` and `AUTHENTIC_BROWSER_INTR_ROUND_TRIP_NOT_YET_OBSERVED`.
 - `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`: not eligible; canonical coverage still records no runtime receipt and no public observation round trip.
 - `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`: not eligible; the task retired without runtime completion and its unresolved resident dispatch visit remains carried by the existing successor lineage.
-- shared Service Gateway/public TLS lineage: not eligible; current canonical surfaces still record the public sovereign Gateway route and Service Gateway TLS adoption as unobserved.
+- the previously traced TVC Coinbase Service Gateway lane is not part of Elyria's generic transport contract and is no longer an Elyria dependency.
 
 Therefore there is no presently observed existing StegVerse sovereign public execution surface that can carry an authentic Elyria two-way external request/response without circularly promoting another lane's missing evidence.
 
@@ -99,42 +99,110 @@ It remains unresolved.
 None.
 
 
-## Shared Service Gateway / CMC-029 lineage trace — 2026-09-21
+## Dependency reconciliation — 2026-09-21
 
-The existing owner path was traced without creating a new gateway, runtime, credential flow, custody store, task-specific transport, or device dependency:
+The Elyria component profile is authoritative and does not require Coinbase or KV.
 
-```text
-TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
--> workers/tvc_coinbase_intr_resident_activation_worker.py
--> StegVerse-Labs/TVC resident activation/readiness
--> CMC-029 exact WebPKI HTTP-01 resident adapter when TLS adoption is absent
--> separate sovereign Gateway TLS reconciliation
--> fresh public route observation
--> READY_FOR_OWNER_INGRESS
-```
-
-CMC-029 source is already merged/validated and explicitly remains runtime-evidence pending. Its authentic Gateway leaf certificate, browser-trusted hostname certificate, live issuance, and public HTTPS observation remain unobserved.
-
-The machine owner itself is `HANDOFF_READY` and authorized for an independent fresh claim/fence. Source inspection found no carriage defect:
-- the sovereign bootstrap child environment scrubs credential variables but preserves non-secret deployment bindings;
-- the TVC worker adapter allowlists the Gateway storage root, KV custody root, public node URL, hostname, ACME directory/contact, and HTTP-01 challenge root;
-- the worker correctly requires real Gateway + KV roots only when resident activation must run;
-- when TLS adoption is absent, the worker invokes only the exact CMC-029 resident adapter and stops for separate Gateway reconciliation before public route observation.
-
-Therefore the first concrete predecessor condition is:
+The active Elyria path is:
 
 ```text
-REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED
+StegVerse SDK Elyria framework adapter
+-> RTC-MANIFEST-001
+-> RTC-GOVERNED-PROCESSING-002
+-> RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> reachable authorized Elyria public endpoint
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
 ```
 
-No retained authentic worker receipt was found showing an execution that reached `RESIDENT_STORAGE_BINDINGS_REQUIRED` or any later CMC-029/public-route transition. This is presently missing runtime evidence, not a demonstrated source defect, so no runtime code repair is authorized.
+The goal profile explicitly excludes the KV/SKAP user-verification flow. `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is provider-specific infrastructure: its objective is Coinbase resident activation, its runtime bindings include Coinbase Gateway and KV custody roots, its allowed services are TVC-specific, and its continuation owner is the Coinbase/TVC worker lineage.
 
-The downstream predicates remain:
+Therefore the prior Coinbase -> CMC-029 -> Coinbase Service Gateway trace is superseded as an Elyria dependency. It may remain valid for its own task, but it must not gate, satisfy, or diagnose Elyria transport.
+
+No Coinbase claim/fence, KV binding, CMC-029 certificate, Coinbase Gateway readiness, or Coinbase public-route predicate is required for `SDK-ELYRIA-INTR-ADAPTER-001`.
+
+The remaining Elyria completion predicate is unchanged:
 
 ```text
-PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED
-SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED
+AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-They must not be promoted until the existing machine-owned TVC execution runs with authentic real Gateway/KV bindings and produces the applicable runtime evidence. Elyria transport remains ineligible.
+The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for custody/readback if an authentic Elyria network response is produced.
 
+
+## Generic transport trace — 2026-09-21
+
+The exact active path was traced after removing the Coinbase/KV detour.
+
+`stegverse/elyria_framework_adapter.py` is intentionally translation-only. It validates Elyria request/response semantics and explicitly requires a caller-injected transport that reaches an Elyria public surface. It does not create transport authority, Interlock/InTr protocol, credentials, receipts, or Master Records custody.
+
+No Elyria endpoint binding was found in the current SDK source or canonical coordination state. Fresh public discovery likewise did not identify an owner-operated callable assessment base URL.
+
+Therefore the first missing predicate is:
+
+```text
+REACHABLE_AUTHORIZED_PUBLIC_ELYRIA_ENDPOINT_BINDING
+```
+
+This precedes any authentic `RTC-ROUNDTRIP-003` execution. WorkerCoordinator claim/fence is relevant only if a resident worker is actually used by the selected generic transport path; it is not itself an Elyria prerequisite. Coinbase, KV, CMC-029, and Coinbase Service Gateway state are not part of this Goal Task's active dependency chain.
+
+If a reachable authorized Elyria endpoint becomes available through the existing endpoint binding surface, the next sequence is:
+
+```text
+RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> authentic Elyria response
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
+```
+
+Until then, `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved and no transport completion may be claimed.
+
+
+## Endpoint-binding registry trace — 2026-09-21
+
+The generic endpoint-binding mechanism already exists in `StegVerse-Labs/admissibility-wiki`.
+
+Canonical surfaces:
+
+```text
+framework registry: docs/external-frameworks/index.json
+endpoint overlay: data/external-framework-roundtrip-endpoints.json
+schema: stegverse.external-framework-roundtrip-endpoint-overlay/v1
+```
+
+The reusable rollout requires an endpoint binding to contain all four fields:
+
+```text
+runtime_endpoint_ref
+endpoint_evidence_ref
+endpoint_observed_at
+endpoint_evidence_class
+```
+
+The builder/checker and handoffs already enforce those fields and reject bare endpoint strings, documentation URLs, source URLs, orphan evidence, and malformed bindings.
+
+Current endpoint overlay state is:
+
+```json
+{"schema":"stegverse.external-framework-roundtrip-endpoint-overlay/v1","bindings":{}}
+```
+
+Therefore:
+- the binding registry is not missing;
+- the generic transport-binding implementation is not missing;
+- no Elyria-specific configuration row can lawfully be created without independently observed endpoint evidence;
+- the first concrete defect class is missing external endpoint publication/independent observation, not missing StegVerse source.
+
+The first missing predicate is refined to:
+
+```text
+EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE
+```
+
+No source repair is authorized because creating a synthetic endpoint row would violate the evidence-qualified binding contract. Once an authentic Elyria runtime endpoint is independently observed, the existing overlay is the correct place to bind it and the reusable planner can determine `ROUNDTRIP_ELIGIBLE` without any new transport implementation.
