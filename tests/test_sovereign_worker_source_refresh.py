@@ -193,7 +193,10 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/resident-execution-request.d", path_unit)
             self.assertIn(f"PathChanged={source / 'data/canonical-task-registry.json'}", path_unit)
             self.assertIn(f"PathChanged={source / 'data/canonical-task-records'}", path_unit)
+            self.assertIn("install_sovereign_worker_source_refresh_service.py", service)
+            self.assertIn("--materialize-master-records-only", service)
             self.assertIn("dispatch_resident_execution_requests.py", service)
+            self.assertLess(service.index("--materialize-master-records-only"), service.index("dispatch_resident_execution_requests.py"))
             self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
             self.assertIn(f"PathChanged={packages.resolve()}", path_unit)
@@ -262,6 +265,17 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertFalse((destination / "stale.txt").exists())
             self.assertFalse(result["network_source_fetch_performed"])
             self.assertFalse(result["credential_read_or_acquired"])
+
+
+    def test_materialize_only_cli_does_not_reinstall_watcher(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            with mock.patch.object(install_mod, "materialize_master_records_source_package", return_value={"state": "PACKAGE_NOT_PRESENT"}) as materialize, mock.patch.object(install_mod, "install") as install_call, mock.patch.object(sys, "argv", ["install_sovereign_worker_source_refresh_service.py", "--runtime-root", str(runtime), "--source-package-root", str(package_root), "--materialize-master-records-only"]):
+                self.assertEqual(install_mod.main(), 0)
+            materialize.assert_called_once_with(package_root, runtime)
+            install_call.assert_not_called()
 
 
     def test_default_source_package_root_honors_nonsecret_override(self) -> None:

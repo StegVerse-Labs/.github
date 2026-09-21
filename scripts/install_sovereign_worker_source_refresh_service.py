@@ -174,6 +174,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     # This grants no transport or execution authority; it only removes a stale-self
     # bootstrap dependency at the source->runtime projection boundary.
     refresh_script = source / "scripts/refresh_sovereign_worker_runtime_source.py"
+    materializer = source / "scripts/install_sovereign_worker_source_refresh_service.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
     safe_local_bindings = {}
@@ -196,6 +197,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "Type=oneshot",
         *environment_lines,
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(materializer)} --runtime-root {_quote(runtime)} --source-package-root {_quote(packages)} --materialize-master-records-only",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
@@ -400,7 +402,12 @@ def main() -> int:
     parser.add_argument("--unit-root", type=Path)
     parser.add_argument("--source-package-root", type=Path, default=default_source_package_root())
     parser.add_argument("--no-activate", action="store_true")
+    parser.add_argument("--materialize-master-records-only", action="store_true")
     args = parser.parse_args()
+    if args.materialize_master_records_only:
+        result = materialize_master_records_source_package(args.source_package_root, args.runtime_root)
+        print(json.dumps(result, sort_keys=True))
+        return 0
     receipt = install(
         args.source_root,
         args.runtime_root,
