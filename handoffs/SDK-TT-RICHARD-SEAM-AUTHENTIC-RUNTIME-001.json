@@ -26,7 +26,8 @@
       "data/canonical-task-records/SDK-TT-ATOMIC-TASK-WORKER-BINDING-001.json",
       "workers/stegagents_governed_runtime_worker.py",
       "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
-      "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py"
+      "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py",
+      "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
     ],
     "dependencies": [],
     "coordination_refs": [
@@ -163,7 +164,14 @@
           "receipt_sha256==reconstructed_receipt_sha256"
         ],
         "release_worker_only_after_refusal_closure": true,
-        "authority_effect": "NONE_FALSIFICATION_EVIDENCE_ONLY"
+        "authority_effect": "NONE_FALSIFICATION_EVIDENCE_ONLY",
+        "source_repair": {
+          "pr": 35,
+          "merge": "f12abf3e062de95f7bbd5eb56247e91fdcd8481f",
+          "exact_head": "a1772001cf8e6ee97214944e009d624df8c54f2b",
+          "exact_head_checks": "PASS_3_OF_3",
+          "authentic_runtime_evidence_observed": false
+        }
       }
     }
   }
