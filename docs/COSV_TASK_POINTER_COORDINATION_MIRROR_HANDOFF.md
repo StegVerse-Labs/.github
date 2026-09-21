@@ -287,3 +287,12 @@ Source reconciliation showed the concrete cause. The mutable/monolithic WorkerCo
 The bounded repair extends the already-existing unclaimed-`HANDOFF_READY` preclaim reconciliation seam. It may update only an already-existing `AVAILABLE` worker when worker ID, adapter, executor type, and authority source are unchanged, and only when the fragment capabilities satisfy the current handoff. It changes only static capabilities/profile metadata and grants no worker identity, assignment, claim, fence, timing, lease, credential, execution, transition, or custody authority. Claimed/timed tasks remain immutable to this reconciliation.
 
 This repair addresses only the first concrete existing-path failure before the Functional Memory assignment seam. It does not claim that a fresh resident assignment disposition has yet occurred.
+
+## Targeted Master Records custody-carriage reconciliation — 2026-09-21
+
+The previously identified transport-carriage defect in `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` is closed by merged PR `#2363` at `7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df`. Focused workflow run `35536016433` passed the exact `Validate targeted Master Records custody carriage` step.
+
+The sanitized targeted child environment preserves only the existing canonical Master Records custody bindings required by the existing transports: HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT`, `STEGVERSE_MASTER_RECORDS_TOKEN`, `STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS`; and durable-local `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Existing source-root discovery remains unchanged; GitHub/provider credentials remain stripped; TV/TVC remains credential authority.
+
+No endpoint, token source, database, custody store, runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, or device dependency was added. This is source-carriage closure only and does not itself claim an authentic resident Functional Memory or claim/fence Master Records transition. Further authentic custody/runtime progression is owned by the existing `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` lane and `docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md`.
+
