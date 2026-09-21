@@ -8744,7 +8744,8 @@
         "StegVerse-org/StegVerse-SDK#305 merged e63aa7929e9ebac7a3c6c9d856cd4be9218cbb38",
         "StegVerse-Labs/Site#1447 merged d40a70e73c17f77205cf8c2884bc38d227e67a40",
         "StegVerse-Labs/Site#1448 merged 570c2917369d8b634d33a79f63cf327b9158b45d",
-        "Site claim SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921 RELEASED_COMPLETE and active COSV projection removed"
+        "Site claim SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921 RELEASED_COMPLETE and active COSV projection removed",
+        "StegVerse-org/StegVerse-SDK#306 merged 96f434a2cda2c8c544b76d2feacbd501c8e5d783"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTRATION_MERGED",
