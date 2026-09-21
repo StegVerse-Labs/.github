@@ -4,7 +4,7 @@ Updated: 2026-09-21
 Goal Task ID: `SDK-PUBLIC-DEVELOPER-WIKI-001`
 Canonical repository: `StegVerse-org/StegVerse-SDK`
 Target public origin: `https://sdk.stegverse.org/`
-Status: `ACTIVE / SDK SOURCE MERGED + PAGES DEPLOYED / DNS VERIFIED / TLS PROVISIONING`
+Status: `ACTIVE / PUBLIC ROOT LIVE HTTPS / SITE LINK MERGED / REPRESENTATIVE PUBLIC OBSERVATION PENDING`
 
 ## Goal
 
@@ -88,8 +88,12 @@ This task is adjacent to, but does not replace, the governed submission/publicat
 
 Canonical registration merged via `StegVerse-Labs/.github#2490` as `608c104f45db5dbe9c29d498881fb3267c562cc7`. SDK implementation merged via `StegVerse-org/StegVerse-SDK#300` as `e454dfa9042884939a0e6cde3c15a2fd2e386be5`. Exact-head SDK public-wiki validation passed after repair, and the main `Publish SDK Developer Wiki` workflow completed successfully.
 
-Earlier user-supplied Pages evidence showed `InvalidDNSError`, and Cloudflare showed the `sdk` CNAME incorrectly pointed to `stegverse-org.stegverse.org`. The user corrected the existing DNS-only record to `stegverse-org.github.io`. Subsequent GitHub Pages evidence now reports `DNS check successful` for `sdk.stegverse.org`. TLS certificate provisioning remains at `Certificate Requested` (1/3), so HTTPS/public-host closure is not yet claimed.
+Earlier user-supplied Pages evidence showed `InvalidDNSError` until the CNAME was corrected to `stegverse-org.github.io`. The latest supplied GitHub Pages evidence shows `https://sdk.stegverse.org/` live, DNS check successful, and Enforce HTTPS enabled.
+
+Site PR #1446 merged as `110de303b9f88922c926c4a75dbabcc86630d42e`; its exact-head validation passed and post-merge Pages run `35637977873` completed successfully.
+
+The remaining evidence gap is bounded: this session's public web fetch surface could not independently retrieve the SDK schema/example/receipt-navigation subresources or the deployed Site `wikis.html` body. Source/build/deployment evidence must not be promoted into those observation predicates.
 
 ## Current next executable step
 
-Wait for GitHub Pages certificate issuance to complete, then enable **Enforce HTTPS** when available. After that, observe the branded root plus representative schema/example/receipt/provenance resources before Site propagation or completion.
+Re-observe the four remaining public resources through an independent public fetch surface. If all are served as expected, reconcile completion; otherwise repair only the first concrete served-content defect.
