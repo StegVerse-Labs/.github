@@ -140,3 +140,17 @@ All unique continuation state is preserved here. This runtime workstream remains
 ## 2026-09-19 ACTIVE/CHECKED_OUT carriage repair
 
 `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` is already `ACTIVE / CHECKED_OUT`, so PROPOSED-only registry selection could not carry it to Canonical Work and the shared bootstrap also rejected it. The repair stays inside the existing `canonical_work_coordination` selector and consumer: an exact non-authorizing request reaches the shared Canonical Work bootstrap; ACTIVE/CHECKED_OUT is accepted only when `INGRESS_ADMITTED` is explicitly allowed, no WorkerCoordinator claim/fence is projected, and the authority model remains intact. Runtime ingress is recorded as `runtime_refs.ingress_state=INGRESS_ADMITTED` without demoting canonical coordination state. Focused regression coverage is `tests/test_steghealth_kv_interlock_canonical_work_ingress.py`. No separate runtime-proof class is required. The next state changes only when the governed transition itself is retained by Master Records with the required closure predicates.
+
+
+## 2026-09-21 StegHealth task-specific consumption-retention repair
+
+Tracing the standing Healer `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` lineage exposed the first deterministic producer-path defect after source-materialization closure. `scripts/refresh_and_dispatch_resident_requests.py` previously accepted exact-selector `DISPATCH_COMPLETE` for `canonical_work_coordination` without requiring the current Goal's task-specific consumption receipt. Because `scripts/trigger_reusable_task.py` classifies a successful runner with no standardized result as `AUTOMATABLE_STEPS_EXHAUSTED`, and the neutral scheduler treats that state as a satisfied slot, the StegHealth schedule could stop retrying even when `canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json` was still absent.
+
+The bounded repair keeps the existing path and authority model unchanged. For current Goal `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` only, portable dispatch now requires the retained receipt to:
+- use schema `stegverse.canonical-work-bootstrap-request-consumption/v1`;
+- identify the exact StegHealth Goal task;
+- be `state=COMPLETED`;
+- show no credential material and no network source fetch;
+- match the same dispatch's `canonical_work_request_set.outcomes[]` entry by task ID, request SHA-256, and bootstrap receipt reference.
+
+Until those predicates hold, the bridge returns `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, causing the existing reusable-task lifecycle to remain retryable rather than falsely satisfying the slot. This repair does not itself prove resident execution or create a WorkerCoordinator claim/fence, Interlock/InTr decision, or Master Records closure.
