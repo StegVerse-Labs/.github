@@ -320,3 +320,18 @@ The existing post-repair source/runtime path was traced before declaring another
 No new deterministic defect was identified in that chain. Therefore absence of a post-repair resident receipt is not promoted to failure and no additional runtime/source seam was changed.
 
 The next admissible evidence is the first authentic post-repair source-refresh or WorkerCoordinator-cycle result proving whether the same `STEGFIN-LIVE-ENTRY-003` task now resolves the refreshed existing worker registration. Only that authentic result may choose the non-ALLOW/ALLOW branch. Missing-local-pointer recovery remains downstream of a real retained same-task Functional Memory receipt.
+
+
+### Functional Memory control-plane package carriage repair — 2026-09-21
+
+Tracing the existing resident path from canonical source to the far-side/local resident source found the first deterministic post-repair break before `worker-source-refresh.latest.json`: `scripts/build_control_plane_source_package.py` did not carry the canonical admitted WorkerCoordinator / Functional Memory delta or the corrected `STEGFIN-LIVE-ENTRY-003` fragment.
+
+The existing TVC-authorized control-plane relay could therefore succeed while still materializing a source set incapable of reproducing the merged Functional Memory repair. The bounded repair adds only the already-canonical files required by that existing execution seam:
+
+- `heartbeat_runtime/worker_runtime.py`
+- `heartbeat_runtime/admitted_worker_runtime.py`
+- `heartbeat_runtime/worker_assignment_functional_memory.py`
+- `workers/canonical_state_transition_custody.py`
+- `control/worker-registry.d/stegfin-live-entry-003.json`
+
+No transport, relay, runtime, WorkerCoordinator, scheduler, dispatcher, authority plane, credential path, custody store, deployment plane, device dependency, or invocation is added. The package remains an allowlisted content-addressed source delta and the downstream source-refresh/worker-service path remains unchanged.
