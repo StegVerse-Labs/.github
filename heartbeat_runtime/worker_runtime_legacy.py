@@ -905,8 +905,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             return True
 
         registry["generation"] = generation
-        if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":
-            task["claim_fence_master_records_transition"] = dict(assignment_custody)
+        task["claim_fence_master_records_transition"] = dict(assignment_custody)
         if purpose_graph_claim_bundle is not None:
             task["purpose_bound_state_graph_claim_bundle"] = purpose_graph_claim_bundle
         task.update({

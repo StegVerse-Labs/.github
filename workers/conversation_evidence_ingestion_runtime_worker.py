@@ -115,12 +115,28 @@ def main() -> int:
     if not claim_id or not isinstance(fence, int):
         print("fresh WorkerCoordinator claim/fence required", file=sys.stderr)
         return 6
+    predecessor = task.get("claim_fence_master_records_transition")
+    predecessor_complete = (
+        isinstance(predecessor, dict)
+        and predecessor.get("transition_id") == "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
+        and predecessor.get("state") == "RECORDED"
+        and predecessor.get("reconstruction_status") == "PASS"
+        and predecessor.get("required_evidence_validation_status") == "PASS"
+        and isinstance(predecessor.get("receipt_sha256"), str)
+        and predecessor.get("receipt_sha256") == predecessor.get("reconstructed_receipt_sha256")
+    )
+    if not predecessor_complete:
+        print("closed WorkerCoordinator claim/fence Master Records predecessor required", file=sys.stderr)
+        return 7
 
     record_id = f"SYNTH-CONVERSATION-EVIDENCE-{_safe(claim_id)}-F{fence}"
     source, attachments = _synthetic_source(record_id)
     package = build_ingestion_package(source, attachments)
     record_root = _persist_idempotent(package, attachments)
-    custody = custody_ingestion(package)
+    custody = custody_ingestion(
+        package,
+        predecessor_receipt_sha256=str(predecessor["receipt_sha256"]),
+    )
 
     if custody.get("state") != "RECORDED":
         response = {

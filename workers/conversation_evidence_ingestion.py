@@ -7,7 +7,12 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from canonical_state_transition_custody import build_state_receipt, submit_state_receipt, sha256_uri
+from canonical_state_transition_custody import (
+    build_state_receipt,
+    require_predecessor_master_records_closure,
+    sha256_uri,
+    submit_state_receipt,
+)
 
 CONTRACT_SCHEMA = "stegverse.conversation-evidence-service-performance-publication-contract/v1"
 PACKAGE_SCHEMA = "stegverse.conversation-evidence-ingestion-package/v1"
@@ -167,9 +172,17 @@ def persist_ingestion_package(package: Mapping[str, Any], attachment_bytes: Mapp
         write_once_bytes(record_root / "attachments" / attachment_id, bytes(raw))
     return record_root
 
-def custody_ingestion(package: Mapping[str, Any]) -> dict[str, Any]:
+def custody_ingestion(
+    package: Mapping[str, Any],
+    *,
+    predecessor_receipt_sha256: str | None = None,
+) -> dict[str, Any]:
     record_id = _required_string(package, "record_id")
-    evidence_items = []
+    prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+        predecessor_receipt_sha256,
+        successor_transition_id=TRANSITION_ID,
+    )
+    evidence_items = list(predecessor_evidence)
     for evidence_type, key in (
         ("CONVERSATION_EVIDENCE_ORIGINAL","evidence_original"),
         ("CONVERSATION_AUTHENTICITY_ENVELOPE","authenticity_envelope"),
@@ -191,7 +204,7 @@ def custody_ingestion(package: Mapping[str, Any]) -> dict[str, Any]:
         transition_sequence=1,
         subject_or_correlation_id=record_id,
         transition_outcome="OBSERVED",
-        prior_state_ref_or_hash=None,
+        prior_state_ref_or_hash=prior_ref,
         resulting_state_ref_or_hash="sha256:" + _required_string(package, "package_sha256"),
         governance_decision_ref_where_applicable=None,
         transition_evidence={
