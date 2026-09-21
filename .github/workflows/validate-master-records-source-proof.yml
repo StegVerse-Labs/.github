@@ -1,0 +1,32 @@
+name: Validate Master Records Source Proof
+
+on:
+  pull_request:
+    paths:
+      - 'workers/bootstrap_v1_source_package_production_worker.py'
+      - 'scripts/install_sovereign_worker_source_refresh_service.py'
+      - 'tests/test_bootstrap_v1_source_package_production_worker.py'
+      - 'tests/test_sovereign_worker_source_refresh.py'
+      - '.github/workflows/validate-master-records-source-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+      - name: Validate package provenance and resident materialization
+        run: |
+          python -m unittest -v tests.test_bootstrap_v1_source_package_production_worker
+          python -m unittest -v tests.test_sovereign_worker_source_refresh
+          python -m py_compile workers/bootstrap_v1_source_package_production_worker.py scripts/install_sovereign_worker_source_refresh_service.py
+      - name: Record non-authorizing boundary
+        run: |
+          echo 'MASTER_RECORDS_SOURCE_PROOF_VALIDATION=PASS'
+          echo 'authentic_resident_execution_claimed=false'
+          echo 'github_token_runtime_authority=NONE'
