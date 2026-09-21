@@ -274,11 +274,11 @@ def test_workercoordinator_does_not_project_purpose_task_active_before_governed_
     purpose_branch = 'if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":'
     provisional = '"state": "ACTIVE",'
     terminal_projection = '"state": "COMPLETED",'
-    generic_active_projection = '        task.update({\n            "state": "ACTIVE",'
+    purpose_branch_end = '        if self._atomic_constitutive_activation_required(handoff):'
 
     purpose_start = body.index(purpose_branch, body.index(custody_call))
-    generic_start = body.index(generic_active_projection, purpose_start)
-    purpose_body = body[purpose_start:generic_start]
+    purpose_end = body.index(purpose_branch_end, purpose_start)
+    purpose_body = body[purpose_start:purpose_end]
 
     assert body.index(custody_call) < purpose_start
     assert provisional in purpose_body
