@@ -1,6 +1,6 @@
 # Entity Autonomous Governed Progression Runtime Adoption Mirror Handoff
 
-Updated: 2026-09-16
+Updated: 2026-09-21
 Repository: `StegVerse-Labs/.github`
 Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
@@ -93,6 +93,23 @@ The following are invalid global prerequisites:
 `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` remains independently governed. Its reconstructed parent state and G25+ fence requirement, if still current, apply only to that lane. They are not a prerequisite for `canonical_work_coordination` or unrelated Organization AI progression.
 
 The prior handoff's serial sequence placing Ecosystem Chat first is superseded by this correction.
+
+## Task Registry runtime review — 2026-09-21
+
+Current Canonical Task Registry generation 150 makes runtime handling explicit:
+
+- `runtime missing` is not an operational wait condition;
+- runtime compatibility must first resolve through the Canonical Runtime Profile Map;
+- unresolved completion evidence is metadata and does not block routing readiness;
+- Runtime Profile Map matching grants no execution authority;
+- WorkerCoordinator review follows routing readiness, while current runtime observation remains completion evidence;
+- a missing authentic runtime receipt must be traced to the first deterministic existing-path defect rather than converted into passive waiting.
+
+The runtime-adoption task's prior `runtime_requirements` encoded the entire end-to-end authority/evidence chain as though one runtime profile had to declare `canonical_work_ingress`, `resident_runtime_consumption`, `workercoordinator_claim_fence`, `interlock_intr_admission`, `goal_resolution_continuation`, and `canonical_state_reconstruction` under the task-local environment class `SOVEREIGN_RESIDENT_OR_ADMITTED_CURRENT_DEVICE_RUNTIME`. Those names/environment do not exist as one canonical Runtime Profile Map profile, so deterministic routing could produce no compatible candidate before WorkerCoordinator review.
+
+That is corrected without changing authority or completion semantics. Routing compatibility now uses the already-canonical `canonical-work-coordination-runtime-v1` capability vocabulary and `SOVEREIGN_RESIDENT` environment. Current runtime observation is not a routing prerequisite; it remains required by the authentic runtime-adoption completion predicate below. `runtime_resolution` remains a non-authorizing projection and may be persisted by the existing resolver; no profile match, routing-ready disposition, source change, or CI result proves execution.
+
+The previously emphasized absence of `runtime-presence.latest.json` therefore does not by itself stop this ACTIVE task. The next admissible machine step is runtime-profile compatibility/routing-readiness resolution followed by existing WorkerCoordinator admission review and the governed transition path.
 
 ## Runtime-adoption completion predicate
 
