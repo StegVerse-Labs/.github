@@ -500,3 +500,10 @@ The active progression for this Goal remains ecosystem-wide inventory of direct 
 ## SDK purpose-bound post-claim TVC warrant issuance reconciliation — generation 169
 
 PR #2456 merged as `3a9fbee2c0b102884c0721047688905f12f911d2` from exact head `e59888890950b495353d77b82c17faf83a7c2731`. Validation runs `35601925845`, `35601925763`, `35601925836`, and `35601926185` all passed. The repaired existing path now requires exact `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure before writing a non-secret TVC warrant request, invoking the existing `stegtvc-tv-execution-warrant@.service`, validating its secret-free issuance receipt, and passing only the signed warrant/public-key/policy tuple into the existing StegAgents subprocess. No new runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, credential source, database, custody store, authority plane, or device dependency was added. Authentic assignment disposition, warrant issuance, and resident runtime execution remain unclaimed.
+
+## SDK TVC resident caller bridge reconciliation — generation 171
+
+TVC PR #452 merged as `c6ebfcf02296359f8f1791fddab982377f381f7d` from exact head `7f3287f739edbae6315defe0cd58ba5228659153`. Validation runs `35605389527`, `35605389223`, `35605389059`, and `35605389187` all passed. The repaired existing boundary gives the user-owned WorkerCoordinator runtime group-scoped write access to the existing TVC warrant request root, group-scoped read access to the secret-free receipt root, runs the existing root system oneshot with that caller group, emits only the non-secret receipt as `0640`, and installs a narrow polkit rule allowing that exact non-root caller only to start `stegtvc-tv-execution-warrant@<safe-instance>.service`. The private key remains root-owned and `LoadCredential`-only.
+
+No new runtime, scheduler, dispatcher, endpoint, credential store, signing path, custody store, database, or authority plane was added. Authentic assignment disposition, TVC warrant issuance, and resident SDK runtime execution remain unclaimed.
+
