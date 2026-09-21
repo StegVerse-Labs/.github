@@ -447,3 +447,16 @@ PR #2441 merged as `32bdae7ce39fe76a345fcfd1c5383b968dcf7dbb` from exact head `8
 The direct caller now reuses the shared `require_predecessor_master_records_closure(...)` contract. When the admitted assignment carries prior Functional Memory, its exact Master Records receipt must reconstruct with `state=PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality before the claim/fence transition can use it. The resulting canonical predecessor closure is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence and becomes the exact `prior_state_ref_or_hash`. Legacy `task.last_checkpoint_ref` is no longer accepted as predecessor state. When no predecessor receipt exists, none is synthesized.
 
 This repair adds no runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, credential route, host dependency, device dependency, or MIR-specific execution behavior. The next generic action is to continue inventorying remaining direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers and repair only the next machine-owned successor that can bypass canonical predecessor closure.
+
+
+## RTC008/RTC009 southbound continuity repair merged — 2026-09-21
+
+StegOS PR `#397` merged as `29e67329d99a841fcdc8ef118029fdf30c3ff1aa` from exact head `fbb68a2a52f98596757310734351632bf07daa98`.
+
+The repaired southbound path consumes only an already-authentic LLM Adapter `stegverse.llm-adapter.southbound-intr-egress-admission/v1` with `state=EGRESS_ADMITTED`. It preserves the exact Universal InTr request unchanged and binds the original manifest, response_to, completion.initiator, return_projection, RTC008 request hash, and RTC008 admission hash in the separate `stegverse.mir-southbound-continuity/v1` sidecar.
+
+RTC008 must close through canonical Master Records with `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` and exact receipt/reconstruction digest equality before RTC009 may execute. RTC009 then uses receipt-only MIR counterpart semantics; it does not synthesize historical-accounting events and must independently satisfy the same Master Records closure tuple.
+
+Only after RTC009 closure may the source emit `stegverse.mir-caller-consequence-handoff/v1`, addressed to the original `completion.initiator` and bounded by the original `return_projection`. The handoff retains `caller_consequence_observed=false` and `communication_complete=false`.
+
+Exact-head validation passed StegOS CI run `35600594107` and GADI native boundary defense run `35600594109`. Source/CI/merge evidence does not establish authentic RTC008 runtime admission, RTC009 runtime transition, caller consequence, or terminal communication.
