@@ -505,3 +505,11 @@ PR #2456 merged as `3a9fbee2c0b102884c0721047688905f12f911d2` from exact head `e
 
 TVC PR #452 merged as `c6ebfcf02296359f8f1791fddab982377f381f7d` from exact head `7f3287f739edbae6315defe0cd58ba5228659153`; validation runs `35605389527`, `35605389223`, `35605389059`, and `35605389187` all passed. The existing user-owned WorkerCoordinator can now write the existing TVC warrant request, start only the existing `stegtvc-tv-execution-warrant@<safe-instance>.service` through a narrow start-only polkit rule, and read only the secret-free caller-group receipt. The Ed25519 private key remains root-owned and `LoadCredential`-only. Authentic assignment disposition, warrant issuance, and resident SDK execution remain unclaimed.
 
+## SDK TVC execution-warrant self-heal installation reconciliation — generation 183
+
+TVC PR #458 merged as `99c65265377f1f2f6349d0fa6e0c40c6c0aebb58` from exact head `0feaf07568e6c395600e2c970b91a08ab9aa3dbd`; validation runs `35668005838`, `35668005778`, `35668005789`, and `35668005818` all passed.
+
+The next deterministic post-caller-bridge defect was that the existing root `stegtvc-primary-runtime.service` self-heal did not install/reconcile the execution-warrant service for discovered user sovereign runtimes. The merged repair keeps installation on that existing root authority surface: for each validated locator it resolves the exact runtime-owner username, runs the existing `install_tv_execution_warrant_service.py` under the existing transient root systemd helper, adds `/etc/polkit-1/rules.d` write access only to that installer invocation, performs root `systemctl daemon-reload` after successful install, and includes both install/reload results in the existing self-heal completion predicate. The private key remains `LoadCredential`-only.
+
+No new runtime, scheduler, dispatcher, endpoint, credential source/store, signing path, custody store, database, authority plane, or device dependency was added. Authentic host installation, assignment disposition, warrant issuance, and SDK runtime execution remain unclaimed.
+
