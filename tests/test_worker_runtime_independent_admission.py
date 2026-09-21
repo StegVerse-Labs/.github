@@ -118,6 +118,14 @@ class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
 
 
 
+    def test_manifest_runtime_request_flag_is_initialized_before_assignment_record_use(self):
+        source = inspect.getsource(LegacyWorkerCoordinator._activate_from_trigger)
+        initialize = source.index("manifest_runtime_request_present = manifest_runtime_request_path.is_file()")
+        consume = source.index("if manifest_runtime_request_present:")
+        custody = source.index("_custody_assignment_transition")
+        self.assertLess(initialize, consume)
+        self.assertLess(consume, custody)
+
     def test_cosv_task_record_passes_operational_preclaim_without_semantic_hash(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
