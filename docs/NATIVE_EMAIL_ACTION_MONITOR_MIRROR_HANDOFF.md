@@ -235,3 +235,31 @@ Fresh #2334 exact-head validation at `bb63124a31deed839be9b8ef9895fee55bb7531e`:
 - push `Validate KV AI Memory Resident Binding` — run `35598592667` — success.
 
 The final merge fence observed canonical main generation 158 with status `CONVERSATION_EVIDENCE_NATIVE_RESIDENT_INITIATION_SOURCE_COMPLETE_RUNTIME_EVIDENCE_PENDING`; the registration merge produced generation 159 with status `EMAIL_FAILURE_REMEDIATION_LIFECYCLE_REGISTERED`. No intervening canonical task state was overwritten, and no new runtime, scheduler, dispatcher, authority plane, credential path, custody store, or device dependency was introduced.
+
+## 2026-09-21 remediation-child consumption and first unmet runtime predicate
+
+Canonical Task Registry advanced independently to generation 164 with status `STEGBROWSER_A3_RECURRING_MASTER_RECORDS_REFRESH_REPAIRED_RUNTIME_OBSERVATION_REQUIRED`; this native-email reconciliation does not overwrite that unrelated state.
+
+Seven lifecycle-aware remediation identities were reconciled through their existing StegHealth/source-owner paths without recreating remediation work:
+
+- StegHealth #94 remains OPEN: the bounded missing-`cryptography` defect was repaired/merged as StegAgents `ee89007c8a699ca61ce001489b4cfb2a38585f17`, but the separate private-repository access failure remains current-owner-path work.
+- StegHealth #95 remains OPEN: continuity-vault-kit repair `88805570a88260081bff672aebb532979c2a165a` converted the unauthorized private StegDB checkout into durable fail-closed `BLOCKED_PRIVATE_CROSS_REPO_SOURCE_TRANSPORT`; admitted source materialization/overlay sync remains nonterminal.
+- StegHealth #96 remains OPEN: Site PR #1425 merge `5e9da5b8ee04fb0019199d7268ddfa03d18e09f3` did not close the exact StegOS Node Public Observation signature. Merged-head run `35518611952` failed, and current Site run `35598126222` / job `106327577685` still fails because source validation does not pass.
+- StegHealth #97 remains OPEN/nonterminal on the previously retained 26-blocker formalism-worker queue and mathematical evidence-coverage gaps; no mathematical invalidity is inferred.
+- StegHealth #98 is CLOSED/COMPLETED after exact recovery of all registered signatures: ERL monitor repair `d851f335b1f285fb0edb0e8ed4a585e79ec1b416`; producer-schema repair `e67cb7c65f10253a6ce559505b923596d9cd67c2` with post-merge Discover Producer Adapters run `35528983717` success; Administrations repair `8996115802f1d6c3930d6cfbab8266a1656e973c` with scheduled ERL Active Research Acquisition runs `35536481843` and `35562221218` success.
+- StegHealth #99 remains OPEN with the first deterministic defect identified as two stale handoff hashes in `data/session-orchestration-cross-repository.report.json`: admissibility-wiki expected `35d797fbddb2be9c0b0712d0a96efbad90ca4882` but observed `ee2e67f25b299875da4f141fffb6417be894b875`; stegguardian-wiki expected `c7f792867c81a8f8226a1c74c59206f24c765641` but observed `0394381b5ca5725187dbafab546465d1e7965851`. Site and Publisher pass; missing-authority, unresolved-successor, and owner-collision counts are zero.
+- StegHealth #100 is CLOSED/COMPLETED on exact historical failure-to-repair evidence: Cross-Task run `35511614788` failed on the stale optional-`dependencies` assertion; commit `7e343b90c37a0aac0bbb712236119b6e4ee4fc34` repaired it; run `35511660570` succeeded; no duplicate repair was created.
+
+The canonical registry projections for these seven identities may lag their StegHealth issue lifecycle until ordinary Canonical Work/InTr reconciliation consumes the owner evidence. This handoff does not promote registry terminal state directly and does not treat issue closure as WorkerCoordinator/InTr/Master Records execution authority.
+
+### First unmet authentic native-email completion predicate
+
+No retained native-email sovereign-host runtime receipt is present on current `.github` main at any of the canonical receipt paths:
+
+- `receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json`;
+- `receipts/sovereign-host/native-email-action-monitor.latest.json`;
+- `receipts/sovereign-host/native-email-failure-canonical-work.latest.json`;
+- `receipts/sovereign-host/native-email-archived-failure-replay.checkpoint.json`;
+- `receipts/sovereign-host/native-email-kv-guard.latest.json`.
+
+The task record also still states `VERIFIED_SOURCE_REUSE_MERGED_AUTHENTIC_SV_DN1_SOURCE_PREP_RECEIPT_NOT_OBSERVED` for the SDK/governance source dependency. Therefore the earliest unmet completion-boundary predicate remains **predicate 1: authentic resident source refresh materializes the current monitor/mapping source**. Source merges, CI, issue reconciliation, and the generation-159 lifecycle registration do not satisfy that runtime predicate. Do not advance to TV/TVC Gmail-session, mailbox-empty, archive, or terminal consumption claims until an authentic existing-path resident source-refresh/source-prep result is retained.
