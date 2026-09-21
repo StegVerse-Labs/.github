@@ -6,7 +6,7 @@ Goal Task ID: `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001`
 
 COSV ID: `50000000100000`
 
-Status: `ACTIVE / CHECKED_OUT / CANONICALIZATION STAGED AT REGISTRY GENERATION 150 / FIRST EXTERNAL-ANCHOR SUCCESSOR CONTRACT DEFINED`
+Status: `ACTIVE / CHECKED_OUT / CANONICAL TASK REGISTRY GENERATION 150 MERGED / FIRST EXTERNAL-ANCHOR SUCCESSOR CONTRACT DEFINED / RUNTIME ANCHOR EVIDENCE PENDING`
 
 ## Goal
 
@@ -281,3 +281,10 @@ These branch changes establish a source contract and canonicalization candidate 
 ## PR #2378 validation repair
 
 Initial Cross-Task Coordination validation exposed one deterministic registration defect: the new runtime-capable canonical task record lacked the required `execution_substrate_resolution`. The task is source-contract-only at this stage, so all canonical substrate candidates are explicitly classified `NOT_APPLICABLE / SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION`, no substrate is selected, no external device is required, and authority effect remains `NONE`. The task record and generation-150 registry copy were repaired in place; no runtime path was added.
+
+
+## Canonical merge closure — 2026-09-21
+
+PR #2378 merged to canonical main as `b0997941d6f655a03496924e895d25d5a59e9658` after exact head `90cd4fba21635a4a4cfd4117302e1c61cec60a7a` passed every observed applicable workflow: Cross-Task Coordination Validation, KV AI Memory Resident Binding, Purpose-Bound Worker Derived Lifetime, DeepSeek resident validation, and Deterministic Repository Suite. Canonical Task Registry main now reads generation `150` and contains this Goal Task as `ACTIVE / CHECKED_OUT` with COSV `50000000100000`.
+
+This merge proves canonical source/coordination adoption only. It does not prove an authentic runtime-created HB/Master Records checkpoint, OpenTimestamps submission, Bitcoin confirmation, distributed Node/KV witness set, or inherited external temporal bound.
