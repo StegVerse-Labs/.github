@@ -1134,3 +1134,8 @@ The existing content-addressed control-plane source package now carries the cano
 ### SDK evaluator pre-drift runtime-proof boundary
 
 `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
+
+
+### Existing control-plane relay continuation
+
+The reusable control-plane package lifecycle now continues through the already-existing StegOS control-plane relay when an already-issued TVC authorization and already-admitted relay binding are present. It does not mint relay authority. Completion requires exact far-side materialization digest parity for the five Functional Memory/StegFin carriage files.
