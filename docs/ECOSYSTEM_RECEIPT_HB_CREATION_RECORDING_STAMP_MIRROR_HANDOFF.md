@@ -457,3 +457,12 @@ That made the preceding worker-launch repair insufficient on the actual carrier-
 The bounded repair carries the existing `WORKER_SAFE_LOCAL_BINDINGS` into the carrier registration on Linux systemd, macOS launchd, and Windows scheduled-task launch material. The carrier still grants no execution, transition, custody, credential, or governance authority; the values are carried only so the existing self-heal can pass them to `run_worker_runtime.py`.
 
 No new runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential source, or device dependency is introduced. No receipt SHA, HB creation reference, Master Records recording reference, reconstruction result, or bounded root is claimed until an actual post-repair resident process cycle executes.
+
+
+## Carrier self-heal binding repair merge closure — generation 170
+
+PR #2480 merged as `70300377311b9a949fd0f126cf1f31dacaaf55cd`. Exact head `dde5f1e172b11582739e92947137a6859dfe738b` passed `Validate Ecosystem Receipt HB Successor` run `35605040349` with `13 passed`, and every other observed applicable exact-head workflow completed SUCCESS.
+
+This closes the second source-level process-startup defect on the carrier-first path: the carrier process now receives the same already-declared safe local worker bindings needed by its existing `ensure_worker_presence(...)` self-heal path to launch WorkerCoordinator with canonical Master Records custody connectivity.
+
+The evidence boundary remains execution-specific. Canonical retained state is still historical; no fresh post-merge carrier/worker process cycle is retained here. Therefore execution reaching `build_state_receipt(...)`, any receipt SHA/HB creation reference, Master Records recording metadata, reconstruction equality, or bounded receipt-set root remains unclaimed.
