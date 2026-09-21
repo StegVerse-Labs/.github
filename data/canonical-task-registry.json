@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 155,
-  "status": "CONVERSATION_EVIDENCE_SOURCE_REFRESH_ORDER_REPAIRED_RESIDENT_DISPATCH_VISIT_PENDING",
+  "generation": 156,
+  "status": "CANONICAL_MASTER_RECORDS_SDK_TEST1_PREDECESSOR_BINDING_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5191,7 +5191,14 @@
           35567185027,
           35567185029
         ],
-        "authentic_production_workercoordinator_claim_fence_observed": false
+        "authentic_production_workercoordinator_claim_fence_observed": false,
+        "sdk_test1_claim_fence_predecessor_binding_repaired": true,
+        "sdk_test1_claim_fence_predecessor_binding_pr": 2400,
+        "sdk_test1_claim_fence_predecessor_binding_merge": "25e996510619ed0cb75d4f69750e038eede5a209",
+        "sdk_test1_claim_fence_predecessor_binding_validation_runs": [
+          35568188445,
+          35568188426
+        ]
       },
       "completion": {
         "claimed": false,
@@ -5368,6 +5375,26 @@
             "OPTIONALLY_BIND_REQUEST_REF_TO_ASSIGNMENT_RECORD",
             "BUILD_PURPOSE_GRAPH_CLAIM_BUNDLE",
             "SUBMIT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_TO_MASTER_RECORDS"
+          ],
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+        },
+        "sdk_test1_claim_fence_predecessor_binding": {
+          "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+          "defect": "MANIFEST_BOUND_PURPOSE_TASK_DROPPED_CLAIM_FENCE_MASTER_RECORDS_CLOSURE_BEFORE_STEGAGENTS_SUCCESSOR_REQUEST",
+          "effect": "TV_TVC_WARRANT_POLICY_VERIFIED_COULD_FALL_BACK_TO_WORKER_CLAIM_INSTEAD_OF_EXACT_IMMEDIATE_MASTER_RECORDS_PREDECESSOR",
+          "pull_request": 2400,
+          "merge_commit": "25e996510619ed0cb75d4f69750e038eede5a209",
+          "validation_runs": [
+            35568188445,
+            35568188426
+          ],
+          "repaired_path": [
+            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+            "RETAIN_EXACT_CLOSURE_ON_PURPOSE_TASK_IN_MANIFEST_AND_GRAPH_MODES",
+            "VALIDATE_EXACT_CLOSURE_IN_MANIFEST_BOUND_WORKER_BRIDGE",
+            "FORWARD_AS_GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION",
+            "TV_TVC_WARRANT_POLICY_VERIFIED_USES_EXACT_PREDECESSOR_RECEIPT_SHA"
           ],
           "authentic_resident_runtime_execution_claimed": false,
           "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
