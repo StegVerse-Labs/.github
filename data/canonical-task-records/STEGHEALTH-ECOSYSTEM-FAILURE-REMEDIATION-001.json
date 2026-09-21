@@ -69,5 +69,70 @@
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true
   },
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  }
 }
