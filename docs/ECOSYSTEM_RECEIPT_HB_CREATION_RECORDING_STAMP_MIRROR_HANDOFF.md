@@ -500,3 +500,34 @@ Next execution must use the already-authorized carrier-only installer on the adm
 - if `carrier_active=false`, repair the exact activation/service failure reported there;
 - if `carrier_active=true` but no task-capable worker cycle follows, trace `ensure_worker_presence(...)` and its retained supervision result;
 - if the worker cycle exists, continue immediately to the first governed transition and canonical HB-stamped receipt.
+
+
+## Authorized resident execution surface check — generation 175
+
+Canonical Task Registry is generation 175 and `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` remains `ACTIVE / CHECKED_OUT`.
+
+The canonical next action remains the existing `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` direct carrier-only native installer. Its registry fragment is still `HANDOFF_READY`, with no claim, worker id, or worker instance bound, and its handoff explicitly authorizes native carrier-only execution without WorkerCoordinator, GitHub Actions, hosted schedulers, or third-party process hosts.
+
+The authorized resident-machine connector was queried in this session and returned no connected devices. Therefore no admitted resident OS surface was available to execute `python scripts/install_sovereign_heartbeat_carrier.py`, inspect systemd/launchd/scheduled-task state, or consume a post-repair `carrier-activation.latest.json`.
+
+This result is not a StegVerse runtime failure and does not justify a source repair. It means only that the canonical native execution predecessor could not be invoked from this session. No hosted substitute, alternate runtime, observer, scheduler, dispatcher, or synthetic activation was introduced.
+
+The next valid progression remains exact and unchanged:
+
+```text
+authorized resident surface becomes available
+-> execute existing HEARTBEAT-OSCILLATOR-RESIDENT-START-012 carrier-only installer
+-> consume exact carrier-activation.latest.json
+-> if carrier_active=false: repair the reported native service/process failure
+-> if carrier_active=true: require oscillator progression
+-> trace ensure_worker_presence(...)
+-> require first fresh task-capable WorkerCoordinator cycle
+-> first governed transition
+-> build_state_receipt(...)
+-> receipt_sha256 + hb_creation_reference
+-> submit_state_receipt(...)
+-> canonical Master Records row + hb_recording_reference
+-> exact reconstruction equality
+```
+
+No receipt, state transition, Master Records row, or bounded receipt-set root is claimed at this boundary.
