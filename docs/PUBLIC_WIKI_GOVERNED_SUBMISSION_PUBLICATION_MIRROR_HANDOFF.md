@@ -77,3 +77,7 @@ Completion requires one authentic Admissibility publication traversing the compl
 - reusable target-profile conformance for at least Admissibility, StegGuardian, and StegTalk.
 
 Source implementation alone is not runtime completion.
+
+## Execution-substrate registration disposition
+
+The current canonicalization/implementation phase does not execute the governed runtime chain, so all six canonical execution substrates are `NOT_APPLICABLE` for this registration phase, with no selected substrate, `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`. This satisfies the runtime-capable Task Registry invariant without inventing runtime evidence or changing the later WorkerCoordinator/Interlock/InTr execution contract. Before authentic runtime execution, the canonical record must be reconciled to the actually admitted existing substrate rather than treating this source-phase disposition as runtime authority.
