@@ -105,3 +105,16 @@ The remediation path remains the already-merged targeted one-shot:
 python scripts/run_worker_runtime.py --task-id CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001
 ```
 through the existing Canonical Work -> WorkerCoordinator -> process adapter -> canonical Master Records path. No device inventory query, second machine prerequisite, alternate runtime, scheduler, dispatcher, or custody plane is introduced.
+
+
+## State-triggered selector repair — 2026-09-21
+
+Canonical generation 150 exposed a deterministic projection mismatch: the task's runtime-resolution metadata declared the already-admitted state-triggered WorkerCoordinator successor ready, but the canonical row still carried `coordination_state=IN_PROGRESS`, no `checkout_state`, and retained `INGRESS_ADMITTED` in `allowed_next_transitions`. The repaired canonical selector therefore could not classify this task as `WORKERCOORDINATOR_TARGETED_STATE_TRANSITION`.
+
+This repair changes only the canonical coordination projection to the already-established state:
+- `coordination_state=ACTIVE`
+- `checkout_state=CHECKED_OUT`
+- immediate next transition begins at `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`
+- `INGRESS_ADMITTED` is removed from the remaining successor list.
+
+No claim/fence is minted by this repair and no runtime, scheduler, dispatcher, custody plane, or device prerequisite is added.
