@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.repository-hygiene-ref-retirement-routing/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-OWNER-CLEARANCE-BATCH1-20260921",
+  "source_approval_manifest": "StegVerse-Labs/TVC:.github/repository-hygiene-approved-retirements.txt",
+  "source_clearance_evidence": "StegVerse-Labs/TVC:evidence/repository-hygiene/2026-09-21-tvc-owner-clearance-batch1.json",
+  "source_revalidation_run_id": 35651085752,
+  "source_revalidation_head": "6f56110ab322a0bd0fbe4f94205895951ee2ad61",
+  "source_revalidation_artifact_id": 10662600248,
+  "source_revalidation_artifact_digest": "sha256:2937914a669d74b5f502e621d09ff45837924fd3018ebd317c655eea09ca4241",
+  "approved_retirement_ready_count": 10,
+  "invalid_approved_count": 0,
+  "routed_refs": [
+    "tmp-noop-should-not-create",
+    "docs/reconcile-tv-guidance-closure",
+    "docs/cmc014-aex-hosted-retirement-proof",
+    "docs/cmc-hcb-hosted-retirement-20260827",
+    "fix/va-observers-validation-only",
+    "audit/final-model-decision-20260827",
+    "audit/cmc005-cmc006-current-indexed-census-closure-20260828",
+    "audit/cmc032-stegfinco-closure-20260828",
+    "audit/cmc033-stegfin-zeroex-closure-20260828",
+    "docs/cmc024-crypto-bot-closure-20260827"
+  ],
+  "route_target": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "route_state": "ROUTED_NON_DESTRUCTIVE_AUTHORITY_INPUT",
+  "deletion_performed": false,
+  "deletion_authorized_by_this_record": false,
+  "authority_effect": "NONE",
+  "notes": "Classification/routing only. Repository-native ref-retirement authority must independently revalidate current state before any deletion."
+}
