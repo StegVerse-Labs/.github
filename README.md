@@ -1116,3 +1116,8 @@ The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `
 ### Canonical predecessor closure for direct receipt callers
 
 Direct state-transition producers that do not use `CanonicalTransitionCustody` must still consume the immediately preceding canonical Master Records closure. The first repaired direct caller is WorkerCoordinator claim/fence custody: prior Functional Memory is reconstructed through Master Records and carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`; legacy checkpoint references cannot substitute for canonical predecessor state.
+
+
+### RTC008/RTC009 canonical custody continuity
+
+StegOS PR #397 merged the post-admission MIR continuation. Authentic RTC008 admission must close through canonical Master Records before receipt-only RTC009 can run; RTC009 must then close through the same full reconstruction/digest gate before a caller-consequence handoff can be emitted. Caller consequence and communication completion remain runtime predicates, not source claims.
