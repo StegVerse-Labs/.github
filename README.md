@@ -1169,3 +1169,8 @@ TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator r
 `SDK-PUBLIC-DEVELOPER-WIKI-001` establishes `sdk.stegverse.org` as a developer-facing documentation projection sourced directly from `StegVerse-org/StegVerse-SDK`. The public surface is intended to expose the real manifest ingress, processing/route selection, schemas, examples, receipt navigation, replay/reconstruction, external-framework integration, and authority boundaries already present in the SDK. The SDK repository remains canonical; the wiki is presentation/navigation only and grants no governance, execution, transition, credential, custody, or evidence authority.
 
 Canonical handoff: `docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md`.
+
+
+### Actual carrier execution boundary — 2026-09-21
+
+The HB receipt path now distinguishes source readiness from native execution. The canonical carrier-only installer is the next execution predecessor; no source fallback should be added merely because a post-repair `carrier-activation.latest.json` has not yet been retained. Once native activation runs, any reported carrier/service failure is repaired at that exact boundary before WorkerCoordinator or receipt custody is considered.
