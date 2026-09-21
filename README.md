@@ -1100,11 +1100,6 @@ For `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`, the resident-dispatch initiat
 The shared canonical custody helper now makes the immediately preceding Master Records closure the actual predecessor for a successor transition. A successor recorded through `CanonicalTransitionCustody` receives `prior_state_ref_or_hash=sha256:<prior Master Records receipt>` and automatically carries the exact `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. Progression occurs only after `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality. Domain state/result hashes remain transition evidence and do not replace canonical custody closure as progression authority.
 
 
-### Elyria Service Gateway predecessor trace — 2026-09-21
-
-For `SDK-ELYRIA-INTR-ADAPTER-001`, the existing shared Service Gateway / TVC CMC-029 lineage was traced to its first concrete predecessor condition. The canonical machine owner `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is already `HANDOFF_READY`; its bootstrap and WorkerCoordinator adapter preserve the existing non-secret Gateway/KV/TLS bindings while scrubbing credentials. No source carriage defect was found. The first unresolved condition is authentic observation of real resident Gateway and KV storage bindings; no retained authentic execution receipt currently shows that boundary being reached. CMC-029 live issuance/public HTTPS and the public sovereign Gateway route therefore remain unobserved. No code repair, alternate gateway/runtime, credential path, custody store, or second user-operated device was introduced, and Elyria public transport remains unresolved.
-
-
 Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` again confirms `RESIDENT_REQUEST_DISPATCH_VISIT` as the first missing authentic transition. Retained worker state remains historical and all native post-repair runtime receipts remain absent; no downstream state is promoted.
 
 
@@ -1211,3 +1206,9 @@ The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-ret
 ### TVC hygiene retirement routing batch 2 — 2026-09-21
 
 TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready refs and zero invalid approvals after PR #457 merged. Only the ten newly approved batch-2 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` in `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json`; no branch deletion was performed.
+
+
+### Elyria dependency reconciliation — 2026-09-21
+
+`SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. The canonical external-framework endpoint-binding registry already exists in admissibility-wiki and its evidence-qualified endpoint overlay is intentionally empty. The current Elyria boundary is therefore `EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE`: no independently observed callable Elyria runtime endpoint can yet be lawfully bound. The prior Coinbase/TVC Service Gateway lineage is superseded for Elyria and must not gate or diagnose this task.
+

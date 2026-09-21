@@ -117,9 +117,10 @@
     },
     "shared_service_gateway_surface": {
       "eligible": false,
+      "role": "NOT_ELYRIA_DEPENDENCY",
       "reason": [
-        "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
-        "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
+        "TVC_COINBASE_SERVICE_GATEWAY_IS_PROVIDER_SPECIFIC_INFRASTRUCTURE",
+        "ELYRIA_COMPONENT_PROFILE_REQUIRES_DIRECT_GENERIC_INTERLOCK_INTR_EXTERNAL_ADAPTER_TRANSPORT"
       ]
     },
     "governed_round_trip_executed": false,
@@ -159,23 +160,65 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "service_gateway_lineage_trace_20260921": {
-    "owner_task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
-    "tvc_cmc029_task_id": "TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029",
-    "machine_owner_state": "HANDOFF_READY",
-    "source_carriage_check": "PASS",
-    "bootstrap_nonsecret_binding_carriage": "PRESERVED",
-    "adapter_env_allowlist_check": "PASS",
-    "credential_scrub_preserves_nonsecret_gateway_kv_tls_bindings": true,
-    "first_concrete_predecessor_condition": "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
-    "runtime_receipt_for_resident_storage_binding_failure_observed": false,
-    "source_defect_found": false,
-    "repair_performed": false,
-    "downstream_public_route_predicate": "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
-    "downstream_tls_predicate": "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED",
-    "cmc029_live_issuance_observed": false,
-    "cmc029_public_https_observed": false,
-    "elyria_transport_eligible": false,
-    "disposition": "REQUIRE_AUTHENTIC_EXISTING_MACHINE_OWNER_EXECUTION_WITH_REAL_GATEWAY_AND_KV_BINDINGS_BEFORE_CMC029_TLS_OR_PUBLIC_ROUTE_CAN_ADVANCE"
+  "dependency_reconciliation_20260921": {
+    "coinbase_dependency_required": false,
+    "kv_dependency_required": false,
+    "tvc_coinbase_service_gateway_dependency_required": false,
+    "basis": [
+      "goal component profile selects RT-EXTERNAL-ADAPTER-ESTABLISH-001 plus generic RTC transport/custody components",
+      "goal component profile explicitly excludes KV/SKAP user-verification flow",
+      "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001 objective, bindings, services, readiness, and continuation owner are Coinbase-specific"
+    ],
+    "superseded_active_dependency_path": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001 -> CMC-029 -> Coinbase Service Gateway",
+    "canonical_active_path": [
+      "StegVerse SDK Elyria framework adapter",
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-STEGVERSE-EGRESS-007",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-SDK-RETURN-006"
+    ],
+    "external_endpoint_requirement": "reachable authorized Elyria public endpoint",
+    "master_records_required": true,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "generic_transport_trace_20260921": {
+    "sdk_elyria_codec_present": true,
+    "codec_requires_injected_transport": true,
+    "generic_intr_transport_selected": true,
+    "endpoint_binding_in_sdk_observed": false,
+    "endpoint_binding_in_canonical_coordination_observed": false,
+    "owner_operated_public_elyria_assessment_url_observed": false,
+    "first_missing_predicate": "EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE",
+    "workercoordinator_required_only_if_resident_worker_execution_is_used": true,
+    "coinbase_required": false,
+    "kv_required": false,
+    "cmc029_required": false,
+    "master_records_stage": "AFTER_AUTHENTIC_TRANSPORT_EVIDENCE_EXISTS",
+    "authentic_round_trip_observed": false,
+    "authority_effect": "NONE_COORDINATION_ONLY",
+    "endpoint_binding_registry": {
+      "registry_repository": "StegVerse-Labs/admissibility-wiki",
+      "registry_ref": "docs/external-frameworks/index.json",
+      "overlay_ref": "data/external-framework-roundtrip-endpoints.json",
+      "overlay_schema": "stegverse.external-framework-roundtrip-endpoint-overlay/v1",
+      "overlay_binding_count_observed": 0,
+      "registry_implementation_present": true,
+      "framework_binding_slots_present": true,
+      "evidence_qualification_present": true,
+      "required_fields": [
+        "runtime_endpoint_ref",
+        "endpoint_evidence_ref",
+        "endpoint_observed_at",
+        "endpoint_evidence_class"
+      ],
+      "source_defect_found": false,
+      "first_concrete_defect_class": "MISSING_EXTERNAL_ENDPOINT_PUBLICATION_OR_INDEPENDENT_OBSERVATION",
+      "missing_configuration": false,
+      "missing_transport_binding_implementation": false
+    }
   }
 }
