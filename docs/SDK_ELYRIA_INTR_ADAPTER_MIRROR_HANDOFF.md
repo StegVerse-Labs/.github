@@ -97,3 +97,44 @@ It remains unresolved.
 ## Manual work
 
 None.
+
+
+## Shared Service Gateway / CMC-029 lineage trace — 2026-09-21
+
+The existing owner path was traced without creating a new gateway, runtime, credential flow, custody store, task-specific transport, or device dependency:
+
+```text
+TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
+-> workers/tvc_coinbase_intr_resident_activation_worker.py
+-> StegVerse-Labs/TVC resident activation/readiness
+-> CMC-029 exact WebPKI HTTP-01 resident adapter when TLS adoption is absent
+-> separate sovereign Gateway TLS reconciliation
+-> fresh public route observation
+-> READY_FOR_OWNER_INGRESS
+```
+
+CMC-029 source is already merged/validated and explicitly remains runtime-evidence pending. Its authentic Gateway leaf certificate, browser-trusted hostname certificate, live issuance, and public HTTPS observation remain unobserved.
+
+The machine owner itself is `HANDOFF_READY` and authorized for an independent fresh claim/fence. Source inspection found no carriage defect:
+- the sovereign bootstrap child environment scrubs credential variables but preserves non-secret deployment bindings;
+- the TVC worker adapter allowlists the Gateway storage root, KV custody root, public node URL, hostname, ACME directory/contact, and HTTP-01 challenge root;
+- the worker correctly requires real Gateway + KV roots only when resident activation must run;
+- when TLS adoption is absent, the worker invokes only the exact CMC-029 resident adapter and stops for separate Gateway reconciliation before public route observation.
+
+Therefore the first concrete predecessor condition is:
+
+```text
+REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED
+```
+
+No retained authentic worker receipt was found showing an execution that reached `RESIDENT_STORAGE_BINDINGS_REQUIRED` or any later CMC-029/public-route transition. This is presently missing runtime evidence, not a demonstrated source defect, so no runtime code repair is authorized.
+
+The downstream predicates remain:
+
+```text
+PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED
+SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED
+```
+
+They must not be promoted until the existing machine-owned TVC execution runs with authentic real Gateway/KV bindings and produces the applicable runtime evidence. Elyria transport remains ineligible.
+
