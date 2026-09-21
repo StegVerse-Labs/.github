@@ -162,3 +162,47 @@ RTC-STEGVERSE-EGRESS-007
 ```
 
 Until then, `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved and no transport completion may be claimed.
+
+
+## Endpoint-binding registry trace — 2026-09-21
+
+The generic endpoint-binding mechanism already exists in `StegVerse-Labs/admissibility-wiki`.
+
+Canonical surfaces:
+
+```text
+framework registry: docs/external-frameworks/index.json
+endpoint overlay: data/external-framework-roundtrip-endpoints.json
+schema: stegverse.external-framework-roundtrip-endpoint-overlay/v1
+```
+
+The reusable rollout requires an endpoint binding to contain all four fields:
+
+```text
+runtime_endpoint_ref
+endpoint_evidence_ref
+endpoint_observed_at
+endpoint_evidence_class
+```
+
+The builder/checker and handoffs already enforce those fields and reject bare endpoint strings, documentation URLs, source URLs, orphan evidence, and malformed bindings.
+
+Current endpoint overlay state is:
+
+```json
+{"schema":"stegverse.external-framework-roundtrip-endpoint-overlay/v1","bindings":{}}
+```
+
+Therefore:
+- the binding registry is not missing;
+- the generic transport-binding implementation is not missing;
+- no Elyria-specific configuration row can lawfully be created without independently observed endpoint evidence;
+- the first concrete defect class is missing external endpoint publication/independent observation, not missing StegVerse source.
+
+The first missing predicate is refined to:
+
+```text
+EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE
+```
+
+No source repair is authorized because creating a synthetic endpoint row would violate the evidence-qualified binding contract. Once an authentic Elyria runtime endpoint is independently observed, the existing overlay is the correct place to bind it and the reusable planner can determine `ROUNDTRIP_ELIGIBLE` without any new transport implementation.
