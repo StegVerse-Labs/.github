@@ -288,3 +288,32 @@ Initial Cross-Task Coordination validation exposed one deterministic registratio
 PR #2378 merged to canonical main as `b0997941d6f655a03496924e895d25d5a59e9658` after exact head `90cd4fba21635a4a4cfd4117302e1c61cec60a7a` passed every observed applicable workflow: Cross-Task Coordination Validation, KV AI Memory Resident Binding, Purpose-Bound Worker Derived Lifetime, DeepSeek resident validation, and Deterministic Repository Suite. Canonical Task Registry main now reads generation `150` and contains this Goal Task as `ACTIVE / CHECKED_OUT` with COSV `50000000100000`.
 
 This merge proves canonical source/coordination adoption only. It does not prove an authentic runtime-created HB/Master Records checkpoint, OpenTimestamps submission, Bitcoin confirmation, distributed Node/KV witness set, or inherited external temporal bound.
+
+
+## First source-level successor implementation — 2026-09-21
+
+This successor slice begins implementation of the generation-150 contract without claiming runtime evidence or external anchoring.
+
+Source changes in this branch:
+
+- `workers/canonical_state_transition_custody.py` now derives a canonical non-authorizing `hb_creation_reference` from the existing 100 Hz HeartBeat oscillator when a new canonical state-transition receipt is created and freezes `hb_creation_protocol=STEGVERSE_HEARTBEAT_100HZ_OSCILLATOR_V1` into the exact receipt body before hashing/custody.
+- `heartbeat_runtime/master_records_checkpoint_commitment.py` defines the first source implementation of `stegverse.hb-master-records-checkpoint-commitment/v1`. It accepts only a bounded Master Records receipt-set commitment using `ORDERED_CANONICAL_RECEIPT_SHA256_BOUNDED_RANGE_V1`, binds that exact root/count/floor/ceiling to an HB reference, and computes `checkpoint_commitment_sha256` over canonical JSON with the digest field omitted.
+- `tests/test_master_records_checkpoint_commitment.py` validates exact root/HB binding, digest tamper detection, contiguous-bound enforcement, and non-authorizing semantics.
+
+The corresponding Master Records implementation is owned by `master-records/orchestration` and is being advanced on a separate integration branch. It must retain `hb_recording_reference` as custody metadata, not mutate the already-frozen receipt body; assign a stable custody ordinal only to post-activation HB-capable receipts; and construct the bounded deterministic receipt-set root from that ordinal range.
+
+Historical receipts that lack `hb_creation_reference` remain valid historical receipts and must remain `SYSTEM_RELATIVE_CONTINUITY_ONLY`. They are not backfilled with invented creation or recording HB values.
+
+### Proof ceiling
+
+This source implementation does not establish:
+
+- authentic runtime creation of an HB-bound receipt;
+- authentic Master Records recording-HB metadata;
+- an authentic bounded receipt-set root from runtime custody;
+- an authentic HB checkpoint commitment;
+- Node/KV witness propagation;
+- OpenTimestamps/Bitcoin submission or confirmation;
+- any external temporal bound.
+
+Those predicates remain pending authentic runtime evidence after source validation and merge.
