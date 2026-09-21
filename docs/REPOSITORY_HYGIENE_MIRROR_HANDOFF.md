@@ -698,3 +698,19 @@ A future continuation may resume only from newly exposed authentic resident evid
 ## 2026-09-18 post-retirement Master Records continuity correction
 
 The retired hygiene Goal remains `RETIRED / PROMPT_LIMIT_RUNTIME_EVIDENCE_PENDING`; it is not reopened. Tracing the existing Healer path exposed a source-level continuity inconsistency: `handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json` declared `continuity.master_records_required=false` even though the canonical state-transition custody contract requires every observed governed state transition to be recorded and exactly reconstructed in Master Records before subsequent machine-owned progression. The handoff is corrected to `master_records_required=true` and cites the existing canonical custody contract/client. This does not claim any authentic resident transition or Master Records write.
+
+
+## 2026-09-21 reusable repository hygiene remediation
+
+A reusable first-class branch hygiene mechanism has been implemented on branch `hygiene/reusable-inventory-20260921` for `HYGIENE-CAUSAL-ROOTS-001`. It adapts the Site hygiene package into the existing causal-root hygiene contract instead of preserving the package's destructive `apply` behavior.
+
+New surfaces:
+
+```text
+.github/workflows/repository-hygiene-reusable.yml
+scripts/repository_hygiene_inventory.py
+```
+
+The reusable workflow runs with `permissions: {}`, performs anonymous repository fetches, classifies every branch by protection, ahead/behind ancestry, age, and exact branch-name references on the default branch, and uploads non-authorizing evidence. It never deletes refs, closes PRs/issues, or treats age/name as deletion authority. An optional repository-local approved-retirement manifest is validation input only; entries fail closed unless they are still current retirement candidates. Actual ref mutation remains owned by `HYGIENE-BRANCH-REF-RETIREMENT`.
+
+StegHealth is the intended first adopter. No product/runtime authority is created by this reusable surface.
