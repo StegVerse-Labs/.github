@@ -1224,3 +1224,8 @@ TVC PR #458 is merged and validated. The existing root TVC resident self-heal no
 ### TVC hygiene retirement routing batch 3 — 2026-09-21
 
 TVC run `35668559325` proved 27 approved-retirement-ready refs and zero invalid approvals. Seven new batch-3 CMC reconciliation refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`; no branch deletion occurred. The current census has 136 unapproved structural candidates because the merged batch implementation itself created one additional fully-main-contained ref.
+
+
+### HIL machine receiver Gateway carriage
+
+The Healer scheduler projects the retained G25/fence-25 HIL worker receiver `base_url` separately from Universal InTr, allowing the Service Gateway to relay `/api/hil/*` to the already-running machine-owned receiver without creating another runtime or custody lineage.
