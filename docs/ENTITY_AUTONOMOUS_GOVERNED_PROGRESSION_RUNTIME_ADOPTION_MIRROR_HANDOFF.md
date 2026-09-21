@@ -115,6 +115,12 @@ Generation 152 also extends the existing registry-first cycle with a targeted Wo
 
 No profile match, routing-ready disposition, source change, CI result, targeted invocation request, or prior receipt grants execution/transition authority. WorkerCoordinator claim/fence, Interlock/InTr governance, TV/TVC credential authority, and Master Records transition custody/reconstruction remain mandatory at their exact state boundaries.
 
+## Standalone runtime-resolution persistence repair
+
+The runtime resolver and routing-readiness evaluator already resolve this identity from its standalone canonical task shard, but the existing single-task persistence applier previously required the task to exist in the aggregate registry. That asymmetry left this task permanently at `ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW_WITH_RUNTIME_RESOLUTION_PERSISTENCE_PENDING` even after compatibility was deterministically resolved.
+
+The existing applier is now extended fail-closed: aggregate tasks retain the existing registry-generation projection behavior; a task absent from the aggregate registry may persist only into an already-existing exact standalone canonical shard with matching task identity, correlation identity, runtime requirements, map generation, and known candidate profiles. The operation does not insert an aggregate task, change coordination/completion/claim state, mint claim/fence, grant admission, or prove execution.
+
 ## Runtime-adoption completion predicate
 
 Source implementation is complete. Authentic runtime adoption remains unproven until a current goal chain produces evidence that demonstrates together:
