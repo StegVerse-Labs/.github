@@ -131,7 +131,7 @@
     "site_browser_heartbeat_run": 35415040363,
     "site_browser_bootstrap_run": 35415040385,
     "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-    "next_transition_under_evidence_trace": "RTC-INTERLOCK-INTR-TRANSPORT-008_AUTHENTIC_ADMISSION_THEN_RTC-FARSIDE-FINAL-009_THEN_CALLER_CONSEQUENCE",
+    "next_transition_under_evidence_trace": "TRACE_DIRECT_MACHINE_OWNED_SUCCESSOR_CALLERS_THAT_BYPASS_CANONICALTRANSITIONCUSTODY_AND_REPAIR_ONLY_FIRST_GENERIC_BYPASS",
     "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
     "mir_governed_round_trip_complete_required_evidence_pr": 1411,
     "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -186,7 +186,35 @@
       35569145834,
       35569145993
     ],
-    "authentic_production_purpose_bound_post_claim_runtime_observed": false
+    "authentic_production_purpose_bound_post_claim_runtime_observed": false,
+    "active_scope": "ECOSYSTEM_WIDE_CANONICAL_STATE_TRANSITION_CUSTODY",
+    "mir_rtc007_rtc008_role": "CONFORMANCE_CASE_ONLY",
+    "rtc008_admission_custody_source_repair_merged": true,
+    "rtc008_admission_custody_pr": 2290,
+    "rtc008_admission_custody_merge": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
+    "rtc008_carriage_source_repair_merged": true,
+    "rtc008_carriage_pr": 2349,
+    "rtc008_carriage_merge": "44cc82910c1116a096cca475402c76ebcb1f657f",
+    "rtc008_predecessor_closure_source_repair_merged": true,
+    "rtc008_predecessor_closure_pr": 2356,
+    "rtc008_predecessor_closure_merge": "f81444cd6d40fb32d9e083fc198fe09c254cdc2f",
+    "generic_predecessor_closure_defect_identified": true,
+    "generic_predecessor_closure_repaired": true,
+    "generic_predecessor_closure_repair_pr": 2421,
+    "generic_predecessor_closure_repair_merge": "728b6b695a017c14833e7712c47816fa51d77133",
+    "generic_predecessor_closure_exact_head": "8749ffb55fa753d98a0d55b9fc478c1bd3275d75",
+    "generic_predecessor_closure_validation_runs": [
+      35598195572,
+      35598195638
+    ],
+    "generic_successor_prior_state_contract": "IMMEDIATELY_PRECEDING_MASTER_RECORDS_RECEIPT_SHA256",
+    "generic_successor_required_evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+    "generic_successor_progression_gate": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ]
   },
   "completion": {
     "claimed": false,
@@ -336,6 +364,39 @@
       ],
       "authentic_resident_runtime_execution_claimed": false,
       "authority_effect": "NONE_SOURCE_ORDERING_REPAIR_ONLY"
+    },
+    "rtc008_conformance_case": {
+      "role": "CONFORMANCE_CASE_ONLY_NOT_ACTIVE_TASK_PROGRESSION",
+      "admission_custody_pr": 2290,
+      "admission_custody_merge": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
+      "carriage_pr": 2349,
+      "carriage_merge": "44cc82910c1116a096cca475402c76ebcb1f657f",
+      "predecessor_closure_pr": 2356,
+      "predecessor_closure_merge": "f81444cd6d40fb32d9e083fc198fe09c254cdc2f",
+      "runtime_execution_claimed": false,
+      "rtc009_claimed": false,
+      "caller_consequence_claimed": false,
+      "authority_effect": "NONE_CONFORMANCE_PROVENANCE_ONLY"
+    },
+    "generic_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "defect": "CANONICALTRANSITIONCUSTODY_ADVANCED_SUCCESSOR_PRIOR_STATE_TO_DOMAIN_RESULT_HASH_INSTEAD_OF_IMMEDIATELY_PRECEDING_MASTER_RECORDS_CLOSURE",
+      "effect": "SHARED_HELPER_DID_NOT_ITSELF_FORCE_STATE_DEPENDENT_SUCCESSOR_CONSUMPTION_OF_CANONICAL_CUSTODY_CLOSURE",
+      "pull_request": 2421,
+      "exact_head": "8749ffb55fa753d98a0d55b9fc478c1bd3275d75",
+      "merge_commit": "728b6b695a017c14833e7712c47816fa51d77133",
+      "validation_runs": [
+        35598195572,
+        35598195638
+      ],
+      "repaired_contract": [
+        "SUCCESSOR_PRIOR_STATE_REF_IS_PREDECESSOR_MASTER_RECORDS_RECEIPT_SHA256",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_AUTO_CARRIED_AS_REQUIRED_EVIDENCE",
+        "ADVANCE_ONLY_AFTER_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_EXACT_DIGEST_EQUALITY",
+        "DOMAIN_RESULT_HASH_REMAINS_TRANSITION_EVIDENCE_NOT_PROGRESSION_AUTHORITY"
+      ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
     }
   },
   "required_evidence_validation": {
