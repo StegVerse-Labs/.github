@@ -1066,3 +1066,6 @@ Canonical Goal Task `SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001` / COSV `7
 ### Generic WorkerCoordinator preclaim worker-registration reconciliation — 2026-09-21
 
 The admitted WorkerCoordinator may reconcile stale static capability/profile metadata for an already-existing `AVAILABLE` worker only while its task remains unclaimed `HANDOFF_READY`, with unchanged worker identity, adapter, executor type, and authority source, and only when the refreshed fragment satisfies the canonical handoff's required capabilities. This closes the append-only-fragment case where refreshed source could not repair a stale resident worker declaration before assignment review. Live/claimed/timed lifecycle state remains non-overwritable.
+
+
+The conversation-evidence ingestion Goal now also has source reachability through the existing Healer reusable carrier: StegVerse-Healer PR #93 / merge `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` binds `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` with exact `canonical_work_coordination` + Goal context. This is carrier configuration only; WorkerCoordinator claim/fence and Master Records custody remain the completion authority.
