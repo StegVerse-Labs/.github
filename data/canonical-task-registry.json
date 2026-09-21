@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 165,
+  "generation": 166,
   "status": "CANONICAL_MASTER_RECORDS_DIRECT_CALLER_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5153,7 +5153,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
+        "next_transition_under_evidence_trace": "AUTHENTIC_RTC008_EGRESS_ADMITTED_THEN_MASTER_RECORDS_CLOSURE_THEN_RTC009_THEN_CALLER_CONSEQUENCE",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5250,7 +5250,16 @@
           35600612989
         ],
         "direct_caller_predecessor_source": "FUNCTIONAL_MEMORY_CONTEXT_PRIOR_RECEIPT_SHA256",
-        "direct_caller_legacy_checkpoint_predecessor_removed": true
+        "direct_caller_legacy_checkpoint_predecessor_removed": true,
+        "rtc008_rtc009_continuity_source_repair_merged": true,
+        "rtc008_rtc009_continuity_pr": 397,
+        "rtc008_rtc009_continuity_merge": "29e67329d99a841fcdc8ef118029fdf30c3ff1aa",
+        "rtc008_rtc009_continuity_exact_head": "fbb68a2a52f98596757310734351632bf07daa98",
+        "rtc008_rtc009_ci_run": 35600594107,
+        "rtc008_rtc009_gadi_validation_run": 35600594109,
+        "rtc008_authentic_runtime_admission_observed": false,
+        "rtc009_authentic_runtime_far_side_observed": false,
+        "communication_complete": false
       },
       "completion": {
         "claimed": false,
@@ -5450,6 +5459,29 @@
           "predecessor_contract": "RECONSTRUCT_PRIOR_FUNCTIONAL_MEMORY_MASTER_RECORDS_RECEIPT_THEN_BIND_AS_PRIOR_STATE_AND_REQUIRED_EVIDENCE",
           "legacy_prior_state_source_removed": "task.last_checkpoint_ref",
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "rtc008_rtc009_continuity": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "pull_request": 397,
+          "exact_head": "fbb68a2a52f98596757310734351632bf07daa98",
+          "merge_commit": "29e67329d99a841fcdc8ef118029fdf30c3ff1aa",
+          "validation_runs": [
+            35600594107,
+            35600594109
+          ],
+          "continuity_sidecar_schema": "stegverse.mir-southbound-continuity/v1",
+          "caller_handoff_schema": "stegverse.mir-caller-consequence-handoff/v1",
+          "master_records_gate": [
+            "state=RECORDED",
+            "reconstruction_status=PASS",
+            "required_evidence_validation_status=PASS",
+            "receipt_sha256==reconstructed_receipt_sha256"
+          ],
+          "rtc008_admission_minted_by_repair": false,
+          "rtc009_history_synthesized": false,
+          "caller_consequence_claimed": false,
+          "communication_complete_claimed": false,
+          "authority_effect": "NONE_CUSTODY_AND_HANDOFF_ONLY"
         }
       },
       "required_evidence_validation": {
