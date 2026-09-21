@@ -397,3 +397,28 @@ The canonical task remains `HANDOFF_READY` and unbound after claim/fence custody
 
 No runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, credential source, database, custody store, authority plane, or device dependency was added. This is merged source/validation evidence only; no authentic assignment disposition or production runtime transition is claimed.
 
+
+
+## Generic predecessor-closure successor contract — 2026-09-21
+
+The task is restored to ecosystem-wide canonical custody scope. MIR RTC007/RTC008 is retained only as a conformance case that exposed generic defects; RTC009 transport/runtime choreography belongs to the MIR task and is not the active progression path here.
+
+PR #2421 merged as `728b6b695a017c14833e7712c47816fa51d77133` from exact head `8749ffb55fa753d98a0d55b9fc478c1bd3275d75`. Focused validation run `35598195572` and the existing ecosystem receipt/HB successor validation run `35598195638` passed.
+
+The repaired shared `CanonicalTransitionCustody` contract is now:
+
+```text
+observed governed transition
+-> submit_state_receipt(...)
+-> Master Records RECORDED
+-> reconstruction_status=PASS
+-> required_evidence_validation_status=PASS
+-> receipt_sha256 == reconstructed_receipt_sha256
+-> retain exact Master Records closure
+-> next transition prior_state_ref_or_hash = sha256:<predecessor Master Records receipt>
+-> auto-carry PREDECESSOR_MASTER_RECORDS_CLOSURE as required evidence
+```
+
+The prior implementation advanced `last_state_ref` to the domain/result state hash. That allowed a caller using the generic helper to advance without the prior canonical custody closure being the actual predecessor dependency. Domain/result hashes remain evidence, but they no longer replace the custody closure as the generic progression reference.
+
+This repair does not claim an authentic resident transition. The next generic trace is limited to machine-owned successor paths that call `build_state_receipt(...)` / `submit_state_receipt(...)` directly and therefore may bypass `CanonicalTransitionCustody`. Repair only the first such generic bypass if it permits progression without consuming the immediately preceding closure. Do not continue MIR-specific RTC009 execution under this goal.
