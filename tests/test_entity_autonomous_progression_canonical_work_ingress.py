@@ -57,6 +57,8 @@ class EntityAutonomousProgressionCanonicalWorkIngressTests(unittest.TestCase):
         self.assertIn(requirements["direction"], profile["declared"]["directions"])
         self.assertTrue(profile["declared"]["mutation_allowed"])
         self.assertIsNone(task["runtime_resolution"])
+        runtime_adoption_dep = next(row for row in task["dependencies"] if row["dependency_id"] == "DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION")
+        self.assertEqual(runtime_adoption_dep["kind"], "RUNTIME_PREDICATE")
         self.assertIn("CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED", task["expected_evidence_predicates"])
         self.assertIn("CURRENT_GOVERNANCE_DECISION_OBSERVED", task["expected_evidence_predicates"])
         self.assertIn("EXECUTION_OR_DENIAL_RECEIPT_RETAINED", task["expected_evidence_predicates"])
