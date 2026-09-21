@@ -1,6 +1,6 @@
 ## Ecosystem HB receipt anchoring
 
-Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is staged at Task Registry generation 150 on its canonicalization branch with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
+Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is merged in Task Registry generation 150 with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
 
 The external anchor is evidence-only. The first adapter profile is `OPENTIMESTAMPS_BITCOIN_V1`, but the provider-neutral contract makes blockchain availability non-causal for StegVerse continuity, custody, reconstruction, execution, transition, credentials, routing, or governance. Historical HB-only evidence is never retroactively promoted to externally anchored time proof.
 
