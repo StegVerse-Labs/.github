@@ -769,3 +769,8 @@ The exact ten-ref set is now routed non-destructively to `HYGIENE-BRANCH-REF-RET
 TVC PR `#457` merged from exact validated head `21b6e4149d67753af3c7d6289af9147d631a8e06` as `9c55ca1a99f31636574e7802f0b879aa5d59e06a`. All three exact-head TVC checks passed before merge. Triggered hygiene run `35667376242` then completed SUCCESS on merged main using shared classifier `3928394653f3be42e58bb0e791b56956de3506d4`: 427 branches inspected, 162 structural retirement candidates, **20 approved-retirement-ready**, **0 invalid approvals**, 261 review-required, and 4 protected/retained. Artifact `10669284230`, digest `sha256:f3ff932df7a2a4db219ca4c4e06f6eccdacba1d72c8b5918ffa775b218eca969`.
 
 Only the ten newly validated batch-2 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json`. Batch 1 is not routed twice. No ref deletion occurred; repository-native ref-retirement authority must independently revalidate current state before any mutation.
+
+
+### Bounded TVC routing claim release — 2026-09-21
+
+The bounded `HYGIENE-CAUSAL-ROOTS-VALIDATION` TVC owner-clearance/routing claim is released on issue #165 after batch-2 routing evidence was durably recorded. Current session claim state returns to `RELEASED_TO_CANONICAL_CONTROL_PLANE`. No ref deletion authority transferred to the validation lane; `HYGIENE-BRANCH-REF-RETIREMENT` remains authority-owned/fail-closed.
