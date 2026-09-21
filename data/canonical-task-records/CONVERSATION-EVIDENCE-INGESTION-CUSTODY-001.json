@@ -5,7 +5,7 @@
   "root_correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
   "parent_task_id": null,
   "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records custody/reconstruction before any later public Site projection.",
-  "coordination_state": "IN_PROGRESS",
+  "coordination_state": "ACTIVE",
   "source_refs": [
     "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
     "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
@@ -99,8 +99,8 @@
       "--task-id",
       "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
     ],
-    "current_condition": "CANONICAL_WORK_INGRESS_NOW_IMMEDIATELY_INVOKES_EXISTING_TARGETED_WORKERCOORDINATOR; AUTHENTIC_MASTER_RECORDS_CLOSURE_REMAINS_UNOBSERVED",
-    "remediation_path": "CANONICAL_WORK_INGRESS_CLOSURE_TO_EXISTING_TARGETED_WORKERCOORDINATOR_ONE_SHOT_NO_CARRIER_WAIT",
+    "current_condition": "ALREADY_ADMITTED_STATE_TRIGGERED_WORKERCOORDINATOR_SUCCESSOR_READY",
+    "remediation_path": "EXISTING_TASK_REGISTRY_CYCLE_DELEGATES_DIRECTLY_TO_TARGETED_WORKERCOORDINATOR_ONE_SHOT",
     "connected_device_inventory_role": "NONE_PROHIBITED",
     "second_runtime_created": false,
     "second_scheduler_created": false,
@@ -125,7 +125,6 @@
     "reconciliation_ref": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "CANONICAL_WORK_INGRESS_ADMITTED",
     "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
     "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
     "COMPLETION_CLAIMED"
@@ -204,5 +203,6 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
-  }
+  },
+  "checkout_state": "CHECKED_OUT"
 }
