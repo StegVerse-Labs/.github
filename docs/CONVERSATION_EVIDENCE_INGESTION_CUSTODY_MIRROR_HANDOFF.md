@@ -192,3 +192,20 @@ Accordingly no code-path substitute is admissible:
 - no device prerequisite.
 
 Fresh claim/fence, Master Records claim/fence custody, synthetic ingestion, and Site-successor derivation remain false.
+
+
+## Native evidence re-observation — generation 161
+
+The current canonical evidence surfaces were re-observed without modifying runtime/source configuration.
+
+Observed:
+- `control/worker-runtime-state.json` remains historical: `last_cycle_at=2026-08-18T19:47:00Z`, `runtime_tick=2`, `observation_mode=CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION`.
+- `receipts/sovereign-host/runtime-presence.latest.json`: absent.
+- `receipts/sovereign-host/resident-request-dispatch.latest.json`: absent.
+- `receipts/sovereign-host/hb-machine-continuation.latest.json`: absent.
+- `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`: absent.
+- `control/worker-registry.d/healer-sovereign-scheduler-001.json`: present, task remains `HANDOFF_READY`, `claim_id=null`.
+
+Therefore the first missing authentic transition remains exactly `RESIDENT_REQUEST_DISPATCH_VISIT`. No downstream WorkerCoordinator claim/fence, Master Records claim/fence custody, synthetic ingestion, or public Site successor may be inferred or promoted from source state.
+
+No runtime, scheduler, dispatcher, WorkerCoordinator, carrier, custody plane, credential path, device prerequisite, connected-device inventory dependency, or alternate carrier was added or modified.
