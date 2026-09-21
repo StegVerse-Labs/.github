@@ -1,3 +1,6 @@
+
+Canonical Goal Task `SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001` / COSV `71000000111111` is ACTIVE / CHECKED OUT. It repairs the shared StegVerse SDK `run-manifest` result contract so every successful result is bound to the validated canonical ingress manifest, a deterministic generic run-manifest request, and a hash commitment over the unmodified processor result, while preserving completed four-stage evidence. Future Test 3 naming is person-neutral with the retained historical identifier accepted only as a compatibility alias. Canonical handoff: `docs/SDK_RUN_MANIFEST_RESULT_LINEAGE_BINDING_MIRROR_HANDOFF.md`.
+
 # StegVerse
 
 ## Current repository evidence census
