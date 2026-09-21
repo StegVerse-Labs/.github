@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 168,
-  "status": "CANONICAL_MASTER_RECORDS_CONVERSATION_INGESTION_PREDECESSOR_CLOSURE_REPAIRED",
+  "generation": 169,
+  "status": "CANONICAL_MASTER_RECORDS_SDK_POSTCLAIM_TVC_WARRANT_BRIDGE_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5298,7 +5298,20 @@
           35603365104,
           35603365180,
           35603365163
-        ]
+        ],
+        "sdk_purpose_post_claim_tvc_warrant_bridge_defect_identified": true,
+        "sdk_purpose_post_claim_tvc_warrant_bridge_repaired": true,
+        "sdk_purpose_post_claim_tvc_warrant_bridge_pr": 2456,
+        "sdk_purpose_post_claim_tvc_warrant_bridge_merge": "3a9fbee2c0b102884c0721047688905f12f911d2",
+        "sdk_purpose_post_claim_tvc_warrant_bridge_exact_head": "e59888890950b495353d77b82c17faf83a7c2731",
+        "sdk_purpose_post_claim_tvc_warrant_bridge_validation_runs": [
+          35601925845,
+          35601925763,
+          35601925836,
+          35601926185
+        ],
+        "authentic_sdk_assignment_disposition_observed": false,
+        "authentic_sdk_tvc_warrant_issuance_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5545,6 +5558,37 @@
           ],
           "authentic_runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "sdk_purpose_post_claim_tvc_warrant_bridge": {
+          "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+          "defect": "PURPOSE_BOUND_POST_CLAIM_PATH_REQUIRED_PREEXISTING_STEGVERSE_WARRANT_JSON_INSTEAD_OF_INVOKING_EXISTING_TVC_ISSUER_AFTER_CLAIM_FENCE_CLOSURE",
+          "effect": "CANONICAL_CLAIM_FENCE_TO_TV_TVC_SEQUENCE_COULD_NOT_EXECUTE_FROM_THE_EXISTING_TARGETED_PATH_WITHOUT_PREEXISTING_WARRANT_STATE",
+          "pull_request": 2456,
+          "superseded_pull_requests": [
+            2446,
+            2449,
+            2452,
+            2454
+          ],
+          "exact_head": "e59888890950b495353d77b82c17faf83a7c2731",
+          "merge_commit": "3a9fbee2c0b102884c0721047688905f12f911d2",
+          "validation_runs": [
+            35601925845,
+            35601925763,
+            35601925836,
+            35601926185
+          ],
+          "repaired_sequence": [
+            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+            "NONSECRET_TVC_EXECUTION_WARRANT_REQUEST_WRITTEN_FOR_CURRENT_CLAIM_AND_EXACT_STEGAGENTS_COMMIT",
+            "EXISTING_STEGTVC_TV_EXECUTION_WARRANT_ONESHOT_INVOKED",
+            "SECRET_FREE_SIGNED_WARRANT_PUBLIC_KEY_POLICY_TUPLE_VALIDATED",
+            "EXISTING_STEGAGENTS_PURPOSE_BOUND_RUNTIME_INVOKED"
+          ],
+          "authentic_assignment_disposition_observed": false,
+          "authentic_warrant_issuance_observed": false,
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_EXISTING_PATH_SOURCE_REPAIR_ONLY"
         }
       },
       "required_evidence_validation": {
