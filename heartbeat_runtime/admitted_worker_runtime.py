@@ -31,23 +31,21 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
         registry: dict[str, Any],
         task_id_filter: str | None = None,
     ) -> list[str]:
-        """Apply append-only fragments plus a bounded preclaim policy reconciliation.
+        """Apply append-only fragments plus bounded preclaim static reconciliation.
 
-        The inherited fragment loader intentionally never overwrites an existing
-        task row because the live registry may already contain claims, fences,
-        timers, leases, receipts, or worker lifecycle state. That invariant remains
-        unchanged for live/bound tasks.
+        The inherited fragment loader never overwrites existing task/worker IDs.
+        That protects live claims, fences, timing, leases, receipts, and worker
+        lifecycle state. Before any claim exists, an unclaimed HANDOFF_READY task
+        may reconcile only static declarations that would otherwise remain stale
+        forever after source refresh:
 
-        A narrower seam exists for an unclaimed HANDOFF_READY task: if its static
-        fragment and canonical handoff now agree on a newer policy version while
-        the resident registry still carries the older preclaim policy, the stale
-        value would otherwise survive local source refresh forever because the
-        fragment is append-only. Before any claim/fence exists, reconcile only the
-        policy version, only when the existing and fragment handoff refs match and
-        the fragment policy exactly matches the canonical handoff policy.
+        - authorized_policy_version, when fragment and canonical handoff agree;
+        - an already-existing AVAILABLE worker's capabilities/profile, when the
+          worker identity, adapter, executor type, and authority source are
+          unchanged and the fragment satisfies the handoff's required capabilities.
 
-        No claim, fence, worker assignment, timing, lease, credential, execution,
-        or transition authority is created by this reconciliation.
+        No new worker identity, assignment, claim, fence, timing, lease, credential,
+        execution, transition, or custody authority is created here.
         """
         generation_before = int(registry.get("generation", 0))
         applied = super()._apply_registry_fragments(registry, task_id_filter=task_id_filter)
@@ -56,15 +54,22 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             for item in registry.get("tasks", [])
             if isinstance(item, dict) and item.get("task_id")
         }
+        workers = {
+            str(item.get("worker_id")): item
+            for item in registry.get("workers", [])
+            if isinstance(item, dict) and item.get("worker_id")
+        }
         reconciled = False
 
         if not self.registry_fragment_dir.is_dir():
             return applied
 
         for path in sorted(self.registry_fragment_dir.glob("*.json")):
+            fragment_reconciled = False
             fragment = self._load(path)
             if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
                 continue
+            fragment_ref = str(path.relative_to(self.root))
             for declared in fragment.get("tasks", []):
                 if not isinstance(declared, dict):
                     continue
@@ -93,35 +98,84 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
                 fragment_handoff = declared.get("handoff_ref")
                 if not isinstance(current_handoff, str) or current_handoff != fragment_handoff:
                     continue
-                fragment_policy = declared.get("authorized_policy_version")
-                if not isinstance(fragment_policy, str) or not fragment_policy:
-                    continue
-                if current.get("authorized_policy_version") == fragment_policy:
-                    continue
-
                 handoff_path = self.root / current_handoff
                 if not handoff_path.is_file():
-                    raise RuntimeError(f"preclaim policy reconciliation handoff missing for {task_id}")
+                    raise RuntimeError(f"preclaim reconciliation handoff missing for {task_id}")
                 handoff = self._load(handoff_path)
+
+                fragment_policy = declared.get("authorized_policy_version")
                 canonical_policy = str((handoff.get("authority") or {}).get("policy_version") or "")
+                if not isinstance(fragment_policy, str) or not fragment_policy:
+                    continue
                 if not canonical_policy or fragment_policy != canonical_policy:
                     raise RuntimeError(f"preclaim policy reconciliation mismatch for {task_id}")
+                if current.get("authorized_policy_version") != canonical_policy:
+                    old_policy = current.get("authorized_policy_version")
+                    current["authorized_policy_version"] = canonical_policy
+                    current["preclaim_policy_reconciliation"] = {
+                        "state": "RECONCILED_BEFORE_CLAIM",
+                        "old_policy_version": old_policy,
+                        "new_policy_version": canonical_policy,
+                        "fragment_ref": fragment_ref,
+                        "handoff_ref": current_handoff,
+                        "claim_authority_effect": False,
+                        "fence_authority_effect": False,
+                        "execution_authority_effect": False,
+                    }
+                    reconciled = True
+                    fragment_reconciled = True
 
-                old_policy = current.get("authorized_policy_version")
-                current["authorized_policy_version"] = canonical_policy
-                current["preclaim_policy_reconciliation"] = {
-                    "state": "RECONCILED_BEFORE_CLAIM",
-                    "old_policy_version": old_policy,
-                    "new_policy_version": canonical_policy,
-                    "fragment_ref": str(path.relative_to(self.root)),
-                    "handoff_ref": current_handoff,
-                    "claim_authority_effect": False,
-                    "fence_authority_effect": False,
-                    "execution_authority_effect": False,
-                }
-                if str(path.relative_to(self.root)) not in applied:
-                    applied.append(str(path.relative_to(self.root)))
-                reconciled = True
+                required = set((handoff.get("execution") or {}).get("required_capabilities") or [])
+                for declared_worker in fragment.get("workers", []):
+                    if not isinstance(declared_worker, dict):
+                        continue
+                    worker_id = declared_worker.get("worker_id")
+                    if not isinstance(worker_id, str) or not worker_id:
+                        continue
+                    current_worker = workers.get(worker_id)
+                    if not isinstance(current_worker, dict):
+                        continue
+                    if current_worker.get("status") != "AVAILABLE":
+                        continue
+                    if any(
+                        current_worker.get(key) != declared_worker.get(key)
+                        for key in ("adapter_ref", "executor_type", "authority_source")
+                    ):
+                        continue
+                    declared_capabilities = set(declared_worker.get("capabilities") or [])
+                    if not required.issubset(declared_capabilities):
+                        continue
+                    declared_profile = declared_worker.get("capability_profile_ref")
+                    if not isinstance(declared_profile, str) or not declared_profile:
+                        continue
+                    old_capabilities = list(current_worker.get("capabilities") or [])
+                    old_profile = current_worker.get("capability_profile_ref")
+                    new_capabilities = list(declared_worker.get("capabilities") or [])
+                    if old_capabilities == new_capabilities and old_profile == declared_profile:
+                        continue
+                    current_worker["capabilities"] = new_capabilities
+                    current_worker["capability_profile_ref"] = declared_profile
+                    current["preclaim_worker_registration_reconciliation"] = {
+                        "state": "RECONCILED_BEFORE_CLAIM",
+                        "worker_id": worker_id,
+                        "old_capabilities": old_capabilities,
+                        "new_capabilities": new_capabilities,
+                        "old_capability_profile_ref": old_profile,
+                        "new_capability_profile_ref": declared_profile,
+                        "fragment_ref": fragment_ref,
+                        "handoff_ref": current_handoff,
+                        "worker_identity_changed": False,
+                        "adapter_changed": False,
+                        "authority_source_changed": False,
+                        "claim_authority_effect": False,
+                        "fence_authority_effect": False,
+                        "execution_authority_effect": False,
+                    }
+                    reconciled = True
+                    fragment_reconciled = True
+
+                if fragment_reconciled and fragment_ref not in applied:
+                    applied.append(fragment_ref)
 
         if reconciled and int(registry.get("generation", 0)) == generation_before:
             registry["generation"] = generation_before + 1

@@ -5,7 +5,7 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "shwp-single-hb-stegfin-live-entry-v0.3",
+      "authorized_policy_version": "shwp-single-hb-stegfin-live-entry-v0.6",
       "block_ref": "handoffs/STEGFIN-LIVE-ENTRY-003.json#constraint",
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/stegfin-live-entry-observation.json",
