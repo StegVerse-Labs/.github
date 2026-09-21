@@ -276,3 +276,8 @@ This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, Master
 ### Validation ceiling
 
 These branch changes establish a source contract and canonicalization candidate only. They do not prove a runtime-created HB/Master Records checkpoint, an OpenTimestamps submission, Bitcoin confirmation, or inherited external temporal bound. Those remain successor evidence predicates.
+
+
+## PR #2378 validation repair
+
+Initial Cross-Task Coordination validation exposed one deterministic registration defect: the new runtime-capable canonical task record lacked the required `execution_substrate_resolution`. The task is source-contract-only at this stage, so all canonical substrate candidates are explicitly classified `NOT_APPLICABLE / SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION`, no substrate is selected, no external device is required, and authority effect remains `NONE`. The task record and generation-150 registry copy were repaired in place; no runtime path was added.
