@@ -268,3 +268,22 @@ Exact-head validation on `4bb4964d7135af4472543975690effba0b75514d`:
 The regression suite now proves an unreconstructable predecessor cannot call `submit_state_receipt` for a successor Functional Memory transition, cannot advance sequence, and cannot mint worker/claim/fence consequences. Pointer recovery is accepted only from the existing canonical Master Records query/reconstruction path after contiguous sequence and predecessor-digest-chain validation.
 
 This merge is source/contract validation. It does not claim that an authentic runtime Functional Memory predecessor or successor transition executed.
+
+
+## Functional Memory authentic-path first failure — 2026-09-21
+
+Canonical Task Registry had advanced to generation 150 before this continuation. No Functional Memory runtime result was inferred from the earlier source/CI repair.
+
+The only current unclaimed `HANDOFF_READY` task on the generic WorkerCoordinator seam is `STEGFIN-LIVE-ENTRY-003`. Its retained resident evidence records the first authentic pre-assignment failure:
+
+```text
+activation_requested
+-> activation_deferred
+reason=EXECUTOR_NOT_RESOLVED
+```
+
+Source reconciliation showed the concrete cause. The mutable/monolithic WorkerCoordinator registry retained `stegfin-live-entry-inventory-worker` with only `runtime_observation` and `bounded_repository_mutation`, while the current executable handoff requires those capabilities plus `stegfin_live_entry_inventory_observation`. The repository fragment already carried the third capability, but the existing fragment loader is intentionally append-only and therefore did not update an already-present worker row. The same fragment also retained policy `shwp-single-hb-stegfin-live-entry-v0.3` while the canonical handoff is `v0.6`.
+
+The bounded repair extends the already-existing unclaimed-`HANDOFF_READY` preclaim reconciliation seam. It may update only an already-existing `AVAILABLE` worker when worker ID, adapter, executor type, and authority source are unchanged, and only when the fragment capabilities satisfy the current handoff. It changes only static capabilities/profile metadata and grants no worker identity, assignment, claim, fence, timing, lease, credential, execution, transition, or custody authority. Claimed/timed tasks remain immutable to this reconciliation.
+
+This repair addresses only the first concrete existing-path failure before the Functional Memory assignment seam. It does not claim that a fresh resident assignment disposition has yet occurred.
