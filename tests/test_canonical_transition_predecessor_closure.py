@@ -104,7 +104,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
             "reconstructed_receipt_sha256": "c" * 64,
         }
         with patch(
-            "workers.canonical_state_transition_custody.submit_state_receipt",
+            "canonical_state_transition_custody_under_test.submit_state_receipt",
             return_value=incomplete,
         ):
             with self.assertRaisesRegex(RuntimeError, "canonical_master_records_custody_not_returned"):
@@ -119,7 +119,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
     def test_resulting_domain_state_never_replaces_canonical_closure_dependency(self) -> None:
         custody = CanonicalTransitionCustody("subject-3")
         with patch(
-            "workers.canonical_state_transition_custody.submit_state_receipt",
+            "canonical_state_transition_custody_under_test.submit_state_receipt",
             side_effect=[
                 recorded("d" * 64, master_record_ref="master-record:d"),
                 recorded("e" * 64, master_record_ref="master-record:e"),
