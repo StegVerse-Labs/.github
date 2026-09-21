@@ -515,14 +515,46 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
 
 
 class CanonicalTransitionCustody:
-    """Sequence-aware helper used by governed transition consumers."""
+    """Sequence-aware helper used by governed transition consumers.
+
+    The immediately preceding canonical Master Records closure is the predecessor
+    state for every successor recorded through this helper. Domain/result hashes
+    remain transition evidence; they do not replace the custody closure as the
+    progression dependency.
+    """
     def __init__(self, subject_or_correlation_id: str) -> None:
         if not subject_or_correlation_id:
             raise ValueError("subject_or_correlation_id_required")
         self.subject = subject_or_correlation_id
         self.sequence = 0
         self.last_state_ref: str | None = None
+        self.last_master_records_closure: dict[str, Any] | None = None
         self.records: list[dict[str, Any]] = []
+
+    @staticmethod
+    def _closure_complete(result: Mapping[str, Any]) -> bool:
+        return (
+            result.get("state") == "RECORDED"
+            and result.get("reconstruction_status") == "PASS"
+            and result.get("required_evidence_validation_status") == "PASS"
+            and isinstance(result.get("receipt_sha256"), str)
+            and bool(result.get("receipt_sha256"))
+            and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
+        )
+
+    def _predecessor_required_evidence(self, transition_id: str) -> list[dict[str, Any]]:
+        closure = self.last_master_records_closure
+        if closure is None:
+            return []
+        content = dict(closure)
+        return [{
+            "evidence_id": f"predecessor-master-records-closure:{self.sequence}",
+            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "origin_transition_id": transition_id,
+            "encoding": "canonical-json",
+            "sha256": sha256_uri(content).split(":", 1)[1],
+            "content": content,
+        }]
 
     def record(
         self,
@@ -536,6 +568,8 @@ class CanonicalTransitionCustody:
         require_return: bool = True,
     ) -> dict[str, Any]:
         self.sequence += 1
+        required_evidence = self._predecessor_required_evidence(transition_id)
+        required_evidence.extend(dict(item) for item in (required_evidence_manifest or []))
         receipt = build_state_receipt(
             transition_id=transition_id,
             transition_sequence=self.sequence,
@@ -545,15 +579,27 @@ class CanonicalTransitionCustody:
             resulting_state_ref_or_hash=resulting_state_ref_or_hash,
             governance_decision_ref_where_applicable=governance_decision_ref,
             transition_evidence=evidence,
-            required_evidence_manifest=required_evidence_manifest,
+            required_evidence_manifest=required_evidence,
         )
         result = submit_state_receipt(receipt)
         row = {"receipt":receipt, "master_records":result}
         self.records.append(row)
-        if require_return and result.get("state") != "RECORDED":
+        complete = self._closure_complete(result)
+        if require_return and not complete:
             raise RuntimeError(str(result.get("reason") or "canonical_master_records_custody_not_returned"))
-        if result.get("state") == "RECORDED":
-            self.last_state_ref = resulting_state_ref_or_hash or sha256_uri(receipt)
+        if complete:
+            receipt_sha256 = str(result["receipt_sha256"])
+            self.last_state_ref = f"sha256:{receipt_sha256}"
+            self.last_master_records_closure = {
+                "transition_id": transition_id,
+                "state": "RECORDED",
+                "reconstruction_status": "PASS",
+                "required_evidence_validation_status": "PASS",
+                "receipt_sha256": receipt_sha256,
+                "reconstructed_receipt_sha256": receipt_sha256,
+                "master_record_ref": result.get("master_record_ref"),
+                "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+            }
         return row
 
 
