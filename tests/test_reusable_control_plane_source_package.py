@@ -5,6 +5,8 @@ import json
 import os
 import tempfile
 import unittest
+
+from workers import hil_intr_profiled_ingress as ingress
 from pathlib import Path
 from unittest import mock
 
@@ -36,7 +38,7 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
         paths = {row["path"] for row in package["manifest"]["files"]}
         self.assertIn("scripts/build_control_plane_source_package_reusable.py", paths)
         self.assertIn("source-bundles/reusable-task-registry.d/RT-CONTROL-PLANE-SOURCE-PACKAGE-001.json", paths)
-        self.assertLessEqual(len(rendered), 512 * 1024)
+        self.assertLessEqual(len(rendered), ingress.SOURCE_PACKAGE_MAX_BYTES)
         self.assertFalse(package["credential_material_included"])
         self.assertEqual(package["authority_effect"], "NONE_SOURCE_TRANSPORT_ONLY")
 
