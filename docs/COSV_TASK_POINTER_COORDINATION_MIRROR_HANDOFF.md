@@ -268,3 +268,27 @@ Exact-head validation on `4bb4964d7135af4472543975690effba0b75514d`:
 The regression suite now proves an unreconstructable predecessor cannot call `submit_state_receipt` for a successor Functional Memory transition, cannot advance sequence, and cannot mint worker/claim/fence consequences. Pointer recovery is accepted only from the existing canonical Master Records query/reconstruction path after contiguous sequence and predecessor-digest-chain validation.
 
 This merge is source/contract validation. It does not claim that an authentic runtime Functional Memory predecessor or successor transition executed.
+
+## Targeted Master Records custody-carriage reconciliation — 2026-09-21
+
+The previously identified transport-carriage defect in `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` is no longer open.
+
+PR `#2363` merged the bounded repair as:
+
+```text
+7574e0dd3ab61f5d25ddaf9cd2ee3284cca558df
+```
+
+Focused workflow run `35536016433` passed, including the exact `Validate targeted Master Records custody carriage` step.
+
+The sanitized targeted child environment now preserves only the existing canonical Master Records custody bindings needed by the already-implemented transports:
+
+- HTTP: `STEGVERSE_MASTER_RECORDS_ENDPOINT`, `STEGVERSE_MASTER_RECORDS_TOKEN`, `STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS`;
+- durable local binding: `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`.
+
+Existing Master Records source-root discovery remains unchanged. GitHub/provider credentials remain stripped, TV/TVC remains credential authority, and no endpoint, token source, database, custody store, runtime, scheduler, dispatcher, WorkerCoordinator, or authority plane was added.
+
+This closes the deterministic source-carriage defect only. It does not by itself claim an authentic resident `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` Functional Memory transition or production Master Records closure.
+
+At this goal's prompt-20 boundary, further authentic custody/runtime progression belongs to the already-canonical `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` lane and its handoff `docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md`. Do not re-open or duplicate the merged carriage repair.
+
