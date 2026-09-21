@@ -4,13 +4,33 @@ Status: ACTIVE / CHECKED_OUT
 Goal Task ID: `HF-PUBLIC-PRECURSOR-REPLAY-001`
 COSV task.v1: `40000100100001`
 Repository: `StegVerse-Labs/.github`
-Integration PR: `StegVerse-Labs/.github#2039`
-Site projection PR: `StegVerse-Labs/Site#1371`
+Canonical Task Registry generation reviewed: `150`
+Merged integration PR: `StegVerse-Labs/.github#2039`
+Merged Site projection PR: `StegVerse-Labs/Site#1371`
 
 ## Parent project and public surface
 This experiment is the historical-evidence/acceptance sub-lane of the existing `StegVerse-Labs/Site` NVIDIA–Hugging Face living-analysis/public-display project. It is not a standalone public product. The parent public-analysis contract remains `StegVerse-Labs/Site/docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md`; `hugging-face.html`, `hugging-face-analysis.html`, and the existing canonical living-analysis data remain the public surfaces.
 
 Accepted replay evidence may be shown only as a separate cross-cutting historical-security observation dimension on the existing living-analysis surface. It MUST NOT rewrite `B0_PRE_ACQUISITION_HF`, immutable `T0`, or create/infer a post-B0 acquisition-impact trajectory coordinate.
+
+## Runtime / authority review — 2026-09-21
+Current canonical Task Registry generation `150` was re-read before this reconciliation.
+
+The current Task Registry and Canonical Work documentation establish the following authority separation:
+
+- Task Registry = work intent, obligations, dependency/adjacency, coordination state, collision sorting, and execution-substrate review only.
+- WorkerCoordinator = executable assignment, claim, fence, and lease ownership.
+- Interlock/InTr = governed ingress/egress and transition/admission authority.
+- Master Records = observed reality, durable custody, reconstruction, and retained transition evidence.
+- TV/TVC = credential authority.
+- Heartbeat = observability/freshness only.
+- GitHub Actions / repository source = validation and evidence transport only; `github_runtime_authority=NONE`.
+
+Source, merge, CI, deployment, heartbeat progression, handoff text, public-route bytes, request-file presence, runtime-profile compatibility, or Task Registry substrate selection do not by themselves prove authentic runtime execution or task completion.
+
+This task's canonical record explicitly classifies every runtime execution substrate as `NOT_APPLICABLE`, selects no substrate, sets `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`. Its allowed work is current-session GitHub/public-web evidence reconstruction and Site projection. Therefore no resident Node, device, WorkerCoordinator runtime claim/fence, Interlock/InTr execution admission, or Master Records runtime receipt is a completion prerequisite for this historical-research task unless a later canonical transition changes that record.
+
+The Site post-merge public-byte check is publication/projection evidence only. Even when observed, it must not be described as runtime execution proof.
 
 ## Governing replay rule
 Later disclosure may annotate earlier evidence but may never rewrite the observer-state available at the historical cutoff. Public committed capability is not equivalent to successful runtime effect. Attribution remains `UNKNOWN` when the historical public evidence does not establish the controller. Redacted or unpublished identities MUST NOT be guessed.
@@ -37,20 +57,39 @@ Recovered July classifications:
 
 Canonical ledger: `experiments/hf-public-precursor-replay/historical-observation-ledger.v1.json`.
 
-## Site projection
-Site branch `hf-historical-security-observation` / PR `StegVerse-Labs/Site#1371` now stages the accepted evidence on the existing `hugging-face-analysis.html` surface and adds `data/hugging-face-historical-security-observations.json`. It creates no second dashboard/product and no acquisition-impact coordinate. The required active Site pre-work claim is `SITE-HF-HISTORICAL-SECURITY-OBSERVATION-1371-20260917`.
-
-## Validation state
+## Canonicalization state
 ### `.github#2039`
-Current replay head before this handoff update was `36d7cc6f96a982b4281608dacac9fe293a00578c`:
-- deterministic repository suite: PASS
-- Heartbeat validation: PASS
-- organization-control validation: blocked by current-main workflow-hygiene drift unrelated to this task: `.github/workflows/ephemeral-execution-surface-discovery.yml` exists on canonical main but is not registered by the workflow-surface hygiene contract.
+PR #2039 is already merged. GitHub reports merge commit `1041c86bdde35727eeb21ff64b4c814d08dc6c7f`.
 
-The offending workflow came from current-main execution-surface discovery commits ending in `9192cdb7b8d02634ae754091aa5e6378b84120dd`; it was not introduced by PR #2039. Do not repair or reinterpret that separate execution-surface work inside this Hugging Face evidence task without its own ownership reconciliation.
+The prior workflow-hygiene collision is also resolved outside this task. Current `control/workflow-surface-registry.json` explicitly registers `.github/workflows/ephemeral-execution-surface-discovery.yml` as a source-only standalone exception owned by `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001 / .github#2060`, with no GitHub runtime authority. The owning parent task has since been retired/decomposed at its prompt limit, with remaining SV002 corpus work transferred to its canonical successor. No Hugging Face mutation is required for that resolved collision.
 
 ### `Site#1371`
-The NVIDIA/Hugging Face publication verifier passed on the initial projection head. Site handoff/bootstrap/heartbeat initially failed because the projection branch had no active pre-work claim. The required branch-mapped claim has now been added; exact-head validation must be re-observed after that repair.
+Site PR #1371 is merged at `d830e42ee53c1b43dd29d677fd995b1c102280bc`. Canonical Site main contains:
+- `hugging-face-analysis.html`
+- `data/hugging-face-historical-security-observations.json`
+- `docs/HF_HISTORICAL_SECURITY_OBSERVATION_PROJECTION.md`
+- the Site projection claim for this task.
+
+The merged data preserves:
+- earliest defensible public state change `2026-05-13T11:05:13Z`;
+- `STATE_CHANGED_REVIEW_REQUIRED`;
+- historical `UNKNOWN` attribution where appropriate;
+- committed capability separate from proven runtime effect;
+- redacted/unpublished July object identities;
+- `b0_t0_effect=NONE`;
+- `trajectory_coordinate_effect=NONE_WITHHELD`.
+
+## Independent public observation state
+A fresh independent public-web check was attempted on 2026-09-21.
+
+The public web surface `stegverse.org` is reachable and indexed generally, but the independent web observer did not retrieve `/hugging-face-analysis.html` or `/data/hugging-face-historical-security-observations.json` as accessible exact route/data responses in this session. Search also did not surface the exact historical-security record text.
+
+Therefore:
+- merged repository bytes are proven;
+- Site source projection is proven;
+- independent exact public served-byte observation for this new projection is NOT OBSERVED;
+- the Site projection claim MUST remain nonterminal until that exact public observation exists;
+- absence of public observation is not runtime failure and does not trigger a runtime substrate/device requirement.
 
 ## Current findings
 - earliest defensible public state change: `2026-05-13T11:05:13Z`
@@ -63,6 +102,11 @@ The NVIDIA/Hugging Face publication verifier passed on the initial projection he
 - single existing public surface: PRESERVED
 - parent B0/T0 effect: NONE
 - acquisition-impact trajectory-coordinate effect: NONE / WITHHELD
+- `.github#2039`: MERGED
+- prior workflow-surface hygiene collision: RESOLVED BY OWNER
+- Site #1371: MERGED
+- exact independent public projection bytes: NOT OBSERVED
+- runtime execution proof required by this task: NO / NOT APPLICABLE
 
 ## Next execution
-Revalidate Site PR #1371 at the claim-repaired exact head and reconcile any remaining local validation defects. Reconcile `.github#2039` only against changes owned by this task; treat the unrelated current-main workflow-hygiene defect as an external collision until its owner repairs or canonicalizes registration. Once both relevant lanes are admissible, canonicalize with expected-head protection, observe the existing public Hugging Face living-analysis route, and terminalize the Site projection claim without altering B0/T0 or creating a trajectory coordinate.
+Continue only with independent observation of the already-merged existing public Hugging Face analysis route and its historical-security JSON bytes. Terminalize the Site projection claim only if those exact served bytes are authentically observed and preserve B0/T0 plus the no-trajectory-coordinate boundary. Do not create a runtime, Node/device dependency, WorkerCoordinator execution claim, Interlock/InTr execution transition, or Master Records runtime receipt for this research-only task merely because public propagation evidence is absent. If the exact public projection becomes observable, reconcile the Site claim and this handoff to terminal publication state without rewriting the historical ledger.
