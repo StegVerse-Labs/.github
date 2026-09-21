@@ -286,3 +286,25 @@ def test_workercoordinator_does_not_project_purpose_task_active_before_governed_
     assert 'task_active_projected_before_governed_activation=False' in purpose_body
     assert 'task.update({\n                "state": "ACTIVE",' not in purpose_body
 
+
+
+def test_purpose_bound_worker_cost_basis_resolves_existing_expiry_gate():
+    from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator
+    from heartbeat_runtime.adapters import load_adapters
+
+    purpose = json.loads(PURPOSE_FRAGMENT.read_text(encoding="utf-8"))
+    task = purpose["tasks"][0]
+    cost_path = ROOT / task["cost_basis_ref"]
+    assert cost_path.is_file()
+
+    cost = json.loads(cost_path.read_text(encoding="utf-8"))
+    handoff = json.loads(PURPOSE_HANDOFF.read_text(encoding="utf-8"))
+    assert cost["schema"] == "stegverse.worker-runtime-cost-basis/v0.1"
+    assert cost["task_class"] == "stegagents_governed_runtime"
+    assert cost["hb_estimate"]["expiry_candidate_beats"] == handoff["execution"]["runtime_window_beats"] == 4096
+    assert cost["hb_estimate"]["confidence"] != "NONE"
+
+    runtime = WorkerCoordinator(ROOT, adapters=load_adapters(ROOT))
+    budget, basis = runtime._expiry_budget(task)
+    assert budget == 4096
+    assert basis == "TASK_CLASS_COST_BASIS"
