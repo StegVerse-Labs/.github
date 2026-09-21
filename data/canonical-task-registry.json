@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 176,
-  "status": "SDK_PUBLIC_DEVELOPER_WIKI_ACTIVE_TLS_PROVISIONING",
+  "generation": 177,
+  "status": "SDK_PUBLIC_DEVELOPER_WIKI_ACTIVE_PUBLIC_SUBRESOURCE_OBSERVATION_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8731,7 +8731,10 @@
         "StegVerse-org/StegVerse-SDK canonical ingress schema and external-framework example",
         "StegVerse-org/StegVerse-SDK#300 merged e454dfa9042884939a0e6cde3c15a2fd2e386be5",
         "StegVerse-org/StegVerse-SDK Publish SDK Developer Wiki main run success",
-        "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested"
+        "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested",
+        "user-supplied GitHub Pages evidence: https://sdk.stegverse.org/ live; DNS check successful; Enforce HTTPS enabled",
+        "StegVerse-Labs/Site#1446 merged 110de303b9f88922c926c4a75dbabcc86630d42e",
+        "StegVerse-Labs/Site post-merge Pages run 35637977873 SUCCESS"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTRATION_MERGED",

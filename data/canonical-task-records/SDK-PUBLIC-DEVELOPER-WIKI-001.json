@@ -52,7 +52,10 @@
     "StegVerse-org/StegVerse-SDK canonical ingress schema and external-framework example",
     "StegVerse-org/StegVerse-SDK#300 merged e454dfa9042884939a0e6cde3c15a2fd2e386be5",
     "StegVerse-org/StegVerse-SDK Publish SDK Developer Wiki main run success",
-    "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested"
+    "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested",
+    "user-supplied GitHub Pages evidence: https://sdk.stegverse.org/ live; DNS check successful; Enforce HTTPS enabled",
+    "StegVerse-Labs/Site#1446 merged 110de303b9f88922c926c4a75dbabcc86630d42e",
+    "StegVerse-Labs/Site post-merge Pages run 35637977873 SUCCESS"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
