@@ -1179,3 +1179,8 @@ The HB receipt path now distinguishes source readiness from native execution. Th
 ## Governed wiki publication transition
 
 `GOVERNED-WIKI-PUBLICATION-TRANSITION-001` closes the gap between reviewed wiki-publication candidates and repository mutation. It reuses the existing SDK external-manifest runtime, Interlock/InTr, canonical Master Records closure, and publication mutation adapter. Direct submitter repository writes remain prohibited, and no new runtime, custody store, publisher, or authority plane is created.
+
+
+## Wave-1 repository hygiene propagation — 2026-09-21
+
+`HYGIENE-CAUSAL-ROOTS-001` now has hosted-successful reusable inventory consumers in TVC, LLM-adapter, TV, master-records/orchestration, and micro-node-runtime. The five runs inspected 1,100 branches and identified 280 retirement candidates requiring owner clearance, but zero candidates had repository-local retirement approval, so zero refs were routed for deletion. Canonical routing evidence is `control/repository-hygiene-wave1-routing-20260921.json`; actual ref retirement remains separately authority-owned.
