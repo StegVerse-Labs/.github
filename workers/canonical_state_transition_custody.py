@@ -19,11 +19,14 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
+
+from heartbeat_runtime.independent_oscillator import current_reference, unix_ns_to_iso8601
 
 RECEIPT_SCHEMA = "stegverse.canonical-state-transition-receipt/v1"
 SUBMISSION_SCHEMA = "stegverse.master-records.state-transition-submission/v1"
@@ -40,6 +43,27 @@ def sha256_uri(value: Any) -> str:
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def heartbeat_stamp_at_creation() -> dict[str, Any]:
+    """Sample the canonical HB reference when a receipt is created.
+
+    This is correlation/evidence only. It grants no execution, transition,
+    credential, routing, custody, publication, or governance authority.
+    """
+    sampled_ns = time.time_ns()
+    reference = current_reference(now_ns=sampled_ns)
+    return {
+        "schema": "stegverse.receipt-heartbeat-stamp/v1",
+        "stage": "CREATION",
+        "heartbeat_id": reference["heartbeat_id"],
+        "heartbeat_epoch": reference["epoch"],
+        "heartbeat_generation": reference["generation"],
+        "reference_frame": f"heartbeat_epoch:{reference['epoch']}",
+        "observed_at": unix_ns_to_iso8601(sampled_ns),
+        "heartbeat_grants_authority": False,
+        "authority_effect": "NONE_OBSERVATION_ONLY",
+    }
 
 
 def build_state_receipt(
@@ -84,6 +108,7 @@ def build_state_receipt(
         "transition_evidence": dict(transition_evidence),
         "required_evidence_manifest": manifest,
         "recorded_at": recorded_at or now(),
+        "hb_at_creation": heartbeat_stamp_at_creation(),
         "transition_outcome": transition_outcome,
         "authority_effect": "NONE_STATE_RECEIPT_ONLY",
         "proof_scope": proof_scope,
