@@ -89,6 +89,7 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
             self.assertTrue((runtime / "control/worker-registry.json").is_file())
             self.assertTrue((runtime / "heartbeat_runtime/engine_v13.py").is_file())
             self.assertTrue((runtime / "scripts/dispatch_resident_execution_requests.py").is_file())
+            self.assertTrue((runtime / "scripts/consume_ecosystem_receipt_hb_checkpoint.py").is_file())
             self.assertTrue((runtime / "scripts/repair_resident_worker_presence.py").is_file())
             self.assertTrue((runtime / "state_language/reconcile.py").is_file())
             self.assertTrue((runtime / "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json").is_file())
@@ -121,9 +122,38 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
             "scripts/cosv_state_packet.py",
             "scripts/project_worker_control_plane_from_carrier.py",
             "scripts/verify_iphone_heartbeat_transition_receipt.py",
+            "scripts/consume_ecosystem_receipt_hb_checkpoint.py",
         ):
             self.assertIn(rel, mod.COPY_FILES)
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_worker_service_preserves_canonical_master_records_custody_bindings() -> None:
+    required = {
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+        "STEGVERSE_MASTER_RECORDS_TOKEN",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+        "MASTER_RECORDS_DB",
+        "MASTER_RECORDS_RECEIPT_KEY",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+    }
+    assert required.issubset(set(mod.WORKER_SAFE_LOCAL_BINDINGS))
+    rendered = mod.materialize_service(
+        ROOT,
+        system="linux",
+        env={
+            "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+            "STEGVERSE_MASTER_RECORDS_TOKEN": "canonical-mr-token",
+            "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "10",
+            "MASTER_RECORDS_DB": "/var/lib/stegverse/master-records/master-records.db",
+            "MASTER_RECORDS_RECEIPT_KEY": "canonical-local-receipt-key",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+        },
+    )
+    worker_path = Path(rendered["worker_registration_path"])
+    content = worker_path.read_text(encoding="utf-8")
+    for key in required:
+        assert f"Environment={key}=" in content

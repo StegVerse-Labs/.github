@@ -114,6 +114,12 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
                 "STEGVERSE_TV_ROOT": "/srv/stegverse/TV",
                 "STEGVERSE_STEGINDEX_SOURCE_ROOT": "/srv/stegverse/StegIndex",
                 "STEGVERSE_MASTER_RECORDS_ROOT": "/srv/stegverse/master-records",
+                "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+                "STEGVERSE_MASTER_RECORDS_TOKEN": "canonical-mr-token",
+                "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "10",
+                "MASTER_RECORDS_DB": "/var/lib/stegverse/master-records/master-records.db",
+                "MASTER_RECORDS_RECEIPT_KEY": "canonical-local-receipt-key",
+                "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
                 "GITHUB_TOKEN": "must-not-propagate",
             }
             with mock.patch.dict(os.environ, values, clear=True):
@@ -122,6 +128,8 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             self.assertEqual(env["STEGVERSE_TV_ROOT"], values["STEGVERSE_TV_ROOT"])
             self.assertEqual(env["STEGVERSE_STEGINDEX_SOURCE_ROOT"], values["STEGVERSE_STEGINDEX_SOURCE_ROOT"])
             self.assertEqual(env["STEGVERSE_MASTER_RECORDS_ROOT"], values["STEGVERSE_MASTER_RECORDS_ROOT"])
+            for key in repair.CANONICAL_CUSTODY_ENV:
+                self.assertEqual(env[key], values[key])
             self.assertNotIn("GITHUB_TOKEN", env)
             self.assertEqual(env["STEGVERSE_HEARTBEAT_ROOT"], str(root.resolve()))
 

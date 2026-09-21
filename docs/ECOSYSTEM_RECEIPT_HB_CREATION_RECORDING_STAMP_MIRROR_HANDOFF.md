@@ -391,3 +391,44 @@ The merged source now guarantees that the next native resident dispatch can do e
 2. return `AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED` only after the exact retained receipt reconstructs with both creation/recording HB references, required-evidence PASS, exact receipt/reconstruction digest equality, exact recording identity, stable successor ordinal 1, deterministic Master Records range root, and the derived HB checkpoint commitment.
 
 No authentic runtime checkpoint receipt was observed from this session. No Node/KV witness edge, external anchor state, or external temporal-bound inheritance was advanced.
+
+
+## Deterministic post-update execution trace — generation 164
+
+The post-HB source merge was traced from the actual native execution predecessor instead of waiting for a receipt to appear.
+
+Current retained native state proves the expected post-update transition did not execute on a fresh resident cycle:
+
+- `control/heartbeat-carrier-runtime-state.json` remains historical at `last_cycle_at=2026-08-18T19:47:00Z`;
+- `control/worker-runtime-state.json` remains historical at the same time, `runtime_tick=2`, `observation_mode=CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION`;
+- no retained post-update `resident-request-dispatch.latest.json` exists in canonical evidence;
+- therefore there is no basis to claim that any post-update resident transition reached `build_state_receipt(...)`.
+
+Tracing the existing restart path exposed the first deterministic execution defect that would block the canonical receipt immediately after WorkerCoordinator restoration:
+
+```text
+live carrier
+-> repair_resident_worker_presence.ensure_worker_presence(...)
+-> subprocess.Popen(run_worker_runtime.py --continuous)
+-> repair_resident_worker_presence._clean_env(...)
+-> WorkerCoordinator transition
+-> build_state_receipt(...)
+-> submit_state_receipt(...)
+```
+
+`_clean_env(...)` omitted the canonical Master Records HTTP and durable-local custody bindings and then generically stripped names containing `TOKEN` / `KEY`. The direct resident worker service installer had the same omission in `WORKER_SAFE_LOCAL_BINDINGS`. A restored worker could therefore become task-capable and create the new HB-stamped receipt, but `submit_state_receipt(...)` would have neither supported canonical custody transport.
+
+The repair preserves only the already-existing canonical custody variables through both existing worker launch surfaces:
+
+- `STEGVERSE_MASTER_RECORDS_ENDPOINT`
+- `STEGVERSE_MASTER_RECORDS_TOKEN`
+- `STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS`
+- `MASTER_RECORDS_DB`
+- `MASTER_RECORDS_RECEIPT_KEY`
+- `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`
+
+Generic provider credentials remain stripped. No new runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential source, or authority plane is introduced.
+
+The native installer is also brought to parity with the already-merged resident source-refresh set by materializing `scripts/consume_ecosystem_receipt_hb_checkpoint.py`; otherwise a clean resident materialization could contain the dispatcher selector but not its consumer.
+
+This repair does not assert that the resident process has restarted or that a transition has occurred. The next factual question is: did the existing carrier/worker process execute after this repair, and if so what exact transition result did it produce?
