@@ -714,3 +714,8 @@ scripts/repository_hygiene_inventory.py
 The reusable workflow runs with `permissions: {}`, performs anonymous repository fetches, classifies every branch by protection, ahead/behind ancestry, age, and exact branch-name references on the default branch, and uploads non-authorizing evidence. It never deletes refs, closes PRs/issues, or treats age/name as deletion authority. An optional repository-local approved-retirement manifest is validation input only; entries fail closed unless they are still current retirement candidates. Actual ref mutation remains owned by `HYGIENE-BRANCH-REF-RETIREMENT`.
 
 StegHealth is the intended first adopter. No product/runtime authority is created by this reusable surface.
+
+
+### Private-repository source transport repair — 2026-09-21
+
+The first StegHealth hosted inventory run `35633357556` failed at caller checkout because StegHealth is private and the initial reusable workflow intentionally attempted anonymous source fetch. The shared surface is repaired at commit `8c1378c7daf3a9f56e35cca71239da9ac96790d8` to use only GitHub's ephemeral read-only caller source access with `contents: read` and `persist-credentials: false`; the credential is not retained and grants no content/ref mutation, PR/issue mutation, runtime, TV/TVC, or retirement authority. The classifier and shared-control fetch remain non-authorizing, and actual ref retirement remains separately authority-owned.
