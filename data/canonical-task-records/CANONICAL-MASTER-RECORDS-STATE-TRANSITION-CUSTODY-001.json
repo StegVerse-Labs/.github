@@ -131,7 +131,7 @@
     "site_browser_heartbeat_run": 35415040363,
     "site_browser_bootstrap_run": 35415040385,
     "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-    "next_transition_under_evidence_trace": "TRACE_DIRECT_MACHINE_OWNED_SUCCESSOR_CALLERS_THAT_BYPASS_CANONICALTRANSITIONCUSTODY_AND_REPAIR_ONLY_FIRST_GENERIC_BYPASS",
+    "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
     "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
     "mir_governed_round_trip_complete_required_evidence_pr": 1411,
     "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -214,7 +214,21 @@
       "reconstruction_status=PASS",
       "required_evidence_validation_status=PASS",
       "receipt_sha256==reconstructed_receipt_sha256"
-    ]
+    ],
+    "direct_caller_predecessor_bypass_identified": true,
+    "direct_caller_predecessor_bypass_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "direct_caller_predecessor_bypass_repaired": true,
+    "direct_caller_predecessor_bypass_pr": 2441,
+    "direct_caller_predecessor_bypass_merge": "32bdae7ce39fe76a345fcfd1c5383b968dcf7dbb",
+    "direct_caller_predecessor_bypass_exact_head": "891ea5065edd21db2effcd7024499e43b7aa1c95",
+    "direct_caller_predecessor_bypass_validation_runs": [
+      35600612937,
+      35600612845,
+      35600612909,
+      35600612989
+    ],
+    "direct_caller_predecessor_source": "FUNCTIONAL_MEMORY_CONTEXT_PRIOR_RECEIPT_SHA256",
+    "direct_caller_legacy_checkpoint_predecessor_removed": true
   },
   "completion": {
     "claimed": false,
@@ -396,6 +410,23 @@
         "DOMAIN_RESULT_HASH_REMAINS_TRANSITION_EVIDENCE_NOT_PROGRESSION_AUTHORITY"
       ],
       "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "direct_workercoordinator_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "pull_request": 2441,
+      "superseded_pull_request": 2439,
+      "exact_head": "891ea5065edd21db2effcd7024499e43b7aa1c95",
+      "merge_commit": "32bdae7ce39fe76a345fcfd1c5383b968dcf7dbb",
+      "validation_runs": [
+        35600612937,
+        35600612845,
+        35600612909,
+        35600612989
+      ],
+      "predecessor_contract": "RECONSTRUCT_PRIOR_FUNCTIONAL_MEMORY_MASTER_RECORDS_RECEIPT_THEN_BIND_AS_PRIOR_STATE_AND_REQUIRED_EVIDENCE",
+      "legacy_prior_state_source_removed": "task.last_checkpoint_ref",
       "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
     }
   },
