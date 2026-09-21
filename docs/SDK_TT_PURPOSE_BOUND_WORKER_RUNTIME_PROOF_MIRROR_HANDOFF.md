@@ -598,3 +598,14 @@ Source/integration closure completed in this terminal prompt:
 The source graph and shared ingress are therefore closed. Authentic completion remains false. The successor must execute the exact Test 1 manifest lineage through the existing resident `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` + `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` path and require, in order, `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, `TV_TVC_WARRANT_POLICY_VERIFIED`, `STEGCORE_INTR_MATERIALIZATION_ADMITTED`, and all four purpose-bound lifecycle transitions, with a Master Records closure after every transition satisfying RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality. Completion additionally requires replay PASS, reconstruction PASS, records-only terminal state, `continued_authority=false`, and a manifest receipt bound to the exact original manifest lineage.
 
 Successor handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
+
+
+## Preserved execution-lineage preclaim repair reconciliation — 2026-09-21
+
+Current canonical generation 151 was re-read before reconciliation. The parent Goal remains `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT`, while the already-bound execution-lineage fragment remains `HANDOFF_READY`.
+
+Tracing the preserved targeted WorkerCoordinator path exposed a deterministic source defect: `_activate_from_trigger()` read `manifest_runtime_request_present` before assigning it, so a claim attempt could fail before `_custody_assignment_transition(...)` and therefore before `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`.
+
+That source defect was concurrently repaired on canonical main by commit `f883d36adb356e44dace09f07109af351aab29a6`. This reconciliation does not duplicate that runtime patch. It adds a focused regression guard requiring manifest-request presence initialization before optional assignment-record consumption and before claim/fence custody.
+
+No authentic `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt for this exact execution lineage is currently retained in Master Records. The next authentic execution transition therefore remains the existing WorkerCoordinator claim/fence boundary.
