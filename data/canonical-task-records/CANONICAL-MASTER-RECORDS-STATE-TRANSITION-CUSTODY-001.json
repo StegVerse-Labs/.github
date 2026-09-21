@@ -250,7 +250,18 @@
       35601926185
     ],
     "authentic_sdk_assignment_disposition_observed": false,
-    "authentic_sdk_tvc_warrant_issuance_observed": false
+    "authentic_sdk_tvc_warrant_issuance_observed": false,
+    "sdk_tvc_resident_caller_bridge_defect_identified": true,
+    "sdk_tvc_resident_caller_bridge_repaired": true,
+    "sdk_tvc_resident_caller_bridge_pr": 452,
+    "sdk_tvc_resident_caller_bridge_merge": "c6ebfcf02296359f8f1791fddab982377f381f7d",
+    "sdk_tvc_resident_caller_bridge_exact_head": "7f3287f739edbae6315defe0cd58ba5228659153",
+    "sdk_tvc_resident_caller_bridge_validation_runs": [
+      35605389527,
+      35605389223,
+      35605389059,
+      35605389187
+    ]
   },
   "completion": {
     "claimed": false,
@@ -504,6 +515,32 @@
       "authentic_warrant_issuance_observed": false,
       "authentic_resident_runtime_execution_claimed": false,
       "authority_effect": "NONE_EXISTING_PATH_SOURCE_REPAIR_ONLY"
+    },
+    "sdk_tvc_resident_caller_bridge": {
+      "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+      "defect": "USER_WORKER_RUNTIME_COULD_NOT_WRITE_TVC_WARRANT_REQUEST_START_ROOT_SYSTEM_ONESHOT_OR_READ_ROOT_0600_SECRET_FREE_RECEIPT",
+      "repository": "StegVerse-Labs/TVC",
+      "pull_request": 452,
+      "exact_head": "7f3287f739edbae6315defe0cd58ba5228659153",
+      "merge_commit": "c6ebfcf02296359f8f1791fddab982377f381f7d",
+      "validation_runs": [
+        35605389527,
+        35605389223,
+        35605389059,
+        35605389187
+      ],
+      "repaired_interface": [
+        "REQUEST_ROOT_0770_ROOT_CALLER_GROUP",
+        "RECEIPT_ROOT_0750_ROOT_CALLER_GROUP",
+        "SYSTEM_ONESHOT_GROUP_CALLER_GROUP",
+        "SECRET_FREE_RECEIPT_0640",
+        "POLKIT_START_ONLY_EXACT_STEGTVC_TV_EXECUTION_WARRANT_INSTANCE"
+      ],
+      "private_key_boundary": "UNCHANGED_LOADCREDENTIAL_ROOT_ONLY",
+      "authentic_assignment_disposition_observed": false,
+      "authentic_warrant_issuance_observed": false,
+      "authentic_resident_runtime_execution_claimed": false,
+      "authority_effect": "NONE_EXISTING_SYSTEMD_POLKIT_ACCESS_REPAIR_ONLY"
     }
   },
   "required_evidence_validation": {
