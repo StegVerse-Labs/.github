@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+  "correlation_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "goal": "Ensure every newly created StegVerse receipt carries canonical HeartBeat observation information at creation and every Master Records custody recording carries an independently sampled HB stamp at first recording, while preserving HB as non-authorizing evidence/correlation only.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "authority_effect": "NONE"
+  },
+  "canonical_handoff": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
+  "canonical_contract": "control/receipt-hb-stamping-contract.json",
+  "expected_evidence_predicates": [
+    "EVERY_NEW_RECEIPT_HAS_HB_AT_CREATION",
+    "MASTER_RECORDS_FIRST_RECORDING_HAS_HB_AT_RECORDING",
+    "IDEMPOTENT_REPLAY_PRESERVES_ORIGINAL_RECORDING_HB",
+    "HB_STAMPS_RECONSTRUCT_WITH_EXACT_RECEIPT_CUSTODY",
+    "NO_HISTORICAL_HB_RETROFITTING",
+    "HB_GRANTS_NO_AUTHORITY",
+    "ECOSYSTEM_RECEIPT_EMITTER_INVENTORY_PROPAGATED"
+  ],
+  "current_truth": {
+    "historical_master_records_hb_projection_exists": true,
+    "canonical_state_transition_python_creation_stamp_implementation_started": true,
+    "master_records_recording_stamp_pending": true,
+    "browser_creation_stamp_pending": true,
+    "ecosystem_all_receipt_emitters_propagated": false
+  }
+}
