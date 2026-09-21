@@ -719,3 +719,8 @@ StegHealth is the intended first adopter. No product/runtime authority is create
 ### Private-repository source transport repair — 2026-09-21
 
 The first StegHealth hosted inventory run `35633357556` failed at caller checkout because StegHealth is private and the initial reusable workflow intentionally attempted anonymous source fetch. The shared surface is repaired at commit `8c1378c7daf3a9f56e35cca71239da9ac96790d8` to use only GitHub's ephemeral read-only caller source access with `contents: read` and `persist-credentials: false`; the credential is not retained and grants no content/ref mutation, PR/issue mutation, runtime, TV/TVC, or retirement authority. The classifier and shared-control fetch remain non-authorizing, and actual ref retirement remains separately authority-owned.
+
+
+### Private-repository fetch refinement — 2026-09-21
+
+StegHealth run `35633664041` proved the read-only checkout succeeded, but the subsequent explicit all-branch fetch failed after `persist-credentials: false` removed checkout credentials. The redundant fetch step is removed at `739a611afd70bbe5b8e598b03180e62624fb8459`: `actions/checkout@v4` with `fetch-depth: 0` supplies full history/refs while credentials are not persisted for later commands. No write authority is introduced.
