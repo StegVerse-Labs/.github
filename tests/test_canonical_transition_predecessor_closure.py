@@ -1,9 +1,34 @@
 from __future__ import annotations
 
+import importlib.util
+from pathlib import Path
+import sys
+import types
 import unittest
 from unittest.mock import patch
 
-from workers.canonical_state_transition_custody import CanonicalTransitionCustody
+
+def _load_custody_module():
+    package = types.ModuleType("heartbeat_runtime")
+    package.__path__ = []
+    oscillator = types.ModuleType("heartbeat_runtime.independent_oscillator")
+    oscillator.current_reference = lambda now_ns: {
+        "heartbeat_id": "HB-TEST",
+        "epoch": 1,
+        "generation": 1,
+    }
+    sys.modules.setdefault("heartbeat_runtime", package)
+    sys.modules["heartbeat_runtime.independent_oscillator"] = oscillator
+    path = Path(__file__).resolve().parents[1] / "workers" / "canonical_state_transition_custody.py"
+    spec = importlib.util.spec_from_file_location("canonical_state_transition_custody_under_test", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+custody_module = _load_custody_module()
+CanonicalTransitionCustody = custody_module.CanonicalTransitionCustody
 
 
 def recorded(digest: str, *, master_record_ref: str) -> dict:
@@ -26,7 +51,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
             recorded("b" * 64, master_record_ref="master-record:second"),
         ]
         with patch(
-            "workers.canonical_state_transition_custody.submit_state_receipt",
+            "canonical_state_transition_custody_under_test.submit_state_receipt",
             side_effect=results,
         ) as submit:
             first = custody.record(
