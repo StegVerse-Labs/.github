@@ -1219,3 +1219,8 @@ The runtime-proof task remains at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMI
 ### SDK TVC warrant-service self-heal installation
 
 TVC PR #458 is merged and validated. The existing root TVC resident self-heal now reconciles the existing execution-warrant service for each discovered user sovereign runtime owner and performs daemon reload after successful installation; private-key custody remains LoadCredential-only. Authentic installation, assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
+
+
+### TVC hygiene retirement routing batch 3 — 2026-09-21
+
+TVC run `35668559325` proved 27 approved-retirement-ready refs and zero invalid approvals. Seven new batch-3 CMC reconciliation refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`; no branch deletion occurred. The current census has 136 unapproved structural candidates because the merged batch implementation itself created one additional fully-main-contained ref.
