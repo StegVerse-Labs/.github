@@ -176,3 +176,18 @@ Exact New York Fed Q2 2026 workbook map:
 ## Next work
 
 Inspect TV/TVC custody for authentic BEA credential registration without exposing credential values; if admissible, execute bounded BEA acquisition and retain hashes/vintages. Then determine which currently normalized New York Fed debt/delinquency observations can be admitted into the household-state contract without conflating debt stock with new borrowing or aggregate delinquency flow with distributional household stress; add distribution/cohort and required-cost evidence only where exact source support exists; keep unsupported fields `UNKNOWN`; and bind Site only to an authentic governed ERL output with stale/invalid fail-closed behavior. Public activation remains separately gated on authentic governed output and served-body verification.
+## BEA resident-readiness re-observation — 2026-09-21
+
+The existing TV/TVC BEA provider and non-exporting secret-ingress capabilities remain materialized through TVC #442 and stegfin-governance #110. The current session re-observed the authorized execution surfaces before any BEA request:
+
+- connected resident execution devices visible to the available authorized execution connector: **0**;
+- repository-retained authentic `stegverse.tvc.bea-credential-readiness/v1` receipt: **not observed**;
+- credential value requested/read/returned/logged/hashed: **false**;
+- BEA provider contacted: **false**;
+- bounded BEA lease issued: **false**;
+- BEA NIPA acquisition executed: **false**.
+
+This does not prove credential absence. The runtime predicate remains `UNKNOWN / NOT OBSERVED`. Only an authentic retained readiness result with `decision=READY` may permit the already-existing bounded single-use BEA read-only lease for NIPA `T20600` lines `27/29/35/37`.
+
+Household-state consequence: no BEA-derived DPI/PCE/saving-rate/real-DPI candidate was admitted in this observation. Unsupported net take-home resources, discretionary residual, complete required-cost burden, and unmet/foregone consumption remain `UNKNOWN`. Site public activation remains `FALSE / NOT AUTHORIZED` pending authentic governed ERL output plus served-body proof.
+
