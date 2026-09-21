@@ -1,3 +1,11 @@
+## Ecosystem HB receipt anchoring
+
+Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is staged at Task Registry generation 150 on its canonicalization branch with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
+
+The external anchor is evidence-only. The first adapter profile is `OPENTIMESTAMPS_BITCOIN_V1`, but the provider-neutral contract makes blockchain availability non-causal for StegVerse continuity, custody, reconstruction, execution, transition, credentials, routing, or governance. Historical HB-only evidence is never retroactively promoted to externally anchored time proof.
+
+Canonical handoff: `docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md`.
+
 
 Canonical Goal Task `SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001` / COSV `71000000111111` is RETIRED / COMPLETED / VALIDATED. SDK PR #299 merged as `69921971106ffb4008bf5914c34b34bc51745ff0` after all 12 applicable exact-head workflows passed, including four-stage validation run `35547155843`; the tested head and merged commit share exact Git tree `6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6`. Every successful public `run-manifest` result is now bound to the validated canonical ingress manifest, a deterministic generic run-manifest request, and a hash commitment over the unmodified processor result. Future Test 3 naming is person-neutral with the retained historical identifier accepted only as a compatibility alias. SDK 1.3.0 remains a release candidate. Canonical handoff: `docs/SDK_RUN_MANIFEST_RESULT_LINEAGE_BINDING_MIRROR_HANDOFF.md`.
 
