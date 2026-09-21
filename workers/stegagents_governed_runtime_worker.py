@@ -65,6 +65,83 @@ def git_blob_sha(path: Path) -> str:
     return hashlib.sha1(header + raw).hexdigest()
 
 
+TVC_WARRANT_REQUEST_ROOT = Path("/var/lib/stegverse/tv-credential-processing/execution-warrants/requests")
+TVC_WARRANT_RECEIPT_ROOT = Path("/var/lib/stegverse/tv-credential-processing/execution-warrants/receipts")
+TVC_WARRANT_SERVICE_TEMPLATE = "stegtvc-tv-execution-warrant@{instance}.service"
+
+
+def _fresh_tvc_warrant_env(
+    *,
+    task: Mapping[str, Any],
+    agents_root: Path,
+    runner=subprocess.run,
+    request_root: Path = TVC_WARRANT_REQUEST_ROOT,
+    receipt_root: Path = TVC_WARRANT_RECEIPT_ROOT,
+) -> dict[str, str]:
+    """Issue one fresh TV/TVC warrant after WorkerCoordinator claim/fence closure."""
+    claim_transition = task.get("claim_fence_master_records_transition")
+    _closed_transition(claim_transition, "WORKERCOORDINATOR_CLAIM_FENCE_BOUND")
+    claim_id = str(task.get("claim_id") or "")
+    require(bool(claim_id), "purpose-bound post-claim warrant issuance requires claim_id")
+    safe_instance = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in claim_id)
+    require(bool(safe_instance), "purpose-bound post-claim warrant instance invalid")
+
+    head = runner(
+        ["git", "-C", str(agents_root), "rev-parse", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    commit_sha = head.stdout.strip().lower()
+    require(head.returncode == 0 and len(commit_sha) == 40 and all(ch in "0123456789abcdef" for ch in commit_sha), "StegAgents commit identity unavailable for TVC warrant")
+
+    request = {
+        "schema": "stegverse.tv.execution-warrant-request/v1",
+        "request_id": claim_id,
+        "repository": STEGAGENTS_REPO,
+        "commit_sha": commit_sha,
+        "action": "run_agent",
+        "module": STEGAGENTS_REPO,
+        "ttl_seconds": 900,
+        "task_id": PURPOSE_TASK_ID,
+    }
+    request_root.mkdir(parents=True, exist_ok=True)
+    receipt_root.mkdir(parents=True, exist_ok=True)
+    request_path = request_root / f"{safe_instance}.json"
+    receipt_path = receipt_root / f"{safe_instance}.json"
+    request_path.write_text(json.dumps(request, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    service = runner(
+        ["systemctl", "start", TVC_WARRANT_SERVICE_TEMPLATE.format(instance=safe_instance)],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    require(service.returncode == 0, "TV/TVC execution-warrant service failed")
+    require(receipt_path.is_file(), "TV/TVC execution-warrant receipt missing")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    require(isinstance(receipt, dict), "TV/TVC execution-warrant receipt invalid")
+    require(receipt.get("schema") == "stegverse.tvc.execution-warrant-issuance/v1", "TV/TVC warrant receipt schema mismatch")
+    require(receipt.get("state") == "ISSUED", "TV/TVC warrant not issued")
+    require(receipt.get("credential_authority") == "TV/TVC", "TV/TVC warrant credential authority drift")
+    require(receipt.get("private_key_exposed") is False and receipt.get("private_key_persisted") is False, "TV/TVC private-key boundary violated")
+    warrant = receipt.get("warrant")
+    require(isinstance(warrant, Mapping), "TV/TVC warrant payload missing")
+    claims = warrant.get("claims") if isinstance(warrant.get("claims"), Mapping) else {}
+    require(claims.get("repo") == STEGAGENTS_REPO and claims.get("commit_sha") == commit_sha and claims.get("task_id") == PURPOSE_TASK_ID, "TV/TVC warrant claim binding mismatch")
+    policy_sha = str(receipt.get("policy_bundle_sha256") or "")
+    issuer_key = str(receipt.get("issuer_pubkey_b64") or "")
+    max_ttl = receipt.get("max_ttl_seconds")
+    require(len(policy_sha) == 64 and bool(issuer_key) and isinstance(max_ttl, int), "TV/TVC warrant verification inputs incomplete")
+    return {
+        "STEGVERSE_WARRANT_JSON": json.dumps(dict(warrant), sort_keys=True, separators=(",", ":")),
+        "TV_POLICY_BUNDLE_SHA256": policy_sha,
+        "TV_WARRANT_ISSUER_PUBKEY_B64": issuer_key,
+        "TV_WARRANT_MAX_TTL_SECONDS": str(max_ttl),
+    }
+
 def _profile(task_id: str) -> dict[str, str]:
     if task_id == OWNER_TASK_ID:
         return {
@@ -360,6 +437,8 @@ def run_test3(invocation: Mapping[str, Any]) -> dict[str, Any]:
     env = dict(os.environ)
     env.pop("GITHUB_TOKEN", None)
     env.pop("GH_TOKEN", None)
+    if profile["task_id"] == PURPOSE_TASK_ID:
+        env.update(_fresh_tvc_warrant_env(task=task, agents_root=agents_root))
     completed = subprocess.run(
         [sys.executable, "-m", "src.purpose_bound_worker_runtime"],
         cwd=str(agents_root),
