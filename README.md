@@ -1162,3 +1162,8 @@ TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator r
 ## Reusable repository hygiene inventory
 
 `HYGIENE-CAUSAL-ROOTS-001` now owns an organization-reusable branch inventory/classification surface at `.github/workflows/repository-hygiene-reusable.yml`, backed by `scripts/repository_hygiene_inventory.py`. Callers receive ancestry, age, ahead/behind, and exact default-branch source-reference evidence. The reusable workflow is non-authorizing: it uses anonymous source fetches with `permissions: {}`, never deletes refs or closes PRs/issues, and treats age/name only as review metadata. Retirement candidates still require repository-local owner/evidence clearance and the separate canonical ref-retirement authority.
+
+
+## Governed public wiki submission publication
+
+`PUBLIC-WIKI-GOVERNED-SUBMISSION-PUBLICATION-001` / COSV `71000000100100` owns the missing authority-bearing half of the existing External Chat publication lifecycle. The submitter remains proposal-only: compatibility and delegated review produce an `external_framework_wiki_publication_transition` candidate with `publication_executed=false`; only SDK manifest ingress -> Interlock/InTr -> exact Master Records closure may make a candidate eligible for Publisher mutation. Publisher remains the consequential mutation owner, and DENY/REVIEW_REQUIRED must produce zero repository mutation. The target contract is repository/path scoped so Admissibility can validate the first end-to-end path and StegGuardian, StegTalk, and future knowledge surfaces can reuse the same mechanism.
