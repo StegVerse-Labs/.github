@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -66,6 +67,26 @@ class BootstrapV1SourcePackageProductionTests(unittest.TestCase):
             self.assertEqual(package["manifest"]["source_bundle_sha256"], manifest["source_bundle_sha256"])
             self.assertFalse(package["credential_material_included"])
             self.assertEqual(package["authority_effect"], "NONE_SOURCE_TRANSPORT_ONLY")
+
+    def test_master_records_package_carries_verified_floor_when_git_proof_available(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "master-records"
+            root.mkdir()
+            subprocess.run(["git", "init", str(root)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(root), "config", "user.name", "Test"], check=True)
+            (root / "services").mkdir()
+            (root / "services/canonical_master_records_api.py").write_text("app\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "commit", "-m", "floor"], check=True, capture_output=True)
+            floor = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+            identity, _ = self.make_source(root, worker.MASTER_RECORDS_COMPONENT_ID, {})
+            with mock.patch.object(worker, "MASTER_RECORDS_SOURCE_FLOOR", floor):
+                package = worker.build_package(worker.MASTER_RECORDS_COMPONENT_ID, root, identity)
+            proof = package["provenance"]["source_proof"]
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertEqual(proof["head"], floor)
+            self.assertTrue(proof["source_floor_present"])
 
     def test_upstream_requires_exact_four_root_locator_bindings(self):
         with tempfile.TemporaryDirectory() as td:
