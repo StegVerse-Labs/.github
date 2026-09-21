@@ -197,3 +197,32 @@ observe authentic existing resident refresh
 ```
 
 Manual work: None.
+
+
+## Goal Prompt 5/20 — retained refresh evidence and source proof merged; authentic cycle still required
+
+Canonical registry generation entering this continuation: `169`.
+
+Two subsequent existing-path repairs are already merged on canonical main:
+
+- PR `#2465` / merge `c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d` retains each materialize-only Master Records refresh result at `receipts/sovereign-host/master-records-source-refresh.latest.json` using schema `stegverse.master-records-resident-source-refresh/v1`.
+- PR `#2472` / merge `0c8256e024867199ff065eb19f1277158c9f1635` binds the existing Master Records source package to local Git ancestry proof. The resident materializer now fails closed unless `package_provenance.source_proof` reports `state=VERIFIED_LOCAL_GIT_SOURCE`, repository `master-records/orchestration`, source floor `8804762fb5da5d212aa7c9c448dfcdabac734715`, `source_floor_present=true`, and a valid 40-hex source head.
+
+Repository search still exposes the retained receipt path only as implementation/test contract; no authentic resident copy of the receipt is tracked in GitHub. No authorized resident computer/runtime surface is connected to this continuation. That access condition is not treated as evidence of runtime absence and is not a device prerequisite.
+
+Therefore the first unsatisfied predicate is now:
+
+```text
+AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF
+```
+
+Do not trust a durable Master Records runtime advertisement until the authentic retained refresh receipt proves `state=MATERIALIZED_VERIFIED` and carries the required source proof. Only after that may the existing durable canonical runtime be queried for:
+
+```text
+subject_or_correlation_id=STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+transition_id=WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+```
+
+No A3 claim/fence, nonce-query result, durable runtime state, or runtime completion is claimed by these source/evidence repairs.
+
+Manual work: None.
