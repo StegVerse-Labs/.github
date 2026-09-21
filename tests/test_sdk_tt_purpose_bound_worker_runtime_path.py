@@ -195,3 +195,19 @@ def test_four_case_graph_is_wired_through_existing_workercoordinator_and_worker(
     assert len(handoff["state_dependent_graph"]["single_worker_requests"]) == 3
     assert len(handoff["state_dependent_graph"]["task4_worker_requests"]) == 3
     assert handoff["state_dependent_graph"]["task4"]["worker_count"] == 3
+
+
+def test_workercoordinator_initializes_manifest_request_state_before_assignment_record_use():
+    runtime = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text(encoding="utf-8")
+    function_start = runtime.index("    def _activate_from_trigger(")
+    function_end = runtime.index("\n    def ", function_start + 10)
+    body = runtime[function_start:function_end]
+
+    assignment = 'manifest_runtime_request_present = manifest_runtime_request_path.is_file()'
+    guarded_use = 'if manifest_runtime_request_present:'
+    custody_call = 'assignment_custody = self._custody_assignment_transition('
+
+    assert assignment in body
+    assert guarded_use in body
+    assert custody_call in body
+    assert body.index(assignment) < body.index(guarded_use) < body.index(custody_call)
