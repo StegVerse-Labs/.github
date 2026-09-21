@@ -197,3 +197,18 @@ No direct child remediation, alternate scheduler, alternate dispatcher, replacem
 
 
 Generation fence note: canonical Task Registry advanced from observed generation `150` to `151` before PR creation. This branch does not modify the registry or task record; it records only parent handoff evidence and therefore does not overwrite or reorder generation-151 coordination state.
+
+
+## StegHealth-generated provider-remediation children — canonical generation 165
+
+StegHealth PR #106 merged as `b655ba23f405f23f9c7e3a0bb02dd05165318cba` after the exact failure-map regression passed. The merged StegHealth consumer generated and durably retained seven fresh remediation children under parent `ENTERPRISE-HOST-PROVIDER-ERADICATION-001`, each with task.v1 COSV `10100000111000`:
+
+- issue #82: `STEGHEALTH-FAILURE-REMEDIATION-DEF4029F481DC8149D97` -> `StegVerse-Labs/StegVerse-SCW`
+- issue #83: `STEGHEALTH-FAILURE-REMEDIATION-A529FD0AF1ED5D68290F` -> `StegVerse-Labs/StegCore`
+- issue #84: `STEGHEALTH-FAILURE-REMEDIATION-A239B76027194EF048B9` -> `StegVerse-Labs/Site`
+- issue #85: `STEGHEALTH-FAILURE-REMEDIATION-ADA79F3AA6D81B0DFB77` -> `StegVerse-Labs/Continuity`
+- issue #86: `STEGHEALTH-FAILURE-REMEDIATION-FB979E753EDCF6F37F49` -> `StegVerse-Labs/TVC`
+- issue #87: `STEGHEALTH-FAILURE-REMEDIATION-45726629A12865D51C35` -> `StegVerse-Labs/.github`
+- issue #88: `STEGHEALTH-FAILURE-REMEDIATION-D62E3D015278FC030541` -> `StegVerse-org/LLM-adapter`
+
+These registrations are coordination only. WorkerCoordinator claim/fence, Interlock/InTr governed transition authority, target-repository repair, and exact validation remain separate evidence transitions. No child identity was hand-selected or reused from the parent.
