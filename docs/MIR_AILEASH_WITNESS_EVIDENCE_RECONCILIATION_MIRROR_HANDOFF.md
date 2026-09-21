@@ -271,3 +271,27 @@ Current successor pending: `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`.
 R10 remains operator-disclosed `NOT MET` until the entire predecessor chain closes through state 4 and admits state 5. The independently verified `4a99a3b5...` commitment is therefore not a parallel proof that can independently modify R10; it is predecessor state 1 and must be consumed by state 2.
 
 The v0.8 1,534-event / 50-checkpoint rerun remains `COUNTERPART_REPORTED_COMPLETE` and does not form an alternate path around this state graph. The historical 784-record / 30-commitment run remains settled and historical.
+
+## Goal prompt 17: StegBrowser supersession reconciliation — 2026-09-21
+
+The copied continuation that requested repair of the StegBrowser A1 observer/composition seam was reconciled against current canonical authority before mutation.
+
+Current source has advanced beyond that continuation:
+
+- `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` is retired/decomposed at its prompt limit; its later source history records the SV002-derived browser execution path, Node-journal retention, evidence export, Master Records ingress/custody bindings, and successor decomposition.
+- Site PR `#1436` is merged as `c9af43f7fd70a2fbd6ce45351e5538acdc14fa01`; it repairs the existing browser-to-sovereign Universal InTr compatibility seam by carrying the unchanged canonical materialization request and browser binding through the same deterministic Node outbox entry without a second invocation, listener, scheduler, dispatcher, materializer, WorkerCoordinator, authority plane, credential path, or device requirement.
+- The older `.github` A1 observer still contains a host-side `STEGVERSE_NODE_GENESIS_RECEIPT` filesystem projection, but current authority no longer permits treating that projection as the canonical execution gate or as evidence that the registered Node is absent. The validated browser lane reads the existing registered Node continuity directly and the later merged compatibility path carries that binding into sovereign InTr. No new repair was applied to the retired observer.
+
+The reusable-task registry was then searched for an already-existing manifest-compatible arbitrary external GET/navigation StegBrowser invocation. None was found.
+
+Two adjacent reusable identities were inspected and rejected as substitutes:
+
+- `RT-EXTERNAL-ENDPOINT-MONITOR-001` is a generic observation contract with no executable runner templates; it requires an existing adapter/governed path and is not an arbitrary StegBrowser GET/navigation invocation.
+- `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001` is bounded to canonical external-framework registry entries and manifested operations; its registry-sweep contract explicitly performs no external calls and it is not a generic URL-fetch task.
+
+Therefore no sebbi.pro request was issued through either identity, no new StegBrowser task/manifest/request was minted, and the immutable owned-mirror nonce was not altered or reused for external navigation.
+
+Most importantly, the current canonical task record for `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now marks all StegBrowser execution substrates `NOT_APPLICABLE` for this documentary/public-verification goal. Its strict state-dependent contract permits exactly one next transition: `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`, consuming the immediate `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` Master Records predecessor. The stale StegBrowser continuation is therefore `SUPERSEDED_BY_CURRENT_AUTHORITY` and cannot be used to bypass, parallelize, or leapfrog the ordered evidence chain.
+
+No runtime execution, external GET, A1/A2/A3/A4 promotion, or new authority path is claimed from this reconciliation.
+
