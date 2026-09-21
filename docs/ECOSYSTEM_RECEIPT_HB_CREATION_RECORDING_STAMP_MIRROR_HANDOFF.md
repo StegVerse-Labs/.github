@@ -432,3 +432,17 @@ Generic provider credentials remain stripped. No new runtime, scheduler, dispatc
 The native installer is also brought to parity with the already-merged resident source-refresh set by materializing `scripts/consume_ecosystem_receipt_hb_checkpoint.py`; otherwise a clean resident materialization could contain the dispatcher selector but not its consumer.
 
 This repair does not assert that the resident process has restarted or that a transition has occurred. The next factual question is: did the existing carrier/worker process execute after this repair, and if so what exact transition result did it produce?
+
+
+## Resident worker custody-binding repair merge closure — 2026-09-21
+
+PR #2453 merged as `7b767ddce7b1ecb54f7eda6730875e788f1027de` after generation-166 reconciliation. Exact head `4d3fde8227982063e5a9eb0540b7a29dce142f6b` passed `Validate Ecosystem Receipt HB Successor` run `35602485725` with `12 passed`; all other observed applicable exact-head workflows also completed SUCCESS.
+
+The deterministic conclusion is now explicit:
+
+- no fresh post-update resident cycle is retained, so no claim is made that execution reached `build_state_receipt(...)`;
+- the first concrete source execution defect on the restart path was loss of the existing canonical Master Records custody binding at worker process launch;
+- that defect is merged;
+- no receipt location, Master Records row, reconstruction result, bounded root, or HB checkpoint is inferred until the existing carrier/worker path actually executes and returns the exact machine result.
+
+The next continuation must inspect the first actual post-merge resident worker execution result. If no fresh worker cycle occurred, that is the state-transition failure. If a fresh cycle occurred, trace its exact transition through `build_state_receipt(...)` and `submit_state_receipt(...)` to the actual Master Records result without substituting passive evidence search.
