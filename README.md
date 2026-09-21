@@ -1113,6 +1113,18 @@ Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` 
 The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
 
 
-### HB receipt native execution trace — 2026-09-21
+### Canonical predecessor closure for direct receipt callers
 
-The first post-update break is execution, not passive evidence discovery. Retained native carrier/worker state is historical and does not prove a fresh resident transition reached `build_state_receipt(...)`. The existing carrier self-heal and direct worker-service launch paths now preserve the canonical Master Records HTTP or durable-local custody binding into `run_worker_runtime.py`, while generic provider credentials remain excluded. Clean native materialization also carries the existing HB checkpoint consumer.
+Direct state-transition producers that do not use `CanonicalTransitionCustody` must still consume the immediately preceding canonical Master Records closure. The first repaired direct caller is WorkerCoordinator claim/fence custody: prior Functional Memory is reconstructed through Master Records and carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`; legacy checkpoint references cannot substitute for canonical predecessor state.
+
+
+### RTC008/RTC009 canonical custody continuity
+
+StegOS PR #397 merged the post-admission MIR continuation. Authentic RTC008 admission must close through canonical Master Records before receipt-only RTC009 can run; RTC009 must then close through the same full reconstruction/digest gate before a caller-consequence handoff can be emitted. Caller consequence and communication completion remain runtime predicates, not source claims.
+
+### SDK purpose-bound post-claim TVC warrant bridge
+
+The purpose-bound WorkerCoordinator path now has a bounded repair in progress for the deterministic seam immediately after canonical claim/fence custody: the existing StegAgents adapter must obtain a fresh signed warrant from the already-installed TVC `stegtvc-tv-execution-warrant@.service` after the claim/fence closure rather than requiring a pre-existing warrant environment. The bridge carries only the secret-free warrant/public-key/policy verification tuple and refuses progression unless the claim/fence closure is exact. No new runtime, credential path, authority plane, custody store, or device dependency is introduced; authentic runtime execution remains unclaimed.
+\n\n### HB receipt native execution trace — 2026-09-21
+
+The first post-update break is execution, not passive evidence discovery. Retained native carrier/worker state is historical and does not prove a fresh resident transition reached `build_state_receipt(...)`. The existing carrier self-heal and direct worker-service launch paths now preserve the canonical Master Records HTTP or durable-local custody binding into `run_worker_runtime.py`, while generic provider credentials remain excluded. Clean native materialization also carries the existing HB checkpoint consumer.\n
