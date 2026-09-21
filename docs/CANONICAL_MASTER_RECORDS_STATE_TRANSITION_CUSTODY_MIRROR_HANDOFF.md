@@ -500,3 +500,8 @@ The active progression for this Goal remains ecosystem-wide inventory of direct 
 ## SDK purpose-bound post-claim TVC warrant issuance reconciliation — generation 169
 
 PR #2456 merged as `3a9fbee2c0b102884c0721047688905f12f911d2` from exact head `e59888890950b495353d77b82c17faf83a7c2731`. Validation runs `35601925845`, `35601925763`, `35601925836`, and `35601926185` all passed. The repaired existing path now requires exact `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure before writing a non-secret TVC warrant request, invoking the existing `stegtvc-tv-execution-warrant@.service`, validating its secret-free issuance receipt, and passing only the signed warrant/public-key/policy tuple into the existing StegAgents subprocess. No new runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, credential source, database, custody store, authority plane, or device dependency was added. Authentic assignment disposition, warrant issuance, and resident runtime execution remain unclaimed.
+
+## SDK TVC resident caller bridge reconciliation — generation 172
+
+TVC PR #452 merged as `c6ebfcf02296359f8f1791fddab982377f381f7d` from exact head `7f3287f739edbae6315defe0cd58ba5228659153`; validation runs `35605389527`, `35605389223`, `35605389059`, and `35605389187` all passed. The existing user-owned WorkerCoordinator can now write the existing TVC warrant request, start only the existing `stegtvc-tv-execution-warrant@<safe-instance>.service` through a narrow start-only polkit rule, and read only the secret-free caller-group receipt. The Ed25519 private key remains root-owned and `LoadCredential`-only. Authentic assignment disposition, warrant issuance, and resident SDK execution remain unclaimed.
+
