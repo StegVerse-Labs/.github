@@ -729,3 +729,22 @@ StegHealth run `35633664041` proved the read-only checkout succeeded, but the su
 ### StegHealth first-adopter validation — 2026-09-21
 
 StegHealth is now the first validated consumer of the reusable hygiene surface. Run `35633822799` completed SUCCESS using exact shared revision `739a611afd70bbe5b8e598b03180e62624fb8459`; artifact `10654903766`, digest `sha256:e1f3c4b5986bbe39cb938f892f401f52b5aa22eba09bc223a6381f8d9e3b543a`. The machine census inspected 80 branches: 28 retirement candidates requiring owner clearance, 51 review-required, and 1 protected/retained. No approval manifest entries existed and no branch, PR, or issue mutation occurred. This validates reusable private-repository inventory/classification transport; actual ref retirement remains separately authority-owned.
+
+
+## 2026-09-21 Wave-1 reusable hygiene propagation
+
+Validated reusable revision `739a611afd70bbe5b8e598b03180e62624fb8459` is now merged and hosted-successful in five shared authority/runtime producers, ranked by branch count after preserving Wave-0 causal-root constraints:
+
+```text
+TVC                         423 inspected / 162 owner-clearance candidates / 257 review / 4 protected
+LLM-adapter                 270 inspected /  58 owner-clearance candidates / 211 review / 1 protected
+TV                          263 inspected /   9 owner-clearance candidates / 253 review / 1 protected
+master-records/orchestration 83 inspected /  28 owner-clearance candidates /  52 review / 3 protected
+micro-node-runtime           61 inspected /  23 owner-clearance candidates /  37 review / 1 protected
+```
+
+Aggregate: `1100` branches inspected and `280` retirement candidates requiring owner clearance. Every inventory reported `approved-retirement-ready=0`, therefore **zero refs were routed** to `HYGIENE-BRANCH-REF-RETIREMENT`. Machine routing record: `control/repository-hygiene-wave1-routing-20260921.json`.
+
+Validation evidence: TVC run `35636073607`; LLM-adapter run `35636235950` (after required Work mutation-safety manifest repair); TV run `35636085582`; Master Records run `35636089572` (after artifact-finalization 403 rerun, semantic verification itself had already passed); micro-node run `35636095904`. No branch, PR, or issue was deleted/closed by the hygiene mechanism.
+
+Wave-0 handling remains bounded: repo-standards is not given a new hosted caller because its retained workflows are intentionally inactive sovereign-local migration markers; Continuity remains at 14 branches with prior workflow/branch hygiene already recorded. Site/StegCore remain terminal sinks, not causal-root-first targets.
