@@ -460,3 +460,13 @@ RTC008 must close through canonical Master Records with `RECORDED + reconstructi
 Only after RTC009 closure may the source emit `stegverse.mir-caller-consequence-handoff/v1`, addressed to the original `completion.initiator` and bounded by the original `return_projection`. The handoff retains `caller_consequence_observed=false` and `communication_complete=false`.
 
 Exact-head validation passed StegOS CI run `35600594107` and GADI native boundary defense run `35600594109`. Source/CI/merge evidence does not establish authentic RTC008 runtime admission, RTC009 runtime transition, caller consequence, or terminal communication.
+
+## SDK purpose-bound post-claim TVC warrant issuance seam — 2026-09-21
+
+Fresh evidence search still found no authentic `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` or production `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`; no disposition is inferred from source state.
+
+Tracing the merged post-claim ordering path exposed the next deterministic existing-path defect. After `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` canonical custody closes, the purpose-bound WorkerCoordinator branch invokes the existing `process:stegagents-governed-runtime-v1` adapter. The StegAgents governed runtime requires `STEGVERSE_WARRANT_JSON`, `TV_POLICY_BUNDLE_SHA256`, and `TV_WARRANT_ISSUER_PUBKEY_B64`, but this exact path did not invoke the already-merged credential-bearing TVC service `stegtvc-tv-execution-warrant@.service`; it could therefore only consume a warrant that pre-existed the claim/fence transition rather than executing the canonical claim/fence -> TV/TVC sequence.
+
+The bounded repair reuses that existing TVC oneshot and its established request/receipt roots. Only after exact claim/fence Master Records closure does the existing StegAgents worker bridge write a non-secret `stegverse.tv.execution-warrant-request/v1` bound to the current claim, exact StegAgents commit, canonical purpose task, `run_agent`, and 900-second maximum. It invokes the existing systemd unit, validates the returned `stegverse.tvc.execution-warrant-issuance/v1` receipt, requires `private_key_exposed=false` and `private_key_persisted=false`, and forwards only the signed warrant, public key, policy digest, and TTL into the existing StegAgents subprocess.
+
+No credential material is copied from TVC, and no runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, database, custody store, authority plane, or device dependency is added. This remains source repair until exact-head validation and merge; no authentic assignment disposition or warrant issuance is claimed.
