@@ -1157,3 +1157,8 @@ TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator r
 ## Branded wiki publication and Site propagation
 
 `WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001` coordinates branded public hostnames for the existing StegGuardian and StegTalk wikis and lightweight Site propagation for Admissibility, StegGuardian, and StegTalk. Existing wiki repositories and GitHub Actions Pages deployments remain canonical publication sources. Site remains a directory/bridge projection only. No COSV, runtime, custody, execution authority, or duplicate wiki is created.
+
+
+## Reusable repository hygiene inventory
+
+`HYGIENE-CAUSAL-ROOTS-001` now owns an organization-reusable branch inventory/classification surface at `.github/workflows/repository-hygiene-reusable.yml`, backed by `scripts/repository_hygiene_inventory.py`. Callers receive ancestry, age, ahead/behind, and exact default-branch source-reference evidence. The reusable workflow is non-authorizing: it uses anonymous source fetches with `permissions: {}`, never deletes refs or closes PRs/issues, and treats age/name only as review metadata. Retirement candidates still require repository-local owner/evidence clearance and the separate canonical ref-retirement authority.
