@@ -160,3 +160,40 @@ PR #2354, merged as `5b37c88a0ec6dcb9d5d8289b025e8d80418106cf`, hardens the same
 Exact-head validations passed: KV AI Memory Resident Binding run `35528815067`; DeepSeek resident run `35528814989`.
 
 This supplemental repair does not create a new runtime or change the Goal Prompt count. Authentic resident refresh/materialization, durable runtime advertisement, and the authoritative nonce query remain unobserved.
+
+
+## Goal Prompt 4/20 — recurring Master Records package materialization repaired
+
+Registry generation entering this continuation: `163`.
+
+A second concrete defect remained in the same existing resident source-refresh path after PR #2352. The watcher correctly monitored the already-local `stegverse-master-records` package, and the installer could materialize that package into `vendor/master-records-orchestration`, but the recurring systemd service cycle invoked only `refresh_sovereign_worker_runtime_source.py` before resident dispatch. Therefore package changes after watcher installation could wake the path unit while leaving the resident Master Records vendor root stale.
+
+The bounded repair merged in `StegVerse-Labs/.github#2436`:
+
+```text
+exact head: 0af38b780416b786dee9a4965af547577f811d86
+validation: Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)
+run: 35600016501 PASS
+merge: 00c44a53ab684a1c5abde5cf23cb93be6daa37e3
+```
+
+The same existing refresh service now invokes the existing Master Records package materializer in a materialize-only mode before resident request dispatch on every path-triggered refresh cycle. The mode does not reinstall the watcher and adds no runtime, scheduler, dispatcher, observer, device prerequisite, credential path, custody store, invocation, or authority plane.
+
+This is source-path repair evidence only. It does **not** prove that an authentic resident refresh cycle has consumed the current package, that a durable canonical Master Records runtime is active on the refreshed source, that the immutable-nonce query has executed, or that A3 claim/fence evidence exists.
+
+The next admissible progression remains:
+
+```text
+observe authentic existing resident refresh
+-> require materialized Master Records source at 8804762f... or later
+-> observe durable canonical Master Records runtime using that source
+-> query the durable canonical store for
+   subject_or_correlation_id=STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+   transition_id=WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> if matching record exists require RECORDED + reconstruction_status=PASS
+   + required_evidence_validation_status=PASS
+   + exact receipt/reconstruction digest equality
+-> otherwise trace the first missing custody producer transition
+```
+
+Manual work: None.
