@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 170,
+  "generation": 171,
   "status": "STEGBROWSER_MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_PROOF_REPAIRED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -71,7 +71,11 @@
         "github-pr:2392@b0cd6274bbd7e536a91322a0f42f2f58df747aac",
         "scripts/build_control_plane_source_package.py",
         "tests/test_sdk_tt_richard_seam_control_plane_package.py",
-        "github-pr:2460@12e1dd5630c6d1b729c3089d9a53325ca357c24b"
+        "github-pr:2460@12e1dd5630c6d1b729c3089d9a53325ca357c24b",
+        "scripts/build_control_plane_source_package_reusable.py",
+        "tests/test_reusable_control_plane_source_package.py",
+        ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
+        "github-pr:2482@5f605bf76904c25fd0041be558d0eac085ddcae3"
       ],
       "targets": {
         "organizations": [
@@ -147,7 +151,11 @@
         "github-actions:35602677794",
         "github-actions:35602677909",
         "github-actions:35602677907",
-        "github-actions:35602677880"
+        "github-actions:35602677880",
+        "github-actions:35605682837",
+        "github-actions:35605682688",
+        "github-actions:35605682942",
+        "github-actions:35605682614"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
@@ -213,7 +221,7 @@
         "separate_runtime_observer_is_completion_authority": false
       },
       "functional_memory_runtime_exercise": {
-        "state": "CONTROL_PLANE_PACKAGE_CARRIAGE_REPAIRED_AUTHENTIC_RELAY_RESULT_REQUIRED",
+        "state": "EXISTING_RELAY_CONTINUATION_REPAIRED_AUTHENTIC_MATERIALIZATION_REQUIRED",
         "task_id": "STEGFIN-LIVE-ENTRY-003",
         "retained_authentic_preassignment_result": {
           "event_type": "activation_deferred",
@@ -237,8 +245,8 @@
         "fresh_functional_memory_master_records_receipt_observed": false,
         "controlled_missing_pointer_recovery_exercise_completed": false,
         "controlled_missing_pointer_recovery_disposition": "DEFER_UNTIL_AUTHENTIC_SAME_TASK_FUNCTIONAL_MEMORY_RECEIPT_EXISTS",
-        "authority_effect": "NONE_SOURCE_CARRIAGE_REPAIR_ONLY",
-        "canonical_generation_observed": 166,
+        "authority_effect": "NONE_EXISTING_RELAY_CONTINUATION_REPAIR_ONLY",
+        "canonical_generation_observed": 170,
         "post_repair_merge": "b0cd6274bbd7e536a91322a0f42f2f58df747aac",
         "checked_fresh_resident_evidence": true,
         "latest_retained_same_task_runtime_epoch": 29,
@@ -277,7 +285,30 @@
         "authentic_source_materialization_after_carriage_repair_observed": false,
         "authentic_worker_source_refresh_after_carriage_repair_observed": false,
         "authentic_assignment_disposition_after_carriage_repair_observed": false,
-        "authentic_functional_memory_receipt_after_carriage_repair_observed": false
+        "authentic_functional_memory_receipt_after_carriage_repair_observed": false,
+        "existing_relay_continuation_repair_pr": 2482,
+        "existing_relay_continuation_repair_merge": "5f605bf76904c25fd0041be558d0eac085ddcae3",
+        "existing_relay_continuation_exact_head": "867c7f47e8073a87d094fdc631e1565fae93a63b",
+        "existing_relay_continuation_validation_runs": {
+          "purpose_bound_worker_derived_lifetime": 35605682837,
+          "deepseek_resident": 35605682688,
+          "kv_ai_memory_resident_binding": 35605682942,
+          "test3_richard_seam_acceptance": 35605682614
+        },
+        "first_concrete_relay_defect": "REUSABLE_PACKAGE_LIFECYCLE_RETAINED_OUTBOX_PACKAGE_BUT_HAD_NO_PRODUCTION_CALLER_INTO_EXISTING_STEGOS_CONTROL_PLANE_RELAY",
+        "repaired_behavior": "SAME_REUSABLE_TASK_INVOCATION_CONTINUES_THROUGH_EXISTING_STEGOS_RELAY_ONLY_WHEN_PREEXISTING_TVC_AUTHORIZATION_BINDING_AND_STEGOS_ROOT_ARE_PRESENT",
+        "required_materialization_digest_closure": [
+          "heartbeat_runtime/worker_runtime.py",
+          "heartbeat_runtime/admitted_worker_runtime.py",
+          "heartbeat_runtime/worker_assignment_functional_memory.py",
+          "workers/canonical_state_transition_custody.py",
+          "control/worker-registry.d/stegfin-live-entry-003.json"
+        ],
+        "authentic_control_plane_relay_after_continuation_repair_observed": false,
+        "authentic_source_materialization_after_continuation_repair_observed": false,
+        "authentic_worker_source_refresh_after_continuation_repair_observed": false,
+        "authentic_assignment_disposition_after_continuation_repair_observed": false,
+        "authentic_functional_memory_receipt_after_continuation_repair_observed": false
       }
     },
     {
