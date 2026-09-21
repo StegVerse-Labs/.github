@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "correlation_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "root_correlation_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "parent_task_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "goal": "Make every public run-manifest result self-contained and cryptographically bound to the exact canonical ingress manifest and the generic run-manifest execution request, while preserving historical four-stage evidence and removing future-facing Test 3 person-specific identifiers without adding a test-specific path.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_RUN_MANIFEST_RESULT_LINEAGE_BINDING_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "shared_dispatcher_only": true,
+    "historical_four_stage_evidence_immutable": true,
+    "backward_compatibility_for_retained_test3_identifier": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false
+  }
+}
