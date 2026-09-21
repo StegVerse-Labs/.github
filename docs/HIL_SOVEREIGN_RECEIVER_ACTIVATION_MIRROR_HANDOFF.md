@@ -829,3 +829,8 @@ same_device_gateway_execution=true
 ```
 
 A required remote shared Gateway now fails closed in source. This merge removes acceptance of the invalid topology; it does not yet provide or prove an on-device public rendezvous.
+
+
+## 2026-09-21 machine-owned receiver Gateway carriage
+
+The canonical Healer scheduler now derives the public Service Gateway's HIL receiver projection only from the retained `receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json` worker receipt. The projection requires exact parent task, G25/fence-25, `receiver_ready=true`, TV/TVC credential authority, no GitHub/non-TV secret authority, an absolute durable state root, and a pathless loopback `base_url`. It exports that exact origin as `STEGVERSE_HIL_RECEIVER_UPSTREAM` separately from the existing Universal InTr `/intr/materialization` projection. No receiver process, claim/fence, custody state, or runtime is created by the projection.
