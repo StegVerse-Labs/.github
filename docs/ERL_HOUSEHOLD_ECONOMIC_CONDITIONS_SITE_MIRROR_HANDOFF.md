@@ -190,4 +190,11 @@ The existing TV/TVC BEA provider and non-exporting secret-ingress capabilities r
 This does not prove credential absence. The runtime predicate remains `UNKNOWN / NOT OBSERVED`. Only an authentic retained readiness result with `decision=READY` may permit the already-existing bounded single-use BEA read-only lease for NIPA `T20600` lines `27/29/35/37`.
 
 Household-state consequence: no BEA-derived DPI/PCE/saving-rate/real-DPI candidate was admitted in this observation. Unsupported net take-home resources, discretionary residual, complete required-cost burden, and unmet/foregone consumption remain `UNKNOWN`. Site public activation remains `FALSE / NOT AUTHORIZED` pending authentic governed ERL output plus served-body proof.
+## Task Registry runtime correction — 2026-09-21
+
+The global Task Registry runtime invariant was re-read before further BEA work. Connected-device inventory is prohibited from ordinary task progression and zero connected devices has no task-state meaning. The prior 2026-09-21 zero-device observation is therefore superseded as a gating fact; it remains provenance only.
+
+The Goal Task is reconciled back to the canonical progression order: Task Registry -> Canonical Work/Interlock-InTr ingress -> fresh WorkerCoordinator claim/fence -> TV/TVC readiness/capability use when required -> Master Records custody/reconstruction -> Task Registry reconciliation. No external-device discovery is a prerequisite.
+
+The authentic BEA predicate remains `stegverse.tvc.bea-credential-readiness/v1 decision=READY`. Source review also found existing-path BEA broker composition defects; TVC #451 and stegfin-governance #111 repair those seams without creating a new runtime or credential path. Until authentic READY is retained, no BEA lease/API call or BEA-derived household conclusion is permitted. Site public activation remains false.
 

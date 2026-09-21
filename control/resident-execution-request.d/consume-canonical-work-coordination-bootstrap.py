@@ -39,6 +39,19 @@ STEGHEALTH_KV_INTERLOCK_SPEC = {
 if not any(spec.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK for spec in mod.REQUEST_SPECS):
     mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (STEGHEALTH_KV_INTERLOCK_SPEC,)
 
+# Reuse the same Canonical Work consumer for the ERL household-economic-conditions Goal.
+# This stages canonical ingress only; WorkerCoordinator retains claim/fence authority,
+# TV/TVC retains credential authority, and Master Records remains runtime-reality authority.
+ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK = "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
+ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-erl-household-economic-conditions-site-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-erl-household-economic-conditions-site"),
+    "task_id": ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK,
+}
+if not any(spec.get("task_id") == ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SPEC,)
+
 # Reuse the same Canonical Work consumer for the existing KV connection
 # revalidation TVC runtime-observation request. This only makes the already-staged
 # request visitable by the existing consumer cadence; it creates no second
