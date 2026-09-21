@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path.cwd().resolve()
 RECEIPT_ROOT = (ROOT / "receipts" / "healer-sovereign-scheduler").resolve()
@@ -18,12 +19,18 @@ SV002_OBSERVE_CONFIG_ENV = "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG"
 SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-public-observation-runtime.json"
 HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
+HIL_RECEIVER_WORKER_RECEIPT_REL = Path("receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
+HIL_RECEIVER_TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+HIL_RECEIVER_CLAIM_ID = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"
+HIL_RECEIVER_FENCE = 25
 UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
 UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
 HEALER_STEGHEALTH_SOURCE_FLOOR = "585cf38aad95fda69dbcbd0150c1256571f90feb"
 HEALER_STEGHEALTH_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
 HEALER_STEGHEALTH_REUSABLE_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 CONTROL_BUNDLE_MANIFEST = "stegverse-control-plane-manifest.json"
+HEALER_HIL_RECEIVER_GATEWAY_MERGE = "f2db0edf3af99816d3f134ba66b3398788485d08"
+LLM_HIL_RECEIVER_GATEWAY_MERGE = "c1b2442acda6612a0360a2fad9238bc1579b415c"
 
 CANONICAL_REPO_BASES = (
     Path.home() / ".stegverse" / "repos",
@@ -146,6 +153,35 @@ def verify_healer_source_freshness(root: Path) -> dict:
 
     return {**base, "state": "STALE_OR_INCOMPLETE", "source_mode": "UNVERIFIED_LOCAL_TREE"}
 
+
+
+def verify_healer_hil_receiver_gateway_source(root: Path) -> dict:
+    path = root.expanduser().resolve() / "app" / "coinbase_stegdeploy_gateway.py"
+    base = {
+        "required_healer_merge": HEALER_HIL_RECEIVER_GATEWAY_MERGE,
+        "required_llm_gateway_merge": LLM_HIL_RECEIVER_GATEWAY_MERGE,
+        "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
+    }
+    if not path.is_file():
+        return {**base, "state": "STALE_OR_INCOMPLETE", "reason": "GATEWAY_SOURCE_MISSING"}
+    try:
+        source = path.read_text(encoding="utf-8")
+    except Exception:
+        return {**base, "state": "STALE_OR_INCOMPLETE", "reason": "GATEWAY_SOURCE_UNREADABLE"}
+    required_markers = (
+        'HIL_RECEIVER_PROXY_ENABLED_ENV = "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"',
+        'HIL_RECEIVER_UPSTREAM_ENV = "STEGVERSE_HIL_RECEIVER_UPSTREAM"',
+        f'MINIMUM_HIL_RECEIVER_GATEWAY_COMMIT = "{LLM_HIL_RECEIVER_GATEWAY_MERGE}"',
+        "validate_hil_receiver_gateway_readiness",
+        "LLM_ADAPTER_HIL_RECEIVER_GATEWAY_SOURCE_STALE",
+    )
+    missing = [marker for marker in required_markers if marker not in source]
+    return {
+        **base,
+        "state": "CURRENT" if not missing else "STALE_OR_INCOMPLETE",
+        "source_ref": str(path),
+        "missing_markers": missing,
+    }
 
 def discover_healer_root(explicit: str = "") -> tuple[Path | None, str]:
     if explicit.strip():
@@ -302,6 +338,53 @@ def hil_intr_gateway_projection() -> dict[str, str]:
     }
 
 
+
+def hil_receiver_gateway_projection() -> dict[str, str]:
+    disabled = {
+        "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED": "false",
+        "STEGVERSE_HIL_RECEIVER_UPSTREAM": "",
+    }
+    path = (ROOT / HIL_RECEIVER_WORKER_RECEIPT_REL).resolve()
+    if not path.is_file():
+        return disabled
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return disabled
+    if not isinstance(value, dict):
+        return disabled
+    expected = {
+        "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
+        "task_id": HIL_RECEIVER_TASK_ID,
+        "claim_id": HIL_RECEIVER_CLAIM_ID,
+        "fencing_token": HIL_RECEIVER_FENCE,
+        "receiver_ready": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+    }
+    if any(value.get(k) != v for k, v in expected.items()):
+        return disabled
+    base = str(value.get("base_url") or "").rstrip("/")
+    parsed = urlsplit(base)
+    if (
+        parsed.scheme != "http"
+        or parsed.hostname not in {"127.0.0.1", "::1", "localhost"}
+        or parsed.path not in {"", "/"}
+        or parsed.query
+        or parsed.fragment
+        or parsed.username
+        or parsed.password
+    ):
+        return disabled
+    durable = str(value.get("durable_state_root") or "").strip()
+    if not durable or not Path(durable).expanduser().is_absolute():
+        return disabled
+    return {
+        "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED": "true",
+        "STEGVERSE_HIL_RECEIVER_UPSTREAM": base,
+    }
+
 def universal_intr_gateway_projection() -> dict[str, str]:
     raw = os.environ.get(UNIVERSAL_INTR_CONFIG_ENV, "").strip()
     path = Path(raw).expanduser().resolve() if raw else UNIVERSAL_INTR_CONFIG_DEFAULT.expanduser().resolve()
@@ -375,6 +458,7 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())
+    env.update(hil_receiver_gateway_projection())
     env.update(universal_intr_gateway_projection())
     return env
 
@@ -441,6 +525,12 @@ def main() -> int:
         "state": "NOT_CHECKED",
         "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY",
     }
+    hil_receiver_projection = hil_receiver_gateway_projection()
+    healer_hil_receiver_gateway_source = (
+        verify_healer_hil_receiver_gateway_source(healer_root)
+        if healer_root is not None and hil_receiver_projection.get("STEGVERSE_HIL_RECEIVER_PROXY_ENABLED") == "true"
+        else {"state": "NOT_REQUIRED", "authority_effect": "NONE_SOURCE_FRESHNESS_CHECK_ONLY"}
+    )
     blocker = None
     child_receipt: dict = {}
     state = "BLOCKED"
@@ -472,6 +562,15 @@ def main() -> int:
             "may_remain_blocked": True,
             "next_solution_action": "REUSE_EXISTING_ONE_SHOT_RESIDENT_STACK_ACTIVATION",
             "source_freshness": healer_source_freshness,
+        }
+    elif healer_hil_receiver_gateway_source.get("state") == "STALE_OR_INCOMPLETE":
+        blocker = {
+            "dependency_class": "LOCAL_SOURCE_FRESHNESS",
+            "problem_statement": "The discovered StegVerse-Healer source predates the machine-owned HIL receiver Gateway projection contract.",
+            "solution_required": True,
+            "may_remain_blocked": True,
+            "next_solution_action": "REFRESH_EXISTING_LOCAL_HEALER_SOURCE_THROUGH_CANONICAL_SOURCE_TRANSPORT",
+            "source_freshness": healer_hil_receiver_gateway_source,
         }
     elif not roots_json:
         blocker = {
@@ -553,6 +652,8 @@ def main() -> int:
         "healer_root": str(healer_root) if healer_root is not None else None,
         "healer_root_source": healer_root_source,
         "healer_source_freshness": healer_source_freshness,
+        "healer_hil_receiver_gateway_source": healer_hil_receiver_gateway_source,
+        "hil_receiver_gateway_projection_enabled": hil_receiver_projection.get("STEGVERSE_HIL_RECEIVER_PROXY_ENABLED") == "true",
         "repository_root_count": len(repo_roots),
         "repository_roots_source": repo_roots_source,
         "blocker": blocker,
