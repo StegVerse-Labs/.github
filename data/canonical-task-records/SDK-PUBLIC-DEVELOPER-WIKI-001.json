@@ -1,0 +1,95 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-PUBLIC-DEVELOPER-WIKI-001",
+  "correlation_id": "SDK-PUBLIC-DEVELOPER-WIKI-001",
+  "root_correlation_id": "SDK-PUBLIC-DEVELOPER-WIKI-001",
+  "parent_task_id": null,
+  "goal": "Publish a developer-facing SDK wiki at sdk.stegverse.org directly from the canonical StegVerse-org/StegVerse-SDK repository, exposing manifested-data ingress, processing/governance route selection, schemas, examples, demos, receipt navigation, replay/reconstruction, external-framework integration, current implementation status, and explicit authority boundaries without creating a duplicate SDK authority or allowing documentation publication to grant execution or transition authority.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:README.md",
+    "StegVerse-org/StegVerse-SDK:SDK_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/GENERIC_MANIFEST_PROCESSING_CONTRACT.md",
+    "StegVerse-org/StegVerse-SDK:docs/MANIFEST_RECEIPT_NAVIGATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:schemas/stegverse.ingress-manifest.v1.schema.json",
+    "StegVerse-org/StegVerse-SDK:inspection/examples/external-framework-generic-manifest.json",
+    "docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "sdk-public-developer-wiki",
+      "sdk-pages-publication",
+      "sdk-branded-public-hostname",
+      "manifest-ingress-documentation",
+      "processing-route-documentation",
+      "schema-example-navigation",
+      "manifest-receipt-navigation",
+      "replay-reconstruction-documentation",
+      "external-framework-integration-guides",
+      "authority-boundary-documentation",
+      "site-sdk-wiki-directory-projection"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+    "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-org/StegVerse-SDK README generic manifested-data processing contract",
+    "StegVerse-org/StegVerse-SDK manifest receipt navigation documentation",
+    "StegVerse-org/StegVerse-SDK canonical ingress schema and external-framework example"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTRATION_MERGED",
+    "SDK_REPOSITORY_LOCAL_WIKI_HANDOFF_PRESENT",
+    "SDK_PUBLIC_WIKI_PAGES_SOURCE_PRESENT",
+    "SDK_PUBLIC_WIKI_EXACT_HEAD_VALIDATION_PASS",
+    "SDK_PUBLIC_WIKI_MERGED",
+    "SDK_BRANDED_HOST_SOURCE_CONFIG_PRESENT",
+    "SDK_PUBLIC_ROOT_HTTPS_OBSERVED",
+    "SDK_PUBLIC_SCHEMA_PAGE_OBSERVED",
+    "SDK_PUBLIC_EXAMPLE_PAGE_OBSERVED",
+    "SDK_PUBLIC_RECEIPT_NAVIGATION_PAGE_OBSERVED",
+    "SITE_SDK_PUBLIC_WIKI_LINK_MERGED",
+    "SITE_SDK_PUBLIC_WIKI_LINK_OBSERVED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "COMPLETION_CLAIMED",
+    "CLOSED"
+  ],
+  "handoff_projection_refs": [
+    "docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "public_wiki_grants_authority": false
+  }
+}
