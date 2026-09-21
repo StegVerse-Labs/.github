@@ -1138,3 +1138,8 @@ The existing content-addressed control-plane source package now carries the cano
 ### SDK purpose-bound post-claim TVC warrant bridge reconciliation
 
 PR #2456 is merged and validated. The existing purpose-bound WorkerCoordinator path now invokes the existing TVC execution-warrant oneshot only after canonical claim/fence custody closes, and carries only the secret-free warrant/public-key/policy verification tuple onward. Authentic assignment disposition, warrant issuance, and resident runtime execution remain evidence-gated.
+
+
+### Carrier-first HB receipt execution binding — 2026-09-21
+
+Carrier-first bootstrap restores WorkerCoordinator through the existing carrier-side self-heal path. The carrier registration now carries the same already-declared safe local worker bindings as the direct worker registration, allowing the self-healed WorkerCoordinator to retain its canonical Master Records custody configuration. This changes environment carriage only; HeartBeat remains non-authorizing.
