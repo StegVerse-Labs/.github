@@ -121,3 +121,29 @@ def test_hil_receiver_gateway_projection_rejects_wrong_fence_or_intr_path(tmp_pa
     base["base_url"] = "http://127.0.0.1:8877/intr/materialization"
     receipt.write_text(json.dumps(base) + "\n", encoding="utf-8")
     assert mod.hil_receiver_gateway_projection()["STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"] == "false"
+
+
+def test_healer_hil_receiver_gateway_source_requires_merged_contract(tmp_path):
+    app = tmp_path / "app"
+    app.mkdir()
+    path = app / "coinbase_stegdeploy_gateway.py"
+    path.write_text(
+        'HIL_RECEIVER_PROXY_ENABLED_ENV = "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"\n'
+        'HIL_RECEIVER_UPSTREAM_ENV = "STEGVERSE_HIL_RECEIVER_UPSTREAM"\n'
+        f'MINIMUM_HIL_RECEIVER_GATEWAY_COMMIT = "{mod.LLM_HIL_RECEIVER_GATEWAY_MERGE}"\n'
+        'def validate_hil_receiver_gateway_readiness(): pass\n'
+        'LLM_ADAPTER_HIL_RECEIVER_GATEWAY_SOURCE_STALE\n',
+        encoding="utf-8",
+    )
+    result = mod.verify_healer_hil_receiver_gateway_source(tmp_path)
+    assert result["state"] == "CURRENT"
+    assert result["required_healer_merge"] == mod.HEALER_HIL_RECEIVER_GATEWAY_MERGE
+
+
+def test_healer_hil_receiver_gateway_source_fails_stale_contract(tmp_path):
+    app = tmp_path / "app"
+    app.mkdir()
+    (app / "coinbase_stegdeploy_gateway.py").write_text("# stale\n", encoding="utf-8")
+    result = mod.verify_healer_hil_receiver_gateway_source(tmp_path)
+    assert result["state"] == "STALE_OR_INCOMPLETE"
+    assert result["missing_markers"]
