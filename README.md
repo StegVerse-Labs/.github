@@ -1130,3 +1130,7 @@ The purpose-bound WorkerCoordinator path now has a bounded repair in progress fo
 ### Functional Memory control-plane carriage
 
 The existing content-addressed control-plane source package now carries the canonical WorkerCoordinator wrapper, admitted WorkerCoordinator, Functional Memory bridge, shared canonical Master Records custody client, and corrected StegFin worker fragment as one allowlisted delta. This closes the source-delivery gap where the existing relay could materialize a source tree that still lacked the merged Functional Memory assignment repair.
+
+### SDK evaluator pre-drift runtime-proof boundary
+
+`SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
