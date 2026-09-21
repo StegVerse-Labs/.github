@@ -1,6 +1,6 @@
 # Entity Autonomous Governed Progression Runtime Adoption Mirror Handoff
 
-Updated: 2026-09-16
+Updated: 2026-09-21
 Repository: `StegVerse-Labs/.github`
 Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
@@ -93,6 +93,25 @@ The following are invalid global prerequisites:
 `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` remains independently governed. Its reconstructed parent state and G25+ fence requirement, if still current, apply only to that lane. They are not a prerequisite for `canonical_work_coordination` or unrelated Organization AI progression.
 
 The prior handoff's serial sequence placing Ecosystem Chat first is superseded by this correction.
+
+## Task Registry runtime review — generation 152
+
+Current Canonical Task Registry policy materially narrows the runtime boundary:
+
+- `MISSING_AUTHENTIC_RUNTIME_RECEIPT_IS_NOT_A_WAIT_CONDITION`;
+- `TRACE_EXISTING_PATH_TO_FIRST_DETERMINISTIC_DEFECT_AND_REPAIR_ONLY_THAT_BOUNDARY`;
+- generic `runtime missing` is inadmissible before Canonical Runtime Profile Map compatibility/routing resolution;
+- unresolved runtime/evidence constraints are metadata rather than operational stop states;
+- Runtime Profile Map matching and routing readiness grant no execution authority;
+- current observation may remain a completion predicate without blocking WorkerCoordinator routing review.
+
+The prior runtime-adoption task metadata violated that contract. Its `runtime_requirements` encoded the complete end-to-end authority/evidence chain as one profile match and used task-local environment `SOVEREIGN_RESIDENT_OR_ADMITTED_CURRENT_DEVICE_RUNTIME`. No canonical Runtime Profile Map profile declares that exact environment or that six-name composite capability vocabulary, so deterministic routing could fail before WorkerCoordinator review.
+
+The bounded correction aligns routing requirements with the existing `canonical-work-coordination-runtime-v1` vocabulary already used by the parent Canonical Work goal: `task_registry_reconciliation`, `master_records_reconciliation`, `worker_claim_projection`, `dependency_reevaluation`, `intr_task_admission`, and `canonical_artifact_validation` in `SOVEREIGN_RESIDENT / INTERNAL`. `current_observation_required=false` applies only to runtime-routing compatibility; authentic runtime observation remains required by this task's completion predicates.
+
+Generation 152 also extends the existing registry-first cycle with a targeted WorkerCoordinator state-transition mode for already-admitted ACTIVE/CHECKED_OUT work. That path invokes the existing `scripts/run_worker_runtime.py --task-id <task>` one-shot with `carrier_trigger_required=false` when the canonical WorkerCoordinator fragment authorizes independent task control. Therefore persistent carrier/WorkerCoordinator presence is not a universal prerequisite for Canonical Work progression. Resident self-heal remains valid for the resident runtime substrate, but absence of `runtime-presence.latest.json` cannot globally serialize this task.
+
+No profile match, routing-ready disposition, source change, CI result, targeted invocation request, or prior receipt grants execution/transition authority. WorkerCoordinator claim/fence, Interlock/InTr governance, TV/TVC credential authority, and Master Records transition custody/reconstruction remain mandatory at their exact state boundaries.
 
 ## Runtime-adoption completion predicate
 
