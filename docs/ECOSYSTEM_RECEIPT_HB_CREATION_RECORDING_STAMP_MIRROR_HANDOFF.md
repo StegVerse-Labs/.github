@@ -306,3 +306,30 @@ Historical receipts remain unchanged and are not retroactively assigned HB creat
 ### Proof ceiling
 
 This source merge does not establish authentic runtime HB-bound receipt emission, a production HB/Master Records checkpoint, Node/KV witness propagation, external-anchor submission or confirmation, or inherited external temporal bounds.
+
+
+## First source-level successor merge closure — 2026-09-21
+
+The generation-155 producer/checkpoint source slice merged to canonical `StegVerse-Labs/.github` main from PR #2410 as commit `03af4dcf026ca067e248381ad2920d2312a0bcc2`. Exact PR head `b057c1c7e59ad9362dfa8033f4019109eea362f0` passed `Validate Ecosystem Receipt HB Successor` and `Test 3 Richard Seam Acceptance` before merge. The Goal was re-read immediately before merge and remained `ACTIVE / CHECKED_OUT` with COSV `50000000100000`.
+
+The corresponding Master Records source slice merged from `master-records/orchestration` PR #109 as commit `b97b9b2707d6697c296aa62b0636b961f524ea65`. Its final exact head `21d37cef1786d2bc342dc5021792d9302059f4ec` passed the repository-wide Runtime Evidence Validation suite (`386 passed, 1 skipped, 9 warnings, 10 subtests passed`) plus all other observed applicable workflows.
+
+Together these merged source surfaces now establish the source-level construction for:
+- receipt creation HB reference frozen before canonical receipt hashing;
+- Master Records recording HB reference retained as custody metadata without rewriting the receipt;
+- deterministic bounded Master Records receipt-set roots over stable successor custody ordinals;
+- HB checkpoint commitments binding the exact bounded Master Records root/count/floor/ceiling;
+- preservation of historical receipts without retroactive HB stamping.
+
+### Evidence ceiling remains unchanged
+
+These merges are source/CI evidence only. They do **not** establish:
+- authentic runtime HB-bound receipt emission;
+- authentic production Master Records HB recording metadata;
+- an authentic production bounded receipt-set root;
+- an authentic runtime HB checkpoint commitment;
+- Node/KV distributed witness propagation;
+- external timestamp/notary submission or confirmation;
+- inherited external temporal bounds.
+
+Those predicates require separately observed authentic runtime evidence.
