@@ -335,3 +335,16 @@ The existing TVC-authorized control-plane relay could therefore succeed while st
 - `control/worker-registry.d/stegfin-live-entry-003.json`
 
 No transport, relay, runtime, WorkerCoordinator, scheduler, dispatcher, authority plane, credential path, custody store, deployment plane, device dependency, or invocation is added. The package remains an allowlisted content-addressed source delta and the downstream source-refresh/worker-service path remains unchanged.
+
+
+### Functional Memory package-carriage repair merged — 2026-09-21
+
+PR #2460 merged as `12e1dd5630c6d1b729c3089d9a53325ca357c24b` from exact head `b754fbacc11f025cb84610b8f801dfa7e4864b3a`.
+
+Exact-head validation:
+- Validate Purpose-Bound Worker Derived Lifetime `35602677794`: PASS;
+- validate-deepseek-resident `35602677909`: PASS;
+- Validate KV AI Memory Resident Binding `35602677907`: PASS;
+- Test 3 Richard Seam Acceptance `35602677880`: PASS.
+
+The existing content-addressed control-plane source package now carries the minimum complete Functional Memory execution delta plus the corrected `STEGFIN-LIVE-ENTRY-003` fragment. No authentic post-repair relay/materialization/source-refresh/assignment result is claimed by this merge. The next admissible state transition must come from the existing TVC-authorized control-plane relay and far-side source materialization, followed by the existing source refresh and WorkerCoordinator cycle.
