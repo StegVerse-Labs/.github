@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 178,
-  "status": "SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_ACTIVE",
+  "generation": 179,
+  "status": "SDK_FOUR_STAGE_RETAINED_STANDING_RETIREMENT_PROOF_HANDOFF_READY",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8903,8 +8903,8 @@
       "root_correlation_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
       "parent_task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
       "goal": "Repair the four-stage SDK evidence experiment claims and falsifiability defects identified by the validated v2 post-lineage review while preserving the retired package as immutable history, then produce a clean bounded basis for a separate retained-standing/retirement custody task.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CHECKED_OUT",
+      "coordination_state": "RETIRED",
+      "checkout_state": "COMPLETED_VALIDATED",
       "repository": "StegVerse-org/StegVerse-SDK",
       "handoff": "docs/SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_MIRROR_HANDOFF.md",
       "cosv_task_vector": "71000000111111",
@@ -8931,15 +8931,92 @@
         "successor_run": 35547155843,
         "successor_attempt": 2
       },
+      "remaining_predicates": [],
+      "completion": {
+        "claimed": true,
+        "validated": true,
+        "option_a_complete": true
+      },
+      "evidence": {
+        "sdk_pr": 304,
+        "validated_head": "0bc31804750c224257409e2774fe918e3c797c10",
+        "validated_tree": "f42bb1017aa6f7bb185ba410d8ddca369524b77a",
+        "merged_main": "e1116e9cb5f5043c9198505d64560b710c517e88",
+        "merged_tree": "f42bb1017aa6f7bb185ba410d8ddca369524b77a",
+        "exact_tree_equality": true,
+        "four_stage_validation_run": 35648276053,
+        "four_stage_artifact_id": 10661081336,
+        "four_stage_artifact_sha256": "82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5",
+        "exact_head_triggered_workflows_passed": 13,
+        "coordination_pr": 2498,
+        "coordination_merge": "878856553d5a06e6418a0b968a88d6d75d32a38c",
+        "historical_preregistration_commit": "0127082e415fb220c709962ab7d0645e06105a4c",
+        "historical_preregistration_sha256": "37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7",
+        "historical_attempt1_disposition": "SUCCESS"
+      },
+      "successor_task_id": "SDK-FOUR-STAGE-RETAINED-STANDING-RETIREMENT-PROOF-001"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SDK-FOUR-STAGE-RETAINED-STANDING-RETIREMENT-PROOF-001",
+      "correlation_id": "SDK-FOUR-STAGE-RETAINED-STANDING-RETIREMENT-PROOF-001",
+      "root_correlation_id": "SDK-FOUR-STAGE-RETAINED-STANDING-RETIREMENT-PROOF-001",
+      "parent_task_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+      "goal": "Prove retained prior standing and retirement for the four-stage worker lifecycle using the existing WorkerCoordinator claim/fence, TV/TVC warrant, Interlock/InTr transition authority, and canonical Master Records custody/reconstruction path, with invocation admitted only after retained activation standing exists and a post-close stale-fence invocation authentically refused.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "HANDOFF_READY",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "handoff": "docs/SDK_FOUR_STAGE_RETAINED_STANDING_RETIREMENT_PROOF_MIRROR_HANDOFF.md",
+      "cosv_task_vector": "71000000111111",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "constraints": {
+        "reuse_existing_runtime_authority_paths_only": true,
+        "new_runtime_scheduler_dispatcher_workercoordinator_or_custody_store": false,
+        "manifest_minted_fence_prohibited_for_proof": true,
+        "workercoordinator_external_claim_fence_required": true,
+        "activate_receipt_master_records_custody_required_before_invocation": true,
+        "interlock_intr_admission_required": true,
+        "tv_tvc_warrant_required": true,
+        "hb_authority": "NON_AUTHORIZING_CHRONOLOGY_ONLY",
+        "post_close_stale_fence_refusal_required": true,
+        "canonical_master_records_closure_required": true,
+        "github_runtime_authority": "NONE"
+      },
+      "required_closure": {
+        "standing": {
+          "transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+          "master_records_state": "RECORDED",
+          "reconstruction_status": "PASS",
+          "required_evidence_validation_status": "PASS",
+          "exact_digest_equality": true
+        },
+        "activation": {
+          "retained_before_invocation": true,
+          "custody": "CANONICAL_MASTER_RECORDS",
+          "hb_stamp_optional_non_authorizing": true
+        },
+        "retirement": {
+          "close_retire_retained": true,
+          "stale_fence_post_close_invocation_disposition": "DENY",
+          "refusal_retained": true,
+          "reconstruction_status": "PASS",
+          "required_evidence_validation_status": "PASS",
+          "exact_digest_equality": true
+        }
+      },
+      "nonclaims": [
+        "HB does not authorize admission or transition.",
+        "Local semantic receipts do not prove prior standing.",
+        "GitHub Actions validation does not constitute resident runtime execution.",
+        "No completion is claimed until authentic runtime transitions are retained and reconstruct exactly."
+      ],
       "remaining_predicates": [
-        "TASK4_OVERLAP_MEASUREMENT_FALSIFIABLE_WITH_SERIALIZED_NEGATIVE_CONTROL",
-        "TASK4_PARTITION_SEMANTICS_GENUINE_OR_EXPLICITLY_RELABELED_REPLICATION",
-        "GROUP_RESULT_BINDING_RECOMPUTED_FROM_PER_WORKER_BINDINGS",
-        "GOVERNED_RUNTIME_LOCAL_SEMANTIC_BOUNDARY_ENFORCED",
-        "TEST2_TEST3_DIFFERENTIAL_INVARIANCE_ASSERTION",
-        "PROVENANCE_EXHIBIT_INVENTORY_HYGIENE_REPAIRED",
-        "EXACT_HEAD_VALIDATION_PASS",
-        "MERGED_DEFAULT_BRANCH_EVIDENCE"
+        "AUTHENTIC_EXTERNAL_WORKERCOORDINATOR_CLAIM_FENCE",
+        "ACTIVATION_RECEIPT_RECORDED_BEFORE_INVOCATION",
+        "INTERLOCK_INTR_INVOCATION_ADMISSION_FROM_RETAINED_STANDING",
+        "CLOSE_RETIRE_RECEIPT_RECORDED_AND_RECONSTRUCTED",
+        "POST_CLOSE_STALE_FENCE_INVOCATION_DENIED",
+        "DENIAL_RECEIPT_RECORDED_AND_RECONSTRUCTED"
       ]
     }
   ],
