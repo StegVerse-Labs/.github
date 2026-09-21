@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 162,
-  "status": "CANONICAL_MASTER_RECORDS_GENERIC_PREDECESSOR_CLOSURE_REPAIRED",
+  "generation": 163,
+  "status": "CONVERSATION_EVIDENCE_RESIDENT_DISPATCH_VISIT_REOBSERVED_MISSING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6808,8 +6808,8 @@
           "--task-id",
           "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
         ],
-        "current_condition": "NATIVE_RESIDENT_INITIATION_SOURCE_COMPLETE_BUT_NO_AUTHENTIC_POST_REPAIR_CARRIER_WORKER_DISPATCH_EVIDENCE_RETAINED",
-        "remediation_path": "EXISTING_NATIVE_CARRIER_SUPERVISION_MUST_PRODUCE_FRESH_TASK_CAPABLE_WORKER_TICK_THEN_FIRST_ITERATION_RESIDENT_DISPATCH_VISIT;NO_ALTERNATE_PATH_AUTHORIZED",
+        "current_condition": "FIRST_MISSING_AUTHENTIC_TRANSITION_RESIDENT_REQUEST_DISPATCH_VISIT",
+        "remediation_path": "NO_SOURCE_OR_RUNTIME_MUTATION_AUTHORIZED;RETAIN_EXISTING_NATIVE_PATH_AND_REQUIRE_AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT",
         "connected_device_inventory_role": "NONE_PROHIBITED",
         "second_runtime_created": false,
         "second_scheduler_created": false,
@@ -6860,6 +6860,31 @@
             "evidence_ref": "control/worker-runtime-state.json"
           },
           "authority_effect": "NONE_RUNTIME_OBSERVATION_BOUNDARY_ONLY"
+        },
+        "native_resident_reobservation": {
+          "observed_against_generation": 162,
+          "checked_paths": [
+            "control/worker-runtime-state.json",
+            "receipts/sovereign-host/runtime-presence.latest.json",
+            "receipts/sovereign-host/resident-request-dispatch.latest.json",
+            "receipts/sovereign-host/hb-machine-continuation.latest.json",
+            "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+            "control/worker-registry.d/healer-sovereign-scheduler-001.json"
+          ],
+          "worker_runtime_state": {
+            "last_cycle_at": "2026-08-18T19:47:00Z",
+            "runtime_tick": 2,
+            "observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+          },
+          "runtime_presence_receipt_present": false,
+          "resident_request_dispatch_receipt_present": false,
+          "machine_continuation_receipt_present": false,
+          "healer_scheduler_receipt_present": false,
+          "healer_scheduler_registry_state": "HANDOFF_READY",
+          "healer_scheduler_claim_id": null,
+          "first_missing_authentic_transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+          "downstream_promotion_allowed": false,
+          "authority_effect": "NONE_REOBSERVATION_ONLY"
         }
       },
       "worker_claim": {
