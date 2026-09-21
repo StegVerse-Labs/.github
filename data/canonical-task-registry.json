@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 155,
+  "generation": 156,
   "status": "STEGHEALTH_FAILURE_REMEDIATION_OWNER_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -6648,7 +6648,9 @@
         "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
         "tests/test_conversation_evidence_ingestion_runtime.py",
         "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:data/reusable_task_schedule.json",
-        "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md"
+        "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer@2e3d41e44c28f0c116b190c6d5a38d094d29a588:data/reusable_task_schedule.json",
+        "StegVerse-Labs/StegVerse-Healer@2e3d41e44c28f0c116b190c6d5a38d094d29a588:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md"
       ],
       "targets": {
         "organizations": [
@@ -6729,8 +6731,8 @@
           "--task-id",
           "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
         ],
-        "current_condition": "EXISTING_NEUTRAL_CARRIER_BOUND_TARGETED_WORKERCOORDINATOR_SUCCESSOR_PENDING_AUTHENTIC_INVOCATION",
-        "remediation_path": "NEXT_EXISTING_REUSABLE_CARRIER_INVOCATION_TO_CANONICAL_WORK_GOAL_CONTEXT_THEN_TARGETED_WORKERCOORDINATOR",
+        "current_condition": "POST_REPAIR_HEALER_RESIDENT_DISPATCH_VISIT_NOT_RETAINED",
+        "remediation_path": "EXISTING_STANDING_HEALER_RESIDENT_REQUEST_MUST_BE_VISITED_BY_EXISTING_RESIDENT_DISPATCHER_THEN_EXISTING_NEUTRAL_REUSABLE_SCHEDULER_EVALUATES_SOURCE_REFRESH_BEFORE_GOAL_DISPATCH",
         "connected_device_inventory_role": "NONE_PROHIBITED",
         "second_runtime_created": false,
         "second_scheduler_created": false,
@@ -6750,10 +6752,17 @@
           "invocation_key": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
           "only_consumer": "canonical_work_coordination",
           "goal_task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
-          "healer_merge": "d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026",
+          "healer_merge": "2e3d41e44c28f0c116b190c6d5a38d094d29a588",
           "source_binding_validated": true,
           "authentic_invocation_observed": false,
           "authority_effect": "NONE_CARRIER_BINDING_ONLY"
+        },
+        "source_refresh_ordering": {
+          "source_refresh_reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+          "ordered_before_goal_dispatch": true,
+          "healer_merge": "2e3d41e44c28f0c116b190c6d5a38d094d29a588",
+          "exact_head_validation": "StegVerse-Healer Test Readiness PASS",
+          "authority_effect": "NONE_ORDERING_ONLY"
         }
       },
       "worker_claim": {
