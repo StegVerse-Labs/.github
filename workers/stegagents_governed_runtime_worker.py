@@ -500,6 +500,10 @@ def build_manifest_bound_purpose_request(task: Mapping[str, Any], runtime_reques
         "worker_id": task.get("worker_id"),
         "worker_instance_id": task.get("worker_instance_id"),
     }
+    predecessor = _closed_transition(
+        task.get("claim_fence_master_records_transition"),
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    )
     return {
         "schema": "stegverse.stegagents-purpose-bound-worker-request/v1",
         "task_id": PURPOSE_TASK_ID,
@@ -510,6 +514,7 @@ def build_manifest_bound_purpose_request(task: Mapping[str, Any], runtime_reques
         "credential_material_present": False,
         "worker_claim": claim,
         "purpose_bound_worker_request": dict(contract),
+        "graph_predecessor_master_records_transition": predecessor,
         "sdk_manifest_state_transition_binding": {
             "canonical_manifest_sha256": runtime_request.get("canonical_manifest_sha256"),
             "graph_id": runtime_request.get("graph_id"),
