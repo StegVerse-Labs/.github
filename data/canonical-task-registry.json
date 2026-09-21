@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 150,
-  "status": "CANONICAL_MASTER_RECORDS_WORKERCOORDINATOR_CLAIM_FENCE_CUSTODY_VALIDATED",
+  "generation": 151,
+  "status": "SDK_TT_WORKERCOORDINATOR_MANIFEST_FLAG_ORDER_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4961,7 +4961,20 @@
         "canonical_successor_task_record": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
         "first_unresolved_successor_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION"
       },
-      "allowed_next_transitions": []
+      "allowed_next_transitions": [],
+      "preserved_execution_lineage_repair_2026_09_21": {
+        "source_defect": "WORKERCOORDINATOR_MANIFEST_RUNTIME_REQUEST_FLAG_READ_BEFORE_INITIALIZATION",
+        "affected_boundary": "HANDOFF_READY_TO_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "defect_effect": "TARGETED_ASSIGNMENT_CAN_RAISE_UNBOUND_LOCAL_BEFORE_MASTER_RECORDS_CLAIM_FENCE_CUSTODY",
+        "repair": "INITIALIZE_MANIFEST_REQUEST_PATH_AND_PRESENCE_BEFORE_ASSIGNMENT_RECORD_OPTIONAL_BINDING",
+        "canonical_task_coordination_state_preserved": "RETIRED",
+        "execution_lineage_fragment_state_preserved": "HANDOFF_READY",
+        "no_new_runtime": true,
+        "no_new_scheduler": true,
+        "no_new_dispatcher": true,
+        "no_new_custody_store": true,
+        "authority_effect": "NONE_EXISTING_PATH_SOURCE_REPAIR_ONLY"
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
