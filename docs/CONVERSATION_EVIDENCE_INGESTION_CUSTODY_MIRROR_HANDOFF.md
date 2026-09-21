@@ -192,3 +192,16 @@ Accordingly no code-path substitute is admissible:
 - no device prerequisite.
 
 Fresh claim/fence, Master Records claim/fence custody, synthetic ingestion, and Site-successor derivation remain false.
+
+
+## Native evidence re-observation — generation 162
+
+Re-observation of canonical native evidence again found no authentic post-repair runtime progression:
+- worker runtime state remains historical at `2026-08-18T19:47:00Z`, runtime tick `2`, observation-only;
+- runtime-presence receipt absent;
+- resident-request-dispatch receipt absent;
+- machine-continuation receipt absent;
+- Healer scheduler receipt absent;
+- Healer registry remains `HANDOFF_READY` with `claim_id=null`.
+
+The first missing authentic transition remains exactly `RESIDENT_REQUEST_DISPATCH_VISIT`. No downstream claim/fence, Master Records closure, synthetic ingestion, completion, or Site successor is promoted. No runtime/source path is modified.
