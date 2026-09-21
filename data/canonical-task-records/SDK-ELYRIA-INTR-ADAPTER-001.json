@@ -117,9 +117,10 @@
     },
     "shared_service_gateway_surface": {
       "eligible": false,
+      "role": "NOT_ELYRIA_DEPENDENCY",
       "reason": [
-        "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
-        "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
+        "TVC_COINBASE_SERVICE_GATEWAY_IS_PROVIDER_SPECIFIC_INFRASTRUCTURE",
+        "ELYRIA_COMPONENT_PROFILE_REQUIRES_DIRECT_GENERIC_INTERLOCK_INTR_EXTERNAL_ADAPTER_TRANSPORT"
       ]
     },
     "governed_round_trip_executed": false,
@@ -159,45 +160,29 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "service_gateway_lineage_trace_20260921": {
-    "owner_task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
-    "tvc_cmc029_task_id": "TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029",
-    "machine_owner_state": "HANDOFF_READY",
-    "source_carriage_check": "PASS",
-    "bootstrap_nonsecret_binding_carriage": "PRESERVED",
-    "adapter_env_allowlist_check": "PASS",
-    "credential_scrub_preserves_nonsecret_gateway_kv_tls_bindings": true,
-    "first_concrete_predecessor_condition": "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
-    "runtime_receipt_for_resident_storage_binding_failure_observed": false,
-    "source_defect_found": false,
-    "repair_performed": false,
-    "downstream_public_route_predicate": "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
-    "downstream_tls_predicate": "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED",
-    "cmc029_live_issuance_observed": false,
-    "cmc029_public_https_observed": false,
-    "elyria_transport_eligible": false,
-    "disposition": "REQUIRE_AUTHENTIC_EXISTING_MACHINE_OWNER_EXECUTION_WITH_REAL_GATEWAY_AND_KV_BINDINGS_BEFORE_CMC029_TLS_OR_PUBLIC_ROUTE_CAN_ADVANCE"
-  },
-  "tvc_machine_owned_execution_trace_20260921": {
-    "owner_task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
-    "collision_check": "NO_OPEN_SDK_ELYRIA_INTR_ADAPTER_PR",
-    "targeted_bootstrap_invocation_source_present": true,
-    "generic_workercoordinator_independent_admission_present": true,
-    "task_state": "HANDOFF_READY",
-    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
-    "authentic_claim_fence_observed": false,
-    "authentic_worker_response_observed": false,
-    "authentic_resident_storage_binding_evaluation_observed": false,
-    "retained_runtime_state_fresh_for_task_execution": false,
-    "first_missing_authentic_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-    "downstream_sequence": [
-      "REAL_RESIDENT_STORAGE_BINDINGS_EVALUATED",
-      "SERVICE_GATEWAY_TLS_ADOPTION",
-      "SOVEREIGN_GATEWAY_RECONCILIATION",
-      "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_OBSERVED"
+  "dependency_reconciliation_20260921": {
+    "coinbase_dependency_required": false,
+    "kv_dependency_required": false,
+    "tvc_coinbase_service_gateway_dependency_required": false,
+    "basis": [
+      "goal component profile selects RT-EXTERNAL-ADAPTER-ESTABLISH-001 plus generic RTC transport/custody components",
+      "goal component profile explicitly excludes KV/SKAP user-verification flow",
+      "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001 objective, bindings, services, readiness, and continuation owner are Coinbase-specific"
     ],
-    "source_defect_found": false,
-    "repair_performed": false,
-    "disposition": "NO_SOURCE_REPAIR_JUSTIFIED_REQUIRE_AUTHENTIC_EXISTING_WORKERCOORDINATOR_CYCLE"
+    "superseded_active_dependency_path": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001 -> CMC-029 -> Coinbase Service Gateway",
+    "canonical_active_path": [
+      "StegVerse SDK Elyria framework adapter",
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-STEGVERSE-EGRESS-007",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-SDK-RETURN-006"
+    ],
+    "external_endpoint_requirement": "reachable authorized Elyria public endpoint",
+    "master_records_required": true,
+    "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
