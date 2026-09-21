@@ -33,7 +33,21 @@ jobs:
           test -z "$(git config --local --get-regexp 'extraheader|credential' || true)"
       - name: Validate exact StegBrowser sovereign ingress retention path
         run: |
-          python3 -m unittest -v tests.test_stegbrowser_universal_intr_materialization
+          python3 - <<'PY'
+          import tests.test_stegbrowser_universal_intr_materialization as t
+          tests = [
+              t.test_installer_reuses_shared_listener_and_is_idempotent,
+              t.test_node_trigger_is_admitted_write_once_without_authority,
+              t.test_tampered_node_trigger_fails_closed,
+              t.test_consumer_dispatches_existing_manifest_runner_only_after_exact_binding,
+              t.test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_server,
+              t.test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref,
+              t.test_consumer_maps_opaque_binding_ref_to_ingress_retained_binding_path,
+          ]
+          for test in tests:
+              test()
+              print(f"{test.__name__}=PASS")
+          PY
       - name: Confirm validation-only authority boundary
         run: |
           echo 'STEGBROWSER_INTR_RETENTION_VALIDATION=PASS'
