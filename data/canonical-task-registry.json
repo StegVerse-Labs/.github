@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 166,
+  "generation": 167,
   "status": "CANONICAL_MASTER_RECORDS_DIRECT_CALLER_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -68,7 +68,10 @@
         "github-pr:2367@57415095b055ba04451207fc659bee98855f587a",
         "control/worker-registry.d/stegfin-live-entry-003.json",
         "tests/test_preclaim_fragment_policy_reconciliation.py",
-        "github-pr:2392@b0cd6274bbd7e536a91322a0f42f2f58df747aac"
+        "github-pr:2392@b0cd6274bbd7e536a91322a0f42f2f58df747aac",
+        "scripts/build_control_plane_source_package.py",
+        "tests/test_sdk_tt_richard_seam_control_plane_package.py",
+        "github-pr:2460@12e1dd5630c6d1b729c3089d9a53325ca357c24b"
       ],
       "targets": {
         "organizations": [
@@ -140,7 +143,11 @@
         "scripts/install_sovereign_worker_source_refresh_service.py",
         "scripts/run_worker_runtime.py",
         "events/heartbeat-runtime.jsonl",
-        "control/worker-status.json"
+        "control/worker-status.json",
+        "github-actions:35602677794",
+        "github-actions:35602677909",
+        "github-actions:35602677907",
+        "github-actions:35602677880"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
@@ -206,7 +213,7 @@
         "separate_runtime_observer_is_completion_authority": false
       },
       "functional_memory_runtime_exercise": {
-        "state": "POST_REPAIR_RESIDENT_OBSERVATION_REQUIRED_NO_NEW_DETERMINISTIC_DEFECT",
+        "state": "CONTROL_PLANE_PACKAGE_CARRIAGE_REPAIRED_AUTHENTIC_RELAY_RESULT_REQUIRED",
         "task_id": "STEGFIN-LIVE-ENTRY-003",
         "retained_authentic_preassignment_result": {
           "event_type": "activation_deferred",
@@ -230,8 +237,8 @@
         "fresh_functional_memory_master_records_receipt_observed": false,
         "controlled_missing_pointer_recovery_exercise_completed": false,
         "controlled_missing_pointer_recovery_disposition": "DEFER_UNTIL_AUTHENTIC_SAME_TASK_FUNCTIONAL_MEMORY_RECEIPT_EXISTS",
-        "authority_effect": "NONE_OBSERVATION_ONLY",
-        "canonical_generation_observed": 160,
+        "authority_effect": "NONE_SOURCE_CARRIAGE_REPAIR_ONLY",
+        "canonical_generation_observed": 166,
         "post_repair_merge": "b0cd6274bbd7e536a91322a0f42f2f58df747aac",
         "checked_fresh_resident_evidence": true,
         "latest_retained_same_task_runtime_epoch": 29,
@@ -248,7 +255,29 @@
           "worker_cycle_reapplies_fragments_before_task_evaluation": true,
           "new_deterministic_defect_identified": false
         },
-        "progression_rule": "DO_NOT_TREAT_ABSENCE_OF_POST_REPAIR_RUNTIME_RECEIPT_AS_FAILURE; REQUIRE_FIRST_AUTHENTIC_POST_REPAIR_REFRESH_OR_WORKER_CYCLE_RESULT"
+        "progression_rule": "DO_NOT_TREAT_ABSENCE_OF_POST_REPAIR_RUNTIME_RECEIPT_AS_FAILURE; REQUIRE_FIRST_AUTHENTIC_POST_REPAIR_REFRESH_OR_WORKER_CYCLE_RESULT",
+        "first_concrete_post_repair_execution_defect": "CONTROL_PLANE_SOURCE_PACKAGE_OMITTED_FUNCTIONAL_MEMORY_RUNTIME_AND_STEGFIN_FRAGMENT_DELTA",
+        "carriage_repair_pr": 2460,
+        "carriage_repair_merge": "12e1dd5630c6d1b729c3089d9a53325ca357c24b",
+        "carriage_exact_head": "b754fbacc11f025cb84610b8f801dfa7e4864b3a",
+        "carriage_files": [
+          "heartbeat_runtime/worker_runtime.py",
+          "heartbeat_runtime/admitted_worker_runtime.py",
+          "heartbeat_runtime/worker_assignment_functional_memory.py",
+          "workers/canonical_state_transition_custody.py",
+          "control/worker-registry.d/stegfin-live-entry-003.json"
+        ],
+        "carriage_validation_runs": {
+          "purpose_bound_worker_derived_lifetime": 35602677794,
+          "deepseek_resident": 35602677909,
+          "kv_ai_memory_resident_binding": 35602677907,
+          "test3_richard_seam_acceptance": 35602677880
+        },
+        "authentic_control_plane_relay_after_carriage_repair_observed": false,
+        "authentic_source_materialization_after_carriage_repair_observed": false,
+        "authentic_worker_source_refresh_after_carriage_repair_observed": false,
+        "authentic_assignment_disposition_after_carriage_repair_observed": false,
+        "authentic_functional_memory_receipt_after_carriage_repair_observed": false
       }
     },
     {
