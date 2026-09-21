@@ -1061,3 +1061,8 @@ Canonical Goal Task `SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001` / COSV `71000
 
 
 Canonical Goal Task `SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001` / COSV `71000000111111` is RETIRED / COMPLETED / VALIDATED. A genuinely preregistered post-lineage four-stage successor execution ran as GitHub Actions run `35547155843` attempt 2 on exact tested head `18a5f30b61557bf557b563797fccb241628f4b2d` / tree `6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6`. Fresh artifact `10617582192` hashes to `30838d6c6446d183c833a2023eed1323fe849432ca1ebb66887b85e537c584e1`; all four raw results independently verify canonical-manifest, request, and processor-result lineage. Delivered successor ZIP SHA-256 is `da628137640b26d2eae9124e94d4f02719552628877ca2b73d21051a634461e6`. The prior authoritative rerun bundle remains immutable. Canonical handoff: `docs/SDK_FOUR_STAGE_POST_LINEAGE_EVIDENCE_PACKAGE_MIRROR_HANDOFF.md`.
+
+
+### SDK TT preserved WorkerCoordinator claim-path repair
+
+The preserved `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` execution lineage had a deterministic WorkerCoordinator source defect: `manifest_runtime_request_present` was read before initialization inside `_activate_from_trigger()`, so targeted admission could fail before canonical `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` custody. The existing path now initializes the manifest-request locator/presence before optional assignment-record binding; no runtime or authority surface was added.
