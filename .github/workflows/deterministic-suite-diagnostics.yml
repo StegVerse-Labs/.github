@@ -10,6 +10,8 @@ on:
     paths:
       - "scripts/run_reusable_task_scheduler.py"
       - "tests/test_neutral_reusable_task_scheduler.py"
+      - "scripts/refresh_and_dispatch_resident_requests.py"
+      - "tests/test_canonical_work_goal_context_dispatch.py"
       - "scripts/package_sovereign_control_plane_bundle.py"
       - "tests/test_package_sovereign_control_plane_bundle.py"
       - "scripts/activate_resident_stack.py"
@@ -69,6 +71,7 @@ jobs:
             python -m unittest -v \
               tests.test_neutral_reusable_task_scheduler \
               tests.test_steghealth_reusable_portable_dispatch_binding \
+              tests.test_canonical_work_goal_context_dispatch \
               tests.test_package_sovereign_control_plane_bundle \
               tests.test_one_shot_resident_stack_activation_request \
               tests.test_healer_local_root_discovery \
