@@ -1134,3 +1134,8 @@ The existing content-addressed control-plane source package now carries the cano
 ### SDK evaluator pre-drift runtime-proof boundary
 
 `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
+
+
+### Carrier-first HB receipt execution binding — 2026-09-21
+
+Carrier-first bootstrap restores WorkerCoordinator through the existing carrier-side self-heal path. The carrier registration now carries the same already-declared safe local worker bindings as the direct worker registration, allowing the self-healed WorkerCoordinator to retain its canonical Master Records custody configuration. This changes environment carriage only; HeartBeat remains non-authorizing.
