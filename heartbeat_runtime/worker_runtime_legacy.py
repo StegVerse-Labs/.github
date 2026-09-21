@@ -696,6 +696,119 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             self._invoke(registry, task, carrier_epoch, cost_log, events)
             return True
 
+        if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":
+            adapter_ref = worker.get("adapter_ref")
+            adapter = self.adapters.get(adapter_ref) if isinstance(adapter_ref, str) else None
+            if adapter is None:
+                self._event(events, carrier_epoch, "purpose_bound_post_claim_adapter_missing", task_id=task_id, authority_effect=False)
+                return False
+
+            provisional = dict(task)
+            provisional.update({
+                "state": "ACTIVE",
+                "executor_binding": "BOUND",
+                "worker_id": worker["worker_id"],
+                "worker_instance_id": worker_instance_id,
+                "claim_id": claim_id,
+                "claim_fence_master_records_transition": dict(assignment_custody),
+                "purpose_bound_state_graph_claim_bundle": purpose_graph_claim_bundle,
+                "assignment_timer": timer.as_dict(),
+                "heartbeat_timing": {
+                    "start_epoch": carrier_epoch,
+                    "last_response_epoch": carrier_epoch,
+                    "last_transition_epoch": carrier_epoch,
+                    "current_transition": "CLAIM_FENCE_CUSTODY_CLOSED_PENDING_GOVERNED_ACTIVATION",
+                    "transition_sequence": 0,
+                    "expected_next_transition": "TV_TVC_WARRANT_POLICY_VERIFIED",
+                    "expected_next_earliest_epoch": None,
+                    "expected_next_latest_epoch": None,
+                    "max_missing_response_beats": max(1, min(10, int(budget))),
+                    "expiry_epoch": None,
+                    "expiry_basis": "WORKER_RUNTIME_ASSIGNMENT_TIMER",
+                    "fencing_token": generation,
+                },
+            })
+            response = adapter(provisional, handoff, carrier_epoch)
+            if response.state != "COMPLETED" or not isinstance(response.checkpoint_ref, str) or not response.checkpoint_ref:
+                self._event(
+                    events,
+                    carrier_epoch,
+                    "purpose_bound_post_claim_governed_execution_fail_closed",
+                    task_id=task_id,
+                    claim_id=claim_id,
+                    fencing_token=generation,
+                    response_state=response.state,
+                    transition_id=response.transition_id,
+                    authority_effect=False,
+                )
+                return False
+
+            checkpoint = Path(response.checkpoint_ref)
+            if not checkpoint.is_absolute():
+                checkpoint = self.root / checkpoint
+            if not checkpoint.is_file():
+                self._event(events, carrier_epoch, "purpose_bound_post_claim_receipt_missing", task_id=task_id, claim_id=claim_id, authority_effect=False)
+                return False
+            retained = self._load(checkpoint)
+            records_only_closed = (
+                retained.get("schema") == "stegverse.stegagents-purpose-bound-worker-runtime-receipt/v1"
+                and retained.get("state") == "AUTHENTIC_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED"
+                and retained.get("task_id") == task_id
+                and retained.get("records_only") is True
+                and retained.get("worker_live_after_close") is False
+                and retained.get("continued_authority_after_retirement") is False
+                and isinstance(retained.get("claim_fence_master_records_transition"), dict)
+                and retained["claim_fence_master_records_transition"].get("receipt_sha256") == assignment_custody.get("receipt_sha256")
+            )
+            if not records_only_closed:
+                self._event(
+                    events,
+                    carrier_epoch,
+                    "purpose_bound_post_claim_records_only_closure_blocked",
+                    task_id=task_id,
+                    claim_id=claim_id,
+                    fencing_token=generation,
+                    authority_effect=False,
+                )
+                return False
+
+            registry["generation"] = generation
+            task.update({
+                "state": "COMPLETED",
+                "executor_binding": "UNBOUND",
+                "worker_id": None,
+                "worker_instance_id": None,
+                "claim_id": None,
+                "archive_eligible": True,
+                "archive_reason_codes": [],
+                "block_ref": None,
+                "assignment_timer": None,
+                "heartbeat_timing": None,
+                "claim_fence_master_records_transition": dict(assignment_custody),
+                "purpose_bound_state_graph_claim_bundle": purpose_graph_claim_bundle,
+                "last_checkpoint_ref": response.checkpoint_ref,
+            })
+            record["canonical_master_records_transition"] = assignment_custody
+            record["governed_records_only_receipt_ref"] = response.checkpoint_ref
+            self._append_assignment_record(record)
+            for ref in response.evidence_refs:
+                if ref not in task.setdefault("evidence_refs", []):
+                    task["evidence_refs"].append(ref)
+            self._record_cost(cost_log, task, carrier_epoch, response)
+            self._event(
+                events,
+                carrier_epoch,
+                "purpose_bound_state_graph_completed_after_governed_activation",
+                task_id=task_id,
+                claim_id=claim_id,
+                fencing_token=generation,
+                claim_fence_receipt_sha256=assignment_custody.get("receipt_sha256"),
+                records_only_receipt_ref=response.checkpoint_ref,
+                task_active_projected_before_governed_activation=False,
+                authority_effect=False,
+            )
+            return True
+
         if self._atomic_constitutive_activation_required(handoff):
             try:
                 atomic_response, atomic_receipt = self._admit_atomic_constitutive_activation(

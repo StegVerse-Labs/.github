@@ -386,3 +386,12 @@ manifest request path materialized
 -> `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` submitted through canonical `submit_state_receipt(...)`.
 
 No authentic production claim/fence receipt is claimed from this source repair. The next authentic state remains the same targeted request reaching this repaired assignment cycle and returning a Master Records closure satisfying `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256 == reconstructed_receipt_sha256`. Only after that exact closure may the immediately subsequent governed transition proceed.
+
+## Purpose-bound post-claim successor ordering repair — 2026-09-21
+
+Tracing the staged `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` request beyond the repaired pre-claim producer found the next deterministic existing-path defect in `heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger(...)`. After canonical `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` custody closed, the generic branch projected the canonical task `ACTIVE`, bound the worker/instance/claim, and invoked it before the existing TV/TVC -> StegCore/InTr constitutive activation/lifecycle path had returned its governed Master Records closures.
+
+PR #2414 repairs only that ordering seam. The canonical task remains `HANDOFF_READY` and unbound after claim/fence custody while the existing StegAgents process adapter evaluates the already-bound claim/fence through the existing TV/TVC, Interlock/InTr, and purpose-bound lifecycle path using a provisional invocation view. Canonical task state is projected terminal only after the retained purpose-bound receipt proves records-only closure, no live worker, no continued authority after retirement, and exact binding to the already-closed claim/fence receipt.
+
+No runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, credential source, database, custody store, authority plane, or device dependency is added. This is source repair only until PR #2414 exact-head validation passes and the repair merges; no authentic assignment disposition or production runtime transition is claimed by this source change.
+
