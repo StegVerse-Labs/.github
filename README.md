@@ -1215,3 +1215,7 @@ TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready r
 ### SDK evaluator exact reconstruction checkpoint
 
 The runtime-proof task remains at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Exact parent source hashes were reconciled against accessible retained-runtime and Master Records projections; they currently remain source/CI evidence only and do not promote authentic runtime materialization. The state is `UNKNOWN_NOT_FALSE`, with no source/runtime defect inferred and no `RESIDENT_REQUEST_DISPATCH_VISIT` substitution.
+
+### SDK TVC warrant-service self-heal installation
+
+TVC PR #458 is merged and validated. The existing root TVC resident self-heal now reconciles the existing execution-warrant service for each discovered user sovereign runtime owner and performs daemon reload after successful installation; private-key custody remains LoadCredential-only. Authentic installation, assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.

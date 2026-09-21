@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 182,
-  "status": "STEGBROWSER_A3_POST_REPAIR_REFRESH_EVIDENCE_NOT_OBSERVED",
+  "generation": 183,
+  "status": "CANONICAL_MASTER_RECORDS_SDK_TVC_WARRANT_SELF_HEAL_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5353,7 +5353,19 @@
           35605389223,
           35605389059,
           35605389187
-        ]
+        ],
+        "sdk_tvc_warrant_self_heal_install_defect_identified": true,
+        "sdk_tvc_warrant_self_heal_install_repaired": true,
+        "sdk_tvc_warrant_self_heal_install_pr": 458,
+        "sdk_tvc_warrant_self_heal_install_merge": "99c65265377f1f2f6349d0fa6e0c40c6c0aebb58",
+        "sdk_tvc_warrant_self_heal_install_exact_head": "0feaf07568e6c395600e2c970b91a08ab9aa3dbd",
+        "sdk_tvc_warrant_self_heal_install_validation_runs": [
+          35668005838,
+          35668005778,
+          35668005789,
+          35668005818
+        ],
+        "authentic_sdk_tvc_warrant_service_installation_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5657,6 +5669,34 @@
           "authentic_warrant_issuance_observed": false,
           "authentic_resident_runtime_execution_claimed": false,
           "authority_effect": "NONE_EXISTING_SYSTEMD_POLKIT_ACCESS_REPAIR_ONLY"
+        },
+        "sdk_tvc_warrant_self_heal_install": {
+          "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+          "defect": "ROOT_TVC_RESIDENT_SELF_HEAL_DID_NOT_RECONCILE_EXISTING_EXECUTION_WARRANT_SERVICE_FOR_DISCOVERED_USER_RUNTIME_OWNER",
+          "repository": "StegVerse-Labs/TVC",
+          "pull_request": 458,
+          "exact_head": "0feaf07568e6c395600e2c970b91a08ab9aa3dbd",
+          "merge_commit": "99c65265377f1f2f6349d0fa6e0c40c6c0aebb58",
+          "validation_runs": [
+            35668005838,
+            35668005778,
+            35668005789,
+            35668005818
+          ],
+          "repaired_sequence": [
+            "ROOT_STEGTVC_PRIMARY_RUNTIME_SELF_HEAL_DISCOVERS_VALIDATED_SOVEREIGN_RUNTIME_LOCATOR",
+            "RESOLVE_EXACT_NON_ROOT_RUNTIME_OWNER",
+            "EXISTING_TV_EXECUTION_WARRANT_INSTALLER_RUNS_UNDER_ROOT_TRANSIENT_SYSTEMD",
+            "POLKIT_WRITE_SCOPE_GRANTED_ONLY_TO_WARRANT_INSTALLER",
+            "SYSTEMD_DAEMON_RELOAD_AFTER_SUCCESSFUL_INSTALL",
+            "SELF_HEAL_COMPLETION_INCLUDES_WARRANT_INSTALL_AND_RELOAD"
+          ],
+          "private_key_boundary": "UNCHANGED_LOADCREDENTIAL_ONLY",
+          "authentic_host_installation_observed": false,
+          "authentic_assignment_disposition_observed": false,
+          "authentic_warrant_issuance_observed": false,
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_EXISTING_ROOT_SELF_HEAL_DELIVERY_REPAIR_ONLY"
         }
       },
       "required_evidence_validation": {
