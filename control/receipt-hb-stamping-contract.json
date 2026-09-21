@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.receipt-hb-stamping-contract/v1",
+  "contract_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+  "scope": "EVERY_NEW_STEGVERSE_RECEIPT",
+  "requirements": {
+    "creation_stamp_required": true,
+    "recording_stamp_required_when_recorded_by_master_records": true,
+    "creation_field": "hb_at_creation",
+    "recording_field": "hb_at_recording",
+    "required_stamp_fields": [
+      "schema",
+      "stage",
+      "heartbeat_id",
+      "heartbeat_epoch",
+      "heartbeat_generation",
+      "reference_frame",
+      "observed_at",
+      "heartbeat_grants_authority",
+      "authority_effect"
+    ],
+    "heartbeat_grants_authority": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "semantics": {
+    "creation": "Sample canonical HB when exact receipt bytes/object are created; stamp becomes part of receipt identity.",
+    "recording": "Master Records independently samples canonical HB when first accepting the exact receipt; recording stamp is retained with custody and replayed unchanged on idempotent resubmission.",
+    "historical_receipts": "Do not retrofit or fabricate HB stamps for receipts created before this contract.",
+    "authority": "HB stamps are chronology/correlation evidence only and grant no admission, transition, execution, credential, routing, custody, publication, or governance authority."
+  },
+  "canonical_hb_source": "heartbeat_runtime/independent_oscillator.py",
+  "master_records_owner": "master-records/orchestration",
+  "transition_authority": "Interlock/InTr",
+  "credential_authority": "TV/TVC where required"
+}
