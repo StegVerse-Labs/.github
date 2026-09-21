@@ -446,3 +446,14 @@ The deterministic conclusion is now explicit:
 - no receipt location, Master Records row, reconstruction result, bounded root, or HB checkpoint is inferred until the existing carrier/worker path actually executes and returns the exact machine result.
 
 The next continuation must inspect the first actual post-merge resident worker execution result. If no fresh worker cycle occurred, that is the state-transition failure. If a fresh cycle occurred, trace its exact transition through `build_state_receipt(...)` and `submit_state_receipt(...)` to the actual Master Records result without substituting passive evidence search.
+
+
+## Carrier-to-worker execution trace — generation 169
+
+Retained canonical runtime state remains historical, so no post-repair worker process or task-capable cycle is claimed. Tracing the existing carrier-first bootstrap path found the next concrete startup defect: carrier-first bootstrap starts only the HeartBeat carrier and relies on the existing carrier-side `ensure_worker_presence(...)` path to restore WorkerCoordinator, but the carrier service registration did not receive the already-declared safe local/Master Records bindings. The bindings were rendered only into the separately registered worker service.
+
+That made the preceding worker-launch repair insufficient on the actual carrier-first path: `repair_resident_worker_presence._clean_env(...)` can preserve a canonical custody binding only if the carrier process possesses it.
+
+The bounded repair carries the existing `WORKER_SAFE_LOCAL_BINDINGS` into the carrier registration on Linux systemd, macOS launchd, and Windows scheduled-task launch material. The carrier still grants no execution, transition, custody, credential, or governance authority; the values are carried only so the existing self-heal can pass them to `run_worker_runtime.py`.
+
+No new runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential source, or device dependency is introduced. No receipt SHA, HB creation reference, Master Records recording reference, reconstruction result, or bounded root is claimed until an actual post-repair resident process cycle executes.
