@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 152,
-  "status": "CANONICAL_MASTER_RECORDS_WORKERCOORDINATOR_PRECLAIM_PRODUCER_REPAIRED",
+  "generation": 153,
+  "status": "CONVERSATION_EVIDENCE_EXISTING_CARRIER_BOUND_AUTHENTIC_CLAIM_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6612,7 +6612,9 @@
         "control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json",
         "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
         "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
-        "tests/test_conversation_evidence_ingestion_runtime.py"
+        "tests/test_conversation_evidence_ingestion_runtime.py",
+        "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:data/reusable_task_schedule.json",
+        "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md"
       ],
       "targets": {
         "organizations": [
@@ -6620,7 +6622,8 @@
         ],
         "repositories": [
           "StegVerse-Labs/.github",
-          "master-records/orchestration"
+          "master-records/orchestration",
+          "StegVerse-Labs/StegVerse-Healer"
         ],
         "components": [
           "immutable-conversation-ingestion",
@@ -6692,8 +6695,8 @@
           "--task-id",
           "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
         ],
-        "current_condition": "ALREADY_ADMITTED_STATE_TRIGGERED_WORKERCOORDINATOR_SUCCESSOR_READY",
-        "remediation_path": "EXISTING_TASK_REGISTRY_CYCLE_DELEGATES_DIRECTLY_TO_TARGETED_WORKERCOORDINATOR_ONE_SHOT",
+        "current_condition": "EXISTING_NEUTRAL_CARRIER_BOUND_TARGETED_WORKERCOORDINATOR_SUCCESSOR_PENDING_AUTHENTIC_INVOCATION",
+        "remediation_path": "NEXT_EXISTING_REUSABLE_CARRIER_INVOCATION_TO_CANONICAL_WORK_GOAL_CONTEXT_THEN_TARGETED_WORKERCOORDINATOR",
         "connected_device_inventory_role": "NONE_PROHIBITED",
         "second_runtime_created": false,
         "second_scheduler_created": false,
@@ -6705,7 +6708,19 @@
         "carrier_trigger_required": false,
         "authentic_completion_still_requires_master_records_closure": true,
         "remote_connected_device_requirement": "PROHIBITED",
-        "wait_for_resident_execution_opportunity": false
+        "wait_for_resident_execution_opportunity": false,
+        "carrier_binding": {
+          "reusable_task_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+          "scheduler_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+          "tracking_task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+          "invocation_key": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+          "only_consumer": "canonical_work_coordination",
+          "goal_task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+          "healer_merge": "d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026",
+          "source_binding_validated": true,
+          "authentic_invocation_observed": false,
+          "authority_effect": "NONE_CARRIER_BINDING_ONLY"
+        }
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
