@@ -131,3 +131,34 @@ AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
 The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for custody/readback if an authentic Elyria network response is produced.
+
+
+## Generic transport trace — 2026-09-21
+
+The exact active path was traced after removing the Coinbase/KV detour.
+
+`stegverse/elyria_framework_adapter.py` is intentionally translation-only. It validates Elyria request/response semantics and explicitly requires a caller-injected transport that reaches an Elyria public surface. It does not create transport authority, Interlock/InTr protocol, credentials, receipts, or Master Records custody.
+
+No Elyria endpoint binding was found in the current SDK source or canonical coordination state. Fresh public discovery likewise did not identify an owner-operated callable assessment base URL.
+
+Therefore the first missing predicate is:
+
+```text
+REACHABLE_AUTHORIZED_PUBLIC_ELYRIA_ENDPOINT_BINDING
+```
+
+This precedes any authentic `RTC-ROUNDTRIP-003` execution. WorkerCoordinator claim/fence is relevant only if a resident worker is actually used by the selected generic transport path; it is not itself an Elyria prerequisite. Coinbase, KV, CMC-029, and Coinbase Service Gateway state are not part of this Goal Task's active dependency chain.
+
+If a reachable authorized Elyria endpoint becomes available through the existing endpoint binding surface, the next sequence is:
+
+```text
+RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> authentic Elyria response
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
+```
+
+Until then, `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved and no transport completion may be claimed.
