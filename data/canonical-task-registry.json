@@ -6674,7 +6674,9 @@
         "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY",
         "separate_runtime_presence_gate_required": false,
         "carrier_trigger_required": false,
-        "authentic_completion_still_requires_master_records_closure": true
+        "authentic_completion_still_requires_master_records_closure": true,
+        "remote_connected_device_requirement": "PROHIBITED",
+        "wait_for_resident_execution_opportunity": false
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
