@@ -947,11 +947,81 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/StegHealth#51"
+    },
+    {
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 97,
-    "local_cosv_record_tasks": 97,
+    "indexed_vectorized_tasks": 106,
+    "local_cosv_record_tasks": 106,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
