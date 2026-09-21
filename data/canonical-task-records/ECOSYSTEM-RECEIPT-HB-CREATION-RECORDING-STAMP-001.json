@@ -112,7 +112,7 @@
       {
         "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
@@ -120,7 +120,7 @@
       {
         "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
@@ -128,7 +128,7 @@
       {
         "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
@@ -136,7 +136,7 @@
       {
         "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
@@ -144,7 +144,7 @@
       {
         "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
@@ -152,7 +152,7 @@
       {
         "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "SOURCE_CONTRACT_ONLY_NO_RUNTIME_EXECUTION_IN_THIS_CANONICALIZATION",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
         ]
