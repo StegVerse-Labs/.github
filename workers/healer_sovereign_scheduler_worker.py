@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path.cwd().resolve()
 RECEIPT_ROOT = (ROOT / "receipts" / "healer-sovereign-scheduler").resolve()
@@ -18,6 +19,10 @@ SV002_OBSERVE_CONFIG_ENV = "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG"
 SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-public-observation-runtime.json"
 HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
+HIL_RECEIVER_WORKER_RECEIPT_REL = Path("receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
+HIL_RECEIVER_TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+HIL_RECEIVER_CLAIM_ID = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"
+HIL_RECEIVER_FENCE = 25
 UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
 UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
 HEALER_STEGHEALTH_SOURCE_FLOOR = "585cf38aad95fda69dbcbd0150c1256571f90feb"
@@ -302,6 +307,53 @@ def hil_intr_gateway_projection() -> dict[str, str]:
     }
 
 
+
+def hil_receiver_gateway_projection() -> dict[str, str]:
+    disabled = {
+        "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED": "false",
+        "STEGVERSE_HIL_RECEIVER_UPSTREAM": "",
+    }
+    path = (ROOT / HIL_RECEIVER_WORKER_RECEIPT_REL).resolve()
+    if not path.is_file():
+        return disabled
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return disabled
+    if not isinstance(value, dict):
+        return disabled
+    expected = {
+        "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
+        "task_id": HIL_RECEIVER_TASK_ID,
+        "claim_id": HIL_RECEIVER_CLAIM_ID,
+        "fencing_token": HIL_RECEIVER_FENCE,
+        "receiver_ready": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+    }
+    if any(value.get(k) != v for k, v in expected.items()):
+        return disabled
+    base = str(value.get("base_url") or "").rstrip("/")
+    parsed = urlsplit(base)
+    if (
+        parsed.scheme != "http"
+        or parsed.hostname not in {"127.0.0.1", "::1", "localhost"}
+        or parsed.path not in {"", "/"}
+        or parsed.query
+        or parsed.fragment
+        or parsed.username
+        or parsed.password
+    ):
+        return disabled
+    durable = str(value.get("durable_state_root") or "").strip()
+    if not durable or not Path(durable).expanduser().is_absolute():
+        return disabled
+    return {
+        "STEGVERSE_HIL_RECEIVER_PROXY_ENABLED": "true",
+        "STEGVERSE_HIL_RECEIVER_UPSTREAM": base,
+    }
+
 def universal_intr_gateway_projection() -> dict[str, str]:
     raw = os.environ.get(UNIVERSAL_INTR_CONFIG_ENV, "").strip()
     path = Path(raw).expanduser().resolve() if raw else UNIVERSAL_INTR_CONFIG_DEFAULT.expanduser().resolve()
@@ -375,6 +427,7 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())
+    env.update(hil_receiver_gateway_projection())
     env.update(universal_intr_gateway_projection())
     return env
 
