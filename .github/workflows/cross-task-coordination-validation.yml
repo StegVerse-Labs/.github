@@ -9,6 +9,7 @@ on:
       - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'schemas/canonical-task-record.schema.json'
       - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
