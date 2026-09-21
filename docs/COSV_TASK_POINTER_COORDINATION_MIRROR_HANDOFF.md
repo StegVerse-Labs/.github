@@ -287,3 +287,20 @@ Source reconciliation showed the concrete cause. The mutable/monolithic WorkerCo
 The bounded repair extends the already-existing unclaimed-`HANDOFF_READY` preclaim reconciliation seam. It may update only an already-existing `AVAILABLE` worker when worker ID, adapter, executor type, and authority source are unchanged, and only when the fragment capabilities satisfy the current handoff. It changes only static capabilities/profile metadata and grants no worker identity, assignment, claim, fence, timing, lease, credential, execution, transition, or custody authority. Claimed/timed tasks remain immutable to this reconciliation.
 
 This repair addresses only the first concrete existing-path failure before the Functional Memory assignment seam. It does not claim that a fresh resident assignment disposition has yet occurred.
+
+
+### Functional Memory authentic-path repair merge — 2026-09-21
+
+The first retained authentic failure for the only current generic unclaimed WorkerCoordinator candidate, `STEGFIN-LIVE-ENTRY-003`, remained `activation_deferred / EXECUTOR_NOT_RESOLVED` at heartbeat epoch 29. No later authentic assignment review or `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` receipt was found after source inspection.
+
+The bounded preclaim worker-registration repair was rebased onto current canonical main and merged through PR #2392 as `b0cd6274bbd7e536a91322a0f42f2f58df747aac` from exact head `57b626a548ee97b14d3d9e80ed0202aa70745ca1`.
+
+Exact-head validation:
+- Test 3 Richard Seam Acceptance `35567657664`: PASS;
+- Cross-Task Coordination Validation `35567657698`: PASS;
+- Validate KV AI Memory Resident Binding `35567657662`: PASS;
+- validate-deepseek-resident `35567657765`: PASS.
+
+The repair reuses the existing preclaim reconciliation seam and changes no live claim/fence/timing/lease state. It refreshes only static capability/profile metadata for the already-existing AVAILABLE worker when identity, adapter, executor type, and authority source are unchanged and the refreshed fragment satisfies the canonical handoff.
+
+A fresh authentic assignment disposition has not yet been observed after the merge. Therefore the requested non-ALLOW/ALLOW branch and the controlled missing-local-pointer recovery exercise are not advanced yet. The pointer-recovery exercise must retain a real same-task canonical Master Records Functional Memory history; manufacturing that predecessor would violate the requested authentic-state-dependent sequence.
