@@ -211,3 +211,55 @@ def test_workercoordinator_initializes_manifest_request_state_before_assignment_
     assert guarded_use in body
     assert custody_call in body
     assert body.index(assignment) < body.index(guarded_use) < body.index(custody_call)
+
+
+def test_manifest_bound_test1_retains_and_forwards_exact_claim_fence_predecessor():
+    runtime = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text(encoding="utf-8")
+    worker = (ROOT / "workers/stegagents_governed_runtime_worker.py").read_text(encoding="utf-8")
+
+    assert 'if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":' in runtime
+    assert 'task["claim_fence_master_records_transition"] = dict(assignment_custody)' in runtime
+
+    manifest_start = worker.index("def build_manifest_bound_purpose_request(")
+    manifest_end = worker.index("\ndef _required_capability(", manifest_start)
+    manifest_body = worker[manifest_start:manifest_end]
+    assert '_closed_transition(' in manifest_body
+    assert '"WORKERCOORDINATOR_CLAIM_FENCE_BOUND"' in manifest_body
+    assert '"graph_predecessor_master_records_transition": predecessor' in manifest_body
+
+
+def test_manifest_bound_test1_predecessor_is_exact_master_records_closure():
+    m = load_worker()
+    task = {
+        "task_id": m.PURPOSE_TASK_ID,
+        "claim_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-G42",
+        "worker_id": m.WORKER_ID,
+        "worker_instance_id": "worker-instance:test1",
+        "heartbeat_timing": {"fencing_token": 42},
+        "claim_fence_master_records_transition": {
+            "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+            "state": "RECORDED",
+            "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": "a" * 64,
+            "reconstructed_receipt_sha256": "a" * 64,
+            "master_record_ref": "master-record:state-transition:sha256:" + "a" * 64,
+        },
+    }
+    handoff = json.loads(PURPOSE_HANDOFF.read_text(encoding="utf-8"))
+    contract = handoff["purpose_bound_worker_request"]
+    runtime_request = {
+        "state_graph": {"request": contract},
+        "canonical_manifest_sha256": "b" * 64,
+        "graph_id": "graph:test1",
+        "processing_capability": "governance",
+        "route_id": "route:test1",
+        "request_sha256": "c" * 64,
+    }
+    request = m.build_manifest_bound_purpose_request(task, runtime_request)
+    predecessor = request["graph_predecessor_master_records_transition"]
+    assert predecessor["transition_id"] == "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
+    assert predecessor["state"] == "RECORDED"
+    assert predecessor["reconstruction_status"] == "PASS"
+    assert predecessor["required_evidence_validation_status"] == "PASS"
+    assert predecessor["receipt_sha256"] == predecessor["reconstructed_receipt_sha256"] == "a" * 64
