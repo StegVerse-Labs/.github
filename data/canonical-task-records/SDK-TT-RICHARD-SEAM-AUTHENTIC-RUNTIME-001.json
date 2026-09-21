@@ -38,7 +38,8 @@
     ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
     "scripts/run_sdk_tt_richard_seam_test3.py",
     "tests/test_sdk_tt_richard_seam_test3_runner.py",
-    ".github/workflows/test3-richard-seam-acceptance.yml"
+    ".github/workflows/test3-richard-seam-acceptance.yml",
+    "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
   ],
   "adjacent_task_refs": [
     "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -355,18 +356,14 @@
     "local_semantic_evidence_grants_authentic_runtime_completion": false
   },
   "post_retirement_stale_fence_refusal": {
-    "source_repair_state": "IN_PROGRESS_STEGAGENTS_PR_35",
-    "runtime_path": "EXISTING_STEGAGENTS_TO_SDK_STEGCORE_INTR_TO_CANONICAL_MASTER_RECORDS",
+    "source_repair_state": "MERGED_SOURCE_VALIDATED_RUNTIME_EVIDENCE_PENDING",
+    "stegagents_pr": 35,
+    "stegagents_merge": "f12abf3e062de95f7bbd5eb56247e91fdcd8481f",
+    "stegagents_exact_head": "a1772001cf8e6ee97214944e009d624df8c54f2b",
     "attempted_action": "INVOKE_RETIRED_TASK_BOUND_WORKER",
     "expected_disposition": "DENY",
     "consequence_executor_must_run": false,
     "master_records_transition": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
-    "master_records_requirements": [
-      "state=RECORDED",
-      "reconstruction_status=PASS",
-      "required_evidence_validation_status=PASS",
-      "receipt_sha256==reconstructed_receipt_sha256"
-    ],
     "authentic_runtime_evidence_observed": false,
     "authority_effect": "NONE_SOURCE_PATH_REPAIR_AND_EVIDENCE_REQUIREMENT_ONLY"
   }
