@@ -160,3 +160,35 @@ Accordingly:
 - `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure: not observed;
 - `CONVERSATION_EVIDENCE_INGESTED`: not observed;
 - public Site projection successor: not derived.
+
+
+## Native resident initiation trace — 2026-09-21
+
+The post-ordering resident-dispatch initiation path was traced end to end:
+
+```text
+scripts/run_heartbeat_runtime.py --continuous
+-> carrier-side ensure_worker_presence
+-> scripts/run_worker_runtime.py --continuous
+-> WorkerCoordinator cycle
+-> first iteration local source refresh
+-> first iteration dispatch_local_resident_requests
+-> scripts/dispatch_resident_execution_requests.py
+-> healer_sovereign_scheduler
+-> scripts/consume_healer_sovereign_scheduler_request.py
+```
+
+The native WorkerCoordinator dispatch cadence is not the blocker: `index` begins at zero, so the worker attempts resident-request dispatch on its first normal non-targeted iteration. Carrier-side supervision is also source-complete: any live continuous carrier checks worker presence from HB/AU sub-signal activity and at least every 100 observed references, and starts/recycles the same canonical `run_worker_runtime.py --continuous` process when absent or stale.
+
+No deterministic source defect remains in this initiation chain. The current retained evidence is instead historical: `control/worker-runtime-state.json` records `last_cycle_at=2026-08-18T19:47:00Z`, `runtime_tick=2`, and `observation_mode=CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION`. No authentic post-repair `runtime-presence.latest.json` proving a fresh task-capable WorkerCoordinator cycle and no authentic `resident-request-dispatch.latest.json` proving a Healer visit are retained in canonical evidence.
+
+Accordingly no code-path substitute is admissible:
+- no alternate scheduler;
+- no alternate runtime;
+- no alternate dispatcher;
+- no alternate WorkerCoordinator;
+- no alternate carrier;
+- no connected-device inventory dependency;
+- no device prerequisite.
+
+Fresh claim/fence, Master Records claim/fence custody, synthetic ingestion, and Site-successor derivation remain false.
