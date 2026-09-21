@@ -1190,3 +1190,8 @@ Canonical Goal Task `SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001` / COSV `7100000011
 
 
 SDK four-stage remediation completion: SDK PR #304 merged as `e1116e9cb5f5043c9198505d64560b710c517e88` after 13 exact-head workflows passed. Four-stage run `35648276053` and artifact `10661081336` / SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5` validate the repaired falsifiable overlap measurement, serialized negative control, exact partition reconstruction, group-binding recomputation, local-semantic route boundary, Test-2/Test-3 differential invariance, and provenance inventory. The authentic standing/retirement successor reuses existing `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001`; no duplicate Goal Task is created.
+
+
+### Repository hygiene self-reference correction — 2026-09-21
+
+The reusable hygiene classifier now distinguishes real default-branch source references from branch-name occurrences inside canonical hygiene-control records. The approval manifest, repository-hygiene evidence/control records, and canonical hygiene handoffs may document a retirement candidate without thereby converting that candidate into a source-referenced retain. Matches outside those explicit hygiene-control paths still block retirement. Reports now expose `ignored_hygiene_control_refs` per branch; this correction grants no deletion authority.
