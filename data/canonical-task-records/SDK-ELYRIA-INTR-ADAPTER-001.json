@@ -184,5 +184,21 @@
     "external_endpoint_requirement": "reachable authorized Elyria public endpoint",
     "master_records_required": true,
     "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "generic_transport_trace_20260921": {
+    "sdk_elyria_codec_present": true,
+    "codec_requires_injected_transport": true,
+    "generic_intr_transport_selected": true,
+    "endpoint_binding_in_sdk_observed": false,
+    "endpoint_binding_in_canonical_coordination_observed": false,
+    "owner_operated_public_elyria_assessment_url_observed": false,
+    "first_missing_predicate": "REACHABLE_AUTHORIZED_PUBLIC_ELYRIA_ENDPOINT_BINDING",
+    "workercoordinator_required_only_if_resident_worker_execution_is_used": true,
+    "coinbase_required": false,
+    "kv_required": false,
+    "cmc029_required": false,
+    "master_records_stage": "AFTER_AUTHENTIC_TRANSPORT_EVIDENCE_EXISTS",
+    "authentic_round_trip_observed": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
