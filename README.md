@@ -1111,3 +1111,8 @@ Generation-162 re-observation for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` 
 ### SDK TT WorkerCoordinator expiry-basis repair
 
 The preserved SDK TT WorkerCoordinator path had a dangling `cost_basis_ref` to `cost-basis/worker-runtime/stegagents-governed-runtime.json`. Because the canonical expiry gate fails closed when that file is absent, targeted admission could stop at `EXPIRY_BASIS_UNAVAILABLE` before claim/fence creation. The missing artifact uses the handoff's existing `runtime_window_beats=4096` as the finite expiry candidate and adds no authority or runtime surface.
+
+
+### HB receipt native execution trace — 2026-09-21
+
+The first post-update break is execution, not passive evidence discovery. Retained native carrier/worker state is historical and does not prove a fresh resident transition reached `build_state_receipt(...)`. The existing carrier self-heal and direct worker-service launch paths now preserve the canonical Master Records HTTP or durable-local custody binding into `run_worker_runtime.py`, while generic provider credentials remain excluded. Clean native materialization also carries the existing HB checkpoint consumer.
