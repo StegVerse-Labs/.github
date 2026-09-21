@@ -40,6 +40,7 @@ MASTER_RECORDS_PACKAGE_SLUG = "stegverse-master-records"
 MASTER_RECORDS_COMPONENT_ID = "stegverse.master-records"
 MASTER_RECORDS_VENDOR_REL = Path("vendor/master-records-orchestration")
 MASTER_RECORDS_REFRESH_RECEIPT_REL = Path("receipts/sovereign-host/master-records-source-refresh.latest.json")
+MASTER_RECORDS_REQUIRED_SOURCE_FLOOR = "8804762fb5da5d212aa7c9c448dfcdabac734715"
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -66,6 +67,21 @@ def materialize_master_records_source_package(source_package_root: Path, runtime
         raise RuntimeError("Master Records source package component mismatch")
     if package.get("credential_material_included") is not False or package.get("authority_effect") != "NONE_SOURCE_TRANSPORT_ONLY":
         raise RuntimeError("Master Records source package authority boundary mismatch")
+    provenance = package.get("provenance")
+    proof = provenance.get("source_proof") if isinstance(provenance, dict) else None
+    if not isinstance(proof, dict):
+        raise RuntimeError("Master Records source package provenance proof missing")
+    if (
+        proof.get("schema") != "stegverse.portable-source-proof/v1"
+        or proof.get("repository") != "master-records/orchestration"
+        or proof.get("source_floor") != MASTER_RECORDS_REQUIRED_SOURCE_FLOOR
+        or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE"
+        or proof.get("source_floor_present") is not True
+    ):
+        raise RuntimeError("Master Records source package provenance proof not verified at required floor")
+    head = str(proof.get("head") or "")
+    if len(head) != 40 or any(ch not in "0123456789abcdef" for ch in head):
+        raise RuntimeError("Master Records source package provenance head invalid")
     files = package.get("files")
     manifest = package.get("manifest")
     if not isinstance(files, list) or not isinstance(manifest, dict):

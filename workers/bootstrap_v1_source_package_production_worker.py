@@ -5,6 +5,7 @@ import base64
 import hashlib
 import json
 import os
+import subprocess
 from pathlib import Path, PurePosixPath
 import sys
 import tempfile
@@ -28,6 +29,9 @@ COMPONENTS = (
     "stegverse.core-lite",
     "stegverse.master-records",
 )
+MASTER_RECORDS_COMPONENT_ID = "stegverse.master-records"
+MASTER_RECORDS_REPOSITORY = "master-records/orchestration"
+MASTER_RECORDS_SOURCE_FLOOR = "8804762fb5da5d212aa7c9c448dfcdabac734715"
 ROOT_ENV = {
     "stegverse.sdk": "STEGVERSE_SDK_SOURCE_ROOT",
     "stegverse.stegcore": "STEGVERSE_STEGCORE_SOURCE_ROOT",
@@ -60,6 +64,42 @@ def digest(value: Any) -> str:
 
 def bytes_digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(root), *args],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+        env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", str(Path.home()))},
+    )
+
+def master_records_source_proof(root: Path) -> dict[str, Any]:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": MASTER_RECORDS_REPOSITORY,
+        "source_floor": MASTER_RECORDS_SOURCE_FLOOR,
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    if head.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_GIT_HEAD_UNAVAILABLE"}
+    observed = head.stdout.strip().lower()
+    ancestor = _git(root, "merge-base", "--is-ancestor", MASTER_RECORDS_SOURCE_FLOOR, "HEAD")
+    if ancestor.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT", "head": observed}
+    return {
+        **proof,
+        "state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "head": observed,
+        "source_floor_present": True,
+    }
 
 def slug(component: str) -> str:
     return component.lower().replace("/", "--").replace("_", "-").replace(".", "-")
@@ -178,6 +218,13 @@ def build_package(component: str, root: Path, expected_identity: str) -> dict[st
     identity = "sha256:" + manifest["source_bundle_sha256"]
     if identity != expected_identity:
         raise RuntimeError(f"{component}: source bytes no longer match source-prep identity")
+    provenance = {
+        "source_identity_scheme": "sha256-content-manifest",
+        "upstream_kind": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+        "external_platform_required": False,
+    }
+    if component == MASTER_RECORDS_COMPONENT_ID:
+        provenance["source_proof"] = master_records_source_proof(root)
     return {
         "schema": PACKAGE_SCHEMA,
         "package_version": PACKAGE_VERSION,
@@ -186,11 +233,7 @@ def build_package(component: str, root: Path, expected_identity: str) -> dict[st
         "credential_material_included": False,
         "manifest": manifest,
         "files": files,
-        "provenance": {
-            "source_identity_scheme": "sha256-content-manifest",
-            "upstream_kind": "stegverse.sv-dn1.production-source-prep-receipt/v2",
-            "external_platform_required": False,
-        },
+        "provenance": provenance,
         "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
     }
 

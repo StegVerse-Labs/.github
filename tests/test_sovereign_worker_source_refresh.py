@@ -249,6 +249,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "source_identity": "sha256:" + digest,
                 "credential_material_included": False,
                 "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+                "provenance": {"source_identity_scheme": "sha256-content-manifest", "source_proof": {"schema": "stegverse.portable-source-proof/v1", "repository": "master-records/orchestration", "source_floor": install_mod.MASTER_RECORDS_REQUIRED_SOURCE_FLOOR, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": "a" * 40, "source_floor_present": True, "network_fetch_performed": False, "credential_required": False, "authority_effect": "NONE_SOURCE_IDENTITY_ONLY"}},
                 "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
                 "files": [
                     {**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")}
@@ -266,6 +267,37 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertFalse(result["network_source_fetch_performed"])
             self.assertFalse(result["credential_read_or_acquired"])
 
+
+    def test_master_records_source_package_rejects_unverified_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            files = {
+                "services/canonical_master_records_api.py": b"canonical-app\n",
+                "services/canonical_state_transition_custody.py": b"canonical-custody\n",
+            }
+            rows = [
+                {"path": rel, "sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
+                for rel, raw in sorted(files.items())
+            ]
+            digest = hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+            package = {
+                "schema": "stegverse.source-package/v1",
+                "package_version": "1.0.0",
+                "component_id": "stegverse.master-records",
+                "source_identity": "sha256:" + digest,
+                "credential_material_included": False,
+                "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+                "provenance": {"source_identity_scheme": "sha256-content-manifest"},
+                "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
+                "files": [{**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")} for row in rows],
+            }
+            package_path = package_root / "stegverse-master-records/package.json"
+            package_path.parent.mkdir(parents=True)
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "provenance proof missing"):
+                install_mod.materialize_master_records_source_package(package_root, runtime)
 
     def test_materialize_only_cli_does_not_reinstall_watcher(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -301,7 +333,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "source_identity": "sha256:" + digest,
                 "credential_material_included": False,
                 "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
-                "provenance": {"source_identity_scheme": "sha256-content-manifest", "external_platform_required": False},
+                "provenance": {"source_identity_scheme": "sha256-content-manifest", "external_platform_required": False, "source_proof": {"schema": "stegverse.portable-source-proof/v1", "repository": "master-records/orchestration", "source_floor": install_mod.MASTER_RECORDS_REQUIRED_SOURCE_FLOOR, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": "a" * 40, "source_floor_present": True, "network_fetch_performed": False, "credential_required": False, "authority_effect": "NONE_SOURCE_IDENTITY_ONLY"}},
                 "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
                 "files": [
                     {**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")}
