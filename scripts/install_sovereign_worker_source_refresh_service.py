@@ -39,6 +39,7 @@ SOURCE_PACKAGE_COMPONENT_SLUGS = (
 MASTER_RECORDS_PACKAGE_SLUG = "stegverse-master-records"
 MASTER_RECORDS_COMPONENT_ID = "stegverse.master-records"
 MASTER_RECORDS_VENDOR_REL = Path("vendor/master-records-orchestration")
+MASTER_RECORDS_REFRESH_RECEIPT_REL = Path("receipts/sovereign-host/master-records-source-refresh.latest.json")
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -140,6 +141,31 @@ def materialize_master_records_source_package(source_package_root: Path, runtime
     }
 
 
+
+def materialize_master_records_source_package_and_retain(source_package_root: Path, runtime_root: Path) -> dict[str, Any]:
+    runtime = runtime_root.expanduser().resolve()
+    result = materialize_master_records_source_package(source_package_root, runtime)
+    receipt = {
+        "schema": "stegverse.master-records-resident-source-refresh/v1",
+        "state": result.get("state"),
+        "source_identity": result.get("source_identity"),
+        "package_path": result.get("package_path"),
+        "target_root": result.get("target_root"),
+        "file_count": result.get("file_count"),
+        "canonical_master_records_api_loaded_from_package": result.get("canonical_master_records_api_loaded_from_package", False),
+        "materialization_performed": result.get("materialization_performed", False),
+        "network_source_fetch_performed": result.get("network_source_fetch_performed", False),
+        "credential_read_or_acquired": result.get("credential_read_or_acquired", False),
+        "dispatch_authority_granted": False,
+        "runtime_authority_granted": False,
+        "authority_effect": "NONE_SOURCE_REFRESH_EVIDENCE_ONLY",
+    }
+    path = runtime / MASTER_RECORDS_REFRESH_RECEIPT_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
+
+
 def default_source_package_root(env: dict[str, str] | None = None) -> Path:
     values = dict(os.environ if env is None else env)
     override = values.get("STEGVERSE_SOURCE_PACKAGE_ROOT")
@@ -174,6 +200,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     # This grants no transport or execution authority; it only removes a stale-self
     # bootstrap dependency at the source->runtime projection boundary.
     refresh_script = source / "scripts/refresh_sovereign_worker_runtime_source.py"
+    refresh_installer = source / "scripts/install_sovereign_worker_source_refresh_service.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
     safe_local_bindings = {}
@@ -196,6 +223,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "Type=oneshot",
         *environment_lines,
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(refresh_installer)} --runtime-root {_quote(runtime)} --source-package-root {_quote(packages)} --materialize-master-records-only",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
@@ -279,7 +307,7 @@ def install(
     runtime = runtime_root.expanduser().resolve()
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     refresh_receipt = refresh(source, runtime)
-    master_records_source_refresh = materialize_master_records_source_package(packages, runtime)
+    master_records_source_refresh = materialize_master_records_source_package_and_retain(packages, runtime)
 
     immediate_dispatch = {
         "attempted": False,
@@ -400,7 +428,12 @@ def main() -> int:
     parser.add_argument("--unit-root", type=Path)
     parser.add_argument("--source-package-root", type=Path, default=default_source_package_root())
     parser.add_argument("--no-activate", action="store_true")
+    parser.add_argument("--materialize-master-records-only", action="store_true")
     args = parser.parse_args()
+    if args.materialize_master_records_only:
+        receipt = materialize_master_records_source_package_and_retain(args.source_package_root, args.runtime_root)
+        print(json.dumps(receipt, sort_keys=True))
+        return 0
     receipt = install(
         args.source_root,
         args.runtime_root,
