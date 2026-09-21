@@ -19,7 +19,8 @@ on:
         type: string
         default: '.github/repository-hygiene-approved-retirements.txt'
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   inventory:
@@ -32,16 +33,16 @@ jobs:
       PROTECT_RE: ${{ inputs.protect_regex }}
       APPROVAL_FILE: ${{ inputs.approval_file }}
     steps:
-      - name: Anonymous caller-repository checkout
+      - name: Read-only caller-repository checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch every caller branch with read-only source access
         run: |
           set -euo pipefail
-          test -z "${GITHUB_TOKEN:-}"
-          test -z "${GH_TOKEN:-}"
-          git config --global --unset-all http.https://github.com/.extraheader || true
-          git init .
-          git remote add origin "https://github.com/${REPOSITORY}.git"
-          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
-          git checkout --detach "origin/${DEFAULT_BRANCH}"
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
 
       - name: Acquire canonical classifier without caller credentials
         run: |
