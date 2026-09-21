@@ -135,3 +135,62 @@ LLM-adapter reports/ecosystem-chat-live-activation-status.json @ 8341f5e98127d01
 ```
 
 Therefore the enterprise completion predicates remain false. The parent may close only after StegHealth authentically emits/reuses the corrective Task/COSV identities, their admitted repairs merge with exact validation evidence, and a fresh current-default enterprise sweep returns clean.
+
+
+## StegHealth remediation re-observation — canonical generation 150
+
+Parent goal: `ENTERPRISE-HOST-PROVIDER-ERADICATION-001`
+Parent COSV: `40000100100000`
+Observed canonical Task Registry generation: `150`
+
+StegHealth intake issues `#82` through `#88` remain open and unchanged at their issue surfaces, with no issue comments carrying corrective Task/COSV output.
+
+Fresh direct StegHealth/default-source observation found no authentic materialized corrective records or remediation PRs attributable to these seven intakes. No `STEGHEALTH_TASK_CREATION_COMPLETE` reconciliation receipt for these intakes is present on current canonical `.github` source.
+
+The existing owner path remains authoritative:
+
+```text
+native failure map
+-> .github/scripts/reconcile_email_failure_incidents.py
+-> StegHealth/tools/consume_ecosystem_failure_map.py
+-> StegHealth-created or exact-reused corrective Task/COSV
+-> canonical Task Registry/COSV import
+-> Canonical Work / WorkerCoordinator / Interlock-InTr
+-> exact repair + validation evidence
+-> parent enterprise re-sweep
+```
+
+The parent does not derive or mint child corrective identities itself.
+
+### Fresh current-default residual proof
+
+The enterprise sweep remains non-clean. Direct default-branch reads still contain the following active/provider-identifying residue:
+
+- `StegVerse-Labs/StegVerse-SCW:.github/workflows/one_button_supercheck.yml@0ad176d58964e3fde0fbb67684231dfb58d778bd` — hosted-provider example URL remains.
+- `StegVerse-Labs/StegCore:.github/workflows/steggate-fallback-public-runtime.yml@7e32e89526a63e7bf92c2ea40e9bbe2fcd9e51e3` — named provider credential identifier and third-party fallback semantics remain.
+- `StegVerse-Labs/Continuity:ai_entity/stegverse_continuity.json@897ee0b26dcbe736baf8350f1fbfb6643e214b02` — hosted-provider endpoint and redeploy-hook semantics remain.
+- `StegVerse-Labs/TVC:.github/workflows/coinbase-gateway-stage-drain-validation.yml@f40578a0f57f3736fa1cee3011c27f2c61ac58bf` — hosted-provider gateway URL remains.
+- `StegVerse-Labs/TVC:tvc_primary_runtime_binder.py@21a5edbdc8f22efde6731173185af71578e270df` — provider-specific credential/hosted-runtime identifiers remain.
+- `StegVerse-Labs/.github:authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json@ff87558eb657d18b6f933c2adf8bd1d0054f574d` — provider-specific fallback authorization and credential references remain.
+- `StegVerse-Labs/.github:scripts/run_independent_ecosystem_chat_parent.py@34b59a6a1dccba846750b8bf41ec647f1774f677` — provider-specific credential/hosted-environment identifiers remain.
+- `StegVerse-org/LLM-adapter:reports/ecosystem-chat-live-activation-status.json@8341f5e98127d013dfd7d20116cca22efd02b02f` — hosted-provider Gateway URL remains in current status projection.
+- `StegVerse-org/LLM-adapter:docs/COINBASE_SKAP_SERVICE_GATEWAY_MIRROR_HANDOFF.md@a38fbd8ea68aeceda154bff7d512941ea66f7bc0` — hosted-provider/fallback semantics remain in current active handoff.
+- `StegVerse-Labs/Site:scripts/apply_canonical_fixes.py@8c67d338e79966f70d410ed07dbc99a7529de464` — provider API/deployment template remains.
+- `StegVerse-Labs/Site:install_self_healing_pack.sh@4b17e4d720c6fb7c1c7d9f1b13252c130dcd809d` — provider API/deployment template remains.
+- `StegVerse-Labs/Site:data/third-party-dependency-inventory.json@a653f2f0b121075db17fb6af4807e33971ae9fd9` — current inventory still carries named hosted-provider endpoint/fallback semantics requiring StegHealth classification/remediation.
+- `StegVerse-Labs/Site:data/steggate-rendezvous-activation.json@9eb9a24df5f8d0b8c585cf13f9031ce9b092d223` — current rendezvous state still references a fallback-runtime workflow.
+
+Provider-specific deny-list/test strings and immutable historical receipts are not automatically classified as operational dependencies; they remain subject to StegHealth's exact owner classification. The entries above are retained because their current source role is operational, active-state, deployment/fallback, or current coordination semantics rather than immutable Git history alone.
+
+### Completion state
+
+```text
+StegHealth corrective Task/COSV outputs for #82-#88: NOT OBSERVED
+Corrective execution/repair evidence: NOT OBSERVED
+Fresh enterprise sweep clean: false
+provider_dependency_removed: false
+source_inventory_complete: false
+parent completion admissible: false
+```
+
+No direct child remediation, alternate scheduler, alternate dispatcher, replacement host, second runtime, new authority plane, or synthetic corrective evidence was introduced by this re-observation.
