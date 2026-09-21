@@ -1134,3 +1134,7 @@ The existing content-addressed control-plane source package now carries the cano
 ### SDK evaluator pre-drift runtime-proof boundary
 
 `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001` is anchored at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Missing surfaced Master Records evidence is not treated as non-occurrence, and `RESIDENT_REQUEST_DISPATCH_VISIT` is not a substitute predecessor. Progression requires authentic reconstructed materialization evidence before the existing SDK consumer/Interlock-InTr/runtime-receipt chain may be promoted.
+
+### SDK purpose-bound post-claim TVC warrant bridge reconciliation
+
+PR #2456 is merged and validated. The existing purpose-bound WorkerCoordinator path now invokes the existing TVC execution-warrant oneshot only after canonical claim/fence custody closes, and carries only the secret-free warrant/public-key/policy verification tuple onward. Authentic assignment disposition, warrant issuance, and resident runtime execution remain evidence-gated.
