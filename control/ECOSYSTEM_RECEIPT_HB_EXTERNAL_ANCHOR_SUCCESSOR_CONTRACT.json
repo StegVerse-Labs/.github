@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.ecosystem-receipt-hb-external-anchor-successor-contract/v1",
+  "task_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+  "purpose": "Define the first prospective externally anchored HB/Master Records successor checkpoint while preserving historical HB-only evidence as system-relative continuity only.",
+  "historical_boundary": {
+    "pre_activation_evidence_class": "SYSTEM_RELATIVE_CONTINUITY_ONLY",
+    "retroactive_external_time_upgrade_allowed": false,
+    "historical_hb_reference_documents_remain_authoritative_for_their_original_proof_ceiling": true
+  },
+  "activation": {
+    "mode": "FIRST_CHECKPOINT_AFTER_CONTRACT_ADOPTION",
+    "activation_floor_must_be_explicit": true,
+    "anchor_inheritance_floor_hb_reference": "RUNTIME_BOUND_ON_FIRST_SUCCESSOR_CHECKPOINT",
+    "predecessor_may_be_historical_hb_only": true,
+    "predecessor_external_time_status": "NOT_INHERITED"
+  },
+  "first_successor_checkpoint": {
+    "schema": "stegverse.hb-master-records-checkpoint-commitment/v1",
+    "required_fields": [
+      "hb_reference",
+      "prior_hb_checkpoint_commitment_sha256",
+      "master_records_commitment_profile",
+      "master_records_receipt_set_root_sha256",
+      "master_records_receipt_count",
+      "master_records_query_floor",
+      "master_records_query_ceiling",
+      "anchor_inheritance_floor_hb_reference",
+      "checkpoint_commitment_sha256",
+      "authority_effect"
+    ],
+    "master_records_commitment_profile": "ORDERED_CANONICAL_RECEIPT_SHA256_BOUNDED_RANGE_V1",
+    "authority_effect": "NONE_EVIDENCE_COMMITMENT_ONLY",
+    "root_inclusion_rule": "Only canonical Master Records receipts inside the explicit activation-floor/query-ceiling range are eligible for external-time inheritance. Historical receipts below the activation floor remain excluded even if independently reconstructable.",
+    "checkpoint_digest_rule": "SHA-256 over canonical JSON of the complete checkpoint body with checkpoint_commitment_sha256 omitted."
+  },
+  "external_anchor": {
+    "schema": "stegverse.hb-external-checkpoint-anchor/v1",
+    "provider_neutral": true,
+    "first_adapter_profile": "OPENTIMESTAMPS_BITCOIN_V1",
+    "required_binding": "EXACT_CHECKPOINT_COMMITMENT_SHA256",
+    "states": [
+      "NOT_SUBMITTED",
+      "SUBMITTED_PENDING",
+      "CONFIRMED",
+      "FAILED"
+    ],
+    "external_temporal_bound_valid_only_when": "CONFIRMED",
+    "inherited_scope": "Only the first-successor checkpoint and in-scope receipt identities committed under its activation floor/ceiling may inherit the confirmed external temporal bound.",
+    "provider_failure_does_not_invalidate_internal_history": true,
+    "replacement_provider_allowed_for_later_checkpoints": true,
+    "authority_effect": "NONE_EXTERNAL_EVIDENCE_ONLY"
+  },
+  "decentralized_witnessing": {
+    "primary_evidence_fabric": "STEGVERSE_NODE_KV_WITNESS_GRAPH",
+    "blockchain_role": "OPTIONAL_EXTERNAL_TEMPORAL_WITNESS",
+    "raw_witness_count_is_authority": false,
+    "divergent_witnesses_preserved": true
+  },
+  "invariants": [
+    "HB remains synchronization/timing/freshness/liveness/correlation/observability only.",
+    "Master Records remains custody/reconstruction authority only.",
+    "External anchoring never grants execution, transition, admission, custody, credential, routing, publication, or governance authority.",
+    "No historical HB-only receipt is retroactively promoted to externally anchored evidence.",
+    "A confirmed external anchor must verify the exact checkpoint_commitment_sha256.",
+    "Deletion, insertion, replacement, or reordering of an in-scope receipt must change the deterministic Master Records root or fail reconstruction."
+  ],
+  "authority_effect": "NONE_CONTRACT_ONLY"
+}

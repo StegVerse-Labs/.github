@@ -1,0 +1,11 @@
+{
+  "profile": "task.v1",
+  "task_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+  "vector": "50000000100000",
+  "parent_task_id": null,
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:control/ECOSYSTEM_RECEIPT_HB_EXTERNAL_ANCHOR_SUCCESSOR_CONTRACT.json"
+  ],
+  "authority_effect": "NONE"
+}
