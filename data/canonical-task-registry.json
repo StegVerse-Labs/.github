@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 151,
-  "status": "CONVERSATION_EVIDENCE_STATE_TRIGGERED_SELECTOR_REPAIRED",
+  "generation": 152,
+  "status": "CANONICAL_MASTER_RECORDS_WORKERCOORDINATOR_PRECLAIM_PRODUCER_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5148,7 +5148,16 @@
         "workercoordinator_claim_fence_real_master_records_validation_repo": "master-records/orchestration",
         "workercoordinator_claim_fence_real_master_records_validation_pr": 107,
         "workercoordinator_claim_fence_real_master_records_validation_merge": "273b55cda7903dfa0f4daed35d3a410b565b3e49",
-        "workercoordinator_claim_fence_real_master_records_validation_run": 35539058509
+        "workercoordinator_claim_fence_real_master_records_validation_run": 35539058509,
+        "workercoordinator_preclaim_manifest_request_order_defect_identified": true,
+        "workercoordinator_preclaim_manifest_request_order_defect_repaired": true,
+        "workercoordinator_preclaim_manifest_request_order_repair_pr": 2381,
+        "workercoordinator_preclaim_manifest_request_order_repair_merge": "f883d36adb356e44dace09f07109af351aab29a6",
+        "workercoordinator_preclaim_manifest_request_order_validation_runs": [
+          35567185027,
+          35567185029
+        ],
+        "authentic_production_workercoordinator_claim_fence_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5308,6 +5317,26 @@
           ],
           "authentic_resident_runtime_execution_claimed": false,
           "authority_effect": "NONE_INTEGRATION_VALIDATION_ONLY"
+        },
+        "workercoordinator_preclaim_manifest_request_order": {
+          "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
+          "defect": "MANIFEST_RUNTIME_REQUEST_PRESENT_READ_BEFORE_LOCAL_INITIALIZATION",
+          "effect": "UNBOUNDLOCALERROR_BEFORE_WORKERCOORDINATOR_CLAIM_FENCE_CUSTODY_CALL",
+          "pull_request": 2381,
+          "merge_commit": "f883d36adb356e44dace09f07109af351aab29a6",
+          "validation_runs": [
+            35567185027,
+            35567185029
+          ],
+          "repaired_order": [
+            "MATERIALIZE_MANIFEST_RUNTIME_REQUEST_PATH",
+            "COMPUTE_MANIFEST_RUNTIME_REQUEST_PRESENT",
+            "OPTIONALLY_BIND_REQUEST_REF_TO_ASSIGNMENT_RECORD",
+            "BUILD_PURPOSE_GRAPH_CLAIM_BUNDLE",
+            "SUBMIT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_TO_MASTER_RECORDS"
+          ],
+          "authentic_resident_runtime_execution_claimed": false,
+          "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
         }
       },
       "required_evidence_validation": {
