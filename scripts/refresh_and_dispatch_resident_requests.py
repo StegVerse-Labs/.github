@@ -38,6 +38,8 @@ STEG_BROWSER_TVC_EXACT_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
 # handoff slot may satisfy portable-dispatch completion. HANDOFF_READY means another
 # task owns the slot and therefore remains incomplete for this target.
 STEG_BROWSER_TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT_SOURCE"}
+STEGHEALTH_KV_INTERLOCK_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
 REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
@@ -250,6 +252,54 @@ def stegbrowser_consumption_evidence(
     return receipt, json_sha256(receipt), bool(valid), bool(current_dispatch_match)
 
 
+def canonical_work_goal_consumption_evidence(
+    runtime: Path,
+    target_consumer: str,
+    goal_task_id: str | None,
+    dispatch_receipt: Mapping[str, Any] | None,
+) -> tuple[dict[str, Any] | None, str | None, bool, bool, bool]:
+    required = target_consumer == "canonical_work_coordination" and goal_task_id == STEGHEALTH_KV_INTERLOCK_TASK_ID
+    if not required:
+        return None, None, False, True, True
+    path = runtime / STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL
+    if not path.is_file():
+        return None, None, True, False, False
+    receipt = load_json(path)
+    outcomes = dispatch_receipt.get("outcomes") if isinstance(dispatch_receipt, Mapping) else None
+    current = None
+    if isinstance(outcomes, list):
+        for row in outcomes:
+            if not isinstance(row, Mapping) or row.get("consumer") != "canonical_work_coordination" or row.get("attempted") is not True:
+                continue
+            result = row.get("result")
+            if not isinstance(result, Mapping):
+                continue
+            request_set = result.get("canonical_work_request_set")
+            request_outcomes = request_set.get("outcomes") if isinstance(request_set, Mapping) else None
+            if not isinstance(request_outcomes, list):
+                continue
+            matches = [item for item in request_outcomes if isinstance(item, Mapping) and item.get("task_id") == goal_task_id]
+            if len(matches) == 1:
+                current = dict(matches[0])
+                break
+    current_match = bool(
+        isinstance(current, dict)
+        and current.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK_ID
+        and current.get("state") in {"COMPLETED", "ALREADY_CONSUMED"}
+        and current.get("request_sha256") == receipt.get("request_sha256")
+        and current.get("bootstrap_receipt_ref") == receipt.get("bootstrap_receipt_ref")
+    )
+    valid = bool(
+        receipt.get("schema") == "stegverse.canonical-work-bootstrap-request-consumption/v1"
+        and receipt.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK_ID
+        and receipt.get("state") == "COMPLETED"
+        and receipt.get("credential_material_present") is False
+        and receipt.get("network_source_fetch_performed") is False
+        and current_match
+    )
+    return receipt, json_sha256(receipt), True, valid, current_match
+
+
 def refresh_and_dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -314,6 +364,15 @@ def refresh_and_dispatch(
         runtime, target_consumer, dispatch_receipt
     )
     target_consumption_required = target_consumer == STEG_BROWSER_TVC_CONSUMER
+    canonical_goal_receipt, canonical_goal_sha256, canonical_goal_required, canonical_goal_valid, canonical_goal_matches_current_dispatch = canonical_work_goal_consumption_evidence(
+        runtime, target_consumer, current_goal_task_id, dispatch_receipt
+    )
+    if canonical_goal_required:
+        target_consumption_receipt = canonical_goal_receipt
+        target_consumption_sha256 = canonical_goal_sha256
+        target_consumption_valid = canonical_goal_valid
+        target_consumption_matches_current_dispatch = canonical_goal_matches_current_dispatch
+        target_consumption_required = True
     state = "REFRESH_AND_DISPATCH_COMPLETE" if (
         completed.returncode == 0
         and dispatch_observed
@@ -335,7 +394,10 @@ def refresh_and_dispatch(
         "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
         "dispatch_receipt": dispatch_receipt,
         "target_consumption_evidence_required": target_consumption_required,
-        "target_consumption_receipt_path": str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None,
+        "target_consumption_receipt_path": (
+            str(STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL) if canonical_goal_required
+            else (str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None)
+        ),
         "target_consumption_receipt_observed": target_consumption_receipt is not None,
         "target_consumption_matches_current_dispatch_result": bool(target_consumption_matches_current_dispatch),
         "exact_target_consumption_evidence_observed": bool(target_consumption_valid),
