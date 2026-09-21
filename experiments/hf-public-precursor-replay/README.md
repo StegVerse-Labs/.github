@@ -10,6 +10,20 @@ The experiment is retrospective, but the observer is not allowed retrospective k
 ## Non-intrusive scope
 Allowed evidence includes public Hugging Face pages/API metadata, public account/repository/artifact history, public security disclosures, public source-control history, and later public reporting used solely for retrospective annotation. The experiment does not reproduce exploits, use leaked credentials, probe private endpoints, or scan infrastructure.
 
+## Runtime and authority boundary
+This is a public-evidence reconstruction and Site-projection task, not a resident-runtime execution task.
+
+Canonical Task Registry documentation separates the authorities:
+- Task Registry coordinates work and execution-substrate review; it does not mint execution authority.
+- WorkerCoordinator owns execution claim/fence.
+- Interlock/InTr owns governed transition/admission.
+- Master Records owns observed reality, custody, and reconstruction.
+- TV/TVC owns credentials.
+- Heartbeat is observability only.
+- GitHub Actions/source validation has no runtime authority.
+
+The canonical task record marks every runtime substrate `NOT_APPLICABLE`, selects no runtime substrate, requires no external device, and permits no second user-operated device. Public served-byte observation, when obtained, is publication evidence; it is not runtime execution proof.
+
 ## Three-layer state model
 1. **Observation** — what was externally visible at the cutoff.
 2. **Interpretation** — what, if anything, the visible evidence justified concluding then.
@@ -31,3 +45,5 @@ Allowed evidence includes public Hugging Face pages/API metadata, public account
 
 ## Success criteria
 The experiment succeeds when it identifies the earliest defensible public `STATE_CHANGED` event and the earliest defensible governance escalation, or proves either remains `UNKNOWN`, while preserving false-positive alternatives and the public/private visibility gap.
+
+The evidence reconstruction and Site source projection are merged. Final Site projection terminalization remains fail-closed on independent observation of the exact served analysis and historical-security data bytes; that observation does not imply runtime execution.
