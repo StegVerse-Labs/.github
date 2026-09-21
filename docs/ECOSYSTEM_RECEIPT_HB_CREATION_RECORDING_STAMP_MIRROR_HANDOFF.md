@@ -225,3 +225,17 @@ The target evidence graph is therefore:
 `Master Records receipt set -> deterministic MR root -> HB checkpoint commitment -> N node-local witness receipts -> cross-node correlation graph -> optional public witness surfaces`
 
 The ecosystem itself is the primary anchoring fabric. External public systems are optional additional witnesses, not a root dependency.
+
+
+## External review observation — preserve the original HB boundary
+
+A counterpart review explicitly recognized that the existing HB reference material had already documented its own proof ceiling before the external-anchor question was raised: HB establishes StegVerse system-relative continuity, not external time proof.
+
+This matters to the current extension:
+
+- the historical HB reference documentation should not be rewritten to imply it already provided external time;
+- the external-anchor/witness layer is an additive successor capability, not a reinterpretation of the earlier mechanism;
+- preserving the original limitation statement is itself useful provenance because it demonstrates that the proof boundary was documented before the later criticism/extension;
+- future external-anchor evidence must therefore cite the pre-existing HB limitation and identify the first checkpoint at which stronger externally anchored claims become valid.
+
+The first blockchain/OpenTimestamps adapter, if implemented, should bind only successor checkpoint commitments and must not retroactively upgrade older HB-only observations into externally anchored evidence.
