@@ -1066,3 +1066,6 @@ Canonical Goal Task `SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001` / COSV `7
 ## 2026-09-21 WorkerCoordinator pre-claim producer repair
 
 Tracing the staged SDK purpose-bound targeted request found a deterministic pre-custody defect in the existing WorkerCoordinator assignment producer: `manifest_runtime_request_present` was read before local initialization, allowing `UnboundLocalError` before `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` could reach canonical Master Records. PR #2381 repaired only that ordering defect and merged as `f883d36adb356e44dace09f07109af351aab29a6` after purpose-bound run `35567185027` and Richard-seam run `35567185029` passed. No production runtime receipt is inferred from the source repair.
+
+
+The conversation-evidence ingestion Goal now also has source reachability through the existing Healer reusable carrier: StegVerse-Healer PR #93 / merge `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` binds `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` with exact `canonical_work_coordination` + Goal context. This is carrier configuration only; WorkerCoordinator claim/fence and Master Records custody remain the completion authority.
