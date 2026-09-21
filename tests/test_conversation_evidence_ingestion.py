@@ -91,3 +91,52 @@ def test_contract_is_consumed_unchanged_by_reference():
     assert contract["master_records"]["required_transition_results"]==[
         "RECORDED","reconstruction_status=PASS","required_evidence_validation_status=PASS","receipt_sha256==reconstructed_receipt_sha256"
     ]
+
+
+def test_custody_binds_exact_predecessor_master_records_closure(monkeypatch):
+    package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
+    predecessor="a"*64
+    closure={
+        "transition_id":"WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "state":"RECORDED",
+        "reconstruction_status":"PASS",
+        "required_evidence_validation_status":"PASS",
+        "receipt_sha256":predecessor,
+        "reconstructed_receipt_sha256":predecessor,
+        "master_record_ref":"master-record:state-transition:sha256:"+predecessor,
+        "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+    pred_evidence={
+        "evidence_id":"predecessor-master-records-closure:"+mod.TRANSITION_ID,
+        "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "origin_transition_id":mod.TRANSITION_ID,
+        "encoding":"canonical-json",
+        "sha256":mod.sha256_uri(closure).split(":",1)[1],
+        "content":closure,
+    }
+    monkeypatch.setattr(
+        mod,
+        "require_predecessor_master_records_closure",
+        lambda receipt_sha256, successor_transition_id: (
+            "sha256:"+predecessor,
+            [pred_evidence],
+        ) if receipt_sha256==predecessor and successor_transition_id==mod.TRANSITION_ID else (_ for _ in ()).throw(AssertionError("wrong predecessor")),
+    )
+    captured={}
+    def fake_submit(receipt):
+        captured["receipt"]=receipt
+        digest=mod.sha256_uri(receipt).split(":",1)[1]
+        return {
+            "state":"RECORDED",
+            "reconstruction_status":"PASS",
+            "required_evidence_validation_status":"PASS",
+            "receipt_sha256":digest,
+            "reconstructed_receipt_sha256":digest,
+        }
+    monkeypatch.setattr(mod,"submit_state_receipt",fake_submit)
+    result=mod.custody_ingestion(package,predecessor_receipt_sha256=predecessor)
+    assert result["state"]=="RECORDED"
+    receipt=captured["receipt"]
+    assert receipt["prior_state_ref_or_hash"]=="sha256:"+predecessor
+    assert receipt["required_evidence_manifest"][0]["evidence_type"]=="PREDECESSOR_MASTER_RECORDS_CLOSURE"
+    assert receipt["required_evidence_manifest"][0]["content"]["receipt_sha256"]==predecessor
