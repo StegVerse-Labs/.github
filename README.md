@@ -1224,3 +1224,12 @@ TVC PR #458 is merged and validated. The existing root TVC resident self-heal no
 ### TVC hygiene retirement routing batch 3 — 2026-09-21
 
 TVC run `35668559325` proved 27 approved-retirement-ready refs and zero invalid approvals. Seven new batch-3 CMC reconciliation refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`; no branch deletion occurred. The current census has 136 unapproved structural candidates because the merged batch implementation itself created one additional fully-main-contained ref.
+
+
+## Test 3 post-retirement stale-fence refusal
+
+Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` now requires one additional falsification predicate after governed close: the just-retired task-bound worker claim/fence must be used for one attempted `INVOKE_RETIRED_TASK_BOUND_WORKER` through the existing StegAgents -> SDK/StegCore/InTr path. The request declares completed/retired state and no current actor authority, delegation, validity window, capability, or permission.
+
+StegAgents PR #35 passed all three exact-head gates and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. The consequence must not execute; canonical governance must return `DENY`; then `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` must close in canonical Master Records with `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, and exact receipt/reconstruction digest equality before terminal WorkerCoordinator release.
+
+This merge is source-path evidence only. No authentic fresh claim/fence, governed close/retire, stale-fence refusal, or runtime completion is inferred from CI.
