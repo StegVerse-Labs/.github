@@ -178,3 +178,50 @@ Potential progression:
 `Master Records root -> HB checkpoint commitment -> distributed Node/KV witness receipts -> optional independent/public time anchor`
 
 This preserves decentralization and permits StegVerse users themselves to contribute independent evidence surfaces while leaving the strongest temporal claim dependent on an actually independent anchor when that claim is required.
+
+
+## Ecosystem-native decentralized anchoring direction
+
+The preferred architecture is now **ecosystem-native collective anchoring**, not dependence on a single external blockchain or timestamp network.
+
+Each eligible StegVerse Node, regardless of the underlying user platform, should independently observe the same canonical HB/Master Records checkpoint commitment and retain a local witness receipt bound to:
+
+- node identity / node receipt lineage;
+- KV identity or durable user-owned storage domain where applicable;
+- exact `checkpoint_commitment_sha256`;
+- exact `hb_reference`;
+- exact `master_records_receipt_set_root_sha256`;
+- local observation/reference information;
+- prior witness receipt or local witness-chain head;
+- authority_effect = NONE_WITNESS_ONLY.
+
+Nodes then exchange or expose only the commitment/witness material required for correlation. The ecosystem derives a decentralized witness view from multiple independently retained observations of the same checkpoint.
+
+The evidentiary objective is not "majority vote decides truth." Quorum or witness count is evidence about distributed observation and survivability, not authority. A minority node may preserve the only valid historical witness after other nodes disappear. Therefore verification must preserve individual witness identity and exact commitment equality rather than collapsing all witnesses into one mutable aggregate verdict.
+
+The checkpoint state should distinguish at least:
+
+- `LOCAL_ONLY`: observed by one node;
+- `DISTRIBUTED`: same exact commitment independently retained by multiple nodes;
+- `FAILURE_DOMAIN_DIVERSE`: same commitment retained across declared distinct storage/provider/administrative domains;
+- `PUBLICLY_OBSERVABLE`: commitment additionally exposed through one or more independently observable public mechanisms.
+
+No specific blockchain, timestamp network, cloud vendor, or public ledger is required for protocol validity. Such systems may be optional witness surfaces only.
+
+This design avoids making ecosystem continuity dependent on the survival, economics, governance, availability, or policy of any one external chain. The durable evidence object is the checkpoint commitment plus independently retained node witness receipts. If one external system disappears, surviving StegVerse nodes can continue correlating and reconstructing the historical witness graph.
+
+To avoid false decentralization, node witness receipts must include failure-domain metadata sufficient to distinguish:
+- multiple nodes on the same device;
+- multiple devices under one KV/provider;
+- multiple KVs under one user/provider;
+- genuinely distinct provider/storage/admin domains.
+
+A high witness count inside one failure domain must not be represented as equivalent to cross-domain replication.
+
+EVENT_EPHEMERAL nodes may witness a checkpoint, but before teardown their witness receipt must be durably handed to at least one retained KV/persistent Node or another already-durable witness domain. The ephemeral node's disappearance must not erase the witness edge.
+
+The target evidence graph is therefore:
+
+`Master Records receipt set -> deterministic MR root -> HB checkpoint commitment -> N node-local witness receipts -> cross-node correlation graph -> optional public witness surfaces`
+
+The ecosystem itself is the primary anchoring fabric. External public systems are optional additional witnesses, not a root dependency.
