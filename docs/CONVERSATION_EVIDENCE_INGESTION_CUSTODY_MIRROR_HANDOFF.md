@@ -145,3 +145,18 @@ Post-merge canonical evidence still contains no authentic fresh WorkerCoordinato
 - required-evidence PASS not observed
 - exact digest equality not observed
 - public Site projection successor not derived.
+
+
+## Source-refresh ordering closure and current boundary — 2026-09-21
+
+StegVerse-Healer PR `#94` merged at `2e3d41e44c28f0c116b190c6d5a38d094d29a588` after exact-head Test Readiness PASS.
+
+The repair changes only schedule order so the already-existing `RT-SOVEREIGN-SOURCE-REFRESH-001` child executes before this Goal's already-existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` child. This removes the deterministic same-cycle `RESIDENT_RUNTIME_ROOT_NOT_MATERIALIZED` ordering failure without adding a scheduler, runtime, dispatcher, WorkerCoordinator, custody plane, credential path, device prerequisite, source transport, or authority.
+
+The next exact unresolved predicate is not another source defect in this Goal. The standing Healer request, dispatcher selector `healer_sovereign_scheduler`, consumer `scripts/consume_healer_sovereign_scheduler_request.py`, local source-refresh bootstrap, and targeted WorkerCoordinator entrypoint are already present. What is not retained is an authentic post-repair `RESIDENT_REQUEST_DISPATCH_VISIT` / Healer scheduler checkpoint proving that the existing standing scheduler consumed the repaired reusable schedule.
+
+Accordingly:
+- fresh WorkerCoordinator claim/fence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: not observed;
+- `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure: not observed;
+- `CONVERSATION_EVIDENCE_INGESTED`: not observed;
+- public Site projection successor: not derived.
