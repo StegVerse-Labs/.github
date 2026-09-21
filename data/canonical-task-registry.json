@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 152,
+  "generation": 153,
   "status": "CANONICAL_MASTER_RECORDS_WORKERCOORDINATOR_PRECLAIM_PRODUCER_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -65,7 +65,10 @@
         "heartbeat_runtime/admitted_worker_runtime.py",
         "workers/canonical_state_transition_custody.py",
         "tests/test_worker_assignment_functional_memory.py",
-        "github-pr:2367@57415095b055ba04451207fc659bee98855f587a"
+        "github-pr:2367@57415095b055ba04451207fc659bee98855f587a",
+        "control/worker-registry.d/stegfin-live-entry-003.json",
+        "tests/test_preclaim_fragment_policy_reconciliation.py",
+        "github-pr:2392@b0cd6274bbd7e536a91322a0f42f2f58df747aac"
       ],
       "targets": {
         "organizations": [
@@ -128,7 +131,11 @@
         "github-actions:35539091949",
         "github-actions:35539091944",
         "github-actions:35539091952",
-        "github-actions:35539091988"
+        "github-actions:35539091988",
+        "github-actions:35567657664",
+        "github-actions:35567657698",
+        "github-actions:35567657662",
+        "github-actions:35567657765"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
@@ -192,6 +199,33 @@
         "interlock_intr_is_transition_path_not_precondition": true,
         "master_records_is_transition_custody_not_precondition": true,
         "separate_runtime_observer_is_completion_authority": false
+      },
+      "functional_memory_runtime_exercise": {
+        "state": "FIRST_EXISTING_PATH_DEFECT_REPAIRED_FRESH_ASSIGNMENT_RESULT_REQUIRED",
+        "task_id": "STEGFIN-LIVE-ENTRY-003",
+        "retained_authentic_preassignment_result": {
+          "event_type": "activation_deferred",
+          "reason": "EXECUTOR_NOT_RESOLVED",
+          "heartbeat_epoch": 29,
+          "assignment_review_reached": false,
+          "functional_memory_receipt_emitted": false,
+          "worker_claim_fence_emitted": false
+        },
+        "first_concrete_defect": "APPEND_ONLY_FRAGMENT_COULD_NOT_REFRESH_EXISTING_AVAILABLE_WORKER_STATIC_CAPABILITY_REGISTRATION",
+        "repair_pr": 2392,
+        "repair_merge": "b0cd6274bbd7e536a91322a0f42f2f58df747aac",
+        "exact_head": "57b626a548ee97b14d3d9e80ed0202aa70745ca1",
+        "validation_runs": {
+          "test3_richard_seam_acceptance": 35567657664,
+          "cross_task_coordination": 35567657698,
+          "kv_ai_memory_resident_binding": 35567657662,
+          "deepseek_resident": 35567657765
+        },
+        "fresh_authentic_assignment_disposition_observed": false,
+        "fresh_functional_memory_master_records_receipt_observed": false,
+        "controlled_missing_pointer_recovery_exercise_completed": false,
+        "controlled_missing_pointer_recovery_disposition": "DEFER_UNTIL_AN_AUTHENTIC_SAME_TASK_FUNCTIONAL_MEMORY_RECEIPT_EXISTS_SO_THE_TEST_RETAINS_REAL_CANONICAL_MASTER_RECORDS_HISTORY",
+        "authority_effect": "NONE_COORDINATION_AND_SOURCE_REPAIR_ONLY"
       }
     },
     {
