@@ -357,3 +357,20 @@ Tracing `RT-CONTROL-PLANE-SOURCE-PACKAGE-001 -> RTC-INTERLOCK-INTR-TRANSPORT-008
 The repair keeps the same reusable task invocation and, only when the already-retained `STEGVERSE_RELAY_EGRESS_AUTHORIZATION`, `STEGVERSE_RELAY_EGRESS_BINDING`, and `STEGVERSE_STEGOS_ROOT` inputs are present, continues through the existing `scripts/execute_control_plane_source_package_relay.py`. It issues no authorization, creates no binding or transport, and adds no scheduler/dispatcher/runtime.
 
 Acceptance is fail-closed: the packaged manifest must include all five Functional Memory/StegFin files with exact digests, the far-side receipt must return `SOURCE_MATERIALIZED_VERIFIED` for the exact `source_identity`, and `source_materialization.files[]` must reproduce the exact packaged digest and size for every required file before the continuation receipt is retained.
+
+
+### Existing control-plane relay continuation repair merged — 2026-09-21
+
+PR #2482 merged as `5f605bf76904c25fd0041be558d0eac085ddcae3` from exact head `867c7f47e8073a87d094fdc631e1565fae93a63b`.
+
+Exact-head validation:
+- Validate Purpose-Bound Worker Derived Lifetime `35605682837`: PASS;
+- validate-deepseek-resident `35605682688`: PASS;
+- Validate KV AI Memory Resident Binding `35605682942`: PASS;
+- Test 3 Richard Seam Acceptance `35605682614`: PASS.
+
+The reusable source-package lifecycle now continues through the already-existing StegOS control-plane relay only when the already-issued TVC authorization, already-admitted relay binding, and existing StegOS root are present. It creates no new authorization, binding, transport, runtime, scheduler, dispatcher, WorkerCoordinator, credential path, custody store, or invocation type.
+
+Far-side acceptance is fail-closed: `SOURCE_MATERIALIZED_VERIFIED` must name the exact package `source_identity`, and `source_materialization.files[]` must exactly reproduce path, sha256, and size for all five Functional Memory/StegFin carriage files before the continuation receipt is retained.
+
+No authentic post-merge relay/materialization, worker-source-refresh, WorkerCoordinator assignment disposition, Functional Memory receipt, claim, or fence is promoted by this source repair.
