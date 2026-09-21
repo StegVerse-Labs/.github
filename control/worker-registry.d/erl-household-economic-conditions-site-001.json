@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHENTIC_RUNTIME_EVIDENCE_PENDING"
+      ],
+      "authorized_policy_version": "erl-household-economic-conditions-site-v0.1",
+      "block_ref": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+        "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC#451",
+        "StegVerse-Labs/stegfin-governance#111",
+        "workers/erl_household_economic_conditions_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "goal_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+      "handoff_ref": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "parent_claim_reuse_prohibited": true
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:erl-household-economic-conditions-runtime:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+          "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json",
+          "control/worker-registry.d/erl-household-economic-conditions-site-001.json",
+          "control/process-worker-adapters.d/erl-household-economic-conditions-site-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/erl_household_economic_conditions_worker.py"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "CANONICAL_WORK_INGRESS_RECEIPT_PENDING",
+          "RESIDENT_EXECUTION_RECEIPT_PENDING"
+        ],
+        "continuation_owner": "existing Canonical Work/Interlock-InTr + canonical WorkerCoordinator + TV/TVC + ERL",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:erl-household-economic-conditions-site-v1",
+      "authority_source": "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "tvc_provider_credential_readiness",
+        "public_economic_data_acquisition"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "erl-household-economic-conditions-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "publication_authority": false,
+  "site_public_activation_authority": false
+}
