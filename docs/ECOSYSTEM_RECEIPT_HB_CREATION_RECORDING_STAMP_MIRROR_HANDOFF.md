@@ -333,3 +333,47 @@ These merges are source/CI evidence only. They do **not** establish:
 - inherited external temporal bounds.
 
 Those predicates require separately observed authentic runtime evidence.
+
+
+## Authentic runtime checkpoint trace — generation 158 source continuation
+
+Canonical Task Registry advanced independently to generation 158 before this continuation. The Goal remains `ACTIVE / CHECKED_OUT` with COSV `50000000100000`; the generation-155 source merge closure remains intact.
+
+The existing receipt-producing path is global rather than task-private:
+
+```text
+existing resident/canonical task execution
+-> build_state_receipt(...)
+-> hb_creation_reference frozen into exact receipt bytes
+-> submit_state_receipt(...)
+-> canonical Master Records RECORDED custody
+-> hb_recording_reference retained as custody metadata
+-> exact reconstruction
+-> successor custody ordinal
+```
+
+Repository and retained-evidence inspection found no authentic HB-bound successor receipt or production checkpoint retained in canonical repository evidence after activation. No receipt, root, or checkpoint was inferred from source/CI evidence.
+
+The first concrete verification defect was in the durable-local reconstruction adapter in `workers/canonical_state_transition_custody.py`. Immediate local `record_receipt(...)` results already exposed the new recording HB metadata, but later `reconstruct_state_receipt(...)` rebuilt only the frozen receipt/evidence fields and omitted `canonical_state_transition_hb_recording_metadata`. A resident using the durable-local Master Records binding therefore could not prove that the exact reconstructed receipt preserved the independent recording-time HB reference even though Master Records had retained it.
+
+This continuation repairs only that verification seam and adds no new runtime, scheduler, dispatcher, custody store, authority plane, credential path, or transition semantics:
+
+- durable-local reconstruction now returns and validates the existing `hb_recording_reference`, protocol, stable successor custody ordinal, recorded receipt identity, and HB evidence class;
+- the custody client exposes the already-implemented Master Records bounded receipt-set commitment through either the existing HTTP API or existing durable-local binding;
+- `scripts/consume_ecosystem_receipt_hb_checkpoint.py` is registered as selector `ecosystem_receipt_hb_checkpoint` on the **existing** resident dispatcher and carried through the existing resident source-refresh path;
+- the observer examines only successor custody ordinal 1, requires reconstruction PASS, required-evidence PASS, exact receipt/reconstruction digest equality, a frozen creation HB reference, retained recording HB metadata, exact recorded receipt identity, and `HB_BOUND_SUCCESSOR`;
+- only after those predicates exist does it build `stegverse.hb-master-records-checkpoint-commitment/v1` over the exact bounded Master Records range `1..1`;
+- the checkpoint's external-time inheritance floor is bound to the authentic first successor receipt's creation HB reference;
+- until the first authentic successor exists, the observer returns `WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR` and creates no checkpoint.
+
+The existing dispatcher rejects hosted execution before resident consumers are invoked. Therefore source/CI tests cannot be misrepresented as the requested authentic resident checkpoint.
+
+No authorized resident command surface was available from this session after the source trace, so no authentic runtime invocation was manufactured or substituted. This is a session reachability observation only; it is not a Task Registry blocker, device requirement, or new dependency. The standing resident observer makes the next native resident dispatch self-observing once an actual HB-bound successor enters canonical Master Records.
+
+### Progression fence
+
+Do not advance `NODE_KV_WITNESS_RECEIPTS_BIND_EXACT_CHECKPOINT_COMMITMENT`, external anchor submission, confirmation, or temporal-bound inheritance until the retained observer receipt reports:
+
+`AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED`
+
+with the exact receipt identity, both HB references, Master Records root, and checkpoint commitment.
