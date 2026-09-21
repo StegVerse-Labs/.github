@@ -1148,3 +1148,7 @@ Carrier-first bootstrap restores WorkerCoordinator through the existing carrier-
 ### Existing control-plane relay continuation
 
 The reusable control-plane package lifecycle now continues through the already-existing StegOS control-plane relay when an already-issued TVC authorization and already-admitted relay binding are present. It does not mint relay authority. Completion requires exact far-side materialization digest parity for the five Functional Memory/StegFin carriage files.
+
+### SDK TVC resident caller bridge
+
+TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator runtime can now use the existing root TVC execution-warrant oneshot through group-scoped request/receipt permissions and a start-only polkit rule for that exact service template. The TVC private key remains root-owned and LoadCredential-only. Authentic assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
