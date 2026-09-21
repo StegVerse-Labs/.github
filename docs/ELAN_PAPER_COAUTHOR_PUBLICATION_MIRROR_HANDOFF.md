@@ -1,59 +1,83 @@
 # ÉLAN Paper Coauthor and Publication Mirror Handoff
 
-Updated: 2026-09-16  
+Updated: 2026-09-21  
 Goal Task ID: `ELAN-PAPER-COAUTHOR-PUBLICATION-001`  
 COSV ID: `71000000100100`  
-Status: `ACTIVE / COAUTHOR-ACCEPTED / PUBLICATION-VENUE-QUESTION-OPEN`
+Status: `ACTIVE / COAUTHORED-DRAFT-RECONCILED / VENUES-EVALUATED / AUTHOR-REVIEW-PENDING`
 
 ## Goal
 
-Coordinate the evolving ÉLAN × StegVerse working paper as a genuine co-authored research publication, including authorship state, future-draft collaboration, venue evaluation, and eventual submission planning, while keeping private correspondence and experimental evidence in separate lanes.
+Coordinate the evolving ÉLAN × StegVerse paper as a genuine co-authored research publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.
 
-## Canonical predecessor publication context
+## Co-authorship state
 
-Related completed publication-evidence task: `ELAN-CUMULATIVE-PUBLICATION-001`.
+Élisabeth Correvon has affirmatively accepted co-authorship and offered future draft review/contribution. The full private correspondence remains outside the public repository.
 
-That predecessor is complete as `COMPLETE_RENDERED_VALIDATED_NOT_PUBLISHED`. It is not reopened by this collaboration task. This task concerns the evolving co-authored paper and eventual publication decision rather than the already-completed cumulative evidence package.
+Current manuscript authors:
+- Rigel Randolph
+- Élisabeth Correvon
 
-## Co-author acceptance — 2026-09-16
+Author order, affiliations, corresponding-author designation, final contribution statement, and submission approval remain to be confirmed by the authors before submission.
 
-Source class: `USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE`.
+## Canonical co-authored working draft
 
-Preserved factual record only:
+`docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md`
 
-- Élisabeth Correvon explicitly accepted the user's invitation to join the working paper as a co-author.
-- She stated that she looks forward to reviewing future drafts and contributing to the shared reflection.
-- She asked whether a specific journal, conference, or platform is already intended for final publication.
+This revision supersedes the stale authorship/collaboration-invitation header in `docs/WIBS_FULL_PAPER_REVISION.md` but does not rewrite or delete that historical revision.
 
-The full private LinkedIn message and profile URL are not copied into this public repository. The user-provided correspondence remains the source evidence for these collaboration facts.
+The co-authored revision:
+- preserves the original observation / interpretation / governance framing;
+- incorporates the already-completed Experiment 2 cross-evaluation;
+- preserves the ÉLAN one-continuous-interval evidence exactly at the resolution returned;
+- preserves StegVerse A3/A4 as separate governed transitions only within the validated controlled local SDK experiment path;
+- preserves `UNDETERMINED`, `UNRESOLVED`, and `NOT_EXPOSED` boundaries;
+- explicitly states that Experiment 2 is not evidence of authentic live external/resident InTr execution;
+- adds a contribution-boundary section so the manuscript does not claim novelty for broad representation/governance ideas already present in adjacent literature;
+- treats the two experiments as a cumulative bounded empirical series rather than a universal theory of silence or governance.
 
-## Separation from experiment evidence
+## Venue evaluation
 
-This correspondence is **not** an input to `ELAN-STEGVERSE-CROSS-EVALUATION-001` and must not be used to interpret, rescue, normalize, or score the ÉLAN Test 2 evidence.
+Canonical venue evaluation:
 
-The cross-evaluation is now canonically complete and validated from its own experimental evidence. Publication collaboration may consume completed research results later, but publication discussion does not alter experiment state.
+`docs/WIBS_PUBLICATION_VENUE_EVALUATION.md`
+
+Current candidates:
+- ACM FAccT 2027 — strong and time-sensitive conference fit.
+- AI and Ethics — strong rolling-journal fit.
+- Ethics and Information Technology — moderate-to-strong fit if philosophical/epistemic framing is deepened.
+- Journal of Responsible Technology — moderate-to-strong applied responsible-technology fit.
+- AIES — thematically relevant, but the 2026 submission deadline has passed; reconsider a later cycle when announced.
+
+No venue has been selected.
+
+## Adjacent novelty review
+
+`WIBS-PUBLICATION-NOVELTY-REVIEW-001` remains active. Venue selection and submission claims must not outrun that literature/novelty review.
 
 ## Current collaboration state
 
 - `COAUTHORSHIP_ACCEPTED = true`
+- `COAUTHORED_WORKING_DRAFT_EXISTS = true`
 - `FUTURE_DRAFT_REVIEW_OFFERED = true`
-- `PUBLICATION_VENUE_QUESTION_OPEN = true`
+- `PUBLICATION_VENUES_EVALUATED = true`
 - `SPECIFIC_VENUE_SELECTED = false`
 - `SUBMISSION_AUTHORIZED = false`
 - `PRIVATE_CORRESPONDENCE_PUBLICLY_REPLICATED = false`
 
 ## Next work
 
-1. Preserve authorship and contribution provenance as future drafts evolve.
-2. Evaluate suitable journals, conferences, and publication platforms against the eventual paper scope and maturity.
-3. Keep venue evaluation separate from experimental outcome interpretation.
-4. Record a venue decision only when actually selected by the authors.
-5. Prepare submission materials only after the paper reaches an agreed submission-ready state.
+1. Complete the active literature/novelty matrix.
+2. Provide the co-authored revision and venue evaluation to both authors for substantive review.
+3. Record actual Élisabeth revisions/contributions as they occur rather than attributing work prospectively.
+4. Decide conference versus journal direction jointly.
+5. If FAccT 2027 remains under consideration, work backward from the 2026-10-27 abstract and 2026-11-03 paper deadlines.
+6. Record a venue selection only after author agreement.
+7. Prepare venue-specific submission materials only after author approval.
 
 ## README impact
 
-README reviewed. This is a research/publication coordination lane and does not change repository function; no README text mutation is required at registration.
+This is research/publication coordination and does not change repository function. No README mutation is required.
 
 ## No-claim boundary
 
-This handoff records co-author acceptance and an open venue question. It does not claim a venue has been selected, a manuscript is submission-ready, a submission has occurred, or publication has been accepted.
+This handoff does not claim that the manuscript is submission-ready, that a venue has been selected, that Élisabeth has already performed substantive edits beyond accepting co-authorship and offering future review, or that any publication submission has occurred.
