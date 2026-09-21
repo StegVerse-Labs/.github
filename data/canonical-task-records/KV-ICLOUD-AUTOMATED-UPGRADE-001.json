@@ -27,19 +27,63 @@
     "StegVerse-Labs/Site/cloud-kv-peers.html"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/Site"],
-    "components": ["mykv-current-iphone-unified-install", "resident-stegos-node", "device-node-continuity", "self-diagnostic-health", "device-install-repair", "interlock-intr-storage-admission", "provider-neutral-storage-adapters", "owner-selected-kv-host", "mykv-management-surface", "legacy-kv-upgrade-executor"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/continuity-vault-kit",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "mykv-current-iphone-unified-install",
+      "resident-stegos-node",
+      "device-node-continuity",
+      "self-diagnostic-health",
+      "device-install-repair",
+      "interlock-intr-storage-admission",
+      "provider-neutral-storage-adapters",
+      "owner-selected-kv-host",
+      "mykv-management-surface",
+      "legacy-kv-upgrade-executor"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"CVK-LEGACY-KV-UPGRADE-174","kind":"SOURCE_PLANNER","state":"AVAILABLE","ref":"StegVerse-Labs/continuity-vault-kit/LEGACY_KV_UPGRADE_MIRROR_HANDOFF.md","disposition":"REUSE_NON_DESTRUCTIVE_PLAN_WHEN_UPGRADING_EXISTING_KV"},
-    {"dependency_id":"MYKV-CURRENT-IPHONE-INSTALL-SURFACE","kind":"OWNER_INSTALL_AND_MANAGEMENT_UI","state":"PUBLIC_PROPAGATION_VERIFIED_OWNER_INSTALL_READY","ref":"StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md","disposition":"SOLE_OWNER_FACING_INSTALL_SURFACE_BOOTSTRAPS_RESIDENT_STEGOS"},
-    {"dependency_id":"STEGOS-RESIDENT-HEALTH-REPAIR","kind":"DEVICE_INFRASTRUCTURE_HEALTH_REPAIR","state":"PUBLIC_PROPAGATION_VERIFIED_OWNER_INSTALL_READY","ref":"StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md","disposition":"AUTOMATICALLY_CONSUMED_BY_MYKV_INSTALL_AND_LAUNCH"},
-    {"dependency_id":"KV-CONNECTION-REVALIDATION-WORKER-001","kind":"ADJACENT_RUNTIME","state":"ACTIVE","ref":"KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md","disposition":"DO_NOT_DISTURB_PENDING_GOOGLE_DRIVE_KV2_REQUEST"}
+    {
+      "dependency_id": "CVK-LEGACY-KV-UPGRADE-174",
+      "kind": "SOURCE_PLANNER",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-Labs/continuity-vault-kit/LEGACY_KV_UPGRADE_MIRROR_HANDOFF.md",
+      "disposition": "REUSE_NON_DESTRUCTIVE_PLAN_WHEN_UPGRADING_EXISTING_KV"
+    },
+    {
+      "dependency_id": "MYKV-CURRENT-IPHONE-INSTALL-SURFACE",
+      "kind": "OWNER_INSTALL_AND_MANAGEMENT_UI",
+      "state": "PUBLIC_PROPAGATION_VERIFIED_OWNER_INSTALL_READY",
+      "ref": "StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md",
+      "disposition": "SOLE_OWNER_FACING_INSTALL_SURFACE_BOOTSTRAPS_RESIDENT_STEGOS"
+    },
+    {
+      "dependency_id": "STEGOS-RESIDENT-HEALTH-REPAIR",
+      "kind": "DEVICE_INFRASTRUCTURE_HEALTH_REPAIR",
+      "state": "PUBLIC_PROPAGATION_VERIFIED_OWNER_INSTALL_READY",
+      "ref": "StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md",
+      "disposition": "AUTOMATICALLY_CONSUMED_BY_MYKV_INSTALL_AND_LAUNCH"
+    },
+    {
+      "dependency_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "kind": "ADJACENT_RUNTIME",
+      "state": "ACTIVE",
+      "ref": "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
+      "disposition": "DO_NOT_DISTURB_PENDING_GOOGLE_DRIVE_KV2_REQUEST"
+    }
   ],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
+  "adjacent_task_refs": [
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+  ],
   "existing_evidence_refs": [
     "StegVerse-Labs/continuity-vault-kit/tools/plan_legacy_kv_upgrade.py",
     "StegVerse-Labs/continuity-vault-kit/tools/apply_legacy_kv_upgrade.py",
@@ -85,7 +129,18 @@
     "GOOGLE_DRIVE_KV2_REQUEST_UNCHANGED"
   ],
   "runtime_requirements": {
-    "capabilities": ["current_iphone_mykv_install_with_resident_stegos_bootstrap", "resident_stegos_node", "device_node_continuity", "self_diagnostic_health", "bounded_device_install_repair", "interlock_intr_storage_admission", "provider_neutral_storage_selection", "kv_install_or_adopt", "kv_connect_verify", "receipt_emission"],
+    "capabilities": [
+      "current_iphone_mykv_install_with_resident_stegos_bootstrap",
+      "resident_stegos_node",
+      "device_node_continuity",
+      "self_diagnostic_health",
+      "bounded_device_install_repair",
+      "interlock_intr_storage_admission",
+      "provider_neutral_storage_selection",
+      "kv_install_or_adopt",
+      "kv_connect_verify",
+      "receipt_emission"
+    ],
     "environment": "CURRENT_USER_IPHONE_MYKV_WITH_RESIDENT_STEGOS_AND_OWNER_SELECTED_STORAGE_HOST",
     "direction": "MYKV_INSTALL_TO_RESIDENT_STEGOS_HEALTH_TO_OWNER_SELECTED_KV_HOST",
     "mutation_required": true,
@@ -103,12 +158,48 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md","StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":[]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"PLATFORM","evidence_refs":["StegVerse-Labs/Site/assets/stegos-resident-health.js"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":[]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "StegVerse-Labs/Site/assets/stegos-resident-health.js"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
     ],
     "selected_substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
     "external_device_required": false,
@@ -130,13 +221,44 @@
     "mykv_public_install_shell_sha256": "93b63188b69ba2f80030b76e620dc885957bd4e883ab27c8450d67e4382d82af",
     "mykv_public_manifest_sha256": "f0ab7bdc2d86a82113ccbee353ab20d4afaaae07d462f8e35bd52c00230fda94",
     "mykv_public_node_continuity_loader_sha256": "ee23a94de59b82f57cc98b4c9725f69bd8575ea457d9ff11133892322e4bf193",
-    "upgrade_executor_merge_commit": "4c426925a354a5f2d71b8becd92896917247e74f"
+    "upgrade_executor_merge_commit": "4c426925a354a5f2d71b8becd92896917247e74f",
+    "current_iphone_mykv_install_state": "NOT_INSTALLED_NEVER_INSTALLED",
+    "current_iphone_mykv_first_launch_state": "NOT_LAUNCHED",
+    "current_iphone_resident_health_result_state": "NO_AUTHENTIC_RESULT",
+    "owner_reported_install_truth": "MyKV is not installed on the current iPhone and has never been installed there."
   },
-  "worker_claim": {"authority":"OWNER_CURRENT_IPHONE_MYKV_INSTALL_READY","claim_ref":"docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "worker_claim": {
+    "authority": "OWNER_CURRENT_IPHONE_MYKV_INSTALL_READY",
+    "claim_ref": "docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
+    "fence_ref": null,
+    "projection_only": false
+  },
   "human_action_ref": "INSTALL_MYKV_ON_CURRENT_IPHONE",
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":"StegVerse-Labs/Site/actions/runs/35144058676","activation_proof_complete":false},
-  "allowed_next_transitions": ["INSTALL_MYKV_CURRENT_IPHONE", "VERIFY_DEVICE_NODE_CONTINUITY", "VERIFY_RESIDENT_STEGOS_HEALTH", "RUN_BOUNDED_STEGOS_REPAIR_IF_REQUIRED", "SELECT_KV_STORAGE_HOST", "INSTALL_OR_ADOPT_KV_ON_SELECTED_HOST", "CONNECT_VERIFY_KV", "USE_MYKV_FOR_MANAGEMENT", "RUN_LEGACY_UPGRADE_IF_REQUIRED", "CLOSE_RUNTIME_GOAL"],
-  "handoff_projection_refs": ["docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md", "StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md", "StegVerse-Labs/Site/docs/MYKV_PUBLIC_PROPAGATION_OBSERVER_MIRROR_HANDOFF.md", "StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md", "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/Site/actions/runs/35144058676",
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "INSTALL_MYKV_CURRENT_IPHONE",
+    "VERIFY_DEVICE_NODE_CONTINUITY",
+    "VERIFY_RESIDENT_STEGOS_HEALTH",
+    "RUN_BOUNDED_STEGOS_REPAIR_IF_REQUIRED",
+    "SELECT_KV_STORAGE_HOST",
+    "INSTALL_OR_ADOPT_KV_ON_SELECTED_HOST",
+    "CONNECT_VERIFY_KV",
+    "USE_MYKV_FOR_MANAGEMENT",
+    "RUN_LEGACY_UPGRADE_IF_REQUIRED",
+    "CLOSE_RUNTIME_GOAL"
+  ],
+  "handoff_projection_refs": [
+    "docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/MYKV_PUBLIC_PROPAGATION_OBSERVER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -153,6 +275,8 @@
     "mykv_is_not_kv_or_storage_host": true,
     "live_vault_overwrite_prohibited": true,
     "private_content_must_not_be_uploaded_to_repository": true,
-    "all_state_changing_operations_require_governed_receipts": true
+    "all_state_changing_operations_require_governed_receipts": true,
+    "current_iphone_mykv_installed": false,
+    "current_iphone_mykv_installation_must_not_be_inferred_from_owner_install_ready": true
   }
 }
