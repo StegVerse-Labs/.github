@@ -363,3 +363,26 @@ Public .github PR #2365 attempted to validate that boundary by checking out priv
 Validation was instead executed inside the existing private Master Records repository, where canonical custody source is local and the public StegVerse WorkerCoordinator source can be read without a new credential path. `master-records/orchestration` PR #107 merged as `273b55cda7903dfa0f4daed35d3a410b565b3e49`. Exact run `35539058509` passed `Validate exact WorkerCoordinator claim/fence custody closure`, requiring and observing `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, canonical `master_record_ref`, and reconstruction of the exact assignment evidence.
 
 This proves the existing WorkerCoordinator -> shared custody client -> canonical Master Records boundary at integration level. It does not claim that the staged resident SDK purpose-bound request has actually executed or minted a fresh production claim/fence.
+
+
+## WorkerCoordinator pre-claim producer defect — 2026-09-21
+
+Tracing the already-staged `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` request through the existing native resident visit path found that request carriage and custody configuration were intact:
+
+`run_worker_runtime.py` native request visit -> existing `dispatch_resident_execution_requests.py` -> existing `stegagents_governed_runtime_targeted` consumer -> `refresh_and_execute_resident_task.py` -> targeted `run_worker_runtime.py --task-id SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` -> existing WorkerCoordinator assignment cycle.
+
+The request is copied with the existing `control/resident-execution-request.d` refresh set, the generic dispatcher already visits the targeted consumer, source==runtime is explicitly supported by the targeted execution bridge, and the canonical Master Records endpoint/token or durable-local DB/key/durability bindings survive every existing environment sanitizer in this path.
+
+The first deterministic producer defect was inside `heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger(...)`: `manifest_runtime_request_present` was read while constructing the assignment record before that local variable was assigned. Any assignment reaching that statement could raise `UnboundLocalError` before `_custody_assignment_transition(...)`, preventing production `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` emission regardless of the already-validated Master Records custody boundary.
+
+PR #2381 moved only the existing manifest request path/presence initialization ahead of its guarded assignment-record use. No runtime, dispatcher, scheduler, WorkerCoordinator, custody store, credential path, device dependency, or receipt semantics were added. Exact-head `Validate Purpose-Bound Worker Derived Lifetime` run `35567185027` and `Test 3 Richard Seam Acceptance` run `35567185029` both passed; PR #2381 merged as `f883d36adb356e44dace09f07109af351aab29a6`.
+
+The repaired order is now:
+
+manifest request path materialized
+-> manifest request presence computed
+-> optional non-authorizing request reference attached to assignment evidence
+-> purpose graph claim bundle prepared when applicable
+-> `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` submitted through canonical `submit_state_receipt(...)`.
+
+No authentic production claim/fence receipt is claimed from this source repair. The next authentic state remains the same targeted request reaching this repaired assignment cycle and returning a Master Records closure satisfying `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256 == reconstructed_receipt_sha256`. Only after that exact closure may the immediately subsequent governed transition proceed.
