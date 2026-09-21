@@ -1196,3 +1196,8 @@ SDK four-stage remediation completion: SDK PR #304 merged as `e1116e9cb5f5043c91
 ### Repository hygiene self-reference correction — 2026-09-21
 
 The reusable hygiene classifier now distinguishes real default-branch source references from branch-name occurrences inside canonical hygiene-control records. The approval manifest, repository-hygiene evidence/control records, and canonical hygiene handoffs may document a retirement candidate without thereby converting that candidate into a source-referenced retain. Matches outside those explicit hygiene-control paths still block retirement. Reports now expose `ignored_hygiene_control_refs` per branch; this correction grants no deletion authority.
+
+
+### TVC hygiene retirement routing — 2026-09-21
+
+The first TVC owner-cleared hygiene batch has 10 refs validated as `approved-retirement-ready` with zero invalid approvals and is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT`. Exact routing evidence is `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch1.json`; no branch deletion was performed by the classification lane.
