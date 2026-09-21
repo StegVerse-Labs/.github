@@ -65,6 +65,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             return applied
 
         for path in sorted(self.registry_fragment_dir.glob("*.json")):
+            fragment_reconciled = False
             fragment = self._load(path)
             if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
                 continue
@@ -122,6 +123,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
                         "execution_authority_effect": False,
                     }
                     reconciled = True
+                    fragment_reconciled = True
 
                 required = set((handoff.get("execution") or {}).get("required_capabilities") or [])
                 for declared_worker in fragment.get("workers", []):
@@ -170,8 +172,9 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
                         "execution_authority_effect": False,
                     }
                     reconciled = True
+                    fragment_reconciled = True
 
-                if reconciled and fragment_ref not in applied:
+                if fragment_reconciled and fragment_ref not in applied:
                     applied.append(fragment_ref)
 
         if reconciled and int(registry.get("generation", 0)) == generation_before:
