@@ -197,3 +197,22 @@ observe authentic existing resident refresh
 ```
 
 Manual work: None.
+
+
+## Goal Prompt 5/20 — recurring refresh retention and exact Master Records source-floor proof repaired
+
+PR #2430 was re-read against current main and was no longer mergeable: its head `83597be8cb58718eb6c1bced249bcd77aa942d05` had been superseded by the narrower current-main repair in PR #2436 / `00c44a53ab684a1c5abde5cf23cb93be6daa37e3`. PR #2430 was therefore closed unmerged rather than rebased or duplicated.
+
+The next exact existing-path defect was evidence retention. PR #2436 made every existing source-refresh service cycle invoke the already-existing Master Records package materializer before resident request dispatch, but the materialize-only result was printed and discarded. PR #2465 retains that same result at:
+
+```text
+receipts/sovereign-host/master-records-source-refresh.latest.json
+```
+
+PR #2465 exact head `6631152e04ff0745f82a39f0cc9a4b7588514793` passed run `35603108689` and merged as `c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d`. The receipt is non-authorizing and preserves the package source identity and provenance without creating a new watcher, service, runtime, scheduler, dispatcher, credential path, custody authority, or invocation.
+
+Inspection then found the next provenance defect: the consumed `stegverse.source-package/v1` object carried content-addressed identity but did not carry proof that the Master Records bytes descended from required floor `8804762fb5da5d212aa7c9c448dfcdabac734715`. PR #2472 repairs that existing producer/materializer contract. The producer now carries local `master-records/orchestration` Git ancestry proof when available; the existing resident materializer fails closed unless the proof is `VERIFIED_LOCAL_GIT_SOURCE`, names `master-records/orchestration`, binds the exact required source floor, reports `source_floor_present=true`, and carries a valid Git head. Exact head `bc927e1ef7224fc9fa8e4b3c731e61d35746412f` passed dedicated provenance run `35604219285` and broader resident-request run `35604219129`, then merged as `0c8256e024867199ff065eb19f1277158c9f1635`.
+
+The authorized resident command surface was unavailable during automatic observation. That is only an evidence-reachability condition and is not evidence that the resident runtime or receipt is absent. No user device action is required.
+
+No authentic retained `master-records-source-refresh.latest.json`, durable canonical Master Records runtime, or nonce-bound `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` result has therefore been observed yet. The authoritative nonce query remains gated. No second invocation was emitted, A3 was not promoted, A4 was not entered, and Round Trip 1 remains unstarted.

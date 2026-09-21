@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 169,
-  "status": "CANONICAL_MASTER_RECORDS_SDK_POSTCLAIM_TVC_WARRANT_BRIDGE_RECONCILED",
+  "generation": 170,
+  "status": "STEGBROWSER_MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_PROOF_REPAIRED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -7670,6 +7670,50 @@
           "a3_claim_fence_observed": false,
           "classification": "RECURRING_MASTER_RECORDS_SOURCE_MATERIALIZATION_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED",
           "authority_effect": "NONE_SOURCE_PATH_REPAIR_ONLY"
+        },
+        {
+          "observed_at": "2026-09-21",
+          "transition": "MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_FLOOR_PROVENANCE_REPAIRED",
+          "goal_prompt_count": "5/20",
+          "registry_generation_entering": 169,
+          "superseded_pr": {
+            "pull_request": 2430,
+            "exact_head": "83597be8cb58718eb6c1bced249bcd77aa942d05",
+            "disposition": "CLOSED_UNMERGED_SUPERSEDED_BY_PR_2436"
+          },
+          "recurring_materialization_repair": {
+            "pull_request": 2436,
+            "merge": "00c44a53ab684a1c5abde5cf23cb93be6daa37e3"
+          },
+          "refresh_retention_repair": {
+            "pull_request": 2465,
+            "exact_head": "6631152e04ff0745f82a39f0cc9a4b7588514793",
+            "validation_run": 35603108689,
+            "merge": "c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+            "receipt_path": "receipts/sovereign-host/master-records-source-refresh.latest.json"
+          },
+          "source_floor_provenance_repair": {
+            "pull_request": 2472,
+            "exact_head": "bc927e1ef7224fc9fa8e4b3c731e61d35746412f",
+            "validation_runs": [
+              35604219285,
+              35604219129
+            ],
+            "merge": "0c8256e024867199ff065eb19f1277158c9f1635",
+            "required_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715"
+          },
+          "repair_behavior": "RETAIN_EACH_EXISTING_RECURRING_MASTER_RECORDS_MATERIALIZATION_RESULT_AND_FAIL_CLOSED_UNLESS_SOURCE_PACKAGE_PROVENANCE_VERIFIES_MASTER_RECORDS_ORCHESTRATION_AT_REQUIRED_GIT_FLOOR_OR_DESCENDANT",
+          "authenticated_runtime_command_surface_available": false,
+          "authenticated_runtime_surface_unavailability_is_runtime_absence_evidence": false,
+          "authentic_master_records_source_refresh_receipt_observed": false,
+          "authentic_resident_refresh_observed": false,
+          "durable_master_records_runtime_observed": false,
+          "authentic_nonce_query_executed": false,
+          "a3_claim_fence_observed": false,
+          "second_invocation_emitted": false,
+          "round_trip_1_entered": false,
+          "classification": "MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_FLOOR_PROVENANCE_SOURCE_PATH_REPAIRED_AUTHENTIC_RESIDENT_CYCLE_EVIDENCE_PENDING",
+          "authority_effect": "NONE_SOURCE_AND_EVIDENCE_RETENTION_REPAIR_ONLY"
         }
       ],
       "dependencies": [
@@ -7690,16 +7734,16 @@
         {
           "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-REFRESH",
           "kind": "EXISTING_RESIDENT_SOURCE_REFRESH",
-          "state": "REPAIRED_MERGED_RECURRING_MATERIALIZATION_RUNTIME_OBSERVATION_REQUIRED",
-          "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65;StegVerse-Labs/.github#2436@00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
-          "disposition": "OBSERVE_EXISTING_PATH_TRIGGERED_REFRESH_CONSUMING_CURRENT_stegverse-master-records_PACKAGE_AND_MATERIALIZING_vendor/master-records-orchestration_BEFORE_RESIDENT_DISPATCH_THEN_QUERY_DURABLE_STORE"
+          "state": "REPAIRED_MERGED_RECURRING_MATERIALIZATION_WITH_RETAINED_RECEIPT_RUNTIME_OBSERVATION_REQUIRED",
+          "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65;StegVerse-Labs/.github#2436@00c44a53ab684a1c5abde5cf23cb93be6daa37e3;StegVerse-Labs/.github#2465@c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+          "disposition": "OBSERVE_AUTHENTIC_EXISTING_PATH_TRIGGERED_REFRESH_RECEIPT_AT_receipts/sovereign-host/master-records-source-refresh.latest.json_BEFORE_TRUSTING_RESIDENT_MATERIALIZATION_OR_QUERYING_DURABLE_MASTER_RECORDS"
         },
         {
           "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-PROOF",
           "kind": "EXISTING_RESIDENT_SOURCE_PROVENANCE",
-          "state": "HARDENED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
-          "ref": "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
-          "disposition": "AFTER_THE_EXISTING_REFRESH_WATCHER_CONSUMES_THE_CURRENT_MASTER_RECORDS_PACKAGE_REQUIRE_THE_MATERIALIZED_SOURCE_PROOF_TO_SHOW_8804762F_OR_DESCENDANT_BEFORE_TRUSTING_ANY_RUNTIME_ADVERTISEMENT"
+          "state": "SOURCE_PROOF_CARRIAGE_AND_FAIL_CLOSED_GATE_REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
+          "ref": "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf;StegVerse-Labs/.github#2472@0c8256e024867199ff065eb19f1277158c9f1635",
+          "disposition": "REQUIRE_AUTHENTIC_RETAINED_REFRESH_RECEIPT_PACKAGE_PROVENANCE_TO_VERIFY_master-records/orchestration_WITH_SOURCE_FLOOR_8804762fb5da5d212aa7c9c448dfcdabac734715_AND_A_VALID_DESCENDANT_HEAD_BEFORE_TRUSTING_ANY_DURABLE_RUNTIME_ADVERTISEMENT"
         }
       ],
       "blockers": [],
@@ -7732,7 +7776,7 @@
         "github_runtime_authority": "NONE"
       },
       "prompt_budget": {
-        "goal_prompt_count": "4/20",
+        "goal_prompt_count": "5/20",
         "split_merely_to_reset_counter": false
       },
       "source_refs": [
@@ -7745,7 +7789,11 @@
         "StegVerse-Labs/.github#2354",
         "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
         "StegVerse-Labs/.github#2436",
-        "StegVerse-Labs/.github@00c44a53ab684a1c5abde5cf23cb93be6daa37e3"
+        "StegVerse-Labs/.github@00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
+        "StegVerse-Labs/.github#2465",
+        "StegVerse-Labs/.github@c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+        "StegVerse-Labs/.github#2472",
+        "StegVerse-Labs/.github@0c8256e024867199ff065eb19f1277158c9f1635"
       ]
     },
     {
