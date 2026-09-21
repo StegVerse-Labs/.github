@@ -177,5 +177,27 @@
     "cmc029_public_https_observed": false,
     "elyria_transport_eligible": false,
     "disposition": "REQUIRE_AUTHENTIC_EXISTING_MACHINE_OWNER_EXECUTION_WITH_REAL_GATEWAY_AND_KV_BINDINGS_BEFORE_CMC029_TLS_OR_PUBLIC_ROUTE_CAN_ADVANCE"
+  },
+  "tvc_machine_owned_execution_trace_20260921": {
+    "owner_task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+    "collision_check": "NO_OPEN_SDK_ELYRIA_INTR_ADAPTER_PR",
+    "targeted_bootstrap_invocation_source_present": true,
+    "generic_workercoordinator_independent_admission_present": true,
+    "task_state": "HANDOFF_READY",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "authentic_claim_fence_observed": false,
+    "authentic_worker_response_observed": false,
+    "authentic_resident_storage_binding_evaluation_observed": false,
+    "retained_runtime_state_fresh_for_task_execution": false,
+    "first_missing_authentic_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "downstream_sequence": [
+      "REAL_RESIDENT_STORAGE_BINDINGS_EVALUATED",
+      "SERVICE_GATEWAY_TLS_ADOPTION",
+      "SOVEREIGN_GATEWAY_RECONCILIATION",
+      "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_OBSERVED"
+    ],
+    "source_defect_found": false,
+    "repair_performed": false,
+    "disposition": "NO_SOURCE_REPAIR_JUSTIFIED_REQUIRE_AUTHENTIC_EXISTING_WORKERCOORDINATOR_CYCLE"
   }
 }
