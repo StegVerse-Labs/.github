@@ -470,3 +470,29 @@ Tracing the merged post-claim ordering path exposed the next deterministic exist
 The bounded repair reuses that existing TVC oneshot and its established request/receipt roots. Only after exact claim/fence Master Records closure does the existing StegAgents worker bridge write a non-secret `stegverse.tv.execution-warrant-request/v1` bound to the current claim, exact StegAgents commit, canonical purpose task, `run_agent`, and 900-second maximum. It invokes the existing systemd unit, validates the returned `stegverse.tvc.execution-warrant-issuance/v1` receipt, requires `private_key_exposed=false` and `private_key_persisted=false`, and forwards only the signed warrant, public key, policy digest, and TTL into the existing StegAgents subprocess.
 
 No credential material is copied from TVC, and no runtime, scheduler, dispatcher, WorkerCoordinator, endpoint, database, custody store, authority plane, or device dependency is added. This remains source repair until exact-head validation and merge; no authentic assignment disposition or warrant issuance is claimed.
+
+
+## Conversation-ingestion direct-caller predecessor repair — 2026-09-21
+
+The SDK purpose-bound lineage remains conformance-only for this Goal; no authentic `RESIDENT_REQUEST_DISPATCH_VISIT` or production claim/fence was promoted.
+
+The next ecosystem-wide direct caller bypass was found in `CONVERSATION_EVIDENCE_INGESTED`. Its runtime worker already required a fresh WorkerCoordinator claim/fence, but `workers/conversation_evidence_ingestion.py` built the successor receipt with `prior_state_ref_or_hash=None`. That permitted the machine-owned successor custody call to omit the immediately preceding canonical `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure.
+
+PR #2468 repaired only that existing seam and merged as `1028e16d0e31004b2af98f9294ff512411c19f9f` from exact head `8f52d925338c2bdfd54233a11514484be36d669d`. Exact-head validation passed Conversation Evidence Ingestion run `35603365104`, Test 3 Richard Seam Acceptance run `35603365180`, and Purpose-Bound Worker Derived Lifetime run `35603365163`.
+
+The repaired generic path is:
+
+```text
+WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+-> canonical Master Records RECORDED/reconstruction PASS/required-evidence PASS/exact digest equality
+-> exact closure carried into ordinary worker task invocation
+-> conversation ingestion runtime requires that exact closure
+-> require_predecessor_master_records_closure(...) reconstructs it
+-> CONVERSATION_EVIDENCE_INGESTED prior_state_ref_or_hash = sha256:<claim/fence receipt>
+-> PREDECESSOR_MASTER_RECORDS_CLOSURE carried as required evidence
+-> successor custody may proceed
+```
+
+No claim/fence, ingestion transition, resident execution, or publication is claimed by this source repair. No runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, credential route, host dependency, or device dependency was added.
+
+The active progression for this Goal remains ecosystem-wide inventory of direct machine-owned `build_state_receipt(...)` / `submit_state_receipt(...)` callers. The next action is to repair only the next caller that can advance a successor without the immediately preceding canonical Master Records closure.
