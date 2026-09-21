@@ -1162,3 +1162,10 @@ TVC PR #452 is merged and validated. The existing user-owned WorkerCoordinator r
 ## Reusable repository hygiene inventory
 
 `HYGIENE-CAUSAL-ROOTS-001` now owns an organization-reusable branch inventory/classification surface at `.github/workflows/repository-hygiene-reusable.yml`, backed by `scripts/repository_hygiene_inventory.py`. Callers receive ancestry, age, ahead/behind, and exact default-branch source-reference evidence. The reusable workflow is non-authorizing: it uses anonymous source fetches with `permissions: {}`, never deletes refs or closes PRs/issues, and treats age/name only as review metadata. Retirement candidates still require repository-local owner/evidence clearance and the separate canonical ref-retirement authority.
+
+
+## SDK public developer wiki
+
+`SDK-PUBLIC-DEVELOPER-WIKI-001` establishes `sdk.stegverse.org` as a developer-facing documentation projection sourced directly from `StegVerse-org/StegVerse-SDK`. The public surface is intended to expose the real manifest ingress, processing/route selection, schemas, examples, receipt navigation, replay/reconstruction, external-framework integration, and authority boundaries already present in the SDK. The SDK repository remains canonical; the wiki is presentation/navigation only and grants no governance, execution, transition, credential, custody, or evidence authority.
+
+Canonical handoff: `docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md`.
