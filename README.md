@@ -1089,3 +1089,8 @@ The existing `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` path now prevents a
 
 
 For `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`, the resident-dispatch initiation chain is now source-complete through the existing continuous carrier, carrier-side WorkerCoordinator self-heal, first-iteration resident dispatch, exact Healer selector, and existing Healer consumer. The only retained worker-state evidence is historical (`2026-08-18T19:47:00Z`, runtime tick 2, observation-only), so no authentic post-repair resident dispatch or WorkerCoordinator claim/fence is promoted. No alternate runtime/carrier/device path is authorized.
+
+
+### Canonical predecessor closure for state-dependent successors
+
+The shared canonical custody helper now makes the immediately preceding Master Records closure the actual predecessor for a successor transition. A successor recorded through `CanonicalTransitionCustody` receives `prior_state_ref_or_hash=sha256:<prior Master Records receipt>` and automatically carries the exact `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. Progression occurs only after `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality. Domain state/result hashes remain transition evidence and do not replace canonical custody closure as progression authority.
