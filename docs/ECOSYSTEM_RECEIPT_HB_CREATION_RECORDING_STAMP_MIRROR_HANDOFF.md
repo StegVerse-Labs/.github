@@ -6,7 +6,7 @@ Goal Task ID: `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001`
 
 COSV ID: `50000000100000`
 
-Status: `ACTIVE / CANONICAL CREATION / CURRENT HB-MASTER RECORDS BINDING INSPECTED / CRYPTOGRAPHIC COMMITMENT GAP IDENTIFIED`
+Status: `ACTIVE / CHECKED_OUT / CANONICALIZATION STAGED AT REGISTRY GENERATION 150 / FIRST EXTERNAL-ANCHOR SUCCESSOR CONTRACT DEFINED`
 
 ## Goal
 
@@ -239,3 +239,40 @@ This matters to the current extension:
 - future external-anchor evidence must therefore cite the pre-existing HB limitation and identify the first checkpoint at which stronger externally anchored claims become valid.
 
 The first blockchain/OpenTimestamps adapter, if implemented, should bind only successor checkpoint commitments and must not retroactively upgrade older HB-only observations into externally anchored evidence.
+
+
+## Canonicalization and first anchored successor checkpoint — generation 150 candidate
+
+The canonicalization branch now contains:
+
+- `data/canonical-task-records/ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001.json`;
+- `control/task-vectors/ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001.json` with COSV `50000000100000`;
+- Task Registry generation `150` with the Goal Task in `ACTIVE / CHECKED_OUT` state;
+- `control/ECOSYSTEM_RECEIPT_HB_EXTERNAL_ANCHOR_SUCCESSOR_CONTRACT.json` defining the prospective first externally anchored successor checkpoint;
+- task-vector index coverage updated for the new canonical task;
+- README coordination surface updated.
+
+### Exact prospective boundary
+
+Historical HB-only evidence remains `SYSTEM_RELATIVE_CONTINUITY_ONLY`. The first stronger external-time claim begins only at the first checkpoint created after contract adoption with an explicit runtime-bound `anchor_inheritance_floor_hb_reference`.
+
+The first successor checkpoint uses `stegverse.hb-master-records-checkpoint-commitment/v1` and binds:
+
+- exact HB reference;
+- prior checkpoint commitment digest;
+- deterministic bounded Master Records receipt-set root;
+- exact receipt count and inclusion floor/ceiling;
+- explicit external-time inheritance floor;
+- exact checkpoint commitment SHA-256.
+
+The first external adapter profile is `OPENTIMESTAMPS_BITCOIN_V1`, but the enclosing anchor contract remains provider-neutral. Only `CONFIRMED` external proof may create an external temporal-bound claim. `SUBMITTED_PENDING` is not confirmation, and failure or disappearance of the external provider does not invalidate internal StegVerse history.
+
+The confirmed temporal bound inherits only to receipts inside the explicit post-activation inclusion range committed by the exact checkpoint digest. Historical receipts below the activation floor remain system-relative even when independently reconstructable.
+
+### Authority invariants
+
+This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, Master Records, GitHub, or external provider execution, transition, admission, custody, credential, routing, publication, or governance authority. Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; TV/TVC remains credential authority; Master Records remains custody/reconstruction authority.
+
+### Validation ceiling
+
+These branch changes establish a source contract and canonicalization candidate only. They do not prove a runtime-created HB/Master Records checkpoint, an OpenTimestamps submission, Bitcoin confirmation, or inherited external temporal bound. Those remain successor evidence predicates.
