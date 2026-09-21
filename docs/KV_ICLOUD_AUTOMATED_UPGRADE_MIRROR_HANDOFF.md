@@ -13,6 +13,12 @@ MyKV public propagation observer: `StegVerse-Labs/Site/docs/MYKV_PUBLIC_PROPAGAT
 Resident-health source: `StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md`  
 Upgrade implementation handoff: `StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`
 
+## Current iPhone installation truth
+
+The owner explicitly confirmed on 2026-09-21 that **MyKV is not installed on the current iPhone and has never been installed there**. `MYKV_CURRENT_IPHONE_OWNER_INSTALL_READY` means only that the public install surface is ready for the owner to perform the first installation. It must never be interpreted as an installed, previously launched, resident-health-observed, or device-activated state.
+
+No authentic first-launch resident-health / Node-continuity result exists because the first MyKV installation and launch have not occurred.
+
 ## Canonical architecture
 
 **MyKV is the sole owner-facing installation and management surface.** The owner does not separately visit or install a StegOS site.
