@@ -53,7 +53,7 @@ Existing candidate surfaces were re-observed rather than replaced:
 - `SHWP-EVALUATOR-INTR-READ-RUNTIME-001`: not eligible; canonical coverage still records `SOVEREIGN_PUBLIC_ROUTE_TLS_NOT_YET_OBSERVED` and `AUTHENTIC_BROWSER_INTR_ROUND_TRIP_NOT_YET_OBSERVED`.
 - `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`: not eligible; canonical coverage still records no runtime receipt and no public observation round trip.
 - `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`: not eligible; the task retired without runtime completion and its unresolved resident dispatch visit remains carried by the existing successor lineage.
-- shared Service Gateway/public TLS lineage: not eligible; current canonical surfaces still record the public sovereign Gateway route and Service Gateway TLS adoption as unobserved.
+- the previously traced TVC Coinbase Service Gateway lane is not part of Elyria's generic transport contract and is no longer an Elyria dependency.
 
 Therefore there is no presently observed existing StegVerse sovereign public execution surface that can carry an authentic Elyria two-way external request/response without circularly promoting another lane's missing evidence.
 
@@ -99,67 +99,35 @@ It remains unresolved.
 None.
 
 
-## Shared Service Gateway / CMC-029 lineage trace — 2026-09-21
+## Dependency reconciliation — 2026-09-21
 
-The existing owner path was traced without creating a new gateway, runtime, credential flow, custody store, task-specific transport, or device dependency:
+The Elyria component profile is authoritative and does not require Coinbase or KV.
 
-```text
-TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
--> workers/tvc_coinbase_intr_resident_activation_worker.py
--> StegVerse-Labs/TVC resident activation/readiness
--> CMC-029 exact WebPKI HTTP-01 resident adapter when TLS adoption is absent
--> separate sovereign Gateway TLS reconciliation
--> fresh public route observation
--> READY_FOR_OWNER_INGRESS
-```
-
-CMC-029 source is already merged/validated and explicitly remains runtime-evidence pending. Its authentic Gateway leaf certificate, browser-trusted hostname certificate, live issuance, and public HTTPS observation remain unobserved.
-
-The machine owner itself is `HANDOFF_READY` and authorized for an independent fresh claim/fence. Source inspection found no carriage defect:
-- the sovereign bootstrap child environment scrubs credential variables but preserves non-secret deployment bindings;
-- the TVC worker adapter allowlists the Gateway storage root, KV custody root, public node URL, hostname, ACME directory/contact, and HTTP-01 challenge root;
-- the worker correctly requires real Gateway + KV roots only when resident activation must run;
-- when TLS adoption is absent, the worker invokes only the exact CMC-029 resident adapter and stops for separate Gateway reconciliation before public route observation.
-
-Therefore the first concrete predecessor condition is:
+The active Elyria path is:
 
 ```text
-REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED
+StegVerse SDK Elyria framework adapter
+-> RTC-MANIFEST-001
+-> RTC-GOVERNED-PROCESSING-002
+-> RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> reachable authorized Elyria public endpoint
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
 ```
 
-No retained authentic worker receipt was found showing an execution that reached `RESIDENT_STORAGE_BINDINGS_REQUIRED` or any later CMC-029/public-route transition. This is presently missing runtime evidence, not a demonstrated source defect, so no runtime code repair is authorized.
+The goal profile explicitly excludes the KV/SKAP user-verification flow. `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is provider-specific infrastructure: its objective is Coinbase resident activation, its runtime bindings include Coinbase Gateway and KV custody roots, its allowed services are TVC-specific, and its continuation owner is the Coinbase/TVC worker lineage.
 
-The downstream predicates remain:
+Therefore the prior Coinbase -> CMC-029 -> Coinbase Service Gateway trace is superseded as an Elyria dependency. It may remain valid for its own task, but it must not gate, satisfy, or diagnose Elyria transport.
+
+No Coinbase claim/fence, KV binding, CMC-029 certificate, Coinbase Gateway readiness, or Coinbase public-route predicate is required for `SDK-ELYRIA-INTR-ADAPTER-001`.
+
+The remaining Elyria completion predicate is unchanged:
 
 ```text
-PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED
-SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED
+AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-They must not be promoted until the existing machine-owned TVC execution runs with authentic real Gateway/KV bindings and produces the applicable runtime evidence. Elyria transport remains ineligible.
-
-
-
-## TVC machine-owned execution ordering correction — 2026-09-21
-
-The existing machine-owned path was traced one transition earlier than the prior storage-boundary note.
-
-Source is already present for both:
-- the explicit targeted bootstrap successor invocation of `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001`; and
-- generic WorkerCoordinator independent admission of `HANDOFF_READY` tasks with `AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM`.
-
-Canonical evidence contains no authentic `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` for this task and no authentic TVC worker response. Therefore the worker has not yet authentically reached the storage-binding evaluation seam.
-
-The first missing authentic transition is:
-
-```text
-WORKERCOORDINATOR_CLAIM_FENCE_BOUND
-```
-
-Only after that transition closes may the runtime truthfully establish whether the next worker result is `RESIDENT_STORAGE_BINDINGS_REQUIRED`, successful binding reuse, CMC-029 TLS adoption, Gateway reconciliation, or public-route observation.
-
-No deterministic source, request-carriage, binding-discovery, or response-retention defect was found before claim/fence. The existing WorkerCoordinator supports independent admission and the task is already `HANDOFF_READY`; current retained worker-runtime evidence does not prove a fresh task-capable execution for this task. No source repair is justified.
-
-The earlier `REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED` condition remains a downstream runtime prerequisite, but it is no longer treated as the first missing authentic transition.
-
-Elyria transport remains ineligible and `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved.
+The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for custody/readback if an authentic Elyria network response is produced.
