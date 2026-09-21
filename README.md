@@ -1069,3 +1069,6 @@ The admitted WorkerCoordinator may reconcile stale static capability/profile met
 
 
 The conversation-evidence ingestion Goal now also has source reachability through the existing Healer reusable carrier: StegVerse-Healer PR #93 / merge `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` binds `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` with exact `canonical_work_coordination` + Goal context. This is carrier configuration only; WorkerCoordinator claim/fence and Master Records custody remain the completion authority.
+
+
+Conversation-evidence runtime reachability was further repaired in StegVerse-Healer PR #94 / merge `2e3d41e44c28f0c116b190c6d5a38d094d29a588`: the existing sovereign source-refresh reusable child now precedes the conversation-evidence Canonical Work child in the same neutral scheduler, eliminating the deterministic resident-root ordering failure. The remaining boundary is an authentic post-repair visit of the already-existing Healer standing resident request; no claim/fence or Master Records ingestion closure is inferred from source configuration.
