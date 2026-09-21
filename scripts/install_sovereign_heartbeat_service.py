@@ -454,8 +454,8 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         base = Path(values.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "StegVerse"
         carrier_path = base / "heartbeat-start.cmd"
         worker_path = base / "worker-runtime-start.cmd"
-        carrier_prefix = "".join(f"set {key}={value}\\r\\n" for key, value in sorted(worker_env.items()))
-        carrier_content = "@echo off\\r\\n" + carrier_prefix + subprocess.list2cmdline(carrier_command) + "\\r\\n"
+        carrier_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
+        carrier_content = "@echo off\r\n" + carrier_prefix + subprocess.list2cmdline(carrier_command) + "\r\n"
         worker_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
         worker_content = "@echo off\r\n" + worker_prefix + subprocess.list2cmdline(worker_command) + "\r\n"
         activation_commands = [
