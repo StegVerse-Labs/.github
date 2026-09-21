@@ -396,6 +396,6 @@ def test_purpose_post_claim_warrant_bridge_requires_closed_claim_fence():
                 receipt_root=Path(td) / "receipts",
             )
         except RuntimeError as exc:
-            assert "transition missing" in str(exc)
+            assert "WORKERCOORDINATOR_CLAIM_FENCE_BOUND transition" in str(exc)
         else:
             raise AssertionError("TVC issuance ran without closed claim/fence")
