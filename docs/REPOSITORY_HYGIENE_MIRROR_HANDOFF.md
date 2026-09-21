@@ -748,3 +748,10 @@ Aggregate: `1100` branches inspected and `280` retirement candidates requiring o
 Validation evidence: TVC run `35636073607`; LLM-adapter run `35636235950` (after required Work mutation-safety manifest repair); TV run `35636085582`; Master Records run `35636089572` (after artifact-finalization 403 rerun, semantic verification itself had already passed); micro-node run `35636095904`. No branch, PR, or issue was deleted/closed by the hygiene mechanism.
 
 Wave-0 handling remains bounded: repo-standards is not given a new hosted caller because its retained workflows are intentionally inactive sovereign-local migration markers; Continuity remains at 14 branches with prior workflow/branch hygiene already recorded. Site/StegCore remain terminal sinks, not causal-root-first targets.
+
+
+### Approval self-reference classifier repair — 2026-09-21
+
+TVC post-approval run `35650322213` failed closed with 10 invalid approvals because the reusable classifier counted branch names written into `.github/repository-hygiene-approved-retirements.txt` and `evidence/repository-hygiene/*` as default-branch source references. That made valid approval evidence self-invalidating.
+
+The shared classifier is repaired to ignore branch-name matches only inside explicit canonical hygiene-control paths: the approval manifest, repository-hygiene evidence/control records, and canonical hygiene handoffs. All matches outside those paths remain retention evidence and continue to block retirement. The report now records both `default_branch_source_refs` and `ignored_hygiene_control_refs` per branch. Authority effect remains NONE; this repair cannot delete refs.

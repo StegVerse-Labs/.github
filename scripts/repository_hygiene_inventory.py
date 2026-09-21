@@ -16,18 +16,46 @@ PROTECT_RE = re.compile(os.environ.get("PROTECT_RE", r"^(main|master|gh-pages|re
 APPROVAL_FILE = os.environ.get("APPROVAL_FILE", ".github/repository-hygiene-approved-retirements.txt")
 NOW = dt.datetime.now(dt.timezone.utc)
 
+HYGIENE_CONTROL_PATHS = {
+    ".github/repository-hygiene-approved-retirements.txt",
+    "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+    "docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md",
+}
+HYGIENE_CONTROL_PREFIXES = (
+    "evidence/repository-hygiene/",
+    "control/repository-hygiene-",
+)
+
+def is_hygiene_control_path(path: str) -> bool:
+    return path in HYGIENE_CONTROL_PATHS or any(path.startswith(prefix) for prefix in HYGIENE_CONTROL_PREFIXES)
+
 def run(*args: str, check: bool = True) -> str:
     p = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if check and p.returncode:
         raise SystemExit(f"command failed ({p.returncode}): {' '.join(args)}\\n{p.stderr}")
     return p.stdout
 
-def source_ref_count(branch: str) -> int:
+def source_ref_counts(branch: str) -> tuple[int, int]:
     p = subprocess.run(["git", "grep", "-F", "-n", "--", branch, f"origin/{DEFAULT}"], text=True,
                        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     if p.returncode not in (0, 1):
         raise SystemExit(f"git grep failed for {branch}")
-    return len([line for line in p.stdout.splitlines() if line.strip()])
+    retained = 0
+    ignored_hygiene_control = 0
+    for line in p.stdout.splitlines():
+        if not line.strip():
+            continue
+        try:
+            _, rest = line.split(":", 1)
+            path, _ = rest.split(":", 1)
+        except ValueError:
+            retained += 1
+            continue
+        if is_hygiene_control_path(path):
+            ignored_hygiene_control += 1
+        else:
+            retained += 1
+    return retained, ignored_hygiene_control
 
 raw = run("git", "for-each-ref", "--format=%(refname:lstrip=3)|%(objectname)|%(committerdate:unix)", "refs/remotes/origin")
 rows = []
@@ -49,7 +77,10 @@ for line in raw.splitlines():
     else:
         counts_raw = run("git", "rev-list", "--left-right", "--count", f"origin/{DEFAULT}...origin/{name}").strip().split()
         behind, ahead = map(int, counts_raw)
-    refs = 0 if name == DEFAULT else source_ref_count(name)
+    if name == DEFAULT:
+        refs, ignored_hygiene_refs = 0, 0
+    else:
+        refs, ignored_hygiene_refs = source_ref_counts(name)
     stale = age_days > STALE_DAYS
 
     if protected:
@@ -74,7 +105,8 @@ for line in raw.splitlines():
     counts[category] = counts.get(category, 0) + 1
     rows.append({
         "branch": name, "sha": sha, "age_days": age_days, "behind_by": behind,
-        "ahead_by": ahead, "default_branch_source_refs": refs, "category": category,
+        "ahead_by": ahead, "default_branch_source_refs": refs,
+        "ignored_hygiene_control_refs": ignored_hygiene_refs, "category": category,
         "deletion_authorized": False,
     })
 
