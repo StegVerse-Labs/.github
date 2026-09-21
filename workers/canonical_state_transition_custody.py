@@ -606,6 +606,53 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     return {**payload, "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}
 
 
+def require_predecessor_master_records_closure(
+    receipt_sha256: str | None,
+    *,
+    successor_transition_id: str,
+) -> tuple[str | None, list[dict[str, Any]]]:
+    """Reconstruct and bind one canonical predecessor closure for direct callers.
+
+    A missing predecessor is allowed only when the caller has no predecessor
+    receipt to claim. Any supplied predecessor must reconstruct through canonical
+    Master Records with required evidence PASS and exact digest equality.
+    """
+    if receipt_sha256 is None:
+        return None, []
+    if not isinstance(receipt_sha256, str) or not receipt_sha256:
+        raise RuntimeError("canonical_predecessor_receipt_sha_invalid")
+    raw = receipt_sha256.split(":", 1)[1] if receipt_sha256.startswith("sha256:") else receipt_sha256
+    reconstructed = reconstruct_state_receipt(raw)
+    if (
+        reconstructed.get("state") != "PASS"
+        or reconstructed.get("required_evidence_validation_status") != "PASS"
+        or reconstructed.get("receipt_sha256") != raw
+        or reconstructed.get("reconstructed_receipt_sha256") != raw
+    ):
+        raise RuntimeError(str(reconstructed.get("reason") or "canonical_predecessor_master_records_closure_incomplete"))
+    receipt = reconstructed.get("receipt")
+    predecessor_transition_id = receipt.get("transition_id") if isinstance(receipt, Mapping) else None
+    closure = {
+        "transition_id": predecessor_transition_id,
+        "state": "RECORDED",
+        "reconstruction_status": "PASS",
+        "required_evidence_validation_status": "PASS",
+        "receipt_sha256": raw,
+        "reconstructed_receipt_sha256": raw,
+        "master_record_ref": reconstructed.get("master_record_ref"),
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+    evidence = {
+        "evidence_id": f"predecessor-master-records-closure:{successor_transition_id}",
+        "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "origin_transition_id": successor_transition_id,
+        "encoding": "canonical-json",
+        "sha256": sha256_uri(closure).split(":", 1)[1],
+        "content": closure,
+    }
+    return f"sha256:{raw}", [evidence]
+
+
 class CanonicalTransitionCustody:
     """Sequence-aware helper used by governed transition consumers.
 
@@ -695,4 +742,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_closure", "submit_state_receipt", "sha256_uri"]
