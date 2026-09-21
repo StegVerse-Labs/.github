@@ -25,6 +25,16 @@ def invocation():
             "worker_id": "conversation-evidence-ingestion-custody-worker",
             "worker_instance_id": "worker-instance-synth-001",
             "heartbeat_timing": {"fencing_token": 122},
+            "claim_fence_master_records_transition": {
+                "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+                "state": "RECORDED",
+                "reconstruction_status": "PASS",
+                "required_evidence_validation_status": "PASS",
+                "receipt_sha256": "b" * 64,
+                "reconstructed_receipt_sha256": "b" * 64,
+                "master_record_ref": "master-record:state-transition:sha256:" + "b" * 64,
+                "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+            },
         },
         "handoff": {
             "execution": {
@@ -45,7 +55,7 @@ def test_runtime_worker_requires_fresh_claim_and_fence(monkeypatch):
 def test_runtime_worker_completes_only_after_exact_master_records_closure(tmp_path, monkeypatch):
     monkeypatch.setattr(worker, "ROOT", tmp_path)
     monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
-    monkeypatch.setattr(worker, "custody_ingestion", lambda package: {
+    monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: {
         "state": "RECORDED",
         "master_records": {
             "state": "RECORDED",
@@ -75,7 +85,7 @@ def test_runtime_worker_completes_only_after_exact_master_records_closure(tmp_pa
 def test_runtime_worker_blocks_when_master_records_not_closed(tmp_path, monkeypatch):
     monkeypatch.setattr(worker, "ROOT", tmp_path)
     monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
-    monkeypatch.setattr(worker, "custody_ingestion", lambda package: {
+    monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: {
         "state": "BOUNDARY",
         "reason": "MASTER_RECORDS_INGESTION_CUSTODY_NOT_CLOSED",
         "master_records": {"state": "BOUNDARY"},
@@ -130,3 +140,39 @@ def test_canonical_registry_prohibits_connected_device_runtime_gate():
     assert values["connected_device_inventory_task_progression_role"] == "NONE_PROHIBITED"
     assert values["connected_device_inventory_runtime_dependency_role"] == "NONE_PROHIBITED"
     assert values["zero_connected_devices_may_be_used_to_stop_task_progression"] is False
+
+
+def test_runtime_worker_requires_closed_claim_fence_master_records_predecessor(monkeypatch):
+    value = invocation()
+    value["task"].pop("claim_fence_master_records_transition")
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(value)))
+    assert worker.main() == 7
+
+
+def test_runtime_worker_passes_exact_claim_fence_receipt_to_ingestion(tmp_path, monkeypatch):
+    monkeypatch.setattr(worker, "ROOT", tmp_path)
+    monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
+    captured={}
+    def fake_custody(package, **kwargs):
+        captured.update(kwargs)
+        return {
+            "state": "RECORDED",
+            "master_records": {
+                "state": "RECORDED",
+                "reconstruction_status": "PASS",
+                "required_evidence_validation_status": "PASS",
+                "receipt_sha256": "c" * 64,
+                "reconstructed_receipt_sha256": "c" * 64,
+            },
+        }
+    monkeypatch.setattr(worker, "custody_ingestion", fake_custody)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(invocation())))
+    monkeypatch.setattr(sys, "stdout", io.StringIO())
+    assert worker.main() == 0
+    assert captured["predecessor_receipt_sha256"] == "b" * 64
+
+
+def test_generic_workercoordinator_carries_closed_claim_fence_into_worker_task():
+    source=(ROOT/"heartbeat_runtime"/"worker_runtime_legacy.py").read_text(encoding="utf-8")
+    assert 'task["claim_fence_master_records_transition"] = dict(assignment_custody)' in source
+    assert 'if task_id == "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001":\n            task["claim_fence_master_records_transition"]' not in source
