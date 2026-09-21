@@ -118,3 +118,30 @@ This repair changes only the canonical coordination projection to the already-es
 - `INGRESS_ADMITTED` is removed from the remaining successor list.
 
 No claim/fence is minted by this repair and no runtime, scheduler, dispatcher, custody plane, or device prerequisite is added.
+
+
+## Existing reusable carrier binding — 2026-09-21
+
+The next concrete reachability defect after selector repair was schedule addressability: the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` reusable task was scheduled for other Goal Tasks but not for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`.
+
+StegVerse-Healer PR `#93` merged at `d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026` after Test Readiness PASS. It adds one task-scoped row to the already-existing neutral scheduler:
+
+```text
+RT-REUSABLE-TASK-SCHEDULER-001
+-> RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+-> only_consumer=canonical_work_coordination
+-> goal_task_id=CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001
+-> existing Canonical Work registry cycle
+-> existing targeted WorkerCoordinator one-shot
+```
+
+No second scheduler, runtime, dispatcher, WorkerCoordinator, custody plane, credential path, request identity, or device prerequisite was added.
+
+Post-merge canonical evidence still contains no authentic fresh WorkerCoordinator claim/fence and no `CONVERSATION_EVIDENCE_INGESTED` Master Records closure. Therefore:
+- `worker_claim.claim_ref=null`
+- `worker_claim.fence_ref=null`
+- Master Records `RECORDED` not observed
+- reconstruction PASS not observed
+- required-evidence PASS not observed
+- exact digest equality not observed
+- public Site projection successor not derived.
