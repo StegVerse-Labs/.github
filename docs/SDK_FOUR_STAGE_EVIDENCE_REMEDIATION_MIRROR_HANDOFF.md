@@ -38,3 +38,20 @@ After Option A is merged and validated, derive a separate Goal Task for custody-
 ## Generation fence
 
 Registration read canonical Task Registry generation 177 and advances this branch to generation 178.
+
+
+## Completion — 2026-09-21
+
+Option A is complete and validated.
+
+- SDK PR #304 merged as `e1116e9cb5f5043c9198505d64560b710c517e88`.
+- Exact validated head `0bc31804750c224257409e2774fe918e3c797c10` and merged main share exact tree `f42bb1017aa6f7bb185ba410d8ddca369524b77a`.
+- Four-stage validation run `35648276053` PASS.
+- Artifact `10661081336`, SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5`.
+- All 13 triggered SDK exact-head workflows passed.
+- Coordination registration PR #2498 merged as `878856553d5a06e6418a0b968a88d6d75d32a38c`.
+- Historical F6 correction remains: preregistration was anchored by commit `0127082e415fb220c709962ab7d0645e06105a4c` before attempt 2; attempt 1 disposition was SUCCESS.
+
+Status is now RETIRED / COMPLETED / VALIDATED.
+
+Separate successor: `SDK-FOUR-STAGE-RETAINED-STANDING-RETIREMENT-PROOF-001`, handoff `docs/SDK_FOUR_STAGE_RETAINED_STANDING_RETIREMENT_PROOF_MIRROR_HANDOFF.md`.
