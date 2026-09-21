@@ -5,7 +5,7 @@
   "root_correlation_id": "SDK-PUBLIC-DEVELOPER-WIKI-001",
   "parent_task_id": null,
   "goal": "Publish a developer-facing SDK wiki at sdk.stegverse.org directly from the canonical StegVerse-org/StegVerse-SDK repository, exposing manifested-data ingress, processing/governance route selection, schemas, examples, demos, receipt navigation, replay/reconstruction, external-framework integration, current implementation status, and explicit authority boundaries without creating a duplicate SDK authority or allowing documentation publication to grant execution or transition authority.",
-  "coordination_state": "ACTIVE",
+  "coordination_state": "RETIRED",
   "source_refs": [
     "StegVerse-org/StegVerse-SDK:README.md",
     "StegVerse-org/StegVerse-SDK:SDK_MIRROR_HANDOFF.md",
@@ -55,7 +55,18 @@
     "user-supplied GitHub Pages evidence: sdk.stegverse.org DNS check successful; TLS certificate requested",
     "user-supplied GitHub Pages evidence: https://sdk.stegverse.org/ live; DNS check successful; Enforce HTTPS enabled",
     "StegVerse-Labs/Site#1446 merged 110de303b9f88922c926c4a75dbabcc86630d42e",
-    "StegVerse-Labs/Site post-merge Pages run 35637977873 SUCCESS"
+    "StegVerse-Labs/Site post-merge Pages run 35637977873 SUCCESS",
+    "StegVerse-org/StegVerse-SDK public observation run 35649334318 SUCCESS",
+    "StegVerse-org/StegVerse-SDK public observation artifact 10661262634",
+    "SDK public schema HTTP 200 sha256 9a2624478eb537919bfb69d189d2f8190ee66cf6de460bce94f052a9a4ee7b04",
+    "SDK public external-framework example HTTP 200 sha256 e15ec3fd92da469c5c9d544784727cb00787badca7300a80d5eb2049c0237354",
+    "SDK public receipt navigation HTTP 200 sha256 b70702184d02196dec7df1b6d8c5d90d393bf53763e5702f6d8d1bfe26d2d3dd",
+    "Site public wikis.html HTTP 200 sha256 b3f40d8f52d825ccf66812a67f7df0a10bc6e26062daf66b2acbb4422973afd3",
+    "StegVerse-org/StegVerse-SDK#305 merged e63aa7929e9ebac7a3c6c9d856cd4be9218cbb38",
+    "StegVerse-Labs/Site#1447 merged d40a70e73c17f77205cf8c2884bc38d227e67a40",
+    "StegVerse-Labs/Site#1448 merged 570c2917369d8b634d33a79f63cf327b9158b45d",
+    "Site claim SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921 RELEASED_COMPLETE and active COSV projection removed",
+    "StegVerse-org/StegVerse-SDK#306 merged 96f434a2cda2c8c544b76d2feacbd501c8e5d783"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
@@ -78,14 +89,11 @@
     "projection_only": true
   },
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "reconciliation_ref": "docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md"
   },
-  "allowed_next_transitions": [
-    "COMPLETION_CLAIMED",
-    "CLOSED"
-  ],
+  "allowed_next_transitions": [],
   "handoff_projection_refs": [
     "docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md"
@@ -97,5 +105,6 @@
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "public_wiki_grants_authority": false
-  }
+  },
+  "checkout_state": "COMPLETED"
 }

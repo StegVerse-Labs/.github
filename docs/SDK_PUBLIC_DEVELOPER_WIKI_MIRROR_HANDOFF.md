@@ -4,7 +4,7 @@ Updated: 2026-09-21
 Goal Task ID: `SDK-PUBLIC-DEVELOPER-WIKI-001`
 Canonical repository: `StegVerse-org/StegVerse-SDK`
 Target public origin: `https://sdk.stegverse.org/`
-Status: `ACTIVE / PUBLIC ROOT LIVE HTTPS / SITE LINK MERGED / REPRESENTATIVE PUBLIC OBSERVATION PENDING`
+Status: `RETIRED / COMPLETE / PUBLICLY OBSERVED`
 
 ## Goal
 
@@ -94,6 +94,25 @@ Site PR #1446 merged as `110de303b9f88922c926c4a75dbabcc86630d42e`; its exact-he
 
 The remaining evidence gap is bounded: this session's public web fetch surface could not independently retrieve the SDK schema/example/receipt-navigation subresources or the deployed Site `wikis.html` body. Source/build/deployment evidence must not be promoted into those observation predicates.
 
-## Current next executable step
+## Terminal state
 
-Re-observe the four remaining public resources through an independent public fetch surface. If all are served as expected, reconcile completion; otherwise repair only the first concrete served-content defect.
+```text
+coordination_state: RETIRED
+checkout_state: COMPLETED
+completion.claimed: true
+completion.validated: true
+manual_user_action_required: false
+```
+
+Independent public observation run `35649334318` fetched all four required served resources from a GitHub-hosted runner. Each returned HTTP 200 and passed its required served-body markers. The retained observation artifact is `10661262634`.
+
+Observed served-body SHA-256 values:
+
+- ingress schema: `9a2624478eb537919bfb69d189d2f8190ee66cf6de460bce94f052a9a4ee7b04`;
+- external-framework example: `e15ec3fd92da469c5c9d544784727cb00787badca7300a80d5eb2049c0237354`;
+- receipt-navigation document: `b70702184d02196dec7df1b6d8c5d90d393bf53763e5702f6d8d1bfe26d2d3dd`;
+- Site `wikis.html`: `b3f40d8f52d825ccf66812a67f7df0a10bc6e26062daf66b2acbb4422973afd3`.
+
+SDK observation harness PR #305 merged as `e63aa7929e9ebac7a3c6c9d856cd4be9218cbb38`. Site closure PR #1447 merged as `d40a70e73c17f77205cf8c2884bc38d227e67a40`. Site terminalization PR #1448 merged as `570c2917369d8b634d33a79f63cf327b9158b45d`, releasing `SITE-SDK-PUBLIC-DEVELOPER-WIKI-1446-20260921` and removing its active COSV projection. SDK repository-local terminal documentation PR #306 then passed exact-head validation and merged as `96f434a2cda2c8c544b76d2feacbd501c8e5d783`.
+
+No SDK, governance, execution, transition, credential, custody, evidence, processor-selection, or publication-transition authority is created by this closure.

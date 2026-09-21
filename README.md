@@ -1175,6 +1175,7 @@ Canonical handoff: `docs/SDK_PUBLIC_DEVELOPER_WIKI_MIRROR_HANDOFF.md`.
 
 The HB receipt path now distinguishes source readiness from native execution. The canonical carrier-only installer is the next execution predecessor; no source fallback should be added merely because a post-repair `carrier-activation.latest.json` has not yet been retained. Once native activation runs, any reported carrier/service failure is repaired at that exact boundary before WorkerCoordinator or receipt custody is considered.
 
+Canonical state: `RETIRED / COMPLETE / PUBLICLY OBSERVED`. Independent run `35649334318` verified HTTP 200 and required served-body markers for the SDK ingress schema, external-framework example, receipt-navigation document, and Site SDK-wiki directory link; Site claim/COSV terminalization merged in PR #1448.
 
 ## Governed wiki publication transition
 
