@@ -19,14 +19,19 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
+from heartbeat_runtime.independent_oscillator import current_reference
+
 RECEIPT_SCHEMA = "stegverse.canonical-state-transition-receipt/v1"
 SUBMISSION_SCHEMA = "stegverse.master-records.state-transition-submission/v1"
+HB_CREATION_PROTOCOL = "STEGVERSE_HEARTBEAT_100HZ_OSCILLATOR_V1"
+HB_REFERENCE_SCHEMA = "stegverse.heartbeat-reference/v1"
 
 
 def canonical_json(value: Any) -> str:
@@ -40,6 +45,26 @@ def sha256_uri(value: Any) -> str:
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def current_hb_creation_reference(*, sampled_unix_ns: int | None = None) -> dict[str, Any]:
+    """Return the current canonical HeartBeat reference as non-authorizing evidence."""
+    sampled = time.time_ns() if sampled_unix_ns is None else int(sampled_unix_ns)
+    ref = current_reference(now_ns=sampled)
+    return {
+        "schema": HB_REFERENCE_SCHEMA,
+        "protocol": HB_CREATION_PROTOCOL,
+        "heartbeat_id": ref["heartbeat_id"],
+        "heartbeat_epoch": ref["epoch"],
+        "heartbeat_generation": ref["generation"],
+        "sampled_unix_ns": sampled,
+        "reference_frame": f"heartbeat_epoch:{ref['epoch']}",
+        "authority_effect": "NONE_REFERENCE_ONLY",
+        "grants_execution_authority": False,
+        "grants_transition_authority": False,
+        "grants_custody_authority": False,
+        "grants_credential_authority": False,
+    }
 
 
 def build_state_receipt(
@@ -84,6 +109,8 @@ def build_state_receipt(
         "transition_evidence": dict(transition_evidence),
         "required_evidence_manifest": manifest,
         "recorded_at": recorded_at or now(),
+        "hb_creation_reference": current_hb_creation_reference(),
+        "hb_creation_protocol": HB_CREATION_PROTOCOL,
         "transition_outcome": transition_outcome,
         "authority_effect": "NONE_STATE_RECEIPT_ONLY",
         "proof_scope": proof_scope,
@@ -530,4 +557,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "submit_state_receipt", "sha256_uri"]
