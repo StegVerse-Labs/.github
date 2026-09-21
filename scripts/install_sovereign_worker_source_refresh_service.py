@@ -433,7 +433,7 @@ def main() -> int:
     parser.add_argument("--materialize-master-records-only", action="store_true")
     args = parser.parse_args()
     if args.materialize_master_records_only:
-        result = materialize_master_records_source_package(args.source_package_root, args.runtime_root)
+        result = materialize_master_records_source_package_and_retain(args.source_package_root, args.runtime_root)
         print(json.dumps(result, sort_keys=True))
         return 0
     receipt = install(
