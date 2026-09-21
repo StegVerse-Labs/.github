@@ -1127,6 +1127,11 @@ StegOS PR #397 merged the post-admission MIR continuation. Authentic RTC008 admi
 The purpose-bound WorkerCoordinator path now has a bounded repair in progress for the deterministic seam immediately after canonical claim/fence custody: the existing StegAgents adapter must obtain a fresh signed warrant from the already-installed TVC `stegtvc-tv-execution-warrant@.service` after the claim/fence closure rather than requiring a pre-existing warrant environment. The bridge carries only the secret-free warrant/public-key/policy verification tuple and refuses progression unless the claim/fence closure is exact. No new runtime, credential path, authority plane, custody store, or device dependency is introduced; authentic runtime execution remains unclaimed.
 
 
+### Functional Memory control-plane carriage
+
+The existing content-addressed control-plane source package now carries the canonical WorkerCoordinator wrapper, admitted WorkerCoordinator, Functional Memory bridge, shared canonical Master Records custody client, and corrected StegFin worker fragment as one allowlisted delta. This closes the source-delivery gap where the existing relay could materialize a source tree that still lacked the merged Functional Memory assignment repair.
+
+
 ### Elyria TVC execution ordering correction — 2026-09-21
 
 The shared Service Gateway trace for `SDK-ELYRIA-INTR-ADAPTER-001` now identifies `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` as the first missing authentic transition for `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001`. The task is already `HANDOFF_READY` and independently admissible, explicit targeted bootstrap invocation source exists, and generic WorkerCoordinator independent admission supports the task. No authentic claim/fence or worker response is retained, so the TVC worker has not yet authentically reached Gateway/KV storage-binding evaluation. No source repair was made; `REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED`, CMC-029 TLS adoption, Gateway reconciliation, and public-route observation remain downstream runtime conditions.
