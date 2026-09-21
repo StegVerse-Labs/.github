@@ -496,5 +496,17 @@
     "canonical_successor_task_record": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
     "first_unresolved_successor_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION"
   },
-  "allowed_next_transitions": []
+  "allowed_next_transitions": [],
+  "preserved_execution_lineage_repair_2026_09_21": {
+    "source_defect": "WORKERCOORDINATOR_MANIFEST_RUNTIME_REQUEST_FLAG_READ_BEFORE_INITIALIZATION",
+    "affected_boundary": "HANDOFF_READY_TO_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "merged_source_repair_commit": "f883d36adb356e44dace09f07109af351aab29a6",
+    "source_repair_present_on_current_main": true,
+    "regression_guard_added": true,
+    "canonical_task_coordination_state_preserved": "RETIRED",
+    "execution_lineage_fragment_state_preserved": "HANDOFF_READY",
+    "master_records_authentic_claim_fence_observed": false,
+    "next_execution_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "authority_effect": "NONE_EXISTING_PATH_SOURCE_RECONCILIATION_ONLY"
+  }
 }
