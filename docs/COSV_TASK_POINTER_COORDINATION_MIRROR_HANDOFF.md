@@ -304,3 +304,19 @@ Exact-head validation:
 The repair reuses the existing preclaim reconciliation seam and changes no live claim/fence/timing/lease state. It refreshes only static capability/profile metadata for the already-existing AVAILABLE worker when identity, adapter, executor type, and authority source are unchanged and the refreshed fragment satisfies the canonical handoff.
 
 A fresh authentic assignment disposition has not yet been observed after the merge. Therefore the requested non-ALLOW/ALLOW branch and the controlled missing-local-pointer recovery exercise are not advanced yet. The pointer-recovery exercise must retain a real same-task canonical Master Records Functional Memory history; manufacturing that predecessor would violate the requested authentic-state-dependent sequence.
+
+
+### Functional Memory post-repair resident observation — 2026-09-21
+
+Canonical Task Registry had advanced to generation 160 before this continuation.
+
+Fresh repository-retained resident evidence was checked specifically for `STEGFIN-LIVE-ENTRY-003` after merged repair `b0cd6274bbd7e536a91322a0f42f2f58df747aac`. No post-repair assignment review, `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` receipt, claim/fence, or newer same-task runtime result is retained. The latest retained same-task runtime result remains the pre-repair heartbeat-29 `activation_deferred / EXECUTOR_NOT_RESOLVED` event.
+
+The existing post-repair source/runtime path was traced before declaring another failure:
+- `scripts/refresh_sovereign_worker_runtime_source.py` watches/copies `heartbeat_runtime/**` and `control/worker-registry.d/**`, preserves mutable runtime state, and records exact `source_git_head` in `worker-source-refresh.latest.json`;
+- `install_sovereign_worker_source_refresh_service.py` watches those source paths, runs resident request dispatch after refresh, then restarts/starts the existing `stegverse-worker-runtime.service`;
+- `scripts/run_worker_runtime.py` enters the existing WorkerCoordinator cycle, whose fragment application runs before task evaluation.
+
+No new deterministic defect was identified in that chain. Therefore absence of a post-repair resident receipt is not promoted to failure and no additional runtime/source seam was changed.
+
+The next admissible evidence is the first authentic post-repair source-refresh or WorkerCoordinator-cycle result proving whether the same `STEGFIN-LIVE-ENTRY-003` task now resolves the refreshed existing worker registration. Only that authentic result may choose the non-ALLOW/ALLOW branch. Missing-local-pointer recovery remains downstream of a real retained same-task Functional Memory receipt.

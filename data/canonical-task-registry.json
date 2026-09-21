@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 161,
+  "generation": 162,
   "status": "CANONICAL_MASTER_RECORDS_GENERIC_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -135,7 +135,12 @@
         "github-actions:35567657664",
         "github-actions:35567657698",
         "github-actions:35567657662",
-        "github-actions:35567657765"
+        "github-actions:35567657765",
+        "scripts/refresh_sovereign_worker_runtime_source.py",
+        "scripts/install_sovereign_worker_source_refresh_service.py",
+        "scripts/run_worker_runtime.py",
+        "events/heartbeat-runtime.jsonl",
+        "control/worker-status.json"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_STATE_TRANSITION_SEQUENCE_RECORDED",
@@ -201,7 +206,7 @@
         "separate_runtime_observer_is_completion_authority": false
       },
       "functional_memory_runtime_exercise": {
-        "state": "FIRST_EXISTING_PATH_DEFECT_REPAIRED_FRESH_ASSIGNMENT_RESULT_REQUIRED",
+        "state": "POST_REPAIR_RESIDENT_OBSERVATION_REQUIRED_NO_NEW_DETERMINISTIC_DEFECT",
         "task_id": "STEGFIN-LIVE-ENTRY-003",
         "retained_authentic_preassignment_result": {
           "event_type": "activation_deferred",
@@ -224,8 +229,26 @@
         "fresh_authentic_assignment_disposition_observed": false,
         "fresh_functional_memory_master_records_receipt_observed": false,
         "controlled_missing_pointer_recovery_exercise_completed": false,
-        "controlled_missing_pointer_recovery_disposition": "DEFER_UNTIL_AN_AUTHENTIC_SAME_TASK_FUNCTIONAL_MEMORY_RECEIPT_EXISTS_SO_THE_TEST_RETAINS_REAL_CANONICAL_MASTER_RECORDS_HISTORY",
-        "authority_effect": "NONE_COORDINATION_AND_SOURCE_REPAIR_ONLY"
+        "controlled_missing_pointer_recovery_disposition": "DEFER_UNTIL_AUTHENTIC_SAME_TASK_FUNCTIONAL_MEMORY_RECEIPT_EXISTS",
+        "authority_effect": "NONE_OBSERVATION_ONLY",
+        "canonical_generation_observed": 160,
+        "post_repair_merge": "b0cd6274bbd7e536a91322a0f42f2f58df747aac",
+        "checked_fresh_resident_evidence": true,
+        "latest_retained_same_task_runtime_epoch": 29,
+        "latest_retained_same_task_result": "activation_deferred/EXECUTOR_NOT_RESOLVED",
+        "post_repair_source_refresh_receipt_observed": false,
+        "post_repair_worker_cycle_receipt_observed": false,
+        "post_repair_assignment_disposition_observed": false,
+        "post_repair_functional_memory_receipt_observed": false,
+        "source_refresh_path_review": {
+          "worker_source_and_registry_fragment_paths_watched": true,
+          "source_git_head_recorded": true,
+          "resident_request_dispatch_after_refresh": true,
+          "existing_worker_service_restart_after_refresh": true,
+          "worker_cycle_reapplies_fragments_before_task_evaluation": true,
+          "new_deterministic_defect_identified": false
+        },
+        "progression_rule": "DO_NOT_TREAT_ABSENCE_OF_POST_REPAIR_RUNTIME_RECEIPT_AS_FAILURE; REQUIRE_FIRST_AUTHENTIC_POST_REPAIR_REFRESH_OR_WORKER_CYCLE_RESULT"
       }
     },
     {
