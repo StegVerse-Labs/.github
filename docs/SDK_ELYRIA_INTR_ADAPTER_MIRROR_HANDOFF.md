@@ -138,3 +138,28 @@ SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED
 
 They must not be promoted until the existing machine-owned TVC execution runs with authentic real Gateway/KV bindings and produces the applicable runtime evidence. Elyria transport remains ineligible.
 
+
+
+## TVC machine-owned execution ordering correction — 2026-09-21
+
+The existing machine-owned path was traced one transition earlier than the prior storage-boundary note.
+
+Source is already present for both:
+- the explicit targeted bootstrap successor invocation of `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001`; and
+- generic WorkerCoordinator independent admission of `HANDOFF_READY` tasks with `AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM`.
+
+Canonical evidence contains no authentic `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` for this task and no authentic TVC worker response. Therefore the worker has not yet authentically reached the storage-binding evaluation seam.
+
+The first missing authentic transition is:
+
+```text
+WORKERCOORDINATOR_CLAIM_FENCE_BOUND
+```
+
+Only after that transition closes may the runtime truthfully establish whether the next worker result is `RESIDENT_STORAGE_BINDINGS_REQUIRED`, successful binding reuse, CMC-029 TLS adoption, Gateway reconciliation, or public-route observation.
+
+No deterministic source, request-carriage, binding-discovery, or response-retention defect was found before claim/fence. The existing WorkerCoordinator supports independent admission and the task is already `HANDOFF_READY`; current retained worker-runtime evidence does not prove a fresh task-capable execution for this task. No source repair is justified.
+
+The earlier `REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED` condition remains a downstream runtime prerequisite, but it is no longer treated as the first missing authentic transition.
+
+Elyria transport remains ineligible and `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved.
