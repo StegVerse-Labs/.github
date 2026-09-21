@@ -1,3 +1,6 @@
+
+Canonical Goal Task `SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001` / COSV `71000000111111` is RETIRED / COMPLETED / VALIDATED. SDK PR #299 merged as `69921971106ffb4008bf5914c34b34bc51745ff0` after all 12 applicable exact-head workflows passed, including four-stage validation run `35547155843`; the tested head and merged commit share exact Git tree `6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6`. Every successful public `run-manifest` result is now bound to the validated canonical ingress manifest, a deterministic generic run-manifest request, and a hash commitment over the unmodified processor result. Future Test 3 naming is person-neutral with the retained historical identifier accepted only as a compatibility alias. SDK 1.3.0 remains a release candidate. Canonical handoff: `docs/SDK_RUN_MANIFEST_RESULT_LINEAGE_BINDING_MIRROR_HANDOFF.md`.
+
 # StegVerse
 
 ## Current repository evidence census
