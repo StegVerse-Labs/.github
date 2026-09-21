@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGHEALTH-FAILURE-REMEDIATION-D62E3D015278FC030541",
+  "correlation_id": "STEGHEALTH-FAILURE-REMEDIATION-D62E3D015278FC030541",
+  "root_correlation_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "parent_task_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+  "goal": "Remediate CURRENT_SOURCE_HOSTED_GATEWAY_PROVIDER_FALLBACK_RESIDUAL in StegVerse-org/LLM-adapter as the StegHealth-generated child for issue #88, preserving provider-neutral/fail-closed behavior and returning exact validation evidence to the parent enterprise eradication goal.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/StegHealth",
+  "handoff": "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000111000"
+  },
+  "cosv_task_vector": "10100000111000",
+  "source_refs": [
+    "StegVerse-Labs/StegHealth@b655ba23f405f23f9c7e3a0bb02dd05165318cba:tasks/failure-remediation/STEGHEALTH-FAILURE-REMEDIATION-D62E3D015278FC030541.json",
+    "StegVerse-Labs/StegHealth#88",
+    "StegVerse-Labs/StegHealth@b655ba23f405f23f9c7e3a0bb02dd05165318cba:coordination/enterprise-host-provider-eradication-issues-82-88.handoff.json",
+    "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md"
+  ],
+  "remediation_identity_rule": "OPEN_PARENT_CREATES_FRESH_CHILD",
+  "issue_ref": "StegVerse-Labs/StegHealth#88",
+  "target_repository": "StegVerse-org/LLM-adapter",
+  "expected_evidence_predicates": [
+    "AUTHENTIC_FAILURE_EVIDENCE_RECONCILED",
+    "FIRST_DETERMINISTIC_DEFECT_IDENTIFIED",
+    "BOUNDED_REPAIR_APPLIED_OR_EXACT_RECOVERY_EVIDENCE_BOUND",
+    "EXACT_HEAD_OR_CURRENT_OWNER_VALIDATION_PASS",
+    "POST_CORRECTION_FAILURE_STATE_RECONCILED",
+    "PARENT_PROVIDER_SWEEP_RECONCILED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_effect": "NONE_REMEDIATION_COORDINATION_ONLY"
+}
