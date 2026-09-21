@@ -6,6 +6,7 @@ on:
       - 'workers/conversation_evidence_ingestion.py'
       - 'workers/conversation_evidence_ingestion_runtime_worker.py'
       - 'tests/test_conversation_evidence_ingestion_runtime.py'
+      - 'tests/test_conversation_evidence_state_triggered_selector.py'
       - 'handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json'
       - 'control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json'
       - 'control/worker-registry.d/conversation-evidence-ingestion-custody-001.json'
@@ -31,7 +32,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --quiet pytest
       - name: Validate ingestion tests
-        run: python -m pytest -q tests/test_conversation_evidence_ingestion.py tests/test_conversation_evidence_ingestion_runtime.py
+        run: python -m pytest -q tests/test_conversation_evidence_ingestion.py tests/test_conversation_evidence_ingestion_runtime.py tests/test_conversation_evidence_state_triggered_selector.py
       - name: Compile ingestion worker
         run: python -m py_compile workers/conversation_evidence_ingestion.py workers/conversation_evidence_ingestion_runtime_worker.py
       - name: Parse canonical JSON artifacts
