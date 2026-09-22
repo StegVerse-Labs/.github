@@ -139,6 +139,8 @@ STATIC_FILES = (
     Path("scripts/refresh_heartbeat_transition_receipt.py"),
     Path("scripts/project_worker_control_plane_from_carrier.py"),
     Path("scripts/verify_iphone_heartbeat_transition_receipt.py"),
+    Path("resident-runtime/aggregate_repo_transition.py"),
+    Path(".stegverse/transition-ledger/org-contract.json"),
     Path("scripts/refresh_sovereign_worker_runtime_source.py"),
     Path("scripts/run_stegindex_preflight.py"),
     Path("scripts/verify_stegindex_resident_operational_proof.py"),
