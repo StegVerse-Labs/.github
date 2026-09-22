@@ -190,6 +190,37 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
         "--receipt", str(receipt_path),
     ]
     tracking, cosv = row.get("tracking_task_id"), row.get("cosv_task_vector")
+    if row.get("cosv_binding_policy") == "CANONICAL_INDEX_EXACT_EMITTED_ONLY":
+        # The neutral scheduler only observes an already-governed COSV issuance.
+        # It does not calculate a task vector, authorize the task, or fall back to
+        # another task's vector when its exact canonical row is absent.
+        if not tracking or cosv is not None:
+            raise RuntimeError("canonical COSV lookup requires task identity and no provisional vector")
+        canonical = roots.get("StegVerse-Labs/.github")
+        if canonical is None:
+            return {**base, "state":"BOUNDARY_RECORDED", "boundary":"CANONICAL_COSV_SOURCE_NOT_MATERIALIZED", "slot_satisfied":False}
+        index_path = canonical / "control/task-vector-index.json"
+        record_path = canonical / "data/canonical-task-records" / (str(tracking) + ".json")
+        if not index_path.is_file() or not record_path.is_file():
+            return {**base, "state":"BOUNDARY_RECORDED", "boundary":"CANONICAL_COSV_NOT_EMITTED", "slot_satisfied":False}
+        index = load_json(index_path)
+        record = load_json(record_path)
+        matches = [x for x in index.get("tasks", []) if isinstance(x, dict) and x.get("task_id") == tracking]
+        if len(matches) != 1 or record.get("task_id") != tracking:
+            return {**base, "state":"BOUNDARY_RECORDED", "boundary":"CANONICAL_COSV_NOT_EMITTED", "slot_satisfied":False}
+        issued = matches[0]
+        cosv = issued.get("vector")
+        ref = issued.get("source_state_vector_ref")
+        if (issued.get("vector_state") != "EMITTED" or issued.get("authority_effect") != "NONE"
+                or issued.get("repository") != "StegVerse-Labs/.github"
+                or not isinstance(cosv, str) or len(cosv) != 14 or not cosv.isdigit()
+                or record.get("cosv_task_vector") != cosv
+                or record.get("source_state_vector_ref") != ref
+                or not isinstance(ref, str) or ref != f"control/task-vectors/{tracking}.json"):
+            return {**base, "state":"BOUNDARY_RECORDED", "boundary":"CANONICAL_COSV_IDENTITY_MISMATCH", "slot_satisfied":False}
+        source_record = load_json(canonical / ref) if (canonical / ref).is_file() else None
+        if not isinstance(source_record, dict) or source_record.get("vector_state") != "EMITTED" or source_record.get("vector") != cosv or source_record.get("identity") != f"StegVerse-Labs/.github:task:{tracking}" or source_record.get("authority_effect") != "NONE":
+            return {**base, "state":"BOUNDARY_RECORDED", "boundary":"CANONICAL_COSV_RECORD_MISMATCH", "slot_satisfied":False}
     if tracking or cosv:
         if not tracking or not cosv:
             raise RuntimeError("tracking_task_id and cosv_task_vector must be paired")
