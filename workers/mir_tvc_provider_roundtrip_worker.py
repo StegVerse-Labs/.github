@@ -308,7 +308,7 @@ def _unknown_provider_outcome(root: Path, task: dict[str, Any], request_lane: di
         "provider_operation_outcome_known": False,
         "allow_operation_result_observed": False,
         "use_receipt_observed": False,
-        "intr_transport": {"profile_id": INTR_PROFILE, "request": request_lane, "response": None},
+        "intr_transport": {"component_id": INTR_COMPONENT, "request": request_lane, "response": None},
         "failure_type": type(exc).__name__,
         "failure": str(exc),
         "provider_operation_retry_allowed": False,
@@ -479,15 +479,15 @@ def _resume_completed_provider(root: Path, task: dict[str, Any], existing: dict[
         return _continue_reusable_lifecycle(root)
 
     _, stegos_root = _roots()
-    connector = _load_intr_connector(stegos_root)
+    transport = _load_intr_transport(stegos_root)
     request = _request()
-    packet = _prepare_intr_request(connector, request)
+    request_intent, _ = _prepare_intr_request(transport, request)
     request_receipts = request_lane["receipts"]
-    connector.validate_complete(packet, request_receipts)
-    response_lane = _admit_intr_response(connector, packet, request_receipts, result, task)
+    transport.validate_receipt_chain(request_intent, request_receipts)
+    response_lane = _transport_intr_response(transport, request_receipts, result, task)
     completed_receipt = dict(existing)
     completed_receipt["state"] = "COMPLETED_PROVIDER_OPERATION_RECEIPT"
-    completed_receipt["intr_transport"] = {"profile_id": INTR_PROFILE, "request": request_lane, "response": response_lane}
+    completed_receipt["intr_transport"] = {"component_id": INTR_COMPONENT, "request": request_lane, "response": response_lane}
     completed_receipt["provider_operation_retry_allowed"] = False
     completed_receipt["authority_effect"] = "NONE_EXECUTION_EVIDENCE_ONLY"
     _write_receipt(root, completed_receipt)
@@ -505,7 +505,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
 
     tvc_root, stegos_root = _roots()
     broker = _load_tvc_broker(tvc_root)
-    connector = _load_intr_connector(stegos_root)
+    transport = _load_intr_transport(stegos_root)
     socket_path = (os.getenv("STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET") or "/run/stegverse/vault-broker.sock").strip()
     if not socket_path.startswith("/"):
         raise RuntimeError("canonical TVC vault broker socket path invalid")
@@ -514,7 +514,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     # TVC validates the exact lease/profile/live-operation boundary before the InTr
     # transport receipt is admitted. This source validation grants no credential use.
     broker.validate_request(request)
-    request_packet, request_lane = _admit_intr_request(connector, request, task)
+    request_intent, request_lane = _transport_intr_request(transport, request, task)
 
     try:
         result = broker.forward_to_local_vault_broker(request, socket_path=socket_path, timeout_seconds=60)
@@ -545,7 +545,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "use_receipt_observed": True,
         "ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
         "completion_candidate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
-        "intr_transport": {"profile_id": INTR_PROFILE, "request": request_lane, "response": None},
+        "intr_transport": {"component_id": INTR_COMPONENT, "request": request_lane, "response": None},
         "master_records_custody_required": True,
         "provider_operation_retry_allowed": False,
         "blind_consequence_retry_allowed": False,
@@ -557,14 +557,14 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     _write_receipt(root, interim)
 
     try:
-        response_lane = _admit_intr_response(connector, request_packet, request_lane["receipts"], result, task)
+        response_lane = _transport_intr_response(transport, request_lane["receipts"], result, task)
     except Exception as exc:
         _post_provider_failure(root, interim, exc)
         raise
 
     receipt = dict(interim)
     receipt["state"] = "COMPLETED_PROVIDER_OPERATION_RECEIPT"
-    receipt["intr_transport"] = {"profile_id": INTR_PROFILE, "request": request_lane, "response": response_lane}
+    receipt["intr_transport"] = {"component_id": INTR_COMPONENT, "request": request_lane, "response": response_lane}
     _write_receipt(root, receipt)
     return _continue_reusable_lifecycle(root)
 
