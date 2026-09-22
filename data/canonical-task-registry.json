@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 192,
+  "generation": 193,
   "status": "ECOSYSTEM_HB_AUTHENTIC_MASTER_RECORDS_REFRESH_REOBSERVED_NOT_OBSERVED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5215,7 +5215,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "TRACE_RTC006_UPSTREAM_CANONICAL_PREDECESSOR_CARRIAGE_OR_NEXT_REMAINING_DIRECT_CALLER_WITHOUT_SYNTHESIS",
+        "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5426,7 +5426,13 @@
           35675152172
         ],
         "rtc006_predecessor_contract": "EXACT_IMMEDIATELY_PRECEDING_CANONICAL_MASTER_RECORDS_RECEIPT_SHA256",
-        "rtc006_transport_terminal_role": "TRANSITION_EVIDENCE_ONLY_NOT_PRIOR_STATE"
+        "rtc006_transport_terminal_role": "TRANSITION_EVIDENCE_ONLY_NOT_PRIOR_STATE",
+        "organization_receipt_runtime_reobservation_performed": true,
+        "organization_receipt_runtime_reobservation_source_head": "292c96d8cd61391f61689e94fb643c66bd53e568",
+        "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
+        "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
+        "organization_receipt_runtime_reobservation_repository_evidence_only": true,
+        "organization_receipt_runtime_reobservation_defect_inferred": false
       },
       "completion": {
         "claimed": false,
