@@ -112,7 +112,8 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
                 self.assertEqual(state_root(), expected.resolve())
                 self.assertEqual(receiver_port(), 8877)
         with patch.dict("os.environ", {}, clear=True):
-            self.assertEqual(receiver_port(), DEFAULT_PORT)
+            self.assertEqual(DEFAULT_PORT, 8877)
+            self.assertEqual(receiver_port(), 8877)
             self.assertIn(".stegverse/hil/sovereign-receiver", state_root().as_posix())
 
     def test_worker_response_keeps_activation_open_after_local_ready(self) -> None:
