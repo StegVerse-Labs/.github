@@ -88,6 +88,11 @@
       "SDK evaluator source consumer does not demonstrate exact evaluator manifest materialization on admitted runtime"
     ],
     "promotion_rule": "FAIL_CLOSED_UNTIL_AUTHENTIC_RECEIPTS_AND_CANONICAL_MASTER_RECORDS_RECONSTRUCTION",
-    "repair_scope": "DO_NOT_ADD_PARALLEL_RUNTIME_OR_RECLASSIFY_LEGACY_DIAGNOSTIC_FEDERATION_AS_GOVERNED"
+    "repair_scope": "DO_NOT_ADD_PARALLEL_RUNTIME_OR_RECLASSIFY_LEGACY_DIAGNOSTIC_FEDERATION_AS_GOVERNED",
+    "legacy_kernel_guard": "REJECTS_NON_NONE_AUTHORITY_EFFECT_BEFORE_DISPATCH",
+    "existing_org_ledger": ".stegverse/transition-ledger/org-contract.json + resident-runtime/aggregate_repo_transition.py",
+    "org_ledger_integration": "NOT_WIRED_TO_LEGACY_KERNEL_DIAGNOSTIC_RECEIPTS",
+    "universal_intr_federation_integration": "NOT_IMPLEMENTED_DO_NOT_CLAIM",
+    "source_validation_workflow": ".github/workflows/validate-sdk-evaluator-federation-contract.yml"
   }
 }
