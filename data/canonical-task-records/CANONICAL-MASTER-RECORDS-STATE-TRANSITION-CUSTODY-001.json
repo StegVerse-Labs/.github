@@ -350,7 +350,14 @@
       35677960202,
       35677960211
     ],
-    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY"
+    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY",
+    "rtc007_exact_boundary_predecessor_reconstruction_identified": true,
+    "rtc007_exact_boundary_predecessor_reconstruction_repaired": true,
+    "rtc007_exact_boundary_predecessor_reconstruction_pr": 2562,
+    "rtc007_exact_boundary_predecessor_reconstruction_merge": "248c94f4a9c18579cff99ed5d40d8f6ffcc66111",
+    "rtc007_exact_boundary_predecessor_reconstruction_exact_head": "b8c61cd155734b2c5a4352563b4ae29249a8d977",
+    "rtc007_exact_boundary_predecessor_reconstruction_validation_run": 35681590372,
+    "rtc007_predecessor_contract": "RECONSTRUCT_RTC006_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_RTC007_RECEIPT_EMISSION_BOUNDARY"
   },
   "completion": {
     "claimed": false,
@@ -702,6 +709,26 @@
         "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
       ],
       "rtc009_or_far_side_execution_changed": false,
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "rtc007_exact_boundary_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "RTC-STEGVERSE-EGRESS-007",
+      "role": "GENERIC_DIRECT_CALLER_CONFORMANCE_CASE_ONLY",
+      "pull_request": 2562,
+      "exact_head": "b8c61cd155734b2c5a4352563b4ae29249a8d977",
+      "merge_commit": "248c94f4a9c18579cff99ed5d40d8f6ffcc66111",
+      "validation_run": 35681590372,
+      "defect": "DIRECT_RTC007_CUSTODY_EMITTER_COPIED_RTC006_MASTER_RECORDS_RECEIPT_SHA_FROM_IN_MEMORY_RESULT_INTO_PRIOR_STATE_WITHOUT_RECONSTRUCTING_RTC006_AT_RTC007_RECEIPT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "RTC006_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC007_EMISSION_BOUNDARY",
+        "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-SDK-RETURN-006",
+        "RECONSTRUCTED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_MUST_MATCH_PASSED_RTC006_CLOSURE",
+        "RTC007_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+      ],
+      "rtc008_or_rtc009_execution_changed": false,
       "runtime_execution_claimed": false,
       "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
     }

@@ -1312,3 +1312,8 @@ The Device/KV/SKAP path now explicitly separates origin-scoped browser data from
 ### Exact-boundary canonical predecessor reconstruction
 
 Direct receipt producers may not treat request-carried predecessor status or digest fields as a substitute for canonical reconstruction. The RTC008 conformance caller now reconstructs its exact predecessor through Master Records at receipt emission, verifies the reconstructed identity against the carried metadata, and uses the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` contract before successor custody.
+
+
+### RTC007 exact-boundary predecessor reconstruction
+
+A successor cannot reuse an in-memory Master Records result merely because the upstream caller already validated it. `RTC-STEGVERSE-EGRESS-007` now reconstructs the exact `RTC-SDK-RETURN-006` predecessor at RTC007 receipt emission, verifies closure-field equality, and carries the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence before canonical custody.
