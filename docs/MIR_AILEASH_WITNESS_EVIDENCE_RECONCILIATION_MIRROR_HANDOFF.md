@@ -295,3 +295,40 @@ Most importantly, the current canonical task record for `MIR-AILEASH-WITNESS-EVI
 
 No runtime execution, external GET, A1/A2/A3/A4 promotion, or new authority path is claimed from this reconciliation.
 
+## Goal prompt 18: predecessor Master Records closure verification — 2026-09-21
+
+The strict state-dependent contract was re-read before attempting state 2. The canonical task remains ACTIVE and permits only `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED` after the immediate predecessor `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` is consumed from canonical Master Records.
+
+The predecessor evidence identity remains:
+
+```text
+subjects_block_index = 1895
+subjects_root = 5a34b9af7ab85de4d2b9b3d18c238c4aaa632333f4fedeb4c5fe1d5c6953abff
+subjects_chain_seal = 4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260
+```
+
+Exact closure verification was attempted against current authority before acquiring any state-2 evidence.
+
+Findings:
+
+1. Searches across `StegVerse-Labs/.github` found the state declaration and closure requirements, but no retained receipt carrying `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` with an exact `receipt_sha256` / `reconstructed_receipt_sha256` pair.
+2. The private authoritative repository `master-records/orchestration` was inspected directly. Its complete main tree contains no path or indexed object matching the MIR task ID, predecessor state ID, block 1895, subjects root, or subjects chain seal. The repository-backed `receipts/` and `reconstructions/` trees likewise expose no matching retained artifact.
+3. The canonical Master Records implementation does expose the non-authorizing query contract:
+   `GET /api/master-records/state-transitions/query?subject_or_correlation_id=<id>`, optionally filtered by `transition_id`.
+4. No TV/TVC-authorized live Master Records endpoint/token binding is exposed to this conversation. The previously observed public same-origin path `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404 and is not evidence that the durable store is empty.
+
+Therefore the required predecessor closure is currently `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` from this execution context. The task record's `current_chain_position` is coordination state and is not substituted for the required Master Records closure.
+
+Because the predecessor closure has not been authenticated with all four required predicates simultaneously—
+
+```text
+state = RECORDED
+reconstruction_status = PASS
+required_evidence_validation_status = PASS
+receipt_sha256 == reconstructed_receipt_sha256
+```
+
+—state 2 was not entered. No pre-reset individual witness record was acquired for admission, no `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED` transition was submitted, and no parallel evidence was allowed to satisfy or bypass the missing predecessor closure.
+
+Next execution boundary: query the existing TV/TVC-authorized canonical Master Records service for subject/correlation identity `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` and the exact predecessor transition identity. Only if one returned record proves the four closure predicates and binds block 1895/root/seal exactly may the task acquire and retain one authentic pre-reset witness record and propose state 2.
+
