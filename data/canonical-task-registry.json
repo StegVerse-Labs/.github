@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 190,
-  "status": "CANONICAL_MASTER_RECORDS_FUNCTIONAL_MEMORY_DIRECT_PREDECESSOR_CLOSURE_REPAIRED",
+  "generation": 191,
+  "status": "CANONICAL_MASTER_RECORDS_RTC006_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5215,7 +5215,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
+        "next_transition_under_evidence_trace": "TRACE_RTC006_UPSTREAM_CANONICAL_PREDECESSOR_CARRIAGE_OR_NEXT_REMAINING_DIRECT_CALLER_WITHOUT_SYNTHESIS",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5416,7 +5416,17 @@
           35674317853,
           35674317860
         ],
-        "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY"
+        "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
+        "rtc006_noncanonical_predecessor_bypass_identified": true,
+        "rtc006_noncanonical_predecessor_bypass_repaired": true,
+        "rtc006_noncanonical_predecessor_pr": 2534,
+        "rtc006_noncanonical_predecessor_merge": "79b13827305eab284c6666c869cc1627ed61dcaa",
+        "rtc006_noncanonical_predecessor_exact_head": "234a396fdd916bebdff752c0cc65aa069fc56220",
+        "rtc006_noncanonical_predecessor_validation_runs": [
+          35675152172
+        ],
+        "rtc006_predecessor_contract": "EXACT_IMMEDIATELY_PRECEDING_CANONICAL_MASTER_RECORDS_RECEIPT_SHA256",
+        "rtc006_transport_terminal_role": "TRANSITION_EVIDENCE_ONLY_NOT_PRIOR_STATE"
       },
       "completion": {
         "claimed": false,
@@ -5746,6 +5756,30 @@
             "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
           ],
           "runtime_execution_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "rtc006_canonical_predecessor_closure": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "transition_id": "RTC-SDK-RETURN-006",
+          "defect": "RTC006_USED_REVERSE_TRANSPORT_TERMINAL_RECEIPT_HASH_AS_PRIOR_STATE_INSTEAD_OF_CANONICAL_MASTER_RECORDS_PREDECESSOR_CLOSURE",
+          "effect": "MACHINE_OWNED_SUCCESSOR_COULD_ADVANCE_WITH_TRANSPORT_CONTINUITY_HASH_AS_STATE_PREDECESSOR",
+          "pull_request": 2534,
+          "exact_head": "234a396fdd916bebdff752c0cc65aa069fc56220",
+          "merge_commit": "79b13827305eab284c6666c869cc1627ed61dcaa",
+          "validation_runs": [
+            35675152172
+          ],
+          "repaired_contract": [
+            "RTC006_REQUIRES_EXPLICIT_CANONICAL_PREDECESSOR_RECEIPT_SHA256",
+            "RECONSTRUCT_PREDECESSOR_THROUGH_REQUIRE_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "PRIOR_STATE_REF_IS_EXACT_PREDECESSOR_MASTER_RECORDS_RECEIPT_SHA256",
+            "PREDECESSOR_MASTER_RECORDS_CLOSURE_IS_REQUIRED_EVIDENCE",
+            "RETURN_TRANSPORT_TERMINAL_RECEIPT_REMAINS_TRANSITION_EVIDENCE_ONLY",
+            "MISSING_PREDECESSOR_FAILS_CLOSED_NO_SYNTHESIS",
+            "ORGANIZATION_RECEIPT_PRECEDES_MASTER_RECORDS_VIA_SHARED_SUBMIT_STATE_RECEIPT_CONTRACT"
+          ],
+          "upstream_predecessor_carriage_currently_materialized": false,
+          "authentic_runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
         }
       },
