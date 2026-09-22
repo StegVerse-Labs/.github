@@ -35,7 +35,7 @@
       "execution_proof": false,
       "interlock_intr_transition_required": true,
       "parameter_hash": "d5a0d9d3a9381d5c6bbe6a853ba5d011b6762c864e1f6df60db861125101ac00",
-      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then carry the exact evidence to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, while preserving separate Interlock/InTr admission and Master Records custody boundaries without creating runtime, transition, credential, or custody authority.",
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "EVALUATE_WHETHER_CANDIDATE_REALIZATION_MAY_COMMIT",
       "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001"
@@ -57,7 +57,7 @@
         "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
       },
       "parameter_hash": "d5a0d9d3a9381d5c6bbe6a853ba5d011b6762c864e1f6df60db861125101ac00",
-      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then carry the exact evidence to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, while preserving separate Interlock/InTr admission and Master Records custody boundaries without creating runtime, transition, credential, or custody authority.",
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "DESCRIBE_REALIZED_OR_CANDIDATE_RELATIONAL_TRANSITION_GEOMETRY",
       "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001"
@@ -65,7 +65,7 @@
     "tt": {
       "execution_observation_separation_required": true,
       "parameter_hash": "d5a0d9d3a9381d5c6bbe6a853ba5d011b6762c864e1f6df60db861125101ac00",
-      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then carry the exact evidence to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, while preserving separate Interlock/InTr admission and Master Records custody boundaries without creating runtime, transition, credential, or custody authority.",
       "receipt_chain_required": true,
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "RECORD_DECISION_COMMIT_EXECUTION_OBSERVATION_AND_CONTINUATION",
@@ -74,7 +74,7 @@
   },
   "cosv_task_vector": "50000000100000",
   "invocation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001:TVC-CAPABILITY-RUNTIME-002:READY-DERIVATION",
-  "manifest_hash": "0b3eabbd49eaae63b4a5da1da511856285089aecd0ee200e002f11325cb4ce9f",
+  "manifest_hash": "894fcabf6a7716c88b3158824673a527e07dbaf0f1e23a303dbcdeb7bbd3773e",
   "parameters": {
     "completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
     "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
