@@ -41,10 +41,14 @@ STEG_BROWSER_TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT
 STEGHEALTH_KV_INTERLOCK_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
 STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
+DEFENSIVE_CONSUMER = "ungoverned_ai_defensive_envelope"
+DEFENSIVE_GOAL = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+DEFENSIVE_CONSUMPTION_REL = Path("receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.latest.json")
+DEFENSIVE_BOUNDARY_REL = Path("receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json")
 REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
 REUSABLE_TASK_PARAMETERS_ENV = "STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER, DEFENSIVE_CONSUMER)
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -115,8 +119,10 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     normalized = {key: str(parsed.get(key) or "").strip() for key in allowed}
     if not normalized["source_root"] or not normalized["runtime_root"]:
         raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
-    if normalized["only_consumer"] != "canonical_work_coordination":
-        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector")
+    if normalized["only_consumer"] != "canonical_work_coordination" and not (
+        normalized["only_consumer"] == DEFENSIVE_CONSUMER and normalized["goal_task_id"] == DEFENSIVE_GOAL
+    ):
+        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector or exact component-011 Goal/consumer")
     if not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
     return normalized
@@ -318,8 +324,10 @@ def refresh_and_dispatch(
         current_goal_task_id = str(goal_task_id).strip()
         if not current_goal_task_id:
             raise RuntimeError("goal task id must be non-empty")
-        if target_consumer != "canonical_work_coordination":
-            raise RuntimeError("goal task context requires canonical_work_coordination target")
+        if target_consumer != "canonical_work_coordination" and not (
+            target_consumer == DEFENSIVE_CONSUMER and current_goal_task_id == DEFENSIVE_GOAL
+        ):
+            raise RuntimeError("goal task context requires canonical_work_coordination or exact component-011 Goal/consumer")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
@@ -337,7 +345,7 @@ def refresh_and_dispatch(
         raise RuntimeError("resident request dispatcher not materialized after refresh")
 
     command = [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer]
-    if current_goal_task_id:
+    if current_goal_task_id and target_consumer == "canonical_work_coordination":
         command.extend(["--goal-task-id", current_goal_task_id])
     completed = runner(
         command,
@@ -357,7 +365,9 @@ def refresh_and_dispatch(
         or (
             dispatch_observed
             and dispatch_receipt.get("current_goal_task_id") == current_goal_task_id
-            and dispatch_receipt.get("goal_context_forwarded_to") == "canonical_work_coordination"
+            and dispatch_receipt.get("goal_context_forwarded_to") == (
+                "canonical_work_coordination" if target_consumer == "canonical_work_coordination" else None
+            )
         )
     )
     target_consumption_receipt, target_consumption_sha256, target_consumption_valid, target_consumption_matches_current_dispatch = stegbrowser_consumption_evidence(
@@ -367,6 +377,55 @@ def refresh_and_dispatch(
     canonical_goal_receipt, canonical_goal_sha256, canonical_goal_required, canonical_goal_valid, canonical_goal_matches_current_dispatch = canonical_work_goal_consumption_evidence(
         runtime, target_consumer, current_goal_task_id, dispatch_receipt
     )
+    defensive_required = target_consumer == DEFENSIVE_CONSUMER
+    defensive_boundary = None
+    if defensive_required:
+        target_consumption_required = True
+        consumption_path = runtime / DEFENSIVE_CONSUMPTION_REL
+        boundary_path = runtime / DEFENSIVE_BOUNDARY_REL
+        target_consumption_receipt = load_json(consumption_path) if consumption_path.is_file() else None
+        defensive_boundary = load_json(boundary_path) if boundary_path.is_file() else None
+        target_consumption_sha256 = json_sha256(target_consumption_receipt) if target_consumption_receipt else None
+        rows = dispatch_receipt.get("outcomes") if isinstance(dispatch_receipt, Mapping) else None
+        current = rows[0] if isinstance(rows, list) and len(rows) == 1 and isinstance(rows[0], Mapping) else {}
+        target_consumption_matches_current_dispatch = bool(
+            current.get("consumer") == DEFENSIVE_CONSUMER
+            and current.get("attempted") is True
+            and current.get("returncode") == 0
+            and isinstance(current.get("result"), Mapping)
+            and current["result"] == target_consumption_receipt
+        )
+        boundary = defensive_boundary if isinstance(defensive_boundary, Mapping) else {}
+        probe = boundary.get("probe") if isinstance(boundary.get("probe"), Mapping) else {}
+        admitted = probe.get("admitted_interaction") if isinstance(probe.get("admitted_interaction"), Mapping) else {}
+        denied = probe.get("denied_interactions")
+        claim = boundary.get("claim") if isinstance(boundary.get("claim"), Mapping) else {}
+        receipt = target_consumption_receipt if isinstance(target_consumption_receipt, Mapping) else {}
+        target_consumption_valid = bool(
+            target_consumption_matches_current_dispatch
+            and receipt.get("schema") == "stegverse.ungoverned-ai-defensive-envelope-request-consumption/v1"
+            and receipt.get("task_id") == DEFENSIVE_GOAL
+            and receipt.get("state") == "COMPLETED"
+            and receipt.get("terminal") is True
+            and receipt.get("runtime_execution_attempted") is True
+            and receipt.get("bridge_contract_valid") is True
+            and boundary.get("schema") == "stegverse.ungoverned-ai-defensive-envelope-resident-boundary/v1"
+            and boundary.get("task_id") == DEFENSIVE_GOAL
+            and boundary.get("external_provider_observed") is False
+            and boundary.get("goal_runtime_completion_claimed") is False
+            and isinstance(claim.get("claim_id"), str) and bool(claim.get("claim_id"))
+            and isinstance(claim.get("fencing_token"), int) and claim["fencing_token"] > 0
+            and admitted.get("decision") == "ALLOW" and admitted.get("consumed") is True
+            and admitted.get("result_observed") == 42
+            and admitted.get("filesystem_capability_exposed") is False
+            and admitted.get("network_capability_exposed") is False
+            and admitted.get("temporary_state_destroyed") is True
+            and isinstance(denied, list) and bool(denied)
+            and all(isinstance(item, Mapping) and item.get("decision") == "DENY"
+                    and item.get("consumed") is False and item.get("consequence_reachable") is False
+                    for item in denied)
+            and boundary.get("governed_egress_disposition") == "EVIDENCE_ONLY_NO_CONSEQUENTIAL_EGRESS_REQUESTED"
+        )
     if canonical_goal_required:
         target_consumption_receipt = canonical_goal_receipt
         target_consumption_sha256 = canonical_goal_sha256
@@ -396,13 +455,16 @@ def refresh_and_dispatch(
         "target_consumption_evidence_required": target_consumption_required,
         "target_consumption_receipt_path": (
             str(STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL) if canonical_goal_required
-            else (str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None)
+            else (str(DEFENSIVE_CONSUMPTION_REL) if defensive_required
+                  else (str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None))
         ),
         "target_consumption_receipt_observed": target_consumption_receipt is not None,
         "target_consumption_matches_current_dispatch_result": bool(target_consumption_matches_current_dispatch),
         "exact_target_consumption_evidence_observed": bool(target_consumption_valid),
         "target_consumption_receipt_sha256": target_consumption_sha256,
         "target_consumption_receipt": target_consumption_receipt,
+        "defensive_envelope_boundary_receipt_observed": defensive_boundary is not None,
+        "defensive_envelope_boundary_receipt_sha256": json_sha256(defensive_boundary) if defensive_boundary else None,
         "runtime_execution_possible_in_target_consumer": True,
         "bridge_grants_execution_authority": False, "bridge_mints_claim_or_fence": False,
         "source_refresh_is_runtime_execution": False, "network_source_fetch_performed": False,
