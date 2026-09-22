@@ -1,6 +1,8 @@
 """Source-only regression checks: never claim live federation or evaluator execution."""
 import json
 import unittest
+import importlib.util
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,6 +48,23 @@ class ContractSourceChecks(unittest.TestCase):
         self.assertEqual(self.contract["interorganizational_transport"]["current_implementation_status"], "UNVERIFIED_UNIVERSAL_INTR_FEDERATION_ADMISSION")
         self.assertFalse(self.contract["runtime_proof"]["authentic_federation_observed"])
         self.assertFalse(self.contract["runtime_proof"]["authentic_evaluator_runtime_observed"])
+
+    def test_legacy_kernel_rejects_governed_frame_before_dispatch(self):
+        spec = importlib.util.spec_from_file_location("federation_kernel", KERNEL)
+        kernel = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kernel)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            registry = root / "org-boundary/registry"
+            registry.mkdir(parents=True)
+            (registry / "services.json").write_text(json.dumps({
+                "organization": "StegVerse-Labs",
+                "services": [{"service_id": "test.service", "boundary_role": "BOUNDARY_LOCAL_CONTROL"}]
+            }))
+            packet = {"destination": {"org": "StegVerse-Labs", "service": "test.service"},
+                      "transition": {"authority_effect": "ALLOW"}, "payload": {}, "packet_id": "test"}
+            with self.assertRaisesRegex(ValueError, "governed_federation_requires_universal_intr_admission"):
+                kernel.dispatch(root, packet)
 
     def test_federation_registry_not_runtime_proof(self):
         coverage = self.federation["coverage"]
