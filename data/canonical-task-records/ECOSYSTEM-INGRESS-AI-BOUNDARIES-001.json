@@ -4,16 +4,25 @@
   "correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "root_correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "parent_task_id": null,
-  "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; future non-ChatGPT AI isolated to a sandboxed AI decision-processing region; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
+  "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; ungoverned/non-ChatGPT AI constrained at StegVerse-controlled consequence boundaries by a reusable defensive envelope that preserves external AI sovereignty; External AI Meeting Room as one concrete instantiation; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": null,
   "repository": "StegVerse-Labs/.github",
   "issue_ref": "StegVerse-Labs/.github#1620",
-  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"
+  ],
   "component_model_projection_ref": "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
-  "reusable_component_refs": ["data/reusable-task-component-model.json", "data/reusable-task-component-decomposition-policy.json", "data/reusable-ai-ingress-component-contract.json", "data/reusable-transport-component-contract.json"],
-  "adjacent_task_refs": ["SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"],
+  "reusable_component_refs": [
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-ai-ingress-component-contract.json",
+    "data/reusable-transport-component-contract.json"
+  ],
+  "adjacent_task_refs": [
+    "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
+  ],
   "classification": {
     "reusable_task_component_reconciliation": "MERGED_SOURCE_VALIDATED_PR_1678",
     "readme_impact": "COMPLETE_VALIDATED",
@@ -23,9 +32,11 @@
     "task_registry_session_return_close_ai_policy": "PASS_SOURCE_LEVEL_COMPONENT_010_RUNTIME_IDENTITY_NOT_PROVEN",
     "general_task_registry_checkin_caller_surface_gate": "IMPLEMENTED_SOURCE_LEVEL_VALIDATION_PENDING",
     "general_task_registry_checkin_external_ai_reachability": "NOT_PROVEN_RUNTIME_ORIGIN_SEPARATE",
-    "common_ai_decision_sandbox_region": "REUSABLE_COMPONENT_IDENTIFIED_NOT_IMPLEMENTED",
+    "common_ai_decision_sandbox_region": "SUPERSEDED_BY_UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT",
     "external_framework_llm_adapter_sdk_only": "PARTIAL",
-    "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN"
+    "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
+    "ungoverned_ai_defensive_envelope": "CONTRACT_DEFINED_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
+    "external_ai_meeting_room": "CONCRETE_INSTANTIATION_NOT_AUTHORITY_PRIMITIVE_RUNTIME_NOT_PROVEN"
   },
   "source_evidence": [
     "StegVerse-Labs/.github#1678",
@@ -54,14 +65,19 @@
   "satisfied_source_predicates": [
     "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED_SOURCE_LEVEL",
     "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED_SOURCE_LEVEL",
-    "UNCLASSIFIED_GENERAL_CHECKIN_DIRECT_CALL_FAILS_CLOSED_SOURCE_LEVEL_IMPLEMENTED_VALIDATION_PENDING"
+    "UNCLASSIFIED_GENERAL_CHECKIN_DIRECT_CALL_FAILS_CLOSED_SOURCE_LEVEL_IMPLEMENTED_VALIDATION_PENDING",
+    "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT_DEFINED_SOURCE_LEVEL",
+    "EXTERNAL_AI_MEETING_ROOM_CLASSIFIED_AS_COMPONENT_011_INSTANTIATION"
   ],
   "remaining_predicates": [
     "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
     "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
     "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
-    "COMMON_AI_DECISION_SANDBOX_REGION_DEFINED",
-    "COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED",
+    "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_RUNTIME_ENFORCED",
+    "CAPABILITY_SCOPED_FILESYSTEM_NETWORK_TOOL_BOUNDARIES_RUNTIME_PROVEN",
+    "AMBIENT_CREDENTIAL_AND_PROTECTED_AUTHORITY_UNREACHABILITY_RUNTIME_PROVEN",
+    "DENIED_CONSEQUENCE_UNREACHABILITY_PROVEN_FOR_REPRESENTATIVE_BOUNDARY",
+    "GOVERNED_EGRESS_SEPARATION_RUNTIME_PROVEN",
     "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
     "LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS",
     "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
@@ -94,7 +110,14 @@
     "governed_transition_authority": "Interlock/InTr",
     "master_records_role": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
     "github_runtime_authority": "NONE",
-    "heartbeat_execution_authority": false
+    "heartbeat_execution_authority": false,
+    "ungoverned_ai_internal_role": "SOVEREIGN_INTERNAL_REASONING_AND_WORK_WITHIN_BOUNDARY_NO_STEGVERSE_AUTHORITY",
+    "defensive_envelope_role": "CAPABILITY_AND_CONSEQUENCE_BOUNDARY_ONLY_NO_MODEL_GOVERNANCE",
+    "external_ai_meeting_room_role": "COMPONENT_011_INSTANTIATION_NO_AUTHORITY_PRIMITIVE"
   },
-  "completion": {"claimed": false, "validated": false, "runtime_observed": false}
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  }
 }
