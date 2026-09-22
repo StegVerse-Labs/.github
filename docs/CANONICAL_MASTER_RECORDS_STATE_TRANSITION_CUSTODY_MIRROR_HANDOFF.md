@@ -539,3 +539,14 @@ This is source repair only until merged and until authentic runtime evidence sho
 PR #2520 merged from exact head `2c73acc47f02d4b4dddcf1541094a8ddcb2539f4` as `13ff70132c30147465a25122c8de2fc948da1e56`. Exact-head validation passed Cross-Task Coordination `35672926746`, DeepSeek resident `35672926715`, Ecosystem Receipt HB Successor `35672926790`, KV AI Memory Resident Binding `35672926778`, and Purpose-Bound Worker Derived Lifetime `35672926731`.
 
 Merged source now enforces: every canonical state transition occurring within `StegVerse-Labs` records and verifies the existing organization-level receipt before canonical Master Records submission. Repository-specific linkage is preserved only for actual repository transitions. Authentic runtime proof of the ordered organization-receipt -> Master Records chain remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Organization receipt resident carriage repair — exact-main source repair 2026-09-21
+
+No authentic post-source-repair organization receipt is retained in accessible GitHub evidence, so runtime status remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+Tracing the existing resident source path found the first deterministic runtime-carriage defect: `workers/canonical_state_transition_custody.py` was carried in the bootstrap-critical control-plane package and static worker refresh, but its required `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` dependencies were absent. The existing package, relay materialization verification set, and worker source refresh now carry those exact two files.
+
+The first validation attempt exposed a second bounded seam in the same carriage path: the package validator rejected the org-contract path because it was not exact-allowlisted. The repair exact-allows only those two required dependency files; no broad `resident-runtime/` or `.stegverse/` prefix is opened. Historical failed run: `35673580314`.
+
+This source-only repair is rebuilt directly from current main SHA `d26ab008adb7fbbcfe4393a84608b98ab4d13060`. Task Registry mutation is intentionally deferred to the post-merge reconciliation PR to avoid concurrent generation conflicts. Source/CI does not establish runtime receipt existence or Master Records completion.
