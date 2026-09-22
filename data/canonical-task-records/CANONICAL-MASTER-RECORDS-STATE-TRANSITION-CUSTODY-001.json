@@ -133,7 +133,7 @@
     "site_browser_heartbeat_run": 35415040363,
     "site_browser_bootstrap_run": 35415040385,
     "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-    "next_transition_under_evidence_trace": "AUTHENTIC_RTC008_EGRESS_ADMITTED_THEN_MASTER_RECORDS_CLOSURE_THEN_RTC009_THEN_CALLER_CONSEQUENCE",
+    "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
     "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
     "mir_governed_round_trip_complete_required_evidence_pr": 1411,
     "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -322,7 +322,19 @@
       35674382292,
       35674382171,
       35674382204
-    ]
+    ],
+    "functional_memory_direct_predecessor_bypass_identified": true,
+    "functional_memory_direct_predecessor_bypass_transition": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+    "functional_memory_direct_predecessor_bypass_repaired": true,
+    "functional_memory_direct_predecessor_bypass_pr": 2529,
+    "functional_memory_direct_predecessor_bypass_superseded_pr": 2528,
+    "functional_memory_direct_predecessor_bypass_merge": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+    "functional_memory_direct_predecessor_bypass_exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+    "functional_memory_direct_predecessor_bypass_validation_runs": [
+      35674317853,
+      35674317860
+    ],
+    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY"
   },
   "completion": {
     "claimed": false,
@@ -631,6 +643,28 @@
       "authentic_warrant_issuance_observed": false,
       "authentic_resident_runtime_execution_claimed": false,
       "authority_effect": "NONE_EXISTING_ROOT_SELF_HEAL_DELIVERY_REPAIR_ONLY"
+    },
+    "functional_memory_direct_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+      "pull_request": 2529,
+      "superseded_pull_request": 2528,
+      "exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+      "merge_commit": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+      "validation_runs": [
+        35674317853,
+        35674317860
+      ],
+      "defect": "DIRECT_FUNCTIONAL_MEMORY_RECEIPT_PRODUCER_TRUSTED_TASK_POINTER_AFTER_UPSTREAM_VALID_FLAG_INSTEAD_OF_RECONSTRUCTING_PREDECESSOR_AT_EXACT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "SUPPLIED_PREDECESSOR_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RECEIPT_EMISSION",
+        "PREDECESSOR_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+        "PREDECESSOR_RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
+      ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
     }
   },
   "required_evidence_validation": {
