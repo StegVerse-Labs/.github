@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+    "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
+    "control/worker-registry.d/erl-household-economic-conditions-site-001.json",
+    "control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json",
+    "StegVerse-Labs/.github#2455"
+  ],
+  "observed_at": "2026-09-21T19:58:00-05:00",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}
