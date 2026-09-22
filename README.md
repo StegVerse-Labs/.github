@@ -1276,3 +1276,8 @@ Node registration and `MY_KV_ONBOARDING_STEP_1_COMPLETED` do not imply a Knowled
 ### Functional Memory direct predecessor closure
 
 `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` now reconstructs any supplied predecessor through canonical Master Records at the exact receipt-emission boundary. A stored pointer or upstream validity flag cannot substitute for the canonical closure; the predecessor must pass required-evidence validation and exact digest equality and is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`.
+
+
+### StegHealth resident-root carriage — 2026-09-21
+
+PR #2543 / merge `5284046f03c286ec6f4f84ad93d8423eb9f2a9c1` preserves the already-declared resident HeartBeat root across the existing Healer process boundary so the StegHealth Canonical Work child continues against the same runtime root. The change reuses the standing Healer, reusable-task scheduler, portable dispatch, WorkerCoordinator, Interlock/InTr, and Master Records path.
