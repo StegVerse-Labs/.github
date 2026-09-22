@@ -548,3 +548,8 @@ No authentic post-merge organization receipt was found in retained GitHub eviden
 Tracing the existing resident source path found the first deterministic carriage defect: `workers/canonical_state_transition_custody.py` was already carried in the bootstrap-critical control-plane source package and static worker refresh, but its newly required dependencies `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` were not. A resident receiving the updated custody client could therefore fail at `ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE` before any Master Records submission.
 
 The bounded repair adds those exact two existing source files to the existing control-plane package, required relay-materialization verification set, and sovereign worker source-refresh static file set. It adds regression checks for both package and refresh carriage. No new source transport, runtime, scheduler, dispatcher, WorkerCoordinator, ledger, custody store, credential path, authority plane, or device prerequisite is introduced.
+
+
+### Exact package allowlist follow-up
+
+Exact-head validation exposed one bounded defect in the same carriage seam: the control-plane source package validator did not allow the newly carried `.stegverse/transition-ledger/org-contract.json` path, so Purpose-Bound Worker Derived Lifetime run `35673580314` failed before relay continuation. The existing package allowlist now admits only the two exact organization-ledger dependency paths required by canonical custody: `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json`. No broader hidden-path or resident-runtime prefix is opened.
