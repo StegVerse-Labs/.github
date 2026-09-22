@@ -539,3 +539,17 @@ This is source repair only until merged and until authentic runtime evidence sho
 PR #2520 merged from exact head `2c73acc47f02d4b4dddcf1541094a8ddcb2539f4` as `13ff70132c30147465a25122c8de2fc948da1e56`. Exact-head validation passed Cross-Task Coordination `35672926746`, DeepSeek resident `35672926715`, Ecosystem Receipt HB Successor `35672926790`, KV AI Memory Resident Binding `35672926778`, and Purpose-Bound Worker Derived Lifetime `35672926731`.
 
 Merged source now enforces: every canonical state transition occurring within `StegVerse-Labs` records and verifies the existing organization-level receipt before canonical Master Records submission. Repository-specific linkage is preserved only for actual repository transitions. Authentic runtime proof of the ordered organization-receipt -> Master Records chain remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Functional Memory direct predecessor-closure repair — 2026-09-21
+
+The next ecosystem-wide direct receipt producer was `heartbeat_runtime/worker_assignment_functional_memory.py::record_non_allow_functional_memory(...)`. Although assignment review reconstructed prior Functional Memory upstream, the receipt producer itself then trusted `task.functional_memory.receipt_sha256` and copied that pointer directly into `prior_state_ref_or_hash`. That left the exact emission boundary dependent on an upstream validity flag instead of the canonical predecessor closure contract.
+
+PR #2529 merged as `48a1d766155d33647f0d4463ffede0ac5ac876e6` from exact head `f00d9c43650b4afb1f857e80a38b171ff9ede7d0`. PR #2528 carried the same validated repair but was closed unmerged after main advanced. Exact-head validations passed:
+
+- Functional Memory predecessor closure: `35674317853`
+- Test 3 Richard Seam Acceptance: `35674317860`
+
+The producer now calls the existing shared `require_predecessor_master_records_closure(...)` immediately before building a successor `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` receipt. Any supplied predecessor must reconstruct through canonical Master Records with required-evidence validation `PASS` and exact receipt/reconstruction digest equality. The resulting closure becomes the exact `prior_state_ref_or_hash` and is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. If reconstruction fails, no successor receipt is submitted. If no predecessor exists, none is invented.
+
+This is an ecosystem-wide direct-caller custody repair. It adds no runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, credential path, host dependency, device dependency, or MIR-specific execution logic. The active next step remains inventory of direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers, repairing only the next generic predecessor-closure bypass.
