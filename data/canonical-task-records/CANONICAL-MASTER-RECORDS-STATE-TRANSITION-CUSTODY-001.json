@@ -291,7 +291,18 @@
     "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
     "canonical_state_transition_org_receipt_exact_source_hash_required": true,
     "canonical_state_transition_repo_relabeling_forbidden": true,
-    "organization_receipt_source_repair_pending_merge": true
+    "organization_receipt_source_repair_pending_merge": false,
+    "organization_receipt_source_repair_merged": true,
+    "organization_receipt_source_repair_pr": 2520,
+    "organization_receipt_source_repair_exact_head": "2c73acc47f02d4b4dddcf1541094a8ddcb2539f4",
+    "organization_receipt_source_repair_merge": "13ff70132c30147465a25122c8de2fc948da1e56",
+    "organization_receipt_source_repair_validation_runs": [
+      35672926746,
+      35672926715,
+      35672926790,
+      35672926778,
+      35672926731
+    ]
   },
   "completion": {
     "claimed": false,
