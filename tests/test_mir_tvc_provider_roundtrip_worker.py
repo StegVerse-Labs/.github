@@ -61,6 +61,7 @@ def test_exact_mir_request_is_non_secret_and_admitted_shape():
     intr = worker._intr_request_payload(request)
     assert intr["schema"] == "stegverse.external-provider.operation-request/v1"
     assert intr["provider"] == "mir"
+    assert intr["consumer"] == "StegVerse-org/StegVerse-SDK"
     assert intr["request_id"] == "MIR-RUN2-EVENT-001"
     assert intr["request_hash"].startswith("sha256:")
     assert intr["lease_ref"].startswith("sha256:")
@@ -123,14 +124,14 @@ def test_unknown_provider_outcome_forbids_blind_retry(tmp_path):
     lane = {
         "intent": {"protocol": "InTr"},
         "receipts": [{"receipt_hash": "sha256:" + "a" * 64}],
-        "transport_result": {"state": "TRANSPORT_COMPLETE", "profile_id": worker.INTR_PROFILE},
+        "transport_result": {"state": "TRANSPORT_COMPLETE", "component_id": worker.INTR_COMPONENT},
     }
     retained = worker._unknown_provider_outcome(tmp_path, task, lane, TimeoutError("provider response unavailable"))
     assert retained["state"] == "FAIL_CLOSED_PROVIDER_OPERATION_OUTCOME_UNKNOWN"
     assert retained["provider_operation_outcome_known"] is False
     assert retained["provider_operation_retry_allowed"] is False
     assert retained["blind_consequence_retry_allowed"] is False
-    assert retained["intr_transport"]["profile_id"] == "external-provider-operation"
+    assert retained["intr_transport"]["component_id"] == "RTC-INTERLOCK-INTR-TRANSPORT-008"
 
 
 def test_completed_provider_consequence_is_not_overwritten_as_pre_execution_failure(tmp_path):
@@ -157,3 +158,29 @@ def test_completed_provider_consequence_is_not_overwritten_as_pre_execution_fail
     assert retained["provider_operation_completed"] is True
     assert retained["state"] == "FAIL_CLOSED_POST_PROVIDER_OPERATION_RECEIPT"
     assert retained["provider_operation_retry_allowed"] is False
+
+
+def test_generic_intr_identity_is_sdk_to_tvc_and_reversed_on_return():
+    worker = load_worker()
+
+    class FakeTransport:
+        @staticmethod
+        def sha256_uri(value):
+            return worker._sha(value)
+        @staticmethod
+        def build_transport_intent(**kwargs):
+            return {
+                "protocol": "InTr",
+                "operation_id": kwargs["operation_id"],
+                "payload_hash": kwargs["payload_hash"],
+                "prior_transport_receipt_hash": kwargs.get("prior_transport_receipt_hash"),
+                "source": {"boundary": kwargs["source_boundary"], "subsystem": kwargs["source_subsystem"]},
+                "destination": {"boundary": kwargs["destination_boundary"], "subsystem": kwargs["destination_subsystem"]},
+            }
+        @staticmethod
+        def validate_transport_intent(intent):
+            return None
+
+    request_intent, _ = worker._prepare_intr_request(FakeTransport, worker._request())
+    assert request_intent["source"] == {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "StegVerse-org/StegVerse-SDK"}
+    assert request_intent["destination"] == {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "TVC:ProviderOperationBroker"}
