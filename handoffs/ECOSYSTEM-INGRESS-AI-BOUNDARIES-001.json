@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "created_at": "2026-09-22T04:45:00Z",
-  "updated_at": "2026-09-22T04:45:00Z",
+  "updated_at": "2026-09-22T05:10:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
@@ -54,7 +54,10 @@
       "workers/ungoverned_ai_defensive_envelope_worker.py",
       "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
       "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
-      "StegVerse-Labs/TVC@${TVC_FLOOR}:tasks/ungoverned_ai_defensive_envelope.py"
+      "StegVerse-Labs/TVC@${TVC_FLOOR}:tasks/ungoverned_ai_defensive_envelope.py",
+      "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+      "scripts/dispatch_resident_execution_requests.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py"
     ]
   },
   "authority": {
@@ -91,14 +94,14 @@
     "network_source_fetch_allowed": false
   },
   "completion": {
-    "source_implementation_state": "PENDING_SOURCE_VALIDATION_AND_MERGE",
+    "source_implementation_state": "MERGED_SOURCE_VALIDATED_PR_2575_RESIDENT_DISPATCH_CARRIAGE_REPAIR_PENDING_VALIDATION",
     "runtime_activation_state": "NOT_PROVEN",
     "runtime_observation_claimed": false,
     "terminal_when": [
       "Authentic retained resident receipt proves exact TVC source floor, fresh claim/fence, bounded ALLOW, denied consumed=false and consequence_reachable=false probes, capability/authority non-exposure, temporary-state destruction, and evidence-only egress."
     ],
     "terminal_evidence": "receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json from authentic resident execution",
-    "next_authorized_action": "After source validation/merge, execute only through the existing resident targeted WorkerCoordinator path and consume the retained receipt. Absence remains NOT_PROVEN.",
+    "next_authorized_action": "Validate and merge the existing-dispatcher carriage repair, then allow the standing resident dispatcher to invoke only the existing targeted WorkerCoordinator path. Consume the authentic resident receipt if emitted; absence remains NOT_PROVEN.",
     "targeted_command": "python scripts/refresh_and_execute_resident_task.py --task-id ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
   },
   "activation": {
