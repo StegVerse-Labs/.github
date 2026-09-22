@@ -463,6 +463,9 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
         "TARGETS_FILE": str(targets),
         "STEGVERSE_REPO_ROOTS_JSON": roots_json,
     }
+    heartbeat_root = str(os.environ.get("STEGVERSE_HEARTBEAT_ROOT") or "").strip()
+    if heartbeat_root:
+        env["STEGVERSE_HEARTBEAT_ROOT"] = heartbeat_root
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())
