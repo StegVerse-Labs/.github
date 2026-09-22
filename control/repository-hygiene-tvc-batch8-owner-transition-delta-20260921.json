@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.repository-hygiene-owner-transition-delta/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-OWNER-TRANSITION-DELTA-BATCH8-20260921",
+  "baseline_run_id": 35673548654,
+  "baseline_head": "6f42373737c55e0d73601b9c00494c36820c4731",
+  "current_head": "daf8553a27c9d85b6e06bd75f29155bb219af943",
+  "commits_since_baseline": 4,
+  "changed_paths": [
+    "TVC_MIRROR_HANDOFF.md",
+    "docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md"
+  ],
+  "changed_canonical_owner_paths": [
+    {
+      "path": "TVC_MIRROR_HANDOFF.md",
+      "transition_effect": "NONE",
+      "reason": "Changes since baseline are hygiene-review documentation only; no residual branch owner is newly resolved, superseded, released, or retired."
+    }
+  ],
+  "changed_hygiene_control_paths": [
+    "docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md"
+  ],
+  "newly_eligible_candidates": [],
+  "approval_manifest_changed": false,
+  "hosted_revalidation_required": false,
+  "last_validated_manifest_ready_count": 32,
+  "last_validated_invalid_approval_count": 0,
+  "last_validated_run_id": 35673548654,
+  "routed_ref_delta": [],
+  "remaining_unapproved_structural_candidate_count": 131,
+  "authority_effect": "NONE",
+  "deletion_performed": false,
+  "scanner_revision": "48b3f78ccffd35898d28f9f4dbfe17fcecd753da",
+  "notes": "Delta-only review. No canonical owner transition since the last authenticated census made any residual branch newly eligible; therefore no manifest mutation or redundant hygiene rerun is warranted."
+}
