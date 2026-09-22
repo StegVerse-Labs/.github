@@ -550,3 +550,12 @@ Tracing the existing resident source path found the first deterministic runtime-
 The first validation attempt exposed a second bounded seam in the same carriage path: the package validator rejected the org-contract path because it was not exact-allowlisted. The repair exact-allows only those two required dependency files; no broad `resident-runtime/` or `.stegverse/` prefix is opened. Historical failed run: `35673580314`.
 
 This source-only repair is rebuilt directly from current main SHA `d26ab008adb7fbbcfe4393a84608b98ab4d13060`. Task Registry mutation is intentionally deferred to the post-merge reconciliation PR to avoid concurrent generation conflicts. Source/CI does not establish runtime receipt existence or Master Records completion.
+
+
+## Organization receipt runtime carriage merge reconciliation — 2026-09-21
+
+Source-only PR #2530 merged from exact head `9e0bbca658d171920e6c1e2ed1722d1033b37b20` as `514220dc1636843708d426cb3f19d29403380030`. Exact-head validation passed Workspace DEVICE_KV `35674382117`, SDK WorkSpace reseal `35674382182`, Purpose-Bound Worker Derived Lifetime `35674382168`, Ecosystem Receipt HB Successor `35674382158`, KV AI Memory Resident Binding `35674382292`, DeepSeek resident `35674382171`, and Test 3 Richard Seam Acceptance `35674382204`.
+
+The existing resident source package, exact source-package allowlist, relay materialization verification, and sovereign worker source refresh now carry `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` alongside `workers/canonical_state_transition_custody.py`. This closes the deterministic source-carriage boundary identified after organization-before-Master-Records ordering merged.
+
+No authentic post-repair governed transition with the required retained organization receipt and same-transition Master Records closure has yet been observed in accessible retained evidence. Runtime truth therefore remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.

@@ -1,6 +1,6 @@
 ## Organization receipt resident carriage repair
 
-The existing resident control-plane package and worker source refresh now carry the two dependencies required by organization-before-Master-Records custody: `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json`. Both are exact-allowlisted and included in far-side materialization digest checks; no broad new source prefix is opened. Runtime proof remains UNKNOWN until an authentic governed transition retains the organization receipt and corresponding Master Records closure.
+The existing resident control-plane package and worker source refresh now carry the two dependencies required by organization-before-Master-Records custody: `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json`. Both are exact-allowlisted and included in far-side materialization digest checks; no broad new source prefix is opened. PR #2530 merged as `514220dc1636843708d426cb3f19d29403380030` after exact-head validation. Runtime proof remains UNKNOWN until an authentic governed transition retains the organization receipt and corresponding Master Records closure.
 
 ## Organization-wide transition receipts
 
