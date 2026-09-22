@@ -13,6 +13,7 @@
       "last_authenticated_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
       "baseline_state": "AUTHENTICATED_CENTRAL_BULK_CENSUS",
       "baseline": {
+        "target_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
         "inspected": 2324,
         "retirement_candidates": 726,
         "review_required": 1596,
@@ -28,9 +29,11 @@
       "branch_count": 1100,
       "hygiene_enabled": true,
       "last_authenticated_run": 35688555518,
-      "last_authenticated_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
+      "last_authenticated_head": "6dc154dcc7f95f2e0fa9113e0d7326c03c49c46c",
       "baseline_state": "AUTHENTICATED_CENTRAL_BULK_CENSUS",
       "baseline": {
+        "target_head": "6dc154dcc7f95f2e0fa9113e0d7326c03c49c46c",
+        "control_run_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
         "inspected": 1100,
         "retirement_candidates": 250,
         "review_required": 775,
@@ -67,12 +70,23 @@
     },
     {
       "repository": "StegVerse-Labs/StegCore",
-      "branch_count": 138,
-      "hygiene_enabled": false,
-      "last_authenticated_run": null,
-      "last_authenticated_head": null,
-      "baseline_state": "PRIVATE_IN_REPOSITORY_CALLER_PENDING",
-      "central_bulk_transport": "ANONYMOUS_CLONE_FAILED_NO_CLASSIFICATION"
+      "branch_count": 139,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35688973007,
+      "last_authenticated_head": "341b5e067a6be5079dea6ecd7c4001f4e529d7d9",
+      "baseline_state": "AUTHENTICATED_PRIVATE_IN_REPOSITORY_CENSUS",
+      "central_bulk_transport": "ANONYMOUS_CLONE_FAILED_NO_CLASSIFICATION",
+      "baseline": {
+        "target_head": "341b5e067a6be5079dea6ecd7c4001f4e529d7d9",
+        "inspected": 139,
+        "retirement_candidates": 30,
+        "review_required": 103,
+        "protected_retained": 6,
+        "approved_ready": 0,
+        "invalid_approved": 0,
+        "artifact_id": 10677971716,
+        "artifact_digest": "sha256:7dc0ed503b1eb757c046ccdb5356c57b82690dca6175ea7d20a8dc77124ee7d4"
+      }
     },
     {
       "repository": "master-records/orchestration",
@@ -99,7 +113,7 @@
       "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
     }
   ],
-  "active_bulk_branch_count": 4759,
+  "active_bulk_branch_count": 4760,
   "lower_volume_watchlist": [
     {
       "repository": "StegVerse-Labs/StegVerse-Healer",
@@ -131,7 +145,7 @@
     }
   ],
   "lower_volume_watchlist_branch_count": 247,
-  "known_branch_estate_count": 5003,
+  "known_branch_estate_count": 5007,
   "wave1_owner_transition_result": {
     "newly_eligible_total": 0,
     "approval_manifest_changes": 0,
@@ -145,20 +159,39 @@
       "StegVerse-002/micro-node-runtime"
     ]
   },
-  "pending_first_baseline": [
-    "StegVerse-Labs/StegCore"
-  ],
+  "pending_first_baseline": [],
   "authority_effect": "NONE",
   "deletion_performed": false,
   "central_bulk_run": {
     "run_id": 35688555518,
-    "head_sha": "40e870440af3b4d38e7ba05123c893c683c9e917",
+    "control_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
     "public_targets": {
-      "StegVerse-Labs/.github": "SUCCESS",
-      "StegVerse-Labs/Site": "SUCCESS"
+      "StegVerse-Labs/.github": {
+        "state": "SUCCESS",
+        "target_head": "40e870440af3b4d38e7ba05123c893c683c9e917"
+      },
+      "StegVerse-Labs/Site": {
+        "state": "SUCCESS",
+        "target_head": "6dc154dcc7f95f2e0fa9113e0d7326c03c49c46c"
+      }
     },
-    "private_target_result": {
-      "StegVerse-Labs/StegCore": "ANONYMOUS_CLONE_FAILED; moved to in-repository caller PR #227"
+    "private_target": {
+      "StegVerse-Labs/StegCore": {
+        "central_state": "ANONYMOUS_CLONE_FAILED_NO_CLASSIFICATION",
+        "private_caller_run": 35688973007,
+        "target_head": "341b5e067a6be5079dea6ecd7c4001f4e529d7d9",
+        "state": "SUCCESS"
+      }
     }
+  },
+  "first_heavy_baseline_summary": {
+    "inspected": 3563,
+    "retirement_candidates": 1006,
+    "review_required": 2474,
+    "protected_retained": 83,
+    "approved_ready": 0,
+    "invalid_approved": 0,
+    "routing_delta": 0,
+    "deletion_performed": false
   }
 }
