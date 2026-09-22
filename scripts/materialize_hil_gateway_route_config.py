@@ -31,9 +31,9 @@ def materialize(env=None, output=None):
     runtime = Path(runtime_raw).expanduser().resolve()
     if not runtime.is_dir():
         raise PredicatePending("resident runtime root not materialized")
-    port = int(values.get("STEGVERSE_HIL_RECEIVER_PORT", "8765"))
+    port = int(values.get("STEGVERSE_UNIVERSAL_INTR_PORT", "8765"))
     if not 1 <= port <= 65535:
-        raise PredicatePending("HIL receiver port invalid")
+        raise PredicatePending("Universal InTr port invalid")
     config = {
         "schema": "stegverse.hil-intr-route-config/v1",
         "runtime_root": str(runtime),
