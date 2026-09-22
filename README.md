@@ -1350,3 +1350,8 @@ For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #37 r
 HYGIENE-CAUSAL-ROOTS-001 now operates from an ecosystem census rather than prompt-per-branch review. The active bulk set is every already-hygiene-enabled repository plus every currently observed repository with at least 100 branches. That set contains **4,756 branches** across nine repositories; a lower-volume watchlist adds 247 known branches for a current enumerated estate of **5,003 branches**.
 
 Wave-1 owner-transition delta filtering found zero newly eligible refs, so no manifests or redundant hosted runs were changed there. The three heavy repositories without authenticated hygiene baselines are StegVerse-Labs/.github (2,321 branches), Site (1,100), and StegCore (138). The workflow `.github/workflows/repository-hygiene-ecosystem-bulk-census.yml` establishes their read-only baselines centrally without mutating Site or StegCore. The classifier now performs one batched default-branch source-reference scan rather than one full grep per branch. Census state: `control/repository-hygiene-ecosystem-census-20260921.json`.
+
+
+### Heavy hygiene baselines completed — 2026-09-21
+
+The first bulk baseline cycle inspected 3,563 branches across `.github`, Site, and StegCore and surfaced 1,006 structural retirement candidates without deleting or approving any ref. Exact baselines and retained artifacts are recorded in `control/repository-hygiene-ecosystem-census-20260921.json`. Future review is owner-transition delta driven.
