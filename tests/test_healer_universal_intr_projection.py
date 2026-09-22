@@ -71,7 +71,7 @@ if __name__ == "__main__":
     unittest.main()
 
 
-def test_hil_receiver_gateway_projection_uses_only_retained_g25_machine_receiver(tmp_path, monkeypatch):
+def test_hil_receiver_gateway_projection_requires_fresh_machine_claim_over_retained_g25_predecessor(tmp_path, monkeypatch):
     runtime = tmp_path
     receipt = runtime / mod.HIL_RECEIVER_WORKER_RECEIPT_REL
     receipt.parent.mkdir(parents=True)
@@ -80,8 +80,10 @@ def test_hil_receiver_gateway_projection_uses_only_retained_g25_machine_receiver
     receipt.write_text(json.dumps({
         "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
         "task_id": mod.HIL_RECEIVER_TASK_ID,
-        "claim_id": mod.HIL_RECEIVER_CLAIM_ID,
-        "fencing_token": mod.HIL_RECEIVER_FENCE,
+        "claim_id": "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G26",
+        "fencing_token": 26,
+        "predecessor_claim_id": mod.HIL_RECEIVER_PREDECESSOR_CLAIM_ID,
+        "predecessor_fencing_token": mod.HIL_RECEIVER_PREDECESSOR_FENCE,
         "receiver_ready": True,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
@@ -105,8 +107,10 @@ def test_hil_receiver_gateway_projection_rejects_wrong_fence_or_intr_path(tmp_pa
     base = {
         "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
         "task_id": mod.HIL_RECEIVER_TASK_ID,
-        "claim_id": mod.HIL_RECEIVER_CLAIM_ID,
-        "fencing_token": 24,
+        "claim_id": "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G26",
+        "fencing_token": 26,
+        "predecessor_claim_id": mod.HIL_RECEIVER_PREDECESSOR_CLAIM_ID,
+        "predecessor_fencing_token": 24,
         "receiver_ready": True,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
@@ -117,7 +121,7 @@ def test_hil_receiver_gateway_projection_rejects_wrong_fence_or_intr_path(tmp_pa
     receipt.write_text(json.dumps(base) + "\n", encoding="utf-8")
     monkeypatch.setattr(mod, "ROOT", runtime)
     assert mod.hil_receiver_gateway_projection()["STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"] == "false"
-    base["fencing_token"] = mod.HIL_RECEIVER_FENCE
+    base["predecessor_fencing_token"] = mod.HIL_RECEIVER_PREDECESSOR_FENCE
     base["base_url"] = "http://127.0.0.1:8877/intr/materialization"
     receipt.write_text(json.dumps(base) + "\n", encoding="utf-8")
     assert mod.hil_receiver_gateway_projection()["STEGVERSE_HIL_RECEIVER_PROXY_ENABLED"] == "false"
