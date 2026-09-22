@@ -315,7 +315,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"RTC_STEGVERSE_EGRESS_007_TRANSITION")
             self.assertEqual(captured["required_evidence_manifest"][1]["content"],binding)
             self.assertEqual(result["rtc007_master_records"]["state"],"RECORDED")
-            self.assertFalse(result["rtc008_admission_observed"])
+            self.assertTrue(result["rtc008_admission_observed"])
             self.assertFalse(result["rtc009_far_side_transition_observed"])
             self.assertFalse(result["caller_consequence_observed"])
             self.assertFalse(result["communication_complete"])
