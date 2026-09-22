@@ -302,6 +302,26 @@
       35672926790,
       35672926778,
       35672926731
+    ],
+    "organization_receipt_runtime_carriage_defect_identified": true,
+    "organization_receipt_runtime_carriage_defect": "CANONICAL_CUSTODY_CLIENT_PACKAGED_WITHOUT_AGGREGATE_REPO_TRANSITION_OR_ORG_CONTRACT",
+    "organization_receipt_runtime_carriage_source_repaired": true,
+    "organization_receipt_runtime_carriage_allowlist_defect_identified": true,
+    "organization_receipt_runtime_carriage_allowlist_defect_repaired": true,
+    "organization_receipt_runtime_carriage_failed_validation_run": 35673580314,
+    "organization_receipt_runtime_carriage_source_repair_pending_merge": false,
+    "organization_receipt_runtime_carriage_source_repair_merged": true,
+    "organization_receipt_runtime_carriage_source_repair_pr": 2530,
+    "organization_receipt_runtime_carriage_source_repair_exact_head": "9e0bbca658d171920e6c1e2ed1722d1033b37b20",
+    "organization_receipt_runtime_carriage_source_repair_merge": "514220dc1636843708d426cb3f19d29403380030",
+    "organization_receipt_runtime_carriage_source_repair_validation_runs": [
+      35674382117,
+      35674382182,
+      35674382168,
+      35674382158,
+      35674382292,
+      35674382171,
+      35674382204
     ]
   },
   "completion": {
