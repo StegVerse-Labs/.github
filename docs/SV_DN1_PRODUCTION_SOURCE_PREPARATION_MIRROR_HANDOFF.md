@@ -205,3 +205,16 @@ For v2, durable receipt acceptance requires:
 - `sdk_admitted=false`.
 
 This correction removes false runtime blockers without creating any new source-acquisition or credential authority.
+
+## Provenance-parent runtime reconstruction correction — 2026-09-21
+
+The source-prep handoff retains `parent_task_id=SV-DN1-INTR-RUNTIME-001` for lineage provenance, while `dependencies=[]` and `upstream_runtime_dependency=null` already declare that source preparation has no runtime predecessor. WorkerCoordinator's generic successor-reconstruction gate keys on `parent_task_id` unless the handoff explicitly declares `runtime_predecessor_reconstruction_required=false`. Without that explicit distinction, the targeted independent source-prep path stops before claim/fence with `SUCCESSOR_RECONSTRUCTION_REQUIRED` despite the documented independent-task-control contract.
+
+The bounded correction adds only:
+
+```text
+runtime_predecessor_reconstruction_required=false
+parent_task_relationship=PROVENANCE_ONLY_NO_RUNTIME_PREDECESSOR
+```
+
+No lineage identity is removed. No dependency, runtime, scheduler, dispatcher, WorkerCoordinator, source transport, credential path, authority plane, custody store, or device prerequisite is added. Fresh claim/fence and authentic source-prep receipt remain runtime evidence requirements.

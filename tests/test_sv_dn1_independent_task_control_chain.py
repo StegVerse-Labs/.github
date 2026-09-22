@@ -181,5 +181,24 @@ class SvDn1IndependentTaskControlTests(unittest.TestCase):
                 )
 
 
+    def test_source_prep_provenance_parent_does_not_require_runtime_reconstruction(self):
+        source_root = Path(__file__).resolve().parents[1]
+        handoff = json.loads((source_root / "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json").read_text())
+        self.assertEqual(handoff["task"]["parent_task_id"], "SV-DN1-INTR-RUNTIME-001")
+        self.assertIsNone(handoff["task"]["upstream_runtime_dependency"])
+        self.assertFalse(handoff["task"]["runtime_predecessor_reconstruction_required"])
+        self.assertEqual(
+            handoff["task"]["parent_task_relationship"],
+            "PROVENANCE_ONLY_NO_RUNTIME_PREDECESSOR",
+        )
+
+        runtime = WorkerCoordinator.__new__(WorkerCoordinator)
+        runtime.root = source_root
+        ok, reason, proof = runtime._successor_reconstruction({"generation": 23}, handoff)
+        self.assertTrue(ok)
+        self.assertIsNone(reason)
+        self.assertIsNone(proof)
+
+
 if __name__ == "__main__":
     unittest.main()

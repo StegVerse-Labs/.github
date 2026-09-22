@@ -1305,3 +1305,5 @@ The Device/KV/SKAP path now explicitly separates origin-scoped browser data from
 ### StegOS Node Manifold COSV reconciliation — 2026-09-21
 
 `STEGOS-NODE-MANIFOLD-001` now has an exact task.v1 COSV source projection derived from canonical metrics rather than an assumed continuation value. The vector is `40000100100000`: CLAIMED_INTEGRATION, archive not ready, zero unassigned work, one bounded chat-owned integration continuation, canonical owner installed, zero declared blockers, evidence incomplete, not activated, and not propagated. The vector grants no authority and does not alter the four still-open authentic physical Network predicates.
+
+- SV-DN1 production source preparation now marks its retained `SV-DN1-INTR-RUNTIME-001` parent identity as provenance-only for runtime admission. `runtime_predecessor_reconstruction_required=false` aligns WorkerCoordinator with the existing `upstream_runtime_dependency=null` contract so independent source preparation is not blocked by an unrelated predecessor-reconstruction gate.
