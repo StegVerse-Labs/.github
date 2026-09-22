@@ -1248,3 +1248,8 @@ After a fail-closed README self-reference correction, TVC hygiene run `356702761
 ### TVC hygiene retirement routing batch 5 — 2026-09-21
 
 TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### HIL browser predecessor versus machine execution claim
+
+The accepted browser G25/fence-25 LEASE_OPEN is predecessor evidence, not a reusable WorkerCoordinator assignment. The HIL machine task now enters WorkerCoordinator from an unbound `HANDOFF_READY` state, requires a fresh fence greater than 25, and carries the exact browser G25 lineage into the machine receiver receipt. Gateway projection requires both lineages before forwarding `/api/hil/*`.
