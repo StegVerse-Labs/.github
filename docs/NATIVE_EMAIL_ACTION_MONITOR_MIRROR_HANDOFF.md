@@ -342,3 +342,25 @@ PR #2559 merged as `b639686c19167557957ebf17e89b6e9ce1c65702`.
 This removes the first deterministic source-side pre-claim defect on the existing path. It does **not** satisfy native-email completion predicate 1 by itself. Authentic completion still requires the same resident path to produce a fresh WorkerCoordinator claim/fence and retain `stegverse.sv-dn1.production-source-prep-receipt/v2` with `state=COMPLETE`, `transition_id=SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE`, exactly four current verified source roots/identities, and the no-network/no-credential/no-GitHub-token/no-writeback predicates. Until that runtime evidence exists, TV/TVC Gmail owner-session observation remains downstream and unclaimed.
 
 No runtime, scheduler, dispatcher, WorkerCoordinator, source installer/transport, credential route, authority plane, custody store, Site runtime role, or device dependency was introduced.
+
+## 2026-09-21 claim/fence-bound source-prep readback repair
+
+After the provenance-parent pre-claim repair, no authentic post-repair resident targeted result was exposed through the accessible evidence surfaces. Absence was not treated as runtime failure or non-occurrence. Static tracing then localized the next concrete existing-path defect at Healer receipt readback.
+
+The process adapter already copies allowed bounded-state changes back to the canonical source-prep bound-state root after claim-scope enforcement, so a successful worker can durably retain `receipts/latest.json`. However, StegVerse-Healer `_verified_governance_component_roots()` previously accepted a complete-shaped source-prep v2 receipt without requiring canonical WorkerCoordinator claim/fence binding. That meant a stale, manually formed, or otherwise unfenced receipt could have augmented the native-email governance roots despite this Goal's requirement for a fresh claim/fence.
+
+StegVerse-Healer PR #101 repaired only that readback gate. A source-prep receipt is now reusable by the native-email Healer path only when it proves all of the existing schema/state/transition, exact four-component, SHA-256 identity, migration-anchor, no-network, no-GitHub-platform, no-credential, no-GitHub-token, no-writeback, and root-materialization checks plus:
+
+```text
+task_id = SV-DN1-PRODUCTION-SOURCE-PREP-001
+worker_id = sv-dn1-production-source-prep-worker
+source_identity_scheme = sha256-content-manifest
+current_source_identity_verified = true
+current_source_identity_scheme = sha256-content-manifest
+fencing_token > 22
+claim_id = SHWP-SV-DN1-PRODUCTION-SOURCE-PREP-001-G<fencing_token>
+```
+
+Exact-head Test Readiness run `35687266351` succeeded at PR head `e3c9a8e0bbdbbc2caaf4dba2a649347b46847752`; PR #101 merged as `8a7e64b5c41ef093eb509ea9956d422e500e1614`.
+
+This remains readback validation only. It does not mint a claim/fence, execute source prep, or prove the resident path ran. Native-email completion predicate 1 remains unsatisfied until the existing standing Healer -> local source refresh -> targeted WorkerCoordinator path actually retains a claim/fence-bound `stegverse.sv-dn1.production-source-prep-receipt/v2` meeting the exact contract above. TV/TVC Gmail owner-session observation remains downstream and unclaimed.
