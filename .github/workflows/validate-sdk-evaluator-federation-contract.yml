@@ -1,0 +1,28 @@
+name: Validate SDK evaluator federation source contract
+on:
+  pull_request:
+    paths:
+      - 'data/sdk-evaluator-organization-federation-custody-contract.json'
+      - 'data/canonical-task-records/SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001.json'
+      - 'control/organization-federation.json'
+      - 'org-kernel/kernel.py'
+      - 'resident-runtime/federation_gateway_transport.py'
+      - 'workers/universal_intr_profiled_ingress.py'
+      - 'scripts/consume_sdk_evaluator_governance_posture_request.py'
+      - 'tests/test_sdk_evaluator_federation_contract.py'
+      - '.github/workflows/validate-sdk-evaluator-federation-contract.yml'
+  workflow_dispatch:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile existing source and regression tests
+        run: python -m py_compile org-kernel/kernel.py resident-runtime/federation_gateway_transport.py workers/universal_intr_profiled_ingress.py scripts/consume_sdk_evaluator_governance_posture_request.py tests/test_sdk_evaluator_federation_contract.py
+      - name: Run bounded source-only regression tests
+        run: python -m unittest discover -s tests -p test_sdk_evaluator_federation_contract.py -v
