@@ -309,3 +309,36 @@ No scheduler, dispatcher, WorkerCoordinator, runtime, source installer/transport
 ### Current authentic boundary
 
 Predicate 1 is **source-repaired but not yet authentically satisfied**. GitHub source validation and PR #98 merge do not prove resident execution. The next authentic evidence must come from the same existing resident path and show the local source refresh plus targeted source-prep execution/retention. Only after that evidence exists may this goal advance to TV/TVC Gmail owner-session observation. No TV/TVC provider-operation claim is made by this repair.
+
+## 2026-09-21 source-prep pre-claim reconstruction repair
+
+Tracing the repaired standing Healer -> local source refresh -> targeted `refresh_and_execute_resident_task.py` -> `SV-DN1-PRODUCTION-SOURCE-PREP-001` path exposed the first deterministic pre-claim blocker.
+
+The source-prep handoff intentionally retains `parent_task_id=SV-DN1-INTR-RUNTIME-001` as lineage provenance while already declaring:
+
+```text
+dependencies=[]
+upstream_runtime_dependency=null
+execution_admission_mode=INDEPENDENT_TASK_CONTROL
+```
+
+WorkerCoordinator's generic successor-reconstruction gate uses `parent_task_id` unless the handoff explicitly disables runtime predecessor reconstruction. Consequently, the targeted source-prep path could stop before claim/fence with `SUCCESSOR_RECONSTRUCTION_REQUIRED` despite the source-prep task having no runtime predecessor.
+
+.github PR #2559 repaired only that distinction by adding:
+
+```text
+runtime_predecessor_reconstruction_required=false
+parent_task_relationship=PROVENANCE_ONLY_NO_RUNTIME_PREDECESSOR
+```
+
+The parent identity remains intact for provenance; no runtime dependency was removed because none existed. Focused coverage now verifies that `_successor_reconstruction(...)` returns admissible with no reconstruction proof for this task while the provenance parent remains present. After rebasing onto current main, exact-head validation at `114c2d4ce49c9293d03be58bdf5accc11296bda4` passed:
+
+- `validate-deepseek-resident` run `35677432040` — success;
+- `Validate KV AI Memory Resident Binding` PR run `35677432173` — success;
+- `Validate KV AI Memory Resident Binding` push run `35677427813` — success.
+
+PR #2559 merged as `b639686c19167557957ebf17e89b6e9ce1c65702`.
+
+This removes the first deterministic source-side pre-claim defect on the existing path. It does **not** satisfy native-email completion predicate 1 by itself. Authentic completion still requires the same resident path to produce a fresh WorkerCoordinator claim/fence and retain `stegverse.sv-dn1.production-source-prep-receipt/v2` with `state=COMPLETE`, `transition_id=SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE`, exactly four current verified source roots/identities, and the no-network/no-credential/no-GitHub-token/no-writeback predicates. Until that runtime evidence exists, TV/TVC Gmail owner-session observation remains downstream and unclaimed.
+
+No runtime, scheduler, dispatcher, WorkerCoordinator, source installer/transport, credential route, authority plane, custody store, Site runtime role, or device dependency was introduced.
