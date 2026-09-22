@@ -532,3 +532,10 @@ The first concrete source defect was the organization ledger contract itself: it
 The existing `submit_state_receipt(...)` path now records and verifies the exact organization receipt before any HTTP or local Master Records custody submission. The organization receipt binds the exact canonical receipt digest and uses the existing append-only organization ledger. Failure to record or verify that receipt returns a BOUNDARY and prevents Master Records progression. No second ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, or authority plane is introduced.
 
 This is source repair only until merged and until authentic runtime evidence shows a retained organization receipt followed by canonical Master Records RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality for the same transition. Historical missing runtime organization receipts remain `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Organization receipt source repair merge reconciliation — 2026-09-21
+
+PR #2520 merged from exact head `2c73acc47f02d4b4dddcf1541094a8ddcb2539f4` as `13ff70132c30147465a25122c8de2fc948da1e56`. Exact-head validation passed Cross-Task Coordination `35672926746`, DeepSeek resident `35672926715`, Ecosystem Receipt HB Successor `35672926790`, KV AI Memory Resident Binding `35672926778`, and Purpose-Bound Worker Derived Lifetime `35672926731`.
+
+Merged source now enforces: every canonical state transition occurring within `StegVerse-Labs` records and verifies the existing organization-level receipt before canonical Master Records submission. Repository-specific linkage is preserved only for actual repository transitions. Authentic runtime proof of the ordered organization-receipt -> Master Records chain remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
