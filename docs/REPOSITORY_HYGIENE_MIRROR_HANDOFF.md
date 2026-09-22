@@ -797,3 +797,10 @@ Only the two newly validated batch-4 refs are routed non-destructively to `HYGIE
 TVC PR `#462` exact head `ddc73916bd1c17fcec525909238a02ab9b780dc7` passed all three TVC validations and merged as `ae8d2be912b262eb5c4610eaf1afcff241350b53`. Triggered hygiene run `35672943173` completed SUCCESS: 432 branches inspected, 163 structural retirement candidates, **31 approved-retirement-ready**, **0 invalid approvals**, 265 review-required, and 4 protected/retained. Artifact `10671897141`, digest `sha256:a30ca4d7355f9c137e06cf262be45d63636e8d7fca5af518d30e31965b626c78`.
 
 Only the two newly validated historical hosted-source retirement refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`. Continuing resident service-request and Coinbase provider activation work remains on separate runtime/provider lanes and does not retain these historical refs. Current unapproved structural candidate count: 132. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 6 — 2026-09-21
+
+TVC PR `#463` exact head `a6bcd23b37f06b80dde8ece6236e010f977509cf` passed all three TVC validations and merged as `6f42373737c55e0d73601b9c00494c36820c4731`. Triggered hygiene run `35673548654` completed SUCCESS: 433 branches inspected, 163 structural retirement candidates, **32 approved-retirement-ready**, **0 invalid approvals**, 266 review-required, and 4 protected/retained. Artifact `10671758096`, digest `sha256:74a9a8c0f2d0408b2687a737daf9b9b95dbf256005218bc55bc9e068a1ed5972`.
+
+Only the single newly validated historical AEX hosted-source proof ref is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json`. Fresh AEX runtime resolution remains a separate authority lane and does not retain the historical proof ref. Current unapproved structural candidate count: 131. No ref deletion occurred.
