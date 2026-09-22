@@ -1327,3 +1327,8 @@ A successor cannot reuse an in-memory Master Records result merely because the u
 ### StegAgents purpose-worker warrant predecessor reconstruction
 
 The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no longer accepts a worker-claim string or an un-reconstructed in-memory closure as predecessor state. Its existing graph predecessor receipt is reconstructed through canonical Master Records at the exact warrant receipt-emission boundary, and the resulting `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried before successor custody.
+
+
+### Device/KV executor import and test-isolation repair — 2026-09-21
+
+The existing Device/KV/SKAP event executor now resolves bare sibling-script imports identically whether invoked directly or loaded by a test/spec importer. The canonical predecessor-closure test fixture also confines its synthetic `heartbeat_runtime` package to the module-under-test import, preventing suite-order leakage that can shadow the real runtime package. This is source/validation hygiene only and grants no runtime, transition, credential, custody, installation, or device authority.

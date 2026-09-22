@@ -268,3 +268,10 @@ and never converts either browser-initialized state into `installed=true`. `inst
 Exact readback remains useful evidence that the browser can recover the exact IndexedDB bytes it wrote. It is not installation proof. The My KV create path now says “Create browser-local KV”, and cloud-peer setup may consume that initialized local data instance without changing the installation claim.
 
 The canonical parent Goal remains `ACTIVE / CHECKED_OUT`. No authentic Device -> KV -> SKAP -> KV -> Device runtime predicate was satisfied by this repair.
+
+
+## .github import and validation isolation repair — 2026-09-21
+
+A repository validation repair is staged under the existing Goal rather than creating a new runtime or authority lane. `scripts/execute_device_kv_skap_roundtrip_event.py` now adds its own `scripts/` directory to `sys.path` when imported by spec, matching its direct-script import behavior for bare sibling imports. The predecessor-closure test fixture now scopes its synthetic `heartbeat_runtime` modules with `patch.dict(...)` so they cannot leak into later tests and shadow the real package.
+
+This repair changes source import/test isolation only. It does not establish authentic Device/KV/SKAP runtime execution, a KV relationship, native installation, WorkerCoordinator authority, Interlock/InTr admission, or TV/TVC credential evidence. The Goal remains `ACTIVE / CHECKED_OUT` and authentic runtime predicates remain evidence-gated.
