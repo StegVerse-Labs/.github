@@ -9,10 +9,18 @@ from pathlib import Path
 
 OWNER_PATH_PATTERNS = (
     re.compile(r"^tasks/"),
-    re.compile(r"(^|/)docs/.*HANDOFF.*\.md$", re.I),
+    re.compile(r"(^|/).*HANDOFF.*\.md$", re.I),
     re.compile(r"(^|/)coordination/"),
     re.compile(r"(^|/)control/"),
     re.compile(r"(^|/)data/canonical-task"),
+)
+HYGIENE_CONTROL_PATHS = {
+    "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+    "docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md",
+}
+HYGIENE_CONTROL_PREFIXES = (
+    "evidence/repository-hygiene/",
+    "control/repository-hygiene-",
 )
 RELEASE_WORDS = re.compile(r"\b(resolved|superseded|released|retired|closed|source[_ -]?retired|merged)\b", re.I)
 
@@ -22,8 +30,23 @@ def run(*args: str) -> str:
         raise SystemExit(f"command failed ({p.returncode}): {' '.join(args)}\n{p.stderr}")
     return p.stdout
 
+def hygiene_control_path(path: str) -> bool:
+    return path in HYGIENE_CONTROL_PATHS or any(path.startswith(prefix) for prefix in HYGIENE_CONTROL_PREFIXES)
+
 def owner_path(path: str) -> bool:
-    return any(p.search(path) for p in OWNER_PATH_PATTERNS)
+    return not hygiene_control_path(path) and any(p.search(path) for p in OWNER_PATH_PATTERNS)
+
+def branch_release_context(text: str, branch: str, window: int = 400) -> bool:
+    start = 0
+    while True:
+        idx = text.find(branch, start)
+        if idx < 0:
+            return False
+        lo = max(0, idx - window)
+        hi = min(len(text), idx + len(branch) + window)
+        if RELEASE_WORDS.search(text[lo:hi]):
+            return True
+        start = idx + len(branch)
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -56,7 +79,7 @@ def main() -> int:
                 continue
             if branch in text:
                 refs.append(path)
-                if RELEASE_WORDS.search(text):
+                if branch_release_context(text, branch):
                     explicit_release = True
         if refs and explicit_release:
             newly_eligible.append({"branch": branch, "changed_owner_refs": sorted(set(refs))})
@@ -77,7 +100,7 @@ def main() -> int:
         "zero_delta": len(newly_eligible) == 0,
         "authority_effect": "NONE",
         "deletion_authorized": False,
-        "notes": "Fail-closed prefilter only. A candidate may advance to owner-clearance review only when its exact branch name appears in an owner-bearing file changed since baseline and that changed owner surface explicitly records a release/resolution/supersession/retirement state. Final containment and ownership checks remain required before approval."
+        "notes": "Fail-closed prefilter only. Hygiene-control records are excluded from owner-transition evidence. A candidate may advance only when its exact branch name appears in a changed owner-bearing file and a release/resolution/supersession/retirement term occurs within a bounded context window around that exact reference. Final containment and active-ownership checks remain required before approval."
     }
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
