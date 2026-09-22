@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target repository: `StegVerse-Labs/StegLearn`
 Goal Task ID: `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`
 COSV: `40000100100000`
-Status: `ACTIVE / GOOGLE ADMIN IDENTITY RECONCILIATION REQUIRED BEFORE PARTNER NETWORK RETRY`
+Status: `ACTIVE / HISTORICAL GOOGLE ADMIN LOGIN NOT RECOGNIZED / TENANT RECOVERY REQUIRED BEFORE IDENTITY RECONCILIATION`
 
 ## Canonical registration
 
@@ -35,19 +35,18 @@ A Partner Network enrollment attempt exposed an identity prerequisite: `Rigel@st
 
 Connected Gmail identifies the original administrator identity as `Rige1Randoloh@stegverse.org`. A Google Workspace mandatory service notice received 2026-09-08 states that the `stegverse.org` Workspace Business Standard subscription was suspended on 2025-12-04 and is scheduled for cancellation on or after 2026-10-07 unless the administrator signs in and activates the subscription from Admin console **Billing > Subscriptions**.
 
-This does not prove that the Google organization, Cloud Identity tenant, or administrator login is unavailable. Admin-console observation is required before mutation.
+On 2026-09-21 the owner attempted live Admin-console sign-in with the exact historical username `Rige1Randoloh@stegverse.org` and reported **Account not recognized**. The exact spelling was rechecked against Google Workspace setup mail from 2025-07-26/2025-07-31 and the 2026 cancellation notice, all of which identify the same username. This therefore is not being treated as a spelling correction or ordinary password-reset condition. The current state is an existing-tenant administrator-access recovery condition until Google recovery establishes the live tenant/admin identity.
 
 Minimum-risk sequence:
 
-1. Sign in to `admin.google.com` as `Rige1Randoloh@stegverse.org`.
-2. Inspect **Billing > Subscriptions** before changing users.
-3. Search **Directory > Users** for `Rigel@stegverse.org`.
-4. If it is already managed, reuse it; do not create a duplicate.
-5. If it is not managed, inspect **Directory > Users > More > Transfer tool for unmanaged users** or the current equivalent conflicting-account surface for that address before creating a user.
-6. If an unmanaged account exists, reconcile it through Google's transfer/managed-account path.
-7. Only if the address is neither managed nor unmanaged/conflicting should a new managed user be created.
-8. Do not change MX records, Gmail routing, aliases, DNS, or domain ownership for this identity-only reconciliation.
-9. Retry Google Cloud Partner Network enrollment with `Rigel@stegverse.org` only after managed-identity state is confirmed, then preserve the resulting acknowledgement, reference identifier, or blocker condition.
+1. Do **not** create a replacement Google Workspace/Cloud Identity tenant while the existing `stegverse.org` subscription/tenant evidence remains unresolved.
+2. Use Google Workspace administrator recovery for the existing domain/tenant, selecting the forgotten-admin-username/password path as applicable and using a reachable contact email.
+3. If Google requires domain-ownership verification, add only the exact temporary TXT/CNAME record supplied by Google recovery; do not alter MX, mail routing, nameservers, or unrelated DNS.
+4. After administrator access is restored, inspect **Billing > Subscriptions** before changing users.
+5. Search **Directory > Users** for `Rigel@stegverse.org`.
+6. If it is already managed, reuse it; if absent, inspect the unmanaged/conflicting-account transfer surface before creating anything.
+7. Reconcile an unmanaged account through Google's transfer/managed-account path; create a new managed user only if the address is absent from both managed and unmanaged/conflicting surfaces.
+8. Retry Google Cloud Partner Network enrollment with `Rigel@stegverse.org` only after managed-identity state is confirmed, then preserve the resulting acknowledgement, reference identifier, or exact remaining condition.
 
 ## Capability state
 
@@ -75,7 +74,10 @@ Still unresolved and requiring written Google evidence or negotiation:
 - Google case/reference ID: `UNKNOWN`
 - original administrator identity: `OBSERVED_IN_CONNECTED_GMAIL`
 - Workspace Business Standard suspension/cancellation warning: `OBSERVED_IN_CONNECTED_GMAIL`
-- `Rigel@stegverse.org` managed-user state: `REQUIRES_ADMIN_CONSOLE_OBSERVATION`
+- historical admin live sign-in: `OWNER_REPORTED_ACCOUNT_NOT_RECOGNIZED_2026-09-21`
+- historical admin exact spelling: `RECONFIRMED_FROM_GOOGLE_SETUP_AND_CANCELLATION_MAIL`
+- current tenant/admin recovery state: `RECOVERY_REQUIRED`
+- `Rigel@stegverse.org` managed-user state: `PENDING_ADMIN_TENANT_RECOVERY`
 - written routing response: `NOT_OBSERVED`
 - written technical capability response: `NOT_OBSERVED`
 - partnership: `NOT_CLAIMED`
@@ -94,12 +96,12 @@ Still unresolved and requiring written Google evidence or negotiation:
 
 ## Current state
 
-`GOOGLE_ADMIN_IDENTITY_RECONCILIATION_REQUIRED_BEFORE_PARTNER_NETWORK_RETRY`
+`HISTORICAL_GOOGLE_ADMIN_ACCOUNT_NOT_RECOGNIZED_TENANT_RECOVERY_REQUIRED`
 
 ## Next evidence gate
 
-Observe whether `Rige1Randoloh@stegverse.org` can access the Admin console and classify `Rigel@stegverse.org` as managed, unmanaged/conflicting, or absent. Reconcile only through the applicable minimum-risk path, then retry Partner Network enrollment and bind any Google acknowledgement or response by sender, timestamp, subject/reference identifier, and exact written capability statement.
+Recover administrator access to the existing `stegverse.org` Google tenant without creating a replacement tenant or changing mail routing. Once Google recovery establishes the live administrator identity/access, inspect subscription state and classify `Rigel@stegverse.org` as managed, unmanaged/conflicting, or absent; reconcile only through the applicable minimum-risk path, then retry Partner Network enrollment and bind any Google acknowledgement or response by sender, timestamp, subject/reference identifier, and exact written capability statement.
 
 ## Manual work
 
-Sign in at `https://admin.google.com` using `Rige1Randoloh@stegverse.org`. Record the Billing > Subscriptions state and the Directory > Users / unmanaged-user state for `Rigel@stegverse.org`. Do not create a user until the unmanaged/conflicting-account check is complete. If sign-in fails, use Google Admin account recovery for that exact administrator identity. If sign-in succeeds and the identity can be safely reconciled, retry Partner Network enrollment and preserve the acknowledgement or resulting blocker condition.
+Use Google Workspace administrator recovery for the existing `stegverse.org` tenant because live sign-in with the exact historical admin username returns **Account not recognized**. Use a reachable contact email. If Google requires domain proof, add only the exact recovery TXT/CNAME record it supplies; do not change MX, mail routing, nameservers, or unrelated DNS. Preserve the recovery case/reference or exact result so it can be reconciled canonically.
