@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 192,
-  "status": "ECOSYSTEM_HB_AUTHENTIC_MASTER_RECORDS_REFRESH_REOBSERVED_NOT_OBSERVED",
+  "generation": 193,
+  "status": "STEGBROWSER_A3_EVIDENCE_NOT_OBSERVED_PROMPT_10",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8001,6 +8001,29 @@
           "classification": "AUTHENTIC_RECEIPT_STILL_UNOBSERVABLE_NO_FAILURE_INFERRED_NO_NEW_REPAIR_JUSTIFIED",
           "runtime_completion_claimed": false,
           "authority_effect": "NONE_OBSERVATION_ONLY"
+        },
+        {
+          "observed_at": "2026-09-21",
+          "transition": "GOAL_PROMPT_10_AUTHENTIC_REFRESH_RECEIPT_NOT_OBSERVED",
+          "goal_prompt_count": "10/20",
+          "registry_generation_entering": 192,
+          "canonical_main_entering": "839cb132bc63cf2cc8681d88e5bcb345d64402eb",
+          "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+          "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+          "authorized_resident_command_surface_available": false,
+          "connected_resident_surfaces_observed": 0,
+          "connected_surface_absence_is_runtime_absence_evidence": false,
+          "authentic_retained_refresh_receipt_observed": false,
+          "durable_master_records_runtime_observed": false,
+          "authentic_nonce_query_executed": false,
+          "authentic_nonce_bound_claim_fence_observed": false,
+          "deterministic_pre_a3_failure_observed": false,
+          "source_change_performed": false,
+          "runtime_change_performed": false,
+          "device_prerequisite_added": false,
+          "classification": "EVIDENCE_NOT_OBSERVED",
+          "runtime_completion_claimed": false,
+          "authority_effect": "NONE_OBSERVATION_ONLY"
         }
       ],
       "dependencies": [
@@ -8063,7 +8086,7 @@
         "github_runtime_authority": "NONE"
       },
       "prompt_budget": {
-        "goal_prompt_count": "9/20",
+        "goal_prompt_count": "10/20",
         "split_merely_to_reset_counter": false
       },
       "source_refs": [
