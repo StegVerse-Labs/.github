@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 188,
-  "status": "ECOSYSTEM_HB_AUTHENTIC_MASTER_RECORDS_REFRESH_NOT_OBSERVED",
+  "generation": 189,
+  "status": "CANONICAL_MASTER_RECORDS_FUNCTIONAL_MEMORY_DIRECT_PREDECESSOR_CLOSURE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5215,7 +5215,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "AUTHENTIC_RTC008_EGRESS_ADMITTED_THEN_MASTER_RECORDS_CLOSURE_THEN_RTC009_THEN_CALLER_CONSEQUENCE",
+        "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5322,16 +5322,6 @@
         "rtc008_authentic_runtime_admission_observed": false,
         "rtc009_authentic_runtime_far_side_observed": false,
         "communication_complete": false,
-        "conversation_ingestion_claim_fence_predecessor_bypass_identified": true,
-        "conversation_ingestion_claim_fence_predecessor_bypass_repaired": true,
-        "conversation_ingestion_claim_fence_predecessor_pr": 2468,
-        "conversation_ingestion_claim_fence_predecessor_merge": "1028e16d0e31004b2af98f9294ff512411c19f9f",
-        "conversation_ingestion_claim_fence_predecessor_exact_head": "8f52d925338c2bdfd54233a11514484be36d669d",
-        "conversation_ingestion_claim_fence_predecessor_validation_runs": [
-          35603365104,
-          35603365180,
-          35603365163
-        ],
         "sdk_purpose_post_claim_tvc_warrant_bridge_defect_identified": true,
         "sdk_purpose_post_claim_tvc_warrant_bridge_repaired": true,
         "sdk_purpose_post_claim_tvc_warrant_bridge_pr": 2456,
@@ -5394,7 +5384,19 @@
           35672926790,
           35672926778,
           35672926731
-        ]
+        ],
+        "functional_memory_direct_predecessor_bypass_identified": true,
+        "functional_memory_direct_predecessor_bypass_transition": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+        "functional_memory_direct_predecessor_bypass_repaired": true,
+        "functional_memory_direct_predecessor_bypass_pr": 2529,
+        "functional_memory_direct_predecessor_bypass_superseded_pr": 2528,
+        "functional_memory_direct_predecessor_bypass_merge": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+        "functional_memory_direct_predecessor_bypass_exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+        "functional_memory_direct_predecessor_bypass_validation_runs": [
+          35674317853,
+          35674317860
+        ],
+        "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY"
       },
       "completion": {
         "claimed": false,
@@ -5619,30 +5621,6 @@
           "communication_complete_claimed": false,
           "authority_effect": "NONE_CUSTODY_AND_HANDOFF_ONLY"
         },
-        "conversation_ingestion_claim_fence_predecessor": {
-          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
-          "transition_id": "CONVERSATION_EVIDENCE_INGESTED",
-          "immediate_predecessor_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-          "defect": "DIRECT_CONVERSATION_INGESTION_RECEIPT_USED_NULL_PRIOR_STATE_DESPITE_FRESH_WORKERCOORDINATOR_CLAIM_FENCE_REQUIREMENT",
-          "effect": "MACHINE_OWNED_SUCCESSOR_COULD_RECORD_WITHOUT_BINDING_IMMEDIATELY_PRECEDING_CANONICAL_MASTER_RECORDS_CLOSURE",
-          "pull_request": 2468,
-          "exact_head": "8f52d925338c2bdfd54233a11514484be36d669d",
-          "merge_commit": "1028e16d0e31004b2af98f9294ff512411c19f9f",
-          "validation_runs": [
-            35603365104,
-            35603365180,
-            35603365163
-          ],
-          "repaired_contract": [
-            "GENERIC_WORKERCOORDINATOR_TASK_INVOCATION_CARRIES_EXACT_CLAIM_FENCE_MASTER_RECORDS_CLOSURE",
-            "CONVERSATION_INGESTION_RUNTIME_REQUIRES_CLOSED_WORKERCOORDINATOR_CLAIM_FENCE_PREDECESSOR",
-            "DIRECT_CALLER_RECONSTRUCTS_PREDECESSOR_THROUGH_REQUIRE_PREDECESSOR_MASTER_RECORDS_CLOSURE",
-            "CONVERSATION_EVIDENCE_INGESTED_PRIOR_STATE_IS_EXACT_PREDECESSOR_RECEIPT_SHA256",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_IS_REQUIRED_EVIDENCE"
-          ],
-          "authentic_runtime_execution_claimed": false,
-          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
-        },
         "sdk_purpose_post_claim_tvc_warrant_bridge": {
           "state": "SOURCE_DEFECT_REPAIRED_MERGED_VALIDATED",
           "defect": "PURPOSE_BOUND_POST_CLAIM_PATH_REQUIRED_PREEXISTING_STEGVERSE_WARRANT_JSON_INSTEAD_OF_INVOKING_EXISTING_TVC_ISSUER_AFTER_CLAIM_FENCE_CLOSURE",
@@ -5727,6 +5705,28 @@
           "authentic_warrant_issuance_observed": false,
           "authentic_resident_runtime_execution_claimed": false,
           "authority_effect": "NONE_EXISTING_ROOT_SELF_HEAL_DELIVERY_REPAIR_ONLY"
+        },
+        "functional_memory_direct_predecessor_closure": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+          "pull_request": 2529,
+          "superseded_pull_request": 2528,
+          "exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+          "merge_commit": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+          "validation_runs": [
+            35674317853,
+            35674317860
+          ],
+          "defect": "DIRECT_FUNCTIONAL_MEMORY_RECEIPT_PRODUCER_TRUSTED_TASK_POINTER_AFTER_UPSTREAM_VALID_FLAG_INSTEAD_OF_RECONSTRUCTING_PREDECESSOR_AT_EXACT_EMISSION_BOUNDARY",
+          "repaired_contract": [
+            "SUPPLIED_PREDECESSOR_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RECEIPT_EMISSION",
+            "PREDECESSOR_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+            "PREDECESSOR_RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
+            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
+          ],
+          "runtime_execution_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
         }
       },
       "required_evidence_validation": {
