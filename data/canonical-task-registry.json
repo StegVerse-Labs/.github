@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 198,
+  "generation": 199,
   "status": "CANONICAL_MASTER_RECORDS_STEGAGENTS_PURPOSE_WARRANT_EXACT_BOUNDARY_PREDECESSOR_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5461,7 +5461,19 @@
           35687026270,
           35687026272
         ],
-        "stegagents_state_graph_predecessor_contract": "RECONSTRUCT_EACH_CAUSAL_PREDECESSOR_AT_GRAPH_RECEIPT_EMISSION_AND_USE_LAST_OBSERVED_COMPLETION_AS_EXACT_IMMEDIATE_PREDECESSOR"
+        "stegagents_state_graph_predecessor_contract": "RECONSTRUCT_EACH_CAUSAL_PREDECESSOR_AT_GRAPH_RECEIPT_EMISSION_AND_USE_LAST_OBSERVED_COMPLETION_AS_EXACT_IMMEDIATE_PREDECESSOR",
+        "stegagents_atomic_warrant_predecessor_bypass_identified": true,
+        "stegagents_atomic_warrant_predecessor_bypass_repaired": true,
+        "stegagents_atomic_warrant_predecessor_pr": 38,
+        "stegagents_atomic_warrant_predecessor_merge": "62544bf751199bd4b66aba6870f2639a8db65ca4",
+        "stegagents_atomic_warrant_predecessor_exact_head": "1c1eab44dd9def2586335855e47c637f7ff8b30d",
+        "stegagents_atomic_warrant_predecessor_validation_runs": [
+          35743051807,
+          35743051814,
+          35743051826
+        ],
+        "stegagents_atomic_warrant_predecessor_contract": "RECONSTRUCT_EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CLOSURE_AT_SEQUENCE_2_WARRANT_EMISSION",
+        "stegagents_atomic_warrant_canonical_hash_helper_repaired": true
       },
       "completion": {
         "claimed": false,
@@ -5881,6 +5893,33 @@
             "THREE_WAY_JOIN_USES_EXISTING_COMPLETED_NS_OBSERVED_COMPLETION_ORDER",
             "LAST_OBSERVED_COMPLETION_RECONSTRUCTED_RECEIPT_IS_PRIOR_STATE_REF_OR_HASH"
           ],
+          "runtime_execution_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "stegagents_atomic_warrant_exact_predecessor": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "repository": "StegVerse-Labs/StegAgents",
+          "producer": "src/atomic_task_worker_activation_runtime.py::_record_warrant",
+          "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+          "pull_request": 38,
+          "exact_head": "1c1eab44dd9def2586335855e47c637f7ff8b30d",
+          "merge_commit": "62544bf751199bd4b66aba6870f2639a8db65ca4",
+          "validation_runs": [
+            35743051807,
+            35743051814,
+            35743051826
+          ],
+          "defect": "SEQUENCE_2_WARRANT_RECEIPT_USED_WORKER_CLAIM_STRING_IN_PRIOR_STATE_WITHOUT_RECONSTRUCTING_EXACT_CLAIM_FENCE_MASTER_RECORDS_RECEIPT",
+          "repaired_contract": [
+            "CLAIM_FENCE_MASTER_RECORDS_TRANSITION_REQUIRED_FOR_ATOMIC_PREPARE",
+            "EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_PREDECESSOR_RECONSTRUCTED_AT_WARRANT_RECEIPT_EMISSION",
+            "CARRIED_AND_RECONSTRUCTED_TRANSITION_ID_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_EXACTLY_MATCH",
+            "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
+            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "WORKER_CLAIM_STRING_PREDECESSOR_REMOVED",
+            "EXISTING_CANONICAL_HASH_HELPER_REUSED_INSTEAD_OF_MISSING_CANONICAL_JSON_SYMBOL"
+          ],
+          "subsequent_candidate": "src/atomic_task_worker_activation_runtime.py::_record_atomic_activation",
           "runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
         }
