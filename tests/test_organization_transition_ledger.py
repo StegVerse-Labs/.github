@@ -78,3 +78,9 @@ def test_canonical_custody_records_org_receipt_before_master_records():
     master = client.index("payload = _submit_http(receipt)", submit)
     assert org < master
     assert "ORGANIZATION_TRANSITION_RECEIPT_BINDING_INVALID" in client
+
+
+def test_worker_source_refresh_carries_org_ledger_dependencies():
+    source = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
+    assert 'Path("resident-runtime/aggregate_repo_transition.py")' in source
+    assert 'Path(".stegverse/transition-ledger/org-contract.json")' in source
