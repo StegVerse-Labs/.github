@@ -36,6 +36,8 @@ on:
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py'
+      - 'tests/test_canonical_work_resident_registry_preservation.py'
       - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
@@ -75,6 +77,8 @@ on:
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py'
+      - 'tests/test_canonical_work_resident_registry_preservation.py'
       - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
@@ -111,7 +115,8 @@ jobs:
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
-            tests.test_erl_household_economic_conditions_runtime_binding
+            tests.test_erl_household_economic_conditions_runtime_binding \
+            tests.test_canonical_work_resident_registry_preservation
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py
       - name: Validate coordination source
