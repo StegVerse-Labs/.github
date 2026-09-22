@@ -334,7 +334,13 @@
       35674317853,
       35674317860
     ],
-    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY"
+    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
+    "organization_receipt_runtime_reobservation_performed": true,
+    "organization_receipt_runtime_reobservation_source_head": "292c96d8cd61391f61689e94fb643c66bd53e568",
+    "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
+    "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
+    "organization_receipt_runtime_reobservation_repository_evidence_only": true,
+    "organization_receipt_runtime_reobservation_defect_inferred": false
   },
   "completion": {
     "claimed": false,
