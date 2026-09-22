@@ -210,13 +210,25 @@ def _record_sdk_return_binding_custody(
     workers_root=ROOT/"workers"
     if str(workers_root) not in sys.path:
         sys.path.insert(0,str(workers_root))
-    from canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+    from canonical_state_transition_custody import (
+        build_state_receipt,
+        require_predecessor_master_records_closure,
+        submit_state_receipt,
+    )
+    predecessor_receipt_sha256=request.get("predecessor_master_records_receipt_sha256")
+    prior_ref,predecessor_evidence=require_predecessor_master_records_closure(
+        predecessor_receipt_sha256,
+        successor_transition_id=transition_id,
+    )
+    if prior_ref is None:
+        raise KVPublisherReturnError("RTC-SDK-RETURN-006 canonical predecessor Master Records closure required")
+    required_evidence=list(predecessor_evidence)+required_evidence
     state_receipt=build_state_receipt(
       transition_id=transition_id,
       transition_sequence=1,
       subject_or_correlation_id=str(request.get("operation_id") or materialization_id),
       transition_outcome="EXECUTED",
-      prior_state_ref_or_hash=terminal,
+      prior_state_ref_or_hash=prior_ref,
       resulting_state_ref_or_hash=actual_binding_hash,
       governance_decision_ref_where_applicable=None,
       transition_evidence={

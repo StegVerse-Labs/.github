@@ -119,6 +119,28 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             }
         fake.build_state_receipt=build_state_receipt
         fake.submit_state_receipt=submit_state_receipt
+        def require_predecessor_master_records_closure(receipt_sha256, *, successor_transition_id):
+            self.assertEqual(receipt_sha256,"9"*64)
+            self.assertEqual(successor_transition_id,"RTC-SDK-RETURN-006")
+            closure={
+              "transition_id":"RTC-PREDECESSOR",
+              "state":"RECORDED",
+              "reconstruction_status":"PASS",
+              "required_evidence_validation_status":"PASS",
+              "receipt_sha256":"9"*64,
+              "reconstructed_receipt_sha256":"9"*64,
+              "master_record_ref":"master-record:state-transition:sha256:"+"9"*64,
+              "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+            }
+            return "sha256:"+"9"*64,[{
+              "evidence_id":"predecessor-master-records-closure:RTC-SDK-RETURN-006",
+              "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+              "origin_transition_id":"RTC-SDK-RETURN-006",
+              "encoding":"canonical-json",
+              "sha256":"8"*64,
+              "content":closure,
+            }]
+        fake.require_predecessor_master_records_closure=require_predecessor_master_records_closure
         previous=sys.modules.get("canonical_state_transition_custody")
         sys.modules["canonical_state_transition_custody"]=fake
         try:
@@ -134,14 +156,19 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                   "sdk_return_binding_observed":True,
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                req["predecessor_master_records_receipt_sha256"]="9"*64
                 result=consumer._record_sdk_return_binding_custody(
-                    runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
+                    runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization
                 )
             self.assertEqual(captured["transition_id"],"RTC-SDK-RETURN-006")
             self.assertEqual(captured["resulting_state_ref_or_hash"],consumer.sha(binding))
-            self.assertEqual(len(captured["required_evidence_manifest"]),2)
-            self.assertEqual(captured["required_evidence_manifest"][0]["content"],binding)
-            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"SDK_PUBLISHER_RETURN_BINDING")
+            self.assertEqual(captured["prior_state_ref_or_hash"],"sha256:"+"9"*64)
+            self.assertEqual(len(captured["required_evidence_manifest"]),3)
+            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_CLOSURE")
+            self.assertEqual(captured["required_evidence_manifest"][0]["content"]["receipt_sha256"],"9"*64)
+            self.assertEqual(captured["required_evidence_manifest"][1]["content"],binding)
+            self.assertEqual(captured["required_evidence_manifest"][1]["evidence_type"],"SDK_PUBLISHER_RETURN_BINDING")
+            self.assertEqual(captured["transition_evidence"]["return_transport_terminal_receipt_hash"],"sha256:"+"7"*64)
             self.assertEqual(result["state"],"RECORDED")
             self.assertEqual(result["required_evidence_validation_status"],"PASS")
         finally:
@@ -154,6 +181,26 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
         fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
+        fake.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (
+            "sha256:"+"9"*64,
+            [{
+              "evidence_id":"predecessor-master-records-closure:RTC-SDK-RETURN-006",
+              "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+              "origin_transition_id":"RTC-SDK-RETURN-006",
+              "encoding":"canonical-json",
+              "sha256":"8"*64,
+              "content":{
+                "transition_id":"RTC-PREDECESSOR",
+                "state":"RECORDED",
+                "reconstruction_status":"PASS",
+                "required_evidence_validation_status":"PASS",
+                "receipt_sha256":"9"*64,
+                "reconstructed_receipt_sha256":"9"*64,
+                "master_record_ref":"master-record:state-transition:sha256:"+"9"*64,
+                "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+              },
+            }],
+        )
         previous=sys.modules.get("canonical_state_transition_custody")
         sys.modules["canonical_state_transition_custody"]=fake
         try:
@@ -169,6 +216,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                   "sdk_return_binding_observed":True,
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                req["predecessor_master_records_receipt_sha256"]="9"*64
                 with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records custody not closed"):
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
@@ -236,7 +284,20 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         sys.modules["stegos.mir_southbound_intr_consumer"]=stegos
         sys.modules["canonical_state_transition_custody"]=custody
         original_source_root=consumer.source_root
-        consumer.source_root=lambda env_name,repo_name,required: Path("/tmp") 
+        original_submit_rtc008=consumer._submit_rtc008_materialization
+        consumer.source_root=lambda env_name,repo_name,required: Path("/tmp")
+        consumer._submit_rtc008_materialization=lambda request: {
+          "schema":consumer.MIR_RTC008_RECEIPT_SCHEMA,
+          "state":"INGRESS_ADMITTED",
+          "master_records_state":"RECORDED",
+          "master_records_reconstruction_status":"PASS",
+          "master_records_required_evidence_validation_status":"PASS",
+          "master_records_receipt_sha256":"d"*64,
+          "master_records_reconstructed_receipt_sha256":"d"*64,
+          "rtc008_evidence_complete":True,
+          "far_side_transition_observed":False,
+          "caller_consequence_observed":False,
+        }
         try:
             with tempfile.TemporaryDirectory() as temp:
                 runtime=Path(temp)
@@ -254,12 +315,13 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"RTC_STEGVERSE_EGRESS_007_TRANSITION")
             self.assertEqual(captured["required_evidence_manifest"][1]["content"],binding)
             self.assertEqual(result["rtc007_master_records"]["state"],"RECORDED")
-            self.assertFalse(result["rtc008_admission_observed"])
+            self.assertTrue(result["rtc008_admission_observed"])
             self.assertFalse(result["rtc009_far_side_transition_observed"])
             self.assertFalse(result["caller_consequence_observed"])
             self.assertFalse(result["communication_complete"])
         finally:
             consumer.source_root=original_source_root
+            consumer._submit_rtc008_materialization=original_submit_rtc008
             for name,value in previous.items():
                 if value is None: sys.modules.pop(name,None)
                 else: sys.modules[name]=value
@@ -269,7 +331,39 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         self.assertIn('"RTC-STEGVERSE-EGRESS-007"',source)
         self.assertIn('"RTC_STEGVERSE_EGRESS_007_TRANSITION"',source)
         self.assertIn('mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")',source)
-        self.assertIn('"rtc008_admission_observed":False',source)
+        self.assertIn('rtc008=_submit_rtc008_materialization(rtc008_request)',source)
+        self.assertIn('"rtc008_admission_observed":True',source)
         self.assertIn('"rtc009_far_side_transition_observed":False',source)
+
+
+    def test_rtc006_rejects_transport_terminal_hash_as_predecessor(self):
+        fake=types.ModuleType("canonical_state_transition_custody")
+        fake.build_state_receipt=lambda **kwargs: kwargs
+        fake.submit_state_receipt=lambda receipt: (_ for _ in ()).throw(AssertionError("submit must not run without canonical predecessor"))
+        fake.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (None,[])
+        previous=sys.modules.get("canonical_state_transition_custody")
+        sys.modules["canonical_state_transition_custody"]=fake
+        try:
+            with tempfile.TemporaryDirectory() as temp:
+                runtime=Path(temp)
+                output=runtime/consumer.SDK_BINDING_DIR/"sdk-return.json"
+                output.parent.mkdir(parents=True)
+                binding={"schema":"stegverse.sdk.publisher-return-binding/v1","sdk_return_binding_observed":True}
+                output.write_text(json.dumps(binding,sort_keys=True,separators=(",",":")),encoding="utf-8")
+                materialization={
+                  "schema":"stegverse.sdk.publisher-return-materialization-receipt/v1",
+                  "output_sha256":consumer.sha(binding),
+                  "sdk_return_binding_observed":True,
+                }
+                req=request(consumer.SDK_DOWNSTREAM_OWNER)
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"canonical predecessor Master Records closure required"):
+                    consumer._record_sdk_return_binding_custody(
+                        runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization
+                    )
+        finally:
+            if previous is None:
+                sys.modules.pop("canonical_state_transition_custody",None)
+            else:
+                sys.modules["canonical_state_transition_custody"]=previous
 
 if __name__=="__main__": unittest.main()
