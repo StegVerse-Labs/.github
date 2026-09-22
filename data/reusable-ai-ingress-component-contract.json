@@ -115,7 +115,7 @@
         "scripts/refresh_sovereign_worker_runtime_source.py"
       ],
       "repeatable": true,
-      "status": "REPRESENTATIVE_RUNTIME_PROBE_PATH_MERGED_SOURCE_VALIDATED_RESIDENT_DISPATCH_CARRIAGE_SOURCE_PENDING_VALIDATION_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
+      "status": "REPRESENTATIVE_RUNTIME_PROBE_AND_EXISTING_RESIDENT_DISPATCH_CARRIAGE_MERGED_SOURCE_VALIDATED_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
       "instantiations": [
         {
           "name": "EXTERNAL_AI_MEETING_ROOM",
@@ -151,6 +151,12 @@
         "external_provider_origin": "NOT_PROVEN_BY_THIS_PROBE",
         "consequential_egress": "NOT_REQUESTED_EVIDENCE_ONLY",
         "runtime_owner": "existing sovereign WorkerCoordinator targeted independent task control"
+      },
+      "source_validation": {
+        "tvc_boundary_merge": "0b82b45de7d214fbdb2f24bc4027a6aeb31a7312",
+        "github_probe_merge": "e529982fc01029e6c7016c8e3f1f80413212da1e",
+        "github_dispatch_merge": "5404e8bffb11e08127011a9d27de3d214bd38a7b",
+        "runtime_observation_claimed": false
       }
     }
   ],
