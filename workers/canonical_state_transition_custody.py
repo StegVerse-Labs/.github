@@ -15,6 +15,7 @@ create a second custody store.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -41,6 +42,45 @@ def canonical_json(value: Any) -> str:
 def sha256_uri(value: Any) -> str:
     raw = value if isinstance(value, bytes) else canonical_json(value).encode("utf-8")
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any]:
+    """Record the exact governed transition in the existing organization ledger before Master Records."""
+    module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "aggregate_repo_transition.py"
+    if not module_path.is_file():
+        return {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
+    try:
+        spec = importlib.util.spec_from_file_location("stegverse_org_transition_ledger", module_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("organization_transition_ledger_import_unavailable")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        organization_receipt = module.aggregate_transition(
+            dict(receipt),
+            org_transition_class="ORGANIZATION_STATE_TRANSITION",
+            boundary_evidence={
+                "canonical_state_transition_receipt_sha256": sha256_uri(dict(receipt)),
+                "ordering": "ORGANIZATION_RECEIPT_BEFORE_MASTER_RECORDS_CUSTODY",
+            },
+            authority_effect="NONE",
+        )
+    except Exception as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": f"ORGANIZATION_TRANSITION_RECEIPT_RECORDING_FAILED:{type(exc).__name__}",
+            "authority_effect": "NONE",
+        }
+    expected_source = sha256_uri(dict(receipt))
+    if (
+        organization_receipt.get("schema") != "stegverse.organization-transition-receipt/v1"
+        or organization_receipt.get("organization") != "StegVerse-Labs"
+        or organization_receipt.get("source_receipt_schema") != RECEIPT_SCHEMA
+        or organization_receipt.get("source_transition_sha256") != expected_source
+        or organization_receipt.get("canonical_state_transition_receipt_sha256") != expected_source
+        or not organization_receipt.get("receipt_sha256")
+    ):
+        return {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_RECEIPT_BINDING_INVALID", "authority_effect": "NONE"}
+    return {"state": "RECORDED", "organization_receipt": organization_receipt, "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY"}
 
 
 def now() -> str:
@@ -584,9 +624,12 @@ def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
     return {**payload, "authority_effect": "NONE_RECONSTRUCTION_ONLY"}
 
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    """Submit one canonical receipt and require exact reconstruction."""
+    """Record organization custody first, then submit one canonical receipt and require exact reconstruction."""
     if receipt.get("schema") != RECEIPT_SCHEMA:
         return {"state":"BOUNDARY","reason":"CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH","authority_effect":"NONE"}
+    organization = _record_organization_transition(receipt)
+    if organization.get("state") != "RECORDED":
+        return organization
     payload = _submit_http(receipt)
     if payload is None:
         payload = _submit_local(receipt)
@@ -603,7 +646,11 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
         return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH","response":payload,"authority_effect":"NONE"}
     if payload.get("master_records_grants_transition_authority") is not False:
         return {"state":"BOUNDARY","reason":"MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED","authority_effect":"NONE"}
-    return {**payload, "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}
+    return {
+        **payload,
+        "organization_receipt": organization["organization_receipt"],
+        "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
 
 
 def require_predecessor_master_records_closure(
