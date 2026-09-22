@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGOS-NODE-MANIFOLD-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGOS-NODE-MANIFOLD-001.json",
+    "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS@8f17ea07aa0f896bab78ff2ff44aae0cd2b8f813"
+  ],
+  "observed_at": "2026-09-21T20:00:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_INTEGRATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "ACTIVE/CHECKED_OUT canonical coordination is in an integration reconciliation session; CLAIMED_INTEGRATION is the exact task.v1 lifecycle code used for this bounded source integration.",
+    "archive_ready": "False because authentic distinct-peer, NETWORK_PRESENT, fragmentation/reformation, and exact multi-node replay/reconstruction evidence remain open.",
+    "unassigned_work": "Zero for this reconciliation; the canonical task and handoff retain ownership of the remaining work.",
+    "chat_owned_counts": "Current session owns one bounded integration reconciliation only; no implementation, validation, observation, or credential authority is inferred.",
+    "canonical_owner_installed": "The task-specific canonical Task Registry record and StegOS canonical handoff are installed.",
+    "thread_required": "False because the canonical record, vector, and handoff are sufficient for continuation.",
+    "blocker_count": "Zero canonical blockers are declared; remaining predicates are evidence requirements, not blockers.",
+    "evidence_complete": "False because the four physical network predicates remain unsatisfied.",
+    "activated": "False; source reconciliation does not prove runtime or Network activation.",
+    "propagated": "False; no downstream propagation is claimed."
+  },
+  "authority_effect": "NONE"
+}
