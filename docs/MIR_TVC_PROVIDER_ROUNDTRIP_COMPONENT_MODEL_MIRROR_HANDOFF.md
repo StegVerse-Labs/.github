@@ -143,3 +143,30 @@ Accordingly, the reusable trigger must stop at `INTERLOCK_INTR_ADMISSION_REQUIRE
 ## Next admissible work
 
 Validate PR #2018 on its exact final head. If all required exact-head lanes are green, merge with expected-head protection. Then allow the already-standing `MIR-RUN2-EVENT-001` WorkerCoordinator request to advance on demand through the repaired path. It may reach authentic provider execution plus canonical transport and then stop at the explicit Interlock admission boundary; it may continue to Master Records only when authentic admission evidence is present. Do not create or wait for a persistent device, runtime, scheduler, broker, credential path, listener, host, or second-device dependency. Retire only after `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` and every canonical completion condition are authentically satisfied.
+
+
+## 2026-09-21 neutral Healer reusable carrier closure
+
+Follow-up review after PR #2018 identified one outer-trigger addressability defect: `MIR-TVC-PROVIDER-ROUNDTRIP-001` was not present in the existing `StegVerse-Labs/StegVerse-Healer/data/reusable_task_schedule.json`, even though `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` was already scheduled for another goal.
+
+Healer PR #99 repaired only that missing binding and merged after exact-head `Test Readiness / repo-smoke` success:
+
+```text
+Healer PR: #99
+validated head: 3ecb5adc92d5343f0cce2cf3298840fdb10a7c7f
+merge: b883247840342b117fcc9ed07edebb77eed1916d
+reusable_task_id: RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001
+tracking_task_id: MIR-TVC-PROVIDER-ROUNDTRIP-001
+cosv_task_vector: 50000000100000
+invocation_key: MIR-TVC-PROVIDER-ROUNDTRIP-001
+remote_desktop_required: false
+persistent_runner_required: false
+second_scheduler_required: false
+second_user_operated_device_required: false
+```
+
+This closes reusable schedule addressability without creating another scheduler, runtime, provider broker, credential path, device dependency, or authority plane. The existing neutral Healer scheduler is carrier-only; WorkerCoordinator still owns claim/fence, TV/TVC owns provider/session credentials, Interlock/InTr owns transition/admission, and Master Records owns custody/reconstruction.
+
+Immediately after the merge, no authentic retained Healer scheduler receipt, one-shot resident-stack activation receipt, MIR resident-request consumption receipt, MIR provider-operation receipt, or MIR reusable-trigger receipt was present on the canonical GitHub evidence surface. This is recorded as `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`, not as runtime failure or non-occurrence. No device presence is required or awaited.
+
+The next authentic runtime boundary is therefore machine-owned execution of the already-standing reusable carrier/request chain. When a real attempt occurs it must consume only `MIR-RUN2-EVENT-001`, retain the provider result and generic `RTC-INTERLOCK-INTR-TRANSPORT-008` request/response chain, stop at `INTERLOCK_INTR_ADMISSION_REQUIRED` if explicit admission evidence is absent, and continue to Master Records only after that admission receipt exists.
