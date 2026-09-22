@@ -18,7 +18,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 RESULT_SCHEMA = "stegverse.reusable-task-runner-result/v1"
 EXPECTED_TASK = "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001"
-EXPECTED_INTR_PROFILE = "external-provider-operation"
+EXPECTED_INTR_COMPONENT = "RTC-INTERLOCK-INTR-TRANSPORT-008"
+EXPECTED_SOURCE_SUBSYSTEM = "StegVerse-org/StegVerse-SDK"
+EXPECTED_DESTINATION_SUBSYSTEM = "TVC:ProviderOperationBroker"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -49,8 +51,8 @@ def _require_complete_intr_chain(receipt: dict[str, Any]) -> None:
     intr = receipt.get("intr_transport")
     if not isinstance(intr, dict):
         raise RuntimeError("canonical InTr provider-operation transport evidence missing")
-    if intr.get("profile_id") != EXPECTED_INTR_PROFILE:
-        raise RuntimeError("canonical InTr provider-operation profile mismatch")
+    if intr.get("component_id") != EXPECTED_INTR_COMPONENT:
+        raise RuntimeError("canonical InTr provider-operation component mismatch")
     for direction in ("request", "response"):
         lane = intr.get(direction)
         if not isinstance(lane, dict):
@@ -60,12 +62,18 @@ def _require_complete_intr_chain(receipt: dict[str, Any]) -> None:
         intent = lane.get("intent")
         if not isinstance(result, dict) or result.get("state") != "TRANSPORT_COMPLETE":
             raise RuntimeError(f"canonical InTr {direction} transport incomplete")
-        if result.get("profile_id") != EXPECTED_INTR_PROFILE:
-            raise RuntimeError(f"canonical InTr {direction} profile mismatch")
+        if result.get("component_id") != EXPECTED_INTR_COMPONENT:
+            raise RuntimeError(f"canonical InTr {direction} component mismatch")
         if not isinstance(receipts, list) or not receipts:
             raise RuntimeError(f"canonical InTr {direction} receipt chain missing")
         if not isinstance(intent, dict) or intent.get("protocol") != "InTr":
             raise RuntimeError(f"canonical InTr {direction} intent missing")
+        expected_source = EXPECTED_SOURCE_SUBSYSTEM if direction == "request" else EXPECTED_DESTINATION_SUBSYSTEM
+        expected_destination = EXPECTED_DESTINATION_SUBSYSTEM if direction == "request" else EXPECTED_SOURCE_SUBSYSTEM
+        if intent.get("source") != {"boundary": "STEGOS_ECOSYSTEM", "subsystem": expected_source}:
+            raise RuntimeError(f"canonical InTr {direction} source identity mismatch")
+        if intent.get("destination") != {"boundary": "STEGOS_ECOSYSTEM", "subsystem": expected_destination}:
+            raise RuntimeError(f"canonical InTr {direction} destination identity mismatch")
         if result.get("terminal_receipt_hash") != receipts[-1].get("receipt_hash"):
             raise RuntimeError(f"canonical InTr {direction} terminal receipt mismatch")
         if any(item.get("boundary_verification") != "VERIFIED" for item in receipts if isinstance(item, dict)):
@@ -177,7 +185,7 @@ def main() -> int:
         "ready_state": parameters.get("expected_ready_state"),
         "provider_operation_result_decision": "ALLOW_OPERATION_RESULT",
         "exact_use_receipt_observed": True,
-        "intr_profile_id": intr["profile_id"],
+        "intr_component_id": intr["component_id"],
         "intr_request_terminal_receipt_hash": intr["request"]["transport_result"]["terminal_receipt_hash"],
         "intr_response_terminal_receipt_hash": intr["response"]["transport_result"]["terminal_receipt_hash"],
         "secret_values_exported": False,
