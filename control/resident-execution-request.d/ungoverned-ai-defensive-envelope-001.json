@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001",
+  "state": "REQUESTED",
+  "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "entrypoint_arguments": [
+    "--task-id",
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+  ],
+  "worker_registry_ref": "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
+  "process_adapter_ref": "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
+  "fail_closed_requirements": {
+    "exact_task_id_required": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "exact_request_id_required": "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001",
+    "exact_worker_id_required": "ungoverned-ai-defensive-envelope-worker",
+    "exact_adapter_ref_required": "process:ungoverned-ai-defensive-envelope-v1",
+    "exact_tvc_source_floor_required": "0b82b45de7d214fbdb2f24bc4027a6aeb31a7312",
+    "fail_closed_on_missing_fresh_fence": true
+  },
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "credential_material_required": false,
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "device_confirmation_required": false,
+  "remote_connected_device_required": false,
+  "absence_of_connected_device_is_blocker": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "required_local_source": [
+    "STEGVERSE_TVC_ROOT",
+    "StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312:tasks/ungoverned_ai_defensive_envelope.py"
+  ],
+  "external_provider_origin_required_for_this_probe": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Machine-owned targeted request for representative component-011 boundary evidence only. It does not claim external-provider origin or Goal completion."
+}
