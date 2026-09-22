@@ -195,70 +195,93 @@ def _intr_request_payload(request: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema": INTR_REQUEST_SCHEMA,
         "provider": "mir",
+        "consumer": CONSUMER,
         "request_id": REQUEST_ID,
         "request_hash": _sha(request),
         "lease_ref": _sha(request["lease_receipt"]),
     }
 
 
-def _prepare_intr_request(connector, request: dict[str, Any]):
-    return connector.prepare(
-        _intr_request_payload(request),
-        payload_schema=INTR_REQUEST_SCHEMA,
-        operation="REQUEST_PROVIDER_OPERATION",
+def _prepare_intr_request(transport, request: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    payload = _intr_request_payload(request)
+    intent = transport.build_transport_intent(
         operation_id=REQUEST_ID,
+        payload_hash=transport.sha256_uri(payload),
+        source_boundary="STEGOS_ECOSYSTEM",
+        source_subsystem=INTR_SOURCE_SUBSYSTEM,
+        destination_boundary="STEGOS_ECOSYSTEM",
+        destination_subsystem=INTR_DESTINATION_SUBSYSTEM,
     )
+    transport.validate_transport_intent(intent)
+    return intent, payload
 
 
-def _admit_intr_request(connector, request: dict[str, Any], task: dict[str, Any]):
-    packet = _prepare_intr_request(connector, request)
-    receipt = connector.accept_hop(
-        packet,
+def _transport_intr_request(transport, request: dict[str, Any], task: dict[str, Any]):
+    intent, payload = _prepare_intr_request(transport, request)
+    receipt = transport.build_hop_receipt(
+        intent,
         hop_index=1,
         receipt_id=f"{REQUEST_ID}-INTR-REQUEST-G{task['heartbeat_timing']['fencing_token']}",
         boundary_identity_ref=_boundary_ref(task, "request"),
         recorded_at=_now(),
-        prior_receipt_hash=packet.intent.get("prior_transport_receipt_hash"),
+        prior_receipt_hash=intent.get("prior_transport_receipt_hash"),
         transition_state="RECEIVED",
     )
-    result = connector.validate_complete(packet, [receipt])
-    return packet, {
-        "intent": packet.intent,
+    transport.validate_receipt_chain(intent, [receipt])
+    return intent, {
+        "component_id": INTR_COMPONENT,
+        "intent": intent,
+        "payload_hash": transport.sha256_uri(payload),
         "receipts": [receipt],
-        "transport_result": result,
+        "transport_result": {
+            "state": "TRANSPORT_COMPLETE",
+            "component_id": INTR_COMPONENT,
+            "terminal_receipt_hash": receipt["receipt_hash"],
+            "authority_effect": "NONE",
+        },
     }
 
 
-def _admit_intr_response(connector, request_packet, request_receipts: list[dict[str, Any]], provider_result: dict[str, Any], task: dict[str, Any]) -> dict[str, Any]:
+def _transport_intr_response(transport, request_receipts: list[dict[str, Any]], provider_result: dict[str, Any], task: dict[str, Any]) -> dict[str, Any]:
     payload = {
         "schema": INTR_RESPONSE_SCHEMA,
         "provider": "mir",
+        "consumer": CONSUMER,
         "request_id": REQUEST_ID,
         "response_hash": _sha(provider_result),
     }
-    packet = connector.prepare_response(
-        request_packet,
-        request_receipts,
-        payload,
-        payload_schema=INTR_RESPONSE_SCHEMA,
+    prior = request_receipts[-1]["receipt_hash"]
+    intent = transport.build_transport_intent(
         operation_id=f"{REQUEST_ID}-RETURN",
+        payload_hash=transport.sha256_uri(payload),
+        source_boundary="STEGOS_ECOSYSTEM",
+        source_subsystem=INTR_DESTINATION_SUBSYSTEM,
+        destination_boundary="STEGOS_ECOSYSTEM",
+        destination_subsystem=INTR_SOURCE_SUBSYSTEM,
+        prior_transport_receipt_hash=prior,
     )
-    receipt = connector.accept_hop(
-        packet,
+    receipt = transport.build_hop_receipt(
+        intent,
         hop_index=1,
         receipt_id=f"{REQUEST_ID}-INTR-RESPONSE-G{task['heartbeat_timing']['fencing_token']}",
         boundary_identity_ref=_boundary_ref(task, "response"),
         recorded_at=_now(),
-        prior_receipt_hash=packet.intent.get("prior_transport_receipt_hash"),
+        prior_receipt_hash=prior,
         transition_state="RECEIVED",
     )
-    result = connector.validate_complete(packet, [receipt])
+    transport.validate_receipt_chain(intent, [receipt])
     return {
-        "intent": packet.intent,
+        "component_id": INTR_COMPONENT,
+        "intent": intent,
+        "payload_hash": transport.sha256_uri(payload),
         "receipts": [receipt],
-        "transport_result": result,
+        "transport_result": {
+            "state": "TRANSPORT_COMPLETE",
+            "component_id": INTR_COMPONENT,
+            "terminal_receipt_hash": receipt["receipt_hash"],
+            "authority_effect": "NONE",
+        },
     }
-
 
 def _post_provider_failure(root: Path, receipt: dict[str, Any], exc: Exception) -> dict[str, Any]:
     value = dict(receipt)
