@@ -4,7 +4,7 @@
   "cosv_task_vector": "50000000100000",
   "observed_at": "2026-09-16",
   "source_pr": 2018,
-  "state": "PR_OPEN_EXACT_HEAD_VALIDATION_PENDING",
+  "state": "PR_OPEN_SOURCE_REPAIRED_EXACT_HEAD_VALIDATION_PENDING",
   "defects": [
     {
       "id": "CROSS_REPOSITORY_RUNNER_NOT_MATERIALIZABLE_BY_TRIGGER_DRIVER",
@@ -14,21 +14,28 @@
     {
       "id": "CIRCULAR_RUNNER_COMPLETION_PREDICATES",
       "finding": "Runner completion previously included Master Records custody/reconstruction although the trigger driver performs Master Records only after runner completion is validated.",
-      "repair": "Runner completion now ends at qualifying real provider evidence plus canonical InTr admission; Master Records custody/reconstruction remain post-run lifecycle predicates."
+      "repair": "Runner completion now ends at qualifying real provider evidence plus canonical Universal InTr transport retention; explicit Interlock/InTr admission and Master Records custody/reconstruction remain ordered post-run lifecycle predicates."
     },
     {
       "id": "PROVIDER_RECEIPT_INTR_ADMISSION_NOT_EXECUTED_BY_GENERIC_TRIGGER",
       "finding": "The generic reusable trigger carries runner evidence to Master Records but does not itself execute RT-INTR-BOUNDARY-ADMISSION-001.",
-      "repair": "Reuse the already-registered StegOS CanonicalInTrConnector profile external-provider-operation around the exact resident WorkerCoordinator TVC broker request/result transaction before invoking the reusable observation runner."
+      "repair": "Reuse RTC-INTERLOCK-INTR-TRANSPORT-008 via StegOS universal_intr_transport.py with exact source StegVerse-org/StegVerse-SDK and destination TVC:ProviderOperationBroker; retain request/response transport evidence, then stop at INTERLOCK_INTR_ADMISSION_REQUIRED until an authentic explicit admission receipt exists."
+    },
+    {
+      "id": "LLMADAPTER_PROFILE_IDENTITY_MISMATCH_FOR_MIR_SDK_CALLER",
+      "finding": "The external-provider-operation connector profile is source-bound to LLMAdapter:ProviderOperationClient, but MIR-RUN2-EVENT-001 is canonically owned by StegVerse-org/StegVerse-SDK.",
+      "repair": "Do not reuse that profile for MIR. Use the existing generic RTC-INTERLOCK-INTR-TRANSPORT-008 transport primitives with the exact SDK and TVC broker subsystem identities."
     }
   ],
   "canonical_reuse": {
-    "intr_profile": "external-provider-operation",
-    "intr_registry": "StegVerse-Labs/StegOS:specs/universal-intr-connector-profiles.v1.json",
-    "intr_implementation": "StegVerse-Labs/StegOS:stegos/intr_backbone.py#CanonicalInTrConnector",
+    "intr_component": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "intr_implementation": "StegVerse-Labs/StegOS:stegos/universal_intr_transport.py",
+    "intr_request_source": "StegVerse-org/StegVerse-SDK",
+    "intr_request_destination": "TVC:ProviderOperationBroker",
     "provider_broker": "StegVerse-Labs/TVC:tvc_provider_operation_broker.py",
     "provider_profile": "StegVerse-Labs/TVC:tvc_mir_provider_profile.py",
     "reusable_trigger": "scripts/trigger_reusable_task.py",
+    "explicit_admission_task": "RT-INTR-BOUNDARY-ADMISSION-001",
     "master_records_bridge": "workers/reusable_task_master_records_roundtrip.py"
   },
   "retry_invariants": {
@@ -52,5 +59,16 @@
   },
   "authentic_runtime_completion_claimed": false,
   "authentic_provider_session_predicate_satisfied": false,
-  "authority_effect": "NONE_SOURCE_AUDIT_ONLY"
+  "authority_effect": "NONE_SOURCE_AUDIT_ONLY",
+  "lifecycle_order": [
+    "WORKERCOORDINATOR_FENCE",
+    "GENERIC_INTR_REQUEST_TRANSPORT",
+    "TVC_PROVIDER_OPERATION",
+    "GENERIC_INTR_RESPONSE_TRANSPORT",
+    "REUSABLE_PRE_ADMISSION_RECONCILIATION",
+    "EXPLICIT_INTERLOCK_INTR_ADMISSION",
+    "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION"
+  ],
+  "transport_receipt_is_admission": false,
+  "master_records_before_explicit_admission_allowed": false
 }
