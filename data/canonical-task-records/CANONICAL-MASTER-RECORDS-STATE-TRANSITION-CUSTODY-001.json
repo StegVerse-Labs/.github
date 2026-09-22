@@ -302,7 +302,11 @@
       35672926790,
       35672926778,
       35672926731
-    ]
+    ],
+    "organization_receipt_runtime_carriage_defect_identified": true,
+    "organization_receipt_runtime_carriage_defect": "CANONICAL_CUSTODY_CLIENT_PACKAGED_WITHOUT_AGGREGATE_REPO_TRANSITION_OR_ORG_CONTRACT",
+    "organization_receipt_runtime_carriage_source_repaired": true,
+    "organization_receipt_runtime_carriage_source_repair_pending_merge": true
   },
   "completion": {
     "claimed": false,
