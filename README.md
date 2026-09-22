@@ -1340,3 +1340,6 @@ The existing Device/KV/SKAP event executor now resolves bare sibling-script impo
 ### Device/KV execution-substrate registry reconciliation — 2026-09-21
 
 `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now carries the required canonical execution-substrate resolution, selecting the already-declared admitted ephemeral StegOS Node lane while preserving single-device-first review order, no external-device requirement, and no authority effect. This is registry conformance only; no authentic runtime or installation predicate is promoted.
+
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #37 removes the purpose-bound state graph's predecessor-set hash from canonical `prior_state_ref_or_hash`. Every graph predecessor is reconstructed through canonical Master Records at the emission boundary; all causal branches remain required evidence, and the last observed completed branch is the exact immediate predecessor for the three-way join. Canonical reconciliation target is Task Registry generation 198.
