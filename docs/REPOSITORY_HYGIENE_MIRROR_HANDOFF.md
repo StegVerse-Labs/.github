@@ -832,3 +832,12 @@ The next TVC continuation no longer re-reviews the same 131 residual refs. Using
 Result: **zero newly eligible refs**, no approval-manifest change, no redundant hosted hygiene rerun, routing delta zero, and 131 structural candidates remain unapproved. Evidence: `control/repository-hygiene-tvc-batch8-owner-transition-delta-20260921.json`.
 
 The reusable owner-transition delta scanner is now merged in organization control at `48b3f78ccffd35898d28f9f4dbfe17fcecd753da`. This is the scaling boundary for the remaining branch estate: machine-filter owner-state deltas first, then review only newly eligible refs instead of repeatedly auditing static branches.
+
+
+### Ecosystem bulk census transition — 2026-09-21
+
+The hygiene program has moved from small manual review batches to machine-scale census/delta processing. Current active bulk criterion is `already_hygiene_enabled OR branch_count>=100`. The active set contains 4,756 branches across StegVerse-Labs/.github, Site, TVC, LLM-adapter, TV, StegCore, Master Records, StegHealth, and micro-node-runtime. Seven lower-volume watchlist repositories add 247 branches, bringing the currently enumerated estate to 5,003 branches.
+
+All six previously authenticated Wave-1 consumers were compared from their retained census heads to current main. Exact residual-candidate matching against changed canonical owner-bearing handoffs produced **zero newly eligible refs** across TVC, LLM-adapter, TV, Master Records, StegHealth, and micro-node-runtime. Their approval manifests remain unchanged and no redundant census reruns are required.
+
+For the 3,559 heavy branches lacking authenticated baselines, `.github/workflows/repository-hygiene-ecosystem-bulk-census.yml` performs a central read-only matrix census of StegVerse-Labs/.github, Site, and StegCore without mutating the terminal sink repositories. The classifier is optimized to scan default-branch source references in one batched grep pass rather than once per branch. First baseline results remain evidence-gated until the hosted matrix run completes. Machine census: `control/repository-hygiene-ecosystem-census-20260921.json`.
