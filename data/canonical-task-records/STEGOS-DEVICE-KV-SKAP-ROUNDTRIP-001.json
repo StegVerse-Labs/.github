@@ -95,9 +95,9 @@
     "StegVerse-Labs/StegOS#341:iOSDevicePackageValidation@34612836055:SUCCESS",
     "StegVerse-Labs/StegOS#341:iOSAppleToolchainValidation@34612835919:SUCCESS",
     "StegVerse-Labs/.github#2565@4661a8eb839241c0bff188a991374f45fac1b334",
-    "StegVerse-Labs/.github#2565:ValidateKVAI MemoryResidentBinding@35686779918:SUCCESS",
+    "StegVerse-Labs/.github#2565:Validate-KV-AI-Memory-Resident-Binding@35686779918:SUCCESS",
     "StegVerse-Labs/.github#2565:validate-deepseek-resident@35686779849:SUCCESS",
-    "StegVerse-Labs/.github#2565:push-ValidateKVAI MemoryResidentBinding@35686765254:SUCCESS"
+    "StegVerse-Labs/.github#2565:push-Validate-KV-AI-Memory-Resident-Binding@35686765254:SUCCESS"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_OBSERVED",
