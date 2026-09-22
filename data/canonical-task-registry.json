@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 191,
-  "status": "CANONICAL_MASTER_RECORDS_RTC006_PREDECESSOR_CLOSURE_REPAIRED",
+  "generation": 192,
+  "status": "ECOSYSTEM_HB_AUTHENTIC_MASTER_RECORDS_REFRESH_REOBSERVED_NOT_OBSERVED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -8490,7 +8490,9 @@
         "authentic_first_successor_checkpoint_observed": false,
         "deterministic_existing_path_failure_observed": false,
         "source_repair_justified": false,
-        "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY"
+        "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY",
+        "canonical_generation_observed": 191,
+        "repository_evidence_classification": "IMPLEMENTATION_TEST_HANDOFF_AND_NEGATIVE_OBSERVATION_ONLY"
       }
     },
     {
