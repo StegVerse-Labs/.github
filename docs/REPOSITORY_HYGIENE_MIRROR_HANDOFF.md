@@ -811,3 +811,10 @@ Only the single newly validated historical AEX hosted-source proof ref is routed
 A bounded review of the 131 remaining unapproved TVC structural candidates intentionally produced **zero new approvals**. The sampled plausible historical refs were retained/excluded because they remain actively owned or fall inside the standing exclusion set: SES M23A remains owned by the existing validation/activation chain; sovereign-network source validation is still referenced by active relay/ESRL handoffs and workflow; TV artifact exchange remains `SOURCE_VALIDATED_RUNTIME_PENDING`; StegOS delivery, R3 release, and provider-facing BEA refs are excluded by policy.
 
 Machine review record: `control/repository-hygiene-tvc-batch7-review-20260921.json`. The TVC approval manifest was not changed, so no new hosted revalidation was required; the last authenticated manifest state remains run `35673548654` with **32 approved-retirement-ready / 0 invalid approvals**. Routing delta: zero. Unapproved structural candidates remain 131. No ref deletion occurred.
+
+
+### Bulk owner-transition delta optimization — 2026-09-21
+
+The manual residual-review cadence is replaced by a reusable fail-closed owner-transition delta scanner at `scripts/repository_hygiene_owner_transition_delta.py`. The scanner compares the last authenticated census head to current repository state, limits inspection to changed canonical owner-bearing paths, and surfaces only residual structural candidates whose exact branch ref appears in a changed owner surface with explicit resolved/superseded/released/retired/closed state. Zero changed owner-bearing paths yields a machine zero-delta and no approval-manifest change or redundant hosted census.
+
+This changes hygiene from prompt-per-branch review toward repository-scale processing suitable for thousands of refs. It remains a prefilter: current-main containment and active ownership must still pass before approval, and actual ref deletion remains exclusively `HYGIENE-BRANCH-REF-RETIREMENT` authority-owned.
