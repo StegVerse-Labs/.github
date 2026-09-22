@@ -119,21 +119,24 @@ def run_diagnostic(parameters: dict[str, Any]) -> int:
     fallback = str(parameters.get("diagnostic_fallback") or "")
     if fallback != "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py":
         return 3
-    tvc_root_raw = (os.environ.get("STEGVERSE_TVC_ROOT") or "").strip()
-    if not tvc_root_raw:
-        print(json.dumps({"state": "BOUNDARY", "reason": "STEGVERSE_TVC_ROOT_NOT_MATERIALIZED"}, sort_keys=True))
+    wrapper = ROOT / "scripts" / "run_tvc_runtime_boundary_reusable.py"
+    if not wrapper.is_file():
+        print(json.dumps({"state": "BOUNDARY", "reason": "LOCAL_TVC_RUNTIME_BOUNDARY_WRAPPER_NOT_MATERIALIZED"}, sort_keys=True))
         return 3
-    observer = Path(tvc_root_raw).expanduser().resolve() / "scripts" / "observe_tvc_runtime_boundary.py"
-    if not observer.is_file():
-        print(json.dumps({"state": "BOUNDARY", "reason": "TVC_DIAGNOSTIC_RUNNER_NOT_MATERIALIZED"}, sort_keys=True))
-        return 3
-    completed = subprocess.run([sys.executable, str(observer)], cwd=observer.parents[1], text=True, capture_output=True, check=False)
+    completed = subprocess.run(
+        [sys.executable, str(wrapper)],
+        cwd=ROOT,
+        env=os.environ.copy(),
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=300,
+    )
     if completed.stdout:
         print(completed.stdout, end="")
     if completed.stderr:
         print(completed.stderr, end="", file=sys.stderr)
     return completed.returncode if completed.returncode != 0 else 3
-
 
 def main() -> int:
     reusable_task_id = os.environ.get("STEGVERSE_REUSABLE_TASK_ID")
