@@ -233,6 +233,11 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
         "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE",
         "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
     }
+    # Existing local source locator only; this is not a provider credential or
+    # permission to fetch source. The trusted SES wrapper sees it, never candidate code.
+    tvc_root = roots.get("StegVerse-Labs/TVC")
+    if tvc_root is not None and tvc_root.is_dir():
+        env["STEGVERSE_TVC_ROOT"] = str(tvc_root)
     for name in ("STEGVERSE_KV_ROOT", "STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT"):
         if os.getenv(name):
             env[name] = os.environ[name]
