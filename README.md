@@ -1243,3 +1243,8 @@ The Healer scheduler projects the retained G25/fence-25 HIL worker receiver `bas
 ### TVC hygiene retirement routing batch 4 — 2026-09-21/22
 
 After a fail-closed README self-reference correction, TVC hygiene run `35670276119` proved 29 approved-retirement-ready refs and zero invalid approvals. Two new batch-4 refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`; 134 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### TVC hygiene retirement routing batch 5 — 2026-09-21
+
+TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
