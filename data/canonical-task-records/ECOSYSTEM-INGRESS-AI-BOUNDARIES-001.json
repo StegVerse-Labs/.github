@@ -35,10 +35,20 @@
     "common_ai_decision_sandbox_region": "SUPERSEDED_BY_UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT",
     "external_framework_llm_adapter_sdk_only": "PARTIAL",
     "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
-    "ungoverned_ai_defensive_envelope": "REPRESENTATIVE_RUNTIME_PROBE_PATH_SOURCE_MATERIALIZED_PENDING_EXACT_HEAD_VALIDATION_AND_AUTHENTIC_RESIDENT_EXECUTION",
+    "ungoverned_ai_defensive_envelope": "RUNTIME_PROBE_SOURCE_MERGED_VALIDATED_PR_2575_RESIDENT_DISPATCH_CARRIAGE_REPAIR_PENDING_EXACT_HEAD_VALIDATION_RUNTIME_NOT_PROVEN",
     "external_ai_meeting_room": "MERGED_SOURCE_CLASSIFICATION_AS_COMPONENT_011_INSTANTIATION_RUNTIME_NOT_PROVEN",
     "representative_boundary_provider": "TVC_SES_STDIO_EXISTING_BOUNDARY_SOURCE_MERGED_0b82b45_RUNTIME_OBSERVATION_NOT_PROVEN",
-    "external_provider_origin_for_representative_probe": "NOT_PROVEN_NOT_REQUIRED_FOR_THIS_BOUNDARY_PROBE"
+    "external_provider_origin_for_representative_probe": "NOT_PROVEN_NOT_REQUIRED_FOR_THIS_BOUNDARY_PROBE",
+    "representative_boundary_probe_source_validation": {
+      "pr": 2575,
+      "merge": "e529982fc01029e6c7016c8e3f1f80413212da1e",
+      "exact_head": "16c2ffb316be2db5aaae17f4d89d094b2f597812",
+      "cross_task_run": 35688957026,
+      "deepseek_resident_run": 35688957020,
+      "kv_ai_memory_run": 35688957129,
+      "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+    },
+    "resident_dispatch_carriage": "FIRST_CONCRETE_CARRIAGE_DEFECT_IDENTIFIED_AND_SOURCE_REPAIR_STAGED_PENDING_VALIDATION"
   },
   "source_evidence": [
     "StegVerse-Labs/.github#1678",
@@ -70,7 +80,12 @@
     "workers/ungoverned_ai_defensive_envelope_worker.py",
     "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
     "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
-    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json"
+    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+    "StegVerse-Labs/.github#2575",
+    "StegVerse-Labs/.github@e529982fc01029e6c7016c8e3f1f80413212da1e",
+    "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+    "scripts/dispatch_resident_execution_requests.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py"
   ],
   "satisfied_source_predicates": [
     "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED_SOURCE_LEVEL",
@@ -107,7 +122,7 @@
     "master_records_reconstruction": "NOT_PROVEN",
     "publication": "NOT_APPLICABLE_TO_CURRENT_CORE_GOAL",
     "far_side_transition": "NOT_APPLICABLE_UNLESS_SELECTED_TEST_ROUTE_REQUIRES_IT",
-    "representative_defensive_envelope_boundary": "NOT_PROVEN_PENDING_AUTHENTIC_RESIDENT_RECEIPT",
+    "representative_defensive_envelope_boundary": "NOT_PROVEN_SOURCE_PATH_MERGED_RESIDENT_CARRIAGE_REPAIR_PENDING_VALIDATION",
     "external_provider_origin_for_representative_probe": "NOT_PROVEN_AND_NOT_INFERRED",
     "governed_egress_for_representative_probe": "EVIDENCE_ONLY_NO_CONSEQUENTIAL_EGRESS_REQUESTED"
   },

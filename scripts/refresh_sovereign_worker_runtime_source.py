@@ -101,6 +101,7 @@ STATIC_FILES = (
     Path("scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"),
     Path("scripts/consume_ecosystem_receipt_hb_checkpoint.py"),
     Path("scripts/consume_erl_ai_economic_transparency_review_request.py"),
+    Path("scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     Path("scripts/consume_ibc_intr_resident_request.py"),
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),

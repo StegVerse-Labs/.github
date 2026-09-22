@@ -109,10 +109,13 @@
         "workers/ungoverned_ai_defensive_envelope_worker.py",
         "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
         "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
-        "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json"
+        "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+        "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+        "scripts/dispatch_resident_execution_requests.py",
+        "scripts/refresh_sovereign_worker_runtime_source.py"
       ],
       "repeatable": true,
-      "status": "REPRESENTATIVE_RUNTIME_PROBE_PATH_MATERIALIZED_SOURCE_LEVEL_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
+      "status": "REPRESENTATIVE_RUNTIME_PROBE_PATH_MERGED_SOURCE_VALIDATED_RESIDENT_DISPATCH_CARRIAGE_SOURCE_PENDING_VALIDATION_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
       "instantiations": [
         {
           "name": "EXTERNAL_AI_MEETING_ROOM",
