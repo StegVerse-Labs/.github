@@ -340,7 +340,17 @@
     "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
     "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
     "organization_receipt_runtime_reobservation_repository_evidence_only": true,
-    "organization_receipt_runtime_reobservation_defect_inferred": false
+    "organization_receipt_runtime_reobservation_defect_inferred": false,
+    "rtc008_exact_boundary_predecessor_reconstruction_identified": true,
+    "rtc008_exact_boundary_predecessor_reconstruction_repaired": true,
+    "rtc008_exact_boundary_predecessor_reconstruction_pr": 2560,
+    "rtc008_exact_boundary_predecessor_reconstruction_merge": "7d5b3864f8a61e6982923e5b580584c43a9d93e8",
+    "rtc008_exact_boundary_predecessor_reconstruction_exact_head": "f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23",
+    "rtc008_exact_boundary_predecessor_reconstruction_validation_runs": [
+      35677960202,
+      35677960211
+    ],
+    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY"
   },
   "completion": {
     "claimed": false,
@@ -669,6 +679,29 @@
         "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
         "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
       ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "rtc008_exact_boundary_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "role": "GENERIC_DIRECT_CALLER_CONFORMANCE_CASE_ONLY",
+      "pull_request": 2560,
+      "exact_head": "f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23",
+      "merge_commit": "7d5b3864f8a61e6982923e5b580584c43a9d93e8",
+      "validation_runs": [
+        35677960202,
+        35677960211
+      ],
+      "defect": "DIRECT_RTC008_CUSTODY_EMITTER_TRUSTED_REQUEST_CARRIED_PREDECESSOR_STATUS_AND_DIGEST_FIELDS_WITHOUT_RECONSTRUCTING_THE_EXACT_PREDECESSOR_RECEIPT_AT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_CUSTODY_BOUNDARY",
+        "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-STEGVERSE-EGRESS-007",
+        "RECONSTRUCTED_CLOSURE_MUST_MATCH_CARRIED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
+        "SUCCESSOR_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+      ],
+      "rtc009_or_far_side_execution_changed": false,
       "runtime_execution_claimed": false,
       "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
     }
