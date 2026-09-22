@@ -565,7 +565,7 @@ existing canonical task/runtime execution
 Current proof ceiling remains unchanged: no fresh authentic HB-stamped governed transition, Master Records row with `hb_recording_reference`, exact reconstruction closure, or bounded successor checkpoint is claimed until native evidence from the existing runtime path is retained.
 
 
-## Shared runtime-evidence owner binding — generation 182 review
+## Shared runtime-evidence owner binding — generation 186 reconciliation
 
 Tracing the corrected runtime path found no missing observer registration, request file, scheduler, dispatcher, WorkerCoordinator, or Master Records source implementation.
 
