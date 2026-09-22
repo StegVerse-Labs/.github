@@ -351,9 +351,28 @@ def _prepare_rtc007_continuation(
 
     workers_root=ROOT/"workers"
     if str(workers_root) not in sys.path: sys.path.insert(0,str(workers_root))
-    from canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+    from canonical_state_transition_custody import (
+        build_state_receipt,
+        require_predecessor_master_records_closure,
+        submit_state_receipt,
+    )
+    prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+        rtc006_master_records.get("receipt_sha256"),
+        successor_transition_id="RTC-STEGVERSE-EGRESS-007",
+    )
+    if prior_ref is None:
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 canonical predecessor Master Records closure required")
+    closure = predecessor_evidence[0].get("content") if predecessor_evidence else None
+    if not isinstance(closure,dict):
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor Master Records closure missing")
+    if closure.get("transition_id")!="RTC-SDK-RETURN-006":
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor transition reconstruction mismatch")
+    for field in ("state","reconstruction_status","required_evidence_validation_status","receipt_sha256","reconstructed_receipt_sha256"):
+        if closure.get(field)!=rtc006_master_records.get(field):
+            raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor closure mismatch:"+field)
     transition_hash=sha(transition)
     required_evidence=[
+      *predecessor_evidence,
       {
         "evidence_id":"rtc007-southbound-final-transition",
         "evidence_type":"RTC_STEGVERSE_EGRESS_007_TRANSITION",
@@ -376,7 +395,7 @@ def _prepare_rtc007_continuation(
       transition_sequence=2,
       subject_or_correlation_id=str(request.get("operation_id") or materialization_id),
       transition_outcome="EXECUTED",
-      prior_state_ref_or_hash=rtc006_master_records.get("receipt_sha256"),
+      prior_state_ref_or_hash=prior_ref,
       resulting_state_ref_or_hash=transition_hash,
       governance_decision_ref_where_applicable=None,
       transition_evidence={
