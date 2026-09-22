@@ -1248,3 +1248,8 @@ After a fail-closed README self-reference correction, TVC hygiene run `356702761
 ### TVC hygiene retirement routing batch 5 — 2026-09-21
 
 TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### Ecosystem HB shared runtime evidence owner — generation 187 candidate
+
+`ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` reuses `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` for authentic runtime-materialization evidence. The Master Records canonical route-loading repair exists at `master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715`; the existing source-refresh service requires that floor and dispatches the existing `ecosystem_receipt_hb_checkpoint` observer without a separate request. The first unresolved predicate is authentic retained materialization of that Master Records source floor in the durable canonical runtime. No duplicate runtime, trigger, scheduler, dispatcher, WorkerCoordinator, observer, custody store, hosted substitute, or device dependency is introduced.
