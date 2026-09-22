@@ -263,3 +263,49 @@ No retained native-email sovereign-host runtime receipt is present on current `.
 - `receipts/sovereign-host/native-email-kv-guard.latest.json`.
 
 The task record also still states `VERIFIED_SOURCE_REUSE_MERGED_AUTHENTIC_SV_DN1_SOURCE_PREP_RECEIPT_NOT_OBSERVED` for the SDK/governance source dependency. Therefore the earliest unmet completion-boundary predicate remains **predicate 1: authentic resident source refresh materializes the current monitor/mapping source**. Source merges, CI, issue reconciliation, and the generation-159 lifecycle registration do not satisfy that runtime predicate. Do not advance to TV/TVC Gmail-session, mailbox-empty, archive, or terminal consumption claims until an authentic existing-path resident source-refresh/source-prep result is retained.
+
+## 2026-09-21 Site authority correction and source-prep reachability repair
+
+### Site authority correction
+
+Site is a public-facing mirror/projection surface. A Site-hosted workflow named `StegOS Node Public Observation` validates or observes the Site-published projection only; it is not an authoritative StegOS runtime-observation surface. Its success or failure therefore cannot establish or negate authentic StegOS runtime execution. StegHealth #96 was corrected accordingly: Site projection runs are not the terminal runtime predicate for that remediation child.
+
+### Existing-path trace
+
+The standing native-email execution lineage is:
+
+```text
+SHWP-HEALER-SOVEREIGN-SCHEDULER-001 standing resident request
+-> scripts/consume_healer_sovereign_scheduler_request.py
+-> existing scripts/refresh_and_execute_resident_task.py
+-> local-only refresh_sovereign_worker_runtime_source.refresh()
+-> current .github monitor/mapping source copied into existing resident runtime
+-> targeted existing Healer WorkerCoordinator task
+-> existing Healer reusable-task scheduler
+-> RT-NATIVE-EMAIL-ACTION-MONITOR-001
+```
+
+The refresh already carries `workers/`, `control/worker-registry.d/`, and `control/process-worker-adapters.d/` wholesale, so `SV-DN1-PRODUCTION-SOURCE-PREP-001`, its current-identity worker, and its exact adapter are present after refresh. The source-prep task is independently admitted under existing WorkerCoordinator `INDEPENDENT_TASK_CONTROL`; it is not a canonical Goal Task and correctly has no separate resident-request identity.
+
+The first deterministic reachability defect was in the Healer carrier: it verified and consumed an already-existing `stegverse.sv-dn1.production-source-prep-receipt/v2`, but when that receipt was absent the standing Healer/native-email path never invoked the already-existing targeted resident bridge for `SV-DN1-PRODUCTION-SOURCE-PREP-001`. Thus the source-prep task could remain `HANDOFF_READY / claim_id=null / last_seen_at=null` indefinitely even though source carriage, admission, adapter, and root-locator forwarding were already implemented.
+
+### Bounded repair
+
+StegVerse-Healer PR #98 repaired only that missing invocation seam and merged as `eb0af12746b26fec205e3e8cd39326f63c0550d8` after exact-head Test Readiness run `35674543720` succeeded.
+
+When the canonical source-prep receipt is absent or inadmissible, the existing Healer carrier now invokes the already-canonical `.github/scripts/refresh_and_execute_resident_task.py` bridge with:
+
+```text
+task_id = SV-DN1-PRODUCTION-SOURCE-PREP-001
+cosv_task_vector = 50000000102000
+source_root = already-local StegVerse-Labs/.github
+runtime_root = existing sovereign resident runtime
+```
+
+Only the four already-local non-secret source-root locators are forwarded: SDK, StegCore, Core-Lite, and Master Records. The same path then re-reads the canonical v2 source-prep receipt before neutral scheduler delegation. Missing runtime root, bridge, local component roots, claim/fence, or worker execution remains a bounded fail-closed result.
+
+No scheduler, dispatcher, WorkerCoordinator, runtime, source installer/transport, credential route, authority plane, custody store, GitHub runtime authority, or device dependency was added.
+
+### Current authentic boundary
+
+Predicate 1 is **source-repaired but not yet authentically satisfied**. GitHub source validation and PR #98 merge do not prove resident execution. The next authentic evidence must come from the same existing resident path and show the local source refresh plus targeted source-prep execution/retention. Only after that evidence exists may this goal advance to TV/TVC Gmail owner-session observation. No TV/TVC provider-operation claim is made by this repair.
