@@ -570,3 +570,37 @@ PR #2529 merged as `48a1d766155d33647f0d4463ffede0ac5ac876e6` from exact head `f
 The producer now invokes the existing shared `require_predecessor_master_records_closure(...)` immediately before successor receipt construction. Any supplied predecessor must reconstruct through canonical Master Records with required-evidence validation `PASS` and exact receipt/reconstruction digest equality; the resulting closure becomes both `prior_state_ref_or_hash` and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Reconstruction failure prevents successor submission. No predecessor is invented when none exists.
 
 This remains ecosystem-wide custody work; MIR-specific RTC progression is not the active next transition for this task. Continue inventorying direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers and repair only the next generic predecessor-closure bypass.
+
+
+## RTC006 direct-caller canonical predecessor repair — 2026-09-21
+
+Continued the ecosystem-wide inventory of machine-owned direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers while preserving generic predecessor repair PR #2421, WorkerCoordinator direct-caller repair PR #2441, conversation-ingestion repair PR #2468, Functional Memory emission-boundary repair PR #2529, and the organization-receipt-before-Master-Records contract from PR #2520 / runtime-carriage PR #2530.
+
+Classification of the remaining inspected callers:
+- SDK evaluator runtime and resident dispatch receipts describe already-returned machine results; they are observational-after-result and were not treated as causal predecessors.
+- Functional Memory now reconstructs its supplied predecessor at the exact receipt-emission boundary through PR #2529.
+- RTC008 already requires the exact predecessor Master Records receipt from its request and validates its closure.
+- RTC007 already receives the RTC006 Master Records receipt directly from the same closed path.
+- RTC006 was the first remaining direct successor using a noncanonical predecessor: `RTC-SDK-RETURN-006` set `prior_state_ref_or_hash` to the reverse transport terminal receipt hash.
+
+PR #2534 repaired only that direct-caller seam and merged as `79b13827305eab284c6666c869cc1627ed61dcaa` from exact head `234a396fdd916bebdff752c0cc65aa069fc56220`. Exact-head run `35675152172` passed both the RTC008 continuity suite and the complete SDK Publisher-return materialization suite.
+
+The repaired RTC006 contract is:
+
+```text
+exact upstream canonical predecessor receipt SHA supplied
+-> require_predecessor_master_records_closure(...)
+-> predecessor reconstructs through canonical Master Records
+-> required-evidence validation PASS
+-> exact receipt/reconstruction digest equality
+-> RTC-SDK-RETURN-006 prior_state_ref_or_hash = sha256:<exact predecessor receipt>
+-> PREDECESSOR_MASTER_RECORDS_CLOSURE included as required evidence
+-> reverse transport terminal receipt remains transition evidence only
+-> submit_state_receipt(...)
+-> organization receipt retained first under the shared organization-receipt contract
+-> canonical Master Records custody
+```
+
+When the exact canonical predecessor receipt is absent, RTC006 now fails closed; it does not substitute the reverse transport terminal receipt, SDK `manifest_receipt_id`, a domain/result hash, or any synthesized predecessor.
+
+The current upstream Publisher-return request producer does not yet carry `predecessor_master_records_receipt_sha256`. That is retained as the next precise boundary, not repaired in this change. No authentic RTC006 runtime execution is claimed.
