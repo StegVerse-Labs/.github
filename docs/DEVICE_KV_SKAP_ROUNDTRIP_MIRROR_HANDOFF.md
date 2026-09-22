@@ -217,3 +217,33 @@ StegOS #341 updated the StegOS README for the bounded current-iPhone exchange an
 ## Manual work
 
 None at this coordination stage. Do not enter provider credentials, private-key material, Secure Enclave secrets, or raw key bytes into chat, GitHub, Drive, ordinary KV, logs, screenshots, or repository state. Any eventual owner credential entry remains browser-local sealing only after authentic ingress-readiness predicates are satisfied.
+
+
+## 2026-09-21 fresh-Node My KV relationship-state repair
+
+A real third registered Node exposed a source-semantic defect in the Site My KV Step 2 projection: a Node that had never had any KnowledgeVault relationship was being represented as `KV_INSTALLATION_NOT_VERIFIED` with `resident_kv_root_observed=true`, which incorrectly implied an existing KV relationship and exposed installation-receipt recovery.
+
+Site PR #1450 repaired the existing DEVICE_KV path and merged as `f713330551999125b90868930927984bc33fba9d`. Exact-head Site validation was green before merge. Site PR #1451 then terminalized the temporary Site implementation claim and active COSV projection, merging as `0699af6abb554c4ece47228fd28d35c6135eded4`.
+
+The installation-status projection now preserves three distinct non-authorizing states:
+
+```text
+KV_RELATIONSHIP_NOT_ESTABLISHED
+  kv_relationship_established=false
+  resident_kv_root_observed=false
+  installation_receipt_present=false
+
+KV_INSTALLATION_NOT_VERIFIED
+  kv_relationship_established=true
+  resident_kv_root_observed=true
+  installation_receipt_present=false
+
+KV_INSTALLATION_VERIFIED
+  kv_relationship_established=true
+  resident_kv_root_observed=true
+  installation_receipt_present=true
+```
+
+A fresh registered Node now exposes explicit create-new-KV versus connect-existing-KV choices. Existing-KV installation-receipt recovery remains hidden until the owner deliberately selects that path or authentic DEVICE_KV relationship evidence is already present. `MY_KV_ONBOARDING_STEP_1_COMPLETED` remains Node onboarding evidence only and cannot create, attach, verify, or imply a KnowledgeVault relationship.
+
+This repair does not satisfy or weaken any authentic parent runtime predicate. `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` remains `ACTIVE / CHECKED_OUT`; TV/TVC remains credential authority, Interlock/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and the authentic Device -> KV -> SKAP -> KV -> Device evidence chain remains outstanding.
