@@ -1258,3 +1258,8 @@ TVC hygiene run `35673548654` proved 32 approved-retirement-ready refs and zero 
 ### Ecosystem HB runtime evidence re-observation — generation 188 candidate
 
 The shared runtime-evidence owner confirms the first unsatisfied predicate remains `AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF`. Existing Master Records source/materialization/retention repairs are present; no authentic durable `MATERIALIZED_VERIFIED` refresh receipt is retained and no new deterministic source defect is established. HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+### Functional Memory direct predecessor closure
+
+`WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` now reconstructs any supplied predecessor through canonical Master Records at the exact receipt-emission boundary. An upstream validity flag or stored receipt pointer is not sufficient: the predecessor must reconstruct with required-evidence PASS and exact digest equality, and the resulting canonical closure is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE` before the successor is submitted.
