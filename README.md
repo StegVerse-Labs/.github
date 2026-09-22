@@ -1290,3 +1290,8 @@ PR #2543 / merge `5284046f03c286ec6f4f84ad93d8423eb9f2a9c1` preserves the alread
 ### Ecosystem HB refresh evidence re-observation — generation 192 candidate
 
 At canonical generation 191, the shared runtime-evidence lineage still contains no authentic retained Master Records source-refresh receipt with verified source proof. Adjacent A3 evidence explicitly remains `authentic_retained_refresh_receipt_observed=false`, with no deterministic source/runtime failure retained. No code repair is justified; HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+### Browser-origin KV initialization is not device installation
+
+The Device/KV/SKAP path now explicitly separates origin-scoped browser data from device/native installation. Site PR #1452 (`290318a285089b45259a87811d11585f531b1261`) changed the IndexedDB helper so exact-readback browser KV state is reported as `BROWSER_KV_INITIALIZED_BEST_EFFORT` or `BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED`, with `installed=false` and `installation_claimed=false`. Safari `persistent_storage_granted=true` would strengthen browser-origin durability only; it would still not prove native installation. Site PR #1453 (`c0785763c72518364cf2ae5e7a5a8213907ed7ae`) released the temporary implementation claim.
