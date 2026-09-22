@@ -1,0 +1,30 @@
+{
+  "identity": "StegVerse-Labs/.github:task:PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "20010010100000",
+  "evidence_refs": [
+    "data/canonical-task-records/PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001.json",
+    "docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md",
+    "docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-09-21T22:10:00-05:00",
+  "exact_metrics": {
+    "lifecycle": "CLAIMED_IMPLEMENTATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}
