@@ -604,3 +604,12 @@ exact upstream canonical predecessor receipt SHA supplied
 When the exact canonical predecessor receipt is absent, RTC006 now fails closed; it does not substitute the reverse transport terminal receipt, SDK `manifest_receipt_id`, a domain/result hash, or any synthesized predecessor.
 
 The current upstream Publisher-return request producer does not yet carry `predecessor_master_records_receipt_sha256`. That is retained as the next precise boundary, not repaired in this change. No authentic RTC006 runtime execution is claimed.
+
+
+## Organization receipt runtime evidence re-observation — 2026-09-21
+
+Canonical Task Registry generation 192 and current main `292c96d8cd61391f61689e94fb643c66bd53e568` were re-read after the organization-ledger source and resident-carriage repairs.
+
+Repository-backed evidence search found no retained authentic `stegverse.organization-transition-receipt/v1` produced by a post-repair governed transition and no same-transition canonical Master Records closure satisfying `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. The retained repository evidence also does not establish a fresh post-repair resident dispatch cycle from which such a transition can be inferred.
+
+These are evidence-surface observations only. Absence from repository-backed projections does not prove runtime non-occurrence, and no authentic deterministic runtime failure was retained. Therefore `organization_receipt_runtime_state` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no runtime, source, carriage, retention, or readback defect is inferred and no implementation change is authorized by this re-observation.
