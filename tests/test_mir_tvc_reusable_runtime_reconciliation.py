@@ -8,6 +8,7 @@ TASK_DEF = ROOT / "source-bundles/reusable-task-registry.d/RT-TVC-RUNTIME-BOUNDA
 MANIFEST = ROOT / "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json"
 RUNNER = ROOT / "scripts/reconcile_tvc_runtime_boundary_reusable.py"
 CONSTRUCTOR = ROOT / "scripts/materialize_reusable_task_construct.py"
+TRIGGER = ROOT / "scripts/trigger_reusable_task.py"
 
 
 def load_module(name: str, path: Path):
@@ -26,12 +27,19 @@ def intr_lane(direction: str):
         "authority_transfer": False,
         "receipt_hash": terminal,
     }
+    source = "StegVerse-org/StegVerse-SDK" if direction == "request" else "TVC:ProviderOperationBroker"
+    destination = "TVC:ProviderOperationBroker" if direction == "request" else "StegVerse-org/StegVerse-SDK"
     return {
-        "intent": {"protocol": "InTr"},
+        "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "intent": {
+            "protocol": "InTr",
+            "source": {"boundary": "STEGOS_ECOSYSTEM", "subsystem": source},
+            "destination": {"boundary": "STEGOS_ECOSYSTEM", "subsystem": destination},
+        },
         "receipts": [receipt],
         "transport_result": {
             "state": "TRANSPORT_COMPLETE",
-            "profile_id": "external-provider-operation",
+            "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
             "terminal_receipt_hash": terminal,
         },
     }
@@ -50,12 +58,12 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
             [
                 "QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED",
                 "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED",
-                "INTERLOCK_INTR_RECEIPT_ADMITTED",
+                "CANONICAL_INTR_TRANSPORT_CHAIN_RETAINED",
             ],
         )
         self.assertEqual(
             definition["post_runner_lifecycle_predicates"],
-            ["MASTER_RECORDS_CUSTODY_ACCEPTED", "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"],
+            ["INTERLOCK_INTR_RECEIPT_ADMITTED", "MASTER_RECORDS_CUSTODY_ACCEPTED", "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"],
         )
 
     def test_checked_in_manifest_matches_constructor(self):
@@ -91,7 +99,7 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
                 "use_receipt": {"receipt_id": "real-use-receipt"},
             },
             "intr_transport": {
-                "profile_id": "external-provider-operation",
+                "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
                 "request": intr_lane("request"),
                 "response": intr_lane("response"),
             },
@@ -110,6 +118,16 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
                 tracking_task_id="MIR-TVC-PROVIDER-ROUNDTRIP-001",
                 expected_ready_state="READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
             )
+
+
+    def test_trigger_stops_before_master_records_without_explicit_intr_admission(self):
+        source = TRIGGER.read_text(encoding="utf-8")
+        self.assertIn('BOUNDARY_INTR_ADMISSION = "INTERLOCK_INTR_ADMISSION_REQUIRED"', source)
+        self.assertIn('"INTERLOCK_INTR_RECEIPT_ADMITTED" in post_runner_lifecycle_predicates', source)
+        self.assertIn('"AUTHENTIC_EXPLICIT_INTERLOCK_INTR_ADMISSION_RECEIPT"', source)
+        admission_index = source.index('if "INTERLOCK_INTR_RECEIPT_ADMITTED" in post_runner_lifecycle_predicates')
+        master_index = source.index('custody_request = lifecycle.build_custody_request')
+        self.assertLess(admission_index, master_index)
 
 
 if __name__ == "__main__":
