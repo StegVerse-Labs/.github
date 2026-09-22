@@ -24,7 +24,9 @@
     "every_required_transition_evidence_item_is_bound_to_the_origin_transition": true,
     "every_required_transition_evidence_item_is_digest_validated_before_custody_pass": true,
     "every_required_transition_evidence_item_is_exactly_reconstructable": true,
-    "transition_custody_pass_requires_all_required_evidence_pass": true
+    "transition_custody_pass_requires_all_required_evidence_pass": true,
+    "every_state_transition_within_organization_emits_organization_receipt": true,
+    "organization_receipt_precedes_master_records_custody": true
   },
   "canonical_transition_loop": [
     "OBSERVE_CURRENT_CANONICAL_STATE",
@@ -33,11 +35,13 @@
     "CONSULT_TV_TVC_IF_REQUIRED",
     "RETAIN_ALLOW_OR_DENY_RECEIPT",
     "ENUMERATE_ALL_REQUIRED_EVIDENCE_RESULTING_FROM_TRANSITION",
+    "RECORD_HASH_BOUND_ORGANIZATION_RECEIPT",
     "SUBMIT_DECISION_RECEIPT_AND_REQUIRED_EVIDENCE_TO_MASTER_RECORDS",
     "REQUIRE_RECEIPT_AND_ALL_REQUIRED_EVIDENCE_VALIDATION_PASS",
     "IF_ALLOW_EXECUTE_OR_CONSUME",
     "RETAIN_EXECUTION_STATE_RECEIPT",
     "ENUMERATE_ALL_REQUIRED_EXECUTION_EVIDENCE",
+    "REQUIRE_ORGANIZATION_RECEIPT_RECORDED",
     "SUBMIT_EXECUTION_STATE_RECEIPT_AND_REQUIRED_EVIDENCE_TO_MASTER_RECORDS",
     "REQUIRE_RECEIPT_AND_ALL_REQUIRED_EVIDENCE_RECONSTRUCTION_PASS",
     "RECONSTRUCT_CURRENT_STATE",

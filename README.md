@@ -1,3 +1,7 @@
+## Organization-wide transition receipts
+
+Canonical organization receipt semantics are now simple: every state transition occurring within `StegVerse-Labs` emits a `stegverse.organization-transition-receipt/v1`. Repository transitions preserve their exact repo receipt linkage; non-repository canonical governed transitions are hash-bound directly and are not falsely relabeled as repository transitions. Canonical state-transition custody records and verifies the organization receipt before Master Records progression. This is source-enforced ordering; authentic runtime proof remains separately required.
+
 
 ## Organization receipt / canonical custody reconciliation
 
