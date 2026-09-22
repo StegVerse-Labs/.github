@@ -247,3 +247,24 @@ KV_INSTALLATION_VERIFIED
 A fresh registered Node now exposes explicit create-new-KV versus connect-existing-KV choices. Existing-KV installation-receipt recovery remains hidden until the owner deliberately selects that path or authentic DEVICE_KV relationship evidence is already present. `MY_KV_ONBOARDING_STEP_1_COMPLETED` remains Node onboarding evidence only and cannot create, attach, verify, or imply a KnowledgeVault relationship.
 
 This repair does not satisfy or weaken any authentic parent runtime predicate. `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` remains `ACTIVE / CHECKED_OUT`; TV/TVC remains credential authority, Interlock/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and the authentic Device -> KV -> SKAP -> KV -> Device evidence chain remains outstanding.
+
+
+## 2026-09-21 browser-origin installation truth correction
+
+Authentic current-iPhone Safari evidence showed a distinct defect after the fresh-Node relationship-state repair: the Device KV page reported `State: INSTALLED` while also reporting `Storage: device-local-browser-indexeddb`, `Persistence: requested; granted=false`, and `Exact readback: true`. That was not an authentic device/native installation. It was origin-scoped IndexedDB initialization with successful byte readback.
+
+Site PR #1452 repaired that semantic overclaim and merged as `290318a285089b45259a87811d11585f531b1261` after exact-head validation. Site PR #1453 terminalized the temporary Site claim/COSV projection and merged as `c0785763c72518364cf2ae5e7a5a8213907ed7ae`.
+
+The browser helper now exposes:
+
+```text
+BROWSER_KV_NOT_INITIALIZED
+BROWSER_KV_INITIALIZED_BEST_EFFORT
+BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED
+```
+
+and never converts either browser-initialized state into `installed=true`. `installation_claimed=false` is explicit. A Safari persistence grant only classifies browser-origin durability; it is still not proof of a native app, filesystem service, background process, OS-level vault, or independently resident device runtime.
+
+Exact readback remains useful evidence that the browser can recover the exact IndexedDB bytes it wrote. It is not installation proof. The My KV create path now says “Create browser-local KV”, and cloud-peer setup may consume that initialized local data instance without changing the installation claim.
+
+The canonical parent Goal remains `ACTIVE / CHECKED_OUT`. No authentic Device -> KV -> SKAP -> KV -> Device runtime predicate was satisfied by this repair.
