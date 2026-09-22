@@ -7,19 +7,39 @@
   "active_bulk_set": [
     {
       "repository": "StegVerse-Labs/.github",
-      "branch_count": 2321,
-      "hygiene_enabled": false,
-      "last_authenticated_run": null,
-      "last_authenticated_head": null,
-      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+      "branch_count": 2324,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35688555518,
+      "last_authenticated_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
+      "baseline_state": "AUTHENTICATED_CENTRAL_BULK_CENSUS",
+      "baseline": {
+        "inspected": 2324,
+        "retirement_candidates": 726,
+        "review_required": 1596,
+        "protected_retained": 2,
+        "approved_ready": 0,
+        "invalid_approved": 0,
+        "artifact_id": 10678215761,
+        "artifact_digest": "sha256:044c38397cced5fd6be8e61193af73b5ff1b87fb7d90e46393ea5d24843950a9"
+      }
     },
     {
       "repository": "StegVerse-Labs/Site",
       "branch_count": 1100,
-      "hygiene_enabled": false,
-      "last_authenticated_run": null,
-      "last_authenticated_head": null,
-      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35688555518,
+      "last_authenticated_head": "40e870440af3b4d38e7ba05123c893c683c9e917",
+      "baseline_state": "AUTHENTICATED_CENTRAL_BULK_CENSUS",
+      "baseline": {
+        "inspected": 1100,
+        "retirement_candidates": 250,
+        "review_required": 775,
+        "protected_retained": 75,
+        "approved_ready": 0,
+        "invalid_approved": 0,
+        "artifact_id": 10678315580,
+        "artifact_digest": "sha256:e90c2c0e5e39ca6116b6741ccc4025745b54224737de27b4abbebdf291d1e2c5"
+      }
     },
     {
       "repository": "StegVerse-Labs/TVC",
@@ -51,7 +71,8 @@
       "hygiene_enabled": false,
       "last_authenticated_run": null,
       "last_authenticated_head": null,
-      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+      "baseline_state": "PRIVATE_IN_REPOSITORY_CALLER_PENDING",
+      "central_bulk_transport": "ANONYMOUS_CLONE_FAILED_NO_CLASSIFICATION"
     },
     {
       "repository": "master-records/orchestration",
@@ -78,7 +99,7 @@
       "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
     }
   ],
-  "active_bulk_branch_count": 4756,
+  "active_bulk_branch_count": 4759,
   "lower_volume_watchlist": [
     {
       "repository": "StegVerse-Labs/StegVerse-Healer",
@@ -125,10 +146,19 @@
     ]
   },
   "pending_first_baseline": [
-    "StegVerse-Labs/.github",
-    "StegVerse-Labs/Site",
     "StegVerse-Labs/StegCore"
   ],
   "authority_effect": "NONE",
-  "deletion_performed": false
+  "deletion_performed": false,
+  "central_bulk_run": {
+    "run_id": 35688555518,
+    "head_sha": "40e870440af3b4d38e7ba05123c893c683c9e917",
+    "public_targets": {
+      "StegVerse-Labs/.github": "SUCCESS",
+      "StegVerse-Labs/Site": "SUCCESS"
+    },
+    "private_target_result": {
+      "StegVerse-Labs/StegCore": "ANONYMOUS_CLONE_FAILED; moved to in-repository caller PR #227"
+    }
+  }
 }
