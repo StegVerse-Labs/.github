@@ -1295,3 +1295,8 @@ At canonical generation 191, the shared runtime-evidence lineage still contains 
 ## Repository hygiene owner-transition delta scanning — 2026-09-21
 
 To scale hygiene beyond branch-by-branch review, `scripts/repository_hygiene_owner_transition_delta.py` performs a fail-closed delta scan between the last authenticated census head and current repository state. It inspects only canonical owner-bearing paths that changed since the baseline and surfaces a residual branch only when its exact ref is referenced by a changed owner surface that explicitly records resolved/superseded/released/retired/closed state. If no owner-bearing source changed, the result is a machine-zero-delta and no approval-manifest edit or hosted hygiene rerun is warranted. This is a prefilter only; final current-main containment and active-ownership checks remain mandatory before approval, and no deletion authority is granted.
+
+
+### Browser-origin KV initialization is not device installation
+
+The Device/KV/SKAP path now explicitly separates origin-scoped browser data from device/native installation. Site PR #1452 (`290318a285089b45259a87811d11585f531b1261`) changed the IndexedDB helper so exact-readback browser KV state is reported as `BROWSER_KV_INITIALIZED_BEST_EFFORT` or `BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED`, with `installed=false` and `installation_claimed=false`. Safari `persistent_storage_granted=true` would strengthen browser-origin durability only; it would still not prove native installation. Site PR #1453 (`c0785763c72518364cf2ae5e7a5a8213907ed7ae`) released the temporary implementation claim.
