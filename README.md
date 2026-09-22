@@ -1343,3 +1343,10 @@ The existing Device/KV/SKAP event executor now resolves bare sibling-script impo
 
 
 For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #37 removes the purpose-bound state graph's predecessor-set hash from canonical `prior_state_ref_or_hash`. Every graph predecessor is reconstructed through canonical Master Records at the emission boundary; all causal branches remain required evidence, and the last observed completed branch is the exact immediate predecessor for the three-way join. Canonical reconciliation target is Task Registry generation 198.
+
+
+### Ungoverned AI Defensive Envelope representative runtime path — 2026-09-21
+
+`RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` now has a minimum existing runtime path staged around TVC's merged SES stdio isolated-process provider (`StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312`). The resident worker reuses the existing targeted WorkerCoordinator and `ProcessWorkerAdapter` mutation fence; it creates no second runtime or scheduler. Candidate code is exposed only to the SES capability boundary, while the trusted wrapper receives the already-local TVC source locator. The representative probe requires one bounded ALLOW plus denied filesystem, network/import, and environment/import attempts with `consumed=false` and `consequence_reachable=false`, no ambient credential/protected-authority exposure, destroyed temporary candidate state, and evidence-only egress.
+
+This path does not establish arbitrary-code OS sandboxing or external-provider origin. GitHub source/CI validation cannot satisfy resident runtime predicates; authentic enforcement remains `NOT_PROVEN` until the retained resident boundary receipt is observed.
