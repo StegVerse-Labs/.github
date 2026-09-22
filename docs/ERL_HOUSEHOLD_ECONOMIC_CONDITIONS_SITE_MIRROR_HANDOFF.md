@@ -216,3 +216,9 @@ BEA remains `UNKNOWN / UNRESOLVED`: no authentic resident `stegverse.tvc.bea-cre
 
 The earlier “0 connected devices” observation is historical provenance only and is not a task-state fact, blocker, prerequisite, fallback condition, or runtime-substrate decision.
 
+## COSV task pointer — 2026-09-21
+
+The current source state is now encoded through the existing `task.v1` COSV contract as `10100000100000`: lifecycle `UNCLAIMED`, one unit of unassigned work, canonical owner installed, no chat-owned claim, zero blockers, evidence incomplete, not activated, and not propagated. The exact source record is `control/task-vectors/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json` and is indexed in `control/task-vector-index.json`.
+
+This is a non-authorizing compact pointer only. It does not mint a WorkerCoordinator claim/fence, establish Interlock/InTr admission, prove resident execution, resolve BEA readiness, or authorize Site publication.
+
