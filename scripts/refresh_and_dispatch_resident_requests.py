@@ -362,12 +362,13 @@ def refresh_and_dispatch(
     )
     goal_context_match = (
         current_goal_task_id is None
+        or (target_consumer == DEFENSIVE_CONSUMER and current_goal_task_id == DEFENSIVE_GOAL
+            and exact_selection)
         or (
-            dispatch_observed
+            target_consumer == "canonical_work_coordination"
+            and dispatch_observed
             and dispatch_receipt.get("current_goal_task_id") == current_goal_task_id
-            and dispatch_receipt.get("goal_context_forwarded_to") == (
-                "canonical_work_coordination" if target_consumer == "canonical_work_coordination" else None
-            )
+            and dispatch_receipt.get("goal_context_forwarded_to") == "canonical_work_coordination"
         )
     )
     target_consumption_receipt, target_consumption_sha256, target_consumption_valid, target_consumption_matches_current_dispatch = stegbrowser_consumption_evidence(
