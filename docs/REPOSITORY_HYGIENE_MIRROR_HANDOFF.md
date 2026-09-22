@@ -804,3 +804,10 @@ Only the two newly validated historical hosted-source retirement refs are routed
 TVC PR `#463` exact head `a6bcd23b37f06b80dde8ece6236e010f977509cf` passed all three TVC validations and merged as `6f42373737c55e0d73601b9c00494c36820c4731`. Triggered hygiene run `35673548654` completed SUCCESS: 433 branches inspected, 163 structural retirement candidates, **32 approved-retirement-ready**, **0 invalid approvals**, 266 review-required, and 4 protected/retained. Artifact `10671758096`, digest `sha256:74a9a8c0f2d0408b2687a737daf9b9b95dbf256005218bc55bc9e068a1ed5972`.
 
 Only the single newly validated historical AEX hosted-source proof ref is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json`. Fresh AEX runtime resolution remains a separate authority lane and does not retain the historical proof ref. Current unapproved structural candidate count: 131. No ref deletion occurred.
+
+
+### TVC residual review batch 7 — zero approval delta — 2026-09-21
+
+A bounded review of the 131 remaining unapproved TVC structural candidates intentionally produced **zero new approvals**. The sampled plausible historical refs were retained/excluded because they remain actively owned or fall inside the standing exclusion set: SES M23A remains owned by the existing validation/activation chain; sovereign-network source validation is still referenced by active relay/ESRL handoffs and workflow; TV artifact exchange remains `SOURCE_VALIDATED_RUNTIME_PENDING`; StegOS delivery, R3 release, and provider-facing BEA refs are excluded by policy.
+
+Machine review record: `control/repository-hygiene-tvc-batch7-review-20260921.json`. The TVC approval manifest was not changed, so no new hosted revalidation was required; the last authenticated manifest state remains run `35673548654` with **32 approved-retirement-ready / 0 invalid approvals**. Routing delta: zero. Unapproved structural candidates remain 131. No ref deletion occurred.
