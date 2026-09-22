@@ -8,6 +8,8 @@ REQUIRED = {
     "heartbeat_runtime/admitted_worker_runtime.py",
     "heartbeat_runtime/worker_assignment_functional_memory.py",
     "workers/canonical_state_transition_custody.py",
+    ".stegverse/transition-ledger/org-contract.json",
+    "resident-runtime/aggregate_repo_transition.py",
     "control/worker-registry.d/stegfin-live-entry-003.json",
     "heartbeat_runtime/worker_runtime_legacy.py",
     "heartbeat_runtime/process_adapter.py",
@@ -32,6 +34,8 @@ def test_control_plane_package_reusable_continues_only_through_existing_relay_co
         "heartbeat_runtime/admitted_worker_runtime.py",
         "heartbeat_runtime/worker_assignment_functional_memory.py",
         "workers/canonical_state_transition_custody.py",
+        "resident-runtime/aggregate_repo_transition.py",
+        ".stegverse/transition-ledger/org-contract.json",
         "control/worker-registry.d/stegfin-live-entry-003.json",
     ):
         assert rel in runner
