@@ -646,3 +646,14 @@ StegAgents PR #36 repaired only this custody seam and merged as `a01d4abc2c2f570
 The sequence-2 warrant transition now requires the existing graph predecessor Master Records transition, reconstructs its exact receipt through the shared canonical custody client at the warrant receipt-emission boundary, verifies reconstructed transition identity plus state/reconstruction/required-evidence/digest fields against the carried closure, uses the reconstructed prior reference, and carries `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. The noncanonical `worker-claim:<id>` fallback is removed.
 
 No new runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, credential path, custody store, host dependency, device dependency, or MIR-specific behavior was added. Continue the ecosystem-wide direct receipt-producer inventory and repair only the next true successor bypass.
+
+
+## StegAgents state-graph predecessor reconstruction — 2026-09-21
+
+The next true organization-wide direct successor bypass was `StegVerse-Labs/StegAgents src/purpose_bound_worker_state_graph.py::_record_graph_transition(...)`. It collapsed one or more predecessor receipt refs into `canonical_hash(sorted(predecessor_refs))` and placed that set hash in `prior_state_ref_or_hash`.
+
+StegAgents PR #37 merged as `38e15f276149ee3e46991cf4715c744f410329ef` from exact head `60efa7a8439df859283910f02449a25468adc4c9`. Exact-head validation passed Test Readiness `35687026245`, CI `35687026270` on Python 3.11 and 3.12, and Cross-Agent Authority Validation `35687026272`.
+
+The repaired graph transition reconstructs every supplied predecessor through the existing shared canonical custody client at the receipt-emission boundary, requires exact closure-field agreement, and carries every causal branch as `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. For the three-way join, existing `completed_ns` observations define completion order; the last completed reconstructed receipt is the exact immediate predecessor used by `prior_state_ref_or_hash`. No predecessor-set hash remains in the canonical progression slot. No authentic runtime execution is claimed.
+
+Continue the organization-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` producer inventory and inspect `atomic_task_worker_activation_runtime.py` next, repairing only the first remaining true successor bypass.
