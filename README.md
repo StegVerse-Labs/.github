@@ -1290,3 +1290,8 @@ PR #2543 / merge `5284046f03c286ec6f4f84ad93d8423eb9f2a9c1` preserves the alread
 ### Ecosystem HB refresh evidence re-observation — generation 192 candidate
 
 At canonical generation 191, the shared runtime-evidence lineage still contains no authentic retained Master Records source-refresh receipt with verified source proof. Adjacent A3 evidence explicitly remains `authentic_retained_refresh_receipt_observed=false`, with no deterministic source/runtime failure retained. No code repair is justified; HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+### StegOS Node Manifold COSV reconciliation — 2026-09-21
+
+`STEGOS-NODE-MANIFOLD-001` now has an exact task.v1 COSV source projection derived from canonical metrics rather than an assumed continuation value. The vector is `40000100100000`: CLAIMED_INTEGRATION, archive not ready, zero unassigned work, one bounded chat-owned integration continuation, canonical owner installed, zero declared blockers, evidence incomplete, not activated, and not propagated. The vector grants no authority and does not alter the four still-open authentic physical Network predicates.
