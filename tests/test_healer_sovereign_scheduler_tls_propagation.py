@@ -151,7 +151,16 @@ class HealerSovereignSchedulerTlsAutodiscoveryTests(unittest.TestCase):
         self.assertNotIn(mod.SV002_OBSERVE_CONFIG_ENV, env)
 
     def test_required_scheduler_inputs_still_cross_boundary(self) -> None:
-        env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
+        previous = os.environ.get("STEGVERSE_HEARTBEAT_ROOT")
+        try:
+            os.environ["STEGVERSE_HEARTBEAT_ROOT"] = "/tmp/stegverse-runtime"
+            env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
+        finally:
+            if previous is None:
+                os.environ.pop("STEGVERSE_HEARTBEAT_ROOT", None)
+            else:
+                os.environ["STEGVERSE_HEARTBEAT_ROOT"] = previous
+        self.assertEqual(env["STEGVERSE_HEARTBEAT_ROOT"], "/tmp/stegverse-runtime")
         self.assertEqual(env["RUN_SCOPE"], "all")
         self.assertEqual(env["DISPATCH_MODE"], "schedule")
         self.assertEqual(env["TARGETS_FILE"], "/healer/targets.json")
