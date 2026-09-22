@@ -635,3 +635,14 @@ PR #2562 repaired only this custody seam and merged as `248c94f4a9c18579cff99ed5
 RTC007 now invokes `require_predecessor_master_records_closure(...)` immediately before building its canonical receipt. The reconstructed predecessor must identify `RTC-SDK-RETURN-006`, and its state, reconstruction status, required-evidence validation status, receipt SHA, and reconstructed receipt SHA must exactly match the passed RTC006 closure. The shared reconstructed predecessor reference becomes RTC007 `prior_state_ref_or_hash`, and `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried as required evidence.
 
 SDK evaluator dispatch/runtime receipts remain classified separately as observational/genesis-style receipts where no causal predecessor is claimed. This repair does not alter RTC008, RTC009, transport execution, far-side behavior, or MIR runtime semantics. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next true successor bypass.
+
+
+## StegAgents purpose-worker warrant predecessor reconstruction — 2026-09-21
+
+The ecosystem-wide organization search extended beyond `.github` and identified the next true direct successor bypass in `StegVerse-Labs/StegAgents/src/purpose_bound_worker_runtime.py::_record_verified_warrant_policy_transition(...)`. The sequence-2 `TV_TVC_WARRANT_POLICY_VERIFIED` transition accepted an in-memory `graph_predecessor_master_records_transition`, converted its receipt SHA directly to `prior_state_ref_or_hash`, and could fall back to `worker-claim:<id>` when that canonical predecessor closure was absent.
+
+StegAgents PR #36 repaired only this custody seam and merged as `a01d4abc2c2f570865661bba19a04ad5a53d0c1c` from exact head `53d91a780cabca07b048193511e824d047cb3001`. Exact-head repository validation passed Test Readiness `35682849540`, CI `35682849556` on Python 3.11 and 3.12, and Cross-Agent Authority Validation `35682849500`.
+
+The sequence-2 warrant transition now requires the existing graph predecessor Master Records transition, reconstructs its exact receipt through the shared canonical custody client at the warrant receipt-emission boundary, verifies reconstructed transition identity plus state/reconstruction/required-evidence/digest fields against the carried closure, uses the reconstructed prior reference, and carries `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. The noncanonical `worker-claim:<id>` fallback is removed.
+
+No new runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, credential path, custody store, host dependency, device dependency, or MIR-specific behavior was added. Continue the ecosystem-wide direct receipt-producer inventory and repair only the next true successor bypass.
