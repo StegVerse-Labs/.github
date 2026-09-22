@@ -1317,3 +1317,8 @@ Direct receipt producers may not treat request-carried predecessor status or dig
 ### RTC007 exact-boundary predecessor reconstruction
 
 A successor cannot reuse an in-memory Master Records result merely because the upstream caller already validated it. `RTC-STEGVERSE-EGRESS-007` now reconstructs the exact `RTC-SDK-RETURN-006` predecessor at RTC007 receipt emission, verifies closure-field equality, and carries the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence before canonical custody.
+
+
+## Public repository consumption attribution — 2026-09-21
+
+`PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001` separates GitHub clone traffic from adoption claims. September `StegVerse-Labs/.github` traffic is attributed only from evidence: known StegVerse-controlled clone/checkout producers are inventoried first; generic external indexing/scanning remains distinct from StegVerse-specific downstream consumption; and unexplained traffic stays `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED`. Canonical handoff: `docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md`.
