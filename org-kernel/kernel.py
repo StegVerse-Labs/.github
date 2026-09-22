@@ -73,6 +73,10 @@ def load_registry(root:Path)->dict[str,Any]:
 def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
     registry=load_registry(root)
     if packet["destination"]["org"]!=registry["organization"]: raise ValueError("wrong_destination_org")
+    # This legacy diagnostic kernel has no Universal InTr federation admission.
+    # Never interpret an addressed carrier frame as governed transition authority.
+    if packet.get("transition", {}).get("authority_effect") not in (None, "NONE"):
+        raise ValueError("governed_federation_requires_universal_intr_admission")
     service=next((s for s in registry["services"] if s["service_id"]==packet["destination"]["service"]),None)
     if service is None: raise ValueError("unknown_service")
     role=service.get("boundary_role")
