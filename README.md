@@ -1248,3 +1248,8 @@ After a fail-closed README self-reference correction, TVC hygiene run `356702761
 ### TVC hygiene retirement routing batch 5 — 2026-09-21
 
 TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### TVC hygiene retirement routing batch 6 — 2026-09-21
+
+TVC hygiene run `35673548654` proved 32 approved-retirement-ready refs and zero invalid approvals. One new historical AEX hosted-source proof ref is routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json`; 131 structural candidates remain unapproved and no branch deletion occurred.
