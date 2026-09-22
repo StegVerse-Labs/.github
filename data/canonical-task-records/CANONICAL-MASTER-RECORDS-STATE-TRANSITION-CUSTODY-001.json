@@ -48,7 +48,9 @@
     "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_BOUND_TO_ORIGIN_TRANSITION",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_DIGESTS_VALIDATE",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTS_PASS",
-    "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP"
+    "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP",
+    "EVERY_IN_ORGANIZATION_STATE_TRANSITION_EMITS_ORGANIZATION_RECEIPT",
+    "ORGANIZATION_RECEIPT_PRECEDES_MASTER_RECORDS_CUSTODY"
   ],
   "current_truth": {
     "ecosystem_inventory_materialized": true,
@@ -274,7 +276,7 @@
       35668005818
     ],
     "authentic_sdk_tvc_warrant_service_installation_observed": false,
-    "organization_receipt_pre_master_records_source_enforced": false,
+    "organization_receipt_pre_master_records_source_enforced": true,
     "organization_receipt_source_path_gap_identified": true,
     "canonical_state_transition_direct_master_records_submission_observed_in_source": true,
     "canonical_state_transition_to_repo_receipt_bridge_materialized": false,
@@ -283,7 +285,13 @@
     "organization_receipt_runtime_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
     "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
-    "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1"
+    "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
+    "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_WITHIN_ORGANIZATION",
+    "organization_receipt_contract_generalized_to_canonical_state_transitions": true,
+    "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
+    "canonical_state_transition_org_receipt_exact_source_hash_required": true,
+    "canonical_state_transition_repo_relabeling_forbidden": true,
+    "organization_receipt_source_repair_pending_merge": true
   },
   "completion": {
     "claimed": false,
