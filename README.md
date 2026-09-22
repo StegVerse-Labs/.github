@@ -1,3 +1,7 @@
+## Organization receipt resident carriage repair
+
+The existing resident control-plane package and worker source refresh now carry the two dependencies required by organization-before-Master-Records custody: `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json`. Both are exact-allowlisted and included in far-side materialization digest checks; no broad new source prefix is opened. Runtime proof remains UNKNOWN until an authentic governed transition retains the organization receipt and corresponding Master Records closure.
+
 ## Organization-wide transition receipts
 
 Canonical organization receipt semantics are now simple: every state transition occurring within `StegVerse-Labs` emits a `stegverse.organization-transition-receipt/v1`. Repository transitions preserve their exact repo receipt linkage; non-repository canonical governed transitions are hash-bound directly and are not falsely relabeled as repository transitions. Canonical state-transition custody records and verifies the organization receipt before Master Records progression. This source-enforced ordering merged in PR #2520 as `13ff70132c30147465a25122c8de2fc948da1e56`; authentic runtime proof remains separately required.
