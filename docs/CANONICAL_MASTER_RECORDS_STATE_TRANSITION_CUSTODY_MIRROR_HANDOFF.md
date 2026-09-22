@@ -624,3 +624,14 @@ PR #2560 repaired only that custody boundary and merged as `7d5b3864f8a61e698292
 RTC008 now reuses `require_predecessor_master_records_closure(...)` at its exact canonical receipt-emission boundary. The reconstructed predecessor must be `RTC-STEGVERSE-EGRESS-007`, must satisfy canonical Master Records reconstruction and required-evidence validation, and must exactly match the request-carried predecessor state/digest metadata. The shared reconstructed predecessor reference becomes `prior_state_ref_or_hash`, and the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence is carried into RTC008 custody.
 
 This is a generic direct-caller custody repair using RTC008 only as a conformance caller. It does not alter RTC009, far-side execution, caller consequence, transport authority, or any MIR-specific runtime behavior. No authentic runtime execution is claimed. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next generic predecessor-closure bypass.
+
+
+## RTC007 exact-boundary predecessor reconstruction — 2026-09-21
+
+The next ecosystem-wide direct receipt-producer bypass was `RTC-STEGVERSE-EGRESS-007` in `scripts/consume_kv_publisher_return_materialization_request.py::_prepare_rtc007_continuation(...)`. RTC007 received an already-closed RTC006 Master Records result from the same call path, but copied `rtc006_master_records.receipt_sha256` directly into `prior_state_ref_or_hash` without reconstructing RTC006 again at RTC007's own canonical receipt-emission boundary.
+
+PR #2562 repaired only this custody seam and merged as `248c94f4a9c18579cff99ed5d40d8f6ffcc66111` from exact head `b8c61cd155734b2c5a4352563b4ae29249a8d977`. Focused exact-head workflow run `35681590372` passed both the RTC008 continuity test and the complete SDK Publisher-return materialization suite.
+
+RTC007 now invokes `require_predecessor_master_records_closure(...)` immediately before building its canonical receipt. The reconstructed predecessor must identify `RTC-SDK-RETURN-006`, and its state, reconstruction status, required-evidence validation status, receipt SHA, and reconstructed receipt SHA must exactly match the passed RTC006 closure. The shared reconstructed predecessor reference becomes RTC007 `prior_state_ref_or_hash`, and `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried as required evidence.
+
+SDK evaluator dispatch/runtime receipts remain classified separately as observational/genesis-style receipts where no causal predecessor is claimed. This repair does not alter RTC008, RTC009, transport execution, far-side behavior, or MIR runtime semantics. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next true successor bypass.
