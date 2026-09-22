@@ -790,3 +790,10 @@ TVC PR `#460` exact head `92eb6b227c8a771b588cb5d61c7b1b787430ed55` passed all t
 TVC PR `#461` exact head `554e3fc5f915d68e38e4dee867d6dcc627b7ec1f` passed all three TVC validations and merged as `e901b5ee8a464027e8e46c032f874973dc1d622a`. It removed the exact branch names only from ordinary README text while retaining them in dedicated hygiene evidence/approval records; classifier exclusions were not widened. Triggered hygiene run `35670276119` then completed SUCCESS: 431 branches inspected, 163 structural retirement candidates, **29 approved-retirement-ready**, **0 invalid approvals**, 264 review-required, and 4 protected/retained. Artifact `10670703919`, digest `sha256:3a3f5d175713de564b8f035ea7f013d957349678dade901086e14cb7ca5edd00`.
 
 Only the two newly validated batch-4 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`. Current unapproved structural candidate count: 134. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 5 — 2026-09-21
+
+TVC PR `#462` exact head `ddc73916bd1c17fcec525909238a02ab9b780dc7` passed all three TVC validations and merged as `ae8d2be912b262eb5c4610eaf1afcff241350b53`. Triggered hygiene run `35672943173` completed SUCCESS: 432 branches inspected, 163 structural retirement candidates, **31 approved-retirement-ready**, **0 invalid approvals**, 265 review-required, and 4 protected/retained. Artifact `10671897141`, digest `sha256:a30ca4d7355f9c137e06cf262be45d63636e8d7fca5af518d30e31965b626c78`.
+
+Only the two newly validated historical hosted-source retirement refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`. Continuing resident service-request and Coinbase provider activation work remains on separate runtime/provider lanes and does not retain these historical refs. Current unapproved structural candidate count: 132. No ref deletion occurred.
