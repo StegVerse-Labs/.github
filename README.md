@@ -1,3 +1,12 @@
+## Organization-wide transition receipts
+
+Canonical organization receipt semantics are now simple: every state transition occurring within `StegVerse-Labs` emits a `stegverse.organization-transition-receipt/v1`. Repository transitions preserve their exact repo receipt linkage; non-repository canonical governed transitions are hash-bound directly and are not falsely relabeled as repository transitions. Canonical state-transition custody records and verifies the organization receipt before Master Records progression. This source-enforced ordering merged in PR #2520 as `13ff70132c30147465a25122c8de2fc948da1e56`; authentic runtime proof remains separately required.
+
+
+## Organization receipt / canonical custody reconciliation
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, current source trace shows that the organization ledger path and canonical per-state-transition Master Records path are both materialized but not yet source-enforced as one sequence. Organization recording consumes `stegverse.repo-transition-receipt/v1` and emits `stegverse.organization-transition-receipt/v1`; canonical state-transition custody separately submits `stegverse.canonical-state-transition-receipt/v1` directly to Master Records. No canonical-state -> repo/org bridge was found before that direct custody call. This is a source invariant gap, not runtime failure evidence: authentic runtime omission of an organization receipt remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` until same-transition retained evidence proves it.
+
 ## Ecosystem HB receipt anchoring
 
 Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is merged in Task Registry generation 150 with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
@@ -1212,8 +1221,35 @@ TVC hygiene revalidation run `35667376242` proved 20 approved-retirement-ready r
 
 `SDK-ELYRIA-INTR-ADAPTER-001` does not depend on Coinbase or KV. The authoritative component profile selects the generic SDK + Interlock/InTr external-adapter transport and Master Records custody components, and explicitly excludes the KV/SKAP user-verification flow. The canonical external-framework endpoint-binding registry already exists in admissibility-wiki and its evidence-qualified endpoint overlay is intentionally empty. The current Elyria boundary is therefore `EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE`: no independently observed callable Elyria runtime endpoint can yet be lawfully bound. The prior Coinbase/TVC Service Gateway lineage is superseded for Elyria and must not gate or diagnose this task.
 
+### SDK evaluator exact reconstruction checkpoint
+
+The runtime-proof task remains at `EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE`. Exact parent source hashes were reconciled against accessible retained-runtime and Master Records projections; they currently remain source/CI evidence only and do not promote authentic runtime materialization. The state is `UNKNOWN_NOT_FALSE`, with no source/runtime defect inferred and no `RESIDENT_REQUEST_DISPATCH_VISIT` substitution.
+
+### SDK TVC warrant-service self-heal installation
+
+TVC PR #458 is merged and validated. The existing root TVC resident self-heal now reconciles the existing execution-warrant service for each discovered user sovereign runtime owner and performs daemon reload after successful installation; private-key custody remains LoadCredential-only. Authentic installation, assignment disposition, warrant issuance, and SDK runtime execution remain evidence-gated.
 
 
-### Ecosystem HB shared runtime evidence owner — generation 183 candidate
+### TVC hygiene retirement routing batch 3 — 2026-09-21
 
-`ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` now explicitly reuses `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` for authentic runtime-materialization evidence. The Master Records canonical route-loading repair already exists at `master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715`; the existing resident source-refresh service requires that floor and dispatches the existing `ecosystem_receipt_hb_checkpoint` observer without a separate request. The first unresolved predicate is authentic retained materialization of that Master Records source floor in the durable canonical runtime. No duplicate runtime, trigger, scheduler, dispatcher, WorkerCoordinator, observer, custody store, hosted substitute, or device dependency is introduced.
+TVC run `35668559325` proved 27 approved-retirement-ready refs and zero invalid approvals. Seven new batch-3 CMC reconciliation refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`; no branch deletion occurred. The current census has 136 unapproved structural candidates because the merged batch implementation itself created one additional fully-main-contained ref.
+
+
+### HIL machine receiver Gateway carriage
+
+The Healer scheduler projects the retained G25/fence-25 HIL worker receiver `base_url` separately from Universal InTr, allowing the Service Gateway to relay `/api/hil/*` to the already-running machine-owned receiver without creating another runtime or custody lineage.
+
+
+### TVC hygiene retirement routing batch 4 — 2026-09-21/22
+
+After a fail-closed README self-reference correction, TVC hygiene run `35670276119` proved 29 approved-retirement-ready refs and zero invalid approvals. Two new batch-4 refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`; 134 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### TVC hygiene retirement routing batch 5 — 2026-09-21
+
+TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### Ecosystem HB shared runtime evidence owner — generation 187 candidate
+
+`ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` reuses `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` for authentic runtime-materialization evidence. The Master Records canonical route-loading repair exists at `master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715`; the existing source-refresh service requires that floor and dispatches the existing `ecosystem_receipt_hb_checkpoint` observer without a separate request. The first unresolved predicate is authentic retained materialization of that Master Records source floor in the durable canonical runtime. No duplicate runtime, trigger, scheduler, dispatcher, WorkerCoordinator, observer, custody store, hosted substitute, or device dependency is introduced.
