@@ -199,6 +199,8 @@
     "authentic_first_successor_checkpoint_observed": false,
     "deterministic_existing_path_failure_observed": false,
     "source_repair_justified": false,
-    "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY"
+    "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY",
+    "canonical_generation_observed": 191,
+    "repository_evidence_classification": "IMPLEMENTATION_TEST_HANDOFF_AND_NEGATIVE_OBSERVATION_ONLY"
   }
 }
