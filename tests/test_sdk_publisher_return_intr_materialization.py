@@ -299,8 +299,6 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         self.assertIn('"rtc008_admission_observed":False',source)
         self.assertIn('"rtc009_far_side_transition_observed":False',source)
 
-if __name__=="__main__": unittest.main()
-
 
     def test_rtc006_rejects_transport_terminal_hash_as_predecessor(self):
         fake=types.ModuleType("canonical_state_transition_custody")
@@ -331,3 +329,5 @@ if __name__=="__main__": unittest.main()
                 sys.modules.pop("canonical_state_transition_custody",None)
             else:
                 sys.modules["canonical_state_transition_custody"]=previous
+
+if __name__=="__main__": unittest.main()
