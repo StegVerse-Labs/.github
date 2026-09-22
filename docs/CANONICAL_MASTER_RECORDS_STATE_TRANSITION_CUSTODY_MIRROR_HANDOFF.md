@@ -559,3 +559,14 @@ Source-only PR #2530 merged from exact head `9e0bbca658d171920e6c1e2ed1722d1033b
 The existing resident source package, exact source-package allowlist, relay materialization verification, and sovereign worker source refresh now carry `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` alongside `workers/canonical_state_transition_custody.py`. This closes the deterministic source-carriage boundary identified after organization-before-Master-Records ordering merged.
 
 No authentic post-repair governed transition with the required retained organization receipt and same-transition Master Records closure has yet been observed in accessible retained evidence. Runtime truth therefore remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Functional Memory direct predecessor-closure repair — 2026-09-21
+
+The next ecosystem-wide direct receipt producer was `heartbeat_runtime/worker_assignment_functional_memory.py::record_non_allow_functional_memory(...)`. Although assignment review reconstructed prior Functional Memory upstream, the receipt producer itself trusted `task.functional_memory.receipt_sha256` and copied that pointer directly into `prior_state_ref_or_hash`.
+
+PR #2529 merged as `48a1d766155d33647f0d4463ffede0ac5ac876e6` from exact head `f00d9c43650b4afb1f857e80a38b171ff9ede7d0`; PR #2528 was superseded after main advanced. Exact-head runs `35674317853` and `35674317860` passed.
+
+The producer now invokes the existing shared `require_predecessor_master_records_closure(...)` immediately before successor receipt construction. Any supplied predecessor must reconstruct through canonical Master Records with required-evidence validation `PASS` and exact receipt/reconstruction digest equality; the resulting closure becomes both `prior_state_ref_or_hash` and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Reconstruction failure prevents successor submission. No predecessor is invented when none exists.
+
+This remains ecosystem-wide custody work; MIR-specific RTC progression is not the active next transition for this task. Continue inventorying direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers and repair only the next generic predecessor-closure bypass.
