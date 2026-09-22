@@ -23,5 +23,14 @@
     "StegVerse-Labs/.github#1624 once replacement component PR validates and merges"
   ],
   "runtime_evidence_upgraded": false,
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "component_011_refinement": {
+    "prior_name": "common sandboxed AI decision-processing region",
+    "canonical_semantics": "Ungoverned AI Defensive Envelope at StegVerse-controlled consequence boundaries",
+    "external_ai_meeting_room": "CONCRETE_INSTANTIATION_NOT_PRIMITIVE",
+    "source_contract_defined": true,
+    "runtime_enforcement_observed": false,
+    "external_ai_internal_sovereignty_preserved": true,
+    "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY"
+  }
 }
