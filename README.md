@@ -1272,3 +1272,8 @@ The accepted browser G25/fence-25 LEASE_OPEN is predecessor evidence, not a reus
 ### Fresh-Node KnowledgeVault relationship semantics
 
 Node registration and `MY_KV_ONBOARDING_STEP_1_COMPLETED` do not imply a KnowledgeVault relationship. A registered Node with no authenticated DEVICE_KV relationship evidence is represented as `KV_RELATIONSHIP_NOT_ESTABLISHED` with no resident-KV-root claim. Only an explicitly established/selected relationship may progress to `KV_INSTALLATION_NOT_VERIFIED` or `KV_INSTALLATION_VERIFIED`; existing-KV installation-receipt recovery is not exposed as evidence of a relationship that never existed. Site PR #1450 merged this correction at `f713330551999125b90868930927984bc33fba9d`; the parent Device/KV/SKAP runtime Goal remains evidence-gated.
+
+
+### HIL receiver / Universal InTr port ownership
+
+Universal InTr owns its loopback ingress through `STEGVERSE_UNIVERSAL_INTR_PORT` (default 8765). The machine-owned HIL receiver uses `STEGVERSE_HIL_RECEIVER_PORT` with an independent default (8877). Gateway routing remains receipt-derived, preventing two existing services from competing for one loopback socket.
