@@ -3,10 +3,11 @@
 
 This bridge creates no runtime, scheduler, broker, credential path, InTr authority,
 or Master Records authority. It accepts only an already-fenced WorkerCoordinator
-invocation, uses the already-local canonical StegOS external-provider-operation InTr
-profile around the exact TVC broker transaction, delegates credential use to the
-existing TVC non-exportable provider broker, and then invokes the registered reusable
-lifecycle trigger for same-transaction evidence reconciliation and Master Records.
+invocation, uses the already-local generic RTC-INTERLOCK-INTR-TRANSPORT-008
+Universal InTr transport around the exact TVC broker transaction with the canonical
+StegVerse SDK consumer identity, delegates credential use to the existing TVC
+non-exportable provider broker, and invokes the registered reusable lifecycle trigger.
+Transport evidence never substitutes for explicit Interlock admission.
 """
 from __future__ import annotations
 
@@ -31,9 +32,11 @@ CONSUMER = "StegVerse-org/StegVerse-SDK"
 RECEIPT_REF = "receipts/mir-tvc-provider-roundtrip/MIR-RUN2-EVENT-001.latest.json"
 REUSABLE_MANIFEST_REF = "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json"
 REUSABLE_TRIGGER_RECEIPT_REF = "receipts/reusable-task/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.latest.json"
-INTR_PROFILE = "external-provider-operation"
+INTR_COMPONENT = "RTC-INTERLOCK-INTR-TRANSPORT-008"
 INTR_REQUEST_SCHEMA = "stegverse.external-provider.operation-request/v1"
 INTR_RESPONSE_SCHEMA = "stegverse.external-provider.operation-response/v1"
+INTR_SOURCE_SUBSYSTEM = CONSUMER
+INTR_DESTINATION_SUBSYSTEM = "TVC:ProviderOperationBroker"
 
 
 class ProviderOutcomeUnknown(RuntimeError):
@@ -63,20 +66,14 @@ def _load_tvc_broker(tvc_root: Path):
     return module
 
 
-def _load_intr_connector(stegos_root: Path):
-    registry = stegos_root / "specs" / "universal-intr-connector-profiles.v1.json"
-    if not registry.is_file():
-        raise RuntimeError("canonical StegOS Universal InTr connector registry not materialized")
+def _load_intr_transport(stegos_root: Path):
+    source = stegos_root / "stegos" / "universal_intr_transport.py"
+    if not source.is_file():
+        raise RuntimeError("canonical StegOS Universal InTr transport source not materialized")
     if str(stegos_root) not in sys.path:
         sys.path.insert(0, str(stegos_root))
-    from stegos.intr_backbone import connector_from_registry
-    connector = connector_from_registry(registry, INTR_PROFILE)
-    if connector.profile.authorization_required is not True:
-        raise RuntimeError("external-provider-operation InTr profile authorization invariant missing")
-    if connector.profile.downstream_owner_ref != "StegVerse-Labs/TVC":
-        raise RuntimeError("external-provider-operation InTr profile TVC owner mismatch")
-    return connector
-
+    from stegos import universal_intr_transport
+    return universal_intr_transport
 
 def _validate_invocation(invocation: dict[str, Any]) -> dict[str, Any]:
     if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
