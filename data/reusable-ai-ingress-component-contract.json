@@ -104,9 +104,15 @@
       ],
       "retry_or_reentry_semantics": "FAIL_CLOSED at the controlled consequence boundary; preserve boundary evidence; remediate the first concrete capability, credential, reachability, evidence, or egress defect; re-enter only after the same boundary is revalidated.",
       "version_or_schema_binding": "stegverse.reusable-ai-ingress-component-contract/v1",
-      "canonical_implementation": "NOT_YET_MATERIALIZED",
+      "canonical_implementation": [
+        "StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312:tasks/ungoverned_ai_defensive_envelope.py",
+        "workers/ungoverned_ai_defensive_envelope_worker.py",
+        "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json"
+      ],
       "repeatable": true,
-      "status": "REUSABLE_DEFENSIVE_ENVELOPE_CONTRACT_DEFINED_RUNTIME_NOT_PROVEN",
+      "status": "REPRESENTATIVE_RUNTIME_PROBE_PATH_MATERIALIZED_SOURCE_LEVEL_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
       "instantiations": [
         {
           "name": "EXTERNAL_AI_MEETING_ROOM",
@@ -126,6 +132,22 @@
         "evidence_does_not_create_authority": true,
         "governed_egress_is_separate_from_ai_workspace": true,
         "alternate_paths_outside_controlled_boundaries_are_not_claimed_constrained": true
+      },
+      "representative_runtime_probe": {
+        "scope": "bounded untrusted-source computation through existing TVC SES stdio provider",
+        "admitted_case": "pure bounded transform 41 -> 42",
+        "denied_cases": [
+          "filesystem write",
+          "network/import",
+          "ambient environment/import"
+        ],
+        "denied_evidence_required": [
+          "consumed=false",
+          "consequence_reachable=false"
+        ],
+        "external_provider_origin": "NOT_PROVEN_BY_THIS_PROBE",
+        "consequential_egress": "NOT_REQUESTED_EVIDENCE_ONLY",
+        "runtime_owner": "existing sovereign WorkerCoordinator targeted independent task control"
       }
     }
   ],
