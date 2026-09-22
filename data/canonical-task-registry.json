@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 183,
+  "generation": 184,
   "status": "CANONICAL_MASTER_RECORDS_SDK_TVC_WARRANT_SELF_HEAL_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5365,7 +5365,17 @@
           35668005789,
           35668005818
         ],
-        "authentic_sdk_tvc_warrant_service_installation_observed": false
+        "authentic_sdk_tvc_warrant_service_installation_observed": false,
+        "organization_receipt_pre_master_records_source_enforced": false,
+        "organization_receipt_source_path_gap_identified": true,
+        "canonical_state_transition_direct_master_records_submission_observed_in_source": true,
+        "canonical_state_transition_to_repo_receipt_bridge_materialized": false,
+        "canonical_state_transition_to_organization_receipt_bridge_materialized": false,
+        "organization_receipt_runtime_gap_authentically_observed": false,
+        "organization_receipt_runtime_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
+        "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
+        "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1"
       },
       "completion": {
         "claimed": false,
@@ -5388,7 +5398,8 @@
         "CONTINUE_THROUGH_RTC_007_008_009",
         "ADMIT_GOVERNED_RETURN_AND_RECORD_CANONICAL_RETURN_EXIT",
         "PROPAGATE_CANONICAL_CUSTODY_TO_REMAINING_CONSUMERS",
-        "CONTINUE_POST_RETURN_SDK_PROCESSING_AND_TERMINAL_EGRESS"
+        "CONTINUE_POST_RETURN_SDK_PROCESSING_AND_TERMINAL_EGRESS",
+        "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM"
       ],
       "authority_model": {
         "interlock_intr_grants_transition_authority": true,

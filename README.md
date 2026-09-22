@@ -1,3 +1,8 @@
+
+## Organization receipt / canonical custody reconciliation
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, current source trace shows that the organization ledger path and canonical per-state-transition Master Records path are both materialized but not yet source-enforced as one sequence. Organization recording consumes `stegverse.repo-transition-receipt/v1` and emits `stegverse.organization-transition-receipt/v1`; canonical state-transition custody separately submits `stegverse.canonical-state-transition-receipt/v1` directly to Master Records. No canonical-state -> repo/org bridge was found before that direct custody call. This is a source invariant gap, not runtime failure evidence: authentic runtime omission of an organization receipt remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` until same-transition retained evidence proves it.
+
 ## Ecosystem HB receipt anchoring
 
 Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is merged in Task Registry generation 150 with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
