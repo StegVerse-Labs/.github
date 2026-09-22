@@ -17,6 +17,7 @@ from workers.canonical_state_transition_custody import (
     build_state_receipt,
     query_state_receipts,
     reconstruct_state_receipt,
+    require_predecessor_master_records_closure,
     sha256_uri,
     submit_state_receipt,
 )
@@ -262,9 +263,18 @@ def record_non_allow_functional_memory(
         "sha256": pack_sha,
         "content": pack,
     }
-    prior_ref = None
-    if isinstance(previous, dict) and isinstance(previous.get("receipt_sha256"), str):
-        prior_ref = f"sha256:{previous['receipt_sha256']}"
+    predecessor_sha256 = previous.get("receipt_sha256") if isinstance(previous, dict) else None
+    try:
+        prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+            predecessor_sha256,
+            successor_transition_id=TRANSITION_ID,
+        )
+    except RuntimeError as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": str(exc),
+            "authority_effect": "NONE",
+        }
     outcome = "PARTIAL" if resolution == "DEFER" else "DENY"
     receipt = build_state_receipt(
         transition_id=TRANSITION_ID,
@@ -280,7 +290,7 @@ def record_non_allow_functional_memory(
             "worker_materialized": False,
             "master_records_grants_assignment_authority": False,
         },
-        required_evidence_manifest=[evidence],
+        required_evidence_manifest=[*predecessor_evidence, evidence],
         proof_scope="WORKERCOORDINATOR_ASSIGNMENT_DISPOSITION_ONLY",
         proof_ceiling="NON_ALLOW_ASSIGNMENT_AND_FUNCTIONAL_MEMORY_CUSTODY_ONLY",
     )
