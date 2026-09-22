@@ -25,7 +25,7 @@ def materialize(env=None,output=None):
     if not runtime_raw:raise PredicatePending("resident runtime root unavailable")
     runtime=Path(runtime_raw).expanduser().resolve()
     if not runtime.is_dir():raise PredicatePending("resident runtime root not materialized")
-    port=int(values.get("STEGVERSE_UNIVERSAL_INTR_PORT",values.get("STEGVERSE_HIL_RECEIVER_PORT","8765")))
+    port=int(values.get("STEGVERSE_UNIVERSAL_INTR_PORT","8765"))
     if not 1024<=port<=65535:raise PredicatePending("Universal InTr port invalid")
     provider_binding=values.get("STEGVERSE_KV_PROVIDER_BINDING_PATH","").strip()
     provider_materialized_root=values.get("STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT","").strip()
