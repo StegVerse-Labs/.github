@@ -332,3 +332,45 @@ receipt_sha256 == reconstructed_receipt_sha256
 
 Next execution boundary: query the existing TV/TVC-authorized canonical Master Records service for subject/correlation identity `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` and the exact predecessor transition identity. Only if one returned record proves the four closure predicates and binds block 1895/root/seal exactly may the task acquire and retain one authentic pre-reset witness record and propose state 2.
 
+## Goal prompt 19: canonical-work Master Records binding carriage repair — 2026-09-21
+
+Canonical Task Registry generation 191 was re-read before mutation. The predecessor `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no state-2 acquisition or admission is permitted until the exact canonical Master Records closure is returned and reconstructed.
+
+The first concrete existing service-binding defect was isolated in the already-registered Canonical Work resident path:
+
+```text
+scripts/dispatch_resident_execution_requests.py
+  -> clean_exec_env(...)
+     preserves existing Master Records endpoint/token and durable-local DB/key bindings
+  -> canonical_work_coordination
+  -> control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py
+  -> legacy clean_env(...)
+     previously stripped every Master Records binding before the Canonical Work child
+```
+
+This meant the existing TV/TVC-authorized query capability could be present on the resident carrier and still become invisible at the exact Canonical Work child boundary, producing a query/custody-surface-unavailable condition without proving the durable store absent.
+
+The bounded repair changes only `consume-canonical-work-coordination-bootstrap.legacy.py`:
+
+- preserve the already-carried `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` / `STEGVERSE_MASTER_RECORDS_SOURCE_ROOT`;
+- preserve the already-carried HTTP binding `STEGVERSE_MASTER_RECORDS_ENDPOINT`, `STEGVERSE_MASTER_RECORDS_TOKEN`, and timeout;
+- preserve the already-carried durable-local binding `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, and durability flag;
+- preserve `STEGVERSE_REPO_ROOTS_JSON` only as the existing source locator;
+- continue stripping GitHub credentials and all pre-existing forbidden credential names;
+- report only a boolean `credential_material_present` plus the bounded scope `EXISTING_TV_TVC_MASTER_RECORDS_BINDING_ONLY`; no credential value is written to receipts.
+
+Focused regression coverage asserts that every canonical Master Records binding survives `clean_env(...)`, while `GITHUB_TOKEN` and `GH_TOKEN` do not.
+
+This creates no new custody service, query API, credential route, runtime, transport, dispatcher, scheduler, WorkerCoordinator, evidence store, or user/device prerequisite. It only restores carriage of the already-authorized Master Records binding through an existing consumer boundary.
+
+Source repair does not prove that the predecessor exists. After merge and authentic resident refresh/dispatch, the same existing canonical `query_state_receipts(...)` path must query:
+
+```text
+subject_or_correlation_id = MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001
+transition_id = PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED
+```
+
+and accept progression only if one returned reconstruction binds block 1895, root `5a34b9af7ab85de4d2b9b3d18c238c4aaa632333f4fedeb4c5fe1d5c6953abff`, seal `4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260`, and simultaneously proves `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + receipt_sha256==reconstructed_receipt_sha256`.
+
+No predecessor, state-2, runtime, or completion predicate is promoted by this source change.
+
