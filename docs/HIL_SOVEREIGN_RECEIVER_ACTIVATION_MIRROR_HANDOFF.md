@@ -841,3 +841,10 @@ Dependency merges for the machine-owned receiver Gateway carriage are now exact:
 - StegVerse-Healer PR #97 merge `f2db0edf3af99816d3f134ba66b3398788485d08`.
 
 When the retained G25/fence-25 receiver projection is enabled, the canonical Healer worker now also requires the discovered local Healer source to contain that merged projection contract and the pinned LLM relay floor before dispatch. Stale local Healer source therefore cannot silently ignore the receiver projection and cannot satisfy HIL custody through the Gateway's own local copy.
+
+
+## 2026-09-21 browser-predecessor / machine-claim separation
+
+The first deterministic machine-execution failure after Gateway carriage was canonical registry state, not missing runtime evidence. The HIL task was `HANDOFF_READY` while simultaneously pre-populated with browser `claim_id=SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25` and `worker_id=hil-sovereign-receiver-worker`. WorkerCoordinator rejects that shape before activation because `HANDOFF_READY` is activatable only when claim and worker bindings are empty.
+
+The source registry is now cleanly unbound for machine execution and requires a fresh independent-task-control fence strictly greater than 25. Browser G25/fence-25, LEASE_OPEN, request ID, and evidence refs remain immutable predecessor evidence under `machine_readable_state.browser_predecessor_lineage`; they are not reused as the machine WorkerCoordinator claim. The machine receiver receipt carries both the fresh machine claim/fence and exact G25 predecessor fields. The Healer Gateway projection requires that split explicitly before it will expose `/api/hil/*`.
