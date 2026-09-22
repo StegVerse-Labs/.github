@@ -26,6 +26,12 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+# Sibling scripts are imported bare across this directory, which works when
+# this file is run as `python scripts/x.py` but not when it is imported (its
+# test loads it by spec with ROOT on the path). Put this file directory
+# on the path so both entry paths resolve identically.
+if str(Path(__file__).resolve().parent) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from refresh_sovereign_worker_runtime_source import refresh
 from scripts.refresh_and_execute_resident_task import validate_cosv_task_pointer
