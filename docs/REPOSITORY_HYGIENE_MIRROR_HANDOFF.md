@@ -841,3 +841,10 @@ The hygiene program has moved from small manual review batches to machine-scale 
 All six previously authenticated Wave-1 consumers were compared from their retained census heads to current main. Exact residual-candidate matching against changed canonical owner-bearing handoffs produced **zero newly eligible refs** across TVC, LLM-adapter, TV, Master Records, StegHealth, and micro-node-runtime. Their approval manifests remain unchanged and no redundant census reruns are required.
 
 For the 3,559 heavy branches lacking authenticated baselines, `.github/workflows/repository-hygiene-ecosystem-bulk-census.yml` performs a central read-only matrix census of StegVerse-Labs/.github, Site, and StegCore without mutating the terminal sink repositories. The classifier is optimized to scan default-branch source references in one batched grep pass rather than once per branch. First baseline results remain evidence-gated until the hosted matrix run completes. Machine census: `control/repository-hygiene-ecosystem-census-20260921.json`.
+
+
+### First ecosystem bulk census result — 2026-09-21
+
+Hosted matrix run `35688555518` established first authenticated baselines for the two public heavy repositories without touching their repositories: StegVerse-Labs/.github inspected **2,324** branches with 726 structural retirement candidates, 1,596 review-required, 2 protected/retained, and 0 approved/invalid manifest entries; artifact `10678215761`, digest `sha256:044c38397cced5fd6be8e61193af73b5ff1b87fb7d90e46393ea5d24843950a9`. Site inspected **1,100** branches with 250 structural retirement candidates, 775 review-required, 75 protected/retained, and 0 approved/invalid entries; artifact `10678315580`, digest `sha256:e90c2c0e5e39ca6116b6741ccc4025745b54224737de27b4abbebdf291d1e2c5`.
+
+StegCore anonymous clone failed before classification because the repository is private. This is a transport result, not a hygiene result. StegCore is moved to the validated private in-repository caller pattern in PR #227. The central matrix is narrowed to public targets so future bulk runs do not repeat a known private-access failure.
