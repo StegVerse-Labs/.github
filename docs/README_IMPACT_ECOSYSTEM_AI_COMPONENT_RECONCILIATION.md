@@ -18,7 +18,7 @@ The projection:
 
 ## Classification
 
-README impact: `DEFENSIVE_ENVELOPE_RECONCILIATION_PENDING_EXACT_HEAD_VALIDATION`.
+README impact: `DEFENSIVE_ENVELOPE_RECONCILIATION_MERGED_SOURCE_VALIDATED_PR_2568`.
 
 This documentation evidence grants no execution, claim/fence, credential, transition, user-verification, custody, publication, runtime-truth, or completion authority.
 
