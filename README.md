@@ -1336,3 +1336,7 @@ The existing Device/KV/SKAP event executor now resolves bare sibling-script impo
 ### Device/KV validation repair merge evidence — 2026-09-21
 
 `.github` PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` after exact-head PR validations `35686779849` and `35686779918` passed; push validation `35686765254` also passed. This closes only the executor import/test-isolation source defect and does not establish any authentic Device/KV/SKAP runtime, installation, authority, or Master Records predicate.
+
+### Device/KV execution-substrate registry reconciliation — 2026-09-21
+
+`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now carries the required canonical execution-substrate resolution, selecting the already-declared admitted ephemeral StegOS Node lane while preserving single-device-first review order, no external-device requirement, and no authority effect. This is registry conformance only; no authentic runtime or installation predicate is promoted.
