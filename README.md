@@ -1322,3 +1322,8 @@ A successor cannot reuse an in-memory Master Records result merely because the u
 ## Public repository consumption attribution — 2026-09-21
 
 `PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001` separates GitHub clone traffic from adoption claims. September `StegVerse-Labs/.github` traffic is attributed only from evidence: known StegVerse-controlled clone/checkout producers are inventoried first; generic external indexing/scanning remains distinct from StegVerse-specific downstream consumption; and unexplained traffic stays `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED`. Canonical handoff: `docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md`.
+
+
+### StegAgents purpose-worker warrant predecessor reconstruction
+
+The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no longer accepts a worker-claim string or an un-reconstructed in-memory closure as predecessor state. Its existing graph predecessor receipt is reconstructed through canonical Master Records at the exact warrant receipt-emission boundary, and the resulting `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried before successor custody.
