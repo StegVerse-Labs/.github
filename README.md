@@ -1267,3 +1267,8 @@ The shared runtime-evidence owner confirms the first unsatisfied predicate remai
 ### HIL browser predecessor versus machine execution claim
 
 The accepted browser G25/fence-25 LEASE_OPEN is predecessor evidence, not a reusable WorkerCoordinator assignment. The HIL machine task now enters WorkerCoordinator from an unbound `HANDOFF_READY` state, requires a fresh fence greater than 25, and carries the exact browser G25 lineage into the machine receiver receipt. Gateway projection requires both lineages before forwarding `/api/hil/*`.
+
+
+### Functional Memory direct predecessor closure
+
+`WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` now reconstructs any supplied predecessor through canonical Master Records at the exact receipt-emission boundary. A stored pointer or upstream validity flag cannot substitute for the canonical closure; the predecessor must pass required-evidence validation and exact digest equality and is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`.
