@@ -823,3 +823,12 @@ This changes hygiene from prompt-per-branch review toward repository-scale proce
 ### Owner-transition delta scanner hardening — 2026-09-21
 
 The bulk delta scanner is hardened before cross-repository use: root-level and nested `*HANDOFF*.md` owner surfaces are recognized; canonical hygiene-control handoffs/evidence/control records are excluded as owner-transition evidence; and resolved/superseded/released/retired/closed terms must occur within a bounded context window around the exact branch-ref occurrence instead of anywhere in a large file. This prevents hygiene documentation from releasing its own refs and prevents unrelated status words in large handoffs from creating false-positive eligibility.
+
+
+### TVC owner-transition delta batch 8 — zero delta — 2026-09-21
+
+The next TVC continuation no longer re-reviews the same 131 residual refs. Using the last authenticated census head `6f42373737c55e0d73601b9c00494c36820c4731` as baseline, current TVC main `daf8553a27c9d85b6e06bd75f29155bb219af943` is four commits ahead and changes only `TVC_MIRROR_HANDOFF.md` plus `docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md`. Those changes are hygiene-review documentation only; no canonical owner/task/release/runtime state transitioned any residual branch to resolved, superseded, or explicitly released.
+
+Result: **zero newly eligible refs**, no approval-manifest change, no redundant hosted hygiene rerun, routing delta zero, and 131 structural candidates remain unapproved. Evidence: `control/repository-hygiene-tvc-batch8-owner-transition-delta-20260921.json`.
+
+The reusable owner-transition delta scanner is now merged in organization control at `48b3f78ccffd35898d28f9f4dbfe17fcecd753da`. This is the scaling boundary for the remaining branch estate: machine-filter owner-state deltas first, then review only newly eligible refs instead of repeatedly auditing static branches.
