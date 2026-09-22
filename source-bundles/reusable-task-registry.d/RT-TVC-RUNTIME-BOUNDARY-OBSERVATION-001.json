@@ -4,21 +4,72 @@
   "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, while preserving separate Interlock/InTr admission and Master Records custody boundaries without creating runtime, transition, credential, or custody authority.",
   "trigger": "a canonical task requires TVC runtime/broker evidence and a qualifying real provider-operation receipt chain exists or diagnostic route posture must be checked",
   "scope": "one manifest-bound TVC runtime evidence trajectory using existing provider-operation receipts first and synthetic observation only when needed for diagnostics",
-  "parameter_keys": ["provider_operation_task_ref", "runtime_observer_task_ref", "provider_operation_route", "expected_ready_state", "primary_evidence_source", "provider_operation_receipt_ref", "diagnostic_fallback", "require_vault_backed_provider_binding", "intr_admission_task", "evidence_custody_task", "master_records_destination", "completion_predicate"],
+  "parameter_keys": [
+    "provider_operation_task_ref",
+    "runtime_observer_task_ref",
+    "provider_operation_route",
+    "expected_ready_state",
+    "primary_evidence_source",
+    "provider_operation_receipt_ref",
+    "diagnostic_fallback",
+    "require_vault_backed_provider_binding",
+    "intr_admission_task",
+    "evidence_custody_task",
+    "master_records_destination",
+    "completion_predicate"
+  ],
   "existing_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
-  "composes": ["RT-TVC-PROVIDER-OPERATION-BROKER-001", "RT-TVC-PRIMARY-RUNTIME-BINDING-001", "RT-INTR-BOUNDARY-ADMISSION-001", "RT-INTR-GOVERNED-TRANSITION-001", "RT-INTR-EVIDENCE-CUSTODY-001"],
-  "runner_templates": ["scripts/reconcile_tvc_runtime_boundary_reusable.py"],
-  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
-  "completion_predicates": ["QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED", "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED", "CANONICAL_INTR_TRANSPORT_CHAIN_RETAINED"],
-  "post_runner_lifecycle_predicates": ["INTERLOCK_INTR_RECEIPT_ADMITTED", "MASTER_RECORDS_CUSTODY_ACCEPTED", "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"],
+  "composes": [
+    "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+    "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+    "RT-INTR-BOUNDARY-ADMISSION-001",
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "runner_templates": [
+    "scripts/reconcile_tvc_runtime_boundary_reusable.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "component",
+    "system",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED",
+    "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED",
+    "CANONICAL_INTR_TRANSPORT_CHAIN_RETAINED"
+  ],
+  "post_runner_lifecycle_predicates": [
+    "INTERLOCK_INTR_RECEIPT_ADMITTED",
+    "MASTER_RECORDS_CUSTODY_ACCEPTED",
+    "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"
+  ],
   "ready_derivation": {
     "preferred_source": "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
-    "requires": ["CANONICAL_PROVIDER_OPERATION_ROUTE_EXECUTED", "CURRENT_TVC_SOURCE_OR_EXPLICIT_SUCCESSOR_BOUND", "TV_TVC_VAULT_BACKED_SECRET_REF_AND_LEASE_ADMITTED", "ALLOW_OPERATION_RESULT", "EXACT_USE_RECEIPT_RETAINED", "CANONICAL_INTR_REQUEST_AND_RESPONSE_TRANSPORT_COMPLETE", "PROVIDER_SECRET_NOT_EXPORTED", "AUTHORITY_CEILINGS_PRESERVED"],
+    "requires": [
+      "CANONICAL_PROVIDER_OPERATION_ROUTE_EXECUTED",
+      "CURRENT_TVC_SOURCE_OR_EXPLICIT_SUCCESSOR_BOUND",
+      "TV_TVC_VAULT_BACKED_SECRET_REF_AND_LEASE_ADMITTED",
+      "ALLOW_OPERATION_RESULT",
+      "EXACT_USE_RECEIPT_RETAINED",
+      "CANONICAL_INTR_REQUEST_AND_RESPONSE_TRANSPORT_COMPLETE",
+      "PROVIDER_SECRET_NOT_EXPORTED",
+      "AUTHORITY_CEILINGS_PRESERVED"
+    ],
     "projected_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
     "synthetic_observer_role": "DIAGNOSTIC_FALLBACK_ONLY",
     "synthetic_observer_alone_satisfies_provider_session": false
   },
-  "failure_semantics": ["MISSING_QUALIFYING_EXECUTION_EVIDENCE_FAIL_CLOSED_FOR_PROVIDER_SESSION", "SOURCE_OR_CONFIG_REFERENCE_IS_NOT_RUNTIME_RECEIPT", "TRANSPORT_RECEIPT_IS_NOT_INTERLOCK_ADMISSION", "UNADMITTED_RECEIPT_CANNOT_SATISFY_COMPLETION", "MASTER_RECORDS_CUSTODY_MISSING_CANNOT_SATISFY_TERMINAL_COMPLETION"],
+  "failure_semantics": [
+    "MISSING_QUALIFYING_EXECUTION_EVIDENCE_FAIL_CLOSED_FOR_PROVIDER_SESSION",
+    "SOURCE_OR_CONFIG_REFERENCE_IS_NOT_RUNTIME_RECEIPT",
+    "TRANSPORT_RECEIPT_IS_NOT_INTERLOCK_ADMISSION",
+    "UNADMITTED_RECEIPT_CANNOT_SATISFY_COMPLETION",
+    "MASTER_RECORDS_CUSTODY_MISSING_CANNOT_SATISFY_TERMINAL_COMPLETION"
+  ],
   "authority_effect": "NONE_OBSERVATION_AND_CUSTODY_ONLY",
-  "reuse_instructions": "Use scripts/reconcile_tvc_runtime_boundary_reusable.py as the local orchestration-only runner. The provider-operation worker may retain canonical Universal InTr request/response transport receipts using RTC-INTERLOCK-INTR-TRANSPORT-008 with the exact canonical consumer identity and TVC broker destination, but transport receipts are not an Interlock admission decision. The reusable runner emits standardized pre-admission evidence only when the same real transaction proves current WorkerCoordinator claim/fence evidence, ALLOW_OPERATION_RESULT, exact use_receipt, complete canonical InTr transport chains, no secret export, and authority ceilings. scripts/trigger_reusable_task.py must stop before Master Records when an explicit Interlock admission receipt required by post_runner_lifecycle_predicates is absent. Synthetic observer evidence remains diagnostic only and cannot satisfy AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED."
+  "reuse_instructions": "Use scripts/reconcile_tvc_runtime_boundary_reusable.py as the local orchestration-only primary runner. Qualifying real provider-operation receipts remain the preferred READY evidence. When they are absent, the diagnostic fallback invokes the already-local scripts/run_tvc_runtime_boundary_reusable.py wrapper, which reuses the released TVC same-service activation-delivery installer and then the non-secret TVC observer without fetching source or exporting protected values. The provider-operation worker may retain canonical Universal InTr request/response transport receipts using RTC-INTERLOCK-INTR-TRANSPORT-008 with exact source StegVerse-org/StegVerse-SDK and destination TVC:ProviderOperationBroker, but transport receipts are not an Interlock admission decision. The reusable runner emits standardized pre-admission evidence only when the same real transaction proves current WorkerCoordinator claim/fence evidence, ALLOW_OPERATION_RESULT, exact use_receipt, complete canonical InTr transport chains, no secret export, and authority ceilings. scripts/trigger_reusable_task.py must stop before Master Records when an explicit Interlock admission receipt required by post_runner_lifecycle_predicates is absent. Synthetic observer evidence remains diagnostic only and cannot satisfy AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED."
 }
