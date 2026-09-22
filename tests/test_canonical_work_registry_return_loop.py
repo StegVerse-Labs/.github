@@ -27,6 +27,14 @@ class CanonicalWorkRegistryReturnLoopTests(unittest.TestCase):
         self.assertIn('parser.add_argument("--exclude-task-id", action="append", default=[])', selector)
         self.assertIn("PROGRESSION_CONTROLLER_TASK_ID", selector)
 
+    def test_current_goal_context_is_threaded_without_new_dispatcher(self):
+        consumer = CONSUMER.read_text(encoding="utf-8")
+        selector = SELECTOR.read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--goal-task-id")', consumer)
+        self.assertIn('parser.add_argument("--goal-task-id")', selector)
+        self.assertIn('"current_goal_task_id": args.goal_task_id', consumer)
+        self.assertIn('"progression_controller_lineage_goal_id": controller_lineage_goal_id', selector)
+
     def test_no_parallel_authority_or_scheduler_is_created(self):
         text = CONSUMER.read_text(encoding="utf-8")
         self.assertIn('"second_dispatcher_created": False', text)

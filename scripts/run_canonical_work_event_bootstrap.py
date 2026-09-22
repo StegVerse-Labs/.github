@@ -43,7 +43,9 @@ def validate_target_task(*, registry: Path, registry_shards: Path, task_id: str)
     require(task.get("task_id") == task_id, "canonical_task_identity_must_resolve_exactly_once")
     correlation_id = task.get("correlation_id")
     require(isinstance(correlation_id, str) and bool(correlation_id), "canonical_task_correlation_missing")
-    require(task.get("coordination_state") == "PROPOSED", "canonical_task_not_proposed_for_ingress")
+    coordination_state = task.get("coordination_state")
+    active_checked_out = coordination_state == "ACTIVE" and task.get("checkout_state") == "CHECKED_OUT"
+    require(coordination_state == "PROPOSED" or active_checked_out, "canonical_task_not_ingress_projectable")
     require("INGRESS_ADMITTED" in task.get("allowed_next_transitions", []), "canonical_task_ingress_not_allowed")
     claim = task.get("worker_claim", {})
     require(claim.get("authority") == "WORKERCOORDINATOR", "canonical_task_workercoordinator_authority_missing")
@@ -135,6 +137,53 @@ def wait_for_consumption(*, runtime: Path, materialization_id: str, timeout_seco
     raise SystemExit("FAIL_CLOSED: canonical_work_consumption_receipt_timeout")
 
 
+def invoke_immediate_successor(*, task_id: str, runtime: Path) -> dict[str, Any]:
+    """Immediately evaluate the admitted task through the existing WorkerCoordinator.
+
+    This is the state-dependent continuation edge. It creates no scheduler,
+    dispatcher, heartbeat authority, claim authority, or transition authority.
+    The existing targeted WorkerCoordinator path performs all ordinary
+    admission/claim/fence/InTr/Master Records checks.
+    """
+    command = [
+        sys.executable,
+        str(ROOT / "scripts" / "run_worker_runtime.py"),
+        "--root",
+        str(runtime),
+        "--task-id",
+        task_id,
+    ]
+    completed = subprocess.run(
+        command,
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=1200,
+    )
+    result = None
+    for line in reversed([line.strip() for line in completed.stdout.splitlines() if line.strip()]):
+        try:
+            candidate = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(candidate, dict):
+            result = candidate
+            break
+    return {
+        "attempted": True,
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "stderr_tail": completed.stderr[-2000:],
+        "carrier_trigger_required": False,
+        "workercoordinator_remains_claim_fence_authority": True,
+        "interlock_intr_remains_transition_authority": True,
+        "master_records_remains_custody_reconstruction_authority": True,
+        "authority_effect": "NONE_STATE_DEPENDENT_CONTINUATION_CALL_ONLY",
+    }
+
+
 def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ingress_path: Path, consumption_path: Path) -> Path:
     subprocess.run(
         [
@@ -153,15 +202,28 @@ def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ing
         cwd=str(ROOT),
         check=True,
     )
+    def runtime_ingress_state(task: dict[str, Any]) -> str | None:
+        refs = task.get("runtime_refs")
+        return refs.get("ingress_state") if isinstance(refs, dict) else None
+
+    def valid_projected_state(task: dict[str, Any]) -> bool:
+        if task.get("coordination_state") == "INGRESS_ADMITTED":
+            return True
+        return (
+            task.get("coordination_state") == "ACTIVE"
+            and task.get("checkout_state") == "CHECKED_OUT"
+            and runtime_ingress_state(task) == "INGRESS_ADMITTED"
+        )
+
     registry_value = load(registry)
     matches = [task for task in registry_value.get("tasks", []) if task.get("task_id") == task_id]
     if matches:
-        require(len(matches) == 1 and matches[0].get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_registry_invalid")
+        require(len(matches) == 1 and valid_projected_state(matches[0]), "persisted_post_ingress_registry_invalid")
         return registry
     shard = registry_shards / f"{task_id}.json"
     require(shard.is_file(), "persisted_post_ingress_task_shard_missing")
     projected = load(shard)
-    require(projected.get("task_id") == task_id and projected.get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_shard_invalid")
+    require(projected.get("task_id") == task_id and valid_projected_state(projected), "persisted_post_ingress_shard_invalid")
     return shard
 
 
@@ -202,6 +264,10 @@ def main() -> int:
         ingress_path=ingress_path,
         consumption_path=consumption_path,
     )
+    immediate_successor = invoke_immediate_successor(
+        task_id=args.task_id,
+        runtime=runtime,
+    )
 
     receipt = {
         "schema": "stegverse.canonical-work-event-bootstrap-receipt/v1",
@@ -220,7 +286,11 @@ def main() -> int:
         "oscillator_advanced_by_bootstrap": False,
         "shared_listener_implementation": "workers.universal_intr_profiled_ingress.Server",
         "second_listener_implementation_created": False,
-        "workercoordinator_claim_or_fence_observed": False,
+        "immediate_successor_evaluation": immediate_successor,
+        "workercoordinator_claim_or_fence_observed": bool(
+            isinstance(immediate_successor.get("result"), dict)
+            and immediate_successor["result"].get("workers_activated", 0)
+        ),
         "master_records_reconciliation_observed": False,
         "task_execution_observed": False,
         "task_egress_or_closure_observed": False,

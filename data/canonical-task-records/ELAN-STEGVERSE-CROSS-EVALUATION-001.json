@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+  "correlation_id": "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+  "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "parent_task_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "goal": "Cross-evaluate preserved ELAN Test 2 evidence and the independently produced StegVerse evidence chain without altering either architecture.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "UNCLAIMED",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "source_state_vector_ref": "control/task-vectors/ELAN-STEGVERSE-CROSS-EVALUATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
+    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:scripts/run_elan_stegverse_cross_evaluation.py",
+    "StegVerse-org/StegVerse-SDK:.github/workflows/elan-stegverse-cross-evaluation.yml"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ELAN-TEST2-RETURNED-TRACE",
+      "kind": "EXPERIMENT_EVIDENCE",
+      "state": "AVAILABLE",
+      "ref": "Returned ELAN Test 2 trace reconciled in predecessor handoff"
+    },
+    {
+      "dependency_id": "DEP-STEGVERSE-INDEPENDENT-CORRESPONDING-CHAIN",
+      "kind": "CROSS_EVALUATION_EVIDENCE",
+      "state": "SATISFIED",
+      "ref": "SDK workflow run 35164877959; artifact 10474396420"
+    }
+  ],
+  "blockers": [],
+  "result": {
+    "workflow_run_id": 35164877959,
+    "workflow_head_sha": "b16b581bb05d4b3a8fd5e9b4fa7345010c4ee8de",
+    "workflow_conclusion": "success",
+    "artifact_id": 10474396420,
+    "artifact_name": "elan-stegverse-cross-evaluation",
+    "artifact_digest": "sha256:a5db9a9027269c2b805f09eef1f338e79f09521e7596adb1dc0f9d721b97c79c",
+    "artifact_size_bytes": 23205,
+    "stegverse_a3_separate_transition": true,
+    "stegverse_a4_separate_transition": true,
+    "elan_a3_a4_separate_boundaries_exposed": false,
+    "earliest_representation_divergence": "OBSERVATION_BOUNDARY_AND_STATE_TRANSITION_RESOLUTION",
+    "stegverse_governance_state": "ALLOW",
+    "stegverse_governance_reason": "ok",
+    "custody_status": "RECORDED",
+    "replay_deterministic_match": true,
+    "reconstruction_chain_verified": true,
+    "returned_result_preserved": true,
+    "architectures_normalized": false,
+    "runtime_scope": "LOCAL_SDK_TEST_WITH_TEST_INTR_RESOLVER_NOT_LIVE_EXTERNAL_INTR"
+  },
+  "expected_evidence_predicates": [
+    "BOTH_EVIDENCE_CHAINS_PRESERVED_BEFORE_COMPARISON",
+    "ELAN_NATIVE_RESOLUTION_PRESERVED",
+    "STEGVERSE_A3_A4_TRANSITION_RESOLUTION_EVALUATED",
+    "SEMANTIC_INTERPRETATION_SEPARATED_FROM_OBSERVATION",
+    "GOVERNANCE_POSTURE_COMPARISON_COMPLETED",
+    "DIVERGENCE_ORIGIN_IDENTIFIED_OR_UNRESOLVED",
+    "CUSTODY_REPLAY_RECONSTRUCTION_PRESERVED_WHERE_APPLICABLE",
+    "NOT_EXPOSED_REMAINS_NOT_EXPOSED",
+    "UNRESOLVED_REMAINS_UNRESOLVED"
+  ],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": [
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md"
+  ],
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "reviewed": true,
+    "reason": "Research/evidence execution completed without changing repository product behavior."
+  }
+}

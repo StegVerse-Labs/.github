@@ -14,6 +14,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/healer-sovereign-scheduler-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json")
+CHECKPOINT_REL = Path("receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json")
+ROOT_OBSERVATION_REL = Path("receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json")
+RETENTION_POINTER_FIELDS = ("packet_ref", "packet_relative_path", "packet_sha256", "retained_under_root", "retained_under_root_source", "packet_state")
 TARGET_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
@@ -92,24 +95,50 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
 
 
 def resolve_source_root(source_root: Path, runtime_root: Path, values: dict[str, str]) -> tuple[Path | None, str]:
-    """Keep canonical source distinct from mutable resident runtime."""
+    """Keep canonical source distinct from mutable resident runtime.
+
+    Prefer an explicit dispatcher source, then the installed worker's canonical
+    source binding, then the already-standard local repository-root map. The map
+    is discovery metadata only; it grants no execution or transition authority.
+    """
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     if source != runtime:
         return (source, "DISPATCHER_DISTINCT_SOURCE") if source.is_dir() else (None, "DISPATCHER_SOURCE_MISSING")
 
     raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
-    if not raw:
-        return None, "DISTINCT_SOURCE_ROOT_NOT_PROVIDED"
-    candidate = Path(raw).expanduser().resolve()
-    if candidate == runtime:
-        return None, "SOURCE_ROOT_EQUALS_RUNTIME"
-    if not candidate.is_dir():
-        return None, "SOURCE_ROOT_NOT_MATERIALIZED"
-    required = candidate / TARGET_ENTRYPOINT
-    if not required.is_file():
-        return None, "SOURCE_ROOT_INCOMPLETE"
-    return candidate, "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
+    if raw:
+        candidate = Path(raw).expanduser().resolve()
+        if candidate == runtime:
+            return None, "SOURCE_ROOT_EQUALS_RUNTIME"
+        if not candidate.is_dir():
+            return None, "SOURCE_ROOT_NOT_MATERIALIZED"
+        required = candidate / TARGET_ENTRYPOINT
+        if not required.is_file():
+            return None, "SOURCE_ROOT_INCOMPLETE"
+        return candidate, "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
+
+    roots_raw = str(values.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+    if roots_raw:
+        try:
+            roots = json.loads(roots_raw)
+        except Exception:
+            return None, "REPO_ROOTS_JSON_INVALID"
+        if not isinstance(roots, dict):
+            return None, "REPO_ROOTS_JSON_INVALID"
+        mapped = roots.get("StegVerse-Labs/.github")
+        if isinstance(mapped, str) and mapped.strip():
+            candidate = Path(mapped).expanduser().resolve()
+            if candidate == runtime:
+                return None, "REPO_ROOT_EQUALS_RUNTIME"
+            if not candidate.is_dir():
+                return None, "REPO_ROOT_NOT_MATERIALIZED"
+            required = candidate / TARGET_ENTRYPOINT
+            if not required.is_file():
+                return None, "REPO_ROOT_INCOMPLETE"
+            return candidate, "STEGVERSE_REPO_ROOTS_JSON"
+
+    return None, "DISTINCT_SOURCE_ROOT_NOT_PROVIDED"
 
 
 def synchronize_standing_request(source: Path, runtime: Path) -> dict[str, Any]:
@@ -214,6 +243,65 @@ def ensure_neutral_scheduler_materialized(
     }
 
 
+
+def bind_projected_retention_pointer(runtime: Path) -> dict[str, Any]:
+    """Read and verify the already-projected Healer checkpoint retention pointer."""
+    checkpoint_path = runtime / CHECKPOINT_REL
+    if not checkpoint_path.is_file():
+        return {"state":"CHECKPOINT_NOT_PRESENT","pointer":None,"checkpoint_ref":CHECKPOINT_REL.as_posix(),"authority_effect":"NONE_EVIDENCE_CARRIAGE_ONLY"}
+    checkpoint = load_json(checkpoint_path)
+    child = checkpoint.get("child_receipt")
+    if not isinstance(child, dict):
+        raise RuntimeError("projected Healer checkpoint child_receipt missing")
+    raw = child.get("resident_custody_root_observation_retention")
+    if not isinstance(raw, dict):
+        raise RuntimeError("projected Healer checkpoint retention pointer missing")
+    pointer = {field: raw.get(field) for field in RETENTION_POINTER_FIELDS}
+    missing = [field for field, value in pointer.items() if value in (None, "")]
+    if missing:
+        raise RuntimeError("projected Healer checkpoint retention pointer incomplete:" + ",".join(missing))
+    if pointer["packet_relative_path"] != ROOT_OBSERVATION_REL.as_posix():
+        raise RuntimeError("projected Healer checkpoint retained packet path mismatch")
+    packet_path = runtime / ROOT_OBSERVATION_REL
+    if not packet_path.is_file():
+        raise RuntimeError("projected Healer checkpoint retained packet missing")
+    packet_sha256 = file_sha256(packet_path)
+    if pointer["packet_sha256"] != packet_sha256:
+        raise RuntimeError("projected Healer checkpoint retained packet sha256 mismatch")
+    packet = load_json(packet_path)
+    if packet.get("state") != pointer["packet_state"]:
+        raise RuntimeError("projected Healer checkpoint retained packet state mismatch")
+    if Path(str(pointer["retained_under_root"])).expanduser().resolve() != runtime:
+        raise RuntimeError("projected Healer checkpoint retained root mismatch")
+    return {"state":"VALIDATED_PROJECTED_RETENTION_POINTER_BOUND","pointer":pointer,"checkpoint_ref":CHECKPOINT_REL.as_posix(),"checkpoint_sha256":file_sha256(checkpoint_path),"packet_sha256":packet_sha256,"authority_effect":"NONE_EVIDENCE_CARRIAGE_ONLY"}
+
+
+
+def completed_healer_cycle_observed(result: dict[str, Any] | None) -> bool:
+    """Recognize the real WorkerCoordinator cycle-envelope completion shape."""
+    if not isinstance(result, dict):
+        return False
+    cycle = result.get("execution_result")
+    if isinstance(cycle, dict):
+        if cycle.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED":
+            return True
+        events = cycle.get("events")
+        if isinstance(events, list):
+            matches = [
+                event for event in events
+                if isinstance(event, dict)
+                and event.get("event_type") == "worker_response"
+                and event.get("task_id") == TARGET_TASK
+                and event.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+                and event.get("response_state") == "HANDOFF_READY"
+            ]
+            if len(matches) > 1:
+                raise RuntimeError("multiple Healer completion events observed in one targeted cycle")
+            if len(matches) == 1:
+                return True
+    return result.get("transition_id") == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
@@ -283,10 +371,16 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(values), timeout=1200)
     result = parse_last_json(completed.stdout)
     execution_result = result.get("execution_result") if isinstance(result, dict) else None
-    transition = execution_result.get("transition_id") if isinstance(execution_result, dict) else None
-    if transition is None and isinstance(result, dict):
-        transition = result.get("transition_id")
-    cycle_completed = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    cycle_completed = completed_healer_cycle_observed(result)
+    retention_binding = (
+        bind_projected_retention_pointer(runtime)
+        if cycle_completed
+        else {"state":"CURRENT_CYCLE_NOT_COMPLETED","pointer":None,"checkpoint_ref":CHECKPOINT_REL.as_posix(),"authority_effect":"NONE_EVIDENCE_CARRIAGE_ONLY"}
+    )
+    if isinstance(result, dict):
+        result = dict(result)
+        result["resident_custody_root_observation_retention"] = retention_binding.get("pointer")
+        result["resident_custody_root_observation_retention_binding"] = {key: value for key, value in retention_binding.items() if key != "pointer"}
 
     receipt = {
         "schema": "stegverse.healer-resident-request-consumption/v1",

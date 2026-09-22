@@ -22,8 +22,13 @@
     "StegVerse-Labs/.github@cf83f9efa438014e7dc71bb16a4ca6d55e35efd0"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "entity-autonomous-governed-progression",
       "canonical-work-coordination",
@@ -36,14 +41,39 @@
     ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-ENTITY-AUTONOMOUS-PROGRESSION-SOURCE","kind":"SOURCE_PREDICATE","state":"RESOLVED","ref":"control/entity-autonomous-governed-progression-contract.json"},
-    {"dependency_id":"DEP-CANONICAL-WORK-COORDINATION-SOURCE","kind":"SOURCE_PREDICATE","state":"RESOLVED","ref":"docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"},
-    {"dependency_id":"DEP-GOAL-COMPLETION-GITHUB-NOTIFICATION-PROVIDER-SOURCE","kind":"SOURCE_PREDICATE","state":"RESOLVED","ref":"StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6"},
-    {"dependency_id":"DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED","disposition":"USE_EXISTING_CANONICAL_WORK_WORKERCOORDINATOR_INTR_AND_ENTITY_CONSUMERS; NO_PARALLEL_RUNTIME"}
+    {
+      "dependency_id": "DEP-ENTITY-AUTONOMOUS-PROGRESSION-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "control/entity-autonomous-governed-progression-contract.json"
+    },
+    {
+      "dependency_id": "DEP-CANONICAL-WORK-COORDINATION-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "DEP-GOAL-COMPLETION-GITHUB-NOTIFICATION-PROVIDER-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6"
+    },
+    {
+      "dependency_id": "DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED",
+      "disposition": "USE_EXISTING_CANONICAL_WORK_WORKERCOORDINATOR_INTR_AND_ENTITY_CONSUMERS; NO_PARALLEL_RUNTIME"
+    }
   ],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001","STEG-BROWSER-RUNTIME-CONSUMPTION-001","SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"],
+  "adjacent_task_refs": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"
+  ],
   "expected_evidence_predicates": [
     "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
     "MACHINE_OWNED_TRANSITION_SELECTED",
@@ -55,33 +85,105 @@
     "HUMAN_REENTRY_FOR_INTERMEDIATE_IDS_FALSE"
   ],
   "runtime_requirements": {
-    "capabilities": ["canonical_work_ingress","resident_runtime_consumption","workercoordinator_claim_fence","interlock_intr_admission","goal_resolution_continuation","canonical_state_reconstruction"],
-    "environment": "SOVEREIGN_RESIDENT_OR_ADMITTED_CURRENT_DEVICE_RUNTIME",
+    "capabilities": [
+      "task_registry_reconciliation",
+      "master_records_reconciliation",
+      "worker_claim_projection",
+      "dependency_reevaluation",
+      "intr_task_admission",
+      "canonical_artifact_validation"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
     "mutation_required": true,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": false
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "data/reusable-task-ephemeral-construct-contract.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "data/reusable-task-ephemeral-construct-contract.json"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
     ],
     "selected_substrate_id": null,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "runtime_resolution": null,
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "runtime_resolution": {
+    "map_ref": "control/runtime-profile-map.json",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "canonical-work-coordination-runtime-v1"
+    ],
+    "resolved_at": "2026-09-21T13:15:10Z",
+    "projection_only": true,
+    "selection_grants_authority": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"runtime_adoption_observed":false},
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_adoption_observed": false
+  },
   "latest_goal_task_block_header": {
     "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
     "handoff_task_id": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
@@ -96,7 +198,14 @@
     "notification_operation": "CREATE_GOAL_COMPLETION_NOTIFICATION_ISSUE",
     "notification_repository": "StegVerse-Labs/.github",
     "notification_assignee": "StegVerse",
-    "notification_body_fields": ["Goal Task ID","Handoff Task ID","COSV ID","Session Prompt Count","Goal Prompt Count","STATUS"],
+    "notification_body_fields": [
+      "Goal Task ID",
+      "Handoff Task ID",
+      "COSV ID",
+      "Session Prompt Count",
+      "Goal Prompt Count",
+      "STATUS"
+    ],
     "summary_included": false,
     "manual_work_included": false,
     "credential_authority": "TV/TVC",
@@ -105,8 +214,13 @@
     "provider_source_ref": "StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6",
     "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
   },
-  "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md","docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,

@@ -4,6 +4,17 @@ on:
   push:
     branches: [main]
     paths:
+      - 'scripts/evaluate_task_registry_collision_checkin.py'
+      - 'scripts/evaluate_task_registry_ai_session_checkin.py'
+      - 'scripts/validate_task_registration_substrate_resolution.py'
+      - 'schemas/canonical-task-record.schema.json'
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/**'
+      - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
+      - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_task_registration_substrate_resolution.py'
+      - 'tests/test_task_registry_ai_session_ingress.py'
+      - 'tests/test_task_registry_general_checkin_surface_gate.py'
       - 'heartbeat_runtime/coordination_graph.py'
       - 'heartbeat_runtime/coordination_ledger.py'
       - 'heartbeat_runtime/worker_task_admission.py'
@@ -24,9 +35,24 @@ on:
       - 'tests/test_session_build_preflight.py'
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
+      - 'scripts/run_canonical_work_event_bootstrap.py'
+      - 'scripts/apply_admitted_canonical_work_projection.py'
+      - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
+      - 'scripts/evaluate_task_registry_collision_checkin.py'
+      - 'scripts/evaluate_task_registry_ai_session_checkin.py'
+      - 'scripts/validate_task_registration_substrate_resolution.py'
+      - 'schemas/canonical-task-record.schema.json'
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
+      - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_task_registration_substrate_resolution.py'
+      - 'tests/test_task_registry_ai_session_ingress.py'
+      - 'tests/test_task_registry_general_checkin_surface_gate.py'
       - 'heartbeat_runtime/coordination_graph.py'
       - 'heartbeat_runtime/coordination_ledger.py'
       - 'heartbeat_runtime/worker_task_admission.py'
@@ -47,6 +73,11 @@ on:
       - 'tests/test_session_build_preflight.py'
       - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
+      - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
+      - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
+      - 'scripts/run_canonical_work_event_bootstrap.py'
+      - 'scripts/apply_admitted_canonical_work_projection.py'
+      - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -70,6 +101,16 @@ jobs:
             env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
           fi
           git checkout --detach FETCH_HEAD
+      - name: Validate Task Registry collision and generation fences
+        run: |
+          python -m unittest -v \
+            tests.test_task_registry_collision_checkin \
+            tests.test_task_registration_substrate_resolution \
+            tests.test_task_registry_ai_session_ingress \
+            tests.test_task_registry_general_checkin_surface_gate \
+            tests.test_steghealth_kv_interlock_canonical_work_ingress
+          python scripts/validate_task_registration_substrate_resolution.py
+          python scripts/validate_org_control_plane.py
       - name: Validate coordination source
         run: |
           python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py scripts/resolve_machine_preflight_receipt.py

@@ -1,0 +1,398 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+  "correlation_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "goal": "Observe the authentic execution result for the one existing immutable StegBrowser invocation through the exact nonce-bound A3 WorkerCoordinator claim/fence boundary, then continue only the same state lineage or repair only the first actual deterministic pre-A3 failure.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "canonical_issue": "StegVerse-Labs/.github#2338",
+  "handoff_ref": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
+  "immutable_invocation": {
+    "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "expected_evidence_predicates": [
+    "AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_ID_OBSERVED",
+    "AUTHENTIC_NONCE_BOUND_FENCING_TOKEN_OBSERVED",
+    "SAME_LINEAGE_INTERLOCK_INTR_SUCCESSOR_ONLY",
+    "MASTER_RECORDS_STATE_RECORDED",
+    "MASTER_RECORDS_RECONSTRUCTION_STATUS_PASS",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+    "MASTER_RECORDS_RECEIPT_DIGEST_EQUALS_RECONSTRUCTED_DIGEST"
+  ],
+  "observations": [
+    {
+      "observed_at": "2026-09-20",
+      "transition": "PARENT_PROMPT_20_FINAL_EXACT_NONCE_INSPECTION",
+      "classification": "A3_NOT_OBSERVED_NO_PRE_A3_RUNTIME_FAILURE_OBSERVED",
+      "authentic_nonce_bound_claim_id_observed": false,
+      "authentic_nonce_bound_fencing_token_observed": false,
+      "deterministic_pre_a3_runtime_failure_observed": false,
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_NONCE_LOOKUP_DEFECT_TRACED_AND_REPAIRED",
+      "goal_prompt_count": "1/20",
+      "registry_generation_entering": 137,
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "authoritative_evidence_location": "master-records/orchestration canonical_state_transition_receipts",
+      "expected_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "prior_defect": "MASTER_RECORDS_READ_API_REQUIRED_ALREADY_KNOWN_RECEIPT_SHA256_DESPITE_STORING_AND_INDEXING_SUBJECT_OR_CORRELATION_ID",
+      "repair": "ADDED_AUTHENTICATED_NON_AUTHORIZING_QUERY_BY_SUBJECT_OR_CORRELATION_ID_WITH_OPTIONAL_TRANSITION_ID_FILTER",
+      "master_records_repo": "master-records/orchestration",
+      "repair_pr": "master-records/orchestration#105",
+      "exact_head": "2c4ab1a058a288cc4645ffbcb5750d98188a7ef3",
+      "merge_commit": "e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+      "validation": {
+        "runtime_evidence_validation_run": 35526500242,
+        "orchestration_and_custody_service_tests": "PASS",
+        "all_exact_head_workflows": "PASS"
+      },
+      "query_path": "/api/master-records/state-transitions/query",
+      "query_subject": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "query_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "classification": "READ_PATH_REPAIRED_AUTHENTIC_MASTER_RECORDS_QUERY_REQUIRED",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_READ_PATH_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RUNTIME_ENTRYPOINT_DEFECT_REPAIRED",
+      "goal_prompt_count": "2/20",
+      "registry_generation_entering": 138,
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "requested_query": {
+        "path": "/api/master-records/state-transitions/query",
+        "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
+      },
+      "actual_runtime_query_executed": false,
+      "reason_not_executed": "NO_AUTHENTIC_DURABLE_CANONICAL_MASTER_RECORDS_ENDPOINT_OR_RUNTIME_ADVERTISEMENT_IS_CURRENTLY_EVIDENCED; EXISTING_RUNTIME_EVIDENCE_WORKFLOW_WAS ALSO_LOADING_BASE_APP_WITHOUT_CANONICAL_STATE_TRANSITION_ROUTES",
+      "first_concrete_runtime_loading_defect": "RUNTIME_EVIDENCE_VALIDATION_LAUNCHED_services.master_records_custody_api:app_INSTEAD_OF_services.canonical_master_records_api:app",
+      "repair_pr": "master-records/orchestration#106",
+      "exact_head": "8f891a271ebc070cdd8fb1cb9e7f19d5ba8ff817",
+      "merge_commit": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "validation": {
+        "runtime_evidence_validation_run": 35527681406,
+        "start_owned_authenticated_custody_service": "PASS",
+        "wait_for_owned_authenticated_custody_service": "PASS",
+        "authenticated_custody_and_readback": "PASS",
+        "orchestration_and_custody_service_tests": "PASS",
+        "all_exact_head_workflows": "PASS"
+      },
+      "production_runtime_evidence": {
+        "durable_canonical_endpoint_observed": false,
+        "public_or_internal_runtime_advertisement_observed": false,
+        "production_endpoint_deployed_claimed": false,
+        "source_only_or_workflow_local_runtime_is_not_target_store": true
+      },
+      "classification": "CANONICAL_ROUTE_LOADING_REPAIRED_DURABLE_RUNTIME_ENDPOINT_STILL_UNOBSERVED",
+      "a3_custody_classified": false,
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_RUNTIME_ENTRYPOINT_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RESIDENT_SOURCE_REFRESH_DEFECT_REPAIRED",
+      "goal_prompt_count": "3/20",
+      "registry_generation_entering": 140,
+      "defect": "EXISTING_RESIDENT_SOURCE_REFRESH_WATCHER_WATCHED_stegverse-master-records_PACKAGE_BUT_DID_NOT_MATERIALIZE_IT_INTO_vendor/master-records-orchestration",
+      "repair_pr": "StegVerse-Labs/.github#2352",
+      "repair_merge": "e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+      "repair_behavior": "VALIDATE_ALREADY_LOCAL_stegverse.source-package/v1_FOR_stegverse.master-records_AND_ATOMICALLY_REFRESH_EXISTING_RUNTIME_VENDOR_ROOT_BEFORE_REQUEST_DISPATCH",
+      "validation": {
+        "first_run": 35528771460,
+        "first_failure": "NameError tempfile missing",
+        "repaired_run": 35528813844,
+        "repaired_run_status": "PASS"
+      },
+      "network_fetch_performed": false,
+      "new_runtime_created": false,
+      "new_service_created": false,
+      "new_invocation_issued": false,
+      "durable_runtime_endpoint_observed": false,
+      "authentic_nonce_query_executed": false,
+      "classification": "RESIDENT_MASTER_RECORDS_SOURCE_REFRESH_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED"
+    },
+    {
+      "observed_at": "2026-09-20",
+      "transition": "MASTER_RECORDS_RESIDENT_SOURCE_PROOF_HARDENED",
+      "goal_prompt_count": "3/20",
+      "supplemental_to": "MASTER_RECORDS_RESIDENT_SOURCE_REFRESH_DEFECT_REPAIRED",
+      "canonical_first_defect_remains": "EXISTING_RESIDENT_SOURCE_REFRESH_WATCHER_DID_NOT_MATERIALIZE_MASTER_RECORDS_PACKAGE",
+      "hardening_defect": "MASTER_RECORDS_BUNDLE_SOURCE_PROOF_STILL_ACCEPTED_DESCENDANTS_OF_OLD_SV001_FLOOR_AND_DID_NOT_PROTECT_CANONICAL_STATE_TRANSITION_API_FILES",
+      "repair_pr": "StegVerse-Labs/.github#2354",
+      "repair_merge": "5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+      "required_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "protected_paths_added": [
+        "services/canonical_state_transition_custody.py",
+        "services/canonical_master_records_api.py"
+      ],
+      "validation": {
+        "exact_head": "0cd5890163399e0dd96b9d8f28dd435aa995f418",
+        "kv_ai_memory_binding_run": 35528815067,
+        "kv_ai_memory_binding": "PASS",
+        "deepseek_resident_run": 35528814989,
+        "deepseek_resident": "PASS"
+      },
+      "authentic_runtime_refresh_observed": false,
+      "durable_runtime_endpoint_observed": false,
+      "nonce_query_executed": false,
+      "authority_effect": "NONE_SOURCE_PROOF_HARDENING_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "MASTER_RECORDS_RECURRING_SOURCE_PACKAGE_MATERIALIZATION_DEFECT_REPAIRED",
+      "goal_prompt_count": "4/20",
+      "registry_generation_entering": 163,
+      "defect": "PATH_TRIGGERED_SOURCE_REFRESH_WATCHED_stegverse-master-records_BUT_ONLY_MATERIALIZED_MASTER_RECORDS_PACKAGE_DURING_WATCHER_INSTALLATION",
+      "repair_pr": "StegVerse-Labs/.github#2436",
+      "repair_exact_head": "0af38b780416b786dee9a4965af547577f811d86",
+      "repair_merge": "00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
+      "validation": {
+        "workflow": "Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)",
+        "run_id": 35600016501,
+        "conclusion": "success"
+      },
+      "repair_behavior": "PATH_TRIGGERED_REFRESH_CYCLE_REUSES_EXISTING_MATERIALIZER_IN_MATERIALIZE_ONLY_MODE_BEFORE_RESIDENT_REQUEST_DISPATCH",
+      "new_runtime_created": false,
+      "new_scheduler_created": false,
+      "new_dispatcher_created": false,
+      "new_observer_created": false,
+      "new_device_prerequisite": false,
+      "new_credential_path": false,
+      "new_custody_authority": false,
+      "authentic_resident_refresh_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "a3_claim_fence_observed": false,
+      "classification": "RECURRING_MASTER_RECORDS_SOURCE_MATERIALIZATION_PATH_REPAIRED_RUNTIME_OBSERVATION_STILL_REQUIRED",
+      "authority_effect": "NONE_SOURCE_PATH_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_FLOOR_PROVENANCE_REPAIRED",
+      "goal_prompt_count": "5/20",
+      "registry_generation_entering": 169,
+      "superseded_pr": {
+        "pull_request": 2430,
+        "exact_head": "83597be8cb58718eb6c1bced249bcd77aa942d05",
+        "disposition": "CLOSED_UNMERGED_SUPERSEDED_BY_PR_2436"
+      },
+      "recurring_materialization_repair": {
+        "pull_request": 2436,
+        "merge": "00c44a53ab684a1c5abde5cf23cb93be6daa37e3"
+      },
+      "refresh_retention_repair": {
+        "pull_request": 2465,
+        "exact_head": "6631152e04ff0745f82a39f0cc9a4b7588514793",
+        "validation_run": 35603108689,
+        "merge": "c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+        "receipt_path": "receipts/sovereign-host/master-records-source-refresh.latest.json"
+      },
+      "source_floor_provenance_repair": {
+        "pull_request": 2472,
+        "exact_head": "bc927e1ef7224fc9fa8e4b3c731e61d35746412f",
+        "validation_runs": [
+          35604219285,
+          35604219129
+        ],
+        "merge": "0c8256e024867199ff065eb19f1277158c9f1635",
+        "required_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715"
+      },
+      "repair_behavior": "RETAIN_EACH_EXISTING_RECURRING_MASTER_RECORDS_MATERIALIZATION_RESULT_AND_FAIL_CLOSED_UNLESS_SOURCE_PACKAGE_PROVENANCE_VERIFIES_MASTER_RECORDS_ORCHESTRATION_AT_REQUIRED_GIT_FLOOR_OR_DESCENDANT",
+      "authenticated_runtime_command_surface_available": false,
+      "authenticated_runtime_surface_unavailability_is_runtime_absence_evidence": false,
+      "authentic_master_records_source_refresh_receipt_observed": false,
+      "authentic_resident_refresh_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "a3_claim_fence_observed": false,
+      "second_invocation_emitted": false,
+      "round_trip_1_entered": false,
+      "classification": "MASTER_RECORDS_REFRESH_RETENTION_AND_SOURCE_FLOOR_PROVENANCE_SOURCE_PATH_REPAIRED_AUTHENTIC_RESIDENT_CYCLE_EVIDENCE_PENDING",
+      "authority_effect": "NONE_SOURCE_AND_EVIDENCE_RETENTION_REPAIR_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "POST_REPAIR_AUTHENTIC_MASTER_RECORDS_REFRESH_EVIDENCE_REOBSERVED",
+      "goal_prompt_count": "6/20",
+      "registry_generation_entering": 181,
+      "canonical_main_entering": "453a05fb0c08f5a4563e65cad6f4dee5ff197e02",
+      "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+      "required_schema": "stegverse.master-records-resident-source-refresh/v1",
+      "required_receipt_predicates": {
+        "state": "MATERIALIZED_VERIFIED",
+        "materialization_performed": true,
+        "canonical_master_records_api_loaded_from_package": true,
+        "source_proof_state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "source_proof_repository": "master-records/orchestration",
+        "source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+        "source_floor_present": true,
+        "valid_descendant_head_required": true
+      },
+      "authentic_retained_refresh_receipt_observed": false,
+      "authentic_source_package_artifact_observed": false,
+      "durable_master_records_endpoint_advertisement_observed": false,
+      "authentic_nonce_bound_claim_fence_observed": false,
+      "repository_hits_classification": "IMPLEMENTATION_TEST_AND_HANDOFF_ONLY",
+      "authorized_resident_command_surface_available": false,
+      "surface_unavailability_is_runtime_absence_evidence": false,
+      "device_prerequisite_added": false,
+      "deterministic_pre_a3_failure_observed": false,
+      "source_change_performed": false,
+      "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+      "classification": "EVIDENCE_NOT_OBSERVED_NO_DETERMINISTIC_EXISTING_PATH_FAILURE_RETAINED",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "GOAL_PROMPT_8_AUTHENTIC_MASTER_RECORDS_REFRESH_REOBSERVATION",
+      "goal_prompt_count": "8/20",
+      "registry_generation_entering": 184,
+      "canonical_main_entering": "5c5bd54a232f241b107d84e0c529d7dbfc36ee21",
+      "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+      "required_schema": "stegverse.master-records-resident-source-refresh/v1",
+      "required_receipt_predicates": {
+        "state": "MATERIALIZED_VERIFIED",
+        "materialization_performed": true,
+        "canonical_master_records_api_loaded_from_package": true,
+        "source_proof_state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "source_proof_repository": "master-records/orchestration",
+        "source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+        "source_floor_present": true,
+        "valid_descendant_head_required": true
+      },
+      "authorized_resident_command_surface_available": false,
+      "connected_surface_absence_is_runtime_absence_evidence": false,
+      "authentic_retained_refresh_receipt_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "authentic_nonce_bound_claim_fence_observed": false,
+      "deterministic_pre_a3_failure_observed": false,
+      "retention_writer_runtime_root_alignment_reverified": true,
+      "recurring_service_materialize_only_writer_reverified": true,
+      "focused_retention_test_present": true,
+      "newly_evidenced_source_defect": false,
+      "source_change_performed": false,
+      "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+      "classification": "EVIDENCE_REACHABILITY_UNCHANGED_EXISTING_RETENTION_PATH_REVERIFIED_NO_NEW_SOURCE_DEFECT",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "GOAL_PROMPT_9_POST_REBASE_AUTHENTIC_SOURCE_REFRESH_REOBSERVATION",
+      "goal_prompt_count": "9/20",
+      "canonical_main_entering": "cde20d6dd997b6b6aa528e9d02b9e5fdf50896e5",
+      "coordination_pr": 2521,
+      "coordination_pr_exact_head_entering": "ec24644601e9745d63fc80e8e9edac1a8edbc14d",
+      "coordination_pr_mergeable": true,
+      "exact_head_validation_runs_attached": false,
+      "coordination_merge_performed": false,
+      "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+      "authentic_retained_refresh_receipt_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "authentic_nonce_bound_claim_fence_observed": false,
+      "repository_evidence_classification": "SOURCE_IMPLEMENTATION_TESTS_AND_PRIOR_DECLARATIONS_ONLY",
+      "authorized_resident_command_surface_available": false,
+      "surface_unavailability_is_runtime_absence_evidence": false,
+      "retention_writer_same_runtime_root_reverified": true,
+      "new_source_defect_observed": false,
+      "source_change_performed": false,
+      "deterministic_pre_a3_failure_observed": false,
+      "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+      "classification": "AUTHENTIC_RECEIPT_STILL_UNOBSERVABLE_NO_FAILURE_INFERRED_NO_NEW_REPAIR_JUSTIFIED",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-NONCE-QUERY",
+      "kind": "AUTHENTIC_CUSTODY_READ_PATH",
+      "state": "SOURCE_REPAIRED_MERGED_RUNTIME_QUERY_REQUIRED",
+      "ref": "master-records/orchestration#105@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+      "disposition": "QUERY_CANONICAL_MASTER_RECORDS_BY_IMMUTABLE_NONCE_AND_WORKERCOORDINATOR_CLAIM_FENCE_BOUND; EMPTY_AUTHORITATIVE_RESULT_MEANS_NO_CUSTODIED_A3_TRANSITION_FOR_THIS_SUBJECT"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RUNTIME-ENTRYPOINT",
+      "kind": "CANONICAL_RUNTIME_LOADING",
+      "state": "SOURCE_REPAIRED_MERGED_AUTHENTIC_DURABLE_RUNTIME_MATERIALIZATION_REQUIRED",
+      "ref": "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
+      "disposition": "THE_EXISTING_MASTER_RECORDS_RUNTIME_MUST_LOAD_services.canonical_master_records_api:app_AND_EXPOSE_THE_MERGED_QUERY_AGAINST_ITS_DURABLE_CUSTODY_DB; WORKFLOW_LOCAL_RUNTIME_DOES_NOT_SUBSTITUTE_FOR_THE_AUTHENTIC_TARGET_STORE"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-REFRESH",
+      "kind": "EXISTING_RESIDENT_SOURCE_REFRESH",
+      "state": "REPAIRED_MERGED_RECURRING_MATERIALIZATION_WITH_RETAINED_RECEIPT_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/.github#2352@e3a0f31c1b31b2d0133969bd1409a6218d693e65;StegVerse-Labs/.github#2436@00c44a53ab684a1c5abde5cf23cb93be6daa37e3;StegVerse-Labs/.github#2465@c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+      "disposition": "OBSERVE_AUTHENTIC_EXISTING_PATH_TRIGGERED_REFRESH_RECEIPT_AT_receipts/sovereign-host/master-records-source-refresh.latest.json_BEFORE_TRUSTING_RESIDENT_MATERIALIZATION_OR_QUERYING_DURABLE_MASTER_RECORDS"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RESIDENT-SOURCE-PROOF",
+      "kind": "EXISTING_RESIDENT_SOURCE_PROVENANCE",
+      "state": "SOURCE_PROOF_CARRIAGE_AND_FAIL_CLOSED_GATE_REPAIRED_MERGED_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/.github#2354@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf;StegVerse-Labs/.github#2472@0c8256e024867199ff065eb19f1277158c9f1635",
+      "disposition": "REQUIRE_AUTHENTIC_RETAINED_REFRESH_RECEIPT_PACKAGE_PROVENANCE_TO_VERIFY_master-records/orchestration_WITH_SOURCE_FLOOR_8804762fb5da5d212aa7c9c448dfcdabac734715_AND_A_VALID_DESCENDANT_HEAD_BEFORE_TRUSTING_ANY_DURABLE_RUNTIME_ADVERTISEMENT"
+    }
+  ],
+  "blockers": [],
+  "allowed_next_transitions": [
+    "OBSERVE_EXISTING_RESIDENT_SOURCE_REFRESH_CONSUMING_CURRENT_MASTER_RECORDS_PACKAGE",
+    "VERIFY_MATERIALIZED_MASTER_RECORDS_SOURCE_CONTAINS_8804762F_OR_LATER",
+    "OBSERVE_AUTHENTIC_DURABLE_MASTER_RECORDS_RUNTIME_USING_MATERIALIZED_SOURCE",
+    "EXECUTE_AUTHENTIC_NONCE_QUERY_AGAINST_DURABLE_CANONICAL_STORE",
+    "IF_MATCH_VALIDATE_AND_CONTINUE_SAME_LINEAGE",
+    "IF_EMPTY_TRACE_FIRST_MISSING_CUSTODY_PRODUCER_TRANSITION"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "a3_claim_fence_observed": false,
+    "deterministic_pre_a3_failure_observed": false,
+    "runtime_completion_claimed": false
+  },
+  "nonclaims": [
+    "SOURCE_DECLARATIONS_ARE_NOT_RUNTIME_EVIDENCE",
+    "STATIC_FAILURE_STRINGS_ARE_NOT_RUNTIME_FAILURE_EVIDENCE",
+    "ABSENCE_OF_RUNTIME_RESULT_IS_NOT_FAILURE",
+    "NO_SECOND_INVOCATION_AUTHORIZED"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE"
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "9/20",
+    "split_merely_to_reset_counter": false
+  },
+  "source_refs": [
+    "master-records/orchestration#105",
+    "master-records/orchestration@e88be99fdfa678b19b3d0c52d120d15a60c9557c",
+    "master-records/orchestration#106",
+    "master-records/orchestration@8804762fb5da5d212aa7c9c448dfcdabac734715",
+    "StegVerse-Labs/.github#2352",
+    "StegVerse-Labs/.github@e3a0f31c1b31b2d0133969bd1409a6218d693e65",
+    "StegVerse-Labs/.github#2354",
+    "StegVerse-Labs/.github@5b37c88a0ec6dcb9d5d8289b025e8d80418106cf",
+    "StegVerse-Labs/.github#2436",
+    "StegVerse-Labs/.github@00c44a53ab684a1c5abde5cf23cb93be6daa37e3",
+    "StegVerse-Labs/.github#2465",
+    "StegVerse-Labs/.github@c3de84f2d4e8dc6c587b53a73f9eba5f7ac5033d",
+    "StegVerse-Labs/.github#2472",
+    "StegVerse-Labs/.github@0c8256e024867199ff065eb19f1277158c9f1635"
+  ]
+}

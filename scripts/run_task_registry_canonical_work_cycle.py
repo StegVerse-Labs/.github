@@ -29,6 +29,8 @@ RECORDS = ROOT / "data" / "canonical-task-records"
 REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
+WORKER_RUNTIME = ROOT / "scripts" / "run_worker_runtime.py"
+WORKER_REGISTRY_FRAGMENTS = ROOT / "control" / "worker-registry.d"
 CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
 PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 NOTIFICATION_REL = Path("requests/tv-tvc/goal-task-completion-github-notification.latest.json")
@@ -64,20 +66,26 @@ def atomic_json(path: Path, value: dict[str, Any]) -> None:
     tmp.replace(path)
 
 
-def progression_context(records_dir: Path = RECORDS) -> tuple[str, dict[str, Any], dict[str, Any]]:
+def progression_context(
+    current_goal_task_id: str | None = None,
+    records_dir: Path = RECORDS,
+) -> tuple[str, dict[str, Any] | None, dict[str, Any], str]:
     controller = load(records_dir / f"{PROGRESSION_CONTROLLER_TASK_ID}.json")
-    goal_task_id = str(controller.get("root_correlation_id") or "").strip()
-    if not goal_task_id:
-        raise RuntimeError("progression controller missing root Goal Task ID")
+    controller_lineage_goal_id = str(controller.get("root_correlation_id") or "").strip()
+    if not controller_lineage_goal_id:
+        raise RuntimeError("progression controller missing lineage root Goal Task ID")
     header = controller.get("latest_goal_task_block_header")
     notification = controller.get("goal_completion_notification")
     if not isinstance(header, dict):
         raise RuntimeError("progression controller missing latest Goal Task block header projection")
     if not isinstance(notification, dict):
         raise RuntimeError("progression controller missing Goal completion notification contract")
-    if header.get("goal_task_id") != goal_task_id:
-        raise RuntimeError("Goal Task block header identity mismatch")
-    return goal_task_id, header, notification
+    header_goal_task_id = str(header.get("goal_task_id") or "").strip()
+    goal_task_id = str(current_goal_task_id or header_goal_task_id).strip()
+    if not goal_task_id:
+        raise RuntimeError("current root Goal Task ID is unavailable")
+    completion_header = header if header_goal_task_id == goal_task_id else None
+    return goal_task_id, completion_header, notification, controller_lineage_goal_id
 
 
 def canonical_registry_rows(registry_path: Path = REGISTRY) -> list[dict[str, Any]]:
@@ -196,9 +204,12 @@ def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str
     excluded = excluded_task_ids or set()
     if task_id == PROGRESSION_CONTROLLER_TASK_ID or task_id in excluded:
         return False
-    if record.get("coordination_state") != "PROPOSED":
+    coordination_state = str(record.get("coordination_state") or "").upper()
+    checkout_state = str(record.get("checkout_state") or "").upper()
+    active_checked_out = coordination_state == "ACTIVE" and checkout_state == "CHECKED_OUT"
+    if coordination_state != "PROPOSED" and not active_checked_out:
         return False
-    if record.get("checkout_state") in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
+    if checkout_state in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
         return False
     if "INGRESS_ADMITTED" not in (record.get("allowed_next_transitions") or []):
         return False
@@ -217,6 +228,55 @@ def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str
     if authority.get("interlock_intr_required_for_governed_ingress_egress") is not True:
         return False
     return True
+
+
+def workercoordinator_target_candidate(
+    record: dict[str, Any],
+    fragments_dir: Path = WORKER_REGISTRY_FRAGMENTS,
+) -> bool:
+    """Return true only for an already-admitted state-triggerable WorkerCoordinator task."""
+    if str(record.get("coordination_state") or "").upper() != "ACTIVE":
+        return False
+    if str(record.get("checkout_state") or "").upper() != "CHECKED_OUT":
+        return False
+    if record.get("human_action_ref") not in {None, ""}:
+        return False
+    if "INGRESS_ADMITTED" in (record.get("allowed_next_transitions") or []):
+        return False
+    task_id = str(record.get("task_id") or "").strip()
+    if not task_id or not fragments_dir.is_dir():
+        return False
+
+    matches: list[dict[str, Any]] = []
+    for path in sorted(fragments_dir.glob("*.json")):
+        fragment = load(path)
+        if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
+            continue
+        for declared in fragment.get("tasks", []):
+            if isinstance(declared, dict) and declared.get("task_id") == task_id:
+                matches.append(declared)
+    if len(matches) != 1:
+        return False
+
+    task = matches[0]
+    admission = task.get("admission") or {}
+    return (
+        task.get("state") == "HANDOFF_READY"
+        and not task.get("claim_id")
+        and not task.get("worker_id")
+        and not task.get("worker_instance_id")
+        and admission.get("authority_domain") == "INDEPENDENT_TASK_CONTROL"
+        and admission.get("claim_state") == "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+        and admission.get("carrier_trigger_required") is False
+    )
+
+
+def delegation_mode(record: dict[str, Any]) -> str | None:
+    if workercoordinator_target_candidate(record):
+        return "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION"
+    if machine_ingress_candidate(record):
+        return "CANONICAL_WORK_INGRESS"
+    return None
 
 
 def ecosystem_priority_class(record: dict[str, Any]) -> str:
@@ -258,17 +318,20 @@ def load_candidates(
         if goal_task_id and root_id != goal_task_id:
             continue
         record = registry_candidate_projection(registry_record, records_dir)
-        if machine_ingress_candidate(record, excluded_task_ids):
+        if delegation_mode(record) is not None and task_id not in (excluded_task_ids or set()):
             rows.append(record)
     rows.sort(key=candidate_sort_key)
     return rows
 
 
 def collision_check(task_id: str) -> dict[str, Any]:
+    registry_generation = int(load(REGISTRY).get("generation", -1))
+    if registry_generation < 0:
+        raise RuntimeError("canonical Task Registry generation unavailable")
     proc = subprocess.run(
         [sys.executable, str(CHECKIN)],
         cwd=str(ROOT),
-        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE}),
+        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE, "observed_registry_generation": registry_generation}),
         text=True,
         capture_output=True,
         check=True,
@@ -297,6 +360,7 @@ def select_task(
             "task_id": task_id,
             "priority_class": ecosystem_priority_class(record),
             "checkout_state": record.get("checkout_state"),
+            "delegation_mode": delegation_mode(record),
             "disposition": checkin.get("disposition"),
             "collision_candidates": checkin.get("collision_candidates") or [],
         })
@@ -310,11 +374,33 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--select-only", action="store_true")
     parser.add_argument("--exclude-task-id", action="append", default=[])
+    parser.add_argument("--goal-task-id")
     args = parser.parse_args()
     excluded_task_ids = {str(task_id).strip() for task_id in args.exclude_task_id if str(task_id).strip()}
 
-    goal_task_id, header, notification = progression_context()
+    goal_task_id, header, notification, controller_lineage_goal_id = progression_context(args.goal_task_id)
+    goal_context_source = "EXPLICIT_CURRENT_GOAL_TASK" if args.goal_task_id else "PROGRESSION_HEADER_FALLBACK"
     goal_record = canonical_goal_record(goal_task_id)
+    if goal_completion_validated(goal_record) and header is None:
+        receipt = {
+            "schema": "stegverse.task-registry-canonical-work-cycle/v1",
+            "state": "GOAL_TASK_COMPLETED_NOTIFICATION_HEADER_UNAVAILABLE",
+            "start_point": "CANONICAL_TASK_REGISTRY",
+            "goal_task_id": goal_task_id,
+            "goal_context_source": goal_context_source,
+            "progression_controller_lineage_goal_id": controller_lineage_goal_id,
+            "goal_completion_validated": True,
+            "continue_machine_work": False,
+            "selected_task_id": None,
+            "successor_selection_performed": False,
+            "completion_notification_request": None,
+            "completion_notification_pending_reason": "CURRENT_GOAL_TASK_BLOCK_HEADER_NOT_PROJECTED",
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "authority_effect": "NONE_FAIL_CLOSED_TERMINAL_STOP_ONLY",
+        }
+        print(json.dumps(receipt, sort_keys=True))
+        return 0
     if goal_completion_validated(goal_record):
         notification_request = build_completion_notification_request(goal_task_id, header, notification, goal_record)
         notification_ref = None
@@ -327,6 +413,8 @@ def main() -> int:
             "state": "GOAL_TASK_COMPLETED_TERMINAL_NOTIFICATION_REQUESTED",
             "start_point": "CANONICAL_TASK_REGISTRY",
             "goal_task_id": goal_task_id,
+            "goal_context_source": goal_context_source,
+            "progression_controller_lineage_goal_id": controller_lineage_goal_id,
             "goal_completion_validated": True,
             "continue_machine_work": False,
             "selected_task_id": None,
@@ -348,11 +436,14 @@ def main() -> int:
         "candidate_identity_source": "CANONICAL_TASK_REGISTRY",
         "task_record_shards_are_optional_enrichment_only": True,
         "goal_task_id": goal_task_id,
+        "goal_context_source": goal_context_source,
+        "progression_controller_lineage_goal_id": controller_lineage_goal_id,
         "goal_completion_validated": False,
         "selection_priority_rule": "ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_FIRST",
         "progression_controller_excluded_from_work_selection": True,
         "explicit_request_task_ids_excluded": sorted(excluded_task_ids),
         "selected_task_id": selected.get("task_id") if selected else None,
+        "selected_delegation_mode": delegation_mode(selected) if selected else None,
         "candidate_count": len(candidates),
         "considered": considered,
         "workercoordinator_claim_or_fence_minted": False,
@@ -375,17 +466,31 @@ def main() -> int:
     if args.runtime_root is None:
         raise SystemExit("--runtime-root is required unless --select-only is used")
 
-    command = [
-        sys.executable,
-        str(BOOTSTRAP),
-        "--task-id",
-        str(selected["task_id"]),
-        "--runtime-root",
-        str(args.runtime_root.expanduser().resolve()),
-    ]
+    mode = delegation_mode(selected)
+    if mode == "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION":
+        command = [
+            sys.executable,
+            str(WORKER_RUNTIME),
+            "--task-id",
+            str(selected["task_id"]),
+        ]
+    else:
+        command = [
+            sys.executable,
+            str(BOOTSTRAP),
+            "--task-id",
+            str(selected["task_id"]),
+            "--runtime-root",
+            str(args.runtime_root.expanduser().resolve()),
+        ]
     completed = subprocess.run(command, cwd=str(ROOT), text=True, capture_output=True, check=False)
+    delegated_state = (
+        "DELEGATED_TO_EXISTING_WORKERCOORDINATOR_STATE_TRANSITION"
+        if mode == "WORKERCOORDINATOR_TARGETED_STATE_TRANSITION"
+        else "DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH"
+    )
     receipt.update({
-        "state": "DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH" if completed.returncode == 0 else "CANONICAL_WORK_DELEGATION_RECORDED_FAILURE",
+        "state": delegated_state if completed.returncode == 0 else "EXISTING_PATH_DELEGATION_RECORDED_FAILURE",
         "delegation_returncode": completed.returncode,
         "delegation_command": command,
         "delegation_stdout": completed.stdout,

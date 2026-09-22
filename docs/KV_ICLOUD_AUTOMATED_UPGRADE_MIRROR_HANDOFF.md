@@ -5,12 +5,19 @@ Goal Task ID: `KV-ICLOUD-AUTOMATED-UPGRADE-001`
 COSV profile: `task.v1`  
 COSV: `40000100100000`  
 Coordination state: `ACTIVE`  
-Runtime phase: `MYKV_CURRENT_IPHONE_UNIFIED_INSTALL_PENDING`  
+Runtime phase: `MYKV_CURRENT_IPHONE_OWNER_INSTALL_READY`  
 Canonical task record: `data/canonical-task-records/KV-ICLOUD-AUTOMATED-UPGRADE-001.json`  
 Canonical task vector: `control/task-vectors/KV-ICLOUD-AUTOMATED-UPGRADE-001.json`  
 MyKV unified install source: `StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md`  
+MyKV public propagation observer: `StegVerse-Labs/Site/docs/MYKV_PUBLIC_PROPAGATION_OBSERVER_MIRROR_HANDOFF.md`  
 Resident-health source: `StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md`  
 Upgrade implementation handoff: `StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`
+
+## Current iPhone installation truth
+
+The owner explicitly confirmed on 2026-09-21 that **MyKV is not installed on the current iPhone and has never been installed there**. `MYKV_CURRENT_IPHONE_OWNER_INSTALL_READY` means only that the public install surface is ready for the owner to perform the first installation. It must never be interpreted as an installed, previously launched, resident-health-observed, or device-activated state.
+
+No authentic first-launch resident-health / Node-continuity result exists because the first MyKV installation and launch have not occurred.
 
 ## Canonical architecture
 
@@ -44,6 +51,22 @@ The unified install contract is merged and validated in Site:
 
 `cloud-kv-peers.html` keeps owner-selectable storage-host panels hidden until the same resident-health contract reports a healthy resident substrate and registered Node.
 
+## Authentic public served-body propagation proof
+
+Public propagation is now independently verified from a credential-free GitHub Actions observer that has no runtime, activation, credential, deployment, Interlock/InTr, Node, or KV authority.
+
+Observer implementation PR `StegVerse-Labs/Site#1366` passed its exact-head validation lanes and merged as `c89a460e5d6c2d92c49af1d663e5b18d61a0a0db`. Main-branch workflow run `35144058676` then performed an authentic HTTPS observation of the actual `stegverse.org` origin. Run job `observe` completed successfully and artifact `mykv-public-propagation-proof-35144058676` / artifact ID `10465584595` retained the exact served bodies, response headers, and `stegverse.mykv-public-propagation-proof/v1` receipt.
+
+The receipt observed PASS on attempt 1 at `2026-09-16T20:01:50.459599Z` with every deterministic predicate true:
+
+- install shell `https://stegverse.org/my-kv-install.html`: HTTP `200`, SHA-256 `93b63188b69ba2f80030b76e620dc885957bd4e883ab27c8450d67e4382d82af`;
+- manifest `https://stegverse.org/my-kv.webmanifest`: HTTP `200`, SHA-256 `f0ab7bdc2d86a82113ccbee353ab20d4afaaae07d462f8e35bd52c00230fda94`;
+- Node-continuity loader `https://stegverse.org/assets/stegverse-node-continuity.js`: HTTP `200`, SHA-256 `ee23a94de59b82f57cc98b4c9725f69bd8575ea457d9ff11133892322e4bf193`.
+
+Verified predicates include the `20260915-unified-mykv-v1` unified loader marker, single-owner-facing-install language, automatic resident StegOS/Node bootstrap, fail-closed `HEALTHY` and registered-Node gates, manifest standalone display/start URL `/my-kv-install.html?source=installed`, root scope, and the canonical Node-continuity/bootstrap chain.
+
+This satisfies the independent public-propagation predicate. It does **not** claim MyKV is installed on the current iPhone and does not claim any resident runtime result yet.
+
 ## Resident StegOS diagnostic and repair boundary
 
 The resident StegOS/Node remains intentionally small. It is not a second KV and does not duplicate owner data. It provides the minimum same-device substrate needed for Node/continuity, diagnostic health, service-worker/runtime recovery, and governed transition availability.
@@ -72,16 +95,15 @@ The pending Google Drive KV #2 request `SITE-CLOUD-KV-4347408852127319cbda574f02
 
 ## Remaining completion predicates
 
-Only deployment/runtime predicates remain for this phase:
+The public-propagation predicate is complete. Remaining predicates begin with the single current-iPhone owner installation:
 
-1. independently verify public propagation of the merged MyKV install surface and its unified resident-substrate loader on the actual StegVerse-controlled origin;
-2. install MyKV once on the current iPhone;
-3. launch MyKV and observe the first consolidated resident-health / Node-continuity result;
-4. verify a valid existing Node is reused or, only when genuinely absent, established once;
-5. run bounded resident repair only if the health result requires it;
-6. expose storage-host choices only after resident substrate health is acceptable;
-7. select the KV storage host independently of KV identity;
-8. install/adopt and connect/verify the KV through DEVICE_KV / Interlock/InTr with authentic receipts;
-9. reconcile canonical state only from authentic runtime evidence.
+1. install MyKV once on the current iPhone using the verified `https://stegverse.org/my-kv-install.html` surface;
+2. launch MyKV once and capture the first consolidated resident-health / Node-continuity result before KV-host selection;
+3. verify a valid existing Node is reused or, only when genuinely absent, established once;
+4. run bounded resident repair only if the health result requires it;
+5. expose storage-host choices only after resident substrate health is acceptable;
+6. select the KV storage host independently of KV identity;
+7. install/adopt and connect/verify the KV through DEVICE_KV / Interlock/InTr with authentic receipts;
+8. reconcile canonical state only from authentic runtime evidence.
 
-The next owner-facing action, once public MyKV propagation is independently verified, is **one MyKV installation**. There is no separate owner-facing StegOS installation or multi-site bootstrap test.
+The next owner-facing action is now authorized by the satisfied public-propagation prerequisite: **one MyKV installation on the current iPhone**. Use Safari -> Share -> Add to Home Screen -> Add, then launch MyKV once and stop at the first consolidated resident-health / Node-continuity result before selecting any KV storage host. There is no separate owner-facing StegOS installation or multi-site bootstrap test.

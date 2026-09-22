@@ -7,6 +7,9 @@ on:
       - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
       - scripts/consume_cross_framework_current_basis_v04_request.py
       - scripts/dispatch_resident_execution_requests.py
+      - scripts/consume_sdk_evaluator_governance_posture_request.py
+      - control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json
+      - tests/test_sdk_evaluator_governance_posture_resident.py
       - scripts/install_sovereign_worker_source_refresh_service.py
       - scripts/install_sovereign_heartbeat_service.py
       - scripts/bootstrap_sovereign_runtime.py
@@ -26,6 +29,9 @@ on:
       - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
       - scripts/consume_cross_framework_current_basis_v04_request.py
       - scripts/dispatch_resident_execution_requests.py
+      - scripts/consume_sdk_evaluator_governance_posture_request.py
+      - control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json
+      - tests/test_sdk_evaluator_governance_posture_resident.py
       - scripts/install_sovereign_worker_source_refresh_service.py
       - scripts/install_sovereign_heartbeat_service.py
       - scripts/bootstrap_sovereign_runtime.py
@@ -61,6 +67,7 @@ jobs:
           set -eu
           python -m unittest tests.test_cross_framework_current_basis_v04_resident
           python -m unittest tests.test_resident_request_dispatcher
+          python -m unittest tests.test_sdk_evaluator_governance_posture_resident
           python -m unittest tests.test_sovereign_worker_source_refresh
           python -m unittest tests.test_bootstrap_resident_request_dispatch
           python -m unittest tests.test_portable_resident_request_dispatch

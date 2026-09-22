@@ -1,0 +1,118 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
+  "correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
+  "root_correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
+  "parent_task_id": null,
+  "goal": "Bind an already-reviewed external_framework_wiki_publication_transition candidate through the existing StegVerse SDK external-manifest ingress and canonical governed runtime, require Interlock/InTr-governed Master Records closure with RECORDED + reconstruction PASS + required-evidence PASS + exact receipt digest equality, and permit repository mutation only after that closure is verified. Preserve direct-submitter non-authority and make the publication transition reusable by Admissibility, StegGuardian, StegTalk, and a future SDK public wiki.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/schemas/external-chat-publication-transition.schema.json",
+    "StegVerse-org/LLM-adapter:llm_adapter/external_review_api.py",
+    "StegVerse-org/LLM-adapter:llm_adapter/external_publication_mutation.py",
+    "StegVerse-org/LLM-adapter:llm_adapter/governed_manifest_ingress.py",
+    "StegVerse-org/StegVerse-SDK:stegverse/external_framework_runner.py",
+    "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
+    "master-records/orchestration:services/canonical_state_transition_custody.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org",
+      "master-records",
+      "GCAT-BCAT-Engine",
+      "StegVerse-002"
+    ],
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-Labs/admissibility-wiki",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "reviewed-publication-candidate",
+      "sdk-manifest-ingress",
+      "interlock-intr-governed-decision",
+      "master-records-closure",
+      "publisher-mutation-gate"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "EXTERNAL_REVIEW_AND_CORRECTION_RECEIPT",
+      "kind": "SOURCE_CONTRACT",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-org/LLM-adapter:external review API/store"
+    },
+    {
+      "dependency_id": "EXTERNAL_FRAMEWORK_WIKI_PUBLICATION_TRANSITION",
+      "kind": "SOURCE_CONTRACT",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-Labs/admissibility-wiki:external-chat-publication-transition.schema.json"
+    },
+    {
+      "dependency_id": "SDK_EXTERNAL_MANIFEST_RUNTIME",
+      "kind": "SOURCE_CONTRACT",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-org/StegVerse-SDK:external_framework_runner.py"
+    },
+    {
+      "dependency_id": "CANONICAL_MASTER_RECORDS_CLOSURE",
+      "kind": "SOURCE_CONTRACT",
+      "state": "AVAILABLE",
+      "ref": "master-records/orchestration:canonical_state_transition_custody.py"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-org/LLM-adapter:tests/test_external_review_publication.py",
+    "StegVerse-org/LLM-adapter:tests/test_external_publication_mutation.py",
+    "StegVerse-org/StegVerse-SDK:tests/test_external_framework_runner.py",
+    "master-records/orchestration:tests/test_canonical_state_transition_custody.py"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTRATION_MERGED",
+    "PUBLICATION_CANDIDATE_BINDS_TO_SDK_MANIFEST",
+    "SDK_MANIFEST_CANDIDATE_HASH_BINDS_PUBLICATION_TRANSITION",
+    "NON_ALLOW_NEVER_REACHES_MUTATION",
+    "INTERLOCK_INTR_GOVERNED_RESULT_REQUIRED",
+    "MASTER_RECORDS_STATE_RECORDED_REQUIRED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS_REQUIRED",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_PASS_REQUIRED",
+    "MASTER_RECORDS_RECEIPT_DIGEST_EQUALITY_REQUIRED",
+    "DIRECT_SUBMITTER_REPOSITORY_MUTATION_REJECTED",
+    "PUBLISHER_MUTATION_CONSUMES_EXACT_GOVERNED_CLOSURE",
+    "GENERIC_TARGET_PROFILE_SUPPORTS_MULTIPLE_WIKI_SURFACES_WITHOUT_ENABLING_THEM_BY_DEFAULT"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-org/StegVerse-SDK:docs/GOVERNED_WIKI_PUBLICATION_TRANSITION_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "COMPLETION_CLAIMED",
+    "CLOSED"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-org/StegVerse-SDK:docs/GOVERNED_WIKI_PUBLICATION_TRANSITION_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter:docs/GOVERNED_WIKI_PUBLICATION_TRANSITION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

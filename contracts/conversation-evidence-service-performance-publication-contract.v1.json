@@ -1,0 +1,201 @@
+{
+  "schema": "stegverse.conversation-evidence-service-performance-publication-contract/v1",
+  "purpose": "Preserve complete conversation evidence and derive governed public and enforcement records for service-performance disputes while keeping evidence, allegation, publication, adjudication, and enforcement authority distinct.",
+  "invariants": {
+    "original_is_immutable": true,
+    "public_record_is_derivative": true,
+    "redactions_are_explicit_and_hash_bound": true,
+    "publication_is_not_adjudication": true,
+    "allegation_is_not_fact": true,
+    "payment_is_not_proof_of_nonperformance": true,
+    "recurrence_is_not_proof_of_intent": true,
+    "counterevidence_must_be_preservable": true,
+    "enforcement_export_requires_authorization": true
+  },
+  "evidence_original": {
+    "required_fields": [
+      "record_id",
+      "capture_method",
+      "source_platform",
+      "source_locator_or_export_identity",
+      "captured_at",
+      "conversation_start",
+      "conversation_end",
+      "participant_assertions",
+      "message_sequence",
+      "attachment_manifest",
+      "original_bytes_sha256",
+      "canonical_manifest_sha256"
+    ],
+    "message_requirements": [
+      "stable ordinal",
+      "source message identifier when available",
+      "speaker assertion",
+      "timestamp assertion and precision",
+      "verbatim content bytes or exact exported representation",
+      "attachment references",
+      "individual message digest"
+    ],
+    "mutation_policy": "WRITE_ONCE; corrections create superseding records and never rewrite the original."
+  },
+  "authenticity": {
+    "states": [
+      "UNVERIFIED",
+      "SOURCE_EXPORT_VERIFIED",
+      "PARTICIPANT_ATTESTED",
+      "COUNTERPARTY_ACKNOWLEDGED",
+      "PLATFORM_CORROBORATED",
+      "CONFLICTING_EVIDENCE"
+    ],
+    "rule": "Authenticity state must identify exactly what was verified and must not imply identity facts beyond the supporting evidence."
+  },
+  "attachments": {
+    "preserve_original_bytes": true,
+    "required_fields": [
+      "attachment_id",
+      "filename_if_available",
+      "media_type_if_available",
+      "byte_length",
+      "sha256",
+      "message_ordinal",
+      "capture_provenance"
+    ],
+    "transformed_preview_rule": "Any preview, thumbnail, transcript, or normalized rendition is a derivative with its own digest and a pointer to the preserved original."
+  },
+  "redaction_manifest": {
+    "required_for_public_derivative": true,
+    "required_fields": [
+      "public_record_id",
+      "original_record_id",
+      "policy_version",
+      "redaction_entries",
+      "public_bytes_sha256"
+    ],
+    "redaction_entry_fields": [
+      "location",
+      "original_fragment_sha256",
+      "reason_code",
+      "replacement_marker"
+    ],
+    "reason_codes": [
+      "AUTH_SECRET",
+      "PAYMENT_CREDENTIAL",
+      "PRIVATE_ADDRESS",
+      "PRIVATE_CONTACT",
+      "MINOR_DATA",
+      "UNRELATED_HEALTH_DATA",
+      "UNRELATED_PRIVATE_DATA",
+      "LEGAL_RESTRICTION",
+      "THIRD_PARTY_PRIVATE_DATA",
+      "OTHER_EXPLAINED"
+    ],
+    "rule": "No silent deletion or paraphrase. Every removed span or attachment must be represented in the manifest."
+  },
+  "transaction_binding": {
+    "entities": [
+      "service_representation",
+      "agreement_or_scope",
+      "invoice_or_request",
+      "payment_evidence",
+      "delivery_or_performance_evidence",
+      "refund_or_remediation",
+      "dispute_event"
+    ],
+    "finding_states": [
+      "NOT_EVALUATED",
+      "PERFORMANCE_SUPPORTED",
+      "PARTIAL_PERFORMANCE_SUPPORTED",
+      "NONPERFORMANCE_SUPPORTED",
+      "CONTESTED",
+      "INSUFFICIENT_EVIDENCE"
+    ],
+    "rule": "Finding state must be derived from admitted evidence and cannot be inferred solely from a compensation request, payment, complaint, or absence of response."
+  },
+  "provider_response": {
+    "right_to_respond": true,
+    "response_states": [
+      "NOT_REQUESTED",
+      "REQUESTED",
+      "RECEIVED",
+      "DECLINED",
+      "NO_RESPONSE_BY_DISCLOSED_CUTOFF"
+    ],
+    "requirements": [
+      "response preserved verbatim",
+      "response evidence hash-bound",
+      "counterevidence evaluated under same evidence rules",
+      "no-response is not admission"
+    ]
+  },
+  "corroborating_customer_submissions": {
+    "eligibility": "A corroborating submission must carry its own independently evidenced transaction/service relationship or be explicitly classified as non-transactional context.",
+    "aggregation_rule": "Aggregate only comparable evidence classes; do not merge private conversations into one source record.",
+    "anti_pile_on_rule": "Unauthenticated popularity signals, votes, likes, or unsupported accusations do not count as transaction corroboration."
+  },
+  "jurisdiction_publication": {
+    "fields": [
+      "payer_jurisdiction",
+      "provider_jurisdiction",
+      "contract_jurisdiction_if_known",
+      "payment_processor_jurisdiction_if_relevant",
+      "performance_location_if_relevant",
+      "publication_review_state"
+    ],
+    "publication_review_states": [
+      "NOT_REVIEWED",
+      "REVIEW_REQUIRED",
+      "CLEARED_FOR_DEFINED_PUBLIC_DERIVATIVE",
+      "RESTRICTED",
+      "WITHHELD_PENDING_REVIEW"
+    ],
+    "rule": "The contract records jurisdictional facts and review state; it does not itself determine legality."
+  },
+  "public_projection": {
+    "default": "PUBLISH_DERIVATIVE_NOT_ORIGINAL_BYTES",
+    "required_sections": [
+      "provenance",
+      "conversation_derivative",
+      "transaction_binding",
+      "evidence_state",
+      "provider_response_state",
+      "corroboration_summary",
+      "redaction_manifest_ref",
+      "reconstruction_ref",
+      "nonadjudication_notice"
+    ],
+    "identity_rule": "Identity fields require evidence and applicable publication authorization; pseudonymous or organization-level projection is permitted where appropriate."
+  },
+  "master_records": {
+    "required_transition_results": [
+      "RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "custody_rule": "Every governed publication, redaction supersession, provider-response admission, corroboration admission, and enforcement export authorization is separately reconstructable."
+  },
+  "enforcement_export": {
+    "contents": [
+      "unabridged_original",
+      "all_attachment_originals",
+      "authenticity_evidence",
+      "transaction_binding",
+      "provider_response",
+      "counterevidence",
+      "redaction_history",
+      "custody_and_reconstruction_receipts",
+      "jurisdiction_metadata"
+    ],
+    "authorization_required": true,
+    "export_is_not_publication": true,
+    "export_is_not_enforcement_authority": true
+  },
+  "prohibited_inferences": [
+    "PUBLISHED_RECORD_IMPLIES_GUILT",
+    "COMPENSATION_REQUEST_IMPLIES_PREDATION",
+    "NONRESPONSE_IMPLIES_ADMISSION",
+    "MULTIPLE_COMPLAINTS_IMPLIES_CRIMINAL_INTENT",
+    "PAYMENT_IMPLIES_CONTRACT_TERMS_NOT_IN_EVIDENCE",
+    "HASH_MATCH_ALONE_PROVES_SPEAKER_IDENTITY"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+  "correlation_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+  "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "COAUTHORED_DRAFT_RECONCILED_VENUES_EVALUATED_AUTHOR_REVIEW_PENDING",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100100",
+    "source_state_vector_ref": "control/task-vectors/ELAN-PAPER-COAUTHOR-PUBLICATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md",
+    "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md",
+    "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md",
+    "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md",
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
+    "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ELAN-COAUTHOR-ACCEPTANCE",
+      "kind": "COLLABORATION_EVIDENCE",
+      "state": "AVAILABLE_USER_FORWARDED_PRIVATE_CORRESPONDENCE",
+      "ref": "Élisabeth Correvon explicitly accepted co-authorship and offered future draft review"
+    },
+    {
+      "dependency_id": "DEP-WIBS-COAUTHORED-REVISION",
+      "kind": "MANUSCRIPT",
+      "state": "AVAILABLE_RECONCILED_AUTHOR_REVIEW_PENDING",
+      "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md"
+    },
+    {
+      "dependency_id": "DEP-WIBS-PUBLICATION-NOVELTY-REVIEW",
+      "kind": "LITERATURE_REVIEW",
+      "state": "ACTIVE",
+      "ref": "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "DEP-ELAN-PUBLICATION-VENUE",
+      "kind": "EDITORIAL_DECISION",
+      "state": "CANDIDATES_EVALUATED_SELECTION_OPEN",
+      "ref": "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+    "WIBS-PUBLICATION-NOVELTY-REVIEW-001"
+  ],
+  "expected_evidence_predicates": [
+    "COAUTHORSHIP_ACCEPTANCE_PRESERVED",
+    "PRIVATE_CORRESPONDENCE_NOT_PUBLICLY_REPLICATED",
+    "EXPERIMENT_AND_PUBLICATION_LANES_REMAIN_SEPARATE",
+    "AUTHORSHIP_CONTRIBUTION_PROVENANCE_PRESERVED",
+    "COAUTHORED_WORKING_DRAFT_RECONCILED_WITH_COMPLETED_CROSS_EVALUATION",
+    "EXPERIMENT_SCOPE_LIMITATIONS_PRESERVED",
+    "PUBLICATION_VENUES_EVALUATED_WITHOUT_PREMATURE_SELECTION",
+    "PUBLICATION_VENUE_DECISION_RECORDED_WHEN_SELECTED",
+    "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE"
+  ],
+  "collaboration_state": {
+    "coauthorship_accepted": true,
+    "coauthored_working_draft_exists": true,
+    "future_draft_review_offered": true,
+    "publication_venues_evaluated": true,
+    "specific_venue_selected": false,
+    "submission_authorized": false,
+    "private_correspondence_publicly_replicated": false,
+    "final_author_order_confirmed": false,
+    "final_contribution_statement_confirmed": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
+    "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
+    "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
+    "RECORD_AGREED_VENUE_SELECTION",
+    "PREPARE_VENUE_SPECIFIC_SUBMISSION_MATERIALS_WHEN_AUTHORIZED"
+  ],
+  "handoff_projection_refs": [
+    "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"
+  ],
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "reviewed": true,
+    "reason": "Research/publication coordination and manuscript revision do not change repository function."
+  }
+}

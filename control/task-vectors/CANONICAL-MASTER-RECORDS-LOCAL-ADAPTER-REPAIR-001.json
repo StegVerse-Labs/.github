@@ -1,0 +1,40 @@
+{
+  "identity": "StegVerse-Labs/.github:task:CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001.json",
+    "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md"
+  ],
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "PROPOSED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Generic canonical custody local-adapter contract repair is registered separately from the immutable StegBrowser browser invocation.",
+    "archive_ready": "False until the local state-transition custody adapter contract is repaired and validated.",
+    "unassigned_work": "Canonical owner and concrete handoff are installed.",
+    "chat_owned_counts": "Source contract repair may be implemented by chat; authentic custody evidence remains authority-owned.",
+    "canonical_owner_installed": "Task record and handoff are present.",
+    "thread_required": "No separate runtime thread is required for source repair.",
+    "blocker_count": "Schema mismatch is a concrete repair condition, not a blocker.",
+    "evidence_complete": "False until exact reconstruction behavior is validated under the repaired contract.",
+    "activated": "False until the repaired adapter is in canonical source.",
+    "propagated": "Not applicable before completion."
+  },
+  "authority_effect": "NONE"
+}

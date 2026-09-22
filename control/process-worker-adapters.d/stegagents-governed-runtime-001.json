@@ -5,8 +5,14 @@
     {
       "adapter_ref": "process:stegagents-governed-runtime-v1",
       "authority_ref": "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json#authority",
-      "capabilities": ["stegagents_governed_coderepair_roundtrip"],
-      "command": ["python", "workers/stegagents_governed_runtime_worker.py"],
+      "capabilities": [
+        "stegagents_governed_coderepair_roundtrip",
+        "stegagents_purpose_bound_worker_lifecycle"
+      ],
+      "command": [
+        "python",
+        "workers/stegagents_governed_runtime_worker.py"
+      ],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -17,14 +23,23 @@
         "STEGVERSE_WARRANT_JSON",
         "TV_POLICY_BUNDLE_SHA256",
         "TV_WARRANT_ISSUER_PUBKEY_B64",
-        "TV_WARRANT_MAX_TTL_SECONDS"
+        "TV_WARRANT_MAX_TTL_SECONDS",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+        "STEGVERSE_MASTER_RECORDS_TOKEN",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+        "MASTER_RECORDS_DB",
+        "MASTER_RECORDS_RECEIPT_KEY",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
       ],
       "notes": [
         "Consumes only an already-created WorkerCoordinator claim/fence for STEGAGENTS-GOVERNED-RUNTIME-001.",
         "Invokes the existing merged StegAgents governed CodeRepair runtime through already-local source roots.",
         "Carries the existing StegAgents live-run warrant/policy verification inputs into the worker process; these are governance admission inputs, not provider credentials and not execution authority.",
         "Verifies the exact merged governed manifest blob before execution and retains proposal/governance/reconstruction evidence in the resident runtime.",
-        "Creates no second WorkerCoordinator, scheduler, InTr implementation, provider route, credential path, agent registry, or consequential execution authority."
+        "Creates no second WorkerCoordinator, scheduler, InTr implementation, provider route, credential path, agent registry, or consequential execution authority.",
+        "The same worker/process adapter may carry SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001 only when its separate executable handoff requires stegagents_purpose_bound_worker_lifecycle; this does not alter the proposal-only owner task."
       ],
       "timeout_seconds": 300,
       "type": "process_json_v0.1"

@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "correlation_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "root_correlation_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+  "parent_task_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "goal": "Make every public run-manifest result self-contained and cryptographically bound to the exact canonical ingress manifest and the generic run-manifest execution request, while preserving historical four-stage evidence and removing future-facing Test 3 person-specific identifiers without adding a test-specific path.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_VALIDATED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_RUN_MANIFEST_RESULT_LINEAGE_BINDING_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "shared_dispatcher_only": true,
+    "historical_four_stage_evidence_immutable": true,
+    "backward_compatibility_for_retained_test3_identifier": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true
+  },
+  "evidence": {
+    "sdk_pr": 299,
+    "tested_head": "18a5f30b61557bf557b563797fccb241628f4b2d",
+    "merged_main": "69921971106ffb4008bf5914c34b34bc51745ff0",
+    "tested_and_merged_tree": "6431e9b19a43cfa7f112bafcf28fdb23d96dd1b6",
+    "exact_head_workflows_passed": 12,
+    "four_stage_validation_run": 35547155843,
+    "result_lineage_contract": "canonical_manifest_sha256 + request_sha256 + processor_result_sha256 + manifest_lineage",
+    "neutral_test3_scenario": "TEST_3_INVARIANCE_SHORT_LIVED_ACTOR_SEAM",
+    "legacy_test3_alias": "TEST_3_RICHARD_SHORT_LIVED_ACTOR_SEAM",
+    "sdk_version_state": "1.3.0 RELEASE_CANDIDATE"
+  },
+  "remaining_predicate": null
+}

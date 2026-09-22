@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "WIBS-EXPERIMENT2-PAPER-001",
+  "correlation_id": "WIBS-EXPERIMENT2-PAPER-001",
+  "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "parent_task_id": "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+  "goal": "Draft a publication-ready Experiment 2 section for When Interpretation Becomes State using the completed ELAN-Ste gVerse cross-evaluation evidence without overstating runtime scope or altering the existing paper's bounded framing.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "UNCLAIMED",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/WIBS_EXPERIMENT2_PAPER_MIRROR_HANDOFF.md",
+    "docs/WIBS_EXPERIMENT2_SECTION_DRAFT.md",
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "docs/WIBS_EXPERIMENT2_PAPER_MIRROR_HANDOFF.md"
+  },
+  "handoff_projection_refs": [
+    "docs/WIBS_EXPERIMENT2_PAPER_MIRROR_HANDOFF.md"
+  ]
+}

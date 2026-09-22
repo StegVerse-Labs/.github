@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+    "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json"
+  ],
+  "observed_at": "2026-09-14T23:37:05Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Canonical task record is ACTIVE/CHECKED_OUT and the proven SV002 route is the reusable substrate.",
+    "archive_ready": "Current MIR-bound one-way transport and governed return receipts remain unobserved.",
+    "canonical_owner_installed": "The canonical task record declares COSV 50000000100000.",
+    "evidence_complete": "Current Goal/COSV binding, MIR destination transition, and Master Records reconstruction are still required from authentic runtime execution.",
+    "activated": "COSV source projection does not claim runtime activation.",
+    "propagated": "COSV source projection does not claim downstream propagation."
+  },
+  "authority_effect": "NONE"
+}

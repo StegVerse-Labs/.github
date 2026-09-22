@@ -15,9 +15,9 @@ Supported modes:
 
 For compact canonical continuation, targeted/resume modes may additionally provide
 --cosv-task-vector. After source refresh and before execution, the task ID/vector pair
-is resolved exactly once against control/task-vector-index.json and fails closed on
-missing, duplicate, malformed, or mismatched state. Pointer validation grants no
-execution, claim, fence, credential, transition, or custody authority.
+is resolved exactly once against control/task-vector-index.json and the referenced
+canonical task-vector record; index/source-vector parity drift fails closed. Pointer
+validation grants no execution, claim, fence, credential, transition, or custody authority.
 
 Running this script on a sovereign resident surface may produce real runtime evidence.
 Merely merging or validating this source does not.
@@ -25,6 +25,7 @@ Merely merging or validating this source does not.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -41,6 +42,7 @@ CARRIER_REF = Path("control/heartbeat-carrier-runtime-state.json")
 REGISTRY_REF = Path("control/worker-registry.json")
 COSV_INDEX_REF = Path("control/task-vector-index.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-targeted-execution.latest.json")
+IMMUTABLE_RECEIPT_DIR_REL = Path("receipts/sovereign-host/resident-targeted-execution.by-receipt")
 
 GITHUB_AUTH_ENV = {
     "GITHUB_TOKEN",
@@ -77,6 +79,12 @@ NONSECRET_FORWARD = {
     "STEGVERSE_TV_ROOT",
     "STEGVERSE_LLM_ADAPTER_ROOT",
     "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN",
+    "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB",
+    "MASTER_RECORDS_RECEIPT_KEY",
+    "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     "STEGVERSE_SDK_SOURCE_ROOT",
     "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_CORE_LITE_SOURCE_ROOT",
@@ -138,6 +146,28 @@ def clean_exec_env(source: dict[str, str] | None = None) -> dict[str, str]:
     return env
 
 
+def _write_receipt_surfaces(runtime_root: Path, receipt: dict[str, Any]) -> dict[str, Any]:
+    """Persist latest plus immutable content-addressed resident execution evidence."""
+    unsigned = json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    body_sha256 = hashlib.sha256(unsigned).hexdigest()
+    persisted = dict(receipt)
+    persisted["receipt_body_sha256"] = "sha256:" + body_sha256
+    encoded = json.dumps(persisted, indent=2, sort_keys=True) + "\n"
+
+    immutable_path = runtime_root / IMMUTABLE_RECEIPT_DIR_REL / f"{body_sha256}.json"
+    immutable_path.parent.mkdir(parents=True, exist_ok=True)
+    if immutable_path.exists():
+        if immutable_path.read_text(encoding="utf-8") != encoded:
+            raise RuntimeError("immutable resident execution receipt collision")
+    else:
+        immutable_path.write_text(encoded, encoding="utf-8")
+
+    latest_path = runtime_root / RECEIPT_REL
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(encoded, encoding="utf-8")
+    return persisted
+
+
 def _parse_last_json(stdout: str) -> dict[str, Any] | None:
     for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
         try:
@@ -163,11 +193,7 @@ def _load_registry(runtime_root: Path) -> dict[str, Any]:
 
 
 def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) -> dict[str, Any]:
-    """Verify a compact task.v1 pointer against the refreshed canonical index.
-
-    This is resolution only. A successful result is evidence that the caller supplied
-    the currently indexed pointer; it is never execution or transition authority.
-    """
+    """Verify a compact task.v1 pointer against index and canonical vector record."""
     if not isinstance(vector, str) or len(vector) != 14 or not vector.isdigit():
         raise RuntimeError("COSV task vector must be a 14-digit task.v1 vector")
     path = runtime_root / COSV_INDEX_REF
@@ -177,7 +203,9 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
         index = json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
         raise RuntimeError("canonical COSV task-vector index is unreadable") from exc
-    rows = index.get("tasks") if isinstance(index, dict) else None
+    if not isinstance(index, dict) or index.get("profile") not in (None, "task.v1"):
+        raise RuntimeError("canonical COSV task-vector index profile is invalid")
+    rows = index.get("tasks")
     if not isinstance(rows, list):
         raise RuntimeError("canonical COSV task-vector index shape is invalid")
     matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == task_id]
@@ -186,9 +214,31 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
     row = matches[0]
     if row.get("vector") != vector:
         raise RuntimeError("task_id/COSV vector binding mismatch")
+    if row.get("vector_state") not in (None, "EMITTED") or row.get("authority_effect") not in (None, "NONE"):
+        raise RuntimeError("canonical COSV task-vector index row is not non-authorizing EMITTED state")
     source_ref = row.get("source_state_vector_ref")
     if not isinstance(source_ref, str) or not source_ref:
         raise RuntimeError("canonical COSV task pointer lacks source state-vector provenance")
+    source_path = (runtime_root / source_ref.split("#", 1)[0]).resolve()
+    try:
+        source_path.relative_to(runtime_root.resolve())
+    except ValueError as exc:
+        raise RuntimeError("canonical COSV source state-vector escaped resident root") from exc
+    if not source_path.is_file():
+        raise RuntimeError("canonical COSV source state-vector is not materialized")
+    try:
+        source_vector = json.loads(source_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError("canonical COSV source state-vector is unreadable") from exc
+    identity = str(source_vector.get("identity") or "") if isinstance(source_vector, dict) else ""
+    if not (
+        isinstance(source_vector, dict)
+        and source_vector.get("profile") == "task.v1"
+        and source_vector.get("level") == "task"
+        and identity.endswith(f":task:{task_id}")
+        and source_vector.get("vector") == vector
+    ):
+        raise RuntimeError("canonical COSV index/source state-vector parity mismatch")
     return {
         "profile": "task.v1",
         "task_id": task_id,
@@ -196,6 +246,7 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
         "source_state_vector_ref": source_ref,
         "registry_ref": row.get("registry_ref"),
         "validated_against": str(COSV_INDEX_REF),
+        "source_vector_verified": True,
         "binding_verified": True,
         "authority_effect": "NONE",
     }
@@ -282,7 +333,19 @@ def refresh_and_execute(
     if ecosystem_chat_parent and cosv_task_vector is not None:
         raise ValueError("cosv_task_vector applies only to explicit task modes")
 
-    refresh_receipt = refresh(source, runtime)
+    if source == runtime:
+        refresh_receipt = {
+            "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+            "state": "SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED",
+            "source_root": str(source),
+            "runtime_root": str(runtime),
+            "mutable_runtime_state_preserved": True,
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE",
+        }
+    else:
+        refresh_receipt = refresh(source, runtime)
     selected_pointer_task_id = resume_claimed_task_id or task_id
     pointer_receipt = (
         validate_cosv_task_pointer(runtime, str(selected_pointer_task_id), cosv_task_vector)
@@ -304,9 +367,12 @@ def refresh_and_execute(
     executable = Path(command[1])
     if not executable.is_file():
         raise RuntimeError(f"refreshed execution entrypoint missing: {executable}")
-    if not ecosystem_chat_parent and not (runtime / CARRIER_REF).is_file():
+    # Independent --task-id execution is admitted directly by WorkerCoordinator and
+    # must not be gated by a separated carrier reference. Resume mode preserves an
+    # already-existing claim/fence and retains its historical carrier requirement.
+    if resume_claimed_task_id is not None and not (runtime / CARRIER_REF).is_file():
         raise RuntimeError(
-            "targeted resident execution requires the preserved separated carrier reference"
+            "claimed-task resume requires the preserved separated carrier reference"
         )
 
     completed = runner(
@@ -368,10 +434,7 @@ def refresh_and_execute(
         "credential_value_exposed": False,
         "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
     }
-    receipt_path = runtime / RECEIPT_REL
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return _write_receipt_surfaces(runtime, receipt)
 
 
 def main() -> int:

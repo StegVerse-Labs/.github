@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "MIR-AUTONOMOUS-INVOCATION-CHAIN-001",
+  "goal_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "cosv_task_vector": "50000000100000",
+  "state": "SOURCE_CHAIN_VALIDATED_EVENT_TRANSITION_UNOBSERVED",
+  "verdict": "PARTIAL",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "source_chain": [
+    "scripts/run_heartbeat_runtime.py --continuous",
+    "scripts/repair_resident_worker_presence.py#ensure_worker_presence",
+    "scripts/run_worker_runtime.py --continuous",
+    "heartbeat_runtime.worker_runtime.WorkerCoordinator first task-capable cycle",
+    "scripts/run_worker_runtime.py#dispatch_local_resident_requests",
+    "scripts/dispatch_resident_execution_requests.py",
+    "canonical_work_coordination -> control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "scripts/consume_mir_roundtrip_egress_authenticity_request.py",
+    "scripts/refresh_and_execute_resident_task.py --task-id MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+    "existing WorkerCoordinator fresh claim/fence",
+    "workers/mir_roundtrip_egress_authenticity_worker.py",
+    "StegOS SovereignLocalEventRuntimeAdapter + run_mir_profile_transition",
+    "Master Records exact-byte custody/reconstruction"
+  ],
+  "source_evidence": {
+    "heartbeat_supervises_worker": true,
+    "worker_self_heal_starts_existing_continuous_worker": true,
+    "worker_first_task_capable_cycle_precedes_long_tick_zero_maintenance": true,
+    "worker_native_dispatch_interval_ticks": 100,
+    "worker_dispatches_on_index_zero_after_first_task_capable_cycle": true,
+    "resident_dispatcher_contains_canonical_work_coordination": true,
+    "canonical_work_coordination_visits_mir_before_legacy_set": true,
+    "mir_request_materialized": true,
+    "mir_process_worker_registered": true,
+    "generic_sv002_reproof_gate_present": false,
+    "new_scheduler_created": false,
+    "new_dispatcher_created": false,
+    "new_runtime_plane_created": false,
+    "user_device_prerequisite": false
+  },
+  "runtime_model": {
+    "resident_supervision_is_not_the_event_runtime": true,
+    "event_runtime_materialization_is_state_transition_dependent": true,
+    "event_ephemeral_runtime_is_instantiated_by_admitted_transition": true,
+    "runtime_need_not_exist_as_idle_reachable_process_before_event": true,
+    "remote_device_or_surface_reachability_is_not_a_runtime_predicate": true,
+    "remote_connector_check_is_non_authoritative_for_event_runtime_availability": true
+  },
+  "runtime_observation": {
+    "mir_request_consumption_receipt_observed_in_canonical_git": false,
+    "mir_current_runtime_receipt_observed_in_canonical_git": false,
+    "live_mir_state_transition_observed": false,
+    "mir_runtime_execution_claimed": false
+  },
+  "diagnosis": {
+    "source_invocation_gap_present": false,
+    "passive_waiting_allowed": false,
+    "prior_remote_surface_blocker_interpretation_retracted": true,
+    "current_unresolved_boundary": "AUTHENTIC_MIR_EVENT_INGRESS_OR_STATE_TRANSITION_RECEIPT_NOT_OBSERVED",
+    "correct_next_transition": "CAUSE_OR_OBSERVE_THE_CURRENT_MIR_EVENT_ENTER_THE_EXISTING_AUTHORIZED_INGRESS_AND_INTERLOCK_INTR_TRANSITION_PATH_SO_THE_EVENT_EPHEMERAL_RUNTIME_MATERIALIZES_AS_A_CONSEQUENCE_OF_STATE_TRANSITION",
+    "prohibited_repairs": [
+      "SECOND_SCHEDULER",
+      "SECOND_DISPATCHER",
+      "SECOND_RUNTIME_PLANE",
+      "GITHUB_ACTIONS_RUNTIME_AUTHORITY",
+      "USER_DEVICE_PREREQUISITE",
+      "GENERIC_SV002_REPROOF",
+      "WAIT_FOR_IDLE_RUNTIME_SURFACE",
+      "REMOTE_DEVICE_REACHABILITY_AS_RUNTIME_GATE"
+    ]
+  },
+  "evidence_refs": [
+    "scripts/run_heartbeat_runtime.py",
+    "scripts/repair_resident_worker_presence.py",
+    "scripts/run_worker_runtime.py",
+    "scripts/dispatch_resident_execution_requests.py",
+    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "scripts/consume_mir_roundtrip_egress_authenticity_request.py",
+    "workers/mir_roundtrip_egress_authenticity_worker.py",
+    "receipts/preflight/HB-WORKER-STARTUP-TICK-BEFORE-DISPATCH-001.json",
+    "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md"
+  ]
+}

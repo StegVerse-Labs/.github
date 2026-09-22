@@ -1,0 +1,59 @@
+name: Reusable repository hygiene inventory
+
+on:
+  workflow_call:
+    inputs:
+      stale_days:
+        description: Age threshold used only to classify review priority; never deletion authority.
+        required: false
+        type: number
+        default: 30
+      protect_regex:
+        description: Branches that must always be retained by this inventory.
+        required: false
+        type: string
+        default: '^(main|master|gh-pages|release/.*|support/.*)$'
+      approval_file:
+        description: Optional caller-repository manifest of owner-cleared retirement candidates.
+        required: false
+        type: string
+        default: '.github/repository-hygiene-approved-retirements.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      REPOSITORY: ${{ github.repository }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      STALE_DAYS: ${{ inputs.stale_days }}
+      PROTECT_RE: ${{ inputs.protect_regex }}
+      APPROVAL_FILE: ${{ inputs.approval_file }}
+    steps:
+      - name: Read-only caller-repository checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Acquire canonical classifier without caller credentials
+        run: |
+          set -euo pipefail
+          env -u GITHUB_TOKEN -u GH_TOKEN git clone --depth=1 https://github.com/StegVerse-Labs/.github.git .hygiene-control
+          cp .hygiene-control/scripts/repository_hygiene_inventory.py /tmp/repository_hygiene_inventory.py
+          rm -rf .hygiene-control
+
+      - name: Classify branch inventory fail-closed
+        run: python3 /tmp/repository_hygiene_inventory.py
+
+      - name: Upload non-authorizing hygiene evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-hygiene-${{ github.repository_id }}-${{ github.run_id }}
+          path: hygiene/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 17,
+  "generation": 18,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -219,6 +219,24 @@
         "The profile proves only a reference ENFORCED boundary and must retain real_external_system_enforced_activation=false.",
         "Governance, Interlock, InTr, HB and Master Records custody grant no execution or credential authority.",
         "Target consequence authority remains separately validated and TV/TVC remains credential authority."
+      ]
+    },
+    {
+      "profile_id": "stegagents-governed-runtime-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "governed_manifest_worker_lifecycle",
+      "allowed_capabilities": [
+        "stegagents_governed_coderepair_roundtrip",
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_purpose_bound_worker_state_graph"
+      ],
+      "mutation_allowed": false,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "Capability/profile matching establishes eligibility only; WorkerCoordinator claim/fence and contemporaneous governance remain required.",
+        "The profile is shared-provider registration for manifest-driven governed worker lifecycles and grants no repository, deployment, credential, transition, or custody authority."
       ]
     }
   ]

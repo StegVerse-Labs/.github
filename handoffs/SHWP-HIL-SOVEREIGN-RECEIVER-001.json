@@ -133,7 +133,7 @@
         "--task-id",
         "SHWP-HIL-SOVEREIGN-RECEIVER-001"
       ],
-      "requires_existing_separated_carrier_reference": true,
+      "requires_existing_separated_carrier_reference": false,
       "g18_bootstrap_allowed": false,
       "compatibility_carrier_packet_consumption": false,
       "unrelated_worker_execution": false,
@@ -166,7 +166,7 @@
       "same_device_execution_required": true
     },
     "resident_execution_request": {
-      "state": "MERGED_VALIDATED_FRESH_RETRY_PENDING_RUNTIME_OBSERVATION",
+      "state": "COMPLETED_RETAINED_SAME_DEVICE_BROWSER",
       "request_ref": "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
       "consumer_ref": "scripts/consume_hil_resident_execution_request.py",
       "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
@@ -181,7 +181,7 @@
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
-      "runtime_execution_observed": false,
+      "runtime_execution_observed": true,
       "authority_effect": "NONE_REQUEST_ONLY",
       "pull_request": 370,
       "merge_commit": "44798bb946fe64ed48ba04ac49eec00181649d12",
@@ -195,7 +195,13 @@
       },
       "prior_request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
       "retry_reason": "Current worker source now includes merged automatic HIL custody→TVC lifecycle watcher/consumer; fresh request identity prevents a previously terminalized request hash from suppressing current-path execution.",
-      "same_device_execution_required": true
+      "same_device_execution_required": true,
+      "runtime_execution_surface": "CURRENT_USER_IPHONE_BROWSER",
+      "evidence_ref": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+      "claim_id": "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25",
+      "fencing_token": 25,
+      "terminal_hil_transition_observed": true,
+      "broader_hil_lifecycle_complete": false
     },
     "transport_event_materialization": {
       "schema": "stegverse.universal-intr-transport/v1",
@@ -292,7 +298,7 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "Same-device HIL source is implemented and merged. Remaining predicates are authentic execution observations on the established device, beginning with same-device event-ephemeral runtime materialization and LEASE_OPEN, followed independently by HIL targeted execution, WorkerCoordinator claim/fence, receiver READY, custody, TVC lifecycle, reconstruction, and private review.",
+    "block_reason": "The HIL resident request-consumption predicate is satisfied by the retained same-device iPhone/browser completion receipt. Broader HIL lifecycle work remains only on its independently governed downstream predicates; no connected-device inventory, remote resident device, or second machine is a prerequisite.",
     "dependency": "authentic same-device HIL runtime execution and retained receipts",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "StegVerse-Labs/StegOS@95cb63a823ca86d6a04c44ef5140961ba9161d6a same-device local LEASE_OPEN + StegVerse-Labs/.github current same-device HIL runtime consumer",

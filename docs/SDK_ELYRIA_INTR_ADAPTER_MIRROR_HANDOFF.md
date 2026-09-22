@@ -1,10 +1,10 @@
 # SDK Elyria Interlock/InTr Adapter Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-21
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-ELYRIA-INTR-ADAPTER-001`
 COSV: `71000000100112`
-Status: `ACTIVE / COMPONENTIZED / SOURCE CURRENT / OWNER-OPERATED PUBLIC ENDPOINT NOT DISCOVERED`
+Status: `ACTIVE / COMPONENTIZED / SOURCE CURRENT / NO ELIGIBLE AUTHENTIC PUBLIC TRANSPORT SURFACE OBSERVED`
 
 ## Canonical Goal Task identity
 
@@ -12,62 +12,28 @@ The Goal Task remains `SDK-ELYRIA-INTR-ADAPTER-001`; no restart, rename, success
 
 ## Reusable Task Component Model reconciliation
 
-Canonical model and policy:
+The existing component profile remains authoritative. Task-specific orchestration must not grow beyond the selected reusable components:
 
 ```text
-data/reusable-task-component-model.json
-data/reusable-task-component-decomposition-policy.json
-scripts/evaluate_reusable_task_componentization.py
+RT-EXTERNAL-ADAPTER-ESTABLISH-001
+RTC-MANIFEST-001
+RTC-GOVERNED-PROCESSING-002
+RTC-ROUNDTRIP-003
+RTC-EVIDENCE-CUSTODY-004
+RTC-SDK-RETURN-006
+RTC-STEGVERSE-EGRESS-007
+RTC-INTERLOCK-INTR-TRANSPORT-008
 ```
 
-Goal-specific component profile:
+No new protocol, transport authority, credential flow, custody store, recurring endpoint monitor, or device-local verification path is admitted by this task.
 
-```text
-data/goal-task-component-profiles/SDK-ELYRIA-INTR-ADAPTER-001.json
-```
+## Source state
 
-The decomposition score is `25`: task-specific orchestration growth must stop and reusable composition must be used. This changes composition, not Goal Task identity or authority.
+Framework-specific source remains merged and validated in `StegVerse-org/StegVerse-SDK` PR `#222` with merge `41f7c18eaed260d36492e0dd0bcae9c232fb3c77`, and component-model handoff reconciliation remains merged in PR `#225` as `5ecb19944019af4bf2432b0a1dad3bda04f9019c`.
 
-Selected components:
+## Elyria public evidence
 
-```text
-RT-EXTERNAL-ADAPTER-ESTABLISH-001  Elyria endpoint translation only
-RTC-MANIFEST-001                   manifest intake/binding
-RTC-GOVERNED-PROCESSING-002       existing governed processing path
-RTC-ROUNDTRIP-003                  public Elyria request/response cycle
-RTC-EVIDENCE-CUSTODY-004           evidence custody/readback/reconstruction
-RTC-SDK-RETURN-006                 normalized return assembly
-RTC-STEGVERSE-EGRESS-007           governed StegVerse-side egress
-RTC-INTERLOCK-INTR-TRANSPORT-008   governed packet movement and return
-```
-
-Not selected: `RTC-PUBLISHER-005`, `RTC-FARSIDE-FINAL-009`, recurring endpoint monitoring, a new credential/session path, or device-local user verification. Replay and no-bind observations may reuse the round-trip component conditionally; they are not forced into the minimal completion path.
-
-## Source state and validation
-
-Framework-specific source is merged in `StegVerse-org/StegVerse-SDK` PR `#222`:
-
-```text
-final head: aeb07d41d83c2a6ae5d84d1a2d8db5cbdc4f540b
-merge commit: 41f7c18eaed260d36492e0dd0bcae9c232fb3c77
-exact-head validation run: 34709179523
-conclusion: SUCCESS
-```
-
-The SDK handoff was reconciled to the component model in PR `#225`:
-
-```text
-head: 4ed637c34c684463b8617e4d1c5fb3ae71666936
-exact-head validation run: 34730774011
-conclusion: SUCCESS
-merge commit: 5ecb19944019af4bf2432b0a1dad3bda04f9019c
-```
-
-The SDK root README already states the generic external-framework manifested processing and governed-interlock model, so no task-specific README mutation is needed.
-
-## Public Elyria endpoint resolution
-
-Canonical public framework source was resolved to:
+Canonical public framework source remains:
 
 ```text
 repository: Kamanaka5502/elyria-admission-runtime
@@ -76,25 +42,22 @@ assessment route: POST /movements/assess
 health route: GET /healthz
 ```
 
-The repository publishes a local/container reviewer runtime and a GHCR image publication workflow. Repository code shows the assessment route is implemented by FastAPI. Public web/GitHub searches did not identify a separately advertised owner-operated public assessment base URL. Therefore no authentic external network round trip is claimed from discovery alone.
+Fresh public discovery on 2026-09-21 found public proof/repository references but no separately advertised owner-operated public assessment base URL. Repository/public documentation continues to describe local/container reviewer execution. Source availability, public proof references, CI, or local execution do not satisfy the authentic external-network round-trip predicate.
 
-A reviewer-hosted public instance is technically available as the next controlled observation path. The connected Render account exposes exactly one workspace, `Rigel's workspace`, but Render requires explicit confirmation of that workspace before workspace-scoped creation. No service was created or modified without that confirmation.
+## Existing StegVerse sovereign public-surface re-observation — 2026-09-21
 
-If created from the public Elyria release/source, such an instance may prove:
+Collision check found no open PR already continuing `SDK-ELYRIA-INTR-ADAPTER-001`.
 
-```text
-PUBLIC_NETWORK_EXECUTION_OF_PUBLIC_ELYRIA_RELEASE
-```
+Existing candidate surfaces were re-observed rather than replaced:
 
-It must not be upgraded into:
+- `SHWP-EVALUATOR-INTR-READ-RUNTIME-001`: not eligible; canonical coverage still records `SOVEREIGN_PUBLIC_ROUTE_TLS_NOT_YET_OBSERVED` and `AUTHENTIC_BROWSER_INTR_ROUND_TRIP_NOT_YET_OBSERVED`.
+- `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`: not eligible; canonical coverage still records no runtime receipt and no public observation round trip.
+- `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`: not eligible; the task retired without runtime completion and its unresolved resident dispatch visit remains carried by the existing successor lineage.
+- the previously traced TVC Coinbase Service Gateway lane is not part of Elyria's generic transport contract and is no longer an Elyria dependency.
 
-```text
-ELYRIA_OWNER_OPERATED_PRODUCTION_ENDPOINT
-PRIVATE_VERITAS_SUBSTRATE_INTEROPERABILITY
-PRODUCTION_ROUTE_CLOSURE
-```
+Therefore there is no presently observed existing StegVerse sovereign public execution surface that can carry an authentic Elyria two-way external request/response without circularly promoting another lane's missing evidence.
 
-unless separate authentic evidence exists.
+No governed Elyria round trip was executed, and no Elyria Master Records custody receipt is claimed.
 
 ## Authority separation
 
@@ -104,31 +67,15 @@ WorkerCoordinator   = claim/fence authority
 Interlock/InTr      = governed admission/state-transition authority
 TV/TVC              = credential/provider/release authority
 KV/SKAP Vault       = user-verification authority
-StegOS devices      = interchangeable transport/execution nodes, not user verifiers
 Master Records      = observed-reality custody/reconstruction
-HeartBeat           = timing/freshness/liveness/correlation/observability only
+HeartBeat           = observability only
 GitHub              = source/evidence coordination only
 Elyria adapter      = NONE_TRANSLATION_ONLY
 ```
 
-Elyria verdicts, signatures, replay observations, no-bind material, and route-closure assertions remain foreign observations; they do not become StegVerse authority.
-
 ## Predicate state
 
-Satisfied:
-
-```text
-EXISTING_STEGVERSE_GOVERNED_PATH_REUSED
-NO_DUPLICATE_INTR_PROTOCOL_CREATED
-ELYRIA_REQUEST_TRANSLATION_BOUND
-ELYRIA_RESPONSE_TRANSLATION_BOUND
-TRANSITION_AND_RUN_IDENTITY_PRESERVED
-ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING
-ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED
-ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION
-FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS
-README_AND_HANDOFF_CURRENT
-```
+Satisfied source/integration predicates remain unchanged.
 
 Remaining Goal Task-specific predicate:
 
@@ -136,21 +83,126 @@ Remaining Goal Task-specific predicate:
 AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-Source construction, CI, local-only execution, injected transport, merge state, and component reuse do not satisfy that remaining predicate.
-
-## Duplicate orchestration retired/superseded
-
-Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Historical source and CI evidence remains provenance.
+It remains unresolved.
 
 ## Next admissible work
 
-1. Prefer an owner-operated public Elyria endpoint if one becomes discoverable.
-2. Otherwise, after explicit confirmation of `Rigel's workspace`, create a bounded reviewer-hosted public Elyria runtime from the public release/source without modifying Elyria semantics.
-3. Execute one authentic governed assessment round trip through the existing selected reusable components.
+1. Consume a genuinely owner-operated public Elyria assessment endpoint if one becomes observable.
+2. Or reuse an existing StegVerse sovereign public execution surface only after that surface independently proves its own authentic public route/TLS/runtime predicates.
+3. Then execute exactly one governed Elyria round trip through the already-selected reusable components.
 4. Preserve exact task/run identity and foreign response semantics.
-5. Record authentic evidence through Master Records custody/readback.
-6. Mark the final predicate satisfied only at the evidence class actually observed; a reviewer-hosted instance does not prove owner-operated production or private Veritas interoperability.
+5. Require canonical Master Records custody/readback before satisfying the final predicate.
+6. Do not promote source, CI, local/test, synthetic, or another task's unresolved runtime evidence into authentic Elyria transport evidence.
 
 ## Manual work
 
-Explicit confirmation is required before using the connected Render workspace `Rigel's workspace` to create the bounded reviewer-hosted Elyria instance.
+None.
+
+
+## Dependency reconciliation — 2026-09-21
+
+The Elyria component profile is authoritative and does not require Coinbase or KV.
+
+The active Elyria path is:
+
+```text
+StegVerse SDK Elyria framework adapter
+-> RTC-MANIFEST-001
+-> RTC-GOVERNED-PROCESSING-002
+-> RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> reachable authorized Elyria public endpoint
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
+```
+
+The goal profile explicitly excludes the KV/SKAP user-verification flow. `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001` is provider-specific infrastructure: its objective is Coinbase resident activation, its runtime bindings include Coinbase Gateway and KV custody roots, its allowed services are TVC-specific, and its continuation owner is the Coinbase/TVC worker lineage.
+
+Therefore the prior Coinbase -> CMC-029 -> Coinbase Service Gateway trace is superseded as an Elyria dependency. It may remain valid for its own task, but it must not gate, satisfy, or diagnose Elyria transport.
+
+No Coinbase claim/fence, KV binding, CMC-029 certificate, Coinbase Gateway readiness, or Coinbase public-route predicate is required for `SDK-ELYRIA-INTR-ADAPTER-001`.
+
+The remaining Elyria completion predicate is unchanged:
+
+```text
+AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
+```
+
+The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for custody/readback if an authentic Elyria network response is produced.
+
+
+## Generic transport trace — 2026-09-21
+
+The exact active path was traced after removing the Coinbase/KV detour.
+
+`stegverse/elyria_framework_adapter.py` is intentionally translation-only. It validates Elyria request/response semantics and explicitly requires a caller-injected transport that reaches an Elyria public surface. It does not create transport authority, Interlock/InTr protocol, credentials, receipts, or Master Records custody.
+
+No Elyria endpoint binding was found in the current SDK source or canonical coordination state. Fresh public discovery likewise did not identify an owner-operated callable assessment base URL.
+
+Therefore the first missing predicate is:
+
+```text
+REACHABLE_AUTHORIZED_PUBLIC_ELYRIA_ENDPOINT_BINDING
+```
+
+This precedes any authentic `RTC-ROUNDTRIP-003` execution. WorkerCoordinator claim/fence is relevant only if a resident worker is actually used by the selected generic transport path; it is not itself an Elyria prerequisite. Coinbase, KV, CMC-029, and Coinbase Service Gateway state are not part of this Goal Task's active dependency chain.
+
+If a reachable authorized Elyria endpoint becomes available through the existing endpoint binding surface, the next sequence is:
+
+```text
+RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RT-EXTERNAL-ADAPTER-ESTABLISH-001
+-> RTC-ROUNDTRIP-003
+-> authentic Elyria response
+-> RTC-EVIDENCE-CUSTODY-004 / Master Records
+-> RTC-SDK-RETURN-006
+```
+
+Until then, `AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED` remains unresolved and no transport completion may be claimed.
+
+
+## Endpoint-binding registry trace — 2026-09-21
+
+The generic endpoint-binding mechanism already exists in `StegVerse-Labs/admissibility-wiki`.
+
+Canonical surfaces:
+
+```text
+framework registry: docs/external-frameworks/index.json
+endpoint overlay: data/external-framework-roundtrip-endpoints.json
+schema: stegverse.external-framework-roundtrip-endpoint-overlay/v1
+```
+
+The reusable rollout requires an endpoint binding to contain all four fields:
+
+```text
+runtime_endpoint_ref
+endpoint_evidence_ref
+endpoint_observed_at
+endpoint_evidence_class
+```
+
+The builder/checker and handoffs already enforce those fields and reject bare endpoint strings, documentation URLs, source URLs, orphan evidence, and malformed bindings.
+
+Current endpoint overlay state is:
+
+```json
+{"schema":"stegverse.external-framework-roundtrip-endpoint-overlay/v1","bindings":{}}
+```
+
+Therefore:
+- the binding registry is not missing;
+- the generic transport-binding implementation is not missing;
+- no Elyria-specific configuration row can lawfully be created without independently observed endpoint evidence;
+- the first concrete defect class is missing external endpoint publication/independent observation, not missing StegVerse source.
+
+The first missing predicate is refined to:
+
+```text
+EVIDENCE_QUALIFIED_ELYRIA_RUNTIME_ENDPOINT_NOT_AVAILABLE
+```
+
+No source repair is authorized because creating a synthetic endpoint row would violate the evidence-qualified binding contract. Once an authentic Elyria runtime endpoint is independently observed, the existing overlay is the correct place to bind it and the reusable planner can determine `ROUNDTRIP_ELIGIBLE` without any new transport implementation.

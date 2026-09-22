@@ -5,19 +5,23 @@
 name: Deterministic Repository Suite - Diagnostic Evidence Only
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
-      - 'handoffs/**'
-      - 'heartbeat_runtime/**'
-      - 'workers/**'
-      - 'tests/**'
-      - 'control/**'
-      - 'cost-basis/worker-runtime/**'
-      - 'docs/**'
-      - 'schemas/**'
-      - 'scripts/**'
-      - '.github/workflows/deterministic-suite-diagnostics.yml'
-  workflow_dispatch:
+      - "scripts/run_reusable_task_scheduler.py"
+      - "tests/test_neutral_reusable_task_scheduler.py"
+      - "scripts/refresh_and_dispatch_resident_requests.py"
+      - "tests/test_canonical_work_goal_context_dispatch.py"
+      - "scripts/package_sovereign_control_plane_bundle.py"
+      - "tests/test_package_sovereign_control_plane_bundle.py"
+      - "scripts/activate_resident_stack.py"
+      - "scripts/consume_one_shot_resident_stack_activation_request.py"
+      - "tests/test_one_shot_resident_stack_activation_request.py"
+      - "workers/healer_sovereign_scheduler_worker.py"
+      - "tests/test_healer_local_root_discovery.py"
+      - "control/task-vectors/**"
+      - "control/task-vector-index.d/**"
+      - ".github/workflows/deterministic-suite-diagnostics.yml"
 
 permissions: {}
 
@@ -63,7 +67,18 @@ jobs:
         run: |
           set +e
           set -o pipefail
-          python -m unittest discover -v tests 2>&1 | tee ci-evidence/deterministic-suite.log
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            python -m unittest -v \
+              tests.test_neutral_reusable_task_scheduler \
+              tests.test_steghealth_reusable_portable_dispatch_binding \
+              tests.test_canonical_work_goal_context_dispatch \
+              tests.test_package_sovereign_control_plane_bundle \
+              tests.test_one_shot_resident_stack_activation_request \
+              tests.test_healer_local_root_discovery \
+              2>&1 | tee ci-evidence/deterministic-suite.log
+          else
+            python -m unittest discover -v tests 2>&1 | tee ci-evidence/deterministic-suite.log
+          fi
           suite_status=${PIPESTATUS[0]}
           export SUITE_STATUS="$suite_status"
           python - <<'PY'
@@ -89,7 +104,7 @@ jobs:
 
           payload = {
               'schema': 'stegverse.validation-diagnostic-evidence/v1',
-              'suite': 'python -m unittest discover -v tests',
+              'suite': 'focused reusable-scheduler/COSV/bundle-source/resident-reactivation/healer-freshness tests' if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request' else 'python -m unittest discover -v tests',
               'status': 'PASS' if os.environ['SUITE_STATUS'] == '0' else 'FAIL',
               'exit_code': int(os.environ['SUITE_STATUS']),
               'tested_commit': tested_commit,

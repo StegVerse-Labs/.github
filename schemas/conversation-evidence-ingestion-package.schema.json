@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/conversation-evidence-ingestion-package.schema.json",
+  "title": "StegVerse Conversation Evidence Ingestion Package",
+  "type": "object",
+  "required": [
+    "schema",
+    "record_id",
+    "evidence_original",
+    "authenticity_envelope",
+    "transaction_binding",
+    "package_sha256",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.conversation-evidence-ingestion-package/v1"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_original": {
+      "type": "object"
+    },
+    "authenticity_envelope": {
+      "type": "object"
+    },
+    "transaction_binding": {
+      "type": "object"
+    },
+    "package_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_effect": {
+      "const": "NONE_EVIDENCE_INGESTION_ONLY"
+    }
+  },
+  "additionalProperties": false
+}

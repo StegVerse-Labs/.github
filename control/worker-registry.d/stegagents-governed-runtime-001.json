@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["AUTHENTIC_STEGAGENTS_GOVERNED_ROUNDTRIP_NOT_YET_RECONCILED"],
+      "archive_reason_codes": [
+        "AUTHENTIC_STEGAGENTS_GOVERNED_ROUNDTRIP_NOT_YET_RECONCILED"
+      ],
       "authorized_policy_version": "stegagents-governed-runtime-v0.1",
       "block_ref": null,
       "claim_id": null,
@@ -39,8 +41,12 @@
         "capability_id": "stegverse:capability:stegagents-governed-coderepair-roundtrip:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
-        "standing_evidence_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
-        "admissibility_evidence_refs": ["handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json"],
+        "standing_evidence_refs": [
+          "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json"
+        ],
         "integration_evidence_refs": [
           "workers/stegagents_governed_runtime_worker.py",
           "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
@@ -79,11 +85,16 @@
     {
       "adapter_ref": "process:stegagents-governed-runtime-v1",
       "authority_source": "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json#authority",
-      "capabilities": ["stegagents_governed_coderepair_roundtrip"],
+      "capabilities": [
+        "stegagents_governed_coderepair_roundtrip",
+        "stegagents_purpose_bound_worker_lifecycle",
+        "stegagents_purpose_bound_worker_state_graph"
+      ],
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
-      "worker_id": "stegagents-governed-runtime-worker"
+      "worker_id": "stegagents-governed-runtime-worker",
+      "capability_profile_ref": "control/worker-capability-profiles.json#stegagents-governed-runtime-v1"
     }
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",

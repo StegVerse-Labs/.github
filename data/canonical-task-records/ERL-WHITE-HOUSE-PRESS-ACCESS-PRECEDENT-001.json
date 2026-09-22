@@ -1,0 +1,122 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001",
+  "correlation_id": "ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001",
+  "root_correlation_id": "ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001",
+  "parent_task_id": null,
+  "predecessor_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "goal": "Register and continue a neutral ERL research lane for the September 18, 2026 White House press-access exclusion announcement affecting CNN, MS NOW, and Politico, preserving exact executive implementation chronology, First Amendment/free-press and viewpoint-discrimination authorities, White House access-surface distinctions, Associated Press precedent, and cross-administration reuse implications without partisan evaluation or premature legal/factual promotion.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#177",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#177",
+    "https://constitution.congress.gov/constitution/amendment-1/",
+    "https://law.justia.com/cases/federal/appellate-courts/F2/569/124/35083/",
+    "https://law.justia.com/cases/federal/district-courts/district-of-columbia/dcdce/1%3A2025cv00532/277682/46/",
+    "https://media.cadc.uscourts.gov/orders/docs/2025/06/25-5109LDSN3.pdf",
+    "https://www.reuters.com/world/us/trump-bans-media-outlets-cnn-msnow-politico-white-house-2026-09-18/",
+    "https://apnews.com/article/bb675679fb10738a51bef90bde6c525a"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger"
+    ],
+    "components": [
+      "active-research-dispatch",
+      "executive-press-access",
+      "freedom-of-the-press",
+      "viewpoint-discrimination",
+      "white-house-credential-and-pool-access",
+      "cross-administration-precedent",
+      "primary-legal-source-chronology"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "PRESIDENTIAL_OR_WHITE_HOUSE_PRIMARY_STATEMENT_CUSTODIED_OR_EXPLICITLY_PENDING",
+    "IMPLEMENTATION_DISTINGUISHES_HARD_PASS_BRIEFING_ROOM_POOL_AND_RESTRICTED_SPACES",
+    "FIRST_AMENDMENT_TEXT_AND_PRESS_FREEDOM_BASELINE_PRESERVED",
+    "SHERRILL_V_KNIGHT_ACCESS_AND_DUE_PROCESS_BASELINE_PRESERVED",
+    "AP_V_BUDOWICH_DISTRICT_AND_APPELLATE_STAGE_POSTURES_SEPARATED",
+    "CROSS_ADMINISTRATION_REUSE_ANALYSIS_IS_INSTITUTIONAL_NOT_PARTISAN",
+    "NO_MOTIVE_CONSTITUTIONAL_FINALITY_POLICY_QUALITY_OR_PARTISAN_FINDING",
+    "FINDING_AND_PUBLICATION_AUTHORITY_REMAIN_FALSE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "public_web_research",
+      "existing_erl_active_research_dispatch"
+    ],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_WEB_RESEARCH",
+    "direction": "PUBLIC_EXECUTIVE_AND_PRIMARY_LEGAL_SOURCES_TO_ERL_ACTIVE_RESEARCH",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE",
+    "disposition": "REUSE_EXISTING_ERL_RECURRING_DISCOVERY_AND_ACTIVE_RESEARCH_DISPATCH"
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#177",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "REGISTER_ERL_ACTIVE_RESEARCH_GROUP",
+    "ACQUIRE_PRIMARY_EXECUTIVE_AND_LEGAL_SOURCES",
+    "TRACK_IMPLEMENTATION_LITIGATION_AND_POLICY_CHANGES",
+    "INDEPENDENT_REVIEW_BEFORE_FINDING_OR_PUBLICATION"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+    "task_registry_coordination_only": true,
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "finding_authorized": false,
+    "publication_authorized": false,
+    "partisan_evaluation_authorized": false,
+    "constitutional_final_judgment_authorized": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "1/20",
+    "predecessor_task_id": "SS-EVIDENCE-COMPARISON-001",
+    "split_merely_to_reset_counter": false,
+    "decomposition_reason": "NEW_BOUNDED_ERL_EXECUTIVE_PRESS_ACCESS_RESEARCH_SUBJECT_USING_EXISTING_RESEARCH_ENGINE"
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "evidence_refs": [
+      "README.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md"
+    ]
+  }
+}

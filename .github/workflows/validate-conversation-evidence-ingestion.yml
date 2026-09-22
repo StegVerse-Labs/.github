@@ -1,0 +1,50 @@
+name: Validate Conversation Evidence Ingestion
+
+on:
+  pull_request:
+    paths:
+      - 'workers/conversation_evidence_ingestion.py'
+      - 'workers/conversation_evidence_ingestion_runtime_worker.py'
+      - 'tests/test_conversation_evidence_ingestion_runtime.py'
+      - 'tests/test_conversation_evidence_state_triggered_selector.py'
+      - 'handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json'
+      - 'control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json'
+      - 'control/worker-registry.d/conversation-evidence-ingestion-custody-001.json'
+      - 'control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json'
+      - 'tests/test_conversation_evidence_ingestion.py'
+      - 'schemas/conversation-evidence-ingestion-package.schema.json'
+      - 'contracts/conversation-evidence-service-performance-publication-contract.v1.json'
+      - 'data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json'
+      - 'docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md'
+      - '.github/workflows/validate-conversation-evidence-ingestion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pytest
+      - name: Validate ingestion tests
+        run: python -m pytest -q tests/test_conversation_evidence_ingestion.py tests/test_conversation_evidence_ingestion_runtime.py tests/test_conversation_evidence_state_triggered_selector.py
+      - name: Compile ingestion worker
+        run: python -m py_compile workers/conversation_evidence_ingestion.py workers/conversation_evidence_ingestion_runtime_worker.py
+      - name: Parse canonical JSON artifacts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in (
+              "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+              "schemas/conversation-evidence-ingestion-package.schema.json",
+              "data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+          ):
+              json.loads(Path(path).read_text(encoding="utf-8"))
+          print("CONVERSATION_EVIDENCE_INGESTION_JSON_PARSE_PASS")
+          PY

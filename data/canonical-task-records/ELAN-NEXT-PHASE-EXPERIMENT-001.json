@@ -4,8 +4,8 @@
   "correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
-  "goal": "Continue the established ELAN experiment through continued non-emission observation until the first authentic ELAN-native return-to-speech transition, with predecessor evidence preserved exactly, expected evidence frozen before interpretation, and no unrelated authority/runtime/evaluator lane promoted into an experiment prerequisite.",
-  "coordination_state": "ACTIVE",
+  "goal": "Preserve and reconcile the returned ELAN Test 2 sustained-silence / return-after-silence evidence without rewriting source-native evidence, then transfer cross-evaluation to a separate successor task.",
+  "coordination_state": "RETIRED",
   "checkout_state": "UNCLAIMED",
   "cosv": {
     "profile": "task.v1",
@@ -16,126 +16,43 @@
   "source_refs": [
     "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
     "docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md",
-    "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
-    "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
+    "StegVerse-org/StegVerse-SDK/docs/ELAN_NEXT_PHASE_EXPERIMENT_PROCEDURE.md",
     "StegVerse-org/StegVerse-SDK/docs/ELAN_NEXT_PHASE_EXPERIMENT_PREREGISTRATION.md",
     "StegVerse-org/StegVerse-SDK/data/elan-next-phase-experiment-001.preregistration.json"
   ],
-  "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-org"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
-    "components": [
-      "elan-predecessor-evidence-preservation",
-      "continued-silence-observation",
-      "return-to-speech-observation",
-      "expected-evidence-freeze",
-      "governed-result-reference",
-      "custody",
-      "replay",
-      "reconstruction"
-    ]
+  "reconciliation": {
+    "returned_evidence_source": "user-supplied 2.ELAN_TEST_TRACE_EN_16.09.2026.pdf",
+    "returned_evidence_date": "2026-09-16",
+    "native_state_claim": "ELAN responses in their native state, unmodified",
+    "extended_silence_interval": "2026-09-16T14:57:31/2026-09-16T15:06:05",
+    "elan_silence_evidence": "No transmission, native presence state maintained.",
+    "return_human_event": "Alright. I think I'm ready to continue.",
+    "return_elan_response": "I'm listening.",
+    "silence_windows_returned_as_one_continuous_interval": true,
+    "return_stimulus_exact_text_match_to_requested_okay_version": false,
+    "source_native_evidence_rewritten": false
   },
-  "dependencies": [
-    {
-      "dependency_id": "DEP-ELAN-FIRST-RETURN-TO-SPEECH",
-      "kind": "EXPERIMENT_OBSERVATION",
-      "state": "PENDING",
-      "ref": "First authentic ELAN-native return-to-speech transition after the continued non-emission interval"
-    },
-    {
-      "dependency_id": "DEP-ELAN-GOVERNED-RESULT-LANE",
-      "kind": "EXPERIMENT_EVIDENCE",
-      "state": "AVAILABLE_FROM_PREDECESSOR_LINEAGE",
-      "ref": "Run 2 canonical governed-result/custody/replay/reconstruction lineage; no separate live StegOS/InTr predicate is introduced as a prerequisite"
-    }
-  ],
-  "blockers": [],
-  "adjacent_task_refs": [
-    "ELAN-CUMULATIVE-PUBLICATION-001",
-    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
-  ],
   "expected_evidence_predicates": [
-    "PREDECESSOR_RUN1_EVENTS_1_2_PRESERVED_EXACTLY",
-    "PREDECESSOR_RUN2_EVENT3_NON_EMISSION_PRESERVED_EXACTLY",
-    "EXPECTED_EVIDENCE_DECLARATION_FROZEN_BEFORE_INTERPRETATION",
-    "FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_OBSERVED",
-    "RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE_PRESERVED",
-    "IMMUTABLE_MANIFEST_REFERENCE_BOUND",
-    "GOVERNED_RESULT_REFERENCE_BOUND",
-    "DETERMINISTIC_REPLAY_PRESERVED",
-    "RECONSTRUCTION_PRESERVED",
-    "RETURNED_RESULT_PRESERVED",
+    "TEST2_AUTHENTIC_SOURCE_NATIVE_TRACE_RECEIVED",
+    "TEST2_TRACE_PRESERVED_WITHOUT_NORMALIZATION",
+    "SILENCE_WINDOW_COLLAPSE_IN_RETURNED_ELAN_TRACE_DISCLOSED",
+    "RETURN_STIMULUS_TEXT_DEVIATION_DISCLOSED",
     "NOT_EXPOSED_REMAINS_NOT_EXPOSED",
     "UNRESOLVED_REMAINS_UNRESOLVED",
-    "SILENCE_HAS_NO_INFERRED_INTENT_CONSENT_REFUSAL_WITHDRAWAL_OR_MEANING"
+    "CROSS_EVALUATION_NOT_EXECUTED_UNDER_PREDECESSOR_TASK"
   ],
-  "runtime_requirements": {
-    "capabilities": [
-      "github_repository_read",
-      "github_pull_request_write",
-      "experiment_evidence_reconciliation",
-      "governed_result_reference_preservation"
-    ],
-    "environment": "EXISTING_ELAN_EXPERIMENT_EVIDENCE_CHAIN",
-    "direction": "CONTINUED_NON_EMISSION_TO_FIRST_AUTHENTIC_RETURN_TO_SPEECH",
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": true
-  },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
-    "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]}
-    ],
-    "selected_substrate_id": null,
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
-  },
-  "worker_claim": {
-    "authority": "NOT_APPLICABLE_TO_ELAN_EXPERIMENT_CONTINUATION",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": false
-  },
-  "human_action_ref": null,
   "completion": {
-    "claimed": false,
-    "validated": false,
-    "reconciliation_ref": null
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"
   },
-  "allowed_next_transitions": [
-    "CONTINUE_NON_EMISSION_OBSERVATION",
-    "CAPTURE_FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH",
-    "PRESERVE_RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE",
-    "BIND_IMMUTABLE_MANIFEST_AND_GOVERNED_RESULT_REFERENCES",
-    "PRESERVE_REPLAY_RECONSTRUCTION_AND_RETURNED_RESULT",
-    "COMPARE_AGAINST_FROZEN_EXPECTED_EVIDENCE"
+  "decomposed_to": [
+    "ELAN-STEGVERSE-CROSS-EVALUATION-001"
   ],
+  "allowed_next_transitions": [],
   "handoff_projection_refs": [
     "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"
   ],
-  "authority_model": {
-    "task_registry_mints_execution_authority": false,
-    "github_actions_mint_execution_authority": false,
-    "github_token_authority_is_experiment_prerequisite": false,
-    "third_party_evaluator_execution_is_experiment_prerequisite": false,
-    "live_stegos_intr_runtime_is_experiment_prerequisite": false,
-    "historical_or_source_native_evidence_may_be_rewritten": false
-  },
   "readme_impact": {
     "material_function_change": false,
     "readme_updated_in_change_set": false,

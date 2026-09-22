@@ -1,0 +1,176 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+  "correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+  "root_correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+  "parent_task_id": null,
+  "goal": "Bind the validated StegHealth KnowledgeVault/Interlock client and generic InTr adapter to the existing canonical resident runtime, then prove the production path with authentic Interlock/InTr-governed execution and Master Records custody/reconstruction without direct KnowledgeVault record access or a duplicate runtime lane.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-Labs/StegHealth",
+  "handoff": "docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "60000000111000"
+  },
+  "cosv_task_vector": "60000000111000",
+  "source_refs": [
+    "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
+    "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit#79",
+    "StegVerse-Labs/StegOS#21",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "scripts/dispatch_resident_execution_requests.py",
+    "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
+    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "scripts/run_canonical_work_event_bootstrap.py",
+    "scripts/apply_admitted_canonical_work_projection.py",
+    "tests/test_steghealth_kv_interlock_canonical_work_ingress.py"
+  ],
+  "adjacent_task_refs": [
+    "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "INTERLOCK_INTR_CURRENT_DECISION_OBSERVED",
+    "MASTER_RECORDS_STATE_RECORDED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_PASS",
+    "MASTER_RECORDS_RECEIPT_DIGEST_MATCH",
+    "LIVE_DEVICE_IDENTITY_BOUND",
+    "LIVE_KV_IDENTITY_BOUND",
+    "PRODUCTION_SEALING_REFERENCE_BOUND",
+    "PRODUCTION_ENDPOINT_TRANSPORT_BOUND",
+    "DURABLE_RECEIPT_CHAIN_HASH_VERIFIED",
+    "OWNER_AUTHORIZED_BOUNDED_HEALTH_CONTEXT_REQUEST_SUCCEEDS",
+    "RESTRICTED_PATH_DENIAL_PROVEN",
+    "MINIMUM_DISCLOSURE_PROVEN",
+    "PII_PHI_REMAINS_IN_OWNER_KV_CUSTODY",
+    "CANDIDATE_WRITEBACK_REMAINS_NON_AUTHORITATIVE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_resident_request_dispatch",
+      "workercoordinator_claim_fence",
+      "interlock_intr_transition",
+      "master_records_custody_reconstruction"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
+    "duplicate_runtime_proof_required": false,
+    "separate_authentic_runtime_evidence_class_required": false,
+    "terminal_state_is_completion_truth": true
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED",
+    "CLAIMED_IMPLEMENTATION",
+    "MACHINE_OWNED",
+    "COMPLETE"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "interlock_intr_is_transition_path_not_precondition": true,
+    "master_records_is_transition_custody_not_precondition": true,
+    "separate_runtime_observer_is_completion_authority": false
+  },
+  "remaining_predicate": "INGRESS_ADMITTED",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "carriage_repair": {
+    "state": "STATE_TRIGGERABLE_INGRESS_READY",
+    "defect": "ACTIVE_CHECKED_OUT_TASK_WAS_NOT_REACHABLE_BY_PROPOSED_ONLY_REGISTRY_SELECTION_OR_PROPOSED_ONLY_INGRESS_PROJECTION",
+    "repair": "EXPLICIT_REQUEST_REUSES_CANONICAL_WORK_CONSUMER_AND_PRESERVES_ACTIVE_CHECKOUT_COORDINATION_WHILE_RECORDING_RUNTIME_INGRESS_SEPARATELY",
+    "request_ref": "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
+    "selector": "canonical_work_coordination",
+    "second_dispatcher_created": false,
+    "second_scheduler_created": false,
+    "second_workercoordinator_created": false,
+    "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
+    "separate_authentic_runtime_gate_required": false,
+    "transition_truth_source": "MASTER_RECORDS_GOVERNED_TRANSITION_CLOSURE"
+  }
+}

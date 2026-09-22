@@ -1,0 +1,213 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+  "correlation_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+  "root_correlation_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "parent_task_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "goal": "Materialize and verify the exact frozen TT/RTG/GTG/AE source corpus required by the StegVerse-002 v0.3 native resource-bundle contract, then reuse the already-proven sandbox native execution/export/egress/Master-Records/origin-delivery chain to close the outstanding Goal 1 and Goal 2 evidence without weakening corpus completeness or introducing a parallel execution path.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "50000000107001",
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+  "source_refs": [
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2064",
+    "control/task-vectors/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "control/task-vector-index.d/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "source-bundles/reusable-task-registry.d/RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001.json",
+    "scripts/run_tvc_runtime_boundary_reusable.py",
+    "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
+    "StegVerse-Labs/TVC:scripts/execute_private_source_read_resident.py",
+    "StegVerse-002/micro-node-runtime:tools/sv002_native_resource_bundle.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "master-records/orchestration:scripts/verify_sv002_self_characterization_reconstruction.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "Admissible-Existence",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/StegVerse-Healer",
+      "StegVerse-002/micro-node-runtime",
+      "Admissible-Existence/TT",
+      "Admissible-Existence/RTG",
+      "Admissible-Existence/GTG",
+      "Admissible-Existence/AE",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "reusable-task-callability",
+      "tvc-primary-runtime-binding",
+      "private-source-resident-materialization",
+      "frozen-corpus-materialization",
+      "source-index-completeness",
+      "native-resource-bundle",
+      "native-action-policy",
+      "v0.3-artifact-export",
+      "post-egress-master-records-custody",
+      "origin-return-delivery"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-CALLABLE-TVC-RUNTIME-PATH",
+      "kind": "EXISTING_REUSABLE_TASK_PATH",
+      "state": "SOURCE_COMPLETE_RELEASED_RUNTIME_RECEIPT_PENDING",
+      "ref": "StegVerse-Labs/.github#2066@a7cc366a7f39bdcfed06bafd693ac0d7170091a7;StegVerse-Labs/StegVerse-Healer#88@f2e91e1969e0c16fd8347931aca59c10ae6db252",
+      "disposition": "USE_EXISTING_HEALER_CARRIER_TO_RT_REUSABLE_TASK_SCHEDULER_TO_RT_TVC_RUNTIME_BOUNDARY_OBSERVATION_TO_RT_TVC_PRIMARY_RUNTIME_BINDING; NO TASK_SPECIFIC_SELECTOR OR SECOND_SCHEDULER"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-TT-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57;tree=173e2b6f8b75a8336144b16f36f5270d6bd741ea"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-RTG-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2;tree=22e87231234e396476ba5af2dc0416462904613b"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-GTG-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225;tree=b01735eaf44b7f1c4bff59c3ac394d2113363579"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-AE-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/AE@53c8eedddc4e54d8fa0660039d65ab9ac63057a1;tree=03643ce2b626f0813ab74707359f2219e9e04551"
+    },
+    {
+      "dependency_id": "DEP-SV002-NATIVE-CORRECTED-CHAIN",
+      "kind": "SANDBOX_PROVISIONAL_EVIDENCE",
+      "state": "RESOLVED_FOR_REUSE_NOT_PRODUCTION_PROOF",
+      "ref": "parent SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001 sandbox evidence",
+      "disposition": "REUSE_NATIVE_REPLACEMENT_ADAPTER_V03_EXPORTER_POST_EGRESS_CUSTODY_AND_ORIGIN_DELIVERY; DO_NOT_REIMPLEMENT OR PROMOTE WITHOUT FULL CORPUS PASS"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "SV002-TVC-REUSABLE-INVOCATION-RUNTIME-RECEIPT",
+      "state": "ACTIVE",
+      "reason": "State-dependent chain is now explicit. The immediate predecessor is CALLABLE_TVC_PATH_SOURCE_COMPLETE and the only admissible successor is REUSABLE_TVC_INVOCATION_OBSERVED. No retained neutral scheduler/reusable-task receipt for this Goal/COSV has yet been observed; every later transition remains BLOCKED_ON_PREDECESSOR."
+    }
+  ],
+  "expected_evidence_predicates": [
+    "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+    "TVC_SERVICE_INSTALLED_VERIFIED",
+    "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+    "TT_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "RTG_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "GTG_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "AE_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "TT_FROZEN_TREE_BYTE_COMPLETE",
+    "RTG_FROZEN_TREE_BYTE_COMPLETE",
+    "GTG_FROZEN_TREE_BYTE_COMPLETE",
+    "AE_FROZEN_TREE_BYTE_COMPLETE",
+    "SOURCE_INDEX_SHA256_RECONSTRUCTED_FOR_ALL_FOUR",
+    "SV002_NATIVE_RESOURCE_BUNDLE_VERIFIED",
+    "REAL_NATIVE_POLICY_EXECUTED_AGAINST_COMPLETE_FROZEN_BUNDLE",
+    "V03_ARTIFACT_RECONSTRUCTION_PASS",
+    "AUTHENTIC_RESPONSE_EGRESS_BOUND",
+    "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS",
+    "ORIGIN_RETURN_DELIVERED_AFTER_CUSTODY",
+    "NO_HISTORICAL_PYTHON_PRINCIPAL_RERUN",
+    "NO_SECOND_USER_OPERATED_DEVICE",
+    "NO_STANDING_EXTERNAL_RUNTIME"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "callable_tvc_path_source_complete": true,
+    "resident_reusable_invocation_observed": false,
+    "frozen_corpus_materialized": false,
+    "source_indexes_verified": false,
+    "native_bundle_verified": false,
+    "goal_1_closed": false,
+    "goal_2_closed": false
+  },
+  "allowed_next_transitions": [
+    "REUSABLE_TVC_INVOCATION_OBSERVED"
+  ],
+  "handoff_projection_refs": [
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "github_source_transport_authority": "SOURCE_AND_EVIDENCE_TRANSPORT_ONLY",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_every_governed_transition": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "neutral_reusable_scheduler_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "second_scheduler_created": false,
+    "remote_desktop_required": false,
+    "second_user_operated_device_required": false
+  },
+  "state_transition_graph": {
+    "schema": "stegverse.state-transition-dependency-graph/v1",
+    "invariant": "EVERY_SUCCESSOR_STATE_REQUIRES_AUTHENTIC_CONSUMPTION_OF_ITS_IMMEDIATE_PREDECESSOR_STATE",
+    "current_state": "CALLABLE_TVC_PATH_SOURCE_COMPLETE",
+    "transitions": [
+      {
+        "from": "CALLABLE_TVC_PATH_SOURCE_COMPLETE",
+        "to": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "predicate": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+        "state": "PENDING"
+      },
+      {
+        "from": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "to": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "predicate": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "to": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "predicate": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "to": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "predicate": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+        "to": "FROZEN_CORPUS_MATERIALIZED",
+        "predicate": "TT_RTG_GTG_AE_IMMUTABLE_COMPLETE_RECEIPTS_AND_TREE_BYTE_COMPLETENESS",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "FROZEN_CORPUS_MATERIALIZED",
+        "to": "NATIVE_BUNDLE_VERIFIED",
+        "predicate": "SV002_NATIVE_RESOURCE_BUNDLE_VERIFIED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "NATIVE_BUNDLE_VERIFIED",
+        "to": "FULL_CHAIN_REEXECUTED",
+        "predicate": "REAL_NATIVE_POLICY_EXECUTED_AGAINST_COMPLETE_FROZEN_BUNDLE",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "FULL_CHAIN_REEXECUTED",
+        "to": "GOAL_EVIDENCE_RECONCILED",
+        "predicate": "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS_AND_ORIGIN_RETURN_DELIVERED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      }
+    ]
+  }
+}

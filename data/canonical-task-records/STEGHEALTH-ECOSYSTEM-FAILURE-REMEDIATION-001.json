@@ -1,0 +1,138 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+  "correlation_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+  "root_correlation_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+  "parent_task_id": null,
+  "goal": "Converge mapped StegVerse ecosystem failures through StegHealth-owned corrective-task creation and remediation routing without creating duplicate runtime, scheduler, dispatcher, custody, credential, or authority lanes.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/StegHealth",
+  "handoff": "docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md",
+  "issue_ref": "StegVerse-Labs/StegHealth#51",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000100000"
+  },
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+    "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py",
+    "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md"
+  ],
+  "adjacent_task_refs": [
+    "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+    "ENTERPRISE-HOST-PROVIDER-ERADICATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "SOURCE_TASK_LIFECYCLE_RESOLVED",
+    "STEGHEALTH_CORRECTIVE_TASK_IDENTITY_CREATED_OR_REUSED",
+    "CORRECTIVE_TASK_COSV_EMITTED",
+    "CANONICAL_INGRESS_INITIATED",
+    "CORRECTION_VALIDATED",
+    "POST_CORRECTION_FAILURE_STATE_RECONCILED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "failure_remediation_task_creation",
+      "canonical_artifact_validation",
+      "github_workflow_failure_reconciliation"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED",
+    "CLAIMED_IMPLEMENTATION",
+    "MACHINE_OWNED",
+    "COMPLETE"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  }
+}

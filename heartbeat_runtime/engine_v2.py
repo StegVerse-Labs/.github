@@ -119,8 +119,11 @@ class HeartbeatRuntime:
         )
 
     def _successor_reconstruction(self, registry: dict[str, Any], handoff: dict[str, Any]) -> tuple[bool, str | None, dict[str, Any] | None]:
-        parent_task_id = handoff.get("task", {}).get("parent_task_id")
+        task_contract = handoff.get("task", {})
+        parent_task_id = task_contract.get("parent_task_id")
         if not parent_task_id:
+            return True, None, None
+        if task_contract.get("runtime_predecessor_reconstruction_required") is False:
             return True, None, None
 
         continuity = handoff.get("continuity", {})

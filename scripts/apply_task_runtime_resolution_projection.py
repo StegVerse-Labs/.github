@@ -26,7 +26,7 @@ def require(ok: bool, reason: str) -> None:
         raise RuntimeError("FAIL_CLOSED: " + reason)
 
 
-def project(registry: dict[str, Any], runtime_map: dict[str, Any], resolution: dict[str, Any], map_ref: str) -> dict[str, Any]:
+def project_task_record(task: dict[str, Any], runtime_map: dict[str, Any], resolution: dict[str, Any], map_ref: str) -> dict[str, Any]:
     require(resolution.get("schema") == "stegverse.canonical-task-runtime-resolution/v1", "resolution schema mismatch")
     require(resolution.get("projection_only") is True, "runtime resolution must be projection-only")
     require(resolution.get("selection_grants_authority") is False, "runtime resolution cannot grant authority")
@@ -35,10 +35,7 @@ def project(registry: dict[str, Any], runtime_map: dict[str, Any], resolution: d
 
     task_id = resolution.get("task_id")
     correlation_id = resolution.get("correlation_id")
-    proposed = copy.deepcopy(registry)
-    matches = [t for t in proposed.get("tasks", []) if t.get("task_id") == task_id]
-    require(len(matches) == 1, "task identity must resolve exactly once")
-    task = matches[0]
+    require(task.get("task_id") == task_id, "task identity drift")
     require(task.get("correlation_id") == correlation_id, "correlation identity drift")
     require(task.get("runtime_requirements") == resolution.get("requirements"), "runtime requirements drift")
 
@@ -47,7 +44,8 @@ def project(registry: dict[str, Any], runtime_map: dict[str, Any], resolution: d
     known = {p.get("profile_id") for p in runtime_map.get("profiles", [])}
     require(all(c in known for c in candidates), "resolution references unknown runtime profile")
 
-    task["runtime_resolution"] = {
+    proposed = copy.deepcopy(task)
+    proposed["runtime_resolution"] = {
         "map_ref": map_ref,
         "map_generation": runtime_map.get("generation"),
         "candidate_profile_ids": candidates,
@@ -55,6 +53,17 @@ def project(registry: dict[str, Any], runtime_map: dict[str, Any], resolution: d
         "projection_only": True,
         "selection_grants_authority": False,
     }
+    return proposed
+
+
+def project(registry: dict[str, Any], runtime_map: dict[str, Any], resolution: dict[str, Any], map_ref: str) -> dict[str, Any]:
+    task_id = resolution.get("task_id")
+    proposed = copy.deepcopy(registry)
+    matches = [t for t in proposed.get("tasks", []) if t.get("task_id") == task_id]
+    require(len(matches) == 1, "task identity must resolve exactly once")
+    projected_task = project_task_record(matches[0], runtime_map, resolution, map_ref)
+    matches[0].clear()
+    matches[0].update(projected_task)
     proposed["generation"] = int(registry.get("generation", 0)) + 1
     proposed["status"] = "RUNTIME_PROFILE_CANDIDATES_PROJECTED_NO_AUTHORITY_GRANTED"
     nonclaims = proposed.setdefault("nonclaims", [])
@@ -73,6 +82,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--registry", type=Path, default=Path("data/canonical-task-registry.json"))
     parser.add_argument("--map", type=Path, default=Path("control/runtime-profile-map.json"))
+    parser.add_argument("--records-dir", type=Path, default=Path("data/canonical-task-records"))
     parser.add_argument("--resolution", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--apply", action="store_true")
@@ -81,15 +91,43 @@ def main() -> int:
     registry = load(args.registry)
     runtime_map = load(args.map)
     resolution = load(args.resolution)
-    result = project(registry, runtime_map, resolution, str(args.map))
+    task_id = resolution.get("task_id")
+    matches = [t for t in registry.get("tasks", []) if t.get("task_id") == task_id]
+    require(len(matches) <= 1, "task identity duplicates in aggregate registry")
+
+    target_kind = "AGGREGATE_CANONICAL_TASK_REGISTRY"
+    target_path = args.registry
+    if matches:
+        result = project(registry, runtime_map, resolution, str(args.map))
+    else:
+        require(isinstance(task_id, str) and task_id, "runtime resolution task identity required")
+        shard_path = args.records_dir / f"{task_id}.json"
+        require(shard_path.is_file(), "task identity must resolve in aggregate registry or standalone canonical shard")
+        task = load(shard_path)
+        result = project_task_record(task, runtime_map, resolution, str(args.map))
+        target_kind = "STANDALONE_CANONICAL_TASK_RECORD"
+        target_path = shard_path
+
     raw = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.apply:
-        args.registry.write_text(raw, encoding="utf-8")
+        target_path.write_text(raw, encoding="utf-8")
     elif args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(raw, encoding="utf-8")
     else:
         print(raw, end="")
+    print(json.dumps({
+        "schema": "stegverse.runtime-profile-resolution-persistence/v1",
+        "task_id": task_id,
+        "target_kind": target_kind,
+        "target_ref": str(target_path),
+        "projection_only": True,
+        "selection_grants_authority": False,
+        "coordination_state_changed": False,
+        "claim_or_fence_minted": False,
+        "execution_authority_granted": False,
+        "authority_effect": "NONE_PROJECTION_PERSISTENCE_ONLY",
+    }, sort_keys=True))
     return 0
 
 

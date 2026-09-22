@@ -53,6 +53,8 @@
       "StegVerse-Labs/TV/scripts/sovereign_self_heal.py",
       "StegVerse-Labs/TVC/policies/local_repository_mutation/tv_self_heal.v1.json",
       "StegVerse-Labs/Continuity/scripts/guardian.py",
+      "control/canonical-master-records-state-transition-custody-contract.json",
+      "workers/canonical_state_transition_custody.py",
       "workers/healer_sovereign_scheduler_worker.py",
       "StegVerse-org/LLM-adapter#209@10a6f6247771b2a85b07f5f19810403c3acde513",
       "StegVerse-Labs/StegVerse-Healer#43@7aa88c39d5e46402e3368b5ebd81d27a773ce93d",
@@ -106,7 +108,7 @@
   "continuity": {
     "checkpoint_ref": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
     "handoff_destination": "control/worker-registry.json",
-    "master_records_required": false,
+    "master_records_required": true,
     "status_projection": "control/worker-status.json"
   },
   "completion": {
@@ -118,6 +120,7 @@
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
       "The executive-rhetoric-ledger-local-sync target has live COMPLETE/PASS evidence before legacy Site carrier retirement",
       "Scheduler receipt is persisted",
+      "Every observed governed Healer state transition is submitted to canonical Master Records custody and exact reconstruction returns PASS before subsequent machine-owned progression",
       "No target depends on GitHub workflow-dispatch as production transport"
     ],
     "dependency_state": {

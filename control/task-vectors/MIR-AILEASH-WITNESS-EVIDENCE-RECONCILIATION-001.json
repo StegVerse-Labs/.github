@@ -1,0 +1,11 @@
+{
+  "profile": "task.v1",
+  "task_id": "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001",
+  "vector": "50000000100000",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md"
+  ],
+  "authority_effect": "NONE"
+}

@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+import argparse
 import importlib.util
+import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 LEGACY = HERE / "consume-canonical-work-coordination-bootstrap.legacy.py"
 ACTIVE_TASK = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 ACTIVE_SHARD = Path("data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json")
+MIR_TASK = "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001"
+MIR_CONSUMER_REL = Path("scripts/consume_mir_roundtrip_egress_authenticity_request.py")
 
 spec = importlib.util.spec_from_file_location("canonical_work_consumer_legacy", LEGACY)
 if spec is None or spec.loader is None:
@@ -19,12 +26,135 @@ mod.STEGBROWSER_RUNTIME_CONSUMPTION_SPEC["task_id"] = ACTIVE_TASK
 if ACTIVE_SHARD not in mod.PRESERVE_IF_PRESENT:
     mod.PRESERVE_IF_PRESENT = tuple(mod.PRESERVE_IF_PRESENT) + (ACTIVE_SHARD,)
 
+# Reuse the same Canonical Work consumer for the already checked-out StegHealth
+# production endpoint task. This stages carriage only; it creates no dispatcher,
+# scheduler, WorkerCoordinator, authority plane, or runtime.
+STEGHEALTH_KV_INTERLOCK_TASK = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+STEGHEALTH_KV_INTERLOCK_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-steghealth-kv-interlock-production-endpoint"),
+    "task_id": STEGHEALTH_KV_INTERLOCK_TASK,
+}
+if not any(spec.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (STEGHEALTH_KV_INTERLOCK_SPEC,)
+
+# Reuse the same Canonical Work consumer for the ERL household-economic-conditions Goal.
+# This stages canonical ingress only; WorkerCoordinator retains claim/fence authority,
+# TV/TVC retains credential authority, and Master Records remains runtime-reality authority.
+ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK = "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
+ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-erl-household-economic-conditions-site-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-erl-household-economic-conditions-site"),
+    "task_id": ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK,
+}
+if not any(spec.get("task_id") == ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SPEC,)
+
+# Reuse the same Canonical Work consumer for the existing KV connection
+# revalidation TVC runtime-observation request. This only makes the already-staged
+# request visitable by the existing consumer cadence; it creates no second
+# dispatcher, scheduler, runtime, WorkerCoordinator, or credential path.
+KV_CONNECTION_REVALIDATION_TASK = "KV-CONNECTION-REVALIDATION-WORKER-001"
+KV_CONNECTION_REVALIDATION_TVC_RUNTIME_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-kv-connection-revalidation-tvc-runtime-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-kv-connection-revalidation-tvc-runtime"),
+    "task_id": KV_CONNECTION_REVALIDATION_TASK,
+}
+if not any(spec.get("task_id") == KV_CONNECTION_REVALIDATION_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (KV_CONNECTION_REVALIDATION_TVC_RUNTIME_SPEC,)
+
 # Preserve the canonical consumer's public implementation/API surface for existing
-# resident-consumer tests and repair modules. This wrapper changes one binding only;
-# it does not create a second dispatcher or execution plane.
+# resident-consumer tests and repair modules. This wrapper does not create a second
+# dispatcher or execution plane.
 for _name in dir(mod):
     if not _name.startswith("__"):
         globals()[_name] = getattr(mod, _name)
+
+
+def _last_json(stdout: str):
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def _consume_mir_duplicate_first(source_root: Path, runtime_root: Path) -> dict:
+    consumer = source_root.expanduser().resolve() / MIR_CONSUMER_REL
+    if not consumer.is_file():
+        return {
+            "schema": "stegverse.mir-roundtrip-egress-authenticity-request-consumption/v1",
+            "state": "REQUEST_CONSUMER_SOURCE_NOT_MATERIALIZED",
+            "task_id": MIR_TASK,
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(consumer),
+            "--source-root", str(source_root.expanduser().resolve()),
+            "--runtime-root", str(runtime_root.expanduser().resolve()),
+        ],
+        cwd=source_root.expanduser().resolve(),
+        capture_output=True,
+        text=True,
+        check=False,
+        env=dict(os.environ),
+        timeout=1200,
+    )
+    result = _last_json(completed.stdout)
+    if not isinstance(result, dict):
+        result = {
+            "schema": "stegverse.mir-roundtrip-egress-authenticity-request-consumption/v1",
+            "state": "REQUEST_CONSUMPTION_RESULT_UNOBSERVED",
+            "task_id": MIR_TASK,
+            "returncode": completed.returncode,
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
+    return result
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-root", type=Path, required=True)
+    parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--goal-task-id")
+    args = parser.parse_args()
+
+    # Visit the explicit machine-owned MIR request first so the existing canonical
+    # cadence cannot strand it behind unrelated request outcomes. The consumer itself
+    # delegates to the existing refresh+WorkerCoordinator path and grants no authority.
+    mir = _consume_mir_duplicate_first(args.source_root, args.runtime_root)
+    legacy = mod.consume_all(
+        args.source_root,
+        args.runtime_root,
+        goal_task_id=args.goal_task_id,
+    )
+    combined = {
+        "schema": "stegverse.canonical-work-bootstrap-plus-mir-request-consumption/v1",
+        "state": "COMPLETED" if legacy.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"} and mir.get("state") not in {"REQUEST_CONSUMPTION_EXCEPTION", "REQUEST_CONSUMER_SOURCE_NOT_MATERIALIZED", "REQUEST_CONSUMPTION_RESULT_UNOBSERVED"} else "ATTEMPT_RECORDED",
+        "mir_roundtrip_egress_authenticity": mir,
+        "canonical_work_request_set": legacy,
+        "current_goal_task_id": args.goal_task_id,
+        "mir_visited_before_legacy_request_set": True,
+        "later_request_attempts_blocked_by_mir_failure": False,
+        "second_dispatcher_created": False,
+        "second_scheduler_created": False,
+        "claim_or_fence_minted_by_wrapper": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "second_machine_required": False,
+        "authority_effect": "NONE_EXISTING_CONSUMER_CADENCE_ONLY",
+    }
+    print(json.dumps(combined, sort_keys=True))
+    return 0
+
 
 # Canonical-source compatibility anchors. Existing repository validators intentionally
 # inspect this canonical entrypoint as text as well as importing it. The executable
@@ -43,6 +173,7 @@ for _name in dir(mod):
 # def run_registry_cycle(
 # source_dir.glob("*.json")
 # command.extend(["--exclude-task-id", spec["task_id"]])
+# "--goal-task-id"
 # "task_registry_cycle_attempted": True
 # "start_point": "CANONICAL_TASK_REGISTRY"
 # "second_dispatcher_created": False
@@ -75,4 +206,4 @@ for _name in dir(mod):
 # existing_target_task_shard_preserved
 
 if __name__ == "__main__":
-    raise SystemExit(mod.main())
+    raise SystemExit(main())

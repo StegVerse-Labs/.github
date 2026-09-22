@@ -58,7 +58,14 @@ def _all_records() -> list[dict[str, Any]]:
             except (OSError, json.JSONDecodeError):
                 continue
             if isinstance(row, dict) and row.get("task_id"):
-                by_id[str(row["task_id"])] = row
+                task_id = str(row["task_id"])
+                if task_id in by_id:
+                    projected = dict(by_id[task_id])
+                    for key, value in row.items():
+                        projected.setdefault(key, value)
+                    by_id[task_id] = projected
+                else:
+                    by_id[task_id] = row
     return [by_id[key] for key in sorted(by_id)]
 
 
@@ -71,7 +78,13 @@ def _checked_out(record: dict[str, Any]) -> bool:
     if checkout == "CHECKED_OUT":
         return True
     claim = record.get("worker_claim")
-    return isinstance(claim, dict) and bool(claim.get("claim_ref")) and claim.get("active") is not False
+    return (
+        isinstance(claim, dict)
+        and str(claim.get("authority") or "").upper() == "WORKERCOORDINATOR"
+        and bool(claim.get("claim_ref"))
+        and bool(claim.get("fence_ref"))
+        and claim.get("active") is not False
+    )
 
 
 def _posture(record: dict[str, Any]) -> str:
@@ -137,6 +150,15 @@ def _one_hop_open_related(record: dict[str, Any], by_id: dict[str, dict[str, Any
     )
 
 
+def _stegdb_comparison(record: dict[str, Any], obligation: dict[str, Any]) -> tuple[str | None, str | None]:
+    ref = obligation.get("stegdb_comparison_ref") or record.get("stegdb_comparison_ref")
+    status = obligation.get("stegdb_comparison_status") or record.get("stegdb_comparison_status")
+    normalized = str(status).strip().upper() if status is not None else None
+    if normalized not in {None, "MATCH", "MISSING", "STALE", "INCONSISTENT"}:
+        normalized = "INCONSISTENT"
+    return (str(ref).strip() if isinstance(ref, str) and ref.strip() else None, normalized)
+
+
 def _worker_return_observation(record: dict[str, Any], now: datetime) -> dict[str, Any]:
     obligation = record.get("worker_return_obligation")
     if not isinstance(obligation, dict):
@@ -191,16 +213,56 @@ def _worker_return_observation(record: dict[str, Any], now: datetime) -> dict[st
             "expected_return_by": due.isoformat().replace("+00:00", "Z"),
         }
 
+    stegdb_ref, stegdb_status = _stegdb_comparison(record, obligation)
+    if stegdb_ref is None or stegdb_status is None:
+        return {
+            "task_id": record.get("task_id"),
+            "posture": "RECONCILIATION_REQUIRED",
+            "reason": "Master Records return is absent after the governed expectation, but the coordinated StegDB comparison has not been observed; absence alone is not classified as runtime failure",
+            "recovery_required": False,
+            "expected_return_by": due.isoformat().replace("+00:00", "Z"),
+            "worker_return_obligation_ref": obligation.get("ref"),
+            "master_records_subject_binding": obligation.get("master_records_subject_binding"),
+            "stegdb_comparison_ref": stegdb_ref,
+            "stegdb_comparison_status": stegdb_status,
+        }
+    if stegdb_status in {"STALE", "INCONSISTENT"}:
+        return {
+            "task_id": record.get("task_id"),
+            "posture": "RECONCILIATION_REQUIRED",
+            "reason": "StegDB and Master Records do not yet support a safe worker-failure classification",
+            "recovery_required": False,
+            "expected_return_by": due.isoformat().replace("+00:00", "Z"),
+            "worker_return_obligation_ref": obligation.get("ref"),
+            "master_records_subject_binding": obligation.get("master_records_subject_binding"),
+            "stegdb_comparison_ref": stegdb_ref,
+            "stegdb_comparison_status": stegdb_status,
+        }
+    if stegdb_status == "MATCH":
+        return {
+            "task_id": record.get("task_id"),
+            "posture": "RECONCILIATION_REQUIRED",
+            "reason": "StegDB reports a matching return while the configured Master Records return is absent; reconcile the observation surfaces before remediation",
+            "recovery_required": False,
+            "expected_return_by": due.isoformat().replace("+00:00", "Z"),
+            "worker_return_obligation_ref": obligation.get("ref"),
+            "master_records_subject_binding": obligation.get("master_records_subject_binding"),
+            "stegdb_comparison_ref": stegdb_ref,
+            "stegdb_comparison_status": stegdb_status,
+        }
+
     confirmed_nonreport = bool(obligation.get("nonreport_confirmed"))
     return {
         "task_id": record.get("task_id"),
         "posture": "WORKER_NONREPORT" if confirmed_nonreport else "RETURN_OVERDUE",
-        "reason": "bound expected worker return is overdue and no matching Master Records return is present",
+        "reason": "bound expected worker return is overdue, Master Records has no matching return, and StegDB independently classifies the same bound return as missing",
         "recovery_required": True,
         "expected_return_by": due.isoformat().replace("+00:00", "Z"),
         "worker_return_obligation_ref": obligation.get("ref"),
         "claim_or_execution_ref": obligation.get("claim_or_execution_ref") or record.get("claim_or_execution_ref"),
         "master_records_subject_binding": obligation.get("master_records_subject_binding"),
+        "stegdb_comparison_ref": stegdb_ref,
+        "stegdb_comparison_status": stegdb_status,
     }
 
 

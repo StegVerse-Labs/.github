@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "identity": "StegVerse-Labs/.github:task:SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "profile": "task.v1",
+  "task_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "vector": "71000000101000",
+  "level": "task",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "evidence_refs": [
+    "data/canonical-task-records/SDK-PRODUCT-PROCESSING-PROVENANCE-001.json",
+    "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}

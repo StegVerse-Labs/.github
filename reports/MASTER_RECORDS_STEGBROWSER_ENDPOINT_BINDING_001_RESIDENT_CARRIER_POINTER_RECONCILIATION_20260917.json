@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-resident-carrier-pointer-reconciliation/v1",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "observed_on": "2026-09-17",
+  "goal_prompt_count": "5/20",
+  "registry_generation_entering": 29,
+  "immutable_invocation": {
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "coordination": {
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "shared_runtime_evidence_owner_mutated": false,
+    "exact_observation_owner_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+    "exact_remediation_owner_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "exact_remediation_owner_mutated": false,
+    "global_measurement_entered": false
+  },
+  "current_exact_machine_owned_seam": {
+    "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+    "resident_carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+    "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+    "embedded_pointer_fields": [
+      "packet_ref",
+      "packet_relative_path",
+      "packet_sha256",
+      "retained_under_root",
+      "retained_under_root_source",
+      "packet_state"
+    ],
+    "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+    "next_required_action": "Observe the authentic resident carrier consumption receipt through the existing authorized resident evidence surface; bind the embedded retention pointer; run the existing classifier only if packet_state is RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root."
+  },
+  "evidence_search": {
+    "organization_wide_exact_receipt_search": "SOURCE_OR_CLASSIFICATION_REFERENCES_ONLY",
+    "authentic_resident_carrier_consumption_receipt_observed": false,
+    "authentic_embedded_retention_pointer_observed": false,
+    "authentic_retained_root_packet_observed": false,
+    "authentic_stegos_347_recovery_result_observed": false,
+    "exact_same_nonce_runtime_ready_event_observed": false,
+    "healer_main_source_still_embeds_retention_pointer": true,
+    "visible_historical_healer_run_34891841481_artifact_count": 0,
+    "source_or_ci_promoted_to_runtime": false
+  },
+  "classifier": {
+    "script": "scripts/check_stegbrowser_runtime_consumption_receipts.py",
+    "run": false,
+    "reason": "No exact authentic resident root was observed. Running the classifier against source checkout, CI output, a synthetic materialization target, or an unbound path would violate the canonical contract."
+  },
+  "downstream": {
+    "exact_runtime_tuple_available": false,
+    "gateway_advertisement_stage_entered": false,
+    "master_records_submission_attempted": false,
+    "authentic_master_records_recorded": false,
+    "authentic_master_records_reconstruction_pass": false,
+    "exact_browser_receipt_reconstruction_digest_equality": false,
+    "handback_to_existing_a1_a4_owner": false,
+    "a3_entered": false,
+    "a4_entered": false,
+    "round_trip_1_entered": false
+  },
+  "prohibited_or_not_introduced": {
+    "second_observer": false,
+    "second_runtime_evidence_owner": false,
+    "second_scheduler": false,
+    "second_dispatcher": false,
+    "second_request": false,
+    "new_recovery_path": false,
+    "new_gateway": false,
+    "new_resident_runtime": false,
+    "fixed_host_dependency": false,
+    "second_user_operated_device": false
+  },
+  "note_on_owner_projection_skew": "The #1866 classification packet is newer/more precise than the remediation task record's older current_exact_defect field. This Goal does not mutate the claimed owner; it consumes the owner's latest canonical classification as coordination evidence.",
+  "next_evidence_boundary": "Observe the authentic resident copy of healer-sovereign-scheduler-request-consumption.latest.json and bind execution_result.resident_custody_root_observation_retention. Only if packet_state proves RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root may the existing classifier run against that root. Then require the immutable invocation's exact Node/Interlock/Receipt-1/lease/runtime/export tuple before Gateway or Master Records custody.",
+  "authority_effect": "NONE_RECONCILIATION_ONLY"
+}

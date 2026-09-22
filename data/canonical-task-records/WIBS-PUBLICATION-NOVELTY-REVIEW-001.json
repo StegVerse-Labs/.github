@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "WIBS-PUBLICATION-NOVELTY-REVIEW-001",
+  "correlation_id": "WIBS-PUBLICATION-NOVELTY-REVIEW-001",
+  "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "parent_task_id": "WIBS-FULL-PAPER-REVISION-001",
+  "goal": "Establish a defensible novelty and positioning boundary for When Interpretation Becomes State through a systematic review of adjacent peer-reviewed, conference, preprint, and independent research before journal or FAccT submission.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv": {"profile": "task.v1", "vector": "10100000100000", "authority_effect": "NONE"},
+  "source_refs": ["docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md"],
+  "expected_evidence_predicates": [
+    "ADJACENT_RESEARCH_LANES_INVENTORIED",
+    "DIRECT_AND_PARTIAL_OVERLAPS_DISTINGUISHED",
+    "PEER_REVIEWED_AND_PREPRINT_STATUS_DISTINGUISHED",
+    "NOVELTY_CLAIMS_BOUND_TO_SUPPORTED_DISTINCTIONS",
+    "FUTURE_INNOVATION_SEPARATED_FROM_DEMONSTRATED_RESULTS",
+    "SUBMISSION_TIME_PUBLICATION_RECHECK_COMPLETED"
+  ],
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+  "handoff_projection_refs": ["docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md"]
+}

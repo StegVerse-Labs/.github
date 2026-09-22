@@ -1,0 +1,14 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "profile": "task.v1",
+  "level": "task",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "vector": "71000000100110",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "evidence_refs": [
+    "data/canonical-task-records/SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001.json",
+    "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:pull/265",
+    "StegVerse-org/StegVerse-SDK:commit/af1be4f9d9b3635912f8e085cbfe8ed922602d83"
+  ]
+}

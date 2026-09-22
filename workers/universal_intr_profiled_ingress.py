@@ -67,6 +67,16 @@ from workers.sv002_intr_materialization_consumer import (  # noqa: E402
     scrubbed_env as sv002_scrubbed_env,
     validate_request as validate_sv002_request,
 )
+from workers.canonical_state_transition_custody import (  # noqa: E402
+    build_state_receipt,
+    submit_state_receipt,
+)
+from workers.manifest_state_transition_intr_ingress import (  # noqa: E402
+    PROFILE as MANIFEST_STATE_TRANSITION_PROFILE,
+    admit as admit_manifest_state_transition,
+    is_manifest_state_transition,
+)
+
 
 PROFILE_PATH = "/intr/profile"
 INGRESS_PATH = "/intr/materialization"
@@ -91,6 +101,12 @@ KV_PUBLISHER_RETURN_LATEST = Path("receipts/sovereign-network/kv-publisher-retur
 KV_PUBLISHER_RETURN_PAYLOAD_DIR = Path("intr-payloads/kv-publisher-return")
 KV_PUBLISHER_RETURN_TRIGGER_SCHEMA = "stegverse.kv-publisher-return-materialization-trigger/v1"
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
+MIR_SOUTHBOUND_DESTINATION = {"boundary": "EXTERNAL_SYSTEM", "subsystem": "MIR:NODE_MIRROR"}
+MIR_SOUTHBOUND_OWNER = "StegVerse-Labs/StegOS#389"
+MIR_SOUTHBOUND_RECEIPT_SCHEMA = "stegverse.mir-southbound-intr-materialization-ingress/v1"
+MIR_SOUTHBOUND_RECEIPT_DIR = Path("receipts/sovereign-network/mir-southbound-intr-ingress")
+MIR_SOUTHBOUND_LATEST = Path("receipts/sovereign-network/mir-southbound-intr-ingress.latest.json")
+RTC008_TRANSITION_ID = "RTC-INTERLOCK-INTR-TRANSPORT-008"
 
 
 def canonical(value: Any) -> bytes:
@@ -648,6 +664,177 @@ def admit_kv_publisher_return(*,runtime_root:Path,body:bytes,headers:Mapping[str
     return {**receipt,"dispatch":dispatch}
 
 
+def _is_mir_southbound(payload: Any) -> bool:
+    return (
+        isinstance(payload, dict)
+        and payload.get("schema") == "stegverse.universal-intr-materialization-request/v1"
+        and payload.get("destination") == MIR_SOUTHBOUND_DESTINATION
+        and payload.get("downstream_owner_ref") == MIR_SOUTHBOUND_OWNER
+    )
+
+
+def _validate_mir_southbound_request(request: Mapping[str, Any]) -> None:
+    expected = {
+        "schema": "stegverse.universal-intr-materialization-request/v1",
+        "state": "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
+        "transport_schema": "stegverse.universal-intr-transport/v1",
+        "transport_protocol": "InTr",
+        "destination": MIR_SOUTHBOUND_DESTINATION,
+        "boundary_path": ["STEGOS_ECOSYSTEM", "EXTERNAL_SYSTEM"],
+        "downstream_owner_ref": MIR_SOUTHBOUND_OWNER,
+        "event_triggered": True,
+        "always_on_receiver_required": False,
+        "second_user_device_required": False,
+        "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+        "exact_packet_transport_retry_allowed": True,
+        "blind_consequence_retry_allowed": False,
+        "interlock_required": True,
+        "request_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "transport_grants_execution_authority": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "authority_transfer": False,
+        "authority_effect": "NONE_REQUEST_ONLY",
+    }
+    for key, value in expected.items():
+        require(request.get(key) == value, "mir_southbound_" + key + "_mismatch")
+    for key in ("materialization_id", "request_hash", "transport_intent_hash", "payload_hash", "operation_id", "packet_id", "payload_ref"):
+        require(isinstance(request.get(key), str) and bool(request.get(key)), "mir_southbound_" + key + "_required")
+    require(request.get("predecessor_transition_id") == "RTC-STEGVERSE-EGRESS-007", "mir_southbound_predecessor_transition_mismatch")
+    require(request.get("predecessor_master_records_state") == "RECORDED", "mir_southbound_predecessor_master_records_not_recorded")
+    require(request.get("predecessor_master_records_reconstruction_status") == "PASS", "mir_southbound_predecessor_reconstruction_not_pass")
+    require(request.get("predecessor_master_records_required_evidence_validation_status") == "PASS", "mir_southbound_predecessor_required_evidence_not_pass")
+    require(request.get("predecessor_master_records_digest_equal") is True, "mir_southbound_predecessor_digest_not_equal")
+    predecessor = request.get("predecessor_master_records_receipt_sha256")
+    reconstructed = request.get("predecessor_master_records_reconstructed_receipt_sha256")
+    require(isinstance(predecessor, str) and bool(predecessor), "mir_southbound_predecessor_receipt_required")
+    require(predecessor == reconstructed, "mir_southbound_predecessor_receipt_digest_mismatch")
+    body = dict(request)
+    claimed = body.pop("request_hash", None)
+    require(claimed == sha_uri(body), "mir_southbound_request_hash_mismatch")
+
+
+def _rtc008_required_evidence(request: Mapping[str, Any], ingress_receipt: Mapping[str, Any]) -> list[dict[str, Any]]:
+    predecessor = {
+        "transition_id": request["predecessor_transition_id"],
+        "state": request["predecessor_master_records_state"],
+        "reconstruction_status": request["predecessor_master_records_reconstruction_status"],
+        "required_evidence_validation_status": request["predecessor_master_records_required_evidence_validation_status"],
+        "receipt_sha256": request["predecessor_master_records_receipt_sha256"],
+        "reconstructed_receipt_sha256": request["predecessor_master_records_reconstructed_receipt_sha256"],
+        "digest_equal": request["predecessor_master_records_digest_equal"],
+    }
+    return [
+        {
+            "evidence_id": "rtc008-rtc007-master-records-closure",
+            "evidence_type": "RTC007_MASTER_RECORDS_CLOSURE",
+            "origin_transition_id": RTC008_TRANSITION_ID,
+            "encoding": "canonical-json",
+            "sha256": sha_uri(predecessor).split(":", 1)[1],
+            "content": predecessor,
+        },
+        {
+            "evidence_id": "rtc008-universal-intr-materialization-request",
+            "evidence_type": "UNIVERSAL_INTR_MATERIALIZATION_REQUEST",
+            "origin_transition_id": RTC008_TRANSITION_ID,
+            "encoding": "canonical-json",
+            "sha256": sha_uri(dict(request)).split(":", 1)[1],
+            "content": dict(request),
+        },
+        {
+            "evidence_id": "rtc008-mir-southbound-ingress-receipt",
+            "evidence_type": "MIR_SOUTHBOUND_INTR_ADMISSION_RECEIPT",
+            "origin_transition_id": RTC008_TRANSITION_ID,
+            "encoding": "canonical-json",
+            "sha256": sha_uri(dict(ingress_receipt)).split(":", 1)[1],
+            "content": dict(ingress_receipt),
+        },
+    ]
+
+
+def _record_rtc008_custody(request: Mapping[str, Any], ingress_receipt: Mapping[str, Any]) -> dict[str, Any]:
+    receipt = build_state_receipt(
+        transition_id=RTC008_TRANSITION_ID,
+        transition_sequence=8,
+        subject_or_correlation_id=str(request["materialization_id"]),
+        transition_outcome="COMPLETED",
+        prior_state_ref_or_hash=str(request["predecessor_master_records_receipt_sha256"]),
+        resulting_state_ref_or_hash=sha_uri(dict(ingress_receipt)),
+        governance_decision_ref_where_applicable=str(ingress_receipt.get("transport_authorization_id") or "") or None,
+        transition_evidence=dict(ingress_receipt),
+        required_evidence_manifest=_rtc008_required_evidence(request, ingress_receipt),
+        proof_scope="RTC008_AUTHENTIC_INTR_ADMISSION_ONLY",
+        proof_ceiling="OBSERVED_INTR_ADMISSION_AND_MASTER_RECORDS_CUSTODY_ONLY",
+    )
+    result = submit_state_receipt(receipt)
+    require(result.get("state") == "RECORDED", "rtc008_master_records_not_recorded")
+    require(result.get("reconstruction_status") == "PASS", "rtc008_master_records_reconstruction_not_pass")
+    require(result.get("required_evidence_validation_status") == "PASS", "rtc008_master_records_required_evidence_not_pass")
+    require(result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256"), "rtc008_master_records_digest_mismatch")
+    return result
+
+
+def admit_mir_southbound(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    transport = hil.validate_transport_headers(headers, body)
+    require(transport["origin"] == hil.ORIGIN_RELAY, "mir_southbound_requires_tvc_relay_egress")
+    try:
+        request = json.loads(body.decode("utf-8"))
+    except Exception as exc:
+        raise ValueError("mir_southbound_request_json_invalid") from exc
+    require(isinstance(request, dict), "mir_southbound_request_object_required")
+    _validate_mir_southbound_request(request)
+    materialization_id = safe_id(str(request["materialization_id"]))
+    request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
+    hil._write_once(request_path, json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n")
+    receipt_path = runtime_root / MIR_SOUTHBOUND_RECEIPT_DIR / f"{materialization_id}.json"
+    if receipt_path.exists():
+        ingress_receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        require(ingress_receipt.get("request_hash") == request.get("request_hash"), "mir_southbound_write_once_collision")
+        require(ingress_receipt.get("state") == "INGRESS_ADMITTED", "mir_southbound_existing_receipt_not_admitted")
+    else:
+        ingress_receipt = {
+            "schema": MIR_SOUTHBOUND_RECEIPT_SCHEMA,
+            "state": "INGRESS_ADMITTED",
+            "materialization_id": materialization_id,
+            "request_hash": request["request_hash"],
+            "transport_intent_hash": request["transport_intent_hash"],
+            "payload_hash": request["payload_hash"],
+            "operation_id": request["operation_id"],
+            "packet_id": request["packet_id"],
+            "transport_origin": transport["origin"],
+            "transport_authorization_id": transport["authorization_id"],
+            "queue_ref": str(request_path),
+            "exact_request_validated": True,
+            "write_once_persisted": True,
+            "runtime_execution_attempted": False,
+            "far_side_transition_observed": False,
+            "caller_consequence_observed": False,
+            "claim_or_fence_minted": False,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "authority_effect": AUTHORITY_EFFECT,
+            "admitted_at": now(),
+        }
+        raw = json.dumps(ingress_receipt, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+        hil._write_once(receipt_path, raw)
+        latest = runtime_root / MIR_SOUTHBOUND_LATEST
+        latest.parent.mkdir(parents=True, exist_ok=True)
+        latest.write_bytes(raw)
+    custody = _record_rtc008_custody(request, ingress_receipt)
+    return {
+        **ingress_receipt,
+        "master_records_state": custody["state"],
+        "master_records_reconstruction_status": custody["reconstruction_status"],
+        "master_records_required_evidence_validation_status": custody["required_evidence_validation_status"],
+        "master_records_receipt_sha256": custody["receipt_sha256"],
+        "master_records_reconstructed_receipt_sha256": custody["reconstructed_receipt_sha256"],
+        "rtc008_evidence_complete": True,
+        "far_side_transition_observed": False,
+        "caller_consequence_observed": False,
+    }
+
+
 def profile(tls_enabled: bool) -> dict[str, Any]:
     return {
         "schema": "stegverse.universal-intr-profiled-ingress/v1",
@@ -656,7 +843,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "device_kv_result_path": DEVICE_KV_RESULT_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
+        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport", "MIR:SouthboundRTC008", MANIFEST_STATE_TRANSITION_PROFILE],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
@@ -711,7 +898,7 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))
+                receipt = admit_manifest_state_transition(runtime_root=self.server.runtime_root, body=body, headers=self.headers, transport_validator=hil.validate_transport_headers) if is_manifest_state_transition(payload) else (admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})

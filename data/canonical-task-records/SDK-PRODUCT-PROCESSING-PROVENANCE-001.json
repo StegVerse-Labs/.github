@@ -1,0 +1,86 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "correlation_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "goal": "Make every governed StegVerse SDK result expose a generic, non-authorizing product_processing provenance envelope that attributes only the exact portion actually processed by each genuine product boundary, with admittedcode_processing as a typed AdmittedCode projection and explicit non-observation for unproven Interlock/InTr or runtime execution.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_SOURCE_VALIDATED_MERGED",
+  "cosv_task_vector": "71000000101000",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff_projection_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/PRODUCT_PROCESSING_PROVENANCE.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "sdk-result-provenance",
+      "admittedcode-processing-projection",
+      "sdk-console-return",
+      "evaluator-manifest-source-validation"
+    ]
+  },
+  "authority_model": {
+    "sdk_product_processing_authority": "NONE_PROVENANCE_PROJECTION_ONLY",
+    "admittedcode_authority": "ADMISSION_DECISION_ONLY",
+    "canonical_governance_implementation": "StegCore/StegGate",
+    "transition_authority": "Interlock/InTr",
+    "execution_authority": "existing bounded runtime owners only",
+    "custody_authority": "Master Records",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "product_attribution_grants_authority": false
+  },
+  "expected_evidence_predicates": [
+    "GENERIC_PRODUCT_PROCESSING_ENVELOPE_SOURCE_VALIDATED",
+    "ADMITTEDCODE_TYPED_PROJECTION_SOURCE_VALIDATED",
+    "UPSTREAM_LLM_ADAPTER_PROVENANCE_DECLARED_NOT_INFERRED",
+    "UNOBSERVED_INTR_AND_STEGAGENTS_NOT_OVERCLAIMED",
+    "MASTER_RECORDS_CUSTODY_ATTRIBUTION_PRESERVES_AUTHORITY_BOUNDARY",
+    "SDK_RETURN_BINDING_COVERS_PRODUCT_PROVENANCE",
+    "EXISTING_CANONICAL_RUNTIME_RESULT_BINDING_PRESERVED",
+    "README_AND_HANDOFF_CURRENT",
+    "NO_DUPLICATE_EVALUATOR_RUNTIME_OR_AUTHORITY_PLANE"
+  ],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "source_merged": true,
+    "registration_pr": 2162,
+    "registration_validated_head": "047976e38647287938c7daaa488928b91dc20f32",
+    "registration_merge": "12c2527b1397470a5d606b0739ae0422e16530d2",
+    "registry_generation_registered": 62,
+    "sdk_pr": 268,
+    "sdk_validated_head": "4439d525d68dbc385ac5f7a965d43b0cfc0c8a3d",
+    "sdk_merge": "b40daac9fc5aaf244bb083433d88a9b835d2cfec",
+    "sdk_handoff_closeout_pr": 269,
+    "sdk_handoff_closeout_head": "5871760a34e463766a5d1370d3da40c6af285fd0",
+    "sdk_handoff_closeout_merge": "125a85c8d359d4ed9a9dc52089341b9612462c79",
+    "validation_runs": {
+      "registry_cross_task_coordination": 35405948780,
+      "sdk_evaluator_manifest_source": 35405677157,
+      "sdk_evaluator_console": 35405677090,
+      "sdk_publisher_return_binding": 35405677158,
+      "sdk_manifest_builder": 35405677092,
+      "sdk_package_artifact": 35405677137,
+      "sdk_structured_authority": 35405677169,
+      "sdk_tt_worker_console": 35405677146,
+      "handoff_evaluator_manifest_source": 35409541094,
+      "handoff_evaluator_console": 35409541554,
+      "handoff_publisher_return_binding": 35409541156,
+      "handoff_manifest_builder": 35409541090,
+      "handoff_structured_authority": 35409541112,
+      "handoff_tt_worker_console": 35409541075
+    },
+    "all_expected_evidence_predicates_satisfied": true,
+    "authentic_runtime_execution_claimed": false,
+    "release_or_downstream_activation_claimed": false
+  },
+  "remaining_predicate": null,
+  "closeout_handoff": "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md"
+}

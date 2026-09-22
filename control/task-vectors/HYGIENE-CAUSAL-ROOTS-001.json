@@ -1,0 +1,33 @@
+{
+  "identity": "StegVerse-Labs/.github:task:HYGIENE-CAUSAL-ROOTS-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+    "control/repository-hygiene-wave0-baseline.json",
+    "control/repository-hygiene-wave0-classification.json",
+    "control/workflow-surface-registry.json",
+    "data/canonical-task-registry.json",
+    "StegVerse-Labs/.github#165"
+  ],
+  "observed_at": "2026-09-17T22:28:14Z",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}

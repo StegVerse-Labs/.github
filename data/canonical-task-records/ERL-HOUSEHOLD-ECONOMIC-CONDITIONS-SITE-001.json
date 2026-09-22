@@ -1,0 +1,213 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "correlation_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "root_correlation_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "parent_task_id": null,
+  "goal": "Build a governed real-time public U.S. household economic-conditions page that consumes ERL Physical Economics / Economic Distribution outputs, preserves household-state semantics, and supports longitudinal comparison back to 2000 or the earliest methodologically comparable date available.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "data/task-registry-global-invariants.json",
+    "docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+    "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
+    "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#163",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#167",
+    "StegVerse-Labs/TVC#442",
+    "StegVerse-Labs/TVC#451",
+    "StegVerse-Labs/stegfin-governance#110",
+    "StegVerse-Labs/stegfin-governance#111",
+    "StegVerse-Labs/Site#1368",
+    "StegVerse-Labs/Site/Household-Economic-Conditions.html"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/stegfin-governance",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "household-economic-condition-state",
+      "historical-comparability-contract",
+      "official-source-binding",
+      "source-acquisition-normalization",
+      "bea-readonly-provider-profile",
+      "bea-resident-credential-readiness",
+      "canonical-work-runtime-ingress",
+      "current-condition-public-page",
+      "longitudinal-line-chart"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ERL-ECONOMIC-DISTRIBUTION",
+      "kind": "CAPABILITY",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md; partial household-state evidence exists but full composite remains incomplete"
+    },
+    {
+      "dependency_id": "DEP-ERL-OFFICIAL-SOURCE-BINDINGS",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json"
+    },
+    {
+      "dependency_id": "DEP-ERL-BEA-PROVIDER-PROFILE",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/TVC#442"
+    },
+    {
+      "dependency_id": "DEP-ERL-BEA-SECRET-INGRESS",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/stegfin-governance#110"
+    },
+    {
+      "dependency_id": "DEP-ERL-BEA-GOVERNED-CREDENTIAL",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "Authentic TV/TVC resident stegverse.tvc.bea-credential-readiness/v1 decision=READY evidence; connected-device inventory is prohibited from task progression and has no bearing on this predicate"
+    },
+    {
+      "dependency_id": "DEP-ERL-PHYSICAL-ECONOMICS-PUBLIC-OUTPUT",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "Authentic governed ERL output plus served-body proof for StegVerse-Labs/Site/Household-Economic-Conditions.html"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#166",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#167",
+    "StegVerse-Labs/.github#2384"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_WORK_INTR_INGRESS_ADMITTED",
+    "WORKERCOORDINATOR_FRESH_CLAIM_FENCE_OBSERVED_BEFORE_RESIDENT_BEA_READINESS_EXECUTION",
+    "BEA_RESIDENT_CREDENTIAL_READINESS_NON_SECRET",
+    "BEA_EXECUTION_ONLY_IF_AUTHENTIC_READY",
+    "HOUSEHOLD_STATE_SEPARATES_GROSS_EARNINGS_FROM_NET_USABLE_CAPACITY",
+    "OBSERVED_SPENDING_NOT_TREATED_AS_NEED_SATISFACTION",
+    "DEBT_SERVICE_ANALYZED_BY_DEBT_CLASS_AND_DISTRIBUTION",
+    "SOURCE_ACQUISITION_FAILS_CLOSED_WITHOUT_FABRICATION",
+    "PUBLIC_PAGE_FAILS_CLOSED_ON_UNGOVERNED_OR_STALE_DATA"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_resident_request_dispatch",
+      "workercoordinator_claim_fence",
+      "interlock_intr_transition",
+      "tvc_provider_credential_readiness",
+      "public_economic_data_acquisition",
+      "master_records_custody_reconstruction",
+      "governed_erl_output_consumption"
+    ],
+    "environment": "SOVEREIGN_RESIDENT_PLUS_GOVERNED_PUBLIC_SITE",
+    "direction": "OFFICIAL_SOURCES_TO_ERL_GOVERNED_EVIDENCE_TO_PUBLIC_SITE",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "data/task-registry-global-invariants.json"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/.github#2384; runtime registry semantics corrected 2026-09-21; authentic runtime progression pending"
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
+    "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

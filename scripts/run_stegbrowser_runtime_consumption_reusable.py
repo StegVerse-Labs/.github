@@ -8,6 +8,7 @@ ROOT = HERE.parent
 LEGACY = HERE / "run_stegbrowser_runtime_consumption_reusable.legacy.py"
 INGRESS_WORKER_REL = Path("workers/stegbrowser_manifest_intr_ingress.py")
 TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
 
 spec = importlib.util.spec_from_file_location("stegbrowser_runtime_legacy", LEGACY)
 if spec is None or spec.loader is None:
@@ -42,6 +43,8 @@ def stage_after_claim(source: Path, runtime_root: Path, record: dict):
             break
     if completed.returncode != 0 or not isinstance(result, dict) or result.get("state") != "AUTHENTIC_INTR_INGRESS_OBSERVED":
         mod.fail("organization_local_intr_ingress_not_observed")
+    if result.get("invocation_request_nonce") != NONCE:
+        mod.fail("workercoordinator_claim_fence_invocation_nonce_mismatch")
     claim_id, fence = result.get("claim_id"), result.get("fencing_token")
     if not isinstance(claim_id, str) or not isinstance(fence, int) or not claim_id.endswith(f"-G{fence}"):
         mod.fail("workercoordinator_claim_fence_not_observed")
@@ -68,6 +71,7 @@ def stage_after_claim(source: Path, runtime_root: Path, record: dict):
         "source_coordination_state":"ACTIVE",
         "projected_coordination_state":"PROPOSED",
         "operation_lineage_task_id":mod.OPERATION_LINEAGE_TASK_ID,
+        "invocation_request_nonce":NONCE,
         "workercoordinator_claim_fence_observed":True,
         "claim_ref":claim_id,
         "fence_ref":fence,

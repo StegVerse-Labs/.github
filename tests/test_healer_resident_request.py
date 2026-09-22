@@ -62,8 +62,19 @@ class HealerResidentRequestTests(unittest.TestCase):
     @staticmethod
     def completed_cycle():
         return Completed({
-            "schema": "stegverse.resident-refresh-targeted-execution/v2",
-            "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
+            "schema": "stegverse.resident-refresh-targeted-execution/v3",
+            "execution_result": {
+                "schema": "stegverse.worker-runtime-cycle-result/v1",
+                "target_task_id": consumer.TARGET_TASK,
+                "targeted_independent_task_control": True,
+                "events": [{
+                    "event_type": "worker_response",
+                    "task_id": consumer.TARGET_TASK,
+                    "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED",
+                    "transition_sequence": 1,
+                    "response_state": "HANDOFF_READY",
+                }],
+            },
         })
 
     def test_missing_runtime_request_self_materializes_from_canonical_source(self):
@@ -137,6 +148,53 @@ class HealerResidentRequestTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_projected_checkpoint_retention_pointer_is_carried_into_consumption_result(self):
+        td, source, runtime = self.roots()
+        try:
+            packet_path = runtime / consumer.ROOT_OBSERVATION_REL
+            packet_path.parent.mkdir(parents=True, exist_ok=True)
+            packet_path.write_text(json.dumps({"state":"RESIDENT_CUSTODY_ROOT_OBSERVED"}, sort_keys=True) + "\n", encoding="utf-8")
+            pointer = {
+                "packet_ref": str(packet_path),
+                "packet_relative_path": consumer.ROOT_OBSERVATION_REL.as_posix(),
+                "packet_sha256": consumer.file_sha256(packet_path),
+                "retained_under_root": str(runtime.resolve()),
+                "retained_under_root_source": "CANONICAL_LOCAL_RUNTIME",
+                "packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+            }
+            checkpoint_path = runtime / consumer.CHECKPOINT_REL
+            checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+            checkpoint_path.write_text(json.dumps({"child_receipt":{"resident_custody_root_observation_retention":pointer}}, sort_keys=True) + "\n", encoding="utf-8")
+            result = consumer.consume(source, runtime, runner=lambda *args, **kwargs: self.completed_cycle(), env={"PATH":"/usr/bin"})
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertEqual(result["execution_result"]["resident_custody_root_observation_retention"], pointer)
+            self.assertEqual(result["execution_result"]["resident_custody_root_observation_retention_binding"]["state"], "VALIDATED_PROJECTED_RETENTION_POINTER_BOUND")
+            persisted = json.loads((runtime / consumer.CONSUMPTION_REL).read_text(encoding="utf-8"))
+            self.assertEqual(persisted["execution_result"]["resident_custody_root_observation_retention"], pointer)
+        finally:
+            td.cleanup()
+
+    def test_projected_checkpoint_pointer_fails_closed_on_packet_hash_mismatch(self):
+        td, source, runtime = self.roots()
+        try:
+            packet_path = runtime / consumer.ROOT_OBSERVATION_REL
+            packet_path.parent.mkdir(parents=True, exist_ok=True)
+            packet_path.write_text('{"state":"RESIDENT_CUSTODY_ROOT_OBSERVED"}\n', encoding="utf-8")
+            checkpoint_path = runtime / consumer.CHECKPOINT_REL
+            checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+            checkpoint_path.write_text(json.dumps({"child_receipt":{"resident_custody_root_observation_retention":{
+                "packet_ref":str(packet_path),
+                "packet_relative_path":consumer.ROOT_OBSERVATION_REL.as_posix(),
+                "packet_sha256":"0"*64,
+                "retained_under_root":str(runtime.resolve()),
+                "retained_under_root_source":"CANONICAL_LOCAL_RUNTIME",
+                "packet_state":"RESIDENT_CUSTODY_ROOT_OBSERVED"
+            }}}) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "sha256 mismatch"):
+                consumer.consume(source, runtime, runner=lambda *args, **kwargs: self.completed_cycle(), env={"PATH":"/usr/bin"})
+        finally:
+            td.cleanup()
+
     def test_blocked_scheduler_attempt_remains_retryable(self):
         td, source, runtime = self.roots()
         try:
@@ -194,6 +252,44 @@ class HealerResidentRequestTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_runtime_as_source_resolves_canonical_source_from_existing_repo_map(self):
+        td, source, runtime = self.roots()
+        try:
+            captured = {}
+            def runner(command, **kwargs):
+                captured["command"] = command
+                return self.completed_cycle()
+            result = consumer.consume(
+                runtime,
+                runtime,
+                runner=runner,
+                env={
+                    "PATH": "/usr/bin",
+                    "STEGVERSE_REPO_ROOTS_JSON": json.dumps({"StegVerse-Labs/.github": str(source)}),
+                },
+            )
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertEqual(result["source_resolution"], "STEGVERSE_REPO_ROOTS_JSON")
+            self.assertEqual(Path(result["source_root"]), source.resolve())
+            self.assertEqual(Path(captured["command"][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
+        finally:
+            td.cleanup()
+
+    def test_invalid_repo_map_fails_closed_without_execution(self):
+        td, _source, runtime = self.roots()
+        try:
+            result = consumer.consume(
+                runtime,
+                runtime,
+                env={"PATH": "/usr/bin", "STEGVERSE_REPO_ROOTS_JSON": "not-json"},
+            )
+            self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertFalse(result["runtime_execution_attempted"])
+            self.assertEqual(result["source_resolution"], "REPO_ROOTS_JSON_INVALID")
+            self.assertEqual(result["blocker"], "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED")
+        finally:
+            td.cleanup()
+
     def test_runtime_as_source_without_distinct_source_fails_closed(self):
         td, _source, runtime = self.roots()
         try:
@@ -205,6 +301,15 @@ class HealerResidentRequestTests(unittest.TestCase):
             self.assertTrue(result["retry_allowed"])
         finally:
             td.cleanup()
+
+    def test_real_workercoordinator_cycle_envelope_is_recognized_as_completed(self):
+        result = json.loads(self.completed_cycle().stdout)
+        self.assertTrue(consumer.completed_healer_cycle_observed(result))
+
+    def test_dispatcher_accepts_cycle_completed_as_successful_consumer_state(self):
+        import inspect
+        source = inspect.getsource(dispatcher.dispatch)
+        self.assertIn('"CYCLE_COMPLETED"', source)
 
     def test_dispatcher_has_exact_healer_selector(self):
         selected = dispatcher.select_consumers(("healer_sovereign_scheduler",))

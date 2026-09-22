@@ -194,6 +194,11 @@ def activate(
             "sv002_principal_execution_claimed": False,
             "formal_evaluation_claimed": False,
             "control_bundle_sha256": package_result.get("bundle_sha256"),
+            "healer_source_proof": (
+                package_result.get("vendor_source_proofs", {}).get("StegVerse-Healer")
+                if isinstance(package_result.get("vendor_source_proofs"), dict)
+                else None
+            ),
             "stegdeploy_returncode": deploy.returncode,
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
             "stegdeploy_receipt_observed": bool(deployment),

@@ -11,7 +11,7 @@ Updated: 2026-09-14
 - Canonical task record: `data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json`
 - Successor remediation: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` / `StegVerse-Labs/.github#1866`
 - Successor handoff: `docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md`
-- Status: `ACTIVE / CHECKED_OUT / SUCCESSOR_REMEDIATION_BOUND`
+- Status: `RETIRED / PROMPT_LIMIT_DECOMPOSED`
 - External/second user-operated device required: `false`
 
 ## Why this exists
@@ -148,3 +148,102 @@ This task does not by itself complete the full parent runtime-consumption chain 
 ## Manual work
 
 None.
+
+
+## Endpoint-binding terminal intake — 2026-09-19
+
+`MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is retired at Goal Prompt 20 with no runtime completion claim. Its unresolved `RESIDENT_REQUEST_DISPATCH_VISIT` predicate is bound here, under the unchanged global/root-observation/materialization owner chain. This is an intake into the existing task and issue #1860, not a new successor, request, invocation, or authority transfer. The retired Goal's `runtime_evidence_terminal_prompt20` and canonical handoff retain the exact immutable invocation, six-field retention seam, Prompt 15 correction, and downstream custody predicates.
+
+Require the authentic exact Healer outcome and six retention fields, with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root, before running the existing non-authorizing classifier. Preserve the checkpoint/outer-envelope distinction documented by the retired Goal. Only then evaluate WorkerCoordinator, Interlock/InTr, and the immutable runtime tuple in order, requiring Master Records RECORDED, required-evidence validation PASS, reconstruction PASS, and exact digest equality. Current runtime predicates remain unproven. No connector-device gate or additional execution path is introduced.
+
+
+## Prompt 5/20 continuation — generation 70 retention-seam reconciliation
+
+Re-read against Task Registry generation `70`, issue `#1860`, the standalone canonical task record, the runtime-materialization remediation record/classification, and the retired endpoint-binding evidence report.
+
+Current exact evidence state:
+
+- The unchanged owner chain remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 -> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`.
+- The retired predecessor `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains retired and contributed no new invocation, runtime, or authority path.
+- The first pointer-bearing Healer transition is the fenced worker checkpoint receipt `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, field `child_receipt.resident_custody_root_observation_retention`; the outer `healer-sovereign-scheduler-request-consumption.latest.json` envelope does not structurally carry that pointer inline.
+- No authentic Healer worker checkpoint has been observed, so none of the six required retention fields (`packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, `packet_state`) is currently bound from authentic runtime evidence.
+- Observed authentic resident-root count remains `0`; `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` has not been proved for exactly one root.
+- The non-authorizing StegBrowser receipt classifier remains correctly not run. WorkerCoordinator, Interlock/InTr, TVC, owner-ingress, and Master Records downstream progression remain prohibited until the root predicate is satisfied.
+- No duplicate task, invocation, scheduler, dispatcher, runtime plane, device dependency, or source-side repair was created.
+
+Master Records promotion remains gated on authentic runtime evidence and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.
+
+
+## Prompt 11/20 — existing Healer carrier seam repaired
+
+The repeated observation loop is replaced by a concrete existing-path repair. After the existing completed targeted Healer cycle, `scripts/consume_healer_sovereign_scheduler_request.py` reads the already-projected fenced checkpoint `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, extracts `child_receipt.resident_custody_root_observation_retention`, requires all six canonical fields, verifies the retained packet path, packet SHA-256, packet state, and resident root, then carries only that validated pointer into the existing resident consumption receipt at `execution_result.resident_custody_root_observation_retention`.
+
+Missing checkpoint evidence does not synthesize a pointer. A malformed pointer or path/hash/state/root mismatch fails closed. No new task, invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, or device dependency is introduced. Authentic promotion still requires a real existing Healer cycle and exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root; source correctness is not runtime proof.
+
+
+## Prompt 12/20 — real WorkerCoordinator cycle-envelope completion repair
+
+Post-PR #2212 inspection found the next concrete existing-path defect. The pointer-carriage repair was correctly gated on a completed current Healer cycle, but the consumer detected completion using a top-level `transition_id` shape that the actual WorkerCoordinator does not emit. The authentic targeted cycle result is `stegverse.worker-runtime-cycle-result/v1`; the Healer worker completion appears inside `execution_result.events[]` as exactly one `worker_response` event for `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` with `transition_id=HEALER_SOVEREIGN_SCHEDULER_COMPLETED` and `response_state=HANDOFF_READY`.
+
+The consumer now recognizes that real envelope, fails closed if more than one matching completion event exists, and only then validates/carries the already-projected six-field retained-root pointer. The resident dispatcher also accepts `CYCLE_COMPLETED` as a successful Healer consumer state rather than incorrectly marking a successful cycle as a request failure.
+
+The unit fixture now uses the real WorkerCoordinator event envelope, preventing the prior synthetic top-level transition shape from hiding this defect. No new invocation, scheduler, dispatcher, runtime, authority plane, custody store, credential path, host, device dependency, or task identity is introduced. Authentic runtime promotion is still not claimed until a post-repair resident cycle produces exactly one validated `RESIDENT_CUSTODY_ROOT_OBSERVED` pointer.
+
+
+## Prompt 12 merge reconciliation
+
+The real WorkerCoordinator cycle-envelope repair merged through PR #2227 as `9801b58ed194fb6488523594ee1c2e824a84cb3c`. The source defect that prevented the post-#2212 pointer carriage gate from ever opening is therefore repaired on current main. Canonical Task Registry generation observed after merge is `96`.
+
+Runtime promotion remains deliberately unclaimed. The next authentic existing Healer resident cycle must now expose exactly one matching `worker_response` completion event and, after checkpoint validation, all six retained-root fields with exactly one `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` root. Only then may the existing classifier and downstream governed progression run.
+
+
+## Prompt 13/20 — existing resident repo-map source-resolution repair
+
+Current Task Registry generation is `97`. No authentic post-#2227 Healer resident cycle/root has yet surfaced through the available evidence path, so the classifier remains unrun and no runtime promotion is claimed.
+
+Tracing the native automatic cycle found the next concrete existing-path defect: `run_worker_runtime.py` invokes the resident dispatcher with `source_root == runtime_root`; the installed worker service preserves both `STEGVERSE_HEARTBEAT_SOURCE_ROOT` and the already-standard `STEGVERSE_REPO_ROOTS_JSON`, and the dispatcher forwards both. However, `consume_healer_sovereign_scheduler_request.py::resolve_source_root()` consumed only the heartbeat-specific source variable and ignored the existing repository-root map. Therefore a resident with a valid already-local `StegVerse-Labs/.github` source in the canonical repo map could still fail closed as `DISTINCT_SOURCE_ROOT_NOT_PROVIDED`, preventing the targeted WorkerCoordinator cycle before the repaired completion/pointer gate.
+
+The consumer now preserves the existing precedence: explicit distinct dispatcher source -> explicit `STEGVERSE_HEARTBEAT_SOURCE_ROOT` -> existing `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]`. The mapped root must remain distinct from runtime, exist locally, and contain the canonical targeted execution entrypoint. Invalid JSON, same-root, missing-root, or incomplete-root cases fail closed. No network source discovery, new scheduler, runtime, dispatcher, invocation, authority plane, credential path, host, or device dependency is introduced.
+
+
+### Prompt 13 continuation — native refresh repo-map catch-22 repaired
+
+After merging #2237, the resident update path was traced one layer earlier. `run_worker_runtime.py::refresh_local_worker_source()` still resolved canonical source only from `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. Therefore a worker service carrying only the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` could know the canonical checkout yet skip source refresh entirely, leaving the resident on the pre-#2237 consumer and recreating the same source-resolution block.
+
+The existing native source refresh now uses the same provider-neutral local precedence: dedicated heartbeat source binding first, then the existing `StegVerse-Labs/.github` repository-map entry. The map is parsed fail-closed, source==runtime remains non-refreshing, and the refresh still performs no network source transport or credential acquisition. This is not a new updater, scheduler, runtime, dispatcher, or authority path; it repairs the existing local refresh locator so merged consumer repairs can actually reach the resident.
+
+
+## Healer routing correction
+
+The generation-70 retention-seam reconciliation incorrectly elevated the first pointer-bearing Healer checkpoint into a required progression gate for the immutable StegBrowser invocation. That was a coordination error: the canonical resident request for nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` binds directly to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and the manifest-bound Browser runtime. It does not require `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`.
+
+The parent now continues directly through the existing Browser execution owner: current WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser runtime evidence -> canonical Master Records custody/reconstruction. The direct receipt surface is `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`; no Healer packet is required before classifying authentic owner-bound evidence.
+
+All prior Healer work is preserved as historical remediation evidence only. Healer role is `TRIGGERED_REMEDIATION_ONLY`; its scheduler/checkpoint/retention pointer is not an execution prerequisite, carrier requirement, transition authority, or Master Records predecessor for this invocation.
+
+
+## Direct-owner nonce-bound claim/fence repair
+
+After removal of the artificial Healer gate, the corrected direct Browser execution chain was traced to its first authentic A3 evidence boundary. No nonce-bound WorkerCoordinator claim/fence receipt is currently retained in repository-visible evidence; current canonical records still classify A3 as unobserved.
+
+The first concrete source defect is exact-lineage correlation: the immutable request preserves nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` through Universal InTr binding construction, but the manifest-bound runner and organization-local ingress path previously replaced reusable invocation identity with manifest/materialization identifiers and did not require the immutable nonce in A3 evidence. Therefore an otherwise-authentic WorkerCoordinator claim/fence could not prove it belonged to this exact one-shot invocation.
+
+The existing path now carries a dedicated non-authorizing `STEGVERSE_STEGBROWSER_INVOCATION_NONCE` through the manifest-bound runner and Universal InTr materialization consumer. `workers/stegbrowser_manifest_intr_ingress.py` requires that exact nonce, includes it in the hashed organization-local ingress packet and transition basis, and returns it with claim/fence evidence. `scripts/run_stegbrowser_runtime_consumption_reusable.py` refuses A3/A4 projection unless the returned nonce exactly matches the immutable request.
+
+No claim/fence is minted by this repair, no second invocation is issued, and no runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, Healer prerequisite, or device dependency is introduced. The next authentic predicate is exactly `AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`, followed by the same InTr and Master Records progression.
+
+## Prompt 20/20 terminal reconciliation — 2026-09-20
+
+A final exact-nonce inspection was performed against current canonical GitHub evidence for `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`. No authentic runtime result was found that binds the nonce to a WorkerCoordinator `claim_id` plus `fencing_token`. No actual cycle result recorded a deterministic pre-A3 failure. Matches remained limited to implementation, tests, task records, and handoff/source declarations.
+
+Therefore A3 remains `NOT_OBSERVED`, not `FAILED`. No second invocation was issued, no source repair was justified, and runtime completion remains unclaimed.
+
+This Goal is retired at its `20/20` prompt boundary and the genuinely unresolved authentic-result observation is transferred to exactly one narrow continuation:
+
+- `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`
+- `StegVerse-Labs/.github#2338`
+- `docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md`
+
+The successor may only observe the same immutable request. If the authentic nonce-bound claim/fence surfaces, it must continue the same state lineage through Interlock/InTr and canonical Master Records, requiring `RECORDED`, reconstruction PASS, required-evidence validation PASS, and exact receipt/reconstruction digest equality at every successor. If an actual pre-A3 deterministic runtime failure surfaces, repair only that first existing-path defect and rerun through the same original request.
+
+Manual work: None.

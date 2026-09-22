@@ -1,0 +1,104 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+  "correlation_id": "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "goal": "Prove through an externally replayable SDK semantic test that, for the tested executable-task class, registered HANDOFF_READY task T plus manifest-governed worker capability M undergo one constitutive transition that simultaneously activates T and creates/binds task-specific worker instance W, with no valid split task/worker state, invocation only after transition closure, result bound to T and W, and task closure paired with retirement of W.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_SOURCE_VALIDATED_MERGED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100100"
+  },
+  "cosv_task_vector": "71000000100100",
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_TT_ATOMIC_TASK_WORKER_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:stegverse/atomic_task_worker_binding.py",
+    "StegVerse-org/StegVerse-SDK:tests/test_atomic_task_worker_binding.py",
+    "StegVerse-org/StegVerse-SDK:inspection/examples/tt-atomic-task-worker-binding.example.json",
+    "StegVerse-org/StegVerse-SDK:.github/workflows/tt-atomic-task-worker-binding.yml",
+    "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+  ],
+  "adjacent_task_refs": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
+  ],
+  "test_contract": {
+    "test_number": 2,
+    "class": "EXTERNALLY_REPLAYABLE_SEMANTIC_TEST",
+    "proposition": "TASK_ACTIVATION_AND_TASK_BOUND_WORKER_CREATION_ARE_ONE_CONSTITUTIVE_TRANSITION",
+    "lifecycle": [
+      "HANDOFF_READY_TASK_PLUS_MANIFEST_CAPABILITY",
+      "ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
+      "TRANSITION_EVIDENCE_CLOSED",
+      "INVOCATION_STARTED",
+      "TASK_COMPLETED",
+      "CLOSE_TASK_AND_RETIRE_WORKER",
+      "RECORDS_ONLY_RECONSTRUCTION"
+    ],
+    "preserved_test_1": true,
+    "authentic_runtime_execution_claimed": false
+  },
+  "expected_evidence_predicates": [
+    "PRESTATE_TASK_HANDOFF_READY_AND_TASK_WORKER_ABSENT",
+    "MANIFEST_CAPABILITY_BOUND",
+    "ATOMIC_TASK_ACTIVATION_AND_WORKER_CREATION_BINDING",
+    "RECIPROCAL_TASK_WORKER_BINDING",
+    "NO_ACTIVE_WITHOUT_WORKER_INTERMEDIATE_STATE",
+    "NO_WORKER_WITHOUT_ACTIVE_TASK_INTERMEDIATE_STATE",
+    "INVOCATION_AFTER_CONSTITUTIVE_TRANSITION",
+    "RESULT_BOUND_TO_SAME_TASK_AND_WORKER",
+    "TASK_CLOSE_AND_WORKER_RETIREMENT_PAIRED",
+    "NO_CONTINUED_TASK_BOUND_WORKER_AUTHORITY",
+    "RECORDS_ONLY_PACKET_REPLAYABLE",
+    "NEGATIVE_CASES_FAIL_CLOSED"
+  ],
+  "falsification_cases": [
+    "ACTIVE_WITHOUT_WORKER",
+    "WORKER_WITHOUT_ACTIVE_TASK",
+    "MISMATCHED_TASK_WORKER_BINDING",
+    "PREACTIVATION_WORKER_CREATION",
+    "INVOCATION_BEFORE_COMBINED_TRANSITION_CLOSURE",
+    "MANIFEST_BOUNDARY_VIOLATION",
+    "TASK_COMPLETE_WITH_WORKER_STILL_LIVE",
+    "RECORDS_ONLY_PACKET_RETAINS_EXECUTOR"
+  ],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "source_merged": true,
+    "replayable_external_evaluator_proof": true,
+    "registration_pr": 2194,
+    "registration_merge": "8708cc174da80911f1575bf731cae76bfeb91c88",
+    "registry_generation_registered": 78,
+    "sdk_pr": 271,
+    "sdk_validated_head": "6a3dfff467de38363337fdb16481d0b41cef9c4f",
+    "sdk_merge": "79da01e219342e982406d257d1a417a4aeb05814",
+    "sdk_closeout_pr": 272,
+    "sdk_closeout_merge": "be082c91b5538efb33ea5be6f5fa3a736ac3df3e",
+    "validation_runs": {
+      "atomic_task_worker_binding": 35425851872,
+      "purpose_bound_worker_regression": 35425851869,
+      "evaluator_console": 35425851886,
+      "structured_authority_basis": 35425851848,
+      "closeout_atomic_task_worker_binding": 35426039893
+    },
+    "expected_records_packet_hash": "b5bbb5476350805a55f365cd27fc0fa8145c75d4cb5b27338d5299d328ca5890",
+    "authentic_runtime_execution_claimed": false
+  },
+  "remaining_predicate": null,
+  "authority_effect": "NONE_SEMANTIC_TEST_ONLY",
+  "coordination_hygiene": {
+    "observed_registry_generation_before_mutation": 77,
+    "generation_fence_satisfied": true,
+    "authentic_runtime_execution_attempted": false,
+    "test_1_preserved_unchanged": true,
+    "reconciled_against_registry_generation": 78,
+    "next_successor_class": "TEST_3_AUTHENTIC_RICHARD_SCENARIO_SEAM_VALIDATION"
+  }
+}

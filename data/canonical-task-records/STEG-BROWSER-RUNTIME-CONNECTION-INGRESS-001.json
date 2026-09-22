@@ -5,8 +5,8 @@
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "goal": "Observe the invocation-bound Interlock/InTr connection variables, select only matching existing reusable capabilities, then compose A2 through A4 through the one canonical registered-Node-bound StegBrowser reusable invocation without executing Round Trip 1.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
   "source_refs": [
@@ -19,7 +19,11 @@
     "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
     "scripts/run_stegbrowser_manifest_bound_runtime.py",
     "scripts/run_stegbrowser_runtime_consumption_reusable.py",
-    "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"
+    "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py",
+    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
+    "data/canonical-task-records/CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001.json"
   ],
   "runtime_requirements": {
     "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
@@ -43,12 +47,52 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"PLATFORM","evidence_refs":["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": [
+          "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
@@ -89,9 +133,19 @@
     "duplicate_materializer_allowed": false
   },
   "candidate_reusable_tasks": [
-    {"reusable_task_id":"RT-SOVEREIGN-SOURCE-REFRESH-001","selection_condition":"callable=true AND refreshable=true"},
-    {"reusable_task_id":"RT-INTR-PROTOCOL-ESTABLISH-001","selection_condition":"callable=true AND applicable_protocol_resolved=false"},
-    {"reusable_task_id":"RT-STEGBROWSER-RUNTIME-CONSUMPTION-001","selection_condition":"callable=true AND applicable_protocol_resolved=true AND registered Receipt #1 concrete path resolved","phase":"A2_THROUGH_A4_CANONICAL_INVOCATION"}
+    {
+      "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+      "selection_condition": "callable=true AND refreshable=true"
+    },
+    {
+      "reusable_task_id": "RT-INTR-PROTOCOL-ESTABLISH-001",
+      "selection_condition": "callable=true AND applicable_protocol_resolved=false"
+    },
+    {
+      "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "selection_condition": "callable=true AND applicable_protocol_resolved=true AND registered Receipt #1 concrete path resolved",
+      "phase": "A2_THROUGH_A4_CANONICAL_INVOCATION"
+    }
   ],
   "expected_evidence_predicates": [
     "MANIFEST_BOUND_TO_INVOCATION",
@@ -122,15 +176,7 @@
     "organization_local_intr_ingress_receipt_verified": false,
     "intr_admission_observed": false
   },
-  "allowed_next_transitions": [
-    "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
-    "SELECT_MATCHING_REUSABLE_CAPABILITIES",
-    "RESOLVE_CANONICAL_REGISTERED_STEGVERSE_NODE_RECEIPT_1",
-    "INVOKE_CANONICAL_NODE_BOUND_STEGBROWSER_A2_A4_PATH",
-    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
-    "OBSERVE_INTR_ADMISSION",
-    "HANDOFF_TO_ROUND_TRIP_1_OWNER"
-  ],
+  "allowed_next_transitions": [],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -142,5 +188,48 @@
     "github_runtime_authority": "NONE",
     "healer_role": "TRIGGERED_REMEDIATION_ONLY",
     "second_user_operated_device_required": false
-  }
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_A1_A4_COMPLETION_UNPROVEN; APPLICABLE_BROWSER_CUSTODY_BINDING_TRANSFERRED_TO_MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001; GENERIC_LOCAL_ADAPTER_DEFECT_TRANSFERRED_SEPARATELY",
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false,
+    "primary_continuation_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001"
+  },
+  "resolved_custody_binding": {
+    "immutable_invocation_uses": "SITE_BROWSER_CANONICAL_MASTER_RECORDS_CUSTODY_CLIENT",
+    "execution_page": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+    "execution_page_blob": "2af607770dcdda03af1699817bc9ea6ee042ead2",
+    "custody_client": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "custody_client_blob": "4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742",
+    "configured_endpoint": "/api/master-records/state-transitions",
+    "python_local_adapter_used_by_immutable_invocation": false,
+    "authentic_master_records_reconstruction_observed": false
+  },
+  "decomposition": {
+    "required": true,
+    "reason": "AUTHENTIC_RUNTIME_AND_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_ABSENT_AT_GOAL_PROMPT_LIMIT",
+    "primary_continuation": {
+      "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "issue": "StegVerse-Labs/.github#2078",
+      "handoff": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+      "first_unresolved_predicate": "AUTHORITATIVE_BROWSER_CUSTODY_ENDPOINT_BOUND"
+    },
+    "separate_canonical_owner_repair": {
+      "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "issue": "StegVerse-Labs/.github#2079",
+      "handoff": "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+      "scope": "GENERIC_OPTIONAL_LOCAL_ADAPTER_SCHEMA_CONTRACT_ONLY"
+    },
+    "post_custody_execution_owner": {
+      "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "handoff": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+      "activation_condition": "ONLY_AFTER_AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_THE_SAME_IMMUTABLE_TUPLE"
+    }
+  },
+  "adjacent_task_refs": [
+    "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+    "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+    "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
+  ]
 }

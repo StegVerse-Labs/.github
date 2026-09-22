@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "HF-PUBLIC-PRECURSOR-REPLAY-001",
+  "correlation_id": "HF-PUBLIC-PRECURSOR-REPLAY-001",
+  "root_correlation_id": "HF-PUBLIC-PRECURSOR-REPLAY-001",
+  "parent_task_id": null,
+  "goal": "Reconstruct the April-July 2026 Hugging Face public observation history using historical knowledge cutoffs, preserve contemporaneous observations separately from retrospective attribution, replay the chronology against StegVerse observation/interpretation/governance semantics without hindsight contamination, and project only admissible evidence into the existing StegVerse-Labs/Site Hugging Face living-analysis/public-display workstream.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100001",
+  "source_refs": [
+    "docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md",
+    "docs/HF_PUBLIC_PRECURSOR_REPLAY_SITE_INTEGRATION.md",
+    "StegVerse-Labs/Site/docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1079",
+    "experiments/hf-public-precursor-replay/README.md",
+    "experiments/hf-public-precursor-replay/historical-observation-ledger.v1.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site"],
+    "components": ["public-observation-baseline", "historical-cutoff-ledger", "retrospective-overlay", "governance-replay", "coverage-gap-analysis", "hugging-face-living-analysis-evidence-input", "hugging-face-public-display-acceptance"]
+  },
+  "dependencies": [
+    "StegVerse-Labs/Site/docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1079"
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["AI-GOVERNANCE-OPPORTUNITY-ENGINE-001", "ELAN-STEGVERSE-CROSS-EVALUATION-001"],
+  "expected_evidence_predicates": [
+    "APRIL_PUBLIC_BASELINE_DEFINED",
+    "HISTORICAL_KNOWLEDGE_CUTOFFS_EXPLICIT",
+    "CONTEMPORANEOUS_OBSERVATION_SEPARATE_FROM_RETROSPECTIVE_ATTRIBUTION",
+    "UNKNOWN_PRESERVED_WHEN_NOT_OBSERVABLE",
+    "PUBLIC_ONLY_NON_INTRUSIVE_BOUNDARY_PRESERVED",
+    "EARLIEST_DEFENSIBLE_STATE_CHANGE_IDENTIFIED",
+    "EARLIEST_DEFENSIBLE_GOVERNANCE_ESCALATION_IDENTIFIED_OR_UNKNOWN",
+    "FALSE_POSITIVE_ANALYSIS_PRESENT",
+    "PUBLIC_VS_PRIVATE_COVERAGE_GAP_PRESENT",
+    "SINGLE_EXISTING_HUGGING_FACE_PUBLIC_SURFACE_PRESERVED",
+    "SITE_LIVING_ANALYSIS_ACCEPTANCE_BOUNDARY_PRESERVED",
+    "README_AND_MIRROR_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "public_web_research"],
+    "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB",
+    "direction": "PUBLIC_EVIDENCE_TO_NON_INTRUSIVE_HISTORICAL_REPLAY_TO_EXISTING_SITE_LIVING_ANALYSIS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md"]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "hf-public-precursor-replay-001",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+  "allowed_next_transitions": ["VALIDATE_PR_HEAD", "FREEZE_INITIAL_LEDGER", "RUN_HISTORICAL_REPLAY", "CLASSIFY_SITE_ACCEPTANCE", "CANONICALIZE_PULL_REQUEST"],
+  "handoff_projection_refs": ["docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md", "docs/HF_PUBLIC_PRECURSOR_REPLAY_SITE_INTEGRATION.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "intrusive_security_testing_authority": false,
+    "credential_use_authority": false,
+    "public_observation_only": true,
+    "retrospective_facts_may_rewrite_historical_state": false,
+    "standalone_public_surface_authorized": false,
+    "existing_site_hugging_face_surface_is_public_projection_target": true,
+    "parent_b0_t0_semantics_may_be_rewritten": false,
+    "trajectory_coordinate_may_be_fabricated": false
+  },
+  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": true, "readme_path": "experiments/hf-public-precursor-replay/README.md"}
+}

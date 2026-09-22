@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "state": "REQUESTED",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "71000000111111",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "argv": [
+    "--task-id",
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "--cosv-task-vector",
+    "71000000111111"
+  ],
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Request the existing WorkerCoordinator targeted one-shot for the canonical purpose-bound four-case state graph. WorkerCoordinator remains the sole claim/fence authority; TV/TVC remains credential authority; StegCore/InTr remains transition authority; Master Records remains custody. The request itself grants no authority and introduces no carrier or device dependency."
+}

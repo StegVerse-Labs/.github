@@ -1,12 +1,21 @@
 {
-  "identity":"StegVerse-Labs/.github:task:SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
-  "profile":"task.v1",
-  "task_id":"SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
-  "vector":"71000000100110",
-  "parent_task_id":"SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
-  "evidence_refs":[
+  "identity": "StegVerse-Labs/.github:task:SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "profile": "task.v1",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "vector": "71000000100110",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "evidence_refs": [
     "StegVerse-org/StegVerse-SDK:SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:pull/172",
-    "StegVerse-org/StegVerse-SDK:commit/7aaf0ea4a3a4b133941a8b16ffd410817746a6ee"
+    "StegVerse-org/StegVerse-SDK:commit/7aaf0ea4a3a4b133941a8b16ffd410817746a6ee",
+    "StegVerse-Labs/StegCore:docs/SDK_AUTHORITY_BASIS_RESOLUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore:commit/f45d52cb62db29418d88752fe38f68e9bcc3cf12",
+    "StegVerse-org/StegVerse-SDK:pull/254",
+    "StegVerse-org/StegVerse-SDK:commit/16d4bf1e40b4eac7313b3399e48ab880a6f53001",
+    "StegVerse-org/StegVerse-SDK:pull/255",
+    "StegVerse-org/StegVerse-SDK:commit/ca5b349b76a3548a385aa65299d8b08664feedaa",
+    "StegVerse-org/StegVerse-SDK:pull/257",
+    "StegVerse-org/StegVerse-SDK:commit/9a0970cdbf3a7f7eef3dcf754a1fb00398b23721",
+    "StegVerse-org/StegVerse-SDK:workflow-run/35311310502"
   ]
 }

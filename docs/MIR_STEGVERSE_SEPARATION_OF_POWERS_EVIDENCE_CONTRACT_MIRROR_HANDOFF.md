@@ -1,49 +1,113 @@
 # MIR / StegVerse separation-of-powers evidence contract mirror handoff
 
-Updated: 2026-09-16
+Updated: 2026-09-17
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / V0.3 FREEZE ACCEPTED BY BOTH SIDES / REFERENCE ARCHITECTURE DRAFTING ACTIVE`
+Status: `ACTIVE / GOAL PROMPT 20 DECOMPOSED / CANONICAL MASTER RECORDS STATE-TRANSITION CUSTODY SUCCESSOR REGISTERED / AILEASH WITNESS EVIDENCE CHILD REGISTERED`
 
-## Reconciliation note
+## Canonical state
 
-The task identity had been used in collaboration and as the root/parent of canonical child tasks, but the parent canonical task shard and this handoff were not present on canonical main when rechecked on 2026-09-16. They are now materialized so the collaboration state is represented in GitHub rather than only in chat/status text.
+The Goal Task remains active. Frozen v0.3 remains separate from post-freeze reference-architecture work. The architecture continues to enforce separation of governance, admission/state transition, execution, credential/provider authority, evidence custody/reconstruction, and observability. `SEAM_CONFORMANCE != RUNTIME_CHAIN_PROOF` remains unchanged.
 
-## Frozen-contract state
+The historically successful StegVerse-002 route remains the reusable execution pattern:
 
-Counterpart communication confirms mutual freeze acceptance of the v0.3 separation-of-powers evidence contract. Freeze acceptance is distinct from later conformance measurement and does not by itself prove downstream runtime execution.
+```text
+EVENT
+-> Universal InTr intent/materialization request
+-> governed Node/outbox/ingress
+-> Interlock/InTr admission
+-> EVENT_EPHEMERAL runtime materialization
+-> execution-time identity
+-> governed transition consequence
+-> state receipts
+-> Master Records custody/reconstruction
+```
 
-The already-canonical child task `MIR-LEAF-V3-CONFORMANCE-FIXTURE-001` remains the concrete section-12.8 cross-implementation conformance lane. Its current boundary remains: StegVerse and a neutral reproducer match the frozen fixture; authentic MIR independent reproduction is still required before that child can claim completion.
+The MIR lane must duplicate that event-triggered order before adding MIR-specific Goal/COSV, destination-profile, RTC-007/008/009, and governed-return requirements. WorkerCoordinator task control must not become a new event-creation prerequisite merely because MIR is registered as a canonical task.
 
-## New collaboration direction
+## Canonical Master Records correction
 
-The agreed next layer is a vendor- and model-neutral public reference architecture for governable/insurable agents organized around explicit separation of powers rather than a specific model or vendor.
+Master Records recording of state change is not a test-only or MIR-specific diagnostic mechanism. The canonical progression contract already requires every governed state change to retain current decision/execution state evidence and reconstruct current state before autonomous progression continues.
 
-StegVerse leads:
+This is now made explicit in:
 
-- actor/authority diagram;
-- governance/governed-transition contract;
-- prohibited authority-collapse list;
-- minimum conformance receipts for each seam.
+- `control/canonical-master-records-state-transition-custody-contract.json`;
+- `data/canonical-task-records/CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json`;
+- `docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md`.
 
-MIR/Richard leads the evidence-custody seam and its concrete minimum receipts. The two sides converge on prohibited collapses because those are where the boundaries become enforceable.
+Canonical invariant:
 
-## Required architecture invariant
+```text
+observe current state
+-> propose exact next transition
+-> Interlock/InTr governance now
+-> TV/TVC now if required
+-> retain ALLOW/DENY receipt
+-> submit decision receipt to Master Records
+-> if ALLOW execute/consume
+-> retain execution/failure state receipt
+-> submit exact state receipt to Master Records
+-> reconstruct current state
+-> continue to next governed transition
+```
 
-A clean interface or seam-conformance result is evidence about that seam, never proof of the downstream runtime chain behind it. Runtime proof requires custody of the authentic transition record plus a reconstruction path under contemporaneous witness/evidence semantics. No authority above the transition may infer that proof merely from its own decision or interface success.
+Master Records remains custody/reconstruction only. It may not grant transition, execution, credential, route, or governance authority and may not infer missing authorization from downstream evidence.
 
-Evidence custody/reconstruction therefore remains an independent corner. It must not collapse into governance/policy, admission/state-transition, execution, credential/provider authority, or observability.
+## MIR diagnostic reclassification
 
-## Counterpart claim requiring evidence before promotion
+The recently added `workers/mir_roundtrip_transition_probe_worker.py` is temporary conformance/break-localization instrumentation only. Its packet fanout is not the canonical architecture for recording state.
 
-Richard reported that MIR's tamper-evident hash-chained checkpoints are now anchored to Bitcoin and that an inclusion-proof endpoint is next. Earlier collaboration explicitly established that no OTS artifact then existed and `otsStatus` remained a pending stub. The newer Bitcoin-anchor statement is therefore retained as `COUNTERPART_REPORTED / UNVERIFIED` until a concrete anchor receipt, transaction/proof reference, or independently checkable inclusion artifact is received. It must not be promoted into StegVerse conformance evidence by chat assertion alone.
+MIR must consume the same canonical state-transition custody mechanism as every other StegVerse workload. The MIR probe may remain temporarily to compare expected transition order against canonical receipts while adoption is validated, then cease being required for correctness.
 
-## Current draft artifact
+The Site MIR transport handoff was reconciled to this model at commit `758d19794f552486d2a466d742ad863cf9fcad27`.
 
-`docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md`
+## Goal-prompt-20 decomposition
 
-This is a drafting artifact, not a frozen standard. It establishes the first actor/authority diagram, seam contracts, prohibited collapses, and minimum receipt shapes for review with MIR.
+Remaining implementation work is decomposed to canonical successor:
+
+`CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`
+
+That successor owns:
+
+1. inventory of existing canonical state-receipt emitters and Master Records adapters;
+2. one reusable canonical transition-custody API/contract;
+3. binding Interlock/InTr decisions, execution states, and fail-closed states to that API;
+4. MIR adoption without task-specific probe fanout as the primary custody path;
+5. validation against the successful StegVerse-002 event-driven semantics;
+6. propagation to other governed StegVerse transition consumers;
+7. authentic runtime proof that each observed governed transition reaches Master Records custody/reconstruction.
+
+The original separation-of-powers goal remains the parent architecture/evidence-contract lane; implementation adoption proceeds under the successor rather than extending this goal beyond Prompt 20.
+
+A genuinely separable evidence-reconciliation child is also registered:
+
+`MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
+
+That child owns AILeash/sebbi.pro/Justin Dobson public-evidence reconciliation for Appendix A R4 and witness-topology claims, with canonical map `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` and handoff `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`. It must not promote operator-controlled declarations, roster counts, pending OpenTimestamps states, or profile claims into stronger independent evidence.
+
+A second genuinely separable external-architecture reconciliation child is now registered:
+
+`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`
+
+That child owns independent inspection of Matthew McPhillips's public AgentEnvelope derived-authority implementation and its bounded mapping to StegVerse RTG/GTG/TT/AE, Interlock/InTr, identity, and evidence-reconstruction semantics. It must not import AgentEnvelope authority, infer technical equivalence, or create duplicate StegVerse governance/custody machinery. Canonical map: `docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md`; handoff: `docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md`.
+
+## Counterpart evidence still required
+
+Separately from canonical custody adoption, independently checkable Bitcoin anchor/inclusion evidence and authentic MIR `mir.leaf.v3` independent reproduction remain pending. The AILeash/sebbi.pro reconciliation independently observed public witness/status surfaces and their bounded disclaimers, but the exact positive live-tip Appendix A attestation and the 784-record/30-commitment clean-room run remain counterpart evidence until independently retained or reproduced.
+
+## Authority boundaries
+
+- Interlock/InTr: current transition admission/state-transition authority.
+- TV/TVC: credential authority where required.
+- WorkerCoordinator: task control/ownership where required; not universal event-creation authority.
+- execution runtime: performs only admitted consequences.
+- Master Records: canonical observed-reality custody/reconstruction only.
+- GitHub/GitHub Actions: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Next action
 
-Review the architecture draft against the frozen v0.3 contract and existing child conformance work; then send Richard the StegVerse first pass for the actor/authority diagram and governance/governed-transition seams while requesting his evidence-custody seam draft and a concrete artifact supporting the new Bitcoin-anchor claim. Preserve all unobserved runtime/proof predicates as unverified.
+Implementation continues under `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
+
+Evidence reconciliation continues under `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`: obtain one exact positive witness-attest artifact for a known peer/tip if independently reachable, and independently verify a specific confirmed OpenTimestamps/Bitcoin proof before promoting either claim. Preserve current bounded public observations otherwise.
+
+External derived-authority reconciliation continues under `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`: check whether deterministic re-derivation is already representable in current StegVerse evidence/verification and Master Records reconstruction schemas before any source mutation.

@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.cosv-task-state/v1",
+  "identity": {
+    "task_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "owner_repo": "StegVerse-Labs/.github"
+  },
+  "profile": "task.v1",
+  "vector": "40000100100000",
+  "notation": "L R U I V G O C M T B E A P",
+  "observed_at": "2026-09-19T12:35:00-05:00",
+  "exact_metrics": {
+    "lifecycle": "CLAIMED_INTEGRATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "evidence_refs": [
+    "data/canonical-task-records/ENTERPRISE-HOST-PROVIDER-ERADICATION-001.json",
+    "docs/ENTERPRISE_HOST_PROVIDER_ERADICATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}

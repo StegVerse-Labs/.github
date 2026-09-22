@@ -1,0 +1,120 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+  "correlation_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "discovered_from_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "goal": "Repair the optional local adapter in the reusable canonical state-transition custody client so it consumes an input contract appropriate for stegverse.canonical-state-transition-receipt/v1 and preserves exact Master Records reconstruction, without relabeling receipts, fabricating reusable-task lifecycle evidence, weakening destination validation, or creating a second custody authority.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "SOURCE_REPAIR_VALIDATED_COMPLETE_MERGED",
+  "cosv_task_vector": "50000000100000",
+  "handoff_ref": "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+  "issue_ref": "StegVerse-Labs/.github#2079",
+  "reproduced_defect": {
+    "source_client": "workers/canonical_state_transition_custody.py",
+    "source_client_blob": "03b2a94710da94cd87bd9ad1ba6ff3a644c8f610",
+    "destination": "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+    "destination_blob": "ad918540145535cc818f53675462dc2a41d00cce",
+    "submitted_schema": "stegverse.canonical-state-transition-receipt/v1",
+    "required_schema": "stegverse.reusable-task-master-records-custody-request/v1",
+    "validation_result": "FAIL_CLOSED_REQUEST_SCHEMA_MISMATCH",
+    "test_only_not_invocation": true,
+    "immutable_stegbrowser_browser_invocation_uses_this_adapter": false,
+    "repair_implemented": true,
+    "repair_strategy": "DIRECT_EXISTING_CANONICAL_STATE_TRANSITION_SERVICE_CALL_WITH_EXPLICIT_DURABLE_MASTER_RECORDS_CONFIGURATION",
+    "invalid_lifecycle_ingester_removed_from_local_fallback": true,
+    "canonical_state_transition_service_ref": "master-records/orchestration:services/canonical_state_transition_custody.py#record_receipt"
+  },
+  "expected_evidence_predicates": [
+    "LOCAL_ADAPTER_ACCEPTS_ONLY_VALID_CANONICAL_STATE_TRANSITION_CONTRACT",
+    "NO_SCHEMA_RELABELING",
+    "NO_FABRICATED_LIFECYCLE_EVIDENCE",
+    "DESTINATION_VALIDATION_NOT_WEAKENED",
+    "EXACT_RECONSTRUCTION_PRESERVED",
+    "NO_SECOND_CUSTODY_AUTHORITY"
+  ],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "local_adapter_contract_repaired": true,
+    "exact_reconstruction_preserved": true,
+    "authentic_runtime_custody_claimed": false
+  },
+  "allowed_next_transitions": [
+    "OBSERVE_AUTHENTIC_RUNTIME_CUSTODY_ONLY_THROUGH_EXISTING_PARENT_RUNTIME_PATH"
+  ],
+  "authority_model": {
+    "interlock_intr_transition_authority": true,
+    "master_records_custody_reconstruction_authority": true,
+    "master_records_grants_transition_authority": false,
+    "credential_authority": "TV/TVC_WHERE_REQUIRED",
+    "github_runtime_authority": "NONE",
+    "second_custody_authority_allowed": false
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "canonical-state-transition-custody-local-adapter",
+      "master-records-state-transition-custody"
+    ]
+  },
+  "source_refs": [
+    "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+    "workers/canonical_state_transition_custody.py",
+    "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+    "StegVerse-Labs/.github#2079",
+    "master-records/orchestration:services/canonical_state_transition_custody.py",
+    "master-records/orchestration:services/master_records_custody_api.py",
+    "tests/test_canonical_master_records_local_adapter_repair.py"
+  ],
+  "blockers": [],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "authority_effect": "NONE",
+  "validation": {
+    "validated_source_head": "b136f22d7df658cfef08788c6f935a2e7dc39b99",
+    "merged_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+    "pull_request": 2136,
+    "automatic_exact_head_runs": [
+      {
+        "run_id": 35398748609,
+        "job_id": 105773519901,
+        "name": "Validate KV AI Memory Resident Binding",
+        "conclusion": "SUCCESS"
+      },
+      {
+        "run_id": 35398748520,
+        "job_id": 105773517293,
+        "name": "validate-deepseek-resident",
+        "conclusion": "SUCCESS"
+      }
+    ],
+    "focused_source_validation": {
+      "source_head": "11f07ae598faf790904e9ba3cea23f7d1e5a454f",
+      "workflow_run_id": 35393803641,
+      "workflow_job_id": 105757920409,
+      "focused_unittest_result": "PASS_3_OF_3",
+      "worker_py_compile": "PASS",
+      "worker_blob_sha": "e944b3b1b94710ef21ed5eb283bd18dc86b7b14e",
+      "test_blob_sha": "e23464524a755c62a6a1fb2b2f359007b2a01cda",
+      "merged_blobs_match_focused_validation": true
+    },
+    "authoritative_master_records_service_blob": "16171c2b0d900c51b131112b6d5d05ba70e03b06",
+    "temporary_validation_workflow_removed_before_merge": true,
+    "authentic_runtime_custody_claimed": false,
+    "runtime_authority_effect": "NONE"
+  }
+}

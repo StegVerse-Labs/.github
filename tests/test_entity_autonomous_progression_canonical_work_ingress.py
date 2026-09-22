@@ -42,6 +42,28 @@ class EntityAutonomousProgressionCanonicalWorkIngressTests(unittest.TestCase):
         self.assertEqual(task["authority_model"]["github_runtime_authority"], "NONE")
         self.assertFalse(task["authority_model"]["human_reentry_required_for_machine_owned_continuation"])
 
+    def test_runtime_routing_metadata_matches_canonical_work_profile(self):
+        task = json.loads(TASK_SHARD.read_text(encoding="utf-8"))
+        runtime_map = json.loads((ROOT / "control" / "runtime-profile-map.json").read_text(encoding="utf-8"))
+        profile = next(row for row in runtime_map["profiles"] if row["profile_id"] == "canonical-work-coordination-runtime-v1")
+        requirements = task["runtime_requirements"]
+        self.assertEqual(requirements["environment"], "SOVEREIGN_RESIDENT")
+        self.assertEqual(requirements["direction"], "INTERNAL")
+        self.assertTrue(requirements["mutation_required"])
+        self.assertFalse(requirements["deployment_required"])
+        self.assertFalse(requirements["current_observation_required"])
+        self.assertTrue(set(requirements["capabilities"]).issubset(set(profile["declared"]["capabilities"])))
+        self.assertIn(requirements["environment"], profile["declared"]["environment_classes"])
+        self.assertIn(requirements["direction"], profile["declared"]["directions"])
+        self.assertTrue(profile["declared"]["mutation_allowed"])
+        self.assertIsNone(task["runtime_resolution"])
+        runtime_adoption_dep = next(row for row in task["dependencies"] if row["dependency_id"] == "DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION")
+        self.assertEqual(runtime_adoption_dep["kind"], "RUNTIME_PREDICATE")
+        self.assertIn("CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED", task["expected_evidence_predicates"])
+        self.assertIn("CURRENT_GOVERNANCE_DECISION_OBSERVED", task["expected_evidence_predicates"])
+        self.assertIn("EXECUTION_OR_DENIAL_RECEIPT_RETAINED", task["expected_evidence_predicates"])
+        self.assertIn("NEXT_STATE_RECONSTRUCTED", task["expected_evidence_predicates"])
+
     def test_existing_generalized_consumer_visits_autonomous_progression_request(self):
         consumer = CONSUMER.read_text(encoding="utf-8")
         self.assertIn("AUTONOMOUS_PROGRESSION_SPEC", consumer)

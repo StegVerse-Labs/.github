@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.reusable-task-source-reconciliation/v1",
+  "goal_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "cosv_task_vector": "50000000102000",
+  "observed_at": "2026-09-16T13:05:00-05:00",
+  "invocation_id": "KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001",
+  "manifest_ref": "manifests/reusable-task-invocations/KV-CONNECTION-REVALIDATION-WORKER-001.TVC-CAPABILITY-RUNTIME-002.json",
+  "manifest_hash": "04c3c1c127c8fedec15652067c37048ae232675aff10f26d81eed0cdeacbd1aa",
+  "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+  "composed_reusable_task_ids": [
+    "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+    "RT-INTR-BOUNDARY-ADMISSION-001",
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "existing_process_adapter": "process:kv-connection-revalidation-v1",
+  "source_reconciliation": {
+    "cross_repository_runner_incompatibility_found": true,
+    "generic_trigger_admitted_runner_surface": "scripts/*.py",
+    "previous_runner_ref": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
+    "local_wrapper_ref": "scripts/run_tvc_runtime_boundary_reusable.py",
+    "local_wrapper_reuses_tvc_preflight": "tvc.primary_runtime_binder.preflight",
+    "local_wrapper_reuses_tvc_activation": "tvc.primary_runtime_binder.activate",
+    "local_wrapper_reuses_tvc_observer": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
+    "network_source_fetch_allowed": false,
+    "persistent_runner_created": false,
+    "second_scheduler_created": false,
+    "second_worker_created": false,
+    "connected_device_prerequisite_created": false
+  },
+  "resident_request_ref": "control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json",
+  "runtime_evidence": {
+    "trigger_receipt_observed": false,
+    "runner_result_observed": false,
+    "runtime_binding_evidence_observed": false,
+    "interlock_intr_admission_observed": false,
+    "master_records_custody_observed": false,
+    "deployed_query_secret_safe_ingress_observed": false,
+    "expected_trigger_receipt": "receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.latest.json",
+    "expected_runner_result": "receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.runner-result.json"
+  },
+  "boundary": {
+    "state": "SOURCE_RECONCILED_RUNTIME_TRIGGER_EVIDENCE_PENDING",
+    "kind": "AUTHENTIC_REUSABLE_TRIGGER_AND_DEPLOYED_LOG_EVIDENCE_REQUIRED",
+    "manual_intermediate_coordination_required": false,
+    "reason": "Source is now manifest-bound to the existing reusable runtime path, but GitHub/source state cannot mint the WorkerCoordinator claim/fence, TV/TVC runtime receipt, Interlock/InTr admission, active Service Gateway log observation, or Master Records custody evidence."
+  },
+  "prohibited_advancement": {
+    "google_consent": true,
+    "provider_connect_verify": true,
+    "kv2_materialization": true,
+    "runtime_pass_inferred_from_source_or_ci": true
+  },
+  "authority_effect": "NONE_SOURCE_RECONCILIATION_ONLY"
+}

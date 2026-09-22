@@ -1,0 +1,176 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "correlation_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "PRE_DRIFT_MANIFEST_MATERIALIZATION_RECONSTRUCTION_PENDING",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100110"
+  },
+  "cosv_task_vector": "71000000100110",
+  "authority_boundaries": {
+    "sdk": "MANIFEST_TRANSPORT_AND_EVIDENCE_ONLY",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "github_runtime_authority": "NONE",
+    "heartbeat_authority": "OBSERVABILITY_ONLY"
+  },
+  "reuse_requirements": {
+    "dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "sdk_entrypoint": "run_evaluator_governance_manifest",
+    "stegos_resolver": "stegos.intr_security_posture_resolution.resolve_task_security_posture",
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_authority_plane_allowed": false,
+    "second_user_operated_device_allowed": false
+  },
+  "expected_evidence_predicates": [
+    "RESIDENT_SDK_GOVERNANCE_POSTURE_CONSUMER_REGISTERED",
+    "SDK_MANIFEST_EXACT_HASH_BINDING_OBSERVED",
+    "STEGOS_INTR_POSTURE_RESOLUTION_OBSERVED",
+    "POSTURE_BOUND_EXECUTION_OBSERVED",
+    "AUTHENTIC_RETAINED_RUNTIME_RECEIPT_OBSERVED",
+    "MASTER_RECORDS_STATE_RECORDED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_PASS",
+    "MASTER_RECORDS_RECEIPT_RECONSTRUCTION_DIGEST_EQUAL"
+  ],
+  "remaining_predicate": "AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE",
+  "adjacent_task_refs": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+  ],
+  "worker_lifecycle_relationship": "DOWNSTREAM_SEPARATE_CONSUMER_NO_RUNTIME_OWNERSHIP_TRANSFER",
+  "source_consumer": {
+    "selector": "sdk_evaluator_governance_posture",
+    "consumer_ref": "scripts/consume_sdk_evaluator_governance_posture_request.py",
+    "request_ref": "control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json",
+    "receipt_ref": "receipts/sovereign-host/sdk-evaluator-governance-posture-runtime-proof.latest.json",
+    "sdk_entrypoint": "stegverse.evaluator_governance_runtime.run_evaluator_governance_manifest",
+    "source_implementation_complete": true,
+    "authentic_runtime_proof_claimed": false
+  },
+  "runtime_resolution": {
+    "global_invariant_ref": "data/task-registry-global-invariants.json",
+    "remote_runtime_connector_contract_ref": "docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md",
+    "runtime_solution_reuse_ref": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "shared_runtime_evidence_owner_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "substrate_review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "remote_connector_required": false,
+    "zero_connected_remote_devices_is_runtime_blocker": false,
+    "evidence_reachability_may_establish_substrate_unsuitable": false,
+    "first_task_local_unresolved_predicate": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE",
+    "manifest_builder_owner": "StegVerse-org/StegVerse-SDK",
+    "manifest_builder_evidence_ref": "SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
+    "manifest_runtime_ref": "runtime-state/sdk-evaluator-governance-posture/manifest.json",
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_request_path_allowed": false,
+    "new_authority_plane_allowed": false,
+    "master_records_verification": {
+      "authority": "master-records/orchestration",
+      "client_ref": "workers/canonical_state_transition_custody.py",
+      "progression_gate": [
+        "state=RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+        "receipt_sha256=reconstructed_receipt_sha256"
+      ],
+      "source_of_success_failure_truth": true,
+      "transition_authority": false
+    },
+    "master_records_dispatch_visit": {
+      "transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+      "selector": "sdk_evaluator_governance_posture",
+      "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+      "custody_client_ref": "workers/canonical_state_transition_custody.py",
+      "required_evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
+      "exact_bindings": [
+        "selector",
+        "consumer_ref",
+        "attempted",
+        "task_id",
+        "request_id",
+        "machine_result_sha256",
+        "machine_result"
+      ],
+      "progression_gate": [
+        "state=RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+        "receipt_sha256=reconstructed_receipt_sha256"
+      ],
+      "dispatch_authority_effect": "NONE_DISPATCH_ONLY",
+      "custody_authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+      "source_repair_complete": true,
+      "authentic_runtime_transition_claimed": false,
+      "valid_predecessor_for_progression": false,
+      "superseded_as_progression_basis": true,
+      "supersession_reason": "MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE_AND_TASK_LOCAL_FIRST_UNRESOLVED_PREDICATE_PRECEDES_DISPATCH_VISIT"
+    },
+    "recovered_pre_drift_boundary": {
+      "predicate": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE",
+      "canonical_status": "UNPROMOTED_RECONSTRUCTION_NOT_CURRENTLY_SURFACED",
+      "non_occurrence_inferred": false,
+      "master_records_query_capability": "SUBJECT_OR_CORRELATION_ID_QUERY_EXISTS",
+      "currently_accessible_task_specific_reconstruction": false,
+      "shared_runtime_selected_substrate_id": null,
+      "shared_runtime_measurement_entered": false,
+      "progression_rule": "DO_NOT_ADVANCE_BEYOND_MANIFEST_MATERIALIZATION_WITHOUT_AUTHENTIC_RECONSTRUCTED_EVIDENCE",
+      "source_repair_authorized": false,
+      "reconstruction_review_20260921": {
+        "canonical_generation_observed": 181,
+        "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+        "request_id": "RESIDENT-EXEC-SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+        "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+        "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+        "exact_parent_source_evidence": {
+          "workflow_run_id": 34539775942,
+          "manifest_sha256": "1f2b204fc55a22fe0ba533a1825d2bc11a8a1427d70fa8191776c71f4c323bc3",
+          "transition_request_sha256": "3d06812c7d1c1967cdded761c1245db4cc4587b275c5944b6de89bb0ac67909b",
+          "intr_posture_binding_sha256": "9c0df3c370b6a1927af25e8318bc2ea38e0608e6f5eeb3bed2451c11a1a429a1",
+          "governance_execution": "FAIL_CLOSED_MISSING_CANONICAL_RUNTIME_PACKAGES",
+          "authentic_live_stegos_intr_proven": false,
+          "proof_class": "SOURCE_CI_EVIDENCE_ONLY"
+        },
+        "exact_hash_reappearance_in_accessible_authentic_runtime_or_master_records_projection": "NOT_SURFACED",
+        "interpretation": "UNKNOWN_NOT_FALSE",
+        "materialization_promoted": false,
+        "source_or_runtime_defect_inferred": false,
+        "resident_request_dispatch_visit_used_as_predecessor": false,
+        "next_allowed_progression": "AUTHENTIC_MASTER_RECORDS_OR_RETAINED_RUNTIME_RECONSTRUCTION_OF_EXACT_MANIFEST_MATERIALIZATION"
+      },
+      "evidence_inventory_recheck_20260921": {
+        "canonical_generation_observed": 183,
+        "exact_hash_search_result": "SOURCE_CI_PARENT_ONLY",
+        "retained_sovereign_host_receipt_inventory": [
+          "hil-browser-esrl-evidence-intake.latest.json",
+          "hil-esrl-acceptance-reconciliation-proposal.latest.json",
+          "hil-esrl-exact-byte-staging-manifest.latest.json",
+          "hil-resident-execution-request-consumption.latest.json"
+        ],
+        "exact_sdk_runtime_receipt_in_repository_backed_sovereign_host_inventory": false,
+        "repository_backed_sdk_runtime_state_directory_observed": false,
+        "interpretation": "UNKNOWN_NOT_FALSE",
+        "non_occurrence_inferred": false,
+        "materialization_promoted": false,
+        "source_or_runtime_defect_inferred": false,
+        "progression_basis_unchanged": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE"
+      }
+    }
+  }
+}

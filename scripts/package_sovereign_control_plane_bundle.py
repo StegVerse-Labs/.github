@@ -22,12 +22,17 @@ MANIFEST_NAME = "stegverse-control-plane-manifest.json"
 TVC_HIL_SOURCE_FLOOR = "2787eece099604a4d2aad93c575167dc73e54037"
 TV_RESIDENT_PROOF_SHA = "e0d102a8c187c059754eced9ac017fdb056a0222"
 TVC_RESIDENT_PROOF_MIN_SHA = "e4bef703b4d6ccad858459ec502637c598948c42"
-MASTER_RECORDS_SV001_SOURCE_FLOOR = "8e33b3e95d3d9e34387fe393031f44bebcdb5d57"
+MASTER_RECORDS_SV001_SOURCE_FLOOR = "8804762fb5da5d212aa7c9c448dfcdabac734715"
+HEALER_STEGHEALTH_SCHEDULE_SOURCE_FLOOR = "585cf38aad95fda69dbcbd0150c1256571f90feb"
+HEALER_STEGHEALTH_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+HEALER_STEGHEALTH_REUSABLE_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 MASTER_RECORDS_SV001_PROTECTED_PATHS = (
     "scripts/watch_stegverse001_autonomy_receipt.py",
     "scripts/import_stegverse001_autonomy_receipt.py",
     "scripts/intake_resident_runtime_presence.py",
     "schemas/resident_runtime_presence_custody.schema.json",
+    "services/canonical_state_transition_custody.py",
+    "services/canonical_master_records_api.py",
 )
 SV002_MICRO_NODE_COMMIT = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
 SV002_MICRO_NODE_REQUIRED_PATHS = (
@@ -268,6 +273,69 @@ def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) ->
     }
 
 
+def healer_source_proof(root: Path, *, source_floor: str = HEALER_STEGHEALTH_SCHEDULE_SOURCE_FLOOR) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "StegVerse-Labs/StegVerse-Healer",
+        "materialized_subpath": "vendor/StegVerse-Healer",
+        "source_floor": source_floor,
+        "required_schedule_task_id": HEALER_STEGHEALTH_TASK_ID,
+        "required_reusable_task_id": HEALER_STEGHEALTH_REUSABLE_TASK_ID,
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    if head.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_GIT_HEAD_UNAVAILABLE"}
+    observed = head.stdout.strip().lower()
+    ancestor = _git(root, "merge-base", "--is-ancestor", source_floor, "HEAD")
+    if ancestor.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT", "head": observed}
+    status = _git(root, "status", "--porcelain")
+    if status.returncode != 0 or status.stdout.strip():
+        return {**proof, "state": "UNVERIFIED_WORKTREE_NOT_CLEAN", "head": observed}
+    schedule_path = root / "data" / "reusable_task_schedule.json"
+    if not schedule_path.is_file():
+        return {**proof, "state": "UNVERIFIED_REQUIRED_SCHEDULE_MISSING", "head": observed}
+    try:
+        schedule = json.loads(schedule_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_SCHEDULE_INVALID", "head": observed}
+    rows = [
+        row for row in schedule.get("tasks", [])
+        if isinstance(row, dict)
+        and row.get("reusable_task_id") == HEALER_STEGHEALTH_REUSABLE_TASK_ID
+        and row.get("tracking_task_id") == HEALER_STEGHEALTH_TASK_ID
+    ] if isinstance(schedule, dict) else []
+    if len(rows) != 1:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_STEGHEALTH_BINDING_MISSING", "head": observed}
+    row = rows[0]
+    expected_parameters = {
+        "only_consumer": "canonical_work_coordination",
+        "goal_task_id": HEALER_STEGHEALTH_TASK_ID,
+    }
+    if (
+        row.get("cosv_task_vector") != "60000000111000"
+        or row.get("repository") != "StegVerse-Labs/.github"
+        or row.get("enabled") is not True
+        or row.get("invocation_key") != HEALER_STEGHEALTH_TASK_ID
+        or row.get("parameters") != expected_parameters
+    ):
+        return {**proof, "state": "UNVERIFIED_REQUIRED_STEGHEALTH_BINDING_MISMATCH", "head": observed}
+    return {
+        **proof,
+        "state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "head": observed,
+        "source_floor_present": True,
+        "clean_worktree_at_packaging": True,
+        "required_steghealth_binding_present": True,
+    }
+
+
 def master_records_source_proof(root: Path, *, source_floor: str = MASTER_RECORDS_SV001_SOURCE_FLOOR) -> dict:
     root = root.expanduser().resolve()
     proof = {
@@ -413,7 +481,11 @@ def build_bundle(
         )
         if not all(path.is_file() for path in healer_required):
             raise RuntimeError("StegVerse-Healer source root invalid")
+        healer_proof = healer_source_proof(hr)
+        if healer_proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+            raise RuntimeError("StegVerse-Healer source proof not verified: " + str(healer_proof.get("state")))
         vendor_sources["StegVerse-Healer"] = True
+        vendor_source_proofs["StegVerse-Healer"] = healer_proof
         bundle_files.extend(
             ("vendor/StegVerse-Healer/" + path.relative_to(hr).as_posix(), path)
             for path in _safe_tree_files(hr)

@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
+  "vector": "60000000111000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}

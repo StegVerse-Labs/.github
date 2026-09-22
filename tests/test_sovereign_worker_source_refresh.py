@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -189,7 +191,12 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/task-vector-index.json", path_unit)
             self.assertIn("control/resident-execution-request.json", path_unit)
             self.assertIn("control/resident-execution-request.d", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-registry.json'}", path_unit)
+            self.assertIn(f"PathChanged={source / 'data/canonical-task-records'}", path_unit)
+            self.assertIn("install_sovereign_worker_source_refresh_service.py", service)
+            self.assertIn("--materialize-master-records-only", service)
             self.assertIn("dispatch_resident_execution_requests.py", service)
+            self.assertLess(service.index("--materialize-master-records-only"), service.index("dispatch_resident_execution_requests.py"))
             self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
             self.assertIn(f"PathChanged={packages.resolve()}", path_unit)
@@ -217,6 +224,136 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 self.assertNotIn(forbidden, combined)
 
 
+    def test_master_records_source_package_refreshes_existing_vendor_root(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            destination = runtime / "vendor/master-records-orchestration"
+            destination.mkdir(parents=True)
+            (destination / "stale.txt").write_text("stale\n", encoding="utf-8")
+            files = {
+                "services/canonical_master_records_api.py": b"canonical-app\n",
+                "services/canonical_state_transition_custody.py": b"canonical-custody\n",
+                "README.md": b"master-records\n",
+            }
+            rows = [
+                {"path": rel, "sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
+                for rel, raw in sorted(files.items())
+            ]
+            digest = hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+            package = {
+                "schema": "stegverse.source-package/v1",
+                "package_version": "1.0.0",
+                "component_id": "stegverse.master-records",
+                "source_identity": "sha256:" + digest,
+                "credential_material_included": False,
+                "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+                "provenance": {"source_identity_scheme": "sha256-content-manifest", "source_proof": {"schema": "stegverse.portable-source-proof/v1", "repository": "master-records/orchestration", "source_floor": install_mod.MASTER_RECORDS_REQUIRED_SOURCE_FLOOR, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": "a" * 40, "source_floor_present": True, "network_fetch_performed": False, "credential_required": False, "authority_effect": "NONE_SOURCE_IDENTITY_ONLY"}},
+                "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
+                "files": [
+                    {**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")}
+                    for row in rows
+                ],
+            }
+            package_path = package_root / "stegverse-master-records/package.json"
+            package_path.parent.mkdir(parents=True)
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            result = install_mod.materialize_master_records_source_package(package_root, runtime)
+            self.assertEqual(result["state"], "MATERIALIZED_VERIFIED")
+            self.assertTrue(result["canonical_master_records_api_loaded_from_package"])
+            self.assertEqual((destination / "services/canonical_master_records_api.py").read_bytes(), b"canonical-app\n")
+            self.assertFalse((destination / "stale.txt").exists())
+            self.assertFalse(result["network_source_fetch_performed"])
+            self.assertFalse(result["credential_read_or_acquired"])
+
+
+    def test_master_records_source_package_rejects_unverified_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            files = {
+                "services/canonical_master_records_api.py": b"canonical-app\n",
+                "services/canonical_state_transition_custody.py": b"canonical-custody\n",
+            }
+            rows = [
+                {"path": rel, "sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
+                for rel, raw in sorted(files.items())
+            ]
+            digest = hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+            package = {
+                "schema": "stegverse.source-package/v1",
+                "package_version": "1.0.0",
+                "component_id": "stegverse.master-records",
+                "source_identity": "sha256:" + digest,
+                "credential_material_included": False,
+                "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+                "provenance": {"source_identity_scheme": "sha256-content-manifest"},
+                "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
+                "files": [{**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")} for row in rows],
+            }
+            package_path = package_root / "stegverse-master-records/package.json"
+            package_path.parent.mkdir(parents=True)
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "provenance proof missing"):
+                install_mod.materialize_master_records_source_package(package_root, runtime)
+
+    def test_materialize_only_cli_does_not_reinstall_watcher(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            with mock.patch.object(install_mod, "materialize_master_records_source_package", return_value={"state": "PACKAGE_NOT_PRESENT"}) as materialize, mock.patch.object(install_mod, "install") as install_call, mock.patch.object(sys, "argv", ["install_sovereign_worker_source_refresh_service.py", "--runtime-root", str(runtime), "--source-package-root", str(package_root), "--materialize-master-records-only"]):
+                self.assertEqual(install_mod.main(), 0)
+            materialize.assert_called_once_with(package_root, runtime)
+            retained = runtime / install_mod.MASTER_RECORDS_REFRESH_RECEIPT_REL
+            self.assertTrue(retained.is_file())
+            install_call.assert_not_called()
+
+
+    def test_master_records_refresh_cycle_retains_materialization_receipt(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            package_root = base / "packages"
+            runtime = base / "runtime"
+            files = {
+                "services/canonical_master_records_api.py": b"canonical-app\n",
+                "services/canonical_state_transition_custody.py": b"canonical-custody\n",
+            }
+            rows = [
+                {"path": rel, "sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
+                for rel, raw in sorted(files.items())
+            ]
+            digest = hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+            package = {
+                "schema": "stegverse.source-package/v1",
+                "package_version": "1.0.0",
+                "component_id": "stegverse.master-records",
+                "source_identity": "sha256:" + digest,
+                "credential_material_included": False,
+                "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+                "provenance": {"source_identity_scheme": "sha256-content-manifest", "external_platform_required": False, "source_proof": {"schema": "stegverse.portable-source-proof/v1", "repository": "master-records/orchestration", "source_floor": install_mod.MASTER_RECORDS_REQUIRED_SOURCE_FLOOR, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": "a" * 40, "source_floor_present": True, "network_fetch_performed": False, "credential_required": False, "authority_effect": "NONE_SOURCE_IDENTITY_ONLY"}},
+                "manifest": {"file_count": len(rows), "source_bundle_sha256": digest, "files": rows},
+                "files": [
+                    {**row, "content_base64": base64.b64encode(files[row["path"]]).decode("ascii")}
+                    for row in rows
+                ],
+            }
+            package_path = package_root / "stegverse-master-records/package.json"
+            package_path.parent.mkdir(parents=True)
+            package_path.write_text(json.dumps(package), encoding="utf-8")
+            receipt = install_mod.materialize_master_records_source_package_and_retain(package_root, runtime)
+            retained = runtime / install_mod.MASTER_RECORDS_REFRESH_RECEIPT_REL
+            self.assertTrue(retained.is_file())
+            self.assertEqual(receipt["state"], "MATERIALIZED_VERIFIED")
+            self.assertEqual(receipt["source_identity"], "sha256:" + digest)
+            self.assertTrue(receipt["canonical_master_records_api_loaded_from_package"])
+            self.assertEqual(receipt["package_provenance"], package["provenance"])
+            self.assertFalse(receipt["dispatch_authority_granted"])
+            self.assertFalse(receipt["runtime_authority_granted"])
+            self.assertEqual(json.loads(retained.read_text(encoding="utf-8")), receipt)
+
     def test_default_source_package_root_honors_nonsecret_override(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td) / "packages"
@@ -240,7 +377,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
                 "mutable_runtime_state_preserved": True,
                 "network_fetch_performed": False,
-            }), mock.patch.object(install_mod.shutil, "which", return_value="/usr/bin/systemctl"):
+            }), mock.patch.object(install_mod, "materialize_master_records_source_package", return_value={"state":"PACKAGE_NOT_PRESENT","materialization_performed":False,"authority_effect":"NONE"}), mock.patch.object(install_mod.shutil, "which", return_value="/usr/bin/systemctl"):
                 package_root = base / "source-packages"
                 receipt = install_mod.install(
                     ROOT,
@@ -256,6 +393,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue(receipt["filesystem_event_driven"])
             self.assertTrue(receipt["intr_materialization_event_driven"])
             self.assertTrue(receipt["source_package_event_driven"])
+            self.assertEqual(receipt["master_records_source_refresh"]["state"], "PACKAGE_NOT_PRESENT")
             self.assertTrue((runtime / "intr-materialization").is_dir())
             self.assertTrue(package_root.is_dir())
             for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:

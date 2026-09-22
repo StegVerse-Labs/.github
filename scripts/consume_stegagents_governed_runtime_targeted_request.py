@@ -11,17 +11,28 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUEST_REL = Path("control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.json")
+OWNER_REQUEST_REL = Path("control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.json")
+PURPOSE_REQUEST_REL = Path("control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json")
-TARGET_TASK = "STEGAGENTS-GOVERNED-RUNTIME-001"
-TARGET_VECTOR = "71000000101001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
+TARGETS = {
+    "STEGAGENTS-GOVERNED-RUNTIME-001": {
+        "vector": "71000000101001",
+        "request_rel": OWNER_REQUEST_REL,
+    },
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001": {
+        "vector": "71000000111111",
+        "request_rel": PURPOSE_REQUEST_REL,
+    },
+}
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 NONSECRET_ENV = (
     "PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA",
     "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT", "STEGVERSE_MASTER_RECORDS_TOKEN", "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB", "MASTER_RECORDS_RECEIPT_KEY", "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     "STEGVERSE_TVC_ROOT", "STEGVERSE_TV_ROOT", "STEGVERSE_REPO_ROOTS_JSON",
     "STEGVERSE_SDK_SOURCE_ROOT", "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_WARRANT_JSON", "TV_POLICY_BUNDLE_SHA256", "TV_WARRANT_ISSUER_PUBKEY_B64", "TV_WARRANT_MAX_TTL_SECONDS",
@@ -61,13 +72,18 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     return env
 
 
-def validate_request(request: dict[str, Any]) -> None:
+def validate_request(request: dict[str, Any]) -> tuple[str, str]:
+    task_id = str(request.get("task_id") or "")
+    target = TARGETS.get(task_id)
+    if not isinstance(target, dict):
+        raise RuntimeError("governed StegAgents targeted request task_id mismatch")
+    vector = str(target["vector"])
     expected = {
         "schema": "stegverse.resident-execution-request/v1",
         "state": "REQUESTED",
-        "task_id": TARGET_TASK,
+        "task_id": task_id,
         "cosv_profile": "task.v1",
-        "cosv_task_vector": TARGET_VECTOR,
+        "cosv_task_vector": vector,
         "mode": TARGET_MODE,
         "entrypoint": TARGET_ENTRYPOINT,
         "fresh_fence_minimum_exclusive": 0,
@@ -84,8 +100,9 @@ def validate_request(request: dict[str, Any]) -> None:
     for key, wanted in expected.items():
         if request.get(key) != wanted:
             raise RuntimeError(f"governed StegAgents targeted request {key} mismatch")
-    if request.get("argv") != ["--task-id", TARGET_TASK, "--cosv-task-vector", TARGET_VECTOR]:
+    if request.get("argv") != ["--task-id", task_id, "--cosv-task-vector", vector]:
         raise RuntimeError("governed StegAgents targeted request argv mismatch")
+    return task_id, vector
 
 
 def parse_last_json(stdout: str) -> dict[str, Any] | None:
@@ -102,28 +119,34 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    request_path = runtime / REQUEST_REL
-    if not request_path.is_file():
+    request_path = None
+    request = None
+    for task_id in ("SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001", "STEGAGENTS-GOVERNED-RUNTIME-001"):
+        candidate = runtime / TARGETS[task_id]["request_rel"]
+        if candidate.is_file():
+            request_path = candidate
+            request = load_json(candidate)
+            break
+    if request_path is None or request is None:
         return {"schema": "stegverse.stegagents-governed-runtime-targeted-consumption/v1", "state": "NO_REQUEST", "runtime_execution_attempted": False, "authority_effect": "NONE"}
-    request = load_json(request_path)
-    validate_request(request)
+    task_id, vector = validate_request(request)
     request_hash = stable_hash(request)
     entrypoint = runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
         raise RuntimeError(f"targeted execution entrypoint missing:{entrypoint}")
-    command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", TARGET_TASK, "--cosv-task-vector", TARGET_VECTOR]
+    command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", task_id, "--cosv-task-vector", vector]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
     result = parse_last_json(completed.stdout)
     pointer = result.get("cosv_task_pointer") if isinstance(result, dict) else None
-    pointer_verified = bool(isinstance(pointer, dict) and pointer.get("task_id") == TARGET_TASK and pointer.get("vector") == TARGET_VECTOR and pointer.get("binding_verified") is True and pointer.get("authority_effect") == "NONE")
-    valid = bool(isinstance(result, dict) and result.get("mode") == TARGET_MODE and result.get("task_id") == TARGET_TASK and result.get("runtime_execution_attempted") is True and result.get("network_fetch_performed") is False and result.get("github_token_runtime_authority") == "NONE" and result.get("credential_authority") == "TV/TVC" and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY" and pointer_verified)
+    pointer_verified = bool(isinstance(pointer, dict) and pointer.get("task_id") == task_id and pointer.get("vector") == vector and pointer.get("binding_verified") is True and pointer.get("authority_effect") == "NONE")
+    valid = bool(isinstance(result, dict) and result.get("mode") == TARGET_MODE and result.get("task_id") == task_id and result.get("runtime_execution_attempted") is True and result.get("network_fetch_performed") is False and result.get("github_token_runtime_authority") == "NONE" and result.get("credential_authority") == "TV/TVC" and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY" and pointer_verified)
     receipt = {
         "schema": "stegverse.stegagents-governed-runtime-targeted-consumption/v1",
         "state": "ATTEMPT_RECORDED" if valid else "FAIL_CLOSED",
         "request_id": request.get("request_id"),
         "request_sha256": request_hash,
-        "task_id": TARGET_TASK,
-        "cosv_task_vector": TARGET_VECTOR,
+        "task_id": task_id,
+        "cosv_task_vector": vector,
         "mode": TARGET_MODE,
         "command": command,
         "execution_returncode": completed.returncode,

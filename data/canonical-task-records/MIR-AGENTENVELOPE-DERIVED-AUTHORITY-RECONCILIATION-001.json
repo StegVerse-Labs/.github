@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+  "correlation_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "goal": "Independently reconcile AgentEnvelope's public derived-authority implementation with StegVerse RTG/GTG/TT/AE, Interlock/InTr, identity, and evidence-reconstruction semantics without importing external authority, overstating equivalence, or creating duplicate governance/custody machinery.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
+    "docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md",
+    "docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "external-framework-comparison",
+      "derived-authority",
+      "identity-lineage",
+      "legitimacy",
+      "temporal-ordering",
+      "evidence-reconstruction"
+    ]
+  },
+  "dependencies": [
+    "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "AGENTENVELOPE_PUBLIC_SPEC_AND_SDK_SOURCE_INSPECTED",
+    "DERIVATION_TREE_EXACTLY_CLASSIFIED",
+    "OFFLINE_VERIFICATION_PROOF_SCOPE_BOUNDED",
+    "LEGITIMACY_SEPARATED_FROM_DERIVED_AUTHORITY",
+    "TEMPORAL_ORDERING_NOT_INFERRED_FROM_DERIVATION",
+    "RTG_GTG_TT_AE_INTR_MAPPING_BOUNDED",
+    "REDERIVED_VS_RETRIEVED_EVIDENCE_SHAPE_CLASSIFIED",
+    "NO_EXTERNAL_AUTHORITY_IMPORTED",
+    "NO_DUPLICATE_STEGVERSE_ENGINE_CREATED",
+    "DETERMINISTIC_RECOMPUTATION_ALREADY_REPRESENTABLE",
+    "NO_SOURCE_MUTATION_REQUIRED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "public_source_inspection",
+      "cross_architecture_semantic_mapping",
+      "canonical_schema_reconciliation"
+    ],
+    "environment": "DOCUMENTARY_AND_PUBLIC_SOURCE_RECONCILIATION",
+    "direction": "EXTERNAL_DERIVED_AUTHORITY_RECONCILIATION",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md"
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "external_capability_grants_stegverse_transition_authority": false,
+    "external_legitimacy_engine_replaces_gtg": false,
+    "derived_identity_replaces_tvtvc_or_kv_skap": false,
+    "deterministic_rederivation_proves_temporal_sequence": false,
+    "external_architecture_similarity_implies_equivalence": false
+  },
+  "existing_evidence_refs": [
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:schemas/typed_custody_evidence.schema.json",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:tools/verify_record_hash.py",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:docs/CUSTODY_RECORD_HASH_CONVENTION.md",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:docs/reconstruction/INFERENCE_WINDOW_RESOLUTION.md"
+  ]
+}

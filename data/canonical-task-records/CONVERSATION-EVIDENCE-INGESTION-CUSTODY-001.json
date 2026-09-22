@@ -1,0 +1,279 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "root_correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "parent_task_id": null,
+  "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records custody/reconstruction before any later public Site projection.",
+  "coordination_state": "ACTIVE",
+  "source_refs": [
+    "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
+    "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+    "workers/conversation_evidence_ingestion.py",
+    "tests/test_conversation_evidence_ingestion.py",
+    "schemas/conversation-evidence-ingestion-package.schema.json",
+    "control/task-vectors/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+    "StegVerse-Labs/.github#2258",
+    "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+    "workers/conversation_evidence_ingestion_runtime_worker.py",
+    "control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json",
+    "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
+    "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
+    "tests/test_conversation_evidence_ingestion_runtime.py",
+    "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:data/reusable_task_schedule.json",
+    "StegVerse-Labs/StegVerse-Healer@d77ad6b80c1a9b48eb67de67a2360ac9f3d0d026:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer@2e3d41e44c28f0c116b190c6d5a38d094d29a588:data/reusable_task_schedule.json",
+    "StegVerse-Labs/StegVerse-Healer@2e3d41e44c28f0c116b190c6d5a38d094d29a588:docs/CONVERSATION_EVIDENCE_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "master-records/orchestration",
+      "StegVerse-Labs/StegVerse-Healer"
+    ],
+    "components": [
+      "immutable-conversation-ingestion",
+      "attachment-byte-preservation",
+      "authenticity-envelope",
+      "transaction-performance-binding",
+      "required-evidence-manifest",
+      "canonical-master-records-custody"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "workers/canonical_state_transition_custody.py"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+  ],
+  "existing_evidence_refs": [
+    "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+    "workers/canonical_state_transition_custody.py"
+  ],
+  "expected_evidence_predicates": [
+    "V1_PUBLICATION_CONTRACT_UNCHANGED",
+    "INGESTION_PACKAGE_SCHEMA_VALID",
+    "ORIGINAL_RECORD_WRITE_ONCE",
+    "MESSAGE_ORDER_AND_MESSAGE_DIGESTS_DETERMINISTIC",
+    "ATTACHMENT_BYTES_AND_DIGESTS_PRESERVED",
+    "AUTHENTICITY_STATE_EXPLICIT",
+    "TRANSACTION_FINDING_DEFAULTS_NOT_EVALUATED",
+    "REQUIRED_EVIDENCE_MANIFEST_BINDS_ORIGINAL_AUTHENTICITY_AND_TRANSACTION",
+    "MASTER_RECORDS_STATE_RECORDED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_PASS",
+    "MASTER_RECORDS_EXACT_RECEIPT_DIGEST_EQUALITY",
+    "NO_PUBLICATION_OR_ADJUDICATION_PERFORMED",
+    "README_AND_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_artifact_validation",
+      "canonical_master_records_state_transition_custody",
+      "canonical_work_ingress",
+      "workercoordinator_targeted_one_shot",
+      "conversation_evidence_synthetic_ingestion_custody"
+    ],
+    "environment": "EXISTING_CANONICAL_WORK_PLUS_WORKERCOORDINATOR_PLUS_MASTER_RECORDS",
+    "direction": "EVIDENCE_CAPTURE_TO_MASTER_RECORDS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": {
+    "state": "STATE_TRIGGERED_IMMEDIATE_SUCCESSOR_PATH_READY",
+    "source_runtime_path_merge": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+    "canonical_work_request_ref": "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json",
+    "workercoordinator_registration_ref": "control/worker-registry.d/conversation-evidence-ingestion-custody-001.json",
+    "process_adapter_ref": "control/process-worker-adapters.d/conversation-evidence-ingestion-custody-001.json",
+    "executable_handoff_ref": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+    "targeted_execution": [
+      "python",
+      "scripts/run_worker_runtime.py",
+      "--task-id",
+      "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+    ],
+    "current_condition": "FIRST_MISSING_AUTHENTIC_TRANSITION_RESIDENT_REQUEST_DISPATCH_VISIT",
+    "remediation_path": "NO_SOURCE_OR_RUNTIME_MUTATION_AUTHORIZED;RETAIN_EXISTING_NATIVE_PATH_AND_REQUIRE_AUTHENTIC_RESIDENT_REQUEST_DISPATCH_VISIT",
+    "connected_device_inventory_role": "NONE_PROHIBITED",
+    "second_runtime_created": false,
+    "second_scheduler_created": false,
+    "second_dispatcher_created": false,
+    "second_custody_plane_created": false,
+    "public_site_successor_allowed": false,
+    "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY",
+    "separate_runtime_presence_gate_required": false,
+    "carrier_trigger_required": false,
+    "authentic_completion_still_requires_master_records_closure": true,
+    "remote_connected_device_requirement": "PROHIBITED",
+    "wait_for_resident_execution_opportunity": false,
+    "carrier_binding": {
+      "reusable_task_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+      "scheduler_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+      "tracking_task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "invocation_key": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "only_consumer": "canonical_work_coordination",
+      "goal_task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "healer_merge": "2e3d41e44c28f0c116b190c6d5a38d094d29a588",
+      "source_binding_validated": true,
+      "authentic_invocation_observed": false,
+      "authority_effect": "NONE_CARRIER_BINDING_ONLY"
+    },
+    "source_refresh_ordering": {
+      "source_refresh_reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+      "ordered_before_goal_dispatch": true,
+      "healer_merge": "2e3d41e44c28f0c116b190c6d5a38d094d29a588",
+      "exact_head_validation": "StegVerse-Healer Test Readiness PASS",
+      "authority_effect": "NONE_ORDERING_ONLY"
+    },
+    "native_resident_initiation": {
+      "carrier_entrypoint": "scripts/run_heartbeat_runtime.py --continuous",
+      "worker_supervision_ref": "scripts/repair_resident_worker_presence.py#ensure_worker_presence",
+      "worker_entrypoint": "scripts/run_worker_runtime.py --continuous",
+      "first_worker_iteration_dispatches_resident_requests": true,
+      "resident_dispatch_ref": "scripts/dispatch_resident_execution_requests.py",
+      "healer_selector": "healer_sovereign_scheduler",
+      "healer_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+      "source_path_complete": true,
+      "deterministic_source_defect_found": false,
+      "retained_post_repair_dispatch_visit_observed": false,
+      "retained_present_worker_runtime_observed": false,
+      "checked_in_worker_state": {
+        "last_cycle_at": "2026-08-18T19:47:00Z",
+        "runtime_tick": 2,
+        "observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
+        "evidence_ref": "control/worker-runtime-state.json"
+      },
+      "authority_effect": "NONE_RUNTIME_OBSERVATION_BOUNDARY_ONLY"
+    },
+    "native_resident_reobservation": {
+      "observed_against_generation": 162,
+      "checked_paths": [
+        "control/worker-runtime-state.json",
+        "receipts/sovereign-host/runtime-presence.latest.json",
+        "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "receipts/sovereign-host/hb-machine-continuation.latest.json",
+        "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+        "control/worker-registry.d/healer-sovereign-scheduler-001.json"
+      ],
+      "worker_runtime_state": {
+        "last_cycle_at": "2026-08-18T19:47:00Z",
+        "runtime_tick": 2,
+        "observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+      },
+      "runtime_presence_receipt_present": false,
+      "resident_request_dispatch_receipt_present": false,
+      "machine_continuation_receipt_present": false,
+      "healer_scheduler_receipt_present": false,
+      "healer_scheduler_registry_state": "HANDOFF_READY",
+      "healer_scheduler_claim_id": null,
+      "first_missing_authentic_transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+      "downstream_promotion_allowed": false,
+      "authority_effect": "NONE_REOBSERVATION_ONLY"
+    }
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
+    "COMPLETION_CLAIMED"
+  ],
+  "handoff_projection_refs": [
+    "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "checkout_state": "CHECKED_OUT"
+}

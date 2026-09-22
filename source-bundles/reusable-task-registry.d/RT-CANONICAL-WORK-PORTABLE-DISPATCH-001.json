@@ -1,0 +1,32 @@
+{
+  "reusable_task_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+  "name": "Portable Canonical Work Exact Dispatch",
+  "purpose": "Invoke the existing already-local sovereign source refresh plus exact canonical_work_coordination resident dispatch bridge for one manifest-bound Goal Task, preserving Task Registry anti-collision preflight, WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, and runtime evidence boundaries without creating another runtime, scheduler, dispatcher, request identity, or authority plane.",
+  "trigger": "an existing canonical Goal Task requires an on-demand portable canonical_work_coordination invocation through the already-implemented refresh_and_dispatch_resident_requests.py bridge",
+  "scope": "one invocation-bound local source root, one invocation-bound sovereign runtime root, exact canonical_work_coordination selector, and one current Goal Task ID",
+  "parameter_keys": [
+    "source_root",
+    "runtime_root",
+    "only_consumer",
+    "goal_task_id"
+  ],
+  "runner_templates": [
+    "scripts/refresh_and_dispatch_resident_requests.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "component",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "EXACT_CANONICAL_WORK_COORDINATION_SELECTOR_BOUND",
+    "EXACT_CURRENT_GOAL_CONTEXT_BOUND",
+    "TASK_REGISTRY_PREFLIGHT_RETAINED",
+    "PORTABLE_REFRESH_AND_TARGETED_DISPATCH_ADVANCED_TO_COMPLETION_OR_AUTHENTIC_BOUNDARY",
+    "NO_RUNTIME_SCHEDULER_DISPATCHER_OR_AUTHORITY_PLANE_CREATED"
+  ],
+  "authority_effect": "NONE_ORCHESTRATION_ONLY",
+  "reuse_instructions": "Trigger through scripts/trigger_reusable_task.py with task_id/COSV tracking for the current canonical Goal. Parameters must bind source_root, runtime_root, only_consumer=canonical_work_coordination, and goal_task_id. The existing bridge refreshes already-local source and visits only canonical_work_coordination; Task Registry must return authentic CONTINUE before downstream mutation. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority. Do not infer runtime success from source, CI, trigger acceptance, or device connectivity."
+}

@@ -1,0 +1,55 @@
+{
+  "reusable_task_id": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "name": "Canonical Master Records State Transition Custody",
+  "purpose": "Submit each observed governed state transition receipt and every required evidence artifact resulting from that transition to the existing Master Records custody/reconstruction authority; require exact validation and reconstruction of the receipt plus the complete required-evidence set before machine-owned progression continues, without promoting custody into transition authority.",
+  "trigger": "a governed state transition decision, execution consequence, denial, failure, partial outcome, or fail-closed state has been observed",
+  "scope": "one observed governed state transition receipt plus its complete required evidence manifest",
+  "parameter_keys": [
+    "transition_id",
+    "transition_sequence",
+    "subject_or_correlation_id",
+    "prior_state_ref_or_hash",
+    "resulting_state_ref_or_hash",
+    "governance_decision_ref_where_applicable",
+    "transition_evidence",
+    "required_evidence_manifest",
+    "proof_scope",
+    "proof_ceiling"
+  ],
+  "composes": [
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "runner_templates": [
+    "workers/canonical_state_transition_custody.py"
+  ],
+  "recording_levels": [
+    "transition",
+    "operation",
+    "task",
+    "goal",
+    "system",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "CANONICAL_STATE_RECEIPT_EMITTED",
+    "MASTER_RECORDS_CUSTODY_RECORDED",
+    "EXACT_RECEIPT_RECONSTRUCTION_PASS",
+    "ALL_REQUIRED_TRANSITION_EVIDENCE_ENUMERATED",
+    "ALL_REQUIRED_TRANSITION_EVIDENCE_MASTER_RECORDS_VALIDATED",
+    "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTION_PASS",
+    "NO_CUSTODY_AUTHORITY_PROMOTION"
+  ],
+  "failure_semantics": [
+    "MISSING_TRANSITION_NOT_FABRICATED",
+    "CUSTODY_UNREACHABLE_FAIL_CLOSED_BEFORE_NEXT_MACHINE_TRANSITION",
+    "RECONSTRUCTION_MISMATCH_FAIL_CLOSED",
+    "DENY_AND_FAILURE_STATES_REMAIN_CANONICAL_EVIDENCE",
+    "CUSTODY_RESULT_CANNOT_AUTHORIZE_NEXT_TRANSITION",
+    "REQUIRED_EVIDENCE_MANIFEST_MISSING_FAIL_CLOSED",
+    "REQUIRED_EVIDENCE_DIGEST_MISMATCH_FAIL_CLOSED",
+    "REQUIRED_EVIDENCE_TRANSITION_BINDING_MISMATCH_FAIL_CLOSED"
+  ],
+  "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+  "reuse_instructions": "Use this for the canonical per-state-transition custody consequence. Every transition receipt must declare required_evidence_manifest, even when empty. Every additional required evidence artifact produced by the transition must be included with exact content, transition binding, encoding, and SHA-256; Master Records must validate and reconstruct the complete set before progression. Any validation required by the transition executes on the existing transition path before evidence closure and its output enters the manifest; the existence of a validator is never a wait/defer condition. If an authentic runtime receipt is absent, trace the existing path to the first deterministic defect and repair only that evidenced boundary. Interlock/InTr remains transition authority and TV/TVC remains credential authority where required."
+}

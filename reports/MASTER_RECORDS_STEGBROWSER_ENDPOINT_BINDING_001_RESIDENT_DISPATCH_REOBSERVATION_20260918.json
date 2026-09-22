@@ -1,0 +1,668 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-resident-dispatch-reobservation/v2",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "handoff_task_id": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+  "cosv_id": "40000100100000",
+  "observed_on": "2026-09-18",
+  "session_prompt_range": "1-9",
+  "goal_prompt_range": "10-19/20",
+  "registry_generation_entering": 36,
+  "registry_generation_candidate": 54,
+  "prompt_10": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 36,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+    "connected_device_count": 0,
+    "authorized_resident_surface_newly_reachable": false,
+    "authentic_dispatch_receipt_observed": false,
+    "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "authentic_machine_result_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY",
+    "goal_prompt_count": "10/20",
+    "session_prompt_count": 1,
+    "reconciliation_note": "Concurrent canonical changes through generation 36 were preserved; no task-local Prompt 10 state existed."
+  },
+  "prompt_11": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 36,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+    "connected_device_count": 0,
+    "authorized_resident_surface_newly_reachable": false,
+    "authentic_dispatch_receipt_observed": false,
+    "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "authentic_machine_result_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY",
+    "goal_prompt_count": "11/20",
+    "session_prompt_count": 2,
+    "reconciliation_note": "Continuation after collision reconciliation; authorized resident evidence remained not newly reachable and no downstream predicate advanced."
+  },
+  "prompt_12": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 37,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+    "connected_device_count": 0,
+    "authorized_resident_surface_newly_reachable": false,
+    "resident_dispatch_receipt_seek_attempted": false,
+    "resident_dispatch_receipt_seek_not_attempted_reason": "Authorized resident evidence surface did not become newly reachable; task contract forbids alternate observation architecture or broader search.",
+    "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "authentic_dispatch_receipt_observed": false,
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "authentic_machine_result_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY",
+    "goal_prompt_count": "12/20",
+    "session_prompt_count": 3
+  },
+  "validation_provenance": {
+    "pr": 2110,
+    "semantic_change": false,
+    "purpose": "Trigger a fresh pull-request synchronize event so exact-head validation can be observed before merge."
+  },
+  "prompt_13": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 39,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+    "connected_device_count": 0,
+    "authorized_resident_surface_newly_reachable": false,
+    "resident_dispatch_receipt_seek_attempted": false,
+    "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "authentic_dispatch_receipt_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY",
+    "goal_prompt_count": "13/20",
+    "session_prompt_count": 4,
+    "coordination_hygiene": {
+      "related_prs_verified_closed": [
+        2080,
+        2082,
+        2084,
+        2088,
+        2089,
+        2093,
+        2094,
+        2095,
+        2096,
+        2099,
+        2107,
+        2109,
+        2110
+      ],
+      "active_goal_issue_preserved_open": 2078,
+      "active_global_owner_issue_preserved_open": 1260,
+      "superseded_branches_identified": [
+        "master-records-stegbrowser-prompt10-20260918",
+        "master-records-stegbrowser-prompt11-20260918",
+        "master-records-stegbrowser-prompt12-20260918",
+        "task/master-records-stegbrowser-endpoint-binding-2078-current",
+        "task/master-records-stegbrowser-endpoint-binding-2078"
+      ],
+      "branch_cleanup_method": "FORCE_ALIGN_TO_CURRENT_MAIN_BECAUSE_CONNECTOR_EXPOSES_UPDATE_REF_BUT_NOT_BRANCH_DELETE",
+      "main_sha": "6f2a3dff7e3ef56e19fd147132fbd29499f448f4"
+    }
+  },
+  "prompt_14": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 39,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+    "connected_device_count": 0,
+    "authorized_resident_surface_newly_reachable": false,
+    "resident_dispatch_receipt_seek_attempted": false,
+    "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "authentic_dispatch_receipt_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY",
+    "goal_prompt_count": "14/20",
+    "session_prompt_count": 5,
+    "coordination_hygiene": {
+      "related_prs_all_closed": true,
+      "related_superseded_branches_all_identical_to_main": true,
+      "superseded_branch_ahead_behind": "0/0",
+      "active_goal_issue_preserved_open": 2078,
+      "active_global_owner_issue_preserved_open": 1260,
+      "no_superseded_issue_left_open": true
+    }
+  },
+  "superseded_coordination_hygiene": {
+    "verified_on": "2026-09-18",
+    "related_prs_closed": [
+      2080,
+      2082,
+      2084,
+      2088,
+      2089,
+      2093,
+      2094,
+      2095,
+      2096,
+      2099,
+      2107,
+      2109,
+      2110
+    ],
+    "preserved_open_issues": [
+      2078,
+      1260
+    ],
+    "superseded_branches_resolved": [
+      {
+        "branch": "master-records-stegbrowser-prompt10-20260918",
+        "resolution": "FORCE_ALIGNED_TO_MAIN",
+        "verified_compare": "identical",
+        "ahead": 0,
+        "behind": 0
+      },
+      {
+        "branch": "master-records-stegbrowser-prompt11-20260918",
+        "resolution": "FORCE_ALIGNED_TO_MAIN",
+        "verified_compare": "identical",
+        "ahead": 0,
+        "behind": 0
+      },
+      {
+        "branch": "master-records-stegbrowser-prompt12-20260918",
+        "resolution": "FORCE_ALIGNED_TO_MAIN",
+        "verified_compare": "identical",
+        "ahead": 0,
+        "behind": 0
+      },
+      {
+        "branch": "task/master-records-stegbrowser-endpoint-binding-2078-current",
+        "resolution": "FORCE_ALIGNED_TO_MAIN",
+        "verified_compare": "identical",
+        "ahead": 0,
+        "behind": 0
+      },
+      {
+        "branch": "task/master-records-stegbrowser-endpoint-binding-2078",
+        "resolution": "FORCE_ALIGNED_TO_MAIN",
+        "verified_compare": "identical",
+        "ahead": 0,
+        "behind": 0
+      }
+    ],
+    "delete_branch_capability_available": false,
+    "stale_divergent_related_branches_remaining": 0,
+    "post_merge_finalization": {
+      "pr": 2115,
+      "merge_sha": "b5bed5efae65cf53cfda5de3f36d819dbc0e7747",
+      "superseded_branches_finally_resolved": [
+        {
+          "branch": "master-records-stegbrowser-prompt10-20260918",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt11-20260918",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt12-20260918",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078-current",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt14-hygiene-20260918",
+          "resolution": "FORCE_ALIGNED_TO_FINAL_MAIN",
+          "verified_compare": "identical",
+          "ahead": 0,
+          "behind": 0
+        }
+      ],
+      "delete_branch_capability_available": false,
+      "divergent_superseded_branch_content_remaining": 0,
+      "active_goal_issue_preserved_open": 2078,
+      "active_global_owner_issue_preserved_open": 1260
+    }
+  },
+  "runtime_evidence_invariant_correction": {
+    "corrected_on": "2026-09-18",
+    "correction_goal_prompt": "15/20",
+    "supersedes_observation_method_for_goal_prompts": [
+      "10/20",
+      "11/20",
+      "12/20",
+      "13/20",
+      "14/20"
+    ],
+    "invalid_method": "REMOTE_DESKTOP_COMMANDER_DEVICE_ENUMERATION_AS_RESIDENT_EVIDENCE_SURFACE",
+    "canonical_rule": "Connector-visible device count is not a runtime prerequisite, blocker, authorization/verification signal, task state, or evidence predicate.",
+    "canonical_refs": [
+      "data/task-registry-global-invariants.json",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+      "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md"
+    ],
+    "corrected_continuation": "Use existing resident carrier outputs, request-consumption receipts, WorkerCoordinator claim/fence state, Interlock/InTr admission, and retained runtime evidence directly.",
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT"
+  },
+  "prompt_16": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 42,
+    "session_prompt_count": 6,
+    "goal_prompt_count": "16/20",
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "superseded_connector_device_method_repeated": false,
+    "exact_receipt_path_checked": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "exact_receipt_repository_check": "NOT_FOUND_404",
+    "exact_receipt_repository_check_authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY",
+    "authentic_dispatch_receipt_observed": false,
+    "canonical_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "required_machine_result": "AUTHENTIC",
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "repository_absence_interpreted_as_runtime_absence": false,
+    "broad_source_search_performed": false,
+    "alternate_observer_exporter_created": false,
+    "new_runtime_request_scheduler_recovery_path_created": false,
+    "measurement_run_entered": false,
+    "second_invocation_emitted": false,
+    "fixed_host_dependency_added": false,
+    "second_device_dependency_added": false,
+    "narrow_branch_hygiene": {
+      "new_divergent_related_refs_observed": false,
+      "compared_refs": [
+        {
+          "branch": "master-records-stegbrowser-runtime-invariant-correction-20260918",
+          "ahead": 0,
+          "behind": 4,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt10-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt11-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt12-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt14-hygiene-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078-current",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        }
+      ],
+      "cleanup_reopened": false,
+      "reason": "No related ref was ahead of or divergent from main; behind-only refs do not carry unmerged stale content."
+    },
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "prompt_17": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 45,
+    "session_prompt_count": 7,
+    "goal_prompt_count": "17/20",
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "controlling_invariant_prompt": 15,
+    "connector_device_method_used": false,
+    "exact_machine_owned_dispatch_receipt_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "exact_existing_owner_level_retention_seam": {
+      "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "parent_owner_task": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "canonical_classification_artifact": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "embedded_pointer_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+      "source_side_fixable": false,
+      "source_side_repair_required": false,
+      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+    },
+    "exact_owner_artifact_checks": [
+      {
+        "path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+        "repository_result": "NOT_FOUND_404",
+        "authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY"
+      },
+      {
+        "path": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+        "repository_result": "NOT_FOUND_404",
+        "authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY"
+      },
+      {
+        "path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+        "repository_result": "NOT_FOUND_404",
+        "authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY"
+      },
+      {
+        "path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+        "repository_result": "NOT_FOUND_404",
+        "authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY"
+      }
+    ],
+    "authentic_retained_root_observed": false,
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "broad_source_search_performed": false,
+    "new_observer_exporter_runtime_request_scheduler_recovery_path_created": false,
+    "measurement_run_entered": false,
+    "second_invocation_emitted": false,
+    "fixed_host_dependency_added": false,
+    "second_device_dependency_added": false,
+    "authority_effect": "NONE_OWNER_SEAM_IDENTIFICATION_ONLY"
+  },
+  "prompt_18": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 48,
+    "session_prompt_count": 8,
+    "goal_prompt_count": "18/20",
+    "controlling_invariant_prompt": 15,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "connector_device_method_used": false,
+    "exact_existing_owner_level_retention_seam": {
+      "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "required_pointer_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "predicate_satisfied": false,
+      "source_side_repair_required": false,
+      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+    },
+    "authentic_retained_carrier_evidence_observed": false,
+    "authentic_retained_root_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "coordination_reconciliation": {
+      "stale_predecessor_issue_closed": {
+        "issue": 1857,
+        "task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+        "canonical_task_state": "RETIRED",
+        "canonical_checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+        "successor_issue": 1860,
+        "successor_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+        "closure_reason": "duplicate/superseded by canonical successor"
+      },
+      "intentionally_preserved_open_issues": [
+        {
+          "issue": 1260,
+          "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+        },
+        {
+          "issue": 1860,
+          "task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
+        },
+        {
+          "issue": 2078,
+          "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001"
+        }
+      ],
+      "issue_1866_preserved_closed": true,
+      "issue_1866_note": "Original source-side remediation issue is already closed/completed; canonical task record remains in the required owner chain and was not mutated.",
+      "recent_goal_prs_verified_closed": [
+        2093,
+        2094,
+        2095,
+        2096,
+        2099,
+        2107,
+        2109,
+        2110,
+        2115,
+        2117,
+        2124,
+        2131
+      ],
+      "exact_goal_branches_force_aligned_to_main": [
+        "master-records-stegbrowser-prompt10-20260918",
+        "master-records-stegbrowser-prompt11-20260918",
+        "master-records-stegbrowser-prompt12-20260918",
+        "master-records-stegbrowser-prompt14-hygiene-20260918",
+        "master-records-stegbrowser-prompt16-machine-receipt-20260918",
+        "master-records-stegbrowser-prompt17-retention-seam-20260918",
+        "master-records-stegbrowser-runtime-invariant-correction-20260918",
+        "task/master-records-stegbrowser-endpoint-binding-2078-current",
+        "task/master-records-stegbrowser-endpoint-binding-2078"
+      ],
+      "branch_delete_capability_available": false,
+      "unrelated_adjacent_stegbrowser_tasks_mutated": false
+    },
+    "new_observer_exporter_runtime_request_scheduler_recovery_path_created": false,
+    "measurement_run_entered": false,
+    "second_invocation_emitted": false,
+    "fixed_host_dependency_added": false,
+    "second_device_dependency_added": false,
+    "authority_effect": "NONE_RECONCILIATION_AND_OWNER_SEAM_OBSERVATION_ONLY"
+  },
+  "prompt_19": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 53,
+    "session_prompt_count": 9,
+    "goal_prompt_count": "19/20",
+    "controlling_invariant_prompt": 15,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "connector_device_method_used": false,
+    "repository_absence_recheck_performed": false,
+    "issue_pr_branch_reconciliation_reopened": false,
+    "narrow_goal_branch_check": {
+      "new_divergent_goal_specific_artifact": false,
+      "all_known_goal_branches_ahead": 0,
+      "observed_status": "BEHIND_ONLY"
+    },
+    "exact_existing_owner_level_retention_seam": {
+      "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "required_pointer_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "predicate_satisfied": false,
+      "source_side_repair_required": false,
+      "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+    },
+    "authentic_retained_carrier_evidence_observed": false,
+    "authentic_retained_root_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "exact_healer_consumer_outcome_validated": false,
+    "embedded_pointer_bound": false,
+    "resident_custody_root_observed_count": 0,
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "new_observer_exporter_runtime_request_scheduler_recovery_path_created": false,
+    "measurement_run_entered": false,
+    "second_invocation_emitted": false,
+    "fixed_host_dependency_added": false,
+    "second_device_dependency_added": false,
+    "authority_effect": "NONE_RETENTION_SEAM_REVERIFICATION_ONLY"
+  }
+}

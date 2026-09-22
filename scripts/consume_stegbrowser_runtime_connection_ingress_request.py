@@ -250,12 +250,17 @@ def main() -> int:
 
     invocation = None
     node_receipt_ref = None
+    node_resolution_error = None
     if callable_value and protocol_resolved and execution_surface_materialized and PROTOCOL_RT not in selected:
-        node_receipt = resolve_registered_node_receipt(request)
-        node_receipt_ref = str(node_receipt)
-        if STEGBROWSER_RT not in selected:
-            selected.append(STEGBROWSER_RT)
-        invocation = run_canonical_node_bound_invocation(source_root, runtime_root, node_receipt)
+        try:
+            node_receipt = resolve_registered_node_receipt(request)
+        except RuntimeError as exc:
+            node_resolution_error = str(exc)
+        else:
+            node_receipt_ref = str(node_receipt)
+            if STEGBROWSER_RT not in selected:
+                selected.append(STEGBROWSER_RT)
+            invocation = run_canonical_node_bound_invocation(source_root, runtime_root, node_receipt)
 
     boundary = invocation.get("boundary", {}) if isinstance(invocation, dict) else {}
     projection = boundary.get("runtime_ingress_projection") if isinstance(boundary, dict) else {}
@@ -269,12 +274,30 @@ def main() -> int:
     fence = projection.get("fence_ref") if isinstance(projection, dict) else None
     claim_observed = bool(isinstance(claim_id, str) and isinstance(fence, int) and claim_id.endswith(f"-G{fence}"))
     binding = boundary.get("node_interlock_runtime_binding") if isinstance(boundary, dict) else {}
-    a2_1_observed = bool(isinstance(binding, dict) and binding.get("lease_id") and binding.get("state_root_binding"))
-    a2_2_observed = bool(isinstance(binding, dict) and binding.get("runtime_class") == "EVENT_EPHEMERAL" and binding.get("runtime_id"))
+    a1_observed = bool(
+        isinstance(binding, dict)
+        and node_receipt_ref
+        and binding.get("node_id")
+        and binding.get("interlock_id")
+        and binding.get("registration_receipt_sha256")
+    )
+    a2_1_observed = bool(a1_observed and binding.get("lease_id") and binding.get("state_root_binding"))
+    a2_2_observed = bool(a1_observed and binding.get("runtime_class") == "EVENT_EPHEMERAL" and binding.get("runtime_id"))
+
+    if a4_observed and claim_observed and a2_1_observed and a2_2_observed:
+        state = "A1_A2_A2_1_A2_2_A3_A4_OBSERVED"
+    elif a1_observed:
+        state = "A1_OBSERVED_CANONICAL_INVOCATION_PENDING_OR_BOUNDARY"
+    elif node_resolution_error:
+        state = "A1_NOT_OBSERVED_REGISTERED_NODE_RECEIPT_UNAVAILABLE"
+    elif callable_value:
+        state = "A1_NOT_OBSERVED_CANONICAL_INVOCATION_NOT_RETAINED"
+    else:
+        state = "A1_NOT_OBSERVED_NOT_CALLABLE"
 
     result = {
         "schema": "stegverse.stegbrowser-runtime-connection-a1-a4-observation/v2",
-        "state": "A1_A2_A2_1_A2_2_A3_A4_OBSERVED" if (a4_observed and claim_observed and a2_1_observed and a2_2_observed) else ("A1_OBSERVED_CANONICAL_INVOCATION_PENDING_OR_BOUNDARY" if callable_value else "A1_OBSERVED_NOT_CALLABLE"),
+        "state": state,
         "task_id": TASK_ID,
         "parent_task_id": PARENT_TASK_ID,
         "cosv": COSV,
@@ -284,6 +307,7 @@ def main() -> int:
         "canonical_node_receipt_path_parameter": "node_genesis_receipt",
         "canonical_node_receipt_path_environment": NODE_PATH_ENV,
         "resolved_node_genesis_receipt_ref": node_receipt_ref,
+        "node_resolution_error": node_resolution_error,
         "callable": callable_value,
         "refreshable": refreshable_value,
         "applicable_protocol_resolved": protocol_resolved,
@@ -291,6 +315,7 @@ def main() -> int:
         "source_refresh_receipt": refresh_receipt,
         "admitted_execution_surface_materialized": execution_surface_materialized,
         "canonical_node_bound_invocation": invocation,
+        "registered_stegverse_node_bound_to_invocation": a1_observed,
         "a2_1_invocation_scoped_lease_observed": a2_1_observed,
         "a2_2_event_ephemeral_runtime_observed": a2_2_observed,
         "workercoordinator_claim_or_fence_observed": claim_observed,

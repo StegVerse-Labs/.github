@@ -69,6 +69,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             )
             self.assertEqual(receipt["state"], "DISPATCH_COMPLETE")
             self.assertEqual(receipt["selection_scope"], "ALL_REGISTERED")
+            self.assertFalse(receipt["exact_selector_failure"])
             self.assertEqual(receipt["consumer_count"], len(mod.CONSUMERS))
             self.assertEqual(receipt["consumers_visited"], len(mod.CONSUMERS))
             # These four entity consumers are deliberately fail-closed until the
@@ -158,12 +159,42 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 only_consumers=(target,),
             )
             self.assertEqual(receipt["state"], "DISPATCH_COMPLETE")
+            self.assertFalse(receipt["exact_selector_failure"])
             self.assertEqual(receipt["selection_scope"], "EXACT_SELECTOR")
             self.assertEqual(receipt["selected_consumers"], [target])
             self.assertEqual(receipt["consumer_count"], 1)
             self.assertEqual(receipt["consumers_visited"], 1)
             self.assertEqual(len(calls), 1)
             self.assertEqual(Path(calls[0][0][1]), consumer)
+
+    def test_exact_selector_failure_cannot_report_dispatch_complete(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            source.mkdir()
+            target = "cross_framework_current_basis_v04"
+            rel = dict(mod.CONSUMERS)[target]
+            consumer = runtime / rel
+            consumer.parent.mkdir(parents=True, exist_ok=True)
+            consumer.write_text("# current-basis consumer\n", encoding="utf-8")
+
+            def runner(command, **kwargs):
+                return SimpleNamespace(returncode=1, stdout='{"state":"FAIL_CLOSED"}\n', stderr="")
+
+            receipt = mod.dispatch(
+                source,
+                runtime,
+                runner=runner,
+                env={"PATH": "/bin", "HOME": td},
+                only_consumers=(target,),
+            )
+            self.assertEqual(receipt["state"], "DISPATCH_INCOMPLETE")
+            self.assertTrue(receipt["exact_selector_failure"])
+            self.assertEqual(receipt["request_failures"], [target])
+            self.assertEqual(receipt["selection_scope"], "EXACT_SELECTOR")
+            self.assertEqual(receipt["selected_consumers"], [target])
+            self.assertTrue((runtime / mod.RECEIPT_REL).is_file())
 
     def test_unknown_selector_fails_before_any_consumer_is_invoked(self) -> None:
         calls = []

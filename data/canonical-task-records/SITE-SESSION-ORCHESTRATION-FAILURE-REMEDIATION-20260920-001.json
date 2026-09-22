@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001",
+  "correlation_id": "SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001",
+  "root_correlation_id": "SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001",
+  "parent_task_id": null,
+  "parent_external_ref": "StegVerse-Labs/Site#114",
+  "goal": "Remediate the newly observed Site Session Orchestration Cross Repository failures as a fresh child of the still-open governed session-orchestration task.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/StegHealth",
+  "handoff": "docs/EMAIL_FAILURE_REMEDIATION_LIFECYCLE_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000111000"
+  },
+  "cosv_task_vector": "10100000111000",
+  "source_refs": [
+    "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json",
+    "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:docs/remediation/EMAIL_FAILURE_REMEDIATION_CHILDREN_20260920.md",
+    "StegVerse-Labs/StegHealth#99",
+    "docs/EMAIL_FAILURE_REMEDIATION_LIFECYCLE_MIRROR_HANDOFF.md"
+  ],
+  "remediation_identity_rule": "OPEN_EXTERNAL_PARENT_CREATES_FRESH_CHILD",
+  "issue_ref": "StegVerse-Labs/StegHealth#99",
+  "expected_evidence_predicates": [
+    "FIRST_DETERMINISTIC_DEFECT_IDENTIFIED",
+    "BOUNDED_REPAIR_APPLIED_OR_EXACT_RECOVERY_EVIDENCE_BOUND",
+    "EXACT_HEAD_OR_CURRENT_OWNER_VALIDATION_PASS",
+    "PARENT_OR_FAILURE_PROVENANCE_RECONCILED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_effect": "NONE_REMEDIATION_COORDINATION_ONLY"
+}

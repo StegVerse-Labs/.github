@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-first-missing-resident-transition/v1",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "observed_on": "2026-09-17",
+  "goal_prompt_count": "8/20",
+  "registry_generation_entering": 32,
+  "immutable_invocation": {
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "owner_chain": {
+    "shared_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "root_observation_owner": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+    "remediation_owner": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "any_owner_mutated": false,
+    "global_measurement_entered": false
+  },
+  "target_checkpoint": {
+    "authoritative_resident_path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "first_pointer_path": "child_receipt.resident_custody_root_observation_retention",
+    "projection_transition": "FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION",
+    "authentic_copy_observed": false,
+    "claim_fence_provenance_verified": false,
+    "pointer_bound": false,
+    "classifier_run": false
+  },
+  "resident_access_observation": {
+    "authorized_remote_device_surface_connected": false,
+    "meaning": "No resident filesystem is reachable from this chat through the connected remote-device surface. This is evidence-reachability only and is not evidence that the sovereign resident runtime is absent.",
+    "issue_lineage_authentic_runtime_copy_found": false,
+    "broad_source_search_repeated": false
+  },
+  "first_missing_transition_before_projection": {
+    "transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "existing_component": "scripts/run_worker_runtime.py -> dispatch_local_resident_requests() -> scripts/dispatch_resident_execution_requests.py",
+    "authoritative_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_proof": {
+      "selected_consumer": "healer_sovereign_scheduler",
+      "consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+      "attempted": true,
+      "outcome_result_must_be_machine_result": true
+    },
+    "authentic_receipt_observed": false,
+    "reason_first": "This is the earliest existing resident-owned execution transition in the already-traced path. Without its authentic receipt, later consumer invocation, targeted WorkerCoordinator cycle, admission, claim/fence, Healer checkpoint write, and ProcessWorkerAdapter projection cannot be promoted."
+  },
+  "downstream_withheld": {
+    "healer_consumer_invocation": false,
+    "targeted_worker_runtime_cycle": false,
+    "worker_task_admission_admit": false,
+    "worker_assignment_bound": false,
+    "healer_checkpoint_written": false,
+    "fenced_process_adapter_allow_projection": false,
+    "resident_custody_root_observed": false,
+    "immutable_runtime_tuple_available": false,
+    "gateway_advertisement_validation_entered": false,
+    "master_records_submission_attempted": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "exact_digest_equality": false,
+    "a1_a4_handback": false
+  },
+  "prohibited_effects": {
+    "new_exporter": false,
+    "new_observer": false,
+    "new_runtime": false,
+    "new_request": false,
+    "new_scheduler": false,
+    "new_recovery_path": false,
+    "global_measurement_run": false,
+    "second_stegbrowser_invocation": false,
+    "fixed_host_dependency": false,
+    "second_user_operated_device": false
+  },
+  "disposition": "FIRST_MISSING_AUTHENTIC_PRE_PROJECTION_TRANSITION_IS_RESIDENT_REQUEST_DISPATCH_VISIT",
+  "authority_effect": "NONE_EVIDENCE_REACHABILITY_RECONCILIATION_ONLY"
+}

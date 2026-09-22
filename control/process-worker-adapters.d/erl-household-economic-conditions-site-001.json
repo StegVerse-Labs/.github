@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:erl-household-economic-conditions-site-v1",
+      "authority_ref": "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "tvc_provider_credential_readiness",
+        "public_economic_data_acquisition"
+      ],
+      "command": [
+        "python",
+        "workers/erl_household_economic_conditions_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_STEGFIN_GOVERNANCE_ROOT",
+        "STEGVERSE_ERL_SOURCE_ROOT",
+        "PATH",
+        "HOME",
+        "LANG",
+        "LC_ALL"
+      ],
+      "notes": [
+        "Uses only existing local repository roots and existing TV/TVC/stegfin-governance readiness and broker entrypoints.",
+        "No provider credential value is accepted, read, logged, hashed, returned, or forwarded by this worker.",
+        "BEA execution is permitted only after authentic metadata-only readiness returns decision=READY and remains bounded to the existing single-use TVC lease plus non-exportable vault-broker path.",
+        "Credential-free ERL public-source acquisition may proceed independently and cannot authorize Site publication."
+      ],
+      "timeout_seconds": 1200,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "external_cost_ceiling_usd": 0,
+  "expected_external_cost_usd": 0,
+  "authority_effect": "NONE_COST_METADATA_ONLY"
+}

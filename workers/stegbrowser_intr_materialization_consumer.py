@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUEST_DIR_REL = Path("intr-materialization")
 INGRESS_RECEIPT_DIR_REL = Path("receipts/sovereign-network/stegbrowser-intr-ingress")
 CONSUMPTION_DIR_REL = Path("receipts/sovereign-host/stegbrowser-intr-materialization")
+BINDING_DIR_REL = Path("intr-payloads/stegbrowser-manifest-invocation")
 LATEST_REL = Path("receipts/sovereign-host/stegbrowser-intr-materialization-consumption.latest.json")
 RUNNER_REL = Path("scripts/run_stegbrowser_manifest_bound_runtime.py")
 GOAL_ID = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
@@ -178,7 +179,17 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     if ingress.get("transport_origin") != "STEGOS_NODE_OUTBOX" or ingress.get("claim_or_fence_minted") is not False:
         raise StegBrowserInTrMaterializationError("stegbrowser_ingress_authority_boundary_invalid")
 
-    payload_path = Path(str(request["payload_ref"])).expanduser().resolve()
+    payload_ref = str(request["payload_ref"])
+    opaque_prefix = "opaque://stegbrowser-manifest-invocation/"
+    if payload_ref.startswith(opaque_prefix):
+        digest = payload_ref[len(opaque_prefix):]
+        if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
+            raise StegBrowserInTrMaterializationError("stegbrowser_invocation_binding_payload_ref_invalid")
+        if request.get("payload_hash") != "sha256:" + digest:
+            raise StegBrowserInTrMaterializationError("stegbrowser_invocation_binding_payload_ref_hash_mismatch")
+        payload_path = runtime / BINDING_DIR_REL / f"{digest}.json"
+    else:
+        payload_path = Path(payload_ref).expanduser().resolve()
     if not payload_path.is_file():
         raise StegBrowserInTrMaterializationError("stegbrowser_invocation_binding_payload_missing")
     binding = _load(payload_path)
@@ -205,6 +216,7 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     child = scrubbed_env(env)
     child["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"] = json.dumps(params, sort_keys=True, separators=(",", ":"))
     child["STEGVERSE_REUSABLE_TASK_INVOCATION_ID"] = materialization_id
+    child["STEGVERSE_STEGBROWSER_INVOCATION_NONCE"] = NONCE
     child["STEGVERSE_STEGBROWSER_MANIFEST_SHA256"] = str(binding["manifest_sha256"])
     completed = runner([sys.executable, str(runner_path)], cwd=str(source), env=child, check=False, capture_output=True, text=True, timeout=1800)
 

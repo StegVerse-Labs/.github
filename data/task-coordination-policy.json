@@ -33,7 +33,10 @@
   },
   "cosv_task_pointer_contract": {
     "required_for_compact_session_continuation": true,
-    "minimal_prompt_fields": ["task_id", "cosv_task_vector"],
+    "minimal_prompt_fields": [
+      "task_id",
+      "cosv_task_vector"
+    ],
     "cosv_profile": "task.v1",
     "cosv_profile_ref": "management/COSV_PROFILE_V1.json",
     "cosv_task_index_ref": "control/task-vector-index.json",
@@ -55,7 +58,11 @@
   "goal_resolution_continuation_contract": {
     "contract_ref": "control/entity-autonomous-governed-progression-contract.json",
     "evaluator_ref": "scripts/evaluate_goal_resolution_continuation.py",
-    "human_originates": ["IDEA", "QUERY", "GOAL"],
+    "human_originates": [
+      "IDEA",
+      "QUERY",
+      "GOAL"
+    ],
     "ecosystem_owns_continuation": true,
     "automatic_reingestion_required": true,
     "reingest": [
@@ -177,7 +184,8 @@
     "HUMAN_ACTION_IS_CANONICALIZED_ONCE_AND_SHARED_BY_DEPENDENTS",
     "SYSTEMIC_INCIDENTS_BIND_NORMALIZED_SYMPTOMS_WITHOUT_DUPLICATE_REPAIR_OWNERS",
     "HANDOFFS_ARE_PROJECTIONS_NOT_INDEPENDENT_TRUTH",
-    "CLOSURE_REVERSAL_REQUIRES_A_NEW_GOVERNED_TRANSITION"
+    "CLOSURE_REVERSAL_REQUIRES_A_NEW_GOVERNED_TRANSITION",
+    "SESSION_MUTATION_REQUIRES_EXACT_CURRENT_CANONICAL_TASK_REGISTRY_GENERATION"
   ],
   "reconciliation_states": [
     "CONSISTENT",
@@ -188,6 +196,7 @@
     "ORPHANED_EVENT"
   ],
   "pre_execution_checks": [
+    "VERIFY_SESSION_OBSERVED_REGISTRY_GENERATION_EQUALS_CURRENT_CANONICAL_GENERATION",
     "VERIFY_TASK_ID_COSV_VECTOR_BINDING",
     "RESOLVE_REUSABLE_IDENTITY_AND_INVOCATION_PARAMETERS_WHEN_APPLICABLE",
     "VERIFY_MANIFEST_BOUND_DERIVED_CONSTRUCT_WHEN_APPLICABLE",
@@ -204,7 +213,10 @@
     "condition": "NO_UNIQUE_TASK_CONTINUITY_REMAINS_ONLY_IN_SESSION_CONTEXT",
     "compact_successor_prompt": {
       "preferred": true,
-      "fields": ["task_id", "cosv_task_vector"],
+      "fields": [
+        "task_id",
+        "cosv_task_vector"
+      ],
       "additional_fields_only_when_not_yet_canonically_resolvable": true
     },
     "machine_owned_continuation": {
@@ -231,6 +243,7 @@
   "new_session_entry_contract": {
     "required": true,
     "sequence": [
+      "READ_CURRENT_CANONICAL_TASK_REGISTRY_GENERATION_AND_APPLICABLE_HANDOFF",
       "VERIFY_TASK_ID_COSV_VECTOR_BINDING",
       "QUERY_RELEVANT_CANONICAL_TASKS",
       "RECONCILE_MASTER_RECORDS_EVIDENCE",
@@ -259,5 +272,25 @@
     "SOURCE_POLICY_DOES_NOT_PROVE_INTERLOCK_INTR_EGRESS_OR_CLOSURE",
     "RUNTIME_PROFILE_MATCH_DOES_NOT_PROVE_RUNTIME_EXECUTION",
     "ROUTING_READINESS_DOES_NOT_GRANT_EXECUTION_AUTHORITY"
-  ]
+  ],
+  "session_mutation_generation_fence": {
+    "required": true,
+    "canonical_generation_ref": "data/canonical-task-registry.json#generation",
+    "observation_must_precede_mutation": true,
+    "exact_generation_match_required": true,
+    "stale_generation_disposition": "STOP_STALE_COORDINATION",
+    "missing_generation_disposition": "STOP_COORDINATION_GENERATION_REQUIRED",
+    "future_or_divergent_generation_disposition": "STOP_COORDINATION_GENERATION_MISMATCH",
+    "prohibited_until_reconciled": [
+      "SOURCE_WRITE",
+      "PULL_REQUEST_CREATE_OR_UPDATE",
+      "PULL_REQUEST_MERGE",
+      "NEW_HANDOFF_CLAIM"
+    ],
+    "reconciliation_action": "RE_READ_CANONICAL_GITHUB_MAIN_TASK_REGISTRY_AND_APPLICABLE_MIRROR_HANDOFF_THEN_RECHECK",
+    "enforcement_surface": "scripts/evaluate_task_registry_collision_checkin.py",
+    "workercoordinator_claim_fence_authority_unchanged": true,
+    "interlock_intr_transition_authority_unchanged": true,
+    "github_platform_admin_bypass_is_not_claimed_prevented": true
+  }
 }

@@ -51,6 +51,26 @@ class RuntimeResolutionTests(unittest.TestCase):
         self.assertIn("sovereign-runtime-worker-v1", result["candidate_profile_ids"])
         self.assertFalse(result["selection_grants_authority"])
 
+    def test_standalone_projection_persists_without_aggregate_insertion_or_authority(self):
+        task_id = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
+        task = resolve_mod.find_task(
+            self.registry,
+            task_id,
+            ROOT / "data/canonical-task-records",
+        )
+        result = resolve_mod.resolve(task, self.runtime_map, "control/runtime-profile-map.json")
+        before_aggregate = [row for row in self.registry.get("tasks", []) if row.get("task_id") == task_id]
+        proposed = apply_mod.project_task_record(task, self.runtime_map, result, "control/runtime-profile-map.json")
+
+        self.assertEqual(before_aggregate, [])
+        self.assertEqual(proposed["task_id"], task_id)
+        self.assertEqual(proposed["coordination_state"], task["coordination_state"])
+        self.assertEqual(proposed["worker_claim"], task["worker_claim"])
+        self.assertEqual(proposed["completion"], task["completion"])
+        self.assertEqual(proposed["runtime_resolution"]["candidate_profile_ids"], ["canonical-work-coordination-runtime-v1"])
+        self.assertTrue(proposed["runtime_resolution"]["projection_only"])
+        self.assertFalse(proposed["runtime_resolution"]["selection_grants_authority"])
+
     def test_projection_does_not_change_coordination_or_claim_state(self):
         task = resolve_mod.find_task(self.registry, "STEGVERSE-CANONICAL-WORK-COORDINATION-001")
         result = resolve_mod.resolve(task, self.runtime_map, "control/runtime-profile-map.json")

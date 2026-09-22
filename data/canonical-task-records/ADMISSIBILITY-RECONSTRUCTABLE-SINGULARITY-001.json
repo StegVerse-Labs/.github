@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "correlation_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "root_correlation_id": "ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001",
+  "parent_task_id": null,
+  "goal": "Maintain Reconstructable Singularity as the canonical Admissibility Wiki formalism, expose it from Site/Papers only as a lightweight formalism-directory link, preserve the former Reconstructive Singularity Site URL as compatibility-only, and close only after the intended public projections are directly observed.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/reconstructable-singularity.md",
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/RECONSTRUCTABLE_SINGULARITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/admissibility-wiki:static/formalisms/reconstructable-singularity.v0.1.schema.json",
+    "StegVerse-Labs/admissibility-wiki:static/formalisms/reconstructable-singularity.v0.1.example.json",
+    "StegVerse-Labs/admissibility-wiki:scripts/check_reconstructable_singularity.py",
+    "StegVerse-Labs/Site:Papers.html",
+    "StegVerse-Labs/Site:reconstructive-singularity.html",
+    "StegVerse-Labs/Site:docs/RECONSTRUCTABLE_SINGULARITY_SITE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/admissibility-wiki",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "reconstructable-singularity-formalism",
+      "site-papers-formalisms-directory",
+      "legacy-reconstructive-singularity-compatibility-route",
+      "canonical-task-registration"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/admissibility-wiki#143",
+    "StegVerse-Labs/admissibility-wiki@fcd376ee1d591c65e0f28b15784aab8f49dfb3a4",
+    "actions:StegVerse-Labs/admissibility-wiki:35417681155",
+    "StegVerse-Labs/Site#1410",
+    "StegVerse-Labs/Site@b19b41bf1b1860b7f5f5c02aceb65760c36eae6f",
+    "actions:StegVerse-Labs/Site:35430643033",
+    "actions:StegVerse-Labs/Site:35430643054"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_ADMISSIBILITY_WIKI_FORMALISM_MERGED",
+    "CANONICAL_ADMISSIBILITY_WIKI_VALIDATION_PASS",
+    "SITE_PAPERS_FORMALISMS_DIRECTORY_MERGED",
+    "SITE_RECONSTRUCTABLE_ENTRY_LINKS_TO_CANONICAL_WIKI",
+    "LEGACY_SITE_RECONSTRUCTIVE_ROUTE_REDIRECTS_TO_CANONICAL_WIKI",
+    "PUBLIC_CANONICAL_WIKI_ROUTE_OBSERVED",
+    "PUBLIC_SITE_PAPERS_FORMALISMS_DIRECTORY_OBSERVED",
+    "PUBLIC_LEGACY_RECONSTRUCTIVE_REDIRECT_OBSERVED",
+    "CENTRAL_TASK_REGISTRY_REGISTRATION_MERGED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "StegVerse-Labs/admissibility-wiki:docs/formalisms/RECONSTRUCTABLE_SINGULARITY_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "COMPLETION_CLAIMED",
+    "CLOSED"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/admissibility-wiki:docs/formalisms/RECONSTRUCTABLE_SINGULARITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/RECONSTRUCTABLE_SINGULARITY_SITE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

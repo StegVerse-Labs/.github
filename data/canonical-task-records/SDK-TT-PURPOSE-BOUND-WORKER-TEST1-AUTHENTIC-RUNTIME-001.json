@@ -1,0 +1,116 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "correlation_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "goal": "Verify and preserve the working Evaluator Test 1 contract: Manifest Builder -> run-manifest -> installed purpose_bound_worker processor -> assembled Test 1 lifecycle result, with the manifest as the only variable input.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_REGRESSION_REPAIRED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000111111"
+  },
+  "cosv_task_vector": "71000000111111",
+  "execution_lineage_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "source_refs": [
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2341",
+    "StegVerse-Labs/.github@746d077e126e3452ccb40685907f141c839fb851",
+    "StegVerse-org/StegVerse-SDK#288",
+    "StegVerse-org/StegVerse-SDK@ec989d1e2075b975c7cc138ceec4ee0fabdd1d50",
+    "workers/manifest_state_transition_intr_ingress.py",
+    "workers/universal_intr_profiled_ingress.py",
+    "heartbeat_runtime/worker_runtime_legacy.py"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SDK-TEST1-WORKING-MANIFEST-PATH",
+      "kind": "REGRESSION_REPAIR",
+      "state": "SATISFIED",
+      "ref": "StegVerse-org/StegVerse-SDK#289",
+      "disposition": "RESTORED_LAST_KNOWN_GOOD_TEST1_EXECUTION_SEMANTICS_WITH_MANIFEST_AS_ONLY_VARIABLE_INPUT"
+    }
+  ],
+  "authoritative_sequence": [
+    "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "TV_TVC_WARRANT_POLICY_VERIFIED",
+    "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+    "PURPOSE_BOUND_WORKER_MATERIALIZED",
+    "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+    "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+    "PURPOSE_BOUND_WORKER_RETIRED"
+  ],
+  "progression_requires": [
+    "state=RECORDED",
+    "reconstruction_status=PASS",
+    "required_evidence_validation_status=PASS",
+    "receipt_sha256==reconstructed_receipt_sha256"
+  ],
+  "remaining_predicate": null,
+  "runtime_boundary": {
+    "sdk_test1_only_run_id": 35527445140,
+    "sdk_test1_only_run_conclusion": "success",
+    "github_ci_first_failure": "UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED",
+    "github_runtime_authority": "NONE",
+    "canonical_resident_ingress_env": "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",
+    "canonical_resident_tvc_authorization_env": "STEGVERSE_TVC_RELAY_AUTHORIZATION_ID",
+    "shared_intr_profile_merge": "746d077e126e3452ccb40685907f141c839fb851",
+    "sdk_binding_merge": "ec989d1e2075b975c7cc138ceec4ee0fabdd1d50",
+    "test2_or_test3_execution_allowed_before_test1_close": false
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "test1_manifest_execution_restored": true,
+    "test1_exact_head_validation_run_id": 35534933752,
+    "test1_exact_head_validation_conclusion": "success",
+    "sdk_package_validation_run_id": 35534933786,
+    "sdk_package_validation_conclusion": "success",
+    "sdk_merge_commit": "3948fbcb7fd4deb185bf6eb815b3410f8abf6fee",
+    "test2_or_test3_executed": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "request_grants_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "INTERLOCK_INTR",
+    "execution_authority": "STEGAGENTS_DOMAIN_COMPONENT",
+    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "second_user_operated_device_required": false
+  },
+  "status_reason": "TEST1_REGRESSION_INTRODUCED_BY_SDK_PR_285_AND_EXTENDED_BY_PR_286_REPAIRED; MANIFEST_DRIVEN_TEST1_EXECUTION_RESTORED_AND_VALIDATED",
+  "regression_repair_2026_09_20": {
+    "last_known_good_merge": "a3a2039f907fe6499f32b79c7112c6be9495f5a4",
+    "first_behavior_breaking_pr": 285,
+    "first_behavior_breaking_head": "0f48f28dfc92ef26f69a4e3df81051fe2634442b",
+    "break_behavior": "run-manifest deliberately rejected the installed purpose-bound processor with AUTHENTIC_GOVERNED_RUNTIME_BINDING_REQUIRED",
+    "follow_on_pr": 286,
+    "follow_on_behavior": "purpose_bound_worker route was rebound to manifest_state_transition_runtime.execute_manifest and required external STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",
+    "repair_pr": 289,
+    "repair_merge": "3948fbcb7fd4deb185bf6eb815b3410f8abf6fee",
+    "restored_path": [
+      "Manifest Builder",
+      "run-manifest",
+      "purpose_bound_worker_processor.execute_manifest",
+      "run_purpose_bound_worker",
+      "assembled lifecycle result"
+    ],
+    "required_lifecycle": [
+      "MATERIALIZED",
+      "INVOCATION_STARTED",
+      "TASK_COMPLETED",
+      "RETIRED"
+    ],
+    "records_only": true,
+    "worker_live_after_close": false,
+    "manifest_is_only_variable_input": true,
+    "external_universal_intr_required_for_test1": false,
+    "prior_authentic_runtime_requirement_for_test1": "SUPERSEDED_AS_REGRESSION_ARTIFACT"
+  }
+}

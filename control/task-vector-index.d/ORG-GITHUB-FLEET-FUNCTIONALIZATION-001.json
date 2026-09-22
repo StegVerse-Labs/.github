@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+  "source_state_vector_ref": "control/task-vectors/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+  "vector": "80000000100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}

@@ -1,0 +1,126 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "created_at": "2026-09-17T08:45:00Z",
+  "state": "HANDOFF_READY",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:mir-roundtrip-egress-authenticity:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json",
+      "StegVerse-Labs/StegOS:stegos/mir_profile_runtime.py"
+    ],
+    "admissibility_evidence_refs": [
+      "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+      "control/resident-execution-request.d/mir-roundtrip-egress-authenticity-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/mir_roundtrip_egress_authenticity_worker.py",
+      "control/process-worker-adapters.d/mir-roundtrip-egress-authenticity-001.json",
+      "control/worker-registry.d/mir-roundtrip-egress-authenticity-001.json",
+      "handoffs/mir-roundtrip-egress-authenticity-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [],
+    "continuation_owner": "mir-roundtrip-egress-authenticity-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "goal": {
+    "goal_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+    "objective": "Duplicate the proven StegVerse-002 event-triggered Interlock/InTr to EVENT_EPHEMERAL route first, bind only current MIR Goal/COSV/destination requirements, canonically retain and reconstruct every observed governed transition in Master Records, and complete governed return without a second execution or transport plane.",
+    "success_predicates": [
+      "current MIR-bound event is admitted through the existing Interlock/InTr route",
+      "every observed governed transition is retained and reconstructed through canonical Master Records custody",
+      "RTC-007, RTC-008, RTC-009, and the StegVerse return exit are observed for the current MIR-bound execution",
+      "the exact governed return packet is retained without introducing a second execution or transport plane"
+    ],
+    "failure_predicates": [
+      "historical SV002 receipts are treated as present execution authority",
+      "a second scheduler, transport plane, credential authority, or runtime authority is introduced",
+      "GitHub Actions or heartbeat is treated as transition or execution authority",
+      "runtime completion is claimed without current MIR-bound receipts and Master Records reconstruction"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "existing admitted MIR task authority only",
+      "Interlock/InTr transition authority unchanged",
+      "TV/TVC credential authority unchanged",
+      "Master Records custody and reconstruction authority unchanged",
+      "heartbeat remains reference-only and non-authorizing"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+      "data/canonical-task-records/MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001.json",
+      "control/resident-execution-request.d/mir-roundtrip-egress-authenticity-001.json",
+      "control/worker-registry.d/mir-roundtrip-egress-authenticity-001.json",
+      "workers/mir_roundtrip_egress_authenticity_worker.py",
+      "scripts/execute_mir_event_driven_roundtrip.py",
+      "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+    "derivation_reason": "Current MIR execution reuses the previously proven SV002 event-triggered route and adds only current MIR binding, custody, and governed-return evidence requirements.",
+    "canonical_owner_ref": "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "mir:roundtrip-egress-authenticity",
+    "derivation_depth": 1,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "mir-roundtrip-egress-authenticity-v1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "mir_roundtrip_egress_authenticity",
+      "interlock_intr_transition",
+      "master_records_reconstruction"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-host/**",
+      "receipts/master-records/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 16,
+    "max_retries": 8,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 256,
+    "rate_class": "mir_roundtrip_egress_authenticity"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+    "recheck_trigger": "existing admitted MIR event or canonical independent-task-control execution opportunity while unfinished",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json",
+    "reconstruction_ref": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+    "handoff_destination": "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+    "master_records_required": true,
+    "status_projection": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json"
+  },
+  "completion": {
+    "next_authorized_action": "Execute the standing MIR event through the existing event-triggered ingress and reconcile canonical Master Records receipts in sequence.",
+    "terminal_when": [
+      "current MIR-bound event materialization is authentically observed",
+      "RTC-007, RTC-008, RTC-009, and StegVerse return exit are authentically observed",
+      "exact governed return packet is retained",
+      "canonical Master Records reconstruction passes for the full observed sequence",
+      "successful data transport round trip is identified"
+    ]
+  }
+}

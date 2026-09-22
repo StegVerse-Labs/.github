@@ -72,6 +72,26 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
         self.assertNotIn("GITHUB_ACTIONS", env)
         self.assertNotIn("ZEROEX_API_KEY", env)
 
+    def test_clean_exec_env_preserves_master_records_custody_binding(self) -> None:
+        env = mod.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/home/stegverse",
+            "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+            "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+            "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "12",
+            "MASTER_RECORDS_DB": "/srv/stegverse/master-records.sqlite",
+            "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+            "GITHUB_TOKEN": "forbidden",
+        })
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_ENDPOINT"], "http://127.0.0.1:8765")
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_TOKEN"], "mr-token")
+        self.assertEqual(env["STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS"], "12")
+        self.assertEqual(env["MASTER_RECORDS_DB"], "/srv/stegverse/master-records.sqlite")
+        self.assertEqual(env["MASTER_RECORDS_RECEIPT_KEY"], "receipt-key")
+        self.assertEqual(env["MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"], "true")
+        self.assertNotIn("GITHUB_TOKEN", env)
+
     def test_clean_exec_env_preserves_direct_stegindex_root(self) -> None:
         env = mod.clean_exec_env({
             "PATH": "/bin",
@@ -244,7 +264,46 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
                 ecosystem_chat_parent=True,
             )
 
-    def test_generic_refresh_then_execute_requires_preserved_carrier(self) -> None:
+    def test_same_root_independent_targeted_execution_skips_refresh_and_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            (runtime / "scripts").mkdir(parents=True)
+            (runtime / "scripts/run_worker_runtime.py").write_text("# runner\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    stdout='{"state":"HANDOFF_READY","transition_id":"FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T"}\n',
+                    stderr="",
+                )
+
+            refresh_mock = mock.Mock(side_effect=AssertionError("same-root execution must not refresh-copy itself"))
+            with mock.patch.object(mod, "refresh", refresh_mock):
+                receipt = mod.refresh_and_execute(
+                    runtime,
+                    runtime,
+                    task_id="SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": "/home/stegverse"},
+                )
+
+            refresh_mock.assert_not_called()
+            self.assertEqual(len(calls), 1)
+            self.assertFalse((runtime / mod.CARRIER_REF).exists())
+            self.assertEqual(
+                receipt["refresh_receipt"]["state"],
+                "SOURCE_EQUALS_RUNTIME_NO_REFRESH_REQUIRED",
+            )
+            self.assertTrue(receipt["runtime_execution_attempted"])
+            self.assertEqual(
+                receipt["execution_result"]["transition_id"],
+                "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+            )
+
+    def test_independent_targeted_execution_does_not_require_carrier(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             source = base / "source"
@@ -252,20 +311,43 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
             source.mkdir()
             (runtime / "scripts").mkdir(parents=True)
             (runtime / "scripts/run_worker_runtime.py").write_text("# runner\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    stdout='{"state":"HANDOFF_READY","transition_id":"FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T"}\n',
+                    stderr="",
+                )
+
             with mock.patch.object(
                 mod,
                 "refresh",
                 return_value={
                     "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
                     "mutable_runtime_state_preserved": True,
+                    "network_fetch_performed": False,
                 },
             ):
-                with self.assertRaisesRegex(RuntimeError, "preserved separated carrier"):
-                    mod.refresh_and_execute(
-                        source,
-                        runtime,
-                        task_id="COSV-LIVE-PACKET-AUTOMATION-006",
-                    )
+                receipt = mod.refresh_and_execute(
+                    source,
+                    runtime,
+                    task_id="SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": "/home/stegverse"},
+                )
+
+            self.assertEqual(len(calls), 1)
+            self.assertIn("--task-id", calls[0][0])
+            self.assertIn("SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001", calls[0][0])
+            self.assertFalse((runtime / mod.CARRIER_REF).exists())
+            self.assertTrue(receipt["runtime_execution_attempted"])
+            self.assertEqual(
+                receipt["execution_result"]["transition_id"],
+                "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
+            )
 
     def test_generic_refresh_then_execute_writes_secret_free_attempt_receipt(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -323,6 +405,14 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
             self.assertEqual(receipt["execution_result"]["transition_id"], "NO_NEW_REFERENCE")
             saved = json.loads((runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"))
             self.assertEqual(saved["task_id"], "COSV-LIVE-PACKET-AUTOMATION-006")
+            self.assertRegex(saved["receipt_body_sha256"], r"^sha256:[a-f0-9]{64}$")
+            digest = saved["receipt_body_sha256"].split(":", 1)[1]
+            immutable = runtime / mod.IMMUTABLE_RECEIPT_DIR_REL / f"{digest}.json"
+            self.assertTrue(immutable.is_file())
+            self.assertEqual(
+                immutable.read_text(encoding="utf-8"),
+                (runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"),
+            )
 
     def test_dedicated_parent_does_not_require_carrier_bootstrap_or_systemd(self) -> None:
         with tempfile.TemporaryDirectory() as td:

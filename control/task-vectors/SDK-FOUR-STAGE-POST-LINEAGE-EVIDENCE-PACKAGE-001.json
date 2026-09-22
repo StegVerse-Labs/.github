@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "identity": "StegVerse-Labs/.github:task:SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "profile": "task.v1",
+  "task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "vector": "71000000111111",
+  "level": "task",
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}

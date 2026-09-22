@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegagents_governed_runtime",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 30,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 4096,
+    "confidence": "INITIAL_BOUNDED_ESTIMATE"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "control/worker-registry.d/stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json"
+  ],
+  "notes": [
+    "The 4096-beat expiry candidate is the exact runtime_window_beats already declared by the executable SDK TT handoff.",
+    "This cost basis restores the existing WorkerCoordinator finite-expiry gate; it grants no execution, claim/fence, transition, credential, or custody authority.",
+    "The 30-beat expected-completion observation mirrors the handoff demonstration lifetime only and is not a production default or authority source.",
+    "External cost is zero; retries and retirement remain governed by the existing handoff and runtime state transitions."
+  ]
+}

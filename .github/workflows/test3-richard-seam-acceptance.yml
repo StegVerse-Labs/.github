@@ -1,0 +1,51 @@
+name: Test 3 Richard Seam Acceptance
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/run_sdk_tt_richard_seam_test3.py'
+      - 'tests/test_sdk_tt_richard_seam_test3_runner.py'
+      - 'tests/test_sdk_tt_richard_atomic_activation_seam.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_carriage.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_materialization.py'
+      - 'tests/test_sdk_tt_richard_seam_control_plane_package.py'
+      - 'tests/test_sdk_tt_purpose_bound_worker_runtime_path.py'
+      - 'heartbeat_runtime/**'
+      - 'workers/stegagents_governed_runtime_worker.py'
+      - 'handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json'
+      - 'control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json'
+      - '.github/workflows/test3-richard-seam-acceptance.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/run_sdk_tt_richard_seam_test3.py'
+      - 'tests/test_sdk_tt_richard_seam_test3_runner.py'
+      - 'tests/test_sdk_tt_richard_atomic_activation_seam.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_carriage.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_materialization.py'
+      - 'tests/test_sdk_tt_richard_seam_control_plane_package.py'
+      - 'tests/test_sdk_tt_purpose_bound_worker_runtime_path.py'
+      - 'heartbeat_runtime/**'
+      - 'workers/stegagents_governed_runtime_worker.py'
+      - 'handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json'
+      - 'control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json'
+      - '.github/workflows/test3-richard-seam-acceptance.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  test3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pytest
+      - name: Validate runner contract
+        run: python -m pytest -q tests/test_sdk_tt_richard_seam_test3_runner.py
+      - name: Run Test 3
+        run: python scripts/run_sdk_tt_richard_seam_test3.py --json-out /tmp/test3-result.json
+      - name: Assert Test 3 result
+        run: python -c "import json; p=json.load(open('/tmp/test3-result.json')); assert p['state']=='PASS'; assert p['constitutive_transition']=='ACTIVATE_TASK_AND_CREATE_BIND_WORKER'; print('TEST3_RICHARD_SEAM_ACCEPTANCE_PASS')"

@@ -1,0 +1,522 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "correlation_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+  "goal": "Prove through the existing governed StegAgents/WorkerCoordinator/StegCore-InTr/Master Records path that one TT transition cell can cause an actual purpose-bound worker to be materialized for a declared bounded purpose, perform one tracked arbitrary task, retire or transform at purpose completion, and leave a reconstructable records-only lifecycle without creating duplicate runtime or authority surfaces.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000111111"
+  },
+  "cosv_task_vector": "71000000111111",
+  "source_refs": [
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",
+    "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:inspection/examples/tt-purpose-worker.example.json",
+    "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents@4363333520f381370b7ae8f93b88a98bf8526aeb:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@4363333520f381370b7ae8f93b88a98bf8526aeb:tests/test_purpose_bound_worker_runtime.py",
+    "workers/stegagents_governed_runtime_worker.py",
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json",
+    "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "tests/test_sdk_tt_purpose_bound_worker_runtime_path.py",
+    "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@0ba84d159a3a501cb0e13d600638cae63be6b14e:tests/test_purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegCore@68b7e38f40e8a31fbd8cd5953bcf87199619f6cd:src/stegcore/steggate_runtime.py",
+    "StegVerse-Labs/StegCore@68b7e38f40e8a31fbd8cd5953bcf87199619f6cd:src/stegcore/transaction_lifecycle.py",
+    "StegVerse-org/StegVerse-SDK@9de805315872b9b615d55f62a5d853acc6c0765a:stegverse/sovereign_validation_runtime.py",
+    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@53d7162805cf077cb7eb0a443a1ce31f41ec078e:tests/test_purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:scripts/issue_tv_execution_warrant_resident.py",
+    "StegVerse-Labs/TVC@fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6:deploy/systemd/stegtvc-tv-execution-warrant@.service",
+    "StegVerse-Labs/TV@b1ab19b3c688075c6f408f409f04c037e179ab9f:stegverse_tv_policy/warrant_issuers.yml",
+    "StegVerse-Labs/StegAgents@d518935020833b12045483c57d7877520d2a244c:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@4880f10b9cbfa90df0c0614f10d775e5eef3e317:tests/test_purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@d6bb9e04d87c4b17d1fa1036c345becc62fe5bce:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/StegAgents@34faa1ec8e4bc7427beb65adb10b2292109c5ca9:src/purpose_bound_worker_state_graph.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:heartbeat_runtime/worker_runtime_legacy.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:workers/stegagents_governed_runtime_worker.py",
+    "StegVerse-Labs/.github@d776570c84b6f2a09f2e41071ca89e57da15b18e:control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json"
+  ],
+  "adjacent_task_refs": [
+    "STEGAGENTS-GOVERNED-RUNTIME-001",
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+    "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
+  ],
+  "reuse_requirements": {
+    "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "StegCore/InTr",
+    "credential_warrant_authority": "TV/TVC",
+    "observed_reality_custody": "Master Records",
+    "github_runtime_authority": "NONE",
+    "second_user_operated_device_allowed": false,
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_dispatcher_allowed": false,
+    "new_workercoordinator_allowed": false
+  },
+  "expected_evidence_predicates": [
+    "AUTHENTIC_TT_CELL_REQUEST_HASH_OBSERVED",
+    "AUTHENTIC_PURPOSE_CAPABILITY_LIFETIME_TUPLE_OBSERVED",
+    "AUTHENTIC_DERIVED_LIFETIME_BUDGET_OBSERVED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_REQUIRED_WARRANT_POLICY_VERIFIED",
+    "AUTHENTIC_INTR_MATERIALIZATION_ADMISSION_OBSERVED",
+    "AUTHENTIC_PURPOSE_BOUND_WORKER_INSTANCE_OBSERVED",
+    "AUTHENTIC_TASK_INVOCATION_AFTER_MATERIALIZATION_OBSERVED",
+    "AUTHENTIC_TRACKED_TASK_RESULT_BOUND_TO_WORKER_AND_TRANSITION",
+    "AUTHENTIC_WORKER_RETIREMENT_OR_TRANSFORMATION_OBSERVED",
+    "POST_RETIREMENT_CONTINUED_AUTHORITY_FALSE_OBSERVED",
+    "AUTHENTIC_LIFECYCLE_RECEIPT_ORDER_VERIFIED",
+    "AUTHENTIC_MASTER_RECORDS_CUSTODY_RECORDED",
+    "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
+    "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
+  ],
+  "remaining_predicate": "AUTHENTIC_TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION_THEN_FRESH_WARRANT_ISSUANCE_REAL_PUBLIC_KEY_REGISTRATION_AND_SAME_RUN_TARGETED_ONE_SHOT_WITH_MASTER_RECORDS_CLOSED_CLAIM_FENCE_TV_TVC_INTR_MATERIALIZED_INVOCATION_COMPLETION_RETIREMENT_POST_RETIREMENT_NO_AUTHORITY_AND_RECORDS_ONLY_RECONSTRUCTION",
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false,
+    "source_and_shared_intr_integration_complete": true,
+    "authentic_test1_runtime_complete": false,
+    "prompt_limit_decomposed": true
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "coordination_hygiene": {
+    "reconciled_against_registry_generation": 116,
+    "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+    "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
+    "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
+    "runtime_prerequisites_satisfied": false,
+    "authentic_runtime_execution_attempted": false,
+    "unsupported_resident_root_prerequisite_removed": true,
+    "unsupported_healer_dependency_present": false,
+    "master_records_sdk_transition_observed": false,
+    "next_actual_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST",
+    "evidence_progression_rule": "EACH_RESULTING_STATE_TRANSITION_REQUIRES_MASTER_RECORDS_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS",
+    "direct_workercoordinator_source_boundary_repaired": true,
+    "carrier_reference_required_for_targeted_independent_control": false,
+    "runtime_capability_provider_is_completion_dependency": false,
+    "shared_worker_provider_resolution_repaired": true,
+    "source_lineage_parent_requires_runtime_reconstruction": false,
+    "pre_materialization_master_records_source_gates_complete": true,
+    "current_main_source_reverification": {
+      "verified": true,
+      "workercoordinator_claim_fence_gate_present": true,
+      "tv_tvc_gate_present": true,
+      "stegcore_intr_admission_gate_present": true,
+      "lifecycle_phase_order_present": true,
+      "lifecycle_master_records_closure_before_next_phase": true,
+      "intr_receipt_is_materialized_predecessor": true,
+      "post_retirement_continued_authority_false_present": true,
+      "records_only_closeout_present": true,
+      "authorized_resident_execution_surface_available": null,
+      "authentic_runtime_execution_attempted": false,
+      "remote_desktop_device_is_runtime_prerequisite": false,
+      "execution_surface_note": "Prior device/Remote Desktop availability check was not an execution prerequisite for TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT and must not be reused as a blocker."
+    },
+    "execution_warrant_authority_repair_complete": true,
+    "tv_tvc_execution_warrant_bridge": {
+      "source_repair_complete": true,
+      "tvc_pr": 446,
+      "exact_head": "dd9a20d8d1ef61ac8e05eccf78125035c4cac423",
+      "merge_commit": "fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6",
+      "exact_head_validation": {
+        "run_id": 35464198311,
+        "conclusion": "success"
+      },
+      "issuer_id": "tv.warrant.resident",
+      "public_key_id": "tv.warrant.resident.ed25519.001",
+      "credential_name": "TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM",
+      "resident_loadcredential_only": true,
+      "github_signing_authority": false,
+      "authentic_resident_credential_observed": false,
+      "authentic_warrant_issuance_observed": false,
+      "authentic_public_key_registration_observed": false,
+      "next_runtime_boundary": "TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION",
+      "device_dependency": false,
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+      "key_materialization_source_repair_complete": true,
+      "key_materialization_tvc_pr": 448,
+      "key_materialization_exact_head": "522bfff406f70c7b18091c25916a6f83a23fcec3",
+      "key_materialization_merge_commit": "4cb804c625060f52b75afc48d11c8d1dc8dc835a",
+      "key_materialization_validation": {
+        "run_id": 35469205465,
+        "conclusion": "success"
+      },
+      "resident_key_activation_transition": "TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION",
+      "authentic_key_activation_receipt_observed": false
+    },
+    "state_dependent_lifecycle_repair": {
+      "source_complete": true,
+      "steagents_pr": 29,
+      "merge_commit": "d518935020833b12045483c57d7877520d2a244c",
+      "each_lifecycle_phase_consumes_prior_master_records_closure": true,
+      "fail_closed_on_missing_predecessor_closure": true,
+      "test3_richard_dependency": false
+    },
+    "four_case_state_graph": {
+      "source_complete": true,
+      "steagents_pr": 30,
+      "merge_commit": "4880f10b9cbfa90df0c0614f10d775e5eef3e317",
+      "case_2_predecessor": "CASE_1_RETIRED_MASTER_RECORDS_CLOSURE",
+      "case_3_predecessor": "CASE_2_RETIRED_MASTER_RECORDS_CLOSURE",
+      "task_4_parent_predecessor": "CASE_3_RETIRED_MASTER_RECORDS_CLOSURE",
+      "task_4_worker_branch": "THREE_WORKERS_FROM_ONE_GOVERNED_PARENT_CLOSURE",
+      "task_4_join": "THREE_WAY_RETIRED_MASTER_RECORDS_JOIN",
+      "authentic_runtime_execution_attempted": false,
+      "authority_effect": "NONE_SOURCE_GRAPH_ONLY",
+      "atomic_task4_three_worker_binding": {
+        "source_complete": true,
+        "steagents_pr": 31,
+        "merge_commit": "d6bb9e04d87c4b17d1fa1036c345becc62fe5bce",
+        "action": "ADMIT_AND_ATOMICALLY_BIND_TASK4_THREE_WORKERS",
+        "exactly_three_distinct_bindings_required": true,
+        "active_without_all_three_bindings_possible": false,
+        "child_binding_without_parent_admission_possible": false,
+        "all_children_consume_same_parent_master_records_closure": true,
+        "true_concurrency_preserved": true
+      }
+    },
+    "authentic_four_case_resident_wiring": {
+      "source_complete": true,
+      "steagents_graph_cli_merge": "34faa1ec8e4bc7427beb65adb10b2292109c5ca9",
+      "github_pr": 2311,
+      "github_merge": "d776570c84b6f2a09f2e41071ca89e57da15b18e",
+      "workercoordinator_six_claim_bundle": true,
+      "case1_outer_claim_fence_master_records_closure_required": true,
+      "per_worker_tv_tvc_and_intr_closure_validation": true,
+      "targeted_resident_request_staged": true,
+      "resident_request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "authentic_runtime_execution_observed": false,
+      "authentic_graph_terminal_observed": false,
+      "no_test3_dependency": true,
+      "no_device_dependency": true,
+      "authority_effect": "NONE_SOURCE_AND_REQUEST_STAGING_ONLY"
+    },
+    "authentic_resident_consumption_observation": {
+      "observed_at": "2026-09-19",
+      "canonical_reconciliation_merge": "42b56d3cdeb2a708f0b0bb4e6b19072e99bec189",
+      "request_present_on_main": true,
+      "request_id": "RESIDENT-EXEC-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "dispatcher_selector_present": "stegagents_governed_runtime_targeted",
+      "consumer_accepts_purpose_task": true,
+      "repository_retained_consumption_receipt_observed": false,
+      "repository_retained_targeted_execution_receipt_observed": false,
+      "repository_retained_purpose_graph_receipt_observed": false,
+      "repository_retained_task4_three_way_join_observed": false,
+      "source_worker_registry_fresh_case1_claim_observed": false,
+      "authentic_runtime_predicates_promoted": false,
+      "next_transition": "RESIDENT_CONSUMPTION_OF_STAGED_PURPOSE_GRAPH_REQUEST",
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    }
+  },
+  "source_refinement": {
+    "steagents_pr": 21,
+    "steagents_merge": "4363333520f381370b7ae8f93b88a98bf8526aeb",
+    "steagents_exact_head_ci": "PASS",
+    "shared_worker_id": "stegagents-governed-runtime-worker",
+    "shared_adapter_ref": "process:stegagents-governed-runtime-v1",
+    "duplicate_worker_created": false,
+    "duplicate_adapter_created": false,
+    "duplicate_runtime_created": false,
+    "runtime_execution_attempted": false,
+    "authority_effect": "NONE_SOURCE_REFINEMENT_ONLY",
+    "github_pr": 2150,
+    "github_merge": "00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29",
+    "shared_worker_source_merged": true,
+    "focused_regression_source_merged": true,
+    "github_pr_workflow_runs_observed": false,
+    "github_mergeability_before_merge": "clean",
+    "source_refinement_complete": true,
+    "lifetime_refinement": {
+      "steagents_pr": 22,
+      "steagents_merge": "19b83dda96cf3c1d2fd5435daf8fce67a90c6228",
+      "exact_head_ci": "PASS",
+      "production_default_seconds": null,
+      "demo_derived_seconds": 30,
+      "runtime_execution_attempted": false,
+      "github_pr": 2153,
+      "github_merge": "53133aaa65b432f022a95713c8ab3913a132394d",
+      "exact_head": "7d9f0751075c3f4e2ce7543d7e1fd961851d0386",
+      "dedicated_validation": {
+        "run_id": 35402863215,
+        "job_id": 105786330855,
+        "conclusion": "success"
+      },
+      "coordination_validation": {
+        "run_id": 35402863119,
+        "conclusion": "success"
+      },
+      "lifetime_refinement_complete": true,
+      "authentic_runtime_execution_attempted": false
+    }
+  },
+  "lifetime_model": {
+    "invariant": "WORKER_LIFETIME_IS_DERIVED_PER_INTENDED_TASK_NOT_GLOBALLY_FIXED",
+    "demonstration": {
+      "derived_max_lifetime_seconds": 30,
+      "production_default": false,
+      "components_seconds": {
+        "expected_task_execution": 6,
+        "known_delay": 4,
+        "inferred_unknown_delay_reserve": 8,
+        "records_decomposition": 7,
+        "safety_reserve": 5
+      }
+    },
+    "production": {
+      "recompute_per_task": true,
+      "cost_analysis_required": true,
+      "known_delay_required": true,
+      "inferred_unknown_delay_reserve_required": true,
+      "records_enabled_packet_decomposition_allowance_required": true,
+      "safety_reserve_required": true,
+      "early_retirement_on_purpose_completion": true,
+      "budget_extension_requires_new_governed_recalculation": true
+    },
+    "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
+  },
+  "direct_workercoordinator_admission_repair": {
+    "source_repair_complete": true,
+    "authentic_runtime_execution_attempted": false,
+    "repaired_conditions": [
+      "TARGETED_INDEPENDENT_CONTROL_NO_LONGER_REQUIRES_EXISTING_SEPARATED_CARRIER_REFERENCE",
+      "SOURCE_LINEAGE_PARENT_NO_LONGER_FORCES_RUNTIME_PREDECESSOR_RECONSTRUCTION",
+      "RUNTIME_CAPABILITY_PROVIDER_NO_LONGER_REQUIRES_PROVIDER_TASK_COMPLETION",
+      "TARGET_FRAGMENT_IMPORTS_EXPLICIT_EXISTING_SHARED_WORKER_PROVIDER_WITHOUT_DUPLICATING_WORKER_DEFINITION"
+    ],
+    "existing_worker_id": "stegagents-governed-runtime-worker",
+    "existing_adapter_ref": "process:stegagents-governed-runtime-v1",
+    "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
+    "github_pr": 2188,
+    "exact_head": "5f3b2370fca225c92522992560cd58a44d1facd5",
+    "merge_commit": "76cff35a03ba1950c13d8e438b6f37081a4186d6",
+    "exact_head_validation": {
+      "purpose_bound_worker_run": 35417051857,
+      "purpose_bound_worker_conclusion": "success",
+      "cross_task_coordination_run": 35417051824,
+      "cross_task_coordination_conclusion": "success",
+      "kv_ai_memory_run": 35417051849,
+      "kv_ai_memory_conclusion": "success",
+      "deepseek_resident_run": 35417052003,
+      "deepseek_resident_conclusion": "success"
+    },
+    "source_repair_merged": true
+  },
+  "claim_fence_master_records_gate": {
+    "source_repair_complete": true,
+    "authentic_runtime_execution_attempted": false,
+    "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "required_evidence_type": "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT",
+    "progression_requires": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "activation_occurs_only_after_custody_pass": true,
+    "worker_invocation_occurs_only_after_custody_pass": true,
+    "claim_authority": "WORKERCOORDINATOR",
+    "custody_authority": "MASTER_RECORDS",
+    "transition_authority": "INTERLOCK_INTR",
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+  },
+  "purpose_bound_lifecycle_master_records_gate": {
+    "source_repair_complete": true,
+    "steagents_pr": 23,
+    "steagents_merge": "0ba84d159a3a501cb0e13d600638cae63be6b14e",
+    "exact_head": "a5d872ff62f94cf94bc42a3e6db4c2d8aa85cbbd",
+    "exact_head_validation": {
+      "ci_run": 35419064991,
+      "ci_conclusion": "success",
+      "test_readiness_run": 35419065008,
+      "test_readiness_conclusion": "success",
+      "cross_agent_authority_run": 35419064969,
+      "cross_agent_authority_conclusion": "success"
+    },
+    "lifecycle_transitions": [
+      "PURPOSE_BOUND_WORKER_MATERIALIZED",
+      "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+      "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+      "PURPOSE_BOUND_WORKER_RETIRED"
+    ],
+    "required_evidence_type": "PURPOSE_BOUND_WORKER_LIFECYCLE_RECEIPT",
+    "progression_requires": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "authentic_runtime_execution_attempted": false,
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+  },
+  "pre_materialization_master_records_gate": {
+    "source_repair_complete": true,
+    "authentic_runtime_execution_attempted": false,
+    "stegcore": {
+      "pr": 224,
+      "exact_head": "cbe952057306081c46db076f9e9fc7e47825ae97",
+      "merge_commit": "68b7e38f40e8a31fbd8cd5953bcf87199619f6cd",
+      "validations": {
+        "spe_standing_run": 35419511997,
+        "spe_standing_conclusion": "success",
+        "stegverse_001_002_run": 35419512024,
+        "stegverse_001_002_conclusion": "success",
+        "credential_authority_gate_run": 35419512017,
+        "credential_authority_gate_conclusion": "skipped"
+      },
+      "behavior": "NON_AUTHORIZING_POST_ALLOW_PRE_EXECUTOR_OBSERVER_FAILS_CLOSED_BEFORE_EXECUTOR"
+    },
+    "sdk": {
+      "superseded_pr": 270,
+      "merged_pr": 273,
+      "exact_head": "bb66529864e2a240aa5cc3be4c1a83c9b77faed2",
+      "merge_commit": "9de805315872b9b615d55f62a5d853acc6c0765a",
+      "validations": {
+        "package_run": 35426131209,
+        "package_conclusion": "success",
+        "mcp_source_run": 35426131200,
+        "mcp_source_conclusion": "success",
+        "standing_context_run": 35426131190,
+        "standing_context_conclusion": "success",
+        "evaluator_manifest_run": 35426131199,
+        "evaluator_manifest_conclusion": "success"
+      },
+      "behavior": "PASSES_PRE_EXECUTION_OBSERVER_UNCHANGED_TO_EXISTING_STEGCORE_TRANSACTION_LIFECYCLE"
+    },
+    "steagents": {
+      "pr": 24,
+      "exact_head": "f92e39fece9351aa7c6730adbcc50fffefc7a7b0",
+      "merge_commit": "53d7162805cf077cb7eb0a443a1ce31f41ec078e",
+      "validations": {
+        "ci_run": 35426525234,
+        "ci_conclusion": "success",
+        "test_readiness_run": 35426525228,
+        "test_readiness_conclusion": "success",
+        "cross_agent_authority_run": 35426525243,
+        "cross_agent_authority_conclusion": "success"
+      }
+    },
+    "transitions": [
+      {
+        "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+        "sequence": 2,
+        "required_evidence_type": "TV_TVC_WARRANT_POLICY_VERIFICATION"
+      },
+      {
+        "transition_id": "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+        "sequence": 3,
+        "required_evidence_type": "STEGCORE_INTR_PRE_CONSEQUENCE_ADMISSION"
+      }
+    ],
+    "progression_requires": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "materialized_predecessor": "STEGCORE_INTR_MATERIALIZATION_ADMITTED_MASTER_RECORDS_RECEIPT",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "StegCore/InTr",
+    "custody_authority": "MASTER_RECORDS",
+    "github_runtime_authority": "NONE",
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+  },
+  "execution_warrant_authority_repair": {
+    "credential_authority": "TV/TVC",
+    "tv_pr": 19,
+    "tv_merge": "b1ab19b3c688075c6f408f409f04c037e179ab9f",
+    "tvc_pr": 446,
+    "tvc_merge": "fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6",
+    "issuer_id": "tv.warrant.resident",
+    "public_key_id": "tv.warrant.resident.ed25519.001",
+    "credential_transport": "SYSTEMD_LOADCREDENTIAL",
+    "credential_name": "TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM",
+    "github_runtime_authority": "NONE",
+    "source_validation": {
+      "tv_exact_head": "c133e61e1bc4645760c110830077866198c99d0a",
+      "tv_runs": [
+        35464038144,
+        35464038097,
+        35464038094,
+        35464038256
+      ],
+      "tv_all_success": true,
+      "tvc_exact_head": "dd9a20d8d1ef61ac8e05eccf78125035c4cac423",
+      "tvc_run": 35464198311,
+      "tvc_success": true
+    },
+    "remaining_authentic_boundary": "RESIDENT_ED25519_SIGNING_CREDENTIAL_MATERIALIZATION_AND_WARRANT_ISSUANCE",
+    "authentic_warrant_issued": false
+  },
+  "runtime_transition_order_correction": {
+    "corrected_against_registry_generation": 124,
+    "authoritative_sequence": [
+      "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "TV_TVC_WARRANT_POLICY_VERIFIED",
+      "STEGCORE_INTR_MATERIALIZATION_ADMITTED",
+      "PURPOSE_BOUND_WORKER_MATERIALIZED",
+      "PURPOSE_BOUND_WORKER_INVOCATION_STARTED",
+      "PURPOSE_BOUND_WORKER_TASK_COMPLETED",
+      "PURPOSE_BOUND_WORKER_RETIRED"
+    ],
+    "warrant_materialization_is_preclaim_dependency": false,
+    "claim_fence_is_first_authentic_transition": true,
+    "master_records_required_after_every_transition": true,
+    "authority_effect": "NONE_ORDERING_CORRECTION_ONLY"
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_TEST1_RUNTIME_CLOSURE_ABSENT; SOURCE_AND_SHARED_INTR_INTEGRATION_COMPLETE; CONTINUATION_TRANSFERRED_TO_SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_001",
+  "successor_task_ids": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001"
+  ],
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false,
+    "continuation_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+    "split_merely_to_reset_counter": false
+  },
+  "decomposition": {
+    "required": true,
+    "reason": "AUTHENTIC_TEST1_GOVERNED_RUNTIME_EVIDENCE_ABSENT_AT_PARENT_GOAL_PROMPT_LIMIT_AFTER_SOURCE_AND_SHARED_INTR_INTEGRATION_CLOSED",
+    "canonical_successor_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+    "canonical_successor_handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+    "canonical_successor_task_record": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
+    "first_unresolved_successor_predicate": "AUTHENTIC_TEST1_UNIVERSAL_INTR_INGRESS_CONSUMPTION"
+  },
+  "allowed_next_transitions": [],
+  "preserved_execution_lineage_expiry_basis_repair_2026_09_21": {
+    "affected_boundary": "HANDOFF_READY_TO_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "defect": "DANGLING_COST_BASIS_REF_CAUSED_EXPIRY_BASIS_UNAVAILABLE",
+    "cost_basis_ref": "cost-basis/worker-runtime/stegagents-governed-runtime.json",
+    "expiry_candidate_beats": 4096,
+    "source": "EXISTING_EXECUTABLE_HANDOFF_RUNTIME_WINDOW_BEATS",
+    "exact_head_validation": {
+      "purpose_bound_worker_run": 35599613913,
+      "purpose_bound_worker_conclusion": "success",
+      "test3_run": 35599613926,
+      "test3_conclusion": "success",
+      "cross_task_run": 35599613924,
+      "cross_task_conclusion": "success",
+      "kv_ai_memory_run": 35599613947,
+      "kv_ai_memory_conclusion": "success",
+      "deepseek_run": 35599613962,
+      "deepseek_conclusion": "success"
+    },
+    "authentic_claim_fence_observed": false,
+    "next_execution_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "authority_effect": "NONE_EXISTING_PATH_SOURCE_REPAIR_ONLY"
+  }
+}

@@ -124,6 +124,14 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
             self.assertEqual(params["stegos_source_root"], str(stegos))
             self.assertNotIn(str(source / module.MANIFEST_INGRESS_REL), cmd)
 
+    def test_missing_registered_node_is_retained_as_not_observed_not_a1(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('except RuntimeError as exc:', source)
+        self.assertIn('node_resolution_error = str(exc)', source)
+        self.assertIn('A1_NOT_OBSERVED_REGISTERED_NODE_RECEIPT_UNAVAILABLE', source)
+        self.assertIn('"registered_stegverse_node_bound_to_invocation": a1_observed', source)
+        self.assertNotIn('"A1_OBSERVED_NOT_CALLABLE"', source)
+
 
 if __name__ == "__main__":
     unittest.main()

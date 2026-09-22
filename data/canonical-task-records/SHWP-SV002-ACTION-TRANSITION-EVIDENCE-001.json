@@ -1,0 +1,143 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "correlation_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "root_correlation_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "parent_task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "goal": "Consume the existing frozen StegVerse-002 v0.3 request through the registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL execution path while enforcing the ecosystem-wide invariant that every governed action transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_FULL_GOAL_1_AND_GOAL_2_CLOSURE_ABSENT; ONLY_REMAINING_SANDBOX_BLOCKER_TRANSFERRED_TO_SHWP_SV002_FROZEN_CORPUS_MATERIALIZATION_001",
+  "cosv_task_vector": "50000000107000",
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false,
+    "continuation_task_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001"
+  },
+  "source_refs": [
+    "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "StegVerse-Labs/.github#2060",
+    "StegVerse-Labs/.github#2064",
+    "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime:tools/sv002_native_resource_bundle.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "master-records/orchestration:scripts/verify_sv002_self_characterization_reconstruction.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002", "Admissible-Existence", "master-records"],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-002/.github",
+      "StegVerse-002/micro-node-runtime",
+      "Admissible-Existence/TT",
+      "Admissible-Existence/RTG",
+      "Admissible-Existence/GTG",
+      "Admissible-Existence/AE",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "registered-stegverse-node",
+      "interlock-intr",
+      "bounded-event-ephemeral-runtime",
+      "native-sv002-principal",
+      "v0.3-transition-evidence",
+      "post-egress-master-records-custody",
+      "frozen-corpus-materialization"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-CALLABLE-OWNERSHIP",
+      "kind": "SOURCE_BINDING",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/.github#2063;a040d37c3809f3d78b6478b1f2e4ff9a3e59e500",
+      "disposition": "STEGVERSE_NODE_IS_SV002_CALLABLE_OWNER; STEGBROWSER_MECHANICS_REFERENCE_ONLY"
+    },
+    {
+      "dependency_id": "DEP-SV002-SANDBOX-NATIVE-CHAIN",
+      "kind": "SANDBOX_PROVISIONAL_EVIDENCE",
+      "state": "RESOLVED_FOR_REUSE_NOT_PRODUCTION_PROOF",
+      "ref": "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+      "disposition": "NATIVE_REPLACEMENT_ADAPTER_V03_EXPORTER_POST_EGRESS_EVIDENCE_MASTER_RECORDS_CUSTODY_AND_ORIGIN_DELIVERY_PROVISIONALLY_PASS"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-CORPUS-MATERIALIZATION",
+      "kind": "SOURCE_MATERIALIZATION",
+      "state": "UNRESOLVED_TRANSFERRED",
+      "ref": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001;StegVerse-Labs/.github#2064",
+      "disposition": "EXACT_BYTE_COMPLETE_TT_RTG_GTG_AE_CORPUS_REQUIRED_BEFORE_GOAL_1_OR_GOAL_2_CAN_BE_CLOSED"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "SV002-FROZEN-CORPUS-BULK-MATERIALIZATION",
+      "state": "TRANSFERRED_TO_CHILD",
+      "child_task_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+      "issue": "StegVerse-Labs/.github#2064"
+    }
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github@12297776c59130f261ed020acc5ea38bb6ecdf8c",
+    "StegVerse-Labs/.github#2063",
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "REQUEST_BOUND",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTR_MATERIALIZATION_ADMITTED",
+    "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+    "EVENT_EPHEMERAL_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+    "T0_CAPTURED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_INTR_INGRESS_OBSERVED",
+    "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
+    "EGRESS_EMITTED",
+    "MASTER_RECORDS_CUSTODY_OBSERVED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "ALL_REQUIRED_ACTION_TRANSITIONS_RECONSTRUCTABLE",
+    "NO_SECOND_USER_OPERATED_DEVICE",
+    "NO_STANDING_RUNTIME_OR_EXTERNAL_HOST"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "goal_1_closed": false,
+    "goal_2_closed": false,
+    "sandbox_native_adapter_provisional_pass": true,
+    "sandbox_v03_exporter_provisional_pass": true,
+    "sandbox_post_egress_custody_provisional_pass": true,
+    "complete_frozen_corpus_observed": false,
+    "authentic_production_runtime_completion_observed": false
+  },
+  "decomposition": {
+    "required": true,
+    "reason": "EXACT_FROZEN_CORPUS_NOT_BYTE_MATERIALIZED_AT_PARENT_GOAL_PROMPT_LIMIT",
+    "canonical_successor_task_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+    "canonical_successor_issue": "StegVerse-Labs/.github#2064",
+    "canonical_successor_handoff": "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "canonical_successor_task_record": "data/canonical-task-records/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "first_unresolved_successor_predicate": "TT_RTG_GTG_AE_FROZEN_TREES_BYTE_COMPLETE"
+  },
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": ["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_every_governed_transition": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "second_user_operated_device_required": false
+  },
+  "universal_action_transition_invariant": {
+    "scope": "EVERY_STEGVERSE_ACTION",
+    "requirement": "EVERY_REQUIRED_GOVERNED_STATE_TRANSITION_MUST_BE_AUTHENTICALLY_EMITTED_RETAINED_AND_RECONSTRUCTABLE",
+    "completion_rule": "NO_ACTION_IS_CANONICALLY_COMPLETE_WITH_MISSING_REQUIRED_TRANSITION_EVIDENCE"
+  }
+}

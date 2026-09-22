@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHENTIC_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_NOT_YET_RECONCILED"
+      ],
+      "authorized_policy_version": "sdk-tt-purpose-bound-worker-runtime-proof-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/stegagents-governed-runtime.json",
+      "evidence_refs": [
+        "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+        "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+        "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "handoff_ref": "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 0,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:stegagents-purpose-bound-worker-lifecycle:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/stegagents_governed_runtime_worker.py",
+          "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+          "control/worker-registry.d/stegagents-governed-runtime-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
+          "AUTHENTIC_TV_WARRANT_POLICY_BINDING_NOT_OBSERVED",
+          "CURRENT_STEGCORE_INTR_MATERIALIZATION_DISPOSITION_NOT_OBSERVED",
+          "CURRENT_PURPOSE_BOUND_WORKER_LIFECYCLE_NOT_OBSERVED",
+          "CURRENT_MASTER_RECORDS_RECONSTRUCTION_NOT_OBSERVED"
+        ],
+        "continuation_owner": "stegagents-governed-runtime-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "reuses_runtime_capability",
+        "target_phase": "ACTIVATED",
+        "runtime_dependency_correction": {
+          "unsupported_healer_dependency_present": false,
+          "unsupported_resident_root_prerequisite_present": false,
+          "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+          "master_records_progression_required": true
+        }
+      },
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "71000000111111",
+          "vector_state": "EMITTED",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "shared_worker_provider_fragment_refs": [
+    "control/worker-registry.d/stegagents-governed-runtime-001.json"
+  ]
+}

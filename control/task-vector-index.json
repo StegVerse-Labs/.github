@@ -888,11 +888,140 @@
       "vector": "71000000100101",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/HYGIENE-CAUSAL-ROOTS-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+      "source_state_vector_ref": "control/task-vectors/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+      "vector": "20011000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001.json",
+      "source_state_vector_ref": "control/task-vectors/ADMISSIBILITY-ASRO-REVIEW-DISPOSITION-001.json",
+      "vector": "71000000100100",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001.json",
+      "vector": "71000000111111",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001.json",
+      "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+      "source_state_vector_ref": "control/task-vectors/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth#51"
+    },
+    {
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SITE-HIL-PAYLOAD-CONTINUITY-OUTBOX-1425-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/AEX-PRINCIPLE-COMPLETENESS-001-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/SITE-SESSION-ORCHESTRATION-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001",
+      "repository": "StegVerse-Labs/StegHealth",
+      "registry_ref": "data/canonical-task-records/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json",
+      "source_state_vector_ref": "control/task-vectors/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json",
+      "vector": "10100000111000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 93,
-    "local_cosv_record_tasks": 93,
+    "indexed_vectorized_tasks": 106,
+    "local_cosv_record_tasks": 106,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

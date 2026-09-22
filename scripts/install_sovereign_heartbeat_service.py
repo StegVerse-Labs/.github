@@ -90,6 +90,7 @@ COPY_FILES = (
     "scripts/activate_resident_stack.py",
     "scripts/continue_stegverse001_evidence_chain.py",
     "scripts/dispatch_resident_execution_requests.py",
+    "scripts/consume_ecosystem_receipt_hb_checkpoint.py",
     "scripts/consume_org_claim_allocator_request.py",
     "scripts/allocate_claims.py",
     "control/resident-execution-request.d/org-claim-allocator-001.json",
@@ -127,6 +128,12 @@ WORKER_SAFE_LOCAL_BINDINGS = (
     "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
     "STEGVERSE_MASTER_RECORDS_ROOT",
     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN",
+    "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB",
+    "MASTER_RECORDS_RECEIPT_KEY",
+    "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_STEGOS_ROOT",
     "STEGVERSE_KV_SOURCE_ROOT",
@@ -402,7 +409,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
         carrier_path = base / "stegverse-heartbeat.service"
         worker_path = base / "stegverse-worker-runtime.service"
-        carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root)
+        carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root, worker_env)
         worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root, worker_env)
         activation_commands = [
             ["systemctl", "--user", "daemon-reload"],
@@ -422,7 +429,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
             "ProgramArguments": carrier_command,
             "RunAtLoad": True,
             "KeepAlive": True,
-            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root)},
+            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root), **worker_env},
             "StandardOutPath": str(root / "receipts" / "sovereign-host" / "carrier.stdout.log"),
             "StandardErrorPath": str(root / "receipts" / "sovereign-host" / "carrier.stderr.log"),
         }).decode()
@@ -447,7 +454,8 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         base = Path(values.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "StegVerse"
         carrier_path = base / "heartbeat-start.cmd"
         worker_path = base / "worker-runtime-start.cmd"
-        carrier_content = "@echo off\r\n" + subprocess.list2cmdline(carrier_command) + "\r\n"
+        carrier_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
+        carrier_content = "@echo off\r\n" + carrier_prefix + subprocess.list2cmdline(carrier_command) + "\r\n"
         worker_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
         worker_content = "@echo off\r\n" + worker_prefix + subprocess.list2cmdline(worker_command) + "\r\n"
         activation_commands = [

@@ -24,6 +24,7 @@ They are coordination/discovery primitives only. A reusable task definition does
 - `RT-INTR-GOVERNED-TRANSITION-001` — evaluate one admitted transition through applicable Transition Elements while resolving authority effect separately from execution success.
 - `RT-INTR-ROUNDTRIP-CORRELATION-001` — preserve exact request/response correlation, destination binding, replay/loop prevention, and transport-versus-application outcome separation.
 - `RT-INTR-EVIDENCE-CUSTODY-001` — bind hash-linked Interlock/InTr evidence into canonical custody/reconstruction without promoting recording into transition authority.
+- `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` — invoke the existing already-local source refresh + exact `canonical_work_coordination` portable bridge for one manifest-bound Goal Task without creating another runtime, scheduler, dispatcher, request identity, or authority plane.
 
 The four reusable Interlock/InTr operational identities above were decomposed from the frozen `STEGVERSE-002-SELF-CHARACTERIZATION-001` v0.3 boundary semantics and are governed by `docs/INTR_REUSABLE_PROTOCOL_COMPONENTS_MIRROR_HANDOFF.md`. They compose existing transport-family components rather than duplicating implementation.
 
@@ -56,3 +57,20 @@ Evidence basis: the repository README already documents Canonical Work, the Reus
 ## Next integration
 
 StegIndex should index the new reusable Interlock/InTr task identities as discovery-only and point back to `docs/INTR_REUSABLE_PROTOCOL_COMPONENTS_MIRROR_HANDOFF.md` and the registry shards. The index must not assert runtime completion merely because reusable definitions exist.
+
+## Portable Canonical Work reusable binding — 2026-09-17
+
+The reusable-task trigger already provides the canonical one-trigger lifecycle and passes invocation parameters through `STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON`, while `scripts/refresh_and_dispatch_resident_requests.py` already provides the exact portable source-refresh -> resident-dispatch bridge. The missing seam was only an identity/binding between those two existing surfaces.
+
+`RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` therefore declares the existing bridge itself as its sole runner template. The bridge reads reusable parameters only when `STEGVERSE_REUSABLE_TASK_ID` exactly matches that identity; it requires `source_root`, `runtime_root`, `only_consumer=canonical_work_coordination`, and a non-empty `goal_task_id`, and rejects unknown fields or CLI/manifest disagreement. Ordinary CLI invocation retains its historical defaults and behavior.
+
+The neutral reusable scheduler resolves child definitions from the already-local repository root supplied in its existing `repo_roots` mapping and injects `source_root` / `runtime_root` before calling `scripts/trigger_reusable_task.py`. Therefore no new scheduler, control-plane package, resident runtime, transport, or second-device dependency is required for this identity. This binding grants no authority: Task Registry remains coordination truth, WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
+
+Source registration does not prove that a resident invocation occurred. The required runtime evidence remains the exact reusable/portable invocation reaching an authentic Task Registry `CONTINUE` disposition before WorkerCoordinator claim/fence and Interlock/InTr admission.
+
+
+## Portable Canonical Work binding merge — 2026-09-17
+
+PR #2092 merged `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` and its existing-bridge manifest binding as `c8ae6b6e83eb046319170d6a939f675f7d9ffd97` from exact head `0b8f0f540fdd76d5c4cffa68320f4315d11bf30f`. The merge creates no new runtime/scheduler/dispatcher implementation; the sole runner remains `scripts/refresh_and_dispatch_resident_requests.py`.
+
+Exact-head PR validations passed, including Python compilation of the modified bridge. Authentic reusable/resident execution remains separately evidence-gated; no runtime completion, Task Registry `CONTINUE`, WorkerCoordinator claim/fence, or Interlock/InTr admission is inferred from the merge.

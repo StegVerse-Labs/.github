@@ -1,0 +1,306 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
+  "correlation_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
+  "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
+  "parent_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+  "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes validated and reconstructed through canonical Master Records custody, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
+  "coordination_state": "IN_PROGRESS",
+  "source_refs": [
+    "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
+    "StegVerse-002/.github:resident-runtime/resident_executor.py",
+    "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
+    "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
+    "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
+    "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
+    "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
+    "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+    "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a",
+    "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31",
+    "StegVerse-Labs/.github@f5c64120d381842db16ca1a5156bb881c8e383f8",
+    "StegVerse-Labs/.github@bf0e936c7da481e7935e7accd959034471def69b"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-002/.github",
+      "master-records/orchestration",
+      "StegVerse-Labs/TVC"
+    ],
+    "components": [
+      "sv002-request-bound-evidence-retention",
+      "sv002-rerun-callable-result",
+      "sv002-resident-executor-heartbeat",
+      "master-records-observed-reality"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-RERUN-PARENT",
+      "kind": "TASK",
+      "state": "RESOLVED",
+      "ref": "STEGVERSE-002-EXPERIMENT-RERUN-001"
+    },
+    {
+      "dependency_id": "DEP-SV002-REQUEST-BOUND-REPAIR",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd"
+    },
+    {
+      "dependency_id": "DEP-SV002-REQUEST-BOUND-MASTER-RECORDS-CUSTODY-REPAIR",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
+    },
+    {
+      "dependency_id": "DEP-SV002-REQUEST-BOUND-REQUIRED-EVIDENCE-REPAIR",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f"
+    },
+    {
+      "dependency_id": "DEP-SV002-CANONICAL-CARRIER-RERUN-BINDING",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f"
+    },
+    {
+      "dependency_id": "DEP-SV002-TVC-CURRENT-CARRIER-SOURCE-REBIND",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
+      "disposition": "EXISTING_TVC_ROOT_SELF_HEAL_NOW_MATERIALIZES_IMMUTABLE_STEGVERSE_LABS_GITHUB_C5E6A793_CURRENT_SV002_CARRIER_SOURCE"
+    },
+    {
+      "dependency_id": "DEP-SV002-TVC-PRIMARY-RUNTIME-CURRENT-SOURCE-OBSERVATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+      "disposition": "EXISTING_SV002_REUSABLE_TVC_RUNNER_ENTERED_RELEASED_SERVICE_DELIVERY_PATH_DIRECTLY_AFTER_PR2236; TVC_OWNED_STEGTVC_PRIMARY_RUNTIME_SERVICE RETAINS ACTIVATION_AUTHORITY, VAULT_SOCKET_EXECSTARTPRE, AND TASK_ACTIVATE_TO_TASK_PREFLIGHT; STILL_REQUIRE_AUTHENTIC_RESTART_STARTUP_CORRELATION_AND_REPO_HEAD_CONTAINING_TVC_35247B58"
+    },
+    {
+      "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/.github:receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
+      "disposition": "REQUIRE_EXISTING_CANONICAL_RESIDENT_REQUEST_CONSUMPTION_OF_CURRENT_RERUN_CALLABLE_AND_REQUEST_BOUND_CUSTODY"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEGVERSE-002-EXPERIMENT-RERUN-001",
+    "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "master-records/orchestration:SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c",
+    "StegVerse-002/.github@9d79719995edb30ef60f6764331d97506977522f",
+    "StegVerse-Labs/.github@b50c124aca3ec12a7e1d8734a268b81c61b1650f",
+    "StegVerse-Labs/TVC@35247b583b363f84c2edb5c77474bced729190ae",
+    "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+    "StegVerse-Labs/TVC@576943af53fce4952a4d2d9f10c432875908123a",
+    "StegVerse-Labs/TVC@4c303fbaf03edd1c7d82e38a0352b094147ddc31",
+    "StegVerse-Labs/.github@f5c64120d381842db16ca1a5156bb881c8e383f8",
+    "StegVerse-Labs/.github@bf0e936c7da481e7935e7accd959034471def69b"
+  ],
+  "expected_evidence_predicates": [
+    "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
+    "REQUEST_BOUND_EXACT_BYTES_OBSERVED",
+    "REQUEST_BOUND_FIELDS_VALIDATED",
+    "REQUEST_BOUND_SAME_EXECUTION_CORRELATED",
+    "NO_SECOND_REQUEST",
+    "NO_NEW_RUNTIME_OR_AUTHORITY_SURFACE",
+    "REQUEST_BOUND_CANONICAL_STATE_RECEIPT_EMITTED",
+    "REQUEST_BOUND_MASTER_RECORDS_RECORDED",
+    "REQUEST_BOUND_MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "CANONICAL_RESIDENT_REQUEST_BOUND_TO_CURRENT_RERUN_CALLABLE",
+    "AUTHENTIC_CANONICAL_RESIDENT_REQUEST_DISPATCH_OBSERVED",
+    "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
+    "SV002_CURRENT_RERUN_CALLABLE_ATTEMPT_OBSERVED",
+    "REQUEST_BOUND_EXACT_BYTES_REQUIRED_EVIDENCE_VALIDATED",
+    "REQUEST_BOUND_MASTER_RECORDS_RECEIPT_HASH_EQUALITY",
+    "TVC_SELF_HEAL_CURRENT_CARRIER_SOURCE_REBIND_MERGED",
+    "TVC_SELF_HEAL_IMMUTABLE_SOURCE_PIN_C5E6A793",
+    "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+    "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+    "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+    "TVC_PRIMARY_RUNTIME_STARTUP_SOURCE_RECEIPT_RETAINED",
+    "TVC_PRIMARY_RUNTIME_RESTART_STARTUP_CORRELATION_REPAIR_MERGED",
+    "TVC_REUSABLE_SERVICE_DELIVERY_CARRIAGE_REPAIR_MERGED",
+    "TVC_SERVICE_OWNED_PREFLIGHT_CARRIAGE_REPAIR_MERGED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "task_registry_reconciliation",
+      "bounded_process_execution",
+      "master_records_reconciliation"
+    ],
+    "environment": "EVENT_EPHEMERAL_SOVEREIGN",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "ARCHITECTURAL",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "REUSABLE_TVC_INVOCATION_OBSERVED"
+  ],
+  "handoff_projection_refs": [
+    "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "state_transition_graph": {
+    "schema": "stegverse.state-transition-dependency-graph/v1",
+    "invariant": "EVERY_SUCCESSOR_STATE_REQUIRES_AUTHENTIC_CONSUMPTION_OF_ITS_IMMEDIATE_PREDECESSOR_STATE",
+    "current_state": "TVC_SERVICE_OWNED_PREFLIGHT_CARRIAGE_REPAIR_MERGED",
+    "transitions": [
+      {
+        "from": "TVC_SERVICE_OWNED_PREFLIGHT_CARRIAGE_REPAIR_MERGED",
+        "to": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "predicate": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+        "state": "PENDING"
+      },
+      {
+        "from": "REUSABLE_TVC_INVOCATION_OBSERVED",
+        "to": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "predicate": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+        "to": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "predicate": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+        "to": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+        "predicate": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "TVC_SELF_HEAL_SUPERVISOR_CURRENT_SOURCE_ACTIVE",
+        "to": "C5E6A793_MATERIALIZED",
+        "predicate": "EXACT_STEGVERSE_LABS_GITHUB_C5E6A793_MATERIALIZED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "C5E6A793_MATERIALIZED",
+        "to": "ASTRA_AWARENESS_OBSERVED",
+        "predicate": "ASTRA_CLASS_RESILIENCE_AWARENESS_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "ASTRA_AWARENESS_OBSERVED",
+        "to": "QUANTUM_AWARENESS_OBSERVED",
+        "predicate": "QUANTUM_RESILIENCE_AWARENESS_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "QUANTUM_AWARENESS_OBSERVED",
+        "to": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
+        "predicate": "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      },
+      {
+        "from": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
+        "to": "REQUEST_BOUND_MASTER_RECORDS_RECORDED",
+        "predicate": "REQUEST_BOUND_MASTER_RECORDS_RECORDED_AND_RECONSTRUCTION_PASS_AND_REQUIRED_EVIDENCE_PASS_AND_EXACT_DIGEST_EQUALITY",
+        "state": "BLOCKED_ON_PREDECESSOR"
+      }
+    ]
+  }
+}

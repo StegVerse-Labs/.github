@@ -1,0 +1,203 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+  "correlation_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+  "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
+  "parent_task_id": null,
+  "goal": "Obtain one authentic rerun of the original StegVerse-002 v0.3 self-characterization experiment through the existing registered StegVerseNode -> Interlock -> Universal InTr -> bounded invocation lease -> EVENT_EPHEMERAL -> StegVerse-002 principal -> governed egress/return -> Master Records custody/reconstruction -> origin-return sequence, without making frozen-corpus bulk materialization a prerequisite.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "50000000107000",
+  "source_refs": [
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2070",
+    "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+    "scripts/list_stegverse_execution_surfaces.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-002/.github",
+      "StegVerse-002/micro-node-runtime",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "registered-stegverse-node",
+      "interlock-intr",
+      "bounded-event-ephemeral-runtime",
+      "sv002-self-characterization-surface",
+      "frozen-v0.3-principal",
+      "governed-egress-origin-return",
+      "master-records-custody-reconstruction"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-HISTORICAL-EPHEMERAL-MECHANICS",
+      "kind": "REUSABLE_COMPONENT",
+      "state": "RESOLVED_REUSE",
+      "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001;docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+      "disposition": "REUSE_MECHANICS_ONLY_STEGVERSE_NODE_REMAINS_CALLABLE_OWNER"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-V03-PRINCIPAL",
+      "kind": "SOURCE_BINDING",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py",
+      "disposition": "USE_EXISTING_V03_PRINCIPAL_AND_PACKAGED_NATIVE_EVIDENCE_PRINCIPAL"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-CORPUS-MATERIALIZATION",
+      "kind": "NON_PREREQUISITE_ADJACENT_TASK",
+      "state": "EXCLUDED_FROM_RERUN_PREREQUISITES",
+      "ref": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+      "disposition": "DO_NOT_GATE_THIS_ORIGINAL_RERUN_ON_CHILD_BULK_CORPUS_TASK"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+    "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001"
+  ],
+  "expected_evidence_predicates": [
+    "REQUEST_BOUND",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTR_MATERIALIZATION_ADMITTED",
+    "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+    "EVENT_EPHEMERAL_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_INTR_INGRESS_OBSERVED",
+    "T0_CAPTURED",
+    "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
+    "EGRESS_EMITTED",
+    "GOVERNED_RETURN_OBSERVED",
+    "MASTER_RECORDS_CUSTODY_OBSERVED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "ORIGIN_RETURN_OBSERVED",
+    "NO_SECOND_USER_OPERATED_DEVICE",
+    "NO_STANDING_RUNTIME_OR_EXTERNAL_HOST"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "task_registry_reconciliation",
+      "intr_task_admission",
+      "bounded_process_execution",
+      "master_records_reconciliation"
+    ],
+    "environment": "EVENT_EPHEMERAL_SOVEREIGN",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "scripts/list_stegverse_execution_surfaces.py"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "scripts/list_stegverse_execution_surfaces.py"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "scripts/list_stegverse_execution_surfaces.py",
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "ARCHITECTURAL",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_rerun_observed": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "REQUEST_BOUND",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTR_MATERIALIZATION_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "second_user_operated_device_required": false
+  },
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md"
+  }
+}

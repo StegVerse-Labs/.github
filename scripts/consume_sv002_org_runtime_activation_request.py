@@ -3,9 +3,9 @@
 
 This consumer is executed by the existing native HeartBeat-separated
 WorkerCoordinator resident runtime. It does not create or require a second
-resident executor. It invokes the bounded StegVerse-org SV002 round-trip
-entrypoint directly from that resident substrate; the source org boundary remains
-StegVerse-org and the target StegVerse-002 org still owns principal execution.
+resident executor or resident request. It invokes the current StegVerse-002 rerun
+callable from that resident substrate; StegVerse-002 remains the execution owner
+and canonical Master Records remains custody/reconstruction authority.
 """
 from __future__ import annotations
 import argparse, hashlib, json, os, subprocess, sys
@@ -59,7 +59,16 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
     req=load(request_path)
     expected={
       "schema":"stegverse.resident-execution-request/v1","state":"REQUESTED",
-      "task_id":TASK_ID,"credential_authority":"TV/TVC",
+      "request_id":"RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
+      "task_id":TASK_ID,
+      "goal_task_id":"STEGVERSE-002-EXPERIMENT-RERUN-001",
+      "cosv_task_vector":"50000000107000",
+      "operation":"REQUEST_SELF_CHARACTERIZATION",
+      "deterministic_packet_id":"SV002-RERUN-C796D0BFD181CEC5D99E4C23",
+      "current_callable_ref":"StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
+      "request_bound_master_records_required":True,
+      "request_bound_required_evidence_exact_bytes":True,
+      "credential_authority":"TV/TVC",
       "github_token_required":False,"github_token_runtime_authority":"NONE",
       "heartbeat_grants_execution_authority":False,"request_granted_authority":False,
       "network_source_fetch_allowed":False,"authority_effect":"NONE_REQUEST_ONLY",
@@ -73,49 +82,87 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
         if prior.get("request_sha256")==request_hash and prior.get("terminal_round_trip_observed") is True:
             return {"schema":prior["schema"],"state":"ALREADY_CONSUMED","request_sha256":request_hash,"runtime_execution_attempted":False,"authority_effect":"NONE"}
 
-    source_org=resolve("STEGVERSE_ORG_CONTROL_ROOT","StegVerse-org",".github",("resident-runtime/run_sv002_self_characterization_roundtrip.py",))
-    target_org=resolve("STEGVERSE_SV002_ORG_ROOT","StegVerse-002",".github",("resident-runtime/self_characterization_surface.py",))
-    sdk=resolve("STEGVERSE_SDK_SOURCE_ROOT","StegVerse-org","StegVerse-SDK",("stegverse/external_interlock_bootstrap.py",))
-    principal=resolve("STEGVERSE_MICRO_NODE_RUNTIME_ROOT","StegVerse-002","micro-node-runtime",("tools/run_self_characterization_principal.py","experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.3.json"))
+    source=source_root.expanduser().resolve()
+    if not (source/"workers/canonical_state_transition_custody.py").is_file():
+        raise RuntimeError("canonical Master Records custody client not materialized in resident source")
+    target_org=resolve(
+        "STEGVERSE_SV002_ORG_ROOT","StegVerse-002",".github",
+        ("resident-runtime/invoke_sv002_experiment_rerun.py","resident-runtime/activation-manifest.json"),
+    )
 
     env=dict(os.environ)
     for name in ("GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","STEGVERSE_GITHUB_TOKEN"):
         env.pop(name,None)
-    env["STEGVERSE_ORG_CONTROL_ROOT"]=str(source_org)
+    roots_raw=str(env.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+    try:
+        roots=json.loads(roots_raw) if roots_raw else {}
+    except Exception as exc:
+        raise RuntimeError("resident repository roots invalid") from exc
+    if not isinstance(roots,dict):
+        raise RuntimeError("resident repository roots must be object")
+    roots["StegVerse-Labs/.github"]=str(source)
+    roots["StegVerse-002/.github"]=str(target_org)
+    mr_root=str(env.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") or "").strip()
+    if mr_root:
+        roots["master-records/orchestration"]=str(Path(mr_root).expanduser().resolve())
+    env["STEGVERSE_REPO_ROOTS_JSON"]=json.dumps(roots,sort_keys=True,separators=(",",":"))
     env["STEGVERSE_SV002_ORG_ROOT"]=str(target_org)
-    env["STEGVERSE_SDK_SOURCE_ROOT"]=str(sdk)
-    env["STEGVERSE_MICRO_NODE_RUNTIME_ROOT"]=str(principal)
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"]="NONE"
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]="TV/TVC"
 
-    cmd=[sys.executable,str(source_org/"resident-runtime/run_sv002_self_characterization_roundtrip.py"),"--authority-ref","SDK_EXTERNAL_EVALUATOR"]
-    completed=runner(cmd,cwd=source_org,capture_output=True,text=True,check=False,env=env,timeout=2300)
+    cmd=[sys.executable,str(target_org/"resident-runtime/invoke_sv002_experiment_rerun.py")]
+    completed=runner(cmd,cwd=target_org,capture_output=True,text=True,check=False,env=env,timeout=2300)
     result=parse_last(completed.stdout)
-    terminal=bool(
-      completed.returncode==0
-      and isinstance(result,dict)
+    request_bound_custodied=bool(
+      isinstance(result,dict)
+      and result.get("goal_task_id")=="STEGVERSE-002-EXPERIMENT-RERUN-001"
+      and result.get("cosv_id")=="50000000107000"
+      and result.get("packet_id")=="SV002-RERUN-C796D0BFD181CEC5D99E4C23"
       and result.get("experiment_id")=="STEGVERSE-002-SELF-CHARACTERIZATION-001"
-      and result.get("principal_execution_owner")=="StegVerse-002/.github"
-      and result.get("cross_organization_principal_execution") is False
+      and result.get("operation")=="REQUEST_SELF_CHARACTERIZATION"
+      and result.get("invocation_count")==1
+      and result.get("manifest_sha256")=="29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828"
+      and isinstance(result.get("packet_sha256"),str) and bool(result.get("packet_sha256"))
+      and isinstance(result.get("request_sha256"),str) and bool(result.get("request_sha256"))
+      and isinstance(result.get("frame_sha256"),str) and bool(result.get("frame_sha256"))
+      and result.get("request_bound_claimed") is True
+      and result.get("request_bound_master_records_state")=="RECORDED"
+      and result.get("request_bound_master_records_reconstruction_status")=="PASS"
+      and result.get("request_bound_master_records_required_evidence_validation_status")=="PASS"
+      and result.get("request_bound_master_records_required_evidence_count")==1
+      and isinstance(result.get("request_bound_master_records_receipt_sha256"),str)
+      and result.get("request_bound_master_records_receipt_sha256")
+      == result.get("request_bound_master_records_reconstructed_receipt_sha256")
     )
+    terminal=False
     receipt={
       "schema":"stegverse.sv002-org-runtime-activation-consumption/v1",
-      "state":"COMPLETED" if terminal else "ATTEMPT_RECORDED",
+      "state":"ATTEMPT_RECORDED",
       "task_id":TASK_ID,
+      "goal_task_id":"STEGVERSE-002-EXPERIMENT-RERUN-001",
+      "cosv_task_vector":"50000000107000",
       "request_sha256":request_hash,
-      "source_org_root":str(source_org),
       "target_org_root":str(target_org),
-      "sdk_root":str(sdk),
-      "principal_root":str(principal),
+      "callable_ref":"resident-runtime/invoke_sv002_experiment_rerun.py",
+      "deterministic_packet_id":"SV002-RERUN-C796D0BFD181CEC5D99E4C23",
       "runtime_execution_attempted":True,
       "execution_returncode":completed.returncode,
       "execution_result":result,
+      "request_bound_custodied":request_bound_custodied,
+      "request_bound_master_records_state":result.get("request_bound_master_records_state") if isinstance(result,dict) else None,
+      "request_bound_master_records_reconstruction_status":result.get("request_bound_master_records_reconstruction_status") if isinstance(result,dict) else None,
+      "request_bound_master_records_required_evidence_validation_status":result.get("request_bound_master_records_required_evidence_validation_status") if isinstance(result,dict) else None,
+      "request_bound_master_records_receipt_sha256":result.get("request_bound_master_records_receipt_sha256") if isinstance(result,dict) else None,
+      "request_bound_master_records_reconstructed_receipt_sha256":result.get("request_bound_master_records_reconstructed_receipt_sha256") if isinstance(result,dict) else None,
+      "request_bound_master_record_ref":result.get("request_bound_master_record_ref") if isinstance(result,dict) else None,
       "terminal_round_trip_observed":terminal,
       "runtime_substrate":"HEARTBEAT_SEPARATED_NATIVE_WORKER_COORDINATOR",
       "second_resident_executor_required":False,
+      "second_request_required":False,
       "cross_org_principal_execution":False,
       "github_token_runtime_authority":"NONE",
       "credential_authority":"TV/TVC",
+      "master_records_custody_authority":"MASTER_RECORDS",
       "authority_effect":"NONE_REQUEST_CONSUMPTION_ONLY",
     }
     receipt_path.parent.mkdir(parents=True,exist_ok=True)

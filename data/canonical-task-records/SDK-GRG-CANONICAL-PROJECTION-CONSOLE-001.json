@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001",
+  "correlation_id": "SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "goal": "Project recognized Governance Reference Graph relations into their existing canonical StegVerse semantic owners and expose that projection through the public SDK console, while preserving unknown relations as hash-bound non-authorizing evidence and proving live Interlock/InTr binding only from authentic retained runtime evidence.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_SOURCE_CONSOLE_SCOPE",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "SDK_GRG_CANONICAL_PROJECTION_CONSOLE_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000101110"
+  },
+  "cosv_task_vector": "71000000101110",
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_GRG_CANONICAL_PROJECTION_CONSOLE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/GOVERNANCE_REFERENCE_GRAPH.md",
+    "StegVerse-org/StegVerse-SDK:stegverse/governance_reference_graph.py",
+    "StegVerse-org/StegVerse-SDK:stegverse/authority_basis_bridge.py",
+    "StegVerse-org/StegVerse-SDK:stegverse/intr_posture_runtime_bridge.py",
+    "StegVerse-Labs/StegCore:docs/SDK_AUTHORITY_BASIS_RESOLUTION_MIRROR_HANDOFF.md"
+  ],
+  "authority_boundaries": {
+    "sdk": "REPRESENTATION_PROJECTION_CONSOLE_ONLY",
+    "canonical_semantic_authority": "StegCore/StegGate",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "github_runtime_authority": "NONE"
+  },
+  "initial_relation_scope": [
+    "HAS_SCOPED_AUTHORITY",
+    "REQUIRES_CONSTRAINT"
+  ],
+  "unknown_relation_behavior": "PRESERVE_HASH_BOUND_NON_AUTHORIZING_NO_CANONICAL_SEMANTICS",
+  "expected_evidence_predicates": [
+    "GRG_RECOGNIZED_RELATION_PROJECTION_SOURCE_VALIDATED",
+    "GRG_CONSOLE_PROJECTION_SURFACE_VALIDATED",
+    "GRG_UNKNOWN_RELATION_NON_AUTHORIZING_PRESERVATION_VALIDATED",
+    "GRG_CANONICAL_OWNER_NO_DUPLICATION_VALIDATED",
+    "AUTHENTIC_GRG_TO_LIVE_STEGOS_INTR_RECEIPT_LINEAGE"
+  ],
+  "remaining_predicate": null,
+  "created_from_parent_state": {
+    "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+    "parent_grg_source_contract": "VALIDATED_MERGED",
+    "parent_live_graph_projection_proven": false
+  },
+  "source_console_scope_complete": true,
+  "source_console_completion": {
+    "sdk_pr": 263,
+    "validated_head": "ec0b97c34fe22b871e1cf647df5b06ce75cff823",
+    "merge": "c89de8a91d5f9872d42477e324eb03e7727a6f0b",
+    "closeout_pr": 264,
+    "closeout_merge": "897a3483c20006086f7e81e0e2cf9f75cd0dff2d"
+  },
+  "runtime_receipt_lineage_transferred_to": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "live_runtime_proof_claimed": false
+}

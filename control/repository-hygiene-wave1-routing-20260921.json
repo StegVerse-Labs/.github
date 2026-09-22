@@ -1,0 +1,86 @@
+{
+  "schema": "stegverse.repository-hygiene-wave-routing/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "observed_at": "2026-09-21T18:07:00Z",
+  "wave": 1,
+  "policy": "causal-root-order_then_branch-count",
+  "shared_workflow_revision": "739a611afd70bbe5b8e598b03180e62624fb8459",
+  "repositories": [
+    {
+      "repository": "StegVerse-Labs/TVC",
+      "pre_adoption_branches": 422,
+      "inspected": 423,
+      "retirement_candidates_requiring_owner_clearance": 162,
+      "review_required": 257,
+      "protected_retained": 4,
+      "approved_retirement_ready": 0,
+      "run_id": 35636073607,
+      "artifact_id": 10655982669,
+      "artifact_digest": "sha256:50d4017e34024fdcf1341fbe3a81850f40f2e7586f1955b1651cedb5b212928e",
+      "merge": "02fe2b8a6f9a03642a8ca75e8f8e6774b5a12059"
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "pre_adoption_branches": 268,
+      "inspected": 270,
+      "retirement_candidates_requiring_owner_clearance": 58,
+      "review_required": 211,
+      "protected_retained": 1,
+      "approved_retirement_ready": 0,
+      "run_id": 35636235950,
+      "artifact_id": 10656017857,
+      "artifact_digest": "sha256:7e52ff98e69b29b0796a28b332aafb1ed11ed2e8ae152c14f114ed582022dc66",
+      "merge": "dc990e46b7925d664e945ed2dcba3f7b750380d9"
+    },
+    {
+      "repository": "StegVerse-Labs/TV",
+      "pre_adoption_branches": 262,
+      "inspected": 263,
+      "retirement_candidates_requiring_owner_clearance": 9,
+      "review_required": 253,
+      "protected_retained": 1,
+      "approved_retirement_ready": 0,
+      "run_id": 35636085582,
+      "artifact_id": 10656067507,
+      "artifact_digest": "sha256:ffe0e0270c7fe7e0c7001d868ff9b72308b159d5d76245ff6e367e883e1f89d4",
+      "merge": "0e40c7715edd1bc4086b91c197ebd4ea55f66bce"
+    },
+    {
+      "repository": "master-records/orchestration",
+      "pre_adoption_branches": 82,
+      "inspected": 83,
+      "retirement_candidates_requiring_owner_clearance": 28,
+      "review_required": 52,
+      "protected_retained": 3,
+      "approved_retirement_ready": 0,
+      "run_id": 35636089572,
+      "artifact_id": 10655714988,
+      "artifact_digest": "sha256:8aba14f93c790a443e5613206b9be7e3c9ea4e84b84f5ad8367c9dd6a7291cb4",
+      "merge": "1b896e1c550aad1ebdebecb9a331ceef38780b11"
+    },
+    {
+      "repository": "StegVerse-002/micro-node-runtime",
+      "pre_adoption_branches": 60,
+      "inspected": 61,
+      "retirement_candidates_requiring_owner_clearance": 23,
+      "review_required": 37,
+      "protected_retained": 1,
+      "approved_retirement_ready": 0,
+      "run_id": 35636095904,
+      "artifact_id": 10656506939,
+      "artifact_digest": "sha256:80e0aa465f0f94843ceb8819e0cbc5e1f1a49a7fb4a5b6768b7b37990ef0c6e0",
+      "merge": "9df49b650842362c7d1a5e4decd2e36864de89bf"
+    }
+  ],
+  "aggregate": {
+    "inspected": 1100,
+    "retirement_candidates_requiring_owner_clearance": 280,
+    "approved_retirement_ready": 0,
+    "routed_ref_count": 0
+  },
+  "routed_refs": [],
+  "routing_decision": "NO_REF_ROUTED_OWNER_APPROVAL_ABSENT",
+  "authority_effect": "NONE",
+  "deletion_authorized": false
+}

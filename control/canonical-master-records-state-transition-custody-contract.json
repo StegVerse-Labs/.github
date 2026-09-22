@@ -1,0 +1,103 @@
+{
+  "schema": "stegverse.canonical-master-records-state-transition-custody-contract/v1",
+  "contract_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "owner_repository": "StegVerse-Labs/.github",
+  "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+  "transition_authority": "INTERLOCK_INTR",
+  "credential_authority": "TV/TVC_WHERE_REQUIRED",
+  "custody_reconstruction_authority": "MASTER_RECORDS",
+  "invariants": {
+    "every_governed_state_change_requires_current_governance": true,
+    "every_observed_governed_state_transition_emits_state_receipt": true,
+    "every_state_receipt_is_submitted_to_master_records": true,
+    "master_records_reconstructs_current_state_from_retained_receipts": true,
+    "next_machine_owned_transition_follows_current_state_receipt_and_reconstruction": true,
+    "allow_or_deny_decision_receipts_are_canonical_state_evidence": true,
+    "execution_state_receipts_are_canonical_state_evidence": true,
+    "failure_state_receipts_are_canonical_state_evidence": true,
+    "missing_transition_may_not_be_fabricated": true,
+    "custody_may_not_grant_transition_authority": true,
+    "reconstruction_may_not_infer_missing_authorization": true,
+    "task_specific_diagnostic_wrappers_are_not_the_canonical_custody_mechanism": true,
+    "every_state_receipt_declares_required_evidence_manifest": true,
+    "every_required_transition_evidence_item_is_submitted_to_master_records": true,
+    "every_required_transition_evidence_item_is_bound_to_the_origin_transition": true,
+    "every_required_transition_evidence_item_is_digest_validated_before_custody_pass": true,
+    "every_required_transition_evidence_item_is_exactly_reconstructable": true,
+    "transition_custody_pass_requires_all_required_evidence_pass": true,
+    "every_state_transition_within_organization_emits_organization_receipt": true,
+    "organization_receipt_precedes_master_records_custody": true
+  },
+  "canonical_transition_loop": [
+    "OBSERVE_CURRENT_CANONICAL_STATE",
+    "PROPOSE_EXACT_NEXT_TRANSITION",
+    "EVALUATE_CURRENT_INTERLOCK_GOVERNANCE",
+    "CONSULT_TV_TVC_IF_REQUIRED",
+    "RETAIN_ALLOW_OR_DENY_RECEIPT",
+    "ENUMERATE_ALL_REQUIRED_EVIDENCE_RESULTING_FROM_TRANSITION",
+    "RECORD_HASH_BOUND_ORGANIZATION_RECEIPT",
+    "SUBMIT_DECISION_RECEIPT_AND_REQUIRED_EVIDENCE_TO_MASTER_RECORDS",
+    "REQUIRE_RECEIPT_AND_ALL_REQUIRED_EVIDENCE_VALIDATION_PASS",
+    "IF_ALLOW_EXECUTE_OR_CONSUME",
+    "RETAIN_EXECUTION_STATE_RECEIPT",
+    "ENUMERATE_ALL_REQUIRED_EXECUTION_EVIDENCE",
+    "REQUIRE_ORGANIZATION_RECEIPT_RECORDED",
+    "SUBMIT_EXECUTION_STATE_RECEIPT_AND_REQUIRED_EVIDENCE_TO_MASTER_RECORDS",
+    "REQUIRE_RECEIPT_AND_ALL_REQUIRED_EVIDENCE_RECONSTRUCTION_PASS",
+    "RECONSTRUCT_CURRENT_STATE",
+    "CONTINUE_TO_NEXT_GOVERNED_TRANSITION"
+  ],
+  "receipt_minimum_fields": [
+    "schema",
+    "transition_id",
+    "transition_sequence",
+    "subject_or_correlation_id",
+    "prior_state_ref_or_hash",
+    "resulting_state_ref_or_hash",
+    "governance_decision_ref_where_applicable",
+    "transition_evidence",
+    "required_evidence_manifest",
+    "recorded_at",
+    "authority_effect",
+    "proof_scope",
+    "proof_ceiling"
+  ],
+  "master_records_semantics": {
+    "custody_is_canonical": true,
+    "reconstruction_is_canonical": true,
+    "transition_authority": false,
+    "credential_authority": false,
+    "execution_authority": false,
+    "observability_authority": false
+  },
+  "mir_adoption": {
+    "mir_roundtrip_task": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+    "mir_specific_live_probe_role": "TEMPORARY_CONFORMANCE_AND_BREAK_LOCALIZATION_ONLY",
+    "mir_specific_live_probe_is_not_canonical_state_recording_mechanism": true,
+    "required_repair": "MIR_TRANSITIONS_MUST_EMIT_THROUGH_CANONICAL_STATE_TRANSITION_CUSTODY_CONTRACT"
+  },
+  "required_evidence_semantics": {
+    "manifest_required": true,
+    "empty_manifest_allowed_when_no_additional_required_evidence_results": true,
+    "each_item_required_fields": [
+      "evidence_id",
+      "evidence_type",
+      "origin_transition_id",
+      "encoding",
+      "sha256",
+      "content"
+    ],
+    "supported_encodings": [
+      "canonical-json",
+      "utf-8",
+      "base64"
+    ],
+    "exact_digest_validation_required": true,
+    "exact_reconstruction_required": true,
+    "same_transition_binding_required": true,
+    "master_records_validation_scope": "REQUIRED_EVIDENCE_COMPLETENESS_BINDING_DIGEST_CUSTODY_RECONSTRUCTION",
+    "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    "validation_execution_semantics": "ALL_VALIDATION_REQUIRED_BY_A_TRANSITION_EXECUTES_ON_THE_EXISTING_TRANSITION_PATH_BEFORE_EVIDENCE_CLOSURE; VALIDATOR_OUTPUTS_ARE_REQUIRED_EVIDENCE; A_VALIDATOR_DEPENDENCY_IS_NEVER_A_WAIT_CONDITION",
+    "no_wait_on_missing_runtime_receipt": "IF_NO_AUTHENTIC_RECEIPT_IS_AVAILABLE, TRACE_THE_EXISTING_PATH_TO_THE_FIRST_DETERMINISTIC_SOURCE_OR_RUNTIME_BOUNDARY_AND_REPAIR_ONLY_THAT_BOUNDARY"
+  }
+}

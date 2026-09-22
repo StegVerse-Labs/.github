@@ -55,6 +55,11 @@ def test_scheduler_owns_hour_slot_idempotency_and_bounded_retry_gate():
     now = dt.datetime(2026, 9, 13, 19, 10, tzinfo=dt.timezone.utc)
     row = {"retry_interval_minutes": 15, "max_attempts_per_slot": 4}
     assert mod.slot_id("RT-NATIVE-EMAIL-ACTION-MONITOR-001", now) == "rt-native-email-action-monitor-001-20260913T19Z"
+    assert mod.slot_id(
+        "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+        now,
+        "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    ) == "steghealth-kv-interlock-production-endpoint-001-20260913T19Z"
 
     may_attempt, reason, retry_at = mod.retry_gate(row, {
         "attempt_count": 1,
@@ -85,3 +90,12 @@ def test_reusable_registry_resolves_scheduler_shard_once():
     registry = constructor.load_reusable_task_registry()
     row = constructor.resolve_reusable_task(registry, "RT-REUSABLE-TASK-SCHEDULER-001")
     assert row["name"] == "Reusable Task Scheduler"
+
+
+def test_scheduler_does_not_treat_deferred_child_as_advanced_transition():
+    source = (ROOT / "scripts/run_reusable_task_scheduler.py").read_text()
+    assert 'advanced_states = {"COMPLETE", "BOUNDARY_RECORDED"}' in source
+    assert '"completion_predicates_satisfied": declared if all_advanced else []' in source
+    assert '"all_due_tasks_advanced_to_completion_or_authentic_boundary": all_advanced' in source
+    assert '"successor_admissible": all_advanced' in source
+    assert 'return 0 if all_advanced else 3' in source

@@ -1,0 +1,232 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001",
+  "correlation_id": "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "goal": "Reconcile prior AILeash/sebbi.pro observations with Evidence Custody Seam Appendix A R4 and Justin Dobson witness-topology claims while preserving strict evidence-status boundaries and preventing promotion of operator-controlled or counterpart-reported claims into independent proof.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
+    "docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md",
+    "docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "evidence-custody-reconstruction",
+      "witness",
+      "external-time",
+      "counterpart-evidence",
+      "joint-review-evidence-map"
+    ]
+  },
+  "dependencies": [
+    "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+  ],
+  "expected_evidence_predicates": [
+    "PUBLIC_WITNESS_SURFACES_CLASSIFIED",
+    "APPENDIX_A_R4_PUBLIC_READ_BEHAVIOR_INDEPENDENTLY_REPRODUCED",
+    "EXACT_FLAVORFLOW_PEER_TIP_POSITIVELY_ATTESTED",
+    "SELF_CONSISTENT_NOT_PROMOTED_TO_THIRD_PARTY_VERIFICATION",
+    "OTS_RAW_PROOF_BYTES_BOUND_TO_REPORTED_HASH",
+    "OTS_PENDING_NOT_PROMOTED_TO_BITCOIN_CONFIRMATION",
+    "WITNESS_ROSTER_NOT_PROMOTED_TO_CONTROL_DOMAIN_INDEPENDENCE",
+    "JUSTIN_DOBSON_ATTRIBUTION_PRESERVED_WITHOUT_IDENTITY_OVERCLAIM",
+    "NO_UNVERIFIED_CLAIM_PROMOTION",
+    "STATE_DEPENDENT_LINEAR_PREDECESSOR_CONSUMPTION",
+    "EVERY_SUCCESSOR_CONSUMES_IMMEDIATE_MASTER_RECORDS_CLOSURE",
+    "NO_PARALLEL_CHECKPOINT_OR_LEAPFROG_SEMANTICS",
+    "R10_UNCHANGED_UNTIL_FULL_ORDERED_CHAIN_CLOSES"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "public_evidence_observation",
+      "source_inspection",
+      "evidence_classification"
+    ],
+    "environment": "DOCUMENTARY_AND_PUBLIC_VERIFICATION",
+    "direction": "JOINT_REVIEW_EVIDENCE_RECONCILIATION",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md"
+  },
+  "allowed_next_transitions": [
+    "HISTORICAL_WITNESS_RECORD_RECONSTRUCTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "counterpart_claim_may_be_promoted_without_artifact": false,
+    "public_service_self_report_equals_independent_proof": false,
+    "witness_member_count_equals_independence": false,
+    "ots_pending_equals_bitcoin_confirmed": false,
+    "profile_identity_claim_equals_independent_identity_verification": false
+  },
+  "state_dependent_test_contract": {
+    "schema": "stegverse.state-dependent-test-contract/v1",
+    "semantics": "STRICT_LINEAR_PREDECESSOR_CONSUMPTION",
+    "every_state_must_transition_to_next_state": true,
+    "parallel_checkpoint_semantics": false,
+    "leapfrog_semantics": false,
+    "independent_evidence_satisfaction_semantics": false,
+    "master_records_closure_required_on_every_edge": true,
+    "required_predecessor_closure": {
+      "state": "RECORDED",
+      "reconstruction_status": "PASS",
+      "required_evidence_validation_status": "PASS",
+      "exact_receipt_reconstruction_digest_equality": true
+    },
+    "ordered_states": [
+      {
+        "ordinal": 1,
+        "state_id": "PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED",
+        "successor": "HISTORICAL_WITNESS_RECORD_RECONSTRUCTED",
+        "evidence_identity": {
+          "subjects_block_index": 1895,
+          "subjects_root": "5a34b9af7ab85de4d2b9b3d18c238c4aaa632333f4fedeb4c5fe1d5c6953abff",
+          "subjects_chain_seal": "4a99a3b5fa83d79a8baba0c8cd4415bab37b0435ee5dff14d50900e7b0acf260"
+        }
+      },
+      {
+        "ordinal": 2,
+        "state_id": "HISTORICAL_WITNESS_RECORD_RECONSTRUCTED",
+        "predecessor": "PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED",
+        "successor": "HISTORICAL_WITNESS_SEAL_RECOMPUTED",
+        "required_new_evidence": [
+          "AUTHENTIC_PRE_RESET_WITNESS_RECORD",
+          "IMMUTABLE_RECORD_IDENTITY",
+          "ORIGINAL_EVENT",
+          "ORIGINAL_RESULT",
+          "ORIGINAL_TIMESTAMP",
+          "ORIGINAL_PREVIOUS_HASH"
+        ]
+      },
+      {
+        "ordinal": 3,
+        "state_id": "HISTORICAL_WITNESS_SEAL_RECOMPUTED",
+        "predecessor": "HISTORICAL_WITNESS_RECORD_RECONSTRUCTED",
+        "successor": "HISTORICAL_WITNESS_VERSION_TERM_BOUND",
+        "required_new_evidence": [
+          "RECOMPUTED_AUDIT_SEAL",
+          "RECOMPUTED_SEAL_EQUALS_RETAINED_SEAL"
+        ]
+      },
+      {
+        "ordinal": 4,
+        "state_id": "HISTORICAL_WITNESS_VERSION_TERM_BOUND",
+        "predecessor": "HISTORICAL_WITNESS_SEAL_RECOMPUTED",
+        "successor": "R10_DISPOSITION_RECONCILED",
+        "required_new_evidence": [
+          "SEALED_WITNESS_VERSION",
+          "SEALED_LIVENESS_TERM",
+          "APPLICABLE_HISTORICAL_REVISION",
+          "REVISION_BINDING_EVIDENCE"
+        ]
+      },
+      {
+        "ordinal": 5,
+        "state_id": "R10_DISPOSITION_RECONCILED",
+        "predecessor": "HISTORICAL_WITNESS_VERSION_TERM_BOUND",
+        "terminal_for_this_test": true,
+        "current_disposition": "OPERATOR_DISCLOSED_NOT_MET_UNTIL_PREDECESSOR_CHAIN_CLOSES"
+      }
+    ],
+    "transition_rule": "A successor may be admitted only when the immediately preceding state exists in Master Records with RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS + exact receipt/reconstruction digest equality. Evidence outside that predecessor closure cannot satisfy, skip, reorder, parallelize, or leapfrog a transition.",
+    "current_chain_position": "PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED",
+    "current_successor_pending": "HISTORICAL_WITNESS_RECORD_RECONSTRUCTED",
+    "r10_change_prohibited_until": "R10_DISPOSITION_RECONCILED"
+  }
+}

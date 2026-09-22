@@ -1,0 +1,129 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-RC-OIL-FLOW-2026",
+  "correlation_id": "ERL-RC-OIL-FLOW-2026",
+  "root_correlation_id": "ERL-RC-OIL-FLOW-2026",
+  "parent_task_id": null,
+  "predecessor_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "goal": "Reconcile Trump-administration, CENTCOM/JMIC, and independent tracker claims about Strait of Hormuz vessel and petroleum throughput using matched units, windows, vessel classes, AIS/dark-transit posture, bypass routes, and downstream delivery evidence, without promoting denominator differences into unsupported falsehood, deception, intent, or motive findings.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/HORMUZ_OIL_FLOW_RECONCILIATION_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#63",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/research-candidates/2026-08-12-trump-administration-oil-flow-normalization-claim.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/coordination/research-candidate-activation-registry.v1.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/HORMUZ_OIL_FLOW_RECONCILIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#63",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/assessments/evidence/2026-09-17-hormuz-matched-window-dark-transit-destination-reconciliation.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger"
+    ],
+    "components": [
+      "research-candidate",
+      "source-posture",
+      "vessel-transit-reconciliation",
+      "petroleum-flow-reconciliation",
+      "dark-ais-uncertainty",
+      "downstream-delivery-reconciliation"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "EXACT_US_PUBLIC_CLAIMS_CAPTURED_WITH_DATE_UNIT_WINDOW_AND_SCOPE",
+    "INDEPENDENT_TRACKER_MEASUREMENTS_PRESERVED_WITH_METHODOLOGY",
+    "SAME_WINDOW_VESSEL_COUNTS_RECONCILED",
+    "AIS_VISIBLE_AND_DARK_RECONSTRUCTED_TRANSITS_SEPARATED",
+    "HORMUZ_AND_BYPASS_EXPORTS_SEPARATED",
+    "CRUDE_ONLY_AND_CRUDE_PLUS_PRODUCTS_SEPARATED",
+    "DOWNSTREAM_DELIVERY_OR_IMPORT_CROSSCHECK_PERFORMED_WHERE_AVAILABLE",
+    "TRACKER_REVISIONS_PRESERVED",
+    "NO_UNSUPPORTED_FALSEHOOD_DECEPTION_INTENT_OR_MOTIVE_FINDING"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "public_web_research"
+    ],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_WEB_RESEARCH",
+    "direction": "PUBLIC_PRIMARY_AND_INDEPENDENT_FLOW_EVIDENCE_TO_ERL_RESEARCH_CANDIDATE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#63",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "ACQUIRE_EXACT_CENTCOM_NCAGS_JMIC_MATCHED_DAY_RECORDS",
+    "ALIGN_SEVEN_DAY_BARREL_VOLUME_SERIES",
+    "CUSTODY_EXACT_DESTINATION_DISCHARGE_EVIDENCE",
+    "INDEPENDENT_REVIEW"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/HORMUZ_OIL_FLOW_RECONCILIATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_physical_flow": false,
+    "worker_claim_authority": "CURRENT_SESSION",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+    "publication_authorized": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "4/20",
+    "predecessor_goal_prompt_count_final": "20/20",
+    "predecessor_task_id": "SS-EVIDENCE-COMPARISON-001",
+    "decomposition_reason": "EXISTING_ERL_RESEARCH_GROUP_REQUIRES_SEPARATE_SUBSTANTIVE_EVIDENCE_RECONSTRUCTION_AFTER_PARENT_ARCHITECTURE_GOAL_REACHED_PROMPT_LIMIT",
+    "split_merely_to_reset_counter": false
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": true,
+    "readme_path": "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md",
+    "evidence_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/ERL_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/HORMUZ_OIL_FLOW_RECONCILIATION_MIRROR_HANDOFF.md"
+    ]
+  },
+  "research_progress": {
+    "observed_at": "2026-09-17",
+    "matched_window": "2026-09-07/2026-09-13",
+    "portwatch_total_transits": 37,
+    "kpler_latest_public_reconstruction_total": 67,
+    "lloyds_minimum_non_iranian_linked_transits": 97,
+    "preliminary_revision_examples_preserved": [
+      "2026-09-08:6->12",
+      "2026-09-09:7->11",
+      "2026-09-14:4->7",
+      "2026-09-15:4->12"
+    ],
+    "hormuz_bypass_separation": "PARTIAL_EVIDENCE_SUPPORTED",
+    "destination_trace": "AL_MARROUNA_PORT_QASIM_ARRIVAL_BERTH_PUBLICLY_CONFIRMED_OTHER_EXACT_DISCHARGES_PENDING",
+    "exact_centcom_jmic_daily_manifest": "PENDING",
+    "independent_review": "PENDING",
+    "finding_authorized": false,
+    "publication_authorized": false
+  }
+}

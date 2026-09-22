@@ -1,0 +1,91 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+  "correlation_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "goal": "Correct the accidental routing that made SHWP-HEALER-SOVEREIGN-SCHEDULER-001 a required dependency/carrier for the immutable StegBrowser custody-root progression, restoring the invocation to its actual existing execution owner and direct WorkerCoordinator -> Interlock/InTr -> retained evidence -> Master Records chain.",
+  "coordination_state": "CLOSED",
+  "checkout_state": "RELEASED",
+  "cosv_task_vector": "40000100100000",
+  "issue_ref": "StegVerse-Labs/.github#2249",
+  "handoff_ref": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+  "immutable_invocation": {
+    "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false
+  },
+  "canonical_execution_owner": {
+    "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+    "runtime_entrypoint": "run_stegbrowser_manifest_bound_runtime",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY"
+  },
+  "defect": {
+    "class": "ARTIFICIAL_HEALER_ROUTING_DEPENDENCY",
+    "description": "Healer evidence-carriage/remediation machinery was elevated into a required StegBrowser execution progression dependency without exact invocation-lineage proof."
+  },
+  "required_outcomes": [
+    "EXACT_STEGBROWSER_EXECUTION_OWNER_TRACED",
+    "ARTIFICIAL_HEALER_PREREQUISITES_REMOVED",
+    "DIRECT_WORKERCOORDINATOR_CLAIM_FENCE_PATH_RESTORED",
+    "DIRECT_INTERLOCK_INTR_PROGRESS_PATH_RESTORED",
+    "RETAINED_EVIDENCE_PATH_BOUND_TO_ACTUAL_OWNER",
+    "MASTER_RECORDS_CUSTODY_PATH_BOUND_TO_ACTUAL_OWNER",
+    "PARENT_TASK_RECONCILED"
+  ],
+  "prohibited": [
+    "NEW_RUNTIME",
+    "NEW_SCHEDULER",
+    "NEW_DISPATCHER",
+    "NEW_CUSTODY_STORE",
+    "NEW_AUTHORITY_PLANE",
+    "NEW_CREDENTIAL_PATH",
+    "SECOND_STEGBROWSER_INVOCATION",
+    "SECOND_USER_OPERATED_DEVICE_DEPENDENCY"
+  ],
+  "runtime_completion_claimed": false,
+  "authority_effect": "NONE_ROUTING_CORRECTION_ONLY",
+  "trace_result": {
+    "immutable_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "exact_insertion_point": "GENERATION_70_RETENTION_SEAM_RECONCILIATION",
+    "insertion_mechanism": "first Healer pointer-bearing checkpoint was incorrectly promoted from remediation/evidence carriage into a required parent progression gate",
+    "canonical_request_contains_healer_dependency": false,
+    "canonical_request_reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "canonical_request_runner": "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "canonical_manifest_bound_entrypoint": "scripts/run_stegbrowser_manifest_bound_runtime.py",
+    "corrected_direct_chain": [
+      "WorkerCoordinator claim/fence",
+      "Interlock/InTr",
+      "retained StegBrowser evidence",
+      "Master Records custody/reconstruction"
+    ],
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY"
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "runtime_completion_claimed": false,
+    "parent_reconciled": true,
+    "second_invocation_issued": false,
+    "new_runtime_created": false,
+    "new_scheduler_created": false,
+    "new_dispatcher_created": false,
+    "new_custody_store_created": false,
+    "new_authority_plane_created": false,
+    "new_credential_path_created": false,
+    "second_device_dependency_created": false,
+    "validation_evidence": {
+      "pr_number": 2281,
+      "exact_head": "a56ea42f3c3d7da09db7c8aa78f1f43f8a9a395a",
+      "merge_commit": "cc13725c6b056481e8ec5d2a33c75c6bca3ceee8",
+      "checks": [
+        "Cross-Task Coordination Validation - Non-Authorizing:SUCCESS",
+        "Validate KV AI Memory Resident Binding:SUCCESS",
+        "validate-deepseek-resident:SUCCESS",
+        "Validate Purpose-Bound Worker Derived Lifetime:SUCCESS"
+      ]
+    }
+  }
+}

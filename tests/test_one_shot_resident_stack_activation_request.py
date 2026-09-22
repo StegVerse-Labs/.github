@@ -82,7 +82,16 @@ def test_complete_activation_is_exactly_once():
         calls=[]
         def runner(command,**kwargs):
             calls.append(command)
-            return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE"})+"\n",stderr="")
+            return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE","healer_source_proof":{
+              "state":"VERIFIED_LOCAL_GIT_SOURCE",
+              "repository":"StegVerse-Labs/StegVerse-Healer",
+              "source_floor":M.HEALER_STEGHEALTH_SOURCE_FLOOR,
+              "source_floor_present":True,
+              "required_steghealth_binding_present":True,
+              "required_schedule_task_id":M.HEALER_STEGHEALTH_TASK_ID,
+              "clean_worktree_at_packaging":True,
+              "network_fetch_performed":False
+            }})+"\n",stderr="")
         first=M.consume(source,runtime,runner,env)
         second=M.consume(source,runtime,runner,env)
         assert first["state"]=="COMPLETED"
@@ -92,6 +101,45 @@ def test_complete_activation_is_exactly_once():
         assert len(calls)==1
         for flag in ("--master-records-root","--micro-node-root","--tt-root","--rtg-root","--gtg-root","--ae-root","--stegindex-root"):
             assert flag in calls[0]
+
+
+def test_completed_activation_without_current_healer_source_proof_reexecutes_same_request():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir()
+        req=write_request(runtime); roots=make_roots(base); env=env_for(roots)
+        script=runtime/"scripts/activate_resident_stack.py"; script.parent.mkdir(parents=True,exist_ok=True); script.write_text("# activate\n")
+        receipt=runtime/M.RECEIPT_REL; receipt.parent.mkdir(parents=True,exist_ok=True)
+        receipt.write_text(json.dumps({
+          "schema":"stegverse.resident-execution-request-consumption/v1",
+          "state":"COMPLETED",
+          "request_id":"R1",
+          "request_sha256":M.stable(req),
+          "task_id":M.TASK_ID,
+          "activation_complete":True,
+          "execution_result":{"state":"COMPLETE"}
+        }))
+        calls=[]
+        def runner(command,**kwargs):
+            calls.append(command)
+            return SimpleNamespace(
+              returncode=0,
+              stdout=json.dumps({"state":"COMPLETE","healer_source_proof":{
+              "state":"VERIFIED_LOCAL_GIT_SOURCE",
+              "repository":"StegVerse-Labs/StegVerse-Healer",
+              "source_floor":M.HEALER_STEGHEALTH_SOURCE_FLOOR,
+              "source_floor_present":True,
+              "required_steghealth_binding_present":True,
+              "required_schedule_task_id":M.HEALER_STEGHEALTH_TASK_ID,
+              "clean_worktree_at_packaging":True,
+              "network_fetch_performed":False
+            }})+"\n",
+              stderr=""
+            )
+        out=M.consume(source,runtime,runner,env)
+        assert out["state"]=="COMPLETED"
+        assert out["runtime_execution_attempted"] is True
+        assert len(calls)==1
+        assert Path(calls[0][1]).name=="activate_resident_stack.py"
 
 def test_incomplete_activation_remains_retryable():
     with tempfile.TemporaryDirectory() as td:
@@ -234,7 +282,17 @@ def test_completed_receipt_reobserves_stegindex_root_without_reexecution():
           "request_id":"R1",
           "request_sha256":M.stable(req),
           "task_id":M.TASK_ID,
-          "activation_complete":True
+          "activation_complete":True,
+          "execution_result":{"state":"COMPLETE","healer_source_proof":{
+              "state":"VERIFIED_LOCAL_GIT_SOURCE",
+              "repository":"StegVerse-Labs/StegVerse-Healer",
+              "source_floor":M.HEALER_STEGHEALTH_SOURCE_FLOOR,
+              "source_floor_present":True,
+              "required_steghealth_binding_present":True,
+              "required_schedule_task_id":M.HEALER_STEGHEALTH_TASK_ID,
+              "clean_worktree_at_packaging":True,
+              "network_fetch_performed":False
+            }}
         }))
         calls=[]
         def runner(command,**kwargs):

@@ -45,6 +45,18 @@ class CanonicalWorkRegisteredTaskIngressTests(unittest.TestCase):
         self.assertNotIn("bootstrap_is_bounded_to_canonical_work_coordination_task", bootstrap)
         self.assertIn('"--task-id"', wrapper)
 
+    def test_ingress_immediately_invokes_existing_targeted_workercoordinator(self):
+        bootstrap = BOOTSTRAP.read_text(encoding="utf-8")
+        self.assertIn("def invoke_immediate_successor", bootstrap)
+        self.assertIn('"--task-id"', bootstrap)
+        self.assertIn('"--root"', bootstrap)
+        self.assertIn("run_worker_runtime.py", bootstrap)
+        self.assertIn('"carrier_trigger_required": False', bootstrap)
+        self.assertIn('"workercoordinator_remains_claim_fence_authority": True', bootstrap)
+        self.assertIn('"interlock_intr_remains_transition_authority": True', bootstrap)
+        self.assertIn('"master_records_remains_custody_reconstruction_authority": True', bootstrap)
+        self.assertNotIn("new scheduler", bootstrap.lower())
+
     def test_existing_resident_consumer_visits_quantum_spec_without_new_dispatch_plane(self):
         consumer = CONSUMER.read_text(encoding="utf-8")
         self.assertIn("QUANTUM_SPEC", consumer)

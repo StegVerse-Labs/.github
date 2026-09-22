@@ -190,15 +190,146 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             (tvc / "tools" / "hil_intr_lifecycle_intake.py").write_text("# intake\n", encoding="utf-8")
             output = Path(tmp) / "control-plane.zip"
 
-            receipt = module.build_bundle(root, output, healer_root=healer, tvc_root=tvc)
+            original_healer_proof = module.healer_source_proof
+            module.healer_source_proof = lambda _root: {
+                "schema": "stegverse.portable-source-proof/v1",
+                "repository": "StegVerse-Labs/StegVerse-Healer",
+                "materialized_subpath": "vendor/StegVerse-Healer",
+                "source_floor": module.HEALER_STEGHEALTH_SCHEDULE_SOURCE_FLOOR,
+                "state": "VERIFIED_LOCAL_GIT_SOURCE",
+                "source_floor_present": True,
+                "clean_worktree_at_packaging": True,
+                "required_steghealth_binding_present": True,
+                "network_fetch_performed": False,
+                "credential_required": False,
+                "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+            }
+            try:
+                receipt = module.build_bundle(root, output, healer_root=healer, tvc_root=tvc)
+            finally:
+                module.healer_source_proof = original_healer_proof
 
             self.assertTrue(receipt["vendor_sources"]["StegVerse-Healer"])
+            self.assertEqual(receipt["vendor_source_proofs"]["StegVerse-Healer"]["state"], "VERIFIED_LOCAL_GIT_SOURCE")
             self.assertTrue(receipt["vendor_sources"]["TVC"])
             with zipfile.ZipFile(output) as archive:
                 names = set(archive.namelist())
             self.assertIn("vendor/StegVerse-Healer/app/dispatch_orchestrators.py", names)
             self.assertIn("vendor/TVC/scripts/activate_coinbase_intr_resident.py", names)
 
+
+
+    def test_healer_source_proof_requires_floor_and_exact_steghealth_schedule_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            healer = Path(tmp) / "StegVerse-Healer"
+            healer.mkdir()
+            subprocess.run(["git", "init", str(healer)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(healer), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(healer), "config", "user.name", "Test"], check=True)
+            (healer / "app").mkdir()
+            (healer / "data").mkdir()
+            (healer / "docs").mkdir()
+            (healer / "app" / "dispatch_orchestrators.py").write_text("# dispatch\n", encoding="utf-8")
+            (healer / "data" / "orchestrator_targets.json").write_text("{}\n", encoding="utf-8")
+            (healer / "docs" / "HEALER_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
+            schedule = {
+                "schema": "stegverse.reusable-task-schedule/v1",
+                "tasks": [{
+                    "reusable_task_id": module.HEALER_STEGHEALTH_REUSABLE_TASK_ID,
+                    "tracking_task_id": module.HEALER_STEGHEALTH_TASK_ID,
+                    "cosv_task_vector": "60000000111000",
+                    "repository": "StegVerse-Labs/.github",
+                    "enabled": True,
+                    "invocation_key": module.HEALER_STEGHEALTH_TASK_ID,
+                    "parameters": {
+                        "only_consumer": "canonical_work_coordination",
+                        "goal_task_id": module.HEALER_STEGHEALTH_TASK_ID,
+                    },
+                }],
+            }
+            (healer / "data" / "reusable_task_schedule.json").write_text(json.dumps(schedule) + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(healer), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(healer), "commit", "-m", "required schedule floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(healer), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+
+            proof = module.healer_source_proof(healer, source_floor=floor)
+
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertTrue(proof["source_floor_present"])
+            self.assertTrue(proof["required_steghealth_binding_present"])
+            self.assertTrue(proof["clean_worktree_at_packaging"])
+            self.assertFalse(proof["network_fetch_performed"])
+
+    def test_healer_source_proof_rejects_missing_steghealth_schedule_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            healer = Path(tmp) / "StegVerse-Healer"
+            healer.mkdir()
+            subprocess.run(["git", "init", str(healer)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(healer), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(healer), "config", "user.name", "Test"], check=True)
+            (healer / "data").mkdir()
+            (healer / "data" / "reusable_task_schedule.json").write_text(
+                json.dumps({"schema": "stegverse.reusable-task-schedule/v1", "tasks": []}) + "\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "-C", str(healer), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(healer), "commit", "-m", "old schedule"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(healer), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+
+            proof = module.healer_source_proof(healer, source_floor=floor)
+
+            self.assertEqual(proof["state"], "UNVERIFIED_REQUIRED_STEGHEALTH_BINDING_MISSING")
+
+    def test_master_records_runtime_floor_is_canonical_query_entrypoint_merge(self) -> None:
+        self.assertEqual(
+            module.MASTER_RECORDS_SV001_SOURCE_FLOOR,
+            "8804762fb5da5d212aa7c9c448dfcdabac734715",
+        )
+        self.assertIn(
+            "services/canonical_state_transition_custody.py",
+            module.MASTER_RECORDS_SV001_PROTECTED_PATHS,
+        )
+        self.assertIn(
+            "services/canonical_master_records_api.py",
+            module.MASTER_RECORDS_SV001_PROTECTED_PATHS,
+        )
+
+    def test_master_records_source_proof_rejects_source_older_than_required_floor(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            mr = Path(tmp) / "orchestration"
+            mr.mkdir()
+            subprocess.run(["git", "init", str(mr)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.name", "Test"], check=True)
+            for rel in module.MASTER_RECORDS_SV001_PROTECTED_PATHS:
+                path = mr / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "old runtime source"], check=True, capture_output=True)
+            old = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            (mr / "README.md").write_text("runtime floor\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "required runtime floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            subprocess.run(["git", "-C", str(mr), "checkout", "--detach", old], check=True, capture_output=True)
+
+            proof = module.master_records_source_proof(mr, source_floor=floor)
+
+            self.assertEqual(proof["state"], "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT")
+            self.assertEqual(proof["head"], old)
 
     def test_master_records_source_proof_verifies_clean_floor_and_protected_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

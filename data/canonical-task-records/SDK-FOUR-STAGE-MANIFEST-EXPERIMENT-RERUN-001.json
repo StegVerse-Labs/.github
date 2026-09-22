@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "correlation_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "root_correlation_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+  "goal": "Repair the generic four-stage manifest-only SDK experiment, rerun all four stages against one current frozen SDK source identity with the manifest as the only per-stage execution input, and retain independently replayable documentation plus raw evidence.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_VALIDATED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_FOUR_STAGE_MANIFEST_EXPERIMENT_RERUN_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "manifest_only_per_stage_variable_input": true,
+    "one_frozen_sdk_source_identity_for_all_four_stages": true,
+    "test_specific_runner_allowed": false,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "documentation_bundle_complete": true
+  },
+  "evidence": {
+    "sdk_pr": 298,
+    "tested_head": "0f74d3b1ec2226d6cf668a6bd011b3e8cf104985",
+    "merged_main": "310c9fe7988a659c22764f4e16e2086f7cb22b12",
+    "tested_and_merged_tree": "56d6d64b4f887130792e7dd0e4cfe1553e0b12fc",
+    "four_stage_run_id": 35545606808,
+    "exact_head_workflows_passed": 12,
+    "github_artifact_id": 10616772029,
+    "github_artifact_sha256": "05a45ba5feb820a26106d6c2e112dd8571d9da9a61abad482de0e2e58297df21",
+    "delivered_bundle_sha256": "91e4034b20c399a78a757103c650a5faa16a18c66ea14815f003d7ddf2448ef7",
+    "test1": "PASS",
+    "test2": "PASS",
+    "test3": "PASS_SAME_ROUTE_INVARIANCE_PERSON_NEUTRALITY",
+    "task4": "PASS_CONCURRENT_INVOCATION_LIFETIME_OVERLAP_NOT_CPU_PARALLELISM"
+  },
+  "remaining_predicate": null
+}

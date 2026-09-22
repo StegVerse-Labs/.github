@@ -1,0 +1,34 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000107001",
+  "evidence_refs": [
+    "data/canonical-task-records/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2064",
+    "source-bundles/reusable-task-registry.d/RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001.json",
+    "scripts/run_tvc_runtime_boundary_reusable.py",
+    "StegVerse-Labs/TVC:requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-TT.json",
+    "StegVerse-Labs/TVC:requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-RTG.json",
+    "StegVerse-Labs/TVC:requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-GTG.json",
+    "StegVerse-Labs/TVC:requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-AE.json"
+  ],
+  "observed_at": "2026-09-17T20:45:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Existing child Goal remains ACTIVE/HANDOFF_READY and is bound to the reusable TVC runtime path without creating another runtime owner.",
+    "archive_ready": "Exact frozen TT/RTG/GTG/AE materialization and complete native bundle verification remain pending.",
+    "evidence_complete": "No authentic SERVICE_INSTALLED_VERIFIED/resident-state/four immutable exact-SHA materialization receipt set is yet retained.",
+    "activated": "Source registration and scheduling do not prove TVC runtime activation.",
+    "propagated": "No frozen corpus bundle or downstream native execution is promoted before all exact materialization predicates pass."
+  },
+  "authority_effect": "NONE"
+}

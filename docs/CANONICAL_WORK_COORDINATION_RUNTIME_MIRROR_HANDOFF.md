@@ -4,7 +4,7 @@ Updated: 2026-09-13
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `REGISTERED_TASK_INGRESS_RUNTIME_PROFILE_MAP_STAGED_LIVE_REGISTRY_PRESERVATION_SOURCE_COMPLETE_AUTHENTIC_LIFECYCLE_PENDING`
+Status: `REGISTERED_TASK_INGRESS_RUNTIME_PROFILE_MAP_STAGED_LIVE_REGISTRY_PRESERVATION_SOURCE_COMPLETE_STATE_TRANSITION_PENDING`
 
 ## Parent authority
 
@@ -54,17 +54,17 @@ Master Records corresponding bounded feed contract remains in `master-records/or
 
 `workers/canonical_work_intr_ingress.py` is a reusable adapter for the existing Universal InTr listener. It starts no server, validates CanonicalWork destination/binding, writes a write-once `INGRESS_ADMITTED` receipt, preserves the non-authorizing HB carrier boundary, and dispatches only the canonical-work coordination consumer.
 
-`scripts/install_canonical_work_universal_intr_route.py` is an idempotent fail-closed transformer for the existing `workers/universal_intr_profiled_ingress.py`. Source installation cannot itself prove authentic ingress.
+`scripts/install_canonical_work_universal_intr_route.py` is an idempotent fail-closed transformer for the existing `workers/universal_intr_profiled_ingress.py`. Source installation cannot itself prove governed ingress.
 
 `scripts/run_canonical_work_event_bootstrap.py` accepts an explicit **registered canonical task** only when it resolves exactly once in the Task Registry, remains `PROPOSED`, allows `INGRESS_ADMITTED`, has no projected WorkerCoordinator claim/fence, and preserves the canonical authority model. It refuses unregistered, duplicate, non-PROPOSED, already-claimed, or transition-ineligible task identities. It reuses the existing shared Universal InTr server and does not create another listener, scheduler, WorkerCoordinator, or authority path.
 
 `scripts/install_and_run_canonical_work_event_bootstrap.py` joins route install/check and bounded bootstrap in one resident-machine sequence and forwards the explicit registered task identity.
 
-The staged requests include the coordination task, `QUANTUM-RESILIENCE-001`, `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190`, and `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`. The Runtime Profile Map request is `control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`; its expected authentic request-consumption receipt is `receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`. All four reuse the one existing dispatcher selector `canonical_work_coordination` and the same resident consumer.
+The staged requests include the coordination task, `QUANTUM-RESILIENCE-001`, `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190`, and `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`. The Runtime Profile Map request is `control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`; its expected governed request-consumption transition result is `receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`. All four reuse the one existing dispatcher selector `canonical_work_coordination` and the same resident consumer.
 
 ## Live canonical registry preservation
 
-A source review after staging the Runtime Profile Map request identified a resident-state rollback hazard: the Canonical Work consumer's local source materialization list previously included `data/canonical-task-registry.json` as an unconditional exact-copy artifact. On a resident runtime that had already accumulated authentic ingress/runtime-resolution/task-state projections, a later request visit could therefore replace newer mutable coordination state with the static source registry.
+A source review after staging the Runtime Profile Map request identified a resident-state rollback hazard: the Canonical Work consumer's local source materialization list previously included `data/canonical-task-registry.json` as an unconditional exact-copy artifact. On a resident runtime that had already accumulated governed ingress/runtime-resolution/task-state projections, a later request visit could therefore replace newer mutable coordination state with the static source registry.
 
 That behavior is corrected. `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` now treats `data/canonical-task-registry.json` as `PRESERVE_IF_PRESENT` mutable resident coordination state. A fresh resident runtime may seed the registry from canonical source when the file is absent; an existing resident registry is retained byte-for-byte and its resident SHA-256 plus source SHA-256 are recorded in source-materialization evidence. The request-consumption receipt records whether the existing registry was preserved.
 
@@ -83,11 +83,11 @@ README completeness remains evidence-only and grants no execution or task author
 
 ## Registry state
 
-The checked-in canonical registry is generation 19. `STEGVERSE-CANONICAL-WORK-COORDINATION-001` and `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remain `PROPOSED` in source state unless authentic governed evidence says otherwise. Source/request staging, preservation logic, tests, merge, CI, deployment, and heartbeat progression do not promote task state.
+The checked-in canonical registry is generation 130. `STEGVERSE-CANONICAL-WORK-COORDINATION-001` and `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remain `PROPOSED` in source state unless a governed state transition changes that canonical state. Source/request staging, preservation logic, tests, merge, CI, deployment, and heartbeat progression do not promote task state.
 
 For Runtime Profile Map, its existing map-build/custody/reconciliation/readiness resident source remains non-authorizing. The Canonical Work request supplies explicit governed task-ingress staging for the lifecycle; it does not replace or duplicate Runtime Profile Map build consumers.
 
-## Required authentic runtime sequence
+## Required governed state-transition sequence
 
 ```text
 resident HB32/oscillator runtime dispatch cycle
@@ -96,7 +96,7 @@ resident HB32/oscillator runtime dispatch cycle
 -> consumer validates each exact REQUESTED object independently
 -> install_and_run_canonical_work_event_bootstrap.py --task-id <registered task>
 -> existing shared CanonicalWork/InTr route handles exact request
--> authentic task-specific INGRESS_ADMITTED receipt
+-> retained governed INGRESS_ADMITTED transition
 -> exact Canonical Work consumption/bootstrap evidence
 -> governed post-ingress registry persistence
 -> Master Records projection/reconciliation
@@ -116,17 +116,17 @@ No step may infer authority from a preceding receipt. Every state change require
 
 The Runtime Profile Map task now has a non-authorizing Canonical Work resident request staged through the generalized path, and the consumer no longer risks overwriting a newer resident canonical registry while materializing source. No authentic task ingress is claimed until `receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json` and nested task-specific ingress/consumption/bootstrap receipts are observed from the resident runtime.
 
-No such authentic request-consumption receipt is present in repository-observable source state at this handoff update.
+No such governed request-consumption transition result is present in repository-observable source state at this handoff update.
 
 ## Remaining machine work
 
 1. Existing resident dispatcher visits `canonical_work_coordination`; consumer visits all explicit Canonical Work request specs independently while preserving live resident task state.
 2. Observe authentic task-specific request-consumption plus Canonical Work ingress/consumption/bootstrap receipts without inferring them from source/merge/CI/deployment/HB progression.
-3. Govern resulting authentic ingress projections into canonical task state.
-4. Run Master Records pre-execution reconciliation and WorkerCoordinator admission review; project only authentic claim/fence evidence.
+3. Govern resulting governed ingress projections into canonical task state.
+4. Run Master Records pre-execution reconciliation and WorkerCoordinator admission review; project only retained WorkerCoordinator claim/fence transition closure.
 5. Continue already-owned governed work paths without duplicate execution substrates.
-6. Run post-execution Master Records reconciliation and governed egress/closure, then dependency fanout from authentic admitted dependency events.
-7. Prove a complete authentic lifecycle.
+6. Run post-execution Master Records reconciliation and governed egress/closure, then dependency fanout from retained admitted dependency transition events.
+7. Prove a complete terminal canonical state-transition lineage.
 
 ## Human action
 
@@ -134,4 +134,23 @@ None currently required for this source/request work. Any later human/device evi
 
 ## Archive readiness
 
-All unique continuation state is preserved here. This runtime workstream remains open until authentic end-to-end lifecycle evidence is observed.
+All unique continuation state is preserved here. This runtime workstream remains open until the canonical Goal reaches terminal state through retained governed transition closures.
+
+
+## 2026-09-19 ACTIVE/CHECKED_OUT carriage repair
+
+`STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` is already `ACTIVE / CHECKED_OUT`, so PROPOSED-only registry selection could not carry it to Canonical Work and the shared bootstrap also rejected it. The repair stays inside the existing `canonical_work_coordination` selector and consumer: an exact non-authorizing request reaches the shared Canonical Work bootstrap; ACTIVE/CHECKED_OUT is accepted only when `INGRESS_ADMITTED` is explicitly allowed, no WorkerCoordinator claim/fence is projected, and the authority model remains intact. Runtime ingress is recorded as `runtime_refs.ingress_state=INGRESS_ADMITTED` without demoting canonical coordination state. Focused regression coverage is `tests/test_steghealth_kv_interlock_canonical_work_ingress.py`. No separate runtime-proof class is required. The next state changes only when the governed transition itself is retained by Master Records with the required closure predicates.
+
+
+## 2026-09-21 StegHealth task-specific consumption-retention repair
+
+Tracing the standing Healer `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` lineage exposed the first deterministic producer-path defect after source-materialization closure. `scripts/refresh_and_dispatch_resident_requests.py` previously accepted exact-selector `DISPATCH_COMPLETE` for `canonical_work_coordination` without requiring the current Goal's task-specific consumption receipt. Because `scripts/trigger_reusable_task.py` classifies a successful runner with no standardized result as `AUTOMATABLE_STEPS_EXHAUSTED`, and the neutral scheduler treats that state as a satisfied slot, the StegHealth schedule could stop retrying even when `canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json` was still absent.
+
+The bounded repair keeps the existing path and authority model unchanged. For current Goal `STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001` only, portable dispatch now requires the retained receipt to:
+- use schema `stegverse.canonical-work-bootstrap-request-consumption/v1`;
+- identify the exact StegHealth Goal task;
+- be `state=COMPLETED`;
+- show no credential material and no network source fetch;
+- match the same dispatch's `canonical_work_request_set.outcomes[]` entry by task ID, request SHA-256, and bootstrap receipt reference.
+
+Until those predicates hold, the bridge returns `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, causing the existing reusable-task lifecycle to remain retryable rather than falsely satisfying the slot. This repair does not itself prove resident execution or create a WorkerCoordinator claim/fence, Interlock/InTr decision, or Master Records closure.

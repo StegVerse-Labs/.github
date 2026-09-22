@@ -1,0 +1,96 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001",
+  "correlation_id": "CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001",
+  "root_correlation_id": "CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001",
+  "parent_task_id": null,
+  "goal": "Define and validate the canonical governed contract for preserving complete conversation evidence, binding it to service/payment/performance evidence, producing explicit privacy- and jurisdiction-aware public derivatives, supporting provider response and independently evidenced corroborating customer submissions, retaining exact Master Records reconstruction, and exporting authorized unabridged enforcement evidence without treating publication, allegation, payment, nonperformance, or recurrence as an adjudicated legal conclusion.",
+  "coordination_state": "CLOSED",
+  "source_refs": [
+    "docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md",
+    "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+    "StegVerse-Labs/.github#2204"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/master-records"
+    ],
+    "components": [
+      "conversation-evidence-original",
+      "conversation-authenticity-envelope",
+      "attachment-manifest",
+      "redaction-manifest",
+      "transaction-service-performance-binding",
+      "provider-response-record",
+      "corroborating-customer-evidence",
+      "jurisdiction-aware-public-projection",
+      "master-records-reconstruction",
+      "authorized-enforcement-export"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github#2204"
+  ],
+  "expected_evidence_predicates": [
+    "CONTRACT_SCHEMA_VALID",
+    "ORIGINAL_CONVERSATION_BYTES_IMMUTABLY_HASH_BOUND",
+    "PARTICIPANT_AND_SOURCE_AUTHENTICITY_STATES_EXPLICIT",
+    "ATTACHMENTS_EXACTLY_HASH_BOUND_AND_ORDER_PRESERVED",
+    "PUBLIC_RECORD_DERIVED_FROM_ORIGINAL_WITH_EXPLICIT_REDACTION_MANIFEST",
+    "TRANSACTION_PROMISE_PAYMENT_PERFORMANCE_BINDING_EXPLICIT",
+    "PROVIDER_RESPONSE_AND_COUNTEREVIDENCE_PATH_DEFINED",
+    "CORROBORATION_REQUIRES_INDEPENDENT_TRANSACTION_EVIDENCE",
+    "JURISDICTION_AND_LAWFUL_PUBLICATION_REVIEW_STATE_EXPLICIT",
+    "PUBLICATION_DOES_NOT_IMPLY_LEGAL_FAULT_OR_PREDATORY_CLASSIFICATION",
+    "MASTER_RECORDS_RECONSTRUCTION_REQUIRES_EXACT_DIGEST_EQUALITY",
+    "AUTHORIZED_ENFORCEMENT_EXPORT_PRESERVES_UNABRIDGED_EVIDENCE",
+    "README_AND_MIRROR_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "canonical_artifact_validation"
+    ],
+    "environment": "CURRENT_SESSION_SOURCE_DESIGN",
+    "direction": "EVIDENCE_ORIGINAL_TO_GOVERNED_DERIVATIVES",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "StegVerse-Labs/.github#2205@8f9f85d510deb47eec0e70492163c7beb365d03c"
+  },
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": [
+    "docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

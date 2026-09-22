@@ -1,0 +1,8 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/ELAN-PAPER-COAUTHOR-PUBLICATION-001.json",
+  "source_state_vector_ref": "control/task-vectors/ELAN-PAPER-COAUTHOR-PUBLICATION-001.json",
+  "cosv_task_vector": "71000000100100"
+}

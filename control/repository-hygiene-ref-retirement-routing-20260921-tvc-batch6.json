@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.repository-hygiene-ref-retirement-routing/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-OWNER-CLEARANCE-BATCH6-20260921",
+  "source_approval_manifest": "StegVerse-Labs/TVC:.github/repository-hygiene-approved-retirements.txt",
+  "source_clearance_evidence": "StegVerse-Labs/TVC:evidence/repository-hygiene/2026-09-21-tvc-owner-clearance-batch6.json",
+  "source_revalidation_run_id": 35673548654,
+  "source_revalidation_head": "6f42373737c55e0d73601b9c00494c36820c4731",
+  "source_revalidation_artifact_id": 10671758096,
+  "source_revalidation_artifact_digest": "sha256:74a9a8c0f2d0408b2687a737daf9b9b95dbf256005218bc55bc9e068a1ed5972",
+  "manifest_approved_retirement_ready_count": 32,
+  "invalid_approved_count": 0,
+  "newly_routed_count": 1,
+  "previously_routed_count": 31,
+  "structural_candidate_count": 163,
+  "remaining_unapproved_structural_candidate_count": 131,
+  "routed_refs": [
+    "proof/aex-principle-completeness-capability"
+  ],
+  "route_target": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "route_state": "ROUTED_NON_DESTRUCTIVE_AUTHORITY_INPUT",
+  "deletion_performed": false,
+  "deletion_authorized_by_this_record": false,
+  "authority_effect": "NONE",
+  "notes": "Batch 6 only. CMC-014 hosted AEX governed-apply source retirement is validated/merged; fresh AEX runtime resolution remains separate and does not retain this historical proof ref. Repository-native retirement authority must independently revalidate current state before any deletion."
+}

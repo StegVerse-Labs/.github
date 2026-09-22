@@ -10,13 +10,16 @@ independent heartbeat carrier is not restarted or used as execution authority.
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import json
 import os
 import platform
 import shutil
 import subprocess
 import sys
-from pathlib import Path
+import tempfile
+from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Mapping
 
 from refresh_sovereign_worker_runtime_source import refresh
@@ -32,6 +35,153 @@ SOURCE_PACKAGE_COMPONENT_SLUGS = (
     "stegverse-core-lite",
     "stegverse-master-records",
 )
+
+MASTER_RECORDS_PACKAGE_SLUG = "stegverse-master-records"
+MASTER_RECORDS_COMPONENT_ID = "stegverse.master-records"
+MASTER_RECORDS_VENDOR_REL = Path("vendor/master-records-orchestration")
+MASTER_RECORDS_REFRESH_RECEIPT_REL = Path("receipts/sovereign-host/master-records-source-refresh.latest.json")
+MASTER_RECORDS_REQUIRED_SOURCE_FLOOR = "8804762fb5da5d212aa7c9c448dfcdabac734715"
+
+
+def _canonical_bytes(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def _sha256_bytes(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def materialize_master_records_source_package(source_package_root: Path, runtime_root: Path) -> dict[str, Any]:
+    package_path = source_package_root.expanduser().resolve() / MASTER_RECORDS_PACKAGE_SLUG / "package.json"
+    if not package_path.is_file():
+        return {
+            "state": "PACKAGE_NOT_PRESENT",
+            "package_path": str(package_path),
+            "materialization_performed": False,
+            "authority_effect": "NONE",
+        }
+    package = json.loads(package_path.read_text(encoding="utf-8"))
+    if package.get("schema") != "stegverse.source-package/v1" or package.get("package_version") != "1.0.0":
+        raise RuntimeError("Master Records source package schema/version mismatch")
+    if package.get("component_id") != MASTER_RECORDS_COMPONENT_ID:
+        raise RuntimeError("Master Records source package component mismatch")
+    if package.get("credential_material_included") is not False or package.get("authority_effect") != "NONE_SOURCE_TRANSPORT_ONLY":
+        raise RuntimeError("Master Records source package authority boundary mismatch")
+    provenance = package.get("provenance")
+    proof = provenance.get("source_proof") if isinstance(provenance, dict) else None
+    if not isinstance(proof, dict):
+        raise RuntimeError("Master Records source package provenance proof missing")
+    if (
+        proof.get("schema") != "stegverse.portable-source-proof/v1"
+        or proof.get("repository") != "master-records/orchestration"
+        or proof.get("source_floor") != MASTER_RECORDS_REQUIRED_SOURCE_FLOOR
+        or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE"
+        or proof.get("source_floor_present") is not True
+    ):
+        raise RuntimeError("Master Records source package provenance proof not verified at required floor")
+    head = str(proof.get("head") or "")
+    if len(head) != 40 or any(ch not in "0123456789abcdef" for ch in head):
+        raise RuntimeError("Master Records source package provenance head invalid")
+    files = package.get("files")
+    manifest = package.get("manifest")
+    if not isinstance(files, list) or not isinstance(manifest, dict):
+        raise RuntimeError("Master Records source package files/manifest missing")
+    manifest_rows = manifest.get("files")
+    if not isinstance(manifest_rows, list) or len(manifest_rows) != len(files) or manifest.get("file_count") != len(files):
+        raise RuntimeError("Master Records source package file count mismatch")
+    decoded: list[tuple[str, bytes]] = []
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for index, file_row in enumerate(files):
+        manifest_row = manifest_rows[index]
+        if not isinstance(file_row, dict) or not isinstance(manifest_row, dict):
+            raise RuntimeError("Master Records source package row malformed")
+        rel = str(file_row.get("path") or "")
+        pure = PurePosixPath(rel)
+        if not pure.parts or pure.is_absolute() or ".." in pure.parts or rel in seen or rel.startswith(".git/"):
+            raise RuntimeError("Master Records source package path invalid")
+        seen.add(rel)
+        expected = {"path": rel, "sha256": file_row.get("sha256"), "size": file_row.get("size")}
+        if any(manifest_row.get(key) != value for key, value in expected.items()):
+            raise RuntimeError("Master Records source package manifest/file mismatch")
+        try:
+            raw = base64.b64decode(str(file_row.get("content_base64") or ""), validate=True)
+        except Exception as exc:
+            raise RuntimeError("Master Records source package base64 invalid") from exc
+        if len(raw) != file_row.get("size") or _sha256_bytes(raw) != file_row.get("sha256"):
+            raise RuntimeError("Master Records source package file integrity mismatch")
+        decoded.append((rel, raw))
+        rows.append(expected)
+    digest = _sha256_bytes(_canonical_bytes(rows))
+    if manifest.get("source_bundle_sha256") != digest or package.get("source_identity") != "sha256:" + digest:
+        raise RuntimeError("Master Records source package identity mismatch")
+    required = {"services/canonical_master_records_api.py", "services/canonical_state_transition_custody.py"}
+    if not required.issubset(seen):
+        raise RuntimeError("Master Records canonical state-transition runtime source absent from package")
+    destination = runtime_root.expanduser().resolve() / MASTER_RECORDS_VENDOR_REL
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".master-records-refresh-", dir=destination.parent))
+    backup = destination.with_name(destination.name + ".refresh-backup")
+    try:
+        for rel, raw in decoded:
+            target = staging / Path(*PurePosixPath(rel).parts)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        if backup.exists():
+            shutil.rmtree(backup)
+        if destination.exists():
+            destination.replace(backup)
+        staging.replace(destination)
+        if backup.exists():
+            shutil.rmtree(backup)
+    except Exception:
+        if destination.exists() and backup.exists():
+            shutil.rmtree(destination, ignore_errors=True)
+        if backup.exists() and not destination.exists():
+            backup.replace(destination)
+        raise
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging, ignore_errors=True)
+    return {
+        "state": "MATERIALIZED_VERIFIED",
+        "package_path": str(package_path),
+        "source_identity": package.get("source_identity"),
+        "target_root": str(destination),
+        "file_count": len(decoded),
+        "canonical_master_records_api_loaded_from_package": True,
+        "network_source_fetch_performed": False,
+        "credential_read_or_acquired": False,
+        "materialization_performed": True,
+        "package_provenance": package.get("provenance"),
+        "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+    }
+
+
+
+def materialize_master_records_source_package_and_retain(source_package_root: Path, runtime_root: Path) -> dict[str, Any]:
+    runtime = runtime_root.expanduser().resolve()
+    result = materialize_master_records_source_package(source_package_root, runtime)
+    receipt = {
+        "schema": "stegverse.master-records-resident-source-refresh/v1",
+        "state": result.get("state"),
+        "source_identity": result.get("source_identity"),
+        "package_path": result.get("package_path"),
+        "target_root": result.get("target_root"),
+        "file_count": result.get("file_count"),
+        "canonical_master_records_api_loaded_from_package": result.get("canonical_master_records_api_loaded_from_package", False),
+        "materialization_performed": result.get("materialization_performed", False),
+        "network_source_fetch_performed": result.get("network_source_fetch_performed", False),
+        "credential_read_or_acquired": result.get("credential_read_or_acquired", False),
+        "package_provenance": result.get("package_provenance"),
+        "dispatch_authority_granted": False,
+        "runtime_authority_granted": False,
+        "authority_effect": "NONE_SOURCE_REFRESH_EVIDENCE_ONLY",
+    }
+    path = runtime / MASTER_RECORDS_REFRESH_RECEIPT_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
 
 
 def default_source_package_root(env: dict[str, str] | None = None) -> Path:
@@ -68,6 +218,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     # This grants no transport or execution authority; it only removes a stale-self
     # bootstrap dependency at the source->runtime projection boundary.
     refresh_script = source / "scripts/refresh_sovereign_worker_runtime_source.py"
+    materializer = source / "scripts/install_sovereign_worker_source_refresh_service.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
     safe_local_bindings = {}
@@ -90,6 +241,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "Type=oneshot",
         *environment_lines,
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(materializer)} --runtime-root {_quote(runtime)} --source-package-root {_quote(packages)} --materialize-master-records-only",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
@@ -112,6 +264,8 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         source / "source-bundles",
         source / "review-packages",
         source / "tasks",
+        source / "data/canonical-task-registry.json",
+        source / "data/canonical-task-records",
         source / "control/worker-registry.d",
         source / "control/process-worker-adapters.d",
         source / "control/task-vectors",
@@ -171,6 +325,7 @@ def install(
     runtime = runtime_root.expanduser().resolve()
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     refresh_receipt = refresh(source, runtime)
+    master_records_source_refresh = materialize_master_records_source_package_and_retain(packages, runtime)
 
     immediate_dispatch = {
         "attempted": False,
@@ -256,6 +411,7 @@ def install(
         "refresh_path_unit": str(path_path),
         "worker_service": WORKER_SERVICE,
         "immediate_refresh": refresh_receipt,
+        "master_records_source_refresh": master_records_source_refresh,
         "immediate_resident_request_dispatch": immediate_dispatch,
         "activation_results": results,
         "activated": activate,
@@ -290,7 +446,12 @@ def main() -> int:
     parser.add_argument("--unit-root", type=Path)
     parser.add_argument("--source-package-root", type=Path, default=default_source_package_root())
     parser.add_argument("--no-activate", action="store_true")
+    parser.add_argument("--materialize-master-records-only", action="store_true")
     args = parser.parse_args()
+    if args.materialize_master_records_only:
+        result = materialize_master_records_source_package_and_retain(args.source_package_root, args.runtime_root)
+        print(json.dumps(result, sort_keys=True))
+        return 0
     receipt = install(
         args.source_root,
         args.runtime_root,

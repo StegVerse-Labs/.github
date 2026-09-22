@@ -46,12 +46,37 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         worker_ids = {str(item.get("worker_id")) for item in workers if item.get("worker_id")}
         applied: list[str] = []
 
-        for path in sorted(self.registry_fragment_dir.glob("*.json")):
-            fragment = self._load(path)
-            if task_id_filter is not None:
-                declared_task_ids = {str(item.get("task_id")) for item in fragment.get("tasks", []) if isinstance(item, dict) and item.get("task_id")}
+        fragment_paths = sorted(self.registry_fragment_dir.glob("*.json"))
+        selected_paths: set[Path] | None = None
+        provider_paths: set[Path] = set()
+        if task_id_filter is not None:
+            selected_paths = set()
+            for candidate in fragment_paths:
+                candidate_fragment = self._load(candidate)
+                declared_task_ids = {
+                    str(item.get("task_id"))
+                    for item in candidate_fragment.get("tasks", [])
+                    if isinstance(item, dict) and item.get("task_id")
+                }
                 if task_id_filter not in declared_task_ids:
                     continue
+                selected_paths.add(candidate.resolve())
+                for ref in candidate_fragment.get("shared_worker_provider_fragment_refs", []):
+                    if not isinstance(ref, str) or not ref:
+                        raise RuntimeError(f"invalid shared worker provider fragment ref: {candidate.name}")
+                    provider = (self.root / ref).resolve()
+                    try:
+                        provider.relative_to(self.registry_fragment_dir.resolve())
+                    except ValueError as exc:
+                        raise RuntimeError(f"shared worker provider fragment escaped registry directory: {ref}") from exc
+                    if not provider.is_file():
+                        raise RuntimeError(f"shared worker provider fragment missing: {ref}")
+                    provider_paths.add(provider)
+            fragment_paths = sorted(selected_paths | provider_paths)
+
+        for path in fragment_paths:
+            fragment = self._load(path)
+            provider_only = task_id_filter is not None and path.resolve() in provider_paths and path.resolve() not in (selected_paths or set())
             if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
                 raise RuntimeError(f"unsupported worker registry fragment schema: {path.name}")
             if fragment.get("authority_effect") != "NONE_REGISTRATION_ONLY":
@@ -60,7 +85,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 raise RuntimeError(f"worker registry fragment may not require GitHub token authority: {path.name}")
 
             changed = False
-            for task in fragment.get("tasks", []):
+            for task in ([] if provider_only else fragment.get("tasks", [])):
                 if not isinstance(task, dict):
                     raise RuntimeError(f"invalid task in registry fragment: {path.name}")
                 task_id = task.get("task_id")

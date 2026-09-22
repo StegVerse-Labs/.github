@@ -9,6 +9,8 @@ RECEIPT_REL=Path("receipts/sovereign-host/one-shot-resident-stack-activation-req
 FENCE_REL=Path("control/one-shot-resident-stack-activation.in-progress.json")
 PROGRESSION_REL=Path("scripts/run_stegverse001_activation_progression.py")
 TASK_ID="SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
+HEALER_STEGHEALTH_SOURCE_FLOOR="585cf38aad95fda69dbcbd0150c1256571f90feb"
+HEALER_STEGHEALTH_TASK_ID="STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
 Runner=Callable[...,subprocess.CompletedProcess[str]]
 
 ENV_KEYS={
@@ -170,6 +172,23 @@ def refresh_stegindex_operational_proof(runtime_root:Path)->dict[str,Any]|None:
     )
     return parse_last_json(completed.stdout)
 
+def prior_activation_covers_current_healer_source(old:dict[str,Any])->bool:
+    result=old.get("execution_result")
+    if not isinstance(result,dict):
+        return False
+    proof=result.get("healer_source_proof")
+    return bool(
+      isinstance(proof,dict)
+      and proof.get("state")=="VERIFIED_LOCAL_GIT_SOURCE"
+      and proof.get("repository")=="StegVerse-Labs/StegVerse-Healer"
+      and proof.get("source_floor")==HEALER_STEGHEALTH_SOURCE_FLOOR
+      and proof.get("source_floor_present") is True
+      and proof.get("required_steghealth_binding_present") is True
+      and proof.get("required_schedule_task_id")==HEALER_STEGHEALTH_TASK_ID
+      and proof.get("clean_worktree_at_packaging") is True
+      and proof.get("network_fetch_performed") is False
+    )
+
 def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None)->dict[str,Any]:
     source=source_root.resolve(); runtime=runtime_root.resolve()
     request_path=runtime/REQUEST_REL
@@ -182,13 +201,19 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
     receipt_path=runtime/RECEIPT_REL
     if receipt_path.is_file():
         old=load(receipt_path)
-        if old.get("request_sha256")==rh and old.get("activation_complete") is True:
+        if (
+            old.get("request_sha256")==rh
+            and old.get("activation_complete") is True
+            and prior_activation_covers_current_healer_source(old)
+        ):
             observed_roots,observed_missing=resolve_roots(env)
             out={
               "schema":"stegverse.resident-execution-request-consumption/v1",
               "state":"ALREADY_CONSUMED","request_id":req.get("request_id"),"request_sha256":rh,
               "task_id":TASK_ID,"runtime_execution_attempted":False,"activation_complete":True,
               "exactly_once_after_complete":True,
+      "completion_reuse_basis":"REQUEST_HASH_AND_REQUIRED_HEALER_SOURCE_PROOF",
+              "completion_reuse_basis":"REQUEST_HASH_AND_REQUIRED_HEALER_SOURCE_PROOF",
               "resolved_source_roots":sorted(observed_roots),
               "missing_source_roots":sorted(observed_missing),
               "stegindex_source_root_resolved":"stegindex" in observed_roots and "stegindex" not in observed_missing,

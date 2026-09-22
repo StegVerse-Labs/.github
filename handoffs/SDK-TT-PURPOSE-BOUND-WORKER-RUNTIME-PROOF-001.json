@@ -1,0 +1,446 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "authority": {
+    "authority_source": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json + existing STEGAGENTS-GOVERNED-RUNTIME-001 runtime owner + TV warrant/policy + StegCore/InTr",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "credential_value_available_to_worker": false,
+    "github_token_required": false,
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "request_grants_execution_authority": false,
+    "second_machine_required": false,
+    "policy_version": "sdk-tt-purpose-bound-worker-runtime-proof-v0.1"
+  },
+  "task": {
+    "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "canonical_lineage_key": "sdk:tt-purpose-bound-worker:runtime-proof",
+    "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+    "derivation_depth": 1,
+    "derivation_reason": "Authentic runtime successor to the completed local-console semantic proof.",
+    "priority": "runtime",
+    "source_refs": [
+      "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+      "workers/stegagents_governed_runtime_worker.py",
+      "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+      "StegVerse-Labs/StegAgents:src/purpose_bound_worker_runtime.py"
+    ],
+    "dependencies": [],
+    "coordination_refs": [
+      "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+      "STEGAGENTS-GOVERNED-RUNTIME-001"
+    ],
+    "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "runtime_predecessor_reconstruction_required": false,
+    "runtime_capability_provider_task_id": "STEGAGENTS-GOVERNED-RUNTIME-001"
+  },
+  "execution": {
+    "required_capabilities": [
+      "stegagents_purpose_bound_worker_lifecycle",
+      "stegagents_purpose_bound_worker_state_graph"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof/*.json",
+      "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json",
+      "receipts/stegagents-governed-runtime/master-records.sqlite"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 1,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "stegagents_governed_runtime",
+    "lifetime_semantics": {
+      "demo_max_lifetime_seconds": 30,
+      "demo_value_is_production_default": false,
+      "production_lifetime_basis": "RECOMPUTE_FROM_INTENDED_TASK_COST_PLUS_KNOWN_DELAY_PLUS_INFERRED_UNKNOWN_DELAY_RESERVE_PLUS_RECORDS_DECOMPOSITION_PLUS_SAFETY_RESERVE",
+      "early_retirement_on_purpose_completion": true,
+      "extension_requires_new_governed_recalculation": true,
+      "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
+    }
+  },
+  "runtime_routing": {
+    "map_ref": "control/runtime-profile-map.json",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "canonical-work-coordination-runtime-v1"
+    ],
+    "routing_ready_for_workercoordinator_review": true,
+    "selection_grants_authority": false,
+    "authority_effect": "NONE_ROUTING_READINESS_ONLY"
+  },
+  "activation": {
+    "carrier": "heartbeat_reference_only",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json#authority",
+    "checkout_policy": "fresh_independent_workercoordinator_claim_after_runtime_routing_readiness",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+      ],
+      "requires_existing_separated_carrier_reference": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "purpose_bound_worker_request": {
+    "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+    "transition_cell": {
+      "cell_id": "tt-cell-purpose-worker-001",
+      "protocol_version": "local-demo-v1",
+      "pre_state": {
+        "worker_live": false
+      },
+      "candidate": {
+        "operation_id": "tracked-task-001",
+        "operation_class": "ARBITRARY_TRACKED_TASK",
+        "purpose": "Analyze a supplied text payload for a tracked integrity summary.",
+        "required_capability": "text.integrity_summary",
+        "max_lifetime_seconds": 30,
+        "payload": {
+          "text": "StegVerse tracks this arbitrary local worker task."
+        },
+        "lifetime_policy": {
+          "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+          "profile": "DEMONSTRATION",
+          "cost_analysis": {
+            "task_cost_basis": "deterministic local integrity summary",
+            "expected_compute_units": 1,
+            "external_cost_usd_ceiling": 0
+          },
+          "time_budget_seconds": {
+            "expected_task_execution": 6,
+            "known_delay": 4,
+            "inferred_unknown_delay_reserve": 8,
+            "records_decomposition": 7,
+            "safety_reserve": 5
+          },
+          "derived_max_lifetime_seconds": 30,
+          "production_recompute_required": true,
+          "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+          "decomposition_target": "RECORDS_ENABLED_PACKET",
+          "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+        }
+      }
+    }
+  },
+  "completion": {
+    "next_authorized_action": "Execute the exact state_dependent_graph through the existing targeted WorkerCoordinator one-shot. WorkerCoordinator must bind one six-claim graph bundle in the Case 1 assignment closure; Case 2 and Case 3 admissions consume the immediately preceding RETIRED Master Records closure; Task 4 admits and atomically binds its three sibling workers from the Case 3 closure; the terminal aggregate is permitted only after the three-way RETIRED closure join.",
+    "terminal_when": [
+      "authentic_tt_cell_request_hash_observed=true",
+      "authentic_workercoordinator_claim_fence_observed=true",
+      "authentic_required_warrant_policy_verified=true",
+      "authentic_intr_materialization_admission_observed=true",
+      "authentic_purpose_bound_worker_instance_observed=true",
+      "authentic_task_result_bound_to_worker_and_transition=true",
+      "authentic_worker_retirement_observed=true",
+      "post_retirement_continued_authority=false",
+      "authentic_master_records_custody_recorded=true",
+      "authentic_master_records_reconstruction_match=true",
+      "authentic_records_only_final_packet=true"
+    ]
+  },
+  "block": {
+    "block_reason": "No authentic SDK purpose-bound runtime state transition is yet recorded in Master Records. This is not a Healer, resident-root, scheduler, dispatcher, or carrier prerequisite.",
+    "dependency": "fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle -> Master Records per-transition evidence closure",
+    "observer": "single canonical WorkerCoordinator plus authoritative Master Records custody/reconstruction",
+    "recheck_trigger": "next authentic SDK state transition",
+    "next_check": "authoritative Master Records state-transition receipt for SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "escalation_condition": "duplicate runtime/worker/adapter authority, warrant substitution, InTr substitution, provider credential exposure, unsupported Healer/resident-root dependency, or second-machine requirement",
+    "block_expires_at": null
+  },
+  "state_dependent_graph": {
+    "schema": "stegverse.purpose-bound-worker-state-graph-handoff/v1",
+    "enabled": true,
+    "graph_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001:FOUR-CASE-GRAPH",
+    "claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "StegCore/InTr",
+    "custody_authority": "MASTER_RECORDS",
+    "case_progression_rule": "NEXT_CASE_ADMISSION_REQUIRES_IMMEDIATELY_PRECEDING_TERMINAL_MASTER_RECORDS_CLOSURE",
+    "single_worker_requests": [
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-1-low-case1",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-1-LOW-case1",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Produce a deterministic integrity summary for one bounded UTF-8 payload.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 15,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-1-LOW case1."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-1-LOW deterministic integrity work",
+                "expected_compute_units": 1,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 3,
+                "known_delay": 2,
+                "inferred_unknown_delay_reserve": 3,
+                "records_decomposition": 4,
+                "safety_reserve": 3
+              },
+              "derived_max_lifetime_seconds": 15,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      },
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-2-median-case2",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-2-MEDIAN-case2",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Produce integrity summary plus deterministic structural segmentation for one bounded UTF-8 payload.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 30,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-2-MEDIAN case2."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-2-MEDIAN deterministic integrity work",
+                "expected_compute_units": 3,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 6,
+                "known_delay": 4,
+                "inferred_unknown_delay_reserve": 8,
+                "records_decomposition": 7,
+                "safety_reserve": 5
+              },
+              "derived_max_lifetime_seconds": 30,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      },
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-3-high-case3",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-3-HIGH-case3",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Produce integrity summary, segmentation, and deterministic multi-pass verification for one bounded UTF-8 payload.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 60,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-3-HIGH case3."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-3-HIGH deterministic integrity work",
+                "expected_compute_units": 9,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 18,
+                "known_delay": 8,
+                "inferred_unknown_delay_reserve": 14,
+                "records_decomposition": 12,
+                "safety_reserve": 8
+              },
+              "derived_max_lifetime_seconds": 60,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      }
+    ],
+    "task4_worker_requests": [
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-4-three-worker-concurrent-worker-a",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT-worker-a",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Execute Task 4 deterministic partition A from the common governed parent state.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 30,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT worker-a."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT deterministic integrity work",
+                "expected_compute_units": 3,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 6,
+                "known_delay": 4,
+                "inferred_unknown_delay_reserve": 8,
+                "records_decomposition": 7,
+                "safety_reserve": 5
+              },
+              "derived_max_lifetime_seconds": 30,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      },
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-4-three-worker-concurrent-worker-b",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT-worker-b",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Execute Task 4 deterministic partition B from the common governed parent state.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 30,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT worker-b."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT deterministic integrity work",
+                "expected_compute_units": 3,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 6,
+                "known_delay": 4,
+                "inferred_unknown_delay_reserve": 8,
+                "records_decomposition": 7,
+                "safety_reserve": 5
+              },
+              "derived_max_lifetime_seconds": 30,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      },
+      {
+        "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+        "transition_cell": {
+          "cell_id": "tt-cell-pbw-demo-task-4-three-worker-concurrent-worker-c",
+          "protocol_version": "state-graph-v1",
+          "pre_state": {
+            "worker_live": false
+          },
+          "candidate": {
+            "operation_id": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT-worker-c",
+            "operation_class": "ARBITRARY_TRACKED_TASK",
+            "purpose": "Execute Task 4 deterministic partition C from the common governed parent state.",
+            "required_capability": "text.integrity_summary",
+            "max_lifetime_seconds": 30,
+            "payload": {
+              "text": "StegVerse state-dependent lifecycle demonstration PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT worker-c."
+            },
+            "lifetime_policy": {
+              "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+              "profile": "DEMONSTRATION",
+              "cost_analysis": {
+                "task_cost_basis": "PBW-DEMO-TASK-4-THREE-WORKER-CONCURRENT deterministic integrity work",
+                "expected_compute_units": 3,
+                "external_cost_usd_ceiling": 0
+              },
+              "time_budget_seconds": {
+                "expected_task_execution": 6,
+                "known_delay": 4,
+                "inferred_unknown_delay_reserve": 8,
+                "records_decomposition": 7,
+                "safety_reserve": 5
+              },
+              "derived_max_lifetime_seconds": 30,
+              "production_recompute_required": true,
+              "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+              "decomposition_target": "RECORDS_ENABLED_PACKET",
+              "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
+            }
+          }
+        }
+      }
+    ],
+    "task4": {
+      "worker_count": 3,
+      "aggregate_expected_compute_units": 9,
+      "per_worker_expected_compute_units": 3,
+      "per_worker_derived_max_lifetime_seconds": 30,
+      "group_wall_clock_budget_seconds": 30,
+      "parent_action": "ADMIT_AND_ATOMICALLY_BIND_TASK4_THREE_WORKERS",
+      "final_join_transition": "PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN"
+    },
+    "closure_requirement": {
+      "state": "RECORDED",
+      "reconstruction_status": "PASS",
+      "required_evidence_validation_status": "PASS",
+      "exact_receipt_reconstruction_digest_equality": true
+    },
+    "authority_effect": "NONE_EXECUTABLE_GRAPH_CONTRACT_ONLY"
+  }
+}

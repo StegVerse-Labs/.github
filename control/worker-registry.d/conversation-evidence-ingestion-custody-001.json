@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHENTIC_SYNTHETIC_MASTER_RECORDS_CUSTODY_NOT_YET_RECONCILED"
+      ],
+      "authorized_policy_version": "conversation-evidence-ingestion-custody-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/conversation-evidence-ingestion-custody.json",
+      "evidence_refs": [
+        "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+        "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "handoff_ref": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 0,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "20011000100000",
+          "vector_state": "EMITTED",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:conversation-evidence-ingestion-custody-v1",
+      "authority_source": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json#authority",
+      "capabilities": [
+        "conversation_evidence_synthetic_ingestion_custody"
+      ],
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "conversation-evidence-ingestion-custody-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}

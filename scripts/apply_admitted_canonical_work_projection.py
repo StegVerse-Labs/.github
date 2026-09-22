@@ -48,13 +48,14 @@ def validate_receipts(ingress: dict[str, Any], consumption: dict[str, Any]) -> t
 def project_task(task: dict[str, Any], *, correlation_id: str, ingress: dict[str, Any], consumption: dict[str, Any]) -> dict[str, Any]:
     proposed = copy.deepcopy(task)
     require(proposed.get("correlation_id") == correlation_id, "correlation identity drift")
-    require(proposed.get("coordination_state") in {"PROPOSED", "INGRESS_ADMITTED"}, "current task state is not ingress-projectable")
+    coordination_state = proposed.get("coordination_state")
+    active_checked_out = coordination_state == "ACTIVE" and proposed.get("checkout_state") == "CHECKED_OUT"
+    require(coordination_state in {"PROPOSED", "INGRESS_ADMITTED"} or active_checked_out, "current task state is not ingress-projectable")
 
     ingress_ref = consumption.get("ingress_receipt_ref")
     require(isinstance(ingress_ref, str) and ingress_ref, "ingress receipt ref required")
     consumption_ref = consumption.get("consumption_receipt_ref") or f"runtime://canonical-work-consumption/{ingress['materialization_id']}"
 
-    proposed["coordination_state"] = "INGRESS_ADMITTED"
     proposed.setdefault("runtime_refs", {})
     proposed["runtime_refs"].update({
         "materialization_id": ingress["materialization_id"],
@@ -62,12 +63,16 @@ def project_task(task: dict[str, Any], *, correlation_id: str, ingress: dict[str
         "consumption_receipt_ref": consumption_ref,
         "request_hash": ingress["request_hash"],
         "payload_hash": ingress["payload_hash"],
+        "ingress_state": "INGRESS_ADMITTED",
     })
+    if not active_checked_out:
+        proposed["coordination_state"] = "INGRESS_ADMITTED"
     evidence = proposed.setdefault("existing_evidence_refs", [])
     for ref in (ingress_ref, consumption_ref):
         if ref not in evidence:
             evidence.append(ref)
-    proposed["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
+    if not active_checked_out:
+        proposed["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
     return proposed
 
 

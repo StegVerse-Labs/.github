@@ -209,3 +209,64 @@ def test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_s
     assert "control_plane_source_package_required\": False" in source
     assert "dispatch_resident_execution_requests" not in source
     assert "control_plane_source_package" not in source.lower().replace('control_plane_source_package_required', '')
+
+
+def test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td)
+        binding = {
+            "schema":"stegverse.stegbrowser-universal-intr-invocation-binding/v1",
+            "state":"BOUND_FOR_UNIVERSAL_INTR_MATERIALIZATION",
+            "goal_task_id":consumer.GOAL_ID,
+            "parent_task_id":consumer.PARENT_TASK_ID,
+            "cosv_task_vector":consumer.COSV,
+            "invocation_request_nonce":consumer.NONCE,
+            "manifest_ref":"manifest.json",
+            "manifest_sha256":"a"*64,
+            "node_genesis_receipt_ref":"indexeddb://stegos-node-v1/meta/registration",
+            "node_id":"SV-NODE-"+"a"*24,
+            "interlock_id":"SV-IL-"+"b"*24,
+            "registration_receipt_sha256":"sha256:"+"c"*64,
+            "stegos_source_root":"StegVerse-Labs/Site#SV002_VALIDATED_BROWSER_BASELINE",
+            "request_mutated":False,
+            "resident_request_sweep_required":False,
+            "control_plane_source_package_required":False,
+            "credential_authority":"TV/TVC",
+            "github_runtime_authority":"NONE",
+            "authority_effect":"NONE_BINDING_ONLY",
+        }
+        payload_hash = consumer.digest_uri(binding)
+        req = request("opaque://stegbrowser-manifest-invocation/" + payload_hash[7:], payload_hash)
+        packet = trigger(req, node_id=binding["node_id"], interlock_id=binding["interlock_id"])
+        packet["node_outbox_entry"]["binding_hash"] = payload_hash
+        packet["node_outbox_entry"]["stegbrowser_invocation"] = binding
+        entry_body = dict(packet["node_outbox_entry"])
+        entry_body.pop("outbox_entry_hash", None)
+        packet["node_outbox_entry"]["outbox_entry_hash"] = ingress.sha_uri(entry_body)
+        packet["outbox_entry_hash"] = packet["node_outbox_entry"]["outbox_entry_hash"]
+        trigger_body = dict(packet)
+        trigger_body.pop("trigger_sha256", None)
+        packet["trigger_sha256"] = ingress.sha_uri(trigger_body)
+        raw = json.dumps(packet, sort_keys=True, separators=(",", ":")).encode()
+        headers = {
+            "Content-Type":"application/json",
+            "X-StegVerse-Transport":"InTr",
+            "X-StegVerse-Transport-Origin":ingress.hil.ORIGIN_NODE,
+            "X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest(),
+        }
+        with patch.object(ingress, "_dispatch") as dispatch:
+            dispatch.return_value = {"consumer_dispatch_attempted": True, "authority_effect": "NONE_DISPATCH_ONLY"}
+            receipt = ingress.admit(runtime_root=runtime, body=raw, headers=headers)
+        digest = payload_hash[7:]
+        retained = runtime / ingress.BINDING_DIR_REL / f"{digest}.json"
+        assert retained.is_file()
+        assert json.loads(retained.read_text(encoding="utf-8")) == binding
+        assert receipt["binding_payload_ref"] == req["payload_ref"]
+        assert Path(receipt["binding_custody_ref"]) == retained
+
+
+def test_consumer_maps_opaque_binding_ref_to_ingress_retained_binding_path():
+    source = (ROOT / "workers/stegbrowser_intr_materialization_consumer.py").read_text(encoding="utf-8")
+    assert 'opaque_prefix = "opaque://stegbrowser-manifest-invocation/"' in source
+    assert 'payload_path = runtime / BINDING_DIR_REL / f"{digest}.json"' in source
+    assert 'request.get("payload_hash") != "sha256:" + digest' in source

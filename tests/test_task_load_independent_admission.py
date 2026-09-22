@@ -54,9 +54,14 @@ class TaskLoadIndependentAdmissionTests(unittest.TestCase):
         self.assertFalse(fragment["resident_sampler_required_for_progression"])
 
     def test_cosv_packet_automation_is_independently_claimable(self) -> None:
-        self.assert_independent(
+        task = self.assert_independent(
             "control/worker-registry.d/cosv-live-packet-automation-006.json",
             "COSV-LIVE-PACKET-AUTOMATION-006",
+        )
+        handoff = self.load("handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json")
+        self.assertEqual(
+            task["authorized_policy_version"],
+            handoff["authority"]["policy_version"],
         )
 
     def test_optional_resident_sampler_is_independently_claimable_but_not_heartbeat_authority(self) -> None:

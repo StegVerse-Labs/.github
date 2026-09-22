@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-resident-carrier-reobservation/v1",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "observed_on": "2026-09-17",
+  "goal_prompt_count": "6/20",
+  "registry_generation_entering": 30,
+  "immutable_invocation": {
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "coordinated_owners": {
+    "shared_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "root_observation_owner": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+    "remediation_owner": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "any_owner_mutated": false,
+    "global_measurement_entered": false
+  },
+  "exact_machine_owned_predicate": {
+    "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+    "resident_receipt": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+    "embedded_pointer": "execution_result.resident_custody_root_observation_retention",
+    "pointer_fields": [
+      "packet_ref",
+      "packet_relative_path",
+      "packet_sha256",
+      "retained_under_root",
+      "retained_under_root_source",
+      "packet_state"
+    ],
+    "retained_packet": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json"
+  },
+  "reobservation": {
+    "organization_wide_exact_name_search_performed": true,
+    "issue_lineage_rechecked": [
+      "StegVerse-Labs/.github#1860",
+      "StegVerse-Labs/.github#1866",
+      "StegVerse-Labs/.github#1260"
+    ],
+    "new_authentic_resident_carrier_consumption_receipt_observed": false,
+    "new_authentic_embedded_pointer_observed": false,
+    "new_authentic_retained_packet_observed": false,
+    "packet_state_resident_custody_root_observed": false,
+    "exactly_one_authentic_root_available": false,
+    "source_or_classification_hits_only": true,
+    "historical_visible_healer_run_34891841481_artifact_count": 0
+  },
+  "classifier": {
+    "script": "scripts/check_stegbrowser_runtime_consumption_receipts.py",
+    "run": false,
+    "reason": "No authentic resident scheduler consumption receipt exposed an embedded pointer proving RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root."
+  },
+  "immutable_tuple": {
+    "available": false,
+    "missing_fields": [
+      "runtime_readiness_receipt_sha256",
+      "readiness_node_receipt_sha256",
+      "node_id",
+      "interlock_id",
+      "registration_receipt_sha256",
+      "lease_id",
+      "runtime_id",
+      "exported_bundle_sha256",
+      "stegbrowser_custody_transition_admission_identity"
+    ]
+  },
+  "downstream": {
+    "gateway_advertisement_validation_entered": false,
+    "custody_submission_attempted": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false
+  },
+  "prohibited_effects": {
+    "new_exporter": false,
+    "new_observer": false,
+    "new_runtime": false,
+    "new_request": false,
+    "new_scheduler": false,
+    "new_recovery_path": false,
+    "new_measurement_run": false,
+    "fixed_host_dependency": false,
+    "second_user_operated_device": false
+  },
+  "disposition": "PRESERVE_EXISTING_RESIDENT_CARRIER_RECEIPT_PREDICATE_UNCHANGED",
+  "authority_effect": "NONE_REOBSERVATION_ONLY"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.preflight.mir-sv002-initiation-mechanism/v1",
+  "task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "mir_goal_task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "cosv_task_vector": "50000000100000",
+  "recorded_at": "2026-09-17",
+  "finding": "THE_SUCCESSFUL_SV002_SEQUENCE_WAS_INITIATED_FROM_THE_SITE_BROWSER_EVENT_SURFACE_NOT_FROM_A_PREEXISTING_REMOTE_MACHINE_EXECUTION_CONNECTOR",
+  "historical_site_surface": "StegVerse-Labs/Site:sv002-observe/index.html",
+  "historical_event_handler": "StegVerse-Labs/Site:assets/sv002-observe.js#observe",
+  "historical_runtime_materializer": "StegVerse-Labs/Site:assets/sv002-local-runtime-materializer.js",
+  "historical_network_sync": "StegVerse-Labs/Site:stegos-node/sv002-intr-sync.js",
+  "validated_reuse_ref": "StegVerse-Labs/Site:docs/STEGBROWSER_SV002_VALIDATED_LANE_RETEST.md",
+  "hard_invariants": {
+    "event_is_trigger": true,
+    "idle_runtime_required": false,
+    "remote_host_discovery_allowed": false,
+    "workercoordinator_claim_required_for_event_creation": false,
+    "claim_or_fence_minted": false,
+    "request_grants_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "interlock_intr_remains_transition_authority": true,
+    "master_records_remains_custody_reconstruction_only": true
+  },
+  "mir_reimplementation": {
+    "browser_binding": "StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json",
+    "browser_canonical_custody": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "browser_event_runtime": "StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js",
+    "browser_activation": "StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js",
+    "browser_surface": "StegVerse-Labs/Site:mir-roundtrip/index.html",
+    "source_tests": "StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py",
+    "source_validation_workflow": "StegVerse-Labs/Site:.github/workflows/mir-sv002-browser-event-conformance.yml",
+    "autostart_on_browser_event_surface": true,
+    "python_driver_is_primary_runtime": false,
+    "temporary_probe_is_primary_custody": false
+  },
+  "canonical_transition_sequence": [
+    "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
+    "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009",
+    "MIR_DESTINATION_EVIDENCE_RETAINED",
+    "EXACT_GOVERNED_RETURN_PACKET_RETAINED",
+    "STEGVERSE_RETURN_EXIT_or_MIR_GOVERNED_RETURN_FAIL_CLOSED"
+  ],
+  "runtime_evidence": {
+    "authentic_current_browser_event_execution_observed": false,
+    "rtc_007_observed": false,
+    "rtc_008_observed": false,
+    "rtc_009_observed": false,
+    "governed_return_observed": false,
+    "source_or_ci_may_promote_runtime_evidence": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_AND_SOURCE_BINDING_EVIDENCE_ONLY"
+}

@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+  "correlation_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+  "root_correlation_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+  "parent_task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+  "goal": "Repair the four-stage SDK evidence experiment claims and falsifiability defects identified by the validated v2 post-lineage review while preserving the retired package as immutable history, then produce a clean bounded basis for a separate retained-standing/retirement custody task.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED_VALIDATED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "docs/SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "constraints": {
+    "retired_parent_history_immutable": true,
+    "option_a_scope_only": true,
+    "no_claim_of_authentic_governed_runtime_from_local_semantic_execution": true,
+    "no_new_runtime_scheduler_dispatcher_workercoordinator_or_custody_store": true,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "separate_retained_standing_retirement_goal_required_after_option_a": true
+  },
+  "review_reconciliation": {
+    "review": "SDK Four Stage Post Lineage Review v2",
+    "f1_overlap_non_falsifiable": "CONFIRMED_CURRENT_MAIN",
+    "f2_partition_is_tagged_replication": "CONFIRMED_CURRENT_MAIN",
+    "f3_standing_retirement_group_binding_derived_not_observed": "CONFIRMED_SCOPE_SPLIT",
+    "f4_local_semantic_guard_empty": "CONFIRMED_CURRENT_MAIN",
+    "f5_test3_no_differential_invariance_assertion": "CONFIRMED_CURRENT_MAIN",
+    "f6_preregistration_unanchored": "CORRECTED",
+    "preregistration_commit": "0127082e415fb220c709962ab7d0645e06105a4c",
+    "preregistration_pdf_sha256": "37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7",
+    "successor_run": 35547155843,
+    "successor_attempt": 2
+  },
+  "remaining_predicates": [],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "option_a_complete": true,
+    "merged_default_branch": true
+  },
+  "evidence": {
+    "sdk_pr": 304,
+    "exact_head": "0bc31804750c224257409e2774fe918e3c797c10",
+    "merged_main": "e1116e9cb5f5043c9198505d64560b710c517e88",
+    "exact_head_workflows_passed": 13,
+    "four_stage_run": 35648276053,
+    "four_stage_artifact_id": 10661081336,
+    "four_stage_artifact_sha256": "82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5",
+    "test2_test3_differential_invariance": "PASS",
+    "task4_serialized_negative_control": "PASS",
+    "task4_positive_overlap": "OBSERVATION_ONLY_NOT_REQUIRED",
+    "partition_reconstruction": "PASS",
+    "group_binding_recomputation": "PASS",
+    "local_semantic_boundary": "PASS",
+    "provenance_hygiene": "PASS",
+    "preregistration_commit": "0127082e415fb220c709962ab7d0645e06105a4c",
+    "preregistration_sha256": "37363e0d3d8880956b0e97a90c54a140e6bebfac0aa9be73a5fb90ab2effa5d7",
+    "prior_run_attempt1_disposition": "SUCCESS"
+  },
+  "successor_task_ref": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+  "successor_reconciliation": {
+    "reuse_existing_task": true,
+    "duplicate_task_creation_prohibited": true,
+    "already_covered": [
+      "EXTERNAL_WORKERCOORDINATOR_CLAIM_FENCE",
+      "TV_TVC_WARRANT_POLICY",
+      "INTR_ATOMIC_ACTIVATION_BINDING",
+      "MASTER_RECORDS_PREINVOCATION_CLOSURE",
+      "SAME_TASK_WORKER_RESULT_LINEAGE",
+      "INTR_CLOSE_RETIRE",
+      "MASTER_RECORDS_RETIREMENT_CLOSURE",
+      "RECORDS_ONLY_RECONSTRUCTION"
+    ],
+    "review_derived_predicate_to_make_explicit": [
+      "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED"
+    ]
+  }
+}

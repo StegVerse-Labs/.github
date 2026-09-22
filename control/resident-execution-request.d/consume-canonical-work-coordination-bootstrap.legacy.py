@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -90,6 +91,12 @@ STEGAGENTS_GOVERNED_RUNTIME_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-stegagents-governed-runtime"),
     "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
 }
+CONVERSATION_EVIDENCE_INGESTION_CUSTODY_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-conversation-evidence-ingestion-custody-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-conversation-evidence-ingestion-custody-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-conversation-evidence-ingestion-custody"),
+    "task_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -101,6 +108,7 @@ REQUEST_SPECS = (
     GLOBAL_MEASUREMENT_SPEC,
     AUTONOMOUS_PROGRESSION_SPEC,
     STEGAGENTS_GOVERNED_RUNTIME_SPEC,
+    CONVERSATION_EVIDENCE_INGESTION_CUSTODY_SPEC,
 )
 
 MATERIALIZE = (
@@ -126,6 +134,7 @@ MATERIALIZE = (
 PRESERVE_IF_PRESENT = (
     Path("data/canonical-task-registry.json"),
     Path("data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json"),
+    Path("data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json"),
 )
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = (
@@ -339,6 +348,23 @@ def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str)
     return {"task_id": task_id, "state": "SOURCE_TASK_SHARD_MATERIALIZED", "materialized": True, "registry_preserved": runtime_registry.is_file(), "source_kind": source_kind, "shard_ref": str(shard), "sha256": sha256(shard)}
 
 
+def refresh_current_goal_registry_projection(runtime: Path, task_id: str) -> dict[str, Any]:
+    """Reuse the existing bootstrap stale-registry projection repair for one current Goal."""
+    entrypoint = runtime / TARGET_ENTRYPOINT
+    require(entrypoint.is_file(), "canonical work bootstrap entrypoint not materialized")
+    spec = importlib.util.spec_from_file_location("canonical_work_projection_refresh", entrypoint)
+    require(spec is not None and spec.loader is not None, "canonical work projection refresh loader unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    refresh = getattr(module, "refresh_registry_projection_from_shard", None)
+    require(callable(refresh), "canonical work projection refresh function unavailable")
+    result = refresh(task_id, runtime / "data/canonical-task-registry.json")
+    require(isinstance(result, dict), "canonical work projection refresh returned invalid result")
+    require(result.get("task_id") == task_id, "canonical work projection refresh identity mismatch")
+    require(result.get("authority_effect") == "NONE", "canonical work projection refresh attempted authority effect")
+    return result
+
+
 def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     validate_spec(spec)
     runtime = runtime_root.expanduser().resolve()
@@ -402,15 +428,29 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     return consume_for_spec(source_root, runtime_root, DEFAULT_SPEC, runner=runner, env=env)
 
 
-def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def run_registry_cycle(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    goal_task_id: str | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     source = resolve_local_canonical_source(source_root, runtime, env)
     materialized = materialize(source, runtime)
     task_shards = materialize_registry_task_shards(source, runtime)
+    current_goal_identity = None
+    current_goal_registry_projection = None
+    if goal_task_id:
+        current_goal_identity = ensure_task_identity_materialized(source, runtime, goal_task_id)
+        current_goal_registry_projection = refresh_current_goal_registry_projection(runtime, goal_task_id)
     entrypoint = runtime / TASK_REGISTRY_CYCLE_ENTRYPOINT
     safe_env = clean_env(env)
     cycle_runtime = runtime / "runtime/task-registry-canonical-work-cycle"
     command = [sys.executable, str(entrypoint), "--runtime-root", str(cycle_runtime)]
+    if goal_task_id:
+        command.extend(["--goal-task-id", str(goal_task_id)])
     for spec in REQUEST_SPECS:
         command.extend(["--exclude-task-id", spec["task_id"]])
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
@@ -422,6 +462,9 @@ def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subproce
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
         "start_point": "CANONICAL_TASK_REGISTRY",
         "entrypoint": str(TASK_REGISTRY_CYCLE_ENTRYPOINT),
+        "current_goal_task_id": goal_task_id,
+        "current_goal_identity_materialization": current_goal_identity,
+        "current_goal_registry_projection": current_goal_registry_projection,
         "resolved_local_source_root": str(source),
         "command": command,
         "returncode": completed.returncode,
@@ -446,15 +489,86 @@ def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subproce
     return receipt
 
 
-def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def retain_request_consumption_exception(
+    runtime_root: Path,
+    spec: Mapping[str, Any],
+    exc: Exception,
+) -> dict[str, Any]:
+    """Retain a task-specific fail-closed receipt for pre-receipt consumer exceptions."""
+    validate_spec(spec)
+    runtime = runtime_root.expanduser().resolve()
+    request_path = runtime / spec["request_rel"]
+    request_id = None
+    request_hash = None
+    if request_path.is_file():
+        try:
+            request = load_json(request_path)
+            request_id = request.get("request_id")
+            request_hash = stable_hash(request)
+        except Exception:
+            request_id = None
+            request_hash = None
+    consumption_path = runtime / spec["consumption_rel"]
+    receipt = {
+        "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+        "state": "REQUEST_CONSUMPTION_EXCEPTION",
+        "request_id": request_id,
+        "request_sha256": request_hash,
+        "task_id": spec["task_id"],
+        "request_ref": str(spec["request_rel"]),
+        "consumption_ref": str(spec["consumption_rel"]),
+        "error_type": type(exc).__name__,
+        "error": str(exc),
+        "attempted": True,
+        "retained_failure_evidence": True,
+        "network_source_fetch_performed": False,
+        "credential_material_present": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "request_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_FAIL_CLOSED",
+    }
+    atomic_json(consumption_path, receipt)
+    return receipt
+
+
+def consume_all(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    goal_task_id: str | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     outcomes: list[dict[str, Any]] = []
     for spec in REQUEST_SPECS:
         try:
             outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
         except Exception as exc:
-            outcomes.append({"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "REQUEST_CONSUMPTION_EXCEPTION", "task_id": spec["task_id"], "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"})
+            try:
+                outcomes.append(retain_request_consumption_exception(runtime_root, spec, exc))
+            except Exception as retention_exc:
+                outcomes.append({
+                    "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                    "state": "REQUEST_CONSUMPTION_EXCEPTION",
+                    "task_id": spec.get("task_id"),
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                    "retention_error_type": type(retention_exc).__name__,
+                    "retention_error": str(retention_exc),
+                    "retained_failure_evidence": False,
+                    "authority_effect": "NONE_FAIL_CLOSED",
+                })
     try:
-        registry_cycle = run_registry_cycle(source_root, runtime_root, runner=runner, env=env)
+        registry_cycle = run_registry_cycle(
+            source_root,
+            runtime_root,
+            goal_task_id=goal_task_id,
+            runner=runner,
+            env=env,
+        )
     except Exception as exc:
         registry_cycle = {"schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1", "state": "REGISTRY_CYCLE_EXCEPTION", "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"}
     acceptable = {"ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}

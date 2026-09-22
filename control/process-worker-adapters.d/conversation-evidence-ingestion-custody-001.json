@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:conversation-evidence-ingestion-custody-v1",
+      "authority_ref": "handoffs/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json#authority",
+      "capabilities": [
+        "conversation_evidence_synthetic_ingestion_custody"
+      ],
+      "command": [
+        "python",
+        "workers/conversation_evidence_ingestion_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "PATH",
+        "PYTHONPATH",
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+        "STEGVERSE_MASTER_RECORDS_TOKEN",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+        "MASTER_RECORDS_DB",
+        "MASTER_RECORDS_RECEIPT_KEY",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
+      ],
+      "notes": [
+        "Consumes only a fresh WorkerCoordinator claim/fence for the canonical conversation-evidence ingestion task.",
+        "Uses a built-in synthetic fixture only; no user conversation is read.",
+        "Reuses workers/canonical_state_transition_custody.py and creates no second custody service/store.",
+        "Fails closed unless Master Records returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

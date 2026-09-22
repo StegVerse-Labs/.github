@@ -1,0 +1,55 @@
+name: Validate StegBrowser InTr Retention
+
+on:
+  pull_request:
+    paths:
+      - 'workers/stegbrowser_intr_materialization_ingress.py'
+      - 'workers/stegbrowser_intr_materialization_consumer.py'
+      - 'tests/test_stegbrowser_universal_intr_materialization.py'
+      - '.github/workflows/validate-stegbrowser-intr-retention.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact pull-request source anonymously
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            SOURCE_REF="refs/pull/${PR_NUMBER}/merge"
+          else
+            SOURCE_REF="${GITHUB_SHA}"
+          fi
+          git -c credential.helper= -c http.extraheader= fetch --no-tags --depth=20 origin "${SOURCE_REF}"
+          git checkout --detach FETCH_HEAD
+          test -z "$(git config --local --get-regexp 'extraheader|credential' || true)"
+      - name: Validate exact StegBrowser sovereign ingress retention path
+        run: |
+          python3 - <<'PY'
+          import tests.test_stegbrowser_universal_intr_materialization as t
+          tests = [
+              t.test_installer_reuses_shared_listener_and_is_idempotent,
+              t.test_node_trigger_is_admitted_write_once_without_authority,
+              t.test_tampered_node_trigger_fails_closed,
+              t.test_consumer_dispatches_existing_manifest_runner_only_after_exact_binding,
+              t.test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_server,
+              t.test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref,
+              t.test_consumer_maps_opaque_binding_ref_to_ingress_retained_binding_path,
+          ]
+          for test in tests:
+              test()
+              print(f"{test.__name__}=PASS")
+          PY
+      - name: Confirm validation-only authority boundary
+        run: |
+          echo 'STEGBROWSER_INTR_RETENTION_VALIDATION=PASS'
+          echo 'RUNTIME_AUTHORITY_EFFECT=NONE'
+          echo 'RUNTIME_PREDICATES_PROMOTED=false'

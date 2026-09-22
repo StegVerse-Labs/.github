@@ -26,11 +26,12 @@
   ],
   "checked_out_review": {
     "required": true,
-    "source": "CANONICAL_TASK_REGISTRY_PLUS_WORKER_RETURN_OBLIGATIONS_PLUS_MASTER_RECORDS",
+    "source": "CANONICAL_TASK_REGISTRY_PLUS_WORKER_RETURN_OBLIGATIONS_PLUS_STEGDB_COMPARISON_PLUS_MASTER_RECORDS",
     "signals": [
       "BOUND_WORKER_RETURN_OBLIGATION",
       "EXPECTED_EXPIRY_OR_RETURN_EXPECTATION",
       "MATCHING_MASTER_RECORDS_RETURN",
+      "STEGDB_DURABLE_STATE_COMPARISON",
       "WORKER_RETRY_COUNTER",
       "CLAIM_OR_EXECUTION_REF",
       "CHECKOUT_STATE",
@@ -39,7 +40,7 @@
     "symptoms": {
       "RETURN_PENDING": "Worker return expectation has not yet elapsed.",
       "RETRYING": "Worker remains within bounded retry resilience.",
-      "RETURN_OVERDUE": "Expected return window elapsed and matching Master Records return is absent.",
+      "RETURN_OVERDUE": "Expected return window elapsed, matching Master Records return is absent, and StegDB independently classifies the same bound return as missing.",
       "WORKER_NONREPORT": "Independent evidence confirms the expected worker return never reached Master Records.",
       "RECONCILIATION_REQUIRED": "Partial/conflicting evidence prevents safe classification.",
       "HEALTHY": "Expected worker return/history is present and reconciled."
@@ -111,7 +112,10 @@
     "RETIRED_MAY_BE_REVIVED_ONLY_FOR_HISTORICAL_EVIDENCE_REVIEW",
     "COMPLETED_IS_NOT_RETIREMENT_READY_WHILE_ANY_IMMEDIATE_OR_ONE_HOP_RELATED_TASK_REMAINS_OPEN",
     "WORKER_RETRY_COUNTERS_ADD_RESILIENCE_BUT_DO_NOT_PROVE_NONREPORT",
-    "WORKER_NONREPORT_REQUIRES_BOUND_EXPECTED_RETURN_AND_ABSENT_MASTER_RECORDS_RETURN",
+    "WORKER_NONREPORT_REQUIRES_BOUND_EXPECTED_RETURN_ABSENT_MASTER_RECORDS_RETURN_AND_MATCHING_STEGDB_MISSING_CLASSIFICATION",
+    "MASTER_RECORDS_ABSENCE_WITHOUT_STEGDB_COMPARISON_IS_RECONCILIATION_REQUIRED_NOT_RUNTIME_FAILURE",
+    "CANONICAL_TASK_REGISTRY_OVERRIDES_SHARDED_RECORDS_AND_SHARDS_MAY_ONLY_ENRICH_MISSING_FIELDS",
+    "WORKER_EXECUTION_CLAIM_INFERENCE_REQUIRES_WORKERCOORDINATOR_CLAIM_AND_FENCE_NOT_CLAIM_REF_ALONE",
     "EVERY_STEGHEALTH_RECOVERY_TASK_IS_A_CANONICAL_TASK_REGISTRY_ENTRY",
     "EVERY_STEGHEALTH_TASK_CREATION_OR_RECOVERY_ACTION_IS_A_RECORDABLE_ECOSYSTEM_EVENT",
     "RECOVERY_TASKS_ARE_CREATED_ONLY_FROM_EVIDENCE_AND_ARE_DEDUPLICATED",
@@ -123,6 +127,7 @@
     "canonical_registry": "data/canonical-task-registry.json",
     "sharded_task_records": "data/canonical-task-records/",
     "worker_registry": "control/worker-registry.json",
+    "stegdb_role": "DURABLE_STATE_COMPARISON",
     "master_records_role": "MASTER_RECORDS",
     "steghealth_recovery_owner": "StegVerse-Labs/StegHealth"
   }

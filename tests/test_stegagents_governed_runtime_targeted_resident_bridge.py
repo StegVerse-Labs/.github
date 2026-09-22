@@ -4,12 +4,24 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TASK = "STEGAGENTS-GOVERNED-RUNTIME-001"
 COSV = "71000000101001"
+PURPOSE_TASK = "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+PURPOSE_COSV = "71000000111111"
 SELECTOR = "stegagents_governed_runtime_targeted"
 GOVERNANCE_ENV = (
     "STEGVERSE_WARRANT_JSON",
     "TV_POLICY_BUNDLE_SHA256",
     "TV_WARRANT_ISSUER_PUBKEY_B64",
     "TV_WARRANT_MAX_TTL_SECONDS",
+)
+MASTER_RECORDS_ENV = (
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN",
+    "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB",
+    "MASTER_RECORDS_RECEIPT_KEY",
+    "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
 )
 
 
@@ -58,7 +70,56 @@ def test_governance_warrant_inputs_are_carried_end_to_end_without_becoming_provi
         assert name in consumer
         assert name in targeted
         assert name in env_allowlist
+    for name in MASTER_RECORDS_ENV:
+        assert name in consumer
+        assert name in targeted
+        assert name in env_allowlist
     assert 'warrant_policy_binding' in worker
     assert 'warrant_verified' in worker
     assert 'policy_bundle_verified' in worker
     assert 'provider credential material exposed to StegAgents' in worker
+
+
+def test_purpose_bound_graph_request_reuses_same_targeted_resident_consumer():
+    request = json.loads((ROOT / "control/resident-execution-request.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json").read_text())
+    assert request["task_id"] == PURPOSE_TASK
+    assert request["cosv_task_vector"] == PURPOSE_COSV
+    assert request["mode"] == "TARGETED_INDEPENDENT_TASK_CONTROL"
+    assert request["argv"] == ["--task-id", PURPOSE_TASK, "--cosv-task-vector", PURPOSE_COSV]
+    assert request["request_granted_authority"] is False
+    assert request["heartbeat_grants_execution_authority"] is False
+    assert request["second_machine_required"] is False
+    consumer = (ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py").read_text()
+    assert "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001" in consumer
+    assert "71000000111111" in consumer
+    assert "PURPOSE_REQUEST_REL" in consumer
+
+
+def test_targeted_consumer_preserves_master_records_custody_transport_inputs():
+    import importlib.util
+    module_path = ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py"
+    spec = importlib.util.spec_from_file_location("targeted_consumer", module_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    source = {
+        "PATH": "/bin",
+        "HOME": "/home/stegverse",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT": "/srv/master-records/orchestration",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "/srv/master-records/orchestration",
+        "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
+        "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+        "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "12",
+        "MASTER_RECORDS_DB": "/srv/stegverse/master-records.sqlite",
+        "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+        "GITHUB_TOKEN": "must-not-survive",
+        "OPENAI_API_KEY": "must-not-survive",
+    }
+    env = module.clean_env(source)
+    for name in MASTER_RECORDS_ENV:
+        assert env[name] == source[name]
+    assert "GITHUB_TOKEN" not in env
+    assert "OPENAI_API_KEY" not in env
+    assert env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] == "TV/TVC"
+    assert env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] == "NONE"

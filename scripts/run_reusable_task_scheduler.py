@@ -61,8 +61,11 @@ def selected(row: dict[str, Any], scope: str) -> bool:
     return scope in {identity, repository} or scope in aliases
 
 
-def slot_id(task_id: str, now: datetime) -> str:
-    compact = task_id.replace("RT-", "rt-").lower()
+def slot_id(task_id: str, now: datetime, invocation_key: str | None = None) -> str:
+    identity = str(invocation_key or task_id).strip()
+    if not identity:
+        raise RuntimeError("reusable scheduler invocation identity must be non-empty")
+    compact = identity.replace("RT-", "rt-").lower().replace("_", "-")
     return f"{compact}-{now.strftime('%Y%m%dT%H')}Z"
 
 
@@ -124,6 +127,7 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
         "tracking_task_id": row.get("tracking_task_id"),
         "cosv_task_vector": row.get("cosv_task_vector"),
         "repository": repository,
+        "invocation_key": str(row.get("invocation_key") or "").strip() or None,
         "retry_interval_minutes": interval,
         "max_attempts_per_slot": maximum,
     }
@@ -136,7 +140,8 @@ def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Pat
     if not trigger.is_file():
         return {**base, "state": "BOUNDARY_RECORDED", "boundary": "REUSABLE_TASK_TRIGGER_NOT_MATERIALIZED", "slot_satisfied": False}
 
-    invocation_id = slot_id(child_id, now)
+    invocation_key = str(row.get("invocation_key") or "").strip() or None
+    invocation_id = slot_id(child_id, now, invocation_key)
     receipt_path = runtime_root / "receipts" / "reusable-task" / f"{invocation_id}.latest.json"
     retry_path = retry_state_path(runtime_root, invocation_id)
     prior = load_json(receipt_path) if receipt_path.is_file() else None
@@ -265,25 +270,50 @@ def main() -> int:
         outcomes.append(execute_child(row, roots, runtime_root, now))
 
     declared = json.loads(os.environ.get("STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON", "[]"))
+    advanced_states = {"COMPLETE", "BOUNDARY_RECORDED"}
+    all_advanced = all(
+        isinstance(outcome, dict) and outcome.get("state") in advanced_states
+        for outcome in outcomes
+    )
+    blocking_outcomes = [
+        {
+            "reusable_task_id": outcome.get("reusable_task_id"),
+            "state": outcome.get("state"),
+            "outcome": outcome.get("outcome"),
+            "child_receipt_state": outcome.get("child_receipt_state"),
+            "child_boundary": outcome.get("child_boundary"),
+            "attempt_count": outcome.get("attempt_count"),
+            "next_retry_at": outcome.get("next_retry_at"),
+        }
+        for outcome in outcomes
+        if not isinstance(outcome, dict) or outcome.get("state") not in advanced_states
+    ]
     result = {
         "schema": RESULT_SCHEMA,
         "invocation_id": manifest["invocation_id"],
         "reusable_task_id": SELF_ID,
         "manifest_hash": manifest["manifest_hash"],
         "runtime_observed": True,
-        "completion_evidence_observed": True,
-        "completion_predicates_satisfied": declared,
+        "completion_evidence_observed": all_advanced,
+        "completion_predicates_satisfied": declared if all_advanced else [],
         "schedule_path": str(schedule_path),
         "runtime_root": str(runtime_root),
         "due_task_count": len(outcomes),
         "outcomes": outcomes,
-        "all_due_tasks_advanced_to_completion_or_authentic_boundary": True,
+        "all_due_tasks_advanced_to_completion_or_authentic_boundary": all_advanced,
+        "blocking_outcomes": blocking_outcomes,
+        "state_transition_dependency": {
+            "predecessor": "DUE_CHILD_STATE_EVALUATED",
+            "successor": "ALL_DUE_REUSABLE_TASKS_ADVANCED_TO_COMPLETION_OR_AUTHENTIC_BOUNDARY",
+            "successor_admissible": all_advanced,
+            "rule": "SUCCESSOR_REQUIRES_EVERY_DUE_CHILD_TO_REACH_COMPLETE_OR_BOUNDARY_RECORDED;_DEFERRED_OR_UNOBSERVED_CHILD_STATE_BLOCKS_SUCCESSOR",
+        },
         "authority_effect": "NONE",
     }
     result_path = Path(os.environ["STEGVERSE_REUSABLE_TASK_RESULT_PATH"])
     write_json(result_path, result)
     print(json.dumps(result, sort_keys=True))
-    return 0
+    return 0 if all_advanced else 3
 
 
 if __name__ == "__main__":
