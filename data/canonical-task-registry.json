@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 195,
+  "generation": 196,
   "status": "CANONICAL_MASTER_RECORDS_RTC007_EXACT_BOUNDARY_PREDECESSOR_RECONSTRUCTION_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9275,6 +9275,84 @@
           "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED"
         ]
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
+      "correlation_id": "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
+      "root_correlation_id": "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
+      "parent_task_id": null,
+      "goal": "Attribute the September 2026 StegVerse-Labs/.github clone spikes against known StegVerse-controlled workflows and repository events, classify only evidence-supported internal automation, generic external indexing/scanning, or StegVerse-specific external consumption, and do not infer adoption from traffic alone.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md",
+      "cosv_task_vector": "20010010100000",
+      "source_refs": [
+        "docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md",
+        "docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md",
+        ".github/workflows/repository-hygiene-reusable.yml",
+        "README.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "StegVerse-org",
+          "GCAT-BCAT-Engine"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "github-traffic-attribution",
+          "workflow-correlation",
+          "public-consumption-classification"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "REPOSITORY-VISIBILITY-BOUNDARY-001"
+      ],
+      "existing_evidence_refs": [
+        "user-supplied GitHub Traffic screenshot showing 34,000 clones / 8,089 unique cloners / 9 views / 4 unique visitors over 14 days",
+        "GitHub Actions daily run counts 2026-09-07 through 2026-09-21 observed through repository API",
+        "2026-09-19 workflow-run distribution: 856 total; KV AI Memory 394; Cross-Task Coordination 175; Purpose-Bound Worker 112; DeepSeek resident 111",
+        "2026-09-13 workflow-run distribution: 748 total; organization control plane 245; Heartbeat Worker 235; Deterministic Suite 234",
+        "current workflow source proves KV AI Memory and Purpose-Bound Worker use actions/checkout while Cross-Task Coordination, DeepSeek resident, organization control plane, Heartbeat Worker, and Deterministic Suite do not",
+        "repository-hygiene reusable workflow currently contains an anonymous explicit git clone of StegVerse-Labs/.github but the introducing commit b8674abfd3a6e4090de188d451448d233e4b47b8 is dated 2026-09-21, after the 2026-09-19 spike",
+        "GitHub commit API observation: 300 commits on 2026-09-13 and 290 commits on 2026-09-19",
+        "GitHub connector traffic endpoints /traffic/clones, /traffic/views, /traffic/popular/referrers, and /traffic/popular/paths are not exposed by the connected fetch surface"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_REGISTRATION_MERGED",
+        "KNOWN_STEGVERSE_CONTROLLED_CLONE_PRODUCERS_INVENTORIED",
+        "SEPTEMBER_SPIKE_DATES_CORRELATED_WITH_REPOSITORY_EVENTS",
+        "INTERNAL_AUTOMATION_CONTRIBUTION_BOUNDED_WITHOUT_OVERCLAIM",
+        "GENERIC_EXTERNAL_INDEXING_SCANNING_NOT_CONFLATED_WITH_ADOPTION",
+        "STEGVERSE_SPECIFIC_EXTERNAL_CONSUMPTION_REQUIRES_INDEPENDENT_DOWNSTREAM_EVIDENCE",
+        "UNATTRIBUTED_REMAINDER_RETAINED_AS_UNKNOWN_WHEN_SOURCE_IDENTITY_IS_UNAVAILABLE"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md"
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_external_adoption": false,
+        "traffic_counts_prove_identity": false,
+        "master_records_reality_authority": true,
+        "credential_authority": "TV/TVC"
+      },
+      "authority_effect": "NONE_OBSERVATION_AND_ATTRIBUTION_ONLY"
     }
   ],
   "human_actions": [],
