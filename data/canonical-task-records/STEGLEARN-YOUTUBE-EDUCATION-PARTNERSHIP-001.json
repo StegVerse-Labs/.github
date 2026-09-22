@@ -43,7 +43,8 @@
     "CONNECTED_GMAIL_SEARCH_2026-09-15_NO_MATCHING_GOOGLE_ACKNOWLEDGEMENT",
     "CONNECTED_GMAIL_SEARCH_2026-09-15T21:12-05:00_SECOND_CHECK_NO_MATCHING_GOOGLE_ACKNOWLEDGEMENT",
     "CONNECTED_GMAIL_2026-09-16_ORIGINAL_ADMIN_IDENTITY_RIGE1RANDOLOH_AT_STEGVERSE_ORG",
-    "CONNECTED_GMAIL_2026-09-16_WORKSPACE_BUSINESS_STANDARD_SUSPENDED_2025-12-04_CANCELLATION_ON_OR_AFTER_2026-10-07"
+    "CONNECTED_GMAIL_2026-09-16_WORKSPACE_BUSINESS_STANDARD_SUSPENDED_2025-12-04_CANCELLATION_ON_OR_AFTER_2026-10-07",
+    "OWNER_REPORTED_2026-09-21_ADMIN_SIGNIN_RIGE1RANDOLOH_ACCOUNT_NOT_RECOGNIZED"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_SHARD_REGISTERED",
@@ -59,6 +60,7 @@
     "STEGLEARN_EXACT_HEAD_VALIDATION_GREEN_AFTER_SECOND_GMAIL_CHECK",
     "GOOGLE_ORIGINAL_ADMIN_IDENTITY_RECONCILED",
     "GOOGLE_ADMIN_SUBSCRIPTION_STATE_OBSERVED",
+    "GOOGLE_HISTORICAL_ADMIN_IDENTITY_LIVE_SIGNIN_NOT_RECOGNIZED_RECONCILED",
     "RIGEL_STEGVERSE_ORG_MANAGED_IDENTITY_STATE_CLASSIFIED",
     "GOOGLE_ACKNOWLEDGEMENT_OR_RESPONSE_RECORDED_WHEN_OBSERVED",
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
@@ -88,7 +90,7 @@
     "authority_effect": "NONE"
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":false},
-  "human_action_ref": "Sign in at admin.google.com with Rige1Randoloh@stegverse.org; observe Billing > Subscriptions and classify Rigel@stegverse.org as managed, unmanaged/conflicting, or absent before any user creation; reconcile through the applicable minimum-risk path; then retry Partner Network enrollment and preserve the resulting acknowledgement or blocker condition.",
+  "human_action_ref": "Use Google Workspace administrator account recovery for the existing stegverse.org tenant because owner-observed live sign-in reports Rige1Randoloh@stegverse.org as not recognized despite Google service mail identifying it as the historical administrator username. Prefer support-assisted recovery/domain-ownership verification over creating a new tenant. After administrator access is restored, inspect Billing > Subscriptions, classify Rigel@stegverse.org as managed, unmanaged/conflicting, or absent, reconcile minimally, then retry Partner Network enrollment.",
   "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
   "allowed_next_transitions": ["RECONCILE_GOOGLE_MANAGED_IDENTITY", "RETRY_PARTNER_NETWORK_ENROLLMENT", "RECORD_GOOGLE_ACKNOWLEDGEMENT", "RECORD_GOOGLE_ROUTING_RESPONSE", "RECORD_GOOGLE_TECHNICAL_RESPONSE", "EVALUATE_NEGOTIATED_CAPABILITY_GAPS"],
   "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
@@ -112,7 +114,10 @@
     "workspace_suspended_date": "2025-12-04",
     "workspace_cancellation_on_or_after": "2026-10-07",
     "target_managed_identity": "Rigel@stegverse.org",
-    "target_managed_identity_state": "ADMIN_CONSOLE_OBSERVATION_REQUIRED",
+    "target_managed_identity_state": "PENDING_ADMIN_TENANT_RECOVERY",
+    "historical_admin_live_signin_state": "OWNER_REPORTED_ACCOUNT_NOT_RECOGNIZED_2026-09-21",
+    "historical_admin_username_exactly_reconfirmed_from_google_mail": true,
+    "admin_recovery_required": true,
     "precreate_unmanaged_conflict_check_required": true,
     "mail_routing_change_required": false,
     "dns_change_required": false
