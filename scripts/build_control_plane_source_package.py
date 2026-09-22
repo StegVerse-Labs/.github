@@ -29,6 +29,8 @@ DEFAULT_PATHS = (
     "heartbeat_runtime/admitted_worker_runtime.py",
     "heartbeat_runtime/worker_assignment_functional_memory.py",
     "workers/canonical_state_transition_custody.py",
+    ".stegverse/transition-ledger/org-contract.json",
+    "resident-runtime/aggregate_repo_transition.py",
     "control/worker-registry.d/stegfin-live-entry-003.json",
     "heartbeat_runtime/worker_runtime_legacy.py",
     "heartbeat_runtime/process_adapter.py",
