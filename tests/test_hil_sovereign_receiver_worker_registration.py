@@ -27,6 +27,9 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertEqual(task["task_id"], TASK_ID)
         self.assertEqual(task["state"], "HANDOFF_READY")
         self.assertEqual(task["executor_binding"], "AUTHORIZED")
+        self.assertIsNone(task["claim_id"])
+        self.assertIsNone(task["worker_id"])
+        self.assertIsNone(task["worker_instance_id"])
         self.assertEqual(task["cost_basis_ref"], "cost-basis/worker-runtime/hil-sovereign-receiver.json")
         admission = task["admission"]
         self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
@@ -35,6 +38,11 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertFalse(admission["heartbeat_grants_execution_authority"])
         self.assertFalse(admission["carrier_trigger_required"])
         self.assertTrue(admission["fresh_fence_required"])
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], 25)
+        predecessor = task["machine_readable_state"]["browser_predecessor_lineage"]
+        self.assertEqual(predecessor["claim_id"], "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25")
+        self.assertEqual(predecessor["fencing_token"], 25)
+        self.assertFalse(predecessor["machine_worker_claim_reuse_allowed"])
         self.assertEqual(registry["workers"][0]["worker_id"], "hil-sovereign-receiver-worker")
         self.assertEqual(registry["workers"][0]["adapter_ref"], "process:hil-sovereign-receiver-v1")
         self.assertFalse(registry["github_token_required"])
@@ -120,6 +128,13 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertEqual(response["expected_next_earliest_epoch"], 43)
         self.assertEqual(response["expected_next_latest_epoch"], 46)
         self.assertIn("receipts/hil-sovereign-receiver/", response["checkpoint_ref"])
+
+    def test_source_worker_requires_fresh_machine_claim_over_g25_predecessor(self) -> None:
+        source = (ROOT / "workers/hil_sovereign_receiver_worker.py").read_text(encoding="utf-8")
+        self.assertIn('predecessor.get("claim_id") != "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"', source)
+        self.assertIn('predecessor.get("fencing_token") != 25', source)
+        self.assertIn("or fence <= 25", source)
+        self.assertIn('"predecessor_claim_id": predecessor["claim_id"]', source)
 
 
 if __name__ == "__main__":
