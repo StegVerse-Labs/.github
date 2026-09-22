@@ -277,3 +277,16 @@ The existing writer path remains internally aligned: the recurring service calls
 The durable Master Records query remains gated. A3 remains `NOT_OBSERVED`, not `FAILED`; A4 and all round-trip predicates remain unentered.
 
 Manual work: None.
+
+
+## Goal Prompt 10/20 — resident refresh evidence remains unreachable
+
+Canonical registry generation entering this continuation: `192`.
+
+No repository-only evidence sweep or source-path reinspection was repeated. The existing authorized resident surface was checked directly and exposed zero currently connected resident command surfaces to this continuation.
+
+That condition remains `EVIDENCE_NOT_OBSERVED`. It is not runtime-absence evidence, does not imply the resident refresh did not occur, and does not introduce a device prerequisite.
+
+No authentic retained `master-records-source-refresh.latest.json`, durable Master Records runtime, nonce-bound `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, or deterministic pre-A3 failure was observed. Therefore the durable custody query remains gated and no source/runtime repair is justified.
+
+Manual work: None.
