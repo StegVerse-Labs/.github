@@ -125,6 +125,7 @@ CONSUMERS = (
     ("sdk_tt_richard_seam_authentic_runtime", "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"),
     ("ecosystem_receipt_hb_checkpoint", "scripts/consume_ecosystem_receipt_hb_checkpoint.py"),
     ("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py"),
+    ("ungoverned_ai_defensive_envelope", "scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
