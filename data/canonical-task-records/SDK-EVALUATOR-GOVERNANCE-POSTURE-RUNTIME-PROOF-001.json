@@ -153,6 +153,23 @@
         "source_or_runtime_defect_inferred": false,
         "resident_request_dispatch_visit_used_as_predecessor": false,
         "next_allowed_progression": "AUTHENTIC_MASTER_RECORDS_OR_RETAINED_RUNTIME_RECONSTRUCTION_OF_EXACT_MANIFEST_MATERIALIZATION"
+      },
+      "evidence_inventory_recheck_20260921": {
+        "canonical_generation_observed": 183,
+        "exact_hash_search_result": "SOURCE_CI_PARENT_ONLY",
+        "retained_sovereign_host_receipt_inventory": [
+          "hil-browser-esrl-evidence-intake.latest.json",
+          "hil-esrl-acceptance-reconciliation-proposal.latest.json",
+          "hil-esrl-exact-byte-staging-manifest.latest.json",
+          "hil-resident-execution-request-consumption.latest.json"
+        ],
+        "exact_sdk_runtime_receipt_in_repository_backed_sovereign_host_inventory": false,
+        "repository_backed_sdk_runtime_state_directory_observed": false,
+        "interpretation": "UNKNOWN_NOT_FALSE",
+        "non_occurrence_inferred": false,
+        "materialization_promoted": false,
+        "source_or_runtime_defect_inferred": false,
+        "progression_basis_unchanged": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE"
       }
     }
   }
