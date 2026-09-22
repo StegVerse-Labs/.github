@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:ungoverned-ai-defensive-envelope-v1",
+      "authority_ref": "handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json#authority",
+      "capabilities": [
+        "ungoverned_ai_defensive_envelope_runtime_probe",
+        "bounded_process_execution",
+        "existing_tvc_ses_boundary_reuse"
+      ],
+      "command": [
+        "python",
+        "workers/ungoverned_ai_defensive_envelope_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "PATH"
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_v0.1",
+      "notes": [
+        "ProcessWorkerAdapter supplies WorkerCoordinator mutation fencing; it is not claimed as the candidate security sandbox.",
+        "Untrusted candidate source executes only inside the existing TVC SES stdio isolated-process boundary.",
+        "No credential, Task Registry, TV/TVC, Interlock/InTr, Master Records, Publisher, provider, or host-runtime authority is exposed to the candidate."
+      ]
+    }
+  ]
+}

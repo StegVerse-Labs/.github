@@ -26,3 +26,10 @@ The prior PR #1624 is historical provenance for the task-specific session-return
 Source-level contract reconciliation now defines component 011's defensive-envelope semantics. No runtime enforcement, sandbox isolation, credential-unreachability, denied-consequence proof, or governed-egress execution is claimed by this projection.
 
 PR #2568 merged as `eeec8ba16a7e534dcd09143e359339ec90770667`; exact-head source validation passed on `de5730f2f4dfa0b2ea6c3665b71eca2644c23d42`. This establishes the component-011 defensive-envelope contract in canonical source only. Runtime isolation/enforcement evidence remains required separately.
+
+
+## Component 011 representative runtime binding — 2026-09-21
+
+TVC merge `0b82b45de7d214fbdb2f24bc4027a6aeb31a7312` provides the existing SES stdio evidence boundary selected for the first representative runtime probe. The `.github` resident binding reuses the existing WorkerCoordinator/targeted-execution path and adds no scheduler, runtime, credential path, device dependency, or authority plane. The probe is deliberately narrower than a general-purpose external-AI meeting-room sandbox: it proves only the declared bounded computation and exact denied capability attempts. External-provider origin and arbitrary-code OS containment are not inferred.
+
+Authentic resident observation remains required separately.
