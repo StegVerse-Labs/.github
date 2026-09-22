@@ -1290,3 +1290,8 @@ PR #2543 / merge `5284046f03c286ec6f4f84ad93d8423eb9f2a9c1` preserves the alread
 ### Ecosystem HB refresh evidence re-observation — generation 192 candidate
 
 At canonical generation 191, the shared runtime-evidence lineage still contains no authentic retained Master Records source-refresh receipt with verified source proof. Adjacent A3 evidence explicitly remains `authentic_retained_refresh_receipt_observed=false`, with no deterministic source/runtime failure retained. No code repair is justified; HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+## Repository hygiene owner-transition delta scanning — 2026-09-21
+
+To scale hygiene beyond branch-by-branch review, `scripts/repository_hygiene_owner_transition_delta.py` performs a fail-closed delta scan between the last authenticated census head and current repository state. It inspects only canonical owner-bearing paths that changed since the baseline and surfaces a residual branch only when its exact ref is referenced by a changed owner surface that explicitly records resolved/superseded/released/retired/closed state. If no owner-bearing source changed, the result is a machine-zero-delta and no approval-manifest edit or hosted hygiene rerun is warranted. This is a prefilter only; final current-main containment and active-ownership checks remain mandatory before approval, and no deletion authority is granted.
