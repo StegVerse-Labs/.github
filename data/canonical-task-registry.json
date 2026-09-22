@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 184,
+  "generation": 185,
   "status": "CANONICAL_MASTER_RECORDS_SDK_TVC_WARRANT_SELF_HEAL_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5130,7 +5130,9 @@
         "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_BOUND_TO_ORIGIN_TRANSITION",
         "ALL_REQUIRED_TRANSITION_EVIDENCE_DIGESTS_VALIDATE",
         "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTS_PASS",
-        "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP"
+        "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP",
+        "EVERY_IN_ORGANIZATION_STATE_TRANSITION_EMITS_ORGANIZATION_RECEIPT",
+        "ORGANIZATION_RECEIPT_PRECEDES_MASTER_RECORDS_CUSTODY"
       ],
       "current_truth": {
         "ecosystem_inventory_materialized": true,
@@ -5213,7 +5215,7 @@
         "site_browser_heartbeat_run": 35415040363,
         "site_browser_bootstrap_run": 35415040385,
         "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-        "next_transition_under_evidence_trace": "TRACE_REMAINING_DIRECT_MACHINE_OWNED_SUCCESSOR_CALLERS_THAT_BYPASS_CANONICAL_PREDECESSOR_CLOSURE",
+        "next_transition_under_evidence_trace": "AUTHENTIC_RTC008_EGRESS_ADMITTED_THEN_MASTER_RECORDS_CLOSURE_THEN_RTC009_THEN_CALLER_CONSEQUENCE",
         "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
         "mir_governed_round_trip_complete_required_evidence_pr": 1411,
         "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -5366,7 +5368,7 @@
           35668005818
         ],
         "authentic_sdk_tvc_warrant_service_installation_observed": false,
-        "organization_receipt_pre_master_records_source_enforced": false,
+        "organization_receipt_pre_master_records_source_enforced": true,
         "organization_receipt_source_path_gap_identified": true,
         "canonical_state_transition_direct_master_records_submission_observed_in_source": true,
         "canonical_state_transition_to_repo_receipt_bridge_materialized": false,
@@ -5375,7 +5377,13 @@
         "organization_receipt_runtime_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
         "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
         "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
-        "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1"
+        "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
+        "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_WITHIN_ORGANIZATION",
+        "organization_receipt_contract_generalized_to_canonical_state_transitions": true,
+        "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
+        "canonical_state_transition_org_receipt_exact_source_hash_required": true,
+        "canonical_state_transition_repo_relabeling_forbidden": true,
+        "organization_receipt_source_repair_pending_merge": true
       },
       "completion": {
         "claimed": false,
