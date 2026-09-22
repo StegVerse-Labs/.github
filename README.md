@@ -1300,3 +1300,8 @@ To scale hygiene beyond branch-by-branch review, `scripts/repository_hygiene_own
 ### Browser-origin KV initialization is not device installation
 
 The Device/KV/SKAP path now explicitly separates origin-scoped browser data from device/native installation. Site PR #1452 (`290318a285089b45259a87811d11585f531b1261`) changed the IndexedDB helper so exact-readback browser KV state is reported as `BROWSER_KV_INITIALIZED_BEST_EFFORT` or `BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED`, with `installed=false` and `installation_claimed=false`. Safari `persistent_storage_granted=true` would strengthen browser-origin durability only; it would still not prove native installation. Site PR #1453 (`c0785763c72518364cf2ae5e7a5a8213907ed7ae`) released the temporary implementation claim.
+
+
+### StegOS Node Manifold COSV reconciliation — 2026-09-21
+
+`STEGOS-NODE-MANIFOLD-001` now has an exact task.v1 COSV source projection derived from canonical metrics rather than an assumed continuation value. The vector is `40000100100000`: CLAIMED_INTEGRATION, archive not ready, zero unassigned work, one bounded chat-owned integration continuation, canonical owner installed, zero declared blockers, evidence incomplete, not activated, and not propagated. The vector grants no authority and does not alter the four still-open authentic physical Network predicates.
