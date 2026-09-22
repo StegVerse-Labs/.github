@@ -222,3 +222,18 @@ The current source state is now encoded through the existing `task.v1` COSV cont
 
 This is a non-authorizing compact pointer only. It does not mint a WorkerCoordinator claim/fence, establish Interlock/InTr admission, prove resident execution, resolve BEA readiness, or authorize Site publication.
 
+## COSV + standing carrier binding — 2026-09-21
+
+The exact Goal now has a canonical non-authorizing `task.v1` pointer and is addressable by the already-existing standing resident carrier:
+
+- .github #2541 exact head `830819aa37db34ba1b1d26800d3c747103813b83` passed both Cross-Task Coordination Validation and Deterministic Repository Suite, then merged with expected-head protection as `f7043dfbc05455677b55b2ade18b4461dd048240`.
+- COSV: `10100000100000`; source: `control/task-vectors/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json`; indexed in `control/task-vector-index.json`.
+- StegVerse-Healer #100 exact head `ed7d691d0ac346695f29283a09bd286beb671c93` passed Test Readiness run `35675227970`, then merged with expected-head protection as `4b219f0acd207cbadaeaa7b040ab305bc5f6d68b`.
+- The Healer schedule now binds the exact Goal/COSV to `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` using the existing `RT-REUSABLE-TASK-SCHEDULER-001`, exact invocation key, `only_consumer=canonical_work_coordination`, hourly slots, 15-minute retry, and maximum four attempts per slot.
+
+No new scheduler, runtime, dispatcher, request plane, credential path, device dependency, or authority plane was introduced.
+
+Current authentic boundary remains unchanged: no retained resident child trigger/dispatch receipt for this exact Goal, no Task Registry `CONTINUE`/Interlock-InTr ingress, no fresh WorkerCoordinator claim/fence, no ERL household worker receipt, and no Master Records reconstruction for this invocation were observed in repository-accessible evidence after the source/carrier merges. Their absence is not converted into a runtime-failure claim.
+
+BEA therefore remains `UNKNOWN / UNRESOLVED`; the single-use BEA operation was not executed. Site public activation remains `false`.
+
