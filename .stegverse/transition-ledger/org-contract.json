@@ -2,11 +2,16 @@
   "schema": "stegverse.organization-transition-ledger-contract/v1",
   "organization": "StegVerse-Labs",
   "ledger_level": "ORGANIZATION",
-  "consumes": "stegverse.repo-transition-receipt/v1",
+  "consumes": [
+    "stegverse.repo-transition-receipt/v1",
+    "stegverse.canonical-state-transition-receipt/v1"
+  ],
   "emits": "stegverse.organization-transition-receipt/v1",
   "replay_rule": "ORGANIZATION_REPLAY_MUST_REQUIRE_ONLY_VERIFIED_REPO_RECEIPTS_AND_ORG_RECEIPTS_NOT_ECOSYSTEM_REPLAY",
   "preserves_repo_receipt": true,
   "append_only_receipts": true,
   "propagation_target": "master-records/.github",
-  "authority_effect": "NONE_CONTRACT_ONLY"
+  "authority_effect": "NONE_CONTRACT_ONLY",
+  "organization_scope_rule": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT",
+  "preserves_source_transition_receipt": true
 }
