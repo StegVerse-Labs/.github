@@ -24,3 +24,5 @@ Authority remains external to reusable components: Task Registry coordination on
 The prior PR #1624 is historical provenance for the task-specific session-return/session-close implementation. Its reusable logic is being reconstituted on current main under component 010; do not merge the stale branch after the replacement is validated.
 
 Source-level contract reconciliation now defines component 011's defensive-envelope semantics. No runtime enforcement, sandbox isolation, credential-unreachability, denied-consequence proof, or governed-egress execution is claimed by this projection.
+
+PR #2568 merged as `eeec8ba16a7e534dcd09143e359339ec90770667`; exact-head source validation passed on `de5730f2f4dfa0b2ea6c3665b71eca2644c23d42`. This establishes the component-011 defensive-envelope contract in canonical source only. Runtime isolation/enforcement evidence remains required separately.

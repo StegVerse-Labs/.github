@@ -35,8 +35,8 @@
     "common_ai_decision_sandbox_region": "SUPERSEDED_BY_UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT",
     "external_framework_llm_adapter_sdk_only": "PARTIAL",
     "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
-    "ungoverned_ai_defensive_envelope": "CONTRACT_DEFINED_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
-    "external_ai_meeting_room": "CONCRETE_INSTANTIATION_NOT_AUTHORITY_PRIMITIVE_RUNTIME_NOT_PROVEN"
+    "ungoverned_ai_defensive_envelope": "MERGED_SOURCE_VALIDATED_PR_2568_RUNTIME_NOT_PROVEN",
+    "external_ai_meeting_room": "MERGED_SOURCE_CLASSIFICATION_AS_COMPONENT_011_INSTANTIATION_RUNTIME_NOT_PROVEN"
   },
   "source_evidence": [
     "StegVerse-Labs/.github#1678",
@@ -60,7 +60,9 @@
     "tests/test_task_registry_general_checkin_surface_gate.py",
     "tests/test_task_registry_ai_session_ingress.py",
     "tests/test_task_registry_session_return_recorder.py",
-    "tests/test_task_registry_session_close_orchestration.py"
+    "tests/test_task_registry_session_close_orchestration.py",
+    "StegVerse-Labs/.github#2568",
+    "StegVerse-Labs/.github@eeec8ba16a7e534dcd09143e359339ec90770667"
   ],
   "satisfied_source_predicates": [
     "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED_SOURCE_LEVEL",
