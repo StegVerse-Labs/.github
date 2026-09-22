@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 196,
-  "status": "CANONICAL_MASTER_RECORDS_RTC007_EXACT_BOUNDARY_PREDECESSOR_RECONSTRUCTION_REPAIRED",
+  "generation": 197,
+  "status": "CANONICAL_MASTER_RECORDS_STEGAGENTS_PURPOSE_WARRANT_EXACT_BOUNDARY_PREDECESSOR_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5439,7 +5439,18 @@
         "rtc007_exact_boundary_predecessor_reconstruction_merge": "248c94f4a9c18579cff99ed5d40d8f6ffcc66111",
         "rtc007_exact_boundary_predecessor_reconstruction_exact_head": "b8c61cd155734b2c5a4352563b4ae29249a8d977",
         "rtc007_exact_boundary_predecessor_reconstruction_validation_run": 35681590372,
-        "rtc007_predecessor_contract": "RECONSTRUCT_RTC006_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_RTC007_RECEIPT_EMISSION_BOUNDARY"
+        "rtc007_predecessor_contract": "RECONSTRUCT_RTC006_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_RTC007_RECEIPT_EMISSION_BOUNDARY",
+        "stegagents_purpose_warrant_exact_boundary_predecessor_identified": true,
+        "stegagents_purpose_warrant_exact_boundary_predecessor_repaired": true,
+        "stegagents_purpose_warrant_pr": 36,
+        "stegagents_purpose_warrant_merge": "a01d4abc2c2f570865661bba19a04ad5a53d0c1c",
+        "stegagents_purpose_warrant_exact_head": "53d91a780cabca07b048193511e824d047cb3001",
+        "stegagents_purpose_warrant_validation_runs": [
+          35682849540,
+          35682849556,
+          35682849500
+        ],
+        "stegagents_purpose_warrant_predecessor_contract": "REQUIRE_AND_RECONSTRUCT_GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION_AT_EXACT_SEQUENCE_2_WARRANT_RECEIPT_EMISSION_BOUNDARY"
       },
       "completion": {
         "claimed": false,
@@ -5811,6 +5822,31 @@
             "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
           ],
           "rtc008_or_rtc009_execution_changed": false,
+          "runtime_execution_claimed": false,
+          "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "stegagents_purpose_warrant_exact_boundary_predecessor": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "repository": "StegVerse-Labs/StegAgents",
+          "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+          "producer": "src/purpose_bound_worker_runtime.py::_record_verified_warrant_policy_transition",
+          "pull_request": 36,
+          "exact_head": "53d91a780cabca07b048193511e824d047cb3001",
+          "merge_commit": "a01d4abc2c2f570865661bba19a04ad5a53d0c1c",
+          "validation_runs": [
+            35682849540,
+            35682849556,
+            35682849500
+          ],
+          "defect": "SEQUENCE_2_WARRANT_TRANSITION_TRUSTED_IN_MEMORY_GRAPH_PREDECESSOR_CLOSURE_AND_PERMITTED_WORKER_CLAIM_STRING_FALLBACK_INSTEAD_OF_RECONSTRUCTING_EXACT_PREDECESSOR_AT_RECEIPT_EMISSION",
+          "repaired_contract": [
+            "GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION_REQUIRED",
+            "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_CUSTODY_CLIENT_AT_WARRANT_RECEIPT_EMISSION",
+            "RECONSTRUCTED_TRANSITION_ID_AND_CLOSURE_FIELDS_MUST_MATCH_CARRIED_GRAPH_PREDECESSOR",
+            "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
+            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "WORKER_CLAIM_STRING_FALLBACK_REMOVED"
+          ],
           "runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
         }
