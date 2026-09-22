@@ -818,3 +818,8 @@ Machine review record: `control/repository-hygiene-tvc-batch7-review-20260921.js
 The manual residual-review cadence is replaced by a reusable fail-closed owner-transition delta scanner at `scripts/repository_hygiene_owner_transition_delta.py`. The scanner compares the last authenticated census head to current repository state, limits inspection to changed canonical owner-bearing paths, and surfaces only residual structural candidates whose exact branch ref appears in a changed owner surface with explicit resolved/superseded/released/retired/closed state. Zero changed owner-bearing paths yields a machine zero-delta and no approval-manifest change or redundant hosted census.
 
 This changes hygiene from prompt-per-branch review toward repository-scale processing suitable for thousands of refs. It remains a prefilter: current-main containment and active ownership must still pass before approval, and actual ref deletion remains exclusively `HYGIENE-BRANCH-REF-RETIREMENT` authority-owned.
+
+
+### Owner-transition delta scanner hardening — 2026-09-21
+
+The bulk delta scanner is hardened before cross-repository use: root-level and nested `*HANDOFF*.md` owner surfaces are recognized; canonical hygiene-control handoffs/evidence/control records are excluded as owner-transition evidence; and resolved/superseded/released/retired/closed terms must occur within a bounded context window around the exact branch-ref occurrence instead of anywhere in a large file. This prevents hygiene documentation from releasing its own refs and prevents unrelated status words in large handoffs from creating false-positive eligibility.
