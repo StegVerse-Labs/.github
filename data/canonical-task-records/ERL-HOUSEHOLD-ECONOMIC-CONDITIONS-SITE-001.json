@@ -218,5 +218,18 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_state_vector_ref": "control/task-vectors/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    }
   }
 }
