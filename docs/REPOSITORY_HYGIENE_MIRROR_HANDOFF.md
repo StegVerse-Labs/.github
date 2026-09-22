@@ -781,3 +781,12 @@ The bounded `HYGIENE-CAUSAL-ROOTS-VALIDATION` TVC owner-clearance/routing claim 
 TVC PR `#459` exact head `429f1a6da2dae46b1b1a5d67e76adefc160d8856` passed all three TVC validations and merged as `23b8642f6cea1531877e37feabfd3c281165cb66`. Triggered hygiene run `35668559325` completed SUCCESS: 429 branches inspected, 163 structural retirement candidates, **27 approved-retirement-ready**, **0 invalid approvals**, 262 review-required, and 4 protected/retained. Artifact `10670521199`, digest `sha256:6e2d9307f2e7e4e85a9aadbe7dfd34413c69e0b8687423a328e71f94dcc1fa98`.
 
 Only the seven newly validated historical CMC reconciliation refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`. The census structural-candidate count rose from 162 to 163 because the merged batch-3 implementation branch itself is now a fully-main-contained unapproved ref; therefore 136 structural candidates remain unapproved. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 4 — 2026-09-21/22
+
+TVC PR `#460` exact head `92eb6b227c8a771b588cb5d61c7b1b787430ed55` passed all three TVC validations and merged as `8aa95de719e76e8fda0bf23539b75d9e1a675940`. Its first triggered hygiene run `35669961523` failed closed with 27 approved-retirement-ready and 2 invalid approvals because ordinary README documentation named both newly approved refs, correctly creating source-reference retention evidence. No routing occurred from that failed run.
+
+TVC PR `#461` exact head `554e3fc5f915d68e38e4dee867d6dcc627b7ec1f` passed all three TVC validations and merged as `e901b5ee8a464027e8e46c032f874973dc1d622a`. It removed the exact branch names only from ordinary README text while retaining them in dedicated hygiene evidence/approval records; classifier exclusions were not widened. Triggered hygiene run `35670276119` then completed SUCCESS: 431 branches inspected, 163 structural retirement candidates, **29 approved-retirement-ready**, **0 invalid approvals**, 264 review-required, and 4 protected/retained. Artifact `10670703919`, digest `sha256:3a3f5d175713de564b8f035ea7f013d957349678dade901086e14cb7ca5edd00`.
+
+Only the two newly validated batch-4 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`. Current unapproved structural candidate count: 134. No ref deletion occurred.
