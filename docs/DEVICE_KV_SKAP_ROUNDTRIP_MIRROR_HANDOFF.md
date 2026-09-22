@@ -275,3 +275,15 @@ The canonical parent Goal remains `ACTIVE / CHECKED_OUT`. No authentic Device ->
 A repository validation repair is staged under the existing Goal rather than creating a new runtime or authority lane. `scripts/execute_device_kv_skap_roundtrip_event.py` now adds its own `scripts/` directory to `sys.path` when imported by spec, matching its direct-script import behavior for bare sibling imports. The predecessor-closure test fixture now scopes its synthetic `heartbeat_runtime` modules with `patch.dict(...)` so they cannot leak into later tests and shadow the real package.
 
 This repair changes source import/test isolation only. It does not establish authentic Device/KV/SKAP runtime execution, a KV relationship, native installation, WorkerCoordinator authority, Interlock/InTr admission, or TV/TVC credential evidence. The Goal remains `ACTIVE / CHECKED_OUT` and authentic runtime predicates remain evidence-gated.
+
+## .github import and validation isolation merge reconciliation — 2026-09-21
+
+PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` from exact head `06d5f11eaad047934e3131a20ad243e04ff1fda3` after the branch was rebased onto current `main` to resolve a documentation-only base advance. Exact-head pull-request validations passed: `validate-deepseek-resident` run `35686779849` and `Validate KV AI Memory Resident Binding` run `35686779918`. Push validation run `35686765254` also passed.
+
+The merged repair is limited to sibling-script import parity and isolation of the synthetic `heartbeat_runtime` test stub. It does not promote any authentic runtime predicate: no KV relationship, native installation, WorkerCoordinator claim/fence, Interlock/InTr admission, TV/TVC credential event, Device -> KV -> SKAP -> KV -> Device roundtrip, Master Records closure, or exact terminal readback is claimed from source/CI evidence. The Goal remains `ACTIVE / CHECKED_OUT`.
+
+## Canonical execution-substrate registration reconciliation — 2026-09-21
+
+Cross-Task Coordination run `35686885863` exposed a registry-conformance defect only: this existing runtime-capable Goal predated the mandatory `stegverse.execution-substrate-resolution/v1` field. The task already declared `CANONICAL_STEGOS_EVENT_EPHEMERAL_LANE` and `SOVEREIGN_CANONICAL_EVENT_EPHEMERAL_STEGOS_NODE_INVOCATION`; the canonical record now projects that existing choice as `selected_substrate_id=ADMITTED-EPHEMERAL-STEGOS-NODE`, preserves the canonical single-device-first review order, sets `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`.
+
+This registration repair does not create a runtime, establish reachability, satisfy retained-Node evidence, or promote any authentic Device/KV/SKAP predicate. Earlier same-device substrates remain suitable or evidence-reachability-limited rather than being falsely declared unsuitable, and remote/external-device fallback remains not applicable.

@@ -1332,3 +1332,11 @@ The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no lon
 ### Device/KV executor import and test-isolation repair — 2026-09-21
 
 The existing Device/KV/SKAP event executor now resolves bare sibling-script imports identically whether invoked directly or loaded by a test/spec importer. The canonical predecessor-closure test fixture also confines its synthetic `heartbeat_runtime` package to the module-under-test import, preventing suite-order leakage that can shadow the real runtime package. This is source/validation hygiene only and grants no runtime, transition, credential, custody, installation, or device authority.
+
+### Device/KV validation repair merge evidence — 2026-09-21
+
+`.github` PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` after exact-head PR validations `35686779849` and `35686779918` passed; push validation `35686765254` also passed. This closes only the executor import/test-isolation source defect and does not establish any authentic Device/KV/SKAP runtime, installation, authority, or Master Records predicate.
+
+### Device/KV execution-substrate registry reconciliation — 2026-09-21
+
+`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now carries the required canonical execution-substrate resolution, selecting the already-declared admitted ephemeral StegOS Node lane while preserving single-device-first review order, no external-device requirement, and no authority effect. This is registry conformance only; no authentic runtime or installation predicate is promoted.
