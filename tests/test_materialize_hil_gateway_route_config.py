@@ -30,7 +30,7 @@ def test_materializes_non_authorizing_shared_gateway_route(tmp_path, monkeypatch
     target = tmp_path / "hil-route.json"
     result = mod.materialize({
         "STEGVERSE_HEARTBEAT_ROOT": str(runtime),
-        "STEGVERSE_HIL_RECEIVER_PORT": "8765"
+        "STEGVERSE_UNIVERSAL_INTR_PORT": "8765"
     }, target)
     cfg = result["config"]
     assert cfg["loopback_url"] == "http://127.0.0.1:8765"
@@ -58,3 +58,15 @@ def test_missing_runtime_is_predicate_pending(tmp_path, monkeypatch):
         assert "runtime root" in str(exc)
     else:
         raise AssertionError("missing runtime must remain predicate pending")
+
+
+def test_hil_route_ignores_machine_receiver_port_namespace(tmp_path):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    target = tmp_path / "hil-route-separated.json"
+    result = mod.materialize({
+        "STEGVERSE_HEARTBEAT_ROOT": str(runtime),
+        "STEGVERSE_UNIVERSAL_INTR_PORT": "8765",
+        "STEGVERSE_HIL_RECEIVER_PORT": "8877",
+    }, target)
+    assert result["config"]["loopback_url"] == "http://127.0.0.1:8765"
