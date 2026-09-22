@@ -613,3 +613,14 @@ Canonical Task Registry generation 192 and current main `292c96d8cd61391f61689e9
 Repository-backed evidence search found no retained authentic `stegverse.organization-transition-receipt/v1` produced by a post-repair governed transition and no same-transition canonical Master Records closure satisfying `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. The retained repository evidence also does not establish a fresh post-repair resident dispatch cycle from which such a transition can be inferred.
 
 These are evidence-surface observations only. Absence from repository-backed projections does not prove runtime non-occurrence, and no authentic deterministic runtime failure was retained. Therefore `organization_receipt_runtime_state` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no runtime, source, carriage, retention, or readback defect is inferred and no implementation change is authorized by this re-observation.
+
+
+## RTC008 exact-boundary predecessor reconstruction — 2026-09-21
+
+The ecosystem-wide direct receipt-producer inventory identified another generic custody bypass in the existing RTC008 conformance caller. `workers/universal_intr_profiled_ingress.py::_record_rtc008_custody(...)` validated predecessor state, reconstruction status, required-evidence status, and digest-equality values carried inside the RTC008 request, but did not itself reconstruct the exact predecessor receipt from canonical Master Records immediately before emitting the successor receipt.
+
+PR #2560 repaired only that custody boundary and merged as `7d5b3864f8a61e6982923e5b580584c43a9d93e8` from exact head `f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23`. Exact-head validation passed RTC008 carriage run `35677960202` and Purpose-Bound Worker Derived Lifetime run `35677960211`.
+
+RTC008 now reuses `require_predecessor_master_records_closure(...)` at its exact canonical receipt-emission boundary. The reconstructed predecessor must be `RTC-STEGVERSE-EGRESS-007`, must satisfy canonical Master Records reconstruction and required-evidence validation, and must exactly match the request-carried predecessor state/digest metadata. The shared reconstructed predecessor reference becomes `prior_state_ref_or_hash`, and the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence is carried into RTC008 custody.
+
+This is a generic direct-caller custody repair using RTC008 only as a conformance caller. It does not alter RTC009, far-side execution, caller consequence, transport authority, or any MIR-specific runtime behavior. No authentic runtime execution is claimed. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next generic predecessor-closure bypass.

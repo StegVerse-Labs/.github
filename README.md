@@ -1307,3 +1307,8 @@ The Device/KV/SKAP path now explicitly separates origin-scoped browser data from
 `STEGOS-NODE-MANIFOLD-001` now has an exact task.v1 COSV source projection derived from canonical metrics rather than an assumed continuation value. The vector is `40000100100000`: CLAIMED_INTEGRATION, archive not ready, zero unassigned work, one bounded chat-owned integration continuation, canonical owner installed, zero declared blockers, evidence incomplete, not activated, and not propagated. The vector grants no authority and does not alter the four still-open authentic physical Network predicates.
 
 - SV-DN1 production source preparation now marks its retained `SV-DN1-INTR-RUNTIME-001` parent identity as provenance-only for runtime admission. `runtime_predecessor_reconstruction_required=false` aligns WorkerCoordinator with the existing `upstream_runtime_dependency=null` contract so independent source preparation is not blocked by an unrelated predecessor-reconstruction gate.
+
+
+### Exact-boundary canonical predecessor reconstruction
+
+Direct receipt producers may not treat request-carried predecessor status or digest fields as a substitute for canonical reconstruction. The RTC008 conformance caller now reconstructs its exact predecessor through Master Records at receipt emission, verifies the reconstructed identity against the carried metadata, and uses the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` contract before successor custody.
