@@ -198,3 +198,21 @@ The Goal Task is reconciled back to the canonical progression order: Task Regist
 
 The authentic BEA predicate remains `stegverse.tvc.bea-credential-readiness/v1 decision=READY`. Source review also found existing-path BEA broker composition defects; TVC #451 and stegfin-governance #111 repair those seams without creating a new runtime or credential path. Until authentic READY is retained, no BEA lease/API call or BEA-derived household conclusion is permitted. Site public activation remains false.
 
+## 2026-09-21 runtime/source merge reconciliation
+
+The corrected runtime/source chain is now merged with exact-head protection:
+
+- TVC #451 exact head `90825af302731a6182f1a760c16c110088796b90` -> merge `d7bbb9024ace0c1c41be35cda3269008139cae6f`; all returned exact-head workflows succeeded.
+- stegfin-governance #111 exact head `13e67ab5b1364a536b5fcda1490337e34da8b16e` -> merge `a06ff7b6811128481bdc4b94f08f1a5540cc1c67`; all returned exact-head workflows succeeded.
+- ERL #199 exact head `d7b7dc18a10a68e5babe04fec498acad401046f8` -> merge `0281a717e720d111b76898232985f8f357d1af33`; source-binding, schema, and public-source observation workflows succeeded.
+- .github #2443 exact head `b39d932aeeab90942daf7914c7b1bb85829e8293` -> merge `c0b93e6c4ff88a038b6af32f45aae1afee34c3ba`; Cross-Task Coordination Validation succeeded.
+- ERL #200 exact head `77c2a8955ebc176059265ddd0d4df367e4fa9979` -> merge `46bfe423472bc0b56072581bece0c8618f7e99eb`; Observe Household Economic Current Candidates run `35601531123` and Validate Ledger Schemas run `35601531110` both succeeded.
+
+The live credential-free ACS B25140 observation on ERL #200 retained raw SHA-256 `b5f37f22d3c0ddf28350d8baf7e349a4e15c5c4981929b7717a756c77a63c880` and emitted 16 observations: 10 direct published counts plus 6 deterministic housing-cost-burden shares. Its admitted scope is `HOUSING_COST_BURDEN_ONLY`; the resulting household state remains `required_cost_burden=PARTIAL`, not a complete required-cost or welfare finding.
+
+Canonical task state after source reconciliation remains `PROPOSED` with only `INGRESS_ADMITTED` as the next allowed transition. Source merges and CI do not establish authentic Canonical Work ingress, WorkerCoordinator claim/fence, resident BEA readiness, Master Records reconstruction, governed ERL live output, or Site served-body proof.
+
+BEA remains `UNKNOWN / UNRESOLVED`: no authentic resident `stegverse.tvc.bea-credential-readiness/v1 decision=READY` has been retained in this continuation, so no BEA lease or BEA provider operation was executed. Unsupported household-state fields remain `UNKNOWN`, and Site public activation remains `false`.
+
+The earlier “0 connected devices” observation is historical provenance only and is not a task-state fact, blocker, prerequisite, fallback condition, or runtime-substrate decision.
+

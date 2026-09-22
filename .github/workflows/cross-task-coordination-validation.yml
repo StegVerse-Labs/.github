@@ -48,6 +48,7 @@ on:
       - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'schemas/canonical-task-record.schema.json'
       - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
@@ -78,6 +79,7 @@ on:
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
       - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
+      - 'tests/test_erl_household_economic_conditions_runtime_binding.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -108,7 +110,8 @@ jobs:
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
-            tests.test_steghealth_kv_interlock_canonical_work_ingress
+            tests.test_steghealth_kv_interlock_canonical_work_ingress \
+            tests.test_erl_household_economic_conditions_runtime_binding
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py
       - name: Validate coordination source
