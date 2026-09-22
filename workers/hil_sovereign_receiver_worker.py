@@ -20,7 +20,7 @@ from workers.hil_sovereign_receiver_bridge import (
 ROOT = Path.cwd().resolve()
 TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
 RECEIPT = ROOT / "receipts" / "hil-sovereign-receiver" / f"{TASK_ID}.json"
-DEFAULT_PORT = 8765
+DEFAULT_PORT = 8877
 TVC_WATCHER_REL = Path("scripts/watch_hil_tvc_lifecycle_outbox.py")
 TVC_WATCH_PID_REL = Path("receipts/hil-sovereign-receiver/tvc-lifecycle-watch.pid")
 
