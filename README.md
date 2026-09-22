@@ -1269,6 +1269,10 @@ The shared runtime-evidence owner confirms the first unsatisfied predicate remai
 The accepted browser G25/fence-25 LEASE_OPEN is predecessor evidence, not a reusable WorkerCoordinator assignment. The HIL machine task now enters WorkerCoordinator from an unbound `HANDOFF_READY` state, requires a fresh fence greater than 25, and carries the exact browser G25 lineage into the machine receiver receipt. Gateway projection requires both lineages before forwarding `/api/hil/*`.
 
 
+### Fresh-Node KnowledgeVault relationship semantics
+
+Node registration and `MY_KV_ONBOARDING_STEP_1_COMPLETED` do not imply a KnowledgeVault relationship. A registered Node with no authenticated DEVICE_KV relationship evidence is represented as `KV_RELATIONSHIP_NOT_ESTABLISHED` with no resident-KV-root claim. Only an explicitly established/selected relationship may progress to `KV_INSTALLATION_NOT_VERIFIED` or `KV_INSTALLATION_VERIFIED`; existing-KV installation-receipt recovery is not exposed as evidence of a relationship that never existed. Site PR #1450 merged this correction at `f713330551999125b90868930927984bc33fba9d`; the parent Device/KV/SKAP runtime Goal remains evidence-gated.
+
 ### Functional Memory direct predecessor closure
 
 `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` now reconstructs any supplied predecessor through canonical Master Records at the exact receipt-emission boundary. A stored pointer or upstream validity flag cannot substitute for the canonical closure; the predecessor must pass required-evidence validation and exact digest equality and is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`.
