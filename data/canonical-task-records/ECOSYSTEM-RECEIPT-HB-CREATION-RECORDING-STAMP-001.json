@@ -186,5 +186,22 @@
       "ECOSYSTEM_RECEIPT_HB_CHECKPOINT_CONSUMES_SUCCESSOR_ORDINAL_1"
     ],
     "authority_effect": "NONE_RUNTIME_ROUTING_CORRECTION_ONLY"
+  },
+  "runtime_resolution": {
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "existing_master_records_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+    "master_records_runtime_entrypoint": "services.canonical_master_records_api:app",
+    "master_records_route_loading_repair": "master-records/orchestration#106@8804762fb5da5d212aa7c9c448dfcdabac734715",
+    "source_refresh_owner": "scripts/install_sovereign_worker_source_refresh_service.py",
+    "source_refresh_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+    "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+    "observer_selector": "ecosystem_receipt_hb_checkpoint",
+    "observer_requires_separate_request": false,
+    "first_unresolved_predicate": "AUTHENTIC_DURABLE_CANONICAL_MASTER_RECORDS_RUNTIME_MATERIALIZATION_WITH_REQUIRED_SOURCE_FLOOR_NOT_YET_EVIDENCED",
+    "authentic_master_records_source_refresh_observed": false,
+    "authentic_hb_bound_successor_ordinal_1_observed": false,
+    "authentic_first_successor_checkpoint_observed": false,
+    "new_runtime_or_dispatcher_required": false,
+    "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY"
   }
 }
