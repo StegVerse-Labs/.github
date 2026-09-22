@@ -29,6 +29,7 @@ BOUNDARY_COMPLETE = "COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION"
 BOUNDARY_NO_RUNNER = "NO_EXECUTABLE_RUNNER_DECLARED"
 BOUNDARY_MISSING_RUNNER = "DECLARED_RUNNER_NOT_MATERIALIZED"
 BOUNDARY_RUNNER_FAILED = "DECLARED_RUNNER_STOPPED_BEFORE_COMPLETION"
+BOUNDARY_INTR_ADMISSION = "INTERLOCK_INTR_ADMISSION_REQUIRED"
 BOUNDARY_MASTER_RECORDS = "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_REQUIRED"
 
 
@@ -176,6 +177,9 @@ def main() -> None:
     completion_predicates = definition.get("completion_predicates", [])
     if not isinstance(completion_predicates, list):
         raise SystemExit("completion_predicates must be a list")
+    post_runner_lifecycle_predicates = definition.get("post_runner_lifecycle_predicates", [])
+    if not isinstance(post_runner_lifecycle_predicates, list):
+        raise SystemExit("post_runner_lifecycle_predicates must be a list")
 
     receipt: dict[str, Any] = {
         "schema": "stegverse.reusable-task-trigger-receipt/v1",
@@ -257,6 +261,20 @@ def main() -> None:
     residual = lifecycle.build_residual_recording(manifest=manifest, runner_result=result, runner_expiry=expiry)
     write_json(expiry_path, expiry)
     write_json(residual_path, residual)
+
+    if "INTERLOCK_INTR_RECEIPT_ADMITTED" in post_runner_lifecycle_predicates:
+        admission_ref = result.get("interlock_intr_admission_receipt_ref")
+        admission_sha = result.get("interlock_intr_admission_receipt_sha256")
+        if not isinstance(admission_ref, str) or not admission_ref or not isinstance(admission_sha, str) or len(admission_sha) != 64:
+            receipt["state"] = "BOUNDARY_RECORDED"
+            receipt["boundary"] = {"kind": BOUNDARY_INTR_ADMISSION, "reason": "Explicit Interlock/InTr admission evidence is required before Master Records custody; canonical InTr transport receipts alone are not admission authority.", "manual_intermediate_coordination_required": False, "required_next_binding": "AUTHENTIC_EXPLICIT_INTERLOCK_INTR_ADMISSION_RECEIPT"}
+            receipt["runner_result_ref"] = str(result_path)
+            receipt["runner_expiry_ref"] = str(expiry_path)
+            receipt["residual_recording_ref"] = str(residual_path)
+            receipt["continuation"] = "OBTAIN_OR_RECONCILE_AUTHENTIC_INTERLOCK_INTR_ADMISSION_THEN_RETRIGGER_WITHOUT_REPEATING_PROVIDER_CONSEQUENCE"
+            write_json(receipt_path, receipt)
+            print(json.dumps(receipt, indent=2, sort_keys=True))
+            return
 
     receipt["state"] = "RUNTIME_EVIDENCE_RECONCILED"
     receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": "Independent Master Records custody and reconstruction are the next required machine-admissible step.", "manual_intermediate_coordination_required": False}
