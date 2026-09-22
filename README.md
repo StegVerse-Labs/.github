@@ -1332,3 +1332,7 @@ The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no lon
 ### Device/KV executor import and test-isolation repair — 2026-09-21
 
 The existing Device/KV/SKAP event executor now resolves bare sibling-script imports identically whether invoked directly or loaded by a test/spec importer. The canonical predecessor-closure test fixture also confines its synthetic `heartbeat_runtime` package to the module-under-test import, preventing suite-order leakage that can shadow the real runtime package. This is source/validation hygiene only and grants no runtime, transition, credential, custody, installation, or device authority.
+
+### Device/KV validation repair merge evidence — 2026-09-21
+
+`.github` PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` after exact-head PR validations `35686779849` and `35686779918` passed; push validation `35686765254` also passed. This closes only the executor import/test-isolation source defect and does not establish any authentic Device/KV/SKAP runtime, installation, authority, or Master Records predicate.
