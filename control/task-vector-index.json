@@ -1017,11 +1017,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/StegHealth@3a4972f6b84ca6bf6bedbcc6222f0209f82a5176:tasks/CANONICAL-WORK-POST-INGRESS-2328-FAILURE-REMEDIATION-20260920-001.json"
+    },
+    {
+      "task_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+      "source_state_vector_ref": "control/task-vectors/ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 106,
-    "local_cosv_record_tasks": 106,
+    "indexed_vectorized_tasks": 107,
+    "local_cosv_record_tasks": 107,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
