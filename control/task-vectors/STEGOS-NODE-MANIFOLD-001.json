@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGOS-NODE-MANIFOLD-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGOS-NODE-MANIFOLD-001.json",
+    "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS@8f17ea07aa0f896bab78ff2ff44aae0cd2b8f813"
+  ],
+  "observed_at": "2026-09-21T20:00:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_INTEGRATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "ACTIVE/CHECKED_OUT canonical coordination is in one bounded integration reconciliation; task.v1 therefore encodes CLAIMED_INTEGRATION.",
+    "archive_ready": "False because authentic distinct-peer, NETWORK_PRESENT, fragmentation/reformation, and exact multi-node replay/reconstruction evidence remain open.",
+    "unassigned_work": "Zero; the canonical task and handoff retain ownership of the remaining work.",
+    "chat_owned_counts": "Exactly one chat-owned integration continuation; no chat-owned implementation, validation, observation, or credential authority.",
+    "canonical_owner_installed": "The canonical task record and StegOS canonical handoff are installed.",
+    "thread_required": "False; durable task/vector/handoff state is sufficient for continuation.",
+    "blocker_count": "Zero canonical blockers are declared; remaining predicates are evidence requirements.",
+    "evidence_complete": "False because all four physical network predicates are not yet authentically satisfied.",
+    "activated": "False; source reconciliation does not prove runtime or Network activation.",
+    "propagated": "False; no downstream propagation is claimed."
+  },
+  "authority_effect": "NONE"
+}
