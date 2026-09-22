@@ -112,5 +112,33 @@ class CanonicalWorkResidentRegistryPreservationTests(unittest.TestCase):
             self.assertEqual(projection["authority_effect"], "NONE")
 
 
+    def test_clean_env_preserves_existing_master_records_bindings_only(self):
+        source = {
+            "PATH": "/usr/bin",
+            "HOME": "/home/stegverse",
+            "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT": "/srv/master-records/orchestration",
+            "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "/srv/master-records/orchestration",
+            "STEGVERSE_MASTER_RECORDS_ENDPOINT": "https://master-records.example.test",
+            "STEGVERSE_MASTER_RECORDS_TOKEN": "mr-token",
+            "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "10",
+            "MASTER_RECORDS_DB": "/var/lib/stegverse/master-records/master-records.db",
+            "MASTER_RECORDS_RECEIPT_KEY": "receipt-key",
+            "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS": "true",
+            "STEGVERSE_REPO_ROOTS_JSON": '{"master-records/orchestration":"/srv/master-records/orchestration"}',
+            "GITHUB_TOKEN": "must-not-survive",
+            "GH_TOKEN": "must-not-survive",
+        }
+
+        env = self.mod.clean_env(source)
+
+        for name in self.mod.CANONICAL_MASTER_RECORDS_BINDINGS:
+            self.assertEqual(env[name], source[name])
+        self.assertNotIn("GITHUB_TOKEN", env)
+        self.assertNotIn("GH_TOKEN", env)
+        self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
+        self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
+
+
+
 if __name__ == "__main__":
     unittest.main()
