@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
     paths:
+      - 'workers/ungoverned_ai_defensive_envelope_worker.py'
+      - 'handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json'
+      - 'control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'tests/test_ungoverned_ai_defensive_envelope_worker.py'
       - 'scripts/evaluate_task_registry_collision_checkin.py'
       - 'scripts/evaluate_task_registry_ai_session_checkin.py'
       - 'scripts/validate_task_registration_substrate_resolution.py'
@@ -45,6 +51,12 @@ on:
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
+      - 'workers/ungoverned_ai_defensive_envelope_worker.py'
+      - 'handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json'
+      - 'control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json'
+      - 'tests/test_ungoverned_ai_defensive_envelope_worker.py'
       - 'scripts/evaluate_task_registry_collision_checkin.py'
       - 'scripts/evaluate_task_registry_ai_session_checkin.py'
       - 'scripts/validate_task_registration_substrate_resolution.py'
@@ -116,7 +128,9 @@ jobs:
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
             tests.test_erl_household_economic_conditions_runtime_binding \
-            tests.test_canonical_work_resident_registry_preservation
+            tests.test_canonical_work_resident_registry_preservation \
+            tests.test_ungoverned_ai_defensive_envelope_worker
+          python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py
       - name: Validate coordination source
