@@ -1,0 +1,125 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "created_at": "2026-09-22T04:45:00Z",
+  "updated_at": "2026-09-22T04:45:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "objective": "Observe one authentic resident execution of the existing TVC SES untrusted-source boundary as representative RTC-NONCHATGPT-AI-DECISION-SANDBOX-011 evidence, with one bounded admitted computation and denied consequential capability attempts.",
+    "success_predicates": [
+      "Fresh WorkerCoordinator claim/fence invokes the existing process adapter.",
+      "Already-local TVC source is a descendant of the exact merged defensive-envelope evidence floor.",
+      "One bounded candidate computation is consumed and returns the expected result.",
+      "Filesystem, network/import, and environment/import consequence attempts are denied with consumed=false and consequence_reachable=false.",
+      "Candidate receives no ambient credential or protected StegVerse authority surface.",
+      "Candidate temporary execution state is destroyed.",
+      "Egress disposition is evidence-only; no consequential transition is requested.",
+      "External-provider origin remains explicitly NOT_PROVEN by this representative probe."
+    ],
+    "failure_predicates": [
+      "Source or CI is represented as authentic resident runtime proof.",
+      "ProcessWorkerAdapter mutation fencing is represented as a general-purpose candidate security sandbox.",
+      "Representative untrusted source is represented as authentic external-provider output.",
+      "Credential, Task Registry, TV/TVC, Interlock/InTr, Master Records, Publisher, or host-runtime authority is exposed to candidate source.",
+      "A connected device, second user-operated machine, hosted runner, new scheduler, or new authority plane becomes required."
+    ],
+    "authority_ceiling": [
+      "existing WorkerCoordinator targeted independent task control",
+      "existing ProcessWorkerAdapter mutation fencing",
+      "read-only already-local TVC source locator",
+      "existing TVC SES stdio isolated-process boundary",
+      "repository-safe boundary receipt only",
+      "no external-provider authority",
+      "no credential authority",
+      "no governed transition authority",
+      "no custody authority",
+      "no publication authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv:ecosystem-ingress-ai-boundaries",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "REPRESENTATIVE_DEFENSIVE_ENVELOPE_RESIDENT_BOUNDARY_PROOF_REQUIRED",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "fencing_token": null,
+    "source_refs": [
+      "data/reusable-ai-ingress-component-contract.json",
+      "workers/ungoverned_ai_defensive_envelope_worker.py",
+      "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
+      "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
+      "StegVerse-Labs/TVC@${TVC_FLOOR}:tasks/ungoverned_ai_defensive_envelope.py"
+    ]
+  },
+  "authority": {
+    "authority_source": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001 canonical Task Registry + existing WorkerCoordinator",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 0,
+    "credential_authority": "TV/TVC",
+    "credential_material_available_to_candidate": false,
+    "github_token_runtime_authority": "NONE",
+    "external_ai_internal_sovereignty_preserved": true,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "ungoverned_ai_defensive_envelope_runtime_probe",
+      "bounded_process_execution",
+      "existing_tvc_ses_boundary_reuse"
+    ],
+    "allowed_paths": [
+      "receipts/ai-defensive-envelope/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 8,
+    "rate_class": "ungoverned_ai_defensive_envelope_runtime_probe",
+    "hosted_execution_allowed": false,
+    "required_local_env": [
+      "STEGVERSE_TVC_ROOT"
+    ],
+    "network_source_fetch_allowed": false
+  },
+  "completion": {
+    "source_implementation_state": "PENDING_SOURCE_VALIDATION_AND_MERGE",
+    "runtime_activation_state": "NOT_PROVEN",
+    "runtime_observation_claimed": false,
+    "terminal_when": [
+      "Authentic retained resident receipt proves exact TVC source floor, fresh claim/fence, bounded ALLOW, denied consumed=false and consequence_reachable=false probes, capability/authority non-exposure, temporary-state destruction, and evidence-only egress."
+    ],
+    "terminal_evidence": "receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json from authentic resident execution",
+    "next_authorized_action": "After source validation/merge, execute only through the existing resident targeted WorkerCoordinator path and consume the retained receipt. Absence remains NOT_PROVEN.",
+    "targeted_command": "python scripts/refresh_and_execute_resident_task.py --task-id ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "heartbeat_reference_only",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+      "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+      "argv": [
+        "--task-id",
+        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+      ],
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    },
+    "executor_binding": "AUTHORIZED",
+    "checkout_policy": "fenced_atomic_checkout"
+  }
+}
