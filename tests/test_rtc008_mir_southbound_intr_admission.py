@@ -81,6 +81,32 @@ def test_rtc008_admission_is_canonically_custodied(monkeypatch, tmp_path: Path):
         }
 
     monkeypatch.setattr(ingress, "submit_state_receipt", fake_submit)
+    predecessor = {
+        "transition_id": "RTC-STEGVERSE-EGRESS-007",
+        "state": "RECORDED",
+        "reconstruction_status": "PASS",
+        "required_evidence_validation_status": "PASS",
+        "receipt_sha256": "5" * 64,
+        "reconstructed_receipt_sha256": "5" * 64,
+        "master_record_ref": "master-record:state-transition:sha256:" + "5" * 64,
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+    predecessor_evidence = [{
+        "evidence_id": "predecessor-master-records-closure:RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "origin_transition_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "encoding": "canonical-json",
+        "sha256": ingress.sha_uri(predecessor).split(":", 1)[1],
+        "content": predecessor,
+    }]
+    monkeypatch.setattr(
+        ingress,
+        "require_predecessor_master_records_closure",
+        lambda receipt_sha256, *, successor_transition_id: (
+            "sha256:" + "5" * 64,
+            predecessor_evidence,
+        ),
+    )
     req = request()
     raw = canonical(req)
     result = ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
@@ -96,15 +122,40 @@ def test_rtc008_admission_is_canonically_custodied(monkeypatch, tmp_path: Path):
     assert receipt["transition_id"] == "RTC-INTERLOCK-INTR-TRANSPORT-008"
     assert receipt["transition_sequence"] == 8
     assert receipt["transition_outcome"] == "COMPLETED"
-    assert receipt["prior_state_ref_or_hash"] == "5" * 64
+    assert receipt["prior_state_ref_or_hash"] == "sha256:" + "5" * 64
     assert [x["evidence_type"] for x in receipt["required_evidence_manifest"]] == [
-        "RTC007_MASTER_RECORDS_CLOSURE",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE",
         "UNIVERSAL_INTR_MATERIALIZATION_REQUEST",
         "MIR_SOUTHBOUND_INTR_ADMISSION_RECEIPT",
     ]
 
 
 def test_rtc008_admission_fails_closed_without_master_records_pass(monkeypatch, tmp_path: Path):
+    predecessor = {
+        "transition_id": "RTC-STEGVERSE-EGRESS-007",
+        "state": "RECORDED",
+        "reconstruction_status": "PASS",
+        "required_evidence_validation_status": "PASS",
+        "receipt_sha256": "5" * 64,
+        "reconstructed_receipt_sha256": "5" * 64,
+        "master_record_ref": "master-record:state-transition:sha256:" + "5" * 64,
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+    monkeypatch.setattr(
+        ingress,
+        "require_predecessor_master_records_closure",
+        lambda receipt_sha256, *, successor_transition_id: (
+            "sha256:" + "5" * 64,
+            [{
+                "evidence_id": "predecessor-master-records-closure:RTC-INTERLOCK-INTR-TRANSPORT-008",
+                "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+                "origin_transition_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+                "encoding": "canonical-json",
+                "sha256": ingress.sha_uri(predecessor).split(":", 1)[1],
+                "content": predecessor,
+            }],
+        ),
+    )
     monkeypatch.setattr(
         ingress,
         "submit_state_receipt",
@@ -243,4 +294,80 @@ def test_rtc008_rejects_nonclosed_rtc007_predecessor(monkeypatch, tmp_path: Path
     req["request_hash"] = ingress.sha_uri(req)
     raw = canonical(req)
     with pytest.raises(ValueError, match="mir_southbound_predecessor_required_evidence_not_pass"):
+        ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
+
+
+def test_rtc008_reconstructs_predecessor_at_exact_custody_boundary(monkeypatch, tmp_path: Path):
+    req = request()
+    raw = canonical(req)
+    captured = {}
+
+    closure = {
+        "transition_id": "RTC-STEGVERSE-EGRESS-007",
+        "state": "RECORDED",
+        "reconstruction_status": "PASS",
+        "required_evidence_validation_status": "PASS",
+        "receipt_sha256": "5" * 64,
+        "reconstructed_receipt_sha256": "5" * 64,
+        "master_record_ref": "master-record:state-transition:sha256:" + "5" * 64,
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+
+    def require_predecessor(receipt_sha256, *, successor_transition_id):
+        captured["receipt_sha256"] = receipt_sha256
+        captured["successor_transition_id"] = successor_transition_id
+        return "sha256:" + receipt_sha256, [{
+            "evidence_id": "predecessor-master-records-closure:" + successor_transition_id,
+            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "origin_transition_id": successor_transition_id,
+            "encoding": "canonical-json",
+            "sha256": ingress.sha_uri(closure).split(":", 1)[1],
+            "content": closure,
+        }]
+
+    monkeypatch.setattr(ingress, "require_predecessor_master_records_closure", require_predecessor)
+    monkeypatch.setattr(
+        ingress,
+        "submit_state_receipt",
+        lambda receipt: {
+            "state": "RECORDED",
+            "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": "a" * 64,
+            "reconstructed_receipt_sha256": "a" * 64,
+            "master_records_grants_transition_authority": False,
+        },
+    )
+    ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
+    assert captured["receipt_sha256"] == "5" * 64
+    assert captured["successor_transition_id"] == "RTC-INTERLOCK-INTR-TRANSPORT-008"
+
+
+def test_rtc008_blocks_when_reconstructed_predecessor_identity_differs(monkeypatch, tmp_path: Path):
+    req = request()
+    raw = canonical(req)
+    wrong = {
+        "transition_id": "SOME-OTHER-TRANSITION",
+        "state": "RECORDED",
+        "reconstruction_status": "PASS",
+        "required_evidence_validation_status": "PASS",
+        "receipt_sha256": "5" * 64,
+        "reconstructed_receipt_sha256": "5" * 64,
+    }
+    monkeypatch.setattr(
+        ingress,
+        "require_predecessor_master_records_closure",
+        lambda receipt_sha256, *, successor_transition_id: (
+            "sha256:" + receipt_sha256,
+            [{
+                "evidence_id": "predecessor-master-records-closure:" + successor_transition_id,
+                "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+                "origin_transition_id": successor_transition_id,
+                "encoding": "canonical-json",
+                "sha256": ingress.sha_uri(wrong).split(":", 1)[1],
+                "content": wrong,
+            }],
+        ),
+    )
+    with pytest.raises(ValueError, match="rtc008_predecessor_transition_reconstruction_mismatch"):
         ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
