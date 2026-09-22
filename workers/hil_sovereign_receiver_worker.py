@@ -198,6 +198,20 @@ def main() -> int:
     if not isinstance(claim_id, str) or not claim_id or not isinstance(fence, int):
         return 3
 
+    machine = task.get("machine_readable_state") or {}
+    predecessor = machine.get("browser_predecessor_lineage") or {}
+    if (
+        predecessor.get("task_id") != TASK_ID
+        or predecessor.get("claim_id") != "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"
+        or predecessor.get("fencing_token") != 25
+        or predecessor.get("lease_id") != "HIL-BROWSER-ESRL-7bafde4a280e847758da157e"
+        or predecessor.get("request_id") != "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002"
+        or predecessor.get("state") != "SATISFIED_PREDECESSOR_ONLY"
+        or predecessor.get("machine_worker_claim_reuse_allowed") is not False
+        or fence <= 25
+    ):
+        return 6
+
     execution = handoff.get("execution") or {}
     required = {"runtime_observation", "bounded_process_execution", "sovereign_hil_receiver_activation"}
     if not required.issubset(set(execution.get("required_capabilities") or [])):
@@ -212,6 +226,12 @@ def main() -> int:
         "heartbeat_epoch": epoch,
         "claim_id": claim_id,
         "fencing_token": fence,
+        "predecessor_claim_id": predecessor["claim_id"],
+        "predecessor_fencing_token": predecessor["fencing_token"],
+        "predecessor_lease_id": predecessor["lease_id"],
+        "predecessor_request_id": predecessor["request_id"],
+        "predecessor_evidence_refs": list(predecessor.get("evidence_refs") or []),
+        "predecessor_authority_effect": "NONE_PREDECESSOR_EVIDENCE_ONLY",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "github_token_used": False,
