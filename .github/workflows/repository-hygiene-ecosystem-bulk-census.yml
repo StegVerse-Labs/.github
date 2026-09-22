@@ -1,0 +1,62 @@
+name: Ecosystem repository hygiene bulk census
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repository-hygiene-ecosystem-bulk-census.yml'
+      - 'scripts/repository_hygiene_inventory.py'
+
+permissions:
+  contents: read
+
+jobs:
+  census:
+    name: census / ${{ matrix.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        repository:
+          - StegVerse-Labs/.github
+          - StegVerse-Labs/Site
+          - StegVerse-Labs/StegCore
+    steps:
+      - name: Checkout canonical hygiene control
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Preserve canonical classifier outside target checkout
+        run: cp scripts/repository_hygiene_inventory.py /tmp/repository_hygiene_inventory.py
+
+      - name: Clone target repository read-only with all branch histories
+        env:
+          TARGET_REPOSITORY: ${{ matrix.repository }}
+        run: |
+          set -euo pipefail
+          rm -rf target
+          env -u GITHUB_TOKEN -u GH_TOKEN git clone --filter=blob:none --no-tags --no-checkout "https://github.com/${TARGET_REPOSITORY}.git" target
+          env -u GITHUB_TOKEN -u GH_TOKEN git -C target fetch --prune --filter=blob:none origin '+refs/heads/*:refs/remotes/origin/*'
+
+      - name: Classify target branch inventory fail-closed
+        working-directory: target
+        env:
+          REPOSITORY: ${{ matrix.repository }}
+          DEFAULT_BRANCH: main
+          STALE_DAYS: '30'
+          PROTECT_RE: '^(main|master|gh-pages|release/.*|support/.*)$'
+          APPROVAL_FILE: '.github/repository-hygiene-approved-retirements.txt'
+        run: python3 /tmp/repository_hygiene_inventory.py
+
+      - name: Upload target census evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-hygiene-${{ strategy.job-index }}-${{ github.run_id }}
+          path: target/hygiene/
+          if-no-files-found: error
+          retention-days: 90
