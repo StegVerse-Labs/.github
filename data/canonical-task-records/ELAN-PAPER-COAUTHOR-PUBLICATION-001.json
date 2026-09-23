@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "TEST2_PROVENANCE_CORRECTION_PROPOSED_AUTHOR_REVIEW_PENDING",
+  "checkout_state": "COAUTHOR_CONFIRMED_LABELING_CORRECTION_FACCT_TIMELINE_AGREED_HOLD_PROTOCOL_DESIGN_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -45,7 +45,7 @@
     {
       "dependency_id": "DEP-ELAN-PUBLICATION-VENUE",
       "kind": "EDITORIAL_DECISION",
-      "state": "CANDIDATES_EVALUATED_SELECTION_OPEN",
+      "state": "FACCT_2027_TIMELINE_AGREED_SUBMISSION_NOT_AUTHORIZED",
       "ref": "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md"
     },
     {
@@ -57,8 +57,8 @@
     {
       "dependency_id": "DEP-ELAN-REPRODUCTION-INQUIRY",
       "kind": "AUTHOR_CONFIRMATION",
-      "state": "UNCONFIRMED",
-      "ref": "Whether any attempt to reproduce original signal occurred is not established by correspondence"
+      "state": "RESOLVED_NO_REPRODUCTION_ATTEMPT",
+      "ref": "Coauthor-confirmed 2026-09-23: earlier annotation corrected during transcript review, not reproduction"
     }
   ],
   "blockers": [],
@@ -77,14 +77,16 @@
     "PUBLICATION_VENUE_DECISION_RECORDED_WHEN_SELECTED",
     "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE",
     "HUMAN_ANNOTATION_NEVER_ATTRIBUTED_AS_ELAN_OUTPUT",
-    "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL"
+    "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL",
+    "COAUTHOR_LABELING_CORRECTION_CONFIRMED",
+    "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION"
   ],
   "collaboration_state": {
     "coauthorship_accepted": true,
     "coauthored_working_draft_exists": true,
     "future_draft_review_offered": true,
     "publication_venues_evaluated": true,
-    "specific_venue_selected": false,
+    "specific_venue_selected": true,
     "submission_authorized": false,
     "private_correspondence_publicly_replicated": false,
     "final_author_order_confirmed": false,
@@ -92,7 +94,10 @@
     "corrected_test2_annotation_attribution_acknowledged": true,
     "corrected_test2_pdf_verified": false,
     "elan_original_signal_reproduction_attempt_confirmed": false,
-    "proposed_hold_protocol_approved": false
+    "proposed_hold_protocol_approved": false,
+    "elan_original_signal_reproduction_attempt_excluded_by_coauthor_confirmation": true,
+    "facct_2027_timeline_agreed": true,
+    "hold_joint_design_agreed": true
   },
   "completion": {
     "claimed": false,
@@ -100,12 +105,12 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
+    "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
+    "PREPARE_FACCT_2027_ABSTRACT_FOR_BOTH_AUTHORS",
     "VERIFY_CORRECTED_ELAN_SOURCE_PDF",
-    "OBTAIN_COAUTHOR_REPRODUCTION_ACCOUNT_AND_AUTHOR_REVIEW",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
     "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
     "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
-    "RECORD_AGREED_VENUE_SELECTION",
     "PREPARE_VENUE_SPECIFIC_SUBMISSION_MATERIALS_WHEN_AUTHORIZED"
   ],
   "handoff_projection_refs": [
