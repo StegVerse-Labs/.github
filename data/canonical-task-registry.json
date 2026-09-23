@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 204,
+  "generation": 205,
   "status": "SDK_MICRO_NODE_ADMISSIBILITY_REGISTRATION_VALIDATED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9545,7 +9545,10 @@
         "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md",
         "StegVerse-Labs/stegfin-governance:FINCO_PRIVATE_STATE_VALUE.md",
         "StegVerse-Labs/stegfin-governance:docs/STEGTOKEN_STEGCOIN_RECONCILIATION.md",
-        "StegVerse-Labs/.github:data/canonical-task-records/GOVERNED-WIKI-PUBLICATION-TRANSITION-001.json"
+        "StegVerse-Labs/.github:data/canonical-task-records/GOVERNED-WIKI-PUBLICATION-TRANSITION-001.json",
+        "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+        "StegVerse-org/LLM-adapter:docs/AI_ENTRY_PROVIDER_BOUNDARY.md",
+        "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md"
       ],
       "targets": {
         "organizations": [
@@ -9573,8 +9576,8 @@
         {
           "dependency_id": "CANONICAL_COSV_EMISSION",
           "kind": "EVIDENCE",
-          "state": "UNRESOLVED",
-          "ref": "StegVerse-Labs/.github:control/task-vector-index.json / canonical task.v1 source emission"
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/.github#2584 / c8a4a93c3bee44be356b18696918589164560f23 / control/task-vectors/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json"
         },
         {
           "dependency_id": "SITE_PREWORK_AND_SOURCE_VALIDATION",
@@ -9609,11 +9612,6 @@
       ],
       "blockers": [
         {
-          "blocker_id": "COSV_NOT_EMITTED",
-          "dependency_id": "CANONICAL_COSV_EMISSION",
-          "reason": "Canonical record is proposed; no exact authoritative task.v1 COSV emitted."
-        },
-        {
           "blocker_id": "SITE_DRAFT_UNMERGED",
           "dependency_id": "SITE_INTEGRATION",
           "reason": "Site #1458 source checks passed after exact pre-work and derived Site projection repair, but release integration remains a draft."
@@ -9637,13 +9635,16 @@
       "adjacent_task_refs": [
         "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
         "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
-        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+        "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
       ],
       "existing_evidence_refs": [
         "GCAT-BCAT-Engine/Publisher draft PR #72, reported three validation workflows SUCCESS",
         "StegVerse-Labs/Site draft PR #1458 and CI fail on absent active pre-work claim",
         "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json",
-        "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS"
+        "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS",
+        "Publisher PR #72 and Site PR #1458 draft source revisions distinguish parallel ephemeral external AI from native MyKV, without runtime-completion claim."
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
@@ -9655,7 +9656,10 @@
         "AUTHENTIC_RUNTIME_MASTER_RECORDS_CLOSURE_FOR_CHECKMARKS",
         "EXACT_EXTERNAL_INTR_ALLOW_REQUIRED_WHEN_APPLICABLE",
         "GOVERNED_PUBLISHER_PUBLICATION_CLOSURE",
-        "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED"
+        "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED",
+        "STAGE1_EPHEMERAL_OPENAI_REAL_RESULT_INDEPENDENT_OF_NATIVE_MYKV",
+        "STAGE1_EPHEMERAL_ANTHROPIC_REAL_RESULT_INDEPENDENT_OF_NATIVE_MYKV",
+        "EPHEMERAL_PROVIDER_REQUEST_EGRESS_AND_TERMINAL_DESTRUCTION_IN_SAME_EXECUTION"
       ],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
