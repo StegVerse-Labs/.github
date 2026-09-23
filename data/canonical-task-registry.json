@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 201,
+  "generation": 202,
   "status": "CANONICAL_MASTER_RECORDS_STEGAGENTS_PURPOSE_WARRANT_EXACT_BOUNDARY_PREDECESSOR_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9683,6 +9683,84 @@
         "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
         "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
       ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "root_correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "parent_task_id": null,
+      "goal": "Reconcile existing organizational transition receipts, worker expiry and task-registry transitions, local replay, bounded organization batch closure, and independently verified Master Records custody/reconstruction without introducing another ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, or device dependency.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "HANDOFF_READY",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
+      "canonical_handoff": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
+      "canonical_contract": "control/organization-batch-custody-replay-contract.json",
+      "cosv_task_vector": "10000000100000",
+      "source_refs": [
+        "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
+        "control/organization-batch-custody-replay-contract.json",
+        "management/COSV_PROFILE_V1.json",
+        "resident-runtime/aggregate_repo_transition.py",
+        ".stegverse/transition-ledger/org-contract.json",
+        "workers/canonical_state_transition_custody.py",
+        "master-records/orchestration/services/ecosystem_transition_ledger.py",
+        "master-records/orchestration/services/canonical_state_transition_custody.py"
+      ],
+      "adjacent_task_refs": [
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+        "WORKER-BLOCKER-FALLBACK-ECOSYSTEM-001",
+        "WORKER-BLOCKER-REMEDIATION-001"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_AND_COSV_REGISTRATION_MERGED",
+        "EXISTING_ORGANIZATION_AND_MASTER_RECORDS_RECEIPT_CONTRACTS_RECONCILED",
+        "WORKER_IRRECOVERABLE_FAILURE_EXPIRY_TASK_REGISTRY_AND_ORG_RECEIPT_SEQUENCE_DEFINED",
+        "ORG_LOCAL_WORKER_TASK_AND_SEQUENCE_REPLAY_VERIFIED_WITH_EXACT_PREDECESSORS",
+        "BATCH_SEGMENT_BOUNDARIES_AND_FAILURE_RECOVERY_VERIFIED",
+        "MASTER_RECORDS_ORGANIZATION_BATCH_INGRESS_AND_RECONSTRUCTION_VERIFIED",
+        "AUTHENTIC_RUNTIME_ORG_BATCH_TO_MASTER_RECORDS_END_TO_END_EVIDENCE_RETAINED"
+      ],
+      "current_truth": {
+        "registration": "PROPOSED_PENDING_PR_MERGE",
+        "runtime_batch_custody": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "live_worker_failure_expiry_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "existing_org_receipt_emitter": "SOURCE_PRESENT",
+        "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
+        "existing_master_records_receipt_set_commitments": "SOURCE_PRESENT",
+        "new_runtime_or_ledger_authorized": false
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authentic_runtime_proof": false
+      },
+      "allowed_next_transitions": [
+        "HANDOFF_READY",
+        "CLAIMED_FOR_VALIDATION",
+        "BLOCKED_WITH_DURABLE_OWNER",
+        "COMPLETE_ONLY_AFTER_EXACT_MASTER_RECORDS_PROOF"
+      ],
+      "authority_model": {
+        "transition_authority": "INTERLOCK_INTR",
+        "worker_lifecycle_authority": "EXISTING_WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "local_ledger_authority": "EXISTING_ORGANIZATION_LEDGER_CUSTODY_ONLY",
+        "master_records_authority": "GLOBAL_CUSTODY_AND_RECONSTRUCTION_ONLY",
+        "github_action_authority": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
+        "registry_mints_execution_authority": false,
+        "receipt_is_transition_authority": false,
+        "master_records_offline_allows_local_replay": true,
+        "master_records_ack_required_where_declared": true
+      },
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
     }
   ],
   "human_actions": [],

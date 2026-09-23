@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.organization-batch-custody-replay-contract/v1",
+  "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+  "status": "DESIGN_REGISTRATION_NOT_RUNTIME_PROOF",
+  "owner": "StegVerse-Labs/.github",
+  "cosv_task_vector": "10000000100000",
+  "receipt_units": "EXACT_INDIVIDUAL_CANONICAL_AND_ORGANIZATION_RECEIPTS",
+  "org_replay_scope": [
+    "WORKER",
+    "TASK",
+    "ORGANIZATION_SEQUENCE"
+  ],
+  "master_records_replay_scope": [
+    "CROSS_ORGANIZATION",
+    "COMPLEX_HISTORICAL_RECONSTRUCTION"
+  ],
+  "batch_closure_reasons": [
+    "ROUTINE_THRESHOLD",
+    "TASK_CLOSURE",
+    "WORKER_EXPIRY",
+    "CONSEQUENTIAL_GOVERNANCE_BOUNDARY",
+    "CUSTODY_RECOVERY",
+    "INTER_ORGANIZATION_HANDOFF"
+  ],
+  "batch_thresholds": "UNSPECIFIED_PENDING_AUTHENTIC_WORKLOAD",
+  "batch_required_fields": [
+    "organization_id",
+    "batch_id",
+    "contiguous_receipt_range",
+    "previous_batch_commitment",
+    "first_org_receipt_sha256",
+    "last_org_receipt_sha256",
+    "ordered_receipt_hashes",
+    "ordered_receipt_commitment",
+    "cross_boundary_predecessor_refs",
+    "required_evidence_commitment",
+    "closure_reason",
+    "acknowledgement_state"
+  ],
+  "integrity_requirements": [
+    "EXACT_PREVIOUS_ORG_RECEIPT_LINKS",
+    "NO_OMISSION_DUPLICATION_OR_REORDERING",
+    "IDEMPOTENT_DELIVERY",
+    "RECONSTRUCT_REQUIRED_EVIDENCE",
+    "FAIL_CLOSED_PARTIAL_BATCH"
+  ],
+  "worker_terminal_failure": [
+    "PRESERVE_EXISTING_DURABLE_FAILURE_EVIDENCE",
+    "EXPIRE_FENCED_ASSIGNMENT_THROUGH_EXISTING_WORKERCOORDINATOR",
+    "TRANSITION_CANONICAL_TASK_REGISTRY_WITH_OWNER_AND_SUCCESSOR",
+    "RECORD_ORG_WORKER_EXPIRY_RECEIPT",
+    "CLOSE_AND_QUEUE_VERIFIABLE_ORG_BATCH"
+  ],
+  "master_records_contract": "INDEPENDENT_VERIFICATION_AND_CROSS_ORGANIZATION_CUSTODY_NOT_TRANSITION_AUTHORITY",
+  "direct_custody_exception": "EXPLICITLY_REQUIRED_IMMEDIATE_MASTER_RECORDS_CLOSURE_STILL_MANDATORY",
+  "authorization_effect": "NONE_DESIGN_ONLY",
+  "runtime_status": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+}
