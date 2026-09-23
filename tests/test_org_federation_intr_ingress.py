@@ -141,6 +141,14 @@ class FederationIngressTests(unittest.TestCase):
             ingress.validate(body=raw, headers=self.headers(raw),
                              decision_reconstructor=lambda _: self.decision(disposition="DENY"))
 
+    def test_cross_organization_source_receipt_mismatch_rejected(self):
+        self.request["source_organization_receipt_sha256"] = "sha256:" + "f" * 64
+        raw = self.raw()
+        with self.assertRaisesRegex(ValueError, "federation_external_intr_decision_binding_mismatch"):
+            ingress.validate(body=raw, headers=self.headers(raw),
+                             decision_reconstructor=lambda _: self.decision())
+        self.assertEqual(self.calls, [])
+
     def test_tampered_carrier_rejected(self):
         self.request["frame"]["packet_sha256"] = "sha256:" + "0" * 64
         raw = self.raw()
