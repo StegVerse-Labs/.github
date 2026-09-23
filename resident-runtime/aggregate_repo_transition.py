@@ -76,12 +76,13 @@ def audit_chain(root=None):
             "organization":C["organization"],"state":"EMPTY_NOT_OBSERVED",
             "head_receipt_sha256":None,"reconstructed_receipt_count":0,
             "failure_transitions":[],"partial_transitions":[],"unknown_source_receipts":[],
-            "orphan_receipts":[],"integrity_errors":[],"authority_effect":"NONE_READ_ONLY"}
+            "orphan_receipts":[],"orphan_source_receipts":[],"recovered_legacy_source_receipts":[],"integrity_errors":[],"authority_effect":"NONE_READ_ONLY"}
     if not h.is_file():
         if paths:
             result["state"]="INTEGRITY_FAILURE"
             result["integrity_errors"].append("HEAD_MISSING_WITH_RETAINED_RECEIPTS")
         return result
+    referenced_sources=set()
     try:
         head=load(h); current=head.get("receipt_sha256")
         result["head_receipt_sha256"]=current
@@ -103,13 +104,23 @@ def audit_chain(root=None):
             if row.get("organization")!=C["organization"]:
                 result["integrity_errors"].append("RECEIPT_ORGANIZATION_MISMATCH:"+current);break
             retained=row.get("source_receipt_ref")
+            if retained is None:
+                legacy=Path("sources")/(row["source_transition_sha256"].split(":",1)[1]+".json")
+                if (root/legacy).is_file():
+                    retained=legacy.as_posix()
+                    result["recovered_legacy_source_receipts"].append(current)
             if retained:
+                referenced_sources.add(Path(retained).name)
                 source_file=root/retained
                 if not source_file.is_file():
                     result["integrity_errors"].append("SOURCE_RECEIPT_MISSING:"+current)
                 else:
                     source=load(source_file)
-                    if sha(source)!=row.get("source_transition_sha256"):
+                    try:
+                        observed_source=verify_source(source)
+                    except (ValueError,KeyError,TypeError):
+                        observed_source={}
+                    if observed_source.get("source_transition_sha256")!=row.get("source_transition_sha256"):
                         result["integrity_errors"].append("SOURCE_RECEIPT_DIGEST_MISMATCH:"+current)
                     elif source.get("schema")!=row.get("source_receipt_schema"):
                         result["integrity_errors"].append("SOURCE_RECEIPT_SCHEMA_MISMATCH:"+current)
@@ -128,6 +139,10 @@ def audit_chain(root=None):
             result["reconstructed_receipt_count"]+=1
             current=row.get("previous_receipt_sha256")
         result["orphan_receipts"]=sorted(p.stem for p in paths if "sha256:"+p.stem not in seen)
+        sources=root/"sources"
+        result["orphan_source_receipts"]=sorted(p.name for p in sources.glob("*.json") if p.name not in referenced_sources) if sources.exists() else []
+        if result["orphan_source_receipts"]:
+            result["integrity_errors"].append("ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION")
         if result["orphan_receipts"]:
             result["integrity_errors"].append("ORPHAN_ORGANIZATION_RECEIPTS")
         result["state"]="INTEGRITY_FAILURE" if result["integrity_errors"] else (
