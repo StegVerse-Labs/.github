@@ -19,6 +19,22 @@ COMPONENT = "sdk:untrusted-dependency-contract-and-inert-tests"
 
 
 class SDKUntrustedDependencyCollisionCheckinTests(unittest.TestCase):
+    def test_unrelated_root_tasks_do_not_share_null_parent_lineage(self):
+        from scripts.evaluate_task_registry_collision_checkin import overlap
+        left = {"task_id": "LEFT", "root_correlation_id": "LEFT",
+                "parent_task_id": None}
+        right = {"task_id": "RIGHT", "root_correlation_id": "RIGHT",
+                 "parent_task_id": None}
+        repos, components, lineage, adjacent, substrates, conflicts, shareable = overlap(
+            left, right, {"repository": "unrelated/fixture"}
+        )
+        self.assertEqual((repos, components, adjacent, substrates, conflicts, shareable),
+                         ([], [], False, [], [], []))
+        self.assertFalse(lineage)
+        same_parent = dict(right, parent_task_id="SHARED")
+        left["parent_task_id"] = "SHARED"
+        self.assertTrue(overlap(left, same_parent)[2])
+
     def test_exact_scoped_canonical_evaluator_with_ephemeral_event_history(self):
         registry = json.loads((ROOT / "data/canonical-task-registry.json").read_text())
         record = next(row for row in registry["tasks"] if row["task_id"] == TASK)
