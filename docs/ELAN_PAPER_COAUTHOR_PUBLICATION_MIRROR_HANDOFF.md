@@ -3,7 +3,7 @@
 Updated: 2026-09-23  
 Goal Task ID: `ELAN-PAPER-COAUTHOR-PUBLICATION-001`  
 COSV ID: `71000000100100`  
-Status: `ACTIVE / TEST2-PROVENANCE-CORRECTION-PROPOSED / VENUE-DISCUSSION / AUTHOR-REVIEW-PENDING`
+Status: `ACTIVE / TEST2-LABELING-CORRECTION-CONFIRMED / FACCT-TIMELINE-AGREED / HOLD-DESIGN-PENDING`
 
 ## Goal
 
@@ -39,11 +39,11 @@ The co-authored revision:
 
 ## Test 2 source correction and reproduction inquiry (2026-09-23)
 
-The ÉLAN coauthor disclosed in private correspondence forwarded by Rigel that the original Test 2 no-prompt interval annotation `No transmission, native presence state maintained.` was **written by the human experimenter for transcript readability**, not emitted by ÉLAN. During an interval in which no API prompt was sent, there was no model output to observe. A corrected trace PDF is shown as an attachment in the forwarded correspondence but its bytes were not available for independent verification in this task turn. No reproduction attempt or failed reproduction is established by this correspondence; both remain UNKNOWN until Élisabeth confirms or provides native test records. Keep private message content outside public repository; this handoff records only the coauthor-authorized scientific correction necessary to prevent misattribution, not her full messages.
+The ÉLAN coauthor disclosed in private correspondence forwarded by Rigel that the original Test 2 no-prompt interval annotation `No transmission, native presence state maintained.` was **written by the human experimenter for transcript readability**, not emitted by ÉLAN. During an interval in which no API prompt was sent, there was no model output to observe. A corrected trace PDF is shown as an attachment in the forwarded correspondence but its bytes were not available for independent verification in this task turn. **Subsequent author clarification, 2026-09-23:** Élisabeth explicitly confirmed this was correction of a labeling error discovered during transcript review, **not a reproduction attempt**. Do not preserve the earlier failed-reproduction hypothesis as an active scientific question. She agreed to design a separate explicit HOLD experiment jointly. Keep private message content outside public repository; this handoff records only the coauthor-authorized scientific correction necessary to prevent misattribution, not her full messages.
 
 Revision 3 proposes source-attribution repairs to the manuscript and distinguishes the historical no-prompt control from a proposed explicit HOLD invocation. Do not claim the prior cross-evaluation demonstrated an ÉLAN-native state difference. The old controlled StegVerse A3/A4, custody, replay, and reconstruction evidence remains historically true for **the supplied StegVerse representations**; its cross-architecture interpretation must be revised. The corrected trace must be compared against the historical source and full rev3 before substantive author approval.
 
-Candidate follow-up: preserve an exact API prompt and observed response/non-response for explicit HOLD, including request/response timestamps and transport metadata if supplied, plus a separate no-invocation control. Ask Élisabeth whether she attempted reproduction but do not presuppose an unsuccessful attempt. A previously shared `...` example is described in user-forwarded correspondence, not verified as an executed revision of this protocol.
+Candidate follow-up: preserve an exact API prompt and observed response/non-response for explicit HOLD, including request/response timestamps and transport metadata if supplied, plus a separate no-invocation control. Élisabeth has answered the reproduction question definitively: no reproduction attempt occurred; do not ask it again. A previously shared `...` example is described in user-forwarded correspondence, not verified as an executed revision of this protocol.
 
 ## Venue evaluation
 
@@ -58,7 +58,7 @@ Current candidates:
 - Journal of Responsible Technology — moderate-to-strong applied responsible-technology fit.
 - AIES — thematically relevant, but the 2026 submission deadline has passed; reconsider a later cycle when announced.
 
-No venue has been selected. The user requests a response addressing venue options and an upcoming mid-October event/deadline. Officially confirmed FAccT 2027 abstract deadline is October 27, 2026, full paper November 3, 2026; for authors lacking institutional affiliation the author guide recommends an OpenReview account by October 16. AIES 2026 runs October 12–14, 2026, but its main-paper submission closed May 21. Distinguish an internal mid-October drafting target or account-verification recommendation from a formal venue deadline; do not claim an October AIES presentation slot without an acceptance or invitation. Venue choice remains a joint author decision.
+**Author agreement:** Rigel proposed ACM FAccT 2027 and Élisabeth affirmatively agreed to target its 2026-10-27 abstract / 2026-11-03 paper deadlines. This records an agreed timeline/target venue, **not** submission authorization, abstract acceptance, or conference presentation. Officially confirmed FAccT 2027 abstract deadline is October 27, 2026, full paper November 3, 2026; for authors lacking institutional affiliation the author guide recommends an OpenReview account by October 16. AIES 2026 runs October 12–14, 2026, but its main-paper submission closed May 21. Distinguish an internal mid-October drafting target or account-verification recommendation from a formal venue deadline; do not claim an October AIES presentation slot without an acceptance or invitation. Both authors now favor FAccT 2027; final submission still requires approved evidence, manuscript, author metadata, and submission authorization.
 
 ## Adjacent novelty review
 
@@ -77,13 +77,13 @@ No venue has been selected. The user requests a response addressing venue option
 ## Next work
 
 1. Verify the exact corrected Test 2 PDF bytes, revise the previous cross-evaluation's attribution in a separately scoped correction, and obtain Élisabeth's substantive review of the proposed Revision 3.
-2. Ask Élisabeth whether any reproduction attempt occurred and request authentic exact prompts, timestamps, output/non-output and API metadata if it did, without assigning motives to reply timing.
+2. Prepare a jointly reviewable explicit HOLD protocol with condition-matched controls, exact prompt strings, timestamps, native outputs, client/transport metadata where available, and explicit separation of no-invocation from invoked nonresponse. Élisabeth confirmed no prior reproduction attempt; do not revisit that speculation.
 3. Complete the active literature/novelty matrix.
 4. Provide the revised manuscript and venue evaluation to both authors for substantive review.
 5. Record actual Élisabeth revisions/contributions as they occur rather than attributing work prospectively.
-6. Decide conference versus journal direction jointly.
+6. Work toward the mutually agreed FAccT 2027 target while retaining journals as contingencies if the authors jointly change course.
 7. If FAccT 2027 remains under consideration, complete any needed OpenReview setup by the recommended October 16 target and work backward from October 27 and November 3 formal deadlines.
-8. Record a venue selection only after author agreement.
+8. Author preference for FAccT 2027 is recorded; collect author-order, affiliation and contribution approvals before submission.
 9. Prepare venue-specific submission materials only after author approval.
 
 ## README impact
@@ -92,4 +92,4 @@ This is research/publication coordination and does not change repository functio
 
 ## No-claim boundary
 
-This handoff does not claim that the manuscript is submission-ready, that a venue has been selected, that Élisabeth has already performed substantive edits beyond accepting co-authorship and offering future review, or that any publication submission has occurred.
+This handoff does not claim that the manuscript is submission-ready, that a submission has been authorized, that Élisabeth has already performed substantive edits beyond accepting co-authorship and offering future review, or that any publication submission has occurred.
