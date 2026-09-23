@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "COAUTHORED_DRAFT_RECONCILED_VENUES_EVALUATED_AUTHOR_REVIEW_PENDING",
+  "checkout_state": "TEST2_PROVENANCE_CORRECTION_PROPOSED_AUTHOR_REVIEW_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -19,7 +19,9 @@
     "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md",
     "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md",
     "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
-    "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16"
+    "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16",
+    "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md",
+    "docs/ELAN_TEST2_CORRECTION_AUTHOR_RESPONSE_DRAFT.md"
   ],
   "dependencies": [
     {
@@ -45,6 +47,18 @@
       "kind": "EDITORIAL_DECISION",
       "state": "CANDIDATES_EVALUATED_SELECTION_OPEN",
       "ref": "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md"
+    },
+    {
+      "dependency_id": "DEP-ELAN-TEST2-CORRECTED-SOURCE",
+      "kind": "PRIMARY_EVIDENCE",
+      "state": "ATTACHMENT_REFERENCED_BYTES_NOT_YET_VERIFIED",
+      "ref": "user-forwarded corrected Test 2 trace PDF, 2026-09-23"
+    },
+    {
+      "dependency_id": "DEP-ELAN-REPRODUCTION-INQUIRY",
+      "kind": "AUTHOR_CONFIRMATION",
+      "state": "UNCONFIRMED",
+      "ref": "Whether any attempt to reproduce original signal occurred is not established by correspondence"
     }
   ],
   "blockers": [],
@@ -61,7 +75,9 @@
     "EXPERIMENT_SCOPE_LIMITATIONS_PRESERVED",
     "PUBLICATION_VENUES_EVALUATED_WITHOUT_PREMATURE_SELECTION",
     "PUBLICATION_VENUE_DECISION_RECORDED_WHEN_SELECTED",
-    "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE"
+    "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE",
+    "HUMAN_ANNOTATION_NEVER_ATTRIBUTED_AS_ELAN_OUTPUT",
+    "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL"
   ],
   "collaboration_state": {
     "coauthorship_accepted": true,
@@ -72,7 +88,11 @@
     "submission_authorized": false,
     "private_correspondence_publicly_replicated": false,
     "final_author_order_confirmed": false,
-    "final_contribution_statement_confirmed": false
+    "final_contribution_statement_confirmed": false,
+    "corrected_test2_annotation_attribution_acknowledged": true,
+    "corrected_test2_pdf_verified": false,
+    "elan_original_signal_reproduction_attempt_confirmed": false,
+    "proposed_hold_protocol_approved": false
   },
   "completion": {
     "claimed": false,
@@ -80,6 +100,8 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
+    "VERIFY_CORRECTED_ELAN_SOURCE_PDF",
+    "OBTAIN_COAUTHOR_REPRODUCTION_ACCOUNT_AND_AUTHOR_REVIEW",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
     "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
     "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
