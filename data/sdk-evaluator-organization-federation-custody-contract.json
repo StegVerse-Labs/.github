@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.sdk-evaluator-organization-federation-custody-contract/v1",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "cosv": "71000000100110",
+  "effect": "NON_AUTHORIZING_SOURCE_CONTRACT",
+  "first_unresolved_predicate": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE",
+  "organization_transition": {
+    "custody_owner": "EMITTING_ORGANIZATION",
+    "exact_immediate_predecessor_required": true,
+    "genesis_explicit": true,
+    "governance_authority": "Interlock/InTr",
+    "evidence_retention": "ORG_LOCAL_ORDERED_RECONSTRUCTABLE",
+    "master_records_checkpoint_as_predecessor": false
+  },
+  "reusable_module": {
+    "scope": "SINGLE_DECLARED_ORGANIZATION_AND_MODULE_VERSION",
+    "required_bindings": [
+      "organization_id",
+      "module_id",
+      "module_schema_version",
+      "entry_receipt_sha256",
+      "terminal_receipt_sha256",
+      "ordered_transition_digest_commitment",
+      "underlying_receipt_reconstruction_locator",
+      "validation_outcome"
+    ],
+    "summary_grants_authority": false,
+    "underlying_receipts_may_be_discarded": false
+  },
+  "interorganizational_transport": {
+    "required_path": "EXISTING_UNIVERSAL_INTERLOCK_INTR_PROFILED_INGRESS_AND_ORG_FEDERATION_CARRIER",
+    "required_bindings": [
+      "origin_organization",
+      "origin_service",
+      "destination_organization",
+      "destination_service",
+      "request_hash",
+      "transition_id",
+      "payload_hash",
+      "source_organization_receipt_sha256",
+      "transport_frame_sha256",
+      "intr_decision_ref",
+      "receiver_organization_receipt_ref"
+    ],
+    "gateway_authority": "NONE_CARRIER_ONLY",
+    "heartbeat_authority": "NONE",
+    "receiver_ack_proves_execution": false,
+    "current_implementation_status": "SOURCE_ROUTED_FAIL_CLOSED_RUNTIME_UNVERIFIED"
+  },
+  "master_records": {
+    "role": "AGGREGATE_CUSTODY_AND_RECONSTRUCTION",
+    "ecosystem_resolution": "LOWER_RESOLUTION_ORGANIZATION_AND_MODULE_ROOTS",
+    "drilldown": "RESOLVE_EXACT_ORG_LOCAL_ORDERED_TRANSITIONS",
+    "progression_gate": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256=reconstructed_receipt_sha256"
+    ],
+    "grants_transition_authority": false
+  },
+  "runtime_proof": {
+    "source_configuration_is_runtime_proof": false,
+    "authentic_federation_observed": false,
+    "authentic_evaluator_runtime_observed": false,
+    "first_predicate_unchanged": true
+  },
+  "new_runtime_allowed": false,
+  "new_scheduler_allowed": false,
+  "new_authority_plane_allowed": false,
+  "implementation_compatibility": {
+    "classification": "SOURCE_INTEGRATION_TESTED_NO_AUTHENTIC_RUNTIME_PROOF",
+    "existing_federation_kernel": "org-kernel/kernel.py",
+    "existing_gateway": "resident-runtime/federation_gateway_transport.py",
+    "existing_universal_intr": "workers/universal_intr_profiled_ingress.py",
+    "existing_sdk_consumer": "scripts/consume_sdk_evaluator_governance_posture_request.py",
+    "confirmed_source_matches": [
+      "organization-addressed packet/frame hashes",
+      "gateway transport is non-authorizing",
+      "shared Universal InTr listener exists separately",
+      "SDK evaluator has bounded resident consumer and Master Records submission"
+    ],
+    "unimplemented_or_unproven": [
+      "TVC relay ID/header equality and payload digest binding do not independently prove upstream TVC authorization; existing external TVC authorization must remain authoritative",
+      "Canonical Master Records reconstruction proves retained matching external Interlock/InTr ALLOW evidence but does not itself grant ALLOW; independently authoritative decision production must be verified at runtime",
+      "No authentic cross-organization admitted frame, live receiver execution, or federation-wide rollout has been observed",
+      "No exact evaluator manifest materialization on admitted runtime is observed"
+    ],
+    "promotion_rule": "FAIL_CLOSED_UNTIL_AUTHENTIC_RECEIPTS_AND_CANONICAL_MASTER_RECORDS_RECONSTRUCTION",
+    "repair_scope": "DO_NOT_ADD_PARALLEL_RUNTIME_OR_RECLASSIFY_LEGACY_DIAGNOSTIC_FEDERATION_AS_GOVERNED",
+    "legacy_kernel_guard": "NON_NONE_AUTHORITY_EFFECT_REJECTED",
+    "existing_org_ledger": ".stegverse/transition-ledger/org-contract.json + resident-runtime/aggregate_repo_transition.py",
+    "org_ledger_integration": "EXISTING_CANONICAL_CUSTODY_CLIENT_RECORDS_EXACT_FRAME_BOUND_OBSERVATIONAL_TRANSITION_AND_LOCKED_RECONSTRUCTED_ORG_PREDECESSOR",
+    "universal_intr_federation_integration": "SOURCE_ROUTED_THROUGH_EXISTING_LISTENER_MR_RECONSTRUCTED_ALLOW_REQUIRED",
+    "source_validation_workflow": ".github/workflows/validate-sdk-evaluator-federation-contract.yml"
+  }
+}

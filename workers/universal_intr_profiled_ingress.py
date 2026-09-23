@@ -72,6 +72,10 @@ from workers.canonical_state_transition_custody import (  # noqa: E402
     require_predecessor_master_records_closure,
     submit_state_receipt,
 )
+from workers.org_federation_intr_profile import (  # noqa: E402
+    REQUEST_SCHEMA as ORG_FEDERATION_REQUEST_SCHEMA,
+    admit as admit_org_federation,
+)
 from workers.manifest_state_transition_intr_ingress import (  # noqa: E402
     PROFILE as MANIFEST_STATE_TRANSITION_PROFILE,
     admit as admit_manifest_state_transition,
@@ -901,7 +905,12 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_manifest_state_transition(runtime_root=self.server.runtime_root, body=body, headers=self.headers, transport_validator=hil.validate_transport_headers) if is_manifest_state_transition(payload) else (admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))))
+                if isinstance(payload, dict) and payload.get("schema") == ORG_FEDERATION_REQUEST_SCHEMA:
+                    receipt = admit_org_federation(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
+                elif is_manifest_state_transition(payload):
+                    receipt = admit_manifest_state_transition(runtime_root=self.server.runtime_root, body=body, headers=self.headers, transport_validator=hil.validate_transport_headers)
+                else:
+                    receipt = (admit_mir_southbound(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_mir_southbound(payload) else (admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
