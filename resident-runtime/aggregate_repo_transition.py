@@ -46,7 +46,7 @@ def verify_source(receipt):
         "subject_or_correlation_id":receipt.get("subject_or_correlation_id"),
     }
 
-def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
+def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", expected_previous_receipt_sha256=None, enforce_expected_previous=False):
     source=verify_source(receipt)
     root=ledger_root(); root.mkdir(parents=True,exist_ok=True)
     # Existing organization ledger is single-writer while HEAD is verified and advanced.
@@ -65,6 +65,8 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 raise ValueError("organization_immediate_predecessor_reconstruction_failed")
         elif any(d.glob("*.json")):
             raise ValueError("organization_genesis_conflicts_existing_receipts")
+        if enforce_expected_previous and prev!=expected_previous_receipt_sha256:
+            raise ValueError("organization_expected_immediate_predecessor_mismatch")
         predecessor=predecessor_org_state_sha256 or prev
         successor=successor_org_state_sha256 or source["source_transition_sha256"]
         body={
