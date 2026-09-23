@@ -69,6 +69,11 @@ def validate(*, body: bytes, headers: Mapping[str, str], transport_validator=Non
     require(request.get("packet_sha256") == frame["packet_sha256"], "federation_packet_binding_mismatch")
     require(request.get("frame_sha256") == frame["frame_sha256"], "federation_frame_binding_mismatch")
     require(request.get("payload_sha256") == K.sha(packet["payload"]), "federation_payload_binding_mismatch")
+    source_org_receipt = request.get("source_organization_receipt_sha256")
+    require(isinstance(source_org_receipt, str) and source_org_receipt.startswith("sha256:")
+            and len(source_org_receipt) == 71
+            and all(x in "0123456789abcdef" for x in source_org_receipt[7:]),
+            "federation_source_org_receipt_required")
     decision_hash = request.get("intr_decision_receipt_sha256")
     require(isinstance(decision_hash, str) and len(decision_hash) == 64
             and all(x in "0123456789abcdef" for x in decision_hash), "federation_external_decision_receipt_required")
@@ -96,6 +101,9 @@ def validate(*, body: bytes, headers: Mapping[str, str], transport_validator=Non
             and evidence.get("packet_sha256") == frame["packet_sha256"]
             and evidence.get("frame_sha256") == frame["frame_sha256"]
             and evidence.get("payload_sha256") == request["payload_sha256"]
+            and evidence.get("source_organization_receipt_sha256") == source_org_receipt
+            and evidence.get("origin_service") == packet["origin"]["service"]
+            and evidence.get("destination_service") == packet["destination"]["service"]
             and evidence.get("origin_organization") == packet["origin"]["org"]
             and evidence.get("destination_organization") == packet["destination"]["org"]
             and evidence.get("transition_id") == transition["reference"],
@@ -119,7 +127,8 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
         existing = json.loads(path.read_text())
         require(existing.get("frame_sha256") == frame_sha
                 and existing.get("intr_decision_receipt_sha256") == validated["decision_sha256"]
-                and existing.get("packet_sha256") == request["packet_sha256"], "federation_ingress_replay_collision")
+                and existing.get("packet_sha256") == request["packet_sha256"]
+                and existing.get("source_organization_receipt_sha256") == request["source_organization_receipt_sha256"], "federation_ingress_replay_collision")
         return existing
     # Require an explicit exact organization HEAD. Canonical custody rechecks it
     # within the existing ledger writer lock, preventing a stale append.
@@ -164,6 +173,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
             "expected_organization_previous_receipt_sha256": actual_previous,
             "packet_sha256": request["packet_sha256"],
             "frame_sha256": frame_sha,
+            "source_organization_receipt_sha256": request["source_organization_receipt_sha256"],
             "origin_organization": packet["origin"]["org"],
             "destination_organization": packet["destination"]["org"],
             "destination_service": packet["destination"]["service"],
@@ -193,6 +203,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
     result = {
         "schema": RECEIPT_SCHEMA, "state": "INGRESS_RECORDED",
         "packet_id": packet["packet_id"], "packet_sha256": request["packet_sha256"],
+        "source_organization_receipt_sha256": request["source_organization_receipt_sha256"],
         "frame_sha256": frame_sha, "intr_decision_receipt_sha256": validated["decision_sha256"],
         "canonical_receipt_sha256": digest, "organization_receipt_sha256": org["receipt_sha256"],
         "predecessor_organization_receipt_sha256": org.get("previous_receipt_sha256"),
