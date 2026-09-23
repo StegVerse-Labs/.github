@@ -315,7 +315,21 @@ def execution_command(
     ]
 
 
-def refresh_and_execute(
+def _at_transition_boundary(stage: str, operation: Callable[[], Any]) -> Any:
+    """Mark an existing execution stage without changing exception types or authority."""
+    try:
+        return operation()
+    except Exception as exc:
+        setattr(exc, "stegverse_transition_boundary", stage)
+        raise
+
+
+def _require_entrypoint(path: Path) -> None:
+    if not path.is_file():
+        raise RuntimeError(f"refreshed execution entrypoint missing: {path}")
+
+
+def _refresh_and_execute_inner(
     source_root: Path,
     runtime_root: Path,
     *,
@@ -345,43 +359,54 @@ def refresh_and_execute(
             "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE",
         }
     else:
-        refresh_receipt = refresh(source, runtime)
+        refresh_receipt = _at_transition_boundary("LOCAL_SOURCE_REFRESH", lambda: refresh(source, runtime))
     selected_pointer_task_id = resume_claimed_task_id or task_id
     pointer_receipt = (
-        validate_cosv_task_pointer(runtime, str(selected_pointer_task_id), cosv_task_vector)
+        _at_transition_boundary(
+            "COSV_POINTER_VALIDATION",
+            lambda: validate_cosv_task_pointer(runtime, str(selected_pointer_task_id), cosv_task_vector),
+        )
         if cosv_task_vector is not None and selected_pointer_task_id is not None
         else None
     )
     claim_before = (
-        claimed_task_snapshot(runtime, resume_claimed_task_id)
+        _at_transition_boundary("EXISTING_CLAIM_PREFLIGHT", lambda: claimed_task_snapshot(runtime, resume_claimed_task_id))
         if resume_claimed_task_id is not None
         else None
     )
 
-    command = execution_command(
-        runtime,
-        task_id=task_id,
-        resume_claimed_task_id=resume_claimed_task_id,
-        ecosystem_chat_parent=ecosystem_chat_parent,
+    command = _at_transition_boundary(
+        "TARGETED_ENTRYPOINT_RESOLUTION",
+        lambda: execution_command(
+            runtime,
+            task_id=task_id,
+            resume_claimed_task_id=resume_claimed_task_id,
+            ecosystem_chat_parent=ecosystem_chat_parent,
+        ),
     )
     executable = Path(command[1])
-    if not executable.is_file():
-        raise RuntimeError(f"refreshed execution entrypoint missing: {executable}")
+    _at_transition_boundary("TARGETED_ENTRYPOINT_VALIDATION", lambda: _require_entrypoint(executable))
     # Independent --task-id execution is admitted directly by WorkerCoordinator and
     # must not be gated by a separated carrier reference. Resume mode preserves an
     # already-existing claim/fence and retains its historical carrier requirement.
     if resume_claimed_task_id is not None and not (runtime / CARRIER_REF).is_file():
-        raise RuntimeError(
-            "claimed-task resume requires the preserved separated carrier reference"
+        _at_transition_boundary(
+            "EXISTING_CLAIM_CARRIER_VALIDATION",
+            lambda: (_ for _ in ()).throw(RuntimeError(
+                "claimed-task resume requires the preserved separated carrier reference"
+            )),
         )
 
-    completed = runner(
-        command,
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=clean_exec_env(env),
+    completed = _at_transition_boundary(
+        "TARGETED_WORKER_SUBPROCESS",
+        lambda: runner(
+            command,
+            cwd=runtime,
+            capture_output=True,
+            text=True,
+            check=False,
+            env=clean_exec_env(env),
+        ),
     )
     result = _parse_last_json(completed.stdout)
     claim_after: dict[str, Any] | None = None
@@ -435,6 +460,71 @@ def refresh_and_execute(
         "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
     }
     return _write_receipt_surfaces(runtime, receipt)
+
+
+
+def refresh_and_execute(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    task_id: str | None = None,
+    resume_claimed_task_id: str | None = None,
+    ecosystem_chat_parent: bool = False,
+    cosv_task_vector: str | None = None,
+    runner: Runner = subprocess.run,
+    env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Retain the first failed bridge stage in existing immutable resident receipts.
+
+    This evidence-only envelope does not admit execution, mint a claim/fence,
+    substitute a worker outcome, or promote a task. Only the resident process
+    actually running this bridge can create an authentic receipt.
+    """
+    try:
+        return _refresh_and_execute_inner(
+            source_root, runtime_root,
+            task_id=task_id,
+            resume_claimed_task_id=resume_claimed_task_id,
+            ecosystem_chat_parent=ecosystem_chat_parent,
+            cosv_task_vector=cosv_task_vector,
+            runner=runner,
+            env=env,
+        )
+    except Exception as exc:
+        boundary = getattr(exc, "stegverse_transition_boundary", "BRIDGE_PRE_RESULT_UNCLASSIFIED")
+        selected = resume_claimed_task_id or task_id or (
+            "SHWP-ECOSYSTEM-CHAT-INFERENCE-001" if ecosystem_chat_parent else None
+        )
+        failure = {
+            "schema": "stegverse.resident-refresh-targeted-execution/v3",
+            "state": "BOUNDARY_FAILED",
+            "task_id": selected,
+            "cosv_task_vector_requested": cosv_task_vector,
+            "mode": (
+                "RESUME_EXISTING_CLAIM" if resume_claimed_task_id
+                else "DEDICATED_ECOSYSTEM_CHAT_PARENT" if ecosystem_chat_parent
+                else "TARGETED_INDEPENDENT_TASK_CONTROL"
+            ),
+            "failed_transition_boundary": boundary,
+            "failure_type": type(exc).__name__,
+            "failure_detail_carried": False,
+            "claim_id": None,
+            "fencing_token": None,
+            "claim_or_fence_inferred": False,
+            "worker_completion_claimed": False,
+            "runtime_execution_attempted": boundary == "TARGETED_WORKER_SUBPROCESS",
+            "canonical_state_transition_claimed": False,
+            "source_root": str(source_root.expanduser().resolve()),
+            "runtime_root": str(runtime_root.expanduser().resolve()),
+            "network_source_fetch_performed": False if boundary != "LOCAL_SOURCE_REFRESH" else None,
+            "credential_value_exposed": False,
+            "github_token_runtime_authority": "NONE",
+            "credential_authority": "TV/TVC",
+            "authority_effect": "NONE_FAILURE_EVIDENCE_ONLY",
+            "next_replay_boundary": boundary,
+        }
+        _write_receipt_surfaces(runtime_root.expanduser().resolve(), failure)
+        raise
 
 
 def main() -> int:

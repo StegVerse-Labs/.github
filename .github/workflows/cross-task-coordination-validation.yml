@@ -7,6 +7,8 @@ on:
       - 'scripts/consume_ungoverned_ai_defensive_envelope_request.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'scripts/refresh_sovereign_worker_runtime_source.py'
+      - 'scripts/refresh_and_execute_resident_task.py'
+      - 'tests/test_portable_refresh_targeted_execution.py'
       - 'tests/test_ungoverned_ai_defensive_envelope_consumer.py'
       - 'workers/ungoverned_ai_defensive_envelope_worker.py'
       - 'handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json'
@@ -58,6 +60,8 @@ on:
       - 'scripts/consume_ungoverned_ai_defensive_envelope_request.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'scripts/refresh_sovereign_worker_runtime_source.py'
+      - 'scripts/refresh_and_execute_resident_task.py'
+      - 'tests/test_portable_refresh_targeted_execution.py'
       - 'tests/test_ungoverned_ai_defensive_envelope_consumer.py'
       - 'workers/ungoverned_ai_defensive_envelope_worker.py'
       - 'handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json'
@@ -137,6 +141,7 @@ jobs:
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
             tests.test_erl_household_economic_conditions_runtime_binding \
             tests.test_canonical_work_resident_registry_preservation \
+            tests.test_portable_refresh_targeted_execution \
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
