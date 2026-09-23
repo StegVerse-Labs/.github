@@ -45,7 +45,7 @@
     "gateway_authority": "NONE_CARRIER_ONLY",
     "heartbeat_authority": "NONE",
     "receiver_ack_proves_execution": false,
-    "current_implementation_status": "UNVERIFIED_UNIVERSAL_INTR_FEDERATION_ADMISSION"
+    "current_implementation_status": "SOURCE_ROUTED_FAIL_CLOSED_RUNTIME_UNVERIFIED"
   },
   "master_records": {
     "role": "AGGREGATE_CUSTODY_AND_RECONSTRUCTION",
@@ -69,7 +69,7 @@
   "new_scheduler_allowed": false,
   "new_authority_plane_allowed": false,
   "implementation_compatibility": {
-    "classification": "PARTIAL_SOURCE_COMPATIBILITY_NOT_RUNTIME_PROOF",
+    "classification": "SOURCE_INTEGRATION_TESTED_NO_AUTHENTIC_RUNTIME_PROOF",
     "existing_federation_kernel": "org-kernel/kernel.py",
     "existing_gateway": "resident-runtime/federation_gateway_transport.py",
     "existing_universal_intr": "workers/universal_intr_profiled_ingress.py",
@@ -81,18 +81,17 @@
       "SDK evaluator has bounded resident consumer and Master Records submission"
     ],
     "unimplemented_or_unproven": [
-      "org-kernel dispatch receipts are in-memory and previous_receipt_id links do not constitute retained canonical organization-ledger predecessor reconstruction",
-      "federation_gateway_transport resident_gateway_cycle calls K.ingest_frame directly without an authenticated shared Universal InTr admission receipt",
-      "shared Universal InTr listener has no verified organization-federation route in the reviewed dispatch chain",
-      "receiver gateway ACK is transport observation, not authenticated organization-local result or execution proof",
-      "SDK evaluator source consumer does not demonstrate exact evaluator manifest materialization on admitted runtime"
+      "TVC relay ID/header equality and payload digest binding do not independently prove upstream TVC authorization; existing external TVC authorization must remain authoritative",
+      "Canonical Master Records reconstruction proves retained matching external Interlock/InTr ALLOW evidence but does not itself grant ALLOW; independently authoritative decision production must be verified at runtime",
+      "No authentic cross-organization admitted frame, live receiver execution, or federation-wide rollout has been observed",
+      "No exact evaluator manifest materialization on admitted runtime is observed"
     ],
     "promotion_rule": "FAIL_CLOSED_UNTIL_AUTHENTIC_RECEIPTS_AND_CANONICAL_MASTER_RECORDS_RECONSTRUCTION",
     "repair_scope": "DO_NOT_ADD_PARALLEL_RUNTIME_OR_RECLASSIFY_LEGACY_DIAGNOSTIC_FEDERATION_AS_GOVERNED",
-    "legacy_kernel_guard": "REJECTS_NON_NONE_AUTHORITY_EFFECT_BEFORE_DISPATCH",
+    "legacy_kernel_guard": "NON_NONE_AUTHORITY_EFFECT_REJECTED",
     "existing_org_ledger": ".stegverse/transition-ledger/org-contract.json + resident-runtime/aggregate_repo_transition.py",
-    "org_ledger_integration": "NOT_WIRED_TO_LEGACY_KERNEL_DIAGNOSTIC_RECEIPTS",
-    "universal_intr_federation_integration": "NOT_IMPLEMENTED_DO_NOT_CLAIM",
+    "org_ledger_integration": "EXISTING_CANONICAL_CUSTODY_CLIENT_RECORDS_EXACT_FRAME_BOUND_OBSERVATIONAL_TRANSITION_AND_LOCKED_RECONSTRUCTED_ORG_PREDECESSOR",
+    "universal_intr_federation_integration": "SOURCE_ROUTED_THROUGH_EXISTING_LISTENER_MR_RECONSTRUCTED_ALLOW_REQUIRED",
     "source_validation_workflow": ".github/workflows/validate-sdk-evaluator-federation-contract.yml"
   }
 }
