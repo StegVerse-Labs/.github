@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "COAUTHOR_CONFIRMED_LABELING_CORRECTION_FACCT_TIMELINE_AGREED_HOLD_PROTOCOL_DESIGN_PENDING",
+  "checkout_state": "API_OBSERVABILITY_MANUSCRIPT_RECONCILED_HOLD_DESIGN_PROPOSED_AUTHOR_REVIEW_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -34,8 +34,8 @@
     {
       "dependency_id": "DEP-WIBS-COAUTHORED-REVISION",
       "kind": "MANUSCRIPT",
-      "state": "AVAILABLE_RECONCILED_AUTHOR_REVIEW_PENDING",
-      "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md"
+      "state": "UPDATED_ON_DRAFT_BRANCH_AUTHOR_REVIEW_PENDING",
+      "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md"
     },
     {
       "dependency_id": "DEP-WIBS-PUBLICATION-NOVELTY-REVIEW",
@@ -80,7 +80,10 @@
     "HUMAN_ANNOTATION_NEVER_ATTRIBUTED_AS_ELAN_OUTPUT",
     "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL",
     "COAUTHOR_LABELING_CORRECTION_CONFIRMED",
-    "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION"
+    "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION",
+    "NO_INVOCATION_NEVER_MODEL_OUTPUT",
+    "TIMEOUT_DISTINCT_FROM_EMPTY_RESPONSE",
+    "NO_UNOBSERVED_INTERNAL_STATE_ATTRIBUTION"
   ],
   "collaboration_state": {
     "coauthorship_accepted": true,
@@ -98,7 +101,8 @@
     "proposed_hold_protocol_approved": false,
     "elan_original_signal_reproduction_attempt_excluded_by_coauthor_confirmation": true,
     "facct_2027_timeline_agreed": true,
-    "hold_joint_design_agreed": true
+    "hold_joint_design_agreed": true,
+    "hold_protocol_operational_design_drafted": true
   },
   "completion": {
     "claimed": false,
