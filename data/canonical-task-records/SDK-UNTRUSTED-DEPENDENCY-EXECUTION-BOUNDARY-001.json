@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "correlation_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "root_correlation_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "parent_task_id": null,
+  "goal": "Reconcile SDK and existing component-011 defensive envelope against untrusted dependency installation, IDE workspace initialization and AI-generated executable ingress; source-test explicit per-operation capability admission, denied consequences and exact receipt lineage without introducing another runtime, authority plane, credential or device prerequisite.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "HANDOFF_READY",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "source_refs": [
+    "docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/RELEASE_DEPENDENCY_ALIGNMENT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/REPRODUCIBLE_RELEASE_CANDIDATE.md"
+  ],
+  "adjacent_task_refs": [
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_REGISTRATION_AND_COSV_VALIDATED",
+    "EXISTING_SDK_MANIFEST_AND_DEPENDENCY_EXECUTION_PATHS_INVENTORIED",
+    "EXISTING_COMPONENT_011_CONTAINMENT_COMPATIBILITY_RECONCILED_WITH_CHECKED_OUT_OWNER",
+    "PINNED_TRANSITIVE_DEPENDENCY_AND_INSTALL_HOOK_BOUNDARIES_FALSIFIED",
+    "IDE_WORKSPACE_AND_AI_GENERATED_EXECUTION_BOUNDARIES_FALSIFIED",
+    "EXACT_OPERATION_SCOPED_TV_TVC_AND_CURRENT_INTR_STANDING",
+    "DENIED_FILESYSTEM_NETWORK_CREDENTIAL_AND_TOOL_EFFECTS_INDEPENDENTLY_OBSERVED",
+    "UNKNOWN_AND_UNOBSERVED_EFFECTS_NOT_PROMOTED_TO_ALLOW",
+    "EXACT_IMMEDIATE_PREDECESSOR_CANONICAL_MASTER_RECORDS_CLOSURE",
+    "ORGANIZATION_LEVEL_DENIED_OPERATION_AND_WORKER_EXPIRY_RECEIPTS",
+    "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_NO_SIDE_EFFECT_REEXECUTION",
+    "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
+  ],
+  "constraints": {
+    "existing_sdk_manifest_only": true,
+    "existing_component_011_boundary_only": true,
+    "existing_workercoordinator_only": true,
+    "existing_intr_only": true,
+    "existing_master_records_and_organization_ledger_only": true,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "no_second_user_operated_device": true,
+    "do_not_mutate_checked_out_neighbor": true
+  },
+  "current_truth": {
+    "canonical_registry_registration": "PROPOSED_PENDING_BRANCH_PR_VALIDATION_AND_MERGE",
+    "source_reconciliation": "HANDOFF_AUTHORED",
+    "source_tests": "NOT_RUN",
+    "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "sandbox_containment": "UNKNOWN_NOT_PROVEN",
+    "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
