@@ -41,16 +41,10 @@
     "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
     "StegVerse-org/StegVerse-SDK:stegverse/sovereign_validation_runtime.py",
     "StegVerse-Labs/StegCore:src/stegcore/steggate_runtime.py",
-    "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
-    "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md"
+    "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": [
-      "StegVerse-Labs",
-      "StegVerse-org",
-      "Data-Continuation",
-      "master-records"
-    ],
+    "organizations": ["StegVerse-Labs", "StegVerse-org", "Data-Continuation", "master-records"],
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/StegVerse-Healer",
@@ -254,15 +248,12 @@
     "reconciliation_ref": "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": [
-    "INGRESS_ADMITTED"
-  ],
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
     "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
     "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/NATIVE_EMAIL_REUSABLE_SCHEDULE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOps-Orchestrator:docs/NATIVE_EMAIL_ARCHIVE_GOVERNED_CONSEQUENCE_MIRROR_HANDOFF.md",
-    "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md"
+    "StegVerse-Labs/StegOps-Orchestrator:docs/NATIVE_EMAIL_ARCHIVE_GOVERNED_CONSEQUENCE_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
