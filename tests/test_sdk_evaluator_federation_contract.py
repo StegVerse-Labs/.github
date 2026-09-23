@@ -45,7 +45,7 @@ class ContractSourceChecks(unittest.TestCase):
         self.assertIn("result = K.ingest_frame(repo_root, frame)", gateway)
         self.assertIn("INGRESS_PATH = \"/intr/materialization\"", universal)
         self.assertIn("run_evaluator_governance_manifest", consumer)
-        self.assertEqual(self.contract["interorganizational_transport"]["current_implementation_status"], "UNVERIFIED_UNIVERSAL_INTR_FEDERATION_ADMISSION")
+        self.assertEqual(self.contract["interorganizational_transport"]["current_implementation_status"], "SOURCE_ROUTED_FAIL_CLOSED_RUNTIME_UNVERIFIED")
         self.assertFalse(self.contract["runtime_proof"]["authentic_federation_observed"])
         self.assertFalse(self.contract["runtime_proof"]["authentic_evaluator_runtime_observed"])
 
@@ -70,7 +70,7 @@ class ContractSourceChecks(unittest.TestCase):
         coverage = self.federation["coverage"]
         self.assertEqual(coverage["registered"], len(self.federation["organizations"]))
         self.assertEqual(coverage["live_federation_observed"], 0)
-        self.assertEqual(self.contract["implementation_compatibility"]["classification"], "PARTIAL_SOURCE_COMPATIBILITY_NOT_RUNTIME_PROOF")
+        self.assertEqual(self.contract["implementation_compatibility"]["classification"], "SOURCE_INTEGRATION_TESTED_NO_AUTHENTIC_RUNTIME_PROOF")
 
 if __name__ == "__main__":
     unittest.main()
