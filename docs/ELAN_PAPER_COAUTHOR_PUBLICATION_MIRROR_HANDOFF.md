@@ -41,7 +41,7 @@ The co-authored revision:
 
 The ÉLAN coauthor disclosed in private correspondence forwarded by Rigel that the original Test 2 no-prompt interval annotation `No transmission, native presence state maintained.` was **written by the human experimenter for transcript readability**, not emitted by ÉLAN. During an interval in which no API prompt was sent, there was no model output to observe. A corrected trace PDF is shown as an attachment in the forwarded correspondence but its bytes were not available for independent verification in this task turn. **Subsequent author clarification, 2026-09-23:** Élisabeth explicitly confirmed this was correction of a labeling error discovered during transcript review, **not a reproduction attempt**. Do not preserve the earlier failed-reproduction hypothesis as an active scientific question. She agreed to design a separate explicit HOLD experiment jointly. Keep private message content outside public repository; this handoff records only the coauthor-authorized scientific correction necessary to prevent misattribution, not her full messages.
 
-Revision 3 proposes source-attribution repairs to the manuscript and distinguishes the historical no-prompt control from a proposed explicit HOLD invocation. Do not claim the prior cross-evaluation demonstrated an ÉLAN-native state difference. The old controlled StegVerse A3/A4, custody, replay, and reconstruction evidence remains historically true for **the supplied StegVerse representations**; its cross-architecture interpretation must be revised. The corrected trace must be compared against the historical source and full rev3 before substantive author approval. The user's sent response and Élisabeth's subsequent confirmation were shown as screenshots; exact source PDF bytes have not been inspected here.
+Revision 3 proposes source-attribution repairs to the manuscript and distinguishes the historical no-prompt control from a proposed explicit HOLD invocation. Do not claim the prior cross-evaluation demonstrated an ÉLAN-native state difference. The old controlled StegVerse A3/A4, custody, replay, and reconstruction evidence remains historically true for **the supplied StegVerse representations**; its cross-architecture interpretation must be revised. The original private PDF has now been inspected directly: 1 page, 115323 bytes, and the misattributed annotation appears in its ÉLAN-response field. The corrected PDF remains represented only by a LinkedIn screenshot; **its exact bytes have not been obtained or compared**. Its direct verification and reconciliation against full Revision 3 remain required before author approval. The user's sent response and Élisabeth's subsequent confirmation were shown as screenshots; exact source PDF bytes have not been inspected here.
 
 Candidate follow-up: preserve an exact API prompt and observed response/non-response for explicit HOLD, including request/response timestamps and transport metadata if supplied, plus a separate no-invocation control. Élisabeth has answered the reproduction question definitively: no reproduction attempt occurred; do not ask it again. A previously shared `...` example is described in user-forwarded correspondence, not verified as an executed revision of this protocol.
 
@@ -62,6 +62,12 @@ Current candidates:
 
 **Author agreement:** Rigel proposed ACM FAccT 2027 and Élisabeth affirmatively agreed to target its 2026-10-27 abstract / 2026-11-03 paper deadlines. This records an agreed timeline/target venue, **not** submission authorization, abstract acceptance, or conference presentation. Officially confirmed FAccT 2027 abstract deadline is October 27, 2026, full paper November 3, 2026; for authors lacking institutional affiliation the author guide recommends an OpenReview account by October 16. AIES 2026 runs October 12–14, 2026, but its main-paper submission closed May 21. Distinguish an internal mid-October drafting target or account-verification recommendation from a formal venue deadline; do not claim an October AIES presentation slot without an acceptance or invitation. Both authors now favor FAccT 2027; final submission still requires approved evidence, manuscript, author metadata, and submission authorization.
 
+## FAccT 2027 abstract preparation
+
+Author-review abstract: `docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md` (draft, **not submitted**). FAccT official CFP and author guide were verified 2026-09-23: 2026-10-27 abstract, 2026-11-03 full paper (both 23:59 AoE), up to 14 content pages excluding references, anonymized submissions, author list and archival/non-archival choice fixed at abstract registration, and a mandatory generative-AI usage statement in the endmatter. Corrected source-PDF verification and both authors' approval remain prerequisites for submission. At present the author-reviewed manuscript and revised HOLD proposal are both pending.
+
+Historical cross-evaluation handoff now has a dated provenance erratum; historical workflow artifacts were **not** altered and should not be interpreted as evidence of an ÉLAN-native silence state.
+
 ## Adjacent novelty review
 
 `WIBS-PUBLICATION-NOVELTY-REVIEW-001` remains active. Venue selection and submission claims must not outrun that literature/novelty review.
@@ -78,10 +84,10 @@ Current candidates:
 
 ## Next work
 
-1. Verify the exact corrected Test 2 PDF bytes, revise the previous cross-evaluation's attribution in a separately scoped correction, and obtain Élisabeth's substantive review of the proposed Revision 3.
+1. Acquire and verify the exact corrected Test 2 PDF bytes; the original source has been inspected and a dated erratum added to the historical cross-evaluation handoff. Obtain Élisabeth's substantive review of Revision 3.
 2. Prepare a jointly reviewable explicit HOLD protocol with condition-matched controls, exact prompt strings, timestamps, native outputs, client/transport metadata where available, and explicit separation of no-invocation from invoked nonresponse. Élisabeth confirmed no prior reproduction attempt; do not revisit that speculation.
 3. Complete the active literature/novelty matrix.
-4. Provide the revised manuscript and venue evaluation to both authors for substantive review.
+4. Provide revised manuscript Revision 3, the FAccT author-review abstract and HOLD proposal to both authors for substantive review.
 5. Record actual Élisabeth revisions/contributions as they occur rather than attributing work prospectively.
 6. Work toward the mutually agreed FAccT 2027 target while retaining journals as contingencies if the authors jointly change course.
 7. If FAccT 2027 remains under consideration, complete any needed OpenReview setup by the recommended October 16 target and work backward from October 27 and November 3 formal deadlines.
