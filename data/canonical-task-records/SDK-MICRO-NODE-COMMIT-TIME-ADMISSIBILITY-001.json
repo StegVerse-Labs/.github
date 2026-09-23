@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+  "correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+  "root_correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+  "parent_task_id": null,
+  "goal": "Falsify and authentically test commit-time admissibility using at least three separately attributable independently evaluated micro-node workers, retained disagreement/unknowns, existing CTA/StegCore/InTr admission, exact predecessor canonical Master Records custody, and worker-absent records-only replay, without introducing duplicate runtime or authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "issue_ref": "https://github.com/StegVerse-Labs/.github/issues/2585",
+  "source_refs": [
+    "docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/SDK_FOUR_STAGE_EVIDENCE_REMEDIATION_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "Admissible-Existence/CTA:CTA_MIRROR_HANDOFF.md"
+  ],
+  "adjacent_task_refs": [
+    "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+    "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+  ],
+  "expected_evidence_predicates": [
+    "EXACT_SOURCE_MANIFEST_POLICY_STATE_IDENTITY_PREREGISTERED",
+    "THREE_SEPARATELY_ATTRIBUTABLE_MICRO_NODE_EVALUATIONS",
+    "INDEPENDENCE_OR_CORRELATION_BOUNDARY_PROVEN",
+    "DISJOINT_PARTITION_COVERAGE_AND_RECONSTRUCTION_VERIFIED",
+    "PER_WORKER_DISSENT_UNKNOWN_PRESERVED",
+    "POST_INVOCATION_OVERLAP_MEASURED_WITH_SERIAL_NEGATIVE_CONTROL",
+    "CURRENT_COMMIT_TIME_STANDING_EVALUATED_BY_EXISTING_INTR_WITH_TV_TVC",
+    "UNANIMOUS_SHARED_MISSING_EVIDENCE_FAILS_CLOSED",
+    "EXACT_PREDECESSOR_RECONSTRUCTED_AT_EACH_SUCCESSOR_EMISSION",
+    "CANONICAL_MASTER_RECORDS_CLOSURE_EXACT_HASH_PASS",
+    "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_VERIFIED",
+    "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
+  ],
+  "constraints": {
+    "existing_sdk_manifest_only": true,
+    "existing_micro_node_runtime_only": true,
+    "existing_workercoordinator_only": true,
+    "existing_intr_and_cta_only": true,
+    "existing_master_records_only": true,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "no_second_device": true,
+    "duplicate_richard_runtime_task_prohibited": true
+  },
+  "current_truth": {
+    "registration": "PROPOSED_PENDING_PR_MERGE",
+    "independent_worker_evaluations": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "commit_time_intr_decision": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "records_only_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
