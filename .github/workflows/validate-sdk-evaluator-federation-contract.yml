@@ -10,6 +10,10 @@ on:
       - 'workers/universal_intr_profiled_ingress.py'
       - 'scripts/consume_sdk_evaluator_governance_posture_request.py'
       - 'tests/test_sdk_evaluator_federation_contract.py'
+      - 'tests/test_org_federation_intr_ingress.py'
+      - 'workers/org_federation_intr_profile.py'
+      - 'workers/canonical_state_transition_custody.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
       - '.github/workflows/validate-sdk-evaluator-federation-contract.yml'
   workflow_dispatch:
 jobs:
@@ -23,6 +27,8 @@ jobs:
         with:
           python-version: '3.11'
       - name: Compile existing source and regression tests
-        run: python -m py_compile org-kernel/kernel.py resident-runtime/federation_gateway_transport.py workers/universal_intr_profiled_ingress.py scripts/consume_sdk_evaluator_governance_posture_request.py tests/test_sdk_evaluator_federation_contract.py
+        run: python -m py_compile org-kernel/kernel.py resident-runtime/federation_gateway_transport.py workers/universal_intr_profiled_ingress.py scripts/consume_sdk_evaluator_governance_posture_request.py workers/org_federation_intr_profile.py workers/canonical_state_transition_custody.py resident-runtime/aggregate_repo_transition.py tests/test_sdk_evaluator_federation_contract.py tests/test_org_federation_intr_ingress.py
       - name: Run bounded source-only regression tests
         run: python -m unittest discover -s tests -p test_sdk_evaluator_federation_contract.py -v
+      - name: Run federation admission and ledger regression tests
+        run: python -m unittest discover -s tests -p test_org_federation_intr_ingress.py -v
