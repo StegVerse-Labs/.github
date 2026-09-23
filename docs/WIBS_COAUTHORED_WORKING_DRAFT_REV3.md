@@ -3,7 +3,7 @@
 
 **Rigel Randolph · Élisabeth Correvon**  
 September 2026  
-**Co-authored Working Draft — Revision 3 (Test 2 provenance correction pending source-PDF verification and coauthor review)**
+**Co-authored Working Draft — Revision 3 (coauthor-confirmed attribution correction; source-PDF verification and author approval pending)**
 
 ## Abstract
 
@@ -69,7 +69,7 @@ The experiment therefore examines not whether silence has one correct meaning, b
 
 #### Experimental boundary
 
-The historical ÉLAN and StegVerse evidence chains were produced independently, but the no-prompt interval's descriptive annotation was later identified by the ÉLAN coauthor as human-authored. ÉLAN remained in its native operating state. StegVerse terminology, evaluation criteria, and expected outcomes were not supplied to ÉLAN as executable input. The returned ÉLAN trace was preserved in source-native form before cross-evaluation. StegVerse then represented the corresponding event sequence through its own governance-oriented state model.
+The historical ÉLAN transcript and the StegVerse controlled evidence chain were assembled independently, but the no-prompt interval's descriptive annotation was later identified by the ÉLAN coauthor as human-authored. Independent preparation does not imply equivalent native observations. ÉLAN remained in its native operating state. StegVerse terminology, evaluation criteria, and expected outcomes were not supplied to ÉLAN as executable input. The returned ÉLAN trace was preserved in source-native form before cross-evaluation. StegVerse then represented the corresponding event sequence through its own governance-oriented state model.
 
 The comparison was performed only after both evidence chains existed. Neither architecture was normalized to resemble the other.
 
@@ -133,15 +133,21 @@ The experiment supports the following bounded conclusion:
 
 > Separately bounded no-emission observations can remain distinct in a governed representation when their observation boundaries and predecessor relationships are supplied. The original ÉLAN no-prompt interval establishes only that no invocation occurred and the experimenter annotated its elapsed duration; it supplies no evidence of ÉLAN's internal state or behavior during the interval.
 
+#### Confirmed API observability boundary
+
+The coauthor's correction identifies a limitation of the **test interface**, not a measured failure of ÉLAN's internal capabilities. With no API request, ÉLAN is not invoked and there is no source-native model output or state-transition event to observe. A client may independently time the absence of requests, but that is client-side evidence, not evidence of model presence or model choice. The controlled StegVerse path can instead accept two separately supplied bounded observations as input and preserve their predecessor-dependent transitions. This establishes an asymmetry of accessible evidence and representation, **not** a native-model performance comparison. A completed empty response, textual ellipsis, timeout, API error and a period with no invocation must remain separate evidence classes.
+
+Élisabeth confirmed she discovered the original labeling error while reviewing the transcript; **no reproduction attempt occurred**. The earlier suggestion of a failed attempt is excluded from this study. The follow-up must send real, author-approved API prompts and preserve native responses before any comparison.
+
 #### Proposed follow-up: invoked HOLD condition (not yet run under the revised protocol)
 
-A distinct follow-up should explicitly send a silence-related API prompt, preserve exact prompt bytes, time of submission, API response metadata, output bytes (including an empty output), and client-side timeout or transport errors. ÉLAN's already shared example in which a direct request for silence elicited `...` is a candidate source trace, **not** evidence that this revised experiment has been performed. Request the source trace with timestamps and invocation metadata if available. Preserve a contemporaneous external no-request control; do not interpret its silence as model choice. Preregister observation windows and keep native ÉLAN output separate from human annotation and StegVerse-governed representation. No revised protocol has been approved by both authors, and the hypothesis that ÉLAN was unsuccessfully reproducing the original signal remains `UNCONFIRMED` pending her account or authentic trace evidence.
+A distinct follow-up should explicitly send a silence-related API prompt, preserve exact prompt bytes, time of submission, API response metadata, output bytes (including an empty output), and client-side timeout or transport errors. ÉLAN's already shared example in which a direct request for silence elicited `...` is a candidate source trace, **not** evidence that this revised experiment has been performed. Request the source trace with timestamps and invocation metadata if available. Preserve a contemporaneous external no-request control; do not interpret its silence as model choice. Preregister observation windows and keep native ÉLAN output separate from human annotation and StegVerse-governed representation. Élisabeth confirmed that she found a labeling error during transcript review and made **no reproduction attempt**. Both authors agreed to design an explicit HOLD experiment, but its protocol and execution remain pending joint approval.
 
 #### Governed StegVerse result and reconstruction
 
 The independently represented StegVerse chain traversed the established controlled local SDK governance experiment path. The governed disposition was `ALLOW / ok`. The chain recorded custody as `RECORDED`, deterministic replay matched the original disposition, retrospective reconstruction verified the chain, and the returned result was preserved.
 
-These results show that the separable A3/A4 representation remained usable by the controlled governance path while semantic interpretation stayed unresolved. They also show that the state-resolution distinction survived custody, replay, and reconstruction rather than existing only in the initial input representation.
+These results show that the supplied A3/A4 representation remained usable by the controlled governance path while semantic interpretation stayed unresolved, and those supplied state boundaries survived custody, replay, and reconstruction. They do not establish ÉLAN-native temporal resolution or a native state distinction.
 
 #### Scope limitation
 
