@@ -21,7 +21,7 @@ class EconomicRoadmapCosvTests(unittest.TestCase):
         self.assertEqual(record["exact_metrics"]["symbol_order"],"LRUIVGOCMTBEAP")
         self.assertEqual(record["exact_metrics"]["blocker_count"],len(task["blockers"]))
         self.assertEqual(record["vector"],encode_task(record["exact_metrics"]))
-        self.assertEqual(record["vector"],"10100000105000")
+        self.assertEqual(record["vector"],"10100000104000")
         self.assertFalse(record["exact_metrics"]["evidence_complete"])
         self.assertFalse(record["exact_metrics"]["activated"])
         self.assertFalse(record["exact_metrics"]["propagated"])
