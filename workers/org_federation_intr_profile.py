@@ -122,6 +122,27 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
                 and existing.get("intr_decision_receipt_sha256") == validated["decision_sha256"]
                 and existing.get("packet_sha256") == request["packet_sha256"], "federation_ingress_replay_collision")
         return existing
+    # Require an explicit exact organization HEAD. Canonical custody rechecks it
+    # within the existing ledger writer lock, preventing a stale append.
+    org_spec = importlib.util.spec_from_file_location(
+        "stegverse_federation_existing_org_ledger", ROOT / "resident-runtime/aggregate_repo_transition.py")
+    org_ledger = importlib.util.module_from_spec(org_spec)
+    org_spec.loader.exec_module(org_ledger)
+    ledger = org_ledger.ledger_root()
+    head_path = ledger / "HEAD.json"
+    head = json.loads(head_path.read_text()) if head_path.is_file() else None
+    actual_previous = head.get("receipt_sha256") if isinstance(head, dict) else None
+    requested_previous = request.get("predecessor_organization_receipt_sha256")
+    require(requested_previous == (actual_previous or "GENESIS"),
+            "federation_org_immediate_predecessor_mismatch")
+    if actual_previous:
+        prior_path = ledger / "receipts" / (actual_previous.split(":", 1)[1] + ".json")
+        require(prior_path.is_file(), "federation_org_immediate_predecessor_missing")
+        prior_org = json.loads(prior_path.read_text())
+        body_prior = dict(prior_org)
+        require(body_prior.pop("receipt_sha256", None) == actual_previous
+                and org_ledger.sha(body_prior) == actual_previous,
+                "federation_org_immediate_predecessor_invalid")
     transition_id = "ORG_FEDERATION_INTR_INGRESS:" + frame_sha.split(":", 1)[1]
     previous = request.get("predecessor_canonical_receipt_sha256")
     require(previous is not None, "federation_explicit_predecessor_required")
@@ -135,6 +156,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
         resulting_state_ref_or_hash=frame_sha,
         governance_decision_ref_where_applicable=validated["decision_sha256"],
         transition_evidence={
+            "expected_organization_previous_receipt_sha256": actual_previous,
             "packet_sha256": request["packet_sha256"],
             "frame_sha256": frame_sha,
             "origin_organization": packet["origin"]["org"],
@@ -160,6 +182,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
     require(isinstance(org, dict)
             and org.get("source_receipt_schema") == "stegverse.canonical-state-transition-receipt/v1"
             and org.get("canonical_state_transition_receipt_sha256") == K.sha(receipt)
+            and org.get("previous_receipt_sha256") == actual_previous
             and org.get("receipt_sha256") == K.sha({k: v for k, v in org.items() if k != "receipt_sha256"}),
             "federation_organization_receipt_binding_invalid")
     result = {
