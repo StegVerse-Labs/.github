@@ -453,6 +453,70 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
                 "SOVEREIGN_LOCAL_MODEL_CAPSULE_NOT_MATERIALIZED",
             )
 
+    def test_source_refresh_failure_retains_first_boundary_without_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source, runtime = base / "source", base / "runtime"
+            source.mkdir()
+            runner = mock.Mock()
+            with mock.patch.object(mod, "refresh", side_effect=RuntimeError("local source drift")):
+                with self.assertRaisesRegex(RuntimeError, "local source drift"):
+                    mod.refresh_and_execute(
+                        source, runtime,
+                        task_id="SV-DN1-PRODUCTION-SOURCE-PREP-001",
+                        cosv_task_vector="50000000102000",
+                        runner=runner,
+                    )
+            runner.assert_not_called()
+            saved = json.loads((runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"))
+            self.assertEqual(saved["state"], "BOUNDARY_FAILED")
+            self.assertEqual(saved["failed_transition_boundary"], "LOCAL_SOURCE_REFRESH")
+            self.assertEqual(saved["next_replay_boundary"], "LOCAL_SOURCE_REFRESH")
+            self.assertEqual(saved["task_id"], "SV-DN1-PRODUCTION-SOURCE-PREP-001")
+            self.assertIsNone(saved["claim_id"])
+            self.assertIsNone(saved["fencing_token"])
+            self.assertFalse(saved["runtime_execution_attempted"])
+            self.assertFalse(saved["worker_completion_claimed"])
+            self.assertNotIn("local source drift", json.dumps(saved))
+            digest = saved["receipt_body_sha256"].split(":", 1)[1]
+            self.assertTrue((runtime / mod.IMMUTABLE_RECEIPT_DIR_REL / f"{digest}.json").is_file())
+
+    def test_cosv_pointer_failure_retains_boundary_and_fails_before_worker(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            runner = mock.Mock()
+            with self.assertRaisesRegex(RuntimeError, "canonical COSV task-vector index"):
+                mod.refresh_and_execute(
+                    runtime, runtime,
+                    task_id="SV-DN1-PRODUCTION-SOURCE-PREP-001",
+                    cosv_task_vector="50000000102000",
+                    runner=runner,
+                )
+            runner.assert_not_called()
+            saved = json.loads((runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"))
+            self.assertEqual(saved["failed_transition_boundary"], "COSV_POINTER_VALIDATION")
+            self.assertIsNone(saved["claim_id"])
+            self.assertIsNone(saved["fencing_token"])
+            self.assertFalse(saved["canonical_state_transition_claimed"])
+
+    def test_worker_invocation_exception_retains_boundary_not_runtime_result(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            (runtime / "scripts").mkdir()
+            (runtime / "scripts/run_worker_runtime.py").write_text("# runner\\n", encoding="utf-8")
+            runner = mock.Mock(side_effect=subprocess.TimeoutExpired(["python"], 30))
+            with self.assertRaises(subprocess.TimeoutExpired):
+                mod.refresh_and_execute(
+                    runtime, runtime,
+                    task_id="SV-DN1-PRODUCTION-SOURCE-PREP-001",
+                    runner=runner,
+                )
+            saved = json.loads((runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"))
+            self.assertEqual(saved["failed_transition_boundary"], "TARGETED_WORKER_SUBPROCESS")
+            self.assertTrue(saved["runtime_execution_attempted"])
+            self.assertFalse(saved["worker_completion_claimed"])
+            self.assertEqual(saved["authority_effect"], "NONE_FAILURE_EVIDENCE_ONLY")
+
 
 if __name__ == "__main__":
     unittest.main()
