@@ -24,6 +24,7 @@ on:
       - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
       - 'tests/test_task_registry_general_checkin_surface_gate.py'
@@ -77,6 +78,7 @@ on:
       - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
       - 'tests/test_task_registry_general_checkin_surface_gate.py'
@@ -135,6 +137,7 @@ jobs:
         run: |
           python -m unittest -v \
             tests.test_task_registry_collision_checkin \
+            tests.test_sdk_untrusted_dependency_collision_checkin \
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
