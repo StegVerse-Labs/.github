@@ -3,8 +3,8 @@
 Updated: 2026-09-22
 Goal Task ID: `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001`
 Issue: https://github.com/StegVerse-Labs/.github/issues/2585
-COSV: `71000000111111` (SDK experiment task-family vector; final canonical admission subject to Registry validation)
-Status: ACTIVE / NOT CHECKED OUT — proposed registry branch; no execution authority
+COSV: `71000000111111` (SDK experiment task-family vector; canonical Task Registry generation 203; source CI five applicable checks green)
+Status: ACTIVE / HANDOFF_READY — registered on canonical main; no execution claim or runtime authority
 
 ## Narrow owner
 A new independently-attributable multi-worker micro-node commit-time admissibility experiment. Reuse the existing SDK generic manifested worker evaluation and micro-node runtime; existing CTA standing formalism, StegCore/Universal InTr admission, TV/TVC warrant, WorkerCoordinator/StegAgents lifecycle, canonical organization ledger and Master Records. Do not create second runtime/scheduler/dispatcher/claim authority/credential/custody store/device prerequisite. Prior work remains immutable.
@@ -35,4 +35,4 @@ Reconcile the existing CTA source contract, SDK public manifests, generic worker
 Dan Gray's https://collapse-resolution.com/ is context from a shared public post. Website content could not be fetched in this session; it is not an external coauthor, evaluator, authority or source of experimental proof.
 
 ## Current evidence
-Verified GitHub Task Registry generation 202 before proposal; issue #2585 and this draft registration branch are coordination preparation. No canonical merge, authoritative COSV admission, checkout, live multi-worker execution, externally independent custody, runtime receipt, or reconstruction claim.
+Canonical Task Registry generation 203 registered by PR #2586 / squash merge 2371cbf551ab526fd89d3b0c1abc17899bda6c7e; five applicable exact-head workflows passed. This closeout projects the validated registration to generation 204. ACTIVE/HANDOFF_READY is coordination only: no WorkerCoordinator claim/fence, governed execution, externally independent custody, live multi-worker runtime receipt or reconstruction is claimed.
