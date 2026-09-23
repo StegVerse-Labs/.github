@@ -2,7 +2,7 @@
 
 Goal Task ID: ORGANIZATION-BATCH-CUSTODY-REPLAY-001
 COSV ID: 10000000100000
-Status: PROPOSED / HANDOFF_READY pending canonical registration.
+Status: ACTIVE / HANDOFF_READY; canonical registration merged in PR #2582 (ed49711678dc9ffb0627a65e66a1d83110f9afc4).
 
 ## Purpose
 Clarify the existing organizational receipt hierarchy: individual state transitions remain replayable at organization level; independently verified bounded organization batches are delivered to Master Records for cross-organization custody and complex reconstruction. This is a refinement of previous documentation, not a new authority plane or production execution claim.
