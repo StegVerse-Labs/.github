@@ -63,6 +63,8 @@ def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any
                 "ordering": "ORGANIZATION_RECEIPT_BEFORE_MASTER_RECORDS_CUSTODY",
             },
             authority_effect="NONE",
+            expected_previous_receipt_sha256=(receipt.get("transition_evidence") or {}).get("expected_organization_previous_receipt_sha256"),
+            enforce_expected_previous="expected_organization_previous_receipt_sha256" in (receipt.get("transition_evidence") or {}),
         )
     except Exception as exc:
         return {
