@@ -45,7 +45,7 @@ Revision 3 proposes source-attribution repairs to the manuscript and distinguish
 
 Candidate follow-up: preserve an exact API prompt and observed response/non-response for explicit HOLD, including request/response timestamps and transport metadata if supplied, plus a separate no-invocation control. Élisabeth has answered the reproduction question definitively: no reproduction attempt occurred; do not ask it again. A previously shared `...` example is described in user-forwarded correspondence, not verified as an executed revision of this protocol.
 
-Joint author-review protocol: `docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md` (proposed, not yet approved or executed).
+Joint author-review protocol: `docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md` (provisional exact prompts, distinct API-result classes, no-invocation control and provenance; not yet author-approved or executed). Manuscript Revision 3 now explicitly describes the confirmed test-interface observability asymmetry.
 
 ## Venue evaluation
 
@@ -72,7 +72,7 @@ Current candidates:
 - `COAUTHORED_WORKING_DRAFT_EXISTS = true`
 - `FUTURE_DRAFT_REVIEW_OFFERED = true`
 - `PUBLICATION_VENUES_EVALUATED = true`
-- `SPECIFIC_VENUE_SELECTED = false`
+- `SPECIFIC_VENUE_SELECTED = true` (agreed FAccT 2027 target; submission not authorized)
 - `SUBMISSION_AUTHORIZED = false`
 - `PRIVATE_CORRESPONDENCE_PUBLICLY_REPLICATED = false`
 
