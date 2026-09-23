@@ -38,3 +38,16 @@ A benchmark check is a claim about its *own* authenticated predicate, not a gene
 
 ## Publication evidence required for closure
 Canonical task/COSV registration; Site claim and exact-head validation; Publisher reviewed source; authenticated external decision and Master Records closure; original Publisher release; mirrored Site assets; machine-readable exact status and tests; deployed mobile HTTP readback. Until then, preserve DRAFT / NOT_VERIFIED / UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
+
+
+## Source-derived canonical task COSV — 2026-09-22
+
+After canonical Task Registry registration merged through PR #2580, this narrowly scoped continuation emits the non-authorizing `task.v1` observation `10100000105000` from the actual canonical task record. Its metrics are L=UNCLAIMED, R=0, U=1, I/V/G/O/C=0, M=1, T=0, B=5, E/A/P=0: the Task Registry contains the goal, no WorkerCoordinator claim/fence exists, five unresolved blockers are retained, and no operational product or publication proof is inferred. No Site pre-work implementation claim is promoted into a canonical WorkerCoordinator claim.
+
+Canonical binding:
+- `control/task-vectors/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json`;
+- `control/task-vector-index.d/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json`;
+- `control/task-vector-index.json` same exact vector and source ref;
+- `tests/test_economic_roadmap_cosv.py` source-derived invariant and index coverage checks.
+
+This COSV represents registered coordination state only. It is **not** an admission decision, runtime claim, external InTr ALLOW, authenticated Master Records completion or authority to publish. If the canonical registry task, blocker set, or WorkerCoordinator state changes, the source owner must emit a successor observational vector; the public Site must never mint one.
