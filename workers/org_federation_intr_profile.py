@@ -15,10 +15,6 @@ import os
 from pathlib import Path
 from typing import Any, Mapping
 
-from workers.canonical_state_transition_custody import (
-    build_state_receipt, reconstruct_state_receipt,
-    require_predecessor_master_records_closure, submit_state_receipt,
-)
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("stegverse_federation_existing_kernel", ROOT / "org-kernel/kernel.py")
@@ -46,7 +42,7 @@ def _write_once(path: Path, obj: dict[str, Any]) -> None:
 
 
 def validate(*, body: bytes, headers: Mapping[str, str], transport_validator=None,
-             decision_reconstructor=reconstruct_state_receipt) -> dict[str, Any]:
+             decision_reconstructor=None) -> dict[str, Any]:
     # The existing relay ID is a resident-bound authorization *reference*,
     # not independent proof of TVC authorization or of an InTr decision.
     from scripts import serve_hil_intr_materialization_ingress as hil
@@ -76,6 +72,9 @@ def validate(*, body: bytes, headers: Mapping[str, str], transport_validator=Non
     decision_hash = request.get("intr_decision_receipt_sha256")
     require(isinstance(decision_hash, str) and len(decision_hash) == 64
             and all(x in "0123456789abcdef" for x in decision_hash), "federation_external_decision_receipt_required")
+    if decision_reconstructor is None:
+        from workers.canonical_state_transition_custody import reconstruct_state_receipt
+        decision_reconstructor = reconstruct_state_receipt
     reconstructed = decision_reconstructor(decision_hash)
     require(reconstructed.get("state") == "PASS"
             and reconstructed.get("required_evidence_validation_status") == "PASS"
@@ -106,8 +105,8 @@ def validate(*, body: bytes, headers: Mapping[str, str], transport_validator=Non
 
 
 def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
-          transport_validator=None, decision_reconstructor=reconstruct_state_receipt,
-          custody_submit=submit_state_receipt) -> dict[str, Any]:
+          transport_validator=None, decision_reconstructor=None,
+          custody_submit=None) -> dict[str, Any]:
     validated = validate(body=body, headers=headers,
                          transport_validator=transport_validator,
                          decision_reconstructor=decision_reconstructor)
@@ -146,6 +145,12 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
     transition_id = "ORG_FEDERATION_INTR_INGRESS:" + frame_sha.split(":", 1)[1]
     previous = request.get("predecessor_canonical_receipt_sha256")
     require(previous is not None, "federation_explicit_predecessor_required")
+    from workers.canonical_state_transition_custody import (
+        build_state_receipt, require_predecessor_master_records_closure,
+        submit_state_receipt,
+    )
+    if custody_submit is None:
+        custody_submit = submit_state_receipt
     prior, evidence = require_predecessor_master_records_closure(
         previous if previous != "GENESIS" else None, successor_transition_id=transition_id)
     receipt = build_state_receipt(
