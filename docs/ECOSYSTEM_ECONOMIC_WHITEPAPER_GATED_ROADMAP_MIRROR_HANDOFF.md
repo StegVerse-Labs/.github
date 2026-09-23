@@ -2,8 +2,8 @@
 
 **Goal Task ID:** ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001  
 **Canonical owner:** StegVerse-Labs/.github Task Registry  
-**COSV:** NOT ISSUED — do not substitute a guessed vector; admit only exact canonical registry emission.  
-**Status:** REGISTRATION PR; governed publication and runtime evidence NOT OBSERVED.  
+**COSV:** `10100000105000` — merged source-derived observational vector; non-authorizing.  
+**Status:** `PROPOSED` (canonical record); source registration and COSV merged; governed publication and runtime evidence NOT OBSERVED.  
 **Date:** 2026-09-22.
 
 ## User-approved public objective
@@ -51,3 +51,21 @@ Canonical binding:
 - `tests/test_economic_roadmap_cosv.py` source-derived invariant and index coverage checks.
 
 This COSV represents registered coordination state only. It is **not** an admission decision, runtime claim, external InTr ALLOW, authenticated Master Records completion or authority to publish. If the canonical registry task, blocker set, or WorkerCoordinator state changes, the source owner must emit a successor observational vector; the public Site must never mint one.
+
+## Publisher PR #72 source-and-equation reconciliation — 2026-09-22
+
+Publisher draft branch `draft/stegverse-private-state-economy-white-paper` received the independently verifiable AI economic section followed by source and equation review, latest README commit `b085308c73d8f29ff95d08057de8851897549c17`. Editorial source now distinguishes Volume I contribution economics vs customer-contracted service economics; Volume II's future AI identity/agency questions vs currently proven legal status; FinCo's private-state/consent/participation/continuity value and receipt classes; StegCoin utility vs StegToken standing plus mandatory contemporaneous commit-time admissibility. FinCo settlement wording was changed to future proposed architecture rather than implied live operation.
+
+The verified-outcome equation now uses every attempted task's mutually exclusive costs, independently accepted-outcome denominator, explicit undefined zero-denominator case, shared-bill reconciliation, separate acceptance yield, realized vs forecast loss separation and non-comparability for inference-only arms unable to meet the same verification predicate. Dated external source checks: NIST AI RMF 1.0 (2023); SEC March 17, 2026 interpretive release, April 2026 SEC asset/transaction explanation and August 2026 *proposed* Regulation Crypto Assets. Primary StegVerse sources fetched: Site public Volume I and Volume II landing pages and series introduction; FinCo Private-State Value Thesis; StegToken/StegCoin Reconciliation. Full nine-page and seven-page PDF interiors remain to be reviewed before final editorial approval.
+
+Observed CI for prior Publisher branch head `f280bdb87c971a0ff847f6b6fdc5cf843555aea3`: Publisher Check run 35813500926 SUCCESS; Publisher Readiness run 35813500938 SUCCESS; Architecture Guard run 35813501318 SUCCESS; ERL KV Provider Proof Projection run 35813500913 SUCCESS. These runs do not validate the new economics-review exact head. Recheck the new head. The canonical Task Registry currently records `coordination_state=PROPOSED`, no WorkerCoordinator claim/fence, and historic `COSV_NOT_EMITTED` blocker text that predates merged COSV issuance: reconcile this stale record separately through the canonical registry source/derivation path, not by editing a vector or declaring execution. Site PR #1458 and Publisher PR #72 remain drafts, all sixteen public benchmarks remain NOT_VERIFIED, and no authenticated external InTr ALLOW, Master Records publication closure or deployed public readback was observed here.
+
+**Next:** Observe fresh exact-head Publisher CI; complete original Entity Economy PDF-page review; request substantive economic/regulatory editorial review; reconcile stale canonical task blocker and regenerate observational COSV only through canonical source workflow; preserve governed publication and Site readback gates.
+
+### Fresh Publisher CI readback after economics reconciliation
+
+The updated Publisher branch head `b085308c73d8f29ff95d08057de8851897549c17` was checked after the reconciled source commits: Publisher Readiness run 35815252062 **SUCCESS**, Architecture Guard run 35815252063 **SUCCESS**, Publisher Check run 35815252024 **SUCCESS**, ERL KV Provider Proof Projection run 35815252152 **SUCCESS**. These are source/architecture checks, not independent empirical economic validation or governed publication approval. This canonical-handoff PR's own head CI must be independently checked after the final edit.
+
+## Canonical source-derived stale COSV blocker repair — 2026-09-22 continuation
+
+Source evidence of original COSV issuance was already present on main from merged PR #2584. This continuation marks only dependency `CANONICAL_COSV_EMISSION` RESOLVED and removes the stale `COSV_NOT_EMITTED` blocker from both the task shard and monolithic registry. The task stays PROPOSED with no WorkerCoordinator claim or execution inference; four authentic unresolved publication/integration/export blockers remain. The successor `task.v1` COSV is derived mechanically from the exact corrected blocker count and preserved state metrics: **10100000104000** (previous **10100000105000**). The exact index shard, aggregate index and regression test now bind the new vector. Registry generation advanced from 204 to 205 on this PR branch; rebase if canonical main advances before merge. This source-derived observation does not grant Interlock/InTr ALLOW, Master Records custody, publication or benchmark completion.

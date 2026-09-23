@@ -4,7 +4,7 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json",
   "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json",
-  "vector": "10100000105000",
+  "vector": "10100000104000",
   "vector_state": "EMITTED",
   "profile": "task.v1",
   "authority_effect": "NONE"
