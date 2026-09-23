@@ -1,26 +1,25 @@
-# Proposed private response to Élisabeth — Test 2 correction and publication venues
+# Proposed next private response to Élisabeth — FAccT 2027 and joint HOLD design
 
-Status: DRAFT FOR RIGEL APPROVAL — NOT SENT. Date: 2026-09-23. Private correspondence text is not stored verbatim here.
+Status: DRAFT FOR RIGEL APPROVAL — NOT SENT. Date: 2026-09-23. Prior proposed response superseded following Rigel's sent message and Élisabeth's reply. Do not reproduce the private exchange verbatim in public sources.
 
 Dear Élisabeth,
 
-Thank you for catching the attribution issue in Test 2 and sending the corrected trace. You're right: when no API request is sent, there is no ÉLAN output from that interval to observe. I am correcting the draft so your explanatory annotation is identified as human-authored rather than treated as an ÉLAN-native state. The external no-request interval and the two separately supplied StegVerse observation windows can still be described, but they do not establish a difference in ÉLAN's native internal state.
+Thank you for clarifying the labeling correction. I'll record that the original annotation was human-authored and that this was a transcript-review correction, not a reproduction attempt. That resolves the attribution question without implying anything about ÉLAN's unobserved behavior during an interval with no API call.
 
-Your suggestion of an explicit HOLD condition seems worth testing separately. The example you previously shared, in which an explicit request for silence elicited “...”, may provide an existing starting trace if you still have its original prompts and timestamps. Did you also attempt to reproduce the original no-request interval as a native ÉLAN signal, or was the issue identified during transcript review? I don't want to assume either. We can agree on the revised protocol after distinguishing those records.
+I'm glad we're aligned on aiming for FAccT 2027. I'll prepare a corrected manuscript section, a draft abstract, and a compact shared HOLD protocol for your review. I'll keep the earlier no-request interval as a methodological control, not as an ÉLAN response.
 
-You also asked where we might publish or present the joint paper. We have evaluated ACM FAccT 2027 and the journal *AI and Ethics*, as well as *Ethics and Information Technology* and the *Journal of Responsible Technology*. FAccT has an abstract deadline of October 27 and a full-paper deadline of November 3, 2026, with the conference June 21–24, 2027. Its author guide recommends that authors without an institutional affiliation register for OpenReview by October 16, if needed. I would use mid-October as our working target for settling the revised evidence and abstract, rather than present it as the formal submission deadline.
+For the HOLD protocol, I'd appreciate your input on the exact prompt wording and which native outputs/metadata ÉLAN can routinely expose without additional instrumentation. We can start with the existing explicit-silence example if you have its original prompt, output, and timestamp; otherwise we can design a fresh sequence together. I propose preregistering one explicit HOLD instruction, one direct question about silence, and a matched ordinary-response control. For each actual API call, we'd preserve the request, timestamp, native response or API-level nonresponse/error, and the return-to-speech sequence. We'll compare only after the independent records are complete.
 
-The 2026 AIES conference takes place October 12–14, but its regular paper deadline has already passed. Unless an existing presentation or other invitation applies, we should not assume we can present this paper there this October. A journal gives us more room for the theoretical and empirical treatment; I would like us to decide the direction together after you have reviewed the corrected experiment section.
+On the paper, could you review the revised Experiment 2 description for architectural accuracy and mark any wording that should change? I'd also welcome your comments on the abstract and related-work framing, particularly where ÉLAN's own research establishes prior concepts we need to cite. We should separately confirm affiliations, author order, and contributions before submission.
 
-If you agree, I'll send the revised section with the corrected evidentiary boundaries and a short proposal for the explicit HOLD comparison.
+Let's use mid-October as our internal checkpoint for the corrected evidence and abstract, ahead of the October 27 abstract and November 3 full-paper deadlines.
 
 Best regards,
 Rigel
 
 ---
 
-Editorial checks before sending:
-- Confirm whether "identified event" means ACM FAccT 2027, AIES 2026, or a different mid-October venue.
-- Independently inspect the corrected PDF and any original HOLD trace before stating their contents as primary evidence.
-- Reconfirm FAccT deadlines against the official CFP if timing changes.
-- Keep this proposed reply private; do not publish without Rigel's approval.
+Action items proposed for the two authors:
+- Rigel: provide corrected Experiment 2 section, proposed HOLD protocol, FAccT abstract, existing source evidence and provenance boundaries.
+- Élisabeth: review architectural attribution and methods, propose ÉLAN-native HOLD prompt/trace, contribute related work and author metadata.
+- Joint: preregister protocol and agree on authorship, abstract, final submission and any release of correspondence.
