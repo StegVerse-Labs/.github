@@ -2,7 +2,7 @@
 
 **Goal Task ID:** ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001  
 **Canonical owner:** StegVerse-Labs/.github Task Registry  
-**COSV:** `10100000105000` — merged source-derived observational vector; non-authorizing.  
+**COSV:** canonical main previously `10100000105000`; PR #2589 successor `10100000104000` is source-derived after resolution of the stale COSV-emission blocker, pending merge; both non-authorizing.  
 **Status:** `PROPOSED` (canonical record); source registration and COSV merged; governed publication and runtime evidence NOT OBSERVED.  
 **Date:** 2026-09-22.
 
@@ -16,7 +16,7 @@ Publish a coherent StegVerse Private-State Economy white paper and six-stage evi
 - Site existing autonomy-roadmap.html and existing Publisher->Site paper mirror are reusable display and distribution mechanisms, not new authority planes.
 
 ## Next source-work sequence
-1. Canonical Task Registry accepts this Task ID and emits a corresponding COSV using its existing allocation/validation path. No manual vector assignment based on similarity to other tasks.
+1. Canonical task and original source-derived COSV were merged through PRs #2580/#2584. PR #2589 now reconciles the stale COSV-emission blocker and derives successor vector `10100000104000` from exactly four remaining blockers; merge only after source consistency tests.
 2. Register one narrowly scoped Site pre-work claim for draft/economic-ecosystem-roadmap-evidence-gates; require exact non-overlap against other live Site claims. Re-run original Site tests and observe current PR checks.
 3. Address concrete source-validation failures only; keep the public economic roadmap isolated from unrelated roadmap/status paths.
 4. In Publisher PR #72, reconcile the existing two-volume Entity Economy, FinCo Private-State Value and StegToken/StegCoin definitions; obtain substantive review of research and investment/regulatory claims, preserving publication candidate posture.
@@ -69,3 +69,13 @@ The updated Publisher branch head `b085308c73d8f29ff95d08057de8851897549c17` was
 ## Canonical source-derived stale COSV blocker repair — 2026-09-22 continuation
 
 Source evidence of original COSV issuance was already present on main from merged PR #2584. This continuation marks only dependency `CANONICAL_COSV_EMISSION` RESOLVED and removes the stale `COSV_NOT_EMITTED` blocker from both the task shard and monolithic registry. The task stays PROPOSED with no WorkerCoordinator claim or execution inference; four authentic unresolved publication/integration/export blockers remain. The successor `task.v1` COSV is derived mechanically from the exact corrected blocker count and preserved state metrics: **10100000104000** (previous **10100000105000**). The exact index shard, aggregate index and regression test now bind the new vector. Registry generation advanced from 204 to 205 on this PR branch; rebase if canonical main advances before merge. This source-derived observation does not grant Interlock/InTr ALLOW, Master Records custody, publication or benchmark completion.
+
+## Exact original PDF page-image inspection and governed editorial candidate — 2026-09-23 UTC
+
+Publisher PR #72 source transport retrieved and byte-verified the **original published** Volume I (16,647 bytes, 9 pages, SHA-256 a831891cee4c4e7a920ed6d38090672e0722b434a5941632620c3e11d8e4da95) and Volume II (132,330 bytes, 7 pages, SHA-256 129accea04dcef0c5b063ae5799d9952e97462859fb36842c93a3ca7776fe95f) from fixed Site source commit 760cdd027e7507c027e0928fcd127b5a47e70a15. All 16 original PDF page images were independently inspected after retrieving exact artifacts from CI. Volume I's page 9 is **visually blank**, while several other original pages (especially 3–4 and 7–8) visibly clip lines at the right edge and page 2 contains malformed operators/missing text; Volume II's seven pages have readable content and layout. Source inspection is completed and the original Volume I defect is documented, not silently repaired or rewritten. A separate versioned corrective edition would require its own canonical ownership and governed publication, preserving the historical artifact identity.
+
+Publisher paper's economics now reconcile the source volumes, distinguish contribution vs contracted-service compensation and token standing vs any separately issued legal investment instrument, distinguish an assistant's initial delegated role from future potential economic independence, and preserve Volume II's separate useful-accepted-work-per-joule research hypothesis. Original-source PDF validation run 35817685688 SUCCESS; 21-file retained source evidence: https://github.com/GCAT-BCAT-Engine/Publisher/actions/runs/35817685688/artifacts/10732455385. Publisher draft editorial candidate metadata binds source bytes SHA-256 **82925ac8ccec8d7ef83bb70dbfc4f2d56888e147018043a9b26a722dd3dbb701** and contains null external InTr/Master Records/Publisher/Site evidence and explicit no-authority controls; candidate metadata is source-preparation only, not an SDK ingress, authenticated review receipt or an issued publication. Original full PDF visual inspection does not constitute independent economic or legal review.
+
+The .github PR #2589 source correction changes exactly: canonical task shard + monolithic Task Registry generation 204 -> 205; resolves previously issued COSV dependency; removes the stale emission blocker while retaining four other blockers; derives successor task.v1 vector `10100000104000` and reconciles both indexes and the dedicated regression test. All other runtime evidence predicates remain open. The targeted source-only workflow was added for `tests/test_economic_roadmap_cosv.py`; its execution must be observed rather than presumed. The earlier deterministic suite run 35816983889 passed at prior head. Merging a registry source-only PR is not governed publication.
+
+Next source work: confirm fresh exact-head Publisher editorial-candidate CI and its source SHA; verify targeted registry test CI or run equivalent independent source validation; merge source-only canonical repair when branch is up to date; retain Publisher PR #72 in DRAFT until independent economics/regulatory review and genuine SDK/Interlock-InTr/Master Records publication closure. Site PR #1458 remains all sixteen NOT_VERIFIED until distinct authenticated evidence and actual public HTTP readback.
