@@ -37,13 +37,19 @@
     "AUTHENTIC_RUNTIME_ORG_BATCH_TO_MASTER_RECORDS_END_TO_END_EVIDENCE_RETAINED"
   ],
   "current_truth": {
-    "registration": "PROPOSED_PENDING_PR_MERGE",
+    "registration": "MERGED_SOURCE_AND_REGISTRY",
     "runtime_batch_custody": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "live_worker_failure_expiry_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "existing_org_receipt_emitter": "SOURCE_PRESENT",
     "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
     "existing_master_records_receipt_set_commitments": "SOURCE_PRESENT",
-    "new_runtime_or_ledger_authorized": false
+    "new_runtime_or_ledger_authorized": false,
+    "registration_pr": 2582,
+    "registration_merge": "ed49711678dc9ffb0627a65e66a1d83110f9afc4",
+    "registration_validation_runs": [
+      35801888478,
+      35801888423
+    ]
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
