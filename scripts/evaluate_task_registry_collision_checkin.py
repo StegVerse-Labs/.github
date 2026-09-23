@@ -266,7 +266,12 @@ def overlap(a, b, request_context=None):
             a_repos.add(str(request_context["repository"]))
     repos = sorted(a_repos & set(bt.get("repositories") or []))
     comps = sorted(a_comps & set(bt.get("components") or []))
-    # Missing parent/root identity is not shared lineage. In particular, two\n    # independent root tasks both have parent_task_id=None; counting None as a\n    # common ancestor spuriously STOP_COLLISIONs unrelated checked-out goals.\n    a_lineage = {v.strip() for v in (a.get("task_id"), a.get("parent_task_id"), a.get("root_correlation_id")) if isinstance(v, str) and v.strip()}\n    b_lineage = {v.strip() for v in (b.get("task_id"), b.get("parent_task_id"), b.get("root_correlation_id")) if isinstance(v, str) and v.strip()}\n    lineage = bool(a_lineage & b_lineage)
+    # Missing parent/root identity is not shared lineage. In particular, two
+    # independent root tasks both have parent_task_id=None; counting None as a
+    # common ancestor spuriously STOP_COLLISIONs unrelated checked-out goals.
+    a_lineage = {v.strip() for v in (a.get("task_id"), a.get("parent_task_id"), a.get("root_correlation_id")) if isinstance(v, str) and v.strip()}
+    b_lineage = {v.strip() for v in (b.get("task_id"), b.get("parent_task_id"), b.get("root_correlation_id")) if isinstance(v, str) and v.strip()}
+    lineage = bool(a_lineage & b_lineage)
     adjacent = b.get("task_id") in (a.get("adjacent_task_refs") or []) or a.get("task_id") in (b.get("adjacent_task_refs") or [])
     a_substrate = selected_substrate(a)
     b_substrate = selected_substrate(b)
