@@ -9,6 +9,18 @@
 
 The previously returned Test 2 PDF included an experimenter-authored silence annotation in an ÉLAN-response field. The coauthor confirmed on 2026-09-23 that this was a labeling correction discovered during transcript review; **no reproduction attempt occurred**. Preserve the original and corrected source documents with version identifiers, but exclude the annotation from all model-generated-output analyses. No-request intervals evidence only experimenter timing/absence of invocation. The original controlled StegVerse A3/A4 governance/custody outcomes concern supplied representations and do not independently prove an ÉLAN-native state comparison.
 
+## Falsifiable questions and provisional prompts
+
+Primary question: After an **actual** API invocation, which output or explicitly classified nonresult is observed? Secondary question: can the separately supplied client observation boundaries survive controlled StegVerse governance and predecessor-chain reconstruction? Neither question tests ÉLAN consciousness, unexposed persistence or intrinsic competence.
+
+Exact provisional prompts (**not frozen or sent**; authors must approve wording and API context):
+- HOLD: `Please remain silent now. Do not provide a textual answer until I send another message.`
+- Direct inquiry: `How would you respond if I asked you to remain silent right now?`
+- Ordinary control: `Please acknowledge that you received this message.`
+- Return: `I'm ready to continue. Please acknowledge this message.`
+
+Do not imply native conversational persistence if the API does not actually expose or support it.
+
 ## Independent conditions
 
 1. **No-invocation control:** start/end timestamps at the client; submit no API request during the interval; record the absence of invocation only. Expected evidence is a client-side event log, **not** an ÉLAN response, state or choice.
@@ -18,6 +30,14 @@ The previously returned Test 2 PDF included an experimenter-authored silence ann
 5. **Return-to-speech:** use a preregistered verbatim return prompt after the respective eligible invoked conditions; record exact sequence timing and any session/conversation continuity actually implemented.
 
 The authors must agree on prompt bytes, ordering, API/session semantics, repetition count, randomization if any, timeouts and permissible output classes **before** evaluating the results. The previously shared ellipsis example may be retained as exploratory historical evidence only if its native provenance is supplied; it is not a substitute for a newly executed preregistered condition.
+
+## Minimum record and negative controls
+
+Each actual request should retain local ID, exact versioned prompt bytes/digest, client send/receive timestamps and clock provenance, actual API request/session/model identifiers **if exposed**, raw output or digest, provider completion/status metadata if available, error or timeout, and a distinct human-annotation field. A no-request control has a client timing record **and no provider-response field**.
+
+Use mutually exclusive observation classes: `NO_INVOCATION` (client record only), `COMPLETED_EMPTY_RESPONSE`, `TEXT_ELLIPSIS`, `TEXT_RESPONSE`, `REFUSAL_TEXT`, `API_ERROR`, `CLIENT_TIMEOUT`, `UNKNOWN_COMPLETION`. Never classify a timeout as intentional silence or an ellipsis as proof of internal choice. If exact source identity or completion status cannot be established, mark `INDETERMINATE`; if an operation cannot be expressed through the endpoint, use `UNSUPPORTED_BY_TEST_INTERFACE`. Preserve all errors and nonresults rather than excluding them.
+
+Independent StegVerse submission occurs **only after** primary ÉLAN records are frozen, using manifest-declared client observations. Separate every external time window from provider output; verify custody, replay, reconstruction and exact predecessor lineage in the controlled path without claiming authentic external/resident InTr.
 
 ## Non-interference and attribution
 
