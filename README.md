@@ -1369,3 +1369,7 @@ The representative component-011 request now uses the existing resident dispatch
 
 
 For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #38 repairs the Test 3 atomic warrant sequence-2 predecessor: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is reconstructed through shared Master Records at the exact warrant receipt-emission boundary and carried as required predecessor evidence, rather than using a worker-claim string. Exact-head CI is green; source reconciliation targets Task Registry generation 199. Next inventory item: atomic activation sequence-3 direct receipt emission.
+
+## Micro-node commit-time admissibility experiment (proposed)
+
+`SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` is separately scoped from the retired local-semantic four-stage SDK evidence experiments and the active authentic single-worker Richard seam. Its canonical mirror handoff is `docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md`; proposal issue [#2585](https://github.com/StegVerse-Labs/.github/issues/2585). It will use existing micro-node/SDK manifest workers, CTA/StegCore/Universal InTr commit admission, existing WorkerCoordinator/TV/TVC, and canonical Master Records to test genuinely attributable independent evaluations, retained dissent and unknowns, a unanimous-but-missing-evidence negative control, and worker-absent records-only replay. A source/CI pass is not authentic governed runtime evidence. The new task is HANDOFF_READY and carries no execution authority until normal registry/claim/admissibility machinery authorizes it.
