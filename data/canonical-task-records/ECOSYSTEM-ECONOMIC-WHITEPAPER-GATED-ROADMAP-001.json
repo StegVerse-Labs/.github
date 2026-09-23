@@ -1,0 +1,154 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": null,
+  "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (draft PR #72)",
+    "StegVerse-Labs/Site:economic-roadmap.html (draft PR #1458)",
+    "StegVerse-Labs/Site:data/economy/public-release-benchmarks.v1.json (draft PR #1458)",
+    "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance:FINCO_PRIVATE_STATE_VALUE.md",
+    "StegVerse-Labs/stegfin-governance:docs/STEGTOKEN_STEGCOIN_RECONCILIATION.md",
+    "StegVerse-Labs/.github:data/canonical-task-records/GOVERNED-WIKI-PUBLICATION-TRANSITION-001.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "GCAT-BCAT-Engine",
+      "StegVerse-org",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "GCAT-BCAT-Engine/Publisher",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "publisher-white-paper-editorial-review",
+      "canonical-release-task",
+      "site-prework-claim",
+      "public-roadmap-projection",
+      "benchmark-master-records-evidence",
+      "governed-publication",
+      "public-propagation-verification"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "CANONICAL_COSV_EMISSION",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/.github:control/task-vector-index.json / canonical task.v1 source emission"
+    },
+    {
+      "dependency_id": "SITE_PREWORK_AND_SOURCE_VALIDATION",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/Site#1458 exact-head 16b99c348dbadfedf1830863bcb6ed5560f298b8, 4 hosted workflows SUCCESS (branch not merged)"
+    },
+    {
+      "dependency_id": "SITE_INTEGRATION",
+      "kind": "TASK",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/Site#1458 (draft)"
+    },
+    {
+      "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
+      "kind": "TASK",
+      "state": "UNRESOLVED",
+      "ref": "GCAT-BCAT-Engine/Publisher#72 (draft)"
+    },
+    {
+      "dependency_id": "GOVERNED_PUBLICATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing SDK / Interlock-InTr / Master Records / Publisher"
+    },
+    {
+      "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing Master Records and Publisher public-safe export"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "COSV_NOT_EMITTED",
+      "dependency_id": "CANONICAL_COSV_EMISSION",
+      "reason": "Canonical record is proposed; no exact authoritative task.v1 COSV emitted."
+    },
+    {
+      "blocker_id": "SITE_DRAFT_UNMERGED",
+      "dependency_id": "SITE_INTEGRATION",
+      "reason": "Site #1458 source checks passed after exact pre-work and derived Site projection repair, but release integration remains a draft."
+    },
+    {
+      "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
+      "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
+      "reason": "Publisher #72 source checks passed but substantive editorial review and governed publication are pending."
+    },
+    {
+      "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
+      "dependency_id": "GOVERNED_PUBLICATION",
+      "reason": "No authentic InTr/Master Records governed publisher closure or deployed public readback is established."
+    },
+    {
+      "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
+      "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
+      "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic Master Records proof and a Publisher-owned public-safe projector."
+    }
+  ],
+  "adjacent_task_refs": [
+    "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
+    "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+  ],
+  "existing_evidence_refs": [
+    "GCAT-BCAT-Engine/Publisher draft PR #72, reported three validation workflows SUCCESS",
+    "StegVerse-Labs/Site draft PR #1458 and CI fail on absent active pre-work claim",
+    "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json",
+    "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
+    "SITE_EXCLUSIVE_PREWORK_CLAIM_PASS",
+    "SOURCE_CHECKER_AND_DETERMINISTIC_TESTS_PASS",
+    "PUBLISHER_EDITORIAL_CANDIDATE_REVIEWED",
+    "SIX_STAGE_16_BENCHMARK_PUBLIC_PROJECTION_FAILS_CLOSED",
+    "EXACT_TASK_AND_COSV_BENCHMARK_BINDINGS",
+    "AUTHENTIC_RUNTIME_MASTER_RECORDS_CLOSURE_FOR_CHECKMARKS",
+    "EXACT_EXTERNAL_INTR_ALLOW_REQUIRED_WHEN_APPLICABLE",
+    "GOVERNED_PUBLISHER_PUBLICATION_CLOSURE",
+    "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md"
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
+    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
+    "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+  ]
+}
