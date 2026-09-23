@@ -159,6 +159,38 @@ class FederationIngressTests(unittest.TestCase):
             self.admit(decision=self.decision(frame=self.frame))
         self.assertEqual(len(self.calls), 1)
 
+    def test_positive_synthetic_successor_links_exact_immediate_org_receipt(self):
+        first = self.admit()
+        self.frame = ingress.K.carrier_frame(
+            ingress.K.build_packet(
+                origin_org="External-Org", origin_service="external.service",
+                destination_org="StegVerse-Labs", destination_service="stegverse-labs.org-control",
+                payload={"message_class": "ecosystem.communication", "body": {"test": True}},
+                transition_reference="federation.test.v1", authority_effect="NONE",
+                packet_id="source-test-packet-002"), now_ns=1_800_000_000_000_000_000)
+        self.packet = ingress.K.recover_packet(self.frame)
+        self.request = self.make_request(predecessor=first["organization_receipt_sha256"],
+                                         canonical=first["canonical_receipt_sha256"])
+        from workers import canonical_state_transition_custody as custody
+        with patch.object(custody, "require_predecessor_master_records_closure",
+                          return_value=("sha256:" + first["canonical_receipt_sha256"], [])):
+            second = self.admit(decision=self.decision(frame=self.frame))
+        self.assertEqual(second["predecessor_organization_receipt_sha256"],
+                         first["organization_receipt_sha256"])
+        self.assertEqual(second["organization_receipt_sha256"],
+                         json.loads((self.root / "org-ledger/HEAD.json").read_text())["receipt_sha256"])
+        self.assertEqual(self.calls[1]["prior_state_ref_or_hash"],
+                         "sha256:" + first["canonical_receipt_sha256"])
+        self.assertEqual(len(list((self.root / "org-ledger/receipts").glob("*.json"))), 2)
+
+    def test_ledger_rejects_stale_expected_predecessor_under_writer_lock(self):
+        first = self.admit()
+        before = (self.root / "org-ledger/HEAD.json").read_text()
+        with self.assertRaisesRegex(ValueError, "organization_expected_immediate_predecessor_mismatch"):
+            self.ledger.aggregate_transition(self.calls[0],
+                expected_previous_receipt_sha256=None, enforce_expected_previous=True)
+        self.assertEqual((self.root / "org-ledger/HEAD.json").read_text(), before)
+
     def test_predecessor_head_tamper_rejected_by_ledger(self):
         first = self.admit()
         path = self.root / "org-ledger/HEAD.json"
