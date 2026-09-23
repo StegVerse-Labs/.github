@@ -9504,56 +9504,67 @@
       },
       "dependencies": [
         {
+          "dependency_id": "CANONICAL_COSV_EMISSION",
+          "kind": "EVIDENCE",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/.github:control/task-vector-index.json / canonical task.v1 source emission"
+        },
+        {
+          "dependency_id": "SITE_PREWORK_AND_SOURCE_VALIDATION",
+          "kind": "EVIDENCE",
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/Site#1458 exact-head 16b99c348dbadfedf1830863bcb6ed5560f298b8, 4 hosted workflows SUCCESS (branch not merged)"
+        },
+        {
+          "dependency_id": "SITE_INTEGRATION",
+          "kind": "TASK",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/Site#1458 (draft)"
+        },
+        {
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
           "kind": "TASK",
           "state": "UNRESOLVED",
-          "ref": "GCAT-BCAT-Engine/Publisher#72"
-        },
-        {
-          "dependency_id": "SITE_PREWORK_CLAIM",
-          "kind": "TASK",
-          "state": "UNRESOLVED",
-          "ref": "StegVerse-Labs/Site#1458"
-        },
-        {
-          "dependency_id": "SITE_VALIDATION",
-          "kind": "EVIDENCE",
-          "state": "UNRESOLVED",
-          "ref": "StegVerse-Labs/Site#1458"
+          "ref": "GCAT-BCAT-Engine/Publisher#72 (draft)"
         },
         {
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001 reuse when applicable"
+          "ref": "existing SDK / Interlock-InTr / Master Records / Publisher"
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "existing canonical Master Records and Publisher readback"
+          "ref": "existing Master Records and Publisher public-safe export"
         }
       ],
       "blockers": [
         {
-          "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_1",
+          "blocker_id": "COSV_NOT_EMITTED",
+          "dependency_id": "CANONICAL_COSV_EMISSION",
+          "reason": "Canonical record is proposed; no exact authoritative task.v1 COSV emitted."
+        },
+        {
+          "blocker_id": "SITE_DRAFT_UNMERGED",
+          "dependency_id": "SITE_INTEGRATION",
+          "reason": "Site #1458 source checks passed after exact pre-work and derived Site projection repair, but release integration remains a draft."
+        },
+        {
+          "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-          "reason": "No registered canonical COSV yet; require canonical emission, do not guess"
+          "reason": "Publisher #72 source checks passed but substantive editorial review and governed publication are pending."
         },
         {
-          "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_2",
-          "dependency_id": "SITE_PREWORK_CLAIM",
-          "reason": "Site draft PR #1458 failed exact active pre-work claim gate"
-        },
-        {
-          "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_3",
-          "dependency_id": "SITE_VALIDATION",
-          "reason": "Publisher draft PR #72 still requires editorial review and governed closure"
-        },
-        {
-          "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_4",
+          "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "No authentic public-safe Master Records-to-Publisher milestone projection established"
+          "reason": "No authentic InTr/Master Records governed publisher closure or deployed public readback is established."
+        },
+        {
+          "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
+          "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
+          "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic Master Records proof and a Publisher-owned public-safe projector."
         }
       ],
       "adjacent_task_refs": [
@@ -9564,7 +9575,8 @@
       "existing_evidence_refs": [
         "GCAT-BCAT-Engine/Publisher draft PR #72, reported three validation workflows SUCCESS",
         "StegVerse-Labs/Site draft PR #1458 and CI fail on absent active pre-work claim",
-        "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json"
+        "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json",
+        "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
