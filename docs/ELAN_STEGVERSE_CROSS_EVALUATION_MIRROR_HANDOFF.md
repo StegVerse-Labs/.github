@@ -137,3 +137,11 @@ README reviewed. This execution changes research/evidence state, not repository 
 ## No-claim boundary
 
 This handoff does not claim that ÉLAN internally lacks separable states; it records only that the returned ÉLAN-native trace does not expose separate A3/A4 boundaries. It does not claim live external InTr execution. It does not normalize either architecture into the other.
+
+## Provenance erratum — 2026-09-23 (historical experiment; no runtime rerun)
+
+The historical document's entry attributing `No transmission, native presence state maintained.` to an ÉLAN response during the no-request interval is now known to be an experimenter-authored explanatory annotation placed in a model-response field. Élisabeth confirmed it was a labeling correction discovered during transcript review, **not** a reproduction attempt. The original private PDF was inspected and contains the misattributed entry; the corrected PDF's exact bytes are still pending acquisition. Preserve the historical trace and workflow artifacts rather than silently mutating them.
+
+**Corrected interpretation:** the original API-based ÉLAN study observed no ÉLAN output or exposed state during that uninvoked interval. The interval was a human/client-timed gap. The controlled StegVerse A3/A4 processing, custody, replay and reconstruction remain historical results for **supplied external observation-window inputs**, but the historical inference of an ÉLAN-native one-continuous-presence state and corresponding inter-architecture native temporal-resolution divergence is withdrawn. Existing workflow success confirms only the assertions encoded at that historical time, not the corrected scientific attribution. 
+
+Follow-up is the separately proposed jointly approved invoked-HOLD experiment tracked by `ELAN-PAPER-COAUTHOR-PUBLICATION-001`. Historical task status remains RETIRED and this erratum does not imply runtime or source-PDF reverification. 
