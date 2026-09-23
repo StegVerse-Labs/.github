@@ -6,11 +6,6 @@
   "parent_task_id": null,
   "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
   "coordination_state": "PROPOSED",
-  "checkout_state": "REGISTRATION_PR_OPEN",
-  "repository": "StegVerse-Labs/.github",
-  "handoff": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-  "cosv_task_vector": null,
-  "cosv_state": "PENDING_CANONICAL_REGISTRY_EMISSION",
   "source_refs": [
     "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (draft PR #72)",
     "StegVerse-Labs/Site:economic-roadmap.html (draft PR #1458)",
@@ -45,40 +40,56 @@
   "dependencies": [
     {
       "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-      "kind": "AUTHORITATIVE_EDITORIAL",
-      "state": "PENDING",
+      "kind": "TASK",
+      "state": "UNRESOLVED",
       "ref": "GCAT-BCAT-Engine/Publisher#72"
     },
     {
       "dependency_id": "SITE_PREWORK_CLAIM",
-      "kind": "SITE_OWNERSHIP",
-      "state": "MISSING",
+      "kind": "TASK",
+      "state": "UNRESOLVED",
       "ref": "StegVerse-Labs/Site#1458"
     },
     {
       "dependency_id": "SITE_VALIDATION",
-      "kind": "SOURCE_VALIDATION",
-      "state": "BLOCKED_ON_PREWORK_CLAIM",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
       "ref": "StegVerse-Labs/Site#1458"
     },
     {
       "dependency_id": "GOVERNED_PUBLICATION",
-      "kind": "AUTHENTIC_RUNTIME",
-      "state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
       "ref": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001 reuse when applicable"
     },
     {
       "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
-      "kind": "AUTHENTIC_RUNTIME",
-      "state": "NOT_IMPLEMENTED",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
       "ref": "existing canonical Master Records and Publisher readback"
     }
   ],
   "blockers": [
-    "No registered canonical COSV yet; require canonical emission, do not guess",
-    "Site draft PR #1458 failed exact active pre-work claim gate",
-    "Publisher draft PR #72 still requires editorial review and governed closure",
-    "No authentic public-safe Master Records-to-Publisher milestone projection established"
+    {
+      "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_1",
+      "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
+      "reason": "No registered canonical COSV yet; require canonical emission, do not guess"
+    },
+    {
+      "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_2",
+      "dependency_id": "SITE_PREWORK_CLAIM",
+      "reason": "Site draft PR #1458 failed exact active pre-work claim gate"
+    },
+    {
+      "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_3",
+      "dependency_id": "SITE_VALIDATION",
+      "reason": "Publisher draft PR #72 still requires editorial review and governed closure"
+    },
+    {
+      "blocker_id": "ECONOMIC_ROADMAP_BLOCKER_4",
+      "dependency_id": "GOVERNED_PUBLICATION",
+      "reason": "No authentic public-safe Master Records-to-Publisher milestone projection established"
+    }
   ],
   "adjacent_task_refs": [
     "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
@@ -115,13 +126,17 @@
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
-    "source_state_proves_runtime": false,
-    "site_display_grants_publication_authority": false,
+    "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "interlock_intr_required_for_external_governed_transitions": true,
     "master_records_reality_authority": true,
-    "publisher_controls_publication": true,
-    "credential_authority": "TV/TVC"
+    "interlock_intr_required_for_governed_ingress_egress": true
   },
-  "authority_effect": "NONE_REGISTRATION_ONLY"
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
+    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
+    "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+  ]
 }
