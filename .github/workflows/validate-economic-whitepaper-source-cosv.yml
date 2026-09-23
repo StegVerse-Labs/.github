@@ -1,0 +1,39 @@
+name: Validate Economic Whitepaper Source-Derived COSV
+on:
+  pull_request:
+    paths:
+      - 'data/canonical-task-records/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json'
+      - 'data/canonical-task-registry.json'
+      - 'control/task-vectors/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json'
+      - 'control/task-vector-index.json'
+      - 'control/task-vector-index.d/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json'
+      - 'tests/test_economic_roadmap_cosv.py'
+      - '.github/workflows/validate-economic-whitepaper-source-cosv.yml'
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  canonical-task-source-derivation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact canonical task, shard, COSV and both indexes
+        run: python -m unittest discover -s tests -p test_economic_roadmap_cosv.py -v
+      - name: Assert this CI is source validation and not authority
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          goal = 'ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001'
+          row = json.loads((Path('data/canonical-task-records')/(goal+'.json')).read_text())
+          vector = json.loads((Path('control/task-vectors')/(goal+'.json')).read_text())
+          assert row['coordination_state'] == 'PROPOSED'
+          assert row['worker_claim']['claim_ref'] is None
+          assert row['worker_claim']['fence_ref'] is None
+          assert not row['completion']['validated']
+          assert vector['authority_effect'] == 'NONE'
+          assert not vector['exact_metrics']['activated']
+          assert not vector['exact_metrics']['propagated']
+          print('ECONOMIC_COSV_NON_AUTHORIZING_PASS')
+          PY
