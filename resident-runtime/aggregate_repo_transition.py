@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,hashlib,json,os
+import argparse,hashlib,json,os,fcntl
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -48,27 +48,42 @@ def verify_source(receipt):
 
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
     source=verify_source(receipt)
-    root=ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
-    prev=load(h).get("receipt_sha256") if h.exists() else None
-    predecessor=predecessor_org_state_sha256 or prev
-    successor=successor_org_state_sha256 or source["source_transition_sha256"]
-    body={
-        "schema":"stegverse.organization-transition-receipt/v1",
-        "organization":C["organization"],
-        **source,
-        "org_transition_class":org_transition_class,
-        "predecessor_org_state_sha256":predecessor,
-        "successor_org_state_sha256":successor,
-        "boundary_evidence":dict(boundary_evidence or {}),
-        "authority_effect":authority_effect,
-        "observed_at":datetime.now(timezone.utc).isoformat(),
-        "previous_receipt_sha256":prev,
-    }
-    digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
-    if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
-    if not fp.exists(): fp.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n")
-    h.write_text(json.dumps({"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)},indent=2,sort_keys=True)+"\n")
-    return record
+    root=ledger_root(); root.mkdir(parents=True,exist_ok=True)
+    # Existing organization ledger is single-writer while HEAD is verified and advanced.
+    with (root/".ledger.lock").open("a+") as lock:
+        fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
+        root=ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
+        prev=load(h).get("receipt_sha256") if h.exists() else None
+        if prev is not None:
+            if not isinstance(prev,str) or not prev.startswith("sha256:"):
+                raise ValueError("organization_head_sha_invalid")
+            predecessor_file=d/(prev.split(":",1)[1]+".json")
+            if not predecessor_file.is_file(): raise ValueError("organization_immediate_predecessor_unavailable")
+            predecessor_record=load(predecessor_file)
+            predecessor_body=dict(predecessor_record); predecessor_claim=predecessor_body.pop("receipt_sha256",None)
+            if predecessor_claim!=prev or sha(predecessor_body)!=prev:
+                raise ValueError("organization_immediate_predecessor_reconstruction_failed")
+        elif any(d.glob("*.json")):
+            raise ValueError("organization_genesis_conflicts_existing_receipts")
+        predecessor=predecessor_org_state_sha256 or prev
+        successor=successor_org_state_sha256 or source["source_transition_sha256"]
+        body={
+            "schema":"stegverse.organization-transition-receipt/v1",
+            "organization":C["organization"],
+            **source,
+            "org_transition_class":org_transition_class,
+            "predecessor_org_state_sha256":predecessor,
+            "successor_org_state_sha256":successor,
+            "boundary_evidence":dict(boundary_evidence or {}),
+            "authority_effect":authority_effect,
+            "observed_at":datetime.now(timezone.utc).isoformat(),
+            "previous_receipt_sha256":prev,
+        }
+        digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
+        if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
+        if not fp.exists(): fp.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n")
+        h.write_text(json.dumps({"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)},indent=2,sort_keys=True)+"\n")
+        return record
 
 def main():
     p=argparse.ArgumentParser()
