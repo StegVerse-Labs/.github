@@ -63,13 +63,13 @@ That difference makes the representation boundary a governance-relevant system s
 
 #### Research question
 
-Experiment 2 asks a subsequent question. When no API prompt is submitted, which aspects of a silence interval are actually observable, and which temporal boundaries arise from the external experiment rather than native model output? When an explicit HOLD prompt is submitted, what response or non-response can be attributed to the invoked model?
+Experiment 2 asks a subsequent question. When no API prompt is submitted, which aspects of a silence interval are actually observable, and which temporal boundaries arise from the external experiment rather than native model output? In a future jointly approved experiment where an explicit HOLD prompt is actually submitted, what response or non-response can be attributed to the invoked model?
 
 The experiment therefore examines not whether silence has one correct meaning, but whether an architecture preserves the boundaries needed to distinguish successive states without forcing a semantic interpretation of human intent.
 
 #### Experimental boundary
 
-The historical ÉLAN transcript and the StegVerse controlled evidence chain were assembled independently, but the no-prompt interval's descriptive annotation was later identified by the ÉLAN coauthor as human-authored. Independent preparation does not imply equivalent native observations. ÉLAN remained in its native operating state. StegVerse terminology, evaluation criteria, and expected outcomes were not supplied to ÉLAN as executable input. The returned ÉLAN trace was preserved in source-native form before cross-evaluation. StegVerse then represented the corresponding event sequence through its own governance-oriented state model.
+The historical ÉLAN transcript and the StegVerse controlled evidence chain were assembled independently, but the no-prompt interval's descriptive annotation was later identified by the ÉLAN coauthor as human-authored. Independent preparation does not imply equivalent native observations. ÉLAN remained in its native operating state. StegVerse terminology, evaluation criteria, and expected outcomes were not supplied to ÉLAN as executable input. The initial ÉLAN PDF was retained before cross-evaluation, but its human-authored interval annotation was mistakenly labeled as native output; a subsequent coauthor correction resolves that attribution. StegVerse then represented the corresponding event sequence through its own governance-oriented state model.
 
 The comparison was performed only after both evidence chains existed. Neither architecture was normalized to resemble the other.
 
@@ -159,7 +159,7 @@ Accordingly, Experiment 2 supports conclusions about representation, governed pr
 
 Experiment 1 shows that alternative upstream representations can change a downstream governed disposition while the evaluator remains fixed.
 
-Experiment 2 shows that supplied external observation windows can survive the controlled StegVerse governance, custody, replay, and reconstruction path. The corrected ÉLAN record reveals a provenance failure in the original comparison: an experimenter-authored description had been treated as model-authored state. The experiment cannot establish native-model temporal-resolution differences without a comparable invoked condition.
+Experiment 2 shows that supplied external observation windows can survive the controlled StegVerse governance, custody, replay, and reconstruction path. The coauthor's correction reveals a provenance failure in the original comparison: an experimenter-authored description had been treated as model-authored state. The experiment cannot establish native-model temporal-resolution differences without a comparable invoked condition.
 
 Together, the experiments support a bounded systems claim:
 
