@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 204,
+  "generation": 205,
   "status": "SDK_MICRO_NODE_ADMISSIBILITY_REGISTRATION_VALIDATED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9573,8 +9573,8 @@
         {
           "dependency_id": "CANONICAL_COSV_EMISSION",
           "kind": "EVIDENCE",
-          "state": "UNRESOLVED",
-          "ref": "StegVerse-Labs/.github:control/task-vector-index.json / canonical task.v1 source emission"
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/.github:control/task-vectors/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json (source-derived task.v1 emitted; PR #2584)"
         },
         {
           "dependency_id": "SITE_PREWORK_AND_SOURCE_VALIDATION",
@@ -9609,11 +9609,6 @@
       ],
       "blockers": [
         {
-          "blocker_id": "COSV_NOT_EMITTED",
-          "dependency_id": "CANONICAL_COSV_EMISSION",
-          "reason": "Canonical record is proposed; no exact authoritative task.v1 COSV emitted."
-        },
-        {
           "blocker_id": "SITE_DRAFT_UNMERGED",
           "dependency_id": "SITE_INTEGRATION",
           "reason": "Site #1458 source checks passed after exact pre-work and derived Site projection repair, but release integration remains a draft."
@@ -9643,7 +9638,8 @@
         "GCAT-BCAT-Engine/Publisher draft PR #72, reported three validation workflows SUCCESS",
         "StegVerse-Labs/Site draft PR #1458 and CI fail on absent active pre-work claim",
         "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json",
-        "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS"
+        "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS",
+        "StegVerse-Labs/.github PR #2584: source-derived task.v1 COSV emitted with original vector 10100000105000; successor observation derived after stale blocker correction"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
