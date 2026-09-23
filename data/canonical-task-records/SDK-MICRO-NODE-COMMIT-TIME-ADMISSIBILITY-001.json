@@ -50,7 +50,7 @@
     "duplicate_richard_runtime_task_prohibited": true
   },
   "current_truth": {
-    "registration": "PROPOSED_PENDING_PR_MERGE",
+    "registration": "MERGED_CANONICAL_GENERATION_203_CI_GREEN",
     "independent_worker_evaluations": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "commit_time_intr_decision": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "records_only_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
