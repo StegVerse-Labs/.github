@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 206,
+  "generation": 207,
   "status": "SDK_MICRO_NODE_ADMISSIBILITY_REGISTRATION_VALIDATED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9837,7 +9837,7 @@
       "root_correlation_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
       "parent_task_id": null,
       "goal": "Reconcile SDK and existing component-011 defensive envelope against untrusted dependency installation, IDE workspace initialization and AI-generated executable ingress; source-test explicit per-operation capability admission, denied consequences and exact receipt lineage without introducing another runtime, authority plane, credential or device prerequisite.",
-      "coordination_state": "PROPOSED",
+      "coordination_state": "ACTIVE",
       "checkout_state": "HANDOFF_READY",
       "repository": "StegVerse-Labs/.github",
       "handoff": "docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md",
@@ -9882,7 +9882,7 @@
         "do_not_mutate_checked_out_neighbor": true
       },
       "current_truth": {
-        "canonical_registry_registration": "PROPOSED_PENDING_BRANCH_PR_VALIDATION_AND_MERGE",
+        "canonical_registry_registration": "MERGED_GENERATION_206_SOURCE_VALIDATED",
         "source_reconciliation": "HANDOFF_AUTHORED",
         "source_tests": "NOT_RUN",
         "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
@@ -9900,7 +9900,21 @@
         "validated": false,
         "authentic_runtime_proof": false
       },
-      "authority_effect": "NONE_COORDINATION_ONLY"
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "registration_validation": {
+        "registration_pr": 2597,
+        "registration_merge": "7fac73d0821b4410d5fddb79ebd1452eab0d7240",
+        "registration_exact_head": "8616a53f8b390b7678f442c995c69180fdc89fd8",
+        "exact_head_workflows_passed": 5,
+        "workflow_run_ids": [
+          35929392397,
+          35929392385,
+          35929392329,
+          35929392365,
+          35929392367
+        ],
+        "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+      }
     }
   ],
   "human_actions": [],
