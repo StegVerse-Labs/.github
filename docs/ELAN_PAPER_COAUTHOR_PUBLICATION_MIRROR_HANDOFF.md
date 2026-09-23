@@ -94,6 +94,10 @@ Historical cross-evaluation handoff now has a dated provenance erratum; historic
 8. Author preference for FAccT 2027 is recorded; collect author-order, affiliation and contribution approvals before submission.
 9. Prepare venue-specific submission materials only after author approval.
 
+## Validation and merge gate (2026-09-23)
+
+The original September 16 ÉLAN PDF was directly inspected (1 page, 115323 bytes); its response-labeled silence annotation is verified in the historical original. The exact corrected PDF was **not** attached to this session, so its bytes and diff remain **unverified**, notwithstanding Élisabeth's explicit correction in user-provided correspondence screenshots. The proposed FAccT abstract and operational HOLD controls were added to draft PR #2593. Targeted readback assertions passed for six repository files; the PR comparison was ahead of current main with no behind commits at validation time. Cross-Task Coordination Validation workflow run 35909510762 reported its `validate` job **success** (Task Registry collision/generation fences and coordination source steps passed) on an earlier intermediate head; recheck required on the final head after this handoff update. No pull-request reviews were recorded. Keep the PR in DRAFT and do not merge until corrected source PDF is verified and author review/approval is obtained, even if automated CI passes.
+
 ## README impact
 
 This is research/publication coordination and does not change repository function. No README mutation is required.
