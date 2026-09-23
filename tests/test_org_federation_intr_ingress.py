@@ -51,6 +51,7 @@ class FederationIngressTests(unittest.TestCase):
             "frame_sha256": self.frame["frame_sha256"],
             "payload_sha256": ingress.K.sha(self.packet["payload"]),
             "intr_decision_receipt_sha256": "d" * 64,
+            "source_organization_receipt_sha256": "sha256:" + "c" * 64,
             "predecessor_organization_receipt_sha256": predecessor,
             "predecessor_canonical_receipt_sha256": canonical,
         }
@@ -77,6 +78,9 @@ class FederationIngressTests(unittest.TestCase):
                     "locally_generated_allow": False,
                     "packet_sha256": frame["packet_sha256"], "frame_sha256": frame["frame_sha256"],
                     "payload_sha256": ingress.K.sha(self.packet["payload"]),
+                    "source_organization_receipt_sha256": "sha256:" + "c" * 64,
+                    "origin_service": "external.service",
+                    "destination_service": "stegverse-labs.org-control",
                     "origin_organization": "External-Org", "destination_organization": "StegVerse-Labs",
                     "transition_id": "federation.test.v1",
                 },
