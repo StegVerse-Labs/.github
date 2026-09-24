@@ -159,6 +159,78 @@ def audit_chain(root=None):
         result["integrity_errors"].append("AUDIT_READ_ERROR:"+type(exc).__name__)
     return result
 
+def _recover_interrupted_append(root, receipt, source, prev, integrity, *,
+                                org_transition_class, predecessor_org_state_sha256,
+                                successor_org_state_sha256, boundary_evidence,
+                                authority_effect, expected_previous_receipt_sha256,
+                                enforce_expected_previous):
+    """Recover only an exactly reconstructed interrupted write under ledger lock.
+
+    A source-only orphan is preappend evidence, not a state transition. A fully
+    retained exact successor may advance HEAD only after all bindings and its
+    existing predecessor independently reconstruct. No new receipt is minted
+    for an interrupted append.
+    """
+    digest=source["source_transition_sha256"]
+    source_name=digest.split(":",1)[1]+".json"
+    source_file=root/"sources"/source_name
+    orphan_sources=integrity.get("orphan_source_receipts") or []
+    errors=set(integrity.get("integrity_errors") or [])
+    if source_file.is_file() and load(source_file)!=receipt:
+        raise ValueError("organization_interrupted_source_mismatch")
+    if enforce_expected_previous and prev!=expected_previous_receipt_sha256:
+        raise ValueError("organization_expected_immediate_predecessor_mismatch")
+    if (errors=={"ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION"}
+        and orphan_sources==[source_name] and source_file.is_file()
+        and not integrity.get("orphan_receipts")):
+        return "EXACT_SOURCE_ONLY"
+    # An interrupted HEAD update may strand one already-written organization
+    # receipt. Recover precisely that receipt; never make a new successor.
+    d=root/"receipts"
+    candidates=list(d.glob("*.json")) if d.is_dir() else []
+    if integrity.get("head_receipt_sha256") is None and len(candidates)!=1:
+        return None
+    if integrity.get("head_receipt_sha256") is not None:
+        candidates=[d/(stem+".json") for stem in integrity.get("orphan_receipts",[])]
+    if len(candidates)!=1 or not candidates[0].is_file():
+        return None
+    candidate=load(candidates[0])
+    body=dict(candidate); claimed=body.pop("receipt_sha256",None)
+    if claimed!=sha(body) or candidates[0].stem!=claimed.split(":",1)[-1]:
+        return None
+    expected_predecessor=predecessor_org_state_sha256 or prev
+    expected_successor=successor_org_state_sha256 or digest
+    if (candidate.get("schema")!="stegverse.organization-transition-receipt/v1"
+        or candidate.get("organization")!=C["organization"]
+        or candidate.get("previous_receipt_sha256")!=prev
+        or candidate.get("source_transition_sha256")!=digest
+        or candidate.get("source_transition_id")!=source["source_transition_id"]
+        or candidate.get("source_receipt_schema")!=source["source_receipt_schema"]
+        or candidate.get("source_receipt_ref")!=("sources/"+source_name)
+        or candidate.get("predecessor_org_state_sha256")!=expected_predecessor
+        or candidate.get("successor_org_state_sha256")!=expected_successor
+        or candidate.get("org_transition_class")!=org_transition_class
+        or candidate.get("boundary_evidence")!=dict(boundary_evidence or {})
+        or candidate.get("authority_effect")!=authority_effect):
+        return None
+    allowed={"ORPHAN_ORGANIZATION_RECEIPTS","ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION",
+             "HEAD_MISSING_WITH_RETAINED_RECEIPTS"}
+    if not errors.issubset(allowed) or "ORPHAN_ORGANIZATION_RECEIPTS" not in errors and prev is not None:
+        return None
+    if orphan_sources and orphan_sources!=[source_name]:
+        return None
+    if not source_file.is_file():
+        # The exact caller-carried source still has to match the org receipt
+        # digest. Retain it before recovering the already-written org receipt.
+        if verify_source(receipt)["source_transition_sha256"]!=digest:
+            return None
+        _atomic_json(source_file,receipt)
+    _atomic_json(root/"HEAD.json",{"organization":C["organization"],
+                                   "receipt_sha256":claimed,
+                                   "receipt_path":str(candidates[0])})
+    return candidate
+
+
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", expected_previous_receipt_sha256=None, enforce_expected_previous=False):
     source=verify_source(receipt)
     root=ledger_root(); root.mkdir(parents=True,exist_ok=True)
@@ -180,7 +252,19 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
             raise ValueError("organization_genesis_conflicts_existing_receipts")
         integrity=audit_chain(root)
         if integrity["state"]=="INTEGRITY_FAILURE":
-            raise ValueError("organization_existing_chain_integrity_failure:"+",".join(integrity["integrity_errors"]))
+            recovered=_recover_interrupted_append(
+                root,receipt,source,prev,integrity,
+                org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=boundary_evidence,authority_effect=authority_effect,
+                expected_previous_receipt_sha256=expected_previous_receipt_sha256,
+                enforce_expected_previous=enforce_expected_previous)
+            if isinstance(recovered,dict):
+                return recovered
+            if recovered!="EXACT_SOURCE_ONLY":
+                raise ValueError("organization_existing_chain_integrity_failure:"+
+                                 ",".join(integrity["integrity_errors"]))
         # Source receipt and hash-linked org receipt stay in the SAME existing
         # organization ledger; no secondary ledger or synthesized transition.
         retained_ref=Path("sources")/(source["source_transition_sha256"].split(":",1)[1]+".json")
