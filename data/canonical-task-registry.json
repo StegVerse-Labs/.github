@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 209,
+  "generation": 210,
   "status": "NATIVE_EMAIL_EXISTING_GOAL_CANONICAL_REGISTRY_PROJECTION_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9931,7 +9931,9 @@
         "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md",
         "StegVerse-Labs/.github:docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
         "StegVerse-Labs/Site#1458",
-        "GCAT-BCAT-Engine/Publisher#72"
+        "GCAT-BCAT-Engine/Publisher#72",
+        "data/ephemeral-external-ai-reusable-component-profile.v1.json",
+        "StegVerse-Labs/.github:control/organization-batch-custody-replay-contract.json"
       ],
       "targets": {
         "organizations": [
@@ -9963,7 +9965,7 @@
           "dependency_id": "EXISTING_STEGBROWSER_RUNTIME_ADMISSION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001; existing retained resident and org receipt surfaces"
+          "ref": "Existing organization-level StegBrowser receipt/claim-fence evidence and existing eligible runtime path; historical A3 source-refresh only if same exact invocation selected"
         },
         {
           "dependency_id": "OPENAI_GOVERNED_EPHEMERAL_TASK",
@@ -9982,13 +9984,19 @@
           "kind": "TASK",
           "state": "NOT_APPLICABLE",
           "ref": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 — independent parallel release lane"
+        },
+        {
+          "dependency_id": "ORGANIZATION_FIRST_RECEIPT_REPLAY_AND_BATCH_CUSTODY",
+          "kind": "EVIDENCE",
+          "state": "UNRESOLVED",
+          "ref": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001: existing org receipt chain + conditional Master Records batch/direct custody"
         }
       ],
       "blockers": [
         {
           "blocker_id": "AUTHENTIC_EXISTING_RUNTIME_ADMISSION_UNOBSERVED",
           "dependency_id": "EXISTING_STEGBROWSER_RUNTIME_ADMISSION",
-          "reason": "Existing A3 owner requires authentic retained resident Master Records source-refresh/source-floor evidence and immutable-nonce claim/fence reconstruction; repository absence is not proof of execution failure and alternate existing eligible ephemeral path must be checked without creating a new substrate."
+          "reason": "First inspect authentic organization-level transition receipts and existing StegBrowser lease/claim-fence capabilities. A3's resident Master Records source-refresh receipt is conditional on selecting that historical exact invocation, NOT a universal external AI gate. If no runtime receipts are exposed, classify EVIDENCE_REACHABILITY/UNKNOWN_NOT_FALSE rather than asserting a failed execution. Identify and repair only a retained actual failure at its existing owner."
         },
         {
           "blocker_id": "OPENAI_REAL_EPHEMERAL_EXECUTION_UNPROVEN",
@@ -10008,15 +10016,20 @@
         "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
         "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
         "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
-        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+        "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
       ],
       "existing_evidence_refs": [
         "StegVerse-Labs/.github main generation 207; parent COSV 10100000104000",
         "StegVerse-Labs/Site#1458 and GCAT-BCAT-Engine/Publisher#72 draft revisions, latest source checks green",
         "StegVerse-Labs/.github current active A3 handoff records first unobserved authentic retained Master Records source-refresh proof",
-        "GitHub repository receipts/sovereign-host source-refresh and StegBrowser runtime consumption latest paths absent from repository at registration observation; durable resident absence NOT inferred"
+        "GitHub repository receipts/sovereign-host source-refresh and StegBrowser runtime consumption latest paths absent from repository at registration observation; durable resident absence NOT inferred",
+        "Existing organization batch contract specifies locally independent WORKER/TASK/ORGANIZATION_SEQUENCE replay and cross-org/complex historical Master Records scope; runtime proof remains UNKNOWN"
       ],
       "expected_evidence_predicates": [
+        "REUSABLE_PROVIDER_NEUTRAL_STEGBROWSER_TO_LLM_ADAPTER_MODULE_BOUNDARIES_VERIFIED",
+        "FIRST_AUTHENTIC_ORG_RECEIPT_FAILURE_CLASSIFIED_WITHOUT_MASTER_RECORDS_SOURCE_REFRESH_AS_GENERIC_GATE",
+        "ORG_LOCAL_REPLAY_INDEPENDENT_OF_MASTER_RECORDS_ONLINE_AVAILABILITY",
         "CURRENT_CANONICAL_TASK_AND_ACTIVE_RUNTIME_OWNER_RECONCILED",
         "FIRST_AUTHENTIC_ORGANIZATION_LEVEL_FAILURE_LOCATED_AND_REMEDIATED_IF_EVIDENCED",
         "CURRENT_WORKERCOORDINATOR_CLAIM_AND_FENCE_SAME_INVOCATION",
@@ -10029,7 +10042,9 @@
         "RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
         "INDEPENDENT_ANTHROPIC_CLAUDE_REAL_RESPONSE_WITH_SEPARATE_ATTRIBUTION",
         "NO_CREDENTIAL_OR_PRIVATE_STATE_LEAKAGE",
-        "NO_NEW_RUNTIME_SCHEDULER_DISPATCHER_AUTHORITY_PLANE_OR_SECOND_DEVICE"
+        "NO_NEW_RUNTIME_SCHEDULER_DISPATCHER_AUTHORITY_PLANE_OR_SECOND_DEVICE",
+        "CONDITIONAL_ORG_BATCH_AND_MASTER_RECORDS_CUSTODY_ONLY_WHEN_DECLARED",
+        "ADAPTER_SPECIFIC_OPENAI_AND_ANTHROPIC_EXECUTION_BOUNDARY_SEPARATED_FROM_STEGBROWSER_SESSION_DESTRUCTION"
       ],
       "runtime_requirements": {
         "capabilities": [

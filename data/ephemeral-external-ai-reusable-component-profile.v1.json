@@ -1,0 +1,162 @@
+{
+  "schema": "stegverse.ephemeral-external-ai-component-profile/v1",
+  "status": "SOURCE_RECONCILED_AUTHENTIC_ORG_EXECUTION_NOT_OBSERVED",
+  "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+  "canonical_parent": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "canonical_existing_contracts": [
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "data/reusable-transport-component-contract.json",
+    "control/organization-batch-custody-replay-contract.json"
+  ],
+  "purpose": "Provider-neutral reusable ephemeral LLM invocation with a narrow provider-specific boundary, independent local organization replay and scoped cross-organization Master Records custody; reuse current canonical execution components, do not create a runtime.",
+  "reusable_components": [
+    {
+      "id": "RTC-MANIFEST-001",
+      "role": "bound task manifest and input-purpose/lease declaration",
+      "owner": "existing SDK + canonical task coordination"
+    },
+    {
+      "id": "EXISTING-WORKERCOORDINATOR",
+      "role": "authentic per-invocation claim and fence, worker expiry on irrecoverable failure",
+      "owner": "WorkerCoordinator"
+    },
+    {
+      "id": "STEGBROWSER-EPHEMERAL-LEASE",
+      "role": "validate admitted ephemeral lease, isolate short-lived browser process/session, enforce origin/time/retention limits",
+      "owner": "StegVerse-Labs/StegBrowser",
+      "source": "src/stegbrowser/ecosystem_ephemeral.py",
+      "max_ttl_seconds": 900
+    },
+    {
+      "id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "role": "required exact external ingress/egress decisions and governed packet movement; transport completion independent of post-transport custody",
+      "owner": "Interlock/InTr"
+    },
+    {
+      "id": "TVC-SKAP-EXECUTION-CREDENTIAL",
+      "role": "execution-scoped secret handling at provider call edge; callback-only, zero secret carriage in lease/receipts",
+      "owner": "TV/TVC + SKAP"
+    },
+    {
+      "id": "RTC-ROUNDTRIP-003",
+      "role": "one provider request/response cycle with exact task, lease, claim/fence, request/response digests and usage",
+      "owner": "existing StegBrowser to LLM-adapter boundary",
+      "repeatable": true
+    },
+    {
+      "id": "ORGANIZATION-LEDGER",
+      "role": "record exact individual worker/task transitions, errors, recovery/expiry, terminal teardown and immediately preceding organization receipt; local replay",
+      "owner": "existing organization ledger"
+    },
+    {
+      "id": "RTC-EVIDENCE-CUSTODY-004",
+      "role": "configured org batch or explicit immediate independent/cross-org custody and reconstruction after completed transport",
+      "owner": "existing org batch custody path and Master Records"
+    }
+  ],
+  "boundary": {
+    "stegbrowser_owns": [
+      "admitted_lease_scope",
+      "temporary_browser_process_session_context",
+      "execution_scoped_browser_session_reference",
+      "terminal_session_destruction",
+      "retained_node_nonsecret_continuity"
+    ],
+    "llm_adapter_owns": [
+      "provider_specific_payload_projection",
+      "provider_endpoint_model_semantics",
+      "actual_provider_http_call_on_authorized_credential_edge",
+      "provider_native_response_validation",
+      "provider_native_usage_extraction",
+      "normalized_output_with_exact_hash_and_attribution"
+    ],
+    "handoff": "STEGBROWSER_TO_LLM_ADAPTER_ON_BOUND_PROVIDER_REQUEST_AND_AUTHENTIC_INGRESS_ALLOW",
+    "provider_adapter_termination": "ON_GENUINE_RESPONSE_OR_EXACT_RECORDED_PROVIDER_FAILURE_WITH_NORMALIZED_NONSECRET_EVIDENCE_RETURNED_TO_STEGBROWSER",
+    "stegbrowser_session_termination": "AFTER_REQUEST_RESULT_OR_FAILURE_HANDED_TO_ORGANIZATION_RECORDING_AND_TEMPORARY_SESSION_DESTRUCTION_OBSERVED",
+    "master_records_relation": "NOT_PROVIDER_SESSION_TERMINATION_AUTHORITY",
+    "web_ui_login_equivalent_to_approved_api_provider_call": false
+  },
+  "providers": [
+    {
+      "provider": "openai",
+      "adapter_ref": "StegVerse-org/LLM-adapter:llm_adapter/http_provider_clients.py",
+      "credential_class": "TV_TVC_PROVIDER_SECRET",
+      "model_artifact": "REAL_OPENAI_RESPONSE_REQUIRED"
+    },
+    {
+      "provider": "anthropic",
+      "adapter_ref": "StegVerse-org/LLM-adapter:llm_adapter/anthropic_intr_transport.py",
+      "protocol": "stegverse.intr.anthropic.transport.v1",
+      "credential_class": "TV_TVC_PROVIDER_SECRET",
+      "model_artifact": "REAL_ANTHROPIC_RESPONSE_REQUIRED",
+      "claude_code_tool_execution_extra_proof_required": true
+    }
+  ],
+  "org_receipt_first": {
+    "source": "existing organization ledger and scoped WorkerCoordinator/InTr receipt producers",
+    "minimum_chain": [
+      "task_invocation_manifest",
+      "worker_claim_fence",
+      "lease_admission",
+      "external_intr_ingress_decision",
+      "provider_call_or_explicit_failure",
+      "provider_return_and_usage_or_failure_receipt",
+      "external_intr_egress_when_required",
+      "terminal_ephemeral_session_destruction",
+      "org_task_closure_or_worker_expiry"
+    ],
+    "each_receipt_requires": [
+      "exact_current_invocation_and_task_identity",
+      "immediate_organization_predecessor_or_genesis",
+      "transition_owner",
+      "result_or_failure_disposition",
+      "content_commitment_and_required_evidence_refs"
+    ],
+    "local_replay_must_work_without_master_records_online": true,
+    "missing_read_access": "EVIDENCE_REACHABILITY_NOT_A_RUNTIME_FAILURE",
+    "first_evidenced_failure": "REPAIR_AT_EXISTING_TRANSITION_OWNER_AND_RETEST",
+    "irrecoverable_worker_failure": "PRESERVE_FAILURE_EXPIRE_ASSIGNMENT_UPDATE_REGISTRY_EMIT_ORG_WORKER_EXPIRY_RECEIPT"
+  },
+  "master_records_custody": {
+    "existing_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "normal_mode": "BOUNDED_CONTIGUOUS_ORGANIZATION_BATCH_AFTER_LOCAL_ORG_RECEIPT_SEQUENCE",
+    "closure_triggers": [
+      "ROUTINE_THRESHOLD",
+      "TASK_CLOSURE",
+      "WORKER_EXPIRY",
+      "CONSEQUENTIAL_GOVERNANCE_BOUNDARY",
+      "CUSTODY_RECOVERY",
+      "INTER_ORGANIZATION_HANDOFF"
+    ],
+    "direct_exception": "EXPLICIT_TRANSITION_CONTRACT_REQUIRES_IMMEDIATE_MASTER_RECORDS_ACK",
+    "scope": [
+      "verify_submitted_contiguous_organization_receipts",
+      "verify_batch_predecessor_and_no_omission_duplication_reordering",
+      "preserve_independent_org_custody_and_cross_organization_predecessor_refs",
+      "cross_organization_and_long_horizon_reconstruction"
+    ],
+    "not_required": "NO_UNCONDITIONAL_MASTER_RECORDS_QUERY_BEFORE_EVERY_LOCAL_WORKER_STATE_TRANSITION",
+    "nonclaims": [
+      "MASTER_RECORDS_NOT_TRANSITION_AUTHORITY",
+      "SOURCE_REFRESH_RECEIPT_IS_NOT_GENERIC_LLM_START_GATE",
+      "LOCAL_ORG_SUCCESS_DOES_NOT_PROVE_GLOBAL_BATCH_CUSTODY"
+    ]
+  },
+  "execution_path_selection": {
+    "first": "RECONCILE_CURRENT_ORG_LEVEL_RECEIPTS_AND_EXISTING_STEGBROWSER_CAPABILITY",
+    "historical_a3_invocation": "SOURCE_REFRESH_REQUIRED_ONLY_IF_EXACT_SELECTED_EXISTING_INVOCATION_CONTRACT_REQUIRES_IT",
+    "independent_eligible_existing_ephemeral_path": "MAY_PROCEED_AFTER_OWN_EXACT_CLAIM_FENCE_AND_INTR_ADMISSION_WITHOUT_INHERITING_A3",
+    "requires_new_runtime": false,
+    "requires_second_user_device": false,
+    "native_mykv_prerequisite_for_nonprivate_input": false
+  },
+  "release_criteria": {
+    "live_openai": "UNVERIFIED",
+    "live_anthropic": "UNVERIFIED",
+    "native_mykv_parallel": true,
+    "organization_replay": "UNVERIFIED",
+    "master_records_custody_when_required": "UNVERIFIED",
+    "governed_site_publication": "NOT_AUTHORIZED"
+  },
+  "authority_effect": "NONE_SOURCE_CONTRACT_ONLY"
+}

@@ -27,3 +27,39 @@ External AI on-demand operation **does not** depend on native MyKV installation 
 
 ## Completion rule
 No CLAIMED/COMPLETE transition solely on task registration, COSV issuance, CI, fixtures, source implementation, a stale/fabricated receipt, observation of missing repository exports or a proposed manifest. Authenticate **all** per-provider runtime predicates above and org-to-Master Records predecessor replay. Record and remediate the first genuine failure in the original owner and re-execute within that authorized existing runtime. Preserve independent Claude Code capability boundary.
+
+## Canonical organization-first and provider-neutral modular correction — 2026-09-23
+
+Canonical Task Registry source proposal: generation 210, the already-registered task identity is unchanged, and the observational COSV remains `10100000103000` because the number and state of authentic runtime blockers are unchanged. This correction supersedes any interpretation of the earlier A3 source-refresh note as a prerequisite for ALL external AI execution. The specific historical immutable A3 invocation owns that source-refresh contract; this separate task first resolves eligible existing execution capabilities and exact organization receipts for ITS OWN invocation.
+
+### Reusable module composition
+
+Machine-readable task profile: `data/ephemeral-external-ai-reusable-component-profile.v1.json`. Reuse rather than reimplement:
+
+```text
+existing Task Registry + RTC-MANIFEST-001 (exact invocation/manifest/purpose)
+ -> existing WorkerCoordinator authentic claim/fence
+ -> retained StegBrowser node + existing bounded ephemeral lease
+ -> existing InTr external ingress decision
+ -> TV/TVC+SKAP execution-scoped credential handoff
+ -> existing LLM Adapter with chosen OpenAI/Anthropic provider-specific adapter
+ -> normalized real response / measured usage / exact task and provider attribution
+ -> existing InTr external egress when required
+ -> existing organization ledger exact local receipt chain
+ -> terminal StegBrowser disposable session destruction; retain node identity
+ -> scoped organization batch when closure policy requires
+ -> independent Master Records batch receipt / cross-organization reconstruction,
+    OR immediate Master Records custody ONLY for explicit direct-ack transition contract
+```
+
+**Boundary of provider-specific adapters:** StegBrowser retains temporary browser/session identity, lease scope, optional browser credential-session mechanics, and terminal destruction. The provider-specific modules live at the already-existing LLM Adapter execution boundary, receiving an exact admitted provider request and only execution-scoped TV/TVC+SKAP secret. Each adapter terminates when it returns an actual validated provider result, native usage measurements and a normalized non-secret response commitment (or an exact provider-failure disposition). Control then returns to the StegBrowser/session and organization recording path, which destroys ephemeral session material after result/failure handling. The originating organization owns local task and worker continuity and receipt replay. The external model weights do not become local StegBrowser components. Optional browser-UI automation does not silently substitute for the governed API provider contract.
+
+### Org-first evidence and explicit Master Records exceptions
+
+Local organization ledger receipts prove the individual worker claim/fence, admitted lease, ingress, real provider request/response or failure, required egress, task/worker transitions and session teardown, with exact immediately preceding organization receipt at every successor emission. The first **retained authentic failure** identifies the owner to repair and retest; merely missing an externally available log is EVIDENCE_REACHABILITY, not FAIL. For a terminal worker failure, preserve failure evidence, expire the fenced assignment, update Task Registry and append organization expiry receipt. Local replay of WORKER, TASK and ORGANIZATION_SEQUENCE must remain available while Master Records is offline.
+
+Reuse `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` / `control/organization-batch-custody-replay-contract.json`: a contiguous ordered hash-linked organization batch supports independently verified global custody, long-horizon replay and cross-organization predecessor continuity. Its closure may follow task completion, worker expiry, consequential boundary, handoff, recovery or measured routine threshold. The historical A3 invocation has an explicit direct Master Records query and source floor; enforce that requirement for **that invocation only**. Do not force unrelated ephemeral LLM tasks to prove a separate Master Records source refresh as a generic start gate. Where a selected transition explicitly requires immediate Master Records acknowledgement, do not substitute a locally queued batch for it. Neither org/local replay nor batch verification creates InTr decision or WorkerCoordinator execution authority.
+
+### Immediate next evidence request
+
+Reconcile the actual organization-level receipts for the current task and the original active StegBrowser successor. Resolve whether an admissible **existing** ephemeral StegBrowser execution path is available independently of the historical A3 invocation. If it is, pursue that path's exact claim/fence, scoped lease and InTr admissions rather than inheriting historical A3. If it is not, identify the first actual retained organization receipt showing a failed transition and assign remediation to the owning component; if authentic retained receipts are inaccessible preserve UNKNOWN_NOT_FALSE. No new runtime, scheduler, device gate or synthetic receipt is permitted. Authentic live OpenAI and Claude capabilities remain NOT_VERIFIED.
