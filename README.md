@@ -52,6 +52,8 @@ Canonical Goal Task `SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001` / COSV `710000
 
 # StegVerse
 
+
+The native resident receipt path now includes the merged worker-launch custody-binding repair from PR #2453. This closes the source defect that could restore a task-capable WorkerCoordinator without preserving its existing canonical Master Records custody configuration. Authentic post-update receipt execution remains an evidence question, not a source-completion claim.
 ## Current repository evidence census
 
 Canonical Goal Task `ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001` is terminal at `RETIRED / COMPLETED`, COSV `20010000100000`.
