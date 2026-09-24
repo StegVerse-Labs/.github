@@ -1,0 +1,112 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+  "correlation_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+  "root_correlation_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+  "parent_task_id": null,
+  "goal": "Standardize additive task-native worker resource-cost linkage to the existing purpose-bound five-component lifetime model and existing task-class cost-basis records; validate manifest-driven positive and negative cases through the installed SDK after authentic central admission, preserving WorkerCoordinator, TV/TVC, InTr, organization ledger and Master Records ownership.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "cosv_task_vector": null,
+  "source_refs": [
+    "https://github.com/StegVerse-Labs/.github/issues/2619",
+    "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md",
+    "management/COSV_PROFILE_V1.json",
+    "StegVerse-org/StegVerse-SDK/stegverse/purpose_bound_worker_processor.py",
+    "StegVerse-Labs/.github/cost-basis/worker-runtime"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "task-native-cost-linkage-compatibility",
+      "task-resource-cost-reference-validation",
+      "sdk-worker-cost-manifest-acceptance"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE",
+      "kind": "TASK",
+      "state": "PENDING",
+      "ref": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
+    },
+    {
+      "dependency_id": "SDK_PURPOSE_BOUND_WORKER_OWNER",
+      "kind": "TASK",
+      "state": "SEPARATE_OWNER_COORDINATION_REQUIRED",
+      "ref": "StegVerse-org/StegVerse-SDK/stegverse/purpose_bound_worker_processor.py"
+    }
+  ],
+  "blockers": [
+    "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+    "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+    "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+  ],
+  "adjacent_task_refs": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "SDK-TT-PURPOSE-BOUND-WORKER-TEST1-AUTHENTIC-RUNTIME-001",
+    "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+  ],
+  "expected_evidence_predicates": [
+    "SOURCE_PR_EXACT_HEAD_CI_PASS",
+    "CANONICAL_REGISTRATION_MERGED_AND_REREAD_AT_CURRENT_GENERATION",
+    "EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_AND_HASH_LINKED_EVENT",
+    "COMPONENT_010_CANONICAL_SHARD_PROJECTION_RECONCILED_BY_EXISTING_OWNER",
+    "COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE",
+    "VALID_TASK_NATIVE_FIVE_PART_BUDGET_WITH_EXACT_SOURCE_BINDING",
+    "MALFORMED_DANGLING_MISMATCHED_RESOURCE_COST_FAIL_CLOSED",
+    "REAL_SDK_MANIFEST_BUILDER_AND_PUBLISHED_PROCESSOR_POSITIVE_NEGATIVE_TESTS",
+    "EXACT_MANIFEST_REQUEST_RESULT_LINEAGE",
+    "AUTHENTIC_GOVERNED_RUNTIME_PROOF_SEPARATE_FROM_SDK_SEMANTICS",
+    "RECEIPT_COST_MEASUREMENTS_REFERRED_TO_EXISTING_ORGANIZATION_BATCH_OWNER"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "allowed_next_transitions": [
+    "CANONICAL_SOURCE_PR_REVIEW_AND_MERGE",
+    "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+    "RECONCILE_RETURNED_OWNER",
+    "DERIVE_CANONICAL_COSV",
+    "AUTHORIZE_COMPONENT_OWNED_COMPATIBILITY",
+    "SDK_MANIFEST_POSITIVE_NEGATIVE_EXECUTION",
+    "EXACT_HEAD_CI_VALIDATION",
+    "GOVERNED_RUNTIME_EVIDENCE_RECONCILIATION"
+  ],
+  "handoff_projection_refs": [
+    "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_or_ci_proves_runtime": false,
+    "workercoordinator_claim_fence_only": true,
+    "interlock_intr_governed_transition_only": true,
+    "tv_tvc_credentials_only": true,
+    "master_records_custody_reconstruction_only": true,
+    "organization_receipt_measurement_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "sdk_semantic_test_is_runtime_proof": false,
+    "no_second_device": true
+  },
+  "registration": {
+    "source_pr_only": true,
+    "post_registration_exact_generation_gate_required": true,
+    "external_sdk_write_approved": false
+  }
+}
