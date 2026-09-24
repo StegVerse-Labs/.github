@@ -3,7 +3,7 @@
 Updated: 2026-09-23  
 Goal Task ID: `ELAN-PAPER-COAUTHOR-PUBLICATION-001`  
 COSV ID: `71000000100100`  
-Status: `ACTIVE / TEST2-CORRECTED-SOURCE-VERIFIED / EDITORIAL-MERGE-CANDIDATE / PUBLICATION-REVIEW-PENDING`
+Status: `ACTIVE / PR-2593-MERGED / CORRECTED-SOURCE-VERIFIED / PUBLICATION-REVIEW-PENDING`
 
 ## Goal
 
@@ -44,6 +44,10 @@ Directly compared the original one-page September 16 source PDF and Élisabeth's
 The confidential PDFs themselves are NOT committed to a public GitHub repository or copied into a public manuscript. Élisabeth's message confirms the attribution change was a **labeling correction during transcript review**, not an unsuccessful reproduction. The former inference of native continuous-presence state and any model-native A3/A4 comparison is withdrawn. Historical controlled StegVerse A3/A4, custody, replay and reconstruction remain valid only for the independently supplied observation-window inputs; prior historical receipts are unchanged.
 
 Élisabeth's messages constitute **substantive methodological feedback on the original Experiment 2 characterization**, now incorporated and source-verified. They do **not** constitute approval of the subsequently drafted coauthored manuscript Revision 3, FAccT abstract or exact joint HOLD protocol. She has agreed to jointly design the HOLD experiment and target FAccT 2027.
+
+## Postmerge custody note — September 24, 2026
+
+Editorial PR [#2593](https://github.com/StegVerse-Labs/.github/pull/2593) merged into main at commit `30cbc58d916fe03dcb8c5ac98e2d27343295cb13` after source comparison, COSV/source-index agreement, six-file editorial validation, current-main nonoverlap verification and final-head CI run `36039471637` SUCCESS. GitHub accepted the merge while preserving concurrent main commits; no native external/resident InTr execution is claimed. The two confidential source PDFs were not published. The coauthored Revision 3, FAccT abstract and HOLD protocol remain under scientific/author review, not final approved publications or an executed experiment.
 
 ## Three distinct approval and execution boundaries
 
@@ -92,7 +96,7 @@ Historical cross-evaluation handoff now has a dated provenance erratum; historic
 
 ## Next work
 
-1. Reconcile this branch's unique seven-file editorial delta against newest main without overwriting concurrent Registry work. Obtain exact-head validation and merge when ordinary repository requirements pass. Keep manuscript and abstract marked DRAFT / NOT SUBMITTED and HOLD marked PROPOSED / NOT EXECUTED.
+1. Editorial PR #2593 has merged. Keep manuscript and abstract marked DRAFT / NOT SUBMITTED and HOLD marked PROPOSED / NOT EXECUTED until separately authorized.
 2. Give both authors Revision 3 and the FAccT abstract for substantive author review. Jointly freeze an exact API-compatible HOLD protocol before an authentic experiment; do not treat the earlier ellipsis as a completed follow-up.
 3. Continue the literature/novelty review, confirm author order/contributions/affiliations and receive **separate publication authorization** from both authors before any FAccT submission.
 
