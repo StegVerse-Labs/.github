@@ -602,10 +602,78 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
         return _consume_kv_owner(runtime,materialization_id,request,raw,terminal)
     raise KVPublisherReturnError("unsupported Publisher return owner")
 
+def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception)->dict[str,Any]:
+    """Persist a non-authorizing diagnostic for the exact failed invocation.
+
+    This is observation of a failed consumer attempt, not proof that RTC006,
+    RTC007, RTC008, RTC009, or any other governed transition failed or closed.
+    Existing SDK/KV receipt namespaces remain the only storage destinations.
+    """
+    if not materialization_id or materialization_id in {".",".."} or "/" in materialization_id or chr(92) in materialization_id:
+        raise KVPublisherReturnError("materialization_id_invalid_for_diagnostic")
+    request_path=runtime/REQUEST_DIR/f"{materialization_id}.json"
+    request=None
+    if request_path.is_file():
+        try:
+            loaded=load(request_path)
+            if isinstance(loaded,dict):
+                request=loaded
+        except (ValueError,OSError):
+            pass
+    owner=request.get("downstream_owner_ref") if request is not None else None
+    destination=SDK_RECEIPT_DIR if owner==SDK_DOWNSTREAM_OWNER else RECEIPT_DIR
+    out=runtime/destination
+    out.mkdir(parents=True,exist_ok=True)
+    reason=str(exc) if isinstance(exc,KVPublisherReturnError) else type(exc).__name__
+    record={
+        "schema":"stegverse.publisher-return-consumption-failure-observation/v1",
+        "state":"BLOCKED",
+        "materialization_id":materialization_id,
+        "request_present":request is not None,
+        "request_hash":request.get("request_hash") if request is not None else None,
+        "downstream_owner_ref":owner,
+        "failure_class":type(exc).__name__,
+        "reason_code":reason[:256],
+        "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "rtc008_admission_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "rtc009_far_side_transition_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "caller_consequence_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "master_records_closure_claimed":False,
+        "credential_material_present":False,
+        "execution_authority":"NONE",
+        "authority_effect":"NONE_DIAGNOSTIC_ONLY",
+    }
+    record["diagnostic_sha256"]=sha(record)
+    raw=json.dumps(record,sort_keys=True,indent=2).encode("utf-8")+bytes([10])
+    receipt_path=out/f"{materialization_id}.{record['diagnostic_sha256'].split(':',1)[1]}.blocked.json"
+    if receipt_path.exists():
+        if receipt_path.read_bytes()!=raw:
+            raise KVPublisherReturnError("diagnostic_write_once_collision")
+    else:
+        with receipt_path.open("xb") as stream:
+            stream.write(raw)
+    (out/"latest.blocked.json").write_bytes(raw)
+    return {**record,"diagnostic_receipt_ref":str(receipt_path.relative_to(runtime))}
+
+
 def main()->int:
     parser=argparse.ArgumentParser(); parser.add_argument("--runtime-root",type=Path,required=True); parser.add_argument("--materialization-id",required=True); args=parser.parse_args()
-    try: result=consume(args.runtime_root.expanduser().resolve(),args.materialization_id)
+    runtime=args.runtime_root.expanduser().resolve()
+    try:
+        result=consume(runtime,args.materialization_id)
     except Exception as exc:
-        result={"schema":"stegverse.publisher-return-materialization-consumption/v1","state":"BLOCKED","reason":str(exc),"return_transport_observed":False,"sdk_return_binding_observed":False,"canonical_kv_mutation_performed":False,"authority_effect":"NONE"}
+        try:
+            result=retain_blocked_consumption(runtime,args.materialization_id,exc)
+        except Exception as diagnostic_exc:
+            result={
+              "schema":"stegverse.publisher-return-consumption-failure-observation/v1",
+              "state":"BLOCKED",
+              "materialization_id":args.materialization_id,
+              "failure_class":type(exc).__name__,
+              "diagnostic_retention":"FAILED",
+              "diagnostic_retention_failure_class":type(diagnostic_exc).__name__,
+              "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+              "authority_effect":"NONE_DIAGNOSTIC_ONLY",
+            }
     print(json.dumps(result,sort_keys=True)); return 0
 if __name__=="__main__": raise SystemExit(main())
