@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.organization-batch-custody-replay-contract/v1",
   "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-  "status": "LOCAL_BATCH_SOURCE_CANDIDATE_PENDING_EXACT_HEAD_VALIDATION",
+  "status": "LOCAL_BATCH_AND_MASTER_RECORDS_INGRESS_SOURCE_VALIDATED_RUNTIME_UNKNOWN",
   "owner": "StegVerse-Labs/.github",
   "cosv_task_vector": "10000000100000",
   "receipt_units": "EXACT_INDIVIDUAL_CANONICAL_AND_ORGANIZATION_RECEIPTS",
@@ -60,5 +60,9 @@
   "batch_ack_state": "PENDING_MASTER_RECORDS_NEVER_SELF_ASSERT",
   "batch_sequences": "CONTIGUOUS_GLOBAL_ORG_BATCH_ORDINALS",
   "batch_concurrent_append_serialization": "NOT_PROVEN",
-  "batch_delivery_to_master_records": "NOT_YET_IMPLEMENTED"
+  "batch_delivery_to_master_records": "NOT_YET_IMPLEMENTED",
+  "master_records_ingress_ref": "master-records/orchestration/services/organization_batch_ingress.py",
+  "master_records_ingress_schema": "stegverse.master-records.organization-batch-ack/v1",
+  "master_records_ingress_source_validation_merge": "5d44513d26d6529d98fdae36aeb8f989e9a9c331",
+  "master_records_ingress_proof_limit": "CI_SOURCE_ONLY_AUTHENTIC_RUNTIME_UNOBSERVED"
 }
