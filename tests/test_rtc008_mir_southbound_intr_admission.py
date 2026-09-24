@@ -116,6 +116,7 @@ def test_rtc008_admission_is_canonically_custodied(monkeypatch, tmp_path: Path):
     assert result["master_records_state"] == "RECORDED"
     assert result["master_records_reconstruction_status"] == "PASS"
     assert result["master_records_required_evidence_validation_status"] == "PASS"
+    assert result["intr_admission_receipt_sha256"] == captured["receipt"]["resulting_state_ref_or_hash"].split(":",1)[1]
     assert result["far_side_transition_observed"] is False
     assert result["caller_consequence_observed"] is False
     receipt = captured["receipt"]
@@ -213,6 +214,7 @@ def test_rtc007_continuation_submits_exact_rtc008_to_existing_shared_ingress():
         "master_records_required_evidence_validation_status": "PASS",
         "master_records_receipt_sha256": "a" * 64,
         "master_records_reconstructed_receipt_sha256": "a" * 64,
+        "intr_admission_receipt_sha256": "c" * 64,
         "rtc008_evidence_complete": True,
         "far_side_transition_observed": False,
         "caller_consequence_observed": False,
@@ -272,6 +274,7 @@ def test_rtc008_submission_fails_closed_on_master_records_digest_mismatch():
         "master_records_required_evidence_validation_status": "PASS",
         "master_records_receipt_sha256": "a" * 64,
         "master_records_reconstructed_receipt_sha256": "b" * 64,
+        "intr_admission_receipt_sha256": "c" * 64,
         "rtc008_evidence_complete": True,
         "far_side_transition_observed": False,
         "caller_consequence_observed": False,
@@ -371,3 +374,33 @@ def test_rtc008_blocks_when_reconstructed_predecessor_identity_differs(monkeypat
     )
     with pytest.raises(ValueError, match="rtc008_predecessor_transition_reconstruction_mismatch"):
         ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
+
+
+def test_missing_exact_rtc008_admission_digest_fails_closed():
+    consumer = _load_return_consumer()
+    req = request()
+    response = {
+        "schema": consumer.MIR_RTC008_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": req["materialization_id"],
+        "request_hash": req["request_hash"],
+        "transport_intent_hash": req["transport_intent_hash"],
+        "payload_hash": req["payload_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
+        "transport_origin": "TVC_RELAY_EGRESS",
+        "transport_authorization_id": "TVC-RTC008-ALLOW-001",
+        "master_records_state": "RECORDED",
+        "master_records_reconstruction_status": "PASS",
+        "master_records_required_evidence_validation_status": "PASS",
+        "master_records_receipt_sha256": "a" * 64,
+        "master_records_reconstructed_receipt_sha256": "a" * 64,
+        "rtc008_evidence_complete": True,
+        "far_side_transition_observed": False,
+        "caller_consequence_observed": False,
+    }
+    with pytest.raises(consumer.KVPublisherReturnError, match="exact ingress admission digest missing"):
+        consumer._submit_rtc008_materialization(req, env={
+            consumer.MIR_RTC008_INGRESS_ENV: "http://localhost:8765/intr/materialization",
+            consumer.MIR_RTC008_AUTH_ENV: "TVC-RTC008-ALLOW-001",
+        }, opener=lambda *_args, **_kwargs: _Response(response))
