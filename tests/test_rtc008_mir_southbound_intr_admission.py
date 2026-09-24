@@ -404,3 +404,45 @@ def test_missing_exact_rtc008_admission_digest_fails_closed():
             consumer.MIR_RTC008_INGRESS_ENV: "http://localhost:8765/intr/materialization",
             consumer.MIR_RTC008_AUTH_ENV: "TVC-RTC008-ALLOW-001",
         }, opener=lambda *_args, **_kwargs: _Response(response))
+
+
+def test_sdk_return_consumer_retains_exact_failed_invocation_diagnostic(tmp_path: Path):
+    consumer = _load_return_consumer()
+    mid = "INTR-MAT-" + "8" * 24
+    request_path = tmp_path / consumer.REQUEST_DIR / f"{mid}.json"
+    request_path.parent.mkdir(parents=True)
+    request_path.write_text(json.dumps({
+        "downstream_owner_ref": consumer.SDK_DOWNSTREAM_OWNER,
+        "request_hash": "sha256:" + "f" * 64,
+    }), encoding="utf-8")
+    error = consumer.KVPublisherReturnError("RTC008 exact ingress admission digest missing")
+    first = consumer.retain_blocked_consumption(tmp_path, mid, error)
+    second = consumer.retain_blocked_consumption(tmp_path, mid, error)
+    assert first == second
+    path = tmp_path / first["diagnostic_receipt_ref"]
+    assert path.is_file()
+    retained = json.loads(path.read_text(encoding="utf-8"))
+    assert retained["state"] == "BLOCKED"
+    assert retained["request_hash"] == "sha256:" + "f" * 64
+    assert retained["downstream_owner_ref"] == consumer.SDK_DOWNSTREAM_OWNER
+    assert retained["first_failed_governed_transition"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert retained["rtc008_admission_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert retained["master_records_closure_claimed"] is False
+    assert retained["authority_effect"] == "NONE_DIAGNOSTIC_ONLY"
+    basis = {key: val for key, val in retained.items() if key != "diagnostic_sha256"}
+    assert retained["diagnostic_sha256"] == consumer.sha(basis)
+    assert (tmp_path / consumer.SDK_RECEIPT_DIR / "latest.blocked.json").read_bytes() == path.read_bytes()
+
+
+def test_sdk_return_consumer_retains_missing_request_failure_without_inventing_transition(tmp_path: Path):
+    consumer = _load_return_consumer()
+    mid = "INTR-MAT-" + "9" * 24
+    result = consumer.retain_blocked_consumption(
+        tmp_path, mid, RuntimeError("sensitive runtime error detail must not be persisted")
+    )
+    assert result["state"] == "BLOCKED"
+    assert result["request_present"] is False
+    assert result["downstream_owner_ref"] is None
+    assert result["reason_code"] == "RuntimeError"
+    assert result["caller_consequence_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert (tmp_path / consumer.RECEIPT_DIR / "latest.blocked.json").exists()
