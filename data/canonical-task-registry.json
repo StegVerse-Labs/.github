@@ -9847,7 +9847,8 @@
         "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
         "StegVerse-Labs/.github:docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
         "StegVerse-org/StegVerse-SDK:docs/RELEASE_DEPENDENCY_ALIGNMENT_MIRROR_HANDOFF.md",
-        "StegVerse-org/StegVerse-SDK:docs/REPRODUCIBLE_RELEASE_CANDIDATE.md"
+        "StegVerse-org/StegVerse-SDK:docs/REPRODUCIBLE_RELEASE_CANDIDATE.md",
+        "StegVerse-org/StegVerse-SDK:stegverse/component011_receipt_compatibility.py"
       ],
       "adjacent_task_refs": [
         "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
@@ -9883,11 +9884,12 @@
       },
       "current_truth": {
         "canonical_registry_registration": "MERGED_GENERATION_206_SOURCE_VALIDATED",
-        "source_reconciliation": "HANDOFF_AUTHORED",
-        "source_tests": "NOT_RUN",
+        "source_reconciliation": "MERGED_SOURCE_RECONCILED_SDK_310_311_COMPONENT011_2611",
+        "source_tests": "PASSED_INERT_FIXTURES_AND_EXACT_HEAD_SOURCE_CI",
         "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
         "sandbox_containment": "UNKNOWN_NOT_PROVEN",
-        "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+        "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "component011_terminal_binding": "MERGED_SOURCE_VALIDATED_PR_2611"
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -9914,6 +9916,60 @@
           35929392367
         ],
         "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+      },
+      "source_validation": {
+        "classification": "SOURCE_AND_CI_ONLY_NO_RUNTIME_AUTHORITY",
+        "sdk_inert_review": {
+          "pr": 310,
+          "merge": "d311c1604198f1493aa4f21ee77e35082c334800",
+          "inert_tests_passed": 14,
+          "exact_head_workflows_passed": 12
+        },
+        "sdk_component011_compatibility": {
+          "pr": 311,
+          "merge": "b5fac425c5cae1fe4034dae288e370cbf96ef901",
+          "focused_tests_passed": 8,
+          "exact_head_workflows_passed": 12
+        },
+        "component011_owner_terminal_binding": {
+          "pr": 2611,
+          "merge": "38580c903a7cf26d914a79f06978b178c3f59908",
+          "validated_head": "55619e8c3bb594de66f4c7fd32225a9c6d6918ab",
+          "workflow_runs": [
+            35945039554,
+            35945039530,
+            35945039527
+          ],
+          "runtime_effect": "NONE_SOURCE_ONLY"
+        }
+      },
+      "runtime_observation": {
+        "component_owner_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "component_owner_checkout_source": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "component_owner_status": "ACTIVE_CHECKED_OUT_IN_SHARD",
+        "existing_resident_selector": "ungoverned_ai_defensive_envelope",
+        "existing_execution_chain": [
+          "scripts/dispatch_resident_execution_requests.py",
+          "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+          "scripts/refresh_and_execute_resident_task.py",
+          "scripts/run_worker_runtime.py",
+          "workers/ungoverned_ai_defensive_envelope_worker.py",
+          "StegVerse-Labs/TVC:tasks/ungoverned_ai_defensive_envelope.py"
+        ],
+        "expected_immutable_targeted_execution_root": "receipts/sovereign-host/resident-targeted-execution.by-receipt/",
+        "expected_request_consumption": "receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.latest.json",
+        "expected_boundary_receipt": "receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "source_owner_binding": "COMPONENT011_OWNER_PATH_ESTABLISHED_SOURCE_ONLY",
+        "independent_organization_observer": "UNRESOLVED_AUTHENTIC_OWNER_DISPOSITION",
+        "global_runtime_profile": "NOT_ENROLLED_IN_FROZEN_18_LANES_NO_GLOBAL_GATE",
+        "global_runtime_owner_coordination": "REQUESTED_ISSUE_1260_COMMENT_5813579260_NO_AUTHENTIC_REPLY_OBSERVED",
+        "workercoordinator_claim_fence": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "tvc_source_and_warrant": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "intr_when_governed_transition_required": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "organization_receipt_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "runtime_failure": "NOT_EVIDENCED",
+        "authority_effect": "NONE_OBSERVATION_COORDINATION_ONLY"
       }
     },
     {
