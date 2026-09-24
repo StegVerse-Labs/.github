@@ -14,15 +14,25 @@ is invoked.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
+COMPONENT011_REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
+COMPONENT011_DISPATCH_IMMUTABLE_REL = Path(
+    "receipts/sovereign-host/ungoverned-ai-defensive-envelope-dispatch.by-receipt"
+)
+COMPONENT011_DISPATCH_LATEST_REL = Path(
+    "receipts/sovereign-host/ungoverned-ai-defensive-envelope-dispatch.latest.json"
+)
 SDK_EVALUATOR_SELECTOR = "sdk_evaluator_governance_posture"
 SDK_EVALUATOR_REQUEST_REL = Path("control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json")
 AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
@@ -312,6 +322,75 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
     }
 
 
+
+def retain_component011_dispatch_outcome(
+    runtime: Path, selected: tuple[tuple[str, str], ...],
+    outcomes: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Retain the first actual selector result beyond an overwritten dispatch.latest.
+
+    This is an exact existing-resident custody projection, not a new ledger, a
+    claimed WorkerCoordinator invocation, or independently authenticated output.
+    On an eligible resident invocation, both a missing consumer and a failed
+    consumer visit remain observable. An unselected component emits nothing.
+    """
+    if COMPONENT011_SELECTOR not in (name for name, _ in selected):
+        return None
+    outcome = next(
+        (item for item in outcomes if item.get("consumer") == COMPONENT011_SELECTOR),
+        None,
+    )
+    if not isinstance(outcome, dict):
+        raise RuntimeError("component011 selector outcome missing after dispatch")
+    request = load_json(runtime / COMPONENT011_REQUEST_REL)
+    if request and (
+        request.get("request_id") != "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001"
+        or request.get("task_id") != "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ):
+        raise RuntimeError("component011 dispatch request identity mismatch")
+    body = {
+        "schema": "stegverse.component011-resident-dispatch-observation/v1",
+        "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "selector": COMPONENT011_SELECTOR,
+        "request_id": request.get("request_id") if request else None,
+        "request_present": request is not None,
+        "observed_at": datetime.now(timezone.utc).isoformat(),
+        "selector_outcome": outcome,
+        "consumer_attempted": outcome.get("attempted") is True,
+        "workercoordinator_claim_authenticated": False,
+        "tvc_runtime_boundary_authenticated": False,
+        "organization_custody_proven": False,
+        "master_records_custody_proven": False,
+        "authority_effect": "NONE_DISPATCH_OBSERVATION_ONLY",
+    }
+    canonical = json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    persisted = {**body, "receipt_body_sha256": "sha256:" + digest}
+    encoded = json.dumps(persisted, indent=2, sort_keys=True) + "\n"
+    relative = COMPONENT011_DISPATCH_IMMUTABLE_REL / (digest + ".json")
+    immutable = runtime / relative
+    immutable.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with immutable.open("x", encoding="utf-8") as handle:
+            handle.write(encoded)
+    except FileExistsError:
+        if immutable.is_symlink() or immutable.read_text(encoding="utf-8") != encoded:
+            raise RuntimeError("component011 immutable dispatch receipt collision")
+    latest = runtime / COMPONENT011_DISPATCH_LATEST_REL
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    if latest.is_symlink():
+        raise RuntimeError("component011 dispatch latest path cannot be a symlink")
+    latest.write_text(encoded, encoding="utf-8")
+    return {
+        "receipt_ref": relative.as_posix(),
+        "receipt_body_sha256": "sha256:" + digest,
+        "selector": COMPONENT011_SELECTOR,
+        "selector_state": outcome.get("state"),
+        "request_present": request is not None,
+        "authority_effect": "NONE_OBSERVATION_POINTER_ONLY",
+    }
+
+
 def dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -371,6 +450,9 @@ def dispatch(
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     exact_selector_failure = only_consumers is not None and bool(request_failures)
     sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
+    # Retain the exact component-011 selector result before the shared latest
+    # dispatch receipt can be overwritten by an unrelated subsequent cycle.
+    component011_dispatch_observation = retain_component011_dispatch_outcome(runtime, selected, outcomes)
     receipt = {
         "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions and not exact_selector_failure else "DISPATCH_INCOMPLETE",
         "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
@@ -380,6 +462,7 @@ def dispatch(
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "sdk_evaluator_dispatch_master_records": sdk_evaluator_dispatch_master_records,
+        "component011_dispatch_observation": component011_dispatch_observation,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
         "quantum_resilience_standing_awareness_ready": quantum_awareness_ready(runtime),
         "network_source_fetch_performed": False, "credential_authority": "TV/TVC", "github_token_required": False, "github_token_runtime_authority": "NONE",

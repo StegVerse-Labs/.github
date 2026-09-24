@@ -210,6 +210,76 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 )
         self.assertEqual(calls, [])
 
+    def test_component011_dispatch_preserves_first_outcome_before_latest_is_overwritten(self) -> None:
+        # Fully synthetic source test; no authentic resident invocation is claimed.
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime = Path(td) / "source", Path(td) / "runtime"
+            source.mkdir()
+            selector = mod.COMPONENT011_SELECTOR
+            first = mod.dispatch(
+                source, runtime, env={"PATH": "/bin"},
+                only_consumers=(selector,),
+            )
+            self.assertEqual(first["state"], "DISPATCH_INCOMPLETE")
+            pointer1 = first["component011_dispatch_observation"]
+            retained1 = runtime / pointer1["receipt_ref"]
+            self.assertEqual(pointer1["selector_state"], "CONSUMER_NOT_MATERIALIZED")
+            self.assertTrue(retained1.is_file())
+            original = retained1.read_bytes()
+            self.assertFalse(json.loads(original)["consumer_attempted"])
+            self.assertIsNone(json.loads(original)["request_id"])
+
+            request = json.loads(
+                (ROOT / "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json").read_text()
+            )
+            target = runtime / mod.COMPONENT011_REQUEST_REL
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(request))
+            consumer = runtime / dict(mod.CONSUMERS)[selector]
+            consumer.parent.mkdir(parents=True, exist_ok=True)
+            consumer.write_text("# synthetic existing consumer")
+            calls = []
+            def runner(command, **kwargs):
+                calls.append(command)
+                return SimpleNamespace(returncode=0, stdout='{"state":"ATTEMPT_RECORDED"}\\n', stderr="")
+            second = mod.dispatch(
+                source, runtime, env={"PATH": "/bin"},
+                only_consumers=(selector,), runner=runner,
+            )
+            pointer2 = second["component011_dispatch_observation"]
+            retained2 = runtime / pointer2["receipt_ref"]
+            self.assertEqual(pointer2["selector_state"], "ATTEMPT_RECORDED")
+            self.assertNotEqual(retained1, retained2)
+            self.assertEqual(retained1.read_bytes(), original)
+            self.assertEqual(len(calls), 1)
+            latest = json.loads((runtime / mod.COMPONENT011_DISPATCH_LATEST_REL).read_text())
+            self.assertEqual(latest["request_id"], request["request_id"])
+            self.assertTrue(latest["consumer_attempted"])
+            self.assertFalse(latest["workercoordinator_claim_authenticated"])
+            self.assertFalse(latest["master_records_custody_proven"])
+            self.assertEqual(second["component011_dispatch_observation"]["receipt_body_sha256"], latest["receipt_body_sha256"])
+            self.assertFalse(second["request_dispatch_grants_authority"])
+
+    def test_component011_unselected_does_not_emit_dispatch_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime = Path(td) / "source", Path(td) / "runtime"
+            source.mkdir()
+            result = mod.dispatch(source, runtime, env={"PATH": "/bin"},
+                                  only_consumers=("cross_framework_current_basis_v04",))
+            self.assertIsNone(result["component011_dispatch_observation"])
+            self.assertFalse((runtime / mod.COMPONENT011_DISPATCH_LATEST_REL).exists())
+
+    def test_component011_dispatch_rejects_wrong_staged_request_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime = Path(td) / "source", Path(td) / "runtime"
+            source.mkdir()
+            target = runtime / mod.COMPONENT011_REQUEST_REL
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text('{"request_id":"forged","task_id":"other"}')
+            with self.assertRaisesRegex(RuntimeError, "component011 dispatch request identity mismatch"):
+                mod.dispatch(source, runtime, env={"PATH": "/bin"},
+                             only_consumers=(mod.COMPONENT011_SELECTOR,))
+
     def test_hosted_environment_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
