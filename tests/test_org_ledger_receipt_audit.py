@@ -107,6 +107,48 @@ class ExistingOrganizationLedgerAuditTests(unittest.TestCase):
         self.assertEqual(report["state"],"RECONSTRUCTED_WITH_LEGACY_SOURCE_GAPS")
         self.assertEqual(report["unknown_source_receipts"],[legacy_sha])
 
+    def test_resume_exact_preappend_source_without_new_authority(self):
+        receipt=canonical_receipt("INTERRUPTED_SOURCE_ONLY")
+        digest=LEDGER.verify_source(receipt)["source_transition_sha256"]
+        retained=self.root/"sources"/(digest.split(":",1)[1]+".json")
+        retained.parent.mkdir(parents=True,exist_ok=True)
+        retained.write_text(json.dumps(receipt))
+        self.assertEqual(LEDGER.audit_chain()["state"],"INTEGRITY_FAILURE")
+        resumed=LEDGER.aggregate_transition(receipt)
+        self.assertEqual(resumed["source_transition_sha256"],digest)
+        self.assertEqual(LEDGER.audit_chain()["state"],"RECONSTRUCTED_PASS")
+
+    def test_resume_exact_retained_successor_without_second_receipt(self):
+        first=LEDGER.aggregate_transition(canonical_receipt())
+        prior_head=(self.root/"HEAD.json").read_text()
+        receipt=canonical_receipt("INTERRUPTED_HEAD_ADVANCE")
+        second=LEDGER.aggregate_transition(receipt)
+        (self.root/"HEAD.json").write_text(prior_head)
+        self.assertEqual(LEDGER.audit_chain()["state"],"INTEGRITY_FAILURE")
+        resumed=LEDGER.aggregate_transition(receipt)
+        self.assertEqual(resumed,second)
+        self.assertEqual(resumed["previous_receipt_sha256"],first["receipt_sha256"])
+        self.assertEqual(len(list((self.root/"receipts").glob("*.json"))),2)
+        self.assertEqual(LEDGER.audit_chain()["state"],"RECONSTRUCTED_PASS")
+
+    def test_resume_exact_interrupted_genesis(self):
+        receipt=canonical_receipt("INTERRUPTED_GENESIS")
+        first=LEDGER.aggregate_transition(receipt)
+        (self.root/"HEAD.json").unlink()
+        self.assertEqual(LEDGER.audit_chain()["state"],"INTEGRITY_FAILURE")
+        resumed=LEDGER.aggregate_transition(receipt)
+        self.assertEqual(resumed,first)
+        self.assertEqual(LEDGER.audit_chain()["state"],"RECONSTRUCTED_PASS")
+
+    def test_refuse_unrelated_orphan_during_recovery(self):
+        original=canonical_receipt()
+        first=LEDGER.aggregate_transition(original)
+        (self.root/"HEAD.json").unlink()
+        with self.assertRaisesRegex(ValueError,"organization_existing_chain_integrity_failure"):
+            LEDGER.aggregate_transition(canonical_receipt("DIFFERENT_SOURCE"))
+        self.assertFalse((self.root/"HEAD.json").exists())
+        self.assertTrue((self.root/first["source_receipt_ref"]).exists())
+
     def test_stale_pinned_predecessor_fails_without_advancing_head(self):
         LEDGER.aggregate_transition(canonical_receipt())
         original=(self.root/"HEAD.json").read_bytes()
