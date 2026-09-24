@@ -237,3 +237,6 @@ Current authentic boundary remains unchanged: no retained resident child trigger
 
 BEA therefore remains `UNKNOWN / UNRESOLVED`; the single-use BEA operation was not executed. Site public activation remains `false`.
 
+## September 24 exact-goal dispatch source-order repair
+
+Current-main continuation of the existing Canonical Work consumer gives an explicit `--goal-task-id ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001` priority over the unrelated MIR-first subprocess without changing unscoped or other-goal scheduling. The unchanged owner is the existing `canonical_work_coordination` selector. This fixes a source-order hazard (unrelated 1200-second preemption), not an observed live failed transition. Exact task consumption, Interlock/InTr outcome, WorkerCoordinator claim/fence, Master Records reconstruction, and subsequent Publisher/Site served-body verification are still required. No new execution or credential route; BEA remains UNKNOWN absent authentic READY; activation remains false.

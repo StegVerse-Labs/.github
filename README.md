@@ -1527,3 +1527,7 @@ PR #2655 merged the exact hash-bound projection of the existing Master Records-c
 ### Publisher-return failure observation custody
 
 Merged PR #2657 repairs the existing SDK/KV Publisher-return consumer's previously console-only `BLOCKED` failure path. An exact, idempotent, non-authorizing diagnostic now persists in its existing receipt directory; authentic RTC008/RTC009/caller transition proof must still come from the actual resident/organization and Master Records chain.
+
+### Household economic conditions: exact-goal ingress priority (September 24, 2026)
+
+The existing Canonical Work consumer prioritizes `ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001` ahead of unrelated requests when that exact Goal is selected through the standing Healer/reusable-task carrier. Its unrelated MIR-first behavior remains unchanged for unscoped or other-goal invocations. This is source-only request-order repair, not Interlock/InTr admission, WorkerCoordinator authority, Master Records closure, or Site public activation. The September 30 release requires governed ERL output and exact served-body proof.
