@@ -8,6 +8,7 @@ from typing import Any
 from .coordination_graph import review_coordination_preflight
 from .coordination_ledger import load_composed_coordination_ledger
 from .worker_runtime_legacy import WorkerCoordinator as LegacySeparatedWorkerCoordinator, ProcessWorkerAdapter
+from .hil_legacy_registration_reconcile import reconcile_legacy_hil_registration, FRAGMENT as HIL_FRAGMENT
 from .worker_task_admission import persist_admission_receipt, review_worker_task_admission
 from .worker_assignment_functional_memory import (
     allow_manifest_context,
@@ -49,6 +50,12 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
         """
         generation_before = int(registry.get("generation", 0))
         applied = super()._apply_registry_fragments(registry, task_id_filter=task_id_filter)
+        legacy_hil_reconciled = (
+            task_id_filter in (None, "SHWP-HIL-SOVEREIGN-RECEIVER-001")
+            and reconcile_legacy_hil_registration(self.root, registry)
+        )
+        if legacy_hil_reconciled and HIL_FRAGMENT.as_posix() not in applied:
+            applied.append(HIL_FRAGMENT.as_posix())
         tasks = {
             str(item.get("task_id")): item
             for item in registry.get("tasks", [])
@@ -59,7 +66,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             for item in registry.get("workers", [])
             if isinstance(item, dict) and item.get("worker_id")
         }
-        reconciled = False
+        reconciled = bool(legacy_hil_reconciled)
 
         if not self.registry_fragment_dir.is_dir():
             return applied
