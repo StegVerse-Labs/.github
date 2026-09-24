@@ -68,8 +68,25 @@
     ],
     "github_actions_authority": "READ_ONLY_VALIDATION_ONLY"
   },
-  "current_authority_state": "PENDING_AUTHENTIC_OWNER_RELEASE_AND_REPOSITORY_ADMINISTRATION",
+  "current_authority_state": "BLOCKED_ON_AUTHENTIC_OWNER_CUSTODY_PACKET_AND_CONNECTED_NATIVE_DELETE_PERMISSION",
   "deletion_performed": false,
   "deletion_claimed": false,
-  "note": "This is an administration queue, not a deletion approval. Closing an unmerged PR does not authorize deleting its branch. No shell, second device, new token or GitHub Actions mutation lane is created."
+  "note": "This is an administration queue, not a deletion approval. Closing an unmerged PR does not authorize deleting its branch. No shell, second device, new token or GitHub Actions mutation lane is created.",
+  "native_utility": {
+    "merged_pr": 2651,
+    "merge_sha": "a0ecb920f70d5e0f2a35df68a13c6c8bf05c79dd",
+    "validated_run": 36041822725,
+    "validated_tests": 8,
+    "source_validation": "PASS",
+    "deletion_runtime": "NOT_OBSERVED"
+  },
+  "disposition_record": "control/repository-hygiene-native-ref-retirement-disposition-20260924.json",
+  "current_queue": {
+    "verified_previously_routed_tvc": 32,
+    "verified_closed_unmerged_control_pr_heads": 2,
+    "verified_merged_control_pr_head": 1,
+    "retained_pending_authority": 35,
+    "deleted": 0
+  },
+  "authenticity_boundary": "Receipt-hash string format is not authentication; existing TV/TVC/InTr, organization-ledger and Master Records custody owners must verify the underlying exact retained source receipts before --apply. Current queue provides no independently verifiable per-ref release packet."
 }
