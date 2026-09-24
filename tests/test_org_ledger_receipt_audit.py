@@ -98,6 +98,12 @@ class ExistingOrganizationLedgerAuditTests(unittest.TestCase):
         path.unlink()
         (self.root/"HEAD.json").write_text(json.dumps({"organization":"StegVerse-Labs","receipt_sha256":legacy_sha}))
         report=LEDGER.audit_chain()
+        self.assertEqual(report["state"],"RECONSTRUCTED_PASS")
+        self.assertEqual(report["recovered_legacy_source_receipts"],[legacy_sha])
+        self.assertEqual(report["unknown_source_receipts"],[])
+        # Absence of source receipt now is a real legacy reconstruction gap.
+        (self.root/first["source_receipt_ref"]).unlink()
+        report=LEDGER.audit_chain()
         self.assertEqual(report["state"],"RECONSTRUCTED_WITH_LEGACY_SOURCE_GAPS")
         self.assertEqual(report["unknown_source_receipts"],[legacy_sha])
 
