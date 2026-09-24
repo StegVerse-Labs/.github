@@ -1,0 +1,358 @@
+{
+  "schema": "stegverse.aex.native-math-processing-census/v1",
+  "status": "SOURCE_RECONNAISSANCE_PRE_ADMISSION",
+  "central_registry_generation_observed": 211,
+  "canonical_org_role_registry": "Admissible-Existence/.github/data/formalism-worker-registry.json",
+  "canonical_org_role_registry_sha": "d7c7086d6cb544f33112927a2e2a29a02fad4258",
+  "registered_role_count": 32,
+  "additional_discovered_consumer_count": 2,
+  "classification_semantics": "SOURCE_PRESENCE_NOT_LOCAL_TEST_NOT_SDK_INVOKABLE_NOT_AUTHENTIC_RUNTIME",
+  "sdk_published_processing_capabilities": [
+    "governance",
+    "ecosystem_diagnostic",
+    "purpose_bound_worker",
+    "atomic_task_worker"
+  ],
+  "native_math_manifest_invocations_verified": 0,
+  "authentic_governed_math_runs_verified": 0,
+  "entries": [
+    {
+      "repository": "Admissible-Existence/.github",
+      "role": "coordination",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/AE",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/check_admissible_resolution.py::validate_case",
+      "inspected_surface_kind": "VALIDATOR_NOT_GENERAL_SOLVER",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/Existence",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/validate_existence.py::validate",
+      "inspected_surface_kind": "PROFILE_SCORE_VALIDATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/RTG",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/verify_rtg_manifest.py::main",
+      "inspected_surface_kind": "MANIFEST_VALIDATOR_GEOMETRY_CALLABLE_NOT_ESTABLISHED",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/GTG",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "formal/predicates.py::a1_transition_participation...a8_model_reality_separation",
+      "inspected_surface_kind": "EXECUTABLE_REFERENCE_PREDICATES",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/TT",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "engine/rtg_contract_adapter.py::resolve_rtg_request",
+      "inspected_surface_kind": "NATIVE_BOUNDED_REQUEST_EVALUATION",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/STCM",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/closure-harness/closure.py::evaluate_closure",
+      "inspected_surface_kind": "NATIVE_COMPUTED_CLOSURE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/ET",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "src/et/temporal.py::resolve_version",
+      "inspected_surface_kind": "DETERMINISTIC_TEMPORAL_RESOLUTION",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/learning-transition-governance",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/check_learning_stages.py",
+      "inspected_surface_kind": "STAGE_VALIDATOR_ONLY",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/BC",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/run_bc_fixtures.py::evaluate",
+      "inspected_surface_kind": "BOUNDARY_COHERENCE_FIXTURE_EVALUATION",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/CHF",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/check_chf_thresholds.py",
+      "inspected_surface_kind": "THRESHOLD_CONTRACT_VALIDATOR_ONLY",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/RE",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "validators/re_check.py::classify",
+      "inspected_surface_kind": "READINESS_FIXTURE_VALIDATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/RE-Reduction",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/reduce_disorder.py::classify",
+      "inspected_surface_kind": "NATIVE_NUMERIC_REDUCTION",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/DC",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "validators/w2_check.py::classify",
+      "inspected_surface_kind": "READINESS_FIXTURE_CLASSIFIER",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/Triad",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/validate_triad.py::validate",
+      "inspected_surface_kind": "STANDING_PROFILE_VALIDATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/GCAT-BCAT",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "papers/decision-envelope/tools/evaluate_envelope.py::build_report",
+      "inspected_surface_kind": "SEPARATE_DECISION_ENVELOPE_CHILD_NUMERIC_EVALUATOR_ROOT_CALLABLE_UNESTABLISHED",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/ECAT-ICAT",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/validate_profiles.py::validate_ecat",
+      "inspected_surface_kind": "RC_PROFILE_VALIDATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/IICT",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/build_graph_dataset.py::main",
+      "inspected_surface_kind": "FIXED_STRUCTURAL_GRAPH_DATASET_GENERATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/CTA",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "engine/aacte_engine.py::evaluate_case",
+      "inspected_surface_kind": "BOUNDED_REFERENCE_CONSUMER",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/HPS",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/verify_standing_score.py::verify_standing_score",
+      "inspected_surface_kind": "NUMERIC_STANDING_SCORE_VERIFIER",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/FI",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/validate_invariant_claim.py::validate_claim",
+      "inspected_surface_kind": "INVARIANT_CLAIM_VALIDATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/DaCo",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "validators/w2.py::classify",
+      "inspected_surface_kind": "READINESS_FIXTURE_CLASSIFIER",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/IW",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "scripts/validate_inference_window_governance.py::evaluate_case",
+      "inspected_surface_kind": "NATIVE_INFERENCE_WINDOW_EVALUATOR",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/standing-proof-formalism",
+      "role": "source",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": "tools/check_standing_cases.py::evaluate",
+      "inspected_surface_kind": "NINE_SURFACE_STANDING_PREDICATE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/core-lite",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/validator",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/tracker",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/telemetry",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/ae-validation-factory",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/ae-validation-research",
+      "role": "empty",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/validation-profile-registry",
+      "role": "support",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/SOL",
+      "role": "empty",
+      "owner": "NATIVE_SOURCE_REPOSITORY",
+      "candidate_callable": null,
+      "inspected_surface_kind": "NON_SOURCE_ROLE",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED",
+      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+    },
+    {
+      "repository": "Admissible-Existence/AID",
+      "role": "INTEGRATION_CONSUMER",
+      "owner": "AID_INTEGRATION_OWNER",
+      "candidate_callable": null,
+      "inspected_surface_kind": "CONSUMER_NOT_IN_32_ROLE_REGISTRY",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED"
+    },
+    {
+      "repository": "Admissible-Existence/Fundamental-Invariants-of-Reality",
+      "role": "FI_CROSS_DOMAIN_FALSIFICATION_CONSUMER",
+      "owner": "FI_SOURCE_MATH__FIR_CROSS_DOMAIN_TEST_OWNER",
+      "candidate_callable": null,
+      "inspected_surface_kind": "CONSUMER_NOT_IN_32_ROLE_REGISTRY",
+      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "NOT_ESTABLISHED"
+    }
+  ]
+}
