@@ -1493,3 +1493,7 @@ Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` now requires one
 StegAgents PR #35 passed all three exact-head gates and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. The consequence must not execute; canonical governance must return `DENY`; then `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` must close in canonical Master Records with `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, and exact receipt/reconstruction digest equality before terminal WorkerCoordinator release.
 
 This merge is source-path evidence only. No authentic fresh claim/fence, governed close/retire, stale-fence refusal, or runtime completion is inferred from CI.
+
+### Private-State Economy economics/legal review (2026-09-24)
+
+The [canonical white-paper handoff](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md) now references the Publisher PR #72 internal economic and US/Texas regulatory issue review. The existing white-paper source hash, StegVerse-only scope and six-stage/16-benchmark roadmap remain unchanged. Independent professional approvals and authentic governed publication are still pending.
