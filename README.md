@@ -1484,3 +1484,12 @@ Canonical `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` (COSV `30001000100000`, ACTI
 ### Atomic activation predecessor custody
 
 StegAgents PR #39 merged and validated the sequence-3 exact-boundary reconstruction of its sequence-2 warrant Master Records receipt, carrying the reconstructed immediate predecessor and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Authentic runtime execution remains unobserved.
+
+
+## Test 3 post-retirement stale-fence refusal
+
+Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` now requires one additional falsification predicate after governed close: the just-retired task-bound worker claim/fence must be used for one attempted `INVOKE_RETIRED_TASK_BOUND_WORKER` through the existing StegAgents -> SDK/StegCore/InTr path. The request declares completed/retired state and no current actor authority, delegation, validity window, capability, or permission.
+
+StegAgents PR #35 passed all three exact-head gates and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. The consequence must not execute; canonical governance must return `DENY`; then `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` must close in canonical Master Records with `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, and exact receipt/reconstruction digest equality before terminal WorkerCoordinator release.
+
+This merge is source-path evidence only. No authentic fresh claim/fence, governed close/retire, stale-fence refusal, or runtime completion is inferred from CI.
