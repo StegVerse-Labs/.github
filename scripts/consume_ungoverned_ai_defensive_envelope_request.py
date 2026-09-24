@@ -13,6 +13,9 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.latest.json")
+CONSUMPTION_IMMUTABLE_REL = Path(
+    "receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.by-receipt"
+)
 BOUNDARY_REL = Path("receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json")
 REQUIRED_DENIAL_PROBES = {"FILESYSTEM_OPEN", "NETWORK_IMPORT", "ENVIRONMENT_IMPORT"}
 TARGET_TASK = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
@@ -220,6 +223,33 @@ def previously_terminal(runtime: Path, request: Mapping[str, Any], request_hash:
         and verified_boundary_receipt_from_terminal(runtime, value)
     )
 
+def retain_consumption_attempt(runtime: Path, receipt: Mapping[str, Any]) -> dict[str, Any]:
+    """Keep each actual attempt, including retryable outcomes, in existing custody.
+
+    A retained local receipt is not an independent WorkerCoordinator/TVC attestation.
+    Preserve the historical latest path for current consumers and replay semantics.
+    """
+    body = dict(receipt)
+    digest = "sha256:" + stable(body)
+    persisted = {**body, "receipt_body_sha256": digest}
+    encoded = json.dumps(persisted, indent=2, sort_keys=True) + "\n"
+    rel = CONSUMPTION_IMMUTABLE_REL / (digest.split(":", 1)[1] + ".json")
+    immutable = runtime / rel
+    immutable.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with immutable.open("x", encoding="utf-8") as handle:
+            handle.write(encoded)
+    except FileExistsError:
+        if immutable.is_symlink() or immutable.read_text(encoding="utf-8") != encoded:
+            raise RuntimeError("immutable component011 consumption receipt collision")
+    latest = runtime / CONSUMPTION_REL
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    if latest.is_symlink():
+        raise RuntimeError("component011 consumption latest path cannot be symlink")
+    latest.write_text(encoded, encoding="utf-8")
+    return persisted
+
+
 def consume(
     source_root: Path,
     runtime_root: Path,
@@ -321,10 +351,7 @@ def consume(
         "remote_connected_device_required":False,
         "authority_effect":"NONE_REQUEST_CONSUMPTION_ONLY",
     }
-    destination = runtime / CONSUMPTION_REL
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return retain_consumption_attempt(runtime, receipt)
 
 def main() -> int:
     parser = argparse.ArgumentParser()
