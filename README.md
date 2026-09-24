@@ -1,3 +1,7 @@
+## Admissible-Existence organization-wide mathematical processing — registration candidate
+
+Draft central registration for `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION`, proposed COSV `10111110111000`, issue [#2615](https://github.com/StegVerse-Labs/.github/issues/2615). Scope: 23 native source repositories plus 9 registered non-source roles and two additional consumer repositories. Source-level registration creates **no execution authority**; exact-generation authentic `AI_SESSION_GATE` disposition remains mandatory after canonical merge before any executable or cross-owner mutation. Current source census: `data/aex-native-math-processing-census.json`; canonical coordination handoff: `docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md`.
+
 ## STCM/CHF independent thermodynamic-witness research registration
 
 Candidate central coordination: `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` / source COSV `10111010112000`, anchored to Admissible-Existence/.github issue #79 and draft PR #80. Registration and COSV projection do **not** create runtime or governance authority. The scoped owner preserves native STCM/CHF claims; inert negative controls remain synthetic and physical thermodynamic evidence requires independent exact-byte source/measurement custody. See `docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md`.
