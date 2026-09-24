@@ -424,8 +424,9 @@
         "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
         "deleted": false,
         "current_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
-        "protected": false,
-        "open_pr_head": false
+        "protected": null,
+        "open_pr_head": false,
+        "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
       },
       {
         "repository": "StegVerse-Labs/.github",
@@ -434,8 +435,9 @@
         "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
         "deleted": false,
         "current_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
-        "protected": false,
-        "open_pr_head": false
+        "protected": null,
+        "open_pr_head": false,
+        "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
       }
     ]
   },
@@ -447,7 +449,7 @@
     "Connected GitHub interface has no delete-ref action or repository delete-on-merge setting mutation",
     "Existing canonical authorization packet with authentic same-ref InTr ALLOW, organization transition custody, Master Records reconstruction and owner/evidence-retention release was not present for these candidates"
   ],
-  "notes": "A successful source test exercises mocked delete and readback, not a real delete. This disposition does not claim authentic runtime receipt validation, deletion or terminal Master Records closure. Superseded closed-unmerged control PR refs were independently verified through exact Git refs readback at their prior recorded heads.",
+  "notes": "A successful source test exercises mocked delete and readback, not a real delete. This disposition does not claim authentic runtime receipt validation, deletion or terminal Master Records closure. Superseded closed-unmerged control PR refs were independently verified through exact Git refs readback at their prior recorded heads. Exact Git-ref readback establishes presence and SHA only, not branch protection status for the three control-repo heads; all remain retained pending native-administrator preflight.",
   "merged_but_head_retained": [
     {
       "repository": "StegVerse-Labs/.github",
@@ -455,9 +457,10 @@
       "branch": "hygiene/finalize-census-and-ref-retirement-20260924",
       "current_sha": "87372f3a078f37ffddbc39ba4362174eab880613",
       "merged": true,
-      "protected": false,
+      "protected": null,
       "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
-      "deleted": false
+      "deleted": false,
+      "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
     }
   ]
 }
