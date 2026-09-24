@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 import sys
@@ -102,6 +103,10 @@ class DefensiveEnvelopeWorkerTests(unittest.TestCase):
                 response = mod.run(invocation)
             self.assertEqual(response["state"], "COMPLETED")
             retained = json.loads(receipt.read_text())
+            body = json.dumps(retained, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+            self.assertEqual(response["boundary_receipt_sha256"], "sha256:" + hashlib.sha256(body).hexdigest())
+            self.assertEqual(response["boundary_claim_id"], "claim-G1")
+            self.assertEqual(response["boundary_fencing_token"], 1)
             self.assertFalse(retained["external_provider_observed"])
             self.assertFalse(retained["goal_runtime_completion_claimed"])
             self.assertFalse(retained["probe"]["denied_interactions"][0]["consumed"])
