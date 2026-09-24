@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+  "correlation_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+  "root_correlation_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+  "parent_task_id": null,
+  "goal": "Inventory every Admissible-Existence native mathematical formalism and establish which versioned native callables can be invoked by existing StegVerse SDK manifest processing routes. Preserve source-specific mathematics, prove actual invocation and lineage before reporting capability, and implement only separately admitted missing generic SDK compatibility without new runtime, authority or device requirements.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10111110111000",
+  "source_refs": [
+    "https://github.com/StegVerse-Labs/.github/issues/2615",
+    "docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md",
+    "data/aex-native-math-processing-census.json",
+    "Admissible-Existence/.github/data/formalism-worker-registry.json",
+    "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "Admissible-Existence",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "aex-native-math-capability-inventory",
+      "sdk-math-processing-binding-inventory",
+      "source-native-invocation-evidence-map",
+      "manifest-execution-compatibility-review"
+    ]
+  },
+  "adjacent_task_refs": [
+    "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+    "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "AEX-TRIFORM-FORMALISM-001",
+    "AEX-MATHEMATICAL-COMPLETENESS-AUDIT-002"
+  ],
+  "blockers": [
+    "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+    "NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
+  ],
+  "expected_evidence_predicates": [
+    "AUTHENTIC_GENERATION_BOUND_AI_SESSION_GATE_CONTINUE_OR_CONVERGED_OWNER",
+    "ALL_34_DISCOVERED_REPOSITORIES_CLASSIFIED_WITH_EXPLICIT_ROLE",
+    "ALL_23_SOURCE_FORMALISMS_BOUND_TO_EXACT_NATIVE_ENTRYPOINT_OR_NOT_ESTABLISHED",
+    "EXISTING_INSTALLED_SDK_BINDINGS_EVALUATED_BEFORE_NEW_WORK",
+    "GENERIC_FROZEN_MANIFEST_INVOCATION_POSITIVE_AND_NEGATIVE_CONTROLS",
+    "EXACT_SOURCE_COMMIT_RESULT_AND_PRE_ENRICHMENT_HASH_LINEAGE",
+    "AUTHENTIC_WORKERCOORDINATOR_TV_TVC_INTR_AND_MASTER_RECORDS_CLOSURE_WHEN_RUNTIME_CLAIMED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "allowed_next_transitions": [
+    "AUTHENTIC_TASK_REGISTRY_COLLISION_CHECKIN",
+    "RECONCILE_RETURNED_OWNER",
+    "INVENTORY_SOURCE_NATIVE_CALLABLES",
+    "SEPARATELY_ADMIT_MISSING_SDK_COMPATIBILITY"
+  ],
+  "handoff_projection_refs": [
+    "docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "github_source_or_ci_proves_runtime": false,
+    "workercoordinator_claim_fence_only": true,
+    "credential_authority": "TV/TVC",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_custody_required": true,
+    "no_second_device": true,
+    "source_math_owner_remains_each_native_repository": true
+  },
+  "registration": {
+    "source_registration_only": true,
+    "post_registration_exact_generation_gate_required": true,
+    "approval_to_mutate_external_repositories": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "5/20",
+    "split_merely_to_reset_counter": false
+  }
+}
