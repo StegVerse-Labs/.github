@@ -168,8 +168,8 @@ def test_master_records_unavailable_keeps_exact_organization_receipt_correlation
         "source_transition_id": source["transition_id"],
     }
     with patch.object(client, "_record_organization_transition",
-                      return_value={"state": "RECORDED", "organization_receipt": organization}), \\
-         patch.object(client, "_submit_http", return_value=None), \\
+                      return_value={"state": "RECORDED", "organization_receipt": organization}), \
+         patch.object(client, "_submit_http", return_value=None), \
          patch.object(client, "_submit_local", return_value=None):
         result = client.submit_state_receipt(source)
     assert result["state"] == "BOUNDARY"
@@ -193,7 +193,7 @@ def test_master_records_boundary_retains_exact_failure_and_org_identity():
     failure = {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_CALL_FAILED",
                "authority_effect": "NONE"}
     with patch.object(client, "_record_organization_transition",
-                      return_value={"state": "RECORDED", "organization_receipt": organization}), \\
+                      return_value={"state": "RECORDED", "organization_receipt": organization}), \
          patch.object(client, "_submit_http", return_value=failure):
         result = client.submit_state_receipt(source)
     assert result["reason"] == failure["reason"]
