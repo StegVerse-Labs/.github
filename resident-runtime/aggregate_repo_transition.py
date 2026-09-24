@@ -52,7 +52,7 @@ def _atomic_json(path, value):
     path.parent.mkdir(parents=True,exist_ok=True)
     raw=json.dumps(value,indent=2,sort_keys=True)+"\n"
     if path.exists() and path.name!="HEAD.json":
-        if path.read_text()!=raw: raise ValueError("organization_write_once_collision")
+        if load(path)!=value: raise ValueError("organization_write_once_collision")
         return
     with tempfile.NamedTemporaryFile(mode="w",encoding="utf-8",dir=path.parent,
                                      prefix=".org-ledger-",delete=False) as handle:
@@ -81,6 +81,10 @@ def audit_chain(root=None):
         if paths:
             result["state"]="INTEGRITY_FAILURE"
             result["integrity_errors"].append("HEAD_MISSING_WITH_RETAINED_RECEIPTS")
+        sources=root/"sources"
+        if sources.exists() and any(sources.glob("*.json")):
+            result["state"]="INTEGRITY_FAILURE"
+            result["integrity_errors"].append("ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION")
         return result
     referenced_sources=set()
     try:
@@ -174,6 +178,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 raise ValueError("organization_immediate_predecessor_reconstruction_failed")
         elif any(d.glob("*.json")):
             raise ValueError("organization_genesis_conflicts_existing_receipts")
+        integrity=audit_chain(root)
+        if integrity["state"]=="INTEGRITY_FAILURE":
+            raise ValueError("organization_existing_chain_integrity_failure:"+",".join(integrity["integrity_errors"]))
         # Source receipt and hash-linked org receipt stay in the SAME existing
         # organization ledger; no secondary ledger or synthesized transition.
         retained_ref=Path("sources")/(source["source_transition_sha256"].split(":",1)[1]+".json")
@@ -186,7 +193,11 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
             prior_row=load(prior_path)
             if prior_row.get("source_transition_sha256")!=source["source_transition_sha256"]:
                 continue
-            if (prior_row.get("org_transition_class")!=org_transition_class
+            if (prior_row.get("source_receipt_schema")!=source["source_receipt_schema"]
+                or prior_row.get("source_transition_id")!=source["source_transition_id"]
+                or (predecessor_org_state_sha256 is not None and prior_row.get("predecessor_org_state_sha256")!=predecessor_org_state_sha256)
+                or (successor_org_state_sha256 is not None and prior_row.get("successor_org_state_sha256")!=successor_org_state_sha256)
+                or prior_row.get("org_transition_class")!=org_transition_class
                 or prior_row.get("boundary_evidence")!=dict(boundary_evidence or {})
                 or prior_row.get("authority_effect")!=authority_effect):
                 raise ValueError("organization_duplicate_source_binding_mismatch")
