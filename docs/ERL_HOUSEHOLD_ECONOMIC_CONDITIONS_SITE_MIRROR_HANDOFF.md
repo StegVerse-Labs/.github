@@ -240,3 +240,16 @@ BEA therefore remains `UNKNOWN / UNRESOLVED`; the single-use BEA operation was n
 ## September 24 exact-goal dispatch source-order repair
 
 Current-main continuation of the existing Canonical Work consumer gives an explicit `--goal-task-id ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001` priority over the unrelated MIR-first subprocess without changing unscoped or other-goal scheduling. The unchanged owner is the existing `canonical_work_coordination` selector. This fixes a source-order hazard (unrelated 1200-second preemption), not an observed live failed transition. Exact task consumption, Interlock/InTr outcome, WorkerCoordinator claim/fence, Master Records reconstruction, and subsequent Publisher/Site served-body verification are still required. No new execution or credential route; BEA remains UNKNOWN absent authentic READY; activation remains false.
+
+## September 24: qualified September 30 publication preparation
+
+The existing source owners have now closed three source-only readiness repairs without promoting a runtime or public outcome:
+
+- .github #2635 merged at `ddc01f4ee34bcc4b1f89173f2b703272b64fa234` after exact-head Cross-Task CI: Census capture fails closed on invalid/missing 10+6 observation evidence; no stale BEA readiness file can trigger a subsequent operation.
+- .github #2659 merged at `6073c1e5e250f4f0ad8e3974733c380cebfc7e79` after three exact-head CI lanes passed. The existing Canonical Work consumer prioritizes this explicit Goal over unrelated MIR preemption, leaving unscoped/other-goal routing intact. Stale duplicate #2633 was closed without merge.
+- Site #1461 merged at `b586a3afde36ae8577148457f9f4dc0b83b185dd` after all four returned exact-head CI lanes passed. The guarded same-origin household publication consumer is now source-merged. Its publication manifest intentionally remains `public_activation_authorized=false`, with no governed output path, Master Records receipt binding or served-body digest populated.
+
+Source/CI state never substitutes for a governed runtime result. This Goal stays `PROPOSED / UNCLAIMED` with `INGRESS_ADMITTED` as the declared next state. The only execution path is the existing standing Healer carrier -> targeted Canonical Work/Interlock-InTr -> fresh WorkerCoordinator claim/fence -> household worker -> Master Records custody/reconstruction -> governed ERL/Publisher/Site mutation and independently verified served-body hash. No second scheduler, runtime, request plane, credential route or device prerequisite is admitted.
+
+For an independently supported September 30 release, qualify the page to the existing official BLS/Board/Census/NY Fed source bounds and explicitly preserve all unsupported household-state fields as UNKNOWN. BEA has no publication-gating role absent authentic same-invocation TV/TVC READY; no BEA operation is claimed. The Site source is ready to consume a Publisher-authorized result; no such governed result or public activation is yet proven.
+
