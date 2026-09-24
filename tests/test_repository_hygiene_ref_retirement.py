@@ -88,6 +88,10 @@ class RetirementGuardTests(unittest.TestCase):
 
     def test_apply_uses_expected_tip_lease_only(self):
         def simulate(*args):
+            if args[:3] == ("git", "remote", "get-url"):
+                return "https://github.com/StegVerse-Labs/.github.git"
+            if args[:2] == ("git", "ls-remote"):
+                return ""
             if args[0] == "git":
                 self.assertIn(f"--force-with-lease=refs/heads/hygiene/merged-safe:{TIP}", args)
                 self.assertIn(":refs/heads/hygiene/merged-safe", args)
@@ -98,6 +102,19 @@ class RetirementGuardTests(unittest.TestCase):
                                   "releases": [evidence()]}, apply=True)
             self.assertEqual(out["results"][0]["result"],
                              "REF_DELETED_ORG_MR_CLOSURE_REQUIRED")
+
+    def test_wrong_checkout_origin_blocks_deletion(self):
+        def wrong_origin(*args):
+            if args[:3] == ("git", "remote", "get-url"):
+                return "https://github.com/other/other.git"
+            if args[0] == "git":
+                self.fail("unexpected Git write or readback")
+            return replies(args)
+        with patch.object(retirement, "command", side_effect=wrong_origin):
+            out = retirement.run({"schema": retirement.SCHEMA, "repository": REPO,
+                                  "releases": [evidence()]}, apply=True)
+            self.assertEqual(out["results"][0]["result"], "RETAIN")
+            self.assertIn("origin does not match", out["results"][0]["reason"])
 
 if __name__ == "__main__":
     unittest.main()
