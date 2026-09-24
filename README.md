@@ -1432,3 +1432,11 @@ Component-011 exact boundary source repair merged in .github PR #2611 (`38580c90
 ## Organization transition exact-source retry
 
 For the existing organization ledger, a retry of an unchanged canonical source transition after incomplete Master Records custody must reuse its verified immutable organization receipt, even when other transitions have since advanced the ledger HEAD. Changed organization context or tampered existing receipts fail closed. The bounded source repair and negative regressions are owned by `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`; it grants no claim, execution or custody authority and is not authentic runtime evidence. The native-email phase uses the same organization-first replay contract: `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
+
+
+## Stage-1 organization-receipt first-failure compatibility — source closeout
+
+Canonical `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` / COSV `71000000111111` is ACTIVE/HANDOFF_READY. SDK PR [#313](https://github.com/StegVerse-org/StegVerse-SDK/pull/313) merged exact-source receipt snapshot inspection `bd41055e83c0d5ba0a49576cbcbc53b6fcc76f13` after twelve exact-head source CI workflows passed. It checks supplied existing canonical-to-org transition hash/predecessor chains and preserves the first structurally retained failure, while refusing to treat empty snapshots as runtime failures. This session's GitHub views did not expose authentic sovereign Richard org receipts; current runtime and independent-observation proof remains UNKNOWN, not failed. The existing checked-out Richard owner retains authentic receipt sourcing/first-failure remediation, and Stage 1 cannot declare external participation or Master Records custody from fixtures. See [canonical handoff](docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md).
+
+
+SDK PR [#314](https://github.com/StegVerse-org/StegVerse-SDK/pull/314) merged the organization-*global* predecessor correction as `03794843c7791a626c0ae898fadcac51e108b57d` with twelve exact-head successful workflows. The read-only reviewer now handles interleaved unrelated source/org receipts, rejects incomplete global windows, and does not classify omitted intermediates as task failures.
