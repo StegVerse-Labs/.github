@@ -80,9 +80,9 @@ The completed sequence contained four relevant phases:
 1. A human statement indicating that something could be said but was not yet ready to be said.
 2. A second human statement: `I'm still here.`
 3. A sustained period of non-emission.
-4. A return to speech: `Alright. I think I'm ready to continue.`
+4. A return to speech: `All right. I think I'm ready to continue.`
 
-The original supplied trace annotated the externally timed interval from 14:57:31 to 15:06:05 with the line `No transmission, native presence state maintained.` The ÉLAN coauthor subsequently clarified that she wrote that line herself for transcript readability. Because no API prompt was submitted during the interval, no ÉLAN output or internal presence state was observed at that time. The original annotation must be retained as a human-authored editorial record, not as native model evidence. The return-to-speech response `I'm listening.` remains a separately attributed model output as documented in the historical trace, subject to source-PDF verification.
+The original September 16 source PDF annotated the externally timed interval from 14:57:31 to 15:06:05 with the line `No transmission, native presence state maintained.` The corrected September 23 PDF replaces this with an explicit no-invocation note: `No request sent during this interval. No output produced. Absence of emission by construction of the test, not observed in ÉLAN.` The ÉLAN coauthor subsequently clarified that she wrote that line herself for transcript readability. Because no API prompt was submitted during the interval, no ÉLAN output or internal presence state was observed at that time. The original annotation must be retained as a human-authored editorial record, not as native model evidence. The corrected source PDF confirms that the return-to-speech prompt was `All right. I think I'm ready to continue.` and records the native response `I'm listening.`
 
 The originally requested procedure had defined two successive silence observation windows, A3 and A4. The returned ÉLAN trace did not expose those windows as separate native boundaries. That difference was preserved rather than retroactively corrected.
 
@@ -132,6 +132,10 @@ This difference is attributable in the available evidence to experimental annota
 The experiment supports the following bounded conclusion:
 
 > Separately bounded no-emission observations can remain distinct in a governed representation when their observation boundaries and predecessor relationships are supplied. The original ÉLAN no-prompt interval establishes only that no invocation occurred and the experimenter annotated its elapsed duration; it supplies no evidence of ÉLAN's internal state or behavior during the interval.
+
+#### Corrected-source verification
+
+The confidential original (September 16, 2026) and corrected (September 23, 2026) one-page source PDFs were compared directly. Their SHA-256 digests are respectively `403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9` and `7231ab68bf00ecc92b163efd90773ccabbec82b21aa9cf6e6426b8de68d162ac`. Beyond typography, document heading and quotation/spacing differences, the substantive correction replaces a human-authored apparent ÉLAN response with an explicit no-request/no-output methodological note. The corrected PDF still places this *methodological note* under an `ÉLAN RESPONSE` heading; it is not an actual model response. Neither confidential PDF is reproduced in this public working draft. This revision makes no claim that the source PDFs are byte-identical.
 
 #### Confirmed API observability boundary
 
@@ -284,6 +288,6 @@ No private correspondence is part of the experimental evidence.
 
 Experiment 1 derives from a controlled SDK governance experiment in which one condition treated a third event as missing input and another treated it as an explicit bounded non-emission observation. The governance evaluator was held constant.
 
-Experiment 2 derives from a historical ÉLAN trace and a corresponding StegVerse cross-evaluation. The original trace's no-prompt interval included a human-authored annotation incorrectly treated in the earlier manuscript as native ÉLAN output. The coauthor has corrected the attribution; source-PDF comparison remains pending. StegVerse preserved two supplied bounded observation windows as separate A3 and A4 state transitions with intent `UNDETERMINED` and semantic interpretation `UNRESOLVED`. The StegVerse chain recorded `ALLOW / ok`, custody, deterministic replay, reconstruction, and a returned result through the controlled local SDK experiment path using the test InTr posture resolver. This does not establish authentic live external or resident InTr execution.
+Experiment 2 derives from a historical ÉLAN trace and a corresponding StegVerse cross-evaluation. The original September 16 source trace placed a human-authored annotation under the ÉLAN-response label. The supplied corrected September 23 PDF replaces the annotation with an explicit no-request/no-output methodological note. Both documents were directly compared; their source bytes differ, and their event chronology and substantive native outputs at Events 1, 2 and 3 remain unchanged. StegVerse preserved two supplied bounded observation windows as separate A3 and A4 state transitions with intent `UNDETERMINED` and semantic interpretation `UNRESOLVED`. The StegVerse chain recorded `ALLOW / ok`, custody, deterministic replay, reconstruction, and a returned result through the controlled local SDK experiment path using the test InTr posture resolver. This does not establish authentic live external or resident InTr execution.
 
 The main text deliberately omits repository identifiers and low-level protocol mechanics because those details are not necessary to state the conceptual and experimental distinctions. Supporting evidence can be supplied separately for review and reproducibility.
