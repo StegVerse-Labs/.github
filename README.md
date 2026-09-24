@@ -1484,3 +1484,8 @@ Canonical `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` (COSV `30001000100000`, ACTI
 ### Atomic activation predecessor custody
 
 StegAgents PR #39 merged and validated the sequence-3 exact-boundary reconstruction of its sequence-2 warrant Master Records receipt, carrying the reconstructed immediate predecessor and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Authentic runtime execution remains unobserved.
+
+
+### Organization-local batch replay candidate
+
+The existing org-ledger root now has a bounded batch source candidate (`resident-runtime/organization_batch_custody.py`) under `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`. It commits exact ordered organization receipts and local replay boundaries, detects missing/orphaned/tampered receipts and maintains pending Master Records custody status; it does not claim accepted Master Records batches, full required-evidence reconstruction, concurrent append serialization or authentic resident execution. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
