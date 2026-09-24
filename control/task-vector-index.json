@@ -1075,7 +1075,7 @@
       "registry_ref": "data/canonical-task-records/STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001.json",
       "source_state_vector_ref": "control/task-vectors/STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001.json",
       "vector": "10111010112000",
-      "vector_state": "PROPOSED_SOURCE_REGISTRATION_PENDING_MERGE",
+      "vector_state": "EMITTED",
       "authority_effect": "NONE"
     }
   ],
