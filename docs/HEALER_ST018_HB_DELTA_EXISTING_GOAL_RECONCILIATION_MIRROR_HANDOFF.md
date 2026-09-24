@@ -4,12 +4,12 @@ Updated: 2026-09-24
 
 ## Canonical coordination
 - Central issue: [#2654](https://github.com/StegVerse-Labs/.github/issues/2654)
-- Candidate central registration branch: `coord/healer-st018-hb-delta-existing-goal-reconciliation-2654`.
+- Candidate central registration branch: `coord/healer-st018-hb-delta-existing-goal-reconciliation-2654-r2`.
 - Previously verified canonical registry generation: 221; branch proposes 222 **only if main has not changed**. Always re-read current main before review, validation or merge.
 - Existing parent Goal Task ID: `HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001`, previously established in `control/worker-registry.d/healer-sovereign-scheduler-001.json` and `handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`. The standing worker task is `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`, worker registry state `HANDOFF_READY`, executor `AUTHORIZED`, existing historical COSV `50000000100000`. This source registration does not change that worker's runtime state or claim its execution.
 - Existing scoped Goal Task ID: `HEALER-RSTD-ST018-LOCAL-TASK-MANAGER-001`; source released under StegVerse-Healer issue #11, repository standards semantics under repo-standards #28. Its admission-derived task COSV is **not yet established**; the parent worker's historical COSV is not silently assigned to this distinct scoped goal.
 - Proposed registry coordination state for both: `PROPOSED / UNCLAIMED`; the central source registration is **non-authorizing**. The existing historical Healer worker remains separately `HANDOFF_READY / AUTHORIZED`.
-- Proposed registry generation 221 and exact shards are an idempotent registration of **existing** pre-registry identities, not newly derived goal IDs or a new scheduler.
+- Proposed registry generation 222 and exact shards are an idempotent registration of **existing** pre-registry identities, not newly derived goal IDs or a new scheduler.
 
 ## Component and authority partition
 
