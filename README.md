@@ -1497,3 +1497,8 @@ This merge is source-path evidence only. No authentic fresh claim/fence, governe
 ### Private-State Economy economics/legal review (2026-09-24)
 
 The [canonical white-paper handoff](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md) now references the Publisher PR #72 internal economic and US/Texas regulatory issue review. The existing white-paper source hash, StegVerse-only scope and six-stage/16-benchmark roadmap remain unchanged. Independent professional approvals and authentic governed publication are still pending.
+
+
+### Healer first-consumption observation
+
+The existing standing-Healer resident consumer records even an initial `NO_REQUEST` when the runtime request and distinct canonical source are both unavailable; that observation is non-authorizing, retryable and retained at the existing `healer-sovereign-scheduler-request-consumption.latest.json` path. A subsequent self-materialized request or actual completed cycle replaces the latest observation through the same atomic writer. This corrects the first source-level visibility gap for native-email forward tracing; CI does not substitute for an authentic resident dispatch, WorkerCoordinator claim/fence or Master Records closure. See `docs/HEALER_STANDING_REQUEST_SELF_MATERIALIZATION_MIRROR_HANDOFF.md` and `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
