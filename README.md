@@ -1507,3 +1507,7 @@ The existing org-ledger root now has a bounded batch source candidate (`resident
 ### Organization batch source merge evidence
 
 Local replay/batch source PR #2643 merged as `f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1` with three green exact-head workflows; Master Records batch ingress and authentic end-to-end execution remain outstanding. Canonical owner: `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`.
+
+### Healer first-consumption observation
+
+The existing standing-Healer resident consumer records even an initial `NO_REQUEST` when the runtime request and distinct canonical source are both unavailable; that observation is non-authorizing, retryable and retained at the existing `healer-sovereign-scheduler-request-consumption.latest.json` path. A subsequent self-materialized request or actual completed cycle replaces the latest observation through the same atomic writer. This corrects the first source-level visibility gap for native-email forward tracing; CI does not substitute for an authentic resident dispatch, WorkerCoordinator claim/fence or Master Records closure. See `docs/HEALER_STANDING_REQUEST_SELF_MATERIALIZATION_MIRROR_HANDOFF.md` and `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
