@@ -33,6 +33,7 @@ class ErlHouseholdWorkerEvidenceTests(unittest.TestCase):
         script.write_text("# source test placeholder\n",encoding="utf-8")
         self.worker=load_worker()
         self.worker.ROOT=self.root
+        self.worker.RECEIPT=self.root/"receipts"/"erl-household-economic-conditions"/"latest.json"
         self.sg=self.root/"stegfin-governance"
         self.tvc=self.root/"TVC"
         self.roots={"StegVerse-Labs/Executive_Rhetoric_Ledger":self.erl}
