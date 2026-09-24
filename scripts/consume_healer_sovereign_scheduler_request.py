@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,7 @@ REQUEST_REL = Path("control/resident-execution-request.d/healer-sovereign-schedu
 CONSUMPTION_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json")
 CHECKPOINT_REL = Path("receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json")
 ROOT_OBSERVATION_REL = Path("receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json")
+IMMUTABLE_CONSUMPTION_DIR_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.by-receipt")
 RETENTION_POINTER_FIELDS = ("packet_ref", "packet_relative_path", "packet_sha256", "retained_under_root", "retained_under_root_source", "packet_state")
 TARGET_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
@@ -55,6 +57,35 @@ def clean_env(source: dict[str, str] | None = None) -> dict[str, str]:
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     return env
+
+
+def persist_consumption(runtime: Path, value: dict[str, Any]) -> dict[str, Any]:
+    """Retain each existing Healer consumer observation before a later cycle overwrites latest.
+
+    This records only request-consumer evidence. It does not fabricate a worker
+    claim, organization transition, Master Records custody or scheduler cycle.
+    """
+    receipt = dict(value)
+    receipt.setdefault("observed_at", datetime.now(timezone.utc).isoformat())
+    body = json.dumps(receipt, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    digest = hashlib.sha256(body).hexdigest()
+    receipt["receipt_body_sha256"] = "sha256:" + digest
+    encoded = (json.dumps(receipt, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
+    immutable = runtime / IMMUTABLE_CONSUMPTION_DIR_REL / f"{digest}.json"
+    immutable.parent.mkdir(parents=True, exist_ok=True)
+    if immutable.is_file():
+        if immutable.read_bytes() != encoded:
+            raise RuntimeError("immutable Healer request-consumption receipt collision")
+    else:
+        temp = immutable.with_name("." + immutable.name + ".tmp")
+        temp.write_bytes(encoded)
+        os.replace(temp, immutable)
+    latest = runtime / CONSUMPTION_REL
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    temp = latest.with_name("." + latest.name + ".tmp")
+    temp.write_bytes(encoded)
+    os.replace(temp, latest)
+    return receipt
 
 
 def validate_request(request: dict[str, Any]) -> None:
@@ -310,15 +341,19 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if source is None:
         request_path = runtime / REQUEST_REL
         if not request_path.is_file():
-            return {
+            return persist_consumption(runtime, {
                 "schema": "stegverse.healer-resident-request-consumption/v1",
                 "state": "NO_REQUEST",
+                "request_ref": REQUEST_REL.as_posix(),
+                "task_id": TARGET_TASK,
                 "runtime_execution_attempted": False,
+                "request_consumed": False,
                 "standing_request": True,
                 "source_resolution": source_resolution,
+                "failure_boundary": "STANDING_REQUEST_NOT_MATERIALIZED_AND_DISTINCT_SOURCE_UNAVAILABLE",
                 "retry_allowed": True,
-                "authority_effect": "NONE",
-            }
+                "authority_effect": "NONE_REQUEST_OBSERVATION_ONLY",
+            })
         request = load_json(request_path)
         validate_request(request)
         request_hash = stable_hash(request)
@@ -348,10 +383,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "blocker": "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED",
             "authority_effect": "NONE_REQUEST_ONLY",
         }
-        path = runtime / CONSUMPTION_REL
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        return receipt
+        return persist_consumption(runtime, receipt)
 
     request_materialization = synchronize_standing_request(source, runtime)
     scheduler_materialization = ensure_neutral_scheduler_materialized(source, runtime, runner=runner, values=values)
@@ -417,10 +449,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "network_source_fetch_performed": False,
         "authority_effect": "NONE_REQUEST_ONLY",
     }
-    path = runtime / CONSUMPTION_REL
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return persist_consumption(runtime, receipt)
 
 
 def main() -> int:
