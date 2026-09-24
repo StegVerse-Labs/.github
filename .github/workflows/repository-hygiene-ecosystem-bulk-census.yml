@@ -2,17 +2,39 @@ name: Ecosystem repository hygiene bulk census
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/repository-hygiene-ecosystem-bulk-census.yml'
+      - 'scripts/repository_hygiene_retire_merged_refs.py'
+      - 'tests/test_repository_hygiene_ref_retirement.py'
   push:
     branches: [main]
     paths:
       - '.github/workflows/repository-hygiene-ecosystem-bulk-census.yml'
       - 'scripts/repository_hygiene_inventory.py'
+      - 'scripts/repository_hygiene_retire_merged_refs.py'
+      - 'tests/test_repository_hygiene_ref_retirement.py'
 
 permissions:
   contents: read
 
 jobs:
+  verify-native-retirement-guards:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout without retained credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run fail-closed repository administration source tests
+        run: python3 -m unittest tests.test_repository_hygiene_ref_retirement -v
+      - name: Check branch-retirement code syntax
+        run: python3 -m py_compile scripts/repository_hygiene_retire_merged_refs.py
+
   census:
+    if: github.event_name != 'pull_request'
     name: census / ${{ matrix.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -22,7 +44,6 @@ jobs:
         repository:
           - StegVerse-Labs/.github
           - StegVerse-Labs/Site
-          - StegVerse-Labs/StegCore
     steps:
       - name: Checkout canonical hygiene control
         uses: actions/checkout@v4
