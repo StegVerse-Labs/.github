@@ -550,3 +550,46 @@ followup_sent: false
 alternative_capability_comparison_triggered: false
 goal_prompt_count: 12/20
 ```
+
+
+## Approved POVA follow-up sent and verified — 2026-09-24
+
+Reconciled current main canonical task record and this handoff before action. The user explicitly approved the exact prior proposed POVA/Western Rail follow-up. A pre-send Outlook query for `from:pova@povarr.com received>=2026-09-17` returned no inbound reply, and the original September 17 message was observed before sending.
+
+Authenticated Outlook `send_email` was invoked once from the connected `rigel@stegverse.org` account to `pova@povarr.com` with subject `Re: GP10 records / rebuild-history question` and the exact approved plaintext body. The provider returned success; a post-send Outlook subject/recipient search independently found the new message, and an exact-ID fetch returned the body and recipient:
+
+```text
+recipient: pova@povarr.com
+subject: Re: GP10 records / rebuild-history question
+provider-observed_message_timestamp: 2026-09-24T17:34:33Z
+outlook_message_id: AAMkADNkZGE1Y2RlLTdjMWYtNDQwNC05YTVlLTViYzhlZjA1NDY1YgBGAAAAAAALfLN1gPipTpwkHIEWImDhBwAtpM0b19v9QIQVKoYGvfR5AAAAAAEJAAAtpM0b19v9QIQVKoYGvfR5AAFPrzlPAAA=
+message_body_verified: true
+original_followup_wording_preserved: true
+public_page_link: https://stegverse.org/gp10-field-validation.html
+followup_sent: true
+pova_reply_observed_at_presend_check: false
+```
+
+The verified body follows, with Outlook display line wrapping not interpreted as changed wording:
+
+> Hello,
+>
+> I'm following up on my earlier question about incomplete or conflicting locomotive and rebuild-history records.
+>
+> We've published a short overview of the bounded evidence-review service we're exploring:
+>
+> https://stegverse.org/gp10-field-validation.html
+>
+> I'm interested in whether this is a problem your organization encounters and whether reviewing a small, authorized record package would be useful.
+>
+> If someone else handles these records or evaluates outside review services, I'd appreciate being directed to the appropriate person.
+>
+> Thank you,
+>
+> Rigel Randolph
+>
+> StegVerse
+
+Provider-saved message evidence establishes presence in the sender's mailbox, not recipient delivery, reading or commercial interest. No response, authorized dataset, paid-scope willingness, authorized decision-maker referral, buyer validation or engagement is established. All six commercial predicates remain false. Integrity Rail Services, Panhandle Northern/OmniTRAX and Progress Rail received no additional follow-up in this step. Preserve ACTIVE/CHECKED_OUT and COSV `30001000100000`; do not promote the alternative-capability comparison before a reasonable ordinary business-day opportunity for this follow-up or an explicit negative-fit/rejection reply. No new runtime, connector, scheduler, feature or routine Actions validation.
+
+goal_prompt_count: 14/20
