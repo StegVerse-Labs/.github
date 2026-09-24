@@ -10,6 +10,7 @@ import json
 import re
 import subprocess
 import sys
+from urllib.parse import quote
 from pathlib import Path
 
 SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -36,7 +37,7 @@ def validate_entry(item, repository):
     if item.get("release_authority") != OWNER or item.get("owner_disposition") != "TERMINAL_UNOWNED_EVIDENCE_SAFE":
         return "MISSING_OWNER_RELEASE"
     if item.get("intr_decision") != "ALLOW":
-        return "MISSING_AUTHENTIC_INTR_PROOF"
+        return "MISSING_INTR_ALLOW_REFERENCE"
     for k in ("intr_receipt_sha256", "org_receipt_sha256", "master_records_receipt_sha256"):
         value = str(item.get(k, ""))
         if not re.fullmatch(r"sha256:[a-f0-9]{64}", value):
@@ -51,14 +52,14 @@ def preflight_live(repository, item):
     owner, name = repository.split("/", 1)
     branch = item["branch"]
     # Read authenticated GitHub state; never trust a stale census as a live ref.
-    found = json.loads(command("gh", "api", f"repos/{repository}/branches/{branch}"))
+    found = json.loads(command("gh", "api", f"repos/{repository}/branches/{quote(branch, safe=chr(0)[:0])}"))
     if found.get("protected") or found.get("name") != branch:
         return "PROTECTED_OR_CHANGED"
     live_sha = (found.get("commit") or {}).get("sha")
     if live_sha != item["expected_sha"]:
         return "REF_TIP_MOVED"
     # A branch head still owned by any open PR cannot be retired.
-    prs = json.loads(command("gh", "api", f"repos/{repository}/pulls?state=open&per_page=100&head={owner}:{branch}"))
+    prs = json.loads(command("gh", "api", f"repos/{repository}/pulls?state=open&per_page=100&head={quote(owner + chr(58) + branch, safe=chr(0)[:0])}"))
     if prs:
         return "ACTIVE_PR_HEAD"
     if item.get("merge_pr") is not None:
@@ -100,7 +101,12 @@ def run(plan, apply):
         ref = f"refs/heads/{branch}"
         expected = item["expected_sha"]
         try:
+            remote = command("git", "remote", "get-url", "origin")
+            if not remote.endswith((f"github.com/{repository}.git", f"github.com/{repository}")):
+                raise RuntimeError("origin does not match approved repository")
             command("git", "push", f"--force-with-lease={ref}:{expected}", "origin", f":{ref}")
+            if command("git", "ls-remote", "--heads", "origin", ref):
+                raise RuntimeError("branch still exists after deletion attempt")
             results.append({"branch": branch, "result": "REF_DELETED_ORG_MR_CLOSURE_REQUIRED", "deleted_sha": expected})
         except RuntimeError as exc:
             results.append({"branch": branch, "result": "RETAIN", "reason": "DELETE_FAILED:" + str(exc)[:200]})
@@ -108,7 +114,7 @@ def run(plan, apply):
         "schema": "stegverse.repository-hygiene-native-ref-retirement-result/v1",
         "repository": repository, "authority_owner": OWNER, "apply": apply,
         "results": results,
-        "note": "No canonical terminal closure is claimed until authentic post-deletion organization transition receipt and Master Records reconstruction are recorded by existing custodians."
+        "note": "Typed packet fields are prerequisites, not authentic receipt verification. The existing authorized custody owner must independently authenticate exact InTr/org/MR evidence before repository-admin execution. No canonical terminal closure is claimed until authentic post-deletion organization transition receipt and Master Records reconstruction are recorded."
     }
 
 def main():
