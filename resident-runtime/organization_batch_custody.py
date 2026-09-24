@@ -234,7 +234,8 @@ def close_batch(reason: str, *, root: Path | None = None) -> dict:
     body = {
         "schema": SCHEMA,
         "organization_id": org.C["organization"],
-        "contiguous_receipt_range": [prior["contiguous_receipt_range"][1] + 1 if prior else 1,\n                                      (prior["contiguous_receipt_range"][1] if prior else 0) + len(hashes)],
+        "contiguous_receipt_range": [prior["contiguous_receipt_range"][1] + 1 if prior else 1,
+                                      (prior["contiguous_receipt_range"][1] if prior else 0) + len(hashes)],
         "previous_batch_commitment": prior_id,
         "first_org_receipt_sha256": hashes[0],
         "last_org_receipt_sha256": hashes[-1],
