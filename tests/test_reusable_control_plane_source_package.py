@@ -163,3 +163,9 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_org_receipt_dependencies_are_exact_allowlisted():
+    source = (ROOT / "workers/control_plane_source_package.py").read_text(encoding="utf-8")
+    assert '"resident-runtime/aggregate_repo_transition.py"' in source
+    assert '".stegverse/transition-ledger/org-contract.json"' in source

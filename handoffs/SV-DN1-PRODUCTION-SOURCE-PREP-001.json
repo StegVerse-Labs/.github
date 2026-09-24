@@ -58,7 +58,9 @@
     "source_handoff_ref": "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
     "dependencies": [],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
-    "upstream_runtime_dependency": null
+    "upstream_runtime_dependency": null,
+    "runtime_predecessor_reconstruction_required": false,
+    "parent_task_relationship": "PROVENANCE_ONLY_NO_RUNTIME_PREDECESSOR"
   },
   "authority": {
     "authority_source": "canonical SV-DN-1 source-root requirement + StegVerse content-addressed source-package contract + sovereign WorkerCoordinator",

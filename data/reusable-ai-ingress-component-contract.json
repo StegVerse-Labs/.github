@@ -3,38 +3,161 @@
   "model": "Reusable Task Component Model",
   "parent_model_ref": "data/reusable-task-component-model.json",
   "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
-  "purpose": "Reusable non-authorizing components for AI/session coordination ingress and future non-ChatGPT AI decision-processing isolation.",
+  "purpose": "Reusable non-authorizing components for AI/session coordination ingress and defensive containment of ungoverned AI at StegVerse-controlled consequence boundaries.",
   "components": [
     {
       "component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
       "capability_provided": "fail_closed_session_actor_classification_and_task_registry_lifecycle_binding",
-      "inputs": ["task_id", "session_id", "actor_kind", "checkin_context_or_exact_registry_disposition"],
-      "outputs": ["coordination_admission_or_stop_disposition", "actor_bound_return_receipt", "actor_bound_session_close_receipt"],
-      "preconditions": ["canonical Goal Task identity exists", "session-bearing Task Registry coordination path", "actor kind supplied", "no runtime identity claim inferred from declaration"],
-      "expected_evidence": ["source-level fail-closed actor classification", "non-ChatGPT AI denial", "ChatGPT gated-checkin continuity on return/close", "runtime identity attestation remains separately classified"],
+      "inputs": [
+        "task_id",
+        "session_id",
+        "actor_kind",
+        "checkin_context_or_exact_registry_disposition"
+      ],
+      "outputs": [
+        "coordination_admission_or_stop_disposition",
+        "actor_bound_return_receipt",
+        "actor_bound_session_close_receipt"
+      ],
+      "preconditions": [
+        "canonical Goal Task identity exists",
+        "session-bearing Task Registry coordination path",
+        "actor kind supplied",
+        "no runtime identity claim inferred from declaration"
+      ],
+      "expected_evidence": [
+        "source-level fail-closed actor classification",
+        "non-ChatGPT AI denial",
+        "ChatGPT gated-checkin continuity on return/close",
+        "runtime identity attestation remains separately classified"
+      ],
       "authority_owner": "Task Registry coordination policy only; no execution authority",
       "authority_effect": "NONE_COORDINATION_ONLY",
-      "failure_classes": ["ACTOR_KIND_MISSING", "ACTOR_KIND_UNRECOGNIZED", "NON_CHATGPT_AI_DENIED", "GATED_CHECKIN_CONTINUITY_MISSING", "TASK_OR_DISPOSITION_MISMATCH"],
+      "failure_classes": [
+        "ACTOR_KIND_MISSING",
+        "ACTOR_KIND_UNRECOGNIZED",
+        "NON_CHATGPT_AI_DENIED",
+        "GATED_CHECKIN_CONTINUITY_MISSING",
+        "TASK_OR_DISPOSITION_MISMATCH"
+      ],
       "retry_or_reentry_semantics": "FAIL_CLOSED; preserve evidence; re-enter only with corrected canonical coordination inputs; component receipt grants no later authority",
       "version_or_schema_binding": "stegverse.task-registry-ai-ingress-policy/v1",
-      "canonical_implementation": ["scripts/evaluate_task_registry_ai_session_checkin.py", "scripts/record_task_registry_session_return.py", "scripts/materialize_task_session_close.py"],
+      "canonical_implementation": [
+        "scripts/evaluate_task_registry_ai_session_checkin.py",
+        "scripts/record_task_registry_session_return.py",
+        "scripts/materialize_task_session_close.py"
+      ],
       "repeatable": true
     },
     {
       "component_id": "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011",
-      "capability_provided": "common_sandboxed_ai_decision_processing_region_with_task_registry_access_denied",
-      "inputs": ["manifested AI decision request", "declared model/framework identity", "bounded processing policy", "allowed output contract"],
-      "outputs": ["bounded AI decision result", "sandbox evidence", "explicit denied Task Registry reachability"],
-      "preconditions": ["non-ChatGPT AI support explicitly enabled", "canonical SDK/LLM Adapter ingress selected as applicable", "sandbox policy materialized", "Task Registry access path absent or fail-closed"],
-      "expected_evidence": ["source enforcement denying Task Registry reachability", "sandbox boundary validation", "representative runtime denial/admission evidence"],
-      "authority_owner": "No component-local state-transition authority; Interlock/InTr remains governed transition owner where state change is requested",
+      "capability_provided": "ungoverned_ai_defensive_envelope_at_controlled_chokepoints_with_external_ai_sovereignty_preserved",
+      "inputs": [
+        "controlled chokepoint descriptor",
+        "declared or observed external AI/process identity without treating declaration as attestation",
+        "capability-scoped filesystem/network/tool policy",
+        "credential isolation or explicitly capability-scoped credential policy",
+        "consequence mediation policy",
+        "evidence retention policy",
+        "governed egress contract"
+      ],
+      "outputs": [
+        "bounded AI work result or proposed consequence",
+        "capability-boundary evidence",
+        "denied-consequence proof where a consequence is rejected",
+        "governed egress candidate with no component-local authority",
+        "explicit denied Task Registry and protected-authority reachability"
+      ],
+      "preconditions": [
+        "non-ChatGPT or otherwise ungoverned AI interaction crosses a StegVerse-controlled consequence boundary",
+        "protected resources have no alternate direct path through this component",
+        "capability scope is materialized before execution",
+        "ambient host credentials and authority-bearing state are absent",
+        "any credential exposure is separately issued and capability-scoped by the canonical credential owner",
+        "Task Registry, TV/TVC, Interlock/InTr, Master Records, Publisher, and host-runtime authority are absent from the AI workspace",
+        "external AI internal reasoning, model policy, memory, and implementation remain outside StegVerse authority"
+      ],
+      "expected_evidence": [
+        "source contract enumerating controlled chokepoints and capability ceilings",
+        "filesystem/network/tool scope enforcement evidence",
+        "credential absence or exact capability-scoped issuance evidence",
+        "Task Registry and protected-authority reachability denial",
+        "denied-consequence proof showing consumed=false and consequence_reachable=false where the selected boundary supports those predicates",
+        "evidence retention for request, boundary policy, proposed consequence, disposition, and released result without claiming hidden model state",
+        "governed egress routed to the canonical authority owner when consequential state change is requested",
+        "representative runtime boundary admission and denial evidence"
+      ],
+      "authority_owner": "No component-local state-transition authority. External AI remains sovereign internally; WorkerCoordinator, TV/TVC, Interlock/InTr, Master Records, Publisher, and other canonical owners retain their existing authority.",
       "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
-      "failure_classes": ["TASK_REGISTRY_REACHABILITY_PRESENT", "SANDBOX_POLICY_MISSING", "UNDECLARED_PROCESSING_ROUTE", "RUNTIME_ISOLATION_NOT_OBSERVED"],
-      "retry_or_reentry_semantics": "FAIL_CLOSED; remediate architecture/policy then revalidate and re-observe runtime evidence",
+      "failure_classes": [
+        "CONTROLLED_CHOKEPOINT_NOT_ESTABLISHED",
+        "ALTERNATE_PROTECTED_PATH_REACHABLE",
+        "CAPABILITY_SCOPE_MISSING_OR_EXCEEDED",
+        "HOST_FILESYSTEM_REACHABLE",
+        "AMBIENT_CREDENTIAL_REACHABLE",
+        "TASK_REGISTRY_REACHABILITY_PRESENT",
+        "PROTECTED_AUTHORITY_REACHABILITY_PRESENT",
+        "DENIED_CONSEQUENCE_STILL_REACHABLE",
+        "EVIDENCE_RETENTION_INCOMPLETE",
+        "UNGOVERNED_EGRESS_PATH_PRESENT",
+        "RUNTIME_ISOLATION_NOT_OBSERVED"
+      ],
+      "retry_or_reentry_semantics": "FAIL_CLOSED at the controlled consequence boundary; preserve boundary evidence; remediate the first concrete capability, credential, reachability, evidence, or egress defect; re-enter only after the same boundary is revalidated.",
       "version_or_schema_binding": "stegverse.reusable-ai-ingress-component-contract/v1",
-      "canonical_implementation": "NOT_YET_MATERIALIZED",
+      "canonical_implementation": [
+        "StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312:tasks/ungoverned_ai_defensive_envelope.py",
+        "workers/ungoverned_ai_defensive_envelope_worker.py",
+        "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+        "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+        "scripts/dispatch_resident_execution_requests.py",
+        "scripts/refresh_sovereign_worker_runtime_source.py"
+      ],
       "repeatable": true,
-      "status": "REUSABLE_COMPONENT_IDENTIFIED_NOT_IMPLEMENTED"
+      "status": "REPRESENTATIVE_RUNTIME_PROBE_AND_EXISTING_RESIDENT_DISPATCH_CARRIAGE_MERGED_SOURCE_VALIDATED_AUTHENTIC_RESIDENT_OBSERVATION_NOT_YET_PROVEN",
+      "instantiations": [
+        {
+          "name": "EXTERNAL_AI_MEETING_ROOM",
+          "role": "CONCRETE_INSTANTIATION_NOT_PRIMITIVE",
+          "workspace_semantics": "External AI may operate freely on sandbox-local copies and tools within declared capability scope.",
+          "required_outer_boundary": "Host filesystem, ambient credentials, protected authority surfaces, and ungoverned consequential egress remain unreachable.",
+          "authority_effect": "NONE"
+        }
+      ],
+      "defensive_envelope_invariants": {
+        "govern_the_boundary_not_hidden_model_state": true,
+        "external_ai_sovereignty_preserved": true,
+        "controlled_chokepoint_required": true,
+        "capabilities_explicit_and_bounded": true,
+        "ambient_credentials_forbidden": true,
+        "denial_requires_consequence_unreachability_evidence_when_supported": true,
+        "evidence_does_not_create_authority": true,
+        "governed_egress_is_separate_from_ai_workspace": true,
+        "alternate_paths_outside_controlled_boundaries_are_not_claimed_constrained": true
+      },
+      "representative_runtime_probe": {
+        "scope": "bounded untrusted-source computation through existing TVC SES stdio provider",
+        "admitted_case": "pure bounded transform 41 -> 42",
+        "denied_cases": [
+          "filesystem write",
+          "network/import",
+          "ambient environment/import"
+        ],
+        "denied_evidence_required": [
+          "consumed=false",
+          "consequence_reachable=false"
+        ],
+        "external_provider_origin": "NOT_PROVEN_BY_THIS_PROBE",
+        "consequential_egress": "NOT_REQUESTED_EVIDENCE_ONLY",
+        "runtime_owner": "existing sovereign WorkerCoordinator targeted independent task control"
+      },
+      "source_validation": {
+        "tvc_boundary_merge": "0b82b45de7d214fbdb2f24bc4027a6aeb31a7312",
+        "github_probe_merge": "e529982fc01029e6c7016c8e3f1f80413212da1e",
+        "github_dispatch_merge": "5404e8bffb11e08127011a9d27de3d214bd38a7b",
+        "runtime_observation_claimed": false
+      }
     }
   ],
   "authority_invariants": {

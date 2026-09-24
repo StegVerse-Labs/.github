@@ -14,9 +14,25 @@
     "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/continuity-vault-kit"],
-    "components": ["retained-stegos-node", "node-genesis", "network-manifold", "universal-intr", "service-root-kv-topology", "ecosystem-chat-service-kv", "physical-peer-evidence", "replay-reconstruction"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/continuity-vault-kit"
+    ],
+    "components": [
+      "retained-stegos-node",
+      "node-genesis",
+      "network-manifold",
+      "universal-intr",
+      "service-root-kv-topology",
+      "ecosystem-chat-service-kv",
+      "physical-peer-evidence",
+      "replay-reconstruction"
+    ]
   },
   "adjacent_task_refs": [
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
@@ -26,8 +42,6 @@
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
   ],
   "remaining_predicates": [
-    "DISTINCT_SECOND_ACTIVE_NODE_OBSERVED",
-    "NETWORK_PRESENT_PROVEN",
     "REAL_FRAGMENTATION_AND_REFORMATION_OBSERVED",
     "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
   ],
@@ -50,5 +64,7 @@
     "heartbeat_execution_authority": false,
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false
-  }
+  },
+  "cosv_task_vector": "40000100100000",
+  "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json"
 }

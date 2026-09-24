@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHENTIC_RESIDENT_DEFENSIVE_ENVELOPE_BOUNDARY_RECEIPT_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "ecosystem-ai-defensive-envelope-v0.1",
+      "block_ref": "docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/ungoverned-ai-defensive-envelope.json",
+      "evidence_refs": [
+        "docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+        "handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "workers/ungoverned_ai_defensive_envelope_worker.py",
+        "StegVerse-Labs/TVC@${TVC_FLOOR}:tasks/ungoverned_ai_defensive_envelope.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "handoff_ref": "handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001 canonical Task Registry + existing WorkerCoordinator",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 0,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "event_materialization_grants_authority": false,
+        "device_confirmation_required": false,
+        "device_discovery_required": false,
+        "remote_connected_device_required": false,
+        "second_user_operated_device_required": false,
+        "absence_of_connected_device_is_blocker": false
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:ungoverned-ai-defensive-envelope-v1",
+      "authority_source": "handoffs/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json#authority",
+      "capabilities": [
+        "ungoverned_ai_defensive_envelope_runtime_probe",
+        "bounded_process_execution",
+        "existing_tvc_ses_boundary_reuse"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "ungoverned-ai-defensive-envelope-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false,
+  "remote_connected_device_required": false,
+  "second_user_operated_device_required": false
+}

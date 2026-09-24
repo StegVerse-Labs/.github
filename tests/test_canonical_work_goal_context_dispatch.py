@@ -204,6 +204,89 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
         self.assertIsNone(goal)
 
 
+    def test_erl_household_goal_requires_its_current_exact_consumption_receipt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source, runtime = root / "source", root / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            dispatcher = runtime / BRIDGE.DISPATCHER_REL
+            dispatcher.parent.mkdir(parents=True, exist_ok=True)
+            dispatcher.write_text("# existing dispatcher\n", encoding="utf-8")
+            task_id = BRIDGE.ERL_HOUSEHOLD_GOAL_TASK_ID
+
+            def runner(command, **kwargs):
+                dispatch = runtime / BRIDGE.DISPATCH_RECEIPT_REL
+                dispatch.parent.mkdir(parents=True, exist_ok=True)
+                dispatch.write_text(json.dumps({
+                    "schema": "stegverse.resident-request-dispatch/v1",
+                    "state": "DISPATCH_COMPLETE",
+                    "consumer_count": 1,
+                    "selected_consumers": ["canonical_work_coordination"],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "current_goal_task_id": task_id,
+                    "goal_context_forwarded_to": "canonical_work_coordination",
+                    "request_failures": [],
+                    "outcomes": [{
+                        "consumer": "canonical_work_coordination",
+                        "attempted": True, "state": "COMPLETED", "returncode": 0,
+                        "result": {"canonical_work_request_set": {"outcomes": [{
+                            "task_id": task_id, "state": "COMPLETED",
+                            "request_sha256": "current-request-hash",
+                            "bootstrap_receipt_ref": "/runtime/current-bootstrap.json"
+                        }]}}
+                    }]
+                }) + "\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            safe_refresh = {
+                "mutable_runtime_state_preserved": True,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+            }
+            with mock.patch.object(BRIDGE, "refresh", return_value=safe_refresh):
+                first = BRIDGE.refresh_and_dispatch(
+                    source, runtime, target_consumer="canonical_work_coordination",
+                    goal_task_id=task_id, runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+            self.assertEqual(first["state"], "REFRESH_COMPLETE_DISPATCH_INCOMPLETE")
+            self.assertTrue(first["target_consumption_evidence_required"])
+            self.assertFalse(first["exact_target_consumption_evidence_observed"])
+            self.assertEqual(first["target_consumption_receipt_path"],
+                             str(BRIDGE.ERL_HOUSEHOLD_CONSUMPTION_REL))
+
+            path = runtime / BRIDGE.ERL_HOUSEHOLD_CONSUMPTION_REL
+            path.parent.mkdir(parents=True, exist_ok=True)
+            receipt = {
+                "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                "task_id": task_id, "state": "COMPLETED",
+                "request_sha256": "current-request-hash",
+                "bootstrap_receipt_ref": "/runtime/current-bootstrap.json",
+                "credential_material_present": False,
+                "network_source_fetch_performed": False,
+            }
+            path.write_text(json.dumps(receipt) + "\n", encoding="utf-8")
+            with mock.patch.object(BRIDGE, "refresh", return_value=safe_refresh):
+                second = BRIDGE.refresh_and_dispatch(
+                    source, runtime, target_consumer="canonical_work_coordination",
+                    goal_task_id=task_id, runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+            self.assertEqual(second["state"], "REFRESH_AND_DISPATCH_COMPLETE")
+            self.assertTrue(second["exact_target_consumption_evidence_observed"])
+            self.assertTrue(second["target_consumption_matches_current_dispatch_result"])
+            receipt["request_sha256"] = "stale-previous-request"
+            path.write_text(json.dumps(receipt) + "\n", encoding="utf-8")
+            with mock.patch.object(BRIDGE, "refresh", return_value=safe_refresh):
+                third = BRIDGE.refresh_and_dispatch(
+                    source, runtime, target_consumer="canonical_work_coordination",
+                    goal_task_id=task_id, runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+            self.assertEqual(third["state"], "REFRESH_COMPLETE_DISPATCH_INCOMPLETE")
+            self.assertFalse(third["target_consumption_matches_current_dispatch_result"])
+
     def test_steghealth_goal_requires_task_specific_consumption_receipt(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

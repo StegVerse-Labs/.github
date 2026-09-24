@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.repository-hygiene-ref-retirement-routing/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-OWNER-CLEARANCE-BATCH4-20260921",
+  "source_approval_manifest": "StegVerse-Labs/TVC:.github/repository-hygiene-approved-retirements.txt",
+  "source_clearance_evidence": "StegVerse-Labs/TVC:evidence/repository-hygiene/2026-09-21-tvc-owner-clearance-batch4.json",
+  "failed_revalidation": {
+    "run_id": 35669961523,
+    "reason": "README self-reference named both approved branches, converting them to REVIEW_REQUIRED_SOURCE_REFERENCED",
+    "invalid_approved_count": 2,
+    "routed": false
+  },
+  "source_revalidation_run_id": 35670276119,
+  "source_revalidation_head": "e901b5ee8a464027e8e46c032f874973dc1d622a",
+  "source_revalidation_artifact_id": 10670703919,
+  "source_revalidation_artifact_digest": "sha256:3a3f5d175713de564b8f035ea7f013d957349678dade901086e14cb7ca5edd00",
+  "manifest_approved_retirement_ready_count": 29,
+  "invalid_approved_count": 0,
+  "newly_routed_count": 2,
+  "previously_routed_count": 27,
+  "structural_candidate_count": 163,
+  "remaining_unapproved_structural_candidate_count": 134,
+  "routed_refs": [
+    "docs/cmc022-cvk-connector-blocker-20260827",
+    "docs/cmc024-crypto-bot-hosted-live-preflight-20260827"
+  ],
+  "route_target": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "route_state": "ROUTED_NON_DESTRUCTIVE_AUTHORITY_INPUT",
+  "deletion_performed": false,
+  "deletion_authorized_by_this_record": false,
+  "authority_effect": "NONE",
+  "notes": "Batch 4 only. Initial post-merge validation failed closed because README referenced the approved branch names. PR #461 removed those exact names from ordinary documentation without widening classifier exclusions; exact names remain in dedicated hygiene evidence. Repository-native retirement authority must independently revalidate current state before any deletion."
+}

@@ -186,5 +186,21 @@
       "ECOSYSTEM_RECEIPT_HB_CHECKPOINT_CONSUMES_SUCCESSOR_ORDINAL_1"
     ],
     "authority_effect": "NONE_RUNTIME_ROUTING_CORRECTION_ONLY"
+  },
+  "runtime_resolution": {
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "existing_master_records_source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+    "master_records_runtime_entrypoint": "services.canonical_master_records_api:app",
+    "source_refresh_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+    "source_refresh_owner": "scripts/install_sovereign_worker_source_refresh_service.py",
+    "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+    "authentic_master_records_source_refresh_observed": false,
+    "authentic_hb_bound_successor_ordinal_1_observed": false,
+    "authentic_first_successor_checkpoint_observed": false,
+    "deterministic_existing_path_failure_observed": false,
+    "source_repair_justified": false,
+    "authority_effect": "NONE_SHARED_RUNTIME_EVIDENCE_BINDING_ONLY",
+    "canonical_generation_observed": 191,
+    "repository_evidence_classification": "IMPLEMENTATION_TEST_HANDOFF_AND_NEGATIVE_OBSERVATION_ONLY"
   }
 }

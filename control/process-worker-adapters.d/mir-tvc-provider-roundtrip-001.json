@@ -5,12 +5,20 @@
     {
       "adapter_ref": "process:mir-tvc-provider-roundtrip-v1",
       "authority_ref": "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
-      "capabilities": ["mir_tvc_provider_roundtrip"],
-      "command": ["python", "workers/mir_tvc_provider_roundtrip_worker.py"],
+      "capabilities": [
+        "mir_tvc_provider_roundtrip"
+      ],
+      "command": [
+        "python",
+        "workers/mir_tvc_provider_roundtrip_worker.py"
+      ],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
         "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_STEGOS_ROOT",
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_HEARTBEAT_ROOT",
         "STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET",
         "HOME",
         "USER",
@@ -27,10 +35,12 @@
       "notes": [
         "Thin WorkerCoordinator protocol bridge only; does not create runtime, scheduler, broker, credential, transition, or custody authority.",
         "Consumes only an already-fenced WorkerCoordinator invocation for MIR-TVC-PROVIDER-ROUNDTRIP-001.",
+        "Uses the already-local generic RTC-INTERLOCK-INTR-TRANSPORT-008 Universal InTr implementation with exact StegVerse-org/StegVerse-SDK -> TVC:ProviderOperationBroker request identity and exact reverse response identity; transport receipts do not grant Interlock admission or provider authority.",
         "Delegates the admitted MIR-RUN2-EVENT-001 request to the existing canonical TVC non-exportable provider broker through the existing TV/TVC Unix vault socket.",
+        "After a real completed provider receipt exists, invokes only the registered reusable trigger to reconcile that same transaction and Master Records custody; a later custody boundary must reuse the retained provider receipt rather than blindly repeat the external consequence.",
         "No credential material is accepted from or returned to the worker."
       ],
-      "timeout_seconds": 120,
+      "timeout_seconds": 300,
       "type": "process_json_v0.1"
     }
   ]

@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.repository-hygiene-owner-review/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-RESIDUAL-REVIEW-BATCH7-20260921",
+  "source_inventory_run_id": 35673548654,
+  "source_inventory_artifact_id": 10671758096,
+  "source_inventory_artifact_digest": "sha256:74a9a8c0f2d0408b2687a737daf9b9b95dbf256005218bc55bc9e068a1ed5972",
+  "starting_unapproved_structural_candidate_count": 131,
+  "exclusion_policy": [
+    "broad active credential-consistency",
+    "resident/runtime",
+    "provider-activation",
+    "release",
+    "private-source",
+    "App Store Connect",
+    "Google Drive",
+    "HIL",
+    "MIR",
+    "SDK",
+    "SV002",
+    "payment",
+    "evidence-retention",
+    "StegOS delivery"
+  ],
+  "reviewed_refs": [
+    {
+      "branch": "chore/ses-m23a-machine-ownership-023a",
+      "decision": "RETAIN_ACTIVE_OWNER",
+      "evidence": "TVC_MIRROR_HANDOFF states SES M23A genuine execution remains owned by .github#59/#65/#81 plus the TVC validation/activation chain."
+    },
+    {
+      "branch": "chore/sovereign-network-source-validation",
+      "decision": "RETAIN_ACTIVE_HANDOFF_AND_WORKFLOW",
+      "evidence": "Current sovereign relay/ESRL handoffs and .github/workflows/sovereign-network-source-validation.yml actively reference and use this source-validation surface."
+    },
+    {
+      "branch": "feat/tv-artifact-exchange-20260824",
+      "decision": "RETAIN_RUNTIME_PENDING",
+      "evidence": "tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json classifies artifact_exchange as SOURCE_VALIDATED_RUNTIME_PENDING; active resident source and service templates remain current."
+    },
+    {
+      "branch": "docs/reconcile-stegos-tvc-upload-retirement",
+      "decision": "EXCLUDED_STEGOS_DELIVERY",
+      "evidence": "Falls within the explicit StegOS delivery/App Store execution exclusion boundary for this batch."
+    },
+    {
+      "branch": "feat/r3-task-post-pr98-reconciliation",
+      "decision": "EXCLUDED_RELEASE",
+      "evidence": "R3 post-PR98 reconciliation remains release-adjacent and is excluded by batch policy."
+    },
+    {
+      "branch": "feat/bea-readonly-provider-erl-household",
+      "decision": "EXCLUDED_PROVIDER",
+      "evidence": "Provider-facing BEA surface is excluded by the provider-activation/provider-operation boundary."
+    }
+  ],
+  "approved_ref_delta": [],
+  "approval_manifest_changed": false,
+  "hosted_revalidation_required": false,
+  "last_validated_manifest_ready_count": 32,
+  "last_validated_invalid_approval_count": 0,
+  "last_validated_run_id": 35673548654,
+  "routed_ref_delta": [],
+  "route_state": "NO_DELTA_NOT_ROUTED",
+  "deletion_performed": false,
+  "authority_effect": "NONE",
+  "ending_unapproved_structural_candidate_count": 131,
+  "notes": "Batch 7 intentionally approves nothing. Every sampled plausible residual is either actively owned or falls within the explicit exclusion set. No manifest change means no new hosted hygiene run is necessary; the last validated manifest remains 32 ready / 0 invalid."
+}

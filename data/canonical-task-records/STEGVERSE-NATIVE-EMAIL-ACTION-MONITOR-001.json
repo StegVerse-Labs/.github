@@ -230,6 +230,74 @@
     "deployment_required": false,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+          "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+          "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+          "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+          "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+          "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "runtime_resolution": {
     "current_executor": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001 has a standing recurring resident request. The existing Healer scheduler selects RT-NATIVE-EMAIL-ACTION-MONITOR-001 by deterministic UTC-hour slot, invokes the KV-enforcing monitor in the resident heartbeat runtime, and bounds failed retries. Exact reviewed Gmail IDs plus verified KV receipts enter the merged StegOps generic-manifest governance path. TVC ARCHIVE_IDS is installed only as the trusted bounded consequence outside caller authority payload and remains unreachable unless canonical StegGate and commit coherence allow. Healer may reuse already-local governance roots or augment them only from an admissible SV-DN1 production-source-preparation v2 receipt. That authentic source-preparation receipt has not yet been observed in the current canonical handoff, so governed archive runtime may remain source-blocked until those four roots are otherwise locally available or the existing source-prep lane completes.",
     "authority_basis": "Merged source and deterministic validation prove construction, source propagation, KV ordering, retry semantics, exact archive-context binding, canonical governance wiring, denial-path non-execution, and verified source-root reuse semantics only. Authentic resident schedule, current governance-source materialization, KnowledgeVault write/readback, SDK/StegCore decision/coherence, TV/TVC provider mutation, Gmail mailbox progression, Master Records custody, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",

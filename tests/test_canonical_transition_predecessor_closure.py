@@ -17,14 +17,23 @@ def _load_custody_module():
         "epoch": 1,
         "generation": 1,
     }
-    sys.modules.setdefault("heartbeat_runtime", package)
-    sys.modules["heartbeat_runtime.independent_oscillator"] = oscillator
     path = Path(__file__).resolve().parents[1] / "workers" / "canonical_state_transition_custody.py"
     spec = importlib.util.spec_from_file_location("canonical_state_transition_custody_under_test", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
+    # The module under test stays registered; that shadows nothing real.
     sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    # The heartbeat_runtime stub is scoped to this exec only. Left in
+    # sys.modules it shadows the real package for every test file that runs
+    # after this one, failing them with "cannot import name ... from
+    # heartbeat_runtime.independent_oscillator (unknown location)" -- the
+    # empty __path__ showing through. The custody module binds
+    # current_reference at import time, so it needs the stub only here.
+    with patch.dict(sys.modules, {
+        "heartbeat_runtime": package,
+        "heartbeat_runtime.independent_oscillator": oscillator,
+    }):
+        spec.loader.exec_module(module)
     return module
 
 

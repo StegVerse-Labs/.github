@@ -237,3 +237,43 @@ AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF
 The durable Master Records nonce query remains gated until that exact authentic receipt is observed and validates all required source-proof predicates.
 
 Manual work: None.
+
+
+## Goal Prompt 8/20 — retained source-refresh path re-observed; no new source defect
+
+Canonical main entering this continuation: `5c5bd54a232f241b107d84e0c529d7dbfc36ee21` (Task Registry generation 184).
+
+The existing retained receipt path was re-observed without substituting GitHub/CI for resident runtime truth. No authorized resident command surface was exposed to this continuation, so the absence of a readable runtime receipt is not treated as runtime absence or failure.
+
+Current source was traced again end-to-end. The existing recurring source-refresh service invokes the already-merged Master Records materializer in `--materialize-master-records-only` mode with the same resident `--runtime-root`; `materialize_master_records_source_package_and_retain(...)` writes the non-authorizing result to:
+
+```text
+receipts/sovereign-host/master-records-source-refresh.latest.json
+```
+
+under that exact resident runtime root. Focused repository tests still require the retained file to exist and require `state=MATERIALIZED_VERIFIED`. The writer continues to preserve `package_provenance.source_proof`, `canonical_master_records_api_loaded_from_package`, and `materialization_performed` without granting dispatch or runtime authority.
+
+No newly evidenced source-level carriage, path, provenance, or retention defect was found. Therefore no source change, new observer, runtime, scheduler, dispatcher, endpoint, host, device prerequisite, invocation, or custody plane is justified in this prompt.
+
+The authentic receipt itself remains unobserved. Consequently the durable canonical Master Records nonce query remains gated and A3 remains `NOT_OBSERVED`, not `FAILED`. The first unsatisfied predicate remains:
+
+```text
+AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF
+```
+
+Only an authentic retained receipt satisfying the exact schema/state/materialization/source-proof predicates may permit observation of the durable canonical Master Records runtime and the existing authenticated query for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` on the immutable nonce.
+
+Manual work: None.
+
+
+## Goal Prompt 9/20 — post-rebase authentic source-refresh evidence still unobservable
+
+PR #2521 was rebased onto canonical main `cde20d6dd997b6b6aa528e9d02b9e5fdf50896e5` as one commit containing only this task record and handoff. GitHub reports the PR mergeable, but no exact-head validation workflows have attached to head `ec24644601e9745d63fc80e8e9edac1a8edbc14d`; therefore it remains open and unmerged.
+
+The resident evidence boundary was re-observed again. Repository searches produced only the existing source implementation, focused tests, and prior canonical declarations for `receipts/sovereign-host/master-records-source-refresh.latest.json`; no authentic retained resident receipt was exposed. That is still an evidence-reachability condition, not runtime absence or deterministic failure.
+
+The existing writer path remains internally aligned: the recurring service calls the materializer with the same resident runtime root, and the retention helper writes the expected receipt beneath that root. No new carriage, provenance, path, or retention defect was evidenced, so no source repair is justified.
+
+The durable Master Records query remains gated. A3 remains `NOT_OBSERVED`, not `FAILED`; A4 and all round-trip predicates remain unentered.
+
+Manual work: None.

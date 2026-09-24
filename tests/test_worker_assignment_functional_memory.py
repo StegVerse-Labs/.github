@@ -295,5 +295,113 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertNotIn("functional_memory", task)
 
 
+    def test_successor_functional_memory_reconstructs_predecessor_at_emit_boundary(self):
+        previous_hash = "9" * 64
+        previous = {
+            "schema": SCHEMA,
+            "state": "RECORDED",
+            "sequence": 1,
+            "receipt_sha256": previous_hash,
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            bound = bind_assignment_review(
+                root=self.root(tmp),
+                task={"task_id": "TASK-1"},
+                packet=self.packet("BLOCK"),
+                prior_memory={
+                    "schema": SCHEMA,
+                    "sequence": 1,
+                    "task_id": "TASK-1",
+                    "admissibility_resolution": "DENY",
+                },
+                prior_memory_valid=True,
+                prior_memory_reason=None,
+            )
+        predecessor_evidence = {
+            "evidence_id": "predecessor-master-records-closure:WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "origin_transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+            "encoding": "canonical-json",
+            "sha256": "8" * 64,
+            "content": {
+                "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+                "state": "RECORDED",
+                "reconstruction_status": "PASS",
+                "required_evidence_validation_status": "PASS",
+                "receipt_sha256": previous_hash,
+                "reconstructed_receipt_sha256": previous_hash,
+            },
+        }
+        returned = {
+            "state": "RECORDED",
+            "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": "7" * 64,
+            "reconstructed_receipt_sha256": "7" * 64,
+            "master_record_ref": "master-record:successor",
+        }
+        with patch(
+            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_closure",
+            return_value=(f"sha256:{previous_hash}", [predecessor_evidence]),
+        ) as require_predecessor, patch(
+            "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",
+            return_value=returned,
+        ) as submit:
+            memory = record_non_allow_functional_memory(
+                task={"task_id": "TASK-1", "functional_memory": previous},
+                trigger={"packet_id": "P3", "source": "INDEPENDENT_TASK_CONTROL"},
+                packet=bound,
+            )
+
+        self.assertEqual(memory["state"], "RECORDED")
+        require_predecessor.assert_called_once_with(
+            previous_hash,
+            successor_transition_id="WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+        )
+        receipt = submit.call_args.args[0]
+        self.assertEqual(receipt["prior_state_ref_or_hash"], f"sha256:{previous_hash}")
+        self.assertEqual(
+            [item["evidence_type"] for item in receipt["required_evidence_manifest"]],
+            ["PREDECESSOR_MASTER_RECORDS_CLOSURE", "WORKERCOORDINATOR_NON_ALLOW_ASSIGNMENT_FUNCTIONAL_MEMORY"],
+        )
+
+    def test_emit_boundary_reconstruction_failure_blocks_successor_submission(self):
+        previous_hash = "6" * 64
+        previous = {
+            "schema": SCHEMA,
+            "state": "RECORDED",
+            "sequence": 1,
+            "receipt_sha256": previous_hash,
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            bound = bind_assignment_review(
+                root=self.root(tmp),
+                task={"task_id": "TASK-1"},
+                packet=self.packet("BLOCK"),
+                prior_memory={
+                    "schema": SCHEMA,
+                    "sequence": 1,
+                    "task_id": "TASK-1",
+                    "admissibility_resolution": "DENY",
+                },
+                prior_memory_valid=True,
+                prior_memory_reason=None,
+            )
+        with patch(
+            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_closure",
+            side_effect=RuntimeError("CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH"),
+        ), patch(
+            "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",
+        ) as submit:
+            memory = record_non_allow_functional_memory(
+                task={"task_id": "TASK-1", "functional_memory": previous},
+                trigger={"packet_id": "P4", "source": "INDEPENDENT_TASK_CONTROL"},
+                packet=bound,
+            )
+        self.assertEqual(memory["state"], "BOUNDARY")
+        self.assertEqual(memory["reason"], "CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH")
+        submit.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

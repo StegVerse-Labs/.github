@@ -508,3 +508,165 @@ TVC PR #452 merged as `c6ebfcf02296359f8f1791fddab982377f381f7d` from exact head
 ## SDK TVC execution-warrant self-heal installation reconciliation — generation 183
 
 TVC PR #458 merged as `99c65265377f1f2f6349d0fa6e0c40c6c0aebb58` from exact head `0feaf07568e6c395600e2c970b91a08ab9aa3dbd`; validation runs `35668005838`, `35668005778`, `35668005789`, and `35668005818` all passed. The existing root `stegtvc-primary-runtime.service` self-heal now reconciles the already-existing execution-warrant service for each validated sovereign runtime locator: exact runtime-owner identity -> existing warrant installer under root transient systemd -> installer-only `/etc/polkit-1/rules.d` write scope -> root daemon reload -> self-heal completion gate. Private-key custody remains `LoadCredential`-only. Authentic host installation, assignment disposition, warrant issuance, and resident SDK execution remain unclaimed.
+
+
+## Organization receipt before Master Records custody trace — 2026-09-21
+
+Canonical source trace found two independently materialized receipt paths that are not presently composed into one enforced sequence.
+
+The organization transition ledger contract consumes `stegverse.repo-transition-receipt/v1`, verifies its exact digest, and emits append-only/hash-linked `stegverse.organization-transition-receipt/v1` through `resident-runtime/aggregate_repo_transition.py`. The separate organization-to-Master-Records path requires that already-hash-bound organization receipt before publishing `CUSTODY_ORGANIZATION_TRANSITION` toward `master-records.ecosystem-transition-ledger`.
+
+The canonical per-state-transition custody client, however, builds `stegverse.canonical-state-transition-receipt/v1` and submits it directly through `submit_state_receipt(...)` to `/api/master-records/state-transitions` or the equivalent local canonical Master Records custody service. Current source search found no bridge that converts that canonical state-transition receipt into the repository receipt -> organization receipt sequence before the direct Master Records custody call.
+
+This establishes a source invariant gap only: the requested ordering "applicable governed transition -> repository receipt -> organization receipt -> Master Records custody" is not enforced by the current canonical state-transition custody source. It does **not** establish that an authentic retained runtime transition actually skipped an organization receipt. No authentic same-transition runtime comparison between a canonical Master Records receipt and the corresponding organization ledger was found in this trace, so runtime status remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`, not FALSE.
+
+The next bounded action is to reconcile the existing contracts without inventing receipts: first classify which canonical governed transitions are organization-ledger-applicable; for those transitions, reuse the existing repository and organization ledger emitters and require the exact `stegverse.organization-transition-receipt/v1` identity/hash as predecessor evidence before Master Records progression. Transitions that are not repository transitions must not be relabeled or fabricated merely to satisfy the hierarchy. Any implementation must preserve Interlock/InTr transition authority, TV/TVC credential authority, Master Records custody/reconstruction-only authority, append-only replay, and exact predecessor closure.
+
+
+## Organization-wide receipt invariant source repair — 2026-09-21
+
+The governing rule is now explicit: every state transition that occurs within the organization requires an organization-level receipt. There is no special repository-only applicability classification.
+
+The first concrete source defect was the organization ledger contract itself: it consumed only `stegverse.repo-transition-receipt/v1`, even though canonical governed transitions can occur within the organization without being repository mutations. The existing organization ledger was generalized in place to consume either an exact repository transition receipt or an exact `stegverse.canonical-state-transition-receipt/v1`. Repository transitions retain their repo receipt hash/transition identity; canonical transitions are hash-bound directly and keep repository-specific fields null rather than fabricating a repository transition.
+
+The existing `submit_state_receipt(...)` path now records and verifies the exact organization receipt before any HTTP or local Master Records custody submission. The organization receipt binds the exact canonical receipt digest and uses the existing append-only organization ledger. Failure to record or verify that receipt returns a BOUNDARY and prevents Master Records progression. No second ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, or authority plane is introduced.
+
+This is source repair only until merged and until authentic runtime evidence shows a retained organization receipt followed by canonical Master Records RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality for the same transition. Historical missing runtime organization receipts remain `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Organization receipt source repair merge reconciliation — 2026-09-21
+
+PR #2520 merged from exact head `2c73acc47f02d4b4dddcf1541094a8ddcb2539f4` as `13ff70132c30147465a25122c8de2fc948da1e56`. Exact-head validation passed Cross-Task Coordination `35672926746`, DeepSeek resident `35672926715`, Ecosystem Receipt HB Successor `35672926790`, KV AI Memory Resident Binding `35672926778`, and Purpose-Bound Worker Derived Lifetime `35672926731`.
+
+Merged source now enforces: every canonical state transition occurring within `StegVerse-Labs` records and verifies the existing organization-level receipt before canonical Master Records submission. Repository-specific linkage is preserved only for actual repository transitions. Authentic runtime proof of the ordered organization-receipt -> Master Records chain remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Organization receipt resident carriage repair — exact-main source repair 2026-09-21
+
+No authentic post-source-repair organization receipt is retained in accessible GitHub evidence, so runtime status remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+Tracing the existing resident source path found the first deterministic runtime-carriage defect: `workers/canonical_state_transition_custody.py` was carried in the bootstrap-critical control-plane package and static worker refresh, but its required `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` dependencies were absent. The existing package, relay materialization verification set, and worker source refresh now carry those exact two files.
+
+The first validation attempt exposed a second bounded seam in the same carriage path: the package validator rejected the org-contract path because it was not exact-allowlisted. The repair exact-allows only those two required dependency files; no broad `resident-runtime/` or `.stegverse/` prefix is opened. Historical failed run: `35673580314`.
+
+This source-only repair is rebuilt directly from current main SHA `d26ab008adb7fbbcfe4393a84608b98ab4d13060`. Task Registry mutation is intentionally deferred to the post-merge reconciliation PR to avoid concurrent generation conflicts. Source/CI does not establish runtime receipt existence or Master Records completion.
+
+
+## Organization receipt runtime carriage merge reconciliation — 2026-09-21
+
+Source-only PR #2530 merged from exact head `9e0bbca658d171920e6c1e2ed1722d1033b37b20` as `514220dc1636843708d426cb3f19d29403380030`. Exact-head validation passed Workspace DEVICE_KV `35674382117`, SDK WorkSpace reseal `35674382182`, Purpose-Bound Worker Derived Lifetime `35674382168`, Ecosystem Receipt HB Successor `35674382158`, KV AI Memory Resident Binding `35674382292`, DeepSeek resident `35674382171`, and Test 3 Richard Seam Acceptance `35674382204`.
+
+The existing resident source package, exact source-package allowlist, relay materialization verification, and sovereign worker source refresh now carry `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` alongside `workers/canonical_state_transition_custody.py`. This closes the deterministic source-carriage boundary identified after organization-before-Master-Records ordering merged.
+
+No authentic post-repair governed transition with the required retained organization receipt and same-transition Master Records closure has yet been observed in accessible retained evidence. Runtime truth therefore remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+
+## Functional Memory direct predecessor-closure repair — 2026-09-21
+
+The next ecosystem-wide direct receipt producer was `heartbeat_runtime/worker_assignment_functional_memory.py::record_non_allow_functional_memory(...)`. Although assignment review reconstructed prior Functional Memory upstream, the receipt producer itself trusted `task.functional_memory.receipt_sha256` and copied that pointer directly into `prior_state_ref_or_hash`.
+
+PR #2529 merged as `48a1d766155d33647f0d4463ffede0ac5ac876e6` from exact head `f00d9c43650b4afb1f857e80a38b171ff9ede7d0`; PR #2528 was superseded after main advanced. Exact-head runs `35674317853` and `35674317860` passed.
+
+The producer now invokes the existing shared `require_predecessor_master_records_closure(...)` immediately before successor receipt construction. Any supplied predecessor must reconstruct through canonical Master Records with required-evidence validation `PASS` and exact receipt/reconstruction digest equality; the resulting closure becomes both `prior_state_ref_or_hash` and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Reconstruction failure prevents successor submission. No predecessor is invented when none exists.
+
+This remains ecosystem-wide custody work; MIR-specific RTC progression is not the active next transition for this task. Continue inventorying direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers and repair only the next generic predecessor-closure bypass.
+
+
+## RTC006 direct-caller canonical predecessor repair — 2026-09-21
+
+Continued the ecosystem-wide inventory of machine-owned direct `build_state_receipt(...)` / `submit_state_receipt(...)` callers while preserving generic predecessor repair PR #2421, WorkerCoordinator direct-caller repair PR #2441, conversation-ingestion repair PR #2468, Functional Memory emission-boundary repair PR #2529, and the organization-receipt-before-Master-Records contract from PR #2520 / runtime-carriage PR #2530.
+
+Classification of the remaining inspected callers:
+- SDK evaluator runtime and resident dispatch receipts describe already-returned machine results; they are observational-after-result and were not treated as causal predecessors.
+- Functional Memory now reconstructs its supplied predecessor at the exact receipt-emission boundary through PR #2529.
+- RTC008 already requires the exact predecessor Master Records receipt from its request and validates its closure.
+- RTC007 already receives the RTC006 Master Records receipt directly from the same closed path.
+- RTC006 was the first remaining direct successor using a noncanonical predecessor: `RTC-SDK-RETURN-006` set `prior_state_ref_or_hash` to the reverse transport terminal receipt hash.
+
+PR #2534 repaired only that direct-caller seam and merged as `79b13827305eab284c6666c869cc1627ed61dcaa` from exact head `234a396fdd916bebdff752c0cc65aa069fc56220`. Exact-head run `35675152172` passed both the RTC008 continuity suite and the complete SDK Publisher-return materialization suite.
+
+The repaired RTC006 contract is:
+
+```text
+exact upstream canonical predecessor receipt SHA supplied
+-> require_predecessor_master_records_closure(...)
+-> predecessor reconstructs through canonical Master Records
+-> required-evidence validation PASS
+-> exact receipt/reconstruction digest equality
+-> RTC-SDK-RETURN-006 prior_state_ref_or_hash = sha256:<exact predecessor receipt>
+-> PREDECESSOR_MASTER_RECORDS_CLOSURE included as required evidence
+-> reverse transport terminal receipt remains transition evidence only
+-> submit_state_receipt(...)
+-> organization receipt retained first under the shared organization-receipt contract
+-> canonical Master Records custody
+```
+
+When the exact canonical predecessor receipt is absent, RTC006 now fails closed; it does not substitute the reverse transport terminal receipt, SDK `manifest_receipt_id`, a domain/result hash, or any synthesized predecessor.
+
+The current upstream Publisher-return request producer does not yet carry `predecessor_master_records_receipt_sha256`. That is retained as the next precise boundary, not repaired in this change. No authentic RTC006 runtime execution is claimed.
+
+
+## Organization receipt runtime evidence re-observation — 2026-09-21
+
+Canonical Task Registry generation 192 and current main `292c96d8cd61391f61689e94fb643c66bd53e568` were re-read after the organization-ledger source and resident-carriage repairs.
+
+Repository-backed evidence search found no retained authentic `stegverse.organization-transition-receipt/v1` produced by a post-repair governed transition and no same-transition canonical Master Records closure satisfying `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. The retained repository evidence also does not establish a fresh post-repair resident dispatch cycle from which such a transition can be inferred.
+
+These are evidence-surface observations only. Absence from repository-backed projections does not prove runtime non-occurrence, and no authentic deterministic runtime failure was retained. Therefore `organization_receipt_runtime_state` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no runtime, source, carriage, retention, or readback defect is inferred and no implementation change is authorized by this re-observation.
+
+
+## RTC008 exact-boundary predecessor reconstruction — 2026-09-21
+
+The ecosystem-wide direct receipt-producer inventory identified another generic custody bypass in the existing RTC008 conformance caller. `workers/universal_intr_profiled_ingress.py::_record_rtc008_custody(...)` validated predecessor state, reconstruction status, required-evidence status, and digest-equality values carried inside the RTC008 request, but did not itself reconstruct the exact predecessor receipt from canonical Master Records immediately before emitting the successor receipt.
+
+PR #2560 repaired only that custody boundary and merged as `7d5b3864f8a61e6982923e5b580584c43a9d93e8` from exact head `f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23`. Exact-head validation passed RTC008 carriage run `35677960202` and Purpose-Bound Worker Derived Lifetime run `35677960211`.
+
+RTC008 now reuses `require_predecessor_master_records_closure(...)` at its exact canonical receipt-emission boundary. The reconstructed predecessor must be `RTC-STEGVERSE-EGRESS-007`, must satisfy canonical Master Records reconstruction and required-evidence validation, and must exactly match the request-carried predecessor state/digest metadata. The shared reconstructed predecessor reference becomes `prior_state_ref_or_hash`, and the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence is carried into RTC008 custody.
+
+This is a generic direct-caller custody repair using RTC008 only as a conformance caller. It does not alter RTC009, far-side execution, caller consequence, transport authority, or any MIR-specific runtime behavior. No authentic runtime execution is claimed. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next generic predecessor-closure bypass.
+
+
+## RTC007 exact-boundary predecessor reconstruction — 2026-09-21
+
+The next ecosystem-wide direct receipt-producer bypass was `RTC-STEGVERSE-EGRESS-007` in `scripts/consume_kv_publisher_return_materialization_request.py::_prepare_rtc007_continuation(...)`. RTC007 received an already-closed RTC006 Master Records result from the same call path, but copied `rtc006_master_records.receipt_sha256` directly into `prior_state_ref_or_hash` without reconstructing RTC006 again at RTC007's own canonical receipt-emission boundary.
+
+PR #2562 repaired only this custody seam and merged as `248c94f4a9c18579cff99ed5d40d8f6ffcc66111` from exact head `b8c61cd155734b2c5a4352563b4ae29249a8d977`. Focused exact-head workflow run `35681590372` passed both the RTC008 continuity test and the complete SDK Publisher-return materialization suite.
+
+RTC007 now invokes `require_predecessor_master_records_closure(...)` immediately before building its canonical receipt. The reconstructed predecessor must identify `RTC-SDK-RETURN-006`, and its state, reconstruction status, required-evidence validation status, receipt SHA, and reconstructed receipt SHA must exactly match the passed RTC006 closure. The shared reconstructed predecessor reference becomes RTC007 `prior_state_ref_or_hash`, and `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried as required evidence.
+
+SDK evaluator dispatch/runtime receipts remain classified separately as observational/genesis-style receipts where no causal predecessor is claimed. This repair does not alter RTC008, RTC009, transport execution, far-side behavior, or MIR runtime semantics. Continue the ecosystem-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` inventory and repair only the next true successor bypass.
+
+
+## StegAgents purpose-worker warrant predecessor reconstruction — 2026-09-21
+
+The ecosystem-wide organization search extended beyond `.github` and identified the next true direct successor bypass in `StegVerse-Labs/StegAgents/src/purpose_bound_worker_runtime.py::_record_verified_warrant_policy_transition(...)`. The sequence-2 `TV_TVC_WARRANT_POLICY_VERIFIED` transition accepted an in-memory `graph_predecessor_master_records_transition`, converted its receipt SHA directly to `prior_state_ref_or_hash`, and could fall back to `worker-claim:<id>` when that canonical predecessor closure was absent.
+
+StegAgents PR #36 repaired only this custody seam and merged as `a01d4abc2c2f570865661bba19a04ad5a53d0c1c` from exact head `53d91a780cabca07b048193511e824d047cb3001`. Exact-head repository validation passed Test Readiness `35682849540`, CI `35682849556` on Python 3.11 and 3.12, and Cross-Agent Authority Validation `35682849500`.
+
+The sequence-2 warrant transition now requires the existing graph predecessor Master Records transition, reconstructs its exact receipt through the shared canonical custody client at the warrant receipt-emission boundary, verifies reconstructed transition identity plus state/reconstruction/required-evidence/digest fields against the carried closure, uses the reconstructed prior reference, and carries `PREDECESSOR_MASTER_RECORDS_CLOSURE` as required evidence. The noncanonical `worker-claim:<id>` fallback is removed.
+
+No new runtime, scheduler, dispatcher, WorkerCoordinator, authority plane, credential path, custody store, host dependency, device dependency, or MIR-specific behavior was added. Continue the ecosystem-wide direct receipt-producer inventory and repair only the next true successor bypass.
+
+
+## StegAgents state-graph predecessor reconstruction — 2026-09-21
+
+The next true organization-wide direct successor bypass was `StegVerse-Labs/StegAgents src/purpose_bound_worker_state_graph.py::_record_graph_transition(...)`. It collapsed one or more predecessor receipt refs into `canonical_hash(sorted(predecessor_refs))` and placed that set hash in `prior_state_ref_or_hash`.
+
+StegAgents PR #37 merged as `38e15f276149ee3e46991cf4715c744f410329ef` from exact head `60efa7a8439df859283910f02449a25468adc4c9`. Exact-head validation passed Test Readiness `35687026245`, CI `35687026270` on Python 3.11 and 3.12, and Cross-Agent Authority Validation `35687026272`.
+
+The repaired graph transition reconstructs every supplied predecessor through the existing shared canonical custody client at the receipt-emission boundary, requires exact closure-field agreement, and carries every causal branch as `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. For the three-way join, existing `completed_ns` observations define completion order; the last completed reconstructed receipt is the exact immediate predecessor used by `prior_state_ref_or_hash`. No predecessor-set hash remains in the canonical progression slot. No authentic runtime execution is claimed.
+
+Continue the organization-wide direct `build_state_receipt(...)` / `submit_state_receipt(...)` producer inventory and inspect `atomic_task_worker_activation_runtime.py` next, repairing only the first remaining true successor bypass.
+
+
+## StegAgents atomic warrant exact predecessor reconstruction — 2026-09-22
+
+The next organization-wide direct successor bypass was `StegVerse-Labs/StegAgents src/atomic_task_worker_activation_runtime.py::_record_warrant(...)`. Its sequence-2 `TV_TVC_WARRANT_POLICY_VERIFIED` receipt used `worker-claim:<id>` as `prior_state_ref_or_hash`, omitting reconstruction of the already supported `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure.
+
+StegAgents PR #38 merged as `62544bf751199bd4b66aba6870f2639a8db65ca4` from exact head `1c1eab44dd9def2586335855e47c637f7ff8b30d`. Exact-head validation passed Test Readiness `35743051807`, CI `35743051814` on Python 3.11 and 3.12, and Cross-Agent Authority Validation `35743051826`. Initial CI `35742835301` exposed a pre-existing same-emitter missing `base.canonical_json` helper; the bounded fix reuses existing `base.canonical_hash` without changing the canonical serialization algorithm.
+
+Atomic PREPARE now requires existing caller-carried `claim_fence_master_records_transition`. At the warrant emission boundary, the shared canonical custody client reconstructs that exact receipt and requires `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, exact receipt/reconstruction digest equality, and agreement with the carried predecessor transition identity and status fields. The reconstructed predecessor ref replaces the worker-claim string; `PREDECESSOR_MASTER_RECORDS_CLOSURE` is required evidence. Missing or contradictory evidence fails closed. The next inventoried direct successor, `_record_atomic_activation(...)`, still copies the preceding warrant receipt SHA into its sequence-3 `prior_state_ref_or_hash`; inspect that boundary next, without inferring runtime execution. No new authority or runtime was introduced.
+
+## StegAgents atomic activation exact warrant predecessor — 2026-09-24
+
+StegAgents PR #39 merged as `938c1a8a586920b6709c331a25f376f045066e08` from exact head `69243630302b6131713daa5fedd014c9d5e1e00b`; exact-head Cross-Agent Authority Validation `36036227697`, CI `36036227515`, and Test Readiness `36036227461` passed. Sequence-3 `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` now reconstructs the exact sequence-2 `TV_TVC_WARRANT_POLICY_VERIFIED` closure through the existing shared canonical custody client immediately before receipt emission; requires RECORDED, reconstruction PASS, required evidence PASS, exact digest agreement and carried/reconstructed status agreement; uses the reconstructed immediate predecessor reference and carries `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Missing or contradictory evidence fails closed. Source validation does not establish authentic resident assignment, warrant issuance, activation, or lifecycle closure.

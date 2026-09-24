@@ -1,0 +1,134 @@
+{
+  "schema": "stegverse.repository-hygiene-ecosystem-census/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "observed_date": "2026-09-21",
+  "active_bulk_threshold": "already_hygiene_enabled OR branch_count>=100",
+  "active_bulk_set": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "branch_count": 2321,
+      "hygiene_enabled": false,
+      "last_authenticated_run": null,
+      "last_authenticated_head": null,
+      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "branch_count": 1100,
+      "hygiene_enabled": false,
+      "last_authenticated_run": null,
+      "last_authenticated_head": null,
+      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+    },
+    {
+      "repository": "StegVerse-Labs/TVC",
+      "branch_count": 434,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35673548654,
+      "last_authenticated_head": "6f42373737c55e0d73601b9c00494c36820c4731",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "branch_count": 275,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35636235950,
+      "last_authenticated_head": "dc990e46b7925d664e945ed2dcba3f7b750380d9",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    },
+    {
+      "repository": "StegVerse-Labs/TV",
+      "branch_count": 263,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35636085582,
+      "last_authenticated_head": "0e40c7715edd1bc4086b91c197ebd4ea55f66bce",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    },
+    {
+      "repository": "StegVerse-Labs/StegCore",
+      "branch_count": 138,
+      "hygiene_enabled": false,
+      "last_authenticated_run": null,
+      "last_authenticated_head": null,
+      "baseline_state": "PENDING_FIRST_BULK_CENSUS"
+    },
+    {
+      "repository": "master-records/orchestration",
+      "branch_count": 83,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35636089572,
+      "last_authenticated_head": "1b896e1c550aad1ebdebecb9a331ceef38780b11",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    },
+    {
+      "repository": "StegVerse-Labs/StegHealth",
+      "branch_count": 81,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35633822799,
+      "last_authenticated_head": "e02dab2b9f50d9eee49f0db5cf7f64df421861bc",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    },
+    {
+      "repository": "StegVerse-002/micro-node-runtime",
+      "branch_count": 61,
+      "hygiene_enabled": true,
+      "last_authenticated_run": 35636095904,
+      "last_authenticated_head": "9df49b650842362c7d1a5e4decd2e36864de89bf",
+      "owner_transition_delta": "ZERO_NEWLY_ELIGIBLE"
+    }
+  ],
+  "active_bulk_branch_count": 4756,
+  "lower_volume_watchlist": [
+    {
+      "repository": "StegVerse-Labs/StegVerse-Healer",
+      "branch_count": 83
+    },
+    {
+      "repository": "StegVerse-002/.github",
+      "branch_count": 37
+    },
+    {
+      "repository": "StegVerse-Labs/StegVerse-SCW",
+      "branch_count": 33
+    },
+    {
+      "repository": "StegVerse-Labs/repo-standards",
+      "branch_count": 32
+    },
+    {
+      "repository": "StegVerse-002/stegguardian-wiki",
+      "branch_count": 27
+    },
+    {
+      "repository": "StegVerse-Labs/Governance",
+      "branch_count": 21
+    },
+    {
+      "repository": "StegVerse-Labs/Continuity",
+      "branch_count": 14
+    }
+  ],
+  "lower_volume_watchlist_branch_count": 247,
+  "known_branch_estate_count": 5003,
+  "wave1_owner_transition_result": {
+    "newly_eligible_total": 0,
+    "approval_manifest_changes": 0,
+    "redundant_hygiene_reruns": 0,
+    "repositories_checked": [
+      "StegVerse-Labs/TVC",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-Labs/TV",
+      "master-records/orchestration",
+      "StegVerse-Labs/StegHealth",
+      "StegVerse-002/micro-node-runtime"
+    ]
+  },
+  "pending_first_baseline": [
+    "StegVerse-Labs/.github",
+    "StegVerse-Labs/Site",
+    "StegVerse-Labs/StegCore"
+  ],
+  "authority_effect": "NONE",
+  "deletion_performed": false
+}

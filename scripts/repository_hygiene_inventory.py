@@ -35,36 +35,45 @@ def run(*args: str, check: bool = True) -> str:
         raise SystemExit(f"command failed ({p.returncode}): {' '.join(args)}\\n{p.stderr}")
     return p.stdout
 
-def source_ref_counts(branch: str) -> tuple[int, int]:
-    p = subprocess.run(["git", "grep", "-F", "-n", "--", branch, f"origin/{DEFAULT}"], text=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-    if p.returncode not in (0, 1):
-        raise SystemExit(f"git grep failed for {branch}")
-    retained = 0
-    ignored_hygiene_control = 0
-    for line in p.stdout.splitlines():
-        if not line.strip():
-            continue
-        try:
-            _, rest = line.split(":", 1)
-            path, _ = rest.split(":", 1)
-        except ValueError:
-            retained += 1
-            continue
-        if is_hygiene_control_path(path):
-            ignored_hygiene_control += 1
-        else:
-            retained += 1
-    return retained, ignored_hygiene_control
+def source_ref_counts_bulk(branches: list[str]) -> dict[str, tuple[int, int]]:
+    counts = {branch: [0, 0] for branch in branches}
+    if not branches:
+        return {branch: (0, 0) for branch in branches}
+    pattern_path = Path(".repository-hygiene-branch-patterns.txt")
+    pattern_path.write_text("\n".join(branches) + "\n", encoding="utf-8")
+    try:
+        p = subprocess.run(
+            ["git", "grep", "-F", "-n", "-f", str(pattern_path), f"origin/{DEFAULT}"],
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+        )
+        if p.returncode not in (0, 1):
+            raise SystemExit("batched git grep failed")
+        for line in p.stdout.splitlines():
+            if not line.strip():
+                continue
+            try:
+                _, path, _, content = line.split(":", 3)
+            except ValueError:
+                path, content = "", line
+            ignored = is_hygiene_control_path(path)
+            for branch in branches:
+                if branch in content:
+                    counts[branch][1 if ignored else 0] += 1
+    finally:
+        pattern_path.unlink(missing_ok=True)
+    return {branch: (vals[0], vals[1]) for branch, vals in counts.items()}
 
 raw = run("git", "for-each-ref", "--format=%(refname:lstrip=3)|%(objectname)|%(committerdate:unix)", "refs/remotes/origin")
+ref_lines = [line for line in raw.splitlines() if line and not line.startswith("HEAD|")]
+branch_names = [line.split("|", 1)[0] for line in ref_lines if line.split("|", 1)[0] != "HEAD"]
+source_counts = source_ref_counts_bulk([name for name in branch_names if name != DEFAULT])
 rows = []
 candidates = []
 review = []
 retained = []
 counts: dict[str, int] = {}
 
-for line in raw.splitlines():
+for line in ref_lines:
     if not line or line.startswith("HEAD|"):
         continue
     name, sha, ts_s = line.split("|", 2)
@@ -80,7 +89,7 @@ for line in raw.splitlines():
     if name == DEFAULT:
         refs, ignored_hygiene_refs = 0, 0
     else:
-        refs, ignored_hygiene_refs = source_ref_counts(name)
+        refs, ignored_hygiene_refs = source_counts.get(name, (0, 0))
     stale = age_days > STALE_DAYS
 
     if protected:

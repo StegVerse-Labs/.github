@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.repository-hygiene-ref-retirement-routing/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_id": "10100000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "batch_id": "TVC-WAVE1-OWNER-CLEARANCE-BATCH5-20260921",
+  "source_approval_manifest": "StegVerse-Labs/TVC:.github/repository-hygiene-approved-retirements.txt",
+  "source_clearance_evidence": "StegVerse-Labs/TVC:evidence/repository-hygiene/2026-09-21-tvc-owner-clearance-batch5.json",
+  "source_revalidation_run_id": 35672943173,
+  "source_revalidation_head": "ae8d2be912b262eb5c4610eaf1afcff241350b53",
+  "source_revalidation_artifact_id": 10671897141,
+  "source_revalidation_artifact_digest": "sha256:a30ca4d7355f9c137e06cf262be45d63636e8d7fca5af518d30e31965b626c78",
+  "manifest_approved_retirement_ready_count": 31,
+  "invalid_approved_count": 0,
+  "newly_routed_count": 2,
+  "previously_routed_count": 29,
+  "structural_candidate_count": 163,
+  "remaining_unapproved_structural_candidate_count": 132,
+  "routed_refs": [
+    "fix/service-request-discovery-validation-only",
+    "docs/credential-consistency-local-observe-proof"
+  ],
+  "route_target": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "route_state": "ROUTED_NON_DESTRUCTIVE_AUTHORITY_INPUT",
+  "deletion_performed": false,
+  "deletion_authorized_by_this_record": false,
+  "authority_effect": "NONE",
+  "notes": "Batch 5 only. The historical hosted source paths are explicitly retired, while any continuing resident/provider goals remain separate and do not retain these branch refs. Repository-native retirement authority must independently revalidate current state before any deletion."
+}

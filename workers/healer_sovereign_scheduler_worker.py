@@ -21,8 +21,8 @@ HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
 HIL_RECEIVER_WORKER_RECEIPT_REL = Path("receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
 HIL_RECEIVER_TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
-HIL_RECEIVER_CLAIM_ID = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"
-HIL_RECEIVER_FENCE = 25
+HIL_RECEIVER_PREDECESSOR_CLAIM_ID = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25"
+HIL_RECEIVER_PREDECESSOR_FENCE = 25
 UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
 UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
 HEALER_STEGHEALTH_SOURCE_FLOOR = "585cf38aad95fda69dbcbd0150c1256571f90feb"
@@ -356,14 +356,22 @@ def hil_receiver_gateway_projection() -> dict[str, str]:
     expected = {
         "schema": "stegverse.hil.sovereign-receiver-worker-receipt/v0.1",
         "task_id": HIL_RECEIVER_TASK_ID,
-        "claim_id": HIL_RECEIVER_CLAIM_ID,
-        "fencing_token": HIL_RECEIVER_FENCE,
+        "predecessor_claim_id": HIL_RECEIVER_PREDECESSOR_CLAIM_ID,
+        "predecessor_fencing_token": HIL_RECEIVER_PREDECESSOR_FENCE,
         "receiver_ready": True,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "non_tv_tvc_secret_or_token_used": False,
     }
     if any(value.get(k) != v for k, v in expected.items()):
+        return disabled
+    machine_claim = str(value.get("claim_id") or "")
+    machine_fence = value.get("fencing_token")
+    if (
+        not machine_claim.startswith("SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G")
+        or not isinstance(machine_fence, int)
+        or machine_fence <= HIL_RECEIVER_PREDECESSOR_FENCE
+    ):
         return disabled
     base = str(value.get("base_url") or "").rstrip("/")
     parsed = urlsplit(base)
@@ -455,6 +463,9 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
         "TARGETS_FILE": str(targets),
         "STEGVERSE_REPO_ROOTS_JSON": roots_json,
     }
+    heartbeat_root = str(os.environ.get("STEGVERSE_HEARTBEAT_ROOT") or "").strip()
+    if heartbeat_root:
+        env["STEGVERSE_HEARTBEAT_ROOT"] = heartbeat_root
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())

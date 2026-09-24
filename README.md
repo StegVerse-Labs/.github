@@ -1,3 +1,42 @@
+Documentation closeout: [PR #2625](https://github.com/StegVerse-Labs/.github/pull/2625) merged at `280b63a6cbe38f6dec407e33f2157be6addd93b7` with both applicable documentation-head workflows successful. This is coordination-only: authentic resident organization HEAD and immutable transition receipts are not exposed through the connected GitHub source interface; no genuine runtime failure or closure is claimed. Continue at the existing organization custody owner and component-011 standing request. See the canonical handoff for exact next operations.
+
+## SDK dependency execution: state-transition-owned organization receipts (2026-09-24)
+
+For `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001`, runtime evidence is dependent on actual governed state transitions, not a passive observation gate. Review the existing resident `StegVerse-Labs` organization ledger HEAD and its immutable hash-linked entries for an actual task/worker failure first. Repair only a retained first failure under the canonical producer; if no governed transition exists, use component-011's already staged standing request and exact dispatcher/consumer outcomes for lawful invocation. GitHub repository source does not expose the sovereign resident ledger; absence of repo-backed receipts does not prove an organization failure. Exact custody paths, PR #2616 already-merged retry repair, and owner boundaries are in `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+## SDK dependency execution: durable recovery checkpoint (2026-09-24)
+
+Canonical goal `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` remains ACTIVE/HANDOFF_READY at last observed Registry generation 212, COSV `71000000111111`. Existing source/CI work is merged; authentic component-011 resident selector/consumer/WorkerCoordinator/TVC proof remains UNKNOWN. GitHub default-branch receipt paths returned 404 in read-only checks, which is evidence-reachability only, not runtime failure. Resume with the existing checked-out component-011 owner at the first authentic `ungoverned_ai_defensive_envelope` dispatcher selector outcome, then exact request consumption and immutable targeted receipt before downstream org/MR inspection. Independent eligible invocation is not gated on the frozen global 18-lane matrix. Detailed recovery and no-device guardrails: `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+## Admissible-Existence organization-wide mathematical processing — registration candidate
+
+Draft central registration for `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION`, proposed COSV `10111110111000`, issue [#2615](https://github.com/StegVerse-Labs/.github/issues/2615). Scope: 23 native source repositories plus 9 registered non-source roles and two additional consumer repositories. Source-level registration creates **no execution authority**; exact-generation authentic `AI_SESSION_GATE` disposition remains mandatory after canonical merge before any executable or cross-owner mutation. Current source census: `data/aex-native-math-processing-census.json`; canonical coordination handoff: `docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md`.
+
+## STCM/CHF independent thermodynamic-witness research registration
+
+Candidate central coordination: `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` / source COSV `10111010112000`, anchored to Admissible-Existence/.github issue #79 and draft PR #80. Registration and COSV projection do **not** create runtime or governance authority. The scoped owner preserves native STCM/CHF claims; inert negative controls remain synthetic and physical thermodynamic evidence requires independent exact-byte source/measurement custody. See `docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md`.
+
+## Open-source strategy and rights inventory
+
+Canonical goal `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` is staged for registration. The 2026-09-22 StegVerse-Labs census covers 119 accessible repositories (46 public, 70 private, 3 internal). All 46 public plus 12 selected nonpublic repository metadata records were checked: 1 GitHub-recognized SPDX MIT license, 5 Other/NOASSERTION, and 52 with no detected license. Six root-license locations were inspected; five contain files, and one does not at common root names. The remaining 61 nonpublic metadata records and all contributor/copyright rights remain unaudited. Neither GitHub ownership nor visibility verifies copyright title, third-party permissions or open-source eligibility. No relicensing or public release is authorized by this census. See `data/open-source-repository-licensing-inventory.json` and `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md` for the audit and staged release gate.
+
+## Organization receipt runtime evidence re-observation
+
+Post-repair repository evidence still contains no authentic retained organization receipt paired to the same canonical transition's Master Records closure. This remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`, not a failure inference; no runtime or source mutation is justified until authentic retained evidence identifies a concrete boundary.
+
+## Organization receipt resident carriage repair
+
+The existing resident control-plane package and worker source refresh now carry the two dependencies required by organization-before-Master-Records custody: `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json`. Both are exact-allowlisted and included in far-side materialization digest checks; no broad new source prefix is opened. PR #2530 merged as `514220dc1636843708d426cb3f19d29403380030` after exact-head validation. Runtime proof remains UNKNOWN until an authentic governed transition retains the organization receipt and corresponding Master Records closure.
+
+## Organization-wide transition receipts
+
+Canonical organization receipt semantics are now simple: every state transition occurring within `StegVerse-Labs` emits a `stegverse.organization-transition-receipt/v1`. Repository transitions preserve their exact repo receipt linkage; non-repository canonical governed transitions are hash-bound directly and are not falsely relabeled as repository transitions. Canonical state-transition custody records and verifies the organization receipt before Master Records progression. This source-enforced ordering merged in PR #2520 as `13ff70132c30147465a25122c8de2fc948da1e56`; authentic runtime proof remains separately required.
+
+
+## Organization receipt / canonical custody reconciliation
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, current source trace shows that the organization ledger path and canonical per-state-transition Master Records path are both materialized but not yet source-enforced as one sequence. Organization recording consumes `stegverse.repo-transition-receipt/v1` and emits `stegverse.organization-transition-receipt/v1`; canonical state-transition custody separately submits `stegverse.canonical-state-transition-receipt/v1` directly to Master Records. No canonical-state -> repo/org bridge was found before that direct custody call. This is a source invariant gap, not runtime failure evidence: authentic runtime omission of an organization receipt remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` until same-transition retained evidence proves it.
+
 ## Ecosystem HB receipt anchoring
 
 Canonical Goal Task `ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001` is merged in Task Registry generation 150 with COSV `50000000100000`. The task preserves historical HeartBeat evidence as system-relative continuity only, binds future receipt creation and Master Records recording to deterministic HB references, defines a reproducible bounded Master Records receipt-set root, and defines the first prospective externally anchored successor checkpoint contract.
@@ -13,6 +52,8 @@ Canonical Goal Task `SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001` / COSV `710000
 
 # StegVerse
 
+
+The native resident receipt path now includes the merged worker-launch custody-binding repair from PR #2453. This closes the source defect that could restore a task-capable WorkerCoordinator without preserving its existing canonical Master Records custody configuration. Authentic post-update receipt execution remains an evidence question, not a source-completion claim.
 ## Current repository evidence census
 
 Canonical Goal Task `ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001` is terminal at `RETIRED / COMPLETED`, COSV `20010000100000`.
@@ -285,7 +326,7 @@ Transport and AI-ingress coordination are materialized reusable component famili
 
 For Task Registry AI/session coordination, `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` is the reusable fail-closed source gate across applicable check-in/return/close lifecycle operations. It permits ChatGPT as the only AI actor kind at that coordination surface while preserving human and non-AI system coordinator paths. The actor declaration is not authentic origin attestation, and Task Registry coordination never grants WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, KV/SKAP user-verification, execution, or Master Records custody authority.
 
-`RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` is the reusable capability definition for future non-ChatGPT AI decision processing outside Task Registry coordination. Registration or source construction does not prove sandbox enforcement or runtime isolation; those remain independent evidence predicates before additional AI support can be considered active.
+`RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` is the reusable **Ungoverned AI Defensive Envelope** for non-ChatGPT or otherwise ungoverned AI at StegVerse-controlled consequence boundaries. It constrains the boundary rather than the model: filesystem, network, tools, credentials, consequential effects, retained evidence, and governed egress are explicitly scoped while the external AI's internal reasoning, memory, and policy remain sovereign. A denial must make the protected consequence unreachable where the selected boundary supports that proof. The External AI Meeting Room is one concrete instantiation of this component, not a separate authority plane. Source contract definition does not prove runtime isolation or enforcement; those remain independent evidence predicates.
 The complete transport manifest -> governed processing -> round trips -> evidence/custody/reconstruction -> Publisher -> SDK return -> governed egress -> Interlock/InTr -> far-side final transition sequence remains a maximal composition, not a universal pipeline.
 
 Canonical model and decomposition sources:
@@ -1231,10 +1272,215 @@ TVC run `35668559325` proved 27 approved-retirement-ready refs and zero invalid 
 The Healer scheduler projects the retained G25/fence-25 HIL worker receiver `base_url` separately from Universal InTr, allowing the Service Gateway to relay `/api/hil/*` to the already-running machine-owned receiver without creating another runtime or custody lineage.
 
 
-## Test 3 post-retirement stale-fence refusal
+### TVC hygiene retirement routing batch 4 — 2026-09-21/22
 
-Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` now requires one additional falsification predicate after governed close: the just-retired task-bound worker claim/fence must be used for one attempted `INVOKE_RETIRED_TASK_BOUND_WORKER` through the existing StegAgents -> SDK/StegCore/InTr path. The request declares completed/retired state and no current actor authority, delegation, validity window, capability, or permission.
+After a fail-closed README self-reference correction, TVC hygiene run `35670276119` proved 29 approved-retirement-ready refs and zero invalid approvals. Two new batch-4 refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`; 134 structural candidates remain unapproved and no branch deletion occurred.
 
-StegAgents PR #35 passed all three exact-head gates and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. The consequence must not execute; canonical governance must return `DENY`; then `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` must close in canonical Master Records with `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, and exact receipt/reconstruction digest equality before terminal WorkerCoordinator release.
 
-This merge is source-path evidence only. No authentic fresh claim/fence, governed close/retire, stale-fence refusal, or runtime completion is inferred from CI.
+### TVC hygiene retirement routing batch 5 — 2026-09-21
+
+TVC hygiene run `35672943173` proved 31 approved-retirement-ready refs and zero invalid approvals. Two new historical hosted-source retirement refs are routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`; 132 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### TVC hygiene retirement routing batch 6 — 2026-09-21
+
+TVC hygiene run `35673548654` proved 32 approved-retirement-ready refs and zero invalid approvals. One new historical AEX hosted-source proof ref is routed non-destructively through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json`; 131 structural candidates remain unapproved and no branch deletion occurred.
+
+
+### Ecosystem HB runtime evidence re-observation — generation 188 candidate
+
+The shared runtime-evidence owner confirms the first unsatisfied predicate remains `AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF`. Existing Master Records source/materialization/retention repairs are present; no authentic durable `MATERIALIZED_VERIFIED` refresh receipt is retained and no new deterministic source defect is established. HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+### HIL browser predecessor versus machine execution claim
+
+The accepted browser G25/fence-25 LEASE_OPEN is predecessor evidence, not a reusable WorkerCoordinator assignment. The HIL machine task now enters WorkerCoordinator from an unbound `HANDOFF_READY` state, requires a fresh fence greater than 25, and carries the exact browser G25 lineage into the machine receiver receipt. Gateway projection requires both lineages before forwarding `/api/hil/*`.
+
+
+### Fresh-Node KnowledgeVault relationship semantics
+
+Node registration and `MY_KV_ONBOARDING_STEP_1_COMPLETED` do not imply a KnowledgeVault relationship. A registered Node with no authenticated DEVICE_KV relationship evidence is represented as `KV_RELATIONSHIP_NOT_ESTABLISHED` with no resident-KV-root claim. Only an explicitly established/selected relationship may progress to `KV_INSTALLATION_NOT_VERIFIED` or `KV_INSTALLATION_VERIFIED`; existing-KV installation-receipt recovery is not exposed as evidence of a relationship that never existed. Site PR #1450 merged this correction at `f713330551999125b90868930927984bc33fba9d`; the parent Device/KV/SKAP runtime Goal remains evidence-gated.
+
+### Functional Memory direct predecessor closure
+
+`WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` now reconstructs any supplied predecessor through canonical Master Records at the exact receipt-emission boundary. A stored pointer or upstream validity flag cannot substitute for the canonical closure; the predecessor must pass required-evidence validation and exact digest equality and is carried as `PREDECESSOR_MASTER_RECORDS_CLOSURE`.
+
+
+### StegHealth resident-root carriage — 2026-09-21
+
+PR #2543 / merge `5284046f03c286ec6f4f84ad93d8423eb9f2a9c1` preserves the already-declared resident HeartBeat root across the existing Healer process boundary so the StegHealth Canonical Work child continues against the same runtime root. The change reuses the standing Healer, reusable-task scheduler, portable dispatch, WorkerCoordinator, Interlock/InTr, and Master Records path.
+
+
+### Ecosystem HB refresh evidence re-observation — generation 192 candidate
+
+At canonical generation 191, the shared runtime-evidence lineage still contains no authentic retained Master Records source-refresh receipt with verified source proof. Adjacent A3 evidence explicitly remains `authentic_retained_refresh_receipt_observed=false`, with no deterministic source/runtime failure retained. No code repair is justified; HB successor ordinal 1 and the bounded 1..1 checkpoint remain unclaimed.
+
+
+## Repository hygiene owner-transition delta scanning — 2026-09-21
+
+To scale hygiene beyond branch-by-branch review, `scripts/repository_hygiene_owner_transition_delta.py` performs a fail-closed delta scan between the last authenticated census head and current repository state. It inspects only canonical owner-bearing paths that changed since the baseline and surfaces a residual branch only when its exact ref is referenced by a changed owner surface that explicitly records resolved/superseded/released/retired/closed state. If no owner-bearing source changed, the result is a machine-zero-delta and no approval-manifest edit or hosted hygiene rerun is warranted. This is a prefilter only; final current-main containment and active-ownership checks remain mandatory before approval, and no deletion authority is granted.
+
+
+### Browser-origin KV initialization is not device installation
+
+The Device/KV/SKAP path now explicitly separates origin-scoped browser data from device/native installation. Site PR #1452 (`290318a285089b45259a87811d11585f531b1261`) changed the IndexedDB helper so exact-readback browser KV state is reported as `BROWSER_KV_INITIALIZED_BEST_EFFORT` or `BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED`, with `installed=false` and `installation_claimed=false`. Safari `persistent_storage_granted=true` would strengthen browser-origin durability only; it would still not prove native installation. Site PR #1453 (`c0785763c72518364cf2ae5e7a5a8213907ed7ae`) released the temporary implementation claim.
+
+
+### StegOS Node Manifold COSV reconciliation — 2026-09-21
+
+`STEGOS-NODE-MANIFOLD-001` now has an exact task.v1 COSV source projection derived from canonical metrics rather than an assumed continuation value. The vector is `40000100100000`: CLAIMED_INTEGRATION, archive not ready, zero unassigned work, one bounded chat-owned integration continuation, canonical owner installed, zero declared blockers, evidence incomplete, not activated, and not propagated. The vector grants no authority and does not alter the four still-open authentic physical Network predicates.
+
+- SV-DN1 production source preparation now marks its retained `SV-DN1-INTR-RUNTIME-001` parent identity as provenance-only for runtime admission. `runtime_predecessor_reconstruction_required=false` aligns WorkerCoordinator with the existing `upstream_runtime_dependency=null` contract so independent source preparation is not blocked by an unrelated predecessor-reconstruction gate.
+
+
+### Exact-boundary canonical predecessor reconstruction
+
+Direct receipt producers may not treat request-carried predecessor status or digest fields as a substitute for canonical reconstruction. The RTC008 conformance caller now reconstructs its exact predecessor through Master Records at receipt emission, verifies the reconstructed identity against the carried metadata, and uses the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` contract before successor custody.
+
+
+### RTC007 exact-boundary predecessor reconstruction
+
+A successor cannot reuse an in-memory Master Records result merely because the upstream caller already validated it. `RTC-STEGVERSE-EGRESS-007` now reconstructs the exact `RTC-SDK-RETURN-006` predecessor at RTC007 receipt emission, verifies closure-field equality, and carries the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence before canonical custody.
+
+
+## Public repository consumption attribution — 2026-09-21
+
+`PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001` separates GitHub clone traffic from adoption claims. September `StegVerse-Labs/.github` traffic is attributed only from evidence: known StegVerse-controlled clone/checkout producers are inventoried first; generic external indexing/scanning remains distinct from StegVerse-specific downstream consumption; and unexplained traffic stays `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED`. Canonical handoff: `docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md`.
+
+
+### StegAgents purpose-worker warrant predecessor reconstruction
+
+The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no longer accepts a worker-claim string or an un-reconstructed in-memory closure as predecessor state. Its existing graph predecessor receipt is reconstructed through canonical Master Records at the exact warrant receipt-emission boundary, and the resulting `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried before successor custody.
+
+
+### Device/KV executor import and test-isolation repair — 2026-09-21
+
+The existing Device/KV/SKAP event executor now resolves bare sibling-script imports identically whether invoked directly or loaded by a test/spec importer. The canonical predecessor-closure test fixture also confines its synthetic `heartbeat_runtime` package to the module-under-test import, preventing suite-order leakage that can shadow the real runtime package. This is source/validation hygiene only and grants no runtime, transition, credential, custody, installation, or device authority.
+
+### Device/KV validation repair merge evidence — 2026-09-21
+
+`.github` PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` after exact-head PR validations `35686779849` and `35686779918` passed; push validation `35686765254` also passed. This closes only the executor import/test-isolation source defect and does not establish any authentic Device/KV/SKAP runtime, installation, authority, or Master Records predicate.
+
+### Device/KV execution-substrate registry reconciliation — 2026-09-21
+
+`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now carries the required canonical execution-substrate resolution, selecting the already-declared admitted ephemeral StegOS Node lane while preserving single-device-first review order, no external-device requirement, and no authority effect. This is registry conformance only; no authentic runtime or installation predicate is promoted.
+
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #37 removes the purpose-bound state graph's predecessor-set hash from canonical `prior_state_ref_or_hash`. Every graph predecessor is reconstructed through canonical Master Records at the emission boundary; all causal branches remain required evidence, and the last observed completed branch is the exact immediate predecessor for the three-way join. Canonical reconciliation target is Task Registry generation 198.
+
+
+## Ecosystem-scale repository hygiene — 2026-09-21
+
+HYGIENE-CAUSAL-ROOTS-001 now operates from an ecosystem census rather than prompt-per-branch review. The active bulk set is every already-hygiene-enabled repository plus every currently observed repository with at least 100 branches. That set contains **4,756 branches** across nine repositories; a lower-volume watchlist adds 247 known branches for a current enumerated estate of **5,003 branches**.
+
+Wave-1 owner-transition delta filtering found zero newly eligible refs, so no manifests or redundant hosted runs were changed there. The three heavy repositories without authenticated hygiene baselines are StegVerse-Labs/.github (2,321 branches), Site (1,100), and StegCore (138). The workflow `.github/workflows/repository-hygiene-ecosystem-bulk-census.yml` establishes their read-only baselines centrally without mutating Site or StegCore. The classifier now performs one batched default-branch source-reference scan rather than one full grep per branch. Census state: `control/repository-hygiene-ecosystem-census-20260921.json`.
+
+
+### Ungoverned AI Defensive Envelope representative runtime path — 2026-09-21
+
+`RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` now has a minimum existing runtime path staged around TVC's merged SES stdio isolated-process provider (`StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312`). The resident worker reuses the existing targeted WorkerCoordinator and `ProcessWorkerAdapter` mutation fence; it creates no second runtime or scheduler. Candidate code is exposed only to the SES capability boundary, while the trusted wrapper receives the already-local TVC source locator. The representative probe requires one bounded ALLOW plus denied filesystem, network/import, and environment/import attempts with `consumed=false` and `consequence_reachable=false`, no ambient credential/protected-authority exposure, destroyed temporary candidate state, and evidence-only egress.
+
+This path does not establish arbitrary-code OS sandboxing or external-provider origin. GitHub source/CI validation cannot satisfy resident runtime predicates; authentic enforcement remains `NOT_PROVEN` until the retained resident boundary receipt is observed.
+
+
+### Ungoverned AI Defensive Envelope resident dispatcher carriage — 2026-09-21
+
+The representative component-011 request now uses the existing resident dispatcher instead of requiring an operator-targeted invocation. The request-specific consumer is registered under selector `ungoverned_ai_defensive_envelope`, is carried by the existing sovereign source refresh, forwards only non-secret runtime locators, and retries nonterminal `NOT_PROVEN` attempts until the exact WorkerCoordinator boundary transition completes. This repair creates no new scheduler/runtime and does not make dispatcher visitation an authority or runtime-success claim.
+
+
+For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #38 repairs the Test 3 atomic warrant sequence-2 predecessor: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is reconstructed through shared Master Records at the exact warrant receipt-emission boundary and carried as required predecessor evidence, rather than using a worker-claim string. Exact-head CI is green; source reconciliation targets Task Registry generation 199. Next inventory item: atomic activation sequence-3 direct receipt emission.
+
+## Micro-node commit-time admissibility experiment (proposed)
+
+`SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` is separately scoped from the retired local-semantic four-stage SDK evidence experiments and the active authentic single-worker Richard seam. Its canonical mirror handoff is `docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md`; proposal issue [#2585](https://github.com/StegVerse-Labs/.github/issues/2585). It will use existing micro-node/SDK manifest workers, CTA/StegCore/Universal InTr commit admission, existing WorkerCoordinator/TV/TVC, and canonical Master Records to test genuinely attributable independent evaluations, retained dissent and unknowns, a unanimous-but-missing-evidence negative control, and worker-absent records-only replay. A source/CI pass is not authentic governed runtime evidence. The new task is HANDOFF_READY and carries no execution authority until normal registry/claim/admissibility machinery authorizes it.
+
+
+## SDK micro-node commit-time admissibility contract reconciliation
+
+Canonical task `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` / COSV `71000000111111` is ACTIVE/HANDOFF_READY at Task Registry generation 204 after PR #2586 registration. The source-interface reconciliation in `docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md` identifies reusable SDK generic three-worker disjoint partitions, true measured invocation overlap and recomputed group binding, but these are SDK-local semantic routes—not independently sourced observations or authentic governed execution. Micro-node request/receipt schemas do not themselves supply per-worker independent-evidence binding, UNKNOWN/dissent or exact Master Records predecessor reconstruction; CTA disposition compatibility must preserve ESCALATE/REFUSE without promoting tri-state projection to authorization. Existing authentic Richard seam owns worker lifecycle. No new runtime/custody/authority or authentic runtime claim.
+
+
+## SDK micro-node commit-time source contract merged
+
+The registered `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` / COSV `71000000111111` now has a source-tested non-authorizing three-worker group experiment contract in SDK PR #309, merge `78100556a5b8e0314dc3dc18ff3078df8a0487d8`. It binds the existing SDK group manifest/results to the existing micro-node request identity, declared worker observation/custody origins and local receipt/CTA standing checks. Exact-head CI passed, including focused positive and negative tests. **No** live independent worker evaluations, externally issued commit-time ALLOW, authentic Master Records predecessor custody or worker-absent replay are claimed. See `docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md`.
+
+
+## SDK untrusted dependency execution boundary (proposed)
+
+`SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` is a separately scoped SDK supply-chain security task with candidate family COSV `71000000111111` and canonical handoff `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`. It investigates untrusted package installation hooks, recursive dependencies, IDE workspace initialization and AI-generated executable ingress. The existing checked-out component-011 AI defensive envelope remains the sole shared capability boundary; the micro-node task retains independent evidence/commit-time evaluation, while the Richard seam, Interlock/InTr, TV/TVC and Master Records retain their existing authority and custody. Registration merged and source-validated in PR #2597; ACTIVE/HANDOFF_READY coordination is proposed separately. Neither registration nor activation confers runtime execution, validates arbitrary-code containment, or claims authentic custody. Run canonical collision check-in before modifying any SDK execution path; no second device or new sandbox runtime is authorized.
+
+
+## SDK executable supply-chain ingress — inert source review
+
+Canonical `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` remains ACTIVE/HANDOFF_READY at generation 207. SDK draft PR #310 adds a metadata-only checker for dependency digest substitution, declared install hooks, workspace-open tasks, AI-generated commands, requested capabilities and stale policy/fence. It never installs or executes candidates, issues authorization or claims sandbox containment. Twelve source workflows, including fourteen targeted inert fixtures, passed on exact head `9105144c3c08273975379cf2e3db259d5c8baf7f`. An additional scoped canonical collision evaluator test exercises the SDK-only component and explicitly preserves COORDINATE_CONVERGENCE; a source check-in test is not a resident claim/fence or runtime authority. See `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md` and SDK PR #310. Shared component-011 defensive envelope is owned separately and unchanged; authentic runtime and Master Records closure remain unproven.
+
+
+SDK supply-chain boundary source closeout: .github PR #2599 merged null-parent lineage false-positive repair and exact scoped evaluator CI; SDK PR #310 merged the inert descriptor checker and fourteen non-executing source tests after twelve exact-head source workflow successes. Canonical `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` remains ACTIVE/HANDOFF_READY at generation 207; component-011 enforcement, real TV/TVC/InTr admission, organization receipt evidence and Master Records reconstruction are still unproven. Canonical handoff: `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+## Native email resident evidence continuation (2026-09-23)
+
+The native email monitor retains its canonical `STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001` / COSV `10100000100000` parent and `PROPOSED/UNCLAIMED` source-shard state. Generation 209 now also includes that existing goal exactly once in the consolidated Task Registry (source registration only, not execution). Existing organization receipt replay and canonical Master Records custody remain independently owned; only authentic resident transition receipts can identify a first runtime failure. The original Goal exceeded its 20-prompt ceiling; the bounded successor handoff tracks the cumulative count without creating duplicate execution ownership. Source-only first-failure bridge repair PR #2595 is merged/validated, but an authentic post-repair resident WorkerCoordinator claim/fence, matching four-root v2 source-preparation receipt, organization transition and Master Records closure remain unobserved through the connected evidence surface. Do not promote Gmail/KV/archive or task completion from CI. The exact existing-path first-failure replay contract and registry-shard/monolith reconciliation are in [`docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`](docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md).
+
+
+## Independent framework separation-of-powers experimental sequence (proposal, 2026-09-23)
+
+The existing `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` task remains ACTIVE/HANDOFF_READY (COSV `71000000111111`). Its [canonical handoff](docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md) now distinguishes Stage 1 manifold-style independent capability discovery and possible co-development from Stage 2: a potentially different external framework supplies manifested data/work, existing CTA/StegCore/Universal InTr independently governs commit-time standing, and separately attributable independent observers measure the actual pre/post-transition state. Reconciling inputs, policy decisions, execution reports and independent observed outcomes reveals measured residuals and bounded unknowns; receipts are not external reality proof. External participation, authentic governed execution and independently retained measurements are not yet demonstrated. The Richard single-worker seam retains lifecycle ownership; no new runtime, authority plane or device is proposed.
+
+
+SDK component-011 receipt compatibility: canonical `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` remains ACTIVE/HANDOFF_READY at registry generation 207. SDK PR #311 merged `stegverse/component011_receipt_compatibility.py`, eight source tests and workflow wiring after twelve exact-head workflow successes; it non-authoritatively checks supplied existing component-011 request/worker/boundary -> canonical transition -> organization receipt -> Master Records linkage. The shared component-011 runtime belongs to the separately checked-out `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001`; source inspection found that its existing consumer marks request terminal from a worker completion return rather than directly verifying the exact boundary receipt/org/MR closure. Owner coordination: .github issue #1620 comment 5805318241. No runtime execution, authoritative custody or arbitrary package/IDE sandbox proof is claimed. Canonical handoff: `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+Canonical Task Registry generation 208 observed during final documentation rebase; coordination state remains ACTIVE/HANDOFF_READY. The previous generation 207 remains historical source-reconciliation evidence, not a current generation claim.
+
+
+## Stage-1 capability discovery SDK source closeout
+
+Existing canonical goal `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` / COSV `71000000111111` remains ACTIVE/HANDOFF_READY. SDK PR [#312](https://github.com/StegVerse-org/StegVerse-SDK/pull/312) merged `f7baa8aa17feb82b4a4b3dfbb876f738ddce1a8c` with twelve exact-head PR source workflows SUCCESS. The SDK now includes a strictly non-authorizing Stage-1 capability evidence descriptor review over the existing three-worker manifest and group result, preserving claimed independent origins, packet hashes, per-participant observation limits and disagreement/UNKNOWN. Adversarial local source tests do not prove external participation, real independent origin, governance, Master Records custody or runtime execution. Canonical details and next evidence boundary: `docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md`.
+
+
+Component-011 terminal receipt binding (source repair PR #2608): the existing checked-out owner now proposes a direct fresh boundary-file verification in its resident request consumer rather than trusting COMPLETED worker response or a stale prior terminal marker. Its exact-head Cross-Task Coordination source checks passed (run 35944421262); retryability remains for missing/malformed/consumed-denial receipts. Request terminality is not independent WorkerCoordinator or TV/TVC proof, canonical task completion, org-ledger custody, or Master Records reconstruction. Canonical SDK goal remains ACTIVE/HANDOFF_READY at historical generation 209, with latest observed generation 210; see `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+The component-011 source repair additionally binds the worker's completed response to the same fresh boundary receipt digest and claim/fence. Canonical Task Registry generation 210 was observed; any future collision check-in must re-read its current generation. No production runtime or custody promotion is inferred.
+
+
+Component-011 exact boundary source repair merged in .github PR #2611 (`38580c903a7cf26d914a79f06978b178c3f59908`) after three successful exact-head workflows. Existing worker and resident consumer now bind completion to a fresh exact receipt hash, same response claim/fence and bounded denial probes. This establishes source validation only; runtime, current organization ledger, applicable InTr, TV/TVC and canonical Master Records readback remain unobserved. Canonical SDK security goal ACTIVE/HANDOFF_READY at last observed generation 210, COSV `71000000111111`.
+
+
+## Organization transition exact-source retry
+
+For the existing organization ledger, a retry of an unchanged canonical source transition after incomplete Master Records custody must reuse its verified immutable organization receipt, even when other transitions have since advanced the ledger HEAD. Changed organization context or tampered existing receipts fail closed. The bounded source repair and negative regressions are owned by `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`; it grants no claim, execution or custody authority and is not authentic runtime evidence. The native-email phase uses the same organization-first replay contract: `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
+
+
+## Stage-1 organization-receipt first-failure compatibility — source closeout
+
+Canonical `SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001` / COSV `71000000111111` is ACTIVE/HANDOFF_READY. SDK PR [#313](https://github.com/StegVerse-org/StegVerse-SDK/pull/313) merged exact-source receipt snapshot inspection `bd41055e83c0d5ba0a49576cbcbc53b6fcc76f13` after twelve exact-head source CI workflows passed. It checks supplied existing canonical-to-org transition hash/predecessor chains and preserves the first structurally retained failure, while refusing to treat empty snapshots as runtime failures. This session's GitHub views did not expose authentic sovereign Richard org receipts; current runtime and independent-observation proof remains UNKNOWN, not failed. The existing checked-out Richard owner retains authentic receipt sourcing/first-failure remediation, and Stage 1 cannot declare external participation or Master Records custody from fixtures. See [canonical handoff](docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md).
+
+
+SDK PR [#314](https://github.com/StegVerse-org/StegVerse-SDK/pull/314) merged the organization-*global* predecessor correction as `03794843c7791a626c0ae898fadcac51e108b57d` with twelve exact-head successful workflows. The read-only reviewer now handles interleaved unrelated source/org receipts, rejects incomplete global windows, and does not classify omitted intermediates as task failures.
+
+
+SDK untrusted dependency goal source truth was reconciled at Registry generation 212: SDK PRs #310/#311 and component-011 owner PR #2611 are merged exact-head source-validated, while authentic execution/containment/Master Records remain UNKNOWN. The checked-out component-011 owner already has a direct `ungoverned_ai_defensive_envelope` resident dispatcher/consumer and exact boundary receipt-binding path; independent organizational observation ownership has not been authoritatively disposed, and the goal is not enrolled in the frozen 18 global runtime measurement lanes. Coordination request: [global runtime issue #1260 comment 5813579260](https://github.com/StegVerse-Labs/.github/issues/1260#issuecomment-5813579260). Canonical goal handoff: `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+## Task-native worker resource-cost linkage — source preregistration (2026-09-24)
+
+Draft task `WORKER-TASK-RESOURCE-COST-LINKAGE-001` has an intake record in [issue #2619](https://github.com/StegVerse-Labs/.github/issues/2619) and a source preregistration proposal in [PR #2629](https://github.com/StegVerse-Labs/.github/pull/2629). This source PR does not establish authentic AI_SESSION_GATE admission or an assigned COSV. Post-admission acceptance requires the existing SDK Manifest Builder and published purpose_bound_worker processor, positive and negative tests on an exact SDK head, and separately authenticated WorkerCoordinator/InTr/organization/Master Records evidence. Organization receipt-cost measurements belong to `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`. See `docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md`.
+
+## Optical physical-state and replay research — source preregistration
+
+Central [issue #2626](https://github.com/StegVerse-Labs/.github/issues/2626) proposes a coordination-only source row for `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001` at generation 214 (branch proposal from generation 213). The canonical continuation is [`docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md`](docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md). PAT-003 adaptive-scanner, Publisher reconstruction and existing SDK/governance owners retain their independent scopes. **A source row is not authentic AI_SESSION_GATE admission, a minted COSV, patent family identity or runtime proof.** The associated [Patents draft PR #6](https://github.com/StegVerse-Labs/Patents/pull/6) remains pending convergence. Keep confidential enabling claim material and restricted video out of public repositories.
+
+### Private-State Economy paper scope (2026-09-24)
+
+The canonical [`Private-State Economy white-paper handoff`](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md) records the Publisher PR #72 editorial clarification: StegVerse and its existing six-stage/16-benchmark roadmap remain central; Evidence Custody Seam research is historical lineage and any independently owned external-framework collaboration is optional future research rather than a roadmap gate. Draft-only source updates do not assert publication or external review.
+
+### Component-011 event-ephemeral selector reconciliation (2026-09-24; Registry 214)
+
+The registered `ungoverned_ai_defensive_envelope` selector is present in `scripts/dispatch_resident_execution_requests.py` and its exact standing request is staged. The existing portable on-demand entry `scripts/refresh_and_dispatch_resident_requests.py` currently omits this selector from `ALLOWED_TARGET_CONSUMERS` and rejects an explicit component-011 portable invocation before dispatch. This is a verified source entrypoint mismatch, **not** an authentic dispatch or runtime failure. The checked-out component-011 owner coordinates this source or an existing independently authorized direct dispatcher invocation at [issue #1620](https://github.com/StegVerse-Labs/.github/issues/1620#issuecomment-5818339213). The SDK goal does not edit that shared source. No new runtime, always-on process, device connection, GitHub execution authority or extra observation gate may be introduced. Require the actual selector outcome and exact same-invocation consumer/targeted/WorkerCoordinator/TVC evidence before any runtime promotion. Organization and Master Records custody attach only to a real consequential governed transition.
+
+
+## GP10 POVA follow-up — 2026-09-24
+
+Canonical `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` (COSV `30001000100000`, ACTIVE/CHECKED_OUT) sent its single user-approved POVA/Western Rail follow-up to `pova@povarr.com` from the authenticated `rigel@stegverse.org` Outlook mailbox. Outlook independently returned the sent message and its exact approved body, subject `Re: GP10 records / rebuild-history question`, provider-observed timestamp `2026-09-24T17:34:33Z`. The public [GP10 service page](https://stegverse.org/gp10-field-validation.html) appears only as explanatory context. No other prospect received a follow-up. Message presence does not establish recipient delivery, reading, buyer interest, paid scope or revenue; all commercial predicates remain false. Allow a reasonable response opportunity before classifying any reply or triggering the gated alternative already-implemented revenue-capability comparison. Canonical evidence details: [GP10 commercial handoff](docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md).
+
+### Atomic activation predecessor custody
+
+StegAgents PR #39 merged and validated the sequence-3 exact-boundary reconstruction of its sequence-2 warrant Master Records receipt, carrying the reconstructed immediate predecessor and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Authentic runtime execution remains unobserved.

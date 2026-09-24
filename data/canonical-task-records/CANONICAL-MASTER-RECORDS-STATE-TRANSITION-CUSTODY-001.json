@@ -48,7 +48,9 @@
     "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_BOUND_TO_ORIGIN_TRANSITION",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_DIGESTS_VALIDATE",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTS_PASS",
-    "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP"
+    "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP",
+    "EVERY_IN_ORGANIZATION_STATE_TRANSITION_EMITS_ORGANIZATION_RECEIPT",
+    "ORGANIZATION_RECEIPT_PRECEDES_MASTER_RECORDS_CUSTODY"
   ],
   "current_truth": {
     "ecosystem_inventory_materialized": true,
@@ -131,7 +133,7 @@
     "site_browser_heartbeat_run": 35415040363,
     "site_browser_bootstrap_run": 35415040385,
     "current_intr_ingress_required_evidence_carriage_source_materialized": true,
-    "next_transition_under_evidence_trace": "AUTHENTIC_RTC008_EGRESS_ADMITTED_THEN_MASTER_RECORDS_CLOSURE_THEN_RTC009_THEN_CALLER_CONSEQUENCE",
+    "next_transition_under_evidence_trace": "INVENTORY_NEXT_DIRECT_BUILD_AND_SUBMIT_STATE_RECEIPT_CALLER_AND_REPAIR_ONLY_FIRST_GENERIC_PREDECESSOR_BYPASS",
     "mir_governed_round_trip_complete_required_evidence_source_repair_complete": true,
     "mir_governed_round_trip_complete_required_evidence_pr": 1411,
     "mir_governed_round_trip_complete_required_evidence_merge": "4ede839f58307175f768e2cab9b4b9e5792a9b95",
@@ -273,7 +275,134 @@
       35668005789,
       35668005818
     ],
-    "authentic_sdk_tvc_warrant_service_installation_observed": false
+    "authentic_sdk_tvc_warrant_service_installation_observed": false,
+    "organization_receipt_pre_master_records_source_enforced": true,
+    "organization_receipt_source_path_gap_identified": true,
+    "canonical_state_transition_direct_master_records_submission_observed_in_source": true,
+    "canonical_state_transition_to_repo_receipt_bridge_materialized": false,
+    "canonical_state_transition_to_organization_receipt_bridge_materialized": false,
+    "organization_receipt_runtime_gap_authentically_observed": false,
+    "organization_receipt_runtime_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
+    "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
+    "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
+    "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_WITHIN_ORGANIZATION",
+    "organization_receipt_contract_generalized_to_canonical_state_transitions": true,
+    "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
+    "canonical_state_transition_org_receipt_exact_source_hash_required": true,
+    "canonical_state_transition_repo_relabeling_forbidden": true,
+    "organization_receipt_source_repair_pending_merge": false,
+    "organization_receipt_source_repair_merged": true,
+    "organization_receipt_source_repair_pr": 2520,
+    "organization_receipt_source_repair_exact_head": "2c73acc47f02d4b4dddcf1541094a8ddcb2539f4",
+    "organization_receipt_source_repair_merge": "13ff70132c30147465a25122c8de2fc948da1e56",
+    "organization_receipt_source_repair_validation_runs": [
+      35672926746,
+      35672926715,
+      35672926790,
+      35672926778,
+      35672926731
+    ],
+    "organization_receipt_runtime_carriage_defect_identified": true,
+    "organization_receipt_runtime_carriage_defect": "CANONICAL_CUSTODY_CLIENT_PACKAGED_WITHOUT_AGGREGATE_REPO_TRANSITION_OR_ORG_CONTRACT",
+    "organization_receipt_runtime_carriage_source_repaired": true,
+    "organization_receipt_runtime_carriage_allowlist_defect_identified": true,
+    "organization_receipt_runtime_carriage_allowlist_defect_repaired": true,
+    "organization_receipt_runtime_carriage_failed_validation_run": 35673580314,
+    "organization_receipt_runtime_carriage_source_repair_pending_merge": false,
+    "organization_receipt_runtime_carriage_source_repair_merged": true,
+    "organization_receipt_runtime_carriage_source_repair_pr": 2530,
+    "organization_receipt_runtime_carriage_source_repair_exact_head": "9e0bbca658d171920e6c1e2ed1722d1033b37b20",
+    "organization_receipt_runtime_carriage_source_repair_merge": "514220dc1636843708d426cb3f19d29403380030",
+    "organization_receipt_runtime_carriage_source_repair_validation_runs": [
+      35674382117,
+      35674382182,
+      35674382168,
+      35674382158,
+      35674382292,
+      35674382171,
+      35674382204
+    ],
+    "functional_memory_direct_predecessor_bypass_identified": true,
+    "functional_memory_direct_predecessor_bypass_transition": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+    "functional_memory_direct_predecessor_bypass_repaired": true,
+    "functional_memory_direct_predecessor_bypass_pr": 2529,
+    "functional_memory_direct_predecessor_bypass_superseded_pr": 2528,
+    "functional_memory_direct_predecessor_bypass_merge": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+    "functional_memory_direct_predecessor_bypass_exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+    "functional_memory_direct_predecessor_bypass_validation_runs": [
+      35674317853,
+      35674317860
+    ],
+    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
+    "organization_receipt_runtime_reobservation_performed": true,
+    "organization_receipt_runtime_reobservation_source_head": "292c96d8cd61391f61689e94fb643c66bd53e568",
+    "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
+    "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
+    "organization_receipt_runtime_reobservation_repository_evidence_only": true,
+    "organization_receipt_runtime_reobservation_defect_inferred": false,
+    "rtc008_exact_boundary_predecessor_reconstruction_identified": true,
+    "rtc008_exact_boundary_predecessor_reconstruction_repaired": true,
+    "rtc008_exact_boundary_predecessor_reconstruction_pr": 2560,
+    "rtc008_exact_boundary_predecessor_reconstruction_merge": "7d5b3864f8a61e6982923e5b580584c43a9d93e8",
+    "rtc008_exact_boundary_predecessor_reconstruction_exact_head": "f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23",
+    "rtc008_exact_boundary_predecessor_reconstruction_validation_runs": [
+      35677960202,
+      35677960211
+    ],
+    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY",
+    "rtc007_exact_boundary_predecessor_reconstruction_identified": true,
+    "rtc007_exact_boundary_predecessor_reconstruction_repaired": true,
+    "rtc007_exact_boundary_predecessor_reconstruction_pr": 2562,
+    "rtc007_exact_boundary_predecessor_reconstruction_merge": "248c94f4a9c18579cff99ed5d40d8f6ffcc66111",
+    "rtc007_exact_boundary_predecessor_reconstruction_exact_head": "b8c61cd155734b2c5a4352563b4ae29249a8d977",
+    "rtc007_exact_boundary_predecessor_reconstruction_validation_run": 35681590372,
+    "rtc007_predecessor_contract": "RECONSTRUCT_RTC006_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_RTC007_RECEIPT_EMISSION_BOUNDARY",
+    "stegagents_purpose_warrant_exact_boundary_predecessor_identified": true,
+    "stegagents_purpose_warrant_exact_boundary_predecessor_repaired": true,
+    "stegagents_purpose_warrant_pr": 36,
+    "stegagents_purpose_warrant_merge": "a01d4abc2c2f570865661bba19a04ad5a53d0c1c",
+    "stegagents_purpose_warrant_exact_head": "53d91a780cabca07b048193511e824d047cb3001",
+    "stegagents_purpose_warrant_validation_runs": [
+      35682849540,
+      35682849556,
+      35682849500
+    ],
+    "stegagents_purpose_warrant_predecessor_contract": "REQUIRE_AND_RECONSTRUCT_GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION_AT_EXACT_SEQUENCE_2_WARRANT_RECEIPT_EMISSION_BOUNDARY",
+    "stegagents_state_graph_predecessor_set_hash_bypass_identified": true,
+    "stegagents_state_graph_predecessor_set_hash_bypass_repaired": true,
+    "stegagents_state_graph_predecessor_set_hash_pr": 37,
+    "stegagents_state_graph_predecessor_set_hash_merge": "38e15f276149ee3e46991cf4715c744f410329ef",
+    "stegagents_state_graph_predecessor_set_hash_exact_head": "60efa7a8439df859283910f02449a25468adc4c9",
+    "stegagents_state_graph_predecessor_set_hash_validation_runs": [
+      35687026245,
+      35687026270,
+      35687026272
+    ],
+    "stegagents_state_graph_predecessor_contract": "RECONSTRUCT_EACH_CAUSAL_PREDECESSOR_AT_GRAPH_RECEIPT_EMISSION_AND_USE_LAST_OBSERVED_COMPLETION_AS_EXACT_IMMEDIATE_PREDECESSOR",
+    "stegagents_atomic_warrant_predecessor_bypass_identified": true,
+    "stegagents_atomic_warrant_predecessor_bypass_repaired": true,
+    "stegagents_atomic_warrant_predecessor_pr": 38,
+    "stegagents_atomic_warrant_predecessor_merge": "62544bf751199bd4b66aba6870f2639a8db65ca4",
+    "stegagents_atomic_warrant_predecessor_exact_head": "1c1eab44dd9def2586335855e47c637f7ff8b30d",
+    "stegagents_atomic_warrant_predecessor_validation_runs": [
+      35743051807,
+      35743051814,
+      35743051826
+    ],
+    "stegagents_atomic_warrant_predecessor_contract": "RECONSTRUCT_EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CLOSURE_AT_SEQUENCE_2_WARRANT_EMISSION",
+    "stegagents_atomic_warrant_canonical_hash_helper_repaired": true,
+    "stegagents_atomic_activation_predecessor_bypass_identified": true,
+    "stegagents_atomic_activation_predecessor_repaired": true,
+    "stegagents_atomic_activation_predecessor_pr": 39,
+    "stegagents_atomic_activation_predecessor_merge": "938c1a8a586920b6709c331a25f376f045066e08",
+    "stegagents_atomic_activation_predecessor_exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+    "stegagents_atomic_activation_predecessor_validation_runs": [
+      36036227697,
+      36036227515,
+      36036227461
+    ],
+    "authentic_atomic_activation_runtime_observed": false
   },
   "completion": {
     "claimed": false,
@@ -296,7 +425,8 @@
     "CONTINUE_THROUGH_RTC_007_008_009",
     "ADMIT_GOVERNED_RETURN_AND_RECORD_CANONICAL_RETURN_EXIT",
     "PROPAGATE_CANONICAL_CUSTODY_TO_REMAINING_CONSUMERS",
-    "CONTINUE_POST_RETURN_SDK_PROCESSING_AND_TERMINAL_EGRESS"
+    "CONTINUE_POST_RETURN_SDK_PROCESSING_AND_TERMINAL_EGRESS",
+    "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM"
   ],
   "authority_model": {
     "interlock_intr_grants_transition_authority": true,
@@ -581,6 +711,162 @@
       "authentic_warrant_issuance_observed": false,
       "authentic_resident_runtime_execution_claimed": false,
       "authority_effect": "NONE_EXISTING_ROOT_SELF_HEAL_DELIVERY_REPAIR_ONLY"
+    },
+    "functional_memory_direct_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+      "pull_request": 2529,
+      "superseded_pull_request": 2528,
+      "exact_head": "f00d9c43650b4afb1f857e80a38b171ff9ede7d0",
+      "merge_commit": "48a1d766155d33647f0d4463ffede0ac5ac876e6",
+      "validation_runs": [
+        35674317853,
+        35674317860
+      ],
+      "defect": "DIRECT_FUNCTIONAL_MEMORY_RECEIPT_PRODUCER_TRUSTED_TASK_POINTER_AFTER_UPSTREAM_VALID_FLAG_INSTEAD_OF_RECONSTRUCTING_PREDECESSOR_AT_EXACT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "SUPPLIED_PREDECESSOR_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RECEIPT_EMISSION",
+        "PREDECESSOR_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
+        "PREDECESSOR_RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
+      ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "rtc008_exact_boundary_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "role": "GENERIC_DIRECT_CALLER_CONFORMANCE_CASE_ONLY",
+      "pull_request": 2560,
+      "exact_head": "f2c8cfa954b6b7d1a23111e2252ee6bdaad13c23",
+      "merge_commit": "7d5b3864f8a61e6982923e5b580584c43a9d93e8",
+      "validation_runs": [
+        35677960202,
+        35677960211
+      ],
+      "defect": "DIRECT_RTC008_CUSTODY_EMITTER_TRUSTED_REQUEST_CARRIED_PREDECESSOR_STATUS_AND_DIGEST_FIELDS_WITHOUT_RECONSTRUCTING_THE_EXACT_PREDECESSOR_RECEIPT_AT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_CUSTODY_BOUNDARY",
+        "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-STEGVERSE-EGRESS-007",
+        "RECONSTRUCTED_CLOSURE_MUST_MATCH_CARRIED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
+        "SUCCESSOR_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+      ],
+      "rtc009_or_far_side_execution_changed": false,
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "rtc007_exact_boundary_predecessor_closure": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "transition_id": "RTC-STEGVERSE-EGRESS-007",
+      "role": "GENERIC_DIRECT_CALLER_CONFORMANCE_CASE_ONLY",
+      "pull_request": 2562,
+      "exact_head": "b8c61cd155734b2c5a4352563b4ae29249a8d977",
+      "merge_commit": "248c94f4a9c18579cff99ed5d40d8f6ffcc66111",
+      "validation_run": 35681590372,
+      "defect": "DIRECT_RTC007_CUSTODY_EMITTER_COPIED_RTC006_MASTER_RECORDS_RECEIPT_SHA_FROM_IN_MEMORY_RESULT_INTO_PRIOR_STATE_WITHOUT_RECONSTRUCTING_RTC006_AT_RTC007_RECEIPT_EMISSION_BOUNDARY",
+      "repaired_contract": [
+        "RTC006_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC007_EMISSION_BOUNDARY",
+        "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-SDK-RETURN-006",
+        "RECONSTRUCTED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_MUST_MATCH_PASSED_RTC006_CLOSURE",
+        "RTC007_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+      ],
+      "rtc008_or_rtc009_execution_changed": false,
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "stegagents_purpose_warrant_exact_boundary_predecessor": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "repository": "StegVerse-Labs/StegAgents",
+      "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+      "producer": "src/purpose_bound_worker_runtime.py::_record_verified_warrant_policy_transition",
+      "pull_request": 36,
+      "exact_head": "53d91a780cabca07b048193511e824d047cb3001",
+      "merge_commit": "a01d4abc2c2f570865661bba19a04ad5a53d0c1c",
+      "validation_runs": [
+        35682849540,
+        35682849556,
+        35682849500
+      ],
+      "defect": "SEQUENCE_2_WARRANT_TRANSITION_TRUSTED_IN_MEMORY_GRAPH_PREDECESSOR_CLOSURE_AND_PERMITTED_WORKER_CLAIM_STRING_FALLBACK_INSTEAD_OF_RECONSTRUCTING_EXACT_PREDECESSOR_AT_RECEIPT_EMISSION",
+      "repaired_contract": [
+        "GRAPH_PREDECESSOR_MASTER_RECORDS_TRANSITION_REQUIRED",
+        "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_CUSTODY_CLIENT_AT_WARRANT_RECEIPT_EMISSION",
+        "RECONSTRUCTED_TRANSITION_ID_AND_CLOSURE_FIELDS_MUST_MATCH_CARRIED_GRAPH_PREDECESSOR",
+        "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "WORKER_CLAIM_STRING_FALLBACK_REMOVED"
+      ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "stegagents_state_graph_predecessor_reconstruction": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "repository": "StegVerse-Labs/StegAgents",
+      "producer": "src/purpose_bound_worker_state_graph.py::_record_graph_transition",
+      "pull_request": 37,
+      "exact_head": "60efa7a8439df859283910f02449a25468adc4c9",
+      "merge_commit": "38e15f276149ee3e46991cf4715c744f410329ef",
+      "validation_runs": [
+        35687026245,
+        35687026270,
+        35687026272
+      ],
+      "defect": "GRAPH_TRANSITION_COLLAPSED_PREDECESSOR_RECEIPT_REFS_INTO_A_SET_HASH_USED_AS_PRIOR_STATE_REF_INSTEAD_OF_RECONSTRUCTING_THE_EXACT_IMMEDIATE_PREDECESSOR_AT_EMISSION",
+      "repaired_contract": [
+        "EVERY_SUPPLIED_GRAPH_PREDECESSOR_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_MASTER_RECORDS_CUSTODY_CLIENT",
+        "RECONSTRUCTED_PREDECESSOR_CLOSURE_MUST_MATCH_CARRIED_TRANSITION_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
+        "ALL_CAUSAL_BRANCH_PREDECESSORS_CARRIED_AS_PREDECESSOR_MASTER_RECORDS_CLOSURE_REQUIRED_EVIDENCE",
+        "THREE_WAY_JOIN_USES_EXISTING_COMPLETED_NS_OBSERVED_COMPLETION_ORDER",
+        "LAST_OBSERVED_COMPLETION_RECONSTRUCTED_RECEIPT_IS_PRIOR_STATE_REF_OR_HASH"
+      ],
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "stegagents_atomic_warrant_exact_predecessor": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "repository": "StegVerse-Labs/StegAgents",
+      "producer": "src/atomic_task_worker_activation_runtime.py::_record_warrant",
+      "transition_id": "TV_TVC_WARRANT_POLICY_VERIFIED",
+      "pull_request": 38,
+      "exact_head": "1c1eab44dd9def2586335855e47c637f7ff8b30d",
+      "merge_commit": "62544bf751199bd4b66aba6870f2639a8db65ca4",
+      "validation_runs": [
+        35743051807,
+        35743051814,
+        35743051826
+      ],
+      "defect": "SEQUENCE_2_WARRANT_RECEIPT_USED_WORKER_CLAIM_STRING_IN_PRIOR_STATE_WITHOUT_RECONSTRUCTING_EXACT_CLAIM_FENCE_MASTER_RECORDS_RECEIPT",
+      "repaired_contract": [
+        "CLAIM_FENCE_MASTER_RECORDS_TRANSITION_REQUIRED_FOR_ATOMIC_PREPARE",
+        "EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_PREDECESSOR_RECONSTRUCTED_AT_WARRANT_RECEIPT_EMISSION",
+        "CARRIED_AND_RECONSTRUCTED_TRANSITION_ID_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_EXACTLY_MATCH",
+        "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
+        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "WORKER_CLAIM_STRING_PREDECESSOR_REMOVED",
+        "EXISTING_CANONICAL_HASH_HELPER_REUSED_INSTEAD_OF_MISSING_CANONICAL_JSON_SYMBOL"
+      ],
+      "subsequent_candidate": "src/atomic_task_worker_activation_runtime.py::_record_atomic_activation",
+      "runtime_execution_claimed": false,
+      "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "stegagents_atomic_activation_predecessor": {
+      "state": "SOURCE_REPAIR_MERGED_EXACT_HEAD_VALIDATED",
+      "repository": "StegVerse-Labs/StegAgents",
+      "pull_request": 39,
+      "merge_commit": "938c1a8a586920b6709c331a25f376f045066e08",
+      "exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+      "validation_runs": [
+        36036227697,
+        36036227515,
+        36036227461
+      ],
+      "defect": "ATOMIC_ACTIVATION_SEQUENCE_3_COPIED_UNRECONSTRUCTED_SEQUENCE_2_WARRANT_RECEIPT_SHA",
+      "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+      "authentic_resident_runtime_observed": false,
+      "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
     }
   },
   "required_evidence_validation": {

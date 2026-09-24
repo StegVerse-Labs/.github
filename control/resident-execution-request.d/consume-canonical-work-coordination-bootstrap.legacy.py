@@ -147,6 +147,17 @@ NONSECRET = (
     "XDG_STATE_HOME", "XDG_CONFIG_HOME", "STEGVERSE_HEARTBEAT_ROOT",
     "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_SOVEREIGN_NODE",
 )
+CANONICAL_MASTER_RECORDS_BINDINGS = (
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN",
+    "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "MASTER_RECORDS_DB",
+    "MASTER_RECORDS_RECEIPT_KEY",
+    "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+    "STEGVERSE_REPO_ROOTS_JSON",
+)
 
 
 def truthy(value: str | None) -> bool:
@@ -235,6 +246,9 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     hosted = [name for name in HOSTED if truthy(values.get(name))]
     require(not hosted, "hosted environment may not consume canonical work bootstrap request: " + ",".join(sorted(hosted)))
     env = {name: values[name] for name in NONSECRET if values.get(name)}
+    for name in CANONICAL_MASTER_RECORDS_BINDINGS:
+        if values.get(name):
+            env[name] = values[name]
     for name in FORBIDDEN:
         env.pop(name, None)
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
@@ -410,7 +424,11 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         "result": result,
         "bootstrap_receipt_ref": str(bootstrap_receipt),
         "network_source_fetch_performed": False,
-        "credential_material_present": False,
+        "credential_material_present": bool(
+            safe_env.get("STEGVERSE_MASTER_RECORDS_TOKEN")
+            or safe_env.get("MASTER_RECORDS_RECEIPT_KEY")
+        ),
+        "credential_material_scope": "EXISTING_TV_TVC_MASTER_RECORDS_BINDING_ONLY",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False,
@@ -478,7 +496,11 @@ def run_registry_cycle(
         "second_scheduler_created": False,
         "claim_or_fence_minted": False,
         "network_source_fetch_performed": False,
-        "credential_material_present": False,
+        "credential_material_present": bool(
+            safe_env.get("STEGVERSE_MASTER_RECORDS_TOKEN")
+            or safe_env.get("MASTER_RECORDS_RECEIPT_KEY")
+        ),
+        "credential_material_scope": "EXISTING_TV_TVC_MASTER_RECORDS_BINDING_ONLY",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False,

@@ -217,3 +217,73 @@ StegOS #341 updated the StegOS README for the bounded current-iPhone exchange an
 ## Manual work
 
 None at this coordination stage. Do not enter provider credentials, private-key material, Secure Enclave secrets, or raw key bytes into chat, GitHub, Drive, ordinary KV, logs, screenshots, or repository state. Any eventual owner credential entry remains browser-local sealing only after authentic ingress-readiness predicates are satisfied.
+
+
+## 2026-09-21 fresh-Node My KV relationship-state repair
+
+A real third registered Node exposed a source-semantic defect in the Site My KV Step 2 projection: a Node that had never had any KnowledgeVault relationship was being represented as `KV_INSTALLATION_NOT_VERIFIED` with `resident_kv_root_observed=true`, which incorrectly implied an existing KV relationship and exposed installation-receipt recovery.
+
+Site PR #1450 repaired the existing DEVICE_KV path and merged as `f713330551999125b90868930927984bc33fba9d`. Exact-head Site validation was green before merge. Site PR #1451 then terminalized the temporary Site implementation claim and active COSV projection, merging as `0699af6abb554c4ece47228fd28d35c6135eded4`.
+
+The installation-status projection now preserves three distinct non-authorizing states:
+
+```text
+KV_RELATIONSHIP_NOT_ESTABLISHED
+  kv_relationship_established=false
+  resident_kv_root_observed=false
+  installation_receipt_present=false
+
+KV_INSTALLATION_NOT_VERIFIED
+  kv_relationship_established=true
+  resident_kv_root_observed=true
+  installation_receipt_present=false
+
+KV_INSTALLATION_VERIFIED
+  kv_relationship_established=true
+  resident_kv_root_observed=true
+  installation_receipt_present=true
+```
+
+A fresh registered Node now exposes explicit create-new-KV versus connect-existing-KV choices. Existing-KV installation-receipt recovery remains hidden until the owner deliberately selects that path or authentic DEVICE_KV relationship evidence is already present. `MY_KV_ONBOARDING_STEP_1_COMPLETED` remains Node onboarding evidence only and cannot create, attach, verify, or imply a KnowledgeVault relationship.
+
+This repair does not satisfy or weaken any authentic parent runtime predicate. `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` remains `ACTIVE / CHECKED_OUT`; TV/TVC remains credential authority, Interlock/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and the authentic Device -> KV -> SKAP -> KV -> Device evidence chain remains outstanding.
+
+
+## 2026-09-21 browser-origin installation truth correction
+
+Authentic current-iPhone Safari evidence showed a distinct defect after the fresh-Node relationship-state repair: the Device KV page reported `State: INSTALLED` while also reporting `Storage: device-local-browser-indexeddb`, `Persistence: requested; granted=false`, and `Exact readback: true`. That was not an authentic device/native installation. It was origin-scoped IndexedDB initialization with successful byte readback.
+
+Site PR #1452 repaired that semantic overclaim and merged as `290318a285089b45259a87811d11585f531b1261` after exact-head validation. Site PR #1453 terminalized the temporary Site claim/COSV projection and merged as `c0785763c72518364cf2ae5e7a5a8213907ed7ae`.
+
+The browser helper now exposes:
+
+```text
+BROWSER_KV_NOT_INITIALIZED
+BROWSER_KV_INITIALIZED_BEST_EFFORT
+BROWSER_KV_INITIALIZED_PERSISTENCE_GRANTED
+```
+
+and never converts either browser-initialized state into `installed=true`. `installation_claimed=false` is explicit. A Safari persistence grant only classifies browser-origin durability; it is still not proof of a native app, filesystem service, background process, OS-level vault, or independently resident device runtime.
+
+Exact readback remains useful evidence that the browser can recover the exact IndexedDB bytes it wrote. It is not installation proof. The My KV create path now says “Create browser-local KV”, and cloud-peer setup may consume that initialized local data instance without changing the installation claim.
+
+The canonical parent Goal remains `ACTIVE / CHECKED_OUT`. No authentic Device -> KV -> SKAP -> KV -> Device runtime predicate was satisfied by this repair.
+
+
+## .github import and validation isolation repair — 2026-09-21
+
+A repository validation repair is staged under the existing Goal rather than creating a new runtime or authority lane. `scripts/execute_device_kv_skap_roundtrip_event.py` now adds its own `scripts/` directory to `sys.path` when imported by spec, matching its direct-script import behavior for bare sibling imports. The predecessor-closure test fixture now scopes its synthetic `heartbeat_runtime` modules with `patch.dict(...)` so they cannot leak into later tests and shadow the real package.
+
+This repair changes source import/test isolation only. It does not establish authentic Device/KV/SKAP runtime execution, a KV relationship, native installation, WorkerCoordinator authority, Interlock/InTr admission, or TV/TVC credential evidence. The Goal remains `ACTIVE / CHECKED_OUT` and authentic runtime predicates remain evidence-gated.
+
+## .github import and validation isolation merge reconciliation — 2026-09-21
+
+PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` from exact head `06d5f11eaad047934e3131a20ad243e04ff1fda3` after the branch was rebased onto current `main` to resolve a documentation-only base advance. Exact-head pull-request validations passed: `validate-deepseek-resident` run `35686779849` and `Validate KV AI Memory Resident Binding` run `35686779918`. Push validation run `35686765254` also passed.
+
+The merged repair is limited to sibling-script import parity and isolation of the synthetic `heartbeat_runtime` test stub. It does not promote any authentic runtime predicate: no KV relationship, native installation, WorkerCoordinator claim/fence, Interlock/InTr admission, TV/TVC credential event, Device -> KV -> SKAP -> KV -> Device roundtrip, Master Records closure, or exact terminal readback is claimed from source/CI evidence. The Goal remains `ACTIVE / CHECKED_OUT`.
+
+## Canonical execution-substrate registration reconciliation — 2026-09-21
+
+Cross-Task Coordination run `35686885863` exposed a registry-conformance defect only: this existing runtime-capable Goal predated the mandatory `stegverse.execution-substrate-resolution/v1` field. The task already declared `CANONICAL_STEGOS_EVENT_EPHEMERAL_LANE` and `SOVEREIGN_CANONICAL_EVENT_EPHEMERAL_STEGOS_NODE_INVOCATION`; the canonical record now projects that existing choice as `selected_substrate_id=ADMITTED-EPHEMERAL-STEGOS-NODE`, preserves the canonical single-device-first review order, sets `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`.
+
+This registration repair does not create a runtime, establish reachability, satisfy retained-Node evidence, or promote any authentic Device/KV/SKAP predicate. Earlier same-device substrates remain suitable or evidence-reachability-limited rather than being falsely declared unsuitable, and remote/external-device fallback remains not applicable.

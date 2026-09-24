@@ -781,3 +781,63 @@ The bounded `HYGIENE-CAUSAL-ROOTS-VALIDATION` TVC owner-clearance/routing claim 
 TVC PR `#459` exact head `429f1a6da2dae46b1b1a5d67e76adefc160d8856` passed all three TVC validations and merged as `23b8642f6cea1531877e37feabfd3c281165cb66`. Triggered hygiene run `35668559325` completed SUCCESS: 429 branches inspected, 163 structural retirement candidates, **27 approved-retirement-ready**, **0 invalid approvals**, 262 review-required, and 4 protected/retained. Artifact `10670521199`, digest `sha256:6e2d9307f2e7e4e85a9aadbe7dfd34413c69e0b8687423a328e71f94dcc1fa98`.
 
 Only the seven newly validated historical CMC reconciliation refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json`. The census structural-candidate count rose from 162 to 163 because the merged batch-3 implementation branch itself is now a fully-main-contained unapproved ref; therefore 136 structural candidates remain unapproved. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 4 — 2026-09-21/22
+
+TVC PR `#460` exact head `92eb6b227c8a771b588cb5d61c7b1b787430ed55` passed all three TVC validations and merged as `8aa95de719e76e8fda0bf23539b75d9e1a675940`. Its first triggered hygiene run `35669961523` failed closed with 27 approved-retirement-ready and 2 invalid approvals because ordinary README documentation named both newly approved refs, correctly creating source-reference retention evidence. No routing occurred from that failed run.
+
+TVC PR `#461` exact head `554e3fc5f915d68e38e4dee867d6dcc627b7ec1f` passed all three TVC validations and merged as `e901b5ee8a464027e8e46c032f874973dc1d622a`. It removed the exact branch names only from ordinary README text while retaining them in dedicated hygiene evidence/approval records; classifier exclusions were not widened. Triggered hygiene run `35670276119` then completed SUCCESS: 431 branches inspected, 163 structural retirement candidates, **29 approved-retirement-ready**, **0 invalid approvals**, 264 review-required, and 4 protected/retained. Artifact `10670703919`, digest `sha256:3a3f5d175713de564b8f035ea7f013d957349678dade901086e14cb7ca5edd00`.
+
+Only the two newly validated batch-4 refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json`. Current unapproved structural candidate count: 134. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 5 — 2026-09-21
+
+TVC PR `#462` exact head `ddc73916bd1c17fcec525909238a02ab9b780dc7` passed all three TVC validations and merged as `ae8d2be912b262eb5c4610eaf1afcff241350b53`. Triggered hygiene run `35672943173` completed SUCCESS: 432 branches inspected, 163 structural retirement candidates, **31 approved-retirement-ready**, **0 invalid approvals**, 265 review-required, and 4 protected/retained. Artifact `10671897141`, digest `sha256:a30ca4d7355f9c137e06cf262be45d63636e8d7fca5af518d30e31965b626c78`.
+
+Only the two newly validated historical hosted-source retirement refs are routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json`. Continuing resident service-request and Coinbase provider activation work remains on separate runtime/provider lanes and does not retain these historical refs. Current unapproved structural candidate count: 132. No ref deletion occurred.
+
+
+### TVC Wave-1 retirement routing batch 6 — 2026-09-21
+
+TVC PR `#463` exact head `a6bcd23b37f06b80dde8ece6236e010f977509cf` passed all three TVC validations and merged as `6f42373737c55e0d73601b9c00494c36820c4731`. Triggered hygiene run `35673548654` completed SUCCESS: 433 branches inspected, 163 structural retirement candidates, **32 approved-retirement-ready**, **0 invalid approvals**, 266 review-required, and 4 protected/retained. Artifact `10671758096`, digest `sha256:74a9a8c0f2d0408b2687a737daf9b9b95dbf256005218bc55bc9e068a1ed5972`.
+
+Only the single newly validated historical AEX hosted-source proof ref is routed non-destructively to `HYGIENE-BRANCH-REF-RETIREMENT` through `control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json`. Fresh AEX runtime resolution remains a separate authority lane and does not retain the historical proof ref. Current unapproved structural candidate count: 131. No ref deletion occurred.
+
+
+### TVC residual review batch 7 — zero approval delta — 2026-09-21
+
+A bounded review of the 131 remaining unapproved TVC structural candidates intentionally produced **zero new approvals**. The sampled plausible historical refs were retained/excluded because they remain actively owned or fall inside the standing exclusion set: SES M23A remains owned by the existing validation/activation chain; sovereign-network source validation is still referenced by active relay/ESRL handoffs and workflow; TV artifact exchange remains `SOURCE_VALIDATED_RUNTIME_PENDING`; StegOS delivery, R3 release, and provider-facing BEA refs are excluded by policy.
+
+Machine review record: `control/repository-hygiene-tvc-batch7-review-20260921.json`. The TVC approval manifest was not changed, so no new hosted revalidation was required; the last authenticated manifest state remains run `35673548654` with **32 approved-retirement-ready / 0 invalid approvals**. Routing delta: zero. Unapproved structural candidates remain 131. No ref deletion occurred.
+
+
+### Bulk owner-transition delta optimization — 2026-09-21
+
+The manual residual-review cadence is replaced by a reusable fail-closed owner-transition delta scanner at `scripts/repository_hygiene_owner_transition_delta.py`. The scanner compares the last authenticated census head to current repository state, limits inspection to changed canonical owner-bearing paths, and surfaces only residual structural candidates whose exact branch ref appears in a changed owner surface with explicit resolved/superseded/released/retired/closed state. Zero changed owner-bearing paths yields a machine zero-delta and no approval-manifest change or redundant hosted census.
+
+This changes hygiene from prompt-per-branch review toward repository-scale processing suitable for thousands of refs. It remains a prefilter: current-main containment and active ownership must still pass before approval, and actual ref deletion remains exclusively `HYGIENE-BRANCH-REF-RETIREMENT` authority-owned.
+
+
+### Owner-transition delta scanner hardening — 2026-09-21
+
+The bulk delta scanner is hardened before cross-repository use: root-level and nested `*HANDOFF*.md` owner surfaces are recognized; canonical hygiene-control handoffs/evidence/control records are excluded as owner-transition evidence; and resolved/superseded/released/retired/closed terms must occur within a bounded context window around the exact branch-ref occurrence instead of anywhere in a large file. This prevents hygiene documentation from releasing its own refs and prevents unrelated status words in large handoffs from creating false-positive eligibility.
+
+
+### TVC owner-transition delta batch 8 — zero delta — 2026-09-21
+
+The next TVC continuation no longer re-reviews the same 131 residual refs. Using the last authenticated census head `6f42373737c55e0d73601b9c00494c36820c4731` as baseline, current TVC main `daf8553a27c9d85b6e06bd75f29155bb219af943` is four commits ahead and changes only `TVC_MIRROR_HANDOFF.md` plus `docs/REPOSITORY_HYGIENE_ADOPTION_MIRROR_HANDOFF.md`. Those changes are hygiene-review documentation only; no canonical owner/task/release/runtime state transitioned any residual branch to resolved, superseded, or explicitly released.
+
+Result: **zero newly eligible refs**, no approval-manifest change, no redundant hosted hygiene rerun, routing delta zero, and 131 structural candidates remain unapproved. Evidence: `control/repository-hygiene-tvc-batch8-owner-transition-delta-20260921.json`.
+
+The reusable owner-transition delta scanner is now merged in organization control at `48b3f78ccffd35898d28f9f4dbfe17fcecd753da`. This is the scaling boundary for the remaining branch estate: machine-filter owner-state deltas first, then review only newly eligible refs instead of repeatedly auditing static branches.
+
+
+### Ecosystem bulk census transition — 2026-09-21
+
+The hygiene program has moved from small manual review batches to machine-scale census/delta processing. Current active bulk criterion is `already_hygiene_enabled OR branch_count>=100`. The active set contains 4,756 branches across StegVerse-Labs/.github, Site, TVC, LLM-adapter, TV, StegCore, Master Records, StegHealth, and micro-node-runtime. Seven lower-volume watchlist repositories add 247 branches, bringing the currently enumerated estate to 5,003 branches.
+
+All six previously authenticated Wave-1 consumers were compared from their retained census heads to current main. Exact residual-candidate matching against changed canonical owner-bearing handoffs produced **zero newly eligible refs** across TVC, LLM-adapter, TV, Master Records, StegHealth, and micro-node-runtime. Their approval manifests remain unchanged and no redundant census reruns are required.
+
+For the 3,559 heavy branches lacking authenticated baselines, `.github/workflows/repository-hygiene-ecosystem-bulk-census.yml` performs a central read-only matrix census of StegVerse-Labs/.github, Site, and StegCore without mutating the terminal sink repositories. The classifier is optimized to scan default-branch source references in one batched grep pass rather than once per branch. First baseline results remain evidence-gated until the hosted matrix run completes. Machine census: `control/repository-hygiene-ecosystem-census-20260921.json`.

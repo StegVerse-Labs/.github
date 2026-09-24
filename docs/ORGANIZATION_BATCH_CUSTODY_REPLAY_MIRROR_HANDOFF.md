@@ -1,0 +1,37 @@
+# Organization Batch Custody and Replay
+
+Goal Task ID: ORGANIZATION-BATCH-CUSTODY-REPLAY-001
+COSV ID: 10000000100000
+Status: PROPOSED / HANDOFF_READY pending canonical registration.
+
+## Purpose
+Clarify the existing organizational receipt hierarchy: individual state transitions remain replayable at organization level; independently verified bounded organization batches are delivered to Master Records for cross-organization custody and complex reconstruction. This is a refinement of previous documentation, not a new authority plane or production execution claim.
+
+## Ownership
+WorkerCoordinator retains worker claim/fence, expiry and reassignment. Task Registry owns durable task state and successor obligations. Interlock/InTr owns transition governance; TV/TVC owns credentials. The existing organization ledger owns exact locally reconstructable worker/task/sequence receipts and hash-linked batches. Master Records verifies batches, preserves durable global custody and reconstructs cross-organization histories without acquiring transition authority.
+
+## Failure and expiry
+A genuinely irrecoverable worker failure must preserve its exact evidence and last closed transition, expire the existing fenced assignment through WorkerCoordinator, update canonical Task Registry with durable failure and successor owner, record the worker-expiry receipt in the existing organization ledger, and trigger immediate batch closure. An individual blocked work item does not automatically expire a worker with other lawful work. When custody itself fails, preserve the incident on existing durable worker/task failure surfaces, with pending custody explicitly marked; do not fabricate a completed state transition or introduce another failure mailbox.
+
+## Batch boundaries
+Use one ordered hash-linked organization ledger. Batch closure may be routine (time/size after measurement), task closure, worker expiry, consequential governed transition, recovery of pending custody, or inter-organization handoff. Batch classification is metadata, not separate ledgers. A batch commits exact organization identity, contiguous sequence range, prior batch hash, first/last org receipt hashes, ordered receipt hashes/commitment, required-evidence commitment, cross-boundary predecessors, closure reason and Master Records acknowledgement status. Validate no omission, duplication, broken predecessor or reorder; retain unacknowledged batches locally and use existing authorized transport with idempotent retry.
+
+## Replay
+Local organization replay must reconstruct individual worker, task and sequence receipts and required evidence without requiring Master Records to be online. Master Records must independently verify organization batches and reconstruct relationships spanning organizations. Where a transition contract explicitly requires immediate Master Records acknowledgement, local-only replay or queued batch submission cannot authorize progression.
+
+## Existing code and evidence boundary
+Reconcile resident-runtime/aggregate_repo_transition.py, .stegverse/transition-ledger/org-contract.json, workers/canonical_state_transition_custody.py, the existing WorkerCoordinator expiry and Task Registry paths, master-records/orchestration/services/ecosystem_transition_ledger.py, and services/canonical_state_transition_custody.py. Existing Master Records receipt-set commitments do not themselves establish organizational batch delivery. Source/CI is not runtime proof. Require authentic retained organization and Master Records receipts for runtime closure, including RECORDED, reconstruction PASS, required-evidence PASS and exact digest equality where required.
+
+## Scope
+Register canonical Goal and COSV, verify existing source seams, define minimal existing-surface batch ingress, add positive/negative replay and failure tests, and reconcile live receipts. No new ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, credential route, device or manual device step.
+
+
+## 2026-09-23 exact-source retry correction candidate
+
+A source trace of `workers/canonical_state_transition_custody.py::submit_state_receipt` establishes a reproducible replay seam: organization recording precedes Master Records submission, and previously each retry of an unchanged source transition unconditionally appended a new organization receipt with a new timestamp and predecessor hash. If the Master Records step returns `BOUNDARY`, an authorized caller retry could thus produce multiple organization receipts for **one unchanged canonical source transition**. This is a source-proven potential defect; no authentic resident occurrence has been observed.
+
+The bounded existing-owner correction in `resident-runtime/aggregate_repo_transition.py` reuses the exact previously retained organization receipt for the same verified source-transition digest, schema, transition ID, organizational class and immutable context, even if another valid organization receipt was appended meanwhile. It reads **only the existing immutable receipt directory**, verifies stored receipt integrity and file/hash parity, and rejects changed context and tampering without appending. The ledger HEAD remains at the newest transition on an exact retry; retries can then pursue the original source transition's existing Master Records custody without inventing a second organization event. Regression cases: exact repeat after an intervening org transition; changed organizational context rejected; tampered retained receipt rejected. This correction does **not** prove concurrent append serialization, existing historical duplicate cleanup, real resident execution or Master Records acknowledgement. Retain the source/CI versus authentic runtime evidence boundary.
+
+## 2026-09-23 exact-source retry repair merged and validated
+
+[PR #2616](https://github.com/StegVerse-Labs/.github/pull/2616) merged as `24068665860c4b5a2695d38900f91a2977b6435e` at exact-head `ac2b262829e462636b84dac046af8f4601001145`. The targeted non-authorizing [organization-ledger regression run 35955965885](https://github.com/StegVerse-Labs/.github/actions/runs/35955965885), [validate-deepseek-resident 35955965632](https://github.com/StegVerse-Labs/.github/actions/runs/35955965632), and [KV resident binding 35955965719](https://github.com/StegVerse-Labs/.github/actions/runs/35955965719) succeeded. Positive/negative targeted cases now cover exact source retry after another organization transition, rejection of changed context, and detection of tampered retained receipts. The updated recorder and test are verified on main. Evidence classification: `CI_VALIDATED_SOURCE_REPAIR`, not authentic resident organization replay, concurrent append proof, historical duplicate repair or Master Records custody.

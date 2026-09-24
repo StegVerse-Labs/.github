@@ -7,7 +7,16 @@
   "decomposition_evaluation": {
     "score": 26,
     "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
-    "active_signals": ["repeated_subflow", "multiple_authority_crossings", "cross_repository_or_org_spread", "task_specific_adapter_duplicates_generic_work", "handoff_sequence_growth", "independent_reusability", "optional_subflow_present", "independent_evidence_predicate"],
+    "active_signals": [
+      "repeated_subflow",
+      "multiple_authority_crossings",
+      "cross_repository_or_org_spread",
+      "task_specific_adapter_duplicates_generic_work",
+      "handoff_sequence_growth",
+      "independent_reusability",
+      "optional_subflow_present",
+      "independent_evidence_predicate"
+    ],
     "authority_effect": "NONE_COORDINATION_ONLY"
   },
   "selected_components": [
@@ -16,12 +25,29 @@
       "family": "ai_ingress_coordination",
       "existing": "EXTRACTED_FROM_PRIOR_TASK_SPECIFIC_SOURCE_SLICE",
       "canonical_implementation_or_owner": "StegVerse-Labs/.github Task Registry coordination source",
-      "inputs": ["task_id", "session_id", "actor_kind", "checkin_context_or_exact_registry_disposition"],
-      "outputs": ["coordination disposition", "actor-bound return receipt", "actor-bound close receipt"],
-      "preconditions": ["canonical task identity", "session lifecycle", "runtime identity remains separately evidenced"],
+      "inputs": [
+        "task_id",
+        "session_id",
+        "actor_kind",
+        "checkin_context_or_exact_registry_disposition"
+      ],
+      "outputs": [
+        "coordination disposition",
+        "actor-bound return receipt",
+        "actor-bound close receipt"
+      ],
+      "preconditions": [
+        "canonical task identity",
+        "session lifecycle",
+        "runtime identity remains separately evidenced"
+      ],
       "authority_owner": "Task Registry coordination policy only",
       "authority_effect": "NONE_COORDINATION_ONLY",
-      "expected_evidence": ["source actor classification", "session lifecycle actor binding", "separate runtime origin evidence"],
+      "expected_evidence": [
+        "source actor classification",
+        "session lifecycle actor binding",
+        "separate runtime origin evidence"
+      ],
       "repeatability_cardinality": "EVERY_APPLICABLE_SESSION_LIFECYCLE",
       "failure_remediation_semantics": "FAIL_CLOSED_AND_REENTER_WITH_CORRECTED_COORDINATION_INPUTS",
       "requirement": "REQUIRED",
@@ -32,12 +58,21 @@
       "family": "transport",
       "existing": true,
       "canonical_implementation_or_owner": "Canonical SDK manifest ingress",
-      "inputs": ["external evaluator manifested submission"],
-      "outputs": ["validated manifest result"],
-      "preconditions": ["SDK evaluator route selected"],
+      "inputs": [
+        "external evaluator manifested submission"
+      ],
+      "outputs": [
+        "validated manifest result"
+      ],
+      "preconditions": [
+        "SDK evaluator route selected"
+      ],
       "authority_owner": "SDK ingress validation",
       "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
-      "expected_evidence": ["SDK route source evidence", "runtime evidence separately required"],
+      "expected_evidence": [
+        "SDK route source evidence",
+        "runtime evidence separately required"
+      ],
       "repeatability_cardinality": "ONCE_PER_SUBMISSION",
       "failure_remediation_semantics": "FAIL_CLOSED_AND_RESUBMIT_AFTER_REMEDIATION",
       "requirement": "REQUIRED_FOR_EXTERNAL_EVALUATOR_ROUTE",
@@ -48,12 +83,28 @@
       "family": "framework_provider_adapter",
       "existing": true,
       "canonical_implementation_or_owner": "data/reusable-task-registry.json / External Adapter Establishment",
-      "inputs": ["endpoint_identity", "endpoint_protocol", "intr_protocol_ref", "operations", "error_mapping", "evidence_mapping"],
-      "outputs": ["endpoint translation contract"],
-      "preconditions": ["reuse existing adapter first", "translation remains external-side"],
+      "inputs": [
+        "endpoint_identity",
+        "endpoint_protocol",
+        "intr_protocol_ref",
+        "operations",
+        "error_mapping",
+        "evidence_mapping"
+      ],
+      "outputs": [
+        "endpoint translation contract"
+      ],
+      "preconditions": [
+        "reuse existing adapter first",
+        "translation remains external-side"
+      ],
       "authority_owner": "NONE_TRANSLATION_ONLY",
       "authority_effect": "NONE_TRANSLATION_ONLY",
-      "expected_evidence": ["existing adapter reused or non-duplicate adapter derived", "canonical SDK delegation", "round-trip evidence requirements declared"],
+      "expected_evidence": [
+        "existing adapter reused or non-duplicate adapter derived",
+        "canonical SDK delegation",
+        "round-trip evidence requirements declared"
+      ],
       "repeatability_cardinality": "ONCE_PER_ENDPOINT_PROFILE",
       "failure_remediation_semantics": "FAIL_CLOSED_AND_REUSE_OR_REDERIVE_WITHOUT_DUPLICATING_CANONICAL_OWNERS",
       "requirement": "REQUIRED_FOR_EXTERNAL_FRAMEWORK_MODEL_ROUTE",
@@ -61,18 +112,40 @@
     },
     {
       "component_id": "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011",
-      "family": "ai_ingress_coordination",
-      "existing": false,
-      "canonical_implementation_or_owner": "IDENTIFIED_NOT_YET_MATERIALIZED",
-      "inputs": ["manifested AI decision request", "declared model or framework identity", "bounded processing policy"],
-      "outputs": ["bounded decision result", "isolation evidence"],
-      "preconditions": ["additional AI route enabled only after source isolation exists"],
-      "authority_owner": "NO_COMPONENT_LOCAL_TRANSITION_AUTHORITY",
+      "family": "ai_defensive_boundary",
+      "existing": "CONTRACT_DEFINED_SOURCE_LEVEL_IMPLEMENTATION_NOT_YET_MATERIALIZED",
+      "canonical_implementation_or_owner": "Reusable defensive-envelope contract; concrete runtime owner not yet materialized",
+      "inputs": [
+        "controlled chokepoint",
+        "capability-scoped filesystem/network/tool policy",
+        "credential isolation policy",
+        "consequence mediation policy",
+        "evidence retention policy",
+        "governed egress contract"
+      ],
+      "outputs": [
+        "bounded work result or proposed consequence",
+        "boundary evidence",
+        "denied-consequence proof",
+        "governed egress candidate"
+      ],
+      "preconditions": [
+        "StegVerse controls the relevant consequence path",
+        "no protected-authority path is exposed to the external AI",
+        "external AI internal sovereignty remains untouched"
+      ],
+      "authority_owner": "NO_COMPONENT_LOCAL_TRANSITION_AUTHORITY_EXTERNAL_AI_INTERNAL_SOVEREIGNTY_PRESERVED",
       "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
-      "expected_evidence": ["source isolation evidence", "runtime isolation evidence"],
+      "expected_evidence": [
+        "capability-boundary source contract",
+        "credential isolation",
+        "denied consequence unreachable when supported",
+        "governed egress separation",
+        "representative runtime isolation evidence"
+      ],
       "repeatability_cardinality": "ONCE_PER_ADDITIONAL_AI_REQUEST",
-      "failure_remediation_semantics": "FAIL_CLOSED_UNTIL_ISOLATION_IS_PROVEN",
-      "requirement": "REQUIRED_BEFORE_ADDITIONAL_AI_SUPPORT",
+      "failure_remediation_semantics": "FAIL_CLOSED_AT_CONTROLLED_BOUNDARY_REPAIR_FIRST_CONCRETE_ESCAPE_OR_EVIDENCE_DEFECT",
+      "requirement": "REQUIRED_BEFORE_UNGOVERNED_AI_CAN_CAUSE_PROTECTED_CONSEQUENCES",
       "version_or_schema_binding": "stegverse.reusable-ai-ingress-component-contract/v1"
     },
     {
@@ -80,12 +153,27 @@
       "family": "runtime_observation",
       "existing": true,
       "canonical_implementation_or_owner": "Canonical runtime observation lane; Master Records owns custody and reconstruction",
-      "inputs": ["selected interface under test", "runtime subject", "expected condition", "correlation identifiers"],
-      "outputs": ["authentic observation", "exact first failure", "evidence reference"],
-      "preconditions": ["source route validated", "runtime subject reachable", "source or CI not substituted for runtime evidence"],
+      "inputs": [
+        "selected interface under test",
+        "runtime subject",
+        "expected condition",
+        "correlation identifiers"
+      ],
+      "outputs": [
+        "authentic observation",
+        "exact first failure",
+        "evidence reference"
+      ],
+      "preconditions": [
+        "source route validated",
+        "runtime subject reachable",
+        "source or CI not substituted for runtime evidence"
+      ],
       "authority_owner": "Master Records for observed-reality custody and reconstruction",
       "authority_effect": "NONE_OBSERVATION_ONLY",
-      "expected_evidence": ["representative authentic runtime observations"],
+      "expected_evidence": [
+        "representative authentic runtime observations"
+      ],
       "repeatability_cardinality": "REPEATABLE_PER_INTERFACE_AND_RUNTIME_SUBJECT",
       "failure_remediation_semantics": "RECORD_FAILURE_REMEDIATE_OUTSIDE_OBSERVER_AND_REOBSERVE",
       "requirement": "REQUIRED_FOR_RUNTIME_COMPLETION",
@@ -97,15 +185,23 @@
     "RTC-EVIDENCE-CUSTODY-004 when canonical custody readback or reconstruction is required",
     "TV/TVC credential session capability only when selected runtime route requires credential provider or release issuance"
   ],
-  "not_selected": ["RTC-PUBLISHER-005", "RTC-SDK-RETURN-006 as mandatory", "RTC-STEGVERSE-EGRESS-007 as mandatory", "RTC-FARSIDE-FINAL-009", "terminal cleanup entropy recovery"],
+  "not_selected": [
+    "RTC-PUBLISHER-005",
+    "RTC-SDK-RETURN-006 as mandatory",
+    "RTC-STEGVERSE-EGRESS-007 as mandatory",
+    "RTC-FARSIDE-FINAL-009",
+    "terminal cleanup entropy recovery"
+  ],
   "goal_specific_completion_predicates_preserved": [
     "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED",
     "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
     "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
     "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED",
     "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
-    "COMMON_AI_DECISION_SANDBOX_REGION_DEFINED",
-    "COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED",
+    "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT_DEFINED",
+    "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_RUNTIME_ENFORCED",
+    "DENIED_CONSEQUENCE_UNREACHABILITY_PROVEN_FOR_REPRESENTATIVE_BOUNDARY",
+    "EXTERNAL_AI_MEETING_ROOM_TREATED_AS_INSTANTIATION_NOT_AUTHORITY_PRIMITIVE",
     "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
     "LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS",
     "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
@@ -116,6 +212,15 @@
   "runtime_evidence_state": "NOT_COMPLETE_SOURCE_AND_CI_DO_NOT_PROVE_RUNTIME",
   "goal_identity_preserved": true,
   "new_goal_task_required": false,
-  "new_reusable_components_identified": ["RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010", "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011"],
-  "duplicate_orchestration_to_retire": ["standalone session actor gating after component 010 validates", "parallel AI session gates", "parallel AI isolation implementations", "LLM Adapter duplication of RT-EXTERNAL-ADAPTER-ESTABLISH-001 or downstream canonical owners"]
+  "new_reusable_components_identified": [
+    "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+    "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011"
+  ],
+  "duplicate_orchestration_to_retire": [
+    "standalone session actor gating after component 010 validates",
+    "parallel AI session gates",
+    "parallel AI sandbox or defensive-envelope implementations",
+    "meeting-room-specific authority planes that duplicate component 011",
+    "LLM Adapter duplication of RT-EXTERNAL-ADAPTER-ESTABLISH-001 or downstream canonical owners"
+  ]
 }

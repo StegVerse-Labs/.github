@@ -252,6 +252,68 @@
       "classification": "EVIDENCE_NOT_OBSERVED_NO_DETERMINISTIC_EXISTING_PATH_FAILURE_RETAINED",
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "GOAL_PROMPT_8_AUTHENTIC_MASTER_RECORDS_REFRESH_REOBSERVATION",
+      "goal_prompt_count": "8/20",
+      "registry_generation_entering": 184,
+      "canonical_main_entering": "5c5bd54a232f241b107d84e0c529d7dbfc36ee21",
+      "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+      "required_schema": "stegverse.master-records-resident-source-refresh/v1",
+      "required_receipt_predicates": {
+        "state": "MATERIALIZED_VERIFIED",
+        "materialization_performed": true,
+        "canonical_master_records_api_loaded_from_package": true,
+        "source_proof_state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "source_proof_repository": "master-records/orchestration",
+        "source_floor": "8804762fb5da5d212aa7c9c448dfcdabac734715",
+        "source_floor_present": true,
+        "valid_descendant_head_required": true
+      },
+      "authorized_resident_command_surface_available": false,
+      "connected_surface_absence_is_runtime_absence_evidence": false,
+      "authentic_retained_refresh_receipt_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "authentic_nonce_bound_claim_fence_observed": false,
+      "deterministic_pre_a3_failure_observed": false,
+      "retention_writer_runtime_root_alignment_reverified": true,
+      "recurring_service_materialize_only_writer_reverified": true,
+      "focused_retention_test_present": true,
+      "newly_evidenced_source_defect": false,
+      "source_change_performed": false,
+      "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+      "classification": "EVIDENCE_REACHABILITY_UNCHANGED_EXISTING_RETENTION_PATH_REVERIFIED_NO_NEW_SOURCE_DEFECT",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
+    },
+    {
+      "observed_at": "2026-09-21",
+      "transition": "GOAL_PROMPT_9_POST_REBASE_AUTHENTIC_SOURCE_REFRESH_REOBSERVATION",
+      "goal_prompt_count": "9/20",
+      "canonical_main_entering": "cde20d6dd997b6b6aa528e9d02b9e5fdf50896e5",
+      "coordination_pr": 2521,
+      "coordination_pr_exact_head_entering": "ec24644601e9745d63fc80e8e9edac1a8edbc14d",
+      "coordination_pr_mergeable": true,
+      "exact_head_validation_runs_attached": false,
+      "coordination_merge_performed": false,
+      "required_receipt": "receipts/sovereign-host/master-records-source-refresh.latest.json",
+      "authentic_retained_refresh_receipt_observed": false,
+      "durable_master_records_runtime_observed": false,
+      "authentic_nonce_query_executed": false,
+      "authentic_nonce_bound_claim_fence_observed": false,
+      "repository_evidence_classification": "SOURCE_IMPLEMENTATION_TESTS_AND_PRIOR_DECLARATIONS_ONLY",
+      "authorized_resident_command_surface_available": false,
+      "surface_unavailability_is_runtime_absence_evidence": false,
+      "retention_writer_same_runtime_root_reverified": true,
+      "new_source_defect_observed": false,
+      "source_change_performed": false,
+      "deterministic_pre_a3_failure_observed": false,
+      "first_unsatisfied_predicate": "AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF",
+      "classification": "AUTHENTIC_RECEIPT_STILL_UNOBSERVABLE_NO_FAILURE_INFERRED_NO_NEW_REPAIR_JUSTIFIED",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_OBSERVATION_ONLY"
     }
   ],
   "dependencies": [
@@ -314,7 +376,7 @@
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
-    "goal_prompt_count": "6/20",
+    "goal_prompt_count": "9/20",
     "split_merely_to_reset_counter": false
   },
   "source_refs": [

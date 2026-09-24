@@ -48,6 +48,8 @@ ALLOWED_EXACT = {
     "control/quantum-crypto-census.json",
     "data/reusable-task-registry.json",
     "data/reusable-task-ephemeral-construct-contract.json",
+    ".stegverse/transition-ledger/org-contract.json",
+    "resident-runtime/aggregate_repo_transition.py",
 }
 FORBIDDEN_PREFIXES = (
     ".git/", "receipts/", "checkpoints/", "events/", "heartbeats/",

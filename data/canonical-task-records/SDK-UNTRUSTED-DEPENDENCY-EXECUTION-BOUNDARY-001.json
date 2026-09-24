@@ -1,0 +1,142 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "correlation_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "root_correlation_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+  "parent_task_id": null,
+  "goal": "Reconcile SDK and existing component-011 defensive envelope against untrusted dependency installation, IDE workspace initialization and AI-generated executable ingress; source-test explicit per-operation capability admission, denied consequences and exact receipt lineage without introducing another runtime, authority plane, credential or device prerequisite.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md",
+  "cosv_task_vector": "71000000111111",
+  "source_refs": [
+    "docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/RELEASE_DEPENDENCY_ALIGNMENT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/REPRODUCIBLE_RELEASE_CANDIDATE.md",
+    "StegVerse-org/StegVerse-SDK:stegverse/component011_receipt_compatibility.py"
+  ],
+  "adjacent_task_refs": [
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_REGISTRATION_AND_COSV_VALIDATED",
+    "EXISTING_SDK_MANIFEST_AND_DEPENDENCY_EXECUTION_PATHS_INVENTORIED",
+    "EXISTING_COMPONENT_011_CONTAINMENT_COMPATIBILITY_RECONCILED_WITH_CHECKED_OUT_OWNER",
+    "PINNED_TRANSITIVE_DEPENDENCY_AND_INSTALL_HOOK_BOUNDARIES_FALSIFIED",
+    "IDE_WORKSPACE_AND_AI_GENERATED_EXECUTION_BOUNDARIES_FALSIFIED",
+    "EXACT_OPERATION_SCOPED_TV_TVC_AND_CURRENT_INTR_STANDING",
+    "DENIED_FILESYSTEM_NETWORK_CREDENTIAL_AND_TOOL_EFFECTS_INDEPENDENTLY_OBSERVED",
+    "UNKNOWN_AND_UNOBSERVED_EFFECTS_NOT_PROMOTED_TO_ALLOW",
+    "EXACT_IMMEDIATE_PREDECESSOR_CANONICAL_MASTER_RECORDS_CLOSURE",
+    "ORGANIZATION_LEVEL_DENIED_OPERATION_AND_WORKER_EXPIRY_RECEIPTS",
+    "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_NO_SIDE_EFFECT_REEXECUTION",
+    "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
+  ],
+  "constraints": {
+    "existing_sdk_manifest_only": true,
+    "existing_component_011_boundary_only": true,
+    "existing_workercoordinator_only": true,
+    "existing_intr_only": true,
+    "existing_master_records_and_organization_ledger_only": true,
+    "github_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "no_second_user_operated_device": true,
+    "do_not_mutate_checked_out_neighbor": true
+  },
+  "current_truth": {
+    "canonical_registry_registration": "MERGED_GENERATION_206_SOURCE_VALIDATED",
+    "source_reconciliation": "MERGED_SOURCE_RECONCILED_SDK_310_311_COMPONENT011_2611",
+    "source_tests": "PASSED_INERT_FIXTURES_AND_EXACT_HEAD_SOURCE_CI",
+    "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "sandbox_containment": "UNKNOWN_NOT_PROVEN",
+    "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "component011_terminal_binding": "MERGED_SOURCE_VALIDATED_PR_2611"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "registration_validation": {
+    "registration_pr": 2597,
+    "registration_merge": "7fac73d0821b4410d5fddb79ebd1452eab0d7240",
+    "registration_exact_head": "8616a53f8b390b7678f442c995c69180fdc89fd8",
+    "exact_head_workflows_passed": 5,
+    "workflow_run_ids": [
+      35929392397,
+      35929392385,
+      35929392329,
+      35929392365,
+      35929392367
+    ],
+    "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+  },
+  "source_validation": {
+    "classification": "SOURCE_AND_CI_ONLY_NO_RUNTIME_AUTHORITY",
+    "sdk_inert_review": {
+      "pr": 310,
+      "merge": "d311c1604198f1493aa4f21ee77e35082c334800",
+      "inert_tests_passed": 14,
+      "exact_head_workflows_passed": 12
+    },
+    "sdk_component011_compatibility": {
+      "pr": 311,
+      "merge": "b5fac425c5cae1fe4034dae288e370cbf96ef901",
+      "focused_tests_passed": 8,
+      "exact_head_workflows_passed": 12
+    },
+    "component011_owner_terminal_binding": {
+      "pr": 2611,
+      "merge": "38580c903a7cf26d914a79f06978b178c3f59908",
+      "validated_head": "55619e8c3bb594de66f4c7fd32225a9c6d6918ab",
+      "workflow_runs": [
+        35945039554,
+        35945039530,
+        35945039527
+      ],
+      "runtime_effect": "NONE_SOURCE_ONLY"
+    }
+  },
+  "runtime_observation": {
+    "component_owner_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "component_owner_checkout_source": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+    "component_owner_status": "ACTIVE_CHECKED_OUT_IN_SHARD",
+    "existing_resident_selector": "ungoverned_ai_defensive_envelope",
+    "existing_execution_chain": [
+      "scripts/dispatch_resident_execution_requests.py",
+      "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+      "scripts/refresh_and_execute_resident_task.py",
+      "scripts/run_worker_runtime.py",
+      "workers/ungoverned_ai_defensive_envelope_worker.py",
+      "StegVerse-Labs/TVC:tasks/ungoverned_ai_defensive_envelope.py"
+    ],
+    "expected_immutable_targeted_execution_root": "receipts/sovereign-host/resident-targeted-execution.by-receipt/",
+    "expected_request_consumption": "receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.latest.json",
+    "expected_boundary_receipt": "receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+    "source_owner_binding": "COMPONENT011_OWNER_PATH_ESTABLISHED_SOURCE_ONLY",
+    "independent_organization_observer": "UNRESOLVED_AUTHENTIC_OWNER_DISPOSITION",
+    "global_runtime_profile": "NOT_ENROLLED_IN_FROZEN_18_LANES_NO_GLOBAL_GATE",
+    "global_runtime_owner_coordination": "REQUESTED_ISSUE_1260_COMMENT_5813579260_NO_AUTHENTIC_REPLY_OBSERVED",
+    "workercoordinator_claim_fence": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "tvc_source_and_warrant": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "intr_when_governed_transition_required": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "organization_receipt_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "runtime_failure": "NOT_EVIDENCED",
+    "authority_effect": "NONE_OBSERVATION_COORDINATION_ONLY"
+  }
+}

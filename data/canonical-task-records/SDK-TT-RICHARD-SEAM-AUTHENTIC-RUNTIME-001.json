@@ -38,8 +38,7 @@
     ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
     "scripts/run_sdk_tt_richard_seam_test3.py",
     "tests/test_sdk_tt_richard_seam_test3_runner.py",
-    ".github/workflows/test3-richard-seam-acceptance.yml",
-    "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
+    ".github/workflows/test3-richard-seam-acceptance.yml"
   ],
   "adjacent_task_refs": [
     "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -82,10 +81,7 @@
     "INTR_ADMITS_CLOSE_T_RETIRE_W_T",
     "MASTER_RECORDS_CLOSES_RETIREMENT_TRANSITION",
     "POST_RETIREMENT_NO_LIVE_TASK_BOUND_AUTHORITY",
-    "RECORDS_ONLY_RECONSTRUCTION_MATCHES_AUTHENTIC_RECEIPTS",
-    "POST_RETIREMENT_STALE_FENCE_INVOCATION_ATTEMPTED_THROUGH_EXISTING_GOVERNED_PATH",
-    "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
-    "MASTER_RECORDS_CLOSES_STALE_FENCE_REFUSAL"
+    "RECORDS_ONLY_RECONSTRUCTION_MATCHES_AUTHENTIC_RECEIPTS"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_PRESTATE_TASK_HANDOFF_READY_AND_WORKER_ABSENT",
@@ -101,8 +97,7 @@
     "AUTHENTIC_CLOSE_TASK_RETIRE_WORKER_TRANSITION",
     "AUTHENTIC_POST_RETIREMENT_CONTINUED_AUTHORITY_FALSE",
     "AUTHENTIC_RECORDS_ONLY_FINAL_RECONSTRUCTION",
-    "AUTHENTIC_NO_SPLIT_TASK_WORKER_STATE_OBSERVED",
-    "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED"
+    "AUTHENTIC_NO_SPLIT_TASK_WORKER_STATE_OBSERVED"
   ],
   "falsification_requirements": [
     "ACTIVE_WITHOUT_WORKER_MUST_FAIL_CLOSED",
@@ -112,8 +107,7 @@
     "INVOCATION_BEFORE_CONSTITUTIVE_CLOSURE_MUST_FAIL_CLOSED",
     "MANIFEST_BOUNDARY_EXPANSION_MUST_FAIL_CLOSED",
     "TASK_COMPLETE_WITH_WORKER_STILL_LIVE_MUST_FAIL_CLOSED",
-    "RECORDS_ONLY_WITH_EXECUTOR_REFERENCE_MUST_FAIL_CLOSED",
-    "POST_RETIREMENT_STALE_FENCE_MUST_BE_DENIED_WITH_ZERO_EXECUTION_AND_CANONICAL_CUSTODY"
+    "RECORDS_ONLY_WITH_EXECUTOR_REFERENCE_MUST_FAIL_CLOSED"
   ],
   "master_records_progression_rule": [
     "state=RECORDED",
@@ -343,28 +337,5 @@
     "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
     "authentic_runtime_transition_observed": false,
     "authority_effect": "NONE_EXISTING_DISPATCH_AND_WORKERCOORDINATOR_ONLY"
-  },
-  "option_a_reconciliation": {
-    "predecessor_task_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
-    "predecessor_state": "RETIRED_COMPLETED_VALIDATED",
-    "sdk_pr": 304,
-    "sdk_merge": "e1116e9cb5f5043c9198505d64560b710c517e88",
-    "four_stage_run": 35648276053,
-    "artifact_id": 10661081336,
-    "artifact_sha256": "82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5",
-    "imported_runtime_predicate": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED",
-    "local_semantic_evidence_grants_authentic_runtime_completion": false
-  },
-  "post_retirement_stale_fence_refusal": {
-    "source_repair_state": "MERGED_SOURCE_VALIDATED_RUNTIME_EVIDENCE_PENDING",
-    "stegagents_pr": 35,
-    "stegagents_merge": "f12abf3e062de95f7bbd5eb56247e91fdcd8481f",
-    "stegagents_exact_head": "a1772001cf8e6ee97214944e009d624df8c54f2b",
-    "attempted_action": "INVOKE_RETIRED_TASK_BOUND_WORKER",
-    "expected_disposition": "DENY",
-    "consequence_executor_must_run": false,
-    "master_records_transition": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
-    "authentic_runtime_evidence_observed": false,
-    "authority_effect": "NONE_SOURCE_PATH_REPAIR_AND_EVIDENCE_REQUIREMENT_ONLY"
   }
 }
