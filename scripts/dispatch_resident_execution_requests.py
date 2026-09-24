@@ -14,6 +14,7 @@ is invoked.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -23,6 +24,7 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+IMMUTABLE_RECEIPT_DIR_REL = Path("receipts/sovereign-host/resident-request-dispatch.by-receipt")
 SDK_EVALUATOR_SELECTOR = "sdk_evaluator_governance_posture"
 SDK_EVALUATOR_REQUEST_REL = Path("control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json")
 AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
@@ -312,6 +314,34 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
     }
 
 
+
+def retain_immutable_dispatch_receipt(runtime: Path, receipt: Mapping[str, Any]) -> Path:
+    """Retain exact observed selector outcomes before the mutable latest pointer moves.
+
+    This is local evidence retention only. Its presence never independently
+    authenticates the host, WorkerCoordinator claim/fence or downstream custody.
+    """
+    raw = (json.dumps(dict(receipt), indent=2, sort_keys=True) + "\n").encode("utf-8")
+    digest = hashlib.sha256(raw).hexdigest()
+    directory = runtime / IMMUTABLE_RECEIPT_DIR_REL
+    directory.mkdir(parents=True, exist_ok=True)
+    immutable = directory / f"{digest}.json"
+    if immutable.is_symlink():
+        raise RuntimeError("immutable resident dispatch receipt symlink rejected")
+    try:
+        with immutable.open("xb") as destination:
+            destination.write(raw)
+    except FileExistsError:
+        if immutable.is_symlink() or immutable.read_bytes() != raw:
+            raise RuntimeError("immutable resident dispatch receipt hash collision")
+    # Keep existing latest-file consumers compatible. Unlike latest, the
+    # content-addressed receipt remains available across subsequent visits.
+    latest = runtime / RECEIPT_REL
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    latest.write_bytes(raw)
+    return immutable
+
+
 def dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -385,9 +415,7 @@ def dispatch(
         "network_source_fetch_performed": False, "credential_authority": "TV/TVC", "github_token_required": False, "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False, "request_dispatch_grants_authority": False, "second_machine_required": False, "authority_effect": "NONE_DISPATCH_ONLY",
     }
-    path = runtime / RECEIPT_REL
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    retain_immutable_dispatch_receipt(runtime, receipt)
     return receipt
 
 
