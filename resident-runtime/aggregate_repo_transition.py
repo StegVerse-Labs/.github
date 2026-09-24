@@ -82,9 +82,11 @@ def _audit_chain_unlocked(root=None):
             result["state"]="INTEGRITY_FAILURE"
             result["integrity_errors"].append("HEAD_MISSING_WITH_RETAINED_RECEIPTS")
         sources=root/"sources"
-        if sources.exists() and any(sources.glob("*.json")):
-            result["state"]="INTEGRITY_FAILURE"
-            result["integrity_errors"].append("ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION")
+        if sources.exists():
+            result["orphan_source_receipts"]=sorted(p.name for p in sources.glob("*.json"))
+            if result["orphan_source_receipts"]:
+                result["state"]="INTEGRITY_FAILURE"
+                result["integrity_errors"].append("ORPHAN_SOURCE_RECEIPTS_PENDING_RECONCILIATION")
         return result
     referenced_sources=set()
     try:
