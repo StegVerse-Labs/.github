@@ -1413,3 +1413,5 @@ Canonical Task Registry generation 208 observed during final documentation rebas
 
 
 Component-011 terminal receipt binding (source repair PR #2608): the existing checked-out owner now proposes a direct fresh boundary-file verification in its resident request consumer rather than trusting COMPLETED worker response or a stale prior terminal marker. Its exact-head Cross-Task Coordination source checks passed (run 35944421262); retryability remains for missing/malformed/consumed-denial receipts. Request terminality is not independent WorkerCoordinator or TV/TVC proof, canonical task completion, org-ledger custody, or Master Records reconstruction. Canonical SDK goal remains ACTIVE/HANDOFF_READY at observed Task Registry generation 209; see `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
+
+The component-011 source repair additionally binds the worker's completed response to the same fresh boundary receipt digest and claim/fence. Canonical Task Registry generation 210 was observed; any future collision check-in must re-read its current generation. No production runtime or custody promotion is inferred.
