@@ -2,8 +2,8 @@
 
 **Goal Task ID:** ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001  
 **Canonical owner:** StegVerse-Labs/.github Task Registry  
-**COSV:** NOT ISSUED — do not substitute a guessed vector; admit only exact canonical registry emission.  
-**Status:** REGISTRATION PR; governed publication and runtime evidence NOT OBSERVED.  
+**COSV:** 10100000104000 — source-derived observation only, successor recorded below; never authorization.  
+**Status:** PROPOSED in current canonical Task Registry; Publisher paper remains DRAFT, governed publication and runtime evidence NOT OBSERVED.  
 **Date:** 2026-09-22.
 
 ## User-approved public objective
@@ -74,3 +74,9 @@ Publisher branch `draft/stegverse-private-state-economy-white-paper` updated dra
 ## PR #72 exact-head source validation — 2026-09-24
 
 Publisher draft exact head `504b0fc82c088182ccbecc4f4bd9e0ef44e0a02c` includes the scoped paper, Publisher handoff/review report, README and candidate SHA-256 `3329a0c47161eb4613c32bbc5e0a393116f395cb8fa78368ed21fed8775c3dca`. Five GitHub-hosted PR-head checks completed SUCCESS: Publisher Check `36026984080`, Publisher Readiness `36026984212`, Architecture Guard `36026983801`, ERL KV Provider Proof Projection `36026983867`, and Editorial Entity Economy PDF Source Verification `36026984033`. PR #72 description reconciled with current source hash. These are source-validation observations only; keep the draft open and do not infer independent review, runtime operation, governed publication or Site propagation.
+
+## Internal economics and jurisdiction-scoped legal source review — 2026-09-24
+
+Publisher PR #72 branch `draft/stegverse-private-state-economy-white-paper` at `f9a140d02e162c8284db7fe22b9093e70c25207a` now contains substantive internal claim-by-claim economic review and primary-source US/Texas legal issue analysis in `docs/PRIVATE_STATE_ECONOMY_EDITORIAL_REVIEW_REPORT.md`. No paper-body changes were needed: current paper SHA-256 remains `3329a0c47161eb4613c32bbc5e0a393116f395cb8fa78368ed21fed8775c3dca`. Evidence Custody Seam remains bounded historic research; separately owned potential interoperability with independent participants does not change StegVerse's roadmap or publication gates.
+
+This is internal source-level preparation, NOT independent economist approval, counsel's jurisdiction-specific opinion, external participant endorsement, or publication authority. External economic/legal review receipts remain missing. The governed path still requires exact candidate admission, authentic external Interlock/InTr decision, Master Records RECORDED plus reconstruction/evidence PASS and exact digest equality, then Publisher mutation, Site mirror and deployed readback. Preserve all sixteen NOT_VERIFIED. Current branch source checks should be observed against that exact head and recorded separately; do not infer success from checks on earlier commits.
