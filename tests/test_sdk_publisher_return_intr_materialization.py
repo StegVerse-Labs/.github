@@ -407,6 +407,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
           "intr_handoff":{"schema":"stegverse.llm-adapter.southbound-intr-egress-handoff/v1"},
           "authority_effect":"NONE",
         }
+        llm.admit_intr_egress=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("admission must not run before predecessor validation"))
         custody=types.ModuleType("canonical_state_transition_custody")
         custody.build_state_receipt=lambda **kwargs: kwargs
         custody.submit_state_receipt=lambda receipt: (_ for _ in ()).throw(AssertionError("submit must not run"))
