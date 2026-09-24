@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 221,
+  "generation": 222,
   "status": "MYKV_NATIVE_IOS_SOURCE_PREREGISTRATION_PROPOSED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11015,6 +11015,185 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_repository_mutation_approved": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "correlation_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "root_correlation_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "parent_task_id": null,
+      "goal": "Reconcile the existing sole sovereign Healer scheduling carrier identity with the canonical Task Registry and preserve its TV/TVC-only and independent-HB authority boundaries.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "cosv_task_vector": null,
+      "source_refs": [
+        "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+        "control/worker-registry.d/healer-sovereign-scheduler-001.json",
+        "StegVerse-Labs/StegVerse-Healer:docs/HEALER_MIRROR_HANDOFF.md",
+        "docs/HEALER_ST018_HB_DELTA_EXISTING_GOAL_RECONCILIATION_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegVerse-Healer",
+          "StegVerse-Labs/repo-standards"
+        ],
+        "components": [
+          "healer-sovereign-scheduler-existing-goal-reconciliation",
+          "sole-scheduler-owner-continuity"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+        "HEALER-RSTD-ST018-LOCAL-TASK-MANAGER-001"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHENTIC_AI_SESSION_GATE_OWNER_CONVERGENCE",
+        "EXISTING_WORKER_TASK_IDENTITY_PRESERVED",
+        "NO_SECOND_SCHEDULER_OR_HEARTBEAT",
+        "EXACT_RESIDENT_WORKER_CYCLE_RECEIPT_AND_APPLICABLE_MASTER_RECORDS_CLOSURE"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authentic_runtime_proof": false,
+        "master_records_closure_proven": false
+      },
+      "allowed_next_transitions": [
+        "SOURCE_REGISTRATION_REVIEW_AND_MERGE",
+        "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+        "RECONCILE_RETURNED_OWNER",
+        "DERIVE_COSV",
+        "AUTHORIZE_SCOPE_SPECIFIC_HEALER_PR_102",
+        "EXACT_HEAD_CI",
+        "GOVERNED_RUNTIME_EVIDENCE"
+      ],
+      "handoff_projection_refs": [
+        "docs/HEALER_ST018_HB_DELTA_EXISTING_GOAL_RECONCILIATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:docs/HEALER_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_or_ci_proves_execution": false,
+        "workercoordinator_claim_fence_only": true,
+        "credential_authority": "TV/TVC",
+        "heartbeat_grants_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "master_records_custody_required_for_applicable_transitions": true,
+        "no_new_runtime_or_second_device": true
+      },
+      "registration": {
+        "source_pr_only": true,
+        "post_registration_exact_generation_gate_required": true,
+        "external_repository_mutation_approved": false,
+        "canonical_generation_before_source_proposal": 221,
+        "central_issue": 2654
+      },
+      "prompt_budget": {
+        "goal_prompt_count": "UNVERIFIED",
+        "goal_prompt_limit": 20
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "HEALER-RSTD-ST018-LOCAL-TASK-MANAGER-001",
+      "correlation_id": "HEALER-RSTD-ST018-LOCAL-TASK-MANAGER-001",
+      "root_correlation_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "parent_task_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "goal": "Replace existing ST-018 Healer UTC scheduling with independently sampled resident HB(Δ) eligibility in the existing sovereign scheduler, retaining bounded retries, exact checkpoint lineage, WorkerCoordinator and applicable Master Records closure.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "cosv_task_vector": null,
+      "source_refs": [
+        "StegVerse-Labs/StegVerse-Healer#11",
+        "StegVerse-Labs/StegVerse-Healer#102",
+        "StegVerse-Labs/repo-standards#28",
+        "docs/HEALER_ST018_HB_DELTA_EXISTING_GOAL_RECONCILIATION_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegVerse-Healer",
+          "StegVerse-Labs/repo-standards"
+        ],
+        "components": [
+          "st018-resident-hb-delta-scheduling",
+          "source-and-runtime-evidence"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+        "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHENTIC_AI_SESSION_GATE_SCOPE_OWNER_CONVERGENCE",
+        "HEALER_PR_102_EXACT_HEAD_CI_PASS",
+        "HB_DELTA_NO_UTC_FALLBACK_AND_BOUNDED_RETRIES",
+        "AUTHENTIC_ST018_EXECUTION_AND_CHECKPOINT_READBACK",
+        "APPLICABLE_GOVERNED_TRANSITION_MASTER_RECORDS_RECONSTRUCTION_PASS"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authentic_runtime_proof": false,
+        "master_records_closure_proven": false
+      },
+      "allowed_next_transitions": [
+        "SOURCE_REGISTRATION_REVIEW_AND_MERGE",
+        "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+        "RECONCILE_RETURNED_OWNER",
+        "DERIVE_COSV",
+        "AUTHORIZE_SCOPE_SPECIFIC_HEALER_PR_102",
+        "EXACT_HEAD_CI",
+        "GOVERNED_RUNTIME_EVIDENCE"
+      ],
+      "handoff_projection_refs": [
+        "docs/HEALER_ST018_HB_DELTA_EXISTING_GOAL_RECONCILIATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:docs/HEALER_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_or_ci_proves_execution": false,
+        "workercoordinator_claim_fence_only": true,
+        "credential_authority": "TV/TVC",
+        "heartbeat_grants_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "master_records_custody_required_for_applicable_transitions": true,
+        "no_new_runtime_or_second_device": true
+      },
+      "registration": {
+        "source_pr_only": true,
+        "post_registration_exact_generation_gate_required": true,
+        "external_repository_mutation_approved": false,
+        "canonical_generation_before_source_proposal": 221,
+        "central_issue": 2654
+      },
+      "prompt_budget": {
+        "goal_prompt_count": "UNVERIFIED",
+        "goal_prompt_limit": 20
       }
     }
   ],
