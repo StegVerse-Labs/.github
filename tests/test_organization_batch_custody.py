@@ -86,8 +86,9 @@ def test_broken_predecessor_chain_cannot_close(monkeypatch, tmp_path):
     head_path = tmp_path / "HEAD.json"
     head = json.loads(head_path.read_text())
     head["receipt_sha256"] = altered["receipt_sha256"]
+    head["receipt_path"] = str(forged)
     head_path.write_text(json.dumps(head))
-    with pytest.raises(ValueError, match="organization receipt predecessor mismatch"):
+    with pytest.raises(ValueError, match="orphaned or omitted"):
         batch.close_batch("TASK_CLOSURE", root=tmp_path)
 
 
