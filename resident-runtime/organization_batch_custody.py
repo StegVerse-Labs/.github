@@ -122,6 +122,19 @@ def _segment(root: Path, tip: str, predecessor: str | None) -> list[dict]:
     if not rows:
         raise ValueError("no new organization receipts to batch")
     rows.reverse()
+    # A path that walks from HEAD but silently excludes an immutable receipt
+    # is not a complete organization ledger replay. Include already-batched
+    # ancestors in the inventory, then reject orphaned or omitted files.
+    reachable = {row["receipt_sha256"][7:] for row in rows}
+    ancestor = predecessor
+    while ancestor is not None:
+        if ancestor[7:] in reachable:
+            raise ValueError("organization ledger ancestor cycle")
+        reachable.add(ancestor[7:])
+        ancestor = _verified_receipt(root, ancestor).get("previous_receipt_sha256")
+    inventory = {path.stem for path in (root / "receipts").glob("*.json")}
+    if inventory != reachable:
+        raise ValueError("organization ledger orphaned or omitted receipt detected")
     for i, row in enumerate(rows):
         expected = predecessor if i == 0 else rows[i - 1]["receipt_sha256"]
         if row.get("previous_receipt_sha256") != expected:
@@ -209,6 +222,8 @@ def close_batch(reason: str, *, root: Path | None = None) -> dict:
         raise ValueError("organization ledger HEAD identity mismatch")
     tip = head.get("receipt_sha256")
     _verified_receipt(root, tip)
+    if Path(str(head.get("receipt_path") or "")).resolve() != (root / "receipts" / (tip[7:] + ".json")).resolve():
+        raise ValueError("organization ledger HEAD receipt path mismatch")
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:
         if prior["closure_reason"] != reason:
