@@ -22,7 +22,6 @@ jobs:
         repository:
           - StegVerse-Labs/.github
           - StegVerse-Labs/Site
-          - StegVerse-Labs/StegCore
     steps:
       - name: Checkout canonical hygiene control
         uses: actions/checkout@v4
