@@ -36,7 +36,7 @@ def replies(command):
     if "/pulls?" in target:
         return "[]"
     if "/pulls/" in target:
-        return json.dumps({"merged": True, "head": {"ref": "hygiene/merged-safe"}})
+        return json.dumps({"merged": True, "head": {"ref": "hygiene/merged-safe", "sha": TIP}})
     if "/compare/" in target:
         return json.dumps({"ahead_by": 0, "files": []})
     if target == f"repos/{REPO}":
@@ -61,6 +61,33 @@ class RetirementGuardTests(unittest.TestCase):
         item["merge_pr"] = None
         self.assertEqual(retirement.validate_entry(item, REPO),
                          "CLOSED_UNMERGED_PR_NOT_RELEASED")
+
+    def test_exact_squash_merged_pr_head_does_not_require_git_ancestry(self):
+        def squash(*args):
+            if "/compare/" in args[-1]:
+                self.fail("squash-merged head must be checked by exact GitHub merge proof")
+            return replies(args)
+        with patch.object(retirement, "command", side_effect=squash):
+            self.assertIsNone(retirement.preflight_live(REPO, evidence()))
+
+    def test_mismatched_merged_pr_head_fails_closed(self):
+        def mismatched(*args):
+            if "/pulls/" in args[-1] and "/pulls?" not in args[-1]:
+                return json.dumps({"merged": True, "head": {"ref": "hygiene/merged-safe", "sha": "f" * 40}})
+            return replies(args)
+        with patch.object(retirement, "command", side_effect=mismatched):
+            self.assertEqual(retirement.preflight_live(REPO, evidence()), "MERGE_PROOF_MISMATCH")
+
+    def test_unmerged_explicit_release_does_not_skip_containment(self):
+        item = evidence()
+        item["merge_pr"] = None
+        item["explicit_unmerged_release"] = True
+        def divergent(*args):
+            if "/compare/" in args[-1]:
+                return json.dumps({"ahead_by": 1, "files": [{"filename": "unique.txt"}]})
+            return replies(args)
+        with patch.object(retirement, "command", side_effect=divergent):
+            self.assertEqual(retirement.preflight_live(REPO, item), "UNMERGED_OR_UNIQUE_SOURCE")
 
     def test_live_tip_movement_fails_closed(self):
         def changed(*args):

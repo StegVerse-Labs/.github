@@ -62,17 +62,23 @@ def preflight_live(repository, item):
     prs = json.loads(command("gh", "api", f"repos/{repository}/pulls?state=open&per_page=100&head={quote(owner + chr(58) + branch, safe=chr(0)[:0])}"))
     if prs:
         return "ACTIVE_PR_HEAD"
+    merged_head_verified = False
     if item.get("merge_pr") is not None:
         pr = json.loads(command("gh", "api", f"repos/{repository}/pulls/{int(item['merge_pr'])}"))
-        if not pr.get("merged") or (pr.get("head") or {}).get("ref") != branch:
+        head = pr.get("head") or {}
+        if not pr.get("merged") or head.get("ref") != branch or head.get("sha") != item["expected_sha"]:
             return "MERGE_PROOF_MISMATCH"
-    # Current default-branch ancestry is required even for a merged PR.
+        merged_head_verified = True
     default = json.loads(command("gh", "api", f"repos/{repository}")).get("default_branch")
     if branch == default:
         return "DEFAULT_BRANCH"
-    relation = json.loads(command("gh", "api", f"repos/{repository}/compare/{default}...{item['expected_sha']}"))
-    if relation.get("ahead_by") != 0 or relation.get("files"):
-        return "UNMERGED_OR_UNIQUE_SOURCE"
+    # Squash/rebase merge leaves unique source commits although GitHub confirms
+    # the exact PR head was merged. Require independent owner release above.
+    # Unmerged closure never receives that exception.
+    if not merged_head_verified:
+        relation = json.loads(command("gh", "api", f"repos/{repository}/compare/{default}...{item['expected_sha']}"))
+        if relation.get("ahead_by") != 0 or relation.get("files"):
+            return "UNMERGED_OR_UNIQUE_SOURCE"
     return None
 
 def run(plan, apply):
