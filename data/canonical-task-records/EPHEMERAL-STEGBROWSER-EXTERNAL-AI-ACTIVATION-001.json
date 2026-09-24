@@ -1,0 +1,219 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+  "correlation_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "goal": "Coordinate the first real, governed and independently reconstructable on-demand external OpenAI task through the existing StegBrowser ephemeral lease and LLM Adapter, then a separately attributable Anthropic/Claude task, independently of native MyKV installation and without creating another runtime, dispatcher, scheduler, credential or custody plane.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter:docs/AI_ENTRY_PROVIDER_BOUNDARY.md",
+    "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1458",
+    "GCAT-BCAT-Engine/Publisher#72"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegBrowser",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-Labs/TVC",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "existing-ephemeral-browser-lease",
+      "existing-stegbrowser-successor",
+      "existing-workercoordinator-claim-fence",
+      "existing-universal-interlock-intr",
+      "openai-provider-adapter",
+      "anthropic-provider-transport",
+      "tvc-skap-provider-secret-custody",
+      "organization-receipts",
+      "canonical-master-records-reconstruction"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "EXISTING_STEGBROWSER_RUNTIME_ADMISSION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001; existing retained resident and org receipt surfaces"
+    },
+    {
+      "dependency_id": "OPENAI_GOVERNED_EPHEMERAL_TASK",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "StegVerse-Labs/StegBrowser ephemeral lease + StegVerse-org/LLM-adapter existing OpenAI route"
+    },
+    {
+      "dependency_id": "ANTHROPIC_GOVERNED_EPHEMERAL_TASK",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "StegVerse-org/LLM-adapter:stegverse.intr.anthropic.transport.v1"
+    },
+    {
+      "dependency_id": "PRIVATE_NATIVE_MYKV",
+      "kind": "TASK",
+      "state": "NOT_APPLICABLE",
+      "ref": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 — independent parallel release lane"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "AUTHENTIC_EXISTING_RUNTIME_ADMISSION_UNOBSERVED",
+      "dependency_id": "EXISTING_STEGBROWSER_RUNTIME_ADMISSION",
+      "reason": "Existing A3 owner requires authentic retained resident Master Records source-refresh/source-floor evidence and immutable-nonce claim/fence reconstruction; repository absence is not proof of execution failure and alternate existing eligible ephemeral path must be checked without creating a new substrate."
+    },
+    {
+      "blocker_id": "OPENAI_REAL_EPHEMERAL_EXECUTION_UNPROVEN",
+      "dependency_id": "OPENAI_GOVERNED_EPHEMERAL_TASK",
+      "reason": "No real, usable on-demand OpenAI response has been authenticated with exact lease, InTr ingress/egress, measured usage, terminal session teardown and same-execution organizational/Master Records custody."
+    },
+    {
+      "blocker_id": "ANTHROPIC_REAL_EPHEMERAL_EXECUTION_UNPROVEN",
+      "dependency_id": "ANTHROPIC_GOVERNED_EPHEMERAL_TASK",
+      "reason": "No independently attributable Anthropic/Claude task with identical governed and reconstructable proof; Claude Messages does not by itself prove Claude Code tool execution."
+    }
+  ],
+  "adjacent_task_refs": [
+    "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github main generation 207; parent COSV 10100000104000",
+    "StegVerse-Labs/Site#1458 and GCAT-BCAT-Engine/Publisher#72 draft revisions, latest source checks green",
+    "StegVerse-Labs/.github current active A3 handoff records first unobserved authentic retained Master Records source-refresh proof",
+    "GitHub repository receipts/sovereign-host source-refresh and StegBrowser runtime consumption latest paths absent from repository at registration observation; durable resident absence NOT inferred"
+  ],
+  "expected_evidence_predicates": [
+    "CURRENT_CANONICAL_TASK_AND_ACTIVE_RUNTIME_OWNER_RECONCILED",
+    "FIRST_AUTHENTIC_ORGANIZATION_LEVEL_FAILURE_LOCATED_AND_REMEDIATED_IF_EVIDENCED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_AND_FENCE_SAME_INVOCATION",
+    "AUTHENTIC_BOUNDED_STEGBROWSER_EPHEMERAL_LEASE",
+    "EXACT_EXTERNAL_INTR_INGRESS_ALLOW_OPENAI",
+    "REAL_OPENAI_PROVIDER_RESPONSE_USABLE_AND_USAGE_ATTRIBUTED",
+    "EXACT_EXTERNAL_INTR_EGRESS_ALLOW_OPENAI",
+    "SAME_INVOCATION_TERMINAL_BROWSER_SESSION_DESTRUCTION",
+    "ORG_LEVEL_IMMEDIATE_PREDECESSOR_CHAIN_AND_CANONICAL_MASTER_RECORDS_RECORDED_PASS",
+    "RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
+    "INDEPENDENT_ANTHROPIC_CLAUDE_REAL_RESPONSE_WITH_SEPARATE_ATTRIBUTION",
+    "NO_CREDENTIAL_OR_PRIVATE_STATE_LEAKAGE",
+    "NO_NEW_RUNTIME_SCHEDULER_DISPATCHER_AUTHORITY_PLANE_OR_SECOND_DEVICE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "bounded_process_execution",
+      "ephemeral_browser_execution",
+      "provider_request_execution",
+      "intr_task_admission",
+      "master_records_reconciliation"
+    ],
+    "environment": "EXISTING_ADMITTED_STEGBROWSER_EPHEMERAL_SUBSTRATE",
+    "direction": "INTERNAL_WITH_GOVERNED_EXTERNAL_PROVIDER_INGRESS_EGRESS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "handoff_projection_refs": [
+    "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1458",
+    "GCAT-BCAT-Engine/Publisher#72"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "StegVerse-Labs/StegOS:docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegBrowser:src/stegbrowser/ecosystem_ephemeral.py"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "StegVerse-Labs/.github:docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  }
+}
