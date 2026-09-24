@@ -1,0 +1,28 @@
+name: Validate STCM CHF witness task registration - non-authorizing
+on:
+  pull_request:
+    paths:
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001.json'
+      - 'control/task-vector-index.json'
+      - 'control/task-vectors/STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001.json'
+      - 'docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md'
+      - 'tests/test_stcm_chf_witness_registration.py'
+      - '.github/workflows/stcm-chf-witness-registration-validation.yml'
+  workflow_dispatch:
+permissions: {}
+jobs:
+  source-registration-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout unprivileged exact PR source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate source-only registration and boundary tests
+        run: |
+          python -m unittest -v tests.test_stcm_chf_witness_registration
+      - name: Confirm non-authorizing workflow
+        run: |
+          grep -F 'permissions: {}' .github/workflows/stcm-chf-witness-registration-validation.yml
+          echo 'SOURCE_VALIDATION_ONLY_NO_ADMISSION_OR_RUNTIME_AUTHORITY'

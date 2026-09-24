@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 210,
+  "generation": 211,
   "status": "NATIVE_EMAIL_EXISTING_GOAL_CANONICAL_REGISTRY_PROJECTION_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10163,6 +10163,116 @@
       "handoff": "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
       "cosv_task_vector": "10100000100000",
       "authority_effect": "NONE_COORDINATION_ONLY"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+      "correlation_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+      "root_correlation_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+      "parent_task_id": null,
+      "goal": "Coordinate a bounded independent STCM/CHF and externally authored thermodynamic-witness comparison over one immutable common specimen, retaining source-native semantics, independently attributable evidence, causal custody, calculation-versus-physical-measurement distinctions, and synthetic-only fixtures without implying external participation or inherited governance authority.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "cosv_task_vector": "10111010112000",
+      "source_refs": [
+        "Admissible-Existence/.github#79",
+        "Admissible-Existence/.github#80",
+        "Admissible-Existence/.github/docs/STCM_CHF_THERMODYNAMIC_WITNESS_RESEARCH_INTAKE_MIRROR_HANDOFF.md",
+        "docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md",
+        "Admissible-Existence/STCM/STCM_MIRROR_HANDOFF.md",
+        "Admissible-Existence/CHF/docs/CHF_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "Admissible-Existence",
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "Admissible-Existence/.github"
+        ],
+        "components": [
+          "inert-common-specimen-schema",
+          "independent-witness-comparison-fixtures",
+          "negative-control-comparison-validator"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "STCM_NATIVE_SEMANTICS",
+          "kind": "SEPARATE_SOURCE_OWNER",
+          "state": "NOT_CLAIMED",
+          "ref": "Admissible-Existence/STCM/STCM_MIRROR_HANDOFF.md"
+        },
+        {
+          "dependency_id": "CHF_NATIVE_SEMANTICS",
+          "kind": "SEPARATE_SOURCE_OWNER",
+          "state": "NOT_CLAIMED",
+          "ref": "Admissible-Existence/CHF/docs/CHF_MIRROR_HANDOFF.md"
+        },
+        {
+          "dependency_id": "EXTERNAL_TECHNICAL_EXPORT",
+          "kind": "EXTERNAL_SOURCE",
+          "state": "NOT_RECEIVED",
+          "ref": "Admissible-Existence/.github#79"
+        }
+      ],
+      "blockers": [
+        "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN",
+        "EXTERNAL_EXPORT_AND_SCOPE_NOT_RECEIVED"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_ID_AND_COSV_PROJECTED",
+        "AUTHENTIC_GENERATION_BOUND_CHECKIN_RECONSTRUCTABLE",
+        "EXACT_PR_HEAD_HOSTED_VALIDATION_SUCCESS",
+        "FROZEN_SPECIMEN_BYTES_SHA256_BOUND",
+        "NATIVE_STCM_AND_CHF_RECEIPTS_INDEPENDENT",
+        "EXTERNAL_EXPORT_PERMISSION_AND_EXACT_BYTES_BOUND",
+        "LANDAUER_DERIVATION_DISTINCT_FROM_PHYSICAL_HEAT_MEASUREMENT",
+        "CAUSAL_WITNESS_INDEPENDENT_OF_COINCIDENT_TIMESTAMPS",
+        "NEGATIVE_FIXTURES_NEVER_PROMOTED",
+        "AUTHENTIC_ORGANIZATION_RECEIPT_AND_MASTER_RECORDS_CLOSURE_BEFORE_EVIDENCE_PROMOTION"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "activation_proof_complete": false
+      },
+      "allowed_next_transitions": [
+        "AUTHENTIC_TASK_REGISTRY_COLLISION_CHECKIN",
+        "RECONCILE_COLLISION_OWNER",
+        "INSTALL_INERT_SCHEMA_FIXTURES_AFTER_PERMISSIVE_CHECKIN",
+        "VALIDATE_EXACT_PR_HEAD",
+        "INDEPENDENT_SOURCE_NATIVE_RECEIPT_COMPARISON_WHEN_AVAILABLE"
+      ],
+      "handoff_projection_refs": [
+        "Admissible-Existence/.github/docs/STCM_CHF_THERMODYNAMIC_WITNESS_RESEARCH_INTAKE_MIRROR_HANDOFF.md",
+        "docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_or_ci_proves_runtime": false,
+        "synthetic_fixtures_prove_physical_measurement": false,
+        "workercoordinator_claim_fence_only": true,
+        "interlock_intr_governed_transition_only": true,
+        "master_records_custody_reconstruction_only": true,
+        "tv_tvc_credentials_only": true,
+        "no_second_user_operated_device_required": true
+      },
+      "readme_impact": {
+        "material_function_change": false,
+        "readme_updated_in_change_set": true,
+        "readme_path": "README.md"
+      },
+      "prompt_budget": {
+        "goal_prompt_count": "5/20",
+        "split_merely_to_reset_counter": false
+      }
     }
   ],
   "human_actions": [],

@@ -1,3 +1,7 @@
+## STCM/CHF independent thermodynamic-witness research registration
+
+Candidate central coordination: `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` / source COSV `10111010112000`, anchored to Admissible-Existence/.github issue #79 and draft PR #80. Registration and COSV projection do **not** create runtime or governance authority. The scoped owner preserves native STCM/CHF claims; inert negative controls remain synthetic and physical thermodynamic evidence requires independent exact-byte source/measurement custody. See `docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md`.
+
 ## Open-source strategy and rights inventory
 
 Canonical goal `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` is staged for registration. The 2026-09-22 StegVerse-Labs census covers 119 accessible repositories (46 public, 70 private, 3 internal). All 46 public plus 12 selected nonpublic repository metadata records were checked: 1 GitHub-recognized SPDX MIT license, 5 Other/NOASSERTION, and 52 with no detected license. Six root-license locations were inspected; five contain files, and one does not at common root names. The remaining 61 nonpublic metadata records and all contributor/copyright rights remain unaudited. Neither GitHub ownership nor visibility verifies copyright title, third-party permissions or open-source eligibility. No relicensing or public release is authorized by this census. See `data/open-source-repository-licensing-inventory.json` and `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md` for the audit and staged release gate.

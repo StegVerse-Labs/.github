@@ -1,0 +1,28 @@
+{
+  "profile": "task.v1",
+  "task_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+  "vector": "10111010112000",
+  "source_state": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 1,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "evidence_refs": [
+    "Admissible-Existence/.github/docs/STCM_CHF_THERMODYNAMIC_WITNESS_RESEARCH_INTAKE_MIRROR_HANDOFF.md",
+    "Admissible-Existence/.github#79",
+    "Admissible-Existence/.github#80",
+    "docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}
