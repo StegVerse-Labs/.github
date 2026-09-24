@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "CORRECTED_SOURCE_VERIFIED_EDITORIAL_MERGE_CANDIDATE_PUBLICATION_REVIEW_PENDING",
+  "checkout_state": "EDITORIAL_PR_2593_MERGED_CORRECTED_SOURCE_VERIFIED_PUBLICATION_REVIEW_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -109,13 +109,14 @@
     "facct_abstract_drafted": true,
     "facct_abstract_author_approved": false,
     "original_test2_pdf_inspected": true,
-    "latest_final_head_ci_passed": false,
+    "latest_final_head_ci_passed": true,
     "coauthor_substantive_review_received": true,
     "corrected_pdf_source_discovery_checked": true,
-    "pr_merged": false,
+    "pr_merged": true,
     "coauthor_substantive_review_scope": "Original Experiment 2 source attribution correction and methodological objections in supplied LinkedIn messages; NOT manuscript Revision 3 or abstract approval",
     "editorial_pr_merge_author_approval_required": false,
-    "publication_author_approval_required": true
+    "publication_author_approval_required": true,
+    "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13"
   },
   "completion": {
     "claimed": false,
@@ -123,7 +124,7 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
-    "EDITORIAL_PR_MERGE_AFTER_SOURCE_AND_CI_RECONCILIATION",
+    "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
     "OBTAIN_COAUTHOR_FACCT_ABSTRACT_REVIEW",
     "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
