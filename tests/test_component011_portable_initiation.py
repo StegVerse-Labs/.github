@@ -44,7 +44,7 @@ def test_component011_portable_refresh_forwards_exact_selector_without_claiming_
         def fake_refresh(actual_source, actual_runtime):
             assert (actual_source, actual_runtime) == (source, runtime)
             (runtime / portable.DISPATCHER_REL).parent.mkdir(parents=True)
-            (runtime / portable.DISPATCHER_REL).write_text("# existing dispatcher fixture\\n")
+            (runtime / portable.DISPATCHER_REL).write_text("# existing dispatcher fixture\n")
             return {
                 "network_fetch_performed": False,
                 "credential_read_or_acquired": False,
@@ -72,7 +72,7 @@ def test_component011_portable_refresh_forwards_exact_selector_without_claiming_
             }
             location = runtime / portable.DISPATCH_RECEIPT_REL
             location.parent.mkdir(parents=True, exist_ok=True)
-            location.write_text(json.dumps(receipt) + "\\n")
+            location.write_text(json.dumps(receipt) + "\n")
             return SimpleNamespace(returncode=0, stdout=json.dumps(receipt), stderr="")
 
         with patch.object(portable, "refresh", side_effect=fake_refresh):
