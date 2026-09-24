@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 
@@ -33,7 +34,7 @@ def _read(path: Path) -> dict:
 
 
 def _verified_receipt(root: Path, digest: str) -> dict:
-    if not isinstance(digest, str) or not digest.startswith("sha256:") or len(digest) != 71:
+    if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise ValueError("organization receipt digest invalid")
     path = root / "receipts" / (digest[7:] + ".json")
     if not path.is_file():
@@ -60,7 +61,7 @@ def _verified_receipt(root: Path, digest: str) -> dict:
 
 def _ordered_commitment(hashes: list[str]) -> str:
     return "sha256:" + hashlib.sha256(
-        b"STEGVERSE_ORGANIZATION_BATCH_ORDERED_V1\\n" + org.canon(hashes)
+        b"STEGVERSE_ORGANIZATION_BATCH_ORDERED_V1\n" + org.canon(hashes)
     ).hexdigest()
 
 
@@ -77,7 +78,7 @@ def _boundary_commitment(rows: list[dict]) -> str:
 
 
 def _verified_batch(root: Path, digest: str) -> dict:
-    if not isinstance(digest, str) or not digest.startswith("sha256:") or len(digest) != 71:
+    if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise ValueError("organization batch digest invalid")
     path = root / "batches" / (digest[7:] + ".json")
     if not path.is_file():
@@ -137,7 +138,8 @@ def verify_batch(root: Path, batch_id: str, *, source_receipts: dict[str, dict] 
     hashes = batch.get("ordered_receipt_hashes")
     if not isinstance(hashes, list) or not hashes or len(set(hashes)) != len(hashes):
         raise ValueError("organization batch receipt set invalid")
-    if batch.get("contiguous_receipt_range") != [1, len(hashes)]:
+    floor = prior["contiguous_receipt_range"][1] + 1 if prior else 1
+    if batch.get("contiguous_receipt_range") != [floor, floor + len(hashes) - 1]:
         raise ValueError("organization batch sequence range invalid")
     rows = [_verified_receipt(root, digest) for digest in hashes]
     for i, row in enumerate(rows):
@@ -189,7 +191,7 @@ def _atomic_json(path: Path, row: dict) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as stream:
             json.dump(row, stream, sort_keys=True, indent=2)
-            stream.write("\\n")
+            stream.write("\n")
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(name, path)
@@ -217,7 +219,7 @@ def close_batch(reason: str, *, root: Path | None = None) -> dict:
     body = {
         "schema": SCHEMA,
         "organization_id": org.C["organization"],
-        "contiguous_receipt_range": [1, len(hashes)],
+        "contiguous_receipt_range": [prior["contiguous_receipt_range"][1] + 1 if prior else 1,\n                                      (prior["contiguous_receipt_range"][1] if prior else 0) + len(hashes)],
         "previous_batch_commitment": prior_id,
         "first_org_receipt_sha256": hashes[0],
         "last_org_receipt_sha256": hashes[-1],
