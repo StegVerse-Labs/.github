@@ -46,9 +46,46 @@ def verify_source(receipt):
         "subject_or_correlation_id":receipt.get("subject_or_correlation_id"),
     }
 
+def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
+    """Reuse an immutable organization receipt for an exact already-recorded transition.
+
+    The existing receipt directory is the only index; no new store or authority
+    is introduced. A retry after an incomplete Master Records submission must
+    not append a second organization transition for the same exact source.
+    """
+    for path in sorted(d.glob("*.json")):
+        row=load(path)
+        if row.get("source_transition_sha256") != source["source_transition_sha256"]:
+            continue
+        if row.get("source_receipt_schema") != source["source_receipt_schema"]:
+            raise ValueError("organization source digest/schema collision")
+        body=dict(row)
+        claimed=body.pop("receipt_sha256",None)
+        if claimed != sha(body) or path.stem != claimed.split(":",1)[-1]:
+            raise ValueError("existing organization receipt integrity invalid")
+        if (
+            row.get("source_transition_id") != source["source_transition_id"]
+            or row.get("org_transition_class") != org_transition_class
+            or row.get("authority_effect") != authority_effect
+            or row.get("boundary_evidence") != dict(boundary_evidence or {})
+            or (predecessor_org_state_sha256 is not None and row.get("predecessor_org_state_sha256") != predecessor_org_state_sha256)
+            or (successor_org_state_sha256 is not None and row.get("successor_org_state_sha256") != successor_org_state_sha256)
+        ):
+            raise ValueError("existing organization source transition context conflict")
+        return row
+    return None
+
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
     source=verify_source(receipt)
     root=ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
+    existing=_existing_exact_source(
+        d,source,org_transition_class=org_transition_class,
+        predecessor_org_state_sha256=predecessor_org_state_sha256,
+        successor_org_state_sha256=successor_org_state_sha256,
+        boundary_evidence=boundary_evidence,authority_effect=authority_effect,
+    )
+    if existing is not None:
+        return existing
     prev=load(h).get("receipt_sha256") if h.exists() else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]
