@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 219,
+  "generation": 220,
   "status": "CANONICAL_MASTER_RECORDS_ATOMIC_ACTIVATION_PREDECESSOR_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10767,6 +10767,128 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_repository_mutation_approved": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "correlation_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "root_correlation_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "parent_task_id": null,
+      "goal": "Reconcile legacy Governance metered-platform PR #3 against existing Task Registry owners; coordinate provider-neutral Governance policy-only recovery in draft PR #47, separately route remaining historical provider runtime and GitHub history/export files to current canonical owners, and request owner-cleared branch retirement only after every unique change is merged, transferred or explicitly declined. Do not restore third-party hosting or give provider cancellation authority.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "cosv_task_vector": null,
+      "source_refs": [
+        "https://github.com/StegVerse-Labs/.github/issues/2632",
+        "https://github.com/StegVerse-Labs/Governance/issues/46",
+        "https://github.com/StegVerse-Labs/Governance/pull/47",
+        "https://github.com/StegVerse-Labs/Governance/pull/3",
+        "docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Governance:METERED_PLATFORM_REPLACEMENT_MIRROR_HANDOFF.md",
+        "https://github.com/StegVerse-Labs/.github/pull/2636"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "governance-metered-policy-owner-and-admission-reconciliation",
+          "legacy-pr3-component-owner-partition-and-disposition",
+          "policy-only-source-acceptance-and-branch-retirement-coordination"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION",
+          "kind": "TASK",
+          "state": "PENDING",
+          "ref": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
+        },
+        {
+          "dependency_id": "EXISTING_HOST_PROVIDER_ERADICATION_OWNER",
+          "kind": "TASK",
+          "state": "COLLISION_RECONCILIATION_REQUIRED",
+          "ref": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001"
+        },
+        {
+          "dependency_id": "INDEPENDENT_GOVERNANCE_PR_OWNER",
+          "kind": "EXTERNAL_SOURCE",
+          "state": "CLEARANCE_REQUIRED",
+          "ref": "StegVerse-Labs/Governance#47"
+        },
+        {
+          "dependency_id": "EXISTING_REPOSITORY_HYGIENE_BRANCH_RETIREMENT_OWNER",
+          "kind": "TASK",
+          "state": "OWNER_CLEARANCE_REQUIRED",
+          "ref": "HYGIENE-CAUSAL-ROOTS-001"
+        }
+      ],
+      "blockers": [
+        "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "CANONICAL_OWNER_CONVERGENCE_NOT_AUTHENTICATED",
+        "EXCLUDED_LEGACY_PATHS_NOT_FULLY_TRANSFERRED_OR_DECLINED",
+        "LEGACY_BRANCH_DELETION_NOT_OWNER_CLEARED"
+      ],
+      "adjacent_task_refs": [
+        "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+        "HYGIENE-CAUSAL-ROOTS-001",
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      ],
+      "expected_evidence_predicates": [
+        "SOURCE_REGISTRATION_MERGED_RE-READ_FROM_CURRENT_MAIN",
+        "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_AND_HASH_LINKED_CHECKIN",
+        "EXISTING_OWNER_CONVERGENCE_RECORDED",
+        "GOVERNANCE_PR47_EXACT_HEAD_GREEN_AND_PROTECTION_CLEARED_BEFORE_MERGE",
+        "PR3_EXCLUDED_PATHS_CLASSIFIED_AND_HANDOFFS_ACCEPTED_BY_NATIVE_OWNERS",
+        "HYGIENE_OWNER_BRANCH_RETIREMENT_CLEARANCE",
+        "LEGACY_BRANCH_ABSENCE_VERIFIED_AFTER_AUTHORIZED_DELETION"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "source_policy_ci_evidence": "StegVerse-Labs/Governance@0503b9f716fcf575d89f43d1d43e2c24561f0a00",
+        "authentic_runtime_proof": false,
+        "branch_retirement_verified": false
+      },
+      "allowed_next_transitions": [
+        "SOURCE_REGISTRATION_REVIEW_AND_MERGE",
+        "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+        "OWNER_CONVERGENCE",
+        "COSV_DERIVATION_IF_ADMITTED",
+        "REVIEW_GOVERNANCE_POLICY_PR",
+        "CLASSIFY_AND_TRANSFER_LEGACY_COMPONENTS",
+        "REQUEST_BRANCH_RETIREMENT_AFTER_APPROVAL"
+      ],
+      "handoff_projection_refs": [
+        "docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "github_source_or_ci_proves_runtime": false,
+        "workercoordinator_claim_fence_only": true,
+        "credential_authority": "TV/TVC",
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "master_records_custody_required_for_governed_transitions": true,
+        "provider_retirement_authorized": false,
+        "no_second_device": true
+      },
+      "registration": {
+        "source_pr_only": true,
+        "post_registration_exact_generation_gate_required": true,
+        "external_repository_mutation_approved": false,
+        "canonical_generation_before_source_proposal": 219,
+        "old_source_pr_head": "f517598709b58ad37d37bc4b34a26a73926a290c"
       }
     }
   ],
