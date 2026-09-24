@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.organization-batch-custody-replay-contract/v1",
   "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-  "status": "DESIGN_REGISTRATION_NOT_RUNTIME_PROOF",
+  "status": "LOCAL_BATCH_SOURCE_CANDIDATE_PENDING_EXACT_HEAD_VALIDATION",
   "owner": "StegVerse-Labs/.github",
   "cosv_task_vector": "10000000100000",
   "receipt_units": "EXACT_INDIVIDUAL_CANONICAL_AND_ORGANIZATION_RECEIPTS",
@@ -54,5 +54,11 @@
   "master_records_contract": "INDEPENDENT_VERIFICATION_AND_CROSS_ORGANIZATION_CUSTODY_NOT_TRANSITION_AUTHORITY",
   "direct_custody_exception": "EXPLICITLY_REQUIRED_IMMEDIATE_MASTER_RECORDS_CLOSURE_STILL_MANDATORY",
   "authorization_effect": "NONE_DESIGN_ONLY",
-  "runtime_status": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  "runtime_status": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "local_batch_source": "resident-runtime/organization_batch_custody.py",
+  "batch_source_reconstruction_ceiling": "ORG_CHAIN_AND_SOURCE_DIGEST_ONLY_REQUIRED_EVIDENCE_BYTES_NOT_VERIFIED",
+  "batch_ack_state": "PENDING_MASTER_RECORDS_NEVER_SELF_ASSERT",
+  "batch_sequences": "CONTIGUOUS_GLOBAL_ORG_BATCH_ORDINALS",
+  "batch_concurrent_append_serialization": "NOT_PROVEN",
+  "batch_delivery_to_master_records": "NOT_YET_IMPLEMENTED"
 }
