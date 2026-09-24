@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "FACCT_ABSTRACT_DRAFTED_CI_PASSED_ORIGINAL_VERIFIED_CORRECTED_PDF_AND_AUTHOR_REVIEW_PENDING_BRANCH_SYNC_REQUIRED",
+  "checkout_state": "CORRECTED_SOURCE_VERIFIED_EDITORIAL_MERGE_CANDIDATE_PUBLICATION_REVIEW_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -54,8 +54,8 @@
     {
       "dependency_id": "DEP-ELAN-TEST2-CORRECTED-SOURCE",
       "kind": "PRIMARY_EVIDENCE",
-      "state": "ORIGINAL_DIRECTLY_VERIFIED_CORRECTED_BYTES_UNAVAILABLE",
-      "ref": "user-forwarded corrected Test 2 trace PDF, 2026-09-23"
+      "state": "ORIGINAL_AND_CORRECTED_PDFS_DIRECTLY_VERIFIED",
+      "ref": "Confidential original 2026-09-16 sha256:403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9; corrected 2026-09-23 sha256:7231ab68bf00ecc92b163efd90773ccabbec82b21aa9cf6e6426b8de68d162ac (not published)"
     },
     {
       "dependency_id": "DEP-ELAN-REPRODUCTION-INQUIRY",
@@ -85,7 +85,9 @@
     "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION",
     "NO_INVOCATION_NEVER_MODEL_OUTPUT",
     "TIMEOUT_DISTINCT_FROM_EMPTY_RESPONSE",
-    "NO_UNOBSERVED_INTERNAL_STATE_ATTRIBUTION"
+    "NO_UNOBSERVED_INTERNAL_STATE_ATTRIBUTION",
+    "EDITORIAL_MERGE_NOT_MISREPRESENTED_AS_PUBLICATION_AUTHORIZATION",
+    "CONFIDENTIAL_SOURCE_PDFS_NOT_PUBLISHED"
   ],
   "collaboration_state": {
     "coauthorship_accepted": true,
@@ -98,7 +100,7 @@
     "final_author_order_confirmed": false,
     "final_contribution_statement_confirmed": false,
     "corrected_test2_annotation_attribution_acknowledged": true,
-    "corrected_test2_pdf_verified": false,
+    "corrected_test2_pdf_verified": true,
     "elan_original_signal_reproduction_attempt_confirmed": false,
     "proposed_hold_protocol_approved": false,
     "elan_original_signal_reproduction_attempt_excluded_by_coauthor_confirmation": true,
@@ -108,10 +110,13 @@
     "facct_abstract_drafted": true,
     "facct_abstract_author_approved": false,
     "original_test2_pdf_inspected": true,
-    "latest_final_head_ci_passed": true,
-    "coauthor_substantive_review_received": false,
+    "latest_final_head_ci_passed": false,
+    "coauthor_substantive_review_received": true,
     "corrected_pdf_source_discovery_checked": true,
-    "pr_merged": false
+    "pr_merged": false,
+    "coauthor_substantive_review_scope": "Original Experiment 2 source attribution correction and methodological objections in supplied LinkedIn messages; NOT manuscript Revision 3 or abstract approval",
+    "editorial_pr_merge_author_approval_required": false,
+    "publication_author_approval_required": true
   },
   "completion": {
     "claimed": false,
@@ -119,9 +124,9 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
+    "EDITORIAL_PR_MERGE_AFTER_SOURCE_AND_CI_RECONCILIATION",
     "OBTAIN_COAUTHOR_FACCT_ABSTRACT_REVIEW",
     "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
-    "VERIFY_CORRECTED_ELAN_SOURCE_PDF",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
     "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
     "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
