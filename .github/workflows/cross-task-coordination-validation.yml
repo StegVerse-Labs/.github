@@ -110,6 +110,8 @@ on:
       - 'scripts/apply_admitted_canonical_work_projection.py'
       - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - 'tests/test_erl_household_economic_conditions_runtime_binding.py'
+      - 'tests/test_erl_household_worker_evidence.py'
+      - 'workers/erl_household_economic_conditions_worker.py'
       - 'tests/test_ephemeral_external_ai_org_first_components.py'
       - 'data/ephemeral-external-ai-reusable-component-profile.v1.json'
       - 'data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json'
@@ -146,12 +148,13 @@ jobs:
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
             tests.test_erl_household_economic_conditions_runtime_binding \
+            tests.test_erl_household_worker_evidence \
             tests.test_canonical_work_resident_registry_preservation \
             tests.test_portable_refresh_targeted_execution \
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components
-          python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
+          python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py
       - name: Validate coordination source
