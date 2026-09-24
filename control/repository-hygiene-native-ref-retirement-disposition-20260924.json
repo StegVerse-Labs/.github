@@ -421,27 +421,31 @@
         "repository": "StegVerse-Labs/.github",
         "branch": "hygiene/bulk-census-private-split-20260921",
         "expected_prior_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
-        "disposition": "UNVERIFIED_REF_STATE",
+        "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
         "deleted": false,
-        "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: HTTPError: 400: GitHub Fetch URL contains an invalid repository path. (Resp"
+        "current_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
+        "protected": false,
+        "open_pr_head": false
       },
       {
         "repository": "StegVerse-Labs/.github",
         "branch": "hygiene/census-2574-main-reconcile-20260923",
         "expected_prior_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
-        "disposition": "UNVERIFIED_REF_STATE",
+        "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
         "deleted": false,
-        "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: HTTPError: 400: GitHub Fetch URL contains an invalid repository path. (Resp"
+        "current_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
+        "protected": false,
+        "open_pr_head": false
       }
     ]
   },
   "actual_deleted_refs": [],
   "actual_deleted_count": 0,
-  "retained_count": 32,
-  "unverified_count": 2,
+  "retained_count": 34,
+  "unverified_count": 0,
   "blockers": [
     "Connected GitHub interface has no delete-ref action or repository delete-on-merge setting mutation",
     "Existing canonical authorization packet with authentic same-ref InTr ALLOW, organization transition custody, Master Records reconstruction and owner/evidence-retention release was not present for these candidates"
   ],
-  "notes": "A successful source test exercises mocked delete and readback, not a real delete. This disposition does not claim authentic runtime receipt validation, deletion or terminal Master Records closure."
+  "notes": "A successful source test exercises mocked delete and readback, not a real delete. This disposition does not claim authentic runtime receipt validation, deletion or terminal Master Records closure. Superseded closed-unmerged control PR refs were independently verified through exact Git refs readback at their prior recorded heads."
 }
