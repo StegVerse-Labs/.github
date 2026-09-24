@@ -1427,3 +1427,8 @@ The component-011 source repair additionally binds the worker's completed respon
 
 
 Component-011 exact boundary source repair merged in .github PR #2611 (`38580c903a7cf26d914a79f06978b178c3f59908`) after three successful exact-head workflows. Existing worker and resident consumer now bind completion to a fresh exact receipt hash, same response claim/fence and bounded denial probes. This establishes source validation only; runtime, current organization ledger, applicable InTr, TV/TVC and canonical Master Records readback remain unobserved. Canonical SDK security goal ACTIVE/HANDOFF_READY at last observed generation 210, COSV `71000000111111`.
+
+
+## Organization transition exact-source retry
+
+For the existing organization ledger, a retry of an unchanged canonical source transition after incomplete Master Records custody must reuse its verified immutable organization receipt, even when other transitions have since advanced the ledger HEAD. Changed organization context or tampered existing receipts fail closed. The bounded source repair and negative regressions are owned by `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`; it grants no claim, execution or custody authority and is not authentic runtime evidence. The native-email phase uses the same organization-first replay contract: `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
