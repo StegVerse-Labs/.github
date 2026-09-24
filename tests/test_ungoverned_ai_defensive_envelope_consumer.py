@@ -52,12 +52,16 @@ def _synthetic_boundary(mod, *, consumed=False):
     }
 
 
-def _completed_worker_response(mod):
+def _completed_worker_response(mod, boundary=None):
+    boundary = boundary or _synthetic_boundary(mod)
     return {
         "state": "COMPLETED",
         "transition_id": "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_REPRESENTATIVE_BOUNDARY_OBSERVED",
         "checkpoint_ref": mod.BOUNDARY_REL.as_posix(),
         "evidence_refs": [mod.BOUNDARY_REL.as_posix()],
+        "boundary_receipt_sha256": mod._boundary_digest(boundary),
+        "boundary_claim_id": boundary["claim"]["claim_id"],
+        "boundary_fencing_token": boundary["claim"]["fencing_token"],
     }
 
 
@@ -105,7 +109,9 @@ class DefensiveEnvelopeResidentConsumerTests(unittest.TestCase):
                 if payload["execution_result"]["state"] == "COMPLETED":
                     boundary_path = runtime / mod.BOUNDARY_REL
                     boundary_path.parent.mkdir(parents=True, exist_ok=True)
-                    boundary_path.write_text(json.dumps(_synthetic_boundary(mod)))
+                    boundary = _synthetic_boundary(mod)
+                    boundary_path.write_text(json.dumps(boundary))
+                    payload["execution_result"] = _completed_worker_response(mod, boundary)
                 return SimpleNamespace(returncode=0, stdout=json.dumps(payload) + "\n", stderr="")
 
             env = {
@@ -147,10 +153,14 @@ class DefensiveEnvelopeResidentConsumerTests(unittest.TestCase):
                 if len(calls) == 1:
                     p = runtime / mod.BOUNDARY_REL
                     p.parent.mkdir(parents=True, exist_ok=True)
-                    p.write_text(json.dumps(_synthetic_boundary(mod, consumed=True)))
+                    boundary = _synthetic_boundary(mod, consumed=True)
+                    p.write_text(json.dumps(boundary))
+                    value["execution_result"] = _completed_worker_response(mod, boundary)
                 if not calls:
                     p = runtime / mod.BOUNDARY_REL
-                    p.write_text(json.dumps(_synthetic_boundary(mod, consumed=False)))
+                    boundary = _synthetic_boundary(mod, consumed=False)
+                    p.write_text(json.dumps(boundary))
+                    value["execution_result"] = _completed_worker_response(mod, boundary)
                 return SimpleNamespace(returncode=0, stdout=json.dumps(value) + "\n", stderr="")
             env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin")}
             first = mod.consume(source, runtime, runner=runner, env=env)
