@@ -130,7 +130,26 @@ def main() -> int:
     # Visit the explicit machine-owned MIR request first so the existing canonical
     # cadence cannot strand it behind unrelated request outcomes. The consumer itself
     # delegates to the existing refresh+WorkerCoordinator path and grants no authority.
-    mir = _consume_mir_duplicate_first(args.source_root, args.runtime_root)
+    # A caller-selected household request must be visited first. In the former
+    # unconditional MIR-first path, an unrelated subprocess could consume the
+    # full 1200-second timeout before the exact household request was reached.
+    # Unscoped and other-goal invocations preserve existing MIR-first behavior.
+    household_targeted = args.goal_task_id == ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK
+    if household_targeted:
+        household_specs = tuple(
+            item for item in mod.REQUEST_SPECS
+            if item.get("task_id") == ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK
+        )
+        if len(household_specs) != 1:
+            raise RuntimeError("exact household request spec missing or duplicated")
+        mod.REQUEST_SPECS = household_specs + tuple(
+            item for item in mod.REQUEST_SPECS
+            if item.get("task_id") != ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK
+        )
+        mir = {"state": "NOT_SELECTED_EXACT_HOUSEHOLD_TARGET", "task_id": MIR_TASK,
+               "authority_effect": "NONE"}
+    else:
+        mir = _consume_mir_duplicate_first(args.source_root, args.runtime_root)
     legacy = mod.consume_all(
         args.source_root,
         args.runtime_root,
@@ -142,7 +161,8 @@ def main() -> int:
         "mir_roundtrip_egress_authenticity": mir,
         "canonical_work_request_set": legacy,
         "current_goal_task_id": args.goal_task_id,
-        "mir_visited_before_legacy_request_set": True,
+        "mir_visited_before_legacy_request_set": not household_targeted,
+        "exact_household_request_prioritized": household_targeted,
         "later_request_attempts_blocked_by_mir_failure": False,
         "second_dispatcher_created": False,
         "second_scheduler_created": False,
