@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.repository-hygiene-native-ref-retirement-intake/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv_task_vector": "10100000100000",
+  "authority_owner": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "organization_custody_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+  "master_records_custody_owner": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "control_repository": "StegVerse-Labs/.github",
+  "observed_repository_setting": {
+    "delete_branch_on_merge": false,
+    "git_branch_delete_connector_available": false
+  },
+  "obsolete_closed_prs": [
+    {
+      "pr": 2574,
+      "branch": "hygiene/bulk-census-private-split-20260921",
+      "head_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
+      "state": "CLOSED_UNMERGED",
+      "reason": "SUPERSEDED",
+      "successor_branch": "hygiene/finalize-census-and-ref-retirement-20260924",
+      "ref_retirement": "REQUIRES_EXPLICIT_UNMERGED_RELEASE_AND_TIP_RECHECK"
+    },
+    {
+      "pr": 2617,
+      "branch": "hygiene/census-2574-main-reconcile-20260923",
+      "head_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
+      "state": "CLOSED_UNMERGED",
+      "reason": "SUPERSEDED",
+      "successor_branch": "hygiene/finalize-census-and-ref-retirement-20260924",
+      "ref_retirement": "REQUIRES_EXPLICIT_UNMERGED_RELEASE_AND_TIP_RECHECK"
+    }
+  ],
+  "previously_routed_tvc": {
+    "approved_ready": 32,
+    "routing_records": [
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch1.json",
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch2.json",
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch3.json",
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch4.json",
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch5.json",
+      "control/repository-hygiene-ref-retirement-routing-20260921-tvc-batch6.json"
+    ],
+    "classification_does_not_authorize_ref_deletion": true
+  },
+  "heavy_baseline": {
+    "authenticated_2026_09_22_structural_candidates": 1006,
+    "approved_for_deletion": 0,
+    "auth_artifact_index": "control/repository-hygiene-ecosystem-census-20260921.json"
+  },
+  "administrative_execution": {
+    "native_tool": "scripts/repository_hygiene_retire_merged_refs.py",
+    "execution_owner": "EXISTING_REPOSITORY_ADMINISTRATION",
+    "credentials": "EXISTING_TV_TVC_ONLY",
+    "cli_mode": "EXISTING_AUTHORITY_PACKET_AND_APPLY_ONLY",
+    "required_predecessors": [
+      "EXACT_CURRENT_REF_TIP",
+      "EXACT_PR_MERGED_OR_EXPLICIT_UNMERGED_RELEASE",
+      "NO_OPEN_PR_OWNER",
+      "EVIDENCE_RETENTION_CLEARANCE",
+      "EXTERNAL_AUTHENTIC_INTR_ALLOW",
+      "ORGANIZATION_RECEIPT",
+      "MASTER_RECORDS_RECONSTRUCTION"
+    ],
+    "post_delete_requirements": [
+      "VERIFY_REF_ABSENT",
+      "AUTHENTIC_ORGANIZATION_TRANSITION_APPEND",
+      "MASTER_RECORDS_RECONSTRUCTION_PASS"
+    ],
+    "github_actions_authority": "READ_ONLY_VALIDATION_ONLY"
+  },
+  "current_authority_state": "PENDING_AUTHENTIC_OWNER_RELEASE_AND_REPOSITORY_ADMINISTRATION",
+  "deletion_performed": false,
+  "deletion_claimed": false,
+  "note": "This is an administration queue, not a deletion approval. Closing an unmerged PR does not authorize deleting its branch. No shell, second device, new token or GitHub Actions mutation lane is created."
+}
