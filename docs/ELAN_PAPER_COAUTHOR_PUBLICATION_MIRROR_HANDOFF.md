@@ -3,7 +3,7 @@
 Updated: 2026-09-23  
 Goal Task ID: `ELAN-PAPER-COAUTHOR-PUBLICATION-001`  
 COSV ID: `71000000100100`  
-Status: `ACTIVE / TEST2-LABELING-CORRECTION-CONFIRMED / FACCT-TIMELINE-AGREED / HOLD-DESIGN-PENDING`
+Status: `ACTIVE / TEST2-CORRECTED-SOURCE-VERIFIED / EDITORIAL-MERGE-CANDIDATE / PUBLICATION-REVIEW-PENDING`
 
 ## Goal
 
@@ -21,7 +21,7 @@ Author order, affiliations, corresponding-author designation, final contribution
 
 ## Canonical co-authored working draft
 
-`docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md` (proposed provenance-corrected revision; coauthor review and corrected PDF verification pending)
+`docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md` (corrected primary-source comparison complete; full manuscript author review and publication approval pending)
 
 Historical Revision 2 remains retained and is not evidence that ÉLAN emitted a response during the no-request interval.
 
@@ -37,15 +37,23 @@ The co-authored revision:
 - adds a contribution-boundary section so the manuscript does not claim novelty for broad representation/governance ideas already present in adjacent literature;
 - treats the two experiments as a cumulative bounded empirical series rather than a universal theory of silence or governance.
 
-## Test 2 source correction and reproduction inquiry (2026-09-23)
+## Verified confidential source comparison — 2026-09-24
 
-The ÉLAN coauthor disclosed in private correspondence forwarded by Rigel that the original Test 2 no-prompt interval annotation `No transmission, native presence state maintained.` was **written by the human experimenter for transcript readability**, not emitted by ÉLAN. During an interval in which no API prompt was sent, there was no model output to observe. A corrected trace PDF is shown as an attachment in the forwarded correspondence but its bytes were not available for independent verification in this task turn. **Subsequent author clarification, 2026-09-23:** Élisabeth explicitly confirmed this was correction of a labeling error discovered during transcript review, **not a reproduction attempt**. Do not preserve the earlier failed-reproduction hypothesis as an active scientific question. She agreed to design a separate explicit HOLD experiment jointly. Keep private message content outside public repository; this handoff records only the coauthor-authorized scientific correction necessary to prevent misattribution, not her full messages.
+Directly compared the original one-page September 16 source PDF and Élisabeth's uploaded corrected one-page September 23 PDF. Original SHA-256: `403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9`. Corrected SHA-256: `7231ab68bf00ecc92b163efd90773ccabbec82b21aa9cf6e6426b8de68d162ac`. They are distinct PDF bytes. The substantive correction replaces the apparent ÉLAN response `No transmission, native presence state maintained.` with the methodology note `No request sent during this interval. No output produced. Absence of emission by construction of the test, not observed in ÉLAN.` The September 23 corrected PDF still places this methodology text under an `ÉLAN RESPONSE` heading, but it is not native output. Its heading, quotation marks and typography also differ from the original. Events 1 and 2 retain their native responses and timestamps; the return at 15:06:05 is written `All right. I think I'm ready to continue.` and native response `I'm listening.` is retained.
 
-Revision 3 proposes source-attribution repairs to the manuscript and distinguishes the historical no-prompt control from a proposed explicit HOLD invocation. Do not claim the prior cross-evaluation demonstrated an ÉLAN-native state difference. The old controlled StegVerse A3/A4, custody, replay, and reconstruction evidence remains historically true for **the supplied StegVerse representations**; its cross-architecture interpretation must be revised. The original private PDF has now been inspected directly: 1 page, 115323 bytes, and the misattributed annotation appears in its ÉLAN-response field. The corrected PDF remains represented only by a LinkedIn screenshot; **its exact bytes have not been obtained or compared**. Its direct verification and reconciliation against full Revision 3 remain required before author approval. The user's sent response and Élisabeth's subsequent confirmation were shown as screenshots; exact source PDF bytes have not been inspected here.
+The confidential PDFs themselves are NOT committed to a public GitHub repository or copied into a public manuscript. Élisabeth's message confirms the attribution change was a **labeling correction during transcript review**, not an unsuccessful reproduction. The former inference of native continuous-presence state and any model-native A3/A4 comparison is withdrawn. Historical controlled StegVerse A3/A4, custody, replay and reconstruction remain valid only for the independently supplied observation-window inputs; prior historical receipts are unchanged.
 
-Candidate follow-up: preserve an exact API prompt and observed response/non-response for explicit HOLD, including request/response timestamps and transport metadata if supplied, plus a separate no-invocation control. Élisabeth has answered the reproduction question definitively: no reproduction attempt occurred; do not ask it again. A previously shared `...` example is described in user-forwarded correspondence, not verified as an executed revision of this protocol.
+Élisabeth's messages constitute **substantive methodological feedback on the original Experiment 2 characterization**, now incorporated and source-verified. They do **not** constitute approval of the subsequently drafted coauthored manuscript Revision 3, FAccT abstract or exact joint HOLD protocol. She has agreed to jointly design the HOLD experiment and target FAccT 2027.
 
-Joint author-review protocol: `docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md` (provisional exact prompts, distinct API-result classes, no-invocation control and provenance; not yet author-approved or executed). Manuscript Revision 3 now explicitly describes the confirmed test-interface observability asymmetry.
+## Three distinct approval and execution boundaries
+
+**1. Editorial repository merge.** The reviewed source-correction working draft and proposed protocol may be merged into the repository after exact-source reconciliation, canonical Registry/COSV and current-main compatibility, PR validation and ordinary repository merge requirements. Coauthor *final-manuscript approval* is **not** an editorial-PR merge predicate. Mark all author-review drafts, abstract and HOLD proposal unapproved, unexecuted and unsubmitted. Confidential source PDFs stay outside public repository.
+
+**2. Scientific review and experiment approval.** Élisabeth must review the revised statements about ÉLAN and jointly approve exact HOLD stimuli, API observation/recording boundaries and protocol before conducting or attributing findings to the proposed joint experiment. Her source-correction feedback has already been incorporated, but approval of the new protocol has not yet occurred.
+
+**3. Publication authorization.** Both authors must review and expressly approve the final manuscript, abstract, authorship metadata/contributions and any FAccT submission or public release. Their agreement on FAccT deadlines alone does not authorize submission.
+
+Joint author-review protocol: `docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md` (provisional exact prompts and distinct outcome classes; not author-approved or executed). The author-review abstract remains `docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md`.
 
 ## Venue evaluation
 
@@ -84,29 +92,13 @@ Historical cross-evaluation handoff now has a dated provenance erratum; historic
 
 ## Next work
 
-1. Acquire and verify the exact corrected Test 2 PDF bytes; the original source has been inspected and a dated erratum added to the historical cross-evaluation handoff. Obtain Élisabeth's substantive review of Revision 3.
-2. Prepare a jointly reviewable explicit HOLD protocol with condition-matched controls, exact prompt strings, timestamps, native outputs, client/transport metadata where available, and explicit separation of no-invocation from invoked nonresponse. Élisabeth confirmed no prior reproduction attempt; do not revisit that speculation.
-3. Complete the active literature/novelty matrix.
-4. Provide revised manuscript Revision 3, the FAccT author-review abstract and HOLD proposal to both authors for substantive review.
-5. Record actual Élisabeth revisions/contributions as they occur rather than attributing work prospectively.
-6. Work toward the mutually agreed FAccT 2027 target while retaining journals as contingencies if the authors jointly change course.
-7. If FAccT 2027 remains under consideration, complete any needed OpenReview setup by the recommended October 16 target and work backward from October 27 and November 3 formal deadlines.
-8. Author preference for FAccT 2027 is recorded; collect author-order, affiliation and contribution approvals before submission.
-9. Prepare venue-specific submission materials only after author approval.
+1. Reconcile this branch's unique seven-file editorial delta against newest main without overwriting concurrent Registry work. Obtain exact-head validation and merge when ordinary repository requirements pass. Keep manuscript and abstract marked DRAFT / NOT SUBMITTED and HOLD marked PROPOSED / NOT EXECUTED.
+2. Give both authors Revision 3 and the FAccT abstract for substantive author review. Jointly freeze an exact API-compatible HOLD protocol before an authentic experiment; do not treat the earlier ellipsis as a completed follow-up.
+3. Continue the literature/novelty review, confirm author order/contributions/affiliations and receive **separate publication authorization** from both authors before any FAccT submission.
 
-## Validation and merge gate (2026-09-23)
+## Prior validation history
 
-The original September 16 ÉLAN PDF was directly inspected (1 page, 115323 bytes); its response-labeled silence annotation is verified in the historical original. The exact corrected PDF was **not** attached to this session, so its bytes and diff remain **unverified**, notwithstanding Élisabeth's explicit correction in user-provided correspondence screenshots. The proposed FAccT abstract and operational HOLD controls were added to draft PR #2593. Targeted readback assertions passed for six repository files; the PR comparison was ahead of current main with no behind commits at validation time. Cross-Task Coordination Validation workflow run 35909510762 reported its `validate` job **success** (Task Registry collision/generation fences and coordination source steps passed) on an earlier intermediate head; recheck required on the final head after this handoff update. No pull-request reviews were recorded. Keep the PR in DRAFT and do not merge until corrected source PDF is verified and author review/approval is obtained, even if automated CI passes.
-
-## 2026-09-23 subsequent premerge reconciliation
-
-- Current task ID, registry, source vector and vector index agree on COSV `71000000100100`; canonical coordination state remains `ACTIVE`.
-- The original private source PDF was directly materialized and SHA-256-verified: `403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9`; this is **not** the corrected PDF.
-- Searched the current conversation/Library and accessible Google Drive for corrected ÉLAN Test 2 source; no corrected PDF bytes located. The user-shared LinkedIn screenshot is author clarification, not a byte-verifiable primary-source PDF. The previous generated WIBS Revision 3 ZIP includes derived paper PDFs and a superseded experiment PDF, **not** the corrected ÉLAN-native source.
-- Known coauthor clarifications (labeling error, no reproduction attempt, joint HOLD design agreement, FAccT timeline target) were already incorporated into manuscript Revision 3, the abstract draft and the proposed protocol. No new substantive manuscript edits or signed approvals were present in accessible GitHub review records; PR #2593 currently has 0 recorded review submissions and 0 review threads.
-- Last verified PR-head CI: Cross-Task Coordination Validation run [35909704582](https://github.com/StegVerse-Labs/.github/actions/runs/35909704582), success; Task Registry collision/generation fences and coordination source validation passed for prior head `2e9baedfaa5b6e2bbe50b30677c608dd160b1284`. This registry/handoff update requires checking the new final head separately.
-- Branch comparison after upstream main advanced: `research/elan-test2-provenance-correction-20260923` diverged from main by 20 commits ahead / 10 behind at the comparison time. Reconcile against the newest main and rerun checks before merger; avoid bypassing author and corrected-source evidence gates.
-- **No-merge condition remains:** exact corrected PDF acquisition and semantic/byte diff, substantive author approval of manuscript/abstract/protocol, branch/main reconciliation and final-head checks. FAccT submission and live execution have not occurred.
+Historical run `35909704582` passed coordination validation at an intermediate PR head. Later run `35939688037` passed Task Registry collision/generation fences and coordination source at head `d16a5c08bad3f7b066f83d5a4535c76f59d788d6`. Both precede the verified-PDF editorial updates and cannot substitute for exact final-head validation. Prior branch divergence and other timestamps are historical observations; recompute immediately before merge.
 
 ## README impact
 
