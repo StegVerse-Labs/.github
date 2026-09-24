@@ -253,10 +253,24 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
               "destination_profile":"MIR",
               "sdk_binding_sha256":consumer.sha(binding_bytes).split(":",1)[1],
               "final_stegverse_transition_surface_reached":True,
-              "intr_handoff":{"schema":"stegverse.llm-adapter.southbound-intr-egress-handoff/v1"},
+              "intr_handoff":{"schema":"stegverse.llm-adapter.southbound-intr-egress-handoff/v1","sdk_binding_sha256":consumer.sha(binding_bytes).split(":",1)[1]},
               "authority_effect":"NONE",
             }
         llm.prepare_sdk_return_for_intr=prepare_sdk_return_for_intr
+        def admit_intr_egress(transition, *, disposition, egress_receipt_hash, admitted_sdk_binding_sha256):
+            self.assertEqual(disposition,"ALLOW")
+            self.assertEqual(egress_receipt_hash,"e"*64)
+            self.assertEqual(admitted_sdk_binding_sha256,transition["intr_handoff"]["sdk_binding_sha256"])
+            return {
+              "schema":"stegverse.llm-adapter.southbound-intr-egress-admission/v1",
+              "state":"EGRESS_ADMITTED",
+              "sdk_binding_sha256":admitted_sdk_binding_sha256,
+              "egress_receipt_hash":egress_receipt_hash,
+              "far_side_transition_observed":False,
+              "communication_complete":False,
+              "transition_authority":"Interlock/InTr",
+            }
+        llm.admit_intr_egress=admit_intr_egress
         stegos_pkg=types.ModuleType("stegos")
         stegos=types.ModuleType("stegos.mir_southbound_intr_consumer")
         stegos.prepare_mir_southbound_materialization=lambda handoff,payload_ref: {
@@ -315,6 +329,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
           "master_records_required_evidence_validation_status":"PASS",
           "master_records_receipt_sha256":"d"*64,
           "master_records_reconstructed_receipt_sha256":"d"*64,
+          "intr_admission_receipt_sha256":"e"*64,
           "rtc008_evidence_complete":True,
           "far_side_transition_observed":False,
           "caller_consequence_observed":False,
@@ -346,6 +361,8 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["required_evidence_manifest"][2]["content"],binding)
             self.assertEqual(result["rtc007_master_records"]["state"],"RECORDED")
             self.assertTrue(result["rtc008_admission_observed"])
+            self.assertEqual(result["rtc008_llm_adapter_admission"]["state"],"EGRESS_ADMITTED")
+            self.assertEqual(result["rtc008_llm_adapter_admission"]["egress_receipt_hash"],"e"*64)
             self.assertFalse(result["rtc009_far_side_transition_observed"])
             self.assertFalse(result["caller_consequence_observed"])
             self.assertFalse(result["communication_complete"])
