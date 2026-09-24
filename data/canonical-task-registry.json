@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 221,
+  "generation": 222,
   "status": "MYKV_NATIVE_IOS_SOURCE_PREREGISTRATION_PROPOSED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9816,7 +9816,9 @@
         ".stegverse/transition-ledger/org-contract.json",
         "workers/canonical_state_transition_custody.py",
         "master-records/orchestration/services/ecosystem_transition_ledger.py",
-        "master-records/orchestration/services/canonical_state_transition_custody.py"
+        "master-records/orchestration/services/canonical_state_transition_custody.py",
+        "master-records/orchestration/services/organization_batch_ingress.py",
+        "master-records/orchestration/tests/test_organization_batch_ingress.py"
       ],
       "adjacent_task_refs": [
         "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
@@ -9850,9 +9852,30 @@
           36039580961
         ],
         "local_batch_runtime_proof": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-        "master_records_batch_ingress": "NOT_IMPLEMENTED",
+        "master_records_batch_ingress": "MERGED_SOURCE_CI_VALIDATED",
         "concurrent_org_append_serialization": "NOT_PROVEN",
-        "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED"
+        "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED",
+        "master_records_batch_ingress_pr": 111,
+        "master_records_batch_ingress_head": "4352bc5cb0632b941e01a03fc26551b398d81927",
+        "master_records_batch_ingress_merge": "5d44513d26d6529d98fdae36aeb8f989e9a9c331",
+        "master_records_batch_ingress_validation_runs": [
+          36075018546,
+          36075018524,
+          36075018823,
+          36075018744,
+          36075018671,
+          36075018706,
+          36075018513,
+          36075018549,
+          36075018527,
+          36075018541,
+          36075018805,
+          36075018621
+        ],
+        "master_records_batch_ingress_exact_source_validation": "PASS",
+        "master_records_batch_runtime_proof": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "required_evidence_bytes_master_records_ingress": "CI_VALIDATED",
+        "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED"
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
