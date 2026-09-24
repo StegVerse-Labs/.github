@@ -1522,3 +1522,8 @@ Stage-1 micro-node experiment: Richard Test-3 owner PR [#2649](https://github.co
 ### RTC008 LLM admission projection merged
 
 PR #2655 merged the exact hash-bound projection of the existing Master Records-closed RTC008 ingress receipt into the LLM Adapter's canonical `EGRESS_ADMITTED` schema. Source/CI closure is separate from authentic resident RTC008/RTC009/caller runtime closure, which remains unobserved.
+
+
+### Publisher-return failure observation custody
+
+Merged PR #2657 repairs the existing SDK/KV Publisher-return consumer's previously console-only `BLOCKED` failure path. An exact, idempotent, non-authorizing diagnostic now persists in its existing receipt directory; authentic RTC008/RTC009/caller transition proof must still come from the actual resident/organization and Master Records chain.

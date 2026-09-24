@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 218,
+  "generation": 219,
   "status": "CANONICAL_MASTER_RECORDS_ATOMIC_ACTIVATION_PREDECESSOR_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5493,7 +5493,13 @@
           36068497995,
           36068498014
         ],
-        "rtc008_llm_admission_projection_runtime_observed": false
+        "rtc008_llm_admission_projection_runtime_observed": false,
+        "publisher_return_failure_diagnostic_source_merged": true,
+        "publisher_return_failure_diagnostic_pr": 2657,
+        "publisher_return_failure_diagnostic_merge": "0f976b6b050ea761da2cffcfe35e81d6a090081b",
+        "publisher_return_failure_diagnostic_exact_head": "a6ab3cc81f8300fcc45dc158cdf5338c741e0263",
+        "publisher_return_failure_diagnostic_validation_run": 36069544761,
+        "authentic_publisher_return_failure_diagnostic_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5980,6 +5986,19 @@
           "runtime_claimed": false,
           "far_side_claimed": false,
           "caller_consequence_claimed": false
+        },
+        "publisher_return_failure_observation": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "pr": 2657,
+          "exact_head": "a6ab3cc81f8300fcc45dc158cdf5338c741e0263",
+          "merge": "0f976b6b050ea761da2cffcfe35e81d6a090081b",
+          "validation_run": 36069544761,
+          "prior_defect": "BLOCKED_ONLY_PRINTED_NO_DURABLE_CONSUMPTION_FAILURE_RECEIPT",
+          "receipt_schema": "stegverse.publisher-return-consumption-failure-observation/v1",
+          "paths": "EXISTING_SDK_OR_KV_RECEIPT_DIRECTORY",
+          "runtime_observation": false,
+          "actual_first_failed_transition": "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+          "authority_effect": "NONE_DIAGNOSTIC_ONLY"
         }
       },
       "required_evidence_validation": {
