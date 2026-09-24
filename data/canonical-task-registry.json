@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 214,
-  "status": "OPTICAL_PHYSICAL_STATE_REPLAY_SOURCE_PREREGISTRATION_PROPOSED",
+  "generation": 215,
+  "status": "CANONICAL_MASTER_RECORDS_ATOMIC_ACTIVATION_PREDECESSOR_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -5473,7 +5473,18 @@
           35743051826
         ],
         "stegagents_atomic_warrant_predecessor_contract": "RECONSTRUCT_EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CLOSURE_AT_SEQUENCE_2_WARRANT_EMISSION",
-        "stegagents_atomic_warrant_canonical_hash_helper_repaired": true
+        "stegagents_atomic_warrant_canonical_hash_helper_repaired": true,
+        "stegagents_atomic_activation_predecessor_bypass_identified": true,
+        "stegagents_atomic_activation_predecessor_repaired": true,
+        "stegagents_atomic_activation_predecessor_pr": 39,
+        "stegagents_atomic_activation_predecessor_merge": "938c1a8a586920b6709c331a25f376f045066e08",
+        "stegagents_atomic_activation_predecessor_exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+        "stegagents_atomic_activation_predecessor_validation_runs": [
+          36036227697,
+          36036227515,
+          36036227461
+        ],
+        "authentic_atomic_activation_runtime_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5922,6 +5933,22 @@
           "subsequent_candidate": "src/atomic_task_worker_activation_runtime.py::_record_atomic_activation",
           "runtime_execution_claimed": false,
           "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+        },
+        "stegagents_atomic_activation_predecessor": {
+          "state": "SOURCE_REPAIR_MERGED_EXACT_HEAD_VALIDATED",
+          "repository": "StegVerse-Labs/StegAgents",
+          "pull_request": 39,
+          "merge_commit": "938c1a8a586920b6709c331a25f376f045066e08",
+          "exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+          "validation_runs": [
+            36036227697,
+            36036227515,
+            36036227461
+          ],
+          "defect": "ATOMIC_ACTIVATION_SEQUENCE_3_COPIED_UNRECONSTRUCTED_SEQUENCE_2_WARRANT_RECEIPT_SHA",
+          "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+          "authentic_resident_runtime_observed": false,
+          "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
         }
       },
       "required_evidence_validation": {
