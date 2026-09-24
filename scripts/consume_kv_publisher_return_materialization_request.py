@@ -609,7 +609,7 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
     RTC007, RTC008, RTC009, or any other governed transition failed or closed.
     Existing SDK/KV receipt namespaces remain the only storage destinations.
     """
-    if not materialization_id or materialization_id in {".",".."} or "/" in materialization_id or "\\\\" in materialization_id:
+    if not materialization_id or materialization_id in {".",".."} or "/" in materialization_id or chr(92) in materialization_id:
         raise KVPublisherReturnError("materialization_id_invalid_for_diagnostic")
     request_path=runtime/REQUEST_DIR/f"{materialization_id}.json"
     request=None
@@ -644,7 +644,7 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
         "authority_effect":"NONE_DIAGNOSTIC_ONLY",
     }
     record["diagnostic_sha256"]=sha(record)
-    raw=json.dumps(record,sort_keys=True,indent=2).encode("utf-8")+b"\\n"
+    raw=json.dumps(record,sort_keys=True,indent=2).encode("utf-8")+bytes([10])
     receipt_path=out/f"{materialization_id}.{record['diagnostic_sha256'].split(':',1)[1]}.blocked.json"
     if receipt_path.exists():
         if receipt_path.read_bytes()!=raw:
