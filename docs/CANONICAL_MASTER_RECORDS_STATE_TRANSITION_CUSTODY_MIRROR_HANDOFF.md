@@ -679,3 +679,10 @@ Closed unmerged PR #2537 was superseded by PR #2655, which preserved main's inte
 The existing Universal InTr ingress now reports the exact SHA-256 of its persisted RTC008 ingress receipt **after** canonical Master Records closure. The SDK-return consumer requires the exact hash, RECORDED, reconstruction PASS, required-evidence PASS and exact receipt/reconstruction digest equality before calling the existing LLM Adapter's `admit_intr_egress()` to project the same already-authoritative admission. This creates no new ALLOW or second RTC008 custody transition.
 
 Repository source and CI are not resident transition evidence. No same-invocation authentic RTC008 admission, organization-wide predecessor receipt, RTC009 far-side result or caller consequence has been retrieved from resident custody. Do not promote the runtime predicates from this merge.
+
+
+## Publisher-return first-failure observation boundary repaired — September 24, 2026
+
+Tracing the existing RTC008 producer revealed a separate observation defect in `scripts/consume_kv_publisher_return_materialization_request.py`: the top-level exception handler printed `BLOCKED` but did not persist an invocation-level diagnostic. Thus a failed path could leave no matching durable failure receipt even when the exact request existed. PR #2657, exact head `a6ab3cc81f8300fcc45dc158cdf5338c741e0263`, passed focused RTC008 validation run `36069544761` and merged as `0f976b6b050ea761da2cffcfe35e81d6a090081b`.
+
+The existing SDK/KV receipt directory now receives an idempotent SHA-256-addressed `stegverse.publisher-return-consumption-failure-observation/v1` diagnostic with materialization ID, retained request hash if available, bounded failure classification, and UNKNOWN rather than fabricated RTC008/RTC009 or caller state. The diagnostic has no transition, governance, credential, or Master Records authority and is not itself proof of an authentic governed failure. The first authentic resident failed transition remains to be reconstructed from a real subsequent invocation and existing organization custody.
