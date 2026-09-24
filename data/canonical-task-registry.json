@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 216,
+  "generation": 217,
   "status": "CANONICAL_MASTER_RECORDS_ATOMIC_ACTIVATION_PREDECESSOR_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9783,13 +9783,26 @@
         "AUTHENTIC_RUNTIME_ORG_BATCH_TO_MASTER_RECORDS_END_TO_END_EVIDENCE_RETAINED"
       ],
       "current_truth": {
-        "registration": "PROPOSED_PENDING_PR_MERGE",
+        "registration": "MERGED_PR_2582_ED497116",
         "runtime_batch_custody": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
         "live_worker_failure_expiry_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
         "existing_org_receipt_emitter": "SOURCE_PRESENT",
         "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
         "existing_master_records_receipt_set_commitments": "SOURCE_PRESENT",
-        "new_runtime_or_ledger_authorized": false
+        "new_runtime_or_ledger_authorized": false,
+        "local_batch_replay_source": "CI_VALIDATED_SOURCE_REPAIR",
+        "local_batch_source_pr": 2643,
+        "local_batch_source_head": "3552330b88a38aae1ac91d0d26a72c3ca08be169",
+        "local_batch_source_merge": "f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1",
+        "local_batch_source_validation_runs": [
+          36039580975,
+          36039581142,
+          36039580961
+        ],
+        "local_batch_runtime_proof": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "master_records_batch_ingress": "NOT_IMPLEMENTED",
+        "concurrent_org_append_serialization": "NOT_PROVEN",
+        "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED"
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
