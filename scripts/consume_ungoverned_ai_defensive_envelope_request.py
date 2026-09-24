@@ -13,6 +13,8 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/ungoverned-ai-defensive-envelope-request-consumption.latest.json")
+BOUNDARY_REL = Path("receipts/ai-defensive-envelope/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json")
+REQUIRED_DENIAL_PROBES = {"FILESYSTEM_OPEN", "NETWORK_IMPORT", "ENVIRONMENT_IMPORT"}
 TARGET_TASK = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
@@ -93,6 +95,104 @@ def last_json(stdout: str) -> dict[str, Any] | None:
             return value
     return None
 
+def _boundary_digest(value: Mapping[str, Any]) -> str:
+    return "sha256:" + stable(value)
+
+
+def verified_boundary_receipt(
+    runtime: Path, worker_result: Mapping[str, Any] | None,
+    *, previous_digest: str | None,
+) -> dict[str, Any] | None:
+    """Check a newly retained exact receipt, not just the worker completion flag."""
+    if not isinstance(worker_result, Mapping):
+        return None
+    if worker_result.get("checkpoint_ref") != BOUNDARY_REL.as_posix():
+        return None
+    refs = worker_result.get("evidence_refs")
+    if not isinstance(refs, list) or BOUNDARY_REL.as_posix() not in refs:
+        return None
+    path = runtime / BOUNDARY_REL
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        value = load(path)
+    except (ValueError, OSError):
+        return None
+    digest = _boundary_digest(value)
+    if previous_digest == digest:
+        return None
+    claim = value.get("claim")
+    probe = value.get("probe")
+    checks = value.get("checks")
+    if not isinstance(claim, dict) or not isinstance(probe, dict) or not isinstance(checks, dict):
+        return None
+    fence = claim.get("fencing_token")
+    claim_id = claim.get("claim_id")
+    if not (
+        value.get("schema") == "stegverse.ungoverned-ai-defensive-envelope-resident-boundary/v1"
+        and value.get("task_id") == TARGET_TASK
+        and value.get("component_id") == "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011"
+        and value.get("state") == "REPRESENTATIVE_BOUNDARY_PROBE_OBSERVED"
+        and isinstance(fence, int) and not isinstance(fence, bool) and fence > 0
+        and isinstance(claim_id, str) and claim_id.endswith(f"-G{fence}")
+        and claim.get("worker_id") == "ungoverned-ai-defensive-envelope-worker"
+        and value.get("tvc_source_floor") == "0b82b45de7d214fbdb2f24bc4027a6aeb31a7312"
+        and isinstance(value.get("tvc_source_head"), str) and bool(value["tvc_source_head"])
+        and value.get("external_provider_observed") is False
+        and value.get("goal_runtime_completion_claimed") is False
+    ):
+        return None
+    denied = probe.get("denied_interactions")
+    if not isinstance(denied, list) or not REQUIRED_DENIAL_PROBES.issubset(
+        row.get("probe_id") for row in denied if isinstance(row, dict)
+    ):
+        return None
+    if not all(
+        isinstance(row, dict) and row.get("decision") == "DENY"
+        and row.get("consumed") is False and row.get("consequence_reachable") is False
+        for row in denied
+    ):
+        return None
+    required = (
+        "allow_consumed", "allow_result", "filesystem_not_exposed",
+        "network_not_exposed", "deny_not_consumed", "deny_consequence_unreachable",
+        "ambient_credentials_not_exposed", "temporary_state_destroyed",
+        "egress_evidence_only",
+    )
+    if not all(checks.get(key) is True for key in required):
+        return None
+    return {
+        "receipt_sha256": digest,
+        "claim_id": claim_id,
+        "fencing_token": fence,
+        "tvc_source_head": value["tvc_source_head"],
+        "denial_probe_ids": sorted(REQUIRED_DENIAL_PROBES),
+        "origin": "SAME_RESIDENT_FILESYSTEM_NOT_INDEPENDENT_AUTHORITY_READBACK",
+        "master_records_custody_proven": False,
+        "organization_ledger_custody_proven": False,
+    }
+
+
+def verified_boundary_receipt_from_terminal(
+    runtime: Path, consumption: Mapping[str, Any],
+) -> bool:
+    """Reject replay of an orphaned/stale terminal consumption marker."""
+    path = runtime / BOUNDARY_REL
+    if not path.is_file() or path.is_symlink():
+        return False
+    try:
+        boundary = load(path)
+    except (ValueError, OSError):
+        return False
+    claim = boundary.get("claim")
+    return bool(
+        _boundary_digest(boundary) == consumption.get("boundary_receipt_sha256")
+        and isinstance(claim, dict)
+        and claim.get("claim_id") == consumption.get("boundary_claim_id")
+        and claim.get("fencing_token") == consumption.get("boundary_fencing_token")
+    )
+
+
 def previously_terminal(runtime: Path, request: Mapping[str, Any], request_hash: str) -> bool:
     path = runtime / CONSUMPTION_REL
     if not path.is_file():
@@ -106,6 +206,9 @@ def previously_terminal(runtime: Path, request: Mapping[str, Any], request_hash:
         and value.get("request_sha256") == request_hash
         and value.get("terminal") is True
         and value.get("runtime_execution_attempted") is True
+        and value.get("boundary_receipt_verified") is True
+        and isinstance(value.get("boundary_receipt_sha256"), str)
+        and verified_boundary_receipt_from_terminal(runtime, value)
     )
 
 def consume(
@@ -141,6 +244,13 @@ def consume(
         "--runtime-root", str(runtime),
         "--task-id", TARGET_TASK,
     ]
+    existing_boundary = runtime / BOUNDARY_REL
+    previous_digest = None
+    if existing_boundary.is_file() and not existing_boundary.is_symlink():
+        try:
+            previous_digest = _boundary_digest(load(existing_boundary))
+        except (ValueError, OSError):
+            previous_digest = None
     done = runner(
         command, cwd=runtime, capture_output=True, text=True, check=False,
         env=clean_env(env), timeout=600,
@@ -158,8 +268,12 @@ def consume(
         and result.get("credential_authority") == "TV/TVC"
         and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
     )
+    boundary = verified_boundary_receipt(
+        runtime, worker_result, previous_digest=previous_digest
+    ) if bridge_valid and done.returncode == 0 else None
     terminal = bool(
-        bridge_valid
+        boundary is not None
+        and bridge_valid
         and isinstance(worker_result, dict)
         and worker_result.get("state") == "COMPLETED"
         and worker_result.get("transition_id") == "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_REPRESENTATIVE_BOUNDARY_OBSERVED"
@@ -178,6 +292,14 @@ def consume(
         "bridge_contract_valid":bridge_valid,
         "runtime_execution_attempted":attempted,
         "terminal":terminal,
+        "boundary_receipt_verified":boundary is not None,
+        "boundary_receipt_sha256":boundary.get("receipt_sha256") if boundary else None,
+        "boundary_claim_id":boundary.get("claim_id") if boundary else None,
+        "boundary_fencing_token":boundary.get("fencing_token") if boundary else None,
+        "boundary_evidence":boundary,
+        "organization_ledger_custody_proven":False,
+        "master_records_custody_proven":False,
+        "runtime_proof_promoted":False,
         "request_granted_authority":False,
         "heartbeat_grants_execution_authority":False,
         "github_token_required":False,
