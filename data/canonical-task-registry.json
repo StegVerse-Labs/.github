@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 208,
-  "status": "SDK_MICRO_NODE_ADMISSIBILITY_REGISTRATION_VALIDATED",
+  "generation": 209,
+  "status": "NATIVE_EMAIL_EXISTING_GOAL_CANONICAL_REGISTRY_PROJECTION_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -10134,6 +10134,20 @@
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE"
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "correlation_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "root_correlation_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "parent_task_id": null,
+      "goal": "Periodically consume the bounded GitHub/[Task Update] operational mailbox slice through the existing TV/TVC-backed native email monitor, normalize actionable failure observations, exact-byte persist represented failure observations into the already-materialized KnowledgeVault before live archive, govern Gmail state mutation through the existing generic SDK/StegCore bounded-consequence path, reconcile corrective work through StegHealth and Canonical Work/InTr, and preserve durable evidence without creating a second monitor, scheduler, heartbeat, WorkerCoordinator, provider mount, source installer, credential route, manifest class, or evaluator.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
+      "cosv_task_vector": "10100000100000",
+      "authority_effect": "NONE_COORDINATION_ONLY"
     }
   ],
   "human_actions": [],
