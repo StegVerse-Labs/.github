@@ -1,0 +1,114 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+  "correlation_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+  "root_correlation_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+  "parent_task_id": null,
+  "goal": "Coordinate patent-safe optical/multispectral state-dependent acquisition and independently reconstructable physical-world replay research. Reconcile PAT-003 adaptive scanner and pre-existing governance/reconstruction owners first; under authentic central admission, benchmark rights-cleared recordings with time-of-knowledge preservation and explicit observation/interpretation separation. Do not create new governance/runtime authority or imply clinical monitoring performance.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "cosv_task_vector": null,
+  "source_refs": [
+    "https://github.com/StegVerse-Labs/.github/issues/2626",
+    "https://github.com/StegVerse-Labs/Patents/issues/5",
+    "https://github.com/StegVerse-Labs/Patents/pull/6",
+    "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Patents/OPTICAL_PHYSICAL_STATE_RESEARCH_INTAKE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "optical-physical-state-admission-and-patent-scope-reconciliation",
+      "recorded-video-research-protocol-coordination",
+      "physical-replay-evidence-contract-review"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "AUTHENTIC_EXACT_GENERATION_COMPONENT_010_CHECKIN",
+      "kind": "TASK",
+      "state": "PENDING",
+      "ref": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
+    },
+    {
+      "dependency_id": "PAT_003_EXISTING_FAMILY_OWNER",
+      "kind": "EXTERNAL_SOURCE",
+      "state": "COLLISION_RECONCILIATION_REQUIRED",
+      "ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "EXISTING_RECONSTRUCTION_GOVERNANCE_OWNERS",
+      "kind": "TASK",
+      "state": "COORDINATE_SEPARATELY",
+      "ref": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+    }
+  ],
+  "blockers": [
+    "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+    "OWNER_COLLISION_CONVERGENCE_NOT_AUTHENTICATED",
+    "COSV_DERIVATION_AFTER_ADMISSION",
+    "RIGHTS_CLEARED_DATASET_AND_PHYSICAL_REFERENCE_VALIDATION_PENDING"
+  ],
+  "adjacent_task_refs": [
+    "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_SOURCE_REGISTRATION_MERGED_AND_REREAD_AT_EXACT_GENERATION",
+    "EXACT_GENERATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_HASH_LINKED_EVENT",
+    "PAT_003_AND_EXISTING_GOVERNANCE_OWNER_COLLISION_DISPOSITION",
+    "COSV_DERIVED_AFTER_AUTHENTIC_ADMISSION",
+    "RIGHTS_CLEARED_SOURCE_RECORDING_AND_ORIGINAL_FILE_HASH",
+    "VERSIONED_PROCESSOR_PREDECESSOR_LINKAGE_AND_EXACT_HISTORICAL_REPLAY",
+    "NEGATIVE_MISSING_FRAME_AND_ALTERED_TIMESTAMP_REJECTION",
+    "PHYSICAL_RUNTIME_OR_CLINICAL_CLAIMS_ONLY_AFTER_SEPARATE_AUTHENTIC_VALIDATION"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_runtime_proof": false
+  },
+  "allowed_next_transitions": [
+    "SOURCE_REGISTRATION_REVIEW_AND_MERGE",
+    "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+    "RECONCILE_RETURNED_OWNER",
+    "DERIVE_COSV",
+    "APPROVE_COMPONENT_OWNED_EXPERIMENTS",
+    "EXACT_HEAD_EXPERIMENT_CI",
+    "SEPARATE_AUTHENTIC_GOVERNED_RUNTIME_PROOF"
+  ],
+  "handoff_projection_refs": [
+    "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "github_source_or_ci_proves_runtime": false,
+    "workercoordinator_claim_fence_only": true,
+    "credential_authority": "TV/TVC",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_custody_required": true,
+    "no_second_device": true,
+    "patent_family_numbering_authorized": false,
+    "clinical_monitoring_assertion_authorized": false
+  },
+  "registration": {
+    "source_pr_only": true,
+    "post_registration_exact_generation_gate_required": true,
+    "external_repository_mutation_approved": false
+  }
+}
