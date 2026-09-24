@@ -1497,3 +1497,8 @@ This merge is source-path evidence only. No authentic fresh claim/fence, governe
 ### Private-State Economy economics/legal review (2026-09-24)
 
 The [canonical white-paper handoff](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md) now references the Publisher PR #72 internal economic and US/Texas regulatory issue review. The existing white-paper source hash, StegVerse-only scope and six-stage/16-benchmark roadmap remain unchanged. Independent professional approvals and authentic governed publication are still pending.
+
+
+### Organization-local batch replay candidate
+
+The existing org-ledger root now has a bounded batch source candidate (`resident-runtime/organization_batch_custody.py`) under `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`. It commits exact ordered organization receipts and local replay boundaries, detects missing/orphaned/tampered receipts and maintains pending Master Records custody status; it does not claim accepted Master Records batches, full required-evidence reconstruction, concurrent append serialization or authentic resident execution. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
