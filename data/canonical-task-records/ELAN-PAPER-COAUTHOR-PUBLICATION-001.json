@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "COAUTHORED_DRAFT_RECONCILED_VENUES_EVALUATED_AUTHOR_REVIEW_PENDING",
+  "checkout_state": "EDITORIAL_PR_2593_MERGED_CORRECTED_SOURCE_VERIFIED_PUBLICATION_REVIEW_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -19,7 +19,11 @@
     "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md",
     "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md",
     "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
-    "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16"
+    "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16",
+    "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md",
+    "docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md",
+    "docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md",
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun"
   ],
   "dependencies": [
     {
@@ -31,8 +35,8 @@
     {
       "dependency_id": "DEP-WIBS-COAUTHORED-REVISION",
       "kind": "MANUSCRIPT",
-      "state": "AVAILABLE_RECONCILED_AUTHOR_REVIEW_PENDING",
-      "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md"
+      "state": "UPDATED_ON_DRAFT_BRANCH_AUTHOR_REVIEW_PENDING",
+      "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md"
     },
     {
       "dependency_id": "DEP-WIBS-PUBLICATION-NOVELTY-REVIEW",
@@ -43,8 +47,20 @@
     {
       "dependency_id": "DEP-ELAN-PUBLICATION-VENUE",
       "kind": "EDITORIAL_DECISION",
-      "state": "CANDIDATES_EVALUATED_SELECTION_OPEN",
+      "state": "FACCT_2027_TIMELINE_AGREED_SUBMISSION_NOT_AUTHORIZED",
       "ref": "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md"
+    },
+    {
+      "dependency_id": "DEP-ELAN-TEST2-CORRECTED-SOURCE",
+      "kind": "PRIMARY_EVIDENCE",
+      "state": "ORIGINAL_AND_CORRECTED_PDFS_DIRECTLY_VERIFIED",
+      "ref": "Confidential original 2026-09-16 sha256:403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9; corrected 2026-09-23 sha256:7231ab68bf00ecc92b163efd90773ccabbec82b21aa9cf6e6426b8de68d162ac (not published)"
+    },
+    {
+      "dependency_id": "DEP-ELAN-REPRODUCTION-INQUIRY",
+      "kind": "AUTHOR_CONFIRMATION",
+      "state": "RESOLVED_NO_REPRODUCTION_ATTEMPT",
+      "ref": "Coauthor-confirmed 2026-09-23: earlier annotation corrected during transcript review, not reproduction"
     }
   ],
   "blockers": [],
@@ -61,18 +77,46 @@
     "EXPERIMENT_SCOPE_LIMITATIONS_PRESERVED",
     "PUBLICATION_VENUES_EVALUATED_WITHOUT_PREMATURE_SELECTION",
     "PUBLICATION_VENUE_DECISION_RECORDED_WHEN_SELECTED",
-    "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE"
+    "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE",
+    "HUMAN_ANNOTATION_NEVER_ATTRIBUTED_AS_ELAN_OUTPUT",
+    "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL",
+    "COAUTHOR_LABELING_CORRECTION_CONFIRMED",
+    "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION",
+    "NO_INVOCATION_NEVER_MODEL_OUTPUT",
+    "TIMEOUT_DISTINCT_FROM_EMPTY_RESPONSE",
+    "NO_UNOBSERVED_INTERNAL_STATE_ATTRIBUTION",
+    "EDITORIAL_MERGE_NOT_MISREPRESENTED_AS_PUBLICATION_AUTHORIZATION",
+    "CONFIDENTIAL_SOURCE_PDFS_NOT_PUBLISHED"
   ],
   "collaboration_state": {
     "coauthorship_accepted": true,
     "coauthored_working_draft_exists": true,
     "future_draft_review_offered": true,
     "publication_venues_evaluated": true,
-    "specific_venue_selected": false,
+    "specific_venue_selected": true,
     "submission_authorized": false,
     "private_correspondence_publicly_replicated": false,
     "final_author_order_confirmed": false,
-    "final_contribution_statement_confirmed": false
+    "final_contribution_statement_confirmed": false,
+    "corrected_test2_annotation_attribution_acknowledged": true,
+    "corrected_test2_pdf_verified": true,
+    "elan_original_signal_reproduction_attempt_confirmed": false,
+    "proposed_hold_protocol_approved": false,
+    "elan_original_signal_reproduction_attempt_excluded_by_coauthor_confirmation": true,
+    "facct_2027_timeline_agreed": true,
+    "hold_joint_design_agreed": true,
+    "hold_protocol_operational_design_drafted": true,
+    "facct_abstract_drafted": true,
+    "facct_abstract_author_approved": false,
+    "original_test2_pdf_inspected": true,
+    "latest_final_head_ci_passed": true,
+    "coauthor_substantive_review_received": true,
+    "corrected_pdf_source_discovery_checked": true,
+    "pr_merged": true,
+    "coauthor_substantive_review_scope": "Original Experiment 2 source attribution correction and methodological objections in supplied LinkedIn messages; NOT manuscript Revision 3 or abstract approval",
+    "editorial_pr_merge_author_approval_required": false,
+    "publication_author_approval_required": true,
+    "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13"
   },
   "completion": {
     "claimed": false,
@@ -80,10 +124,12 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
+    "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
+    "OBTAIN_COAUTHOR_FACCT_ABSTRACT_REVIEW",
+    "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
     "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
     "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
-    "RECORD_AGREED_VENUE_SELECTION",
     "PREPARE_VENUE_SPECIFIC_SUBMISSION_MATERIALS_WHEN_AUTHORIZED"
   ],
   "handoff_projection_refs": [

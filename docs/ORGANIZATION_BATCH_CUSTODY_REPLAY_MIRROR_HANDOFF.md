@@ -2,7 +2,7 @@
 
 Goal Task ID: ORGANIZATION-BATCH-CUSTODY-REPLAY-001
 COSV ID: 10000000100000
-Status: PROPOSED / HANDOFF_READY pending canonical registration.
+Status: ACTIVE / HANDOFF_READY; canonical registration merged via PR #2582.
 
 ## Purpose
 Clarify the existing organizational receipt hierarchy: individual state transitions remain replayable at organization level; independently verified bounded organization batches are delivered to Master Records for cross-organization custody and complex reconstruction. This is a refinement of previous documentation, not a new authority plane or production execution claim.
@@ -35,3 +35,13 @@ The bounded existing-owner correction in `resident-runtime/aggregate_repo_transi
 ## 2026-09-23 exact-source retry repair merged and validated
 
 [PR #2616](https://github.com/StegVerse-Labs/.github/pull/2616) merged as `24068665860c4b5a2695d38900f91a2977b6435e` at exact-head `ac2b262829e462636b84dac046af8f4601001145`. The targeted non-authorizing [organization-ledger regression run 35955965885](https://github.com/StegVerse-Labs/.github/actions/runs/35955965885), [validate-deepseek-resident 35955965632](https://github.com/StegVerse-Labs/.github/actions/runs/35955965632), and [KV resident binding 35955965719](https://github.com/StegVerse-Labs/.github/actions/runs/35955965719) succeeded. Positive/negative targeted cases now cover exact source retry after another organization transition, rejection of changed context, and detection of tampered retained receipts. The updated recorder and test are verified on main. Evidence classification: `CI_VALIDATED_SOURCE_REPAIR`, not authentic resident organization replay, concurrent append proof, historical duplicate repair or Master Records custody.
+
+## 2026-09-24 organization-local bounded batch source candidate
+
+This source-only implementation adds `resident-runtime/organization_batch_custody.py` within the **existing** organization ledger root; it does not add another ledger, transport, runtime, custody store or authority. It closes immutable batches from the actual organization ledger `HEAD.json`, verifies exact individual receipt hashes and previous-receipt links, rejects missing/tampered/orphaned receipts, commits a globally contiguous organization ordinal range and prior-batch commitment, and retains pending Master Records acknowledgement. Exact closure retry is idempotent. Worker expiry, task closure, consequential governance, recovery, inter-organization handoff and measured routine thresholds are classification triggers, not new authority grants.
+
+The local verifier reports separately: organization-chain PASS; optional exact source receipt digest PASS; required-evidence *bytes* NOT YET RECONSTRUCTED; Master Records acknowledgement NOT ESTABLISHED. Merely proposing or verifying a local batch cannot advance any state transition that already requires immediate Master Records closure. The batch remains pending until the existing authorized Master Records path accepts and independently reconstructs it. Concurrent organization-ledger append serialization, genuine worker expiry and live Master Records batch delivery are separate unproven boundaries. Positive and fail-closed tests are wired into the existing organization transition ledger CI; do not infer authentic resident runtime from source/CI.
+
+## 2026-09-24 bounded local batch source merge reconciliation
+
+[PR #2643](https://github.com/StegVerse-Labs/.github/pull/2643) merged from exact head `3552330b88a38aae1ac91d0d26a72c3ca08be169` as `f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1` after success in the organization transition ledger regression workflow `36039581142` (existing org and newly added batch tests), deepseek-resident `36039580975` and KV resident binding `36039580961`. The conflicted PR #2642 was closed as superseded. The implementation is now on main, not merely a candidate branch. Canonical Task Registry advances once from generation 216 to 217 only after merged source evidence. The independent Master Records batch ingress and worker-expiry/registry/org receipt runtime chain remain unimplemented or unobserved as separately recorded; no batch custody or live execution state is promoted.

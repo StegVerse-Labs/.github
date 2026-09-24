@@ -321,7 +321,11 @@ def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str
     for key,value in expected.items():
         if admitted.get(key)!=value:
             raise KVPublisherReturnError("RTC008 admission mismatch:"+key)
-    if admitted.get("master_records_receipt_sha256")!=admitted.get("master_records_reconstructed_receipt_sha256"):
+    digest=admitted.get("intr_admission_receipt_sha256")
+    if not isinstance(digest,str) or len(digest)!=64 or any(ch not in "0123456789abcdef" for ch in digest):
+        raise KVPublisherReturnError("RTC008 exact ingress admission digest missing")
+    mr_receipt=admitted.get("master_records_receipt_sha256")
+    if not isinstance(mr_receipt,str) or not mr_receipt or mr_receipt!=admitted.get("master_records_reconstructed_receipt_sha256"):
         raise KVPublisherReturnError("RTC008 Master Records digest mismatch")
     return admitted
 
@@ -341,7 +345,7 @@ def _prepare_rtc007_continuation(
     if llm is None:
         raise KVPublisherReturnError("local_LLM_adapter_source_materialization_required")
     if str(llm) not in sys.path: sys.path.insert(0,str(llm))
-    from llm_adapter.southbound_sdk_return import prepare_sdk_return_for_intr
+    from llm_adapter.southbound_sdk_return import prepare_sdk_return_for_intr, admit_intr_egress
     transition=prepare_sdk_return_for_intr(binding_bytes,transition_id="RTC-STEGVERSE-EGRESS-007")
     if transition.get("state")!="FINAL_STEGVERSE_SIDE_TRANSITION_PREPARED" or transition.get("final_stegverse_transition_surface_reached") is not True:
         raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 transition not prepared")
@@ -444,6 +448,14 @@ def _prepare_rtc007_continuation(
     rtc008_request["request_hash"]=sha(rtc008_request)
     prepared={**prepared,"materialization_request":rtc008_request}
     rtc008=_submit_rtc008_materialization(rtc008_request)
+    llm_admission=admit_intr_egress(
+        transition,
+        disposition="ALLOW",
+        egress_receipt_hash=rtc008["intr_admission_receipt_sha256"],
+        admitted_sdk_binding_sha256=handoff["sdk_binding_sha256"],
+    )
+    if llm_admission.get("state")!="EGRESS_ADMITTED" or llm_admission.get("sdk_binding_sha256")!=handoff["sdk_binding_sha256"] or llm_admission.get("egress_receipt_hash")!=rtc008["intr_admission_receipt_sha256"]:
+        raise KVPublisherReturnError("RTC008 LLM Adapter canonical admission projection invalid")
     return {
       "rtc007_transition":transition,
       "rtc007_master_records":{
@@ -455,6 +467,7 @@ def _prepare_rtc007_continuation(
       },
       "rtc008_materialization_prepared":prepared,
       "rtc008_admission":rtc008,
+      "rtc008_llm_adapter_admission":llm_admission,
       "rtc008_admission_observed":True,
       "rtc009_far_side_transition_observed":False,
       "caller_consequence_observed":False,
@@ -519,6 +532,8 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
       "rtc007_master_records_reconstructed_receipt_sha256":continuation["rtc007_master_records"]["reconstructed_receipt_sha256"],
       "rtc008_materialization_request":continuation["rtc008_materialization_prepared"]["materialization_request"],
       "rtc008_ingress_receipt":continuation["rtc008_admission"],
+      "rtc008_llm_adapter_admission":continuation["rtc008_llm_adapter_admission"],
+      "rtc008_llm_adapter_admission_sha256":sha(continuation["rtc008_llm_adapter_admission"]),
       "rtc008_master_records_state":continuation["rtc008_admission"]["master_records_state"],
       "rtc008_master_records_reconstruction_status":continuation["rtc008_admission"]["master_records_reconstruction_status"],
       "rtc008_master_records_required_evidence_validation_status":continuation["rtc008_admission"]["master_records_required_evidence_validation_status"],
@@ -587,10 +602,78 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
         return _consume_kv_owner(runtime,materialization_id,request,raw,terminal)
     raise KVPublisherReturnError("unsupported Publisher return owner")
 
+def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception)->dict[str,Any]:
+    """Persist a non-authorizing diagnostic for the exact failed invocation.
+
+    This is observation of a failed consumer attempt, not proof that RTC006,
+    RTC007, RTC008, RTC009, or any other governed transition failed or closed.
+    Existing SDK/KV receipt namespaces remain the only storage destinations.
+    """
+    if not materialization_id or materialization_id in {".",".."} or "/" in materialization_id or chr(92) in materialization_id:
+        raise KVPublisherReturnError("materialization_id_invalid_for_diagnostic")
+    request_path=runtime/REQUEST_DIR/f"{materialization_id}.json"
+    request=None
+    if request_path.is_file():
+        try:
+            loaded=load(request_path)
+            if isinstance(loaded,dict):
+                request=loaded
+        except (ValueError,OSError):
+            pass
+    owner=request.get("downstream_owner_ref") if request is not None else None
+    destination=SDK_RECEIPT_DIR if owner==SDK_DOWNSTREAM_OWNER else RECEIPT_DIR
+    out=runtime/destination
+    out.mkdir(parents=True,exist_ok=True)
+    reason=str(exc) if isinstance(exc,KVPublisherReturnError) else type(exc).__name__
+    record={
+        "schema":"stegverse.publisher-return-consumption-failure-observation/v1",
+        "state":"BLOCKED",
+        "materialization_id":materialization_id,
+        "request_present":request is not None,
+        "request_hash":request.get("request_hash") if request is not None else None,
+        "downstream_owner_ref":owner,
+        "failure_class":type(exc).__name__,
+        "reason_code":reason[:256],
+        "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "rtc008_admission_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "rtc009_far_side_transition_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "caller_consequence_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        "master_records_closure_claimed":False,
+        "credential_material_present":False,
+        "execution_authority":"NONE",
+        "authority_effect":"NONE_DIAGNOSTIC_ONLY",
+    }
+    record["diagnostic_sha256"]=sha(record)
+    raw=json.dumps(record,sort_keys=True,indent=2).encode("utf-8")+bytes([10])
+    receipt_path=out/f"{materialization_id}.{record['diagnostic_sha256'].split(':',1)[1]}.blocked.json"
+    if receipt_path.exists():
+        if receipt_path.read_bytes()!=raw:
+            raise KVPublisherReturnError("diagnostic_write_once_collision")
+    else:
+        with receipt_path.open("xb") as stream:
+            stream.write(raw)
+    (out/"latest.blocked.json").write_bytes(raw)
+    return {**record,"diagnostic_receipt_ref":str(receipt_path.relative_to(runtime))}
+
+
 def main()->int:
     parser=argparse.ArgumentParser(); parser.add_argument("--runtime-root",type=Path,required=True); parser.add_argument("--materialization-id",required=True); args=parser.parse_args()
-    try: result=consume(args.runtime_root.expanduser().resolve(),args.materialization_id)
+    runtime=args.runtime_root.expanduser().resolve()
+    try:
+        result=consume(runtime,args.materialization_id)
     except Exception as exc:
-        result={"schema":"stegverse.publisher-return-materialization-consumption/v1","state":"BLOCKED","reason":str(exc),"return_transport_observed":False,"sdk_return_binding_observed":False,"canonical_kv_mutation_performed":False,"authority_effect":"NONE"}
+        try:
+            result=retain_blocked_consumption(runtime,args.materialization_id,exc)
+        except Exception as diagnostic_exc:
+            result={
+              "schema":"stegverse.publisher-return-consumption-failure-observation/v1",
+              "state":"BLOCKED",
+              "materialization_id":args.materialization_id,
+              "failure_class":type(exc).__name__,
+              "diagnostic_retention":"FAILED",
+              "diagnostic_retention_failure_class":type(diagnostic_exc).__name__,
+              "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+              "authority_effect":"NONE_DIAGNOSTIC_ONLY",
+            }
     print(json.dumps(result,sort_keys=True)); return 0
 if __name__=="__main__": raise SystemExit(main())

@@ -147,3 +147,109 @@ def test_native_runtime_prioritizes_exact_test3_selector_before_global_dispatch(
     assert priority < global_dispatch
     assert 'test3_request = root / TEST3_REQUEST_REL' in body
     assert '"priority_test3_dispatch": priority_result' in body
+
+
+def test_existing_org_ledger_root_survives_targeted_custody_chain():
+    module = load_consumer()
+    values = {"PATH": "/usr/bin", "STEGVERSE_ORG_LEDGER_ROOT": "/srv/stegverse/org-ledgers/StegVerse-Labs"}
+    assert module.clean_env(values)["STEGVERSE_ORG_LEDGER_ROOT"] == values["STEGVERSE_ORG_LEDGER_ROOT"]
+    spec = importlib.util.spec_from_file_location("test3_dispatcher_org", DISPATCHER)
+    dispatcher = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dispatcher)
+    assert dispatcher.clean_exec_env(values)["STEGVERSE_ORG_LEDGER_ROOT"] == values["STEGVERSE_ORG_LEDGER_ROOT"]
+    refresh = (ROOT / "scripts/refresh_and_execute_resident_task.py").read_text(encoding="utf-8")
+    assert '"STEGVERSE_ORG_LEDGER_ROOT"' in refresh.split("NONSECRET_FORWARD =", 1)[1].split("Runner =", 1)[0]
+    adapter = json.loads((ROOT / "control/process-worker-adapters.d/stegagents-governed-runtime-001.json").read_text())
+    assert "STEGVERSE_ORG_LEDGER_ROOT" in adapter["adapters"][0]["env_allowlist"]
+
+
+def _setup_test3_target(tmp_path, module, *, old_close=None):
+    source = tmp_path / "source"
+    runtime = tmp_path / "runtime"
+    source.mkdir()
+    (runtime / "control/resident-execution-request.d").mkdir(parents=True)
+    (runtime / "scripts").mkdir(parents=True)
+    (runtime / module.REQUEST_REL).write_text(REQUEST.read_text(), encoding="utf-8")
+    (runtime / module.TARGET_ENTRYPOINT).write_text("# fixture\n", encoding="utf-8")
+    if old_close is not None:
+        close = runtime / module.CLOSE_LATEST_REL
+        close.parent.mkdir(parents=True, exist_ok=True)
+        close.write_text(json.dumps(old_close), encoding="utf-8")
+    return source, runtime
+
+
+def _test3_result(module, *, verified=True):
+    return {
+        "mode": module.TARGET_MODE, "task_id": module.TARGET_TASK,
+        "runtime_execution_attempted": True,
+        "network_fetch_performed": False,
+        "github_token_runtime_authority": "NONE",
+        "credential_authority": "TV/TVC",
+        "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
+        "cosv_task_pointer": {
+            "task_id": module.TARGET_TASK, "vector": module.TARGET_VECTOR,
+            "binding_verified": verified, "authority_effect": "NONE",
+        },
+    }
+
+
+def test_first_failed_targeted_cycle_is_not_masked_by_second_retry(tmp_path):
+    module = load_consumer()
+    source, runtime = _setup_test3_target(tmp_path, module)
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(
+            command, 7, stdout=json.dumps(_test3_result(module)) + "\n", stderr="fixture-only",
+        )
+
+    receipt = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert len(calls) == 1
+    assert receipt["state"] == "FAIL_CLOSED"
+    assert receipt["first_failed_cycle"] == {
+        "cycle_index": 0, "boundary": "PROCESS_EXIT_NONZERO", "returncode": 7,
+    }
+    assert receipt["targeted_cycles"][0]["cycle_valid"] is False
+    assert receipt["fresh_close_snapshot_seen"] is False
+
+
+def test_missing_exact_pointer_fails_before_second_cycle(tmp_path):
+    module = load_consumer()
+    source, runtime = _setup_test3_target(tmp_path, module)
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(
+            command, 0, stdout=json.dumps(_test3_result(module, verified=False)) + "\n", stderr="",
+        )
+
+    receipt = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert len(calls) == 1
+    assert receipt["state"] == "FAIL_CLOSED"
+    assert receipt["first_failed_cycle"]["boundary"] == "TARGETED_RESULT_OR_COSV_POINTER_INVALID"
+
+
+def test_stale_close_pointer_does_not_terminate_fresh_attempt(tmp_path):
+    module = load_consumer()
+    previous = {
+        "state": "AUTHENTIC_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY",
+        "task_id": module.TARGET_TASK,
+        "worker_claim": {"claim_id": "STALE-OLD-CLAIM", "fencing_token": 1},
+    }
+    source, runtime = _setup_test3_target(tmp_path, module, old_close=previous)
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(
+            command, 0, stdout=json.dumps(_test3_result(module)) + "\n", stderr="",
+        )
+
+    receipt = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert len(calls) == 2
+    assert receipt["state"] == "ATTEMPT_RECORDED"
+    assert receipt["first_failed_cycle"] is None
+    assert receipt["fresh_close_snapshot_seen"] is False
+    assert receipt["authority_effect"] == "NONE_REQUEST_CONSUMPTION_ONLY"

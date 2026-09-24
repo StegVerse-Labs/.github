@@ -2,7 +2,7 @@
 
 Goal Task ID: `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` (requested; not canonically admitted)
 Central admission: https://github.com/StegVerse-Labs/.github/issues/2638
-Last inspected main monolithic Task Registry: generation 214 (task absent). This draft PR now stages a PROPOSED / UNCLAIMED source row and matching shard at **candidate generation 215**; neither is canonical until the PR is merged against then-current main and re-read.
+Reconciled against main monolithic Task Registry generation 220. This draft PR stages a PROPOSED / UNCLAIMED source row plus matching shard at **candidate generation 221**, preserving every predecessor main row. Neither is canonical until exact-head PR checks, authorized merge and current-main re-read.
 Recovery COSV: `40000100100000` (not yet independently canonically derived).
 Coordination status: SOURCE_PREREGISTRATION_PROPOSED (draft branch only); no canonical ACTIVE or CHECKED_OUT claim. Candidate record: `data/canonical-task-records/MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001.json`.
 Predecessor: `KV-ICLOUD-AUTOMATED-UPGRADE-001` / `docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`.
@@ -25,7 +25,7 @@ This handoff documents exact discovered source and an admission request; its cre
 Place a MyKV owner-facing native navigation surface inside the existing StegOS Mobile host; retain existing native resident Node/continuity and do not silently equate its Node with separate WKWebView-origin state. Bind identity by independently verifiable existing contract before KV storage operations; do not forge a HEALTHY web diagnostic. Load only HTTPS admitted MyKV origin and preserve current Site JS/governance rather than cloning a second runtime. Native UI may report separate native and web health, not a falsely unified success. Keep PWA an optional fallback.
 
 ## Evidence/status
-- Canonical task admission: NOT OBSERVED. Candidate PROPOSED/UNCLAIMED source row staged at generation 215 in draft `.github` PR; source registration itself grants no execution authority.
+- Canonical task admission: NOT OBSERVED. Candidate PROPOSED/UNCLAIMED source row staged at generation 221 in draft `.github` PR; source registration itself grants no execution authority.
 - Native MyKV code integration: PENDING.
 - Exact-head source tests and iPhoneOS package for new integration: NOT OBSERVED.
 - TV/TVC signed IPA, provisioning entitlement verification, TestFlight acceptance: NOT OBSERVED.
