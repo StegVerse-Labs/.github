@@ -80,3 +80,8 @@ SDK PR [#311](https://github.com/StegVerse-org/StegVerse-SDK/pull/311) merged at
 
 ### Canonical generation refresh
 During documentation closeout current canonical Task Registry generation advanced independently to 208. This goal remains ACTIVE/HANDOFF_READY with unchanged COSV 71000000111111; re-run the exact collision check-in at generation 208 before any new mutation or runtime transition. Prior generation 207 check-in test is historical source evidence only.
+
+
+## Existing component-011 terminal binding remediation — 2026-09-23
+
+Current canonical Task Registry generation 209, SDK goal ACTIVE/HANDOFF_READY with unchanged COSV 71000000111111. The checked-out component-011 owner has a source-level repair proposed in .github PR #2608: its existing resident consumer now requires a fresh exact boundary receipt (task, claim/fence shape, TVC floor, bounded deny predicates, content digest) before declaring request-consumption terminal; stale and fabricated responses do not consume retryability. Exact-head Cross-Task Coordination validation 35944421262 passed. This does **not** independently verify a WorkerCoordinator claim or warrant, actual sandbox isolation, organization ledger or Master Records; all remain unproven until authentic same-invocation organization receipts and canonical custody reconstruction. No new runtime, scheduler, authority route, ledger or device prerequisite. The path remains the existing owner-controlled dispatcher -> consumer -> targeted WorkerCoordinator -> TVC SES source probe, then existing canonical custody for any applicable governed transition.
