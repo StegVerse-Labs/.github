@@ -67,7 +67,7 @@ def _atomic_json(path, value):
     finally:
         temp.unlink(missing_ok=True)
 
-def audit_chain(root=None):
+def _audit_chain_unlocked(root=None):
     """Read-only, whole-chain org receipt audit. No transition or repair inferred."""
     root=Path(root) if root is not None else ledger_root()
     d=root/"receipts"; h=root/"HEAD.json"
@@ -158,6 +158,19 @@ def audit_chain(root=None):
         result["state"]="INTEGRITY_FAILURE"
         result["integrity_errors"].append("AUDIT_READ_ERROR:"+type(exc).__name__)
     return result
+
+def audit_chain(root=None, *, _caller_holds_lock=False):
+    """Read-only snapshot; share the existing writer lock when called externally."""
+    root=Path(root) if root is not None else ledger_root()
+    if _caller_holds_lock:
+        return _audit_chain_unlocked(root)
+    lock_path=root/".ledger.lock"
+    if not lock_path.is_file():
+        return _audit_chain_unlocked(root)
+    with lock_path.open("r") as lock:
+        fcntl.flock(lock.fileno(),fcntl.LOCK_SH)
+        return _audit_chain_unlocked(root)
+
 
 def _recover_interrupted_append(root, receipt, source, prev, integrity, *,
                                 org_transition_class, predecessor_org_state_sha256,
@@ -250,7 +263,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 raise ValueError("organization_immediate_predecessor_reconstruction_failed")
         elif any(d.glob("*.json")):
             raise ValueError("organization_genesis_conflicts_existing_receipts")
-        integrity=audit_chain(root)
+        integrity=audit_chain(root,_caller_holds_lock=True)
         if integrity["state"]=="INTEGRITY_FAILURE":
             recovered=_recover_interrupted_append(
                 root,receipt,source,prev,integrity,
