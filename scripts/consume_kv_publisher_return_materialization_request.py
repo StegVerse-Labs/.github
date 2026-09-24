@@ -321,7 +321,11 @@ def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str
     for key,value in expected.items():
         if admitted.get(key)!=value:
             raise KVPublisherReturnError("RTC008 admission mismatch:"+key)
-    if admitted.get("master_records_receipt_sha256")!=admitted.get("master_records_reconstructed_receipt_sha256"):
+    digest=admitted.get("intr_admission_receipt_sha256")
+    if not isinstance(digest,str) or len(digest)!=64 or any(ch not in "0123456789abcdef" for ch in digest):
+        raise KVPublisherReturnError("RTC008 exact ingress admission digest missing")
+    mr_receipt=admitted.get("master_records_receipt_sha256")
+    if not isinstance(mr_receipt,str) or not mr_receipt or mr_receipt!=admitted.get("master_records_reconstructed_receipt_sha256"):
         raise KVPublisherReturnError("RTC008 Master Records digest mismatch")
     return admitted
 
@@ -341,7 +345,7 @@ def _prepare_rtc007_continuation(
     if llm is None:
         raise KVPublisherReturnError("local_LLM_adapter_source_materialization_required")
     if str(llm) not in sys.path: sys.path.insert(0,str(llm))
-    from llm_adapter.southbound_sdk_return import prepare_sdk_return_for_intr
+    from llm_adapter.southbound_sdk_return import prepare_sdk_return_for_intr, admit_intr_egress
     transition=prepare_sdk_return_for_intr(binding_bytes,transition_id="RTC-STEGVERSE-EGRESS-007")
     if transition.get("state")!="FINAL_STEGVERSE_SIDE_TRANSITION_PREPARED" or transition.get("final_stegverse_transition_surface_reached") is not True:
         raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 transition not prepared")
@@ -444,6 +448,14 @@ def _prepare_rtc007_continuation(
     rtc008_request["request_hash"]=sha(rtc008_request)
     prepared={**prepared,"materialization_request":rtc008_request}
     rtc008=_submit_rtc008_materialization(rtc008_request)
+    llm_admission=admit_intr_egress(
+        transition,
+        disposition="ALLOW",
+        egress_receipt_hash=rtc008["intr_admission_receipt_sha256"],
+        admitted_sdk_binding_sha256=handoff["sdk_binding_sha256"],
+    )
+    if llm_admission.get("state")!="EGRESS_ADMITTED" or llm_admission.get("sdk_binding_sha256")!=handoff["sdk_binding_sha256"] or llm_admission.get("egress_receipt_hash")!=rtc008["intr_admission_receipt_sha256"]:
+        raise KVPublisherReturnError("RTC008 LLM Adapter canonical admission projection invalid")
     return {
       "rtc007_transition":transition,
       "rtc007_master_records":{
@@ -455,6 +467,7 @@ def _prepare_rtc007_continuation(
       },
       "rtc008_materialization_prepared":prepared,
       "rtc008_admission":rtc008,
+      "rtc008_llm_adapter_admission":llm_admission,
       "rtc008_admission_observed":True,
       "rtc009_far_side_transition_observed":False,
       "caller_consequence_observed":False,
@@ -519,6 +532,8 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
       "rtc007_master_records_reconstructed_receipt_sha256":continuation["rtc007_master_records"]["reconstructed_receipt_sha256"],
       "rtc008_materialization_request":continuation["rtc008_materialization_prepared"]["materialization_request"],
       "rtc008_ingress_receipt":continuation["rtc008_admission"],
+      "rtc008_llm_adapter_admission":continuation["rtc008_llm_adapter_admission"],
+      "rtc008_llm_adapter_admission_sha256":sha(continuation["rtc008_llm_adapter_admission"]),
       "rtc008_master_records_state":continuation["rtc008_admission"]["master_records_state"],
       "rtc008_master_records_reconstruction_status":continuation["rtc008_admission"]["master_records_reconstruction_status"],
       "rtc008_master_records_required_evidence_validation_status":continuation["rtc008_admission"]["master_records_required_evidence_validation_status"],
