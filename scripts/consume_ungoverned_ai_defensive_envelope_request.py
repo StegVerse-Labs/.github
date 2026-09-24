@@ -119,6 +119,15 @@ def verified_boundary_receipt(
     except (ValueError, OSError):
         return None
     digest = _boundary_digest(value)
+    claim = value.get("claim")
+    if not isinstance(claim, dict):
+        return None
+    if (
+        worker_result.get("boundary_receipt_sha256") != digest
+        or worker_result.get("boundary_claim_id") != claim.get("claim_id")
+        or worker_result.get("boundary_fencing_token") != claim.get("fencing_token")
+    ):
+        return None
     if previous_digest == digest:
         return None
     claim = value.get("claim")
