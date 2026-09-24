@@ -50,7 +50,7 @@ def verify_source(receipt):
 def _atomic_json(path, value):
     """Write once by content address, or atomically advance existing HEAD."""
     path.parent.mkdir(parents=True,exist_ok=True)
-    raw=json.dumps(value,indent=2,sort_keys=True)+"\\n"
+    raw=json.dumps(value,indent=2,sort_keys=True)+"\n"
     if path.exists() and path.name!="HEAD.json":
         if path.read_text()!=raw: raise ValueError("organization_write_once_collision")
         return
@@ -219,8 +219,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
         }
         digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
         if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
-        if not fp.exists(): fp.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n")
-        h.write_text(json.dumps({"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)},indent=2,sort_keys=True)+"\n")
+        _atomic_json(retained,receipt)
+        _atomic_json(fp,record)
+        _atomic_json(h,{"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)})
         return record
 
 def main():
