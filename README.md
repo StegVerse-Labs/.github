@@ -1527,3 +1527,7 @@ PR #2655 merged the exact hash-bound projection of the existing Master Records-c
 ### Publisher-return failure observation custody
 
 Merged PR #2657 repairs the existing SDK/KV Publisher-return consumer's previously console-only `BLOCKED` failure path. An exact, idempotent, non-authorizing diagnostic now persists in its existing receipt directory; authentic RTC008/RTC009/caller transition proof must still come from the actual resident/organization and Master Records chain.
+
+## Governance metered-policy recovery — central Task Registry source proposal (generation 220)
+
+[Issue #2632](https://github.com/StegVerse-Labs/.github/issues/2632) and [PR #2636](https://github.com/StegVerse-Labs/.github/pull/2636) preregister proposed `GOVERNANCE-METERED-POLICY-RECOVERY-001` as PROPOSED/UNCLAIMED with unassigned COSV against main generation 219. Canonical handoff: [`docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md`](docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md). [Governance draft PR #47](https://github.com/StegVerse-Labs/Governance/pull/47) carries a distinct provider-neutral source policy. The ACTIVE `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` owner continues removing hosted dependencies independently; this proposal does not restore provider-specific workflows. The source registration has no authentic AI_SESSION_GATE event, execution claim or runtime authority; following a merged reread, use the existing canonical gate and exact generation before any cross-owner mutation.
