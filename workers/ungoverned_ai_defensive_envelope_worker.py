@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -63,7 +64,7 @@ def _tvc_root() -> tuple[Path, str]:
         raise RuntimeError("TVC_SES_BOUNDARY_SOURCE_FLOOR_NOT_VERIFIED")
     return root, head.stdout.strip()
 
-def _response(state: str, transition: str, evidence: list[str], error: str | None = None) -> dict[str, Any]:
+def _response(state: str, transition: str, evidence: list[str], error: str | None = None, *, boundary_receipt: Mapping[str, Any] | None = None) -> dict[str, Any]:
     out: dict[str, Any] = {
         "schema": "stegverse.worker-response/v0.1",
         "state": state,
@@ -81,6 +82,11 @@ def _response(state: str, transition: str, evidence: list[str], error: str | Non
             "services_used": [],
         },
     }
+    if boundary_receipt is not None:
+        canonical = json.dumps(dict(boundary_receipt), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        out["boundary_receipt_sha256"] = "sha256:" + hashlib.sha256(canonical).hexdigest()
+        out["boundary_claim_id"] = (boundary_receipt.get("claim") or {}).get("claim_id")
+        out["boundary_fencing_token"] = (boundary_receipt.get("claim") or {}).get("fencing_token")
     if error:
         out["error"] = error
     return out
@@ -158,6 +164,7 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "COMPLETED",
         "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_REPRESENTATIVE_BOUNDARY_OBSERVED",
         [RECEIPT_REL.as_posix()],
+        boundary_receipt=receipt,
     )
 
 def main() -> int:
