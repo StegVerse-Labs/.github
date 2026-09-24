@@ -1517,3 +1517,8 @@ Richard Test-3 existing targeted-consumer source correction (September 24): pres
 
 
 Stage-1 micro-node experiment: Richard Test-3 owner PR [#2649](https://github.com/StegVerse-Labs/.github/pull/2649) merged configured organization-ledger root carriage and fail-first targeted request-consumption diagnostics after nine successful exact-head CI workflows. The canonical [Stage-1 handoff](docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md) preserves the distinction between source-level repair, actual authenticated global organization receipts, authoritative Master Records reconstruction and independently witnessed capability observations. No runtime or external participation is claimed by this source closeout.
+
+
+### RTC008 LLM admission projection merged
+
+PR #2655 merged the exact hash-bound projection of the existing Master Records-closed RTC008 ingress receipt into the LLM Adapter's canonical `EGRESS_ADMITTED` schema. Source/CI closure is separate from authentic resident RTC008/RTC009/caller runtime closure, which remains unobserved.

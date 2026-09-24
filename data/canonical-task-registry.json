@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 217,
+  "generation": 218,
   "status": "CANONICAL_MASTER_RECORDS_ATOMIC_ACTIVATION_PREDECESSOR_SOURCE_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -5484,7 +5484,16 @@
           36036227515,
           36036227461
         ],
-        "authentic_atomic_activation_runtime_observed": false
+        "authentic_atomic_activation_runtime_observed": false,
+        "rtc008_llm_admission_projection_source_merged": true,
+        "rtc008_llm_admission_projection_pr": 2655,
+        "rtc008_llm_admission_projection_merge": "de2cdcab15075b3e6f83ecdc698bcec0f5a61a06",
+        "rtc008_llm_admission_projection_exact_head": "536baee0fdaf301535d6864eb90c0ae02703b26b",
+        "rtc008_llm_admission_projection_validation_runs": [
+          36068497995,
+          36068498014
+        ],
+        "rtc008_llm_admission_projection_runtime_observed": false
       },
       "completion": {
         "claimed": false,
@@ -5949,6 +5958,28 @@
           "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
           "authentic_resident_runtime_observed": false,
           "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
+        },
+        "rtc008_llm_admission_projection": {
+          "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+          "superseded_closed_pr": 2537,
+          "merged_pr": 2655,
+          "exact_head": "536baee0fdaf301535d6864eb90c0ae02703b26b",
+          "merge_commit": "de2cdcab15075b3e6f83ecdc698bcec0f5a61a06",
+          "validation_runs": [
+            36068497995,
+            36068498014
+          ],
+          "exact_ingress_receipt_digest": "SHA256_CANONICAL_PERSISTED_INTR_ADMISSION_RECEIPT",
+          "custody_gate": [
+            "RECORDED",
+            "reconstruction_status=PASS",
+            "required_evidence_validation_status=PASS",
+            "receipt_sha256==reconstructed_receipt_sha256"
+          ],
+          "llm_admission_schema": "stegverse.llm-adapter.southbound-intr-egress-admission/v1",
+          "runtime_claimed": false,
+          "far_side_claimed": false,
+          "caller_consequence_claimed": false
         }
       },
       "required_evidence_validation": {

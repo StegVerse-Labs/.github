@@ -670,3 +670,12 @@ Atomic PREPARE now requires existing caller-carried `claim_fence_master_records_
 ## StegAgents atomic activation exact warrant predecessor — 2026-09-24
 
 StegAgents PR #39 merged as `938c1a8a586920b6709c331a25f376f045066e08` from exact head `69243630302b6131713daa5fedd014c9d5e1e00b`; exact-head Cross-Agent Authority Validation `36036227697`, CI `36036227515`, and Test Readiness `36036227461` passed. Sequence-3 `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` now reconstructs the exact sequence-2 `TV_TVC_WARRANT_POLICY_VERIFIED` closure through the existing shared canonical custody client immediately before receipt emission; requires RECORDED, reconstruction PASS, required evidence PASS, exact digest agreement and carried/reconstructed status agreement; uses the reconstructed immediate predecessor reference and carries `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Missing or contradictory evidence fails closed. Source validation does not establish authentic resident assignment, warrant issuance, activation, or lifecycle closure.
+
+
+## Exact RTC008 LLM admission projection source merged — September 24, 2026
+
+Closed unmerged PR #2537 was superseded by PR #2655, which preserved main's intervening exact-boundary predecessor reconstruction. PR #2655 exact head `536baee0fdaf301535d6864eb90c0ae02703b26b` passed RTC008 carriage run `36068497995` and Purpose-Bound Worker run `36068498014` and merged as `de2cdcab15075b3e6f83ecdc698bcec0f5a61a06`.
+
+The existing Universal InTr ingress now reports the exact SHA-256 of its persisted RTC008 ingress receipt **after** canonical Master Records closure. The SDK-return consumer requires the exact hash, RECORDED, reconstruction PASS, required-evidence PASS and exact receipt/reconstruction digest equality before calling the existing LLM Adapter's `admit_intr_egress()` to project the same already-authoritative admission. This creates no new ALLOW or second RTC008 custody transition.
+
+Repository source and CI are not resident transition evidence. No same-invocation authentic RTC008 admission, organization-wide predecessor receipt, RTC009 far-side result or caller consequence has been retrieved from resident custody. Do not promote the runtime predicates from this merge.
