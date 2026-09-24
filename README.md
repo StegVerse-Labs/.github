@@ -1502,3 +1502,8 @@ The [canonical white-paper handoff](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROA
 ### Organization-local batch replay candidate
 
 The existing org-ledger root now has a bounded batch source candidate (`resident-runtime/organization_batch_custody.py`) under `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`. It commits exact ordered organization receipts and local replay boundaries, detects missing/orphaned/tampered receipts and maintains pending Master Records custody status; it does not claim accepted Master Records batches, full required-evidence reconstruction, concurrent append serialization or authentic resident execution. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
+
+
+### Organization batch source merge evidence
+
+Local replay/batch source PR #2643 merged as `f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1` with three green exact-head workflows; Master Records batch ingress and authentic end-to-end execution remain outstanding. Canonical owner: `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`.
