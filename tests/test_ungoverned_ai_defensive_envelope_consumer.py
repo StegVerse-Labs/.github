@@ -121,9 +121,22 @@ class DefensiveEnvelopeResidentConsumerTests(unittest.TestCase):
             first = mod.consume(source, runtime, runner=runner, env=env)
             self.assertEqual(first["state"], "ATTEMPT_RECORDED")
             self.assertFalse(first["terminal"])
+            immutable_first = runtime / mod.CONSUMPTION_IMMUTABLE_REL / (
+                first["receipt_body_sha256"].split(":", 1)[1] + ".json"
+            )
+            self.assertTrue(immutable_first.is_file())
+            original = immutable_first.read_bytes()
             second = mod.consume(source, runtime, runner=runner, env=env)
             self.assertEqual(second["state"], "COMPLETED")
             self.assertTrue(second["terminal"])
+            immutable_second = runtime / mod.CONSUMPTION_IMMUTABLE_REL / (
+                second["receipt_body_sha256"].split(":", 1)[1] + ".json"
+            )
+            self.assertTrue(immutable_second.is_file())
+            self.assertNotEqual(immutable_first, immutable_second)
+            self.assertEqual(immutable_first.read_bytes(), original)
+            self.assertFalse(second["runtime_proof_promoted"])
+            self.assertFalse(second["organization_ledger_custody_proven"])
             third = mod.consume(source, runtime, runner=runner, env=env)
             self.assertEqual(third["state"], "ALREADY_TERMINAL")
             self.assertFalse(third["runtime_execution_attempted"])
