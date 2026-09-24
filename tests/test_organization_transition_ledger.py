@@ -6,6 +6,10 @@ import os
 from pathlib import Path
 import tempfile
 
+# Initialize the existing WorkerCoordinator import graph before importing its custody client.
+# Importing the custody client first triggers the pre-existing package circular import.
+from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator as _WorkerCoordinatorImportOrder
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
