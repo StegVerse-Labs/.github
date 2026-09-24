@@ -84,3 +84,73 @@ def test_worker_source_refresh_carries_org_ledger_dependencies():
     source = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
     assert 'Path("resident-runtime/aggregate_repo_transition.py")' in source
     assert 'Path(".stegverse/transition-ledger/org-contract.json")' in source
+
+
+def test_exact_source_retry_reuses_org_receipt_after_intervening_transition():
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmp:
+        old = os.environ.get("STEGVERSE_ORG_LEDGER_ROOT")
+        os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
+        try:
+            source = canonical_receipt()
+            first = module.aggregate_transition(source)
+            second_source = {**source, "transition_id": "UNRELATED_TRANSITION", "transition_sequence": 2}
+            unrelated = module.aggregate_transition(second_source)
+            head_before = json.loads((Path(tmp) / "HEAD.json").read_text())
+            retry = module.aggregate_transition(source)
+            assert retry == first
+            assert retry["receipt_sha256"] != unrelated["receipt_sha256"]
+            assert json.loads((Path(tmp) / "HEAD.json").read_text()) == head_before
+            assert len(list((Path(tmp) / "receipts").glob("*.json"))) == 2
+        finally:
+            if old is None:
+                os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
+            else:
+                os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
+
+
+def test_exact_source_retry_rejects_changed_context_without_appending():
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmp:
+        old = os.environ.get("STEGVERSE_ORG_LEDGER_ROOT")
+        os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
+        try:
+            source = canonical_receipt()
+            module.aggregate_transition(source, boundary_evidence={"scope": "original"})
+            try:
+                module.aggregate_transition(source, boundary_evidence={"scope": "changed"})
+            except ValueError as exc:
+                assert "context conflict" in str(exc)
+            else:
+                assert False, "same source with conflicting organization context must fail closed"
+            assert len(list((Path(tmp) / "receipts").glob("*.json"))) == 1
+        finally:
+            if old is None:
+                os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
+            else:
+                os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
+
+
+def test_exact_source_retry_rejects_tampered_existing_receipt():
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmp:
+        old = os.environ.get("STEGVERSE_ORG_LEDGER_ROOT")
+        os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
+        try:
+            source = canonical_receipt()
+            first = module.aggregate_transition(source)
+            path = Path(tmp) / "receipts" / (first["receipt_sha256"].split(":", 1)[1] + ".json")
+            tampered = json.loads(path.read_text())
+            tampered["boundary_evidence"] = {"tampered": True}
+            path.write_text(json.dumps(tampered))
+            try:
+                module.aggregate_transition(source)
+            except ValueError as exc:
+                assert "integrity invalid" in str(exc)
+            else:
+                assert False, "tampered prior receipt must not be reused"
+        finally:
+            if old is None:
+                os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
+            else:
+                os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
