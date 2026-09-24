@@ -1427,3 +1427,8 @@ The component-011 source repair additionally binds the worker's completed respon
 
 
 Component-011 exact boundary source repair merged in .github PR #2611 (`38580c903a7cf26d914a79f06978b178c3f59908`) after three successful exact-head workflows. Existing worker and resident consumer now bind completion to a fresh exact receipt hash, same response claim/fence and bounded denial probes. This establishes source validation only; runtime, current organization ledger, applicable InTr, TV/TVC and canonical Master Records readback remain unobserved. Canonical SDK security goal ACTIVE/HANDOFF_READY at last observed generation 210, COSV `71000000111111`.
+
+
+### Ecosystem hygiene census reconciliation — 2026-09-23
+
+First authenticated heavy baselines inspected 3,563 branches and identified 1,006 *structural*, not owner-approved, candidates across `.github`, Site, and StegCore. Exact dated heads and artifacts: `control/repository-hygiene-ecosystem-census-20260921.json`. The central read-only matrix covers public `.github` and Site; private StegCore uses its own read-only caller. Further routing requires independently authenticated organization-level owner-release receipts, never age or branch name alone.
