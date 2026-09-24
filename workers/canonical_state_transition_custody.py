@@ -624,32 +624,49 @@ def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
     return {**payload, "authority_effect": "NONE_RECONSTRUCTION_ONLY"}
 
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    """Record organization custody first, then submit one canonical receipt and require exact reconstruction."""
+    """Record organization custody first; retain its verified identity on every later failure."""
     if receipt.get("schema") != RECEIPT_SCHEMA:
         return {"state":"BOUNDARY","reason":"CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH","authority_effect":"NONE"}
     organization = _record_organization_transition(receipt)
     if organization.get("state") != "RECORDED":
         return organization
+    org_receipt = organization["organization_receipt"]
+    correlation = {
+        "organization_receipt_sha256": org_receipt["receipt_sha256"],
+        "organization_previous_receipt_sha256": org_receipt.get("previous_receipt_sha256"),
+        "organization_source_transition_sha256": org_receipt["source_transition_sha256"],
+        "organization_source_transition_id": org_receipt["source_transition_id"],
+        "organization_custody_state": "RECORDED",
+    }
+
+    def blocked(reason: str, **details: Any) -> dict[str, Any]:
+        # Diagnostic correlation only. Neither an org receipt nor this response
+        # grants execution, Master Records closure or downstream authority.
+        return {"state": "BOUNDARY", "reason": reason, **correlation,
+                **details, "authority_effect": "NONE"}
+
     payload = _submit_http(receipt)
     if payload is None:
         payload = _submit_local(receipt)
     if payload is None:
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE","authority_effect":"NONE"}
+        return blocked("CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE")
     if payload.get("state") == "BOUNDARY":
-        return payload
+        return blocked(str(payload.get("reason") or "CANONICAL_MASTER_RECORDS_CUSTODY_BOUNDARY"),
+                       master_records_response=payload)
     expected_hash = sha256_uri(dict(receipt)).split(":", 1)[1]
     if payload.get("state") != "RECORDED" or payload.get("reconstruction_status") != "PASS":
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_CUSTODY_NOT_RECORDED","response":payload,"authority_effect":"NONE"}
+        return blocked("CANONICAL_MASTER_RECORDS_CUSTODY_NOT_RECORDED", response=payload)
     if payload.get("required_evidence_validation_status") != "PASS":
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED","response":payload,"authority_effect":"NONE"}
+        return blocked("CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED", response=payload)
     if payload.get("receipt_sha256") != expected_hash or payload.get("reconstructed_receipt_sha256") != expected_hash:
-        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH","response":payload,"authority_effect":"NONE"}
+        return blocked("CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH", response=payload)
     if payload.get("master_records_grants_transition_authority") is not False:
-        return {"state":"BOUNDARY","reason":"MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED","authority_effect":"NONE"}
+        return blocked("MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED")
     return {
         **payload,
-        "organization_receipt": organization["organization_receipt"],
-        "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
+        **correlation,
+        "organization_receipt": org_receipt,
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
     }
 
 
