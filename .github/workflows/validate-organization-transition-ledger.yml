@@ -6,7 +6,8 @@ on:
       - "resident-runtime/aggregate_repo_transition.py"
       - "resident-runtime/organization_batch_custody.py"
       - "tests/test_organization_transition_ledger.py"
-      - "tests/test_organization_batch_custody.py"\n      - "tests/test_org_batch_exact_source_replay.py"
+      - "tests/test_organization_batch_custody.py"
+      - "tests/test_org_batch_exact_source_replay.py"
       - ".stegverse/transition-ledger/org-contract.json"
       - ".github/workflows/validate-organization-transition-ledger.yml"
   workflow_dispatch:
