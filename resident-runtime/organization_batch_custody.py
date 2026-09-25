@@ -185,7 +185,7 @@ def verify_batch(root: Path, batch_id: str, *, source_receipts: dict[str, dict] 
                 raise ValueError("source transition receipt missing or invalid")
             if source.get("transition_id") != row.get("source_transition_id"):
                 raise ValueError("source transition identity mismatch")
-        source_state = "SOURCE_DIGESTS_PASS_REQUIRED_EVIDENCE_BYTES_NOT_EVALUATED"
+        source_state = "SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS"
     return {
         "state": "PASS", "schema": "stegverse.organization-batch-local-verification/v1",
         "batch_id": batch_id, "receipt_count": len(rows),
@@ -195,6 +195,46 @@ def verify_batch(root: Path, batch_id: str, *, source_receipts: dict[str, dict] 
         "source_reconstruction": source_state,
         "master_records_acknowledgement": "NOT_ESTABLISHED",
         "authority_effect": "NONE_VERIFICATION_ONLY",
+    }
+
+
+def export_batch(root: Path, batch_id: str) -> dict:
+    """Prepare exact locally retained source bytes for the existing MR ingress.
+
+    No network delivery or Master Records acknowledgement occurs here. This
+    deterministic envelope can be carried by the already-authorized TV/TVC
+    transport; only Master Records independently accepts it.
+    """
+    root=Path(root)
+    batch=_verified_batch(root,batch_id)
+    hashes=batch.get("ordered_receipt_hashes")
+    if not isinstance(hashes,list) or not hashes:
+        raise ValueError("organization batch receipt set invalid")
+    receipts=[_verified_receipt(root,digest) for digest in hashes]
+    sources=[]
+    source_map={}
+    for row in receipts:
+        source_hash=row["source_transition_sha256"]
+        source_path=root/"source-receipts"/(source_hash[7:]+".json")
+        if not source_path.is_file():
+            raise ValueError("exact organization source receipt unavailable: "+source_hash)
+        source=_read(source_path)
+        verified=org.verify_source(source)
+        if verified["source_transition_sha256"]!=source_hash or verified["source_transition_id"]!=row["source_transition_id"]:
+            raise ValueError("exact organization source receipt binding invalid")
+        source_map[source_hash]=source
+        sources.append(source)
+    result=verify_batch(root,batch_id,source_receipts=source_map)
+    if result.get("source_reconstruction")!="SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS":
+        raise ValueError("organization-local required evidence reconstruction incomplete")
+    return {
+        "schema":"stegverse.master-records.organization-batch-submission/v1",
+        "batch":batch,
+        "organization_receipts":receipts,
+        "source_receipts":sources,
+        "authority_requested":False,
+        "custody_requested":True,
+        "reconstruction_requested":True,
     }
 
 
@@ -273,12 +313,18 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--closure-reason", choices=sorted(CLOSURE_REASONS))
     parser.add_argument("--verify-batch")
+    parser.add_argument("--export-batch")
     parser.add_argument("--root")
     args = parser.parse_args()
     root = Path(args.root) if args.root else org.ledger_root()
-    if bool(args.closure_reason) == bool(args.verify_batch):
-        parser.error("provide exactly one of --closure-reason or --verify-batch")
-    result = close_batch(args.closure_reason, root=root) if args.closure_reason else verify_batch(root, args.verify_batch)
+    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch)) != 1:
+        parser.error("provide exactly one of --closure-reason, --verify-batch or --export-batch")
+    if args.closure_reason:
+        result=close_batch(args.closure_reason,root=root)
+    elif args.verify_batch:
+        result=verify_batch(root,args.verify_batch)
+    else:
+        result=export_batch(root,args.export_batch)
     print(json.dumps(result, sort_keys=True))
 
 
