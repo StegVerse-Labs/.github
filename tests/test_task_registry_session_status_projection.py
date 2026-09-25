@@ -58,7 +58,8 @@ def checkin(path: Path, *, session: str, observed_generation=None, task="TASK-RE
     }
     if observed_generation is not None:
         payload["observed_registry_generation"] = observed_generation
-    env = dict(os.environ, STEGVERSE_TASK_REGISTRY_EVENT_LEDGER=str(path))
+    env = dict(os.environ, STEGVERSE_TASK_REGISTRY_EVENT_LEDGER=str(path),
+               PYTEST_CURRENT_TEST="session_status_source_fixture")
     result = subprocess.run(
         [sys.executable, str(CHECKIN)],
         input=json.dumps(payload), text=True, capture_output=True, env=env,
