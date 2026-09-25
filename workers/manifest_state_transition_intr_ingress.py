@@ -238,7 +238,7 @@ def _nonworker_diagnostic_deny(runtime_root: Path, validated: Mapping[str, Any])
     root = runtime_root / REQUEST_DIR / "dispositions" / graph_id
     root.mkdir(parents=True, exist_ok=True)
     exact = root / f"{request_hash}.json"
-    raw = json.dumps(record, indent=2, sort_keys=True) + "\\n"
+    raw = json.dumps(record, indent=2, sort_keys=True) + "\n"
     if exact.exists():
         require(exact.read_text(encoding="utf-8") == raw, "diagnostic_deny_immutable_collision")
     else:
