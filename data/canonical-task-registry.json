@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 225,
-  "status": "OPTICAL_PHYSICAL_STATE_RESEARCH_COSV_SOURCE_PROPOSAL_PENDING_NATIVE_OWNER_MERGE",
+  "generation": 226,
+  "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
