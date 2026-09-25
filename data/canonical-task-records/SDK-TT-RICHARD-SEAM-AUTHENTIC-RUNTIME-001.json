@@ -390,13 +390,16 @@
     "source_repair_merged": true
   },
   "execution_path_repair_pre_receipt_exception_retention": {
-    "source_candidate_state": "PR_VALIDATION_REQUIRED",
+    "source_candidate_state": "MERGED_EXACT_HEAD_VALIDATED_AUTHENTIC_RUNTIME_UNVERIFIED",
     "origin": "SOURCE_AUDIT_NO_AUTHENTIC_RESIDENT_EVENT_OBSERVED",
     "new_gap": "TARGETED_RUNNER_EXCEPTION_OR_DISPATCH_CUSTODY_EXCEPTION_BYPASSES_RECEIPT_PERSISTENCE",
     "consumer_repair": "IMMUTABLE_FIRST_CYCLE_EXCEPTION_BOUNDARY_RECEIPT",
     "dispatcher_repair": "FAIL_CLOSED_EXISTING_DISPATCH_SNAPSHOT_CUSTODY_EXCEPTION_DIAGNOSTIC",
-    "source_validation": "PENDING_EXACT_HEAD_CI",
+    "source_validation": "12_OF_12_EXACT_HEAD_PR_CHECKS_PASS",
     "authentic_runtime_transition_observed": false,
-    "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY"
+    "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
+    "source_repair_pr": 2696,
+    "source_repair_exact_head": "3a188d0608337bdf23d1f02b9f6c965792ec1df4",
+    "source_repair_merge": "98cef18d7107f1bf234567e2ee7f9a6ff0a2f30e"
   }
 }
