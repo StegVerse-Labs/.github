@@ -147,6 +147,7 @@ jobs:
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
+            tests.test_component010_exact_projection_unittest \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
             tests.test_erl_household_economic_conditions_runtime_binding \
             tests.test_erl_household_worker_evidence \
