@@ -50,6 +50,7 @@ ALLOWED_EXACT = {
     "data/reusable-task-ephemeral-construct-contract.json",
     ".stegverse/transition-ledger/org-contract.json",
     "resident-runtime/aggregate_repo_transition.py",
+    "resident-runtime/organization_batch_custody.py",
 }
 FORBIDDEN_PREFIXES = (
     ".git/", "receipts/", "checkpoints/", "events/", "heartbeats/",
