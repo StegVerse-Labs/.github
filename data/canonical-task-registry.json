@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 245,
+  "generation": 246,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9640,7 +9640,9 @@
         "docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md",
         "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md",
         "tests/test_open_source_strategy_inventory.py",
-        "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md"
+        "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md",
+        "data/ecosystem-open-source-organization-census-20260925.json",
+        "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json"
       ],
       "adjacent_task_refs": [
         "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -9719,7 +9721,34 @@
         "followup_head": "4737f3a68db41a00abc3e12104265bd4e4220d0b",
         "followup_merge": "aee4e664cf26aee2491b3558db307a897c8785d9",
         "followup_exact_head_workflows_passed": 6,
-        "followup_source_status": "MERGED_EXACT_HEAD_CI_PASS"
+        "followup_source_status": "MERGED_EXACT_HEAD_CI_PASS",
+        "ecosystem_census": "KNOWN_14_ORGANIZATIONS_252_REPOSITORY_ENTRIES_VISIBILITY_REFRESHED",
+        "labs_inventory": "119_OF_119_METADATA_ONLY_PRESERVED",
+        "stegverse_org_inventory": "18_OF_18_METADATA_SOURCE_OWNER_MERGED",
+        "other_orgs": "12_VISIBILITY_ONLY_RIGHTS_UNVERIFIED",
+        "org_scope": "14_KNOWN_ORGS_252_VISIBLE_REPOSITORIES",
+        "labs_scope": "119_OF_119_METADATA_ONLY",
+        "stegverse_org_scope": "18_OF_18_METADATA_MERGED_SOURCE_OWNER",
+        "remaining_scope": "12_ORGS_COUNTS_ONLY"
+      },
+      "ecosystem_inventory": {
+        "snapshot": "2026-09-25",
+        "known_organizations_observed": 14,
+        "repository_entries_observed": 252,
+        "public": 85,
+        "private": 153,
+        "internal": 14,
+        "manifest": "data/ecosystem-open-source-organization-census-20260925.json",
+        "universe_complete": false,
+        "metadata_audited": [
+          "StegVerse-Labs",
+          "StegVerse-org"
+        ],
+        "second_org_source_owned_pr": "StegVerse-org/.github#11",
+        "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
+        "other_organizations_count_only": 12,
+        "copyright_title_verified": 0,
+        "release_authorized": false
       }
     },
     {
