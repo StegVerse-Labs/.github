@@ -651,7 +651,26 @@ def dispatch(
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     exact_selector_failure = only_consumers is not None and bool(request_failures)
     sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
-    richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
+    try:
+        richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
+    except Exception as exc:
+        # A canonical-custody exception must not erase the actual consumer
+        # observation before this existing dispatch snapshot is persisted.
+        # This local boundary is NOT an authenticated organization failure.
+        richard_row = next((row for row in outcomes if row.get("consumer") == RICHARD_SELECTOR), None)
+        richard_dispatch_master_records = {
+            "state": "BOUNDARY",
+            "reason": "RICHARD_DISPATCH_CUSTODY_EXCEPTION",
+            "exception_type": type(exc).__name__,
+            "selector": RICHARD_SELECTOR,
+            "consumer_state": richard_row.get("state") if richard_row else None,
+            "consumer_returncode": richard_row.get("returncode") if richard_row else None,
+            "first_failed_cycle": (
+                richard_row["result"].get("first_failed_cycle")
+                if richard_row and isinstance(richard_row.get("result"), dict) else None
+            ),
+            "authority_effect": "NONE_FAIL_CLOSED_OBSERVATION_ONLY",
+        }
     if only_consumers is not None and RICHARD_SELECTOR in only_consumers and (
         not isinstance(richard_dispatch_master_records, dict)
         or richard_dispatch_master_records.get("state") != "RECORDED"
