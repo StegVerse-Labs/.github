@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 224,
-  "status": "MYKV_NATIVE_IOS_SOURCE_WORK_CORRELATION_ACTIVE_RUNTIME_EVIDENCE_SEPARATE",
+  "generation": 225,
+  "status": "OPTICAL_PHYSICAL_STATE_RESEARCH_COSV_SOURCE_PROPOSAL_PENDING_NATIVE_OWNER_MERGE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -10688,7 +10688,7 @@
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10111110114000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2626",
         "https://github.com/StegVerse-Labs/Patents/issues/5",
@@ -10790,6 +10790,17 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_repository_mutation_approved": false
+      },
+      "cosv_source_proposal": {
+        "profile": "task.v1",
+        "vector": "10111110114000",
+        "classification": "EXACT_GENERATION_SOURCE_PROPOSAL_NOT_AUTHENTIC_SESSION_ADMISSION",
+        "observed_generation": 224,
+        "source_profile": "management/COSV_PROFILE_V1.json",
+        "evidence_refs": [
+          "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/.github/issues/2626"
+        ]
       }
     },
     {
