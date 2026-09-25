@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 242,
+  "generation": 243,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10813,10 +10813,10 @@
         }
       ],
       "blockers": [
-        "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-        "OWNER_COLLISION_CONVERGENCE_NOT_AUTHENTICATED",
-        "COSV_DERIVATION_AFTER_ADMISSION",
-        "RIGHTS_CLEARED_DATASET_AND_PHYSICAL_REFERENCE_VALIDATION_PENDING"
+        "AUTHENTIC_COMPONENT_010_SESSION_EVENT_NOT_OBSERVED_FOR_GOVERNED_EXECUTION",
+        "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED",
+        "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE",
+        "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT"
       ],
       "adjacent_task_refs": [
         "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
@@ -10828,7 +10828,7 @@
         "CANONICAL_SOURCE_REGISTRATION_MERGED_AND_REREAD_AT_EXACT_GENERATION",
         "EXACT_GENERATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_HASH_LINKED_EVENT",
         "PAT_003_AND_EXISTING_GOVERNANCE_OWNER_COLLISION_DISPOSITION",
-        "COSV_DERIVED_AFTER_AUTHENTIC_ADMISSION",
+        "CANONICAL_COSV_DERIVED_REREAD_GEN225_WITH_SESSION_ADMISSION_SEPARATE",
         "RIGHTS_CLEARED_SOURCE_RECORDING_AND_ORIGINAL_FILE_HASH",
         "VERSIONED_PROCESSOR_PREDECESSOR_LINKAGE_AND_EXACT_HISTORICAL_REPLAY",
         "NEGATIVE_MISSING_FRAME_AND_ALTERED_TIMESTAMP_REJECTION",
@@ -10957,6 +10957,87 @@
           "RIGHTS_CLEARED_SOURCE_RECORDING portion of old combined blocker completed; independent physical reference still missing"
         ],
         "authority_effect": "NONE_SOURCE_EVIDENCE_ONLY"
+      },
+      "blocker_reconciliation": {
+        "baseline_generation": 242,
+        "resolved_from_existing_canonical_evidence": [
+          {
+            "old_blocker": "COSV_DERIVATION_AFTER_ADMISSION",
+            "disposition": "CLOSED_COSV_CANONICAL_GEN225_SESSION_ADMISSION_STILL_SEPARATE",
+            "proof": "cosv_tracking canonicalized_in_registry_generation=225, source merge #2663, exact row+shard readback"
+          },
+          {
+            "old_blocker": "RIGHTS_CLEARED_DATASET_AND_PHYSICAL_REFERENCE_VALIDATION_PENDING",
+            "disposition": "SPLIT_SOURCE_BYTES_VERIFIED_PHYSICAL_GROUND_TRUTH_STILL_PENDING",
+            "proof": "gen239 exact publisher-matched original SHA1, independent original SHA256, PTS replay PASS"
+          }
+        ],
+        "retained_genuine_obligations": [
+          "AUTHENTIC_COMPONENT_010_SESSION_EVENT_NOT_OBSERVED_FOR_GOVERNED_EXECUTION",
+          "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED",
+          "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE",
+          "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT"
+        ],
+        "cosv_profile": "task.v1",
+        "cosv_vector_unchanged": "10111110114000",
+        "blocker_count_unchanged": 4,
+        "source_coordination_does_not_require_authentic_session": true,
+        "worker_claim_added": false,
+        "authority_effect": "NONE_SOURCE_RECONCILIATION"
+      },
+      "image_reference_v08": {
+        "schema": "stegverse.optical-image-proxy-calibration/v0.8",
+        "source_original_sha256": "069d9a266f584f14f009a2bc7d2e7fbc20cc87bdffebb8be87573ca939d2eb8b",
+        "source_evidence": "fad1f946216b57e248c1442efd91f1ac483f7c902e6d20eb8fb4bdbd102e8aa6",
+        "reference_class": "SAME_CAMERA_IMAGE_SPACE_PROXY_NOT_INDEPENDENT_PHYSICAL_GROUND_TRUTH",
+        "reference_description": "high-resolution 422-frame gold-fork centroid, source-verified; 12 holdout overlays visually inspected",
+        "image_x_range_px": [
+          267.263,
+          335.407
+        ],
+        "presentation_time_peak_interval_median_s": 1.001,
+        "training_transition_count": 209,
+        "heldout_transition_count": 212,
+        "training_selection_only": true,
+        "image_motion_label": "adjacent gold-centroid shift >3 original pixels",
+        "unchanged_default": {
+          "threshold": 8,
+          "holdout_tp": 0,
+          "holdout_fn": 151,
+          "high_resolution_selected": 1
+        },
+        "global_calibrated": {
+          "threshold": 0.288194,
+          "heldout_tp": 148,
+          "heldout_fn": 3,
+          "heldout_fp": 9,
+          "heldout_tn": 52,
+          "heldout_recall": 0.9801,
+          "high_resolution_selected_no_context": 313,
+          "high_resolution_selected_context_2_2": 421
+        },
+        "roi_calibrated": {
+          "threshold": 8.046875,
+          "heldout_tp": 145,
+          "heldout_fn": 6,
+          "heldout_fp": 1,
+          "heldout_tn": 60,
+          "heldout_recall": 0.9603,
+          "high_resolution_selected_no_context": 294,
+          "high_resolution_selected_context_2_2": 421
+        },
+        "total_full_res_frames": 422,
+        "source_always_fully_decoded": true,
+        "tests_total_passed": 73,
+        "prior_v06_v07_modified": false,
+        "independent_ruler_or_sensor_reference": false,
+        "physical_units_or_camera_capture_clock_authenticated": false,
+        "measured_total_energy_or_sensor_bandwidth_benefit": false,
+        "governed_execution_observed": false,
+        "private_artifact": {
+          "filename": "optical-state-replay-calibrated-v08.zip",
+          "sha256": "9b1b41dc6272067f29ff2dd470b570d7ccb451fcb7dc904e0de804b5ea39d33e"
+        }
       }
     },
     {
