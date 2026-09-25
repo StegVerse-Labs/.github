@@ -1,5 +1,21 @@
 # STCM/CHF thermodynamic-witness registration mirror handoff
 
+## Authoritative source-only reconciliation (generation 231 candidate, 2026-09-24)
+
+This **already registered** Goal `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` remains ACTIVE / UNCLAIMED with unchanged task.v1 COSV `10111010112000`. Registry generation 230 was the source base; generation 231 is the proposed exact-shard source-evidence projection and must be re-read on final main. The earlier admission-candidate language below is historical, not current authority.
+
+- Merged comparison [PR #81](https://github.com/Admissible-Existence/.github/pull/81) `6a90de84a209c6f8d328a1e378ab172ec7e9114f`: five frozen synthetic specimens, schemas, inert validator, fourteen tests, exact-head hosted validation. Synthetic tests do not prove any physical measurement.
+- Merged [comparison PR #82](https://github.com/Admissible-Existence/.github/pull/82) `99bc476ff6f9b732c910d0d3fd1f763f8c046652`: pinned read-only independent native STCM source baseline at source commit `92f6bb8ac61377792970da16a835430ebe20f000`. STCM exact-head validation workflow `36086473729` and inert suite `36086473747` both succeeded; the former includes seven adversarial pin/tamper/report tests and actual nine-layer source harness execution, source report artifact `10843957172` with ZIP SHA-256 `d1e821ed211596cc832932c640c05a13006ebe5c5a3746948a7539054b99156a`.
+- CHF is private. Anonymous cross-repository source checkout failed at the *acquisition* stage on first comparison CI `36085734517`, not during CHF native evaluation. This was remediated **without publishing private source or creating credentials** by separately running the six existing CHF native validators within their existing repository: [CHF PR #4](https://github.com/Admissible-Existence/CHF/pull/4) merged `52f1f226dc3be9dbc53e52429d03fa87d3087519`; exact-head native validation run `36086125184` and Tri-Form run `36086125211` passed. Native receipt-validation artifact `10843369973` ZIP SHA-256 `7b80c604186151508385f834196f75b36346b144634f653fa7872b0846d2dbfd`. The pinned CHF baseline *source data and checker blobs* are from original commit `369737c3ca1985cd9b1e0a2696ebfbc7ecb84b93`; PR #4 changes only CI trigger.
+- These are two **independent native baseline validations in their original source domains**, not native STCM+CHF application to the same frozen comparison specimen. CHF's six repository validators test declared conditions/contracts; they are not an evidenced native numerical thermodynamic witness callable. Generic SDK manifested native invocation remains the distinct registered `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION` owner's work.
+- Shared source repairs central #2670, #2671, #2673, #2680 and KV #2675 are merged. Exact-generation, existing-owner source-only work no longer needs a fabricated AI_SESSION_GATE check-in. Real authenticated ChatGPT resident session-origin request consumption and matching event/predecessor readback remain unobserved; do not infer failure from inaccessible private runtime.
+- The third-party technical export, its scope/permission and exact bytes remain NOT_RECEIVED. Calculated Landauer lower bounds remain distinct from experimentally measured physical heat; genuine same-specimen native outputs and independent causal custody remain unobserved. No WorkerCoordinator claim/fence, applicable Interlock/InTr transition, organization ledger event or Master Records closure is claimed.
+
+**Current unique next work:** Under existing independent native source and mathematical-SDK owners, establish an executable frozen *same-specimen* STCM/CHF comparison if the native implementations actually expose compatible callables; return NOT_ESTABLISHED for CHF mathematical processing where source only has contract validators. In parallel, existing component-010 must establish real authorized session ingress and immutable event readback rather than blocking nonauthoritative source review. Do not create another runtime, scheduler, ledger, authority plane or device dependency.
+
+---
+
+
 Canonical goal candidate: `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001`
 Proposed central Task Registry generation after merge: `211` (base 210; rebase/rederive if changed).
 COSV task.v1 source-state projection candidate: `10111010112000`.
