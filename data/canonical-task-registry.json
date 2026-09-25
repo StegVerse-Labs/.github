@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 226,
+  "generation": 227,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11487,6 +11487,164 @@
         "master_records_reality_authority": true,
         "github_runtime_authority": "NONE",
         "heartbeat_execution_authority": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "correlation_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "root_correlation_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "parent_task_id": null,
+      "goal": "Produce an independently verifiable bilateral MIR/StegVerse capability-boundary experiment preserving claimed vs independently observed vs physical work vs unknown, and the observe/demonstrate/retain/reconstruct matrix with equal-weight limitations and first-class dissent.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "50000000100000",
+        "source_state_vector_ref": "control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json",
+        "authority_effect": "NONE"
+      },
+      "source_refs": [
+        "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+        "docs/mir-exp3/RECOVERED_CONVERSATION_EVIDENCE.md",
+        "docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md",
+        "https://github.com/StegVerse-Labs/.github/issues/2682"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "mir-sv-exp3",
+          "independent-capability-boundary",
+          "first-class-unknowns",
+          "disagreement",
+          "independent-evidence-verification"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+      ],
+      "expected_evidence_predicates": [
+        "COUNTERPART_MIR_PDF_IDENTIFIED_BY_SHA256",
+        "EXPERIMENT_3_DISTINCT_FROM_PRIOR_TESTS",
+        "STEGVERSE_FOUR_SECTION_COUNTERPART_DRAFTED",
+        "CLAIMS_SEPARATED_FROM_CURRENT_AUTHENTIC_OBSERVATIONS",
+        "CAPABILITIES_AND_LIMITS_SAME_ARTIFACT",
+        "UNKNOWN_AND_DISAGREEMENT_SEPARATELY_ATTRIBUTED",
+        "CURRENT_RESIDENT_ORG_LEDGER_EXACT_HEAD_AUDITED",
+        "CANONICAL_MASTER_RECORDS_EXACT_RECONSTRUCTION_REPRODUCED",
+        "INDEPENDENT_JOINT_REVIEW"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "source_inspection",
+          "read_only_custody_audit",
+          "independent_evidence_comparison"
+        ],
+        "environment": "DOCUMENTARY_AND_AUTHENTIC_READ_ONLY_IF_AVAILABLE",
+        "direction": "INDEPENDENT_BILATERAL_COMPARISON",
+        "mutation_required": false,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "SOURCE_AUDIT_REVIEWED",
+        "INDEPENDENT_CUSTODY_EVIDENCE_RETRIEVED"
+      ],
+      "handoff_projection_refs": [
+        "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "mir_historical_record_grants_stegverse_admission": false,
+        "stegverse_governance_grants_mir_custody": false,
+        "source_conformance_proves_authentic_runtime": false,
+        "missing_accessible_receipt_equals_no_event": false,
+        "unknowns_may_be_silently_resolved": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          }
+        ],
+        "selected_substrate_id": null,
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
       }
     }
   ],
