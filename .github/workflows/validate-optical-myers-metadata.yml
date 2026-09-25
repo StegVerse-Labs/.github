@@ -1,0 +1,59 @@
+name: Optical external dataset rights metadata (one-off validation)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validate-optical-myers-metadata.yml'
+permissions:
+  contents: read
+jobs:
+  inspect-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect only public publisher metadata
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, urllib.error, datetime, pathlib
+          root=pathlib.Path("/tmp/optical-myers-metadata")
+          root.mkdir(parents=True,exist_ok=True)
+          urls={
+          "dataset":"https://api.data.mendeley.com/datasets/7yd2ntbh3w?version=1",
+          "files":"https://api.data.mendeley.com/datasets/7yd2ntbh3w/files?version=1",
+          "public_files":"https://api.data.mendeley.com/datasets/publics/7yd2ntbh3w/files?version=1",
+          }
+          result={"dataset_id":"7yd2ntbh3w","version":1,
+          "observed_at_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          "authority_effect":"NONE_VALIDATION_EVIDENCE_TRANSPORT_ONLY",
+          "original_publisher":"https://data.mendeley.com/datasets/7yd2ntbh3w/1",
+          "rights_conflict":"dataset_page_CC_BY_4_vs_article_file_table_GPLv3",
+          "results":{}}
+          for key,url in urls.items():
+              req=urllib.request.Request(url,headers={"Accept":"application/json","User-Agent":"StegVerse-source-rights-audit/1.0"})
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as resp:
+                      raw=resp.read(2000000)
+                      content=json.loads(raw)
+                      result["results"][key]={"status":resp.status,"data":content}
+              except urllib.error.HTTPError as exc:
+                  result["results"][key]={"status":exc.code,"error":exc.read(400).decode("utf-8","replace")}
+              except Exception as exc:
+                  result["results"][key]={"status":"ERROR","error":str(exc)}
+          (root/"publisher-metadata.json").write_text(json.dumps(result,sort_keys=True,indent=2))
+          summary={"dataset_id":result["dataset_id"],"files":[]}
+          for key in ("files","public_files"):
+              data=result["results"].get(key,{}).get("data")
+              records=data if isinstance(data,list) else (data.get("files",[]) if isinstance(data,dict) else [])
+              for item in records:
+                  if isinstance(item,dict):
+                      summary["files"].append({k:item.get(k) for k in ("id","filename","size","description","license")})
+          (root/"safe-file-summary.json").write_text(json.dumps(summary,sort_keys=True,indent=2))
+          print(json.dumps({"statuses":{k:x["status"] for k,x in result["results"].items()},"file_summaries":summary["files"][:30]}))
+          PY
+      - name: Transfer metadata evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: optical-myers-rights-metadata
+          path: /tmp/optical-myers-metadata/
+          if-no-files-found: error
+          retention-days: 1
