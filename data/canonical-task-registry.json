@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 227,
+  "generation": 228,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11510,14 +11510,22 @@
         "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
         "docs/mir-exp3/RECOVERED_CONVERSATION_EVIDENCE.md",
         "docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md",
-        "https://github.com/StegVerse-Labs/.github/issues/2682"
+        "https://github.com/StegVerse-Labs/.github/issues/2682",
+        "StegVerse-org/StegVerse-SDK:inspection/examples/mir-sv-exp3/assessment-input.json",
+        "StegVerse-org/StegVerse-SDK:inspection/examples/mir-sv-exp3/diagnostic-request.json",
+        "StegVerse-org/StegVerse-SDK:scripts/build_mir_sv_exp3_manifest.py",
+        "StegVerse-org/StegVerse-SDK:tests/test_mir_sv_exp3_manifest.py",
+        "StegVerse-org/StegVerse-SDK:docs/MIR_SV_EXP3_MANIFEST.md",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/317",
+        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36085026183/artifacts/10843328013"
       ],
       "targets": {
         "organizations": [
           "StegVerse-Labs"
         ],
         "repositories": [
-          "StegVerse-Labs/.github"
+          "StegVerse-Labs/.github",
+          "StegVerse-org/StegVerse-SDK"
         ],
         "components": [
           "mir-sv-exp3",
@@ -11542,7 +11550,9 @@
         "UNKNOWN_AND_DISAGREEMENT_SEPARATELY_ATTRIBUTED",
         "CURRENT_RESIDENT_ORG_LEDGER_EXACT_HEAD_AUDITED",
         "CANONICAL_MASTER_RECORDS_EXACT_RECONSTRUCTION_REPRODUCED",
-        "INDEPENDENT_JOINT_REVIEW"
+        "INDEPENDENT_JOINT_REVIEW",
+        "SDK_SOURCE_MANIFEST_BUILT_FROM_EXISTING_INSTALLED_PROCESSOR",
+        "SDK_READ_ONLY_DIAGNOSTIC_ARTIFACT_SOURCE_VALIDATED"
       ],
       "runtime_requirements": {
         "capabilities": [
