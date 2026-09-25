@@ -398,3 +398,34 @@ Tracing the already-REQUESTED request after the dispatcher custody fix exposed w
 The existing native dispatcher path now invokes the already-registered exact selector `sdk_tt_richard_seam_authentic_runtime` first whenever the canonical Test 3 request is present, then preserves the normal global dispatcher pass so unrelated resident work is not suppressed. The Test 3 consumer now drives a maximum of two targeted WorkerCoordinator cycles in the same request consumption, stopping early if the authentic terminal close receipt already exists.
 
 This adds no runtime, scheduler, dispatcher, authority plane, carrier requirement, source relay, or device prerequisite. It makes the existing `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` behave as one bounded Test 3 request rather than a globally delayed multi-visit sequence.
+
+
+## Option-A reconciliation and post-retirement stale-fence falsification — generation 216 resolved PR #2516
+
+Completed predecessor `SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001` is now reconciled into this existing authentic-runtime lineage rather than creating a duplicate task. The predecessor remains immutable RETIRED / COMPLETED / VALIDATED and contributes one additional runtime falsification predicate:
+
+`POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED`.
+
+The predecessor evidence is source/test evidence only: SDK PR #304 merged as `e1116e9cb5f5043c9198505d64560b710c517e88`; four-stage run `35648276053`; artifact `10661081336` with SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5`. None of that establishes authentic standing, retirement, stale-fence refusal, or runtime completion for this task.
+
+Tracing the existing Test-3 terminal path found one concrete source gap. `CLOSE_TASK_AND_RETIRE_WORKER` already closes through StegCore/InTr and canonical Master Records, but the state machine previously returned records-only completion immediately afterward. It did not attempt a post-retirement invocation using the just-retired claim/fence, so the required refusal could not be authentically observed or retained.
+
+The bounded repair reuses the existing StegAgents -> SDK/StegCore/InTr -> canonical Master Records path. After the close receipt is `RECORDED` and reconstructed, the same retired claim/fence is submitted as `INVOKE_RETIRED_TASK_BOUND_WORKER` with task state `COMPLETED`, worker state `RETIRED`, actor authority false, delegation false, validity-window false, capability disallowed, and permission absent. The consequence executor is forbidden from running. The canonical governance result must be `DENY`, and only then is `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` submitted to Master Records using the denied transaction/manifest identity as evidence.
+
+Terminal acceptance now requires that refusal transition to satisfy:
+
+`state=RECORDED`
+`reconstruction_status=PASS`
+`required_evidence_validation_status=PASS`
+`receipt_sha256 == reconstructed_receipt_sha256`
+
+The WorkerCoordinator bridge rejects a governed-close response unless the refusal, zero executor invocation, refusal Master Records closure, and refusal reconstruction are all present. No second runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential path, authority plane, carrier requirement, or device prerequisite is introduced.
+
+StegAgents PR #35 passed all three exact-head gates at `a1772001cf8e6ee97214944e009d624df8c54f2b` and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. This validates the source path only; source/CI validation must not be interpreted as authentic runtime evidence. The first still-unobserved authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`; only an actual machine-owned targeted one-shot can advance that predicate.
+
+
+## Existing targeted-consumer source correction — September 24, 2026
+
+Continuing the **existing checked-out Richard Test-3 lifecycle**, source inspection found two independently reproducible bounded-consumer defects, not an authenticated failed state transition. First, configured `STEGVERSE_ORG_LEDGER_ROOT` was absent from the dispatcher, local refresh, targeted consumer, and existing StegAgents process-adapter environment allowlists; a configured organization ledger location could therefore be silently replaced by the default directory along the resident path. This change carries only the existing non-secret path value end-to-end and preserves all prior credential/authority restrictions. Second, the two-cycle targeted consumer previously continued after a nonzero first attempt or invalid COSV result, allowing the later cycle to hide the earliest failure. It also accepted an unchanged `close.latest.json` from a prior invocation as a reason to stop. It now stops at and retains the earliest failed cycle in the *existing consumption receipt*, requires all attempted cycles to have zero exit status and exact pointer/result identity, and treats only a changed close snapshot as a candidate stop condition. Changed latest evidence is never itself Master Records closure.
+
+The existing `REQUESTED` targeted request, WorkerCoordinator claim/fence, TV/TVC, InTr and canonical Master Records authority remain unchanged. The source repair does **not** prove that the actual resident ledger ever used a nondefault path, that any authentic attempt failed, or that a changed close snapshot is authoritative. When the existing machine-owned invocation runs, inspect its earliest retained failure record and the actual organization-wide hash-linked receipt sequence; require an authentic same-claim/fence canonical transition and `RECORDED`/reconstruction PASS/required-evidence PASS/exact digest equality from Master Records before declaring a repaired runtime transition. External participation and Stage-1 three-worker independence remain unverified. No new runtime, connected device, scheduler, or governance authority.

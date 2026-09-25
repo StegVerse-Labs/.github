@@ -391,7 +391,33 @@
       35743051826
     ],
     "stegagents_atomic_warrant_predecessor_contract": "RECONSTRUCT_EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_CLOSURE_AT_SEQUENCE_2_WARRANT_EMISSION",
-    "stegagents_atomic_warrant_canonical_hash_helper_repaired": true
+    "stegagents_atomic_warrant_canonical_hash_helper_repaired": true,
+    "stegagents_atomic_activation_predecessor_bypass_identified": true,
+    "stegagents_atomic_activation_predecessor_repaired": true,
+    "stegagents_atomic_activation_predecessor_pr": 39,
+    "stegagents_atomic_activation_predecessor_merge": "938c1a8a586920b6709c331a25f376f045066e08",
+    "stegagents_atomic_activation_predecessor_exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+    "stegagents_atomic_activation_predecessor_validation_runs": [
+      36036227697,
+      36036227515,
+      36036227461
+    ],
+    "authentic_atomic_activation_runtime_observed": false,
+    "rtc008_llm_admission_projection_source_merged": true,
+    "rtc008_llm_admission_projection_pr": 2655,
+    "rtc008_llm_admission_projection_merge": "de2cdcab15075b3e6f83ecdc698bcec0f5a61a06",
+    "rtc008_llm_admission_projection_exact_head": "536baee0fdaf301535d6864eb90c0ae02703b26b",
+    "rtc008_llm_admission_projection_validation_runs": [
+      36068497995,
+      36068498014
+    ],
+    "rtc008_llm_admission_projection_runtime_observed": false,
+    "publisher_return_failure_diagnostic_source_merged": true,
+    "publisher_return_failure_diagnostic_pr": 2657,
+    "publisher_return_failure_diagnostic_merge": "0f976b6b050ea761da2cffcfe35e81d6a090081b",
+    "publisher_return_failure_diagnostic_exact_head": "a6ab3cc81f8300fcc45dc158cdf5338c741e0263",
+    "publisher_return_failure_diagnostic_validation_run": 36069544761,
+    "authentic_publisher_return_failure_diagnostic_observed": false
   },
   "completion": {
     "claimed": false,
@@ -840,6 +866,57 @@
       "subsequent_candidate": "src/atomic_task_worker_activation_runtime.py::_record_atomic_activation",
       "runtime_execution_claimed": false,
       "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"
+    },
+    "stegagents_atomic_activation_predecessor": {
+      "state": "SOURCE_REPAIR_MERGED_EXACT_HEAD_VALIDATED",
+      "repository": "StegVerse-Labs/StegAgents",
+      "pull_request": 39,
+      "merge_commit": "938c1a8a586920b6709c331a25f376f045066e08",
+      "exact_head": "69243630302b6131713daa5fedd014c9d5e1e00b",
+      "validation_runs": [
+        36036227697,
+        36036227515,
+        36036227461
+      ],
+      "defect": "ATOMIC_ACTIVATION_SEQUENCE_3_COPIED_UNRECONSTRUCTED_SEQUENCE_2_WARRANT_RECEIPT_SHA",
+      "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+      "authentic_resident_runtime_observed": false,
+      "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
+    },
+    "rtc008_llm_admission_projection": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "superseded_closed_pr": 2537,
+      "merged_pr": 2655,
+      "exact_head": "536baee0fdaf301535d6864eb90c0ae02703b26b",
+      "merge_commit": "de2cdcab15075b3e6f83ecdc698bcec0f5a61a06",
+      "validation_runs": [
+        36068497995,
+        36068498014
+      ],
+      "exact_ingress_receipt_digest": "SHA256_CANONICAL_PERSISTED_INTR_ADMISSION_RECEIPT",
+      "custody_gate": [
+        "RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+        "receipt_sha256==reconstructed_receipt_sha256"
+      ],
+      "llm_admission_schema": "stegverse.llm-adapter.southbound-intr-egress-admission/v1",
+      "runtime_claimed": false,
+      "far_side_claimed": false,
+      "caller_consequence_claimed": false
+    },
+    "publisher_return_failure_observation": {
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "pr": 2657,
+      "exact_head": "a6ab3cc81f8300fcc45dc158cdf5338c741e0263",
+      "merge": "0f976b6b050ea761da2cffcfe35e81d6a090081b",
+      "validation_run": 36069544761,
+      "prior_defect": "BLOCKED_ONLY_PRINTED_NO_DURABLE_CONSUMPTION_FAILURE_RECEIPT",
+      "receipt_schema": "stegverse.publisher-return-consumption-failure-observation/v1",
+      "paths": "EXISTING_SDK_OR_KV_RECEIPT_DIRECTORY",
+      "runtime_observation": false,
+      "actual_first_failed_transition": "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+      "authority_effect": "NONE_DIAGNOSTIC_ONLY"
     }
   },
   "required_evidence_validation": {

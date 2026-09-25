@@ -6,6 +6,10 @@ import os
 from pathlib import Path
 import tempfile
 
+# Initialize the existing WorkerCoordinator import graph before importing its custody client.
+# Importing the custody client first triggers the pre-existing package circular import.
+from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator as _WorkerCoordinatorImportOrder
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -83,6 +87,7 @@ def test_canonical_custody_records_org_receipt_before_master_records():
 def test_worker_source_refresh_carries_org_ledger_dependencies():
     source = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
     assert 'Path("resident-runtime/aggregate_repo_transition.py")' in source
+    assert 'Path("resident-runtime/organization_batch_custody.py")' in source
     assert 'Path(".stegverse/transition-ledger/org-contract.json")' in source
 
 
@@ -154,3 +159,71 @@ def test_exact_source_retry_rejects_tampered_existing_receipt():
                 os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
             else:
                 os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
+
+
+def test_master_records_unavailable_keeps_exact_organization_receipt_correlation():
+    from unittest.mock import patch
+    from workers import canonical_state_transition_custody as client
+    source = canonical_receipt()
+    organization = {
+        "schema": "stegverse.organization-transition-receipt/v1",
+        "receipt_sha256": "sha256:" + "a" * 64,
+        "previous_receipt_sha256": "sha256:" + "b" * 64,
+        "source_transition_sha256": client.sha256_uri(source),
+        "source_transition_id": source["transition_id"],
+    }
+    with patch.object(client, "_record_organization_transition",
+                      return_value={"state": "RECORDED", "organization_receipt": organization}), \
+         patch.object(client, "_submit_http", return_value=None), \
+         patch.object(client, "_submit_local", return_value=None):
+        result = client.submit_state_receipt(source)
+    assert result["state"] == "BOUNDARY"
+    assert result["reason"] == "CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE"
+    assert result["organization_receipt_sha256"] == organization["receipt_sha256"]
+    assert result["organization_previous_receipt_sha256"] == organization["previous_receipt_sha256"]
+    assert result["organization_source_transition_sha256"] == organization["source_transition_sha256"]
+    assert result["organization_source_transition_id"] == source["transition_id"]
+    assert result["organization_custody_state"] == "RECORDED"
+    assert result["authority_effect"] == "NONE"
+
+
+def test_master_records_boundary_retains_exact_failure_and_org_identity():
+    from unittest.mock import patch
+    from workers import canonical_state_transition_custody as client
+    source = canonical_receipt()
+    organization = {"receipt_sha256": "sha256:" + "a" * 64,
+                    "previous_receipt_sha256": None,
+                    "source_transition_sha256": client.sha256_uri(source),
+                    "source_transition_id": source["transition_id"]}
+    failure = {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_CALL_FAILED",
+               "authority_effect": "NONE"}
+    with patch.object(client, "_record_organization_transition",
+                      return_value={"state": "RECORDED", "organization_receipt": organization}), \
+         patch.object(client, "_submit_http", return_value=failure):
+        result = client.submit_state_receipt(source)
+    assert result["reason"] == failure["reason"]
+    assert result["master_records_response"] == failure
+    assert result["organization_receipt_sha256"] == organization["receipt_sha256"]
+    assert result["state"] == "BOUNDARY"
+    assert result["authority_effect"] == "NONE"
+
+
+def test_failed_organization_recording_does_not_fabricate_correlation():
+    from unittest.mock import patch
+    from workers import canonical_state_transition_custody as client
+    with patch.object(client, "_record_organization_transition",
+                      return_value={"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE",
+                                    "authority_effect": "NONE"}):
+        result = client.submit_state_receipt(canonical_receipt())
+    assert result["state"] == "BOUNDARY"
+    assert "organization_receipt_sha256" not in result
+
+
+def test_worker_assignment_event_carries_failed_master_records_org_correlation():
+    source = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text()
+    start = source.index('"worker_assignment_master_records_blocked"')
+    event = source[start:source.index("return False", start)]
+    assert 'organization_receipt_sha256=assignment_custody.get("organization_receipt_sha256")' in event
+    assert 'organization_previous_receipt_sha256=assignment_custody.get("organization_previous_receipt_sha256")' in event
+    assert 'organization_source_transition_sha256=assignment_custody.get("organization_source_transition_sha256")' in event
+    assert 'organization_custody_state=assignment_custody.get("organization_custody_state")' in event

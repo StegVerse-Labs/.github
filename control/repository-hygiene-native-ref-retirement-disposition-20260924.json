@@ -1,0 +1,466 @@
+{
+  "schema": "stegverse.repository-hygiene-ref-retirement-disposition/v1",
+  "goal_task_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "cosv": "10100000100000",
+  "observation_date": "2026-09-24",
+  "native_utility_merge": {
+    "pr": 2651,
+    "merge_sha": "a0ecb920f70d5e0f2a35df68a13c6c8bf05c79dd",
+    "test_run": 36041822725,
+    "initial_adversarial_tests_passed": 8
+  },
+  "authority_owner": "HYGIENE-BRANCH-REF-RETIREMENT",
+  "classification_is_not_deletion_authority": true,
+  "repositories": {
+    "tvc": {
+      "live_branch_count": 437,
+      "open_prs_first_page": 10,
+      "delete_branch_on_merge": false
+    },
+    "control": {
+      "delete_branch_on_merge": false,
+      "open_prs_first_page": 74
+    }
+  },
+  "previously_approved_tvc": {
+    "candidate_count": 32,
+    "live_present": 32,
+    "protected": 0,
+    "open_pr_heads": 0,
+    "retained": [
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "tmp-noop-should-not-create",
+        "current_sha": "81ec2ee8f8d07fd7d882af501efdd0943908e8bc",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/reconcile-tv-guidance-closure",
+        "current_sha": "f825a37209de056ed444b8c719abbf9833eb4644",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc014-aex-hosted-retirement-proof",
+        "current_sha": "f97742b2d639598916d6f2ac093a805870ffcf15",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc-hcb-hosted-retirement-20260827",
+        "current_sha": "76398bfbcb9badac1305219d926d6214be199c79",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "fix/va-observers-validation-only",
+        "current_sha": "d763d5e44bd33b5dd122f876c1c6d1f76b497e26",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/final-model-decision-20260827",
+        "current_sha": "478b4848a9c49a83f5f5032f55cfe7df3903ebf6",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc005-cmc006-current-indexed-census-closure-20260828",
+        "current_sha": "324a49a953ad5bea24367c64aae5c5b3f54ed56a",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc032-stegfinco-closure-20260828",
+        "current_sha": "b2d57491353bbb88a77b4fbdf772026e3a41bfb3",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc033-stegfin-zeroex-closure-20260828",
+        "current_sha": "d83407259f96541d2b0006aeee92b45c0711481b",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc024-crypto-bot-closure-20260827",
+        "current_sha": "fde2ddc92c1772f388ae93b28eec6749bab2014d",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 1,
+        "source_run": 35651085752,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc005-cmc006-ara-graph-provider-coverage-20260828",
+        "current_sha": "1e3e6f596d8d39126842592fa60439488a0e3282",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc005006-cvk-coinbase-finance-coverage-r2-20260828",
+        "current_sha": "08d76a88873fb219d181a10b4296cded3744ac7c",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/cmc016-017-stegops-provider-surfaces-r2",
+        "current_sha": "b3495165ae3868d5dd7361a3d9e0a2a66f2e87bd",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/credential-residual-census-20260828",
+        "current_sha": "2ee6001a3a48893a0f53999a63dfec72e698c5f0",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "audit/external-credential-residual-census-20260828",
+        "current_sha": "0135deb483a0fb1013d30447fe25564155e571a2",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc005-006-partial-inventory",
+        "current_sha": "b6e96fd93fd3be820e0aceccbfa721a6b3142b42",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc015-service-request-proof",
+        "current_sha": "449dc2a10c097c06b548093335094d613e73e8a0",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc021-matrix-inventory-20260827",
+        "current_sha": "b0c96a2a1b4768ac4afd1a2b79bb839350a9c0a5",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc022-cvk-hosted-release-classification-20260827",
+        "current_sha": "a20ecac50bbd83d709ab4fd6cf063329ed76fd3e",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc023-cvk-release-cycle-control-plane-20260827",
+        "current_sha": "c71eb0f1e464918837ecbd639d53baccd8da462c",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 2,
+        "source_run": 35667376242,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/reconcile-cmc003-legacy-profile",
+        "current_sha": "6a2b45be94bc3fd1ee38feec55336a7ddd24652c",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "fix/cmc007-hcb-source-reconciliation",
+        "current_sha": "a4bdacb44ab41b7d7ccb252466810bcbe98e86e0",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "fix/cmc008-stegops-source-reconciliation",
+        "current_sha": "22363d4ab458436c96e5d0942566e13f0e281590",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/reconcile-cmc016-017-stegops",
+        "current_sha": "476daf3e3a377c558e46aa774caa0370ad3d2bb2",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/reconcile-cmc018-ara-graph",
+        "current_sha": "6cbd50ce7a2fab1cacef19e888d1aabc4196d067",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "reconcile/cmc005-cvk-coinbase-merge-20260828",
+        "current_sha": "a5900fa861bf2bcfb8d40b57947f9ea5e0735335",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "reconcile/cmc030-hcb-admin-boundary-successor-20260828",
+        "current_sha": "fff71b13b12dc0f1d7c8ead54b1e99832f0afd89",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 3,
+        "source_run": 35668559325,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc022-cvk-connector-blocker-20260827",
+        "current_sha": "99447727ebfc0317cdfee26628567b60b65ac0b7",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 4,
+        "source_run": 35670276119,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/cmc024-crypto-bot-hosted-live-preflight-20260827",
+        "current_sha": "ff01607646cc648d5f52cb611634a1fa1f922f77",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 4,
+        "source_run": 35670276119,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "fix/service-request-discovery-validation-only",
+        "current_sha": "864a92392160ede329a63e9de1660eb598eeefc7",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 5,
+        "source_run": 35672943173,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "docs/credential-consistency-local-observe-proof",
+        "current_sha": "80eaedd969c92794ce34ac441cf4380a0b8a31ce",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 5,
+        "source_run": 35672943173,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      },
+      {
+        "repository": "StegVerse-Labs/TVC",
+        "branch": "proof/aex-principle-completeness-capability",
+        "current_sha": "a7fa20b832bb0fd6e1891ea1437e587acc519560",
+        "current_protected": false,
+        "open_pr_head": false,
+        "source_batch": 6,
+        "source_run": 35673548654,
+        "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+        "deleted": false,
+        "reason": "Classification approval alone is not an authenticated InTr/organization/Master Records branch-deletion decision. This connector cannot delete refs."
+      }
+    ]
+  },
+  "closed_unmerged_superseded": {
+    "candidate_count": 2,
+    "retained": [
+      {
+        "repository": "StegVerse-Labs/.github",
+        "branch": "hygiene/bulk-census-private-split-20260921",
+        "expected_prior_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
+        "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
+        "deleted": false,
+        "current_sha": "737ce17334a27db4d8317a9c379eb9fdeaa375a2",
+        "protected": null,
+        "open_pr_head": false,
+        "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
+      },
+      {
+        "repository": "StegVerse-Labs/.github",
+        "branch": "hygiene/census-2574-main-reconcile-20260923",
+        "expected_prior_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
+        "disposition": "RETAIN_PENDING_EXPLICIT_UNMERGED_RELEASE_AND_AUTHENTIC_CUSTODY",
+        "deleted": false,
+        "current_sha": "43a91a963d08bfd823ed0f9af18f0dc930b0aae5",
+        "protected": null,
+        "open_pr_head": false,
+        "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
+      }
+    ]
+  },
+  "actual_deleted_refs": [],
+  "actual_deleted_count": 0,
+  "retained_count": 35,
+  "unverified_count": 0,
+  "blockers": [
+    "Connected GitHub interface has no delete-ref action or repository delete-on-merge setting mutation",
+    "Existing canonical authorization packet with authentic same-ref InTr ALLOW, organization transition custody, Master Records reconstruction and owner/evidence-retention release was not present for these candidates"
+  ],
+  "notes": "A successful source test exercises mocked delete and readback, not a real delete. This disposition does not claim authentic runtime receipt validation, deletion or terminal Master Records closure. Superseded closed-unmerged control PR refs were independently verified through exact Git refs readback at their prior recorded heads. Exact Git-ref readback establishes presence and SHA only, not branch protection status for the three control-repo heads; all remain retained pending native-administrator preflight.",
+  "merged_but_head_retained": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "pr": 2651,
+      "branch": "hygiene/finalize-census-and-ref-retirement-20260924",
+      "current_sha": "87372f3a078f37ffddbc39ba4362174eab880613",
+      "merged": true,
+      "protected": null,
+      "disposition": "RETAIN_PENDING_AUTHENTIC_OWNER_CUSTODY_AND_NATIVE_DELETE_AUTHORITY",
+      "deleted": false,
+      "protection_status": "UNVERIFIED_BY_GIT_REF_READBACK"
+    }
+  ]
+}

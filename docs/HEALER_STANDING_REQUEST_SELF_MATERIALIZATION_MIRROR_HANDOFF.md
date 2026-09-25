@@ -28,3 +28,9 @@ Required repair:
 6. Preserve standing recurrence and all existing WorkerCoordinator admission requirements.
 
 Runtime evidence is not claimed by this source repair. A later authentic resident scheduler cycle must still produce its normal scheduler and reusable-task receipts.
+
+## 2026-09-24 first-boundary observation retention
+
+The existing consumer had one unretained outcome before canonical source/self-materialization: when no resident request was present **and** no distinct local canonical source could be resolved, it returned `NO_REQUEST` without writing `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json`. This is a source-observed evidence production gap; no actual resident failure is inferred.
+
+The bounded existing-owner repair writes that `NO_REQUEST` observation atomically to the same preexisting receipt path with the exact task/mode, source-resolution reason, unconsumed standing-request semantics, explicit absence of execution/claim/authority, and a retry indication. Existing request-but-source-unavailable `ATTEMPT_RECORDED` and normal consumed-cycle receipts use the same atomic helper. Negative tests prove the no-request path does not invoke the worker; the recovery test proves a later materialized request can overwrite the observation with an ordinary cycle result. No new runtime, device, scheduler, dispatcher, receipt store, or governance path is created. Validation is source-only; authentic dispatch and organization receipts remain separate evidence.

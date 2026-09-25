@@ -24,6 +24,7 @@ NONSECRET_ENV = (
     "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
     "STEGVERSE_MASTER_RECORDS_ENDPOINT", "STEGVERSE_MASTER_RECORDS_TOKEN", "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "STEGVERSE_ORG_LEDGER_ROOT",
     "MASTER_RECORDS_DB", "MASTER_RECORDS_RECEIPT_KEY", "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     "STEGVERSE_TVC_ROOT", "STEGVERSE_TV_ROOT", "STEGVERSE_REPO_ROOTS_JSON",
     "STEGVERSE_SDK_SOURCE_ROOT", "STEGVERSE_STEGCORE_SOURCE_ROOT",
@@ -119,6 +120,16 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     completed = None
     result = None
     pointer_verified = False
+    first_failed_cycle = None
+    close_observed_in_attempt = False
+    close_path = runtime / CLOSE_LATEST_REL
+    # The latest pointer can predate this bounded invocation. A stale close
+    # is diagnostic history, not a reason to skip the fresh governed close.
+    try:
+        previous_close = stable_hash(load_json(close_path)) if close_path.is_file() else None
+    except (OSError, ValueError):
+        # Unreadable historical latest is not current-run governed closure.
+        previous_close = None
     for cycle_index in range(2):
         completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
         result = parse_last_json(completed.stdout)
@@ -130,35 +141,53 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             and pointer.get("binding_verified") is True
             and pointer.get("authority_effect") == "NONE"
         )
+        result_valid = bool(
+            isinstance(result, dict)
+            and result.get("mode") == TARGET_MODE
+            and result.get("task_id") == TARGET_TASK
+            and result.get("runtime_execution_attempted") is True
+            and result.get("network_fetch_performed") is False
+            and result.get("github_token_runtime_authority") == "NONE"
+            and result.get("credential_authority") == "TV/TVC"
+            and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+        )
+        cycle_valid = completed.returncode == 0 and result_valid and pointer_verified
         executions.append({
             "cycle_index": cycle_index,
             "returncode": completed.returncode,
             "result": result,
             "pointer_binding_verified": pointer_verified,
+            "cycle_valid": cycle_valid,
         })
-        close_path = runtime / CLOSE_LATEST_REL
+        if not cycle_valid:
+            first_failed_cycle = {
+                "cycle_index": cycle_index,
+                "boundary": (
+                    "PROCESS_EXIT_NONZERO" if completed.returncode != 0
+                    else "TARGETED_RESULT_OR_COSV_POINTER_INVALID"
+                ),
+                "returncode": completed.returncode,
+            }
+            # Do not conceal the first observed process/identity failure by
+            # driving another invocation. This is a local attempt diagnostic,
+            # NOT an authenticated org-level failed transition.
+            break
         if close_path.is_file():
             try:
                 close_receipt = load_json(close_path)
-            except Exception:
+            except (OSError, ValueError):
                 close_receipt = {}
             if (
                 close_receipt.get("state") == "AUTHENTIC_TASK_CLOSED_WORKER_RETIRED_RECORDS_ONLY"
                 and close_receipt.get("task_id") == TARGET_TASK
+                and stable_hash(close_receipt) != previous_close
             ):
+                close_observed_in_attempt = True
+                # Stop condition only; actual governance and Master Records
+                # closure require separate authoritative reconstruction.
                 break
 
-    valid = bool(
-        isinstance(result, dict)
-        and result.get("mode") == TARGET_MODE
-        and result.get("task_id") == TARGET_TASK
-        and result.get("runtime_execution_attempted") is True
-        and result.get("network_fetch_performed") is False
-        and result.get("github_token_runtime_authority") == "NONE"
-        and result.get("credential_authority") == "TV/TVC"
-        and result.get("authority_effect") == "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
-        and pointer_verified
-    )
+    valid = bool(executions and all(row["cycle_valid"] for row in executions))
     receipt = {
         "schema": "stegverse.sdk-tt-richard-seam-targeted-consumption/v1",
         "state": "ATTEMPT_RECORDED" if valid else "FAIL_CLOSED",
@@ -174,6 +203,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "targeted_cycle_count": len(executions),
         "targeted_cycles": executions,
         "bounded_cycle_limit": 2,
+        "first_failed_cycle": first_failed_cycle,
+        "fresh_close_snapshot_seen": close_observed_in_attempt,
         "pointer_binding_verified_before_execution": pointer_verified,
         "runtime_execution_attempted": True,
         "request_granted_authority": False,

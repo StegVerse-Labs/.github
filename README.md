@@ -8,9 +8,9 @@ For `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001`, runtime evidence is depen
 
 Canonical goal `SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001` remains ACTIVE/HANDOFF_READY at last observed Registry generation 212, COSV `71000000111111`. Existing source/CI work is merged; authentic component-011 resident selector/consumer/WorkerCoordinator/TVC proof remains UNKNOWN. GitHub default-branch receipt paths returned 404 in read-only checks, which is evidence-reachability only, not runtime failure. Resume with the existing checked-out component-011 owner at the first authentic `ungoverned_ai_defensive_envelope` dispatcher selector outcome, then exact request consumption and immutable targeted receipt before downstream org/MR inspection. Independent eligible invocation is not gated on the frozen global 18-lane matrix. Detailed recovery and no-device guardrails: `docs/SDK_UNTRUSTED_DEPENDENCY_EXECUTION_BOUNDARY_MIRROR_HANDOFF.md`.
 
-## Admissible-Existence organization-wide mathematical processing — registration candidate
+## Admissible-Existence organization-wide mathematical processing — registered source coordination
 
-Draft central registration for `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION`, proposed COSV `10111110111000`, issue [#2615](https://github.com/StegVerse-Labs/.github/issues/2615). Scope: 23 native source repositories plus 9 registered non-source roles and two additional consumer repositories. Source-level registration creates **no execution authority**; exact-generation authentic `AI_SESSION_GATE` disposition remains mandatory after canonical merge before any executable or cross-owner mutation. Current source census: `data/aex-native-math-processing-census.json`; canonical coordination handoff: `docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md`.
+Central goal `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION` is **ACTIVE / UNCLAIMED** in canonical Registry generation 216 at this source review, with COSV `10111110111000`. Registration merged in [PR #2621](https://github.com/StegVerse-Labs/.github/pull/2621). Its canonical handoff is `docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md`; the 34-repository source/consumer census is `data/aex-native-math-processing-census.json`. Authentic AI_SESSION_GATE and native manifested SDK mathematical invocation are **not established**; no execution authority or second device is created by this documentation.
 
 ## STCM/CHF independent thermodynamic-witness research registration
 
@@ -1474,9 +1474,76 @@ The canonical [`Private-State Economy white-paper handoff`](docs/ECOSYSTEM_ECONO
 
 ### Component-011 event-ephemeral selector reconciliation (2026-09-24; Registry 214)
 
-The registered `ungoverned_ai_defensive_envelope` selector is present in `scripts/dispatch_resident_execution_requests.py` and its exact standing request is staged. The existing portable on-demand entry `scripts/refresh_and_dispatch_resident_requests.py` currently omits this selector from `ALLOWED_TARGET_CONSUMERS` and rejects an explicit component-011 portable invocation before dispatch. This is a verified source entrypoint mismatch, **not** an authentic dispatch or runtime failure. The checked-out component-011 owner coordinates this source or an existing independently authorized direct dispatcher invocation at [issue #1620](https://github.com/StegVerse-Labs/.github/issues/1620#issuecomment-5818339213). The SDK goal does not edit that shared source. No new runtime, always-on process, device connection, GitHub execution authority or extra observation gate may be introduced. Require the actual selector outcome and exact same-invocation consumer/targeted/WorkerCoordinator/TVC evidence before any runtime promotion. Organization and Master Records custody attach only to a real consequential governed transition.
+The registered `ungoverned_ai_defensive_envelope` selector and standing request are staged. The portable on-demand entry previously omitted this selector, but owner PR [#2652](https://github.com/StegVerse-Labs/.github/pull/2652) merged the exact allowlist correction at `a7b5d2121fdbb6513156451dc42e4c46e9daefe6`; three exact-head source-validation workflows passed. Authentic resident worker-cycle/source-refresh, exact component consumer execution and any applicable organization/Master Records custody remain unverified. This is a verified source entrypoint mismatch, **not** an authentic dispatch or runtime failure. The checked-out component-011 owner coordinates this source or an existing independently authorized direct dispatcher invocation at [issue #1620](https://github.com/StegVerse-Labs/.github/issues/1620#issuecomment-5818339213). The SDK goal does not edit that shared source. No new runtime, always-on process, device connection, GitHub execution authority or extra observation gate may be introduced. Require the actual selector outcome and exact same-invocation consumer/targeted/WorkerCoordinator/TVC evidence before any runtime promotion. Organization and Master Records custody attach only to a real consequential governed transition.
 
 
 ## GP10 POVA follow-up — 2026-09-24
 
 Canonical `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` (COSV `30001000100000`, ACTIVE/CHECKED_OUT) sent its single user-approved POVA/Western Rail follow-up to `pova@povarr.com` from the authenticated `rigel@stegverse.org` Outlook mailbox. Outlook independently returned the sent message and its exact approved body, subject `Re: GP10 records / rebuild-history question`, provider-observed timestamp `2026-09-24T17:34:33Z`. The public [GP10 service page](https://stegverse.org/gp10-field-validation.html) appears only as explanatory context. No other prospect received a follow-up. Message presence does not establish recipient delivery, reading, buyer interest, paid scope or revenue; all commercial predicates remain false. Allow a reasonable response opportunity before classifying any reply or triggering the gated alternative already-implemented revenue-capability comparison. Canonical evidence details: [GP10 commercial handoff](docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md).
+
+### Atomic activation predecessor custody
+
+StegAgents PR #39 merged and validated the sequence-3 exact-boundary reconstruction of its sequence-2 warrant Master Records receipt, carrying the reconstructed immediate predecessor and `PREDECESSOR_MASTER_RECORDS_CLOSURE` required evidence. Authentic runtime execution remains unobserved.
+
+
+## Test 3 post-retirement stale-fence refusal
+
+Canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` now requires one additional falsification predicate after governed close: the just-retired task-bound worker claim/fence must be used for one attempted `INVOKE_RETIRED_TASK_BOUND_WORKER` through the existing StegAgents -> SDK/StegCore/InTr path. The request declares completed/retired state and no current actor authority, delegation, validity window, capability, or permission.
+
+StegAgents PR #35 passed all three exact-head gates and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. The consequence must not execute; canonical governance must return `DENY`; then `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` must close in canonical Master Records with `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, and exact receipt/reconstruction digest equality before terminal WorkerCoordinator release.
+
+This merge is source-path evidence only. No authentic fresh claim/fence, governed close/retire, stale-fence refusal, or runtime completion is inferred from CI.
+
+### Private-State Economy economics/legal review (2026-09-24)
+
+The [canonical white-paper handoff](docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md) now references the Publisher PR #72 internal economic and US/Texas regulatory issue review. The existing white-paper source hash, StegVerse-only scope and six-stage/16-benchmark roadmap remain unchanged. Independent professional approvals and authentic governed publication are still pending.
+
+
+### Organization-local batch replay candidate
+
+The existing org-ledger root now has a bounded batch source candidate (`resident-runtime/organization_batch_custody.py`) under `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`. It commits exact ordered organization receipts and local replay boundaries, detects missing/orphaned/tampered receipts and maintains pending Master Records custody status; it does not claim accepted Master Records batches, full required-evidence reconstruction, concurrent append serialization or authentic resident execution. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
+
+
+### Organization batch source merge evidence
+
+Local replay/batch source PR #2643 merged as `f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1` with three green exact-head workflows; Master Records batch ingress and authentic end-to-end execution remain outstanding. Canonical owner: `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`.
+
+### Healer first-consumption observation
+
+The existing standing-Healer resident consumer records even an initial `NO_REQUEST` when the runtime request and distinct canonical source are both unavailable; that observation is non-authorizing, retryable and retained at the existing `healer-sovereign-scheduler-request-consumption.latest.json` path. A subsequent self-materialized request or actual completed cycle replaces the latest observation through the same atomic writer. This corrects the first source-level visibility gap for native-email forward tracing; CI does not substitute for an authentic resident dispatch, WorkerCoordinator claim/fence or Master Records closure. See `docs/HEALER_STANDING_REQUEST_SELF_MATERIALIZATION_MIRROR_HANDOFF.md` and `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`.
+
+
+Richard Test-3 existing targeted-consumer source correction (September 24): preserve the configured organization-ledger root across dispatcher, refresh, targeted consumer and existing StegAgents adapter; stop on the first failed targeted cycle, keep that diagnostic in the existing consumption receipt, and refuse to treat a stale prior close snapshot as a fresh result. This is source-level failure-observability repair, not authentic resident or external-participant proof. See `docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
+
+
+Stage-1 micro-node experiment: Richard Test-3 owner PR [#2649](https://github.com/StegVerse-Labs/.github/pull/2649) merged configured organization-ledger root carriage and fail-first targeted request-consumption diagnostics after nine successful exact-head CI workflows. The canonical [Stage-1 handoff](docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md) preserves the distinction between source-level repair, actual authenticated global organization receipts, authoritative Master Records reconstruction and independently witnessed capability observations. No runtime or external participation is claimed by this source closeout.
+
+
+### RTC008 LLM admission projection merged
+
+PR #2655 merged the exact hash-bound projection of the existing Master Records-closed RTC008 ingress receipt into the LLM Adapter's canonical `EGRESS_ADMITTED` schema. Source/CI closure is separate from authentic resident RTC008/RTC009/caller runtime closure, which remains unobserved.
+
+
+### Publisher-return failure observation custody
+
+Merged PR #2657 repairs the existing SDK/KV Publisher-return consumer's previously console-only `BLOCKED` failure path. An exact, idempotent, non-authorizing diagnostic now persists in its existing receipt directory; authentic RTC008/RTC009/caller transition proof must still come from the actual resident/organization and Master Records chain.
+
+### Household economic conditions: exact-goal ingress priority (September 24, 2026)
+
+The existing Canonical Work consumer prioritizes `ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001` ahead of unrelated requests when that exact Goal is selected through the standing Healer/reusable-task carrier. Its unrelated MIR-first behavior remains unchanged for unscoped or other-goal invocations. This is source-only request-order repair, not Interlock/InTr admission, WorkerCoordinator authority, Master Records closure, or Site public activation. The September 30 release requires governed ERL output and exact served-body proof.
+
+## Governance metered-policy recovery — central Task Registry source proposal (generation 220)
+
+[Issue #2632](https://github.com/StegVerse-Labs/.github/issues/2632) and [PR #2636](https://github.com/StegVerse-Labs/.github/pull/2636) preregister proposed `GOVERNANCE-METERED-POLICY-RECOVERY-001` as PROPOSED/UNCLAIMED with unassigned COSV against main generation 219. Canonical handoff: [`docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md`](docs/GOVERNANCE_METERED_POLICY_RECOVERY_MIRROR_HANDOFF.md). [Governance draft PR #47](https://github.com/StegVerse-Labs/Governance/pull/47) carries a distinct provider-neutral source policy. The ACTIVE `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` owner continues removing hosted dependencies independently; this proposal does not restore provider-specific workflows. The source registration has no authentic AI_SESSION_GATE event, execution claim or runtime authority; following a merged reread, use the existing canonical gate and exact generation before any cross-owner mutation.
+
+## MyKV native iOS registration (pending)
+
+`MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` is staged as a PROPOSED / UNCLAIMED source preregistration at candidate Registry generation 221, coordinated by [central issue #2638](https://github.com/StegVerse-Labs/.github/issues/2638). The [native MyKV handoff](docs/MYKV_NATIVE_IOS_PACKAGING_DISTRIBUTION_MIRROR_HANDOFF.md) identifies the existing StegOS iOS target, Site MyKV/PWA fallback and separate TV/TVC signing and TestFlight custody. Source registration alone grants no WorkerCoordinator authority; consume an authentic current-generation AI_SESSION_GATE disposition before execution or owner promotion. Unsigned builds cannot prove TestFlight distribution or current-iPhone installation.
+
+### Organization-local exact-source replay
+
+The existing organization ledger keeps immutable exact source receipts and inline required evidence in its current private ledger root. The existing batch worker can independently validate local worker/task receipt sequences and export an exact, non-authorizing Master Records submission envelope. This is not an additional ledger or a live delivery claim. Source repair validation and authenticated runtime evidence are tracked separately in `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`.
+
+### Native MyKV: work correlation does not require runtime admission
+
+The canonical Task Registry entry `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` is the stable cross-repository work identity; its existing `40000100100000` COSV is a shared StegBrowser **lineage coordinate**, not a unique task identifier, authorization or fresh gate-derived vector. Source registration (.github PR #2640) and the validated native iOS integration (StegOS PR #409) are merged. Continue authorized source edits, exact-head tests and component-owner handoffs without waiting for an unavailable `AI_SESSION_GATE` disposition. Resolve deterministic, non-authorizing correlation through `python3 scripts/resolve_task_work_correlation.py --task-id MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001`. The existing WorkerCoordinator/Interlock/InTr/TV/TVC/Master Records checks remain mandatory when a **real governed transition** is attempted. All-four-bundle signing provisioning, TestFlight and actual current-iPhone installation remain separately evidence-gated; unsigned builds are not installations. See [current native MyKV handoff](docs/MYKV_NATIVE_IOS_PACKAGING_DISTRIBUTION_MIRROR_HANDOFF.md).

@@ -31,6 +31,7 @@ DEFAULT_PATHS = (
     "workers/canonical_state_transition_custody.py",
     ".stegverse/transition-ledger/org-contract.json",
     "resident-runtime/aggregate_repo_transition.py",
+    "resident-runtime/organization_batch_custody.py",
     "control/worker-registry.d/stegfin-live-entry-003.json",
     "heartbeat_runtime/worker_runtime_legacy.py",
     "heartbeat_runtime/process_adapter.py",

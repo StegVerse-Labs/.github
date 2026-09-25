@@ -31,7 +31,8 @@
         "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
         "MASTER_RECORDS_DB",
         "MASTER_RECORDS_RECEIPT_KEY",
-        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS"
+        "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
+        "STEGVERSE_ORG_LEDGER_ROOT"
       ],
       "notes": [
         "Consumes only an already-created WorkerCoordinator claim/fence for STEGAGENTS-GOVERNED-RUNTIME-001.",
