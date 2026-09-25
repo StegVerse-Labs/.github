@@ -77,6 +77,11 @@ def load_missing_checked_out_shards(registered: dict) -> dict:
     missing = {}
     for path in sorted(RECORDS.glob("*.json")):
         shard = _load_object(path)
+        # Auxiliary session notes live alongside canonical shards; they lack a
+        # canonical task identity and must not impersonate a checked-out owner.
+        if ("task_id" not in shard and shard.get("schema") != "stegverse.canonical-task-record/v1"
+                and "checkout_state" not in shard):
+            continue
         tid = shard.get("task_id")
         if not isinstance(tid, str) or tid != path.stem:
             raise ValueError(f"canonical task shard path identity mismatch: {path.name}")
