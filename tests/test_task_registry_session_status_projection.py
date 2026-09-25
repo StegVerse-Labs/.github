@@ -164,3 +164,24 @@ def test_invalid_status_cannot_append_session_return(tmp_path):
     ], input=json.dumps(invalid), text=True, capture_output=True)
     assert proc.returncode != 0
     assert not ledger.exists()
+
+if __name__ == "__main__":
+    # Existing stable Cross-Task CI uses stdlib unittest without an external
+    # pytest installation. Run these same fixture-style tests directly there.
+    from tempfile import TemporaryDirectory
+
+    cases = [
+        test_active_same_task_session_is_candidate_not_falsely_attested,
+        test_returned_session_does_not_become_active_duplicate,
+        test_foreign_checked_out_collision_requires_owner_conjunction,
+        test_stale_generation_preserves_existing_stop_and_unknown_status,
+        test_close_carries_exact_status_after_existing_return_receipt,
+        test_invalid_status_cannot_append_session_return,
+    ]
+    with TemporaryDirectory(prefix="stegverse-session-status-") as base:
+        for case in cases:
+            root = Path(base) / case.__name__
+            root.mkdir(parents=True)
+            case(root)
+            print(f"PASS {case.__name__}")
+    print(f"PASS session-status focus: {len(cases)} cases")
