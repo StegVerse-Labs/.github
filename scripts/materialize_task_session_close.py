@@ -74,6 +74,26 @@ def main() -> int:
     if return_receipt.get("reusable_component_id") != COMPONENT_ID:
         raise SystemExit("session return receipt reusable component mismatch")
 
+    status_projection = disposition.get("session_status_projection")
+    if status_projection is None:
+        status_projection = {
+            "schema": "stegverse.task-registry-session-status-projection/v1",
+            "duplicate": "UNVERIFIED",
+            "collision": "UNVERIFIED",
+            "source_disposition": disposition.get("disposition"),
+            "evidence_class": "NO_SESSION_STATUS_PROJECTION_IN_INPUT",
+            "authority_effect": "NONE",
+        }
+    if (not isinstance(status_projection, dict)
+            or status_projection.get("schema") != "stegverse.task-registry-session-status-projection/v1"
+            or status_projection.get("authority_effect") != "NONE"
+            or status_projection.get("source_disposition") != disposition.get("disposition")
+            or status_projection.get("duplicate") not in {"UNVERIFIED", "CONFIRMED"}
+            or status_projection.get("collision") not in {
+                "UNVERIFIED", "CONJOIN_REQUIRED", "REVIEW_REQUIRED", "NO_REGISTERED_COLLISION_OBSERVED",
+            }):
+        raise SystemExit("invalid session status projection")
+
     print(json.dumps({
         "schema": "stegverse.task-session-close/v1",
         "task_id": args.task_id,
@@ -81,6 +101,7 @@ def main() -> int:
         "actor_kind": return_receipt["actor_kind"],
         "reusable_component_id": COMPONENT_ID,
         "return_receipt": return_receipt,
+        "session_status_projection": status_projection,
         "continuity_materialized": True,
         "footer_handoff_emission_admissible": True,
         "required_pre_footer_return_event_sha256": return_event_sha256,
