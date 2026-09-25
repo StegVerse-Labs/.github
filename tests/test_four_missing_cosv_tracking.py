@@ -14,6 +14,16 @@ class TestFourCanonicalCosvRecords(unittest.TestCase):
   self.assertEqual(r["vector"],"10111110114000")
   self.assertEqual(s["cosv_source_proposal"]["vector"],r["vector"])
   self.assertTrue(s["cosv_tracking"]["tracking_authoritative"])
+ def test_optical_intervening_v08_and_v09_evidence_preserved(self):
+  id=verifier.OPTICAL
+  s=json.loads((ROOT/"data/canonical-task-records"/(id+".json")).read_text())
+  r=json.loads((ROOT/"data/canonical-task-registry.json").read_text())
+  row=next(t for t in r["tasks"] if t["task_id"]==id)
+  for key in ("image_reference_v08","external_reference_v09"):
+   self.assertIn(key,s)
+   self.assertEqual(row[key],s[key])
+  self.assertEqual(s["external_reference_v09"]["external_dataset"]["doi"],"10.17632/7yd2ntbh3w.1")
+  self.assertEqual(s["cosv_task_vector"],"10111110114000")
  def test_no_fabricated_attestation_and_metric_mutation_rejected(self):
   for id in verifier.TASKS:
    v=json.loads((ROOT/"control/task-vectors"/(id+".json")).read_text())
