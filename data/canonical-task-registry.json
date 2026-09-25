@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 237,
-  "status": "EXACT_NATIVE_OWNER_PROJECTION_RECONCILIATION_CANDIDATE",
+  "generation": 238,
+  "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -1476,8 +1476,8 @@
       "root_correlation_id": "STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001",
       "parent_task_id": "STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001",
       "goal": "Build an analysis-only public-evidence AI-company specialization of the canonical Business Opportunity Engine using economic scale, observable usage, consequential transition exposure, governance gap, commercial accessibility, and explicit evidence confidence while keeping outreach hard-disabled.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CLAIMED_INTEGRATION",
+      "coordination_state": "RETIRED",
+      "checkout_state": "COMPLETED",
       "cosv_task_vector": "40000100100001",
       "source_refs": [
         "AI_GOVERNANCE_OPPORTUNITY_ENGINE_MIRROR_HANDOFF.md",
@@ -1507,6 +1507,13 @@
           "kind": "TASK",
           "state": "RESOLVED",
           "ref": "STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001"
+        },
+        {
+          "dependency_id": "DEP-AI-GOVERNANCE-EVIDENCE-CYCLE-CLOSEOUT",
+          "kind": "MERGE_VALIDATION",
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/StegBusiness-Ops#51",
+          "disposition": "EXACT_HEAD_a9fd167a6fadd63a8eaef6bb5b10ac9416748ed4_GREEN_RUN_35602471735_THEN_EXPECTED_HEAD_MERGED_0f22edcf245ca4ef94921afebb3c173e0b037b4a"
         }
       ],
       "blockers": [],
@@ -1601,22 +1608,17 @@
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE"
       },
-      "worker_claim": {
-        "authority": "CURRENT_SESSION",
-        "claim_ref": "StegVerse-Labs/StegBusiness-Ops#1",
-        "fence_ref": null,
-        "projection_only": false
-      },
       "human_action_ref": null,
       "completion": {
-        "claimed": false,
-        "validated": false,
-        "reconciliation_ref": null
+        "claimed": true,
+        "validated": true,
+        "reconciliation_ref": "StegVerse-Labs/StegBusiness-Ops@0f22edcf245ca4ef94921afebb3c173e0b037b4a",
+        "archive_ready": true,
+        "completion_basis": "GOAL_PROMPT_COUNT_20_CLOSURE_WITH_ALL_CANONICAL_EVIDENCE_PREDICATES_SATISFIED_AND_MISSING_REVENUE_USAGE_RETAINED_AS_EXPLICIT_UNKNOWN"
       },
       "allowed_next_transitions": [
-        "VALIDATE_SOURCE_PACKAGE",
-        "MERGE_ANALYSIS_ONLY_PILOT",
-        "ENRICH_PUBLIC_EVIDENCE"
+        "NO_FURTHER_EXECUTION_UNDER_THIS_GOAL",
+        "CONTINUE_ONLY_UNDER_SEPARATE_FUTURE_EVIDENCE_UPDATE_TASK"
       ],
       "handoff_projection_refs": [
         "AI_GOVERNANCE_OPPORTUNITY_ENGINE_MIRROR_HANDOFF.md"
@@ -1632,6 +1634,20 @@
         "material_function_change": true,
         "readme_updated_in_change_set": true,
         "readme_path": "README.md"
+      },
+      "goal_prompt_count": "20/20",
+      "result": {
+        "disposition": "COMPLETE_WITH_EXPLICIT_UNKNOWNS",
+        "unresolved_terminal_unknowns": [
+          "Adept aggregate/revenue",
+          "Figure AI standalone revenue",
+          "Hippocratic AI standalone revenue",
+          "Physical Intelligence standalone revenue"
+        ],
+        "successor_goal_created": false,
+        "future_stronger_evidence_requires_separate_task": true,
+        "deterministic_ranking_preserved": true,
+        "outreach_hard_disabled": true
       }
     },
     {
@@ -13312,6 +13328,1344 @@
         "credential_authority": "TV/TVC",
         "master_records_reality_authority": true
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "goal": "Execute the StegBrowser invocation through two governed Interlock/InTr round-trip phases: first return the correlated records packet at the Interlock/InTr exit for recording and verification; then, after record/mirror processing, initiate the mirror-boundary Interlock/InTr return, call endpoint Interlock/InTr, and re-enter the ecosystem.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "current_exact_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
+      "source_validation": {
+        "previous_binding_repair_pull_request": 1907,
+        "previous_binding_repair_merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
+        "runtime_authority_effect": "NONE"
+      },
+      "source_refs": [
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+        "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+        "data/reusable-transport-component-contract.json",
+        "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+        "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
+        "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+        "scripts/run_stegbrowser_runtime_consumption_reusable.py"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "canonical_portable_execution",
+          "event_ephemeral_stegos_node",
+          "universal_intr_profiled_ingress",
+          "governed_round_trip_transport"
+        ],
+        "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "governed_round_trip_lifecycle_count": 2,
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true,
+        "physical_device_identity_required": false,
+        "second_user_operated_device_required": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "PENDING_EVIDENCE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "SUITABLE",
+            "limitation_class": "PLATFORM",
+            "evidence_refs": [
+              "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+              "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "projection_only": true,
+        "claim_ref": null,
+        "fence_ref": null
+      },
+      "runtime_connection_transition": {
+        "variables": {
+          "callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+          "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"
+        },
+        "authority": "INTERLOCK_INTR",
+        "always_on_runtime_source_assumed": false,
+        "source_freshness_persistent_state": false,
+        "refresh_reusable_task_ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+        "refresh_selection_condition": "callable=true AND refreshable=true"
+      },
+      "round_trip_model": {
+        "lifecycle_count": 2,
+        "round_trip_1_recording_verification": {
+          "entry": "GOVERNED_INTR_INGRESS",
+          "intermediate_transitions_may_be_endpoint_local_if_allowed": true,
+          "return": "CORRELATED_RECORDS_PACKET",
+          "exit": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
+          "recording_surface": "MASTER_RECORDS_RECORDING_SURFACE",
+          "verification_evidence": [
+            "GOVERNED_RETURN_PACKET_RECEIVED",
+            "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
+            "RETURN_RECORD_DURABLY_RECORDED",
+            "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"
+          ],
+          "terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
+        },
+        "between_round_trips": {
+          "begins_at": "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
+          "includes": [
+            "RECORDING",
+            "CUSTODY_RECONSTRUCTION",
+            "PROCESSING",
+            "MIRROR_BOUNDARY_PROCESSING"
+          ],
+          "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+          "transport_authority": "NONE",
+          "mirror_boundary_initiates_next_interlock_intr": true
+        },
+        "round_trip_2_ecosystem_return": {
+          "entry": "MIRROR_BOUNDARY_INTR_REENTRY",
+          "local_transition": "MIRROR_BOUNDARY_INTERLOCK_INTR_ALLOWED",
+          "endpoint_call": "ENDPOINT_INTERLOCK_INTR_CALLED",
+          "endpoint_transition": "ENDPOINT_INTERLOCK_INTR_ALLOWED",
+          "exit": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+          "terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"
+        },
+        "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION",
+          "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE",
+          "state": "SOURCE_REBOUND_MERGED_VALIDATED_RUNTIME_UNOBSERVED",
+          "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"
+        },
+        {
+          "dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION",
+          "kind": "GOVERNED_STATE_TRANSITION",
+          "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+          "ref": "INTERLOCK_INTR"
+        },
+        {
+          "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
+          "kind": "AUTHORITY_OWNED_PRE_TRANSPORT_EXECUTION_STATE",
+          "state": "PENDING_AUTHENTIC_EXECUTION",
+          "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"
+        },
+        {
+          "dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT",
+          "kind": "REUSABLE_TRANSPORT_COMPONENT",
+          "state": "REPEAT_TWICE_FOR_DECLARED_LIFECYCLES",
+          "ref": "RTC-ROUNDTRIP-003"
+        },
+        {
+          "dependency_id": "DEP-INTR-TRANSPORT-COMPONENT",
+          "kind": "REUSABLE_TRANSPORT_COMPONENT",
+          "state": "PENDING_AUTHENTIC_TRANSPORT",
+          "ref": "RTC-INTERLOCK-INTR-TRANSPORT-008"
+        },
+        {
+          "dependency_id": "DEP-EVIDENCE-CUSTODY",
+          "kind": "BETWEEN_ROUND_TRIPS_PROCESSING_COMPONENT",
+          "state": "PENDING_ROUND_TRIP_1_RETURN",
+          "ref": "RTC-EVIDENCE-CUSTODY-004"
+        },
+        {
+          "dependency_id": "DEP-STEGVERSE-EGRESS",
+          "kind": "ROUND_TRIP_2_EGRESS_COMPONENT",
+          "state": "PENDING_MIRROR_BOUNDARY_PROCESSING",
+          "ref": "RTC-STEGVERSE-EGRESS-007"
+        },
+        {
+          "dependency_id": "DEP-FARSIDE-FINAL",
+          "kind": "ROUND_TRIP_2_ENDPOINT_COMPONENT",
+          "state": "PENDING_ROUND_TRIP_2",
+          "ref": "RTC-FARSIDE-FINAL-009"
+        }
+      ],
+      "allowed_next_transitions": [
+        "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
+        "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
+        "ENTER_GOVERNED_INTR_TRANSPORT",
+        "OBSERVE_ROUND_TRIP_1_RETURN_TO_RECORDING",
+        "OBSERVE_RETURN_RECORD_DURABLY_RECORDED",
+        "SET_SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED_TRUE",
+        "PROCESS_RECORDED_STATE_TO_MIRROR_BOUNDARY",
+        "INITIATE_MIRROR_BOUNDARY_INTR_REENTRY",
+        "CALL_ENDPOINT_INTERLOCK_INTR",
+        "OBSERVE_ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+        "SET_SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED_TRUE",
+        "SET_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED_TRUE"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_connection_transition_observed": false,
+        "workercoordinator_claim_fence_observed": false,
+        "round_trip_1_return_packet_received": false,
+        "round_trip_1_return_record_durably_recorded": false,
+        "successful_recording_verification_round_trip_identified": false,
+        "mirror_boundary_processing_observed": false,
+        "round_trip_2_mirror_intr_reentry_observed": false,
+        "round_trip_2_endpoint_intr_call_observed": false,
+        "round_trip_2_ecosystem_reentry_observed": false,
+        "successful_ecosystem_return_round_trip_identified": false,
+        "successful_data_transport_round_trips_identified": false
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "interlock_intr_transition_authority": true,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "user_verification_authority": "KV/SKAP Vault",
+        "master_records_reality_authority": true,
+        "master_records_transport_authority": false,
+        "heartbeat_role": "OBSERVABILITY_ONLY",
+        "github_runtime_authority": "NONE",
+        "second_user_operated_device_required": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+      "correlation_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+      "root_correlation_id": "STEGOS-SOVEREIGN-INFRASTRUCTURE-001",
+      "parent_task_id": "STEGOS-SOVEREIGN-INFRASTRUCTURE-001",
+      "goal": "Reuse the established event-ephemeral StegOS Node and Canonical Work Interlock/InTr path to validate the AI pre-execution ALLOW/DENY/BYPASS test on one admitted ephemeral StegOS runtime, then preserve the boundary to authentic AI-originated proof without physical-device identity gates.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "global_invariant_ref": "data/task-registry-global-invariants.json",
+      "device_interchangeability_enforced": true,
+      "physical_device_identity_gate": "NONE_PROHIBITED",
+      "source_refs": [
+        "StegVerse-Labs/StegOS#384",
+        "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a",
+        "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "data/reusable-task-ephemeral-construct-contract.json",
+        "source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+        "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
+        "StegVerse-Labs/StegVerse-Healer#85",
+        "StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a",
+        "StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md",
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/StegVerse-Healer"
+        ],
+        "components": [
+          "RTC-MANIFEST-001",
+          "RTC-GOVERNED-PROCESSING-002",
+          "RTC-INTERLOCK-INTR-TRANSPORT-008",
+          "execution_materialization:data/reusable-task-ephemeral-construct-contract.json",
+          "RTC-FARSIDE-FINAL-009",
+          "RTC-EVIDENCE-CUSTODY-004",
+          "resident-neutral-reusable-task-carrier-binding"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-AI-PREEXECUTION-STEGOS-SOURCE",
+          "kind": "SOURCE_BINDING",
+          "state": "AVAILABLE_VALIDATED",
+          "ref": "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+        },
+        {
+          "dependency_id": "DEP-AI-PREEXECUTION-EPHEMERAL-NODE",
+          "kind": "RUNTIME_SUBSTRATE",
+          "state": "AVAILABLE_REUSABLE_PATH",
+          "ref": "ADMITTED-EPHEMERAL-STEGOS-NODE"
+        },
+        {
+          "dependency_id": "DEP-AI-PREEXECUTION-AUTHENTIC-AI",
+          "kind": "RUNTIME_EVIDENCE",
+          "state": "PROPOSAL_PRESERVED_RUNTIME_OBSERVATION_PENDING",
+          "ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"
+        },
+        {
+          "dependency_id": "DEP-AI-PREEXECUTION-HEALER-CARRIER-BINDING",
+          "kind": "RUNTIME_REACHABILITY_SOURCE_BINDING",
+          "state": "RESOLVED_SOURCE_ONLY",
+          "ref": "StegVerse-Labs/StegVerse-Healer#85;StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a;actions:34891751182",
+          "disposition": "EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_NOW_CARRIES_RT_STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_001; NO_SECOND_SCHEDULER_RUNTIME_CREDENTIAL_PATH_REMOTE_DESKTOP_OR_SECOND_USER_DEVICE"
+        },
+        {
+          "dependency_id": "DEP-AI-PREEXECUTION-AUTHENTIC-ADMITTED-STEGOS-RUNTIME",
+          "kind": "RUNTIME_EVIDENCE_GATE",
+          "state": "PENDING_AUTHENTIC_ADMITTED_STEGOS_RUNTIME",
+          "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "FIRST_UNRESOLVED_PREDICATE_AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK; ANY ELIGIBLE STEGOS SURFACE MAY SATISFY AFTER KV/SKAP CONTINUITY WHERE APPLICABLE, WORKERCOORDINATOR CLAIM/FENCE, AND INTERLOCK/INTR ADMISSION; PHYSICAL DEVICE IDENTITY GATE PROHIBITED"
+        }
+      ],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+        "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+        "STEGOS-ESRL-001"
+      ],
+      "expected_evidence_predicates": [
+        "EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED",
+        "CANONICAL_WORK_INTR_ADMISSION_OBSERVED",
+        "ALLOW_TARGET_STATE_CHANGED",
+        "DENY_TARGET_STATE_UNCHANGED",
+        "BYPASS_TARGET_STATE_UNCHANGED",
+        "MODEL_OUTPUT_AUTHORITY_REMAINS_NONE",
+        "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+        "NO_SECOND_RUNTIME_SCHEDULER_OR_CREDENTIAL_PATH",
+        "AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "canonical_portable_execution",
+          "event_ephemeral_stegos_node",
+          "universal_intr_profiled_ingress",
+          "bounded_loopback_network_consequence",
+          "target_state_readback"
+        ],
+        "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "direction": "AI_PROPOSAL_TO_STEGOS_GOVERNANCE_TO_NETWORK_TARGET",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true,
+        "physical_device_identity_required": false,
+        "second_user_operated_device_required": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "data/task-registry-global-invariants.json"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "data/reusable-task-ephemeral-construct-contract.json"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "PLATFORM",
+            "evidence_refs": [
+              "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+              "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "physical_device_identity_required": false,
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "runtime_resolution": {
+        "current_executor": "standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
+        "unresolved_classification": "HEALER_CARRIER_BOUND_AUTHENTIC_ADMITTED_STEGOS_EXECUTION_NOT_OBSERVED",
+        "reachability_source_binding": "RESOLVED_HEALER_85",
+        "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "current_first_unresolved_reachability_predicate": "AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK",
+        "next_admissible_transition": "INGRESS_ADMITTED",
+        "proposal_evidence_ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
+        "proposal_sha256": "cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": false
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "activation_proof_complete": false,
+        "carrier_binding_repaired_source_only": true,
+        "reconciliation_ref": "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED",
+        "MATERIALIZE_EPHEMERAL_STEGOS_NODE",
+        "RUN_ALLOW_DENY_BYPASS_NETWORK_TEST",
+        "OBSERVE_AUTHENTIC_AI_PROPOSAL",
+        "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS"
+      ],
+      "handoff_projection_refs": [
+        "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+        "neutral_reusable_scheduler_authority": "NONE_SCHEDULING_ONLY",
+        "workercoordinator_remains_claim_fence_authority": true,
+        "interlock_intr_remains_transition_authority": true,
+        "tvc_remains_credential_provider_release_authority": true,
+        "master_records_remains_custody_reconstruction_authority": true,
+        "model_output_grants_execution_authority": false,
+        "physical_device_identity_grants_authority": false,
+        "github_runtime_authority": "NONE"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "goal": "Make the sovereign single-device StegOS Device <-> KnowledgeVault <-> SKAP Vault lane bidirectionally functional through canonical adjacent Interlock/InTr hops, TV/TVC credential authority, exact packet custody, one receipt-hash lineage, authentic retained-Node continuity, canonical EVENT_EPHEMERAL runtime binding, and exact readback without hosted runtime fallback or a second user-operated device.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000102000",
+      "source_refs": [
+        "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "workers/run_device_kv_skap_roundtrip_worker.py",
+        "workers/run_device_kv_skap_canonical_runtime_worker.py",
+        "scripts/execute_device_kv_skap_roundtrip_event.py",
+        "scripts/continue_device_kv_skap_from_tvc_custody.py",
+        "control/process-worker-adapters.d/device-kv-skap-roundtrip-001.json",
+        "StegVerse-Labs/StegOS/stegos/canonical_runtime_lane.py",
+        "StegVerse-Labs/StegOS/stegos/ephemeral_runtime_lease.py",
+        "StegVerse-Labs/StegOS/stegos/node_event_execution_broker.py",
+        "StegVerse-Labs/StegOS/stegos/sovereign_local_event_runtime.py",
+        "StegVerse-Labs/StegOS/stegos/device_kv_skap_canonical_runtime.py",
+        "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py",
+        "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+        "StegVerse-Labs/TVC/tools/coinbase_gateway_stage_drain.py",
+        "data/canonical-task-records/TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001.json"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/TVC",
+          "StegVerse-Labs/Site"
+        ],
+        "components": [
+          "device-kv-bidirectional-intr",
+          "kv-skap-bidirectional-intr",
+          "canonical-event-ephemeral-domain-binding",
+          "single-roundtrip-receipt-lineage",
+          "tvc-skap-credential-reference",
+          "exact-packet-verification"
+        ]
+      },
+      "dependencies": [
+        "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+        "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
+      ],
+      "blockers": [
+        "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_NOT_YET_OBSERVED",
+        "AUTHENTIC_TVC_CHALLENGE_EXCHANGE_NOT_YET_OBSERVED",
+        "AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED",
+        "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED",
+        "AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
+        "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
+        "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
+      ],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "KV-CONNECTION-REVALIDATION-WORKER-001",
+        "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+        "STEGOS-NODE-MANIFOLD-001",
+        "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
+      ],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/StegOS#326@2339f2f2fc8c28eb4d63077387013154dac9b75c",
+        "StegVerse-org/LLM-adapter#331@f4db7005818c7b77bf7e25345c86df1277760a93",
+        "StegVerse-Labs/TVC#377@72aa78c8f60226621c19d58751ec776f777583f9",
+        "StegVerse-Labs/.github#1352@ec7594aac88b8d60b0d230be15f7901f1040b0fa",
+        "StegVerse-Labs/.github#1371@f00ab3f885f172a4703b8ae1b83e5676f3341eba",
+        "StegVerse-Labs/StegOS#332@288a5a32c8c89bf0e44176330ce99bf487e4cc6c",
+        "StegVerse-Labs/StegOS#333@f955068eb23556458434e22d25d696ce9ff5cc9d",
+        "StegVerse-Labs/.github#1399@b273b35fbe96010ca136e84e3d48914d087a00fd",
+        "StegVerse-Labs/StegOS#334@18020e50bc5732216abeb5c2f00e6ec2ea91a11a",
+        "StegVerse-Labs/.github#1400@97f47cbc28fdaf95535a04b48fbe5368f27fc8d5",
+        "StegVerse-Labs/.github#1401@2e4997dc50687ec6e4972f2b63f2e515bb6491bd",
+        "StegVerse-Labs/StegOS#335@abeeed3bc57f7e9bac191f61b6acfd7754bbe644",
+        "StegVerse-Labs/StegOS#336@c1a5393f970f2f9eb3e10f0945a4371bfb120f08",
+        "StegVerse-Labs/StegOS#336:CI@34563132304:SUCCESS",
+        "StegVerse-Labs/.github#1403@002c928ba387080fcabc557002abc1df58301b64",
+        "StegVerse-Labs/.github#1403:DeterministicRepositorySuite@34563316067:SUCCESS",
+        "StegVerse-Labs/.github#1403:OrganizationControl@34563316089:SUCCESS",
+        "StegVerse-Labs/.github#1403:HeartbeatWorkerValidation@34563316085:SUCCESS",
+        "StegVerse-Labs/.github#1420@f75426b62862047fcc999e44f085fa69ff2c23a2",
+        "StegVerse-Labs/StegOS#338@9b532806f3c7d71dd7ae90ecc5ba76192b6027a7",
+        "StegVerse-Labs/StegOS#339@cff17eb68ac156bd60e6db388dfefeefb71ea01b",
+        "StegVerse-Labs/StegOS#340@01fc87a88cd956d83fb3206082513e9de59c0647",
+        "StegVerse-Labs/TVC#407@3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e",
+        "StegVerse-Labs/StegOS#341@a43b203d7c6d738f8c571d64b1669bd6285fc9ff",
+        "StegVerse-Labs/StegOS#341:StegOSCI@34612835986:SUCCESS",
+        "StegVerse-Labs/StegOS#341:GADINativeBoundaryDefense@34612835913:SUCCESS",
+        "StegVerse-Labs/StegOS#341:iOSDevicePackageValidation@34612836055:SUCCESS",
+        "StegVerse-Labs/StegOS#341:iOSAppleToolchainValidation@34612835919:SUCCESS",
+        "StegVerse-Labs/.github#2565@4661a8eb839241c0bff188a991374f45fac1b334",
+        "StegVerse-Labs/.github#2565:Validate-KV-AI-Memory-Resident-Binding@35686779918:SUCCESS",
+        "StegVerse-Labs/.github#2565:validate-deepseek-resident@35686779849:SUCCESS",
+        "StegVerse-Labs/.github#2565:push-Validate-KV-AI-Memory-Resident-Binding@35686765254:SUCCESS"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_OBSERVED",
+        "AUTHENTIC_TVC_CHALLENGE_EXCHANGE_VERIFIED",
+        "TVC_PUBLIC_RECIPIENT_CONFIG_PROJECTED_FROM_AUTHENTIC_EXCHANGE",
+        "AUTHENTIC_RETAINED_NODE_BINDING_OBSERVED",
+        "AUTHENTIC_CANONICAL_EVENT_EPHEMERAL_LEASE_OPEN_OBSERVED",
+        "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_TO_CANONICAL_RUNTIME_BRIDGE",
+        "AUTHENTIC_CURRENT_DEVICE_GATEWAY_CANONICAL_SIDECAR_OBSERVED",
+        "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_OBSERVED",
+        "DEVICE_KV_SKAP_ROUNDTRIP_IS_ONE_RECEIPT_HASH_CHAIN",
+        "CURRENT_PACKET_BYTES_MATCH_INTENT_HASH_AT_COMPLETION",
+        "EVERY_COMPLETED_HOP_HAS_VERIFIED_INTERLOCK_RECEIPT",
+        "SKAP_CREDENTIAL_MATERIAL_NEVER_ENTERS_ORDINARY_KV_DEVICE_OR_REPOSITORY_STATE",
+        "TVC_REMAINS_SOLE_CREDENTIAL_AUTHORITY",
+        "TVC_REMAINS_SINGLE_SKAP_CIPHERTEXT_CUSTODY_WRITER",
+        "KV_AND_SKAP_TERMINAL_STATE_EXACT_READBACK_VERIFIED",
+        "CANONICAL_RUNTIME_BRIDGE_RECEIPT_RETAINED",
+        "NO_HOSTED_RUNTIME_FALLBACK_USED",
+        "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
+      ],
+      "runtime_requirements": {
+        "environment": "SOVEREIGN_CANONICAL_EVENT_EPHEMERAL_STEGOS_NODE_INVOCATION",
+        "direction": "DEVICE_SYSTEM_TO_KV_TO_SKAP_VAULT_TO_KV_TO_DEVICE_SYSTEM",
+        "mutation_required": true,
+        "deployment_required": false,
+        "persistent_runtime_required": false,
+        "always_on_receiver_required": false,
+        "event_ephemeral_materialization_allowed": true,
+        "current_observation_required": true
+      },
+      "runtime_resolution": {
+        "current_executor": "CANONICAL_STEGOS_EVENT_EPHEMERAL_LANE",
+        "runtime_lifecycle_owner": "StegVerse-Labs/StegOS/stegos/canonical_runtime_lane.py",
+        "domain_binding_owner": "StegVerse-Labs/StegOS/stegos/device_kv_skap_canonical_runtime.py",
+        "worker_entrypoint": "workers/run_device_kv_skap_canonical_runtime_worker.py",
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "transition_authority": "Interlock/InTr",
+        "credential_authority": "TV/TVC",
+        "bridge_owns_runtime_lifecycle": false,
+        "domain_binding_owns_runtime_lifecycle": false,
+        "persistent_node_identity_required": true,
+        "persistent_transport_process_required": false,
+        "unattended_runtime": false
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "fence_ref": "stegverse.worker-invocation/v0.1#scope.fencing_token",
+        "projection_only": false
+      },
+      "human_action_ref": "control/current-user-ios-interaction-queue.json",
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "single_roundtrip_composition_source_complete": true,
+        "tvc_continuation_wired": true,
+        "bounded_event_executor_merged": true,
+        "stegos_canonical_runtime_domain_binding_merged": true,
+        "stegos_canonical_runtime_domain_binding_validation_run": 34563132304,
+        "github_workercoordinator_domain_entrypoint_merged": true,
+        "github_workercoordinator_domain_entrypoint_merge_sha": "002c928ba387080fcabc557002abc1df58301b64",
+        "ios_opaque_recipient_source_complete": true,
+        "ios_native_invocation_source_complete": true,
+        "authentic_current_iphone_tvc_recipient_activation_observed": false,
+        "authentic_tvc_challenge_exchange_observed": false,
+        "authentic_gateway_tvc_input_pair_observed": false,
+        "authentic_four_leg_roundtrip_observed": false,
+        "kv_skap_exact_readback_observed": false,
+        "reconciliation_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "github_import_test_isolation_repair_merged": true,
+        "github_import_test_isolation_repair_merge_sha": "4661a8eb839241c0bff188a991374f45fac1b334",
+        "github_import_test_isolation_validation_runs": [
+          35686779849,
+          35686779918,
+          35686765254
+        ]
+      },
+      "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION",
+        "VERIFY_AUTHENTIC_TVC_CHALLENGE_EXCHANGE",
+        "PROJECT_TVC_PUBLIC_RECIPIENT_CONFIG",
+        "PRODUCE_OR_LOCATE_AUTHENTIC_CURRENT_DEVICE_GATEWAY_TVC_INPUT_PAIR",
+        "EXECUTE_AUTHENTIC_CANONICAL_EVENT_EPHEMERAL_ROUNDTRIP",
+        "RETAIN_BRIDGE_FOUR_HOP_AND_EXACT_READBACK_EVIDENCE"
+      ],
+      "handoff_projection_refs": [
+        "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "credential_authority": "TV_TVC",
+        "github_runtime_authority": "NONE",
+        "heartbeat_execution_authority": false,
+        "model_output_authority": false,
+        "hosted_execution_fallback": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/StegOS#341@a43b203d7c6d738f8c571d64b1669bd6285fc9ff"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/StegOS#333@f955068eb23556458434e22d25d696ce9ff5cc9d"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/StegOS#336@c1a5393f970f2f9eb3e10f0945a4371bfb120f08",
+              "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json#runtime_resolution"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGOS-NODE-MANIFOLD-001",
+      "correlation_id": "STEGOS-NODE-MANIFOLD-001",
+      "root_correlation_id": "STEGOS-NODE-MANIFOLD-001",
+      "parent_task_id": null,
+      "goal": "Physically prove the governed StegOS Node and ephemeral Network Manifold from retained node genesis through distinct peer participation, NETWORK_PRESENT, degradation/reformation, and exact replay/reconstruction, while allowing separately tracked service-KV substrate work to reuse the same retained-node and Interlock/InTr primitives without claiming physical network proof.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "repository": "StegVerse-Labs/StegOS",
+      "canonical_issue": "StegVerse-Labs/StegOS#23",
+      "handoff_projection_refs": [
+        "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/continuity-vault-kit"
+        ],
+        "components": [
+          "retained-stegos-node",
+          "node-genesis",
+          "network-manifold",
+          "universal-intr",
+          "service-root-kv-topology",
+          "ecosystem-chat-service-kv",
+          "physical-peer-evidence",
+          "replay-reconstruction"
+        ]
+      },
+      "adjacent_task_refs": [
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "KV-CONNECTION-REVALIDATION-WORKER-001",
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+      ],
+      "remaining_predicates": [
+        "REAL_FRAGMENTATION_AND_REFORMATION_OBSERVED",
+        "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
+      ],
+      "worker_claim": {
+        "authority": "CURRENT_SESSION_COORDINATION_ONLY",
+        "claim_ref": "StegVerse-Labs/StegOS#23",
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "activation_proof_complete": false
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "heartbeat_execution_authority": false,
+        "github_runtime_authority": "NONE",
+        "hosted_execution_fallback": false
+      },
+      "cosv_task_vector": "40000100100000",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+      "correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+      "root_correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+      "parent_task_id": null,
+      "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and derive deduplicated StegHealth recovery tasks when expected worker history fails to return to Master Records.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "20010000100000",
+      "source_refs": [
+        "docs/STEGVERSE_TASK_REGISTRY_HEALTH_MONITOR_001_MIRROR_HANDOFF.md",
+        "data/task-registry-health-monitor-contract.json",
+        "data/worker-return-observation-contract.json",
+        "control/task-vectors/STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001.json"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegIndex",
+          "StegVerse-Labs/StegDB",
+          "StegVerse-Labs/StegHealth"
+        ],
+        "components": [
+          "task-registry-census",
+          "checked-out-task-review",
+          "worker-return-reconciliation",
+          "steghealth-recovery-derivation",
+          "monitor-report"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001"
+      ],
+      "existing_evidence_refs": [
+        "data/task-lifecycle-status-contract.json",
+        "data/worker-return-observation-contract.json",
+        "data/task-registry-health-monitor-contract.json"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "report_complete": false,
+        "summary_ref": null
+      },
+      "next_admissible_work": {
+        "kind": "TASK_REGISTRY_HEALTH_MONITOR_CYCLE",
+        "output": "TASK_COUNTS_CHECKED_OUT_FINDINGS_AND_STEGHEALTH_RECOVERY_DERIVATIONS"
+      },
+      "status_response_contract": {
+        "active": "currently active - checked out",
+        "completed": "completed with monitor findings"
+      },
+      "retired_terminal": true,
+      "retired_resurrection_review_only": true
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+      "parent_task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "root_correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "goal": "Bind normal voluntary session/task close to the merged Task Registry hash-linked RETURNED/CHECK_OUT event protocol so session handoff/footer orchestration cannot relinquish work without durable coordination history.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "worker_claim": "CURRENT_SESSION",
+      "source_refs": [
+        "docs/TASK_REGISTRY_SESSION_RETURN_ORCHESTRATION_MIRROR_HANDOFF.md",
+        "scripts/materialize_task_session_close.py",
+        "scripts/record_task_registry_session_return.py",
+        "data/task-coordination-policy.json",
+        "StegVerse-Labs/.github#1411"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "canonical-task-registry",
+          "session-close",
+          "handoff-footer",
+          "recent-collision-history"
+        ]
+      },
+      "dependencies": [
+        "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+      ],
+      "adjacent_task_refs": [
+        "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+      ],
+      "authority": {
+        "task_registry": "COORDINATION_ONLY",
+        "workercoordinator": "CLAIM_FENCE",
+        "interlock_intr": "TRANSITION_ADMISSION",
+        "credential_authority": "TV/TVC",
+        "master_records": "OBSERVED_REALITY_AND_RECONSTRUCTION",
+        "heartbeat": "OBSERVABILITY_ONLY",
+        "github_runtime_authority": "NONE"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+      "correlation_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+      "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "goal": "Materialize a real current-iPhone TVC recipient-key capability for Coinbase ingress using an opaque non-exportable P-256 key handle in the existing StegOS Mobile iOS target, while preserving TV/TVC credential authority, Interlock/InTr transition authority, no private-key export, and no second runtime owner.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000102000",
+      "owners": {
+        "credential_capability_owner": "StegVerse-Labs/TVC",
+        "mobile_host_integration_owner": "StegVerse-Labs/StegOS",
+        "roundtrip_consumer": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+      },
+      "source_refs": [
+        "StegVerse-Labs/TVC/scripts/tvc_recipient_key_capability.py",
+        "StegVerse-Labs/TVC/scripts/ios_opaque_recipient_capability.py",
+        "StegVerse-Labs/TVC/scripts/activate_coinbase_intr_capability.py",
+        "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
+        "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/StegOSMobileApp.swift",
+        "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj",
+        "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
+      ],
+      "current_truth": {
+        "platform_neutral_tvc_capability_contract_merged": true,
+        "linux_root_adapter_exists": true,
+        "native_ios_project_exists": true,
+        "ios_tvc_opaque_key_adapter_exists": true,
+        "stegos_ios_candidate_compiled": true,
+        "stegos_ios_liveness_signer_compiled": true,
+        "stegos_ios_url_exchange_merged": true,
+        "tvc_ios_signature_verifier_merged": true,
+        "tvc_coinbase_activation_seam_bound": true,
+        "source_and_apple_toolchain_validated": true,
+        "native_source_invocation_gap_closed": true,
+        "authentic_current_device_activation_observed": false,
+        "authentic_tvc_challenge_exchange_observed": false,
+        "tvc_public_recipient_config_projected_from_authentic_exchange": false
+      },
+      "required_implementation": [
+        "Implement a TVC-owned iOS recipient capability adapter inside the existing StegOS Mobile target using Apple Security APIs and a non-exportable P-256 private key handle.",
+        "Bind key creation/liveness to a TVC namespace and emit only public key material, recipient_key_id, runtime_instance_id, lease metadata, and an opaque tvc-capability:// handle.",
+        "Do not expose raw private-key bytes to StegOS Mobile, ordinary KV, GitHub, logs, screenshots, argv, or provider payloads.",
+        "Provide a TVC-verifiable activation/liveness envelope compatible with stegverse.tvc.recipient-key-capability/v1 semantics.",
+        "Fail closed when Secure Enclave/non-exportability requirements cannot be satisfied; do not silently downgrade to an exportable software key for production proof.",
+        "Wire the capability into the existing Coinbase recipient activation seam without creating another runtime lifecycle or transition authority.",
+        "Expose the bounded candidate/challenge exchange through the existing StegOS Mobile URL scheme without widening callback origin, credential, transition, runtime, custody, provider, or GitHub authority.",
+        "Validate source/build behavior, then require authentic current-iPhone activation before projecting READY_FOR_OWNER_INGRESS or producing a Gateway sidecar."
+      ],
+      "authority_invariants": {
+        "credential_authority": "TV/TVC",
+        "transition_authority": "Interlock/InTr",
+        "mobile_host_mints_credential_authority": false,
+        "mobile_host_mints_transition_authority": false,
+        "private_key_export_allowed": false,
+        "github_runtime_authority": "NONE",
+        "hosted_runtime_fallback": false,
+        "second_user_operated_device_required": false
+      },
+      "expected_evidence_predicates": [
+        "IOS_TVC_OPAQUE_P256_KEY_CREATED_NON_EXPORTABLE",
+        "IOS_TVC_PUBLIC_RECIPIENT_CONFIG_DERIVED",
+        "IOS_TVC_LIVENESS_MATCHES_ACTIVATION",
+        "IOS_TVC_PRIVATE_KEY_BYTES_NEVER_EXPORTED",
+        "CURRENT_IPHONE_RECIPIENT_CAPABILITY_ACTIVATION_OBSERVED",
+        "CURRENT_IPHONE_RECIPIENT_CAPABILITY_LIVENESS_OBSERVED"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false,
+        "source_implemented": true,
+        "source_validated": true,
+        "native_invocation_source_merged": true,
+        "native_invocation_source_validated": true
+      },
+      "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION",
+        "VERIFY_AUTHENTIC_TVC_CHALLENGE_EXCHANGE",
+        "PROJECT_TVC_PUBLIC_RECIPIENT_CONFIG"
+      ],
+      "handoff_projection_refs": [
+        "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
+      ],
+      "implementation_evidence": {
+        "StegOS_PR_338": "9b532806f3c7d71dd7ae90ecc5ba76192b6027a7",
+        "StegOS_PR_339": "cff17eb68ac156bd60e6db388dfefeefb71ea01b",
+        "StegOS_PR_340": "01fc87a88cd956d83fb3206082513e9de59c0647",
+        "TVC_PR_407": "3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e",
+        "StegOS_PR_341": "a43b203d7c6d738f8c571d64b1669bd6285fc9ff",
+        "StegOS_PR_341_head": "710fc16d4c3c7cca07257e7575e8914859d76846",
+        "StegOS_PR_341_validation_runs": {
+          "StegOS_CI": 34612835986,
+          "GADI_native_boundary_defense_validation": 34612835913,
+          "iOS_Device_Package_Validation": 34612836055,
+          "iOS_Apple_Toolchain_Validation": 34612835919
+        },
+        "validation": "StegOS candidate/signing/native URL exchange source and Apple-toolchain/device-package/CI validation SUCCESS; TVC recipient-capability/credential-model/consent HTTP validation SUCCESS"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "correlation_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "parent_task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "goal": "Materialize or bind an authentic TVC-controlled non-exportable P-256 recipient-admission authority signer backend to the existing vault-agent OpaqueRecipientAdmissionSigner interface without reusing the recipient Secure Enclave key, creating a second credential path, exporting private-key material, or creating a user verifier outside KV/SKAP Vault.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000102000",
+      "owners": {
+        "credential_authority": "TV/TVC",
+        "implementation_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/TVC + StegVerse-Labs/StegOS + StegVerse-Labs/.github",
+        "consumer": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+      },
+      "component_model_projection": {
+        "model": "data/reusable-task-component-model.json",
+        "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+        "evaluator": "scripts/evaluate_reusable_task_componentization.py",
+        "transport_family": "data/reusable-transport-component-contract.json",
+        "evidence_validation_family": "data/reusable-evidence-validation-component-contract.json",
+        "goal_transport_profile": "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
+        "execution_materialization_contract": "data/reusable-task-ephemeral-construct-contract.json",
+        "component_handoff": "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "selected_transport_components": [
+          "RTC-MANIFEST-001",
+          "RTC-GOVERNED-PROCESSING-002",
+          "RTC-ROUNDTRIP-003",
+          "RTC-EVIDENCE-CUSTODY-004",
+          "RTC-INTERLOCK-INTR-TRANSPORT-008"
+        ],
+        "selected_evidence_validation_components": [
+          "RTC-EVIDENCE-CURRENT-SELECTOR-010"
+        ],
+        "omitted_optional_or_non_applicable_transport_components": [
+          "RTC-PUBLISHER-005",
+          "RTC-SDK-RETURN-006",
+          "RTC-STEGVERSE-EGRESS-007",
+          "RTC-FARSIDE-FINAL-009"
+        ],
+        "goal_identity_preserved": true,
+        "cosv_identity_preserved": true,
+        "componentization_mints_authority": false,
+        "runtime_predicates_changed": false,
+        "runtime_handoff_remains_runtime_truth": true
+      },
+      "componentization_evaluation": {
+        "score": 27,
+        "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+        "active_signals": [
+          "repeated_subflow",
+          "multiple_authority_crossings",
+          "multiple_round_trips",
+          "cross_repository_or_org_spread",
+          "task_specific_adapter_duplicates_generic_work",
+          "handoff_sequence_growth",
+          "failure_path_branching",
+          "independent_reusability",
+          "independent_evidence_predicate"
+        ],
+        "optional_subflow_present": false,
+        "authority_effect": "NONE_COORDINATION_ONLY"
+      },
+      "source_refs": [
+        "data/task-registry-global-invariants.json",
+        "data/reusable-task-component-model.json",
+        "data/reusable-task-component-decomposition-policy.json",
+        "data/reusable-transport-component-contract.json",
+        "data/reusable-evidence-validation-component-contract.json",
+        "data/reusable-task-ephemeral-construct-contract.json",
+        "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
+        "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/stegfin-governance/stegwallet/platform_recipient_admission_signer.py",
+        "StegVerse-Labs/stegfin-governance/stegwallet/kv_skap_admitted_node_platform_transport.py",
+        "StegVerse-Labs/stegfin-governance/stegwallet/current_intr_admission_provider.py",
+        "StegVerse-Labs/stegfin-governance/docs/TVC_CURRENT_INTR_ADMISSION_PROVIDER_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/stegos/kv_skap_verified_local_operation.py",
+        "StegVerse-Labs/StegOS/stegos/tvc_recipient_admission_node_capability.py",
+        "StegVerse-Labs/StegOS/stegos/tvc_recipient_admission_canonical_node_carrier.py",
+        "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
+        "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCAuthenticatedRecipientCapability.swift",
+        "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_NODE_CAPABILITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_CANONICAL_NODE_CARRIER_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_BOUND_OPERATION_SIGNING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC/tools/project_kv_skap_user_verification_provenance.py",
+        "StegVerse-Labs/TVC/tools/select_current_kv_skap_verification_record.py",
+        "StegVerse-Labs/TVC/docs/CURRENT_KV_SKAP_VERIFICATION_SELECTOR_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github/scripts/build_tvc_recipient_admission_sign_intr_request.py",
+        "StegVerse-Labs/.github/workers/tvc_recipient_admission_sign_intr_ingress.py",
+        "StegVerse-Labs/.github/scripts/install_tvc_recipient_admission_sign_universal_intr_route.py",
+        "docs/TVC_RECIPIENT_ADMISSION_SIGN_INTR_ROUTE_MIRROR_HANDOFF.md"
+      ],
+      "blockers": [
+        "CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE_NOT_YET_OBSERVED",
+        "CURRENT_INTR_ADMISSION_RUNTIME_ROUTE_INSTALLATION_AND_EXACT_RECEIPT_EVIDENCE_SOURCE_NOT_YET_OBSERVED",
+        "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER",
+        "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
+        "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
+        "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED",
+        "FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED",
+        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED"
+      ],
+      "expected_evidence_predicates": [
+        "KV_SKAP_USER_VERIFICATION_PRESERVED_AS_SOLE_USER_VERIFIER",
+        "STEGOS_NODE_REMAINS_INTERCHANGEABLE_TRANSPORT_NODE",
+        "KV_SKAP_VERIFICATION_PROVENANCE_PROJECTED_WITHOUT_NEW_VERIFIER",
+        "CURRENT_KV_SKAP_BINDING_AUTHENTICALLY_OBSERVED",
+        "CURRENT_KV_SKAP_RECORD_SELECTED_BY_REUSABLE_COMPONENT",
+        "EXACT_PLATFORM_SIGN_REQUEST_ADMITTED_BY_UNIVERSAL_INTR",
+        "CURRENT_INTR_ADMISSION_PROJECTED_FROM_AUTHENTIC_WRITE_ONCE_RECEIPT",
+        "KV_SKAP_VERIFICATION_AND_INTR_ADMISSION_BOUND_TO_EXACT_LOCAL_OPERATION",
+        "CANONICAL_RUNTIME_NODE_CARRIER_BINDS_EXACT_WORKER_CLAIM_LEASE_AND_NODE",
+        "NODE_EVENT_EXECUTION_BROKER_CAPABILITY_CONSUMES_EXACT_BOUND_OPERATION",
+        "NATIVE_ROLE_SEPARATED_P256_SIGNER_CONSUMES_EXACT_BOUND_OPERATION",
+        "TVC_ADMISSION_AUTHORITY_BACKEND_BOUND_TO_EXISTING_VAULT_AGENT",
+        "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
+        "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
+        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_CONFIRMED",
+        "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
+        "RECIPIENT_SECURE_ENCLAVE_KEY_NOT_REPURPOSED_AS_AUTHORITY_KEY",
+        "NO_SECOND_SIGNER_DAEMON_OR_CREDENTIAL_PATH"
+      ],
+      "current_truth": {
+        "user_verification_authority": "KV/SKAP Vault",
+        "user_verification_authority_exclusive": true,
+        "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+        "device_user_verifier_authority": "NONE",
+        "node_user_verifier_authority": "NONE",
+        "transport_user_verifier_authority": "NONE",
+        "secure_enclave_user_verifier_authority": "NONE",
+        "opaque_signing_protocol_merged": true,
+        "existing_vault_agent_dispatch_integration_merged": true,
+        "role_separated_secure_enclave_authority_candidate_source_merged": true,
+        "role_separated_secure_enclave_authority_candidate_merge": "StegVerse-Labs/StegOS@e81b981c1218fca2031a43207afd0a419ff1263d",
+        "tvc_vault_agent_caller_consolidated": true,
+        "platform_opaque_signer_backend_adapter_merged": true,
+        "platform_opaque_signer_backend_merge": "StegVerse-Labs/stegfin-governance@6a42422d1faf2449f18f98efcd6b0c61bd0bb733",
+        "kv_skap_verified_local_operation_binding_merged": true,
+        "kv_skap_verified_local_operation_binding_merge": "StegVerse-Labs/StegOS@d39477a0a175c175266fe31fe0a2862323895ec9",
+        "kv_skap_admitted_node_platform_transport_merged": true,
+        "kv_skap_admitted_node_platform_transport_merge": "StegVerse-Labs/stegfin-governance@1e592bd6c385e79411ac72229ae9fd12a70411c9",
+        "kv_skap_user_verification_provenance_projector_merged": true,
+        "kv_skap_user_verification_provenance_projector_merge": "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a",
+        "reusable_current_verification_selector_component_merged": true,
+        "reusable_current_verification_selector_component_merge": "StegVerse-Labs/.github@f7132f32ce27a628f9c379f6d585a01d8b0e90dc",
+        "reusable_current_verification_selector_component_id": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
+        "current_kv_skap_verification_selector_implementation_merged": true,
+        "current_kv_skap_verification_selector_implementation_merge": "StegVerse-Labs/TVC@b029e0d880d3f133b96cdedced915cea8df47532",
+        "current_kv_skap_verification_selector_validation": "34731405250",
+        "current_kv_skap_verification_selector_creates_verification": false,
+        "current_kv_skap_verification_selector_uses_latest_by_time": false,
+        "current_kv_skap_verification_selector_returns_raw_source_record": false,
+        "current_kv_skap_verification_binding_source_observed": false,
+        "tvc_recipient_admission_sign_universal_intr_route_source_merged": true,
+        "tvc_recipient_admission_sign_universal_intr_route_merge": "StegVerse-Labs/.github@08178861cfa144ce032d9399d50c56a77bd1a74b",
+        "universal_intr_route_starts_second_listener": false,
+        "universal_intr_request_grants_execution_authority": false,
+        "universal_intr_ingress_receipt_authority_effect": "INGRESS_TRANSITION_ONLY",
+        "current_intr_admission_provider_merged": true,
+        "current_intr_admission_provider_merge": "StegVerse-Labs/stegfin-governance@0980ca24f3acc4ed9a26cd24e433276d37c72911",
+        "current_intr_provider_issues_admission": false,
+        "current_intr_provider_requires_exact_platform_request_binding": true,
+        "current_intr_provider_requires_fresh_receipt": true,
+        "current_intr_provider_rejects_tvc_capability_admission_as_intr_evidence": true,
+        "node_event_recipient_admission_capability_merged": true,
+        "node_event_recipient_admission_capability_merge": "StegVerse-Labs/StegOS@8b3b83532b26333570369884a270481f48aeaeef",
+        "node_event_capability_reuses_existing_broker": true,
+        "node_event_capability_selects_permanent_device": false,
+        "node_event_capability_performs_user_verification": false,
+        "canonical_runtime_recipient_admission_node_carrier_merged": true,
+        "canonical_runtime_recipient_admission_node_carrier_merge": "StegVerse-Labs/StegOS@b6b6a370bffb2cee20ae1037b0a8292c41c08858",
+        "canonical_runtime_recipient_admission_node_carrier_ci": "34722999313",
+        "canonical_runtime_recipient_admission_node_carrier_uses_existing_broker": true,
+        "canonical_runtime_recipient_admission_node_carrier_opens_runtime_lease": false,
+        "canonical_runtime_recipient_admission_node_carrier_selects_device": false,
+        "canonical_runtime_recipient_admission_node_carrier_performs_user_verification": false,
+        "native_bound_authority_signer_merged": true,
+        "native_bound_authority_signer_merge": "StegVerse-Labs/StegOS@ad05e62f0d84549e511b6ebd047bb8091a3b0ce7",
+        "native_bound_authority_signer_stegos_ci": "34722630460",
+        "native_bound_authority_signer_apple_toolchain": "34722630468",
+        "native_bound_authority_signer_device_package": "34722630448",
+        "native_bound_authority_signer_exposes_public_signing_url": false,
+        "native_bound_authority_signer_performs_user_verification": false,
+        "native_bound_authority_signer_uses_role_separated_authority_key": true,
+        "native_bound_authority_signer_private_key_exported": false,
+        "platform_transport_performs_user_verification": false,
+        "node_local_operation_may_create_user_verification": false,
+        "public_loopback_or_deep_link_signing_service_authorized": false,
+        "stegos_readme_authority_candidate_paragraph_requires_reconciliation": true,
+        "reusable_task_component_model_canonical_merge": "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+        "reusable_component_profile_projected": true,
+        "duplicate_task_specific_orchestration_growth_stopped": true,
+        "platform_backend_injected_in_production_launcher": false,
+        "production_backend_materialized": false,
+        "public_trust_anchor_bound": false,
+        "fresh_production_signature_observed": false,
+        "master_records_reconstruction_observed": false
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WorkerCoordinator",
+        "user_verification_authority": "KV/SKAP Vault",
+        "device_user_verifier_authority": "NONE",
+        "node_user_verifier_authority": "NONE",
+        "transport_user_verifier_authority": "NONE",
+        "credential_authority": "TV/TVC",
+        "transition_authority": "Interlock/InTr",
+        "master_records_reality_authority": true,
+        "heartbeat_authority": "OBSERVABILITY_ONLY",
+        "github_runtime_authority": "NONE",
+        "github_ci_model_may_create_production_signing_key": false,
+        "recipient_key_may_be_promoted_to_authority_key": false,
+        "alternate_credential_path_authorized": false,
+        "hosted_execution_fallback": false,
+        "second_user_operated_device_required": false
+      },
+      "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE",
+        "BIND_CURRENT_INTR_EVIDENCE_SOURCE_TO_EXISTING_UNIVERSAL_INTR_RUNTIME_COMPONENT",
+        "BIND_GENERIC_NODE_OPAQUE_P256_CAPABILITY_TO_NATIVE_STEGOS_AUTHORITY_SIGNER_WITHIN_EXISTING_ELIGIBLE_EXECUTION_CONTEXT",
+        "INJECT_COMPONENTIZED_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
+        "RECONCILE_STEGOS_README_BOUND_SIGNING_STATE",
+        "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
+        "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION",
+        "SUBMIT_AUTHENTIC_SIGNING_EVIDENCE_TO_MASTER_RECORDS_RECONSTRUCTION"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false
+      },
+      "handoff_projection_refs": [
+        "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
+        "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "correlation_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "goal": "Establish authentic TVC-controlled production custody for the recipient-capability admission signing key and bind the matching public JWK trust anchor without exporting private-key material or granting GitHub, CI, model, StegOS, or Interlock signing authority.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000102000",
+      "owners": {
+        "credential_authority": "TV/TVC",
+        "implementation_owner": "StegVerse-Labs/TVC",
+        "consumer": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
+      },
+      "source_refs": [
+        "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC/scripts/stegos_ios_recipient_authenticated_adoption.py",
+        "StegVerse-Labs/TVC/scripts/tvc_recipient_capability_admission.py",
+        "StegVerse-Labs/TVC/scripts/tvc_recipient_admission_resident_signer.py",
+        "StegVerse-Labs/TVC/.github/workflows/recipient-admission-signing-custody-validation.yml"
+      ],
+      "blockers": [
+        "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
+        "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND",
+        "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED"
+      ],
+      "expected_evidence_predicates": [
+        "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
+        "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
+        "FRESH_SIGNED_RECIPIENT_ADMISSION_BOUND_TO_EXACT_WORKER_FENCE_AND_LEASE",
+        "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
+        "GITHUB_CI_MODEL_HAVE_NO_SIGNING_AUTHORITY"
+      ],
+      "current_truth": {
+        "tvc_408_authenticated_adoption_merged": true,
+        "stegos_343_authenticated_verifier_merged": true,
+        "opaque_resident_signer_source_merged": true,
+        "opaque_resident_signer_source_validated": true,
+        "opaque_resident_signer_merge_sha": "f7124a2f0a60a3474a1f8868fb3b03e8821c1e38",
+        "opaque_resident_signer_validation_run": 34670427194,
+        "private_key_input_surface_absent": true,
+        "public_trust_anchor_projection_source_complete": true,
+        "returned_signature_verified_locally": true,
+        "wrong_signature_fails_closed": true,
+        "private_jwk_fails_closed": true,
+        "production_signing_custody_observed": false,
+        "public_trust_anchor_bound": false,
+        "production_signed_admission_observed": false
+      },
+      "authority_model": {
+        "credential_authority": "TV_TVC",
+        "transition_authority": "Interlock/InTr",
+        "github_runtime_authority": "NONE",
+        "github_ci_model_may_create_production_signing_key": false,
+        "stegos_may_mint_tvc_signing_authority": false,
+        "hosted_execution_fallback": false
+      },
+      "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_TVC_CONTROLLED_OPAQUE_SIGNER_MATERIALIZATION",
+        "BIND_MATCHING_PUBLIC_JWK_TRUST_ANCHOR",
+        "ISSUE_FRESH_BOUND_SIGNED_RECIPIENT_ADMISSION"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false,
+        "source_implemented": true,
+        "source_validated": true
+      },
+      "handoff_projection_refs": [
+        "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md"
+      ]
     }
   ],
   "human_actions": [],
@@ -13361,7 +14715,9 @@
     "ALL_REQUIRED_EVIDENCE_RESULTING_FROM_A_GOVERNED_STATE_TRANSITION_MUST_BE_VALIDATED_BY_MASTER_RECORDS",
     "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_DOES_NOT_GRANT_TRANSITION_OR_EXECUTION_AUTHORITY",
     "MISSING_AUTHENTIC_RUNTIME_RECEIPT_IS_NOT_A_WAIT_CONDITION",
-    "TRACE_EXISTING_PATH_TO_FIRST_DETERMINISTIC_DEFECT_AND_REPAIR_ONLY_THAT_BOUNDARY"
+    "TRACE_EXISTING_PATH_TO_FIRST_DETERMINISTIC_DEFECT_AND_REPAIR_ONLY_THAT_BOUNDARY",
+    "EXACT_NATIVE_SHARD_PROJECTION_DOES_NOT_CREATE_TASK_IDENTITY_EXECUTION_AUTHORITY_OR_RUNTIME_EVIDENCE",
+    "AI_SOURCE_CLOSURE_REQUIRES_EVIDENCED_NATIVE_OWNER_RECONCILIATION_AND_KEEPS_OUTREACH_DISABLED"
   ],
   "global_runtime_invariant_update": {
     "connected_device_inventory_task_progression_role": "NONE_PROHIBITED",
