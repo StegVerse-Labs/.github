@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 223,
+  "generation": 224,
   "status": "MYKV_NATIVE_IOS_SOURCE_WORK_CORRELATION_ACTIVE_RUNTIME_EVIDENCE_SEPARATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11068,6 +11068,111 @@
         "signing_performed": false,
         "testflight_uploaded": false,
         "device_installed": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "parent_task_id": null,
+      "goal": "Consume authentic existing provider-conformance and private-KV readback proofs on the existing sovereign KV worker; preserve original Google Drive KV #2 request as separately governed.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "cosv_task_vector": "50000000102000",
+      "source_refs": [
+        "handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json",
+        "control/task-vectors/KV-CONNECTION-REVALIDATION-WORKER-001.json",
+        "docs/KV_SDK_MANIFEST_RUNTIME_OWNER_RECONCILIATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/continuity-vault-kit#119",
+        "StegVerse-Labs/.github#366",
+        "StegVerse-Labs/.github#424"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/continuity-vault-kit"
+        ],
+        "components": [
+          "existing-kv-connection-revalidation-worker",
+          "existing-native-cvk-intr-custody-source",
+          "sdk-universal-intr-compatibility"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "EXISTING_CVK_NATIVE_OWNER",
+          "kind": "EXISTING_OWNER",
+          "state": "SOURCE_INSTALLED",
+          "ref": "StegVerse-Labs/continuity-vault-kit#119"
+        },
+        {
+          "dependency_id": "CURRENT_GENERATION_AUTHENTIC_GATE",
+          "kind": "ADMISSION",
+          "state": "PENDING_RETAINED_RUNTIME_EVENT",
+          "ref": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
+        }
+      ],
+      "blockers": [
+        "AUTHENTIC_CURRENT_GENERATION_GATE_EVENT_NOT_OBSERVED",
+        "MASTER_RECORDS_ACCEPTANCE_AND_FULL_INTR_REPLAY_NOT_AUTHENTICALLY_OBSERVED",
+        "DEPLOYED_QUERY_SECRET_SAFE_INGRESS_AND_TVC_CALLBACK_NOT_OBSERVED"
+      ],
+      "adjacent_task_refs": [
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+      ],
+      "expected_evidence_predicates": [
+        "ORIGINAL_GOAL_PRESERVED_WITH_UNCHANGED_COSV",
+        "GENERATION_BOUND_AUTHENTIC_OWNER_COLLISION_DISPOSITION",
+        "NATIVE_MASTER_RECORDS_ACCEPTANCE_AND_FULL_INTR_REPLAY",
+        "SDK_MANIFEST_REQUEST_RESULT_LINEAGE",
+        "AUTHENTIC_GATEWAY_AND_TVC_CALLBACK_BEFORE_PROVIDER_OPERATION"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authentic_runtime_proof": false,
+        "provider_connect_verified": false,
+        "kv2_materialized": false
+      },
+      "allowed_next_transitions": [
+        "SOURCE_REGISTRATION_REVIEW_AND_AUTHORIZED_MERGE",
+        "AUTHENTIC_GENERATION_BOUND_AI_SESSION_GATE",
+        "NATIVE_OWNER_COLLISION_RECONCILIATION",
+        "SEPARATE_AUTHORIZED_SOURCE_MERGES",
+        "NATIVE_MASTER_RECORDS_AND_UNIVERSAL_INTR_REPLAY"
+      ],
+      "handoff_projection_refs": [
+        "docs/KV_SDK_MANIFEST_RUNTIME_OWNER_RECONCILIATION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "transition_authority": "INTERLOCK_INTR",
+        "master_records_reality_authority": true,
+        "github_runtime_authority": "NONE",
+        "healer_role": "OPTIONAL_CARRIER_NOT_KV_COMPLETION",
+        "second_user_operated_device_required": false
+      },
+      "registration": {
+        "source_pr_only": true,
+        "existing_goal_not_new_goal": true,
+        "original_goal_prompt_ceiling": "20/20",
+        "existing_owner": "StegVerse-Labs/continuity-vault-kit#119 + StegVerse-Labs/.github#366",
+        "original_cosv": "50000000102000",
+        "post_merge_authentic_gate_required": true
       }
     }
   ],
