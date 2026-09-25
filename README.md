@@ -1624,3 +1624,7 @@ Within existing open-source strategy owner ECOSYSTEM-OPEN-SOURCE-STRATEGY-001 / 
 ### Source-pinned citation repair preview added to SDK draft
 
 The existing SDK draft PR #322 now proposes a review-only `resolve_deepwiki_review_citations.py` step and tests. It uses the checkout's exact SHA to produce source-path/line-bound candidate URLs and explicitly preserves unresolved entries, with `publication_allowed=false`. Exact-head CI and actual candidate counts still require readback; the official Pages wiki, licenses, Registry state and previous DeepWiki raw artifact remain unchanged.
+
+### 613 source-pinned citation candidates — exact evidence
+
+SDK PR #322 exact head `0b6b3417c7ab099c67223fed2a1b979b672a6f33` passed 12/12 applicable workflows. Review-only [run 36156082719](https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36156082719) retained [artifact 10873616895](https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36156082719/artifacts/10873616895) with exact original DeepWiki input hash, 613 validated path/line source-link candidates and 46 unresolved citations out of 659. All outputs mark `publication_allowed=false`. Central PR #2713 prior head `d45c141ccd85e277d4929774e442d74914c120cf` passed both applicable workflows. No PR merged; current-head checks must follow further commits. This is not semantic documentation approval or license clearance.
