@@ -388,5 +388,15 @@
       36085593598
     ],
     "source_repair_merged": true
+  },
+  "execution_path_repair_pre_receipt_exception_retention": {
+    "source_candidate_state": "PR_VALIDATION_REQUIRED",
+    "origin": "SOURCE_AUDIT_NO_AUTHENTIC_RESIDENT_EVENT_OBSERVED",
+    "new_gap": "TARGETED_RUNNER_EXCEPTION_OR_DISPATCH_CUSTODY_EXCEPTION_BYPASSES_RECEIPT_PERSISTENCE",
+    "consumer_repair": "IMMUTABLE_FIRST_CYCLE_EXCEPTION_BOUNDARY_RECEIPT",
+    "dispatcher_repair": "FAIL_CLOSED_EXISTING_DISPATCH_SNAPSHOT_CUSTODY_EXCEPTION_DIAGNOSTIC",
+    "source_validation": "PENDING_EXACT_HEAD_CI",
+    "authentic_runtime_transition_observed": false,
+    "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY"
   }
 }
