@@ -148,6 +148,28 @@ def test_close_carries_exact_status_after_existing_return_receipt(tmp_path):
     assert result["authority_effect"] == "NONE"
 
 
+def test_legacy_close_defaults_to_unverified_without_granting_permission(tmp_path):
+    """Older callers keep original return semantics; no fabricated duplicate proof."""
+    ledger = tmp_path / "events.jsonl"
+    incoming = {
+        "schema": "stegverse.task-registry-checkin-disposition/v1",
+        "task_id": "TASK-A", "disposition": "CONTINUE",
+        "authority_effect": "NONE",
+    }
+    proc = subprocess.run([
+        sys.executable, str(CLOSE), "--task-id", "TASK-A",
+        "--session-id", "legacy", "--actor-kind", "NON_AI_SYSTEM_COORDINATOR",
+        "--ledger", str(ledger),
+    ], input=json.dumps(incoming), text=True, capture_output=True, check=True)
+    result = json.loads(proc.stdout)
+    status = result["session_status_projection"]
+    assert status["duplicate"] == "UNVERIFIED"
+    assert status["collision"] == "UNVERIFIED"
+    assert status["authority_effect"] == "NONE"
+    assert result["required_pre_footer_return_event_sha256"] == result["return_receipt"]["event_sha256"]
+    assert result["runtime_identity_attestation_proven"] is False
+
+
 def test_invalid_status_cannot_append_session_return(tmp_path):
     ledger = tmp_path / "events.jsonl"
     invalid = {
@@ -204,6 +226,7 @@ if __name__ == "__main__":
         test_foreign_checked_out_collision_requires_owner_conjunction,
         test_stale_generation_preserves_existing_stop_and_unknown_status,
         test_close_carries_exact_status_after_existing_return_receipt,
+        test_legacy_close_defaults_to_unverified_without_granting_permission,
         test_invalid_status_cannot_append_session_return,
         test_forged_confirmed_duplicate_refused_before_return,
     ]
