@@ -1,3 +1,7 @@
+## Data-Continuation licensing scope added to existing open-source strategy (2026-09-25)
+
+Canonical `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` now has three source-owned metadata audits: StegVerse-Labs 119/119, StegVerse-org 18/18 and Data-Continuation 7/7, totaling 144 metadata-checked entries within the existing 14-organization / 252-repository visibility census. Data-Continuation source owner merged its seven-repository inventory in [PR #7](https://github.com/Data-Continuation/.github/pull/7); the exact pinned SDK Core-Lite commit has no root LICENSE/NOTICE or project license metadata, and no rights clearance. The other 11 organizations remain visibility-only. See `data/ecosystem-open-source-organization-census-20260925.json` and `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md`. No relicensing or release authorized.
+
 ## Organization-scoped open-source census merge evidence (2026-09-25)
 
 The central source [PR #2732](https://github.com/StegVerse-Labs/.github/pull/2732) merged `f0edc55389af8852cd8811ff21c2d8f3ab57afa5` after six exact-head applicable workflows passed. The census records 14 historically registered organizations and 252 observable repositories; it is not full ecosystem closure or a 252-repository license audit. The original 119-repository Labs audit and the independently merged 18-repository StegVerse-org inventory remain separate. Rights and source releases are not authorized.
