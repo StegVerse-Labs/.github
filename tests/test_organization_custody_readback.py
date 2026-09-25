@@ -16,6 +16,13 @@ import organization_custody_readback as readback  # noqa: E402
 from scripts import consume_organization_custody_readback_request as consumer  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def source_only_simulated_resident(monkeypatch):
+    # Hosted CI runs local fixtures only; no network or resident state is used.
+    for name in consumer.HOSTED_ENV:
+        monkeypatch.delenv(name, raising=False)
+
+
 def source(name, task="SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001", outcome="OBSERVED"):
     content = {"event": name, "task": task}
     return {
