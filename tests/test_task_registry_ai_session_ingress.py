@@ -58,21 +58,18 @@ def test_unknown_actor_kind_fails_closed():
     assert out["disposition"] == "STOP_ACTOR_KIND_UNRECOGNIZED"
 
 
-def test_chatgpt_session_reaches_canonical_checkin_without_execution_authority():
+def test_self_declared_chatgpt_session_stops_before_canonical_ledger():
     out = run({
         "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
         "observed_registry_generation": current_generation(),
-        "checkin_context": {
-            "session_id": "session-test",
-            "actor_kind": "CHATGPT_SESSION",
-        },
+        "checkin_context": {"session_id": "synthetic-test", "actor_kind": "CHATGPT_SESSION"},
     })
-    assert out["task_id"] == "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
-    assert out["disposition"] in {"CONTINUE", "COORDINATE_CONVERGENCE", "STOP_COLLISION"}
+    assert out["disposition"] == "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE"
     assert out["authority_effect"] == "NONE"
-    assert out["ai_session_ingress"]["actor_kind"] == "CHATGPT_SESSION"
-    assert out["ai_session_ingress"]["chatgpt_is_only_permitted_ai_kind"] is True
-    assert out["ai_session_ingress"]["runtime_identity_attestation_proven"] is False
+    assert out["write_pr_merge_handoff_claim_admissible"] is False
+    assert out["runtime_identity_attestation_proven"] is False
+    assert out["session_origin_authenticity"] == "UNVERIFIED"
+    assert "checkin_event_sha256" not in out
 
 
 def test_policy_explicitly_separates_source_gate_from_runtime_attestation():
@@ -102,18 +99,17 @@ def chatgpt_payload(observed_marker="CURRENT"):
 
 def test_chatgpt_ai_session_missing_generation_stops_before_mutation():
     out = run(chatgpt_payload("MISSING"))
-    assert out["disposition"] == "STOP_COORDINATION_GENERATION_REQUIRED"
+    assert out["disposition"] == "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE"
     assert out["write_pr_merge_handoff_claim_admissible"] is False
 
 
 def test_chatgpt_ai_session_stale_generation_stops_before_mutation():
     out = run(chatgpt_payload("STALE"))
-    assert out["disposition"] == "STOP_STALE_COORDINATION"
+    assert out["disposition"] == "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE"
     assert out["write_pr_merge_handoff_claim_admissible"] is False
-    assert out["reconciliation_required_before_mutation"] is True
 
 
 def test_chatgpt_ai_session_divergent_generation_stops_before_mutation():
     out = run(chatgpt_payload("DIVERGENT"))
-    assert out["disposition"] == "STOP_COORDINATION_GENERATION_MISMATCH"
+    assert out["disposition"] == "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE"
     assert out["write_pr_merge_handoff_claim_admissible"] is False

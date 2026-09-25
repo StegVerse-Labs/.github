@@ -26,6 +26,8 @@ def emit(task_id: str, disposition: str, action: str, actor_kind: str | None, re
         "source_policy": "data/task-registry-ai-ingress-policy.json",
         "caller_surface": CALLER_SURFACE,
         "runtime_identity_attestation_proven": False,
+        "write_pr_merge_handoff_claim_admissible": False,
+        "session_origin_authenticity": "UNVERIFIED",
     }, sort_keys=True))
 
 
@@ -55,6 +57,15 @@ def main() -> None:
         return
     if actor_kind not in allowed:
         emit(task_id, "STOP_ACTOR_KIND_UNRECOGNIZED", "END_SESSION", actor_kind, "actor_kind_not_admitted_by_source_policy")
+        return
+
+    # The existing public CLI has no authenticated host-to-resident session origin.
+    # Neither actor_kind nor session_id is attestation. Fail before invoking the
+    # canonical evaluator or appending any durable CHECK_IN/STOPPED ledger events;
+    # source-only current-generation work continues via its separate owner path.
+    if actor_kind == "CHATGPT_SESSION":
+        emit(task_id, "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE", "END_SESSION", actor_kind,
+             "authenticated_chatgpt_session_origin_not_supplied_by_existing_authorized_caller")
         return
 
     request = dict(request)
