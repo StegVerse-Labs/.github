@@ -126,7 +126,9 @@
       "license_metadata_coverage": "18/18",
       "org_owned_inventory": "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_ESTABLISHED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_WORKFLOWS_2_OF_2_PASS",
+      "org_owned_inventory_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63"
     },
     {
       "organization": "formalism-tests",
@@ -192,7 +194,7 @@
   "inventory_rules": [
     "Metadata inventory is per-organization and held by its existing source owner; central task only aggregates counts, provenance and dispositions.",
     "Public central index includes organization aggregate counts, but no nonpublic repository names, contents, dependency URLs, credentials or personal data.",
-    "StegVerse-Labs 119/119 metadata census remains unchanged. StegVerse-org 18/18 is a separate source-owned draft PR #11 pending exact-head checks and authorized merge.",
+    "StegVerse-org 18/18 organization-owned inventory merged in source-owner PR #11 at d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63 after both applicable workflows passed.",
     "The other 12 organizations have refreshed repository COUNT/VISIBILITY censuses only, not licensing audit or rights clearance.",
     "Never infer all-in ecosystem completeness from registered organization list. Discover additional orgs through authorized canonical registry sources, and distinguish inaccessible/unlisted repositories from observed zeros.",
     "Public GitHub visibility and GitHub-detected MIT are not exhaustive file-level scope/copyright provenance or authority to relicense.",
