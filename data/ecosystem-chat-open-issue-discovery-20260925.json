@@ -1,0 +1,488 @@
+{
+  "observed_at": "2026-09-25",
+  "registry_generation": 243,
+  "searches": [
+    "issues",
+    "orgissues:StegVerse-org",
+    "orgissues:master-records",
+    "orgissues:StegVerse-002",
+    "orgissues:GCAT-BCAT-Engine",
+    "search2"
+  ],
+  "issues": [
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOS/issues/213",
+      "title": "Compose canonical Ecosystem Chat portable iPhone runtime chain",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/396",
+      "title": "Ecosystem Chat/VACC semantic shorthand command layer",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/569",
+      "title": "Simplify homepage into Ecosystem Chat with KV entry points",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/1141",
+      "title": "Align Ecosystem Chat executable handoff with canonical G25+ fence floor",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/508",
+      "title": "Align HPS visualization validator with current user-first Ecosystem Chat",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/523",
+      "title": "Align free-tier trust validator with current user-first Ecosystem Chat",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegAgents/issues/2",
+      "title": "Activate Internal Task Continuation Layer for Ecosystem Chat",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/572",
+      "title": "Bind My KV, VA Guide, and Ecosystem Chat to StegVerse Node continuity",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/60",
+      "title": "SHWP-ECOSYSTEM-CHAT-INFERENCE-WORKER-001 — heartbeat-managed sovereign inference activation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/242",
+      "title": "Bind Ecosystem Chat public runtime to canonical StegGate and complete live activation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/510",
+      "title": "Align unified-governed-experience validator with current shared conversational contract",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegHealth/issues/88",
+      "title": "Remediation intake: LLM-adapter hosted gateway/provider-fallback residuals",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/88",
+      "title": "Wire Ecosystem Node to provider-neutral LLM-adapter gateway",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegCore/issues/77",
+      "title": "Continue four-app activation while evaluation snapshot is preserved",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/1260",
+      "title": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 — ecosystem-wide runtime evidence convergence",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrain/issues/865",
+      "title": "Implement COSV expectation-residual introspection mechanics",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/239",
+      "title": "Activate four governed capability families through the unified conversational surface",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/517",
+      "title": "Align Site mirror orchestration validator with current canonical handoff goal",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegHealth/issues/87",
+      "title": "Remediation intake: canonical .github StegGate provider-fallback residuals",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOS/issues/7",
+      "title": "Physical iPod touch 7 build/install/launch validation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/continuity-vault-kit/issues/16",
+      "title": "[BLOCKED: EXTERNAL ACTIVATION] Activate reconstructive AI memory with production providers",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/24",
+      "title": "Corrected active path: StegVerse-owned endpoint publication for canonical StegDeploy",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegCore/issues/70",
+      "title": "Integrate live canonical StegGate with four public reference applications",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/61",
+      "title": "SHWP-SESSION-ARCHIVE-WORKER-GATE-001 — require active heartbeat workers before archive",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegAgents/issues/5",
+      "title": "SA-EMAIL-AUTO-001: validate Gmail read-only adapter and activate provider runtime",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/101",
+      "title": "Queue Admissible Resolution Site projection intake",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/792",
+      "title": "Observe production evaluator InTr route from Site",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOps-Notifs/issues/8",
+      "title": "TASK-EVIDENCE-PORTABLE-NODE-RECON-001 — reconcile evidence profiles, continuity node, and incentive architecture",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/240",
+      "title": "Build universal mathematics educator capability on the unified conversational surface",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/admissibility-wiki/issues/60",
+      "title": "ECOSYSTEM-CROSSWALK-RUNTIME-001: governed crosswalk request and Companion Layer intake",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOps-Orchestrator/issues/7",
+      "title": "Run ecosystem-wide outcome-level completion integrity audit",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/65",
+      "title": "Drive blocked production workers from monitoring to measurable progress",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/208",
+      "title": "REPOSITORY-VISIBILITY-BOUNDARY-001: SDK-driven estate privatization audit",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/399",
+      "title": "Project StegOS bounded web-command ingress for physical iPod validation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/59",
+      "title": "SHWP-SOVEREIGN-RUNTIME-WORKER-001 — non-blocking stale G18 lifecycle reconciliation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/497",
+      "title": "Eliminate required third-party dependencies from Site",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/39",
+      "title": "Implement governed cross-service learning and StegMusic/StegDJ playable vertical slice",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOps-Notifs/issues/7",
+      "title": "TASK-ST017-HANDOFF-RECON-001 — reconcile completed ST-017 adoption into authoritative handoffs",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/201",
+      "title": "Enforce ecosystem-wide no-second-machine activation invariant",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegHealth/issues/38",
+      "title": "Run live StegVerse repository branch-health census and classification",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/160",
+      "title": "Consolidate session goals and enforce federal-plus security baseline",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/113",
+      "title": "Build governed VA specialty capability on the unified conversational surface",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/268",
+      "title": "Consolidate Site GitHub workflows toward minimum stable surface",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/246",
+      "title": "Activate HIL receiver without physical iPhone/HB30 prerequisite",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/Site/issues/81",
+      "title": "Activate StegVerse sovereign HIL receiver and make Site upload READY",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "issues"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/338",
+      "title": "Remediate repeated Ecosystem Chat / HIL activation workflow failures",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/190",
+      "title": "Add conversational evidence posture receipts for Ecosystem Chat",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/339",
+      "title": "Remediate historical Ecosystem Chat/HIL activation failure family from Gmail backlog",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/7",
+      "title": "Complete autonomous Ecosystem Chat gateway activation evidence",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/140",
+      "title": "Bind Ecosystem Chat to canonical public StegVerse knowledge and usage corpus",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/340",
+      "title": "Reconcile clustered live-activation failures from 2026-08-04",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/StegVerse-SDK/issues/129",
+      "title": "Track Site-owned processor-generic manifest propagation admission",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/282",
+      "title": "Central AI Entity Coordination Ingress with sandbox-only external participation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/142",
+      "title": "Supersede VACC GitHub-token provider path with sovereign local-model route",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/StegVerse-SDK/issues/61",
+      "title": "Compose SDK → SPE → StegGate as the canonical governed application spine",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/issues/90",
+      "title": "Implement governed retrieval for VA Claim Assistant",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-org"
+    },
+    {
+      "url": "https://github.com/master-records/orchestration/issues/2",
+      "title": "Ingest Ecosystem Chat activation receipts and emit reconstructability evidence",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:master-records"
+    },
+    {
+      "url": "https://github.com/master-records/orchestration/issues/31",
+      "title": "Harden manifested operation custody and portable backup path",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:master-records"
+    },
+    {
+      "url": "https://github.com/StegVerse-002/micro-node-runtime/issues/16",
+      "title": "Sovereign platform migration for Ecosystem Chat",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "orgissues:StegVerse-002"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/2338",
+      "title": "StegBrowser immutable nonce A3 result observation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrowser/issues/13",
+      "title": "STEG-BROWSER-NATIVE-SOCIAL-PUBLISH-001 — native ephemeral social publication transport",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrowser/issues/4",
+      "title": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001 — bind authentic browser execution substrate",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrowser/issues/5",
+      "title": "STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001 — release propagation verification",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrowser/issues/37",
+      "title": "Reconcile historical StegBrowser validation failures for Web3 precommit governance",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOps-Notifs/issues/14",
+      "title": "Reconcile StegBrowser G0-G3 completion and gate G4 mutation",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/2079",
+      "title": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegBrowser/issues/2",
+      "title": "STEG-BROWSER-ECOSYSTEM-EPHEMERAL-001 — governed ephemeral browser capability",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/TVC/issues/353",
+      "title": "TVC-CONNECTION-PROFILE-001 — provider-neutral external connection profiles",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/1299",
+      "title": "KV-bound ephemeral browser projection materialization",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/TVC/issues/355",
+      "title": "Add App Store Connect provider credential path through TV/TVC + InTr/SKAP",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/1239",
+      "title": "GADI-RESIDENT-EXECUTION-001 — canonical WorkerCoordinator execution seam",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/StegOS/issues/277",
+      "title": "SV001: materialize signed StegOSMobile through Apple Developer/TestFlight",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/.github/issues/2638",
+      "title": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 — canonical admission and native MyKV distribution",
+      "search_status": "OPEN_AT_QUERY",
+      "discovery_scope": "search2"
+    }
+  ],
+  "related_open_prs": [
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/351",
+      "title": "Wire OpenAI TVC non-exportable operation into governed ephemeral LLM adapter"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/327",
+      "title": "LLMA-UNIVERSAL-AI-INGRESS-324: canonical provider-independent AI ingress"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/325",
+      "title": "feat: canonical universal AI ingress architecture"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/323",
+      "title": "Reconcile Work mutation safety release state"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/283",
+      "title": "feat: add central AI entity coordination ingress"
+    },
+    {
+      "url": "https://github.com/StegVerse-org/LLM-adapter/pull/227",
+      "title": "Make evaluator Gateway readiness prove receiver liveness"
+    }
+  ],
+  "tvc_prs": [
+    {
+      "url": "https://github.com/StegVerse-Labs/TVC/pull/468",
+      "title": "Bind ephemeral OpenAI task leases to existing non-exportable TVC broker"
+    },
+    {
+      "url": "https://github.com/StegVerse-Labs/TVC/pull/469",
+      "title": "TVC#467 browser-agnostic sealed provider-key enrollment source"
+    }
+  ]
+}
