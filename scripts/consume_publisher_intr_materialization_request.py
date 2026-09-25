@@ -54,6 +54,12 @@ def select_return_owner(result:dict[str,Any])->str:
     """Select the next owner only from the already-verified Publisher return state."""
     if result.get("schema")!=RETURN_SCHEMA: raise PublisherInTrConsumerError("publisher_return_schema_invalid")
     binding=result.get("roundtrip_binding")
+    source_schema=result.get("source_export_schema")
+    if source_schema=="stegverse.publisher.evidence-report-package/v1":
+        if binding is not None: raise PublisherInTrConsumerError("generic_review_cannot_impersonate_specialized_mir_binding")
+        return MIR_SDK_RETURN_OWNER
+    if source_schema is not None:
+        raise PublisherInTrConsumerError("unsupported_publisher_source_export_schema")
     if binding is None: return KV_RETURN_OWNER
     if not isinstance(binding,dict) or binding.get("profile")!=MIR_ROUNDTRIP_BINDING_PROFILE:
         raise PublisherInTrConsumerError("publisher_return_roundtrip_binding_invalid")
