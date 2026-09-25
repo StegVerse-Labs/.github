@@ -65,6 +65,16 @@ class Component010ProjectionTests(unittest.TestCase):
         self.put(released)
         self.assertEqual(gate.load_missing_checked_out_shards({}), {})
 
+    def test_auxiliary_session_note_is_not_a_canonical_owner(self):
+        (self.root / "SOME-TASK.current-session-note.json").write_text(json.dumps({
+            "goal_task_id": "SOME-TASK", "session_claim": "CURRENT_SESSION",
+            "authentic_skap_observation": "NOT_PROVEN"}))
+        self.assertEqual(gate.load_missing_checked_out_shards({}), {})
+        forged = owner("SOME-TASK")
+        (self.root / "SOME-TASK.current-session-note.json").write_text(json.dumps(forged))
+        with self.assertRaisesRegex(ValueError, "path identity mismatch"):
+            gate.load_missing_checked_out_shards({})
+
     def test_path_and_registered_identity_mismatches_fail_closed(self):
         self.put(owner("EXPECTED"), filename="WRONG")
         with self.assertRaisesRegex(ValueError, "path identity mismatch"):
