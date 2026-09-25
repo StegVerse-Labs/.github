@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 239,
+  "generation": 240,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10543,7 +10543,9 @@
         "docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md",
         "data/aex-native-math-processing-census.json",
         "Admissible-Existence/.github/data/formalism-worker-registry.json",
-        "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py"
+        "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py",
+        "data/aex-stcm-chf-native-math-capability-review.json",
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
       ],
       "targets": {
         "organizations": [

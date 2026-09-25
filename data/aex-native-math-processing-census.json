@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.native-math-processing-census/v1",
-  "status": "SOURCE_RECONNAISSANCE_PRE_ADMISSION",
-  "central_registry_generation_observed": 211,
+  "status": "SOURCE_CENSUS_WITH_ORIGINAL_NATIVE_STCM_FIXTURE_EVIDENCE_AND_CHF_MATH_BOUNDARY",
+  "central_registry_generation_observed": 239,
   "canonical_org_role_registry": "Admissible-Existence/.github/data/formalism-worker-registry.json",
   "canonical_org_role_registry_sha": "d7c7086d6cb544f33112927a2e2a29a02fad4258",
   "registered_role_count": 32,
@@ -80,11 +80,14 @@
       "repository": "Admissible-Existence/STCM",
       "role": "source",
       "owner": "NATIVE_SOURCE_REPOSITORY",
-      "candidate_callable": "tools/closure-harness/closure.py::evaluate_closure",
-      "inspected_surface_kind": "NATIVE_COMPUTED_CLOSURE",
+      "candidate_callable": "tools/closure-harness/lineage_gate.py::gated_close",
+      "inspected_surface_kind": "PINNED_NATIVE_LINEAGE_AND_COMPUTED_CLOSURE_EXECUTED_SYNTHETIC",
       "sdk_manifest_invocation": "NOT_ESTABLISHED",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+      "verification_note": "Original pinned STCM code executed 4 synthetic frozen-specimen controls at comparison PR #83; positive predecessor constructed and not authentic. Run 36091077891 PASS; artifact 10845258620. No generic SDK mathematical manifest invocation or governed run.",
+      "native_exact_source_commit": "92f6bb8ac61377792970da16a835430ebe20f000",
+      "native_source_run_ref": "Admissible-Existence/.github#83; workflow run 36091077891",
+      "same_specimen_math_status": "STCM_SYNTHETIC_ONLY_ORIGINAL_CALLABLE_VERIFIED"
     },
     {
       "repository": "Admissible-Existence/ET",
@@ -120,11 +123,19 @@
       "repository": "Admissible-Existence/CHF",
       "role": "source",
       "owner": "NATIVE_SOURCE_REPOSITORY",
-      "candidate_callable": "tools/check_chf_thresholds.py",
-      "inspected_surface_kind": "THRESHOLD_CONTRACT_VALIDATOR_ONLY",
+      "candidate_callable": "tools/check_chf_thresholds.py; validators/c.py::classify",
+      "inspected_surface_kind": "DECLARATIVE_THRESHOLD_VALIDATOR_AND_SEPARATE_READY_CLASSIFIER_NOT_PER_SPECIMEN_MATH",
       "sdk_manifest_invocation": "NOT_ESTABLISHED",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+      "verification_note": "Exact CHF tools/*, formalism/* and validators/c.py inspected; threshold/conditions scripts test JSON declarations, validators/c.py::classify checks ready/declared/mapped/scoped flags and no R/O/A/K values or horizon flux. Original-owner CHF six-checker and Tri-Form CI pass source contracts (runs 36086125184, 36086125211), not numerical same-specimen math.",
+      "native_exact_source_commit": "369737c3ca1985cd9b1e0a2696ebfbc7ecb84b93",
+      "same_specimen_math_status": "NOT_ESTABLISHED",
+      "needed_native_callable_contract": {
+        "input": "Frozen specimen's original source digest; explicit post-transition recoverability R, observability O, absorption A, coherence K, independently specified thresholds and horizon flux if defined by the CHF owner",
+        "output": "Source-owner-defined per-specimen threshold/horizon evaluation and reasoned unknown/deny decisions with untouched native result hash",
+        "status": "UNDEFINED_IN_INSPECTED_NATIVE_SOURCE",
+        "authority": "NATIVE_CHF_OWNER_ONLY"
+      }
     },
     {
       "repository": "Admissible-Existence/RE",
