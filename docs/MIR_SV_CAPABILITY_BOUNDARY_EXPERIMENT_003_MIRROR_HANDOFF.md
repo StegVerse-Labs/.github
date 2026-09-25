@@ -3,8 +3,8 @@
 Updated: 2026-09-24
 Goal Task ID: `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003`
 COSV ID: `50000000100000` (task.v1, documentary/source active; no claim of authentic runtime)
-Registry source generation at intake: 226; proposed next generation: 227, subject to exact-head reconciliation.
-Status: ACTIVE / UNCLAIMED / NEW DISTINCT EXPERIMENT / STEGVERSE COUNTERPART SOURCE AUDIT DRAFTED / AUTHENTIC RUNTIME NOT ESTABLISHED
+Registry source generation at intake: 226; canonical registration MERGED at generation 227 and independently read back from main (one Registry row, one COSV index row, exact task vector 50000000100000).
+Status: ACTIVE / UNCLAIMED / REGISTRATION MERGED / EXACT-HEAD SOURCE-CI VALIDATED / STEGVERSE COUNTERPART SOURCE AUDIT DRAFTED / AUTHENTIC RUNTIME NOT ESTABLISHED
 Owner issue: https://github.com/StegVerse-Labs/.github/issues/2682
 
 ## Experiment identity and separation
@@ -38,3 +38,9 @@ Draft: `docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md`.
 2. Obtain independent current read-only evidence from the existing authorized organization ledger HEAD and immutable receipt chain, followed by actual corresponding canonical Master Records responses; report `NOT_OBSERVED_IN_ACCESSIBLE_SURFACE` rather than asserting no runtime occurred where access is absent.
 3. For each positive claim, provide exact reproducible source file, public endpoint or retained receipt identifier plus command/query and proof ceiling; for each limitation, show counterexample, explicit coverage constraint or retained negative evidence. Classify source/CI, historical reported, independent external and authentic current runtime separately.
 4. Return the StegVerse counterpart for joint review. Do not begin the separate third-framework interoperability test or rewrite the existing frozen contracts.
+
+## Canonical registration readback (2026-09-24)
+
+[Registration PR #2683](https://github.com/StegVerse-Labs/.github/pull/2683) merged as `33602d67d50e57d1bcff4b2f77a0a05ed4b1ad36` from exact head `efe80c70e9f816fcc76db1402e049c156925a634`. All seven observed exact-head workflows completed SUCCESS: Task Registry Work Correlation `36083682537`, Cross-Task Coordination `36083682598` (initial missing execution-substrate-review failure repaired by non-executing documentary classification, then green), Deterministic Repository Suite `36083682563`, Purpose-Bound Worker `36083682475`, KV AI Memory `36083682600`, STCM CHF registration `36083682643`, and DeepSeek resident source `36083682471`. Main readback confirms canonical Registry generation 227, exactly one task row, one COSV index entry and matching vector `50000000100000`. These are source/coordination validation only. No authentic current resident organization-ledger, Master Records runtime or external physical consequence was observed by this experiment.
+
+Original PDF and ten screenshot bytes remain retained in the user's conversation and bundled in a user-downloadable `mir-sv-exp3-original-evidence.zip` with SHA256SUMS. Binary original artifacts were not written to the GitHub repository; the versioned GitHub provenance note carries exact SHA256 and a bounded visible-content reconstruction.
