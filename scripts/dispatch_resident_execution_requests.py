@@ -134,6 +134,7 @@ CONSUMERS = (
     ("stegagents_governed_runtime_targeted", "scripts/consume_stegagents_governed_runtime_targeted_request.py"),
     ("sdk_tt_richard_seam_authentic_runtime", "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"),
     ("ecosystem_receipt_hb_checkpoint", "scripts/consume_ecosystem_receipt_hb_checkpoint.py"),
+    ("organization_custody_readback", "scripts/consume_organization_custody_readback_request.py"),
     ("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py"),
     ("ungoverned_ai_defensive_envelope", "scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
