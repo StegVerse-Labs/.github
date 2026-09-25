@@ -18,6 +18,7 @@ import json
 import os
 import subprocess
 import sys
+from time import time_ns
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -316,7 +317,7 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
 
 
 def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Retain the existing SDK evaluator selector visit through canonical Master Records custody."""
+    """Record actual Richard dispatch observation, not WorkerCoordinator execution."""
     row = next((item for item in outcomes if item.get("consumer") == RICHARD_SELECTOR), None)
     if not isinstance(row, dict):
         return None
@@ -327,7 +328,9 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         return {"state": "BOUNDARY", "reason": "RICHARD_DISPATCH_REQUEST_IDENTITY_UNAVAILABLE", "authority_effect": "NONE"}
     task_id = request.get("task_id")
     request_id = request.get("request_id")
-    if not isinstance(task_id, str) or not task_id or not isinstance(request_id, str) or not request_id:
+    if (task_id != "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+            or request.get("cosv_task_vector") != "20010000110000"
+            or not isinstance(request_id, str) or not request_id):
         return {"state": "BOUNDARY", "reason": "RICHARD_DISPATCH_REQUEST_IDENTITY_INVALID", "authority_effect": "NONE"}
     workers_root = source / "workers"
     if str(workers_root) not in sys.path:
@@ -348,7 +351,7 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "machine_result_sha256": sha256_uri(machine_result),
         "machine_result": machine_result,
     }
-    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}"
+    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{time_ns()}"
     required_evidence = [{
         "evidence_id": f"{transition_id}:selector-visit",
         "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
