@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 246,
+  "generation": 247,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9729,7 +9729,14 @@
         "org_scope": "14_KNOWN_ORGS_252_VISIBLE_REPOSITORIES",
         "labs_scope": "119_OF_119_METADATA_ONLY",
         "stegverse_org_scope": "18_OF_18_METADATA_MERGED_SOURCE_OWNER",
-        "remaining_scope": "12_ORGS_COUNTS_ONLY"
+        "remaining_scope": "12_ORGS_COUNTS_ONLY",
+        "ecosystem_census_pr": 2732,
+        "ecosystem_census_head": "f92d6ca68e8a5c58fcc39bd455679783ef05a35f",
+        "ecosystem_census_merge": "f0edc55389af8852cd8811ff21c2d8f3ab57afa5",
+        "ecosystem_census_exact_head_ci": "6_OF_6_APPLICABLE_SUCCESS",
+        "organization_owner_source_pr": "StegVerse-org/.github#11",
+        "organization_owner_source_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
+        "release_status": "NOT_AUTHORIZED"
       },
       "ecosystem_inventory": {
         "snapshot": "2026-09-25",
