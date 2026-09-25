@@ -1,5 +1,16 @@
 # Admissible-Existence Mathematical Processing Integration — Mirror Handoff
 
+## 2026-09-24 original CHF bounded mathematical callable now independently executed
+
+Source-only [CHF PR #5](https://github.com/Admissible-Existence/CHF/pull/5), merge `27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a`, introduces source-native `tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen` computing the four **already published** R/O/A/K ≥ supplied-minimum comparisons for a supplied immutable frozen specimen. It verifies original source bytes against SHA-256 and requires threshold provenance; missing supplied numerical dimension yields UNKNOWN; malformed values and forged original source fail closed. CHF exact-head `36095046140` PASS and Tri-Form `36095046224` PASS, with original native four-case artifact `10847107096`, ZIP SHA-256 `7d3db6a52e1af1716894de8e75bbfb223496d8fa96da8275483531c01b2a4084`.
+
+Distinct [comparison PR #84](https://github.com/Admissible-Existence/.github/pull/84) merged `615b1927e27acf916bd9dc502bdbcc2213b777f3`, binding CHF and pinned STCM original-source synthetic outputs to the **same frozen source bytes** without moving private CHF code, asserting commensurate full mathematical conclusions or claiming independent physical measurements. Exact capability review and source census now identify a genuine **bounded declared-threshold callable**; original CHF full consequence-horizon field derivation, flux, measured physical heat, independent external witness and genuine predecessor remain NOT_ESTABLISHED. The original completed CHF Tri-Form and six existing contract checks are preserved.
+
+The existing SDK published capability set and manifest executor still do **not** establish generic native mathematical invocation. This math integration owner must first check for an already installed authorized generic route, and if absent seek independently admitted reusable compatibility under existing SDK ownership; do not add a special STCM/CHF runtime or invent source equations. The existing registered math task remains ACTIVE/UNCLAIMED with unchanged COSV `10111110111000`; comparison task remains ACTIVE/UNCLAIMED with `10111010112000`. Current source projection proposes canonical generation 243 from observed 242, not an invented resident gate receipt or Master Records event.
+
+
+---
+
 **Registered goal:** `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION`  
 **Canonical admission issue:** [StegVerse-Labs/.github #2615](https://github.com/StegVerse-Labs/.github/issues/2615)  
 **Registration:** MERGED as central PR [#2621](https://github.com/StegVerse-Labs/.github/pull/2621), merge commit `8888658f4f962d5e864b5b2e1e0bc4a1cd188140`. Re-read of canonical `main` confirms Registry generation **216** at this handoff reconciliation; future transitions MUST re-read current generation. **Coordination:** `ACTIVE / UNCLAIMED`, not checked out; authentic post-registration `AI_SESSION_GATE` receipt **NOT OBSERVED**.  
