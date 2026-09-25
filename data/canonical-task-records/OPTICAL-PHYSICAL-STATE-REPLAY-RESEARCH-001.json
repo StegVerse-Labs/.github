@@ -148,5 +148,68 @@
     "tracking_authoritative": true,
     "session_admission_authentic_observed": false,
     "execution_authority_effect": "NONE"
+  },
+  "research_source_evidence": {
+    "schema": "stegverse.optical-real-original-evidence/v1",
+    "goal_task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+    "cosv": "10111110114000",
+    "classification": "EXACT_PUBLIC_CAMERA_VIDEO_VERIFIED_SOURCE_ONLY_NOT_INDEPENDENT_PHYSICAL_GROUND_TRUTH",
+    "publisher": {
+      "source_page": "https://commons.wikimedia.org/wiki/File:Mechanical_movement_of_pendulum_clock.webm",
+      "creator": "Darklanlan",
+      "license": "CC0-1.0",
+      "original_bytes": 4084050,
+      "publisher_sha1": "1f3b63e6742f38c331a81bb2e872597b9e394c96",
+      "independently_verified_sha1": "1f3b63e6742f38c331a81bb2e872597b9e394c96",
+      "independently_measured_sha256": "069d9a266f584f14f009a2bc7d2e7fbc20cc87bdffebb8be87573ca939d2eb8b"
+    },
+    "validation_evidence": {
+      "github_pr": 2697,
+      "merged": false,
+      "closed": true,
+      "existing_actions_run_id": 36091207085,
+      "verified_public_artifact_id": 10845596776,
+      "authority_effect": "NONE_VALIDATION_AND_EVIDENCE_TRANSPORT"
+    },
+    "original_v06": {
+      "decoded_frames": 422,
+      "independent_redecode": "PASS",
+      "baseline_threshold12_crossings": 0,
+      "counterfactual_threshold5_crossings": 0,
+      "default_causal_high_resolution_frames": 1,
+      "last_nominal_time_us": 14047367,
+      "evidence_class": "FROZEN_HISTORICAL_RESEARCH_RECEIPTS"
+    },
+    "corrected_v07": {
+      "decoded_frames": 422,
+      "independent_decoder_and_ffprobe_pts": "PASS",
+      "last_presented_frame_pts_us": 21054000,
+      "presentation_clock": "DECODER_PTS_NOT_AUTHENTICATED_CAMERA_CAPTURE",
+      "terminal_receipt_sha256": "fad1f946216b57e248c1442efd91f1ac483f7c902e6d20eb8fb4bdbd102e8aa6",
+      "original_receipts_unchanged": true,
+      "post_observation_exploratory_threshold1_per_frame_crossings": 236,
+      "distinct_physical_events": "NOT_MEASURED",
+      "causal_independent_replay": "PASS"
+    },
+    "offline_tests": {
+      "existing_synthetic_and_transport": 50,
+      "new_real_original_pts_tests": 14,
+      "combined_passed": 64
+    },
+    "private_user_artifact": {
+      "filename": "optical-state-replay-physical-evidence-gen236.zip",
+      "sha256": "2ee338ef6740bdddf5fa78f65e284c5cd9835c88400f74d9ba34a7f307882216"
+    },
+    "physical_ground_truth": "NOT_ESTABLISHED",
+    "capture_clock_authenticated": false,
+    "component010_authentic_session_event": "NOT_OBSERVED",
+    "governed_runtime_execution": "NOT_INVOKED",
+    "worker_claim_or_fence": "NONE",
+    "master_records_acknowledgement": "NONE",
+    "historical_blocker_resolution_candidates_only": [
+      "COSV_DERIVATION_AFTER_ADMISSION already completed in Registry gen225",
+      "RIGHTS_CLEARED_SOURCE_RECORDING portion of old combined blocker completed; independent physical reference still missing"
+    ],
+    "authority_effect": "NONE_SOURCE_EVIDENCE_ONLY"
   }
 }
