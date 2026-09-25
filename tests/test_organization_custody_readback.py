@@ -191,3 +191,74 @@ def test_inline_evidence_tampering_detected_before_readback(monkeypatch, tmp_pat
     path.write_text(json.dumps(changed))
     with pytest.raises(ValueError, match="required evidence digest mismatch"):
         readback.readback(ledger, correlation_ids=("BOUND",))
+
+
+
+def test_existing_master_records_exact_reconstruction_must_match_source(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    source_receipt = source("REALISH_INTR_ALLOW", outcome="ALLOW")
+    org.aggregate_transition(source_receipt)
+    snapshot = readback.readback(ledger, correlation_ids=(source_receipt["subject_or_correlation_id"],))
+    digest = org.sha(source_receipt)[7:]
+    calls = []
+    def fake_get(path, params):
+        calls.append((path, params))
+        assert path == "/api/master-records/state-transitions/query"
+        assert params == {"subject_or_correlation_id": source_receipt["subject_or_correlation_id"],
+                          "transition_id": source_receipt["transition_id"]}
+        return {"schema": "stegverse.master-records.state-transition-query/v1",
+                "subject_or_correlation_id": params["subject_or_correlation_id"],
+                "transition_id": params["transition_id"], "count": 1, "records": [{
+                    "state": "PASS", "receipt_sha256": digest,
+                    "reconstructed_receipt_sha256": digest,
+                    "required_evidence_validation_status": "PASS", "receipt": source_receipt,
+                }]}
+    proof = readback.reconcile_master_records(snapshot, get_json=fake_get)
+    assert proof["state"] == "PASS"
+    assert len(calls) == 1
+    assert proof["canonical_transition_results"][0]["state"] == "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS"
+
+
+def test_missing_or_mismatched_master_records_cannot_pass(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    source_receipt = source("INTR_DENY", outcome="DENY")
+    org.aggregate_transition(source_receipt)
+    snapshot = readback.readback(ledger, correlation_ids=(source_receipt["subject_or_correlation_id"],))
+    def missing(_path, params):
+        return {"schema": "stegverse.master-records.state-transition-query/v1",
+                **params, "count": 0, "records": []}
+    result = readback.reconcile_master_records(snapshot, get_json=missing)
+    assert result["state"] == "INCOMPLETE"
+    assert result["canonical_transition_results"][0]["state"] == "MATCH_NOT_FOUND_IN_AUTHENTIC_QUERY"
+    def forged(_path, params):
+        return {"schema": "stegverse.master-records.state-transition-query/v1",
+                **params, "count": 1, "records": [{
+                    "state": "PASS", "receipt_sha256": org.sha(source_receipt)[7:],
+                    "reconstructed_receipt_sha256": org.sha(source_receipt)[7:],
+                    "required_evidence_validation_status": "PASS",
+                    "receipt": {**source_receipt, "transition_outcome": "ALLOW"},
+                }]}
+    with pytest.raises(ValueError, match="MASTER_RECORDS_EXACT_TRANSITION_RECONSTRUCTION_MISMATCH"):
+        readback.reconcile_master_records(snapshot, get_json=forged)
+
+
+def test_existing_master_records_batch_reconstruction_exact_identity(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    org.aggregate_transition(source("BATCHED_INTR_ALLOW"))
+    closed = batches.close_batch("TASK_CLOSURE", root=ledger)
+    snapshot = readback.readback(ledger, correlation_ids=("NONMATCHING",))
+    def fake_get(path, params):
+        assert not params
+        assert path == "/api/master-records/organization-batches/" + closed["batch_id"] + "/reconstruction"
+        return {"schema": "stegverse.master-records.organization-batch-ack/v1",
+                "state": "RECORDED", "reconstruction_status": "PASS",
+                "required_evidence_validation_status": "PASS",
+                "receipt_sha256": "1" * 64, "reconstructed_receipt_sha256": "1" * 64,
+                "batch_id": closed["batch_id"], "organization_id": "StegVerse-Labs",
+                "organization_receipt_count": 1}
+    proof = readback.reconcile_master_records(snapshot, get_json=fake_get)
+    assert proof["state"] == "PASS"
+    assert proof["batch_results"][0]["state"] == "MATCHING_INDEPENDENT_BATCH_RECONSTRUCTION_PASS"
