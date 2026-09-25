@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 236,
-  "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
+  "generation": 237,
+  "status": "EXACT_NATIVE_OWNER_PROJECTION_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -11710,6 +11710,1607 @@
         "external_device_required": false,
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "correlation_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "root_correlation_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "parent_task_id": null,
+      "goal": "Reconstruct the June 6, 2024 Trae Spurlock / Casper Police Department pre-entry domestic-call response, entry authority, safety assessment, belongings-retrieval rationale, rifle-knowledge timeline, arrest transition, Taser deployment, and fatal-force sequence under ERL evidence and inference controls.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": null,
+      "handoff": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md",
+      "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "source_refs": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger@e69881a13d9cd73a06ba1ca2912e6e8f3a13434c",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger/task-state/ERL-SPURLOCK-CPD-ENTRY-001.json"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger"
+        ],
+        "components": [
+          "research-candidate",
+          "pre-entry-knowledge-state-reconstruction",
+          "domestic-call-policy-comparison",
+          "entry-authority-analysis",
+          "fatal-force-reconstruction"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [
+        "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED",
+        "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED",
+        "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED"
+      ],
+      "expected_evidence_predicates": [
+        "PRE_ENTRY_KNOWLEDGE_STATE_MATRIX_BUILT_FROM_PRIMARY_RECORDS",
+        "KELCH_AND_WITNESS_DISCLOSURES_ATTRIBUTED_AND_TIMESTAMPED",
+        "ENTRY_AUTHORITY_ANALYZED_SEPARATELY_FROM_FORCE",
+        "POLICY_COMPLIANCE_COMPARED_TO_2024_CASPER_PD_AND_DISPATCH_RULES",
+        "RIFLE_KNOWLEDGE_BEFORE_AND_AFTER_THRESHOLD_SEPARATED",
+        "TASER_AND_SEVEN_SHOT_SEQUENCE_SYNCHRONIZED_FROM_PRIMARY_EVIDENCE",
+        "NO_UNSUPPORTED_DECEPTION_MOTIVE_SUICIDALITY_MURDER_OR_JUSTIFICATION_FINDING"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "github_repository_read",
+          "github_pull_request_write",
+          "public_record_research"
+        ],
+        "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_RECORD_RESEARCH",
+        "direction": "EXTERNAL_PUBLIC_RECORDS_TO_ERL_RESEARCH_CANDIDATE",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "CURRENT_SESSION",
+        "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+        "fence_ref": null,
+        "projection_only": false
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "activation_proof_complete": false
+      },
+      "allowed_next_transitions": [
+        "ACQUIRE_PRE_ENTRY_PRIMARY_RECORDS",
+        "BUILD_KNOWLEDGE_STATE_MATRIX",
+        "CUSTODY_2024_POLICY_SET",
+        "COMPARE_POLICY_TO_RECORDED_CONDUCT"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "CURRENT_SESSION",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      },
+      "readme_impact": {
+        "material_function_change": false,
+        "readme_updated_in_change_set": false,
+        "readme_path": null,
+        "no_readme_update_reason": "Substantive ERL README index and canonical task handoff were updated in the owning Executive_Rhetoric_Ledger repository; this file is coordination-only Task Registry projection.",
+        "evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/research-candidates/README.md",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md"
+        ]
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "root_correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "parent_task_id": "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+      "goal": "Engineer StegVerse sensitive-data handling so technical enforcement for health information and PII intentionally exceeds the current federal baseline while preserving TV/TVC credential authority, Interlock/InTr transition and posture-resolution authority, fail-closed evidence, and sovereign single-device constraints without claiming legal certification or authorization.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "71000000100100",
+      "source_refs": [
+        "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/stegos/sensitive_data_minimum_necessary.py",
+        "StegVerse-Labs/StegOS/stegos/intr_sensitive_data_binding.py",
+        "StegVerse-Labs/StegOS/stegos/sensitive_data_audit_receipt.py",
+        "StegVerse-Labs/StegOS/stegos/intr_security_posture_resolution.py",
+        "StegVerse-Labs/StegOS/specs/kv-skap-account-metadata-profile.v1.json",
+        "StegVerse-org/StegVerse-SDK/stegverse/security_posture.py",
+        "StegVerse-org/StegVerse-SDK/stegverse/security_posture_binding.py",
+        "StegVerse-org/StegVerse-SDK/stegverse/security_posture_stack.py",
+        "StegVerse-Labs/TVC/tools/skap_kv_account_metadata_ingress.py",
+        "StegVerse-Labs/Site/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "StegVerse-org"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-org/StegVerse-SDK",
+          "StegVerse-Labs/TVC",
+          "StegVerse-Labs/Site"
+        ],
+        "components": [
+          "minimum-necessary-sensitive-data-admission",
+          "versioned-security-posture",
+          "task-scoped-ephemeral-posture",
+          "authoritative-intr-posture-resolution",
+          "sdk-posture-request-projection",
+          "mykv-okv-posture-ui",
+          "tvc-skap-posture-verification",
+          "exact-manifest-posture-payload-intr-binding",
+          "raw-phi-free-audit-receipt",
+          "automatic-disposition-proof",
+          "purpose-of-use-field-authorization",
+          "break-glass-control",
+          "availability-reconstruction",
+          "continuous-control-assessment"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+        "STEGOS-SENSITIVE-DATA-MINIMUM-NECESSARY-001",
+        "SDK-SECURITY-POSTURE-PACKAGE-001",
+        "SDK-TASK-SCOPED-EPHEMERAL-POSTURE-002",
+        "INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001",
+        "INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002",
+        "INTR-AUTHORITATIVE-SECURITY-POSTURE-RESOLUTION-004",
+        "INTR-SENSITIVE-DATA-AUTOMATIC-DISPOSITION-PROOF-003"
+      ],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/StegOS#320",
+        "StegVerse-org/StegVerse-SDK#167",
+        "StegVerse-org/StegVerse-SDK#168",
+        "StegVerse-org/StegVerse-SDK#170",
+        "StegVerse-Labs/StegOS#322",
+        "StegVerse-Labs/StegOS#323",
+        "StegVerse-Labs/StegOS#324",
+        "StegVerse-Labs/StegOS#325",
+        "StegVerse-org/StegVerse-SDK#171",
+        "StegVerse-Labs/Site#1194",
+        "StegVerse-Labs/Site#1195",
+        "StegVerse-Labs/TVC#375",
+        "StegVerse-Labs/TVC#376",
+        "StegVerse-org/StegVerse-SDK@4601a6537270167edf72d7eecec28aad8de3fe76:validation=34506885779_SUCCESS",
+        "StegVerse-Labs/StegOS@05848191ea2715aa9bdf37d63e22622744128a9d:validation=34506947325_SUCCESS",
+        "StegVerse-Labs/StegOS@d62ce42b38f8006a22de1fe530bc47e2be21fdcc:validation=34507366997_SUCCESS",
+        "StegVerse-Labs/StegOS@938f0a6b07e0fe931b794e8462dfddf3f8457fca:validation=34513906903_SUCCESS,34513906952_SUCCESS",
+        "StegVerse-Labs/StegOS@9ba6c84ce30cceb1afaf99153f1c6d1ad196cb52:validation=34514308622_SUCCESS",
+        "StegVerse-org/StegVerse-SDK@8780482e8b688597be270ad31332b1b920da3819:validation=34514224865_SUCCESS",
+        "StegVerse-Labs/Site@872f6ba64f956779191d39db20d99497311bd25a:validation=34513855435_SUCCESS,34513854751_SUCCESS",
+        "StegVerse-Labs/Site@f2696e3591becebdb4314d51d55d927f2cd062b1:validation=34514537767_SUCCESS,34514537784_SUCCESS",
+        "StegVerse-Labs/TVC@9033b9d984332ae8ae139d6b303343a2eea73844:validation=34513528421_SUCCESS",
+        "StegVerse-Labs/TVC@e507bd58ae7c4ca0d50009c4ac27bda2f5d62292:validation=34514931254_SUCCESS"
+      ],
+      "expected_evidence_predicates": [
+        "MINIMUM_NECESSARY_SENSITIVE_DATA_ADMISSION_FAILS_CLOSED",
+        "TASK_SCOPED_SECURITY_POSTURE_CANNOT_BE_DOWNGRADED_OR_REUSED",
+        "SDK_POSTURE_REQUEST_DOES_NOT_ASSERT_AUTHORITATIVE_FINAL_POSTURE",
+        "INTERLOCK_INTR_EXCLUSIVELY_RESOLVES_AUTOMATIC_AND_EFFECTIVE_TASK_POSTURE",
+        "NO_EXPLICIT_POSTURE_SELECTION_USES_AUTOMATIC_FLOOR_WITH_SELECTION_PRESENT_FALSE",
+        "EXPLICIT_POSTURE_SELECTION_BELOW_AUTOMATIC_FLOOR_FAILS_CLOSED",
+        "KV_SKAP_AND_SKAP_KV_CHANNEL_FLOOR_IS_HIGHEST",
+        "POSTURE_INSTANCE_BINDS_TASK_PAYLOAD_TRANSITION_AND_VALIDITY_WINDOW",
+        "TVC_SKAP_VERIFIES_POSTURE_BINDING_WITHOUT_REINTERPRETING_POLICY",
+        "UI_AND_RECEIPTS_PRESERVE_AUTOMATIC_SELECTED_EFFECTIVE_POSTURE_PROVENANCE",
+        "EXACT_PAYLOAD_MANIFEST_POSTURE_AND_INTR_REQUEST_BINDING_FAILS_CLOSED",
+        "RAW_SENSITIVE_PAYLOAD_ABSENT_FROM_BINDING_EVIDENCE",
+        "RAW_PHI_PII_ABSENT_FROM_WRITE_ONCE_AUDIT_RECEIPTS",
+        "AUTOMATIC_DISPOSITION_PROOF_VERIFIABLE",
+        "PURPOSE_OF_USE_AND_FIELD_AUTHORIZATION_ENFORCED",
+        "BREAK_GLASS_ACCESS_DUAL_RECEIPTED_AND_TIME_BOUNDED",
+        "AUTHORIZED_AVAILABILITY_RECONSTRUCTION_PRESERVES_CURRENT_AUTHORITY",
+        "CONTINUOUS_MACHINE_READABLE_CONTROL_ASSESSMENT_AVAILABLE"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "sensitive_data_admission",
+          "security_posture",
+          "intr_posture_resolution",
+          "intr_exact_binding",
+          "tvc_skap_posture_verification",
+          "audit_and_disposition_evidence"
+        ],
+        "environment": "SOURCE_CONTROL_AND_SOVEREIGN_INTR_BOUNDARY",
+        "direction": "SDK_POSTURE_INPUT_TO_INTR_RESOLUTION_TO_TVC_SKAP_VERIFICATION_TO_AUDIT_AND_DISPOSITION",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": {
+        "current_executor": "current-session-repository-orchestration",
+        "authority_basis": "user-authorized GitHub source mutation under canonical task/handoff custody",
+        "unattended_runtime": false
+      },
+      "worker_claim": {
+        "authority": "CURRENT_SESSION",
+        "claim_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "fence_ref": null,
+        "projection_only": false
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "exact_intr_binding_source_complete": true,
+        "raw_phi_free_audit_receipt_source_complete": true,
+        "authoritative_posture_resolution_source_complete": true,
+        "posture_ui_projection_source_complete": true,
+        "tvc_skap_posture_verification_source_complete": true
+      },
+      "allowed_next_transitions": [
+        "IMPLEMENT_INTR_SENSITIVE_DATA_AUTOMATIC_DISPOSITION_PROOF_003"
+      ],
+      "handoff_projection_refs": [
+        "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-org/StegVerse-SDK/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC/docs/SKAP_KV_ACCOUNT_METADATA_INGRESS_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "security_posture_resolution_authority": "INTERLOCK_INTR",
+        "sdk_posture_authority": "REQUEST_INPUT_AND_REPORTING_ONLY",
+        "tvc_skap_posture_authority": "VERIFY_ONLY_NO_REINTERPRETATION",
+        "credential_authority": "TV_TVC",
+        "github_runtime_authority": "NONE",
+        "heartbeat_execution_authority": false,
+        "model_output_authority": false,
+        "hosted_execution_fallback": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+      "correlation_id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+      "root_correlation_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+      "parent_task_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+      "goal": "Observe and reconcile authentic commercial responses to the already-sent GP10 paid field-validation outreach, validate the records/provenance/conflict problem only from explicit prospect evidence, and advance only to a concrete paid scope/quote or an evidence-backed alternative revenue comparison without speculative technical buildout.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "30001000100000",
+      "canonical_issue": "StegVerse-Labs/.github#2073",
+      "goal_prompt_count": "14/20",
+      "source_refs": [
+        "docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+        "StegVerse-Labs/GP10:docs/business/COMMERCIAL_DISCOVERY_OUTREACH.md",
+        "StegVerse-Labs/GP10:docs/business/PAID_FIELD_VALIDATION_OFFER.md",
+        "StegVerse-Labs/.github#2073"
+      ],
+      "starting_evidence": {
+        "outlook_profile_email": "rigel@stegverse.org",
+        "pova_sent_message_observed": true,
+        "pova_subject": "GP10 records / rebuild-history question",
+        "pova_observed_timestamp": "2026-09-17T22:32:55Z",
+        "integrity_sent_message_observed": true,
+        "integrity_subject": "Locomotive record-conflict review question",
+        "integrity_observed_timestamp": "2026-09-17T22:33:17Z",
+        "iphone_sent_folder_screenshot_sha256": "a68668f9012dba663ab24e345d229d975705c217f800602c07c0c82537995de0",
+        "pova_reply_observed": false,
+        "integrity_reply_observed": false
+      },
+      "commercial_predicates": {
+        "problem_confirmation_observed": false,
+        "authorized_dataset_discussion_observed": false,
+        "paid_scope_willingness_observed": false,
+        "authorized_decision_maker_referral_observed": false,
+        "buyer_interest_validated": false,
+        "paid_engagement_observed": false
+      },
+      "constraints": {
+        "zero_speculative_infrastructure": true,
+        "routine_github_actions_allowed": false,
+        "new_connector_required": false,
+        "new_runtime_required": false,
+        "new_scheduler_required": false,
+        "technical_build_without_customer_evidence_allowed": false
+      },
+      "next_admissible_work": "POVA/Western Rail approved bounded follow-up sent via authenticated rigel@stegverse.org Outlook mailbox and provider-observed at 2026-09-24T17:34:33Z; exact approved body independently fetched. Allow a reasonable ordinary business-day response opportunity after September 24, preserving any authentic prospect reply body/sender/timestamp before classifying commercial predicates. Do not infer rejection or buyer interest from silence. Do not repeat follow-up or message other prospects in this step. Alternative already-implemented revenue-capability comparison stays gated pending reasonable follow-up response opportunity or explicit negative-fit/rejection evidence. No technical buildout, new connector, scheduler, runtime or routine GitHub Actions.",
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "response_evidence_observed": false,
+        "commercial_problem_validated": false,
+        "paid_scope_validated": false,
+        "paid_engagement_observed": false
+      },
+      "status_response_contract": {
+        "active": "commercial response validation active",
+        "completed": "authentic prospect response reconciled and revenue-path disposition evidence-backed"
+      },
+      "retired_terminal": false,
+      "retired_resurrection_review_only": false,
+      "current_observation": {
+        "observed_at_local": "2026-09-24T12:34:33-05:00",
+        "outlook_profile_email": "rigel@stegverse.org",
+        "mailbox_search_scope": "exact outreach subjects plus organization/domain searches",
+        "pova_reply_observed": false,
+        "integrity_reply_observed": false,
+        "panhandle_northern_reply_observed": false,
+        "progress_rail_reply_observed": false,
+        "subject_search_results_classification": "exact-subject/domain results were own sent/draft artifacts only; sender-specific prospect searches returned zero inbound messages",
+        "first_wave_elapsed_approx": "5h47m-5h48m",
+        "second_wave_elapsed_approx": "5h09m",
+        "materially_longer_response_interval_elapsed": true,
+        "reasonable_business_response_window_elapsed": true,
+        "same_evening_observation": false,
+        "commercial_predicates_validated": false,
+        "gp10_public_service_page_user_observed_live": true,
+        "gate_checked_at_local": "2026-09-18T23:55:00-05:00",
+        "business_day_response_opportunity_elapsed": true,
+        "outlook_recheck_performed": true,
+        "outlook_recheck_skip_reason": null,
+        "prior_mailbox_observation_preserved": false,
+        "followup_justified": true,
+        "alternative_capability_comparison_triggered": false,
+        "followup_sent": true,
+        "followup_sent_provider_observed": true,
+        "followup_message_observed_timestamp": "2026-09-24T17:34:33Z"
+      },
+      "progress": {
+        "first_wave_reply_recheck_complete": true,
+        "pova_reply_observed": false,
+        "integrity_reply_observed": false,
+        "panhandle_northern_outreach_draft_created": true,
+        "panhandle_northern_outreach_draft_recipient": "thelms@omnitrax.com",
+        "panhandle_northern_outreach_draft_subject": "Older locomotive record-history review question",
+        "progress_rail_outreach_draft_created": true,
+        "progress_rail_outreach_draft_recipient": "customer.service.emd@progressrail.com",
+        "progress_rail_outreach_draft_subject": "EMD rebuild record-conflict review question",
+        "next_prospect_outreach_sent_observed": true,
+        "panhandle_northern_outreach_sent_provider_observed": true,
+        "panhandle_northern_outreach_sent_timestamp": "2026-09-17T23:11:01Z",
+        "panhandle_northern_outreach_recipient": "thelms@omnitrax.com",
+        "progress_rail_outreach_sent_provider_observed": true,
+        "progress_rail_outreach_sent_timestamp": "2026-09-17T23:11:02Z",
+        "progress_rail_outreach_recipient": "customer.service.emd@progressrail.com",
+        "panhandle_northern_reply_observed": false,
+        "progress_rail_reply_observed": false,
+        "connector_direct_send_draft_action_available": false,
+        "exact_draft_content_sent_via_new_message_action": true,
+        "original_drafts_left_unchanged": true,
+        "all_four_prospect_thread_and_domain_recheck_complete": true,
+        "latest_all_prospect_recheck_at": "2026-09-18T23:55:00-05:00",
+        "reasonable_response_window_elapsed": true,
+        "alternative_capability_comparison_triggered": false,
+        "gp10_public_service_page_source_created": true,
+        "gp10_public_service_page_path": "StegVerse-Labs/Site:gp10-field-validation.html",
+        "gp10_public_service_page_intended_url": "https://stegverse.org/gp10-field-validation.html",
+        "gp10_public_service_page_site_handoff": "StegVerse-Labs/Site:docs/GP10_PUBLIC_SERVICE_PAGE_MIRROR_HANDOFF.md",
+        "gp10_public_service_page_source_commit": "f09cd593bde999cfd98b74bf042db6d2f6ebba0a",
+        "gp10_public_service_page_discovery_link_commit": "15782d8b0773bfde973da09102a724635f16e596",
+        "gp10_public_service_page_pages_deployment_run": 35305152499,
+        "gp10_public_service_page_pages_deployment_head": "242d62a06088d81837a44c412a9af0dc0b6ce5b6",
+        "gp10_public_service_page_pages_deployment_success": true,
+        "gp10_public_service_page_served_body_observed": true,
+        "gp10_public_service_page_workspace_exposed": false,
+        "gp10_public_service_page_workspace_isolation_preserved": true,
+        "gp10_public_service_page_backend_added": false,
+        "gp10_public_service_page_routine_actions_dispatched": false,
+        "gp10_public_service_page_site_claim_released": true,
+        "gp10_public_service_page_site_claim_release_commit": "bb787f3a04c47637a572aaae49aba4e71090f520",
+        "gp10_public_service_page_static_boundary_validation": true,
+        "gp10_public_service_page_indexable": true,
+        "gp10_public_service_page_contact_cta_present": true,
+        "gp10_public_service_page_discovery_link_present": true,
+        "gp10_public_service_page_links_workspace": false,
+        "gp10_workspace_noindex_preserved": true,
+        "latest_all_prospect_recheck_date": "2026-09-18",
+        "latest_all_prospect_recheck_no_inbound_reply": true,
+        "latest_subject_and_domain_search_own_messages_only": true,
+        "gp10_public_service_page_served_body_probe_attempted": true,
+        "gp10_public_service_page_served_body_probe_result": "TOOL_NETWORK_ACCESS_UNAVAILABLE",
+        "gp10_public_service_page_site_failure_inferred": false,
+        "gp10_public_service_page_served_body_observation_source": "USER_PROVIDED_IPHONE_SCREENSHOT",
+        "gp10_public_service_page_served_body_screenshot_sha256": "151a7311f57f30bfc20fb82c81bf9b92aa34b8862b8f1b50141877f9fd5be6b4",
+        "gp10_public_service_page_served_body_visible_origin": "stegverse.org",
+        "gp10_public_service_page_served_body_matches_deployed_content": true,
+        "gp10_public_service_page_independent_machine_fetch_observed": false,
+        "gp10_public_service_page_explanatory_followup_context_allowed": true,
+        "materially_longer_response_interval_elapsed": true,
+        "same_evening_silence_not_classified_as_rejection": true,
+        "followup_justified": true,
+        "business_day_gate_last_checked_at": "2026-09-18T23:55:00-05:00",
+        "business_day_gate_elapsed": true,
+        "premature_mailbox_recheck_avoided": true,
+        "sender_specific_recheck_complete": true,
+        "sender_specific_recheck_no_inbound_reply": true,
+        "followup_sent": true,
+        "pova_followup_provider_observed": true,
+        "pova_followup_message_id": "AAMkADNkZGE1Y2RlLTdjMWYtNDQwNC05YTVlLTViYzhlZjA1NDY1YgBGAAAAAAALfLN1gPipTpwkHIEWImDhBwAtpM0b19v9QIQVKoYGvfR5AAAAAAEJAAAtpM0b19v9QIQVKoYGvfR5AAFPrzlPAAA=",
+        "pova_followup_message_observed_timestamp": "2026-09-24T17:34:33Z",
+        "pova_followup_recipient": "pova@povarr.com",
+        "pova_followup_subject": "Re: GP10 records / rebuild-history question",
+        "pova_followup_sender_account": "rigel@stegverse.org",
+        "pova_followup_body_verified": true,
+        "pova_followup_public_page_context_only": true,
+        "pova_followup_user_approval_observed": true,
+        "pova_followup_reasonable_response_opportunity_elapsed": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+      "correlation_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+      "parent_task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+      "predecessor_task_id": "MIR-SDK-RETURN-ASSEMBLY-CONTINUITY-001",
+      "goal": "Duplicate the proven StegVerse-002 event-triggered Interlock/InTr -> EVENT_EPHEMERAL route first, bind only current MIR Goal/COSV/destination requirements, canonically retain/reconstruct every observed governed transition in Master Records, and complete governed return without a second execution or transport plane.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000100000",
+      "canonical_issue": "StegVerse-Labs/.github#1891",
+      "canonical_handoff": "StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+      "canonical_route_duplication_binding": "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json",
+      "canonical_custody_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "canonical_custody_reusable_task": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "event_driver": "scripts/execute_mir_event_driven_roundtrip.py",
+      "standing_event_request": "control/resident-execution-request.d/mir-roundtrip-egress-authenticity-001.json",
+      "temporary_probe": "workers/mir_roundtrip_transition_probe_worker.py",
+      "owners": {
+        "coordination_and_parent_guide_owner": "StegVerse-Labs/Site",
+        "event_materialization_owner": "Interlock/InTr plus existing StegOS EVENT_EPHEMERAL materializer",
+        "sdk_return_materialization_owner": "StegVerse-org/StegVerse-SDK",
+        "final_stegverse_framework_egress_owner": "StegVerse-org/LLM-adapter",
+        "transition_transport_owner": "Interlock/InTr",
+        "credential_owner": "TV/TVC where required",
+        "mir_mirror_endpoint_owner": "StegVerse-owned MIR mirror",
+        "mir_semantics_owner": "MIR",
+        "observed_reality_custody_reconstruction_owner": "Master Records"
+      },
+      "proven_route_reuse": {
+        "instruction": "DUPLICATE_PROVEN_SV002_EVENT_ROUTE_FIRST_THEN_ADD_MIR_SPECIFIC_REQUIREMENTS",
+        "historical_route_status": "SUCCESSFUL_ENGINEERING_LANE",
+        "historical_route_ref": "StegVerse-Labs/Site/docs/STEGBROWSER_SV002_VALIDATED_LANE_RETEST.md",
+        "historical_receipts_grant_present_authority": false,
+        "generic_mechanics_reproof_required_before_current_mir_invocation": false,
+        "fresh_evidence_scope": "CURRENT_MIR_BOUND_EVENT_AND_NEW_TRANSITIONS_ONLY"
+      },
+      "event_creation_invariants": {
+        "standing_request_is_event_input": true,
+        "workercoordinator_claim_required_for_event_creation": false,
+        "requires_current_workercoordinator_claim_fence": false,
+        "claim_or_fence_minted_by_request": false,
+        "request_grants_execution_authority": false,
+        "event_triggered": true,
+        "always_on_receiver_required": false,
+        "interlock_intr_admission_required": true,
+        "event_ephemeral_runtime_materializes_as_transition_consequence": true,
+        "user_device_execution_surface_required": false,
+        "remote_device_execution_surface_required": false,
+        "generic_sv002_route_may_not_be_reproved_as_a_mir_execution_gate": true
+      },
+      "canonical_custody_invariants": {
+        "every_observed_governed_transition_emits_canonical_state_receipt": true,
+        "master_records_recorded_and_reconstruction_pass_required_before_progression": true,
+        "master_records_grants_transition_authority": false,
+        "master_records_grants_execution_authority": false,
+        "task_specific_probe_is_primary_custody": false,
+        "temporary_probe_role": "CONFORMANCE_COMPARATOR_ONLY"
+      },
+      "documented_transport_sequence": [
+        "STANDING_MIR_EVENT",
+        "BUILD_MIR_BOUND_UNIVERSAL_INTR_INTENT",
+        "BUILD_NON_AUTHORIZING_EVENT_MATERIALIZATION_REQUEST",
+        "PERSIST_EVENT_MATERIALIZATION_REQUEST",
+        "CANONICAL_MASTER_RECORDS_CUSTODY_OF_OBSERVED_EVENT_STATE",
+        "INTERLOCK_INTR_ADMISSION",
+        "EVENT_EPHEMERAL_RUNTIME_MATERIALIZATION",
+        "RTC-STEGVERSE-EGRESS-007",
+        "RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "RTC-FARSIDE-FINAL-009",
+        "RETAIN_MIR_DESTINATION_EVIDENCE",
+        "RETAIN_EXACT_GOVERNED_RETURN_PACKET",
+        "CANONICAL_MASTER_RECORDS_CUSTODY_AFTER_EACH_OBSERVED_STATE",
+        "GOVERNED_RETURN_STEGVERSE_RETURN_EXIT"
+      ],
+      "current_truth": {
+        "sv002_route_historically_proven": true,
+        "sv002_route_reuse_binding_materialized": true,
+        "generic_sv002_route_reproof_gate_removed": true,
+        "event_driven_execution_source_materialized": true,
+        "workercoordinator_event_creation_gate_removed": true,
+        "canonical_master_records_custody_source_bound": true,
+        "mir_profile_runtime_canonical_custody_source_bound": true,
+        "temporary_probe_disabled_for_primary_execution": true,
+        "mir_destination_profile_id": "MIR",
+        "mir_mirror_endpoint_known": true,
+        "authentic_current_event_materialization_observed": false,
+        "current_goal_cosv_binding_observed_at_runtime": false,
+        "rtc_007_observed": false,
+        "rtc_008_observed": false,
+        "rtc_009_observed": false,
+        "mir_destination_evidence_retained_at_runtime": false,
+        "canonical_master_records_runtime_sequence_observed": false,
+        "governed_return_packet_retained_at_runtime": false,
+        "stegverse_return_exit_observed": false,
+        "successful_one_way_mir_transport_identified": false,
+        "successful_data_transport_round_trip_identified": false,
+        "communication_complete": false
+      },
+      "runtime_execution_note": {
+        "authentic_current_event_execution_observed": false,
+        "authentic_intr_materialization_observed": false,
+        "correct_interpretation": "The standing MIR request is the event input. Its admitted Interlock/InTr state transition materializes the EVENT_EPHEMERAL runtime; an idle runtime or WorkerCoordinator claim is not a prerequisite for event creation.",
+        "github_runtime_authority": "NONE"
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "source_event_order_corrected": true,
+        "canonical_custody_source_adopted": true,
+        "runtime_completion_pending": true,
+        "rtc_007_observed": false,
+        "rtc_008_observed": false,
+        "rtc_009_observed": false,
+        "stegverse_return_exit_observed": false,
+        "successful_data_transport_round_trip_identified": false,
+        "communication_complete": false
+      },
+      "allowed_next_transitions": [
+        "EXECUTE_STANDING_MIR_EVENT_THROUGH_EXISTING_EVENT_TRIGGERED_INGRESS",
+        "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_SEQUENCE",
+        "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
+        "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
+        "CONTINUE_RTC_007_008_009",
+        "RETAIN_EXACT_GOVERNED_RETURN_PACKET",
+        "ADMIT_STEGVERSE_RETURN_EXIT",
+        "CANONICALLY_CUSTODY_RETURN_EXIT",
+        "IDENTIFY_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP"
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "correlation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "root_correlation_id": "MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+      "parent_task_id": "MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+      "goal": "Use the canonical external-roundtrip build/test pattern plus the existing TV/TVC provider-operation broker for MIR Run 2 historical accounting, preserving StegVerse governance authority, Interlock/InTr transition authority, exact request/body/test bindings, same-device StegOS Node Mirror testing, and later authentic MIR endpoint substitution without creating a second transport or runtime lifecycle.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000100000",
+      "owners": {
+        "credential_and_provider_broker_owner": "StegVerse-Labs/TVC",
+        "governance_and_delta_owner": "StegVerse-org/StegVerse-SDK",
+        "authentic_external_historical_accounting_owner": "MIR",
+        "build_test_counterpart": "StegVerse-Labs/StegOS:MIR NODE MIRROR",
+        "build_test_counterpart_authority_effect": "NONE",
+        "transition_owner": "Interlock/InTr"
+      },
+      "component_model": {
+        "model_ref": "data/reusable-task-component-model.json",
+        "profile_ref": "data/goal-task-component-profiles/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+        "protocol_tasks": [
+          "RT-INTR-BOUNDARY-ADMISSION-001",
+          "RT-INTR-GOVERNED-TRANSITION-001",
+          "RT-INTR-ROUNDTRIP-CORRELATION-001",
+          "RT-INTR-EVIDENCE-CUSTODY-001"
+        ],
+        "reusable_task_lifecycle": "PROMOTED_VALIDATED_REUSABLE",
+        "implementation_components": [
+          "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+          "RTC-ROUNDTRIP-003",
+          "RTC-INTERLOCK-INTR-TRANSPORT-008",
+          "TVC-PROVIDER-OPERATION-BROKER-003",
+          "TVC-CAPABILITY-RUNTIME-002"
+        ],
+        "new_reusable_component_required": false
+      },
+      "build_test_counterpart": {
+        "mode": "STEGOS_NODE_MIRROR",
+        "node_label": "MIR NODE MIRROR",
+        "external_system_profile": "MIR",
+        "runtime_class": "EVENT_EPHEMERAL",
+        "rendezvous_requirement": "NOT_REQUIRED",
+        "requires_other_machine": false,
+        "substitution_rule": "AUTHENTIC_MIR_REPLACES_ONLY_FAR_SIDE_COUNTERPART_WITHOUT_STEGVERSE_CHOREOGRAPHY_CHANGE"
+      },
+      "current_truth": {
+        "mir_profile_merged": true,
+        "mir_node_mirror_source_implemented": true,
+        "mir_node_mirror_source_validated": true,
+        "mir_node_mirror_merged": true,
+        "mir_node_mirror_runtime_observed": true,
+        "mir_node_mirror_sdk_return_observed": true,
+        "mir_profile_request_construction_observed": true,
+        "mir_event_ephemeral_lease_execution_observed": true,
+        "mir_request_intr_hop_observed": true,
+        "mir_bounded_processing_observed": true,
+        "external_framework_ingress_observed": true,
+        "mir_response_intr_hop_observed": true,
+        "mir_exact_return_packet_retained": true,
+        "stegverse_return_exit_observed": true,
+        "sdk_evaluator_review_ingress_observed": true,
+        "node_external_counterpart_return_admitted_observed": true,
+        "authentic_tvc_mir_provider_session_observed": false,
+        "authentic_mir_submit_event_observed": false,
+        "authentic_mir_response_observed": true,
+        "authentic_mir_result_receipt_retained": true,
+        "sdk_run2_delta_observed": false
+      },
+      "private_evidence_projection": {
+        "predicate": "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED",
+        "state": "SATISFIED_PRIVATE_EVIDENCE_HELD_OUTSIDE_PUBLIC_REPOSITORY",
+        "private_content_published": false,
+        "private_digest_published": false,
+        "authority_effect": "NONE"
+      },
+      "runtime_reconciliation_evidence": {
+        "provenance": "MIR_NODE_MIRROR_BUILD_TEST",
+        "canonical_site_handoff": "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+        "stegos_runtime_merge": "b52800a6cec226432c9cb8fec3f2e65abbd4b49c",
+        "site_return_continuity_merge": "419a77da87e77f832ea903723cbdbc7359fb6532",
+        "site_retained_packet_binding_merge": "26b501080f1c00fb4b3204d719619afa8a11acae",
+        "canonical_task_reconciliation_merge": "fe6be6d791520d8f11ebd0e413f99f241a03a84d",
+        "reusable_intr_binding_merge": "8ade8168e44b3b54bd3f24edfcc047397512a356",
+        "reconciliation_rule": "Existing executed MIR mirror transitions are mapped onto the reusable RT-INTR task decomposition because the reusable tasks name the same admission, governed transition, correlation, and custody behaviors; no duplicate runtime invocation is created."
+      },
+      "authority_invariants": {
+        "credential_authority": "TV/TVC",
+        "authentic_mir_historical_accounting_authority": "MIR",
+        "node_mirror_authority_effect": "NONE",
+        "governance_authority": "STEGVERSE",
+        "transition_authority": "Interlock/InTr",
+        "user_verification_authority": "KV/SKAP Vault",
+        "github_runtime_authority": "NONE",
+        "alternate_mir_transport_allowed": false,
+        "second_user_operated_device_required": false
+      },
+      "satisfied_predicates": [
+        "MIR_PROFILE_REGISTERED_IN_CANONICAL_TVC_PROVIDER_REGISTRY",
+        "CANONICAL_PROVIDER_BROKER_DISPATCHES_TO_MIR_VALIDATOR",
+        "MIR_STANDING_REQUEST_BOUND_AND_ADMITTED",
+        "MIR_SUBMIT_EVENT_FAILS_CLOSED_WITHOUT_VERIFIED_EVENT_MAPPING",
+        "MIR_POLICY_EVALUATE_FORBIDDEN",
+        "MIR_CREDENTIAL_NOT_EXPORTED",
+        "MIR_BODY_AND_LEASE_MUTATION_FAIL_CLOSED",
+        "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
+        "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+        "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+      ],
+      "remaining_predicates": [
+        "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": true,
+        "source_implemented": true,
+        "source_validated": true,
+        "build_test_runtime_observed": true,
+        "authentic_external_result_observed": true,
+        "authentic_tvc_provider_session_observed": false
+      },
+      "allowed_next_transitions": [
+        "VERIFY_MIR_PARTNER_STANDING_CONTRACT",
+        "OBSERVE_AUTHENTIC_PROVIDER_SESSION"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/MIR_NODE_MIRROR_RUN2_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github/docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "correlation_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "root_correlation_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+      "parent_task_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+      "goal": "Observe authentic completed Stripe and GoDaddy payment records through TV/TVC-governed read-only provider paths, normalize them into the merged provider-neutral completed-payment evidence boundary, and prove that provider ingress does not expand payment, entitlement, governance, credential, transport, or execution authority before any webhook or failover evaluation.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000010100000",
+      "handoff": "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
+      "canonical_issue": "StegVerse-Labs/.github#1974",
+      "implementation_issue": "StegVerse-Labs/TVC#437",
+      "implementation_pr": "StegVerse-Labs/TVC#438",
+      "implementation_merge": "StegVerse-Labs/TVC@c0a46b6b6c470b5a39499600678fc222822afc79",
+      "implementation_validation_run": "StegVerse-Labs/TVC/actions/runs/35047474638",
+      "read_profile_pr": "StegVerse-Labs/TVC#440",
+      "read_profile_merge": "StegVerse-Labs/TVC@fc5808f74adb0022e584007b7280f646805c1ed2",
+      "read_profile_validation_run": "StegVerse-Labs/TVC/actions/runs/35047891729",
+      "implementation_repository": "StegVerse-Labs/TVC",
+      "parent_handoff": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "credential_authority": "TV/TVC",
+      "provider_write_authority": false,
+      "payment_mutation_authority": false,
+      "entitlement_authority": false,
+      "governance_authority": false,
+      "execution_authority": false,
+      "completion": {
+        "claimed": false,
+        "observation_contract_merged": true,
+        "observation_contract_validation_green": true,
+        "read_profile_contract_merged": true,
+        "read_profile_validation_green": true,
+        "stripe_authenticated_read_observed": true,
+        "stripe_completed_payment_observed": false,
+        "stripe_authentic_normalization_green": false,
+        "godaddy_authenticated_read_observed": false,
+        "godaddy_completed_payment_observed": false,
+        "godaddy_authentic_normalization_green": false,
+        "webhook_evaluation_admissible": false,
+        "failover_evaluation_admissible": false,
+        "authentic_completed_evidence_pending": true
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "correlation_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "root_correlation_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "parent_task_id": null,
+      "goal": "Keep StegSocials drafts private by default in Personal-KV and permit public Facebook, LinkedIn, or Instagram release only through either an exact single-use participant grant or an explicitly bounded participant-approved multi-post group, using canonical adjacent Interlock/InTr hops, event-ephemeral execution, TV/TVC SKAP credential authority, exact source/claim/content/platform/account binding, replay protection, durable atomic use-state, and reconstructable publication evidence.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "60000000102000",
+      "source_refs": [
+        "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
+        "data/reusable-task-component-model.json",
+        "data/reusable-task-component-decomposition-policy.json",
+        "data/reusable-transport-component-contract.json",
+        "data/reusable-task-ephemeral-construct-contract.json",
+        "data/goal-task-transport-profiles/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+        "data/reusable-task-component-evaluations/SS-KV-SKAP-SOCIAL-RELEASE-001.result.json",
+        "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4",
+        "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c",
+        "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6",
+        "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09",
+        "StegVerse-Labs/StegSocials@61d4922dc34197ce1e7604c705a5ad4a6656959b",
+        "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb",
+        "StegVerse-Labs/StegSocials@05ebcd5ec055577379dead0f24b93a825bd1ec9f",
+        "StegVerse-Labs/StegSocials@7e8ba2f932e45fea05e30698999014c916814e56",
+        "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d",
+        "StegVerse-Labs/StegSocials@d639510d05a577e98203a525efb382002dd1e6cb",
+        "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9",
+        "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+        "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "master-records"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegSocials",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/StegBrowser",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/TVC",
+          "master-records/orchestration"
+        ],
+        "components": [
+          "personal-kv-private-draft-reference",
+          "single-use-public-release-grant",
+          "bounded-scope-post-group-grant",
+          "bounded-group-atomic-use-state",
+          "bounded-group-pre-admission-intr-intent",
+          "bounded-group-universal-interlock-received-ingress",
+          "bounded-group-event-publication-bridge",
+          "bounded-group-execution-evidence-reconciler",
+          "bounded-group-execution-to-site-cas-projection",
+          "event-ephemeral-intr-execution",
+          "tv-tvc-skap-social-credential-custody",
+          "stegbrowser-event-ephemeral-session",
+          "facebook-stegverse-transport",
+          "linkedin-stegverse-transport",
+          "instagram-stegverse-ai-transport",
+          "publication-receipt",
+          "master-records-custody"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-SS-SOCIAL-INTR",
+          "kind": "GOVERNED_RUNTIME_ADMISSION",
+          "state": "SOURCE_CANONICAL_RECEIVED_INGRESS_VALIDATED_AUTHENTIC_ADMISSION_PENDING",
+          "ref": "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d",
+          "disposition": "A READY bounded use now projects through the secret-free InTr intent into the canonical Universal Work Interlock v1 INGRESS/RECEIVED record with stable work/correlation/source/dependency/convergence/authority binding. Submit that record through authentic Interlock/InTr and retain only real ADMITTED evidence returned by the runtime boundary."
+        },
+        {
+          "dependency_id": "DEP-SS-SOCIAL-KV",
+          "kind": "STORAGE",
+          "state": "SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING",
+          "ref": "Personal-KV/StegSocials/PostGroupState",
+          "disposition": "DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."
+        },
+        {
+          "dependency_id": "DEP-SS-SOCIAL-SKAP",
+          "kind": "CREDENTIAL_CUSTODY",
+          "state": "EVENT_EXECUTION_EVIDENCE_PENDING",
+          "ref": "TV/TVC SKAP social credential lease",
+          "disposition": "Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."
+        },
+        {
+          "dependency_id": "DEP-SS-SOCIAL-STEGBROWSER",
+          "kind": "EVENT_EPHEMERAL_TRANSPORT",
+          "state": "SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING",
+          "ref": "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09",
+          "disposition": "After authentic InTr admission and TV/TVC-SKAP session materialization, the bounded event may enter the existing Facebook/LinkedIn native StegBrowser callers. Returned provider execution is reconciled before the exact Site CAS request is projected; authentic provider execution remains pending."
+        },
+        {
+          "dependency_id": "DEP-SS-SOCIAL-CUSTODY",
+          "kind": "CUSTODY",
+          "state": "IMPLEMENTED_PENDING_REAL_RECEIPT",
+          "ref": "MR-STEGSOCIALS-RECEIPT-CUSTODY-001",
+          "disposition": "Import and reconstruct after authentic publication and state-transition receipts exist."
+        }
+      ],
+      "blockers": [
+        "AUTHENTIC_BOUNDED_SOCIAL_INTR_EXECUTION_NOT_YET_OBSERVED",
+        "AUTHENTIC_TV_TVC_SKAP_SOCIAL_SESSION_RECEIPT_NOT_YET_OBSERVED",
+        "AUTHENTIC_PLATFORM_PUBLICATION_AND_TERMINAL_SESSION_DESTRUCTION_NOT_YET_OBSERVED",
+        "AUTHENTIC_TWO_POST_BOUNDED_GROUP_AND_KV_CUSTODY_NOT_YET_OBSERVED"
+      ],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "SS-EVIDENCE-COMPARISON-001",
+        "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"
+      ],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4:bounded-post-group-source-and-validation-merged",
+        "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c:atomic-bounded-group-state-store-and-validation-merged",
+        "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6:bounded-event-publication-bridge-merged-and-validated",
+        "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09:bounded-execution-evidence-reconciler-merged-and-validated",
+        "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb:execution-to-existing-site-cas-projection-merged-and-validated",
+        "StegVerse-Labs/StegSocials@05ebcd5ec055577379dead0f24b93a825bd1ec9f:pre-admission-intr-intent-merged-and-validated",
+        "StegVerse-Labs/StegSocials@7e8ba2f932e45fea05e30698999014c916814e56:pre-admission-intr-intent-handoff-task-readme-reconciled",
+        "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d:universal-work-interlock-received-projection-merged-and-validated",
+        "StegVerse-Labs/StegSocials@d639510d05a577e98203a525efb382002dd1e6cb:universal-work-interlock-received-projection-handoff-task-reconciled",
+        "StegVerse-Labs/Site@5a3de454a530a1ce0d8cf8ce442935d1b9366790:registered-node-intr-device-kv-route-merged",
+        "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9:bounded-group-runtime-observation-surface-merged",
+        "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+        "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+        "master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml"
+      ],
+      "expected_evidence_predicates": [
+        "PRIVATE_DRAFT_REMAINS_PERSONAL_VIEW_ONLY_WITHOUT_RELEASE_GRANT",
+        "PUBLIC_RELEASE_GRANT_IS_EXACT_SINGLE_USE_UNEXPIRED_AND_CONTENT_HASH_BOUND_OR_BOUNDED_GROUP_IS_EXPLICITLY_PARTICIPANT_APPROVED_AND_SCOPE_BOUND",
+        "BOUNDED_GROUP_SOURCE_EVIDENCE_CLAIM_TARGET_COUNT_CADENCE_EXPIRY_AND_TRANSFORMATIONS_REMAIN_WITHIN_APPROVED_ENVELOPE",
+        "READY_BOUNDED_USE_PROJECTS_TO_SECRET_FREE_PRE_ADMISSION_INTR_INTENT_WITH_STABLE_WORK_CORRELATION_DEPENDENCY_AND_DUPLICATE_CONVERGENCE_IDENTITY",
+        "PRE_ADMISSION_INTR_INTENT_CARRIES_NO_SYNTHETIC_INTR_OR_SKAP_RECEIPT_AND_GRANTS_NO_EXECUTION_AUTHORITY",
+        "PRE_ADMISSION_INTENT_PROJECTS_TO_CANONICAL_UNIVERSAL_WORK_INTERLOCK_INGRESS_RECEIVED_RECORD_WITHOUT_CLAIMING_ADMISSION",
+        "UNIVERSAL_WORK_INTERLOCK_RECEIVED_RECORD_CARRIES_NO_SYNTHETIC_ADMISSION_RECEIPT_AND_NEXT_OWNER_IS_INTERLOCK_INTR",
+        "BOUNDED_EVENT_BRIDGE_REQUIRES_EXACT_AUTHENTIC_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPT_REFS",
+        "BOUNDED_EXECUTION_RECONCILER_REQUIRES_EXACT_GROUP_USE_APPROVAL_INTR_SKAP_PROVIDER_AND_DESTRUCTION_BINDINGS_BEFORE_STATE_TRANSITION",
+        "RECONCILED_EXECUTION_PROJECTS_ONLY_TO_EXISTING_SITE_CAS_REQUEST_WITH_NO_NEW_AUTHORITY_OR_WRITE_CONTRACT",
+        "BOUNDED_EVENT_EPHEMERAL_NODE_EXECUTION_USES_CANONICAL_ADJACENT_INTR_HOPS",
+        "PERSISTENT_NODE_IDENTITY_AND_CONTINUITY_BINDING_SURVIVE_EPHEMERAL_INVOCATION",
+        "PERSISTENT_TRANSPORT_PROCESS_NOT_REQUIRED",
+        "ALWAYS_ON_APPLICATION_RECEIVER_NOT_REQUIRED",
+        "TV_TVC_REMAINS_SOLE_CREDENTIAL_AUTHORITY",
+        "SKAP_SESSION_MATERIAL_IS_TASK_SCOPED_EPHEMERAL_AND_NOT_DURABLY_RETAINED",
+        "BOUNDED_GROUP_USE_STATE_COMMITS_ATOMICALLY_AFTER_PROVEN_PUBLICATION_AND_STALE_OR_REPLAYED_WRITERS_FAIL_CLOSED",
+        "LIVE_PLATFORM_RESULT_IS_COMPLETE_AND_PUBLICATION_PROVEN",
+        "TERMINAL_BROWSER_SESSION_DESTRUCTION_IS_PROVEN",
+        "PUBLICATION_RECEIPT_CONTAINS_REAL_PLATFORM_POST_ID_URL_AND_EXACT_CONTENT_HASH",
+        "PUBLICATION_RECORD_AND_UPDATED_GROUP_STATE_WRITE_TO_AUTHORIZED_PERSONAL_KV_AND_READBACK_VERIFY",
+        "TWO_IN_SCOPE_POSTS_EXECUTE_WITHOUT_RENEWED_PARTICIPANT_APPROVAL",
+        "WIDENING_REPLAY_AND_STALE_USE_ATTEMPTS_FAIL_CLOSED",
+        "MASTER_RECORDS_IMPORT_AND_RECONSTRUCTION_PASS",
+        "NO_HOSTED_RUNTIME_FALLBACK_USED",
+        "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "personal_kv_read",
+          "personal_kv_conditional_write",
+          "skap_credential_custody",
+          "intr_event_admission",
+          "stegbrowser_event_ephemeral_execute",
+          "platform_publish",
+          "publication_receipt",
+          "kv_write",
+          "custody_reconstruction"
+        ],
+        "environment": "SOVEREIGN_BOUNDED_EVENT_EPHEMERAL_STEGOS_NODE_SOCIAL_INVOCATION",
+        "direction": "PERSONAL_KV_TO_INTR_TO_TV_TVC_SKAP_TO_STEGBROWSER_TO_PLATFORM_TO_KV_TO_MASTER_RECORDS",
+        "mutation_required": true,
+        "deployment_required": false,
+        "persistent_runtime_required": false,
+        "always_on_receiver_required": false,
+        "event_ephemeral_materialization_allowed": true,
+        "current_observation_required": true
+      },
+      "runtime_resolution": {
+        "current_executor": "BOUNDED_EVENT_EPHEMERAL_STEGOS_NODE_WITH_EPHEMERAL_STEGBROWSER_SESSION",
+        "authority_basis": "participant-approved exact or bounded grant plus Interlock/InTr per-hop admission with TV/TVC credential authority",
+        "persistent_node_identity_required": true,
+        "persistent_transport_process_required": false,
+        "bounded_group_unattended_execution_allowed": true
+      },
+      "worker_claim": {
+        "authority": "CURRENT_SESSION_PLUS_PREAUTHORIZED_BOUNDED_GROUP",
+        "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
+        "fence_ref": "bounded group envelope plus canonical Universal Work Interlock RECEIVED record plus authentic InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
+        "projection_only": false
+      },
+      "componentization": {
+        "model_ref": "data/reusable-task-component-model.json",
+        "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
+        "evaluation_ref": "data/reusable-task-component-evaluations/SS-KV-SKAP-SOCIAL-RELEASE-001.result.json",
+        "evaluation_score": 25,
+        "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+        "transport_profile_ref": "data/goal-task-transport-profiles/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+        "component_handoff_ref": "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "runtime_handoff_remains_runtime_truth": true,
+        "selected_transport_components": [
+          "RTC-MANIFEST-001",
+          "RTC-GOVERNED-PROCESSING-002",
+          "RTC-ROUNDTRIP-003",
+          "RTC-EVIDENCE-CUSTODY-004",
+          "RTC-PUBLISHER-005",
+          "RTC-STEGVERSE-EGRESS-007",
+          "RTC-INTERLOCK-INTR-TRANSPORT-008",
+          "RTC-FARSIDE-FINAL-009"
+        ],
+        "omitted_transport_components": [
+          "RTC-SDK-RETURN-006"
+        ],
+        "execution_materialization_ref": "data/reusable-task-ephemeral-construct-contract.json",
+        "callback_correlation_status": "REUSABLE_COMPONENT_CANDIDATE_CURRENT_TASK_BINDING_REMAINS_EXISTING_RECONCILER",
+        "new_goal_task_created": false,
+        "authority_effect": "NONE_COORDINATION_ONLY"
+      },
+      "human_action_ref": "Participant action is required to create/revoke a bounded group or when a provider requires an unavoidable interactive authentication step; individual in-scope posts do not require renewed approval.",
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "bounded_group_source_complete": true,
+        "atomic_use_state_source_complete": true,
+        "device_kv_intr_route_source_complete": true,
+        "event_ephemeral_runtime_semantics_reconciled": true,
+        "bounded_pre_admission_intr_intent_source_complete": true,
+        "bounded_universal_interlock_received_ingress_source_complete": true,
+        "bounded_event_publication_bridge_source_complete": true,
+        "bounded_execution_evidence_reconciler_source_complete": true,
+        "bounded_execution_to_site_cas_projection_source_complete": true,
+        "reusable_component_reconciliation_source_complete": true,
+        "authentic_social_event_execution_observed": false,
+        "authentic_two_post_group_observed": false,
+        "reconciliation_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md"
+      },
+      "allowed_next_transitions": [
+        "SUBMIT_CANONICAL_RECEIVED_RECORD_TO_AUTHENTIC_INTR_BOUNDARY",
+        "RETAIN_AUTHENTIC_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPTS",
+        "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_SOCIAL_OPERATION",
+        "RECONCILE_AUTHENTIC_EXECUTION_AND_PROJECT_EXISTING_SITE_CAS_REQUEST",
+        "APPLY_AND_VERIFY_EXPECTED_ETAG_KV_COMMIT",
+        "EXECUTE_SECOND_IN_SCOPE_POST_WITHOUT_RENEWED_APPROVAL",
+        "PROVE_REPLAY_WIDENING_AND_STALE_USE_REFUSAL",
+        "RECONSTRUCT_IN_MASTER_RECORDS"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
+        "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site/docs/STEGSOCIALS_BOUNDED_GROUP_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+        "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "workercoordinator_owns_claim_fence_authority": true,
+        "kv_skap_vault_is_sole_user_verification_authority": true,
+        "stegos_devices_are_interchangeable_transport_execution_nodes_not_user_verifiers": true,
+        "pre_admission_intr_intent_mints_execution_authority": false,
+        "pre_admission_intr_intent_may_claim_runtime_receipts": false,
+        "universal_interlock_received_record_mints_execution_authority": false,
+        "universal_interlock_received_record_is_runtime_admission": false,
+        "source_may_synthesize_admitted_state_or_admission_receipt": false,
+        "bounded_group_ready_alone_grants_publication_authority": false,
+        "transport_availability_grants_execution_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "personal_kv_has_decryption_authority": false,
+        "device_has_durable_secret_custody": false,
+        "tv_tvc_remains_sole_credential_authority": true,
+        "stegbrowser_is_ephemeral_execution_surface_not_publication_authority": true,
+        "private_draft_is_release_approval": false,
+        "participant_release_is_required": true,
+        "bounded_group_preauthorization_allows_in_scope_unattended_posts": true,
+        "bounded_group_does_not_widen_participant_authority": true,
+        "heartbeat_execution_authority": false,
+        "github_runtime_authority": "NONE",
+        "hosted_execution_fallback": false,
+        "master_records_owns_receipt_custody_not_publication": true
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "correlation_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "goal": "Execute and evidence the already-issued immutable StegBrowser manifest invocation through the existing registered Node and Universal Interlock/InTr runtime surface, promoting only authentic authority-owned A1-A4 predicates and repairing only the first authentic transition defect if the chain fails, without requiring the user to inspect or operate any device as an evidence oracle.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "handoff_ref": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+      "predecessor_goal_prompt_terminal": "20/20",
+      "immutable_invocation": {
+        "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
+        "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "requested_invocation_count": 1,
+        "second_request_allowed": false,
+        "request_mutation_allowed": false,
+        "destination": "StegBrowser:ManifestInvocation",
+        "cosv": "40000100100000"
+      },
+      "execution_surface": {
+        "url": "https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1",
+        "device_scope": "EXISTING_REGISTERED_NODE_CONTEXT",
+        "user_manual_device_check_required": false,
+        "user_manual_page_open_required": false,
+        "user_manual_json_copy_required": false,
+        "observation_responsibility": "EXISTING_NODE_INTR_RUNTIME_AND_CANONICAL_RECEIPT_PATHS",
+        "private_browsing_allowed": false,
+        "site_data_clear_allowed": false,
+        "second_user_operated_device_required": false,
+        "runtime_authority_effect_of_source_or_ci": "NONE"
+      },
+      "source_progress": {
+        "current_iphone_binding_pr": 1360,
+        "current_iphone_binding_merge_sha": "76af62f2befdfa7034d3dd00891bfe60a0990abb",
+        "event_ephemeral_bridge_pr": 1363,
+        "event_ephemeral_bridge_validated_head": "1e5350aa149ba707e756cd055f7132dadd95735c",
+        "event_ephemeral_bridge_merge_sha": "8b032472d2861458daf2a1278fa3301d9a81a736",
+        "event_ephemeral_bridge_claim_release_pr": 1365,
+        "event_ephemeral_bridge_claim_release_validated_head": "4d26aa8d3f92163e504a8c705b789f836eab84f1",
+        "event_ephemeral_bridge_claim_release_merge_sha": "a24b5bfea8d5ea48409c579fd6af76bc227857be",
+        "duplicate_parallel_pr_closed_unmerged": 1364,
+        "runtime_connection_reconciliation_pr": 2017,
+        "runtime_connection_reconciliation_merge_sha": "369c6ba4bc78a64a330c89af9b66d4e233e1fd09",
+        "runtime_reobservation_pr": 2012,
+        "runtime_reobservation_merge_sha": "622824accbfe2d19262cedbf41e43dc5f752a775",
+        "source_capability_through_event_ephemeral_runtime_ready": true,
+        "source_capability_through_workercoordinator_a4": true,
+        "authentic_runtime_predicates_promoted_from_source": false,
+        "github_runtime_authority": "NONE"
+      },
+      "automatic_reobservation": {
+        "performed_through_canonical_main": "622824accbfe2d19262cedbf41e43dc5f752a775",
+        "runtime_evidence_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "immutable_nonce_reemitted": false,
+        "authority_owned_same_nonce_runtime_receipt_observed": false,
+        "runtime_ready_for_workercoordinator_observed": false,
+        "authentic_intr_ingress_observed": false,
+        "workercoordinator_claim_fence_observed": false,
+        "workercoordinator_a3_execution_attempted": false,
+        "a4_execution_attempted": false,
+        "runtime_predicates_promoted": false,
+        "round_trip_1_entered": false,
+        "authority_effect": "NONE_OBSERVATION_ONLY"
+      },
+      "a3_a4_collision_check": {
+        "parallel_workercoordinator_path_found": false,
+        "generic_sv001_adapter_reused": false,
+        "canonical_workercoordinator_admission_task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+        "checkout_policy": "fenced_atomic_checkout",
+        "fresh_claim_fence_required": true,
+        "a4_validator": "workers/stegbrowser_manifest_intr_ingress.py",
+        "targeted_runner": "scripts/refresh_and_execute_resident_task.py",
+        "composition_rule": "After an authentic validated StegBrowser Node/Interlock/lease/runtime binding exists, the existing A4 validator emits the exact organization-local packet, invokes the existing organization-local task under fresh WorkerCoordinator admission, then verifies claim/fence and full runtime correlation before accepting A4.",
+        "authority_effect": "NONE_SOURCE_COLLISION_CHECK_ONLY"
+      },
+      "required_chain": [
+        "REGISTERED_NODE_RECEIPT_1",
+        "DETERMINISTIC_UNCHANGED_NONCE_NODE_OUTBOX_ENTRY",
+        "STEGBROWSER_MANIFEST_INVOCATION_UNIVERSAL_INTR_MATERIALIZATION",
+        "WRITE_ONCE_INGRESS_ADMITTED",
+        "BOUNDED_INVOCATION_LEASE",
+        "EVENT_EPHEMERAL_RUNTIME_IDENTITY",
+        "WORKERCOORDINATOR_CLAIM_FENCE",
+        "EXACT_GOVERNED_STEGBROWSER_A4_INGRESS"
+      ],
+      "authentic_predicates": {
+        "registered_stegverse_node_bound_to_invocation": false,
+        "interlock_bound_to_node_and_manifest": false,
+        "intr_materialization_admitted": false,
+        "invocation_scoped_lease_established": false,
+        "event_ephemeral_runtime_materialized": false,
+        "execution_time_runtime_identity_bound": false,
+        "workercoordinator_claim_fence_observed": false,
+        "organization_local_intr_ingress_receipt_verified": false,
+        "authentic_intr_ingress_observed": false,
+        "a1_a4_complete": false
+      },
+      "first_unresolved_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION",
+      "successor_task_id_on_completion": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+      "allowed_next_transitions": [
+        "REOBSERVE_EXISTING_NODE_INTR_RUNTIME_RECEIPTS",
+        "CONSUME_EXISTING_UNCHANGED_NONCE_EVIDENCE",
+        "PROMOTE_ONLY_AUTHORITY_OWNED_PREDICATES",
+        "REPAIR_ONLY_FIRST_AUTHENTIC_TRANSITION_FAILURE",
+        "ACTIVATE_ROUNDTRIP_SUCCESSOR_ONLY_AFTER_A1_A4_COMPLETE"
+      ],
+      "authority_model": {
+        "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+        "interlock_intr_transition_authority": true,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "organization_local_boundary_executor_task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+        "a4_validator": "workers/stegbrowser_manifest_intr_ingress.py",
+        "credential_authority": "TV/TVC",
+        "github_runtime_authority": "NONE",
+        "user_device_inspection_authority": "NONE",
+        "second_user_operated_device_required": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "goal": "Execute the manifest-defined StegBrowser path through the existing invocation-owned StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS runtime -> WorkerCoordinator claim/fence -> authentic governed ingress -> two governed round trips, reusing the proven StegVerse-002 connection mechanics as reusable components.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "status_reason": "USER_DIRECTED_GOAL_CHART_REVISION_RESUMES_EXECUTION_WITH_PROVEN_SV002_CONNECTION_COMPONENTS; NO_EXTERNAL_RUNTIME_DEVICE_OR_HOST_DISCOVERY_STAGE",
+      "cosv_task_vector": "40000100100000",
+      "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+      "reusable_task_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+      "prompt_budget_history": {
+        "prior_terminal_count": "20/20",
+        "prior_decomposition_preserved_as_history": true,
+        "user_directed_resume": true
+      },
+      "runtime_requirements": {
+        "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "standing_runtime_required": false,
+        "external_runtime_connection_required": false,
+        "generic_process_host_required": false,
+        "external_device_required": false,
+        "second_user_operated_device_required": false,
+        "hosted_carrier_required": false,
+        "registered_node_binding_required": true,
+        "node_interlock_binding_required_before_lease": true,
+        "route_discovery_allowed": false,
+        "endpoint_discovery_allowed": false,
+        "receiver_discovery_allowed": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+              "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+            ]
+          }
+        ],
+        "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "compatibility_projection_only": true,
+        "is_goal_chart_stage": false,
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "immutable_invocation": {
+        "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
+        "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "requested_invocation_count": 1,
+        "second_request_allowed": false,
+        "request_mutation_allowed": false,
+        "destination": "StegBrowser:ManifestInvocation",
+        "cosv": "40000100100000"
+      },
+      "goal_chart": {
+        "A0": {
+          "name": "MANIFEST_PATH_CONTRACT",
+          "predicate": "MANIFEST_BOUND_TO_INVOCATION",
+          "authority": "ROUTE_DECLARATION_ONLY",
+          "state": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING"
+        },
+        "A1": {
+          "name": "STEGVERSE_NODE_BINDING",
+          "predicate": "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+          "authority": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+          "state": "AUTHENTIC_CURRENT_INVOCATION_PROOF_PENDING"
+        },
+        "A2": {
+          "name": "INTERLOCK_INTR_ENTRY",
+          "predicates": [
+            "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+            "INTR_MATERIALIZATION_ADMITTED"
+          ],
+          "authority": "INTERLOCK_INTR",
+          "state": "NOT_AUTHENTICALLY_OBSERVED"
+        },
+        "A2_1": {
+          "name": "BOUNDED_LEASE_EXECUTION_BINDING",
+          "predicate": "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+          "authority": "BOUNDED_INVOCATION_SCOPE_ONLY",
+          "state": "NOT_AUTHENTICALLY_OBSERVED"
+        },
+        "A2_2": {
+          "name": "EVENT_EPHEMERAL_STEGOS_MATERIALIZATION",
+          "predicates": [
+            "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED",
+            "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+            "INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED"
+          ],
+          "authority": "EVENT_EPHEMERAL_STEGOS_RUNTIME",
+          "state": "NOT_AUTHENTICALLY_OBSERVED"
+        },
+        "A3": {
+          "name": "WORKERCOORDINATOR_CLAIM_FENCE",
+          "predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+          "authority": "WORKERCOORDINATOR",
+          "state": "NOT_OBSERVED"
+        },
+        "A4": {
+          "name": "AUTHENTIC_INTERLOCK_INTR_INGRESS",
+          "predicates": [
+            "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+            "AUTHENTIC_INTR_INGRESS_OBSERVED"
+          ],
+          "authority": "INTERLOCK_INTR",
+          "state": "NOT_OBSERVED"
+        },
+        "A5_A7": {
+          "name": "ROUND_TRIP_1",
+          "completion": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED",
+          "state": "NOT_ENTERED"
+        },
+        "B1": {
+          "name": "RECORD_RECONSTRUCT_PROCESS",
+          "completion": "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
+          "authority": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY",
+          "state": "NOT_ENTERED"
+        },
+        "C1_C4": {
+          "name": "ROUND_TRIP_2",
+          "completion": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
+          "state": "NOT_ENTERED"
+        },
+        "composition_success": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
+      },
+      "sv002_connection_component_binding": {
+        "owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+        "rule": "REUSE_PROVEN_CONNECTION_MECHANICS_NOT_SITE_OWNERSHIP",
+        "A1": "REGISTERED_NODE_CONTINUITY_AND_RECEIPT_1_BINDING",
+        "A2": "NODE_BOUND_INTERLOCK_PLUS_NON_AUTHORIZING_UNIVERSAL_INTR_MATERIALIZATION_AND_WRITE_ONCE_OUTBOX",
+        "A2_1": "INVOCATION_SCOPED_BOUNDED_LEASE_FROM_ADMITTED_MATERIALIZATION",
+        "A2_2": "EVENT_MATERIALIZES_EVENT_EPHEMERAL_STEGOS_RUNTIME_AND_EXECUTION_TIME_RUNTIME_IDENTITY",
+        "A3_ordering": "AFTER_A2_2; WORKERCOORDINATOR_DOES_NOT_CREATE_EVENT_OR_MATERIALIZATION",
+        "A4_correlation": "SAME_NODE_INTERLOCK_MATERIALIZATION_LEASE_RUNTIME_MANIFEST_GOAL_COSV_CLAIM_FENCE",
+        "source_provenance_refs": [
+          "StegVerse-Labs/Site:assets/stegverse-node-continuity-impl.js",
+          "StegVerse-Labs/Site:assets/evaluator-intr-connector.js",
+          "StegVerse-Labs/Site:stegos-node/sv002-intr-sync.js",
+          "StegVerse-Labs/Site:assets/sv002-local-runtime-materializer.js",
+          "StegVerse-Labs/Site:assets/sv002-principal-worker.js"
+        ],
+        "site_is_runtime_owner": false,
+        "site_is_required_execution_stage": false,
+        "new_reusable_task_required": false
+      },
+      "required_reusable_sequence": [
+        "MANIFEST_BOUND_TO_INVOCATION",
+        "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+        "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+        "INTR_MATERIALIZATION_ADMITTED",
+        "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+        "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED",
+        "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+        "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+        "AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "ROUND_TRIP_1",
+        "MIRROR_BOUNDARY_PROCESSING",
+        "ROUND_TRIP_2"
+      ],
+      "authentic_runtime_completion": {
+        "manifest_bound_to_invocation": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING",
+        "registered_stegverse_node_bound_to_invocation": false,
+        "interlock_bound_to_node_and_manifest": false,
+        "intr_materialization_admitted": false,
+        "invocation_scoped_lease_established": false,
+        "event_ephemeral_runtime_materialized": false,
+        "execution_time_runtime_identity_bound": false,
+        "workercoordinator_claim_fence_observed": false,
+        "organization_local_intr_ingress_receipt_verified": false,
+        "authentic_intr_ingress_observed": false,
+        "successful_recording_verification_round_trip_identified": false,
+        "mirror_boundary_processing_complete": false,
+        "successful_ecosystem_return_round_trip_identified": false,
+        "successful_data_transport_round_trips_identified": false
+      },
+      "historical_decomposition": {
+        "retained_for_lineage": true,
+        "successor_task_ids": [
+          "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+          "STEG-BROWSER-GOVERNED-ROUNDTRIP-001"
+        ],
+        "rule": "SUCCESSORS_MAY_REMAIN_AS_EVIDENCE_WORKSTREAMS_BUT_DO_NOT_REDEFINE_OR_REORDER_THE_RESUMED_GOAL_CHART"
+      },
+      "issue_1918": {
+        "classification": "REFRAME_CANDIDATE",
+        "original_assumption": "CHATGPT_NEEDED_GENERIC_PROCESS_EXECUTION_SURFACE",
+        "recovered_architecture": "INVOCATION_TO_NODE_TO_INTERLOCK_TO_INTR_TO_LEASE_TO_EVENT_EPHEMERAL_STEGOS",
+        "external_host_discovery_problem_may_not_be_created": true
+      },
+      "allowed_next_transitions": [
+        "TRACE_REUSABLE_SV002_CONNECTION_COMPONENTS_IN_CURRENT_STEGBROWSER_IMPLEMENTATION",
+        "BIND_EXISTING_REGISTERED_NODE_TO_UNCHANGED_INVOCATION",
+        "SUBMIT_NON_AUTHORIZING_INTR_MATERIALIZATION",
+        "OBSERVE_AUTHENTIC_INTR_MATERIALIZATION_ADMISSION",
+        "ESTABLISH_INVOCATION_SCOPED_LEASE",
+        "MATERIALIZE_EVENT_EPHEMERAL_STEGOS_RUNTIME",
+        "BIND_EXECUTION_TIME_RUNTIME_IDENTITY",
+        "OBTAIN_AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE",
+        "OBSERVE_AUTHENTIC_A4_INGRESS",
+        "ENTER_ROUND_TRIP_1_ONLY_AFTER_A4"
+      ],
+      "authority_model": {
+        "manifest": "ROUTE_DECLARATION_ONLY",
+        "node": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+        "lease": "BOUNDED_INVOCATION_SCOPE_ONLY",
+        "event_ephemeral_stegos": "COMPUTE_EXECUTION_SURFACE",
+        "workercoordinator": "CLAIM_FENCE_AUTHORITY",
+        "interlock_intr": "TRANSITION_AND_GOVERNED_PACKET_MOVEMENT_AUTHORITY",
+        "tvc": "CREDENTIAL_AUTHORITY",
+        "master_records": "CUSTODY_OBSERVED_REALITY_RECONSTRUCTION_AUTHORITY_NOT_TRANSPORT_AUTHORITY",
+        "github_ci": "SOURCE_VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY_RUNTIME_AUTHORITY_NONE",
+        "second_user_operated_device_required": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "correlation_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "goal": "Resolve the resident receipt reachability and transport lane for StegBrowser runtime consumption by inspecting exact existing StegVerse-native resident custody targets, classifying them deterministically, and binding valid authentic receipts or capturing/remediating the next concrete native reachability defect without treating external connector inventory, source, or CI as runtime proof.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "40000100100000",
+      "github_task_registry_issue": "StegVerse-Labs/.github#1854",
+      "source_refs": [
+        "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+        "scripts/check_stegbrowser_runtime_consumption_receipts.py",
+        "StegVerse-Labs/.github#1260",
+        "StegVerse-Labs/.github#1841",
+        "StegVerse-Labs/.github#1851",
+        "StegVerse-Labs/.github#1852",
+        "StegVerse-Labs/.github#1854"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "resident-receipt-reachability",
+          "stegbrowser-canonical-work-runtime-consumption-receipt",
+          "stegbrowser-evidence-custody-sidecar",
+          "stegbrowser-tvc-source-promotion-receipt",
+          "browser-recipient-apple-runtime-observation",
+          "parent-task-record-binding",
+          "parent-handoff-binding"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-PARENT-RUNTIME-CONSUMPTION-GOAL",
+          "kind": "PARENT_GOAL",
+          "state": "RUNTIME_OPEN_CONTINUED_BY_SUCCESSORS",
+          "ref": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+          "disposition": "PARENT_REACHED_PROMPT_COUNT_20_WITHOUT_AUTHENTIC_RUNTIME_COMPLETION; RUNTIME EVIDENCE CONTINUES THROUGH SUCCESSOR LINEAGE; DO NOT MARK COMPLETE FROM SOURCE OR CI"
+        },
+        {
+          "dependency_id": "DEP-RECEIPT-REACHABILITY-VERIFIER",
+          "kind": "SOURCE_VALIDATION",
+          "state": "MERGED_VALIDATED",
+          "ref": "StegVerse-Labs/.github#1852@a6d0d6e33520a81b261018f36bb78ff5568d7fed",
+          "disposition": "PR 1852 MERGED AFTER ORGANIZATION CONTROL 34873353094, DETERMINISTIC REPOSITORY SUITE 34873352920, AND HEARTBEAT 34873352943 SUCCEEDED; VERIFIER IS AVAILABLE ON MAIN AND CLASSIFIES EXACT RESIDENT RECEIPTS AS MISSING INVALID OR VALID_BINDABLE"
+        },
+        {
+          "dependency_id": "DEP-CANONICAL-WORK-RESIDENT-CONSUMPTION-RECEIPT",
+          "kind": "RUNTIME_EVIDENCE",
+          "state": "UNOBSERVED",
+          "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+          "disposition": "REQUIRE AUTHENTIC RECEIPT PRODUCED BY THE EXISTING STEGVERSE RESIDENT CYCLE; EXTERNAL DEVICE CONNECTOR INVENTORY IS NOT AN INPUT"
+        },
+        {
+          "dependency_id": "DEP-EVIDENCE-CUSTODY-SIDECAR",
+          "kind": "RUNTIME_EVIDENCE_TRANSPORT",
+          "state": "UNOBSERVED",
+          "ref": "receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json",
+          "disposition": "REQUIRE SHA256 PROVENANCE FOR EXACT BYTE CUSTODY THROUGH THE EXISTING STEGVERSE NATIVE RESIDENT EVIDENCE PATH"
+        },
+        {
+          "dependency_id": "DEP-TVC-SOURCE-PROMOTION-RECEIPT",
+          "kind": "RUNTIME_EVIDENCE",
+          "state": "UNOBSERVED",
+          "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json",
+          "disposition": "REQUIRE CURRENT DISPATCH BOUND STAGED CONSUMPTION FOR PINNED TVC SHA AEF6B6F5"
+        },
+        {
+          "dependency_id": "DEP-OWNER-INGRESS-OBSERVATION",
+          "kind": "RUNTIME_EVIDENCE",
+          "state": "UNOBSERVED",
+          "ref": "/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json",
+          "disposition": "REQUIRE OWNER_INGRESS_READY_OBSERVED FROM IMMUTABLE OBSERVER PATH WHERE THIS PROVIDER LANE IS APPLICABLE"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": "StegVerse-Labs/.github#1260",
+      "adjacent_task_refs": [
+        "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+        "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      ],
+      "expected_evidence_predicates": [
+        "RECEIPT_REACHABILITY_VERIFIER_MERGED",
+        "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED",
+        "CANONICAL_WORK_RESIDENT_CONSUMPTION_RECEIPT_CLASSIFIED",
+        "EVIDENCE_CUSTODY_SIDECAR_CLASSIFIED",
+        "TVC_SOURCE_PROMOTION_RECEIPT_CLASSIFIED_WHERE_APPLICABLE",
+        "OWNER_INGRESS_RUNTIME_OBSERVATION_CLASSIFIED_WHERE_APPLICABLE",
+        "VALID_BINDABLE_RECEIPTS_HASHED_AND_BOUND_OR_NEXT_NATIVE_REACHABILITY_DEFECT_REMEDIATED",
+        "NO_EXTERNAL_CONNECTOR_OR_PHYSICAL_DEVICE_INVENTORY_GATE",
+        "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "existing_resident_custody_inspection",
+          "receipt_sha256_validation",
+          "receipt_binding",
+          "native_reachability_transport_repair"
+        ],
+        "environment": "EXISTING_STEGVERSE_RESIDENT_CYCLE_AND_RETAINED_CUSTODY_SURFACE",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true,
+        "external_connector_required": false,
+        "physical_device_identity_required": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "alternate_eligible_substrates": [
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER"
+        ],
+        "remote_or_external_device_disposition": "NOT_APPLICABLE",
+        "external_connector_required": false,
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "runtime_resolution": {
+        "producer_chain": "existing resident cycle -> standing Healer carrier -> neutral reusable scheduler -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> admitted ephemeral StegOS/Canonical Work -> retained resident receipts",
+        "observer_chain": "retained resident custody -> merged non-authorizing receipt verifier -> exact SHA/path/outcome binding -> Master Records where required",
+        "external_connector_role": "NONE_NOT_APPLICABLE",
+        "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
+        "current_first_unresolved_predicate": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED"
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "receipt_reachability_verifier_merged": true,
+        "valid_receipts_bound": false,
+        "next_reachability_defect_remediated": false,
+        "parent_completion_claimed": false
+      },
+      "allowed_next_transitions": [
+        "INSPECT_EXISTING_STEGVERSE_NATIVE_RESIDENT_RECEIPTS",
+        "BIND_VALID_RECEIPTS",
+        "REMEDIATE_NATIVE_REACHABILITY_DEFECT"
+      ],
+      "handoff_projection_refs": [
+        "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "github_runtime_authority": "NONE",
+        "external_connector_runtime_authority": "NONE_NOT_APPLICABLE",
+        "single_resident_carrier_required": true,
+        "second_user_operated_device_allowed": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "credential_authority": "TV/TVC",
+        "master_records_reality_authority": true
       }
     }
   ],
