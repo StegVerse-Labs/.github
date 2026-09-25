@@ -2,7 +2,7 @@
 
 Goal Task ID: `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001`
 COSV: `task.v1 [L R U I V G O C M T B E A P] = 20010010100000`
-Coordination: `ACTIVE / CHECKED_OUT` (proposed branch, pending merge into canonical Task Registry)
+Coordination: `ACTIVE / CHECKED_OUT` — verified main Registry generation 236 before successor work; PR #2581 merged 2026-09-23T00:09:23Z as 7818050f67c8192962c1a8fcde3301dd3f45d008. Source-only rights and policy successor in current PR; do not treat as runtime or release authority.
 Owner repository: `StegVerse-Labs/.github`
 Canonical registry: `data/canonical-task-registry.json`
 Sharded task record: `data/canonical-task-records/ECOSYSTEM-OPEN-SOURCE-STRATEGY-001.json`
@@ -12,10 +12,10 @@ Inventory: `data/open-source-repository-licensing-inventory.json`
 Establish permission clarity early for code others can inspect or fork. Public visibility does not imply open-source permission. Separate OSI-licensed software from StegVerse trademarks and official authority, proprietary operations, personal KV data, credentials, and patent-sensitive material. Existing license grants are not unilaterally revoked. Open-source licenses permit downstream commercial use; no StegVerse-only use restriction may be attached to OSI-covered code.
 
 ## Verified source discovery — 2026-09-22
-GitHub repository search returned 119 StegVerse-Labs entries across two pages. Snapshot records 46 public, 70 private and 3 other/unclassified visibility entries from the connector response. GitHub license metadata was checked for all 46 public repositories plus 12 nonpublic priority repositories (58/119 total); GitHub recognized one SPDX MIT license, classified five as Other/NOASSERTION, and detected none on 52. The remaining 61 private/internal metadata entries have not been checked. Six selected root-license paths were inspected: five license files found, one absent at common root names. Metadata and root text are not copyright or contributor-rights verification.
+GitHub repository search returned 119 StegVerse-Labs entries across two pages. Snapshot records 46 public, 70 private and 3 internal repositories. As of 2026-09-24 all 119 GitHub license metadata records have now been read through authorized connector access: 2 SPDX MIT, 6 Other/NOASSERTION, 111 with no detected license. Only 46 public repository rows appear in the public inventory; the 73 nonpublic entries are aggregated to avoid leaking private repository names. GitHub classification is not file-level or legal-title verification. Six selected root-license paths were inspected: five license files found, one absent at common root names. Metadata and root text are not copyright or contributor-rights verification.
 
 ## Next audit actions
-1. Classify the three confirmed internal repositories; complete the remaining 61 nonpublic repository metadata checks only through authorized internal review, and discover additional StegVerse organizations.
+1. The 119-entry metadata census is complete; continue source-level licensing and provenance audits on selected release candidates, and expand organization coverage under separate access-scoped inventories.
 2. Inspect actual LICENSE/NOTICE files, SPDX source headers, package manifests, submodules, generated code, contributor history and third-party dependencies for proposed first-wave SDK, schema and verification repositories. Record evidence links and responsible copyright holders; distinguish organizational repository ownership from copyright ownership.
 3. Preserve historical licensing and commit dates for clone/reuse ambiguity, but keep traffic attribution independently owned by PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001.
 4. Draft stage gates and license matrix after the rights audit: SDK/interfaces and verification first, governance reference protocols second, client/financial infrastructure only after separate privacy/security/IP review. Include a commercial services and StegVerse trademark policy; obtain counsel review where ownership, patents, tokens, or existing grants require it.
@@ -25,7 +25,7 @@ GitHub repository search returned 119 StegVerse-Labs entries across two pages. S
 Registry and COSV coordinate the work only; no WorkerCoordinator claim/fence, runtime execution, InTr approval, Master Records closure, source deployment, publication or licensing permission is asserted. TV/TVC only for credentials. No connected-device prerequisite. Maintain `README.md` and this handoff each implementation change.
 
 ## Current state
-Source inventory generated on branch `feat/open-source-strategy-inventory-20260922`; first-wave license/ownership verification remains outstanding. Canonical registration and merge must be observed, not inferred from branch writes.
+PR #2581 is verified merged, and the source inventory is on main. All 119 repository metadata checks are complete. Initial first-wave license text and dependency triage is documented in `docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md`; full contributor chain, third-party rights, and owner release approval remain unverified. Draft policy is `docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md`. Neither document authorizes relicensing or publication.
 
 ## Root LICENSE findings and first-wave triage
 
@@ -37,3 +37,13 @@ Source inventory generated on branch `feat/open-source-strategy-inventory-202609
 - `Randolph_Geneaology_Hub`: GitHub Other but no LICENSE / LICENSE.md / LICENSE.txt at root; inspect subdirectories and history separately.
 
 No source repository was relicensed, no legal owner independently verified, no release published, and no outside reuse identity inferred from clones.
+
+## 2026-09-24 source continuation
+
+Reconciled against main Registry generation 240; proposed generation 241. Successor branch `feat/open-source-strategy-rights-audit-20260924` contains an aggregate-safe 119-repository metadata census (46 public, 70 private, 3 internal; 2 SPDX MIT, 6 Other, 111 without detected license). The first-wave SDK/ARA/hybrid-bridge/continuity-vault source audit discovered an additional restrictive custom `LICENSE.txt` beside the hybrid bridge's root MIT `LICENSE`; that scope contradiction requires the source owner's review. SDK optional test extras refer to Git-based dependencies whose availability and grants must be reviewed. Sampled commits are not a complete authorship census. Full ownership verification: zero. Release-policy draft prepared but neither published nor approved. No licenses were changed and no private repository names were added to the public inventory.
+
+Exact evidence: `data/open-source-repository-licensing-inventory.json`, `docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md`, `docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md`. Reconcile only validated source and exact-PR evidence into task state; any consequential release remains governed by existing InTr and Master Records.
+
+## PR #2703 validation and custody
+
+Draft PR: https://github.com/StegVerse-Labs/.github/pull/2703. Initial exact-head STCM witness source-registration validation found a README replacement regression: a preceding canonical STCM task reference was lost. The README was restored byte-for-byte from the PR base/current main and the new open-source section **prepended**, preserving the STCM and all other existing sections. Added `tests/test_open_source_strategy_inventory.py` checking counts, public-only inventory rows, registry/shard equality and release nonclaim. These changes are source-validation work only; record exact-head workflow verdict before merging. A stale PR validation run is not evidence of current head. No WorkerCoordinator, InTr, Master Records or published-release receipt has been observed.

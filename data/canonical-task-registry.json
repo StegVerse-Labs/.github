@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 240,
+  "generation": 241,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9636,7 +9636,10 @@
         "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
         "data/open-source-repository-licensing-inventory.json",
         "README.md",
-        "management/COSV_PROFILE_V1.json"
+        "management/COSV_PROFILE_V1.json",
+        "docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md",
+        "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md",
+        "tests/test_open_source_strategy_inventory.py"
       ],
       "adjacent_task_refs": [
         "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -9651,21 +9654,23 @@
         "RELEASE_CANDIDATE_VALIDATED_AND_PUBLISHED_WITH_PROVENANCE"
       ],
       "inventory": {
-        "snapshot": "2026-09-22",
+        "snapshot": "2026-09-24",
         "scope": "119 StegVerse-Labs GitHub repository entries",
         "observed": 119,
         "public": 46,
         "private": 70,
         "internal": 3,
-        "metadata_checked": 58,
+        "metadata_checked": 119,
         "public_metadata_checked": 46,
         "root_license_locations_checked": 6,
-        "recognized_spdx": 1,
-        "other_unrecognized": 5,
-        "none_detected": 52,
-        "remaining_nonpublic_metadata_unchecked": 61,
+        "recognized_spdx": 2,
+        "other_unrecognized": 6,
+        "none_detected": 111,
+        "remaining_nonpublic_metadata_unchecked": 0,
         "ownership_verified": 0,
-        "policy_status": "NOT_YET_DRAFTED_RELEASE_NOT_AUTHORIZED"
+        "policy_status": "DRAFT_SOURCE_ONLY_NOT_APPROVED_RELEASE_NOT_AUTHORIZED",
+        "nonpublic_metadata_checked": 73,
+        "first_wave_source_candidates_checked": 4
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -9685,7 +9690,22 @@
         "master_records_reality_authority": true,
         "credential_authority": "TV/TVC"
       },
-      "authority_effect": "NONE_COORDINATION_AND_DISCOVERY_ONLY"
+      "authority_effect": "NONE_COORDINATION_AND_DISCOVERY_ONLY",
+      "source_progress": {
+        "registration_pr": 2581,
+        "registration_merge": "7818050f67c8192962c1a8fcde3301dd3f45d008",
+        "metadata_census": "119_OF_119_COMPLETE",
+        "first_wave_license_dependency_triage": "4_SOURCE_CANDIDATES",
+        "contributor_rights": "UNVERIFIED",
+        "third_party_reuse_rights": "UNVERIFIED",
+        "staged_policy": "DRAFT",
+        "publication": "NOT_AUTHORIZED",
+        "source_pr": 2703,
+        "initial_ci_failure": "README_REPLACEMENT_DROPPED_OTHER_TASK_REFERENCE",
+        "remediation": "RESTORED_BASE_README_AND_PREPENDED_SECTION",
+        "targeted_source_test": "ADDED_PENDING_EXACT_HEAD_CI",
+        "merge": "NOT_MERGED"
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
