@@ -69,6 +69,8 @@ def _validate_request(value: dict[str, Any]) -> tuple[str, tuple[str, ...]]:
             or any(not isinstance(x, str) or not ID.fullmatch(x) for x in correlations)
             or len(set(correlations)) != len(correlations)):
         raise ValueError("READBACK_CORRELATION_SCOPE_INVALID")
+    if value.get("reconcile_master_records", False) not in {True, False}:
+        raise ValueError("MASTER_RECORDS_RECONCILIATION_MODE_INVALID")
     return request_id, tuple(correlations)
 
 
@@ -137,6 +139,30 @@ def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
         # Reuse existing resident ledger-root configuration, not a request path.
         result = module.readback(module.org.ledger_root(),
                                  correlation_ids=correlations, include_exact=True)
+        if request.get("reconcile_master_records") is True:
+            from urllib.parse import urlencode
+            from urllib.request import Request, urlopen
+            workers = str(runtime / "workers") if (runtime / "workers").is_dir() else str(source / "workers")
+            if workers not in sys.path:
+                sys.path.insert(0, workers)
+            from canonical_state_transition_custody import _configuration, _endpoint_allowed
+            endpoint, token, timeout = _configuration()
+            if not endpoint or not token or not _endpoint_allowed(endpoint):
+                raise ValueError("MASTER_RECORDS_AUTHENTIC_CONFIGURATION_NOT_AVAILABLE")
+            base = endpoint.removesuffix("/api/master-records/state-transitions")
+            def get_json(path: str, parameters: dict[str, str]) -> dict[str, Any]:
+                url = base + path + (("?" + urlencode(parameters)) if parameters else "")
+                http_request = Request(url, method="GET", headers={
+                    "Authorization": "Bearer " + token, "Accept": "application/json",
+                })
+                try:
+                    with urlopen(http_request, timeout=timeout) as response:
+                        return json.loads(response.read().decode("utf-8"))
+                except Exception as exc:
+                    raise ValueError("MASTER_RECORDS_AUTHENTIC_QUERY_FAILED:" + type(exc).__name__) from exc
+            comparison = module.reconcile_master_records(result, get_json=get_json)
+            result["master_records_reconstruction"] = comparison["state"]
+            result["master_records_comparison"] = comparison
         latest = {
             "schema": "stegverse.organization-custody-readback-result/v1",
             "state": "RECORDED_LOCAL_READBACK",
@@ -153,7 +179,11 @@ def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
             ],
             "complete_organization_chain": result["complete_organization_chain"],
             "all_source_digests_and_required_evidence": result["all_source_digests_and_required_evidence"],
-            "master_records_reconstruction": "NOT_QUERIED",
+            "master_records_reconstruction": result["master_records_reconstruction"],
+            "master_records_matching_transition_count": sum(
+                x["state"] == "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS"
+                for x in result.get("master_records_comparison", {}).get("canonical_transition_results", [])
+            ),
             "runtime_admission_inferred": False,
             "session_origin_authenticated_by_this_consumer": False,
             "private_exact_artifact_requires_authorized_return_transport": True,
