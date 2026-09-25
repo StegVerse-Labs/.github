@@ -49,7 +49,25 @@ def require(ok: bool, reason: str) -> None:
 def is_manifest_state_transition(payload: Any) -> bool:
     return isinstance(payload, dict) and payload.get("schema") == REQUEST_SCHEMA
 
-def _validate_manifest_hash(manifest: Mapping[str, Any], claimed: str) -> None:
+def _validate_manifest_hash(manifest: Mapping[str, Any], claimed: str, request: Mapping[str, Any]) -> None:
+    # New SDK contract binds the original immutable ingress manifest separately
+    # from its validated normalized projection; neither alters the frozen input.
+    if "wire_manifest_sha256" in request or "canonical_manifest_projection" in request:
+        wire = request.get("wire_manifest_sha256")
+        projection = request.get("canonical_manifest_projection")
+        require(isinstance(wire, str) and len(wire) == 64, "wire_manifest_sha256_required")
+        require(sha256(manifest) == wire, "wire_manifest_sha256_mismatch")
+        require(isinstance(projection, Mapping), "canonical_manifest_projection_required")
+        require(sha256(projection) == claimed, "canonical_manifest_projection_sha256_mismatch")
+        # The projection retains source fields except explicitly normalized fields.
+        normalized = {"processing", "return_projection", "completion", "manifest_labels"}
+        for key, value in manifest.items():
+            if key not in normalized:
+                require(projection.get(key) == value, f"canonical_manifest_projection_source_mismatch:{key}")
+        require("canonical_manifest_sha256" not in manifest, "wire_manifest_must_not_embed_derived_digest")
+        return
+    # Historical self-contained worker fixtures remain accepted on their legacy
+    # binding only; production SDK requests emit both new independent bindings.
     body = dict(manifest)
     embedded = body.pop("canonical_manifest_sha256", None)
     require(isinstance(embedded, str) and embedded == claimed, "canonical_manifest_sha256_binding_mismatch")
@@ -67,7 +85,7 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(isinstance(manifest, Mapping), "canonical_manifest_required")
     manifest_hash = request.get("canonical_manifest_sha256")
     require(isinstance(manifest_hash, str) and len(manifest_hash) == 64, "canonical_manifest_sha256_required")
-    _validate_manifest_hash(manifest, manifest_hash)
+    _validate_manifest_hash(manifest, manifest_hash, request)
     graph = request.get("state_graph")
     require(isinstance(graph, Mapping), "state_graph_required")
     require(graph.get("schema") == "stegverse.sdk.installed-state-transition-graph/v1", "state_graph_schema_mismatch")
@@ -170,11 +188,71 @@ def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, A
         "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
     }
 
+def _nonworker_diagnostic_deny(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
+    """Retain the evaluating profile's correctable DENY, not a forged InTr verdict.
+
+    The current installed worker-only consumer cannot execute a diagnostic graph
+    with no task claim. Source/profile evidence is explicitly not sovereign
+    organization custody, EVENT_EPHEMERAL materialization or Master Records proof.
+    """
+    request_hash = str(validated["request_sha256"])
+    graph_id = str(validated["graph_id"])
+    original = validated.get("canonical_manifest") or {}
+    payload = original.get("payload") if isinstance(original, Mapping) else None
+    goal = payload.get("goal_task_id") if isinstance(payload, Mapping) else None
+    cosv = payload.get("cosv") if isinstance(payload, Mapping) else None
+    record = {
+        "schema": "stegverse.sdk.manifest-profile-disposition/v1",
+        "state": "DENY",
+        "disposition": "DENY",
+        "terminal": False,
+        "automatic_retry_permitted": False,
+        "retry_condition": "NEW_GOVERNED_ATTEMPT_AFTER_EXISTING_OWNER_DISPATCH_REPAIR",
+        "evaluation_boundary": "SDK_MANIFEST_PROFILE_SOURCE_ONLY",
+        "authentic_intr_disposition_observed": False,
+        "organization_master_records_closure_observed": False,
+        "transition_id": "SDK_ECOSYSTEM_DIAGNOSTIC_DISPATCH",
+        "failed_predicate": "INSTALLED_NONWORKER_EVENT_EPHEMERAL_DIAGNOSTIC_DISPATCH",
+        "reason_code": "ECOSYSTEM_DIAGNOSTIC_NONWORKER_DISPATCH_UNWIRED",
+        "goal_task_id": goal,
+        "cosv": cosv,
+        "graph_id": graph_id,
+        "canonical_task_id": None,
+        "processing_capability": "ecosystem_diagnostic",
+        "wire_manifest_sha256": validated.get("wire_manifest_sha256"),
+        "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+        "request_sha256": request_hash,
+        "evidence_refs": [
+            "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py",
+            "StegVerse-org/StegVerse-SDK:stegverse/manifest_state_transition_adapters.py",
+            "StegVerse-Labs/.github:docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+        ],
+        "required_evidence_refs": [
+            "AUTHENTIC_EVENT_EPHEMERAL_STEGOS_INVOCATION_BINDING",
+            "EXACT_BOUND_SDK_DIAGNOSTIC_RESULT",
+            "ORGANIZATION_PREDECESSOR_LINK_AND_MASTER_RECORDS_CLOSURE",
+        ],
+        "repair_owner": "EXISTING_SDK_ECOSYSTEM_DIAGNOSTIC_AND_STEGBROWSER_INTR_OWNERS",
+        "authority_effect": "NONE_SOURCE_PROFILE_DISPOSITION_ONLY",
+    }
+    root = runtime_root / REQUEST_DIR / "dispositions" / graph_id
+    root.mkdir(parents=True, exist_ok=True)
+    exact = root / f"{request_hash}.json"
+    raw = json.dumps(record, indent=2, sort_keys=True) + "\n"
+    if exact.exists():
+        require(exact.read_text(encoding="utf-8") == raw, "diagnostic_deny_immutable_collision")
+    else:
+        exact.write_text(raw, encoding="utf-8")
+    return {**record, "source_disposition_ref": str(exact)}
+
+
 def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
-    require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
     persist_request(runtime_root, validated)
+    if validated.get("processing_capability") == "ecosystem_diagnostic" and task_id is None:
+        return _nonworker_diagnostic_deny(runtime_root, validated)
+    require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
     runtime = WorkerCoordinator(runtime_root, adapters=load_adapters(runtime_root))
     cycle = runtime.cycle(write=True, target_task_id=task_id)
     require(isinstance(cycle, Mapping), "workercoordinator_cycle_result_missing")
