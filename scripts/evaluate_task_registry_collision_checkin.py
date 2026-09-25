@@ -610,6 +610,29 @@ def main():
             collisions.append(row)
             known.add(marker)
 
+    # Existing source history may expose a same-goal, same-scope active
+    # session candidate. Without origin attestation it is NOT a confirmed
+    # duplicate, but overlapping mutation must not silently CONTINUE.
+    same_task_status = project_session_status({"task_id": tid}, context)
+    for candidate in same_task_status["same_task_active_session_candidates"]:
+        collisions.append({
+            "task_id": tid,
+            "session_id": candidate["session_id"],
+            "handoff": handoff(r),
+            "coordination_state": state,
+            "checkout_state": checkout,
+            "overlap": {
+                "repositories": candidate["matching_repositories"],
+                "components": candidate["matching_components"],
+                "same_branch": candidate["same_branch"],
+                "same_pull_request": candidate["same_pull_request"],
+            },
+            "event_sha256": candidate["event_sha256"],
+            "source": "ACTIVE_SAME_TASK_CHECKIN_UNATTESTED",
+            "blocking": False,
+            "origin_attested": False,
+        })
+
     hard=[c for c in collisions if c.get("source") in {"CANONICAL_TASK_REGISTRY", "CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE"} and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
