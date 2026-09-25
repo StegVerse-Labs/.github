@@ -1,41 +1,31 @@
-# Native MyKV iOS Packaging and Distribution — Admission Mirror Handoff
+# Native MyKV iOS Packaging and Distribution — Canonical Work Handoff
 
-Goal Task ID: `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` (requested; not canonically admitted)
-Central admission: https://github.com/StegVerse-Labs/.github/issues/2638
-Reconciled against main monolithic Task Registry generation 220. This draft PR stages a PROPOSED / UNCLAIMED source row plus matching shard at **candidate generation 221**, preserving every predecessor main row. Neither is canonical until exact-head PR checks, authorized merge and current-main re-read.
-Recovery COSV: `40000100100000` (not yet independently canonically derived).
-Coordination status: SOURCE_PREREGISTRATION_PROPOSED (draft branch only); no canonical ACTIVE or CHECKED_OUT claim. Candidate record: `data/canonical-task-records/MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001.json`.
-Predecessor: `KV-ICLOUD-AUTOMATED-UPGRADE-001` / `docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`.
-Implementation owner candidate: `StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj`; collision/admission must confirm.
-Apple provider custody: existing StegVerse-Labs/TVC TV/TVC + SKAP boundaries.
-Current iPhone MyKV install truth: `NOT_INSTALLED_NEVER_INSTALLED` (last owner-reported; no new install evidence).
+Goal Task ID: `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001`  
+Registry source generation: 222; this source delta proposes generation 223 and must be rebased if main advances.  
+Central issue: https://github.com/StegVerse-Labs/.github/issues/2638  
+Canonical source registration: .github PR #2640 merged as `32bc737f5496b6bf995c8a650546227b4b7e56b5`.  
+Native implementation: StegOS PR #409 merged as `664a0ba3a519823e5f3d92f7902c7051f8c060d5`. Seven exact-head GitHub workflows passed at PR head `f1dd78b3cc69ade2dcf0bff1cb84cce2a20e1dab`; unsigned iPhoneOS artifact ID `10839457097`.
 
-## Canonical-admission boundary
-This handoff documents exact discovered source and an admission request; its creation cannot itself register a Goal Task, derive COSV, issue WorkerCoordinator claims/fences, admit Interlock/InTr transitions, or establish Master Records closure. After candidate source registration is validated and merged, submit issue #2638 via the authentic current AI_SESSION_GATE; bind disposition to the exact latest Registry generation and converge with any existing overlapping owner before updating the monolithic registry, task record, task vector/index and canonical task state. Do not manually bypass deterministic admission.
+## Nonblocking canonical work identity
 
-## Reusable source
-- StegOS native host project: `mobile/ios/StegOSMobile.xcodeproj`, native app entry, native retained StegBrowser Node, existing local rendezvous and on-device continuity. Never create a second native identity or KV.
-- Site MyKV runtime: `https://stegverse.org/my-kv.html`; PWA `my-kv-install.html` remains optional fallback and explicitly is not native installation evidence.
-- Existing native unsigned build: `.github/workflows/ios-device-package-validation.yml` builds iPhoneOS device app and uploads an unsigned IPA plus SHA-256 manifest.
-- Existing signing handoff: `.github/workflows/ios-signed-testflight-build.yml` derives a zero-input credential-free signing request for TV/TVC; workflow does not hold Apple secrets, does not execute native Apple signing and does not prove signed artifact.
-- Existing TVC provider flow and same-device browser/WASM signed-IPA byte ingress: reuse exact existing owners; reconcile actual capabilities and authentic provider receipts.
-- Current signing-requirements contract lists host plus two embedded capture extensions; actual native project additionally includes DeviceContinuityPacketTunnel. Reconcile *all actual embedded targets* and approved entitlements against TV/TVC provisioning before declaring signability.
+The primary and unique work-correlation key is the existing Registry `task_id` / `correlation_id`, `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001`. The prior established StegBrowser COSV `40000100100000` is **reused solely as a nonunique lineage coordinate**, not presented as an independently derived new COSV or an execution warrant. Source work is explicitly approved by this owner's request, and must no longer wait for an inaccessible `AI_SESSION_GATE` event.
 
-## Implementation gate
-Place a MyKV owner-facing native navigation surface inside the existing StegOS Mobile host; retain existing native resident Node/continuity and do not silently equate its Node with separate WKWebView-origin state. Bind identity by independently verifiable existing contract before KV storage operations; do not forge a HEALTHY web diagnostic. Load only HTTPS admitted MyKV origin and preserve current Site JS/governance rather than cloning a second runtime. Native UI may report separate native and web health, not a falsely unified success. Keep PWA an optional fallback.
+`scripts/resolve_task_work_correlation.py --task-id MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` deterministically reads the existing canonical Registry, rejects absent/duplicate identities and inconsistent lineage, and returns a stable work-identity digest. It does not create a ledger, credential plane, scheduler, runtime admission, claim/fence, or Master Records closure. The existing AI_SESSION_GATE remains applicable only when actual resident/governed runtime action requests one, and an absent event cannot be turned into a fabricated PERMIT. GitHub source checks are independent of authentic runtime proof.
 
-## Evidence/status
-- Canonical task admission: NOT OBSERVED. Candidate PROPOSED/UNCLAIMED source row staged at generation 221 in draft `.github` PR; source registration itself grants no execution authority.
-- Native MyKV code integration: PENDING.
-- Exact-head source tests and iPhoneOS package for new integration: NOT OBSERVED.
-- TV/TVC signed IPA, provisioning entitlement verification, TestFlight acceptance: NOT OBSERVED.
-- Current-iPhone native installation and first-launch Node/KV identity continuity: NOT OBSERVED.
-- CURRENT_IPHONE_MYKV_INSTALLED: FALSE.
+Existing owner boundaries are explicit: StegOS owns the existing native host and source implementation (`StegVerse-Labs/StegOS#409`), TVC owns Apple credential custody and provider operations (`StegVerse-Labs/TVC#355`), Site owns the existing MyKV origin, and canonical Task Registry owns cross-repository work correlation. No duplicate native Node, KV authority, WorkerCoordinator or device is introduced.
 
-## Authorized next steps
-1. Validate the candidate source registration against exact current main, merge only after required checks, re-read its new generation, then consume authentic collision/admission outcome for issue #2638 and reconcile COSV and actual canonical owner.
-2. Integrate native MyKV in existing StegOS app; perform source tests and exact-head Apple iPhoneOS build without exposing secrets.
-3. Exercise existing TV/TVC signing and TestFlight path only after credentials/entitlements are authentically available in that authority boundary, retain actual signed byte/hash receipt.
-4. Preserve current-iPhone installation false until independent physical-iPhone installation and first-launch receipts prove otherwise.
+## Source implementation and evidence
 
-No second user-operated device, duplicate scheduler/runtime/authority plane, GitHub-held credential, or fabricated build, signing or installation evidence.
+The existing native app now includes a MyKV WKWebView entry gated on retained native Node discovery. The WebKit origin must independently prove identical Node identity or fail closed; its storage is not presumed identical to Safari or the native app. All four real signing targets are enumerated: StegOSMobile, StegOSCaptureControl, StegOSCaptureBroadcast and DeviceContinuityPacketTunnel. The native host and packet tunnel require `packet-tunnel-provider` entitlement, and all four targets require proper App Group and provisioning-profile verification. The historical three-target static IPA fails closed.
+
+Seven exact-head PR #409 workflows passed, including native compilation, unsigned iPhoneOS device packaging, signing-source checks and other boundaries. This validates source and unsigned packaging only. Neither the GitHub handoff workflow nor source contracts prove a signed IPA, a live authenticated TV/TVC provider transaction, TestFlight upload, or current-iPhone installation.
+
+## Runtime boundary remains separate
+
+At a **real transition**, inspect the existing resident WorkerCoordinator, Interlock/InTr, TV/TVC and applicable Master Records receipts. A nonexistent or inaccessible transition remains NOT_OBSERVED, never reclassified as FAILED or successfully admitted. If TVC provisioning is required, independently confirm actual Apple Team/certificate/profiles for the four-target bundle family and genuine Apple provider receipts, then sign and upload via existing TV/TVC path. If Apple account access or SKAP custody is genuinely unavailable, retain that as an exact provider prerequisite, **not a Task Registry source-work admission blocker**. Do not create any alternative credential manager.
+
+Current-iPhone installation remains **FALSE / NOT_INSTALLED_NEVER_INSTALLED** until authentic physical-device installation and first-launch identity continuity evidence exists. The PWA remains optional and is not installation evidence.
+
+## Next exact execution boundary
+
+Consume current existing TVC #355 provider readiness and the retained exact-head unsigned artifact via the existing TV/TVC request path. Require four-profile and entitlement equality, signed IPA digest, provider upload/processing receipt, then first-install and independent native/WebKit same-Node adoption evidence. Continue other authorized source fixes even if provider operations are not available; do not reset this goal into a twenty-prompt admission loop.
