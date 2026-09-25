@@ -38,3 +38,7 @@ Date: 2026-09-24. This is a reconstruction of the **visible portions** of ten us
 
 ## What was and was not preserved
 These SHA-256 entries verify exact originals **if the originals are supplied for recomputation**. The GitHub text transcription preserves bounded content and source attribution, **not** the image/PDF bytes, LinkedIn account authenticity, full LinkedIn chronology or a platform-native export.
+
+## Complete directly supplied pre-PDF message (later source)
+
+Rigel subsequently supplied Richard's pre-PDF message as complete text, eliminating the screenshot-only truncation for **that message**. Preserve the exact text without rephrasing at [`RICHARD_PRE_PDF_EXACT_MESSAGE.md`](RICHARD_PRE_PDF_EXACT_MESSAGE.md). That message makes the sequencing and scope explicit: the present independent observe/demonstrate/retain/reconstruct study is substantial experimental work; the future third-framework/StegVerse/MIR standing study is distinct and not yet begun; Richard intends to notify Emanuel before the later study without seeking permission; historical standing has **no demonstrated predictive signal** yet and even a negative empirical result is valuable. The source's proposal-stage statement that three MIR capacities resolve to nothing must remain historical text and must not replace Richard's later PDF findings. The exact supplied text is not a platform-native LinkedIn export, and the supplied message's external origin is not independently authenticated here.
