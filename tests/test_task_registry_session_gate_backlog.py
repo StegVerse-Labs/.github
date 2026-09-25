@@ -108,3 +108,30 @@ def test_shard_without_exact_filename_identity_cannot_fake_owner(tmp_path):
     }), encoding="utf-8")
     result = audit_mod.audit(registry, shards)
     assert result["mismatched_identity_shards"][0]["declared_task_id"] == "GATE-OWNER"
+
+
+def test_source_gate_is_not_a_second_runtime_or_authorizing_caller():
+    policy = json.loads((ROOT / "data/task-registry-ai-ingress-policy.json").read_text(encoding="utf-8"))
+    source = policy["source_only_coordination_boundary"]
+    assert source["authority_effect"] == "NONE"
+    assert source["classification"] == "NONAUTHORITATIVE_SOURCE_WORK_DOES_NOT_REQUIRE_AN_AUTHENTIC_AI_SESSION_DISPOSITION"
+    assert "NO_FAKE_AI_SESSION_OR_CHECKIN_LEDGER_EVENT" in source["constraints"]
+    assert "AUTHENTIC_AI_SESSION_GATE_REMAINS_REQUIRED_WHEN_ACTUAL_AI_SESSION_ADMISSION_IS_NEEDED" in source["constraints"]
+
+
+def test_existing_resident_refresh_materializes_entire_source_gate_dependency_closure():
+    refresh = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
+    for required in (
+        "scripts/evaluate_task_registry_ai_session_checkin.py",
+        "scripts/evaluate_task_registry_collision_checkin.py",
+        "scripts/task_registry_checkin_event_history.py",
+        "scripts/validate_task_registration_substrate_resolution.py",
+        "scripts/audit_task_registry_session_gate_backlog.py",
+        "data/canonical-task-registry.json",
+        "data/task-registry-ai-ingress-policy.json",
+        "data/task-registry-general-checkin-caller-policy.json",
+        "data/task-registry-global-invariants.json",
+    ):
+        assert f'Path("{required}")' in refresh
+    # Source refresh must never copy the mutable session ledger.
+    assert 'Path("runtime/task-registry/checkin-events.jsonl")' not in refresh
