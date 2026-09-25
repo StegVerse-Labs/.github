@@ -31,6 +31,9 @@ on:
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
       - 'tests/test_component010_unattested_origin_refusal.py'
+      - 'scripts/record_task_registry_session_return.py'
+      - 'scripts/materialize_task_session_close.py'
+      - 'tests/test_component010_unattested_return_refusal_unittest.py'
       - 'tests/test_task_registry_session_gate_backlog.py'
       - 'tests/test_component010_checked_out_shard_projection.py'
       - 'scripts/audit_task_registry_session_gate_backlog.py'
@@ -93,6 +96,9 @@ on:
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
       - 'tests/test_component010_unattested_origin_refusal.py'
+      - 'scripts/record_task_registry_session_return.py'
+      - 'scripts/materialize_task_session_close.py'
+      - 'tests/test_component010_unattested_return_refusal_unittest.py'
       - 'tests/test_task_registry_session_gate_backlog.py'
       - 'tests/test_component010_checked_out_shard_projection.py'
       - 'scripts/audit_task_registry_session_gate_backlog.py'
@@ -168,6 +174,7 @@ jobs:
             tests.test_component010_predecessor_unittest \
             tests.test_component010_source_refresh_carriage \
             tests.test_component010_unattested_origin_refusal \
+            tests.test_component010_unattested_return_refusal_unittest \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
