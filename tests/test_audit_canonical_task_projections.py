@@ -1,6 +1,9 @@
 """Fail-closed structural checks and non-authorizing projection classifications."""
 import unittest
-from scripts.audit_canonical_task_projections import evaluate
+import json
+import tempfile
+from pathlib import Path
+from scripts.audit_canonical_task_projections import evaluate, load_shards
 
 
 class ProjectionAuditTest(unittest.TestCase):
@@ -28,6 +31,24 @@ class ProjectionAuditTest(unittest.TestCase):
         result = evaluate(reg, shards, index)
         self.assertEqual(result["omitted_checked_out_owner_shards"], ["B"])
         self.assertNotIn("B", [r["task_id"] for r in reg["tasks"]])
+
+    def test_verified_session_note_sidecar_is_not_task_shard(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            (folder / 'A.json').write_text(json.dumps({'task_id': 'A'}))
+            (folder / 'A.current-session-note.json').write_text(json.dumps({'goal_task_id': 'A', 'session_claim': 'CURRENT_SESSION'}))
+            shards, notes = load_shards(folder)
+            self.assertEqual(sorted(shards), ['A'])
+            self.assertEqual(notes, ['A.current-session-note.json'])
+
+    def test_malformed_session_note_is_not_silently_excluded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            (folder / 'A.current-session-note.json').write_text(json.dumps({'goal_task_id': 'DIFFERENT'}))
+            shards, notes = load_shards(folder)
+            self.assertEqual(notes, [])
+            self.assertIn('A.current-session-note', shards)
+            self.assertTrue(evaluate({'generation': 1, 'tasks': []}, shards, {'tasks': []})['structural_errors'])
 
     def test_distinct_tasks_may_share_cosv(self):
         reg, shards, index = self.fixture()
