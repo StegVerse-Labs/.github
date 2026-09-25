@@ -20,6 +20,8 @@ on:
       - "workers/healer_sovereign_scheduler_worker.py"
       - "tests/test_healer_local_root_discovery.py"
       - "control/task-vectors/**"
+      - "docs/KV_SDK_MANIFEST_RUNTIME_OWNER_RECONCILIATION_MIRROR_HANDOFF.md"
+      - "tests/test_kv_sdk_owner_reconciliation.py"
       - "control/task-vector-index.d/**"
       - ".github/workflows/deterministic-suite-diagnostics.yml"
 
