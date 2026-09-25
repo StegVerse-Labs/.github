@@ -110,6 +110,29 @@ def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
         if not isinstance(request, dict):
             raise ValueError("READBACK_REQUEST_MUST_BE_OBJECT")
         request_id, correlations = _validate_request(request)
+        request_sha = "sha256:" + hashlib.sha256(canon(request)).hexdigest()
+        private_path = runtime / OUTPUT_REL / (request_sha[7:] + ".json")
+        if private_path.is_file():
+            previous_bytes = private_path.read_bytes()
+            previous = json.loads(previous_bytes)
+            if (previous.get("request_id") != request_id
+                    or previous.get("request_sha256") != request_sha
+                    or previous.get("state") != "VERIFIED_LOCAL_READBACK"):
+                raise ValueError("EXISTING_READBACK_ARTIFACT_REQUEST_CONFLICT")
+            return {
+                "schema": "stegverse.organization-custody-readback-result/v1",
+                "state": "ALREADY_CONSUMED", "request_id": request_id,
+                "request_sha256": request_sha,
+                "task_id": TASK_ID, "cosv_task_vector": COSV,
+                "head_receipt_sha256": previous["head_receipt_sha256"],
+                "receipt_count": previous["receipt_count"],
+                "match_count": previous["match_count"],
+                "private_artifact_sha256": "sha256:" + hashlib.sha256(previous_bytes.rstrip(b"\\n")).hexdigest(),
+                "private_artifact_location": str(OUTPUT_REL / (request_sha[7:] + ".json")),
+                "master_records_reconstruction": "NOT_QUERIED",
+                "runtime_admission_inferred": False,
+                "authority_effect": "NONE_READBACK_ONLY",
+            }
         module = _load_readback(source, runtime)
         # Reuse existing resident ledger-root configuration, not a request path.
         result = module.readback(module.org.ledger_root(),
