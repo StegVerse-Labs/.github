@@ -39,9 +39,9 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertIn("FLAGS_CLASSIFIER", surfaces["validators/c.py"]["kind"])
         self.assertIn("NOT_PER_SPECIMEN", surfaces["validators/c.py"]["kind"])
         self.assertEqual(self.audit["CHF"]["same_specimen_mathematical_output"],
-                         "NOT_ESTABLISHED")
+                         "BOUNDED_ORIGINAL_DECLARED_THRESHOLD_SYNTHETIC_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED")
         self.assertEqual(self.audit["CHF"]["required_original_native_callable"]["status"],
-                         "NOT_ESTABLISHED_NOT_PERMISSION_TO_INVENT")
+                         "FOUR_SYMBOLIC_INEQUALITIES_NATIVE_IMPLEMENTED_FULL_HORIZON_NOT_ESTABLISHED")
 
     def test_census_uses_original_owner_and_same_task_vector(self):
         self.assertEqual(self.audit["math_cosv"], "10111110111000")
@@ -49,7 +49,7 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(self.rows["Admissible-Existence/CHF"]["owner"],
                          "NATIVE_SOURCE_REPOSITORY")
         self.assertEqual(self.rows["Admissible-Existence/CHF"]["same_specimen_math_status"],
-                         "NOT_ESTABLISHED")
+                         "BOUNDED_DECLARED_THRESHOLD_NATIVE_EVALUATION_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED")
         self.assertEqual(self.rows["Admissible-Existence/STCM"]["same_specimen_math_status"],
                          "STCM_SYNTHETIC_ONLY_ORIGINAL_CALLABLE_VERIFIED")
 
@@ -66,9 +66,21 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         forged["CHF"]["same_specimen_mathematical_output"] = "VERIFIED"
         with self.assertRaises(AssertionError):
             self.assertEqual(forged["CHF"]["same_specimen_mathematical_output"],
-                             "NOT_ESTABLISHED")
+                             "BOUNDED_ORIGINAL_DECLARED_THRESHOLD_SYNTHETIC_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED")
         self.assertEqual(forged["CHF"]["original_owner_hosted_evidence"]["classification"],
                          "ORIGINAL_REPO_DECLARATION_AND_CONTRACT_VALIDATION_NOT_NUMERIC_WITNESS")
+
+    def test_new_original_chf_callable_is_exact_bounded_four_thresholds(self):
+        original = self.audit["CHF"]["bounded_original_native_threshold_evaluator"]
+        self.assertEqual(original["native_callable"],
+                         "tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen")
+        self.assertEqual(original["original_owner_pr"], "Admissible-Existence/CHF#5")
+        self.assertEqual(original["validation_workflow_run"], 36095046140)
+        self.assertEqual(original["common_source_sha256"],
+                         "sha256:fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02")
+        self.assertEqual(original["full_horizon"], "NOT_ESTABLISHED")
+        self.assertEqual(original["sdk_native_manifest"], "NOT_ESTABLISHED")
+        self.assertEqual(len(original["four_synthetic_controls"]), 4)
 
     def test_unobserved_runtime_and_physical_heat_remain_unobserved(self):
         self.assertEqual(self.audit["runtime"]["authenticated_resident_gate"],
