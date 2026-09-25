@@ -78,6 +78,7 @@ def test_recent_returned_session_augments_existing_evaluator(tmp_path):
     assert any(x["task_id"] == old_task for x in recent)
     assert out["disposition"] in {"COORDINATE_CONVERGENCE", "STOP_COLLISION"}
     assert out["checkin_event_sha256"].startswith("sha256:")
+    assert out["checkin_event_predecessor_sha256"] is not None
 
 
 def test_evaluator_records_checkin_event_before_returning(tmp_path):
@@ -101,6 +102,7 @@ def test_evaluator_records_checkin_event_before_returning(tmp_path):
     assert rows[-1]["event_type"] == "CHECK_IN"
     assert rows[-1]["session_id"] == "recorded-session"
     assert rows[-1]["event_sha256"] == out["checkin_event_sha256"]
+    assert rows[-1]["predecessor_event_sha256"] == out["checkin_event_predecessor_sha256"]
     assert rows[-1]["authority_effect"] == "NONE"
 
 
@@ -124,4 +126,7 @@ def test_rejected_checkin_is_immediately_closed_with_stopped_event(tmp_path):
     assert [row["event_type"] for row in rows] == ["CHECK_IN", "STOPPED"]
     assert rows[-1]["session_id"] == "rejected-session"
     assert rows[-1]["event_sha256"] == out["stopped_event_sha256"]
+    assert rows[-1]["predecessor_event_sha256"] == out["stopped_event_predecessor_sha256"]
+    assert rows[0]["event_sha256"] == out["stopped_event_predecessor_sha256"]
+    assert out["checkin_event_predecessor_sha256"] is None
     assert rows[-1]["authority_effect"] == "NONE"
