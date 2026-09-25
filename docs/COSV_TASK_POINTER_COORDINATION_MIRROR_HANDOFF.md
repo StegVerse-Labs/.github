@@ -374,3 +374,8 @@ The reusable source-package lifecycle now continues through the already-existing
 Far-side acceptance is fail-closed: `SOURCE_MATERIALIZED_VERIFIED` must name the exact package `source_identity`, and `source_materialization.files[]` must exactly reproduce path, sha256, and size for all five Functional Memory/StegFin carriage files before the continuation receipt is retained.
 
 No authentic post-merge relay/materialization, worker-source-refresh, WorkerCoordinator assignment disposition, Functional Memory receipt, claim, or fence is promoted by this source repair.
+
+
+## Generation-227 full-shard cross-goal audit follow-up
+
+The existing `STEGVERSE-CANONICAL-WORK-COORDINATION-001` / COSV `10100000100000` source-only PR #2677 records the initial 35 user-supplied IDs and adds a reusable read-only entire-local-shard/aggregate/COSV-index reporter (`scripts/audit_canonical_task_projections.py`) with regression coverage. It does not silently project checked-out owners, mint IDs, infer missing GitHub-visible receipts as failed runtime or claim a new scheduler. Check the report's actual overlaps and use existing checked-out task owners for any state-changing repair. Source snapshot at this update: Registry generation 227; refresh before execution and use Master Records for observed consequence evidence.
