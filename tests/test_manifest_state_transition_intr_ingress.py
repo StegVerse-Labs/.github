@@ -198,6 +198,73 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
             self.assertEqual(json.loads(Path(first["source_disposition_ref"]).read_text())["disposition"], "DENY")
             self.assertFalse((Path(td) / "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json").exists())
 
+    def test_missing_embedded_hash_is_retained_deny_then_corrected_envelope_advances(self):
+        original = request("exp3-hash-deny")
+        # The original frozen wire manifest has no derived embedded digest.
+        frozen = copy.deepcopy(original["canonical_manifest"])
+        frozen.pop("canonical_manifest_sha256")
+        rejected = copy.deepcopy(original)
+        rejected["canonical_manifest"] = frozen
+        rejected["canonical_manifest_sha256"] = mod.sha256(frozen)
+        rejected.pop("request_sha256")
+        rejected["request_sha256"] = mod.sha256(rejected)
+        before = copy.deepcopy(frozen)
+
+        def validated_transport(_headers, _body):
+            return {"origin": "TVC_RELAY_EGRESS"}
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            denied = mod.admit(
+                runtime_root=root,
+                body=mod.canonical(rejected),
+                headers={},
+                transport_validator=validated_transport,
+            )
+            self.assertEqual(denied["state"], "DENY")
+            self.assertEqual(denied["reason_code"], "canonical_manifest_sha256_binding_mismatch")
+            self.assertEqual(denied["failed_predicate"], denied["reason_code"])
+            self.assertEqual(denied["transition_id"], "SDK_MANIFEST_BINDING")
+            self.assertFalse(denied["terminal"])
+            self.assertFalse(denied["authentic_intr_admission_observed"])
+            self.assertTrue(denied["transport_validated"])
+            self.assertEqual(denied["original_wire_manifest_sha256"], mod.sha256(before))
+            self.assertEqual(denied["original_request_sha256"], mod.sha256(rejected))
+            self.assertEqual(json.loads(Path(denied["source_disposition_ref"]).read_text())["state"], "DENY")
+            self.assertEqual(frozen, before)
+
+            # A corrected builder envelope separately commits both wire and
+            # normalized projection. Its next verdict is not the hash DENY.
+            corrected = copy.deepcopy(rejected)
+            projection = dict(frozen)
+            projection["ingress_mode"] = "external_manifest"
+            corrected["wire_manifest_sha256"] = mod.sha256(frozen)
+            corrected["canonical_manifest_projection"] = projection
+            corrected["canonical_manifest_sha256"] = mod.sha256(projection)
+            corrected.pop("request_sha256")
+            corrected["request_sha256"] = mod.sha256(corrected)
+            self.assertEqual(
+                mod.validate_request(corrected)["wire_manifest_sha256"],
+                mod.sha256(before),
+            )
+            self.assertEqual(frozen, before)
+            # The subsequent attempt's actual execution disposition requires
+            # an admitted existing runtime; this source test cannot mint it.
+
+    def test_unrelated_invalid_credential_contract_is_not_builder_deny(self):
+        invalid = request("invalid-authority")
+        invalid["credential_authority"] = "GITHUB"
+        invalid.pop("request_sha256")
+        invalid["request_sha256"] = mod.sha256(invalid)
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(ValueError, "credential_authority_mismatch"):
+                mod.admit(
+                    runtime_root=Path(td),
+                    body=mod.canonical(invalid),
+                    headers={},
+                    transport_validator=lambda _h, _b: {"origin": "TVC_RELAY_EGRESS"},
+                )
+
     def test_distinct_reruns_are_immutable_and_latest_pointer_advances(self):
         first = request("one")
         second = request("two")
