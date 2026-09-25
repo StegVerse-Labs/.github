@@ -132,6 +132,45 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
         result={"schema":consumer.RETURN_SCHEMA}
         self.assertEqual(consumer.select_return_owner(result),consumer.KV_RETURN_OWNER)
 
+    def test_generic_sdk_review_return_routes_to_sdk_not_private_kv(self):
+        result={"schema":consumer.RETURN_SCHEMA,
+                "source_export_schema":"stegverse.publisher.evidence-report-package/v1"}
+        self.assertEqual(consumer.select_return_owner(result),consumer.MIR_SDK_RETURN_OWNER)
+
+    def test_generic_review_rejects_owner_impersonation(self):
+        result=mir_return()
+        result["source_export_schema"]="stegverse.publisher.evidence-report-package/v1"
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"generic_review_cannot_impersonate"):
+            consumer.select_return_owner(result)
+
+    def test_unknown_source_schema_cannot_fall_back_to_kv(self):
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"unsupported_publisher_source_export_schema"):
+            consumer.select_return_owner({"schema":consumer.RETURN_SCHEMA,
+                                          "source_export_schema":"unknown-report"})
+
+    def test_source_qualified_sdk_review_materialization_is_device_free_and_non_authorizing(self):
+        req=request(b'{"schema":"stegverse.publisher.artifact-transfer/v1"}')
+        req["boundary_path"]=["STEGOS_ECOSYSTEM"]
+        body=dict(req);body.pop("request_hash",None);req["request_hash"]=sha(body)
+        consumer.validate_request(req)
+        self.assertFalse(req["second_user_device_required"])
+        self.assertFalse(req["request_grants_execution_authority"])
+        self.assertEqual(req["destination"],consumer.DESTINATION)
+
+    def test_noncanonical_origin_path_rejected_before_source_invocation(self):
+        req=request(b'{}')
+        req["boundary_path"]=["EXTERNAL_SYSTEM","STEGOS_ECOSYSTEM"]
+        body=dict(req);body.pop("request_hash",None);req["request_hash"]=sha(body)
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"boundary_path_invalid"):
+            consumer.validate_request(req)
+
+    def test_sdk_source_selects_exact_profile_and_prevents_kv_impersonation(self):
+        source=Path(consumer.__file__).read_text(encoding="utf-8")
+        for text in ("sdk-publisher-review","sdk_review_cannot_impersonate_kv_origin",
+                     "generic_sdk_review_cannot_use_specialized_mir_binding",
+                     "authenticated_sdk_review_intr_profile_not_materialized"):
+            self.assertIn(text,source)
+
     def test_verified_mir_return_routes_to_sdk_owner(self):
         result=mir_return()
         self.assertEqual(consumer.select_return_owner(result),consumer.MIR_SDK_RETURN_OWNER)
