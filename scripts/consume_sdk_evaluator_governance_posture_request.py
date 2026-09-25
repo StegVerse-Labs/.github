@@ -111,12 +111,18 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
         sys.path.insert(0,str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, submit_state_receipt, sha256_uri
     transition_id=f"{TARGET_TASK}:{receipt['state']}"
+    # The existing organization receipt contract requires exact canonical inline
+    # evidence bytes. A legacy evidence_ref/hex-only manifest is rejected before
+    # Master Records gets the transition, masking its actual disposition.
     required_evidence=[{
       "evidence_id":"sdk-evaluator-governance-posture-runtime-receipt",
+      "evidence_type":"SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_RECEIPT",
       "origin_transition_id":transition_id,
+      "encoding":"canonical-json",
+      "sha256":sha256_uri(receipt).split(":",1)[1],
+      "content":receipt,
       "evidence_ref":RECEIPT_REL.as_posix(),
       "evidence_sha256":file_sha256(path),
-      "evidence_bytes":path.read_bytes().hex(),
       "media_type":"application/json",
     }]
     state_receipt=build_state_receipt(
