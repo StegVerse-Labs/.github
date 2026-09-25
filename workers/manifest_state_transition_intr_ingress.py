@@ -262,6 +262,64 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     require(receipt.get("task_id") == task_id, "purpose_runtime_receipt_task_mismatch")
     return _assemble_purpose_result(validated, receipt)
 
+_REPAIRABLE_MANIFEST_BINDING_CODES = {
+    "canonical_manifest_sha256_binding_mismatch",
+    "canonical_manifest_sha256_recompute_mismatch",
+    "wire_manifest_sha256_required",
+    "wire_manifest_sha256_mismatch",
+    "canonical_manifest_projection_required",
+    "canonical_manifest_projection_sha256_mismatch",
+}
+
+
+def _manifest_binding_deny(
+    runtime_root: Path, request: Mapping[str, Any], *, reason_code: str
+) -> dict[str, Any]:
+    """Record a specific correctable profile DENY without inventing InTr admission.
+
+    Called only after existing transport validation succeeded. This receipt is
+    the evaluating SDK manifest profile's verdict, not an organization receipt,
+    a Master Records closure, or permission to retry a consequential operation.
+    """
+    actual = sha256(request)
+    manifest = request.get("canonical_manifest")
+    record = {
+        "schema": "stegverse.sdk.manifest-profile-disposition/v1",
+        "state": "DENY",
+        "disposition": "DENY",
+        "terminal": False,
+        "automatic_retry_permitted": False,
+        "retry_condition": "CORRECT_ENVELOPE_IN_EXISTING_MANIFEST_BUILDER_THEN_NEW_GOVERNED_ATTEMPT",
+        "evaluation_boundary": "SDK_MANIFEST_PROFILE",
+        "transport_validated": True,
+        "authentic_intr_admission_observed": False,
+        "organization_master_records_closure_observed": False,
+        "transition_id": "SDK_MANIFEST_BINDING",
+        "reason_code": reason_code,
+        "failed_predicate": reason_code,
+        "repair_owner": "StegVerse-org/StegVerse-SDK:stegverse/manifest_builder.py",
+        "original_request_sha256": actual,
+        "claimed_request_sha256": request.get("request_sha256"),
+        "original_wire_manifest_sha256": sha256(manifest) if isinstance(manifest, Mapping) else None,
+        "claimed_wire_manifest_sha256": request.get("wire_manifest_sha256"),
+        "claimed_canonical_manifest_sha256": request.get("canonical_manifest_sha256"),
+        "canonical_task_id": request.get("canonical_task_id"),
+        "graph_id": request.get("graph_id"),
+        "processing_capability": request.get("processing_capability"),
+        "required_evidence_refs": ["CORRECTED_MANIFEST_BUILDER_ENVELOPE", "NEW_GOVERNED_ATTEMPT"],
+        "authority_effect": "NONE_MANIFEST_PROFILE_DENY_ONLY",
+    }
+    root = runtime_root / REQUEST_DIR / "dispositions" / "manifest-binding"
+    root.mkdir(parents=True, exist_ok=True)
+    exact = root / f"{actual}.json"
+    raw = json.dumps(record, sort_keys=True, indent=2) + "\n"
+    if exact.exists():
+        require(exact.read_text(encoding="utf-8") == raw, "manifest_binding_deny_immutable_collision")
+    else:
+        exact.write_text(raw, encoding="utf-8")
+    return {**record, "source_disposition_ref": str(exact)}
+
+
 def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transport_validator) -> dict[str, Any]:
     transport = transport_validator(headers, body)
     require(transport.get("origin") in {"STEGOS_NODE_OUTBOX", "TVC_RELAY_EGRESS"}, "manifest_state_transition_transport_origin_invalid")
@@ -270,6 +328,14 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
     except Exception as exc:
         raise ValueError("manifest_state_transition_request_json_invalid") from exc
     require(isinstance(payload, dict), "manifest_state_transition_request_object_required")
-    return execute(runtime_root, payload)
+    try:
+        return execute(runtime_root, payload)
+    except ValueError as exc:
+        reason_code = str(exc)
+        # Only a concrete, correctable manifest-binding mismatch returns DENY.
+        # All unrelated authentication, state or custody errors remain fail closed.
+        if reason_code not in _REPAIRABLE_MANIFEST_BINDING_CODES:
+            raise
+        return _manifest_binding_deny(runtime_root, payload, reason_code=reason_code)
 
 __all__ = ["PROFILE", "REQUEST_SCHEMA", "RESULT_SCHEMA", "admit", "execute", "is_manifest_state_transition", "validate_request"]
