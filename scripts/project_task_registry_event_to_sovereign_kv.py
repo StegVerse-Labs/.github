@@ -6,8 +6,9 @@ import json
 import os
 import shlex
 import subprocess
-import sys
 from pathlib import Path
+
+from task_registry_checkin_event_history import DEFAULT_LEDGER, load_events, validate_event
 
 EVENT_SCHEMA = "stegverse.task-registry-checkin-event/v1"
 REQUEST_SCHEMA = "stegverse.task-registry-sovereign-kv-projection-request/v1"
@@ -15,15 +16,21 @@ RECEIPT_SCHEMA = "stegverse.task-registry-sovereign-kv-projection-receipt/v1"
 CUSTODY_CLASS = "STEGVERSE_SOVEREIGN_KV"
 
 
-def load_event(path: Path) -> dict:
-    event = json.loads(path.read_text(encoding="utf-8"))
-    if event.get("schema") != EVENT_SCHEMA:
-        raise SystemExit("task registry event schema mismatch")
-    if event.get("authority_effect") != "NONE":
-        raise SystemExit("task registry event authority widening")
-    event_hash = event.get("event_sha256")
-    if not isinstance(event_hash, str) or not event_hash.startswith("sha256:"):
-        raise SystemExit("task registry event hash missing")
+def load_event(path: Path, ledger_path: Path | None = None) -> dict:
+    """Fail closed unless the exact event is present in verified canonical custody."""
+    selected = ledger_path or Path(
+        os.environ.get("STEGVERSE_TASK_REGISTRY_EVENT_LEDGER", str(DEFAULT_LEDGER))
+    ).expanduser().resolve()
+    if not selected.is_file():
+        raise SystemExit("canonical event ledger unavailable; no KV projection")
+    try:
+        event = json.loads(path.read_text(encoding="utf-8"))
+        validate_event(event)           # Recalculate canonical digest, schema and identity.
+        events = load_events(selected)  # Verify complete hash and predecessor chain.
+    except (ValueError, TypeError, OSError) as exc:
+        raise SystemExit(f"canonical event validation failed: {exc}") from exc
+    if not events or event not in events:
+        raise SystemExit("event absent from verified canonical event history")
     return event
 
 
@@ -61,10 +68,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--event-file", required=True)
     parser.add_argument("--request-only", action="store_true")
+    parser.add_argument("--ledger", type=Path, help="Existing authentic Task Registry event history path")
     parser.add_argument("--adapter-command")
     args = parser.parse_args()
 
-    event = load_event(Path(args.event_file).expanduser().resolve())
+    event = load_event(Path(args.event_file).expanduser().resolve(),
+                       args.ledger.expanduser().resolve() if args.ledger else None)
     request = build_request(event)
     if args.request_only:
         print(json.dumps(request, sort_keys=True))
