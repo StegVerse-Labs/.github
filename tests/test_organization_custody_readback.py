@@ -157,3 +157,37 @@ def test_hosted_source_environment_refused(monkeypatch, tmp_path):
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "BOUNDARY"
     assert result["reason"] == "HOSTED_ENVIRONMENT_FORBIDDEN"
+
+def test_exact_request_retry_keeps_original_immutable_snapshot_after_new_head(monkeypatch, tmp_path):
+    ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    original = org.aggregate_transition(source("FIRST"))
+    request(runtime)
+    first = consumer.consume(ROOT, runtime)
+    assert first["state"] == "RECORDED_LOCAL_READBACK"
+    artifact = runtime / first["private_artifact_location"]
+    original_bytes = artifact.read_bytes()
+    org.aggregate_transition(source("AFTER_FIRST_READBACK", task="OTHER"))
+    retry = consumer.consume(ROOT, runtime)
+    assert retry["state"] == "ALREADY_CONSUMED", retry
+    assert retry["head_receipt_sha256"] == original["receipt_sha256"]
+    assert retry["private_artifact_sha256"] == first["private_artifact_sha256"]
+    assert artifact.read_bytes() == original_bytes
+    request(runtime, request_id="custody-probe-2")
+    latest = consumer.consume(ROOT, runtime)
+    assert latest["state"] == "RECORDED_LOCAL_READBACK"
+    assert latest["receipt_count"] == 2
+    assert latest["private_artifact_sha256"] != first["private_artifact_sha256"]
+
+
+def test_inline_evidence_tampering_detected_before_readback(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    exact = source("BOUND")
+    org.aggregate_transition(exact)
+    path = ledger / "source-receipts" / (org.sha(exact)[7:] + ".json")
+    changed = json.loads(path.read_text())
+    changed["required_evidence_manifest"][0]["content"]["event"] = "TAMPERED"
+    path.write_text(json.dumps(changed))
+    with pytest.raises(ValueError, match="required evidence digest mismatch"):
+        readback.readback(ledger, correlation_ids=("BOUND",))
