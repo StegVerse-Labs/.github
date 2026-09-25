@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 235,
+  "generation": 236,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10417,7 +10417,8 @@
         "Admissible-Existence/.github#81@6a90de84a209c6f8d328a1e378ab172ec7e9114f",
         "Admissible-Existence/.github#82@99bc476ff6f9b732c910d0d3fd1f763f8c046652",
         "Admissible-Existence/CHF#4@52f1f226dc3be9dbc53e52429d03fa87d3087519",
-        "Admissible-Existence/STCM@92f6bb8ac61377792970da16a835430ebe20f000"
+        "Admissible-Existence/STCM@92f6bb8ac61377792970da16a835430ebe20f000",
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
       ],
       "targets": {
         "organizations": [

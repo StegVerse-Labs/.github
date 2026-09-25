@@ -1,5 +1,18 @@
 # STCM/CHF thermodynamic-witness registration mirror handoff
 
+## Bounded one-sided native same-specimen evidence (generation 236 source proposal)
+
+The comparison is still `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` ACTIVE / UNCLAIMED, unchanged COSV `10111010112000`. [Admissible-Existence/.github PR #83](https://github.com/Admissible-Existence/.github/pull/83) **MERGED** `5425301bef8f3276bc9cd805c926f0661d9a6c70` on exact source PR head `c6170433ddd0a6ee77deb4612c423c822dc69583`. The nonauthoritative original-source STCM workflow `36091077891` and existing synthetic-control workflow `36091077966` both PASSED. Retained native test artifact `10845258620`, ZIP SHA-256 `19018fb77b3ed6d9a08a85ffe5e3c8d0486add21f249f5b3ccb6149bf8b387ad`.
+
+The new original-pinned STCM native callable `tools/closure-harness/lineage_gate.py::gated_close` ran four **identical-frozen-source synthetic specimen controls**: explicitly constructed mock predecessor yields source-native BOUND/CLOSED; missing actual predecessor yields MISSING_PRIOR/nonclosure; unrelated coincident timestamps yield MISSING_PRIOR/nonclosure; wrong original specimen bytes are denied **before** STCM invocation. Seven additional source revision/blob/tamper/report tests passed. The positive prior receipt was *constructed in the fixture*, not a real retained witness or proof of causality.
+
+Inspected exact CHF original Tri-Form manifest `0e2679dd2655778ad6464231f209d72fb2e88958`, declared mathematical threshold markers and six published executable checker scripts. CHF's current checkers verify existing schema and contract declarations, not the physical or numerical consequence-horizon response for one input specimen. A suitable same-specimen native CHF evaluator remains `NOT_ESTABLISHED`, as does an installed SDK native mathematics manifest binding. Existing math/SDK owner `ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION` / [issue #2615](https://github.com/StegVerse-Labs/.github/issues/2615) retains exact callable discovery and authorized generic SDK compatibility work. The comparison owner did not clone private CHF source, implement duplicate CHF equations or create a special SDK runtime route.
+
+This update adds **only** source evidence references to the exact task shard, aggregate Registry and existing COSV evidence refs, proposes generation 236 from inspected main generation 235, and preserves all pre-existing runtime and external-data predicates. Authentic resident AI_SESSION_GATE call/consumption/event, independent third-party export permission and original bytes, native two-framework same-specimen results, observed physical heat and applicable Master Records closure remain UNVERIFIED. Source CI does not create WorkerCoordinator claim/fence or authoritatively advance governed execution.
+
+---
+
+
 ## Authoritative source-only reconciliation (generation 231 candidate, 2026-09-24)
 
 This **already registered** Goal `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` remains ACTIVE / UNCLAIMED with unchanged task.v1 COSV `10111010112000`. Registry generation 230 was the source base; generation 231 is the proposed exact-shard source-evidence projection and must be re-read on final main. The earlier admission-candidate language below is historical, not current authority.
