@@ -1,3 +1,7 @@
+## Ecosystem-wide open-source census (2026-09-25)
+
+The original **119-repository** complete license-metadata audit is **StegVerse-Labs only**, not the entire ecosystem. A refreshed GitHub visibility census of the 14 previously registered organizations observes **252 repositories: 85 public, 153 private, 14 internal**. The baseline remains historically incomplete and additional organizations or inaccessible repositories may exist. StegVerse-org is the second separately audited organization (18/18 metadata reads; 13 GitHub-detected MIT; 5 no detected license), with its inventory preserved under its own [source-owner PR #11](https://github.com/StegVerse-org/.github/pull/11), merged after 2/2 applicable workflows. The remaining 12 organizations have only repository count/visibility census, not verified licenses or rights. Central manifest: `data/ecosystem-open-source-organization-census-20260925.json`; existing task: `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`. No new release or relicensing authority asserted.
+
 ## First-wave rights audit merge evidence (2026-09-25)
 
 Open-source strategy PR [#2727](https://github.com/StegVerse-Labs/.github/pull/2727) merged `aee4e664cf26aee2491b3558db307a897c8785d9` from exact validated head `4737f3a68db41a00abc3e12104265bd4e4220d0b` after six successful applicable workflows. Hybrid license clarification remains with native owner issue #32. No relicensing, formal copyright clearance or public release is claimed. See `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md`.
