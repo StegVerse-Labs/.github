@@ -132,6 +132,22 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
         result={"schema":consumer.RETURN_SCHEMA}
         self.assertEqual(consumer.select_return_owner(result),consumer.KV_RETURN_OWNER)
 
+    def test_generic_sdk_review_return_routes_to_sdk_not_private_kv(self):
+        result={"schema":consumer.RETURN_SCHEMA,
+                "source_export_schema":"stegverse.publisher.evidence-report-package/v1"}
+        self.assertEqual(consumer.select_return_owner(result),consumer.MIR_SDK_RETURN_OWNER)
+
+    def test_generic_review_rejects_owner_impersonation(self):
+        result=mir_return()
+        result["source_export_schema"]="stegverse.publisher.evidence-report-package/v1"
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"generic_review_cannot_impersonate"):
+            consumer.select_return_owner(result)
+
+    def test_unknown_source_schema_cannot_fall_back_to_kv(self):
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"unsupported_publisher_source_export_schema"):
+            consumer.select_return_owner({"schema":consumer.RETURN_SCHEMA,
+                                          "source_export_schema":"unknown-report"})
+
     def test_verified_mir_return_routes_to_sdk_owner(self):
         result=mir_return()
         self.assertEqual(consumer.select_return_owner(result),consumer.MIR_SDK_RETURN_OWNER)
