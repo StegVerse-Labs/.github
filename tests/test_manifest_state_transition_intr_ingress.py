@@ -142,6 +142,34 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical_manifest_sha256_recompute_mismatch"):
             mod.validate_request(tampered)
 
+    def test_immutable_wire_and_projection_digests_are_independently_checked(self):
+        value = request()
+        original = copy.deepcopy(value["canonical_manifest"])
+        original.pop("canonical_manifest_sha256")
+        # The projection is a separately hash-bound SDK validation output.
+        projection = dict(original)
+        projection["ingress_mode"] = "external_manifest"
+        value["canonical_manifest"] = original
+        value["wire_manifest_sha256"] = mod.sha256(original)
+        value["canonical_manifest_projection"] = projection
+        value["canonical_manifest_sha256"] = mod.sha256(projection)
+        value.pop("request_sha256")
+        value["request_sha256"] = mod.sha256(value)
+        self.assertEqual(mod.validate_request(value)["wire_manifest_sha256"], mod.sha256(original))
+        tampered = copy.deepcopy(value)
+        tampered["wire_manifest_sha256"] = "f" * 64
+        tampered.pop("request_sha256")
+        tampered["request_sha256"] = mod.sha256(tampered)
+        with self.assertRaisesRegex(ValueError, "wire_manifest_sha256_mismatch"):
+            mod.validate_request(tampered)
+        tampered = copy.deepcopy(value)
+        tampered["canonical_manifest_projection"]["source_output_id"] = "substituted"
+        tampered["canonical_manifest_sha256"] = mod.sha256(tampered["canonical_manifest_projection"])
+        tampered.pop("request_sha256")
+        tampered["request_sha256"] = mod.sha256(tampered)
+        with self.assertRaisesRegex(ValueError, "canonical_manifest_projection_source_mismatch"):
+            mod.validate_request(tampered)
+
     def test_distinct_reruns_are_immutable_and_latest_pointer_advances(self):
         first = request("one")
         second = request("two")
