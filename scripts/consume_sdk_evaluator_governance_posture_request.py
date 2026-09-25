@@ -79,6 +79,19 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
             return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
                     "state":"SOURCE_MATERIALIZATION_REJECTED","failure_class":"EXACT_MANIFEST_READBACK_MISMATCH",
                     "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        staged_receipt_path=runtime/Path("runtime-state/sdk-evaluator-governance-posture/source-evidence-reconstruction.json")
+        staged=load_json(staged_receipt_path) if staged_receipt_path.is_file() else None
+        if (not isinstance(staged,dict)
+            or staged!=source_staging
+            or staged.get("artifact_id")!=request["historical_source_artifact_id"]
+            or staged.get("manifest_sha256")!=request["historical_manifest_sha256"]
+            or staged.get("manifest_ref")!=request["manifest_ref"]
+            or staged.get("state")!="HISTORICAL_SOURCE_STAGED_NOT_RUNTIME_PROVEN"
+            or staged.get("authority_effect")!="NONE_SOURCE_STAGING_ONLY"):
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"SOURCE_MATERIALIZATION_REJECTED",
+                    "failure_class":"EXACT_SOURCE_STAGING_RECEIPT_READBACK_MISMATCH",
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
     if sdk_root is None or not sdk_root.is_dir():
         return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
                 "state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root",
