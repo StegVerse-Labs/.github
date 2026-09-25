@@ -178,13 +178,15 @@ jobs:
           python scripts/validate_org_control_plane.py
       - name: Report complete local-shard / aggregate / COSV projection (non-authorizing)
         run: |
-          python scripts/audit_canonical_task_projections.py > /tmp/canonical-task-projection-audit.json
+          audit_status=0
+          python scripts/audit_canonical_task_projections.py > /tmp/canonical-task-projection-audit.json || audit_status=$?
           python - <<'PY'
           import json
           from pathlib import Path
           r = json.loads(Path('/tmp/canonical-task-projection-audit.json').read_text())
           print(json.dumps({k: r[k] for k in ('registry_generation', 'counts', 'omitted_checked_out_owner_shards', 'structural_errors', 'shard_aggregate_drift', 'cosv_conflicts_where_both_emitted')}, indent=2, sort_keys=True))
           PY
+          exit "$audit_status"
       - name: Validate coordination source
         run: |
           python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py scripts/resolve_machine_preflight_receipt.py
