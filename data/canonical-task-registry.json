@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 232,
+  "generation": 233,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11547,7 +11547,8 @@
         "https://github.com/GCAT-BCAT-Engine/Publisher/pull/73",
         "GCAT-BCAT-Engine/Publisher:docs/SDK_REVIEW_PUBLISHER_EVIDENCE_MIRROR_HANDOFF.md",
         "https://github.com/StegVerse-org/StegVerse-SDK/pull/318",
-        "StegVerse-org/StegVerse-SDK:docs/SDK_EXTERNAL_REVIEW_PUBLISHER_TRANSFER.md"
+        "StegVerse-org/StegVerse-SDK:docs/SDK_EXTERNAL_REVIEW_PUBLISHER_TRANSFER.md",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/320"
       ],
       "targets": {
         "organizations": [
@@ -11589,7 +11590,10 @@
         "REVIEW_PACKAGE_ORIGINALS_11_OF_11_LOCALLY_SHA256_VERIFIED",
         "AUTHENTIC_PUBLISHER_RETURN_ACTUAL_CUSTODY_VERIFIED",
         "AUTHENTIC_SDK_RETURN_MATCHED_TO_SOURCE_TRANSFER",
-        "AUTHENTIC_FAR_SIDE_EVALUATOR_DELIVERY"
+        "AUTHENTIC_FAR_SIDE_EVALUATOR_DELIVERY",
+        "EXACT_ORIGINAL_MANIFEST_ROOT_CHECKS_SOURCE_VALIDATED",
+        "PUBLISHER_ARTIFACT_AND_RENDERING_RECEIPT_DIGEST_CHECKS_SOURCE_VALIDATED",
+        "COMPLETE_LOCAL_REVIEWER_ORIGINALS_AND_SDK_ARTIFACTS_VERIFIED"
       ],
       "runtime_requirements": {
         "capabilities": [
