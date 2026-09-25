@@ -292,5 +292,103 @@
       "filename": "optical-state-replay-calibrated-v08.zip",
       "sha256": "9b1b41dc6272067f29ff2dd470b570d7ccb451fcb7dc904e0de804b5ea39d33e"
     }
+  },
+  "external_reference_v09": {
+    "schema": "stegverse.optical-independent-reference-readiness/v0.9",
+    "goal_task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+    "cosv": "10111110114000",
+    "evidence_class": "EXTERNAL_PUBLISHER_LICENSE_METADATA_PLUS_EXISTING_CC0_OFFLINE_COMPUTE_PROFILING_NO_INDEPENDENT_SENSOR_DATA",
+    "external_dataset": {
+      "doi": "10.17632/7yd2ntbh3w.1",
+      "publisher_page": "https://data.mendeley.com/datasets/7yd2ntbh3w/1",
+      "article": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9041261/",
+      "dataset_page_license": "CC BY 4.0",
+      "author_article_file_table_license": "GNU GPL v3",
+      "affected_files": [
+        "DP_free_drop_video.mp4",
+        "Encoder_Data.zip",
+        "Video_Tracking_Data.zip"
+      ],
+      "effective_file_level_rights": "UNRESOLVED",
+      "metadata_via_existing_github_actions": {
+        "one_off_pr": 2733,
+        "closed_unmerged": true,
+        "run_ids": [
+          36191137923,
+          36191388517
+        ],
+        "public_html_http": 200,
+        "json_dataset_http": 401,
+        "json_files_http": 401,
+        "json_public_files_http": 401
+      },
+      "original_video_ingested": false,
+      "encoder_ingested": false,
+      "tracking_data_ingested": false,
+      "file_hashes_obtained": false,
+      "physical_sensor_validation": "NOT_EXECUTED",
+      "disposition": "HOLD_EXTERNAL_ORIGINAL_INGESTION_RIGHTS_AND_METADATA_UNVERIFIED"
+    },
+    "synthetic_reference_gate": {
+      "validation_tests_passed": 8,
+      "calibration_required": true,
+      "trial_match_required": true,
+      "independent_file_hashes_required_for_external": true,
+      "relative_lag_training_only": true,
+      "heldout_encoder_check": true,
+      "disposition_on_missing_rights": "DENY_EXTERNAL_SOURCE_PROVENANCE_OR_RIGHTS",
+      "actual_external_dataset_evaluated": false,
+      "shared_camera_encoder_hardware_trigger_verified": false
+    },
+    "offline_context_cost": {
+      "source_sha256": "069d9a266f584f14f009a2bc7d2e7fbc20cc87bdffebb8be87573ca939d2eb8b",
+      "frozen_v08_source_verified": true,
+      "all_422_source_frames_decoded": true,
+      "batch_repeats": 8,
+      "heavy_operation": "GRAY_160x90_PLUS_SHA256",
+      "full": {
+        "frames": 422,
+        "median_heavy_wall_ms": 168.751
+      },
+      "global_with_required_2_2_context": {
+        "frames": 421,
+        "median_heavy_wall_ms": 168.112
+      },
+      "roi_with_required_2_2_context": {
+        "frames": 421,
+        "median_heavy_wall_ms": 168.445
+      },
+      "non_equivalent_zero_context": {
+        "global_frames": 313,
+        "global_median_ms": 125.79,
+        "roi_frames": 294,
+        "roi_median_ms": 119.135,
+        "valid_substitute_for_required_context": false
+      },
+      "decode_once_wall_ms": 380.546,
+      "cheap_all_422_median_wall_ms": 323.647,
+      "meaningful_cost_benefit_demonstrated": false,
+      "measured_energy_or_camera_bandwidth": false,
+      "independent_physical_ground_truth": false,
+      "measured_on_single_offline_host": true
+    },
+    "new_local_regression_tests_passed": 13,
+    "private_user_supplement": {
+      "filename": "optical-reference-readiness-v09.zip",
+      "sha256": "67122d712ca8dc53d7ddca9097ee2c733906d36cb3980dfc81f352ffb9a58e58"
+    },
+    "source_documentation_prs": {
+      "central": 2736,
+      "patents": 12
+    },
+    "existing_owners": {
+      "patent_candidate": "PAT-003 EXISTING OWNER_REVIEW_PENDING",
+      "reconstruction": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "master_records": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "session_gate": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    },
+    "authentic_runtime_evidence_observed": false,
+    "worker_claim_fence_observed": false,
+    "governance_authority_effect": "NONE_SOURCE_EVIDENCE_ONLY"
   }
 }
