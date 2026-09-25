@@ -170,6 +170,22 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical_manifest_projection_source_mismatch"):
             mod.validate_request(tampered)
 
+    def test_diagnostic_nonworker_attempt_exposes_exact_unrepaired_predicate(self):
+        diagnostic = request("diagnostic")
+        diagnostic["canonical_task_id"] = None
+        diagnostic["requires_workercoordinator_claim_fence"] = False
+        diagnostic["processing_capability"] = "ecosystem_diagnostic"
+        diagnostic["route_id"] = "stegverse.route.ecosystem-diagnostic.v1"
+        diagnostic["state_graph"]["canonical_task_id"] = None
+        diagnostic["state_graph"]["processing_capability"] = diagnostic["processing_capability"]
+        diagnostic["state_graph"]["route_id"] = diagnostic["route_id"]
+        diagnostic.pop("request_sha256")
+        diagnostic["request_sha256"] = mod.sha256(diagnostic)
+        self.assertIsNone(mod.validate_request(diagnostic)["canonical_task_id"])
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(ValueError, "^canonical_task_id_required$"):
+                mod.execute(Path(td), diagnostic)
+
     def test_distinct_reruns_are_immutable_and_latest_pointer_advances(self):
         first = request("one")
         second = request("two")
