@@ -1,6 +1,6 @@
 # Ecosystem Chat task census and build plan
 
-Observed 2026-09-25. Canonical Registry generation **243**, re-read after source repair. Central main `0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c`.
+Observed 2026-09-25. Canonical Registry generation **243**, re-read after source repair. Initial central main `0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c`; refreshed main `600df885dbf799ebba7a63a1629fe8c07e9a1675`. The intervening central changes alter no canonical task record, shard, vector or worker registry. Adapter main refreshed to `f1a84b2628de65c6e463f87abde12c4842380dff`; its intervening Grok merge alters no native task files.
 
 This is a read-only task reconciliation and source-development report. It does not acquire any existing task checkout, change COSV, admit a runtime, issue a receipt or claim product activation.
 
@@ -39,7 +39,7 @@ Completed source to reuse, not rebuild: LLMA-DISTRIBUTED-LLM-WORKLOAD-272, LLMA-
 
 1. A user sends a message through Ecosystem Chat. Its data packet carries the manifest selecting processing, provider/model participants, scope, disclosure, budgets and return destination. Provider identity does not select processing by itself.
 2. Existing SDK/InTr and WorkerCoordinator resolve the manifest's existing execution path. Use an existing admitted ephemeral StegBrowser instance/lease for each bounded model interaction. Credentials stay at TV/TVC; browser UI and provider APIs are distinct declared interfaces.
-3. Existing LLM Adapter provider modules execute the exact admitted request. ChatGPT/OpenAI, Claude/Anthropic, Grok/xAI, Gemini/Google and additional admitted providers remain independently attributable. Neither a name in a dropdown nor a fixture proves availability.
+3. The manifest-selected existing operation executes the exact admitted request. Reuse browser/session binding for browser-mediated input, genuine local-tool execution for Claude Code, and provider edge adapters only where wire translation is necessary. ChatGPT/OpenAI, Claude/Anthropic, Grok/xAI, Gemini/Google and additional admitted providers remain independently attributable. Neither a name in a dropdown nor a fixture proves availability.
 4. Existing workload handling retains replies, refusals, failures, usage and disagreement. Normal user answers must not require unanimous developer-sandbox agreement. Development proposals may use #282's separate agreement procedure before the existing governed implementation path.
 5. Existing return assembly sends the governed result to the initiating user/conversation. Required InTr egress, organization lineage and manifest-declared Master Records predicates apply. Publisher remains optional unless selected by the manifest.
 6. Observe terminal disposal of temporary session state and retain permitted continuity/evidence. An in-memory `closed` flag is not proof that a physical browser process/context was destroyed.
@@ -52,9 +52,9 @@ Current `Site/ecosystem-chat.html` loads `ecosystem-chat-va-runtime.js` and `eco
 
 | Provider family | Source found | Current proof |
 |---|---|---|
-| OpenAI / ChatGPT | Existing draft Adapter #351 + TVC #468; native vault consumption owner #112 | Updated locally in this session; no authentic runtime result |
+| OpenAI / ChatGPT | Existing draft Adapter #351 + TVC #468; native vault consumption owner #112 | Repair published in existing #351; no authentic runtime result |
 | Anthropic / Claude | Existing governed TVC/InTr adapter on main | Source exists; live same-execution proof not obtained |
-| Grok / xAI | No governed execution dispatch in inspected main or #351 | Add provider-specific edge under existing Adapter/TVC owners; inspect other native branches/profiles before creating source |
+| Grok / xAI | PR #352 merged as f1a84b2628de65c6e463f87abde12c4842380dff | Optional API source and measured-usage fixtures; authentic ephemeral execution remains unverified |
 | Gemini / Google | No governed execution dispatch in inspected main or #351 | Same integration requirement; do not treat search/comparison labels as execution |
 | Z.ai, DeepSeek, Kimi | Existing governed TVC/InTr adapters on main | Reuse; live proof not obtained |
 | Sovereign local model | Existing independent local bridge and runtime work | Preserve truthful model/capability identity; reference model is not a general foundation-model substitute |
@@ -69,18 +69,36 @@ The repair validates canonical provider, model, exact wire request and provider 
 
 **115 focused local tests passed**, covering existing convergence, OpenAI integration, distributed executor/workload and adversarial identity binding. The existing Work Mutation Safety validator also passed. README and the existing canonical adapter handoff were updated. All remote/admission/provider/organization/custody dependencies in these tests are explicit offline fixtures. No provider was called, no live browser was destroyed, and no runtime or Master Records result is claimed.
 
-**Publication status:** automatic approval review rejected pushing `b6b09b7c` to the existing #351 branch because it classified the destination as an unverified external repository and the publication as not explicitly authorized. GitHub readback confirms #351 still points to `ddcaa3e4ad72befef601f2c99df03687e6cc191f`. The local repair and this central report are reviewable but unpublished. No alternative write path was attempted.
+**Publication status:** User explicitly approved these exact source publications after the initial automatic review rejection. Git command-line writes lacked credentials; connected GitHub publication produced trees identical to local adapter `b6b09b7c` and central `525bf34`. Remote adapter commit `e6293abe7048205a6f02a635f9289d89b7318d95` is on existing #351 (seven reported exact-head checks PASS); central `e23d48264ba1a1cfa2267cedac32457a02e5b689` is draft #2723. Commit metadata differs because the connector authored the commits; source tree equality was checked before branch updates. Current-main conflict reconciliation preserves the OpenAI repair and merged optional Grok source.
+
+## Status refresh and Local Claude Code
+
+All original 73 candidate issues were read again and remain OPEN. Newly located central #2721 is also OPEN: **74 observed open candidates**, not 74 unfinished Chat tasks. `data/ecosystem-chat-status-review-20260925.json` retains the issue state/timestamp review and the two existing StegOS proposals. Adapter #283 and #325 conflict; #327 remains draft with its documented README blocker. Do not merge overlapping #325/#327 implementations. Local-source and aggregate/shard task states are unchanged at the refreshed main heads.
+
+FIRST `STEGOS-LOCAL-AI-ENTITY-CHATGPT-001`, THEN `STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001`. Both existing StegOS proposals are `PROPOSED_FOR_CANONICAL_REGISTRATION`, COSV `NOT_YET_EMITTED`, not canonical execution claims. #2721 owns authorized registration; no vector is guessed here. Prove the first resident participant independently before the second's governed collaboration. Claude Code requires actual tool execution and its own scoped evidence; an Anthropic Messages result is insufficient. Preserve two independently reconstructable evidence chains. ECC consideration is downstream and is not installed here.
+
+## Reusable scenario conversion
+
+Seven definitions were added to the established reusable registry shards: Chat answer, ephemeral source lease, source round trip, named contribution collection, terminal session closure, local participant verification and ordered local collaboration. They compose existing InTr admission/round-trip/custody identities; provider names are parameters instead of new runtimes or duplicate canonical goals. Existing `RT-AI-ADAPTER-ESTABLISH-001` remains the task for a genuinely missing translation edge.
+
+`scripts/compose_ecosystem_chat_task.py` uses the existing `materialize_reusable_task_construct.py` to produce deterministic, hash-bound parent/child manifests with explicit dependency and evidence conditions. It supports single, independent parallel and admitted fallback compositions for ChatGPT/OpenAI, Claude/Anthropic, Grok/xAI, Gemini/Google and other explicitly bound operations. Browser sessions, provider APIs and local tools must be explicitly distinguished. An adapter reference requires a translation reason. Sequential/challenge remains refused until the existing governed derived-input contract exists.
+
+This is **source composition, not a working runtime runner**. Each exact operation reference must be supplied by its current owner; no endpoint is guessed. Definitions have no executable runner, so the existing trigger stops at `NO_EXECUTABLE_RUNNER_DECLARED`. No source plan is promoted to a live receipt. The local collaboration composition refuses the currently unregistered participant pointers. Terminal cleanup is required after success, refusal, denial, timeout, cancellation or failure; required evidence survives temporary session destruction. Organization-first custody remains the default, with immediate Master Records only under an explicit contract.
+
+To materialize a source plan, provide a JSON specification with `invocation_id`, an existing `task_id`/`cosv_task_vector` pair, `request_hash`, `routing_mode`, and `sources` (`source_id`, `provider`, `model`, `interaction_mode`, `operation_ref`, optional `adapter_ref` plus `translation_reason`). Run `python scripts/compose_ecosystem_chat_task.py --spec <spec.json> --output <plan.json>`. This command does not invoke a provider or obtain authority.
+
+Validation: 7 new composition tests pass, including all provider aliases, conditional adapters, deterministic hash binding, fallback, cleanup, canonical identity rejection and local registration boundary. Related org-first and reusable componentization tests pass. An additional existing COSV-shard test fails on main unchanged: it expects `scripts/run_tvc_runtime_boundary_reusable.py` while the current registry declares `scripts/reconcile_tvc_runtime_boundary_reusable.py`; this unrelated TVC test drift is not concealed or rewritten.
 
 ## Ordered continuation under existing owners
 
-1. After explicit publication approval, push the exact Adapter commit to existing #351, verify exact-head CI and preserve its draft status until companion/native-owner integration is established.
+1. Verify final published heads after current-main reconciliation; preserve #351 draft until companion/native-owner integration is established. The approved source snapshots have been published.
 2. Reconcile #325/#327 under #324 and #283 under #282 against current main. Preserve completed source and avoid parallel ingress implementations.
 3. Under Site #242 / SHWP parent and Adapter #306/#324, connect manifest-bound Chat input to the existing distributed executor and admitted per-source ephemeral session lifecycle; return exact request/user-bound results and failures. Test ordinary user answers separately from development deliberation.
 4. Finish OpenAI #351 + TVC #468 + native vault owner #112 source convergence, then observe one authentic same-invocation request, result, lineage, required custody and actual session destruction. Apply the same integration to existing Claude. No private user input is needed for initial capability proof.
-5. Extend existing provider edge modules/profiles for Grok and Gemini after original provider-contract and existing-source verification. Keep provider-specific execution capabilities explicit, including separate browser UI/API and agent-tool support.
+5. Reuse merged Grok #352; resolve an exact existing Gemini operation and extend its edge only if needed after provider-contract and source verification. Keep provider-specific execution capabilities explicit, including separate browser UI/API and agent-tool support.
 6. Validate multi-source independent answers, timeout/refusal/failure reporting, no duplicate retries, usage attribution, user/conversation binding, privacy scope, cleanup on success/failure and predecessor replay. Only then propose release and separate propagation verification for applicable Site/Publisher/wiki consumers.
 
-Historical cumulative prompt counts are absent from the read canonical handoffs. Session count is 1; each involved goal has one additional qualifying prompt, historical total UNVERIFIED. Do not reset or invent historical counts. Registry/task/COSV/checkout states are unchanged.
+Historical cumulative prompt counts are absent from the read canonical handoffs. Session count is 3; each involved goal has three additional qualifying prompts, historical total UNVERIFIED. Do not reset or invent historical counts. Registry/task/COSV/checkout states are unchanged.
 
 ## Complete matching task records
 

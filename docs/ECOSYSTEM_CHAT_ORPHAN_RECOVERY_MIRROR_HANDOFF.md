@@ -445,3 +445,12 @@ Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelo
 Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
 
 Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
+
+
+## Current-state review and reusable composition — 2026-09-25
+
+Reviewed all original 73 open issue candidates (all still OPEN), newly located Local Claude Code coordination #2721, existing provider/ingress PRs and latest main source. Registry generation remains 243 and canonical task/claim/vector states are unchanged. Optional Grok #352 is source-merged; #351 now contains the approved provider-envelope repair. Central #2723 publishes the census. Source tree equality was verified despite connector-authored commit metadata.
+
+Seven reusable registry definitions and `scripts/compose_ecosystem_chat_task.py` use the existing constructor for source-only Chat answer/lease/roundtrip/collection/cleanup and local participant/collaboration plans. InTr admission, correlation and custody identities are reused. The adapter is conditional on a declared translation need; browser session, API and local-tool modes remain separate. No executable runner or authentic runtime receipt is claimed. Existing triggers stop honestly at the unbound runner boundary. FIRST local ChatGPT and SECOND local Claude Code remain proposals with COSV NOT_YET_EMITTED under #2721; actual Claude Code tool execution and separate participant evidence are required. See the updated census for exact source and runtime limits.
+
+Session count: 3. Goal cumulative count: UNVERIFIED historical +3 qualifying session prompts. No task checkout, fence, state, COSV, registry generation or runtime result is changed by this source work.

@@ -136,6 +136,11 @@ on:
       - 'tests/test_erl_household_targeted_consumer_priority.py'
       - 'workers/erl_household_economic_conditions_worker.py'
       - 'tests/test_ephemeral_external_ai_org_first_components.py'
+      - 'tests/test_ecosystem_chat_reusable_composition.py'
+      - 'scripts/compose_ecosystem_chat_task.py'
+      - 'source-bundles/reusable-task-registry.d/RT-*CHAT*.json'
+      - 'source-bundles/reusable-task-registry.d/RT-*LLM*.json'
+      - 'source-bundles/reusable-task-registry.d/RT-LOCAL-AI-*.json'
       - 'data/ephemeral-external-ai-reusable-component-profile.v1.json'
       - 'data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json'
       - '.github/workflows/cross-task-coordination-validation.yml'
@@ -185,7 +190,8 @@ jobs:
             tests.test_portable_refresh_targeted_execution \
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
-            tests.test_ephemeral_external_ai_org_first_components
+            tests.test_ephemeral_external_ai_org_first_components \
+            tests.test_ecosystem_chat_reusable_composition
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py

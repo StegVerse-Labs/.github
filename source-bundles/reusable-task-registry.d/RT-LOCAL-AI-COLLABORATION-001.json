@@ -1,0 +1,37 @@
+{
+  "reusable_task_id": "RT-LOCAL-AI-COLLABORATION-001",
+  "name": "Ordered local AI collaboration",
+  "purpose": "Verify ChatGPT first, then distinct Claude Code tool execution; preserve two evidence chains before governed collaboration.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound invocation under existing ownership",
+  "parameter_keys": [
+    "request_hash",
+    "source_bindings",
+    "routing_mode",
+    "existing_operation_refs",
+    "custody_mode"
+  ],
+  "composes": [
+    "RT-LOCAL-AI-PARTICIPANT-001",
+    "RT-EPHEMERAL-LLM-ROUNDTRIP-001"
+  ],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "FIRST_CHATGPT_INDEPENDENTLY_VERIFIED",
+    "SECOND_CLAUDE_CODE_TOOL_EXECUTION",
+    "SEPARATE_PARTICIPANT_CHAINS",
+    "GOVERNED_COLLABORATION_RECONSTRUCTED"
+  ],
+  "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY",
+  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and the existing reusable-task constructor. These are definitions, not an executable runner or admission. Existing StegBrowser / StegOS / WorkerCoordinator / InTr / TV-TVC / organization ledger / Master Records own execution and evidence. The existing trigger stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds its authentic entrypoint. No second runtime or synthetic receipt.",
+  "existing_owner_refs": [
+    "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ]
+}

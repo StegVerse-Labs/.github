@@ -73,3 +73,27 @@ Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelo
 Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
 
 Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
+
+## Optional user-facing Grok/xAI source candidate — 2026-09-25
+
+Current canonical Registry read: generation 243; this task remains `PROPOSED` under observational COSV `10100000103000`. No coordination transition or execution credential is minted by this source-only note. The product scope remains both ordinary user-facing Ecosystem Chat requests and ecosystem-originated manifested work. The completed existing distributed named-source workload and bounded executor (`StegVerse-org/LLM-adapter#272/#274`) are reused; no separate AI Congregation or provider broker is created.
+
+Adapter source PR: https://github.com/StegVerse-org/LLM-adapter/pull/352 (merged; exact-head source checks PASS; squash merge f1a84b2628de65c6e463f87abde12c4842380dff)
+Adapter mirror: `StegVerse-org/LLM-adapter:docs/XAI_MANIFEST_PROVIDER_MIRROR_HANDOFF.md`.
+
+The candidate extends `llm_adapter/http_provider_clients.py` with manifest-selected `xai`/`grok` alongside the sovereign local route, exact request-bound output, provider's actual model identity and measured native usage. Existing admitted InTr ingress, TV/TVC+SKAP execution-scoped credential handoff, WorkerCoordinator claim/fence and retained-node/ephemeral lease remain prerequisites of authentic external execution. Credentials never enter manifests, response metadata, retained node state or GitHub.
+
+Source fixture coverage includes optional Grok failure while a local sovereign source returns and independently attributable two-source contributions. Successful source tests are not evidence of authentic Grok provider execution. Grok is OPTIONAL and must not displace existing first OpenAI/independent Claude verification, independently sufficient local inference, or native ecosystem AI development. The original multi-AI deliberation mode is broader than development, but true sequential/challenge execution remains fail-closed until the existing governed derived-input contract is satisfied; preserve disagreements without model voting becoming governance.
+
+Next evidence: exact admitted user-facing two-source Ecosystem Chat manifest, authentic xAI native response and measured usage, actual non-ALLOW or ALLOW InTr transitions, organization predecessor-linked receipts, observed session teardown and conditional Master Records reconstruction. If existing resident custody cannot be read, retain EVIDENCE_REACHABILITY/UNKNOWN_NOT_FALSE; do not fabricate a failure receipt, introduce another runtime/device or claim live activation.
+
+Source checkpoint: adapter PR #352 merged as f1a84b2628de65c6e463f87abde12c4842380dff after all eight listed exact-head checks PASS. This is source integration, not a runtime/release/deployment/propagation proof.
+
+
+## Current-state review and reusable composition — 2026-09-25
+
+Reviewed all original 73 open issue candidates (all still OPEN), newly located Local Claude Code coordination #2721, existing provider/ingress PRs and latest main source. Registry generation remains 243 and canonical task/claim/vector states are unchanged. Optional Grok #352 is source-merged; #351 now contains the approved provider-envelope repair. Central #2723 publishes the census. Source tree equality was verified despite connector-authored commit metadata.
+
+Seven reusable registry definitions and `scripts/compose_ecosystem_chat_task.py` use the existing constructor for source-only Chat answer/lease/roundtrip/collection/cleanup and local participant/collaboration plans. InTr admission, correlation and custody identities are reused. The adapter is conditional on a declared translation need; browser session, API and local-tool modes remain separate. No executable runner or authentic runtime receipt is claimed. Existing triggers stop honestly at the unbound runner boundary. FIRST local ChatGPT and SECOND local Claude Code remain proposals with COSV NOT_YET_EMITTED under #2721; actual Claude Code tool execution and separate participant evidence are required. See the updated census for exact source and runtime limits.
+
+Session count: 3. Goal cumulative count: UNVERIFIED historical +3 qualifying session prompts. No task checkout, fence, state, COSV, registry generation or runtime result is changed by this source work.
