@@ -183,8 +183,20 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         diagnostic["request_sha256"] = mod.sha256(diagnostic)
         self.assertIsNone(mod.validate_request(diagnostic)["canonical_task_id"])
         with tempfile.TemporaryDirectory() as td:
-            with self.assertRaisesRegex(ValueError, "^canonical_task_id_required$"):
-                mod.execute(Path(td), diagnostic)
+            first = mod.execute(Path(td), diagnostic)
+            second = mod.execute(Path(td), diagnostic)
+            self.assertEqual(first, second)
+            self.assertEqual(first["disposition"], "DENY")
+            self.assertEqual(first["reason_code"], "ECOSYSTEM_DIAGNOSTIC_NONWORKER_DISPATCH_UNWIRED")
+            self.assertEqual(first["failed_predicate"], "INSTALLED_NONWORKER_EVENT_EPHEMERAL_DIAGNOSTIC_DISPATCH")
+            self.assertFalse(first["terminal"])
+            self.assertFalse(first["automatic_retry_permitted"])
+            self.assertFalse(first["authentic_intr_disposition_observed"])
+            self.assertFalse(first["organization_master_records_closure_observed"])
+            self.assertEqual(first["request_sha256"], diagnostic["request_sha256"])
+            self.assertTrue(Path(first["source_disposition_ref"]).is_file())
+            self.assertEqual(json.loads(Path(first["source_disposition_ref"]).read_text())["disposition"], "DENY")
+            self.assertFalse((Path(td) / "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json").exists())
 
     def test_distinct_reruns_are_immutable_and_latest_pointer_advances(self):
         first = request("one")
