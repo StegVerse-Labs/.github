@@ -149,5 +149,98 @@
     }
   ],
   "authority_effect": "NONE_SOURCE_PROJECTION_ONLY",
-  "authenticated_resident_transition": "NOT_ASSERTED"
+  "authenticated_resident_transition": "NOT_ASSERTED",
+  "cosv_index_projection": {
+    "source_index_count": 113,
+    "new_index_count": 122,
+    "added": [
+      {
+        "id": "STEGOS-NODE-MANIFOLD-001",
+        "sha": "a47f129e6da2dbc85d6a558574c3d125e522695e",
+        "vector": "40000100100000"
+      },
+      {
+        "id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+        "sha": "4ee3aeb379e0e93b2fa40665418c47c6e5c1bb6d",
+        "vector": "60000000102000"
+      },
+      {
+        "id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+        "sha": "aa9b5ac46253dc094f5f384eb1fe512f88775ed1",
+        "vector": "50000000100000"
+      },
+      {
+        "id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "sha": "5a24aa5354c5aeafe898d18ff9b176a6ca0dd436",
+        "vector": "50000000102000"
+      },
+      {
+        "id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+        "sha": "7351c90747a232fc46a52be4aab95469d68ccae0",
+        "vector": "50000000100000"
+      },
+      {
+        "id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+        "sha": "c4b032690d1a96bc125bafd2139953fae4858c77",
+        "vector": "40000010100000"
+      },
+      {
+        "id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+        "sha": "4e916bbb6d891e02bb62e38ace982ba65ea0984a",
+        "vector": "30001000100000"
+      },
+      {
+        "id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+        "sha": "26fa0324f7e8d8f5a42fb284cd1a603573c2cea2",
+        "vector": "40000100100000"
+      },
+      {
+        "id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "sha": "f548da455bee0c4de1ca45839283f598909fcf04",
+        "vector": "40000100100000"
+      }
+    ],
+    "not_projected": [
+      {
+        "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+        "reason": "NO_COSV_ON_EXACT_SHARD"
+      },
+      {
+        "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+        "reason": "NO_COSV_ON_EXACT_SHARD"
+      },
+      {
+        "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      },
+      {
+        "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+        "reason": "NO_VERIFIED_COMPATIBLE_TASK_V1_VECTOR_SOURCE"
+      }
+    ]
+  }
 }
