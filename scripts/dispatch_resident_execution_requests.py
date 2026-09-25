@@ -645,12 +645,16 @@ def dispatch(
         "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY", "INPUT_NOT_MATERIALIZED", "OBSERVATION_ATTEMPT_RECORDED",
         "WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR", "AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED",
         "WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY", "REUSE_ACCEPTED", "DELTA_REQUIRED", "BOUND_STATE_INPUT_NOT_READY",
+        "RECORDED_LOCAL_READBACK",
         "A1_A2_A3_A4_OBSERVED", "A1_A2_OBSERVED_A3_A4_PENDING", "A1_OBSERVED_NOT_MATERIALIZED",
         "A1_A2_A2_1_A2_2_A3_A4_OBSERVED", "A1_OBSERVED_CANONICAL_INVOCATION_PENDING_OR_BOUNDARY",
         "A1_NOT_OBSERVED_REGISTERED_NODE_RECEIPT_UNAVAILABLE", "A1_NOT_OBSERVED_CANONICAL_INVOCATION_NOT_RETAINED", "A1_NOT_OBSERVED_NOT_CALLABLE",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
-    exact_selector_failure = only_consumers is not None and bool(request_failures)
+    readback_row = next((row for row in outcomes if row["consumer"] == "organization_custody_readback"), None)
+    readback_selected_failure = bool(only_consumers is not None and "organization_custody_readback" in only_consumers
+                                    and (not readback_row or readback_row["state"] not in {"RECORDED_LOCAL_READBACK", "ALREADY_CONSUMED"}))
+    exact_selector_failure = (only_consumers is not None and bool(request_failures)) or readback_selected_failure
     sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
     try:
         richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
