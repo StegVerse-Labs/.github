@@ -137,5 +137,16 @@
     "requirement": "Existing canonical Registry owner must reconcile current generation and validate vector before binding it to cosv_task_vector. This candidate is not an authentic check-in, owner clearance, or execution authority.",
     "proposed_generation": 225,
     "classification": "SOURCE_PR_AUTHORITATIVE_ONLY_AFTER_NATIVE_OWNER_REVIEW_AND_MERGE"
+  },
+  "cosv_tracking": {
+    "profile": "task.v1",
+    "vector": "10111110114000",
+    "canonicalized_in_registry_generation": 225,
+    "canonical_registry_blob_sha": "ee5fd72d9396437f2958f887d5d90718ba69f75c",
+    "canonical_shard_blob_sha": "65241d4653b6e50a6ee98aa43181ae9a07ed437b",
+    "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
+    "tracking_authoritative": true,
+    "session_admission_authentic_observed": false,
+    "execution_authority_effect": "NONE"
   }
 }
