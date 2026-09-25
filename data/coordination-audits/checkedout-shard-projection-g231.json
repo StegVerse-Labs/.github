@@ -1,0 +1,153 @@
+{
+  "schema": "stegverse.existing-checkout-shard-projection-audit/v1",
+  "source_registry_generation": 230,
+  "proposed_registry_generation": 231,
+  "source_registry_blob_sha": "15b3deac1c10c57f28d2a7a43d4b9909e3b5493a",
+  "exact_source_shards": [
+    {
+      "task_id": "STEGOS-NODE-MANIFOLD-001",
+      "source_blob_sha": "07296414bc6bfe366a8f4b9208b8dc0da034d93f",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    },
+    {
+      "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "source_blob_sha": "bd527c60585cbc35f8aa3f1d0832c3f54ae99644",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": null
+    },
+    {
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "source_blob_sha": "318a8e1590cb2dab9b1535e571c3469a5dc4a0a2",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "60000000102000"
+    },
+    {
+      "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "source_blob_sha": "42617016aab82853258a0b615efe4242335dd27c",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000100000"
+    },
+    {
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "source_blob_sha": "3641c7205db188ea099ea8c8e15280acc723d990",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000102000"
+    },
+    {
+      "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+      "source_blob_sha": "193e6fd7af1c492ae8ec95ec9ba4ef90c30324ec",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000100000"
+    },
+    {
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "source_blob_sha": "727c3ede163ce2a5f68124a1de2739396d7baf76",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000010100000"
+    },
+    {
+      "task_id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+      "source_blob_sha": "a1eb84c7b9738745c5ead3a1aab4c5a01e9ec195",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "30001000100000"
+    },
+    {
+      "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+      "source_blob_sha": "46c539cdcd5ac5a29fc4b8bf31ef3dad8b3756c3",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000102000"
+    },
+    {
+      "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+      "source_blob_sha": "b418fa093b5c15d75a2a05c8f50a7de19240add2",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    },
+    {
+      "task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+      "source_blob_sha": "d41c71348a0a8f7a46fc79874d75c918db0979fe",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "20010000100000"
+    },
+    {
+      "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "source_blob_sha": "7e69e2d113545ab74f96c3f4e0a53354287262ee",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "source_blob_sha": "b636db655b94ae3fdb0fb31a883c690e43ed72eb",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000102000"
+    },
+    {
+      "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "source_blob_sha": "db6ba613dcc7e2f2e2e7fc8fce835dd6450fe534",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "71000000100100"
+    },
+    {
+      "task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+      "source_blob_sha": "8a7b3234d33f491d12c36ab4ba5fe8c222177686",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": null
+    },
+    {
+      "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "source_blob_sha": "ca4efa73fac8b78e756bb637fd6d011180b75d9a",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    },
+    {
+      "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "source_blob_sha": "ba7029da777e9eee26acda92c7bfcac2218f334e",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "source_blob_sha": "7d1fa55db6bd89032e7922604a8db144969c7750",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "50000000102000"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "source_blob_sha": "6ee2abdc8e247f1d2e222b6b4c115a7066104366",
+      "source_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv": "40000100100000"
+    }
+  ],
+  "excluded": [
+    {
+      "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+      "reason": "PROPOSED_CHECKED_OUT_NOT_ACTIVE"
+    },
+    {
+      "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+      "reason": "INACTIVE_CHECKED_IN"
+    }
+  ],
+  "authority_effect": "NONE_SOURCE_PROJECTION_ONLY",
+  "authenticated_resident_transition": "NOT_ASSERTED"
+}
