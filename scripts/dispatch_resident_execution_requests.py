@@ -20,12 +20,15 @@ import os
 import uuid
 import subprocess
 import sys
+from time import time_ns
 from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 SDK_EVALUATOR_SELECTOR = "sdk_evaluator_governance_posture"
+RICHARD_SELECTOR = "sdk_tt_richard_seam_authentic_runtime"
+RICHARD_REQUEST_REL = Path("control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json")
 SDK_EVALUATOR_REQUEST_REL = Path("control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json")
 COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
 COMPONENT011_TASK_ID = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
@@ -497,6 +500,98 @@ def retain_component011_dispatch_in_organization(
             "authority_effect": "NONE",
         }
 
+def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Record actual Richard dispatch observation, not WorkerCoordinator execution."""
+    row = next((item for item in outcomes if item.get("consumer") == RICHARD_SELECTOR), None)
+    if not isinstance(row, dict):
+        return None
+    if row.get("attempted") is not True:
+        return {"state": "BOUNDARY", "reason": "RICHARD_CONSUMER_NOT_INVOKED", "authority_effect": "NONE"}
+    request = load_json(runtime / RICHARD_REQUEST_REL)
+    if not request:
+        return {"state": "BOUNDARY", "reason": "RICHARD_DISPATCH_REQUEST_IDENTITY_UNAVAILABLE", "authority_effect": "NONE"}
+    task_id = request.get("task_id")
+    request_id = request.get("request_id")
+    if (task_id != "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+            or request.get("cosv_task_vector") != "20010000110000"
+            or not isinstance(request_id, str) or not request_id):
+        return {"state": "BOUNDARY", "reason": "RICHARD_DISPATCH_REQUEST_IDENTITY_INVALID", "authority_effect": "NONE"}
+    workers_root = source / "workers"
+    if str(workers_root) not in sys.path:
+        sys.path.insert(0, str(workers_root))
+    from canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+    machine_result = row.get("result")
+    first_failed_cycle = machine_result.get("first_failed_cycle") if isinstance(machine_result, dict) else None
+    evidence_content = {
+        "first_failed_cycle": first_failed_cycle,
+        "cosv_task_vector": "20010000110000",
+        "selector": RICHARD_SELECTOR,
+        "consumer_ref": row.get("consumer_ref"),
+        "attempted": True,
+        "state": row.get("state"),
+        "returncode": row.get("returncode"),
+        "task_id": task_id,
+        "request_id": request_id,
+        "machine_result_sha256": sha256_uri(machine_result),
+        "machine_result": machine_result,
+    }
+    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{time_ns()}"
+    required_evidence = [{
+        "evidence_id": f"{transition_id}:selector-visit",
+        "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
+        "origin_transition_id": transition_id,
+        "encoding": "canonical-json",
+        "sha256": sha256_uri(evidence_content).split(":", 1)[1],
+        "content": evidence_content,
+    }]
+    state_receipt = build_state_receipt(
+        transition_id=transition_id,
+        transition_sequence=1,
+        subject_or_correlation_id=task_id,
+        transition_outcome="OBSERVED",
+        prior_state_ref_or_hash=None,
+        resulting_state_ref_or_hash=sha256_uri(evidence_content),
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={
+            "transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+            "selector": RICHARD_SELECTOR,
+            "consumer_ref": row.get("consumer_ref"),
+            "attempted": True,
+            "task_id": task_id,
+            "request_id": request_id,
+            "machine_result_sha256": sha256_uri(machine_result),
+            "dispatch_grants_authority": False,
+        },
+        required_evidence_manifest=required_evidence,
+        proof_scope="RICHARD_TEST3_DISPATCH_VISIT_ONLY",
+        proof_ceiling="MASTER_RECORDS_VALIDATED_DISPATCH_VISIT_EVIDENCE_ONLY",
+    )
+    result = submit_state_receipt(state_receipt)
+    closed = (
+        result.get("state") == "RECORDED"
+        and result.get("reconstruction_status") == "PASS"
+        and result.get("required_evidence_validation_status") == "PASS"
+        and bool(result.get("receipt_sha256"))
+        and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
+    )
+    return {
+        "transition_id": transition_id,
+        "selector": RICHARD_SELECTOR,
+        "task_id": task_id,
+        "request_id": request_id,
+        "attempted": True,
+        "machine_result_sha256": sha256_uri(machine_result),
+        "state": "RECORDED" if closed else "BOUNDARY",
+        "master_records_state": result.get("state"),
+        "first_failed_cycle": first_failed_cycle,
+        "reconstruction_status": result.get("reconstruction_status"),
+        "required_evidence_validation_status": result.get("required_evidence_validation_status"),
+        "receipt_sha256": result.get("receipt_sha256"),
+        "reconstructed_receipt_sha256": result.get("reconstructed_receipt_sha256"),
+        "reason": result.get("reason") if closed else "RICHARD_DISPATCH_MASTER_RECORDS_CLOSURE_UNVERIFIED",
+        "authority_effect": result.get("authority_effect", "NONE"),
+    }
+
 def dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -556,6 +651,12 @@ def dispatch(
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     exact_selector_failure = only_consumers is not None and bool(request_failures)
     sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
+    richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
+    if only_consumers is not None and RICHARD_SELECTOR in only_consumers and (
+        not isinstance(richard_dispatch_master_records, dict)
+        or richard_dispatch_master_records.get("state") != "RECORDED"
+    ):
+        exact_selector_failure = True
     component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
     component011_custody_failure = bool(
         component011_organization_dispatch is not None
@@ -571,6 +672,7 @@ def dispatch(
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "sdk_evaluator_dispatch_master_records": sdk_evaluator_dispatch_master_records,
+        "richard_dispatch_master_records": richard_dispatch_master_records,
         "component011_organization_dispatch": component011_organization_dispatch,
         "component011_organization_custody_failure": component011_custody_failure,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),

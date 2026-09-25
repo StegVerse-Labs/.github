@@ -13,6 +13,7 @@ from typing import Any, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime-targeted-request-consumption.latest.json")
+IMMUTABLE_CONSUMPTION_DIR_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/targeted-consumption")
 CLOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close.latest.json")
 TARGET_TASK = "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
 TARGET_VECTOR = "20010000110000"
@@ -216,9 +217,20 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "network_source_fetch_performed": False,
         "authority_effect": "NONE_REQUEST_CONSUMPTION_ONLY",
     }
+    # Preserve every actual result, including earliest failure, before replacing latest.
+    body_sha256 = stable_hash(receipt)
+    receipt["receipt_body_sha256"] = "sha256:" + body_sha256
+    immutable = runtime / IMMUTABLE_CONSUMPTION_DIR_REL / (body_sha256 + ".json")
+    immutable.parent.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    if immutable.exists():
+        if immutable.read_text(encoding="utf-8") != encoded:
+            raise RuntimeError("immutable Richard consumption receipt collision")
+    else:
+        immutable.write_text(encoded, encoding="utf-8")
     destination = runtime / CONSUMPTION_REL
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    destination.write_text(encoded, encoding="utf-8")
     return receipt
 
 

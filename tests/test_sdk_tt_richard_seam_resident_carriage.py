@@ -253,3 +253,93 @@ def test_stale_close_pointer_does_not_terminate_fresh_attempt(tmp_path):
     assert receipt["first_failed_cycle"] is None
     assert receipt["fresh_close_snapshot_seen"] is False
     assert receipt["authority_effect"] == "NONE_REQUEST_CONSUMPTION_ONLY"
+
+
+def test_first_failed_richard_consumption_is_immutable_after_later_attempt(tmp_path):
+    module = load_consumer()
+    source, runtime = _setup_test3_target(tmp_path, module)
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        code = 7 if len(calls) == 1 else 0
+        return subprocess.CompletedProcess(
+            command, code, stdout=json.dumps(_test3_result(module)) + "\n", stderr="",
+        )
+
+    first = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert first["state"] == "FAIL_CLOSED"
+    immutable = runtime / module.IMMUTABLE_CONSUMPTION_DIR_REL / (
+        first["receipt_body_sha256"].split(":", 1)[1] + ".json"
+    )
+    original = immutable.read_bytes()
+    second = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert second["state"] == "ATTEMPT_RECORDED"
+    assert immutable.read_bytes() == original
+    assert json.loads(original)["first_failed_cycle"]["boundary"] == "PROCESS_EXIT_NONZERO"
+    latest = json.loads((runtime / module.CONSUMPTION_REL).read_text())
+    assert latest["receipt_body_sha256"] == second["receipt_body_sha256"]
+
+
+def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(tmp_path, monkeypatch):
+    import hashlib
+    import sys
+    import types
+
+    spec = importlib.util.spec_from_file_location("richard_dispatch_custody_test", DISPATCHER)
+    dispatcher = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dispatcher)
+    source, runtime = _setup_test3_target(tmp_path, load_consumer())
+    consumer = runtime / "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py"
+    consumer.write_text("# inert consumer fixture\n")
+    result = {"state": "ATTEMPT_RECORDED", "first_failed_cycle": {
+        "cycle_index": 0, "boundary": "PROCESS_EXIT_NONZERO", "returncode": 7,
+    }}
+    receipt_calls = []
+
+    def sha(value):
+        raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        return "sha256:" + hashlib.sha256(raw.encode()).hexdigest()
+
+    def build(**kwargs):
+        assert kwargs["proof_scope"] == "RICHARD_TEST3_DISPATCH_VISIT_ONLY"
+        assert kwargs["required_evidence_manifest"][0]["content"]["first_failed_cycle"] == result["first_failed_cycle"]
+        return kwargs
+
+    reconstructed_digest = ["sha256:" + "a" * 64]
+    def submit(receipt):
+        receipt_calls.append(receipt)
+        return {
+            "state": "RECORDED", "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": "sha256:" + "a" * 64,
+            "reconstructed_receipt_sha256": reconstructed_digest[0],
+        }
+
+    monkeypatch.setitem(sys.modules, "canonical_state_transition_custody",
+                        types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit))
+
+    def runner(command, **kwargs):
+        return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result) + "\n", stderr="")
+
+    closed = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
+                                 only_consumers=(dispatcher.RICHARD_SELECTOR,))
+    assert closed["state"] == "DISPATCH_COMPLETE"
+    assert closed["richard_dispatch_master_records"]["state"] == "RECORDED"
+    assert closed["richard_dispatch_master_records"]["first_failed_cycle"] == result["first_failed_cycle"]
+    assert len(receipt_calls) == 1
+
+    reconstructed_digest[0] = "sha256:" + "b" * 64
+    rejected = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
+                                   only_consumers=(dispatcher.RICHARD_SELECTOR,))
+    assert rejected["state"] == "DISPATCH_INCOMPLETE"
+    assert rejected["richard_dispatch_master_records"]["state"] == "BOUNDARY"
+    assert rejected["exact_selector_failure"] is True
+
+    request = json.loads((runtime / load_consumer().REQUEST_REL).read_text())
+    request["cosv_task_vector"] = "00000000000000"
+    (runtime / load_consumer().REQUEST_REL).write_text(json.dumps(request))
+    unknown = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
+                                  only_consumers=(dispatcher.RICHARD_SELECTOR,))
+    assert unknown["state"] == "DISPATCH_INCOMPLETE"
+    assert unknown["richard_dispatch_master_records"]["reason"] == "RICHARD_DISPATCH_REQUEST_IDENTITY_INVALID"

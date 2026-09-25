@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 228,
+  "generation": 229,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -6352,7 +6352,8 @@
         "scripts/run_sdk_tt_richard_seam_test3.py",
         "tests/test_sdk_tt_richard_seam_test3_runner.py",
         ".github/workflows/test3-richard-seam-acceptance.yml",
-        "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
+        "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py",
+        "scripts/dispatch_resident_execution_requests.py"
       ],
       "adjacent_task_refs": [
         "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -6679,6 +6680,16 @@
         "master_records_transition": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
         "authentic_runtime_evidence_observed": false,
         "authority_effect": "NONE_SOURCE_PATH_REPAIR_AND_EVIDENCE_REQUIREMENT_ONLY"
+      },
+      "execution_path_repair_dispatch_receipt_retention": {
+        "source_candidate_pr": 2672,
+        "previous_head": "5442ab7ad0117e8067cc01ef1c5b398999fba32d",
+        "retention": "CONTENT_ADDRESSED_IMMUTABLE_RICHARD_TARGETED_CONSUMPTION",
+        "custody": "RICHARD_SELECTOR_ORGANIZATION_LEDGER_THEN_CANONICAL_MASTER_RECORDS",
+        "closure_required": "RECORDED_AND_RECONSTRUCTION_PASS_AND_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
+        "native_dispatcher_component011_must_be_preserved": true,
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_SOURCE_OBSERVATION_ONLY"
       }
     },
     {
