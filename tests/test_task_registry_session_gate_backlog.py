@@ -135,3 +135,42 @@ def test_existing_resident_refresh_materializes_entire_source_gate_dependency_cl
         assert f'Path("{required}")' in refresh
     # Source refresh must never copy the mutable session ledger.
     assert 'Path("runtime/task-registry/checkin-events.jsonl")' not in refresh
+
+
+# The repository's hosted Cross-Task CI runs unittest, so execute the same
+# adversarial functions there rather than silently collecting zero tests.
+import tempfile
+import unittest
+
+
+class TestComponent010BatchAudit(unittest.TestCase):
+    def _with_tmp(self, test):
+        with tempfile.TemporaryDirectory() as directory:
+            test(Path(directory))
+
+    def test_source_only_work_is_separate_from_authentic_ai_session_execution(self):
+        self._with_tmp(test_source_only_work_is_separate_from_authentic_ai_session_execution)
+
+    def test_missing_checked_out_owner_is_reported_not_silently_admitted(self):
+        self._with_tmp(test_missing_checked_out_owner_is_reported_not_silently_admitted)
+
+    def test_retired_shard_is_not_reintroduced_into_active_registry(self):
+        self._with_tmp(test_retired_shard_is_not_reintroduced_into_active_registry)
+
+    def test_mismatched_registered_shard_identity_is_reported(self):
+        self._with_tmp(test_mismatched_registered_shard_identity_is_reported)
+
+    def test_duplicate_canonical_identity_fails_closed(self):
+        self._with_tmp(test_duplicate_canonical_identity_fails_closed)
+
+    def test_unreadable_shards_are_visible_projection_defects(self):
+        self._with_tmp(test_unreadable_shards_are_visible_projection_defects)
+
+    def test_shard_without_exact_filename_identity_cannot_fake_owner(self):
+        self._with_tmp(test_shard_without_exact_filename_identity_cannot_fake_owner)
+
+    def test_source_gate_is_not_a_second_runtime_or_authorizing_caller(self):
+        test_source_gate_is_not_a_second_runtime_or_authorizing_caller()
+
+    def test_existing_resident_refresh_materializes_entire_source_gate_dependency_closure(self):
+        test_existing_resident_refresh_materializes_entire_source_gate_dependency_closure()
