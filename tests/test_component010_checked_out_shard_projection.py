@@ -117,6 +117,24 @@ class Component010ProjectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "event hash mismatch|predecessor chain mismatch"):
             load_events(path)
 
+    def test_current_registered_task_evaluator_does_not_crash_on_real_shards(self):
+        # Hosted source-only diagnostic, never an authenticated resident check-in.
+        import subprocess
+        candidate = json.loads((ROOT / "data/canonical-task-registry.json").read_text())
+        env = dict(os.environ, STEGVERSE_TASK_REGISTRY_EVENT_LEDGER=str(self.root / "integration.jsonl"))
+        proc = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_task_registry_collision_checkin.py")],
+                              cwd=ROOT, input=json.dumps({
+                                  "task_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+                                  "caller_surface": "INTERNAL_CANONICAL_WORK_BOOTSTRAP",
+                                  "observed_registry_generation": candidate["generation"],
+                                  "checkin_context": {"session_id": "inert-source-only-diagnostic",
+                                      "repository": "StegVerse-org/StegVerse-SDK",
+                                      "components_under_mutation": ["sdk:untrusted-dependency-contract-and-inert-tests"]}}),
+                              text=True, capture_output=True, env=env, check=False)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertTrue((self.root / "integration.jsonl").exists())
+
+
     def test_existing_resident_refresh_carries_gate_closure_not_runtime_ledger(self):
         source = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
         required = ("scripts/evaluate_task_registry_ai_session_checkin.py",
