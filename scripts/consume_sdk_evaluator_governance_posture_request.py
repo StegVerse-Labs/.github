@@ -47,13 +47,55 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     request=load_json(request_path)
     validate_request(request)
     manifest_path=runtime/Path(request["manifest_ref"])
-    if not manifest_path.is_file():
-        return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"manifest","manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
     values=dict(os.environ if env is None else env)
     sdk_root=Path(values.get("STEGVERSE_SDK_SOURCE_ROOT","")).expanduser() if values.get("STEGVERSE_SDK_SOURCE_ROOT") else None
     stegos_root=Path(values.get("STEGVERSE_STEGOS_ROOT","")).expanduser() if values.get("STEGVERSE_STEGOS_ROOT") else None
+    source_staging=None
+    if not manifest_path.is_file():
+        if sdk_root is None or not sdk_root.is_dir():
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"INPUT_NOT_MATERIALIZED","missing":"manifest_and_sdk_source",
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        sdk_source=str(sdk_root.resolve())
+        if sdk_source not in sys.path:
+            sys.path.insert(0,sdk_source)
+        try:
+            # Reuse the immutable original SDK producer and exact original
+            # artifact. No new manifest builder, runtime, scheduler, execution
+            # admission or credential authority is introduced here.
+            from stegverse.evaluator_historical_source_recovery import materialize_historical_source
+        except ImportError:
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"INPUT_NOT_MATERIALIZED","missing":"exact_sdk_manifest_source_producer",
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        try:
+            source_staging=materialize_historical_source(runtime_root=runtime,request=request)
+        except (OSError,ValueError,KeyError,TypeError) as exc:
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"SOURCE_MATERIALIZATION_REJECTED",
+                    "failure_class":type(exc).__name__,
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        if not manifest_path.is_file() or file_sha256(manifest_path)!=request["historical_manifest_sha256"]:
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"SOURCE_MATERIALIZATION_REJECTED","failure_class":"EXACT_MANIFEST_READBACK_MISMATCH",
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
+        staged_receipt_path=runtime/Path("runtime-state/sdk-evaluator-governance-posture/source-evidence-reconstruction.json")
+        staged=load_json(staged_receipt_path) if staged_receipt_path.is_file() else None
+        if (not isinstance(staged,dict)
+            or staged!=source_staging
+            or staged.get("artifact_id")!=request["historical_source_artifact_id"]
+            or staged.get("manifest_sha256")!=request["historical_manifest_sha256"]
+            or staged.get("manifest_ref")!=request["manifest_ref"]
+            or staged.get("state")!="HISTORICAL_SOURCE_STAGED_NOT_RUNTIME_PROVEN"
+            or staged.get("authority_effect")!="NONE_SOURCE_STAGING_ONLY"):
+            return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                    "state":"SOURCE_MATERIALIZATION_REJECTED",
+                    "failure_class":"EXACT_SOURCE_STAGING_RECEIPT_READBACK_MISMATCH",
+                    "manifest_ref":request["manifest_ref"],"runtime_execution_attempted":False,"authority_effect":"NONE"}
     if sdk_root is None or not sdk_root.is_dir():
-        return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root","runtime_execution_attempted":False,"authority_effect":"NONE"}
+        return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1",
+                "state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root",
+                "runtime_execution_attempted":False,"authority_effect":"NONE"}
     for root in (stegos_root,sdk_root):
         if root is not None and root.is_dir():
             value=str(root.resolve())
@@ -84,6 +126,9 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
       "state":"COMPLETED" if terminal else "ATTEMPT_RECORDED",
       "task_id":TARGET_TASK,"request_id":request.get("request_id"),
       "manifest_ref":request["manifest_ref"],"manifest_file_sha256":file_sha256(manifest_path),
+      "historical_source_artifact_id":request.get("historical_source_artifact_id"),
+      "source_staging_state":source_staging.get("state") if isinstance(source_staging,dict) else None,
+      "source_staging_ref":"runtime-state/sdk-evaluator-governance-posture/source-evidence-reconstruction.json" if source_staging else None,
       "manifest_sha256":manifest.get("manifest_sha256") if isinstance(manifest,dict) else None,
       "graph_sha256":graph.get("graph_sha256") if isinstance(graph,dict) else None,
       "transition_request_sha256":binding.get("transition_request_sha256") if isinstance(binding,dict) else None,
@@ -131,6 +176,9 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
         "request_id":request.get("request_id"),
         "manifest_ref":request["manifest_ref"],
         "manifest_file_sha256":receipt.get("manifest_file_sha256"),
+        "historical_source_artifact_id":receipt.get("historical_source_artifact_id"),
+        "source_staging_state":receipt.get("source_staging_state"),
+        "source_staging_ref":receipt.get("source_staging_ref"),
         "manifest_sha256":receipt.get("manifest_sha256"),
         "graph_sha256":receipt.get("graph_sha256"),
         "transition_request_sha256":receipt.get("transition_request_sha256"),
