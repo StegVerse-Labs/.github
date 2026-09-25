@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 241,
+  "generation": 242,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9703,8 +9703,12 @@
         "source_pr": 2703,
         "initial_ci_failure": "README_REPLACEMENT_DROPPED_OTHER_TASK_REFERENCE",
         "remediation": "RESTORED_BASE_README_AND_PREPENDED_SECTION",
-        "targeted_source_test": "ADDED_PENDING_EXACT_HEAD_CI",
-        "merge": "NOT_MERGED"
+        "targeted_source_test": "ADDED_NOT_SEPARATELY_EXECUTED",
+        "merge": "MERGED",
+        "source_head": "4d41365bfcf1f664eba29dddf44474fede5c17ba",
+        "source_merge": "57ff52b5ba23fd8df2b727471bdb25f17eb2558c",
+        "exact_head_applicable_workflows_passed": 6,
+        "source_validation": "EXACT_HEAD_CI_PASS"
       }
     },
     {
