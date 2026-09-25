@@ -69,7 +69,7 @@ Reconcile the actual organization-level receipts for the current task and the or
 
 Current canonical Registry read: generation 243; this task remains `PROPOSED` under observational COSV `10100000103000`. No coordination transition or execution credential is minted by this source-only note. The product scope remains both ordinary user-facing Ecosystem Chat requests and ecosystem-originated manifested work. The completed existing distributed named-source workload and bounded executor (`StegVerse-org/LLM-adapter#272/#274`) are reused; no separate AI Congregation or provider broker is created.
 
-Adapter draft PR: https://github.com/StegVerse-org/LLM-adapter/pull/352
+Adapter source PR: https://github.com/StegVerse-org/LLM-adapter/pull/352 (merged; exact-head source checks PASS; squash merge f1a84b2628de65c6e463f87abde12c4842380dff)
 Adapter mirror: `StegVerse-org/LLM-adapter:docs/XAI_MANIFEST_PROVIDER_MIRROR_HANDOFF.md`.
 
 The candidate extends `llm_adapter/http_provider_clients.py` with manifest-selected `xai`/`grok` alongside the sovereign local route, exact request-bound output, provider's actual model identity and measured native usage. Existing admitted InTr ingress, TV/TVC+SKAP execution-scoped credential handoff, WorkerCoordinator claim/fence and retained-node/ephemeral lease remain prerequisites of authentic external execution. Credentials never enter manifests, response metadata, retained node state or GitHub.
@@ -78,4 +78,4 @@ Source fixture coverage includes optional Grok failure while a local sovereign s
 
 Next evidence: exact admitted user-facing two-source Ecosystem Chat manifest, authentic xAI native response and measured usage, actual non-ALLOW or ALLOW InTr transitions, organization predecessor-linked receipts, observed session teardown and conditional Master Records reconstruction. If existing resident custody cannot be read, retain EVIDENCE_REACHABILITY/UNKNOWN_NOT_FALSE; do not fabricate a failure receipt, introduce another runtime/device or claim live activation.
 
-Source checkpoint: adapter PR #352 is a draft; validate its exact head and any existing-owner failure before promotion. No release, deployment, runtime or propagation is asserted here.
+Source checkpoint: adapter PR #352 merged as f1a84b2628de65c6e463f87abde12c4842380dff after all eight listed exact-head checks PASS. This is source integration, not a runtime/release/deployment/propagation proof.
