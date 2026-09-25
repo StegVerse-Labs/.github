@@ -1,5 +1,16 @@
 # STCM/CHF thermodynamic-witness registration mirror handoff
 
+## Exact original-source bounded dual synthetic comparison (generation 243 source candidate)
+
+The original native CHF source owner [PR #5](https://github.com/Admissible-Existence/CHF/pull/5) MERGED `27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a` after original hosted CHF validation `36095046140` and Tri-Form validation `36095046224` both PASSED. New native `tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen` implements **only** the four existing CHF R/O/A/K ≥ supplied-minimum inequalities on **supplied** values, with verified original specimen bytes, exact input/result digest, missing-input UNKNOWN and forged source refusal. Original-owner four-case artifact `10847107096`, ZIP SHA-256 `7d3db6a52e1af1716894de8e75bbfb223496d8fa96da8275483531c01b2a4084`, retains synthetic positive, negative, missing and forged-source results.
+
+[Comparison PR #84](https://github.com/Admissible-Existence/.github/pull/84) MERGED `615b1927e27acf916bd9dc502bdbcc2213b777f3` after both exact-head source-only workflows passed. Its capability map independently binds original pinned STCM PR #83 (run `36091077891`, artifact `10845258620`) and new original CHF PR #5 to the **same frozen synthetic source SHA** `fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02`. Two original-source bounded synthetic evaluators have now executed separately on the same source digest, using **different semantics**. STCM's positive predecessor is constructed, not an authentic independent causal witness. CHF's original four numeric thresholds are supplied synthetic values, not derived consequence fields or physical measurements; a full CHF horizon solver remains `NOT_ESTABLISHED`.
+
+This source-only update appends actual merged PR evidence to the existing comparison and mathematical SDK owner source records and aggregate Registry, proposing generation **243** from exact observed generation **242**, unchanged COSV vectors `10111010112000` and `10111110111000`. No WorkerCoordinator claim/fence, runtime authority or fabricated session disposition. The installed generic SDK native math manifest route is still `NOT_ESTABLISHED` under existing mathematical integration owner #2615. Third-party export and permission remain `NOT_RECEIVED`; physical heat and real organization/Master Records receipts remain `NOT_OBSERVED`. Preserve source validation separately from actual authorized component-010 runtime.
+
+
+---
+
 ## Bounded one-sided native same-specimen evidence (generation 236 source proposal)
 
 The comparison is still `STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001` ACTIVE / UNCLAIMED, unchanged COSV `10111010112000`. [Admissible-Existence/.github PR #83](https://github.com/Admissible-Existence/.github/pull/83) **MERGED** `5425301bef8f3276bc9cd805c926f0661d9a6c70` on exact source PR head `c6170433ddd0a6ee77deb4612c423c822dc69583`. The nonauthoritative original-source STCM workflow `36091077891` and existing synthetic-control workflow `36091077966` both PASSED. Retained native test artifact `10845258620`, ZIP SHA-256 `19018fb77b3ed6d9a08a85ffe5e3c8d0486add21f249f5b3ccb6149bf8b387ad`.
