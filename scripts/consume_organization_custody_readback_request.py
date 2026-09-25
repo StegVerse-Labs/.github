@@ -77,7 +77,7 @@ def _private_write(path: Path, value: dict[str, Any]) -> str:
     raw = canon(value)
     digest = hashlib.sha256(raw).hexdigest()
     if path.exists():
-        if path.read_bytes() != raw + b"\\n":
+        if path.read_bytes() != raw + b"\n":
             raise ValueError("READBACK_REQUEST_REUSED_WITH_DIFFERENT_HEAD")
         return digest
     fd, tmp = tempfile.mkstemp(prefix=".readback-", dir=path.parent)
