@@ -226,11 +226,12 @@ def reconcile_master_records(
         batch_results.append({"batch_id": batch_id,
                               "master_records_receipt_sha256": remote["receipt_sha256"],
                               "state": "MATCHING_INDEPENDENT_BATCH_RECONSTRUCTION_PASS"})
+    eligible = [x for x in canonical if x["state"] != "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY"]
     return {
         "schema": "stegverse.organization-master-records-reconciliation/v1",
-        "state": "PASS" if all(x["state"] == "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS"
-                               for x in canonical if x["state"] != "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY")
-                         else "INCOMPLETE",
+        "state": ("PASS" if (eligible or batch_results) and all(
+            x["state"] == "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS" for x in eligible
+        ) else "INCOMPLETE" if eligible else "NO_APPLICABLE_MATCHING_CUSTODY"),
         "organization_head_receipt_sha256": snapshot["head_receipt_sha256"],
         "canonical_transition_results": canonical,
         "batch_results": batch_results,
