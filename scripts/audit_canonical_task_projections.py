@@ -96,6 +96,23 @@ def evaluate(registry: dict, shards: dict[str, dict], index: dict) -> dict:
     }
 
 
+def load_shards(directory: Path) -> tuple[dict[str, dict], list[str]]:
+    """Exclude verified session-note sidecars, never hide malformed task shards."""
+    shards: dict[str, dict] = {}
+    notes: list[str] = []
+    for path in sorted(directory.glob("*.json")):
+        record = json.loads(path.read_text())
+        suffix = ".current-session-note.json"
+        if path.name.endswith(suffix):
+            expected = path.name[:-len(suffix)]
+            if (isinstance(record, dict) and record.get("goal_task_id") == expected
+                    and "task_id" not in record):
+                notes.append(path.name)
+                continue
+        shards[path.stem] = record
+    return shards, notes
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=ROOT)
@@ -106,8 +123,9 @@ def main() -> int:
     registry = json.loads((root / "data/canonical-task-registry.json").read_text())
     index = json.loads((root / "control/task-vector-index.json").read_text())
     directory = root / "data/canonical-task-records"
-    shards = {p.stem: json.loads(p.read_text()) for p in sorted(directory.glob("*.json"))}
+    shards, notes = load_shards(directory)
     report = evaluate(registry, shards, index)
+    report["verified_non_task_session_notes"] = notes
     print(json.dumps(report, sort_keys=True, indent=2))
     if report["structural_errors"]:
         return 1
