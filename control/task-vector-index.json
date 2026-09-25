@@ -1087,11 +1087,110 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/2682"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEGOS-NODE-MANIFOLD-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json",
+      "vector": "40000100100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+      "vector": "60000000102000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+      "vector": "40000010100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json",
+      "vector": "30001000100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+      "vector": "40000100100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+      "vector": "40000100100000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 111,
-    "local_cosv_record_tasks": 111,
+    "indexed_vectorized_tasks": 122,
+    "local_cosv_record_tasks": 122,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
