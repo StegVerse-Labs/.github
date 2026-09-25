@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 225,
-  "status": "OPTICAL_PHYSICAL_STATE_RESEARCH_COSV_SOURCE_PROPOSAL_PENDING_NATIVE_OWNER_MERGE",
+  "generation": 226,
+  "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -10801,6 +10801,17 @@
           "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
           "StegVerse-Labs/.github/issues/2626"
         ]
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10111110114000",
+        "canonicalized_in_registry_generation": 225,
+        "canonical_registry_blob_sha": "ee5fd72d9396437f2958f887d5d90718ba69f75c",
+        "canonical_shard_blob_sha": "65241d4653b6e50a6ee98aa43181ae9a07ed437b",
+        "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
+        "tracking_authoritative": true,
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
       }
     },
     {
