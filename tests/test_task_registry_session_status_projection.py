@@ -167,6 +167,32 @@ def test_invalid_status_cannot_append_session_return(tmp_path):
     assert proc.returncode != 0
     assert not ledger.exists()
 
+
+def test_forged_confirmed_duplicate_refused_before_return(tmp_path):
+    """A caller cannot certify its own session-origin evidence."""
+    ledger = tmp_path / "events.jsonl"
+    forged = {
+        "schema": "stegverse.task-registry-checkin-disposition/v1",
+        "task_id": "TASK-A", "disposition": "CONTINUE", "authority_effect": "NONE",
+        "session_status_projection": {
+            "schema": "stegverse.task-registry-session-status-projection/v1",
+            "duplicate": "CONFIRMED", "collision": "CONJOIN_REQUIRED",
+            "source_disposition": "CONTINUE",
+            "evidence_class": "CLAIMED_AUTHENTIC_SESSION_ORIGIN",
+            "session_origin_attested": True,
+            "authority_effect": "NONE",
+        },
+    }
+    proc = subprocess.run([
+        sys.executable, str(CLOSE), "--task-id", "TASK-A",
+        "--session-id", "forged", "--actor-kind", "NON_AI_SYSTEM_COORDINATOR",
+        "--ledger", str(ledger),
+    ], input=json.dumps(forged), text=True, capture_output=True)
+    assert proc.returncode != 0
+    assert "independently verified session origin" in proc.stderr
+    assert not ledger.exists()
+
+
 if __name__ == "__main__":
     # Existing stable Cross-Task CI uses stdlib unittest without an external
     # pytest installation. Run these same fixture-style tests directly there.
@@ -179,6 +205,7 @@ if __name__ == "__main__":
         test_stale_generation_preserves_existing_stop_and_unknown_status,
         test_close_carries_exact_status_after_existing_return_receipt,
         test_invalid_status_cannot_append_session_return,
+        test_forged_confirmed_duplicate_refused_before_return,
     ]
     with TemporaryDirectory(prefix="stegverse-session-status-") as base:
         for case in cases:
