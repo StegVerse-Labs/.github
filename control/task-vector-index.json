@@ -1077,6 +1077,16 @@
       "vector": "10111010112000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/2682"
     }
   ],
   "coverage": {
