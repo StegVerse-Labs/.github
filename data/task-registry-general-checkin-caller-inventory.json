@@ -17,13 +17,19 @@
       "external_ai_reachability": "NOT_PROVEN"
     }
   ],
-  "non_production_reference_classes": ["tests", "documentation", "canonical task records", "source inventories"],
+  "non_production_reference_classes": [
+    "tests",
+    "documentation",
+    "canonical task records",
+    "source inventories"
+  ],
   "conclusions": {
     "production_callers_source_inventoried": "PASS_SOURCE_LEVEL",
     "ai_session_route_gated_by_component_010": "PASS_SOURCE_LEVEL",
     "general_evaluator_external_ai_reachability": "NOT_PROVEN",
-    "authentic_chatgpt_origin": "NOT_PROVEN",
-    "runtime_non_chatgpt_ai_denial": "NOT_PROVEN"
+    "authentic_chatgpt_origin": "NOT_PROVEN_EXISTING_TRUSTED_CALLER_NOT_REACHABLE",
+    "runtime_non_chatgpt_ai_denial": "NOT_PROVEN",
+    "unattested_chatgpt_session_cannot_enter_existing_ledger": "SOURCE_FAIL_CLOSED"
   },
   "authority_effect": "NONE_COORDINATION_ONLY"
 }
