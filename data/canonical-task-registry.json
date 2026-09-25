@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 242,
+  "generation": 243,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10458,7 +10458,9 @@
         "Admissible-Existence/.github#82@99bc476ff6f9b732c910d0d3fd1f763f8c046652",
         "Admissible-Existence/CHF#4@52f1f226dc3be9dbc53e52429d03fa87d3087519",
         "Admissible-Existence/STCM@92f6bb8ac61377792970da16a835430ebe20f000",
-        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
+        "Admissible-Existence/CHF#5@27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3"
       ],
       "targets": {
         "organizations": [
@@ -10569,7 +10571,9 @@
         "Admissible-Existence/.github/data/formalism-worker-registry.json",
         "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py",
         "data/aex-stcm-chf-native-math-capability-review.json",
-        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
+        "Admissible-Existence/CHF#5@27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3"
       ],
       "targets": {
         "organizations": [
