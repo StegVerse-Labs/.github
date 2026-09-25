@@ -16,6 +16,8 @@ on:
       - 'control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json'
       - 'control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json'
       - 'tests/test_ungoverned_ai_defensive_envelope_worker.py'
+      - 'scripts/audit_canonical_task_projections.py'
+      - 'tests/test_audit_canonical_task_projections.py'
       - 'scripts/evaluate_task_registry_collision_checkin.py'
       - 'scripts/evaluate_task_registry_ai_session_checkin.py'
       - 'scripts/validate_task_registration_substrate_resolution.py'
@@ -74,6 +76,8 @@ on:
       - 'control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json'
       - 'control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json'
       - 'tests/test_ungoverned_ai_defensive_envelope_worker.py'
+      - 'scripts/audit_canonical_task_projections.py'
+      - 'tests/test_audit_canonical_task_projections.py'
       - 'scripts/evaluate_task_registry_collision_checkin.py'
       - 'scripts/evaluate_task_registry_ai_session_checkin.py'
       - 'scripts/validate_task_registration_substrate_resolution.py'
@@ -155,6 +159,7 @@ jobs:
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_session_gate_backlog \
             tests.test_component010_checked_out_shard_projection \
+            tests.test_audit_canonical_task_projections \
             tests.test_component010_predecessor_unittest \
             tests.test_component010_source_refresh_carriage \
             tests.test_task_registry_ai_session_ingress \
