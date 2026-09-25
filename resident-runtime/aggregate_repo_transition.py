@@ -58,7 +58,7 @@ def retain_source(root, receipt, verified):
     fd,name=tempfile.mkstemp(prefix=".source-",dir=str(directory))
     try:
         with os.fdopen(fd,"w",encoding="utf-8") as stream:
-            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\\n")
+            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
             stream.flush()
             os.fsync(stream.fileno())
         if path.exists():
