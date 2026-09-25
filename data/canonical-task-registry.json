@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 223,
-  "status": "MYKV_NATIVE_IOS_SOURCE_WORK_CORRELATION_ACTIVE_RUNTIME_EVIDENCE_SEPARATE",
+  "generation": 229,
+  "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -6352,7 +6352,8 @@
         "scripts/run_sdk_tt_richard_seam_test3.py",
         "tests/test_sdk_tt_richard_seam_test3_runner.py",
         ".github/workflows/test3-richard-seam-acceptance.yml",
-        "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
+        "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py",
+        "scripts/dispatch_resident_execution_requests.py"
       ],
       "adjacent_task_refs": [
         "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
@@ -6679,6 +6680,16 @@
         "master_records_transition": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
         "authentic_runtime_evidence_observed": false,
         "authority_effect": "NONE_SOURCE_PATH_REPAIR_AND_EVIDENCE_REQUIREMENT_ONLY"
+      },
+      "execution_path_repair_dispatch_receipt_retention": {
+        "source_candidate_pr": 2672,
+        "previous_head": "5442ab7ad0117e8067cc01ef1c5b398999fba32d",
+        "retention": "CONTENT_ADDRESSED_IMMUTABLE_RICHARD_TARGETED_CONSUMPTION",
+        "custody": "RICHARD_SELECTOR_ORGANIZATION_LEDGER_THEN_CANONICAL_MASTER_RECORDS",
+        "closure_required": "RECORDED_AND_RECONSTRUCTION_PASS_AND_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
+        "native_dispatcher_component011_must_be_preserved": true,
+        "authentic_runtime_transition_observed": false,
+        "authority_effect": "NONE_SOURCE_OBSERVATION_ONLY"
       }
     },
     {
@@ -10688,7 +10699,7 @@
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10111110114000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2626",
         "https://github.com/StegVerse-Labs/Patents/issues/5",
@@ -10790,6 +10801,28 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_repository_mutation_approved": false
+      },
+      "cosv_source_proposal": {
+        "profile": "task.v1",
+        "vector": "10111110114000",
+        "classification": "EXACT_GENERATION_SOURCE_PROPOSAL_NOT_AUTHENTIC_SESSION_ADMISSION",
+        "observed_generation": 224,
+        "source_profile": "management/COSV_PROFILE_V1.json",
+        "evidence_refs": [
+          "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/.github/issues/2626"
+        ]
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10111110114000",
+        "canonicalized_in_registry_generation": 225,
+        "canonical_registry_blob_sha": "ee5fd72d9396437f2958f887d5d90718ba69f75c",
+        "canonical_shard_blob_sha": "65241d4653b6e50a6ee98aa43181ae9a07ed437b",
+        "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
+        "tracking_authoritative": true,
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
       }
     },
     {
@@ -11068,6 +11101,571 @@
         "signing_performed": false,
         "testflight_uploaded": false,
         "device_installed": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "root_correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "parent_task_id": null,
+      "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; ungoverned/non-ChatGPT AI constrained at StegVerse-controlled consequence boundaries by a reusable defensive envelope that preserves external AI sovereignty; External AI Meeting Room as one concrete instantiation; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": null,
+      "repository": "StegVerse-Labs/.github",
+      "issue_ref": "StegVerse-Labs/.github#1620",
+      "handoff_projection_refs": [
+        "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"
+      ],
+      "component_model_projection_ref": "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+      "reusable_component_refs": [
+        "data/reusable-task-component-model.json",
+        "data/reusable-task-component-decomposition-policy.json",
+        "data/reusable-ai-ingress-component-contract.json",
+        "data/reusable-transport-component-contract.json"
+      ],
+      "adjacent_task_refs": [
+        "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
+      ],
+      "classification": {
+        "reusable_task_component_reconciliation": "MERGED_SOURCE_VALIDATED_PR_1678",
+        "readme_impact": "COMPLETE_VALIDATED",
+        "task_registry_ai_entry_surface_inventory": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_AND_SURFACE_GATE_VALIDATION_PENDING_RUNTIME_REACHABILITY_NOT_PROVEN",
+        "chatgpt_task_registry_exclusivity": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_RUNTIME_IDENTITY_NOT_PROVEN",
+        "non_chatgpt_ai_task_registry_denial": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
+        "task_registry_session_return_close_ai_policy": "PASS_SOURCE_LEVEL_COMPONENT_010_RUNTIME_IDENTITY_NOT_PROVEN",
+        "general_task_registry_checkin_caller_surface_gate": "IMPLEMENTED_SOURCE_LEVEL_VALIDATION_PENDING",
+        "general_task_registry_checkin_external_ai_reachability": "NOT_PROVEN_RUNTIME_ORIGIN_SEPARATE",
+        "common_ai_decision_sandbox_region": "SUPERSEDED_BY_UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT",
+        "external_framework_llm_adapter_sdk_only": "PARTIAL",
+        "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
+        "ungoverned_ai_defensive_envelope": "REPRESENTATIVE_RUNTIME_PROBE_AND_RESIDENT_DISPATCH_CARRIAGE_MERGED_SOURCE_VALIDATED_RUNTIME_NOT_PROVEN",
+        "external_ai_meeting_room": "MERGED_SOURCE_CLASSIFICATION_AS_COMPONENT_011_INSTANTIATION_RUNTIME_NOT_PROVEN",
+        "representative_boundary_provider": "TVC_SES_STDIO_EXISTING_BOUNDARY_SOURCE_MERGED_0b82b45_RUNTIME_OBSERVATION_NOT_PROVEN",
+        "external_provider_origin_for_representative_probe": "NOT_PROVEN_NOT_REQUIRED_FOR_THIS_BOUNDARY_PROBE",
+        "representative_boundary_probe_source_validation": {
+          "pr": 2575,
+          "merge": "e529982fc01029e6c7016c8e3f1f80413212da1e",
+          "exact_head": "16c2ffb316be2db5aaae17f4d89d094b2f597812",
+          "cross_task_run": 35688957026,
+          "deepseek_resident_run": 35688957020,
+          "kv_ai_memory_run": 35688957129,
+          "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+        },
+        "resident_dispatch_carriage": "MERGED_SOURCE_VALIDATED_PR_2576_RUNTIME_NOT_PROVEN",
+        "resident_dispatch_validation": {
+          "pr": 2576,
+          "merge": "5404e8bffb11e08127011a9d27de3d214bd38a7b",
+          "exact_head": "78af9b20981277827ef674cc3bad7726f5eec6f6",
+          "runs": [
+            35689548786,
+            35689548591,
+            35689548621,
+            35689548677,
+            35689548586,
+            35689548547,
+            35689548662,
+            35689548714
+          ],
+          "runtime_effect": "NONE_SOURCE_VALIDATION_ONLY"
+        }
+      },
+      "source_evidence": [
+        "StegVerse-Labs/.github#1678",
+        "StegVerse-Labs/.github@069fe51538acfa4c29b0512262ea8ab2e155cae6",
+        "StegVerse-Labs/.github#1702",
+        "StegVerse-Labs/.github@66a694372219f07b073be76d190a6f81934f6a25",
+        "README.md",
+        "docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md",
+        "data/task-registry-ai-ingress-policy.json",
+        "data/task-registry-ai-entry-surface-inventory.json",
+        "data/task-registry-general-checkin-caller-inventory.json",
+        "data/task-registry-general-checkin-caller-policy.json",
+        "data/task-session-close-orchestration-contract.json",
+        "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "data/reusable-ai-ingress-component-contract.json",
+        "scripts/evaluate_task_registry_collision_checkin.py",
+        "scripts/evaluate_task_registry_ai_session_checkin.py",
+        "scripts/install_and_run_canonical_work_event_bootstrap.py",
+        "scripts/record_task_registry_session_return.py",
+        "scripts/materialize_task_session_close.py",
+        "tests/test_task_registry_general_checkin_surface_gate.py",
+        "tests/test_task_registry_ai_session_ingress.py",
+        "tests/test_task_registry_session_return_recorder.py",
+        "tests/test_task_registry_session_close_orchestration.py",
+        "StegVerse-Labs/.github#2568",
+        "StegVerse-Labs/.github@eeec8ba16a7e534dcd09143e359339ec90770667",
+        "StegVerse-Labs/TVC#465",
+        "StegVerse-Labs/TVC@0b82b45de7d214fbdb2f24bc4027a6aeb31a7312",
+        "workers/ungoverned_ai_defensive_envelope_worker.py",
+        "control/process-worker-adapters.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/worker-registry.d/ungoverned-ai-defensive-envelope-001.json",
+        "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+        "StegVerse-Labs/.github#2575",
+        "StegVerse-Labs/.github@e529982fc01029e6c7016c8e3f1f80413212da1e",
+        "scripts/consume_ungoverned_ai_defensive_envelope_request.py",
+        "scripts/dispatch_resident_execution_requests.py",
+        "scripts/refresh_sovereign_worker_runtime_source.py",
+        "StegVerse-Labs/.github#2576",
+        "StegVerse-Labs/.github@5404e8bffb11e08127011a9d27de3d214bd38a7b"
+      ],
+      "satisfied_source_predicates": [
+        "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED_SOURCE_LEVEL",
+        "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED_SOURCE_LEVEL",
+        "UNCLASSIFIED_GENERAL_CHECKIN_DIRECT_CALL_FAILS_CLOSED_SOURCE_LEVEL_IMPLEMENTED_VALIDATION_PENDING",
+        "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_CONTRACT_DEFINED_SOURCE_LEVEL",
+        "EXTERNAL_AI_MEETING_ROOM_CLASSIFIED_AS_COMPONENT_011_INSTANTIATION",
+        "EXISTING_TVC_SES_BOUNDARY_SELECTED_AS_REPRESENTATIVE_COMPONENT_011_RUNTIME_PROBE"
+      ],
+      "remaining_predicates": [
+        "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
+        "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
+        "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
+        "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_RUNTIME_ENFORCED",
+        "CAPABILITY_SCOPED_FILESYSTEM_NETWORK_TOOL_BOUNDARIES_RUNTIME_PROVEN",
+        "AMBIENT_CREDENTIAL_AND_PROTECTED_AUTHORITY_UNREACHABILITY_RUNTIME_PROVEN",
+        "DENIED_CONSEQUENCE_UNREACHABILITY_PROVEN_FOR_REPRESENTATIVE_BOUNDARY",
+        "GOVERNED_EGRESS_SEPARATION_RUNTIME_PROVEN",
+        "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
+        "LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS",
+        "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
+        "DIRECT_INTERNAL_BYPASS_REJECTED",
+        "COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN",
+        "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED"
+      ],
+      "runtime_evidence_state": {
+        "resident_execution": "NOT_PROVEN",
+        "intr_admission": "NOT_REQUIRED_UNLESS_REPRESENTATIVE_TEST_REQUESTS_STATE_CHANGE",
+        "worker_claim_fence": "NOT_PROVEN_FOR_RUNTIME_BOUNDARY_TEST",
+        "credential_session_issuance": "NOT_REQUIRED_UNLESS_SELECTED_RUNTIME_ROUTE_REQUIRES_TV_TVC",
+        "provider_execution": "NOT_PROVEN",
+        "callback": "NOT_PROVEN",
+        "custody_readback": "NOT_PROVEN",
+        "master_records_reconstruction": "NOT_PROVEN",
+        "publication": "NOT_APPLICABLE_TO_CURRENT_CORE_GOAL",
+        "far_side_transition": "NOT_APPLICABLE_UNLESS_SELECTED_TEST_ROUTE_REQUIRES_IT",
+        "representative_defensive_envelope_boundary": "NOT_PROVEN_PENDING_AUTHENTIC_RESIDENT_REQUEST_CONSUMPTION_AND_BOUNDARY_RECEIPT",
+        "external_provider_origin_for_representative_probe": "NOT_PROVEN_AND_NOT_INFERRED",
+        "governed_egress_for_representative_probe": "EVIDENCE_ONLY_NO_CONSEQUENTIAL_EGRESS_REQUESTED"
+      },
+      "authority_model": {
+        "task_registry_role": "COORDINATION_WORK_CONTROL_ONLY",
+        "chatgpt_downstream_execution_authority": false,
+        "non_chatgpt_ai_task_registry_access": false,
+        "worker_claim_fence": "WorkerCoordinator",
+        "user_verification_authority": "KV/SKAP Vault",
+        "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
+        "llm_adapter_role": "EXTERNAL_FRAMEWORK_MODEL_PROTOCOL_INGRESS",
+        "sdk_role": "CANONICAL_MANIFEST_PROCESSING_INGRESS_AND_EXTERNAL_EVALUATOR_INGRESS",
+        "credential_authority": "TV/TVC",
+        "governed_transition_authority": "Interlock/InTr",
+        "master_records_role": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+        "github_runtime_authority": "NONE",
+        "heartbeat_execution_authority": false,
+        "ungoverned_ai_internal_role": "SOVEREIGN_INTERNAL_REASONING_AND_WORK_WITHIN_BOUNDARY_NO_STEGVERSE_AUTHORITY",
+        "defensive_envelope_role": "CAPABILITY_AND_CONSEQUENCE_BOUNDARY_ONLY_NO_MODEL_GOVERNANCE",
+        "external_ai_meeting_room_role": "COMPONENT_011_INSTANTIATION_NO_AUTHORITY_PRIMITIVE"
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "parent_task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+      "goal": "Project the canonical hash-linked Task Registry session event history into provider-neutral StegVerse sovereign KV custody without changing collision semantics or authority boundaries.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000100000",
+      "source_state_vector_ref": "control/task-vectors/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json",
+      "source_refs": [
+        "docs/TASK_REGISTRY_SOVEREIGN_KV_EVENT_CUSTODY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github#1423",
+        "scripts/task_registry_checkin_event_history.py",
+        "scripts/project_task_registry_event_to_sovereign_kv.py",
+        "data/task-registry-sovereign-kv-runtime-intake-contract.json",
+        "data/goal-task-transport-profiles/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json",
+        "data/reusable-task-component-model.json",
+        "data/reusable-task-component-decomposition-policy.json",
+        "data/reusable-transport-component-contract.json",
+        "data/reusable-evidence-validation-component-contract.json",
+        "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/continuity-vault-kit#211",
+        "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/StegOS",
+          "StegVerse-Labs/continuity-vault-kit"
+        ],
+        "components": [
+          "task-registry",
+          "session-event-history",
+          "sovereign-kv",
+          "interlock-intr",
+          "provider-adapter",
+          "custody-projection",
+          "runtime-intake",
+          "reusable-task-component-composition",
+          "current-verification-evidence-selection"
+        ]
+      },
+      "dependencies": [
+        "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+        "KV-CONNECTION-REVALIDATION-WORKER-001",
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+      ],
+      "adjacent_task_refs": [
+        "KV-CONNECTION-REVALIDATION-WORKER-001",
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "STEGOS-NODE-MANIFOLD-001",
+        "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+      ],
+      "reusable_task_component_composition": {
+        "model": "data/reusable-task-component-model.json",
+        "profile": "data/goal-task-transport-profiles/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json",
+        "selected_components": [
+          "RTC-MANIFEST-001",
+          "RTC-GOVERNED-PROCESSING-002",
+          "RTC-ROUNDTRIP-003",
+          "RTC-EVIDENCE-CUSTODY-004",
+          "RTC-STEGVERSE-EGRESS-007",
+          "RTC-INTERLOCK-INTR-TRANSPORT-008",
+          "RTC-FARSIDE-FINAL-009",
+          "RTC-EVIDENCE-CURRENT-SELECTOR-010"
+        ],
+        "round_trip_instances": [
+          "admitted_provider_write",
+          "exact_event_hash_readback"
+        ],
+        "current_verification_selection": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
+        "omitted_optional_components": [
+          "RTC-PUBLISHER-005",
+          "RTC-SDK-RETURN-006"
+        ],
+        "new_reusable_component_required": false,
+        "duplicate_orchestration_disposition": "SUPERSEDE_LINEAR_HANDOFF_AS_PRIMARY_ARCHITECTURE; REUSE_EXISTING_RUNTIME_CREDENTIAL_TRANSPORT_CURRENT_EVIDENCE_SELECTOR_AND_RECONSTRUCTION_OWNERS"
+      },
+      "completed_source_integration": [
+        "GITHUB_PROVIDER_NEUTRAL_EVENT_CUSTODY_BRIDGE",
+        "CONTINUITY_VAULT_KIT_PROVIDER_NEUTRAL_WRITE_BINDING",
+        "EXACT_EVENT_HASH_OBJECT_BINDING",
+        "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR",
+        "RUNTIME_INTAKE_CONTRACT_BOUND_TO_EXISTING_EXECUTION_OWNERS",
+        "REUSABLE_TASK_COMPONENT_PROFILE_BOUND",
+        "CURRENT_APPLICABLE_VERIFICATION_SELECTOR_BOUND",
+        "COSV_TASK_VECTOR_EMITTED_AND_INDEXED"
+      ],
+      "goal_specific_completion_predicates": [
+        "LIVE_CANONICAL_TASK_REGISTRY_EVENT_WITH_EXACT_HASH_LINEAGE",
+        "CURRENT_APPLICABLE_KV_SKAP_VERIFICATION_RECORD_SELECTED_WHEN_REQUIRED",
+        "AUTHENTIC_PROVIDER_WRITE_ADMITTED_AND_EXECUTED_BY_EXISTING_OWNER",
+        "EXACT_STORED_EVENT_HASH_READBACK_MATCHES_CANONICAL_EVENT_HASH",
+        "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
+        "REQUIRED_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED"
+      ],
+      "runtime_owner_transition_observation": {
+        "canonical_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "superseded_candidate_successor": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+        "superseded_issue": "StegVerse-Labs/.github#1500",
+        "superseded_pr": "StegVerse-Labs/.github#1519",
+        "superseded_pr_exact_head": "a3c66f7a0a17ca941be72cc63f2cb9d11134b686",
+        "superseded_pr_exact_head_validation": "ALL_THREE_REQUIRED_LANES_PASS",
+        "canonical_dependency_replaced": false,
+        "disposition": "SUPERSEDED_PROMPT_CEILING_ONLY_SUCCESSOR",
+        "reason": "Canonical reusable-task decomposition policy prohibits splitting merely to reset prompt count. Remaining runtime evidence is not a genuinely independent Goal and stays with STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001."
+      },
+      "first_unresolved_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
+      "authority": {
+        "task_registry": "COORDINATION_ONLY",
+        "workercoordinator": "CLAIM_FENCE",
+        "interlock_intr": "TRANSITION_ADMISSION",
+        "credential_authority": "TV/TVC",
+        "user_verification": "KV/SKAP Vault",
+        "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
+        "master_records": "OBSERVED_REALITY_RECONSTRUCTION",
+        "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
+        "github_runtime_authority": "NONE"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "correlation_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "root_correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "parent_task_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "goal": "Persist non-authorizing Task Registry check-in/check-out event history so anti-collision aggregation can include recently returned sessions and their exact branch, PR, source-head, predicate, repository, component, and disposition lineage without creating a second collision engine or granting execution authority.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "50000000100000",
+      "source_refs": [
+        "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github#1387",
+        "data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json",
+        "scripts/evaluate_task_registry_collision_checkin.py"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "task-registry-checkin-event-history",
+          "recent-session-collision-window",
+          "session-target-metadata",
+          "task-registry-collision-evaluator",
+          "portable-workercoordinator-preclaim-lineage"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-TASK-REGISTRY-ANTI-COLLISION-MERGED",
+          "kind": "SOURCE_BASELINE",
+          "state": "MERGED_VALIDATED",
+          "ref": "StegVerse-Labs/.github#1344@a1b6043348354072af59b9e1696451720b83cda6",
+          "disposition": "Consume the merged disposition contract; do not implement a second collision engine."
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+        "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "STEGOS-NODE-MANIFOLD-001",
+        "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+      ],
+      "expected_evidence_predicates": [
+        "CHECKIN_AND_CHECKOUT_EVENTS_RETAIN_SESSION_ID_AND_TIMESTAMPS",
+        "EVENTS_BIND_TASK_BRANCH_PR_SOURCE_HEAD_AND_FIRST_UNRESOLVED_PREDICATE",
+        "EVENTS_BIND_REPOSITORIES_AND_COMPONENTS_UNDER_MUTATION",
+        "EVENTS_BIND_EXACT_DISPOSITION_HASH",
+        "RECENT_RETURNED_SESSION_WINDOW_PARTICIPATES_IN_COLLISION_EVALUATION",
+        "EVENT_HISTORY_IS_NON_AUTHORIZING",
+        "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "task_registry_reconciliation",
+          "coordination_event_retention",
+          "recent_collision_window"
+        ],
+        "environment": "SOURCE_CONTROL_AND_SOVEREIGN_COORDINATION_RUNTIME",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": {
+        "current_executor": "current-session-repository-orchestration",
+        "authority_basis": "user-authorized source mutation under canonical task/handoff custody",
+        "unattended_runtime": false
+      },
+      "worker_claim": {
+        "authority": "CURRENT_SESSION",
+        "claim_ref": "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+        "fence_ref": null,
+        "projection_only": false
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "activation_proof_complete": false
+      },
+      "allowed_next_transitions": [
+        "IMPLEMENT_COORDINATION_EVENT_SCHEMA_AND_STORE"
+      ],
+      "handoff_projection_refs": [
+        "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "event_history_grants_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "master_records_reality_authority": true,
+        "github_runtime_authority": "NONE",
+        "heartbeat_execution_authority": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "correlation_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "root_correlation_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "parent_task_id": null,
+      "goal": "Produce an independently verifiable bilateral MIR/StegVerse capability-boundary experiment preserving claimed vs independently observed vs physical work vs unknown, and the observe/demonstrate/retain/reconstruct matrix with equal-weight limitations and first-class dissent.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "handoff": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "50000000100000",
+        "source_state_vector_ref": "control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json",
+        "authority_effect": "NONE"
+      },
+      "source_refs": [
+        "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+        "docs/mir-exp3/RECOVERED_CONVERSATION_EVIDENCE.md",
+        "docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md",
+        "https://github.com/StegVerse-Labs/.github/issues/2682",
+        "StegVerse-org/StegVerse-SDK:inspection/examples/mir-sv-exp3/assessment-input.json",
+        "StegVerse-org/StegVerse-SDK:inspection/examples/mir-sv-exp3/diagnostic-request.json",
+        "StegVerse-org/StegVerse-SDK:scripts/build_mir_sv_exp3_manifest.py",
+        "StegVerse-org/StegVerse-SDK:tests/test_mir_sv_exp3_manifest.py",
+        "StegVerse-org/StegVerse-SDK:docs/MIR_SV_EXP3_MANIFEST.md",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/317",
+        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36085026183/artifacts/10843328013"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-org/StegVerse-SDK"
+        ],
+        "components": [
+          "mir-sv-exp3",
+          "independent-capability-boundary",
+          "first-class-unknowns",
+          "disagreement",
+          "independent-evidence-verification"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+      ],
+      "expected_evidence_predicates": [
+        "COUNTERPART_MIR_PDF_IDENTIFIED_BY_SHA256",
+        "EXPERIMENT_3_DISTINCT_FROM_PRIOR_TESTS",
+        "STEGVERSE_FOUR_SECTION_COUNTERPART_DRAFTED",
+        "CLAIMS_SEPARATED_FROM_CURRENT_AUTHENTIC_OBSERVATIONS",
+        "CAPABILITIES_AND_LIMITS_SAME_ARTIFACT",
+        "UNKNOWN_AND_DISAGREEMENT_SEPARATELY_ATTRIBUTED",
+        "CURRENT_RESIDENT_ORG_LEDGER_EXACT_HEAD_AUDITED",
+        "CANONICAL_MASTER_RECORDS_EXACT_RECONSTRUCTION_REPRODUCED",
+        "INDEPENDENT_JOINT_REVIEW",
+        "SDK_SOURCE_MANIFEST_BUILT_FROM_EXISTING_INSTALLED_PROCESSOR",
+        "SDK_READ_ONLY_DIAGNOSTIC_ARTIFACT_SOURCE_VALIDATED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "source_inspection",
+          "read_only_custody_audit",
+          "independent_evidence_comparison"
+        ],
+        "environment": "DOCUMENTARY_AND_AUTHENTIC_READ_ONLY_IF_AVAILABLE",
+        "direction": "INDEPENDENT_BILATERAL_COMPARISON",
+        "mutation_required": false,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "SOURCE_AUDIT_REVIEWED",
+        "INDEPENDENT_CUSTODY_EVIDENCE_RETRIEVED"
+      ],
+      "handoff_projection_refs": [
+        "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "mir_historical_record_grants_stegverse_admission": false,
+        "stegverse_governance_grants_mir_custody": false,
+        "source_conformance_proves_authentic_runtime": false,
+        "missing_accessible_receipt_equals_no_event": false,
+        "unknowns_may_be_silently_resolved": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": [
+              "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+            ]
+          }
+        ],
+        "selected_substrate_id": null,
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
       }
     }
   ],
