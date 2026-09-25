@@ -18,7 +18,9 @@
     "docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md",
     "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md",
     "tests/test_open_source_strategy_inventory.py",
-    "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md"
+    "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md",
+    "data/ecosystem-open-source-organization-census-20260925.json",
+    "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json"
   ],
   "adjacent_task_refs": [
     "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -97,6 +99,30 @@
     "followup_head": "4737f3a68db41a00abc3e12104265bd4e4220d0b",
     "followup_merge": "aee4e664cf26aee2491b3558db307a897c8785d9",
     "followup_exact_head_workflows_passed": 6,
-    "followup_source_status": "MERGED_EXACT_HEAD_CI_PASS"
+    "followup_source_status": "MERGED_EXACT_HEAD_CI_PASS",
+    "ecosystem_census": "KNOWN_14_ORGANIZATIONS_252_REPOSITORY_ENTRIES_VISIBILITY_REFRESHED",
+    "labs_inventory": "119_OF_119_METADATA_ONLY_PRESERVED",
+    "stegverse_org_inventory": "18_OF_18_METADATA_SOURCE_OWNER_MERGED",
+    "other_orgs": "12_VISIBILITY_ONLY_RIGHTS_UNVERIFIED"
+  },
+  "ecosystem_inventory": {
+    "snapshot": "2026-09-25",
+    "known_organizations_observed": 14,
+    "repo_entries_observed": 252,
+    "public": 85,
+    "private": 153,
+    "internal": 14,
+    "source_manifest": "data/ecosystem-open-source-organization-census-20260925.json",
+    "registered_universe_complete": false,
+    "metadata_audited_organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "org_owned_verified_merge": {
+      "StegVerse-org/.github#11": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63"
+    },
+    "remaining_organizations_count_visibility_only": 12,
+    "ecosystem_rights_cleared": 0,
+    "license_release_authorized": false
   }
 }
