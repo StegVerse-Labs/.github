@@ -343,3 +343,70 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
                                   only_consumers=(dispatcher.RICHARD_SELECTOR,))
     assert unknown["state"] == "DISPATCH_INCOMPLETE"
     assert unknown["richard_dispatch_master_records"]["reason"] == "RICHARD_DISPATCH_REQUEST_IDENTITY_INVALID"
+
+
+def test_targeted_subprocess_exception_retains_immutable_first_failed_cycle(tmp_path):
+    module = load_consumer()
+    source, runtime = _setup_test3_target(tmp_path, module)
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        raise subprocess.TimeoutExpired(command, 1800)
+
+    receipt = module.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+    assert len(calls) == 1
+    assert receipt["state"] == "FAIL_CLOSED"
+    assert receipt["first_failed_cycle"] == {
+        "cycle_index": 0,
+        "boundary": "TARGETED_SUBPROCESS_INVOCATION_EXCEPTION",
+        "exception_type": "TimeoutExpired",
+        "returncode": None,
+    }
+    assert receipt["targeted_cycle_count"] == 1
+    immutable = runtime / module.IMMUTABLE_CONSUMPTION_DIR_REL / (
+        receipt["receipt_body_sha256"].split(":", 1)[1] + ".json"
+    )
+    assert immutable.is_file()
+    assert json.loads(immutable.read_text())["first_failed_cycle"] == receipt["first_failed_cycle"]
+    assert json.loads((runtime / module.CONSUMPTION_REL).read_text())["receipt_body_sha256"] == receipt["receipt_body_sha256"]
+
+
+def test_custody_exception_preserves_actual_selector_result_in_dispatch_receipt(tmp_path, monkeypatch):
+    import sys
+    import types
+    spec = importlib.util.spec_from_file_location("richard_dispatch_exception_test", DISPATCHER)
+    dispatcher = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dispatcher)
+    source, runtime = _setup_test3_target(tmp_path, load_consumer())
+    # The dispatcher must see the existing consumer as materialized before
+    # reaching the injected canonical custody failure.
+    (runtime / "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py").write_text("# fixture\n")
+    machine = {"state": "FAIL_CLOSED", "first_failed_cycle": {
+        "cycle_index": 0,
+        "boundary": "TARGETED_SUBPROCESS_INVOCATION_EXCEPTION",
+        "exception_type": "TimeoutExpired",
+        "returncode": None,
+    }}
+    def sha(value):
+        return "sha256:diagnostic"
+    def build(**kwargs):
+        return kwargs
+    def submit(receipt):
+        raise ConnectionError("fixture only: canonical custody unreachable")
+    monkeypatch.setitem(sys.modules, "canonical_state_transition_custody",
+        types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit))
+    def runner(command, **kwargs):
+        return subprocess.CompletedProcess(command, 1, stdout=json.dumps(machine) + "\n", stderr="")
+    receipt = dispatcher.dispatch(
+        source, runtime, runner=runner, env={"PATH": "/usr/bin"},
+        only_consumers=(dispatcher.RICHARD_SELECTOR,),
+    )
+    assert receipt["state"] == "DISPATCH_INCOMPLETE"
+    assert receipt["richard_dispatch_master_records"]["reason"] == "RICHARD_DISPATCH_CUSTODY_EXCEPTION"
+    assert receipt["richard_dispatch_master_records"]["exception_type"] == "ConnectionError"
+    assert receipt["richard_dispatch_master_records"]["first_failed_cycle"] == machine["first_failed_cycle"]
+    assert (runtime / dispatcher.RECEIPT_REL).is_file()
+    stored = json.loads((runtime / dispatcher.RECEIPT_REL).read_text())
+    assert stored["richard_dispatch_master_records"]["state"] == "BOUNDARY"
+    assert stored["outcomes"][0]["result"] == machine
