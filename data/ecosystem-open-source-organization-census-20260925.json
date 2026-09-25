@@ -17,7 +17,11 @@
     "labs_licensed_metadata_verified": 119,
     "stegverse_org_licensed_metadata_verified": 18,
     "all_other_orgs_license_metadata": "NOT_AUDITED",
-    "rights_verified": 0
+    "rights_verified": 0,
+    "data_continuation_license_metadata_checked": 7,
+    "metadata_audited_organizations": 3,
+    "metadata_audited_repositories": 144,
+    "other_organizations_visibility_only": 11
   },
   "organizations": [
     {
@@ -51,10 +55,12 @@
       "private_count": 2,
       "internal_count": 1,
       "baseline_20260902": 6,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
-      "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "license_metadata_coverage": "7/7",
+      "org_owned_inventory": "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+      "contributor_rights": "BOUNDED_PINNED_COMMIT_HISTORY_CENSUS_ONLY_RIGHTS_UNVERIFIED",
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_NO_APPLICABLE_PR_CHECKS_REPORTED",
+      "org_owned_inventory_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4"
     },
     {
       "organization": "GCAT-BCAT-Engine",
@@ -195,9 +201,11 @@
     "Metadata inventory is per-organization and held by its existing source owner; central task only aggregates counts, provenance and dispositions.",
     "Public central index includes organization aggregate counts, but no nonpublic repository names, contents, dependency URLs, credentials or personal data.",
     "StegVerse-org 18/18 organization-owned inventory merged in source-owner PR #11 at d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63 after both applicable workflows passed.",
-    "The other 12 organizations have refreshed repository COUNT/VISIBILITY censuses only, not licensing audit or rights clearance.",
+    "The other 11 known organizations have repository COUNT/VISIBILITY census only; Data-Continuation is now a separate source-owned metadata inventory.",
     "Never infer all-in ecosystem completeness from registered organization list. Discover additional orgs through authorized canonical registry sources, and distinguish inaccessible/unlisted repositories from observed zeros.",
     "Public GitHub visibility and GitHub-detected MIT are not exhaustive file-level scope/copyright provenance or authority to relicense.",
-    "No license mutation, release authorization, WorkerCoordinator claim, InTr clearance, Master Records closure or private repo publication is inferred."
+    "No license mutation, release authorization, WorkerCoordinator claim, InTr clearance, Master Records closure or private repo publication is inferred.",
+    "Data-Continuation source-owner PR #7 merged as 21d5292c56961f3a32a814c63d67a61b0c255ae4; zero GitHub PR check runs or statuses were reported on its exact source HEAD; source-file readback and central CI are separate checks.",
+    "Exact SDK-pinned Core-Lite commit resolves, but contains no LICENSE or NOTICE in complete 335-entry tree, nor license field in pyproject; rights and release authorization remain unverified."
   ]
 }
