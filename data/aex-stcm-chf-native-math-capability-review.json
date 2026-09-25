@@ -1,0 +1,108 @@
+{
+  "schema": "stegverse.aex.stcm-chf-native-capability-verification/v1",
+  "source_review_scope": "Pinned current native STCM/CHF inspected original source plus installed SDK route declarations; source-only evidence",
+  "central_registry_generation_inspected": 239,
+  "math_goal_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+  "math_cosv": "10111110111000",
+  "adjacent_comparison_goal_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+  "adjacent_cosv": "10111010112000",
+  "authority_effect": "NONE",
+  "STCM": {
+    "exact_source_commit": "92f6bb8ac61377792970da16a835430ebe20f000",
+    "exact_original_callable": "tools/closure-harness/lineage_gate.py::gated_close",
+    "source_git_blob": "c0d6a9329b4ba88e6e82ebe6f0a4df9c3097906e",
+    "native_source_test": {
+      "original_source_test_ref": "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
+      "exact_head_workflow_run": 36091077891,
+      "workflow_conclusion": "success",
+      "retained_artifact_id": 10845258620,
+      "artifact_zip_sha256": "sha256:19018fb77b3ed6d9a08a85ffe5e3c8d0486add21f249f5b3ccb6149bf8b387ad",
+      "positive": "BOUND/CLOSED with constructed synthetic prior; NOT authentic custody",
+      "missing_prior": "MISSING_PRIOR/nonclosure",
+      "coincident_timestamp": "MISSING_PRIOR/nonclosure",
+      "source_digest_mismatch": "DENY before native invocation"
+    },
+    "native_same_specimen_status": "SYNTHETIC_ONE_SIDED_VERIFIED",
+    "sdk_manifest_invocation": "NOT_ESTABLISHED"
+  },
+  "CHF": {
+    "original_source_commit": "369737c3ca1985cd9b1e0a2696ebfbc7ecb84b93",
+    "inspected_original_surfaces": [
+      {
+        "path": "formalism/triform-manifest.json",
+        "git_blob": "0e2679dd2655778ad6464231f209d72fb2e88958",
+        "kind": "FOUR_BOUND_PROSE_THRESHOLD_DECLARATIONS_NOT_PER_SPECIMEN_EXECUTION"
+      },
+      {
+        "path": "tools/check_chf_thresholds.py",
+        "git_blob": "46b0a7a3ddf41ca72c3669a5ca18c011b33886df",
+        "kind": "DATA_DECLARATION_SET_CHECKER_ONLY"
+      },
+      {
+        "path": "validators/c.py",
+        "git_blob": "f61468c3671c0bb11fb825d8eaa19ab20745ed27",
+        "callable": "classify",
+        "kind": "READY_DECLARED_MAPPED_SCOPED_FLAGS_CLASSIFIER_NOT_PER_SPECIMEN_NOT_CHF_HORIZON"
+      },
+      {
+        "path": "tools/check_chf_conditions.py",
+        "git_blob": "5c2cdef26d6fd0c289213ca87db67deafcd1ac6c",
+        "kind": "CONDITION_NAME_CHECKER_ONLY"
+      }
+    ],
+    "other_existing_original_checks": [
+      "tools/check_chf_proof_surfaces.py",
+      "tools/check_chf_cross_domain.py",
+      "tools/check_chf_integration.py",
+      "tools/check_chf_mirror_handoff.py",
+      "tools/validate_triform_manifest.py"
+    ],
+    "original_owner_hosted_evidence": {
+      "pr": "Admissible-Existence/CHF#4",
+      "merged_commit": "52f1f226dc3be9dbc53e52429d03fa87d3087519",
+      "six_checker_run": 36086125184,
+      "tri_form_run": 36086125211,
+      "classification": "ORIGINAL_REPO_DECLARATION_AND_CONTRACT_VALIDATION_NOT_NUMERIC_WITNESS"
+    },
+    "required_original_native_callable": {
+      "scope": "Native CHF owner defines, validates and versions a genuine per-specimen consequence-horizon mathematical evaluator only if supported by CHF's formalism and independently supplied original measurements/claims.",
+      "input_contract_not_yet_established": [
+        "same_frozen_specimen_sha256",
+        "source-native R/O/A/K consequence fields",
+        "thresholds and threshold provenance",
+        "unknown/missing-field policy",
+        "horizon flux/absorption if mathematically formalized"
+      ],
+      "output_contract_not_yet_established": [
+        "source-native consequence horizon disposition",
+        "reasoned unknown/deny states",
+        "original result bytes/digest",
+        "native revision and executable entrypoint"
+      ],
+      "status": "NOT_ESTABLISHED_NOT_PERMISSION_TO_INVENT",
+      "owner": "Admissible-Existence/CHF"
+    },
+    "same_specimen_mathematical_output": "NOT_ESTABLISHED"
+  },
+  "SDK": {
+    "repository": "StegVerse-org/StegVerse-SDK",
+    "route_resolution_git_blob": "d9241ee1fb7bf4d4a6c02f0e9d9cec717fcb92a1",
+    "manifest_execution_git_blob": "4f84f7b838d91a9348f7c4472fce283732a9c791",
+    "published_processor_capabilities": [
+      "governance",
+      "ecosystem_diagnostic",
+      "purpose_bound_worker",
+      "atomic_task_worker"
+    ],
+    "native_math_published_binding": "NOT_ESTABLISHED",
+    "source_only_next_action": "Existing registered generic SDK math owner verifies installed route reuse or submits authorized generic compatibility; no STCM/CHF-specific authority or new runtime"
+  },
+  "overall_status": "STCM_SYNTHETIC_NATIVE_POSITIVE_NEGATIVE_VERIFIED_CHF_NUMERICAL_AND_SDK_BINDING_NOT_ESTABLISHED",
+  "runtime": {
+    "authenticated_resident_gate": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "organization_ledger": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "master_records": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "external_export": "NOT_RECEIVED",
+  "physical_heat_measurement": "NOT_OBSERVED"
+}
