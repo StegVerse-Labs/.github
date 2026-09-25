@@ -147,7 +147,10 @@
     "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
     "tracking_authoritative": true,
     "session_admission_authentic_observed": false,
-    "execution_authority_effect": "NONE"
+    "execution_authority_effect": "NONE",
+    "source_state_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json",
+    "index_ref": "control/task-vector-index.json",
+    "vector_source_materialized_from_native_proposal": true
   },
   "research_source_evidence": {
     "schema": "stegverse.optical-real-original-evidence/v1",
@@ -292,5 +295,6 @@
       "filename": "optical-state-replay-calibrated-v08.zip",
       "sha256": "9b1b41dc6272067f29ff2dd470b570d7ccb451fcb7dc904e0de804b5ea39d33e"
     }
-  }
+  },
+  "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json"
 }

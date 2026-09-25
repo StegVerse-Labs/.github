@@ -30,3 +30,10 @@ Receive the authentic post-registration central gate disposition, record exact g
 
 ## Generation-219 conflict-safe reconciliation
 Original PR #2636 source registration at generation 215 was superseded by newer canonical updates. This proposal preserves all 219-era rows and advances the Registry exactly once to proposed generation 220. It contains only central coordination components, not hosted-provider removal or independent Governance repository mutation. The active `ENTERPRISE-HOST-PROVIDER-ERADICATION-001` owner remains independent. Authentic AI_SESSION_GATE result and hash-linked event remain unavailable; source merge is registration only, not claimed admission.
+
+
+## Canonical COSV tracking reconciliation — source-state issuance (2026-09-25)
+
+**COSV-first task block**: COSV `10100000124000`; Goal Task ID `GOVERNANCE-METERED-POLICY-RECOVERY-001`; native owner [issue #2632](https://github.com/StegVerse-Labs/.github/issues/2632); coordination `PROPOSED/UNCLAIMED`; baseline Registry generation 245; source-state record `control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json`; index `control/task-vector-index.json`; evidence class **SOURCE_IMPLEMENTED**, authority effect **NONE**.
+
+Derivation follows `management/COSV_PROFILE_V1.json` and `scripts/cosv.py::encode_task`: L=1 R=0 U=1 I=0 V=0 G=0 O=0 C=0 M=1 T=2 B=4 E=0 A=0 P=0. Only current exact-shard source state is encoded; no admission, other-owner clearance or runtime completion is implied. All 14 metric provenance fields are in the new record; unknown thread state is UNKNOWN=2 except the optical owner-authored T=1. Genuine AI_SESSION_GATE origin, retained CHECK_IN and predecessor, WorkerCoordinator/InTr, applicable independent owners and Master Records remain distinct; source-only task tracking does not require fabricated admission. Supersede any historical pre-registration/COSV-unassigned wording **only for the source tracking field**, not its remaining governed work. Do not treat this handoff as a runtime receipt.
