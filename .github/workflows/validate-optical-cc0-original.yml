@@ -1,0 +1,88 @@
+name: Optical CC0 original source verification (validation only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validate-optical-cc0-original.yml'
+permissions:
+  contents: read
+jobs:
+  verify-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify exact publisher original without resident execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.parse import urlsplit
+          from datetime import datetime, timezone
+          import hashlib, json, os
+          source_page = "https://commons.wikimedia.org/wiki/File:Mechanical_movement_of_pendulum_clock.webm"
+          original = "https://upload.wikimedia.org/wikipedia/commons/6/6b/Mechanical_movement_of_pendulum_clock.webm"
+          expected_sha1 = "1f3b63e6742f38c331a81bb2e872597b9e394c96"
+          expected_size = 4084050
+          root = Path("/tmp/optical-cc0-verified")
+          root.mkdir(parents=True, exist_ok=True)
+          staging = root / "pendulum.webm.unverified"
+          final = root / "Mechanical_movement_of_pendulum_clock.webm"
+          staging.unlink(missing_ok=True)
+          h1 = hashlib.sha1()
+          h256 = hashlib.sha256()
+          size = 0
+          req = Request(original, headers={"User-Agent": "StegVerse-research-CC0-validation/1.0 (GitHub Actions validation-only)"})
+          try:
+              with urlopen(req, timeout=45) as resp, staging.open("wb") as output:
+                  actual_url = resp.geturl()
+                  src, actual = urlsplit(original), urlsplit(actual_url)
+                  if (actual.scheme, actual.hostname, actual.path) != (src.scheme, src.hostname, src.path):
+                      raise ValueError("Original redirected or wrong source path")
+                  mime = resp.headers.get_content_type()
+                  if mime not in {"video/webm", "application/octet-stream"}:
+                      raise ValueError("Unexpected content type: " + mime)
+                  while True:
+                      chunk = resp.read(65536)
+                      if not chunk:
+                          break
+                      size += len(chunk)
+                      if size > 5000000:
+                          raise ValueError("Exceeded original media size cap")
+                      h1.update(chunk)
+                      h256.update(chunk)
+                      output.write(chunk)
+              if size != expected_size or h1.hexdigest() != expected_sha1:
+                  raise ValueError("Publisher byte count or SHA1 mismatch")
+              os.replace(staging, final)
+          except Exception:
+              staging.unlink(missing_ok=True)
+              raise
+          provenance = {
+              "goal_task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+              "cosv": "10111110114000",
+              "classification": "VERIFIED_PUBLIC_ORIGINAL_BYTES_NOT_PHYSICAL_GROUND_TRUTH",
+              "source_page": source_page,
+              "original_url": original,
+              "license": "CC0-1.0",
+              "creator": "Darklanlan",
+              "publisher_declared_size": expected_size,
+              "publisher_declared_sha1": expected_sha1,
+              "measured_bytes": size,
+              "measured_sha1": h1.hexdigest(),
+              "measured_sha256": h256.hexdigest(),
+              "verified_at": datetime.now(timezone.utc).isoformat(),
+              "capture_clock_authenticated": False,
+              "governed_runtime_executed": False,
+              "authority_effect": "NONE_CI_EVIDENCE_TRANSPORT_ONLY",
+          }
+          (root / "original-verification.json").write_text(json.dumps(provenance, indent=2) + "\n")
+          print(json.dumps({k:provenance[k] for k in ("measured_bytes","measured_sha1","measured_sha256","classification")}, sort_keys=True))
+          PY
+      - name: Transport validated public original and source proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: optical-cc0-original-verified
+          path: /tmp/optical-cc0-verified/
+          if-no-files-found: error
+          retention-days: 1
