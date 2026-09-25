@@ -72,3 +72,39 @@ Reconciliation against current source in `.github/workers/canonical_state_transi
 CVK draft PR #222 now uses **only those three real native custody methods**. Without a client it stays `PENDING_MASTER_RECORDS_CUSTODY`; after real `RECORDED`, exact receipt and independent destination reconstruction checks it returns `MASTER_RECORDS_CUSTODY_RECORDED_AWAITING_INTR_REPLAY`, with `terminal_receipt=null` and `far_end_observation=null`. It never self-promotes a partial custody result into full Universal InTr graph completion. Existing SDK/Universal InTr must return and independently validate replay, predecessor continuity and exact original manifest/result binding before a terminal result can be used. This reuse needs **no** new SDK-specific KV processing route to repair the native custody defect.
 
 CVK positive and adversarial integration-style tests use a three-method inert native fixture marked `TEST_ONLY_NOT_AUTHENTIC_MASTER_RECORDS` and verify that even a fabricated replay=PASS in that fixture cannot promote public `close_lifecycle`. The existing SDK terminal verifier remains the separate full-graph acceptance path; the pure CVK terminal-shape builder is used only for synthetic compatibility tests, not by its public production entry point. The draft remains open until authentic generation-bound owner admission and exact-head source validation; neither PR authorizes Google provider execution or native runtime completion.
+
+## Same-Goal canonical registration repair candidate — source only
+
+At last verified canonical main Registry generation **223**, the original
+`KV-CONNECTION-REVALIDATION-WORKER-001` executable handoff and COSV
+`50000000102000` existed but its Registry row did not. The installed
+`evaluate_task_registry_collision_checkin.py` deterministically returns
+`STOP_NOT_REGISTERED` for that exact task ID, before owner-collision
+analysis. Merely obtaining a reachable resident caller cannot make an
+unregistered identity admissible.
+
+This existing PR now proposes **exactly one original-Goal row**, with the
+unchanged original ID and COSV, at **candidate generation 224**, plus its
+same-byte canonical task shard and a regression asserting singleton identity,
+original native ownership and no runtime promotion. This is a source
+registration candidate; canonical main remains generation 223 until an
+authorized merge, and no admission or retained native check-in event has been
+created. `PROPOSED/UNCLAIMED` preserves the original 20/20 handoff limit
+without manufacturing a successor Goal or marking the unproven runtime
+complete. After an authorized source merge, reread main's actual then-current
+generation and let the already-installed resident `AI_SESSION_GATE` caller
+consume that exact original task identity and produce its genuinely retained
+hash-linked owner-collision event. Do not invent an artificial session ID,
+user identity attestation, AI disposition, device prerequisite or GitHub
+Actions runtime receipt to bypass this.
+
+Per `data/task-registry-global-invariants.json`, ordinary task progression
+MUST NOT inspect or depend on connected-device inventory; lack of an observed
+external connector has **no task-state meaning**. If an authorized resident
+invocation and receipt readback remain inaccessible, preserve
+`UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` while continuing admissible source
+reconciliation through existing owner tools. Keep the already validated CVK
+native three-function Master Records adaptation and independent Universal InTr
+replay obligations separate. No new SDK route, scheduler, resident runtime,
+credential owner, second user-operated device, Google consent, CONNECT/VERIFY
+or KV #2 materialization is authorized by this candidate.
