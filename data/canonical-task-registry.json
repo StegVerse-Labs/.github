@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 231,
+  "generation": 232,
   "status": "OPTICAL_PHYSICAL_STATE_REPLAY_COSV_CANONICAL_SOURCE_ONLY_RUNTIME_UNVERIFIED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -11543,7 +11543,11 @@
         "StegVerse-org/StegVerse-SDK:tests/test_mir_sv_exp3_manifest.py",
         "StegVerse-org/StegVerse-SDK:docs/MIR_SV_EXP3_MANIFEST.md",
         "https://github.com/StegVerse-org/StegVerse-SDK/pull/317",
-        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36085026183/artifacts/10843328013"
+        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36085026183/artifacts/10843328013",
+        "https://github.com/GCAT-BCAT-Engine/Publisher/pull/73",
+        "GCAT-BCAT-Engine/Publisher:docs/SDK_REVIEW_PUBLISHER_EVIDENCE_MIRROR_HANDOFF.md",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/318",
+        "StegVerse-org/StegVerse-SDK:docs/SDK_EXTERNAL_REVIEW_PUBLISHER_TRANSFER.md"
       ],
       "targets": {
         "organizations": [
@@ -11551,7 +11555,8 @@
         ],
         "repositories": [
           "StegVerse-Labs/.github",
-          "StegVerse-org/StegVerse-SDK"
+          "StegVerse-org/StegVerse-SDK",
+          "GCAT-BCAT-Engine/Publisher"
         ],
         "components": [
           "mir-sv-exp3",
@@ -11578,7 +11583,13 @@
         "CANONICAL_MASTER_RECORDS_EXACT_RECONSTRUCTION_REPRODUCED",
         "INDEPENDENT_JOINT_REVIEW",
         "SDK_SOURCE_MANIFEST_BUILT_FROM_EXISTING_INSTALLED_PROCESSOR",
-        "SDK_READ_ONLY_DIAGNOSTIC_ARTIFACT_SOURCE_VALIDATED"
+        "SDK_READ_ONLY_DIAGNOSTIC_ARTIFACT_SOURCE_VALIDATED",
+        "GENERIC_PUBLISHER_ORIGINALS_SOURCE_VALIDATION_PASS",
+        "EXTERNAL_REVIEW_DEFAULT_PUBLISHER_SOURCE_VALIDATION_PASS",
+        "REVIEW_PACKAGE_ORIGINALS_11_OF_11_LOCALLY_SHA256_VERIFIED",
+        "AUTHENTIC_PUBLISHER_RETURN_ACTUAL_CUSTODY_VERIFIED",
+        "AUTHENTIC_SDK_RETURN_MATCHED_TO_SOURCE_TRANSFER",
+        "AUTHENTIC_FAR_SIDE_EVALUATOR_DELIVERY"
       ],
       "runtime_requirements": {
         "capabilities": [
