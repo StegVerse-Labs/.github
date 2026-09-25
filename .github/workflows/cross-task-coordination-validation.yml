@@ -155,6 +155,8 @@ jobs:
             tests.test_task_registration_substrate_resolution \
             tests.test_task_registry_session_gate_backlog \
             tests.test_component010_checked_out_shard_projection \
+            tests.test_component010_predecessor_unittest \
+            tests.test_component010_source_refresh_carriage \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \
