@@ -14,8 +14,10 @@ is invoked.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
+import uuid
 import subprocess
 import sys
 from pathlib import Path
@@ -25,6 +27,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 SDK_EVALUATOR_SELECTOR = "sdk_evaluator_governance_posture"
 SDK_EVALUATOR_REQUEST_REL = Path("control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json")
+COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
+COMPONENT011_TASK_ID = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+COMPONENT011_REQUEST_ID = "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001"
+COMPONENT011_REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
 AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
 AWARENESS_STATE_DIR = Path("runtime-state/entity-awareness")
 AWARENESS_PROTECTED = {
@@ -313,6 +319,184 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
     }
 
 
+
+def retain_component011_dispatch_in_organization(
+    source: Path, runtime: Path, outcomes: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Record the exact component-011 selector outcome in the EXISTING org ledger.
+
+    This is observation-only. It never submits Master Records custody or mints
+    a WorkerCoordinator claim/fence. The org predecessor is verified by readback.
+    A missing runtime request is recorded as missing ONLY when its canonical
+    already-local source request is available for exact identity validation.
+    """
+    row = next((item for item in outcomes if item.get("consumer") == COMPONENT011_SELECTOR), None)
+    if row is None:
+        return None
+    request = load_json(runtime / COMPONENT011_REQUEST_REL)
+    runtime_request_present = request is not None
+    if request is None:
+        request = load_json(source / COMPONENT011_REQUEST_REL)
+        if request is None:
+            return {
+                "state": "BOUNDARY",
+                "reason": "COMPONENT011_REQUEST_IDENTITY_NOT_MATERIALIZED_IN_SOURCE_OR_RUNTIME",
+                "authority_effect": "NONE",
+            }
+    expected = {
+        "schema": "stegverse.resident-execution-request/v1",
+        "request_id": COMPONENT011_REQUEST_ID,
+        "task_id": COMPONENT011_TASK_ID,
+        "state": "REQUESTED",
+        "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+    }
+    if any(request.get(key) != value for key, value in expected.items()):
+        return {
+            "state": "BOUNDARY",
+            "reason": "COMPONENT011_REQUEST_IDENTITY_MISMATCH",
+            "authority_effect": "NONE",
+        }
+    ledger_path = source / "resident-runtime" / "aggregate_repo_transition.py"
+    if not ledger_path.is_file():
+        return {
+            "state": "BOUNDARY",
+            "reason": "EXISTING_ORGANIZATION_LEDGER_PRODUCER_NOT_MATERIALIZED",
+            "authority_effect": "NONE",
+        }
+    try:
+        workers_root = source / "workers"
+        if str(workers_root) not in sys.path:
+            sys.path.insert(0, str(workers_root))
+        from canonical_state_transition_custody import build_state_receipt, sha256_uri
+
+        spec = importlib.util.spec_from_file_location("component011_existing_org_ledger", ledger_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("existing organization ledger loader unavailable")
+        org = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(org)
+
+        # Reuse the existing organization batch verifier to inspect the entire
+        # current HEAD chain and reject pre-existing omitted/orphaned receipts.
+        # Do not append an observation into a known-corrupt organization graph.
+        runtime_modules = source / "resident-runtime"
+        if str(runtime_modules) not in sys.path:
+            sys.path.insert(0, str(runtime_modules))
+        from organization_batch_custody import _segment
+        ledger_root = org.ledger_root()
+        head_path = ledger_root / "HEAD.json"
+        if head_path.is_file():
+            head = org.load(head_path)
+            tip = head.get("receipt_sha256")
+            if head.get("organization") != org.C["organization"] or not isinstance(tip, str):
+                raise ValueError("organization HEAD identity invalid")
+            _segment(ledger_root, tip, None)
+        elif (ledger_root / "receipts").is_dir() and any((ledger_root / "receipts").glob("*.json")):
+            raise ValueError("organization receipts exist without HEAD")
+
+        # A fresh actual visit receives its own non-authorizing identity.
+        visit_id = uuid.uuid4().hex
+        transition_id = f"{COMPONENT011_TASK_ID}:RESIDENT_REQUEST_DISPATCH_VISIT:{COMPONENT011_REQUEST_ID}:{visit_id}"
+        evidence = {
+            "selector": COMPONENT011_SELECTOR,
+            "consumer_ref": row.get("consumer_ref"),
+            "task_id": COMPONENT011_TASK_ID,
+            "request_id": COMPONENT011_REQUEST_ID,
+            "runtime_request_present": runtime_request_present,
+            "attempted": row.get("attempted") is True,
+            "outcome": row.get("state"),
+            "returncode": row.get("returncode"),
+            "error_type": row.get("error_type"),
+            "consumer_result": row.get("result"),
+        }
+        receipt = build_state_receipt(
+            transition_id=transition_id,
+            transition_sequence=1,
+            subject_or_correlation_id=COMPONENT011_TASK_ID,
+            transition_outcome="OBSERVED",
+            prior_state_ref_or_hash=None,
+            resulting_state_ref_or_hash=sha256_uri(evidence),
+            governance_decision_ref_where_applicable=None,
+            transition_evidence={
+                "transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+                "selector": COMPONENT011_SELECTOR,
+                "task_id": COMPONENT011_TASK_ID,
+                "request_id": COMPONENT011_REQUEST_ID,
+                "visit_id": visit_id,
+                "runtime_request_present": runtime_request_present,
+                "attempted": row.get("attempted") is True,
+                "outcome": row.get("state"),
+                "dispatch_grants_authority": False,
+            },
+            required_evidence_manifest=[{
+                "evidence_id": transition_id + ":selector-outcome",
+                "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_OUTCOME",
+                "origin_transition_id": transition_id,
+                "encoding": "canonical-json",
+                "sha256": sha256_uri(evidence).split(":", 1)[1],
+                "content": evidence,
+            }],
+            proof_scope="COMPONENT011_DISPATCH_OBSERVATION_ONLY",
+            proof_ceiling="EXISTING_ORGANIZATION_LEDGER_OBSERVATION_ONLY",
+        )
+        recorded = org.aggregate_transition(
+            receipt,
+            org_transition_class="RESIDENT_REQUEST_DISPATCH_OBSERVATION",
+            boundary_evidence={
+                "task_id": COMPONENT011_TASK_ID,
+                "request_id": COMPONENT011_REQUEST_ID,
+                "visit_id": visit_id,
+                "runtime_request_present": runtime_request_present,
+                "attempted": row.get("attempted") is True,
+                "consumer_outcome": row.get("state"),
+                "source_transition_sha256": sha256_uri(receipt),
+            },
+            authority_effect="NONE",
+        )
+        digest = recorded["receipt_sha256"]
+        root = org.ledger_root()
+        stored_path = root / "receipts" / (digest[7:] + ".json")
+        stored = org.load(stored_path)
+        body = dict(stored)
+        if body.pop("receipt_sha256", None) != digest or org.sha(body) != digest or stored != recorded:
+            raise ValueError("organization dispatch receipt readback mismatch")
+        if stored.get("source_transition_sha256") != sha256_uri(receipt):
+            raise ValueError("organization dispatch source binding mismatch")
+        # The same established verifier rejects forks, omitted receipts and
+        # predecessor breaks after this append. This is a readback assertion,
+        # not independent concurrent-writer serialization.
+        _segment(root, digest, stored.get("previous_receipt_sha256"))
+        predecessor = stored.get("previous_receipt_sha256")
+        if predecessor is not None:
+            prior = org.load(root / "receipts" / (predecessor[7:] + ".json"))
+            prior_body = dict(prior)
+            if prior_body.pop("receipt_sha256", None) != predecessor or org.sha(prior_body) != predecessor:
+                raise ValueError("organization dispatch immediate predecessor invalid")
+        return {
+            "state": "RECORDED",
+            "classification": "RESIDENT_REQUEST_DISPATCH_OBSERVATION_ONLY",
+            "task_id": COMPONENT011_TASK_ID,
+            "request_id": COMPONENT011_REQUEST_ID,
+            "visit_id": visit_id,
+            "runtime_request_present": runtime_request_present,
+            "attempted": row.get("attempted") is True,
+            "consumer_outcome": row.get("state"),
+            "source_transition_sha256": sha256_uri(receipt),
+            "organization_receipt_sha256": digest,
+            "immediate_predecessor_sha256": predecessor,
+            "exact_receipt_readback": "PASS",
+            "immediate_predecessor_readback": "PASS",
+            "master_records_custody_claimed": False,
+            "runtime_execution_proven": False,
+            "authority_effect": "NONE_ORGANIZATION_OBSERVATION_ONLY",
+        }
+    except Exception as exc:
+        return {
+            "state": "BOUNDARY",
+            "reason": "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED",
+            "error_type": type(exc).__name__,
+            "authority_effect": "NONE",
+        }
+
 def dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -372,8 +556,14 @@ def dispatch(
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     exact_selector_failure = only_consumers is not None and bool(request_failures)
     sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
+    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
+    component011_custody_failure = bool(
+        component011_organization_dispatch is not None
+        and component011_organization_dispatch.get("state") != "RECORDED"
+        and (only_consumers is not None and COMPONENT011_SELECTOR in only_consumers)
+    )
     receipt = {
-        "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions and not exact_selector_failure else "DISPATCH_INCOMPLETE",
+        "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions and not exact_selector_failure and not component011_custody_failure else "DISPATCH_INCOMPLETE",
         "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
         "selected_consumers": [name for name, _ in selected], "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
         "current_goal_task_id": current_goal_task_id,
@@ -381,6 +571,8 @@ def dispatch(
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "sdk_evaluator_dispatch_master_records": sdk_evaluator_dispatch_master_records,
+        "component011_organization_dispatch": component011_organization_dispatch,
+        "component011_organization_custody_failure": component011_custody_failure,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
         "quantum_resilience_standing_awareness_ready": quantum_awareness_ready(runtime),
         "network_source_fetch_performed": False, "credential_authority": "TV/TVC", "github_token_required": False, "github_token_runtime_authority": "NONE",
