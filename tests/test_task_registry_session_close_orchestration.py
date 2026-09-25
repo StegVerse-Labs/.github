@@ -71,14 +71,14 @@ def test_chatgpt_session_close_requires_gated_checkin(tmp_path):
     assert bad.returncode != 0
     assert not ledger.exists()
 
-    good = subprocess.run([
+    forged = disposition("TASK-A", "CHATGPT_SESSION")
+    forged["ai_session_ingress"]["runtime_identity_attestation_proven"] = True
+    denied = subprocess.run([
         sys.executable, str(SCRIPT), "--task-id", "TASK-A", "--session-id", "session-a",
         "--actor-kind", "CHATGPT_SESSION", "--ledger", str(ledger),
-    ], input=json.dumps(disposition("TASK-A", "CHATGPT_SESSION")), text=True, capture_output=True, check=True)
-    payload = json.loads(good.stdout)
-    assert payload["actor_kind"] == "CHATGPT_SESSION"
-    assert payload["reusable_component_id"] == COMPONENT_ID
-    assert payload["runtime_identity_attestation_proven"] is False
+    ], input=json.dumps(forged), text=True, capture_output=True)
+    assert denied.returncode != 0
+    assert not ledger.exists()
 
 
 def test_contract_still_preserves_non_authorizing_session_close():
