@@ -20,7 +20,9 @@
     "tests/test_open_source_strategy_inventory.py",
     "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md",
     "data/ecosystem-open-source-organization-census-20260925.json",
-    "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json"
+    "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md"
   ],
   "adjacent_task_refs": [
     "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -114,7 +116,12 @@
     "ecosystem_census_exact_head_ci": "6_OF_6_APPLICABLE_SUCCESS",
     "organization_owner_source_pr": "StegVerse-org/.github#11",
     "organization_owner_source_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
-    "release_status": "NOT_AUTHORIZED"
+    "release_status": "NOT_AUTHORIZED",
+    "data_continuation_metadata": "7_OF_7_CHECKED_SOURCE_OWNER_MERGED",
+    "core_lite_pinned_license": "SOURCE_LICENSE_SCOPE_UNVERIFIED",
+    "core_lite_author_rights": "351_COMMIT_ATTRIBUTIONS_RIGHTS_UNVERIFIED",
+    "core_lite_dependencies": "PINNED_SOURCE_IMPORT_INSPECTION_PARTIAL",
+    "data_continuation_source_pr_checks": "NONE_REPORTED"
   },
   "ecosystem_inventory": {
     "snapshot": "2026-09-25",
@@ -127,12 +134,17 @@
     "universe_complete": false,
     "metadata_audited": [
       "StegVerse-Labs",
-      "StegVerse-org"
+      "StegVerse-org",
+      "Data-Continuation"
     ],
     "second_org_source_owned_pr": "StegVerse-org/.github#11",
     "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
     "other_organizations_count_only": 12,
     "copyright_title_verified": 0,
-    "release_authorized": false
+    "release_authorized": false,
+    "metadata_checked_entries": 144,
+    "third_org_source_owned_pr": "Data-Continuation/.github#7",
+    "third_org_source_owned_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4",
+    "other_organizations_count_visibility_only": 11
   }
 }
