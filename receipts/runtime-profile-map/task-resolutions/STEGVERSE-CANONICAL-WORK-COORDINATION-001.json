@@ -1,0 +1,129 @@
+{
+  "schema": "stegverse.canonical-task-runtime-resolution/v1",
+  "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "map_ref": "control/runtime-profile-map.json",
+  "map_generation": 2,
+  "requirements": {
+    "capabilities": [
+      "task_registry_reconciliation",
+      "master_records_reconciliation",
+      "worker_claim_projection",
+      "dependency_reevaluation",
+      "intr_task_admission",
+      "canonical_artifact_validation"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "candidate_profile_ids": [
+    "canonical-work-coordination-runtime-v1"
+  ],
+  "candidate_count": 1,
+  "evaluated": [
+    {
+      "profile_id": "canonical-resident-substrate-v1",
+      "compatible": false,
+      "reasons": [
+        "MISSING_CAPABILITIES:canonical_artifact_validation,dependency_reevaluation,intr_task_admission,master_records_reconciliation,task_registry_reconciliation,worker_claim_projection",
+        "MUTATION_NOT_ALLOWED_BY_PROFILE"
+      ],
+      "observed_state": "DECLARED_ONLY",
+      "capabilities_satisfied": [],
+      "missing_capabilities": [
+        "canonical_artifact_validation",
+        "dependency_reevaluation",
+        "intr_task_admission",
+        "master_records_reconciliation",
+        "task_registry_reconciliation",
+        "worker_claim_projection"
+      ],
+      "authority_effect": "NONE_CANDIDATE_MATCH_ONLY"
+    },
+    {
+      "profile_id": "sovereign-runtime-worker-v1",
+      "compatible": false,
+      "reasons": [
+        "MISSING_CAPABILITIES:dependency_reevaluation,intr_task_admission,master_records_reconciliation,task_registry_reconciliation,worker_claim_projection"
+      ],
+      "observed_state": "DECLARED_ONLY",
+      "capabilities_satisfied": [
+        "canonical_artifact_validation"
+      ],
+      "missing_capabilities": [
+        "dependency_reevaluation",
+        "intr_task_admission",
+        "master_records_reconciliation",
+        "task_registry_reconciliation",
+        "worker_claim_projection"
+      ],
+      "authority_effect": "NONE_CANDIDATE_MATCH_ONLY"
+    },
+    {
+      "profile_id": "universal-intr-profiled-ingress-v1",
+      "compatible": false,
+      "reasons": [
+        "MISSING_CAPABILITIES:canonical_artifact_validation,dependency_reevaluation,intr_task_admission,master_records_reconciliation,task_registry_reconciliation,worker_claim_projection",
+        "DIRECTION_NOT_DECLARED:INTERNAL"
+      ],
+      "observed_state": "DECLARED_ONLY",
+      "capabilities_satisfied": [],
+      "missing_capabilities": [
+        "canonical_artifact_validation",
+        "dependency_reevaluation",
+        "intr_task_admission",
+        "master_records_reconciliation",
+        "task_registry_reconciliation",
+        "worker_claim_projection"
+      ],
+      "authority_effect": "NONE_CANDIDATE_MATCH_ONLY"
+    },
+    {
+      "profile_id": "canonical-work-coordination-runtime-v1",
+      "compatible": true,
+      "reasons": [],
+      "observed_state": "DECLARED_ONLY",
+      "capabilities_satisfied": [
+        "canonical_artifact_validation",
+        "dependency_reevaluation",
+        "intr_task_admission",
+        "master_records_reconciliation",
+        "task_registry_reconciliation",
+        "worker_claim_projection"
+      ],
+      "missing_capabilities": [],
+      "authority_effect": "NONE_CANDIDATE_MATCH_ONLY"
+    },
+    {
+      "profile_id": "kv-ai-memory-resident-routing-v1",
+      "compatible": false,
+      "reasons": [
+        "MISSING_CAPABILITIES:canonical_artifact_validation,dependency_reevaluation,intr_task_admission,master_records_reconciliation,task_registry_reconciliation,worker_claim_projection",
+        "ENVIRONMENT_NOT_DECLARED:SOVEREIGN_RESIDENT",
+        "DIRECTION_NOT_DECLARED:INTERNAL"
+      ],
+      "observed_state": "DECLARED_ONLY",
+      "capabilities_satisfied": [],
+      "missing_capabilities": [
+        "canonical_artifact_validation",
+        "dependency_reevaluation",
+        "intr_task_admission",
+        "master_records_reconciliation",
+        "task_registry_reconciliation",
+        "worker_claim_projection"
+      ],
+      "authority_effect": "NONE_CANDIDATE_MATCH_ONLY"
+    }
+  ],
+  "resolved_at": "2026-09-25T21:19:00Z",
+  "projection_only": true,
+  "selection_grants_authority": false,
+  "workercoordinator_admission_still_required": true,
+  "interlock_intr_transition_admission_still_required": true,
+  "master_records_reconciliation_still_required": true,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_RUNTIME_CANDIDATE_PROJECTION_ONLY"
+}
