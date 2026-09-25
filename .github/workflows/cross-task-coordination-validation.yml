@@ -27,6 +27,9 @@ on:
       - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
+      - 'tests/test_task_registry_session_gate_backlog.py'
+      - 'scripts/audit_task_registry_session_gate_backlog.py'
+      - 'data/task-registry-ai-ingress-policy.json'
       - 'tests/test_task_registry_general_checkin_surface_gate.py'
       - 'heartbeat_runtime/coordination_graph.py'
       - 'heartbeat_runtime/coordination_ledger.py'
@@ -81,6 +84,9 @@ on:
       - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
+      - 'tests/test_task_registry_session_gate_backlog.py'
+      - 'scripts/audit_task_registry_session_gate_backlog.py'
+      - 'data/task-registry-ai-ingress-policy.json'
       - 'tests/test_task_registry_general_checkin_surface_gate.py'
       - 'heartbeat_runtime/coordination_graph.py'
       - 'heartbeat_runtime/coordination_ledger.py'
@@ -145,6 +151,7 @@ jobs:
             tests.test_task_registry_collision_checkin \
             tests.test_sdk_untrusted_dependency_collision_checkin \
             tests.test_task_registration_substrate_resolution \
+            tests.test_task_registry_session_gate_backlog \
             tests.test_task_registry_ai_session_ingress \
             tests.test_task_registry_general_checkin_surface_gate \
             tests.test_steghealth_kv_interlock_canonical_work_ingress \

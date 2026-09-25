@@ -10,8 +10,17 @@
     "scripts/record_task_registry_session_return.py",
     "scripts/materialize_task_session_close.py"
   ],
-  "allowed_actor_kinds": ["CHATGPT_SESSION", "HUMAN_OPERATOR", "NON_AI_SYSTEM_COORDINATOR"],
-  "denied_ai_actor_kinds": ["NON_CHATGPT_AI", "AI_MODEL", "AI_AGENT", "EXTERNAL_MODEL"],
+  "allowed_actor_kinds": [
+    "CHATGPT_SESSION",
+    "HUMAN_OPERATOR",
+    "NON_AI_SYSTEM_COORDINATOR"
+  ],
+  "denied_ai_actor_kinds": [
+    "NON_CHATGPT_AI",
+    "AI_MODEL",
+    "AI_AGENT",
+    "EXTERNAL_MODEL"
+  ],
   "invariants": {
     "chatgpt_is_only_ai_actor_kind_permitted": true,
     "human_operator_permitted": true,
@@ -33,5 +42,24 @@
     "master_records": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_actions": "VALIDATION_EVIDENCE_TRANSPORT_ONLY"
+  },
+  "source_only_coordination_boundary": {
+    "classification": "NONAUTHORITATIVE_SOURCE_WORK_DOES_NOT_REQUIRE_AN_AUTHENTIC_AI_SESSION_DISPOSITION",
+    "scope": [
+      "EXACT_GENERATION_CANONICAL_SOURCE_RECONCILIATION",
+      "ISSUE_AND_OWNER_COORDINATION",
+      "SOURCE_ONLY_TESTS_AND_STATIC_VALIDATION",
+      "PR_SOURCE_PROPOSAL_UNDER_EXISTING_REPOSITORY_PROTECTION"
+    ],
+    "constraints": [
+      "MUST_USE_CANONICAL_TASK_REGISTRY_AND_EXISTING_OWNER",
+      "MUST_RECONCILE_CURRENT_GENERATION_AND_SOURCE_COLLISIONS",
+      "NO_WORKERCOORDINATOR_CLAIM_FENCE_OR_GOVERNED_TRANSITION",
+      "NO_COSV_DERIVATION_FROM_THIS_DECLARATION",
+      "NO_FAKE_AI_SESSION_OR_CHECKIN_LEDGER_EVENT",
+      "AUTHENTIC_AI_SESSION_GATE_REMAINS_REQUIRED_WHEN_ACTUAL_AI_SESSION_ADMISSION_IS_NEEDED"
+    ],
+    "audit": "scripts/audit_task_registry_session_gate_backlog.py",
+    "authority_effect": "NONE"
   }
 }
