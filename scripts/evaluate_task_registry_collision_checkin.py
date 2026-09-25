@@ -67,6 +67,37 @@ def load_records():
     return out
 
 
+def load_missing_checked_out_shards(registered: dict) -> dict:
+    """Guard collision evaluation against checked-out shards omitted from aggregate.
+
+    An omitted shard is NEVER admitted as a task, minted a COSV, or silently
+    inserted into the canonical Registry. It is collision evidence only.
+    The canonical Registry producer must separately reconcile valid identities.
+    """
+    missing = {}
+    for path in sorted(RECORDS.glob("*.json")):
+        shard = _load_object(path)
+        # Auxiliary session notes live alongside canonical shards; they lack a
+        # canonical task identity and must not impersonate a checked-out owner.
+        if ("task_id" not in shard and shard.get("schema") != "stegverse.canonical-task-record/v1"
+                and "checkout_state" not in shard):
+            continue
+        tid = shard.get("task_id")
+        if not isinstance(tid, str) or tid != path.stem:
+            raise ValueError(f"canonical task shard path identity mismatch: {path.name}")
+        if tid in registered:
+            canonical = registered[tid]
+            for key in ("correlation_id", "root_correlation_id", "parent_task_id"):
+                left, right = canonical.get(key), shard.get(key)
+                if left is not None and right is not None and left != right:
+                    raise ValueError(f"canonical task shard {key} mismatch: {tid}")
+            continue
+        if (str(shard.get("coordination_state") or "").upper() in ACTIVEISH
+                and str(shard.get("checkout_state") or "").upper() == "CHECKED_OUT"):
+            missing[tid] = shard
+    return missing
+
+
 def load_global_invariants():
     policy = json.loads(GLOBAL_INVARIANTS.read_text(encoding="utf-8"))
     if policy.get("schema") != "stegverse.task-registry-global-invariants/v1":
@@ -421,6 +452,7 @@ def main():
         }, context)
         return
     records = load_records()
+    missing_checked_out = load_missing_checked_out_shards(records)
     r = records.get(tid)
     if not r:
         emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"disposition":"STOP_NOT_REGISTERED","session_action":"END_OR_REGISTER_BEFORE_MUTATION","authority_effect":"NONE"}, context)
@@ -452,7 +484,7 @@ def main():
     repository_only_scope_distinctions=[]
     shareable_user_action_surface_distinctions=[]
     controller_exclusions=[]
-    for oid, o in records.items():
+    for oid, o in [*records.items(), *missing_checked_out.items()]:
         if oid == tid:
             continue
         if progression_controller_for_same_goal(r, o):
@@ -477,7 +509,7 @@ def main():
                     "execution_substrates":substrates,
                     "user_action_surface_conflicts":action_conflicts,
                 },
-                "source":"CANONICAL_TASK_REGISTRY",
+                "source":"CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE" if oid in missing_checked_out else "CANONICAL_TASK_REGISTRY",
             }
             if repository_only_overlap_is_component_distinguished(r, o, repos, comps, lineage, adjacent, substrates):
                 overlap_row["scope_disposition"] = "DISTINGUISHED_COMPONENT_SCOPE"
@@ -505,7 +537,7 @@ def main():
             collisions.append(row)
             known.add(marker)
 
-    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_REGISTRY" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
+    hard=[c for c in collisions if c.get("source") in {"CANONICAL_TASK_REGISTRY", "CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE"} and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
     emit({
@@ -520,6 +552,8 @@ def main():
         "disposition":disposition,
         "session_action":action,
         "collision_candidates":collisions,
+        "unregistered_checked_out_shard_ids":sorted(missing_checked_out),
+        "unregistered_shards_are_collision_guards_only":True,
         "repository_only_scope_distinctions":repository_only_scope_distinctions,
         "shareable_user_action_surface_distinctions":shareable_user_action_surface_distinctions,
         "repository_only_overlap_policy":"NONBLOCKING_ONLY_WHEN_BOTH_TASKS_DECLARE_NONEMPTY_DISJOINT_COMPONENT_SCOPES_AND_NO_STRONGER_OVERLAP_SIGNAL",
