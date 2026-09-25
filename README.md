@@ -1,3 +1,7 @@
+## First-wave rights audit merge evidence (2026-09-25)
+
+Open-source strategy PR [#2727](https://github.com/StegVerse-Labs/.github/pull/2727) merged `aee4e664cf26aee2491b3558db307a897c8785d9` from exact validated head `4737f3a68db41a00abc3e12104265bd4e4220d0b` after six successful applicable workflows. Hybrid license clarification remains with native owner issue #32. No relicensing, formal copyright clearance or public release is claimed. See `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md`.
+
 ## Open-source first-wave exact-source follow-up (2026-09-25)
 
 Under canonical goal `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`, exact-source audit identified a hybrid bridge MIT-versus-constitutional licensing scope discrepancy, routed to its [native owner issue #32](https://github.com/StegVerse-Labs/hybrid-collab-bridge/issues/32). All four pinned SDK optional Git commits resolve, but their downstream copyright/license and historical pinned-commit grants remain unverified; some optional dependencies require Python >=3.11 while SDK metadata supports >=3.9. See `docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md`. The 119-repository metadata census is unchanged. No license file was changed, no new Goal Task ID was minted, and no new release was authorized.
