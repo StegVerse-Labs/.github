@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,hashlib,json,os
+import argparse,base64,hashlib,json,os,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -13,6 +13,62 @@ def ledger_root():
     if o: return Path(o).expanduser().resolve()
     return (Path(os.getenv("XDG_STATE_HOME",str(Path.home()/".local/state")))/"stegverse/org-ledgers"/C["organization"]).resolve()
 def load(p): return json.loads(Path(p).read_text())
+
+def verify_required_evidence(receipt):
+    """Require exact inline canonical evidence bytes for organization-local replay."""
+    manifest=receipt.get("required_evidence_manifest")
+    if not isinstance(manifest,list): raise ValueError("canonical required evidence manifest missing")
+    seen=set()
+    for item in manifest:
+        if not isinstance(item,dict): raise ValueError("canonical evidence entry invalid")
+        for key in ("evidence_id","evidence_type","origin_transition_id","encoding","sha256","content"):
+            if key not in item: raise ValueError("canonical evidence field missing: "+key)
+        identity=item["evidence_id"]
+        if not isinstance(identity,str) or not identity or identity in seen:
+            raise ValueError("canonical evidence identity invalid")
+        seen.add(identity)
+        if not isinstance(item["evidence_type"],str) or not item["evidence_type"] or item["origin_transition_id"]!=receipt.get("transition_id"):
+            raise ValueError("canonical evidence transition binding invalid")
+        encoding=item["encoding"]
+        content=item["content"]
+        if encoding=="canonical-json": raw=canon(content)
+        elif encoding=="utf-8" and isinstance(content,str): raw=content.encode("utf-8")
+        elif encoding=="base64" and isinstance(content,str):
+            try: raw=base64.b64decode(content.encode("ascii"),validate=True)
+            except (ValueError,UnicodeError) as exc: raise ValueError("canonical evidence base64 invalid") from exc
+        else: raise ValueError("canonical evidence encoding invalid")
+        digest=item["sha256"]
+        if not isinstance(digest,str) or len(digest)!=64 or hashlib.sha256(raw).hexdigest()!=digest:
+            raise ValueError("canonical required evidence digest mismatch")
+
+
+def retain_source(root, receipt, verified):
+    """Keep immutable exact source bytes under the existing private org ledger root."""
+    digest=verified["source_transition_sha256"]
+    if not isinstance(digest,str) or len(digest)!=71 or not digest.startswith("sha256:"):
+        raise ValueError("organization source hash invalid")
+    directory=root/"source-receipts"
+    directory.mkdir(mode=0o700,parents=True,exist_ok=True)
+    path=directory/(digest[7:]+".json")
+    if path.exists():
+        stored=load(path)
+        if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=digest:
+            raise ValueError("retained organization source receipt conflict")
+        return path
+    fd,name=tempfile.mkstemp(prefix=".source-",dir=str(directory))
+    try:
+        with os.fdopen(fd,"w",encoding="utf-8") as stream:
+            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        if path.exists():
+            stored=load(path)
+            if stored!=receipt: raise ValueError("retained organization source receipt conflict")
+        else: os.replace(name,path)
+    finally:
+        if os.path.exists(name): os.unlink(name)
+    return path
+
 
 def verify_source(receipt):
     schema=receipt.get("schema")
@@ -34,6 +90,7 @@ def verify_source(receipt):
             "canonical_state_transition_receipt_sha256":None,
             "subject_or_correlation_id":None,
         }
+    verify_required_evidence(receipt)
     digest=sha(receipt)
     return {
         "source_receipt_schema":schema,
@@ -85,7 +142,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
         boundary_evidence=boundary_evidence,authority_effect=authority_effect,
     )
     if existing is not None:
+        retain_source(root,receipt,source)
         return existing
+    retain_source(root,receipt,source)
     prev=load(h).get("receipt_sha256") if h.exists() else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]

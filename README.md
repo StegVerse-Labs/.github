@@ -1539,3 +1539,7 @@ The existing Canonical Work consumer prioritizes `ERL-HOUSEHOLD-ECONOMIC-CONDITI
 ## MyKV native iOS registration (pending)
 
 `MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001` is staged as a PROPOSED / UNCLAIMED source preregistration at candidate Registry generation 221, coordinated by [central issue #2638](https://github.com/StegVerse-Labs/.github/issues/2638). The [native MyKV handoff](docs/MYKV_NATIVE_IOS_PACKAGING_DISTRIBUTION_MIRROR_HANDOFF.md) identifies the existing StegOS iOS target, Site MyKV/PWA fallback and separate TV/TVC signing and TestFlight custody. Source registration alone grants no WorkerCoordinator authority; consume an authentic current-generation AI_SESSION_GATE disposition before execution or owner promotion. Unsigned builds cannot prove TestFlight distribution or current-iPhone installation.
+
+### Organization-local exact-source replay
+
+The existing organization ledger keeps immutable exact source receipts and inline required evidence in its current private ledger root. The existing batch worker can independently validate local worker/task receipt sequences and export an exact, non-authorizing Master Records submission envelope. This is not an additional ledger or a live delivery claim. Source repair validation and authenticated runtime evidence are tracked separately in `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`.

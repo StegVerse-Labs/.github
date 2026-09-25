@@ -42,7 +42,7 @@ def test_close_and_verify_two_contiguous_batches(monkeypatch, tmp_path):
     assert batch.verify_batch(
         tmp_path, closed["batch_id"],
         source_receipts={org.sha(source1): source1, org.sha(source2): source2},
-    )["source_reconstruction"] == "SOURCE_DIGESTS_PASS_REQUIRED_EVIDENCE_BYTES_NOT_EVALUATED"
+    )["source_reconstruction"] == "SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS"
     assert batch.close_batch("TASK_CLOSURE", root=tmp_path) == closed
     _, third = append(monkeypatch, tmp_path, "EXPIRE")
     after = batch.close_batch("WORKER_EXPIRY", root=tmp_path)
