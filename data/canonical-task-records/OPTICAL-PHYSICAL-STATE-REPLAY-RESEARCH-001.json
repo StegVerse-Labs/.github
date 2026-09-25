@@ -8,7 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "10111110114000",
   "source_refs": [
     "https://github.com/StegVerse-Labs/.github/issues/2626",
     "https://github.com/StegVerse-Labs/Patents/issues/5",
@@ -110,5 +110,32 @@
     "source_pr_only": true,
     "post_registration_exact_generation_gate_required": true,
     "external_repository_mutation_approved": false
+  },
+  "cosv_source_proposal": {
+    "profile": "task.v1",
+    "vector": "10111110114000",
+    "source_only": true,
+    "authoritative": false,
+    "registry_generation_observed": 224,
+    "breakdown": {
+      "L": 1,
+      "R": 0,
+      "U": 1,
+      "I": 1,
+      "V": 1,
+      "G": 1,
+      "O": 1,
+      "C": 0,
+      "M": 1,
+      "T": 1,
+      "B": 4,
+      "E": 0,
+      "A": 0,
+      "P": 0
+    },
+    "basis": "Observed PROPOSED/UNCLAIMED source registration; work remains in four documented unresolved classes; implementation/validation/integration/observation research underway; custody and execution not evidenced.",
+    "requirement": "Existing canonical Registry owner must reconcile current generation and validate vector before binding it to cosv_task_vector. This candidate is not an authentic check-in, owner clearance, or execution authority.",
+    "proposed_generation": 225,
+    "classification": "SOURCE_PR_AUTHORITATIVE_ONLY_AFTER_NATIVE_OWNER_REVIEW_AND_MERGE"
   }
 }
