@@ -1620,3 +1620,7 @@ The canonical [StegVerse SDK public wiki](https://sdk.stegverse.org/) was alread
 ## September 25 — SDK DeepWiki citation classification
 
 Within existing open-source strategy owner ECOSYSTEM-OPEN-SOURCE-STRATEGY-001 / COSV 20010010100000, the SDK source-only PR #322 has an [exact-artifact citation audit](https://github.com/StegVerse-org/StegVerse-SDK/blob/docs/deepwiki-readonly-review-20260925/docs/deepwiki-review/CITATION_AUDIT.md): 659 empty generated targets, partitioned into 599 numeric source-line candidates, 41 other simple labels and 19 malformed/context-sensitive references. This does not verify the referenced source or authorize import, wiki publication or a new open-source release. Preserve the existing completed SDK developer-wiki publication and full 38-page export.
+
+### Source-pinned citation repair preview added to SDK draft
+
+The existing SDK draft PR #322 now proposes a review-only `resolve_deepwiki_review_citations.py` step and tests. It uses the checkout's exact SHA to produce source-path/line-bound candidate URLs and explicitly preserves unresolved entries, with `publication_allowed=false`. Exact-head CI and actual candidate counts still require readback; the official Pages wiki, licenses, Registry state and previous DeepWiki raw artifact remain unchanged.
