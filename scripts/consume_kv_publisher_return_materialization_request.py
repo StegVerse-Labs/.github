@@ -23,6 +23,9 @@ SDK_BINDING_DIR=Path("sdk-publisher-return-bindings")
 DESTINATION={"boundary":"KV","subsystem":"KnowledgeVault:DocumentImport"}
 KV_DOWNSTREAM_OWNER="StegVerse-Labs/continuity-vault-kit"
 SDK_DOWNSTREAM_OWNER="StegVerse-org/StegVerse-SDK"
+SDK_REVIEW_RETURN_DESTINATION={"boundary":"STEGOS_ECOSYSTEM","subsystem":"SDK:ReviewerReturn"}
+SDK_REVIEW_PROFILE="sdk-publisher-review"
+SDK_REVIEW_SOURCE_SCHEMA="stegverse.publisher.evidence-report-package/v1"
 RETURN_SCHEMA="stegverse.publisher.artifact-return/v1"
 MIR_ROUNDTRIP_BINDING_PROFILE="stegverse.publisher.mir-roundtrip-binding/v1"
 SDK_COMPLETION_CAPSULE_PROFILE="stegverse.sdk.downstream-completion-capsule/v1"
@@ -86,7 +89,7 @@ def validate_request(request:dict[str,Any])->None:
       "state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
       "transport_schema":"stegverse.universal-intr-transport/v1",
       "transport_protocol":"InTr",
-      "destination":DESTINATION,
+      "destination": (SDK_REVIEW_RETURN_DESTINATION if request.get("destination")==SDK_REVIEW_RETURN_DESTINATION else DESTINATION),
       "event_triggered":True,
       "always_on_receiver_required":False,
       "second_user_device_required":False,
@@ -107,7 +110,11 @@ def validate_request(request:dict[str,Any])->None:
     owner=request.get("downstream_owner_ref")
     if owner not in {KV_DOWNSTREAM_OWNER,SDK_DOWNSTREAM_OWNER}:
         raise KVPublisherReturnError("materialization_downstream_owner_ref_mismatch")
-    if request.get("boundary_path")!=["STEGOS_ECOSYSTEM","DEVICE_SYSTEM","KV"]:
+    sdk_review=request.get("destination")==SDK_REVIEW_RETURN_DESTINATION
+    if sdk_review and owner!=SDK_DOWNSTREAM_OWNER:
+        raise KVPublisherReturnError("sdk_review_return_requires_sdk_owner")
+    required_path=(["STEGOS_ECOSYSTEM"] if sdk_review else ["STEGOS_ECOSYSTEM","DEVICE_SYSTEM","KV"])
+    if request.get("boundary_path")!=required_path:
         raise KVPublisherReturnError("materialization_boundary_path_invalid")
     body=dict(request); claimed=body.pop("request_hash",None)
     if claimed!=sha(body): raise KVPublisherReturnError("materialization_request_hash_mismatch")
@@ -128,17 +135,31 @@ def _verify_common_return_transport(runtime:Path,materialization_id:str,request:
     if sha(intent)!=request["transport_intent_hash"]: raise KVPublisherReturnError("return_intent_hash_mismatch")
     if intent.get("packet_id")!=request["packet_id"] or intent.get("operation_id")!=request["operation_id"]:
         raise KVPublisherReturnError("return_intent_identity_mismatch")
-    if intent.get("source")!={"boundary":"STEGOS_ECOSYSTEM","subsystem":"Publisher:Export"} or intent.get("destination")!=DESTINATION:
+    sdk_review=request.get("destination")==SDK_REVIEW_RETURN_DESTINATION
+    if intent.get("source")!={"boundary":"STEGOS_ECOSYSTEM","subsystem":"Publisher:Export"} or intent.get("destination")!=request["destination"]:
         raise KVPublisherReturnError("return_intent_endpoint_mismatch")
-    if intent.get("boundary_path")!=["STEGOS_ECOSYSTEM","DEVICE_SYSTEM","KV"]:
+    expected_path=(["STEGOS_ECOSYSTEM"] if sdk_review else ["STEGOS_ECOSYSTEM","DEVICE_SYSTEM","KV"])
+    if intent.get("boundary_path")!=expected_path:
         raise KVPublisherReturnError("return_intent_path_mismatch")
-    if not isinstance(receipts,list) or len(receipts)!=2:
+    if not isinstance(receipts,list) or len(receipts)!=(1 if sdk_review else 2):
         raise KVPublisherReturnError("return_receipt_chain_incomplete")
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/universal_intr_transport.py")
     if stegos is None: raise KVPublisherReturnError("local_stegos_source_materialization_required")
     if str(stegos) not in sys.path: sys.path.insert(0,str(stegos))
     from stegos.universal_intr_transport import validate_transport_intent, validate_receipt_chain
     validate_transport_intent(intent); validate_receipt_chain(intent,receipts)
+    if sdk_review:
+        from stegos.intr_backbone import load_connector_registry, CanonicalInTrConnector, PreparedPacket
+        profiles=load_connector_registry(stegos/"specs/universal-intr-connector-profiles.v1.json")
+        if SDK_REVIEW_PROFILE not in profiles:
+            raise KVPublisherReturnError("sdk_review_profile_not_materialized")
+        profile=profiles[SDK_REVIEW_PROFILE]
+        if (profile.response is None or profile.response[0]!=intent["source"]
+            or profile.response[1]!=intent["destination"]):
+            raise KVPublisherReturnError("sdk_review_profile_response_endpoint_mismatch")
+        packet=PreparedPacket(profile,"RESPONSE",RETURN_SCHEMA,raw,intent)
+        if CanonicalInTrConnector(profile).validate_complete(packet,receipts)["state"]!="TRANSPORT_COMPLETE":
+            raise KVPublisherReturnError("sdk_review_reverse_chain_not_complete")
     terminal=receipts[-1].get("receipt_hash")
     if not isinstance(terminal,str) or not terminal: raise KVPublisherReturnError("return_transport_terminal_receipt_missing")
     return raw,intent,receipts,terminal
@@ -597,6 +618,8 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
     raw,_intent,_receipts,terminal=_verify_common_return_transport(runtime,materialization_id,request)
     owner=request["downstream_owner_ref"]
     if owner==SDK_DOWNSTREAM_OWNER:
+        if request.get("destination")==SDK_REVIEW_RETURN_DESTINATION:
+            return _consume_sdk_review_owner(runtime,materialization_id,request,raw,terminal)
         return _consume_sdk_owner(runtime,materialization_id,request,raw,terminal)
     if owner==KV_DOWNSTREAM_OWNER:
         return _consume_kv_owner(runtime,materialization_id,request,raw,terminal)
