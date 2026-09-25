@@ -61,6 +61,11 @@ def main() -> int:
             raise SystemExit("ChatGPT session return requires gated check-in disposition")
         if ingress.get("authority_effect") != "NONE":
             raise SystemExit("AI session ingress authority widening")
+        # The public CLI cannot authenticate a ChatGPT session or verify a
+        # retained same-session CHECK_IN. A forged ingress dict is not proof.
+        # Refuse before append_event until the existing authorized host carrier
+        # can supply independently verified origin and ledger continuity.
+        raise SystemExit("STOP_AUTHENTIC_ORIGIN_UNAVAILABLE: ChatGPT return requires verified resident session origin and retained check-in")
 
     configured = args.ledger or os.environ.get("STEGVERSE_TASK_REGISTRY_EVENT_LEDGER")
     ledger = Path(configured).expanduser().resolve() if configured else DEFAULT_LEDGER
