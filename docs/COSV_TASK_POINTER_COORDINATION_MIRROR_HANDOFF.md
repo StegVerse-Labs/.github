@@ -374,3 +374,8 @@ The reusable source-package lifecycle now continues through the already-existing
 Far-side acceptance is fail-closed: `SOURCE_MATERIALIZED_VERIFIED` must name the exact package `source_identity`, and `source_materialization.files[]` must exactly reproduce path, sha256, and size for all five Functional Memory/StegFin carriage files before the continuation receipt is retained.
 
 No authentic post-merge relay/materialization, worker-source-refresh, WorkerCoordinator assignment disposition, Functional Memory receipt, claim, or fence is promoted by this source repair.
+
+
+## Exact checked-out shard bulk projection — generation 231 candidate
+
+Under existing `STEGVERSE-CANONICAL-WORK-COORDINATION-001` / COSV `10100000100000`, the source-only exact-shard projection candidate imports **19 pre-existing ACTIVE/CHECKED_OUT records** omitted from generation 230 aggregate into proposed generation 231. Their complete source records and checkout ownership are copied without semantic mutation. Exact source blob SHAs and two non-projectable cases are recorded in `data/coordination-audits/checkedout-shard-projection-g231.json`. It does not mint task identity, COSV, new checkout, claim/fence, resident execution or Master Records evidence. Missing COSV source state for ERL-SPURLOCK-CPD-ENTRY-001 and TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001 requires existing-owner follow-up; no value invented. Review index and exact-head CI before merge.
