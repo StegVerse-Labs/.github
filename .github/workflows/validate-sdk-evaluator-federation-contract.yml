@@ -12,6 +12,8 @@ on:
       - 'tests/test_sdk_evaluator_federation_contract.py'
       - 'tests/test_org_federation_intr_ingress.py'
       - 'tests/test_org_ledger_receipt_audit.py'
+      - 'tests/test_sdk_evaluator_governance_posture_resident.py'
+      - 'control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json'
       - 'workers/org_federation_intr_profile.py'
       - 'workers/canonical_state_transition_custody.py'
       - 'resident-runtime/aggregate_repo_transition.py'
@@ -28,10 +30,12 @@ jobs:
         with:
           python-version: '3.11'
       - name: Compile existing source and regression tests
-        run: python -m py_compile org-kernel/kernel.py resident-runtime/federation_gateway_transport.py workers/universal_intr_profiled_ingress.py scripts/consume_sdk_evaluator_governance_posture_request.py workers/org_federation_intr_profile.py workers/canonical_state_transition_custody.py resident-runtime/aggregate_repo_transition.py tests/test_sdk_evaluator_federation_contract.py tests/test_org_federation_intr_ingress.py tests/test_org_ledger_receipt_audit.py
+        run: python -m py_compile org-kernel/kernel.py resident-runtime/federation_gateway_transport.py workers/universal_intr_profiled_ingress.py scripts/consume_sdk_evaluator_governance_posture_request.py workers/org_federation_intr_profile.py workers/canonical_state_transition_custody.py resident-runtime/aggregate_repo_transition.py tests/test_sdk_evaluator_federation_contract.py tests/test_org_federation_intr_ingress.py tests/test_org_ledger_receipt_audit.py tests/test_sdk_evaluator_governance_posture_resident.py
       - name: Run bounded source-only regression tests
         run: python -m unittest discover -s tests -p test_sdk_evaluator_federation_contract.py -v
       - name: Run federation admission and ledger regression tests
         run: python -m unittest discover -s tests -p test_org_federation_intr_ingress.py -v
       - name: Verify organization-level receipt audit, failure replay and custody retry
         run: python -m unittest discover -s tests -p test_org_ledger_receipt_audit.py -v
+      - name: Validate existing resident SDK original-source materialization and fail-closed readback
+        run: python -m unittest discover -s tests -p test_sdk_evaluator_governance_posture_resident.py -v
