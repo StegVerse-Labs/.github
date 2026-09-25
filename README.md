@@ -1628,3 +1628,12 @@ Merged immutable-wire/projection digest source repairs SDK #323 and central #271
 ### Optional distributed Grok source (2026-09-25)
 
 Under existing `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001` (observational COSV `10100000103000`), merged [LLM Adapter PR #352](https://github.com/StegVerse-org/LLM-adapter/pull/352) adds a manifest-selected xAI/Grok `ProviderClient` to the existing distributed Ecosystem Chat capability. The same components serve user-facing multi-LLM requests and ecosystem task execution; no new runtime, broker, execution authority or second device. The canonical coordination handoff is `docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md`. Adapter source and fixture changes do not establish authentic provider execution, InTr admission, organization receipt readback, Master Records custody or public release.
+
+
+
+## Proposed ecosystem transition-disposition invariant (2026-09-25)
+
+Under the existing canonical-work owner `STEGVERSE-CANONICAL-WORK-COORDINATION-001` (COSV `10100000100000`), the proposed reusable contract is [Ecosystem State-Transition Disposition Invariant](docs/ECOSYSTEM_STATE_TRANSITION_DISPOSITION_INVARIANT.md). Every attempted transition should return the next actionable non-ALLOW receipt (DENY, FAIL_CLOSED, or an explicit other defined class) or an evidenced ALLOW; ambiguous blocker/unknown prose does not substitute for a disposition. Use the same exact manifest-bound evaluation/receipt display for external framework findings and normalize misleading governance-'authority' descriptions into governing constraints and state-transition dependencies. This branch is source-only documentation; no canonical task transition, runtime enforcement, SDK implementation, or live receipt is claimed. Existing owner issue #1766 coordinates the proposal; routing issue #1615 and admissibility-wiki #50/#66 retain their respective implementation ownership.
+
+
+Canonical proposed disposition source checks: `scripts/validate_transition_disposition.py` and `tests/test_transition_disposition_invariant.py` validate supplied receipts and external-framework findings under existing owner #1766. They are source-only and cannot mint runtime disposition or Master Records evidence. See `docs/ECOSYSTEM_STATE_TRANSITION_DISPOSITION_INVARIANT.md` and PR #2714.
