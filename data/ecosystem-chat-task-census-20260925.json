@@ -1,0 +1,806 @@
+{
+  "schema": "stegverse.ecosystem-chat-source-census/v1",
+  "registry_generation": 243,
+  "observed_date": "2026-09-25",
+  "coordination_effect": "NONE_READ_ONLY_AUDIT",
+  "coverage": {
+    "aggregate_records": 90,
+    "canonical_shard_files": 172,
+    "adapter_task_files": 75,
+    "site_task_files": 86,
+    "scope": "Current aggregate, every local canonical shard, worker registry, native adapter and Site task files; #283/#325/#327 branch-only records. Related issue discovery spans StegVerse-Labs, StegVerse-org, StegVerse-002, master-records and GCAT-BCAT-Engine. Search matches are candidates, not automatic proof of task relevance or completion."
+  },
+  "matching_records": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
+        "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site#1458",
+        "GCAT-BCAT-Engine/Publisher#72"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "record_state": "ACTIVE",
+      "checkout_state": "CLAIMED_INTEGRATION",
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+        "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+        "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "50000000100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+      "record_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "50000000100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "record_state": "RETIRED",
+      "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+      "issue_ref": "StegVerse-Labs/.github#2078",
+      "handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/STEGOS-NODE-MANIFOLD-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "STEGOS-NODE-MANIFOLD-001",
+      "record_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "issue_ref": "StegVerse-Labs/StegOS#23",
+      "handoff_ref": [
+        "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-records/WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "StegVerse-002/stegguardian-wiki:STEGGUARDIAN_WIKI_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/stegtalk-wiki:STEGTALK_WIKI_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site:docs/WIKI_BRANDED_PUBLICATION_SITE_PROPAGATION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-CANONICAL-LOCAL-MODEL-BINDING-018.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-CANONICAL-LOCAL-MODEL-BINDING-018",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-CHAT-LLM-PROFILES-009.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-CHAT-LLM-PROFILES-009",
+      "record_state": "RELEASED_COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#102",
+      "handoff_ref": "docs/CHAT_LLM_PROFILES_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-CHAT-SESSION-BINDING-010.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-CHAT-SESSION-BINDING-010",
+      "record_state": "RELEASED_COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#105",
+      "handoff_ref": "docs/CHAT_LLM_SESSION_BINDING_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-DISTRIBUTED-LLM-EXECUTOR-274.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-DISTRIBUTED-LLM-EXECUTOR-274",
+      "record_state": "COMPLETE_RELEASED",
+      "checkout_state": null,
+      "issue_ref": 274,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-DISTRIBUTED-LLM-WORKLOAD-272.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-DISTRIBUTED-LLM-WORKLOAD-272",
+      "record_state": "COMPLETE_RELEASED",
+      "checkout_state": null,
+      "issue_ref": 272,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-ECOSYSTEM-CHAT-DESTINATION-PROJECTION-007.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-ECOSYSTEM-CHAT-DESTINATION-PROJECTION-007",
+      "record_state": "COMPLETE_VALIDATED_MERGED_SOURCE_PROJECTION",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#7",
+      "handoff_ref": "docs/ECOSYSTEM_CHAT_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-ECOSYSTEM-CHAT-SERVICE-ADOPTION-012.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-ECOSYSTEM-CHAT-SERVICE-ADOPTION-012",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-ECOSYSTEM-PUBLIC-KNOWLEDGE-021.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-ECOSYSTEM-PUBLIC-KNOWLEDGE-021",
+      "record_state": "COMPLETE_VALIDATED_SOURCE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#140",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-ECOSYSTEM-VA-CHAT-CONSOLIDATION-011.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-ECOSYSTEM-VA-CHAT-CONSOLIDATION-011",
+      "record_state": "RELEASED_COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#107",
+      "handoff_ref": "docs/ECOSYSTEM_VA_CHAT_SESSION_ARCHIVE_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-EXTERNAL-LLM-CONVERGENCE-306.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-EXTERNAL-LLM-CONVERGENCE-306",
+      "record_state": "SOURCE_COMPLETE_MERGED_RUNTIME_PROOF_REQUIRED",
+      "checkout_state": null,
+      "issue_ref": 306,
+      "handoff_ref": "docs/EXTERNAL_LLM_CONNECTION_CONVERGENCE_MIRROR_HANDOFF.md",
+      "cosv": {
+        "profile": "task.v1",
+        "notation": "L R U I V G O C M T B E A P",
+        "vector": "50000000100000",
+        "universal_task_id": "LLMA-EXTERNAL-LLM-CONVERGENCE-306::COSV-task.v1-50000000100000",
+        "vector_ref": "data/cosv/task-vectors/LLMA-EXTERNAL-LLM-CONVERGENCE-306.json",
+        "canonical_profile_ref": "StegVerse-Labs/.github/management/COSV_PROFILE_V1.json"
+      }
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-MANIFEST-INGRESS-024.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-MANIFEST-INGRESS-024",
+      "record_state": "TRANCHE_1_COMPLETE_RELEASED_PARENT_ACTIVE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#139",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-PROVIDER-SURFACE-KNOWLEDGE-057.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-PROVIDER-SURFACE-KNOWLEDGE-057",
+      "record_state": "COMPLETE_VALIDATED_MERGED",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#140",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-SEQUENCE-0001-RELEASE-015.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-SEQUENCE-0001-RELEASE-015",
+      "record_state": "COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#18",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-SOVEREIGN-LOCAL-MODEL-BINDING-019.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-SOVEREIGN-LOCAL-MODEL-BINDING-019",
+      "record_state": "COMPLETE_RELEASED",
+      "checkout_state": null,
+      "issue_ref": 18,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-STALE-ACTIVATION-PR-RECONCILIATION-016.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-STALE-ACTIVATION-PR-RECONCILIATION-016",
+      "record_state": "COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#18",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-UNIFIED-SPECIALTY-PROFILES-180.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-UNIFIED-SPECIALTY-PROFILES-180",
+      "record_state": "COMPLETE_RELEASED_SOURCE",
+      "checkout_state": null,
+      "issue_ref": 180,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORK-MUTATION-SAFETY-320.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORK-MUTATION-SAFETY-320",
+      "record_state": "ACTIVE_IMPLEMENTATION",
+      "checkout_state": null,
+      "issue_ref": 320,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORKFLOW-CONSOLIDATE-SERVICE-ADOPTION-037.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORKFLOW-CONSOLIDATE-SERVICE-ADOPTION-037",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORKFLOW-CONSOLIDATION-HIL-LIFECYCLE-027.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORKFLOW-CONSOLIDATION-HIL-LIFECYCLE-027",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORKFLOW-CONSOLIDATION-RESIDENT-CARRIER-025.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORKFLOW-CONSOLIDATION-RESIDENT-CARRIER-025",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORKFLOW-RETIRE-COMPLETE-PR-CONSOLIDATION-051.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORKFLOW-RETIRE-COMPLETE-PR-CONSOLIDATION-051",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-WORKFLOW-TOKEN-CLEAN-GLOBAL-VALIDATE-035.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "LLMA-WORKFLOW-TOKEN-CLEAN-GLOBAL-VALIDATE-035",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/VACP-ADAPTER-EXECUTION-PREFLIGHT-004.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "VACP-ADAPTER-EXECUTION-PREFLIGHT-004",
+      "record_state": "RELEASED_COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#90",
+      "handoff_ref": "docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/VACP-ADAPTER-SERVICE-CONNECTION-EXEC-003.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "VACP-ADAPTER-SERVICE-CONNECTION-EXEC-003",
+      "record_state": null,
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#90",
+      "handoff_ref": "docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/VACP-PREFLIGHT-HOSTED-EXECUTION-008.json",
+      "source_ref": "4d034a41d474854338c5a78ff9d03f19ea30257c",
+      "task_id": "VACP-PREFLIGHT-HOSTED-EXECUTION-008",
+      "record_state": "COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-org/LLM-adapter#90",
+      "handoff_ref": "docs/VA_CLAIM_ASSISTANT_PROVIDER_PREFLIGHT_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001",
+      "record_state": "COMPLETE",
+      "checkout_state": null,
+      "issue_ref": 1143,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-ECOSYSTEM-NODE-DUAL-VIEW-RESTORE-20260822.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-ECOSYSTEM-NODE-DUAL-VIEW-RESTORE-20260822",
+      "record_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-HPS-USER-FIRST-VALIDATOR-508.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-HPS-USER-FIRST-VALIDATOR-508",
+      "record_state": "IMPLEMENTED_VALIDATION_PENDING",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#508",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-LLM-FREE-TIER-TRUST-USER-FIRST-523.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-LLM-FREE-TIER-TRUST-USER-FIRST-523",
+      "record_state": "IMPLEMENTED_VALIDATION_PENDING",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#523",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-SEMANTIC-SHORTHAND-396-R2.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-SEMANTIC-SHORTHAND-396-R2",
+      "record_state": "MERGED_DEPLOYED_PUBLIC_ROUTE_OBSERVED_DOWNSTREAM_ACTIVATION_GATE_PENDING",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#396",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-TASK-RUNNER-SEMANTIC-LIVE-501.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-TASK-RUNNER-SEMANTIC-LIVE-501",
+      "record_state": "COMPLETE_VALIDATED_DEPLOYED_OBSERVED",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#501",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-UNIFIED-GOVERNED-VALIDATOR-510.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-UNIFIED-GOVERNED-VALIDATOR-510",
+      "record_state": "FIRST_MERGE_FORMAT_DRIFT_REPAIRED_VALIDATION_PENDING",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#510",
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/SITE-VA-COORDINATED-LLM-BRIDGE-002.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "SITE-VA-COORDINATED-LLM-BRIDGE-002",
+      "record_state": "COMPLETE",
+      "checkout_state": null,
+      "issue_ref": "StegVerse-Labs/Site#113",
+      "handoff_ref": "docs/VA_CLAIM_ASSISTANT_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/UNIFIED-CONVERSATION-HIL-SPECIALTY-001.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "UNIFIED-CONVERSATION-HIL-SPECIALTY-001",
+      "record_state": "PROJECTED_PENDING_SEPARATE_ADMISSION",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": "docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "data/tasks/UNIFIED-CONVERSATION-MATH-SPECIALTY-001.json",
+      "source_ref": "9f25f7291371dec2e2ee87d3bdd3e037fa2bfac7",
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "record_state": "GOVERNED_MATH_IMAGE_COMPOSER_HOSTED_VALIDATED_RUNTIME_ADMISSION_PENDING",
+      "checkout_state": null,
+      "issue_ref": 240,
+      "handoff_ref": "docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-registry.json",
+      "source_ref": "generation:243",
+      "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "record_state": "RETIRED",
+      "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+      "issue_ref": "StegVerse-Labs/.github#2078",
+      "handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-registry.json",
+      "source_ref": "generation:243",
+      "task_id": "WIKI-BRANDED-PUBLICATION-SITE-PROPAGATION-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "StegVerse-002/stegguardian-wiki:STEGGUARDIAN_WIKI_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/stegtalk-wiki:STEGTALK_WIKI_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site:docs/WIKI_BRANDED_PUBLICATION_SITE_PROPAGATION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-registry.json",
+      "source_ref": "generation:243",
+      "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
+        "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-registry.json",
+      "source_ref": "generation:243",
+      "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+      "record_state": "PROPOSED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": [
+        "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site#1458",
+        "GCAT-BCAT-Engine/Publisher#72"
+      ],
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "data/canonical-task-registry.json",
+      "source_ref": "generation:243",
+      "task_id": "STEGOS-NODE-MANIFOLD-001",
+      "record_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "issue_ref": "StegVerse-Labs/StegOS#23",
+      "handoff_ref": [
+        "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "control/worker-registry.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "record_state": "HANDOFF_READY",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "control/worker-registry.json",
+      "source_ref": "0a9078a14ac6f02a2e0f9eccf6dfe15fc073e22c",
+      "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "record_state": "COMPLETED",
+      "checkout_state": null,
+      "issue_ref": null,
+      "handoff_ref": "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-AI-ENTITY-COORDINATION-INGRESS-282.json",
+      "source_ref": "review-283",
+      "task_id": "LLMA-AI-ENTITY-COORDINATION-INGRESS-282",
+      "record_state": "SOURCE_IMPLEMENTATION_IN_PROGRESS",
+      "checkout_state": null,
+      "issue_ref": 282,
+      "handoff_ref": "docs/AI_ENTITY_COORDINATION_INGRESS_MIRROR_HANDOFF.md",
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-UNIVERSAL-AI-INGRESS-324.json",
+      "source_ref": "review-325",
+      "task_id": "LLMA-UNIVERSAL-AI-INGRESS-324",
+      "record_state": "SOURCE_IMPLEMENTED_VALIDATION_IN_PROGRESS",
+      "checkout_state": null,
+      "issue_ref": 324,
+      "handoff_ref": null,
+      "cosv": null
+    },
+    {
+      "repository": "StegVerse-org/LLM-adapter",
+      "path": "tasks/LLMA-UNIVERSAL-AI-INGRESS-324.json",
+      "source_ref": "review-327",
+      "task_id": "LLMA-UNIVERSAL-AI-INGRESS-324",
+      "record_state": "DRAFT_PR_OPEN_README_COMPLETENESS_PENDING_VALIDATION_UNPOSTED",
+      "checkout_state": null,
+      "issue_ref": 324,
+      "handoff_ref": "docs/UNIVERSAL_AI_INGRESS_MIRROR_HANDOFF.md",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "20010000110000",
+        "canonical_record": "StegVerse-Labs/.github:control/task-vectors/LLMA-UNIVERSAL-AI-INGRESS-324.json",
+        "authority_effect": "NONE"
+      }
+    }
+  ],
+  "browser_and_custody_dependencies": [
+    {
+      "task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "state": "ACTIVE",
+      "checkout_state": "HANDOFF_READY",
+      "handoff": null,
+      "cosv": "50000000100000",
+      "record": "data/canonical-task-records/CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json"
+    },
+    {
+      "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": [
+        "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"
+      ],
+      "cosv": null,
+      "record": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
+    },
+    {
+      "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+      "state": "ACTIVE",
+      "checkout_state": "CLAIMED_INTEGRATION",
+      "handoff": [
+        "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
+        "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+        "data/goal-task-component-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+        "data/goal-task-transport-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json"
+      ],
+      "cosv": "50000010100000",
+      "record": "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json"
+    },
+    {
+      "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "state": "ACTIVE",
+      "checkout_state": "HANDOFF_READY",
+      "handoff": null,
+      "cosv": "10000000100000",
+      "record": "data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+      "state": "RETIRED",
+      "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+      "handoff": [
+        "docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "state": "SUPERSEDED",
+      "checkout_state": "SUPERSEDED",
+      "handoff": [
+        "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_REUSABLE_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+      "state": "INACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "handoff": "docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-GOVERNED-ROUNDTRIP-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+      "state": "CLOSED",
+      "checkout_state": "RELEASED",
+      "handoff": "docs/STEGBROWSER_HEALER_ROUTING_CORRECTION_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-HEALER-ROUTING-CORRECTION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "state": "RETIRED",
+      "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+      "handoff": [
+        "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": [
+        "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "state": "RETIRED",
+      "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+      "handoff": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "state": "RETIRED",
+      "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+      "handoff": [
+        "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+      ],
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "handoff": null,
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+    },
+    {
+      "task_id": "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001",
+      "state": "RETIRED",
+      "checkout_state": "RELEASED_AFTER_VALIDATED_MERGE",
+      "handoff": "docs/STEGBROWSER_TRANSPORT_BOUNDARY_IMPLEMENTATION_MIRROR_HANDOFF.md",
+      "cosv": "40000100100000",
+      "record": "data/canonical-task-records/STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001.json"
+    }
+  ],
+  "limitations": [
+    "No global completeness claim for unindexed/private repositories outside inspected sources.",
+    "Open issue status does not override terminal task records; completed source records are retained for reuse only.",
+    "Native task files without a verified COSV remain unverified; vectors are never inferred.",
+    "No authentic production, credential, browser teardown, organization ledger or Master Records evidence obtained."
+  ]
+}

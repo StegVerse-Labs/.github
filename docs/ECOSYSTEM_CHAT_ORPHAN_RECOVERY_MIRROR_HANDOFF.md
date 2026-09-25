@@ -435,3 +435,13 @@ The canonical Ecosystem Chat parent must therefore execute its model/runtime, TV
 If the current device lacks the required same-device runtime path, the state is `INCOMPLETE_REQUIRES_CONTINUED_BUILD` / `OTHER_MACHINE_REQUIRED`, not "execution pending on another sovereign machine."
 
 The existing authentic StegOS iOS device-local inference proof remains relevant evidence that same-device inference is technically present on this device class, but it does not by itself satisfy this parent execution chain.
+
+## Ecosystem Chat multi-provider census and source repair — 2026-09-25
+
+Current Registry generation 243 was re-read. The task and emitted COSV are unchanged; no checkout or execution transition occurred. See `docs/ECOSYSTEM_CHAT_TASK_CENSUS_AND_BUILD_PLAN.md` and its two `data/ecosystem-chat-*-20260925.json` inventories for all inspected task records, open issue candidates, existing provider/Chat/sandbox owners, exact coverage limits and implementation sequence. The intended integration is manifest-selected user input -> existing ephemeral StegBrowser lease -> existing provider adapter -> attributed governed return, including optional ChatGPT, Claude, Grok, Gemini and other admitted providers. User Chat and sandbox development deliberation are separate processing purposes.
+
+Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelope request-hash and alias drift that prevented provider results from composing with the existing distributed Chat executor. It retains original admitted wire-response commitments, InTr receipt hashes and usage-event references. 115 focused offline tests and the existing mutation-safety gate passed. Automatic approval review rejected publication to the existing branch as insufficiently authorized external publication; GitHub readback still has #351 at `ddcaa3e4ad72befef601f2c99df03687e6cc191f`. The repair and central report are local/unpublished, not merged or deployed.
+
+Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
+
+Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
