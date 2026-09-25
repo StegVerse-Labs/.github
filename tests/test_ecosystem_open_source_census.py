@@ -30,10 +30,12 @@ class TestEcosystemOpenSourceCensus(unittest.TestCase):
         self.assertEqual(labs["visible_repositories"], 119)
         self.assertEqual(labs["license_metadata_coverage"], "119/119")
     
-    def test_one_additional_organization_audited(self):
+    def test_two_additional_organizations_audited(self):
         org = next(r for r in self.eco["organizations"] if r["organization"] == "StegVerse-org")
         self.assertEqual(org["license_metadata_coverage"], "18/18")
-        self.assertEqual(sum(r["license_metadata_coverage"] == "NOT_AUDITED" for r in self.eco["organizations"]), 12)
+        self.assertEqual(next(r for r in self.eco["organizations"] if r["organization"] == "Data-Continuation")["license_metadata_coverage"], "7/7")
+        self.assertEqual(sum(r["license_metadata_coverage"] == "NOT_AUDITED" for r in self.eco["organizations"]), 11)
+        self.assertEqual(self.eco["counts"]["metadata_audited_repositories"], 144)
         self.assertFalse(self.eco["historical_universe_audit_complete"])
     
     def test_registry_source_only(self):
