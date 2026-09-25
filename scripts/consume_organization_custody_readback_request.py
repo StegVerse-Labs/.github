@@ -69,7 +69,7 @@ def _validate_request(value: dict[str, Any]) -> tuple[str, tuple[str, ...]]:
             or any(not isinstance(x, str) or not ID.fullmatch(x) for x in correlations)
             or len(set(correlations)) != len(correlations)):
         raise ValueError("READBACK_CORRELATION_SCOPE_INVALID")
-    if value.get("reconcile_master_records", False) not in {True, False}:
+    if type(value.get("reconcile_master_records", False)) is not bool:
         raise ValueError("MASTER_RECORDS_RECONCILIATION_MODE_INVALID")
     return request_id, tuple(correlations)
 
@@ -131,7 +131,7 @@ def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
                 "match_count": previous["match_count"],
                 "private_artifact_sha256": "sha256:" + hashlib.sha256(canon(previous)).hexdigest(),
                 "private_artifact_location": str(OUTPUT_REL / (request_sha[7:] + ".json")),
-                "master_records_reconstruction": "NOT_QUERIED",
+                "master_records_reconstruction": previous.get("master_records_reconstruction", "NOT_QUERIED"),
                 "runtime_admission_inferred": False,
                 "authority_effect": "NONE_READBACK_ONLY",
             }
