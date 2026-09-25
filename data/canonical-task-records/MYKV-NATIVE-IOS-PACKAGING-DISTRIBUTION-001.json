@@ -5,10 +5,10 @@
   "root_correlation_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
   "parent_task_id": null,
   "goal": "Coordinate MyKV native iOS packaging and authentic TestFlight distribution by reusing the existing StegOSMobile target, Site MyKV runtime, retained Node and continuity contracts and TV/TVC Apple signing/provider path. No second user-operated device, duplicate runtime, duplicate identity or KV authority. Gate current-iPhone installation state on authentic physical-device receipts.",
-  "coordination_state": "PROPOSED",
+  "coordination_state": "ACTIVE_SOURCE_WORK",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "40000100100000",
   "proposed_cosv_recovery_coordinate": "40000100100000",
   "source_refs": [
     "https://github.com/StegVerse-Labs/.github/issues/2638",
@@ -37,7 +37,7 @@
     {
       "dependency_id": "AUTHENTIC_EXACT_GENERATION_COMPONENT_010_CHECKIN",
       "kind": "TASK",
-      "state": "PENDING",
+      "state": "RUNTIME_ONLY_NOT_SOURCE_WORK_PREREQUISITE",
       "ref": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
     },
     {
@@ -60,7 +60,6 @@
     }
   ],
   "blockers": [
-    "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
     "NATIVE_MYK_V_SAME_NODE_WEBKIT_ADOPTION_NOT_VERIFIED",
     "TV_TVC_SIGNING_PROVISIONING_AND_TESTFLIGHT_NOT_OBSERVED",
     "CURRENT_IPHONE_MYKV_NOT_INSTALLED_NEVER_INSTALLED"
@@ -72,15 +71,15 @@
   ],
   "expected_evidence_predicates": [
     "CANONICAL_SOURCE_REGISTRATION_MERGED_AND_REREAD_AT_EXACT_GENERATION",
-    "EXACT_GENERATION_AUTHENTIC_AI_SESSION_GATE_COLLISION_DISPOSITION",
     "NATIVE_SOURCE_OWNER_AND_APPLE_PROVIDER_OWNER_CONVERGED",
-    "COSV_CANONICALLY_DERIVED",
     "EXACT_HEAD_NATIVE_MYK_V_APP_SOURCE_AND_IPHONEOS_BUILD_PASS",
     "ALL_ACTUAL_EMBEDDED_EXTENSION_ENTITLEMENTS_PROVISIONED",
     "TVC_AUTHENTIC_SIGNED_IPA_SHA256_AND_TESTFLIGHT_UPLOAD",
     "CURRENT_IPHONE_NATIVE_INSTALL_RECEIPT",
     "SAME_NODE_NATIVE_WEBKIT_PROOF_AND_FIRST_LAUNCH_RESIDENT_HEALTH",
-    "DEVICE_KV_INTERLOCK_GOVERNED_STORAGE_ADMISSION_SEPARATE"
+    "DEVICE_KV_INTERLOCK_GOVERNED_STORAGE_ADMISSION_SEPARATE",
+    "SOURCE_WORK_NOT_BLOCKED_BY_RUNTIME_DISPOSITION",
+    "WORK_CORRELATION_RESOLVES_BY_CANONICAL_TASK_ID_WITH_REUSED_COSV_LINEAGE"
   ],
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -90,15 +89,14 @@
   },
   "completion": {
     "claimed": false,
-    "validated": false,
+    "validated": true,
     "authentic_runtime_proof": false,
     "current_iphone_mykv_installed": false
   },
   "allowed_next_transitions": [
-    "SOURCE_REGISTRATION_REVIEW_AND_MERGE",
-    "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+    "RECONCILE_SOURCE_WORK_WITH_CANONICAL_TASK_ID",
+    "REQUIRE_RUNTIME_GATE_ONLY_AT_AUTHENTIC_GOVERNED_TRANSITION",
     "RECONCILE_RETURNED_NATIVE_AND_TVC_OWNERS",
-    "DERIVE_COSV",
     "VALIDATE_COMPONENT_OWNED_NATIVE_SOURCE",
     "TV_TVC_SIGNING_AND_TESTFLIGHT",
     "VERIFY_AUTHENTIC_CURRENT_IPHONE_INSTALLATION",
@@ -119,8 +117,40 @@
     "no_second_device": true
   },
   "registration": {
-    "source_pr_only": true,
-    "post_registration_exact_generation_gate_required": true,
-    "external_repository_mutation_approved": false
+    "source_pr_only": false,
+    "merged_registration_pr": "StegVerse-Labs/.github#2640",
+    "source_work_approved_by_owner_request": true,
+    "post_registration_exact_generation_gate_required_for_source_work": false,
+    "runtime_execution_remains_separately_admitted": true,
+    "external_repository_mutation_approved": true
+  },
+  "cosv_assignment_kind": "REUSED_EXISTING_STEGBROWSER_LINEAGE_FOR_WORK_CORRELATION_ONLY",
+  "work_correlation": {
+    "schema": "stegverse.task-registry-work-correlation/v1",
+    "primary_key": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "correlation_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "root_correlation_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "existing_cosv_lineage": "40000100100000",
+    "cosv_is_unique_task_identifier": false,
+    "source_registration_issue": "StegVerse-Labs/.github#2638",
+    "native_source_owner": "StegVerse-Labs/StegOS#409",
+    "apple_provider_owner": "StegVerse-Labs/TVC#355",
+    "execution_authority_effect": "NONE",
+    "runtime_gate_is_source_work_prerequisite": false
+  },
+  "runtime_evidence_pending": [
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_AND_INTR_ADMISSION_FOR_GOVERNED_TRANSITIONS",
+    "AUTHENTIC_TV_TVC_APPLE_PROVISIONING_AND_SIGNED_IPA",
+    "AUTHENTIC_TESTFLIGHT_UPLOAD_AND_PROCESSING",
+    "AUTHENTIC_CURRENT_IPHONE_INSTALLATION_AND_NODE_IDENTITY_ADOPTION"
+  ],
+  "source_work": {
+    "native_pr": "StegVerse-Labs/StegOS#409",
+    "native_merged_commit": "664a0ba3a519823e5f3d92f7902c7051f8c060d5",
+    "exact_head_validation": "7_OF_7_PASSED",
+    "unsigned_iphoneos_artifact_id": 10839457097,
+    "signing_performed": false,
+    "testflight_uploaded": false,
+    "device_installed": false
   }
 }
