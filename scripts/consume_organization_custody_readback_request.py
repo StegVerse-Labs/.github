@@ -127,7 +127,7 @@ def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
                 "head_receipt_sha256": previous["head_receipt_sha256"],
                 "receipt_count": previous["receipt_count"],
                 "match_count": previous["match_count"],
-                "private_artifact_sha256": "sha256:" + hashlib.sha256(previous_bytes.rstrip(b"\\n")).hexdigest(),
+                "private_artifact_sha256": "sha256:" + hashlib.sha256(canon(previous)).hexdigest(),
                 "private_artifact_location": str(OUTPUT_REL / (request_sha[7:] + ".json")),
                 "master_records_reconstruction": "NOT_QUERIED",
                 "runtime_admission_inferred": False,
