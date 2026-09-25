@@ -1,5 +1,6 @@
 import importlib.util, json, tempfile, unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 SPEC=importlib.util.spec_from_file_location("sdk_eval_consumer", ROOT/"scripts/consume_sdk_evaluator_governance_posture_request.py")
@@ -32,7 +33,15 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
             mp=runtime/"runtime-state/sdk-evaluator-governance-posture/manifest.json"; mp.parent.mkdir(parents=True)
             manifest={"schema":"x","manifest_sha256":"sha256:m","extensions":{"governance_reference_graph":{"graph_sha256":"sha256:g"}}}
             mp.write_text(json.dumps(manifest,sort_keys=True))
-            result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)})
+            org_root=Path(td)/"org-ledger"
+            with patch.dict("os.environ",{"STEGVERSE_ORG_LEDGER_ROOT":str(org_root)}):
+                result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)})
+            head=json.loads((org_root/"HEAD.json").read_text())
+            org_receipt=json.loads((org_root/"receipts"/(head["receipt_sha256"][7:]+".json")).read_text())
+            source=json.loads((org_root/"source-receipts"/(org_receipt["source_transition_sha256"][7:]+".json")).read_text())
+            assert source["required_evidence_manifest"][0]["encoding"]=="canonical-json"
+            assert source["required_evidence_manifest"][0]["content"]["task_id"]==MOD.TARGET_TASK
+            assert org_receipt["source_transition_sha256"]==org_receipt["canonical_state_transition_receipt_sha256"]
             self.assertEqual(result["state"],"MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED")
             self.assertEqual(result["master_records_reason"],"CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE")
             self.assertTrue(result["posture_bound_execution"])
