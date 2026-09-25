@@ -1,0 +1,25 @@
+name: Validate source transition-disposition contract
+on:
+  push:
+    branches: [docs/transition-disposition-ecosystem-invariant-20260925]
+    paths:
+      - .github/workflows/transition-disposition-source-validation.yml
+      - scripts/validate_transition_disposition.py
+  pull_request:
+    paths:
+      - scripts/validate_transition_disposition.py
+      - tests/test_transition_disposition_invariant.py
+      - .github/workflows/transition-disposition-source-validation.yml
+  workflow_dispatch:
+jobs:
+  validate-dispositions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Execute source-only invariant regressions
+        run: python -m unittest discover -s tests -p test_transition_disposition_invariant.py -v
