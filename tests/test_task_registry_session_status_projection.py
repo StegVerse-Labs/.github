@@ -38,8 +38,9 @@ def ledger_event(path: Path, *, task: str, session: str, kind: str, moment: str)
     }
     result = subprocess.run(
         [sys.executable, str(LEDGER), "--ledger", str(path)],
-        input=json.dumps(payload), text=True, capture_output=True, check=True,
+        input=json.dumps(payload), text=True, capture_output=True, check=False,
     )
+    assert result.returncode == 0, result.stderr
     return json.loads(result.stdout)
 
 
