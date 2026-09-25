@@ -381,10 +381,12 @@ def emit(payload, request_context):
     checkin = record_event(envelope, request_context, "CHECK_IN")
     if checkin:
         envelope["checkin_event_sha256"] = checkin["event_sha256"]
+        envelope["checkin_event_predecessor_sha256"] = checkin["predecessor_event_sha256"]
     if str(envelope.get("disposition") or "").startswith("STOP_"):
         stopped = record_event(envelope, request_context, "STOPPED")
         if stopped:
             envelope["stopped_event_sha256"] = stopped["event_sha256"]
+            envelope["stopped_event_predecessor_sha256"] = stopped["predecessor_event_sha256"]
     print(json.dumps(envelope, sort_keys=True))
 
 
