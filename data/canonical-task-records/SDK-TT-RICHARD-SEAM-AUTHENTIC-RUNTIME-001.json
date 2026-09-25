@@ -376,6 +376,17 @@
     "closure_required": "RECORDED_AND_RECONSTRUCTION_PASS_AND_REQUIRED_EVIDENCE_PASS_AND_DIGEST_EQUALITY",
     "native_dispatcher_component011_must_be_preserved": true,
     "authentic_runtime_transition_observed": false,
-    "authority_effect": "NONE_SOURCE_OBSERVATION_ONLY"
+    "authority_effect": "NONE_SOURCE_OBSERVATION_ONLY",
+    "source_repair_state": "MERGED_EXACT_HEAD_VALIDATED_AUTHENTIC_RUNTIME_UNVERIFIED",
+    "exact_head": "d342aaf1718ef4234a8c51b0447382214bba77a9",
+    "merge_commit": "ed5e366282c5e308dcf486f427f54d09aa56dea0",
+    "exact_head_validation": "12_OF_12_PR_CHECKS_SUCCESS",
+    "validated_workflow_run_ids": [
+      36085593683,
+      36085593719,
+      36085593737,
+      36085593598
+    ],
+    "source_repair_merged": true
   }
 }
