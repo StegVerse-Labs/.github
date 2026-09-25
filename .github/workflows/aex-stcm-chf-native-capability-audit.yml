@@ -1,0 +1,28 @@
+name: Validate AEX STCM CHF original native capability audit — non-authorizing
+on:
+  pull_request:
+    paths:
+      - 'data/aex-native-math-processing-census.json'
+      - 'data/aex-stcm-chf-native-math-capability-review.json'
+      - 'tests/test_aex_stcm_chf_native_capability_review.py'
+      - '.github/workflows/aex-stcm-chf-native-capability-audit.yml'
+      - 'docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  exact-head-capability-classification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout non-authorizing source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate exact current native CHF/STCM and SDK source classification
+        run: |
+          set -euo pipefail
+          python -m unittest -v tests.test_aex_stcm_chf_native_capability_review
+          python -m json.tool data/aex-stcm-chf-native-math-capability-review.json >/dev/null
+          python -m json.tool data/aex-native-math-processing-census.json >/dev/null
+          echo 'SOURCE_CLASSIFICATION_ONLY_NO_NATIVE_CHF_MATH_OR_SDK_RUNTIME_AUTHORITY'
