@@ -55,6 +55,10 @@ def main() -> int:
                 "UNVERIFIED", "CONJOIN_REQUIRED", "REVIEW_REQUIRED", "NO_REGISTERED_COLLISION_OBSERVED",
             }):
         raise SystemExit("invalid session status projection")
+    # This coordinator has no host-verified session-origin input. Do not
+    # promote a caller-supplied label to authenticated duplicate evidence.
+    if status_projection["duplicate"] == "CONFIRMED":
+        raise SystemExit("confirmed duplicate requires independently verified session origin")
 
     cmd = [
         sys.executable,
