@@ -40,6 +40,7 @@ STATIC_FILES = (
     Path("scripts/verify_stegos_parent_evidence_candidate.py"),
     Path("control/runtime-observability-consumers/decision-envelope-de006.json"),
     Path("scripts/refresh_and_execute_resident_task.py"),
+
     Path("scripts/materialize_reusable_task_construct.py"),
     Path("scripts/trigger_reusable_task.py"),
     Path("data/reusable-task-registry.json"),
