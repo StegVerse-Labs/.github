@@ -130,3 +130,69 @@ def test_rejected_checkin_is_immediately_closed_with_stopped_event(tmp_path):
     assert rows[0]["event_sha256"] == out["stopped_event_predecessor_sha256"]
     assert out["checkin_event_predecessor_sha256"] is None
     assert rows[-1]["authority_effect"] == "NONE"
+
+
+def test_predecessor_readback_chains_two_independent_checkins(tmp_path):
+    """Readback must carry the true prior ledger event, not a fabricated default."""
+    ledger = tmp_path / "events.jsonl"
+    common = {"task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+              "checkin_context": {"repository": "StegVerse-Labs/.github"}}
+    first = run_evaluator(ledger, {
+        **common,
+        "checkin_context": {**common["checkin_context"], "session_id": "first-event"},
+    })
+    second = run_evaluator(ledger, {
+        **common,
+        "checkin_context": {**common["checkin_context"], "session_id": "second-event"},
+    })
+    rows = [json.loads(line) for line in ledger.read_text().splitlines()]
+    assert len(rows) == 2
+    assert first["checkin_event_predecessor_sha256"] is None
+    assert second["checkin_event_predecessor_sha256"] == first["checkin_event_sha256"]
+    assert rows[1]["predecessor_event_sha256"] == first["checkin_event_sha256"]
+    assert second["checkin_event_sha256"] == rows[1]["event_sha256"]
+
+
+def test_rejected_checkin_readback_chains_seed_checkin_and_stopped(tmp_path):
+    """A STOP must point to its own CHECK_IN; the CHECK_IN points to the prior tip."""
+    ledger = tmp_path / "events.jsonl"
+    prior = run_evaluator(ledger, {
+        "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "checkin_context": {"session_id": "existing-session"},
+    })
+    stopped = run_evaluator(ledger, {
+        "task_id": "NOT-REGISTERED-COMPONENT010-PREDECESSOR-TEST",
+        "checkin_context": {"session_id": "stopped-session"},
+    })
+    rows = [json.loads(line) for line in ledger.read_text().splitlines()]
+    assert stopped["disposition"] == "STOP_NOT_REGISTERED"
+    assert [row["event_type"] for row in rows] == ["CHECK_IN", "CHECK_IN", "STOPPED"]
+    assert stopped["checkin_event_predecessor_sha256"] == prior["checkin_event_sha256"]
+    assert stopped["stopped_event_predecessor_sha256"] == stopped["checkin_event_sha256"]
+    assert rows[2]["predecessor_event_sha256"] == rows[1]["event_sha256"]
+
+
+def test_tampered_retained_predecessor_refuses_new_checkin(tmp_path):
+    """The existing ledger rejects predecessor substitution without emitting a new event."""
+    ledger = tmp_path / "events.jsonl"
+    run_evaluator(ledger, {
+        "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "checkin_context": {"session_id": "original-session"},
+    })
+    retained = [json.loads(line) for line in ledger.read_text().splitlines()]
+    assert len(retained) == 1
+    retained[0]["predecessor_event_sha256"] = "sha256:" + "0" * 64
+    ledger.write_text(json.dumps(retained[0]) + "\n")
+    before = ledger.read_bytes()
+    env = dict(os.environ, STEGVERSE_TASK_REGISTRY_EVENT_LEDGER=str(ledger))
+    proc = subprocess.run(
+        [sys.executable, str(EVALUATOR)],
+        input=json.dumps({
+            "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+            "checkin_context": {"session_id": "forged-followup"},
+        }),
+        text=True, capture_output=True, env=env,
+    )
+    assert proc.returncode != 0
+    assert "hash mismatch" in proc.stderr or "predecessor chain mismatch" in proc.stderr
+    assert ledger.read_bytes() == before
