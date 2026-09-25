@@ -379,6 +379,9 @@ def test_custody_exception_preserves_actual_selector_result_in_dispatch_receipt(
     dispatcher = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(dispatcher)
     source, runtime = _setup_test3_target(tmp_path, load_consumer())
+    # The dispatcher must see the existing consumer as materialized before
+    # reaching the injected canonical custody failure.
+    (runtime / "scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py").write_text("# fixture\n")
     machine = {"state": "FAIL_CLOSED", "first_failed_cycle": {
         "cycle_index": 0,
         "boundary": "TARGETED_SUBPROCESS_INVOCATION_EXCEPTION",
