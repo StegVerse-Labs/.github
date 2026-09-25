@@ -132,7 +132,30 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         # Unreadable historical latest is not current-run governed closure.
         previous_close = None
     for cycle_index in range(2):
-        completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
+        try:
+            completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1800)
+        except Exception as exc:
+            # Retain the first invocation boundary instead of letting an
+            # exception bypass the immutable targeted-consumption receipt.
+            # This proves only a local invocation failure, never worker
+            # execution or an authenticated governed transition.
+            completed = None
+            result = None
+            pointer_verified = False
+            first_failed_cycle = {
+                "cycle_index": cycle_index,
+                "boundary": "TARGETED_SUBPROCESS_INVOCATION_EXCEPTION",
+                "exception_type": type(exc).__name__,
+                "returncode": None,
+            }
+            executions.append({
+                "cycle_index": cycle_index,
+                "returncode": None,
+                "result": None,
+                "pointer_binding_verified": False,
+                "cycle_valid": False,
+            })
+            break
         result = parse_last_json(completed.stdout)
         pointer = result.get("cosv_task_pointer") if isinstance(result, dict) else None
         pointer_verified = bool(
