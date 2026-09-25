@@ -145,3 +145,95 @@ def readback(
         result["exact_source_receipts"] = sources
         result["exact_batches"] = batches
     return result
+
+
+def reconcile_master_records(
+    snapshot: dict[str, Any],
+    *,
+    get_json,
+) -> dict[str, Any]:
+    """Read-only comparison against EXISTING authenticated Master Records APIs.
+
+    get_json(path, parameters) must be supplied by the resident's existing
+    credential/transport owner. A local source record alone never satisfies
+    Master Records custody. Missing matches remain explicit.
+    """
+    if snapshot.get("state") != "VERIFIED_LOCAL_READBACK" or snapshot.get("complete_organization_chain") != "PASS":
+        raise ValueError("ORGANIZATION_SNAPSHOT_NOT_VERIFIED")
+    from urllib.parse import quote
+    sources = {}
+    for source in snapshot.get("exact_source_receipts", []):
+        verified = org.verify_source(source)
+        sources[verified["source_transition_sha256"]] = source
+    canonical = []
+    for item in snapshot.get("matching_transitions", []):
+        source = sources.get(item["source_transition_sha256"])
+        if not isinstance(source, dict):
+            raise ValueError("MATCHED_EXACT_SOURCE_NOT_AVAILABLE")
+        if source.get("schema") != "stegverse.canonical-state-transition-receipt/v1":
+            canonical.append({"organization_receipt_sha256": item["organization_receipt_sha256"],
+                              "state": "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY"})
+            continue
+        query = get_json("/api/master-records/state-transitions/query", {
+            "subject_or_correlation_id": source["subject_or_correlation_id"],
+            "transition_id": source["transition_id"],
+        })
+        if (not isinstance(query, dict)
+                or query.get("schema") != "stegverse.master-records.state-transition-query/v1"
+                or query.get("subject_or_correlation_id") != source["subject_or_correlation_id"]
+                or query.get("transition_id") != source["transition_id"]
+                or not isinstance(query.get("records"), list)
+                or query.get("count") != len(query["records"])):
+            raise ValueError("MASTER_RECORDS_QUERY_RESPONSE_INVALID")
+        digest = item["source_transition_sha256"][7:]
+        same = [record for record in query["records"]
+                if isinstance(record, dict) and record.get("receipt_sha256") == digest]
+        if len(same) > 1:
+            raise ValueError("MASTER_RECORDS_DUPLICATE_EXACT_TRANSITION")
+        if same:
+            record = same[0]
+            if (record.get("state") != "PASS"
+                    or record.get("reconstructed_receipt_sha256") != digest
+                    or record.get("required_evidence_validation_status") != "PASS"
+                    or record.get("receipt") != source):
+                raise ValueError("MASTER_RECORDS_EXACT_TRANSITION_RECONSTRUCTION_MISMATCH")
+            state = "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS"
+        else:
+            state = "MATCH_NOT_FOUND_IN_AUTHENTIC_QUERY"
+        canonical.append({
+            "organization_receipt_sha256": item["organization_receipt_sha256"],
+            "source_transition_sha256": item["source_transition_sha256"],
+            "source_transition_id": source["transition_id"],
+            "state": state,
+        })
+    batch_results = []
+    for local in snapshot.get("exact_batches", []):
+        batch_id = local["batch_id"]
+        remote = get_json(
+            "/api/master-records/organization-batches/" + quote(batch_id, safe=":") + "/reconstruction", {},
+        )
+        if (not isinstance(remote, dict)
+                or remote.get("schema") != "stegverse.master-records.organization-batch-ack/v1"
+                or remote.get("batch_id") != batch_id
+                or remote.get("organization_id") != snapshot["organization"]
+                or remote.get("organization_receipt_count") != len(local["ordered_receipt_hashes"])):
+            raise ValueError("MASTER_RECORDS_BATCH_RECONSTRUCTION_IDENTITY_MISMATCH")
+        if (remote.get("state") != "RECORDED"
+                or remote.get("reconstruction_status") != "PASS"
+                or remote.get("required_evidence_validation_status") != "PASS"
+                or remote.get("receipt_sha256") != remote.get("reconstructed_receipt_sha256")):
+            raise ValueError("MASTER_RECORDS_BATCH_RECONSTRUCTION_FAILED")
+        batch_results.append({"batch_id": batch_id,
+                              "master_records_receipt_sha256": remote["receipt_sha256"],
+                              "state": "MATCHING_INDEPENDENT_BATCH_RECONSTRUCTION_PASS"})
+    return {
+        "schema": "stegverse.organization-master-records-reconciliation/v1",
+        "state": "PASS" if all(x["state"] == "MATCHING_INDEPENDENT_RECONSTRUCTION_PASS"
+                               for x in canonical if x["state"] != "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY")
+                         else "INCOMPLETE",
+        "organization_head_receipt_sha256": snapshot["head_receipt_sha256"],
+        "canonical_transition_results": canonical,
+        "batch_results": batch_results,
+        "master_records_grants_transition_authority": False,
+        "authority_effect": "NONE_READ_ONLY_RECONSTRUCTION_COMPARISON",
+    }
