@@ -49,7 +49,25 @@ def require(ok: bool, reason: str) -> None:
 def is_manifest_state_transition(payload: Any) -> bool:
     return isinstance(payload, dict) and payload.get("schema") == REQUEST_SCHEMA
 
-def _validate_manifest_hash(manifest: Mapping[str, Any], claimed: str) -> None:
+def _validate_manifest_hash(manifest: Mapping[str, Any], claimed: str, request: Mapping[str, Any]) -> None:
+    # New SDK contract binds the original immutable ingress manifest separately
+    # from its validated normalized projection; neither alters the frozen input.
+    if "wire_manifest_sha256" in request or "canonical_manifest_projection" in request:
+        wire = request.get("wire_manifest_sha256")
+        projection = request.get("canonical_manifest_projection")
+        require(isinstance(wire, str) and len(wire) == 64, "wire_manifest_sha256_required")
+        require(sha256(manifest) == wire, "wire_manifest_sha256_mismatch")
+        require(isinstance(projection, Mapping), "canonical_manifest_projection_required")
+        require(sha256(projection) == claimed, "canonical_manifest_projection_sha256_mismatch")
+        # The projection retains source fields except explicitly normalized fields.
+        normalized = {"processing", "return_projection", "completion", "manifest_labels"}
+        for key, value in manifest.items():
+            if key not in normalized:
+                require(projection.get(key) == value, f"canonical_manifest_projection_source_mismatch:{key}")
+        require("canonical_manifest_sha256" not in manifest, "wire_manifest_must_not_embed_derived_digest")
+        return
+    # Historical self-contained worker fixtures remain accepted on their legacy
+    # binding only; production SDK requests emit both new independent bindings.
     body = dict(manifest)
     embedded = body.pop("canonical_manifest_sha256", None)
     require(isinstance(embedded, str) and embedded == claimed, "canonical_manifest_sha256_binding_mismatch")
@@ -67,7 +85,7 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(isinstance(manifest, Mapping), "canonical_manifest_required")
     manifest_hash = request.get("canonical_manifest_sha256")
     require(isinstance(manifest_hash, str) and len(manifest_hash) == 64, "canonical_manifest_sha256_required")
-    _validate_manifest_hash(manifest, manifest_hash)
+    _validate_manifest_hash(manifest, manifest_hash, request)
     graph = request.get("state_graph")
     require(isinstance(graph, Mapping), "state_graph_required")
     require(graph.get("schema") == "stegverse.sdk.installed-state-transition-graph/v1", "state_graph_schema_mismatch")
