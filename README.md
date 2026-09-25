@@ -1623,3 +1623,8 @@ The generic SDK InTr profile recognizes an `ecosystem_diagnostic` graph with `ca
 ### Experiment 3 existing-owner DENY routing reconciliation (2026-09-25)
 
 Merged immutable-wire/projection digest source repairs SDK #323 and central #2715; merged central #2716 writes immutable, request-bound `ECOSYSTEM_DIAGNOSTIC_NONWORKER_DISPATCH_UNWIRED` source/profile DENY without counterfeit authenticated InTr or Master Records proof. Existing StegHealth #51 / PR #110 merged `6d84930ebda648ed14aa7098114c5fe9770f28de` after both exact-head workflows passed; source-level reason routing reuses Manifest Builder, triggered Healer or LLM Sandbox proposals and never retries terminal FAIL_CLOSED. Preserve original Exp3 manifest and explicit Publisher requirement; non-worker EVENT_EPHEMERAL execution and authentic organization/Master Records evidence are still required. Canonical detailed handoff: `docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md`.
+
+
+### Optional distributed Grok source (2026-09-25)
+
+Under existing `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001` (observational COSV `10100000103000`), merged [LLM Adapter PR #352](https://github.com/StegVerse-org/LLM-adapter/pull/352) adds a manifest-selected xAI/Grok `ProviderClient` to the existing distributed Ecosystem Chat capability. The same components serve user-facing multi-LLM requests and ecosystem task execution; no new runtime, broker, execution authority or second device. The canonical coordination handoff is `docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md`. Adapter source and fixture changes do not establish authentic provider execution, InTr admission, organization receipt readback, Master Records custody or public release.
