@@ -76,6 +76,10 @@ def _private_write(path: Path, value: dict[str, Any]) -> str:
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     raw = canon(value)
     digest = hashlib.sha256(raw).hexdigest()
+    if path.exists():
+        if path.read_bytes() != raw + b"\\n":
+            raise ValueError("READBACK_REQUEST_REUSED_WITH_DIFFERENT_HEAD")
+        return digest
     fd, tmp = tempfile.mkstemp(prefix=".readback-", dir=path.parent)
     try:
         os.fchmod(fd, 0o600)
