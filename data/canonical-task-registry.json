@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 244,
+  "generation": 251,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9639,7 +9639,12 @@
         "management/COSV_PROFILE_V1.json",
         "docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md",
         "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md",
-        "tests/test_open_source_strategy_inventory.py"
+        "tests/test_open_source_strategy_inventory.py",
+        "docs/OPEN_SOURCE_EXACT_SOURCE_RIGHTS_FOLLOWUP_20260925.md",
+        "data/ecosystem-open-source-organization-census-20260925.json",
+        "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+        "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+        "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md"
       ],
       "adjacent_task_refs": [
         "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -9708,7 +9713,61 @@
         "source_head": "4d41365bfcf1f664eba29dddf44474fede5c17ba",
         "source_merge": "57ff52b5ba23fd8df2b727471bdb25f17eb2558c",
         "exact_head_applicable_workflows_passed": 6,
-        "source_validation": "EXACT_HEAD_CI_PASS"
+        "source_validation": "EXACT_HEAD_CI_PASS",
+        "exact_source_followup": "FOUR_HEADS_AND_FOUR_OPTIONAL_COMMITS_OBSERVED",
+        "hybrid_license_scope_owner": "StegVerse-Labs/hybrid-collab-bridge#32",
+        "hybrid_license_scope": "NATIVE_OWNER_ISSUE_OPEN_NOT_APPROVED",
+        "optional_dependency_license": "ROOT_LICENSE_NOT_FOUND_AT_THREE_REPO_HEADS",
+        "optional_python_compatibility": "SDK_GE_3_9_EXTRAS_GE_3_11_SOURCE_OBSERVED",
+        "followup_pr": 2727,
+        "followup_head": "4737f3a68db41a00abc3e12104265bd4e4220d0b",
+        "followup_merge": "aee4e664cf26aee2491b3558db307a897c8785d9",
+        "followup_exact_head_workflows_passed": 6,
+        "followup_source_status": "MERGED_EXACT_HEAD_CI_PASS",
+        "ecosystem_census": "KNOWN_14_ORGANIZATIONS_252_REPOSITORY_ENTRIES_VISIBILITY_REFRESHED",
+        "labs_inventory": "119_OF_119_METADATA_ONLY_PRESERVED",
+        "stegverse_org_inventory": "18_OF_18_METADATA_SOURCE_OWNER_MERGED",
+        "other_orgs": "12_VISIBILITY_ONLY_RIGHTS_UNVERIFIED",
+        "org_scope": "14_KNOWN_ORGS_252_VISIBLE_REPOSITORIES",
+        "labs_scope": "119_OF_119_METADATA_ONLY",
+        "stegverse_org_scope": "18_OF_18_METADATA_MERGED_SOURCE_OWNER",
+        "remaining_scope": "12_ORGS_COUNTS_ONLY",
+        "ecosystem_census_pr": 2732,
+        "ecosystem_census_head": "f92d6ca68e8a5c58fcc39bd455679783ef05a35f",
+        "ecosystem_census_merge": "f0edc55389af8852cd8811ff21c2d8f3ab57afa5",
+        "ecosystem_census_exact_head_ci": "6_OF_6_APPLICABLE_SUCCESS",
+        "organization_owner_source_pr": "StegVerse-org/.github#11",
+        "organization_owner_source_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
+        "release_status": "NOT_AUTHORIZED",
+        "data_continuation_metadata": "7_OF_7_CHECKED_SOURCE_OWNER_MERGED",
+        "core_lite_pinned_license": "SOURCE_LICENSE_SCOPE_UNVERIFIED",
+        "core_lite_author_rights": "351_COMMIT_ATTRIBUTIONS_RIGHTS_UNVERIFIED",
+        "core_lite_dependencies": "PINNED_SOURCE_IMPORT_INSPECTION_PARTIAL",
+        "data_continuation_source_pr_checks": "NONE_REPORTED"
+      },
+      "ecosystem_inventory": {
+        "snapshot": "2026-09-25",
+        "known_organizations_observed": 14,
+        "repository_entries_observed": 252,
+        "public": 85,
+        "private": 153,
+        "internal": 14,
+        "manifest": "data/ecosystem-open-source-organization-census-20260925.json",
+        "universe_complete": false,
+        "metadata_audited": [
+          "StegVerse-Labs",
+          "StegVerse-org",
+          "Data-Continuation"
+        ],
+        "second_org_source_owned_pr": "StegVerse-org/.github#11",
+        "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
+        "other_organizations_count_only": 12,
+        "copyright_title_verified": 0,
+        "release_authorized": false,
+        "metadata_checked_entries": 144,
+        "third_org_source_owned_pr": "Data-Continuation/.github#7",
+        "third_org_source_owned_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4",
+        "other_organizations_count_visibility_only": 11
       }
     },
     {
@@ -11042,6 +11101,185 @@
           "filename": "optical-state-replay-calibrated-v08.zip",
           "sha256": "9b1b41dc6272067f29ff2dd470b570d7ccb451fcb7dc904e0de804b5ea39d33e"
         }
+      },
+      "external_reference_v09": {
+        "schema": "stegverse.optical-independent-reference-readiness/v0.9",
+        "goal_task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+        "cosv": "10111110114000",
+        "evidence_class": "EXTERNAL_PUBLISHER_LICENSE_METADATA_PLUS_EXISTING_CC0_OFFLINE_COMPUTE_PROFILING_NO_INDEPENDENT_SENSOR_DATA",
+        "external_dataset": {
+          "doi": "10.17632/7yd2ntbh3w.1",
+          "publisher_page": "https://data.mendeley.com/datasets/7yd2ntbh3w/1",
+          "article": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9041261/",
+          "dataset_page_license": "CC BY 4.0",
+          "author_article_file_table_license": "GNU GPL v3",
+          "affected_files": [
+            "DP_free_drop_video.mp4",
+            "Encoder_Data.zip",
+            "Video_Tracking_Data.zip"
+          ],
+          "effective_file_level_rights": "UNRESOLVED",
+          "metadata_via_existing_github_actions": {
+            "one_off_pr": 2733,
+            "closed_unmerged": true,
+            "run_ids": [
+              36191137923,
+              36191388517
+            ],
+            "public_html_http": 200,
+            "json_dataset_http": 401,
+            "json_files_http": 401,
+            "json_public_files_http": 401
+          },
+          "original_video_ingested": false,
+          "encoder_ingested": false,
+          "tracking_data_ingested": false,
+          "file_hashes_obtained": false,
+          "physical_sensor_validation": "NOT_EXECUTED",
+          "disposition": "HOLD_EXTERNAL_ORIGINAL_INGESTION_RIGHTS_AND_METADATA_UNVERIFIED"
+        },
+        "synthetic_reference_gate": {
+          "validation_tests_passed": 8,
+          "calibration_required": true,
+          "trial_match_required": true,
+          "independent_file_hashes_required_for_external": true,
+          "relative_lag_training_only": true,
+          "heldout_encoder_check": true,
+          "disposition_on_missing_rights": "DENY_EXTERNAL_SOURCE_PROVENANCE_OR_RIGHTS",
+          "actual_external_dataset_evaluated": false,
+          "shared_camera_encoder_hardware_trigger_verified": false
+        },
+        "offline_context_cost": {
+          "source_sha256": "069d9a266f584f14f009a2bc7d2e7fbc20cc87bdffebb8be87573ca939d2eb8b",
+          "frozen_v08_source_verified": true,
+          "all_422_source_frames_decoded": true,
+          "batch_repeats": 8,
+          "heavy_operation": "GRAY_160x90_PLUS_SHA256",
+          "full": {
+            "frames": 422,
+            "median_heavy_wall_ms": 168.751
+          },
+          "global_with_required_2_2_context": {
+            "frames": 421,
+            "median_heavy_wall_ms": 168.112
+          },
+          "roi_with_required_2_2_context": {
+            "frames": 421,
+            "median_heavy_wall_ms": 168.445
+          },
+          "non_equivalent_zero_context": {
+            "global_frames": 313,
+            "global_median_ms": 125.79,
+            "roi_frames": 294,
+            "roi_median_ms": 119.135,
+            "valid_substitute_for_required_context": false
+          },
+          "decode_once_wall_ms": 380.546,
+          "cheap_all_422_median_wall_ms": 323.647,
+          "meaningful_cost_benefit_demonstrated": false,
+          "measured_energy_or_camera_bandwidth": false,
+          "independent_physical_ground_truth": false,
+          "measured_on_single_offline_host": true
+        },
+        "new_local_regression_tests_passed": 13,
+        "private_user_supplement": {
+          "filename": "optical-reference-readiness-v09.zip",
+          "sha256": "67122d712ca8dc53d7ddca9097ee2c733906d36cb3980dfc81f352ffb9a58e58"
+        },
+        "source_documentation_prs": {
+          "central": 2736,
+          "patents": 12
+        },
+        "existing_owners": {
+          "patent_candidate": "PAT-003 EXISTING OWNER_REVIEW_PENDING",
+          "reconstruction": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+          "master_records": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+          "session_gate": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+        },
+        "authentic_runtime_evidence_observed": false,
+        "worker_claim_fence_observed": false,
+        "governance_authority_effect": "NONE_SOURCE_EVIDENCE_ONLY"
+      },
+      "cadence_risk_v10": {
+        "schema": "stegverse.optical-trigger-cadence-risk/v0.10",
+        "goal_task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+        "cosv": "10111110114000",
+        "classification": "SOURCE_ONLY_SAME_CAMERA_IMAGE_PROXY_NOT_INDEPENDENT_PHYSICAL_METROLOGY",
+        "source_verified_sha256": "069d9a266f584f14f009a2bc7d2e7fbc20cc87bdffebb8be87573ca939d2eb8b",
+        "frozen_original_receipt_v07": "fad1f946216b57e248c1442efd91f1ac483f7c902e6d20eb8fb4bdbd102e8aa6",
+        "source_original_bytes_rechecked": 4084050,
+        "predeclared_min_gap_frames": [
+          1,
+          3,
+          5,
+          8,
+          12,
+          16,
+          24
+        ],
+        "train_transition_count": 209,
+        "heldout_transition_count": 212,
+        "required_context": {
+          "predecessor_frames": 2,
+          "successor_frames": 2,
+          "per_original_threshold_trigger": true
+        },
+        "default_gap_1": {
+          "global_heavy_frames": 421,
+          "roi_heavy_frames": 421,
+          "global_heldout_image_positive_frame_coverage": 0.9934,
+          "roi_heldout_image_positive_frame_coverage": 0.9934,
+          "original_trigger_context_suppressed": 0
+        },
+        "gap_3": {
+          "global_heavy_frames": 421,
+          "roi_heavy_frames": 421,
+          "global_original_triggers_suppressed": 186,
+          "roi_original_triggers_suppressed": 167,
+          "context_equivalent": false
+        },
+        "gap_5": {
+          "global_heavy_frames": 420,
+          "roi_heavy_frames": 420,
+          "global_heldout_image_positive_frame_coverage": 0.9934,
+          "roi_heldout_image_positive_frame_coverage": 0.9868,
+          "context_equivalent": false
+        },
+        "gap_8": {
+          "global_heavy_frames": 225,
+          "roi_heavy_frames": 210,
+          "global_heldout_image_positive_frame_coverage": 0.4901,
+          "roi_heldout_image_positive_frame_coverage": 0.4305,
+          "context_equivalent": false
+        },
+        "training_only_strict_acceptance": {
+          "require_training_positive_frame_coverage": 1,
+          "require_all_original_trigger_context": true,
+          "selected_gap_both_models": 1
+        },
+        "new_local_tests_passed": 9,
+        "private_user_artifact": {
+          "filename": "optical-cadence-risk-v10.zip",
+          "sha256": "585029d89e1a2cc58ac0f7b99a7eeebe7c134ff54c6d4102f56e337ce7da455d"
+        },
+        "rights_scope": {
+          "original_dataset_v1": "10.17632/7yd2ntbh3w.1",
+          "earlier_repo_v2": "10.17632/z4hvxjgtbz.2",
+          "both_publisher_dataset_license": "CC BY 4.0",
+          "article_named_file_license": "GPL v3",
+          "dual_licensing_possible": true,
+          "authoritative_exact_file_terms_verified": false,
+          "source_only_ingress_disposition": "DENY_EXTERNAL_SOURCE_RIGHTS_AND_EXACT_IDENTITY_UNVERIFIED",
+          "external_video_or_encoder_ingested": false
+        },
+        "existing_patent_technical_review_pr": 13,
+        "existing_central_handoff_pr": 2746,
+        "independent_sensor_truth_established": false,
+        "adaptive_benefit_with_current_required_context_demonstrated": false,
+        "authentic_component010_event_observed": false,
+        "worker_claim_fence_observed": false,
+        "master_records_closure_observed": false,
+        "authority_effect": "NONE_SOURCE_ONLY"
       }
     },
     {

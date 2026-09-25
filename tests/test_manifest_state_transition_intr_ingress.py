@@ -142,6 +142,129 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical_manifest_sha256_recompute_mismatch"):
             mod.validate_request(tampered)
 
+    def test_immutable_wire_and_projection_digests_are_independently_checked(self):
+        value = request()
+        original = copy.deepcopy(value["canonical_manifest"])
+        original.pop("canonical_manifest_sha256")
+        # The projection is a separately hash-bound SDK validation output.
+        projection = dict(original)
+        projection["ingress_mode"] = "external_manifest"
+        value["canonical_manifest"] = original
+        value["wire_manifest_sha256"] = mod.sha256(original)
+        value["canonical_manifest_projection"] = projection
+        value["canonical_manifest_sha256"] = mod.sha256(projection)
+        value.pop("request_sha256")
+        value["request_sha256"] = mod.sha256(value)
+        self.assertEqual(mod.validate_request(value)["wire_manifest_sha256"], mod.sha256(original))
+        tampered = copy.deepcopy(value)
+        tampered["wire_manifest_sha256"] = "f" * 64
+        tampered.pop("request_sha256")
+        tampered["request_sha256"] = mod.sha256(tampered)
+        with self.assertRaisesRegex(ValueError, "wire_manifest_sha256_mismatch"):
+            mod.validate_request(tampered)
+        tampered = copy.deepcopy(value)
+        tampered["canonical_manifest_projection"]["source_output_id"] = "substituted"
+        tampered["canonical_manifest_sha256"] = mod.sha256(tampered["canonical_manifest_projection"])
+        tampered.pop("request_sha256")
+        tampered["request_sha256"] = mod.sha256(tampered)
+        with self.assertRaisesRegex(ValueError, "canonical_manifest_projection_source_mismatch"):
+            mod.validate_request(tampered)
+
+    def test_diagnostic_nonworker_attempt_exposes_exact_unrepaired_predicate(self):
+        diagnostic = request("diagnostic")
+        diagnostic["canonical_task_id"] = None
+        diagnostic["requires_workercoordinator_claim_fence"] = False
+        diagnostic["processing_capability"] = "ecosystem_diagnostic"
+        diagnostic["route_id"] = "stegverse.route.ecosystem-diagnostic.v1"
+        diagnostic["state_graph"]["canonical_task_id"] = None
+        diagnostic["state_graph"]["processing_capability"] = diagnostic["processing_capability"]
+        diagnostic["state_graph"]["route_id"] = diagnostic["route_id"]
+        diagnostic.pop("request_sha256")
+        diagnostic["request_sha256"] = mod.sha256(diagnostic)
+        self.assertIsNone(mod.validate_request(diagnostic)["canonical_task_id"])
+        with tempfile.TemporaryDirectory() as td:
+            first = mod.execute(Path(td), diagnostic)
+            second = mod.execute(Path(td), diagnostic)
+            self.assertEqual(first, second)
+            self.assertEqual(first["disposition"], "DENY")
+            self.assertEqual(first["reason_code"], "ORIGINAL_WIRE_DIGEST_MISMATCH")
+            self.assertEqual(first["failed_predicate"], "ORIGINAL_WIRE_DIGEST_MISMATCH")
+            self.assertFalse(first["terminal"])
+            self.assertFalse(first["automatic_retry_permitted"])
+            self.assertFalse(first["authentic_intr_disposition_observed"])
+            self.assertFalse(first["organization_master_records_closure_observed"])
+            self.assertEqual(first["request_sha256"], diagnostic["request_sha256"])
+            self.assertTrue(Path(first["source_disposition_ref"]).is_file())
+            self.assertEqual(json.loads(Path(first["source_disposition_ref"]).read_text())["disposition"], "DENY")
+            self.assertFalse((Path(td) / "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json").exists())
+
+    def test_missing_embedded_hash_is_retained_deny_then_corrected_envelope_advances(self):
+        original = request("exp3-hash-deny")
+        # The original frozen wire manifest has no derived embedded digest.
+        frozen = copy.deepcopy(original["canonical_manifest"])
+        frozen.pop("canonical_manifest_sha256")
+        rejected = copy.deepcopy(original)
+        rejected["canonical_manifest"] = frozen
+        rejected["canonical_manifest_sha256"] = mod.sha256(frozen)
+        rejected.pop("request_sha256")
+        rejected["request_sha256"] = mod.sha256(rejected)
+        before = copy.deepcopy(frozen)
+
+        def validated_transport(_headers, _body):
+            return {"origin": "TVC_RELAY_EGRESS"}
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            denied = mod.admit(
+                runtime_root=root,
+                body=mod.canonical(rejected),
+                headers={},
+                transport_validator=validated_transport,
+            )
+            self.assertEqual(denied["state"], "DENY")
+            self.assertEqual(denied["reason_code"], "canonical_manifest_sha256_binding_mismatch")
+            self.assertEqual(denied["failed_predicate"], denied["reason_code"])
+            self.assertEqual(denied["transition_id"], "SDK_MANIFEST_BINDING")
+            self.assertFalse(denied["terminal"])
+            self.assertFalse(denied["authentic_intr_admission_observed"])
+            self.assertTrue(denied["transport_validated"])
+            self.assertEqual(denied["original_wire_manifest_sha256"], mod.sha256(before))
+            self.assertEqual(denied["original_request_sha256"], mod.sha256(rejected))
+            self.assertEqual(json.loads(Path(denied["source_disposition_ref"]).read_text())["state"], "DENY")
+            self.assertEqual(frozen, before)
+
+            # A corrected builder envelope separately commits both wire and
+            # normalized projection. Its next verdict is not the hash DENY.
+            corrected = copy.deepcopy(rejected)
+            projection = dict(frozen)
+            projection["ingress_mode"] = "external_manifest"
+            corrected["wire_manifest_sha256"] = mod.sha256(frozen)
+            corrected["canonical_manifest_projection"] = projection
+            corrected["canonical_manifest_sha256"] = mod.sha256(projection)
+            corrected.pop("request_sha256")
+            corrected["request_sha256"] = mod.sha256(corrected)
+            self.assertEqual(
+                mod.validate_request(corrected)["wire_manifest_sha256"],
+                mod.sha256(before),
+            )
+            self.assertEqual(frozen, before)
+            # The subsequent attempt's actual execution disposition requires
+            # an admitted existing runtime; this source test cannot mint it.
+
+    def test_unrelated_invalid_credential_contract_is_not_builder_deny(self):
+        invalid = request("invalid-authority")
+        invalid["credential_authority"] = "GITHUB"
+        invalid.pop("request_sha256")
+        invalid["request_sha256"] = mod.sha256(invalid)
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(ValueError, "credential_authority_mismatch"):
+                mod.admit(
+                    runtime_root=Path(td),
+                    body=mod.canonical(invalid),
+                    headers={},
+                    transport_validator=lambda _h, _b: {"origin": "TVC_RELAY_EGRESS"},
+                )
+
     def test_distinct_reruns_are_immutable_and_latest_pointer_advances(self):
         first = request("one")
         second = request("two")
