@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 248,
-  "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
+  "generation": 249,
+  "status": "RUNTIME_PROFILE_CANDIDATES_PROJECTED_NO_AUTHORITY_GRANTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -185,7 +185,16 @@
         "deployment_required": false,
         "current_observation_required": false
       },
-      "runtime_resolution": null,
+      "runtime_resolution": {
+        "map_ref": "control/runtime-profile-map.json",
+        "map_generation": 2,
+        "candidate_profile_ids": [
+          "canonical-work-coordination-runtime-v1"
+        ],
+        "resolved_at": "2026-09-25T21:19:00Z",
+        "projection_only": true,
+        "selection_grants_authority": false
+      },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
@@ -15032,7 +15041,10 @@
     "MISSING_AUTHENTIC_RUNTIME_RECEIPT_IS_NOT_A_WAIT_CONDITION",
     "TRACE_EXISTING_PATH_TO_FIRST_DETERMINISTIC_DEFECT_AND_REPAIR_ONLY_THAT_BOUNDARY",
     "EXACT_NATIVE_SHARD_PROJECTION_DOES_NOT_CREATE_TASK_IDENTITY_EXECUTION_AUTHORITY_OR_RUNTIME_EVIDENCE",
-    "AI_SOURCE_CLOSURE_REQUIRES_EVIDENCED_NATIVE_OWNER_RECONCILIATION_AND_KEEPS_OUTREACH_DISABLED"
+    "AI_SOURCE_CLOSURE_REQUIRES_EVIDENCED_NATIVE_OWNER_RECONCILIATION_AND_KEEPS_OUTREACH_DISABLED",
+    "RUNTIME_PROFILE_SELECTION_DOES_NOT_GRANT_TASK_ADMISSION",
+    "WORKERCOORDINATOR_CLAIM_FENCE_STILL_REQUIRED",
+    "INTERLOCK_INTR_TRANSITION_ADMISSION_STILL_REQUIRED"
   ],
   "global_runtime_invariant_update": {
     "connected_device_inventory_task_progression_role": "NONE_PROHIBITED",
