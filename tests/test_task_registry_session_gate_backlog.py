@@ -174,3 +174,30 @@ class TestComponent010BatchAudit(unittest.TestCase):
 
     def test_existing_resident_refresh_materializes_entire_source_gate_dependency_closure(self):
         test_existing_resident_refresh_materializes_entire_source_gate_dependency_closure()
+
+
+def test_exact_checked_out_gate_and_custody_owner_shards_are_projected():
+    registry = json.loads((ROOT / "data/canonical-task-registry.json").read_text(encoding="utf-8"))
+    assert registry["generation"] >= 224
+    rows = {row["task_id"]: row for row in registry["tasks"]}
+    for tid in (
+        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+        "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+    ):
+        shard = json.loads((ROOT / "data/canonical-task-records" / (tid + ".json")).read_text(encoding="utf-8"))
+        row = rows[tid]
+        assert row["task_id"] == shard["task_id"]
+        assert row["checkout_state"] == shard["checkout_state"] == "CHECKED_OUT"
+        assert row["coordination_state"] == shard["coordination_state"] == "ACTIVE"
+        assert row.get("cosv_task_vector") == shard.get("cosv_task_vector")
+        for key in ("correlation_id", "root_correlation_id", "parent_task_id", "targets"):
+            assert row.get(key) == shard.get(key)
+    assert len(rows) == len(registry["tasks"])
+
+
+def _test_exact_owner_projection(self):
+    test_exact_checked_out_gate_and_custody_owner_shards_are_projected()
+
+
+TestComponent010BatchAudit.test_exact_owner_projection = _test_exact_owner_projection
