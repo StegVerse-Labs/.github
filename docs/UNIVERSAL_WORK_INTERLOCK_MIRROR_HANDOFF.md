@@ -133,3 +133,17 @@ Destination `StegVerse-Labs/.github`:
 ## Archive readiness
 
 Not archive-ready until the universal work ingress/egress contract is machine-enforced and at least one real end-to-end work item has both ingress and egress materializations through the canonical Interlock/InTr boundary.
+
+## Bounded participation and temporal non-claims — 2026-09-25
+
+Canonical coordination identity: `STEGVERSE-CANONICAL-WORK-COORDINATION-001` (read-only Task Registry generation 251 at preparation). This universal-work handoff is an existing source reference of that goal; `UNIVERSAL-WORK-INTERLOCK` is its historical component label, not a newly minted canonical Goal Task ID. The existing reusable identities `RT-INTR-PROTOCOL-ESTABLISH-001`, `RT-INTR-BOUNDARY-ADMISSION-001`, `RT-INTR-GOVERNED-TRANSITION-001`, `RT-INTR-ROUNDTRIP-CORRELATION-001` and `RT-INTR-EVIDENCE-CUSTODY-001` retain their existing responsibilities.
+
+**Participation invariant:** an attempted transition presented at a participating StegVerse-governed ingress or egress must receive the applicable Interlock/InTr evaluation and an explicit disposition before any protected effect. ALLOW permits only the specifically evaluated transition within the evidenced scope. DENY prevents the current attempt and may support a separately governed corrected attempt. FAIL_CLOSED terminates the current attempt. REVIEW/ESCALATE/REFUSE or other native non-ALLOW outcomes must not be coerced to ALLOW or silently conflated with a runtime failure; preserve the native disposition and applicable continuation policy.
+
+**Observation ceiling:** this is a contract over participating, presented transitions, **not** a claim of surveillance, universal AI compliance, visibility of all network traffic, absence of bypass routes, or detection of unobserved actions. Missing or inaccessible evidence is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED unless authentic evaluation evidence supports a different disposition. Non-observation is not proof that a transition never occurred; neither a previous ALLOW nor prior compliance establishes future admissibility.
+
+**Temporal governance:** evaluate applicable governance at the evidenced coordinate and retain its time/reference provenance, freshness and stated uncertainty. Do not infer authority from elapsed time, heartbeat cadence, observer freshness, historical standing, or future predictions. A current disposition is bounded by its evaluated evidence and does not guarantee perpetual compliance. The separately applicable authority must still hold at the consequential transition/commit boundary.
+
+**Evidence separation:** preserve evidence establishing constraints, provenance, applicability and authority separately from the evidence of evaluating a particular attempted transition. Record the exact request/response correlation, source disposition, evidence availability/limits and predecessor-linked custody so Master Records can reconstruct what the original evidence supports. Custody cannot manufacture omitted observations or grant transition authority.
+
+This clarification adds no runtime, listener, scheduler, credential source, global surveillance mandate or second governance evaluator. It changes no canonical Registry lifecycle state and claims no resident execution or Master Records closure. The remaining implementation test is to demonstrate this scoped invariant on existing ingress/egress paths, including negative tests for missing evidence, stale authority and native non-ALLOW preservation.

@@ -1111,11 +1111,63 @@
       "profile": "task.v1",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+      "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+      "vector": "20000000129000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/1620"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
+      "source_state_vector_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
+      "vector": "10100000122000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/2619"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json",
+      "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json",
+      "vector": "10111110114000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/2626"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/GOVERNANCE-METERED-POLICY-RECOVERY-001.json",
+      "source_state_vector_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json",
+      "vector": "10100000124000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "canonical_owner_ref": "https://github.com/StegVerse-Labs/.github/issues/2632"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 113,
-    "local_cosv_record_tasks": 113,
+    "indexed_vectorized_tasks": 117,
+    "local_cosv_record_tasks": 117,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

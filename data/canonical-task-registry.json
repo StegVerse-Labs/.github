@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 252,
+  "generation": 254,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -185,7 +185,16 @@
         "deployment_required": false,
         "current_observation_required": false
       },
-      "runtime_resolution": null,
+      "runtime_resolution": {
+        "map_ref": "control/runtime-profile-map.json",
+        "map_generation": 2,
+        "candidate_profile_ids": [
+          "canonical-work-coordination-runtime-v1"
+        ],
+        "resolved_at": "2026-09-25T21:19:00Z",
+        "projection_only": true,
+        "selection_grants_authority": false
+      },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
@@ -10721,7 +10730,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10100000122000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2619",
         "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md",
@@ -10821,7 +10830,19 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_sdk_write_approved": false
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10100000122000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -10956,7 +10977,10 @@
         "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
         "tracking_authoritative": true,
         "session_admission_authentic_observed": false,
-        "execution_authority_effect": "NONE"
+        "execution_authority_effect": "NONE",
+        "source_state_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "vector_source_materialized_from_native_proposal": true
       },
       "research_source_evidence": {
         "schema": "stegverse.optical-real-original-evidence/v1",
@@ -11280,7 +11304,8 @@
         "worker_claim_fence_observed": false,
         "master_records_closure_observed": false,
         "authority_effect": "NONE_SOURCE_ONLY"
-      }
+      },
+      "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -11292,7 +11317,7 @@
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10100000124000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2632",
         "https://github.com/StegVerse-Labs/Governance/issues/46",
@@ -11402,7 +11427,19 @@
         "external_repository_mutation_approved": false,
         "canonical_generation_before_source_proposal": 219,
         "old_source_pr_head": "f517598709b58ad37d37bc4b34a26a73926a290c"
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10100000124000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -11569,7 +11606,7 @@
       "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; ungoverned/non-ChatGPT AI constrained at StegVerse-controlled consequence boundaries by a reusable defensive envelope that preserves external AI sovereignty; External AI Meeting Room as one concrete instantiation; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "20000000129000",
       "repository": "StegVerse-Labs/.github",
       "issue_ref": "StegVerse-Labs/.github#1620",
       "handoff_projection_refs": [
@@ -11728,7 +11765,19 @@
         "claimed": false,
         "validated": false,
         "runtime_observed": false
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "20000000129000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
