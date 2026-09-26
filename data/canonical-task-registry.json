@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 252,
+  "generation": 253,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -185,7 +185,16 @@
         "deployment_required": false,
         "current_observation_required": false
       },
-      "runtime_resolution": null,
+      "runtime_resolution": {
+        "map_ref": "control/runtime-profile-map.json",
+        "map_generation": 2,
+        "candidate_profile_ids": [
+          "canonical-work-coordination-runtime-v1"
+        ],
+        "resolved_at": "2026-09-25T21:19:00Z",
+        "projection_only": true,
+        "selection_grants_authority": false
+      },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
