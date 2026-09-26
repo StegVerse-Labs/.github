@@ -94,6 +94,12 @@ Historical cross-evaluation handoff now has a dated provenance erratum; historic
 - `SUBMISSION_AUTHORIZED = false`
 - `PRIVATE_CORRESPONDENCE_PUBLICLY_REPLICATED = false`
 
+## FAccT abstract visibility and SDK HOLD qualification — September 25, 2026
+
+The source-corrected **FAccT 2027 abstract draft already exists on main** at `docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md`. Its outdated PDF-verification note has been corrected in this change; it remains a private-author-review draft, NOT submitted or author-approved. This is a GitHub research file, not automatically a file in the owner's personal records/Library.
+
+Before sending an ordered HOLD execution packet to Élisabeth, the SDK's evaluator-visible path must be qualified. See `docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md` for the source-backed current capability matrix and D0–D7 evaluator preflight contract. The existing public SDK has generic manifested processing, declared routing, controlled evaluator test precedent and read-only diagnostic transport. Its historical `scripts/run_elan_stegverse_cross_evaluation.py` still hardcodes the superseded ÉLAN-presence annotation and fake InTr resolver: treat it as historical evidence only, NOT a current corrected experiment or live-runtime proof. A HOLD-specific no-invocation provenance negative control and exact evaluator-visible manifest/route/custody/replay qualification remain outstanding. Do not ask Élisabeth to run a purported SDK-integrated HOLD protocol before these source/runtime boundaries are established; distinguish independent ÉLAN-native trace collection from subsequent SDK evaluation.
+
 ## Next work
 
 1. Editorial PR #2593 has merged. Keep manuscript and abstract marked DRAFT / NOT SUBMITTED and HOLD marked PROPOSED / NOT EXECUTED until separately authorized.
