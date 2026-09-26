@@ -125,3 +125,8 @@ This is research/publication coordination and does not change repository functio
 ## No-claim boundary
 
 This handoff does not claim that the manuscript is submission-ready, that a submission has been authorized, that Élisabeth has already performed substantive edits beyond accepting co-authorship and offering future review, or that any publication submission has occurred.
+
+
+## 2026-09-26 jointly reviewable HOLD packet reconciliation
+
+Canonical Registry generation 259 retains ACTIVE / COSV 71000000100100, checkout HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_MERGED_RUNTIME_HOLD_PENDING. Central PR #2751 merged 591906eb0652a0198c21d57aacdd14f93144d951; central PR #2752 merged e66b6b88a6744cb75c5a5d6904a82cb4230f6fd9; SDK #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61; SDK #349 merged 4f5e38910214ea5bfcfb9299811d7a56b7ce1259. The proposed chronological evaluator packet docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md is ready for **private coauthor prompt/recording agreement**, not an approved or executed joint protocol. Send it for confirmation of exact prompts, API/session continuity, timeout and source retention. No-request 60-second control is CLIENT NO_INVOCATION, not ÉLAN output or evidence of internal HOLD. SDK five-condition source qualification does not establish live Interlock/InTr enforcement, prevented effects, original Master Records custody, Publisher delivery or authentic ÉLAN results. Do not gate native trace collection on general SDK roadmap; keep private PDFs and correspondence outside public repository. FAccT abstract and manuscript remain separate author-review drafts, not submitted.
