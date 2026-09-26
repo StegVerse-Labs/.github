@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.stcm-chf-native-capability-verification/v1",
   "source_review_scope": "Pinned current native STCM/CHF inspected original source plus installed SDK route declarations; source-only evidence",
-  "central_registry_generation_inspected": 256,
+  "central_registry_generation_inspected": 257,
   "math_goal_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
   "math_cosv": "10111110111000",
   "adjacent_comparison_goal_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
@@ -168,12 +168,39 @@
       "governance_authority_effect": "NONE"
     }
   },
-  "overall_status": "STCM_AND_CHF_BOUNDED_SYNTHETIC_NATIVE_VERIFIED_CHF_PRIVATE_SDK_MANIFEST_3_CASES_VERIFIED_FULL_HORIZON_AND_RUNTIME_NOT_ESTABLISHED",
+  "overall_status": "STCM_AND_CHF_BOUNDED_NATIVE_SYNTHETIC_VERIFIED_CHF_3_ET_1_PRIVATE_GENERIC_SDK_INVOCATIONS_VERIFIED_FULL_HORIZON_AND_RUNTIME_NOT_ESTABLISHED",
   "runtime": {
     "authenticated_resident_gate": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "organization_ledger": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "master_records": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
   },
   "external_export": "NOT_RECEIVED",
-  "physical_heat_measurement": "NOT_OBSERVED"
+  "physical_heat_measurement": "NOT_OBSERVED",
+  "ET": {
+    "source_repository": "Admissible-Existence/ET",
+    "native_original_callable": "src/et/temporal.py::resolve_version",
+    "original_core_git_blob": "b520bae77ea5cedda95672c5529a2bc5fefc7b33",
+    "original_owner_pr": "Admissible-Existence/ET#11@250d2c09b54cefc0d4b7c3ba58babba6db379466",
+    "original_owner_hosted_run": 36233578328,
+    "private_artifact_id": 10903487505,
+    "private_artifact_zip_sha256": "sha256:556630bcb642a831d8e83226e83a6407d124f8eed12bd4a02fb9e592f0ee39d8",
+    "original_specimen_sha256": "sha256:d1b87fd8f46ad62aa5955d03d52eb2478253b40db507f73b14307ddfedae1946",
+    "original_native_result_sha256": "sha256:b4a660aba3d991db9771f6503a3e774212ff4c55655a42280097202c2bba6afe",
+    "sdk_manifest_sha256": "bd43df50edc5fec49fa5c96887da2a507d86148b5bcc920c75cef01f852f2676",
+    "sdk_request_sha256": "3665f049bd43f291265a32ecad191ed5aef9e486204941e2ecf5dd375b1f4e96",
+    "sdk_pre_enrichment_result_sha256": "469736b01de7f65dc3b5c1da21cbd3a2f6ffe938c5d7831fa45ec094c18d42e3",
+    "synthetic_positive": "EFFECTIVE_VERSION_v2",
+    "negative_controls": [
+      "CONFLICTING_EFFECTIVE_VERSIONS_DENIED",
+      "REVOKED_ONLY_DENIED",
+      "FORGED_ORIGINAL_SPECIMEN_DENIED",
+      "FORGED_ADAPTER_SOURCE_BLOB_DENIED",
+      "MISMATCHED_NATIVE_RESULT_DENIED"
+    ],
+    "original_native_source_unchanged": true,
+    "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_1_SYNTHETIC_CASE",
+    "full_et_mathematical_completeness": "NOT_ESTABLISHED",
+    "general_distribution": "NOT_ESTABLISHED",
+    "governed_runtime": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  }
 }
