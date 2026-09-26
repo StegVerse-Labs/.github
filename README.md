@@ -1788,3 +1788,7 @@ Existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`, observed 
 
 
 September 26 research review status: MIR/SV Experiment 3 has an independently shareable **source-qualified** counterpart at [docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md](docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md), without authentic resident or physical-work claims. ÉLAN HOLD has a [jointly reviewable chronological packet](docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md), not an approved/executed experiment; SDK five-condition source qualification merged as PR #349. Canonical identities, evidence limits and next actions remain in their respective mirror handoffs.
+
+## SDK wiki version synchronization — 2026-09-26
+
+SDK PR [#356](https://github.com/StegVerse-org/StegVerse-SDK/pull/356) proposes rebuilding the public developer wiki on every SDK main push and published release, with release-tag-to-source revision verification. Public publication is not complete until Pages deployment and independent served-manifest revision readback match the released SDK commit. The original SDK public wiki goal remains RETIRED; this synchronization is continued under existing active ECOSYSTEM-OPEN-SOURCE-STRATEGY-001 / COSV 20010010100000. Do not import unreviewed DeepWiki pages or infer authentic runtime from documentation. SDK PR exact-head wiki validation was successful at cbf1fcc3107da8c1e6022c4598286c58e6728172; other workflows were still in progress at inspection. Neither PR merge nor new public deployment is claimed.
