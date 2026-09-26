@@ -69,7 +69,7 @@
       "dependency_id": "DEP-HOLD-SDK-EVALUATOR-QUALIFICATION",
       "kind": "CAPABILITY_QUALIFICATION",
       "state": "GENERIC_SOURCE_GUARD_MERGED_VALIDATED_AUTHENTIC_HOLD_RUNTIME_PENDING",
-      "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md; SDK PR #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61; source preflight run 36210851372 passed; latest README-inclusive run 36210851372 superseded by 36210851372 final-head new run 36210851372? verify PR 340 final head exact run 36210851372 (final run 36210851372 on c48? separate 36210851372)"
+      "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md; SDK PR #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61 after thirteen applicable exact-head validations passed at c48bed6bfb347227313760f1974695bafa7a0800; authentic HOLD and Master Records completion not yet observed"
     },
     {
       "dependency_id": "DEP-HOLD-JOINT_NATIVE_COLLECTION",
