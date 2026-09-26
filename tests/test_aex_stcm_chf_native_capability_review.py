@@ -83,9 +83,9 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(original["full_horizon"], "NOT_ESTABLISHED")
         self.assertEqual(original["sdk_native_manifest"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES")
         self.assertEqual(self.audit["CHF"]["original_source_sdk_invocation"]["hosted_validation_run"], 36231939908)
-        self.assertEqual(self.census["native_math_manifest_invocations_verified"], 4)
+        self.assertEqual(self.census["native_math_manifest_invocations_verified"], 7)
         self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
-        self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] not in {"Admissible-Existence/CHF", "Admissible-Existence/ET"}))
+        self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] not in {"Admissible-Existence/CHF", "Admissible-Existence/ET", "Admissible-Existence/HPS"}))
         self.assertEqual(len(original["four_synthetic_controls"]), 4)
 
     def test_unobserved_runtime_and_physical_heat_remain_unobserved(self):
@@ -127,6 +127,23 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(len(set(hashes)), 4)
         self.assertEqual(et["full_et_mathematical_completeness"], "NOT_ESTABLISHED")
         self.assertEqual(et["governed_runtime"], "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
+        self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
+
+
+    def test_private_hps_source_only_scores_do_not_grant_standing(self):
+        hps = self.audit["HPS"]
+        row = self.rows["Admissible-Existence/HPS"]
+        self.assertEqual(hps["original_native_git_blob"], "91c205bae95d23b20e3814fcd58b5fdb0d603959")
+        self.assertEqual(hps["hosted_validation_run"], 36233899275)
+        self.assertEqual(row["sdk_manifest_invocation"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_SCORE_CLASSES")
+        self.assertEqual([r["source_class"] for r in hps["cases"]], ["RESTORED", "DEGRADED", "FAILED"])
+        for case in hps["cases"]:
+            digests = [case[field] for field in ("native_result_sha256", "sdk_manifest_sha256", "sdk_request_sha256", "sdk_pre_enrichment_result_sha256")]
+            self.assertTrue(all(len(digest) == 64 for digest in digests))
+            self.assertEqual(len(set(digests)), 4)
+        self.assertIs(hps["source_score_is_spe_standing"], False)
+        self.assertEqual(hps["execution_authority_effect"], "NONE")
+        self.assertEqual(hps["governed_runtime"], "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
         self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.stcm-chf-native-capability-verification/v1",
   "source_review_scope": "Pinned current native STCM/CHF inspected original source plus installed SDK route declarations; source-only evidence",
-  "central_registry_generation_inspected": 257,
+  "central_registry_generation_inspected": 258,
   "math_goal_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
   "math_cosv": "10111110111000",
   "adjacent_comparison_goal_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
@@ -168,7 +168,7 @@
       "governance_authority_effect": "NONE"
     }
   },
-  "overall_status": "STCM_AND_CHF_BOUNDED_NATIVE_SYNTHETIC_VERIFIED_CHF_3_ET_1_PRIVATE_GENERIC_SDK_INVOCATIONS_VERIFIED_FULL_HORIZON_AND_RUNTIME_NOT_ESTABLISHED",
+  "overall_status": "STCM_CHF_BOUNDED_SYNTHETIC_NATIVE_VERIFIED_CHF_3_ET_1_HPS_3_PRIVATE_SDK_MANIFESTED_SOURCE_CASES_VERIFIED_FULL_PHYSICAL_GOVERNED_RUNTIME_UNKNOWN",
   "runtime": {
     "authenticated_resident_gate": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "organization_ledger": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
@@ -201,6 +201,54 @@
     "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_1_SYNTHETIC_CASE",
     "full_et_mathematical_completeness": "NOT_ESTABLISHED",
     "general_distribution": "NOT_ESTABLISHED",
+    "governed_runtime": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "HPS": {
+    "original_source_repo": "Admissible-Existence/HPS",
+    "native_original_callable": "tools/verify_standing_score.py::verify_standing_score",
+    "original_native_git_blob": "91c205bae95d23b20e3814fcd58b5fdb0d603959",
+    "private_owner_merged_pr": "Admissible-Existence/HPS#7@2d971d5dba1b89b7bb001f9eb0127818f43d932e",
+    "hosted_validation_run": 36233899275,
+    "private_artifact_id": 10903218434,
+    "original_artifact_zip_sha256": "sha256:9a0d4358b8832012e678658e43814f48e6253347f8e93390229068d343c21b86",
+    "adapter_original_blob": "c02e40569cec165399ffa743a70b7d65697ccbfa",
+    "published_generic_sdk_merge": "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+    "cases": [
+      {
+        "source_fixture": "restored_standing.score.json",
+        "source_class": "RESTORED",
+        "native_result_sha256": "aebc0552ce9c5cff5271562a863a7590aa66cd405c163196d157dc34dafd6a41",
+        "sdk_manifest_sha256": "363716454ccc2eb6ef5b8028deb4c2f528e539399490c4b85dccd028949cd601",
+        "sdk_request_sha256": "2e5fd9b675685453f1c871b4c7634187880660989140f700c051edb749366ea9",
+        "sdk_pre_enrichment_result_sha256": "fe69adc081af09a1059ef78aac9f99294ff95680b6eebea864919a25c348f652"
+      },
+      {
+        "source_fixture": "degraded_standing.score.json",
+        "source_class": "DEGRADED",
+        "native_result_sha256": "af19332c2b68996c2c509c6173b62480808ef7a824035ef200a17c96deb9f52b",
+        "sdk_manifest_sha256": "7e3f976832830e335e998be373b329712f14c184e71b4b5f2bf578c1a4691c79",
+        "sdk_request_sha256": "8578379d8af7f7cfc3736d25056bec5ccd4689a2238bc0a5ce79f91e3cd44ac0",
+        "sdk_pre_enrichment_result_sha256": "0fabfa525cadad2bfdf9692781e8e5874c2f625dfa057fa80a9249869ea7b0de"
+      },
+      {
+        "source_fixture": "hard_fail_standing.score.json",
+        "source_class": "FAILED",
+        "native_result_sha256": "613dc4a3a6a787b19ab93f5d062e7bf7bdc0aa32fef7304c90a164a0557bb7cb",
+        "sdk_manifest_sha256": "3a5e896698c1ab4c1492d550d14f33ace08042bb6589aa26450612c7f64e7947",
+        "sdk_request_sha256": "24ce71d612898ddcbb13211d062a04dcd8bd59ba78e3391e44ce52267c299526",
+        "sdk_pre_enrichment_result_sha256": "475b78b27598154773928e839cc3e8d05095f2d45ba5ce4863c674f507e2ead9"
+      }
+    ],
+    "negative_controls": [
+      "FORGED_ORIGINAL_SPECIMEN_REFUSED",
+      "FORGED_ADAPTER_GIT_BLOB_REFUSED",
+      "EXPECTED_NATIVE_RESULT_MISMATCH_REFUSED",
+      "FROZEN_SPECIMEN_VS_NATIVE_REQUEST_MISMATCH_REFUSED"
+    ],
+    "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_SCORE_CLASSES",
+    "source_score_is_spe_standing": false,
+    "execution_authority_effect": "NONE",
+    "physical_measurements": "NOT_ESTABLISHED",
     "governed_runtime": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
   }
 }
