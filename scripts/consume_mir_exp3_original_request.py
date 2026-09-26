@@ -52,6 +52,7 @@ def consume(source_root: Path, runtime_root: Path) -> dict:
     if any(os.environ.get(key, "").lower() not in {"", "0", "false", "no"}
            for key in HOSTED_ENV):
         return boundary("HOSTED_ENVIRONMENT_FORBIDDEN")
+    ticket: dict | None = None
     try:
         ticket = json.loads(request_path.read_text(encoding="utf-8"))
         if (not isinstance(ticket, dict)
@@ -117,6 +118,23 @@ def consume(source_root: Path, runtime_root: Path) -> dict:
                   "wire_manifest_sha256": ORIGINAL_WIRE,
                   "producer_result": result, "runtime_execution_proven": bool(is_live),
                   "authority_effect": "NONE_RESIDENT_RESULT_RETENTION_ONLY"}
+        # A correctable SOURCE_ONLY DENY must be re-evaluated after the existing
+        # owner repairs native admission. Caching it as the request's terminal
+        # result would prevent progression and misclassify source evidence.
+        # The existing ingress already retains its exact write-once source disposition.
+        terminal_local = result.get("terminal") is True
+        if not is_live and not terminal_local:
+            return {"schema": record["schema"], "state": "SOURCE_PROFILE_DISPOSITION",
+                    "task_id": GOAL, "cosv_task_vector": COSV,
+                    "request_sha256": digest, "wire_manifest_sha256": ORIGINAL_WIRE,
+                    "original_disposition": result.get("disposition"),
+                    "first_failed_predicate": result.get("failed_predicate"),
+                    "source_disposition_ref": result.get("source_disposition_ref"),
+                    "authentic_intr_disposition_observed": False,
+                    "runtime_execution_proven": False,
+                    "authority_effect": "NONE_SOURCE_PROFILE_ONLY"}
+        if terminal_local and not is_live:
+            record["state"] = "ADMITTED_DIAGNOSTIC_LOCAL_FAIL_CLOSED"
         output.parent.mkdir(parents=True, exist_ok=True)
         raw = json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
         with output.open("x", encoding="utf-8") as handle:

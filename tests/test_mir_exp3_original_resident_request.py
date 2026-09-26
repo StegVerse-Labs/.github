@@ -28,7 +28,8 @@ class ResidentOriginalRequestTests(unittest.TestCase):
             root = Path(td)
             (root / mod.REQUEST_REL).parent.mkdir(parents=True)
             (root / mod.REQUEST_REL).write_text(json.dumps(ticket()))
-            got = mod.consume(root, root)
+            with patch.dict(os.environ, {key: '0' for key in mod.HOSTED_ENV}):
+                got = mod.consume(root, root)
             self.assertEqual(got["state"], "SOURCE_BOUNDARY")
             self.assertEqual(got["reason"], "ORIGINAL_IMMUTABLE_REQUEST_NOT_UNIQUELY_RETAINED")
             self.assertFalse(got["runtime_execution_proven"])
@@ -51,7 +52,8 @@ class ResidentOriginalRequestTests(unittest.TestCase):
             bad["request_grants_authority"] = True
             bad["caller_attested_session_origin"] = "self-asserted"
             (root / mod.REQUEST_REL).write_text(json.dumps(bad))
-            got = mod.consume(root, root)
+            with patch.dict(os.environ, {key: '0' for key in mod.HOSTED_ENV}):
+                got = mod.consume(root, root)
             self.assertEqual(got["reason"], "ORIGINAL_RESIDENT_REQUEST_CONTRACT_INVALID")
 
 
