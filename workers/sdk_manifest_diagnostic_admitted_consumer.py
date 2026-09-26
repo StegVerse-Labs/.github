@@ -308,11 +308,9 @@ def _require_current_organization_lease_status(
             "CURRENT_ORGANIZATION_HEAD_MOVED_REQUIRE_REVALIDATION")
 
 
-def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding: Mapping[str, Any]) -> None:
-    """Recheck actual current StegOS lease and relay; old HEAD is not live authority."""
+def _remaining_authorized_lease_seconds(binding: Mapping[str, Any]) -> float:
+    """A fresh, actual owner-bound deadline; never mint an expiry from observation."""
     from datetime import datetime, timezone
-    from workers.stegos_sovereign_relay_bridge import find_stegos_root
-
     deadline = binding.get("lease_expires_at")
     require(isinstance(deadline, str) and deadline.endswith("Z"),
             "CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRY_REQUIRED")
@@ -320,7 +318,16 @@ def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding
         end = datetime.fromisoformat(deadline.replace("Z", "+00:00"))
     except ValueError as exc:
         raise DiagnosticAdmissionError("CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRY_INVALID") from exc
-    require(end > datetime.now(timezone.utc), "CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRED")
+    remaining = (end - datetime.now(timezone.utc)).total_seconds()
+    require(remaining > 0, "CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRED")
+    return remaining
+
+
+def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding: Mapping[str, Any]) -> None:
+    """Recheck actual current StegOS lease and relay; old HEAD is not live authority."""
+    from workers.stegos_sovereign_relay_bridge import find_stegos_root
+
+    _remaining_authorized_lease_seconds(binding)
     snapshot_ref = binding.get("canonical_runtime_lease_snapshot_ref")
     snapshot_hash = binding.get("canonical_runtime_lease_snapshot_sha256")
     require(isinstance(snapshot_ref, str) and snapshot_ref
@@ -489,16 +496,27 @@ def consume(
     child_env["PYTHONPATH"] = str(sdk_root)
     child_env["STEGVERSE_EVENT_EPHEMERAL_RUNTIME_ROOT"] = str(ephemeral_root)
     child_env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
+    # The prior live probe and full HEAD replay can consume the original
+    # lease window. Re-evaluate the original authorized deadline immediately
+    # before invocation and never allow the processor's timeout beyond it.
+    timeout_seconds = (min(120.0, _remaining_authorized_lease_seconds(binding))
+                       if not source_test_doubles else 120)
     try:
         proc = runner([sys.executable, "-m", "stegverse.ecosystem_diagnostic_cli",
                        "--manifest", str(original_path), "--output", str(result_path)],
                       cwd=ephemeral_root, env=child_env, capture_output=True, text=True,
-                      check=False, timeout=120)
+                      check=False, timeout=timeout_seconds)
     except Exception as exc:
         raise DiagnosticExecutionFailClosed(
             "ADMITTED_SDK_DIAGNOSTIC_PROCESS_INVOCATION_FAILED:" + type(exc).__name__) from exc
     if proc.returncode != 0 or not result_path.is_file():
         raise DiagnosticExecutionFailClosed("ADMITTED_SDK_DIAGNOSTIC_PROCESS_EXECUTION_FAILED")
+    if not source_test_doubles:
+        try:
+            _remaining_authorized_lease_seconds(binding)
+        except DiagnosticAdmissionError as exc:
+            raise DiagnosticExecutionFailClosed(
+                "ADMITTED_SDK_DIAGNOSTIC_LEASE_EXPIRED_DURING_EXECUTION") from exc
     try:
         diagnostic = _read(result_path)
     except Exception as exc:
