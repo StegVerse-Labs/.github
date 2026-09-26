@@ -328,5 +328,28 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                         reconstruct=fake_master_records_reconstruction)
 
 
+
+    def test_original_native_snapshot_must_match_actual_admission_and_deadline(self):
+        native = {"original_request_sha256": "a" * 64,
+                  "original_wire_manifest_sha256": "b" * 64,
+                  "original_admission_receipt_sha256": "c" * 64,
+                  "execution_lease_expires_at": "2099-01-01T00:00:00Z"}
+        binding = {"request_sha256": "a" * 64,
+                   "wire_manifest_sha256": "b" * 64,
+                   "original_admission_receipt_sha256": "c" * 64,
+                   "lease_expires_at": "2099-01-01T00:00:00Z"}
+        mod._require_native_original_request_lineage(native, binding, "c" * 64)
+        cases = [
+            ({**native, "original_request_sha256": "d" * 64}, binding, "c" * 64),
+            ({**native, "execution_lease_expires_at": "2099-01-02T00:00:00Z"}, binding, "c" * 64),
+            (native, {**binding, "original_admission_receipt_sha256": "d" * 64}, "c" * 64),
+            (native, binding, "d" * 64),
+        ]
+        for changed_native, changed_binding, admission in cases:
+            with self.assertRaises(mod.DiagnosticAdmissionError):
+                mod._require_native_original_request_lineage(changed_native, changed_binding, admission)
+        with self.assertRaisesRegex(mod.DiagnosticAdmissionError, "CURRENT_NATIVE_ORIGINAL_ADMISSION_REQUIRED"):
+            mod._require_native_original_request_lineage(native, binding, None)
+
 if __name__ == "__main__":
     unittest.main()
