@@ -34,6 +34,8 @@ on:
       - 'scripts/record_task_registry_session_return.py'
       - 'scripts/materialize_task_session_close.py'
       - 'tests/test_component010_unattested_return_refusal_unittest.py'
+      - 'tests/test_task_runtime_resolution.py'
+      - 'receipts/runtime-profile-map/task-resolutions/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json'
       - 'tests/test_task_registry_session_gate_backlog.py'
       - 'tests/test_component010_checked_out_shard_projection.py'
       - 'scripts/audit_task_registry_session_gate_backlog.py'
@@ -99,6 +101,8 @@ on:
       - 'scripts/record_task_registry_session_return.py'
       - 'scripts/materialize_task_session_close.py'
       - 'tests/test_component010_unattested_return_refusal_unittest.py'
+      - 'tests/test_task_runtime_resolution.py'
+      - 'receipts/runtime-profile-map/task-resolutions/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json'
       - 'tests/test_task_registry_session_gate_backlog.py'
       - 'tests/test_component010_checked_out_shard_projection.py'
       - 'scripts/audit_task_registry_session_gate_backlog.py'
@@ -170,6 +174,7 @@ jobs:
             tests.test_task_registry_session_gate_backlog \
             tests.test_component010_checked_out_shard_projection \
             tests.test_audit_canonical_task_projections \
+            tests.test_task_runtime_resolution \
             tests.test_g236_exact_owner_projection \
             tests.test_component010_predecessor_unittest \
             tests.test_component010_source_refresh_carriage \
