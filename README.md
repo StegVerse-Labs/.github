@@ -1536,6 +1536,7 @@ Draft task `WORKER-TASK-RESOURCE-COST-LINKAGE-001` has an intake record in [issu
 ## Optical physical-state and replay research — source preregistration
 
 Central [issue #2626](https://github.com/StegVerse-Labs/.github/issues/2626) proposes a coordination-only source row for `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001` at generation 214 (branch proposal from generation 213). The canonical continuation is [`docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md`](docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md). PAT-003 adaptive-scanner, Publisher reconstruction and existing SDK/governance owners retain their independent scopes. **A source row is not authentic AI_SESSION_GATE admission, a minted COSV, patent family identity or runtime proof.** The associated [Patents draft PR #6](https://github.com/StegVerse-Labs/Patents/pull/6) remains pending convergence. Keep confidential enabling claim material and restricted video out of public repositories.
+
   - Optical v0.12 (2026-09-26): source-only exact-original audit prepared; dense/sparse synthetic context and selected-set equality pass. Original private trigger rows/media, independent physical reference, Mendeley file rights and authentic component-010 runtime remain unverified; see the same canonical handoff.
 
 ### Private-State Economy paper scope (2026-09-24)
@@ -1748,3 +1749,13 @@ The existing Universal InTr non-worker diagnostic consumer now first attempts bo
 ## September 26 — further cross-framework DeepWiki source review
 
 The existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` remains ACTIVE/CHECKED_OUT at canonical Registry generation 252. [SDK PR #346](https://github.com/StegVerse-org/StegVerse-SDK/pull/346) merged after [exact-head read-only CI run 36221098615](https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36221098615) passed. Nineteen further original nonpriority cross-framework/formal-route/Experiment 3 citations received individual predecessor-linked exact-source findings: eight narrowly verified atomic implementation/configuration facts and eleven limited or non-ALLOW contexts. [Retained artifact 10898907376](https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36221098615/artifacts/10898907376). Cumulative additional nonpriority manual reviews total 73, without approving any full original generated paragraph or republication. Prior 46/46 priority findings, 23/23 current historical locators, the original external capture, quarantined link correction and six canonical SDK public Pages source files remain unchanged. Original runtime, rights-holder approval and additional open-source release remain unestablished. See the [existing handoff](docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md).
+
+
+### September 26 — source-owned open-source audit merges
+
+Existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`: owner-authorized source-only merges [AdmittedCode #5](https://github.com/AdmittedCode/.github/pull/5), [Data-Continuation #8](https://github.com/Data-Continuation/.github/pull/8), [GCAT #7](https://github.com/GCAT-BCAT-Engine/.github/pull/7), [AaCT-E #6](https://github.com/AaCT-E/.github/pull/6) and source rights-form [Core-Lite #35](https://github.com/Data-Continuation/core-lite/pull/35). Source-owner coverage is provisionally 168/252 entries across six organizations pending central canonical manifest and Registry reconciliation; 84 remain visibility-only. No license or release granted. See canonical open-source mirror handoff.
+
+
+#### Canonical source-owner audit coverage promoted — September 26
+
+After independent source-owner main readback of AdmittedCode #5, Data-Continuation #8, GCAT #7, AaCT-E #6 and Core-Lite rights form #35, existing open-source task canonical candidate generation 255 records 168/252 metadata/root-inspected repository entries across six known organizations. Eight organizations remain visibility-only; actual file-level legal title and source grants remain unverified, Core-Lite #34 remains open, and no release is authorized. This aggregate excludes private GCAT repository names. See `data/ecosystem-open-source-organization-census-20260925.json` and existing mirror handoff.
