@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "EDITORIAL_SOURCE_VERIFIED_FACCT_DRAFT_LOCATED_SDK_HOLD_QUALIFICATION_PENDING",
+  "checkout_state": "HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_PR_OPEN_PARALLEL_EXECUTION",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -24,7 +24,9 @@
     "docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md",
     "docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md",
     "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun",
-    "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md"
+    "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md",
+    "docs/ELAN_HOLD_IMMEDIATE_EXECUTION_SDK_VERSION_ROADMAP.md",
+    "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
   ],
   "dependencies": [
     {
@@ -66,8 +68,14 @@
     {
       "dependency_id": "DEP-HOLD-SDK-EVALUATOR-QUALIFICATION",
       "kind": "CAPABILITY_QUALIFICATION",
-      "state": "SOURCE_ASSESSED_EXACT_HOLD_PREFLIGHT_UNEXECUTED",
+      "state": "GENERIC_SOURCE_GUARD_PR_340_OPEN_FINAL_VALIDATION_PENDING_ACTUAL_HOLD_UNEXECUTED",
       "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md"
+    },
+    {
+      "dependency_id": "DEP-HOLD-JOINT_NATIVE_COLLECTION",
+      "kind": "COAUTHOR_PROTOCOL",
+      "state": "ORDERED_PACKET_PREPARED_EXACT_PROMPTS_NOT_YET_JOINTLY_FROZEN",
+      "ref": "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
     }
   ],
   "blockers": [],
@@ -126,7 +134,12 @@
     "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13",
     "hold_sdk_capability_source_assessed": true,
     "hold_sdk_exact_experiment_qualified": false,
-    "sdk_historical_test2_fixture_provenance_defect_identified": true
+    "sdk_historical_test2_fixture_provenance_defect_identified": true,
+    "hold_native_ordered_packet_prepared": true,
+    "hold_native_collection_author_approved": false,
+    "hold_native_source_received": false,
+    "sdk_generic_source_guard_pr": 340,
+    "sdk_version_roadmap_prepared": true
   },
   "completion": {
     "claimed": false,
@@ -134,14 +147,12 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
-    "QUALIFY_EVALUATOR_VISIBLE_SDK_PATH_FOR_HOLD",
+    "JOINTLY_FREEZE_EXACT_HOLD_STIMULI_AND_COLLECT_AUTHENTIC_SOURCE",
+    "VALIDATE_SDK_PR_340_SOURCE_GUARD_ON_CURRENT_HEAD",
+    "EXECUTE_AUTHENTIC_HOLD_MANIFEST_AND_PRESERVE_DISPOSITION",
     "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
-    "OBTAIN_COAUTHOR_FACCT_ABSTRACT_REVIEW",
-    "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
-    "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
-    "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
-    "PREPARE_VENUE_SPECIFIC_SUBMISSION_MATERIALS_WHEN_AUTHORIZED"
+    "OBTAIN_FINAL_SUBMISSION_AUTHORIZATION"
   ],
   "handoff_projection_refs": [
     "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"
