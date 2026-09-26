@@ -1763,3 +1763,8 @@ After independent source-owner main readback of AdmittedCode #5, Data-Continuati
 
 
 Linked participation history experiment (source-only): SDK PR #347 examines multi-receipt worker refusal and reported post-refusal activity without treating any receipt as proof of behavior. See docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md. Canonical task remains ACTIVE/HANDOFF_READY; no runtime promotion.
+
+
+## September 26 — all registered organizations source audited (generation 256 candidate)
+
+Existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`: eight additional organization inventories merged and independently read back at native owners, extending bounded repository license-metadata/root-path observations to **252/252 known entries across all 14 previously registered organizations**. The public-safe aggregate in `data/ecosystem-open-source-organization-census-20260925.json` retains only per-organization counts, not private repository names. The registered organization universe may be incomplete, and root LICENSE/LICENSE.md observations do not establish file-level license scope or copyright title. Core-Lite #34 rights, contributor chain, complete SBOM, optional Python compatibility and policy/counsel/release predicates remain open. No new license, SDK release, authentic InTr execution or Master Records closure follows from census completion.
