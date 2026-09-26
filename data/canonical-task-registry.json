@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 251,
+  "generation": 259,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -185,7 +185,16 @@
         "deployment_required": false,
         "current_observation_required": false
       },
-      "runtime_resolution": null,
+      "runtime_resolution": {
+        "map_ref": "control/runtime-profile-map.json",
+        "map_generation": 2,
+        "candidate_profile_ids": [
+          "canonical-work-coordination-runtime-v1"
+        ],
+        "resolved_at": "2026-09-25T21:19:00Z",
+        "projection_only": true,
+        "selection_grants_authority": false
+      },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
@@ -9644,7 +9653,19 @@
         "data/ecosystem-open-source-organization-census-20260925.json",
         "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
         "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
-        "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md"
+        "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md",
+        "AdmittedCode/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+        "GCAT-BCAT-Engine/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+        "AaCT-E/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+        "Data-Continuation/core-lite/docs/CORE_LITE_PINNED_RIGHTS_OWNER_DECISIONS_20260925.md",
+        "Admissible-Existence/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "master-records/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "StegGhost/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "StegVerse-002/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "formalism-tests/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "Infrastructure-Continuity-Ventures/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "ECAT-ICAT-Formal/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+        "Triad-Test/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json"
       ],
       "adjacent_task_refs": [
         "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -9743,10 +9764,22 @@
         "core_lite_pinned_license": "SOURCE_LICENSE_SCOPE_UNVERIFIED",
         "core_lite_author_rights": "351_COMMIT_ATTRIBUTIONS_RIGHTS_UNVERIFIED",
         "core_lite_dependencies": "PINNED_SOURCE_IMPORT_INSPECTION_PARTIAL",
-        "data_continuation_source_pr_checks": "NONE_REPORTED"
+        "data_continuation_source_pr_checks": "NONE_REPORTED",
+        "admittedcode_source_pr_merge": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+        "gcat_source_pr_merge": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+        "aact_e_source_pr_merge": "f63382baca536a740324f8d1ede80f1d12f5cd07",
+        "data_continuation_followup_pr_merge": "99ba313b296c3a5a1d82ae7c5368283f9869a11e",
+        "core_lite_rights_form_merge": "c8c423ebcebef002ed7b98af9fa1a3e58c28fcfd",
+        "core_lite_source_rights": "DENY_SOURCE_LICENSE_SCOPE_UNVERIFIED",
+        "organizations_with_source_owned_metadata": 14,
+        "metadata_audited_repositories": 252,
+        "remaining_visibility_only_organizations": 0,
+        "public_source_audit_status": "MERGED_SOURCE_ONLY_NO_NEW_RELEASE",
+        "root_only_census_eight_orgs": "MERGED_AND_MAIN_READBACK",
+        "core_lite_rights_issue": "Data-Continuation/core-lite#34_OPEN"
       },
       "ecosystem_inventory": {
-        "snapshot": "2026-09-25",
+        "snapshot": "2026-09-26",
         "known_organizations_observed": 14,
         "repository_entries_observed": 252,
         "public": 85,
@@ -9755,19 +9788,47 @@
         "manifest": "data/ecosystem-open-source-organization-census-20260925.json",
         "universe_complete": false,
         "metadata_audited": [
+          "Admissible-Existence",
+          "AdmittedCode",
+          "Data-Continuation",
+          "GCAT-BCAT-Engine",
+          "master-records",
+          "StegGhost",
+          "StegVerse-002",
           "StegVerse-Labs",
           "StegVerse-org",
-          "Data-Continuation"
+          "formalism-tests",
+          "Infrastructure-Continuity-Ventures",
+          "AaCT-E",
+          "ECAT-ICAT-Formal",
+          "Triad-Test"
         ],
         "second_org_source_owned_pr": "StegVerse-org/.github#11",
         "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
-        "other_organizations_count_only": 12,
+        "other_organizations_count_only": 0,
         "copyright_title_verified": 0,
         "release_authorized": false,
-        "metadata_checked_entries": 144,
+        "metadata_checked_entries": 252,
         "third_org_source_owned_pr": "Data-Continuation/.github#7",
         "third_org_source_owned_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4",
-        "other_organizations_count_visibility_only": 11
+        "other_organizations_count_visibility_only": 0,
+        "new_owner_merges": {
+          "AdmittedCode": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+          "GCAT-BCAT-Engine": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+          "AaCT-E": "f63382baca536a740324f8d1ede80f1d12f5cd07"
+        },
+        "remaining_file_level_rights_audits": "NOT_COMPLETE",
+        "latest_eight_owner_merges": {
+          "Admissible-Existence": "1ad9ca46823a1877aa7598976c3173a10784abb7",
+          "master-records": "0068ce0c6f6ec2fe22048fc9fff02732e562fe35",
+          "StegGhost": "91401b6b6a5cde7b0831bdfe1f70934280c6c69b",
+          "StegVerse-002": "64a2310a6919d60d9175e9ed178288d034e3f2ec",
+          "formalism-tests": "f76f3b0681e136cb4d5475a3fc6d01a74acb58a6",
+          "Infrastructure-Continuity-Ventures": "e090d0b89d90f5c16534ed58b4a841620f755a76",
+          "ECAT-ICAT-Formal": "21a10956301c57e50c3f2171ed63fd5cc5362421",
+          "Triad-Test": "ce21996770709fe817c62d8e039314cfc85b9c4d"
+        },
+        "known_universe_complete": false
       }
     },
     {
@@ -10517,7 +10578,9 @@
         "Admissible-Existence/.github#82@99bc476ff6f9b732c910d0d3fd1f763f8c046652",
         "Admissible-Existence/CHF#4@52f1f226dc3be9dbc53e52429d03fa87d3087519",
         "Admissible-Existence/STCM@92f6bb8ac61377792970da16a835430ebe20f000",
-        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
+        "Admissible-Existence/CHF#5@27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3"
       ],
       "targets": {
         "organizations": [
@@ -10628,7 +10691,14 @@
         "Admissible-Existence/.github/data/formalism-worker-registry.json",
         "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py",
         "data/aex-stcm-chf-native-math-capability-review.json",
-        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70"
+        "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
+        "Admissible-Existence/CHF#5@27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3",
+        "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+        "Admissible-Existence/CHF#6@86f61c94a6d7b8fae9c2b09986ce2326fbca94d2",
+        "Admissible-Existence/CHF/actions/runs/36231939908",
+        "Admissible-Existence/ET#11@250d2c09b54cefc0d4b7c3ba58babba6db379466",
+        "Admissible-Existence/HPS#7@2d971d5dba1b89b7bb001f9eb0127818f43d932e"
       ],
       "targets": {
         "organizations": [
@@ -10656,7 +10726,7 @@
       ],
       "blockers": [
         "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
-        "NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
+        "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
       ],
       "expected_evidence_predicates": [
         "AUTHENTIC_GENERATION_BOUND_AI_SESSION_GATE_CONTINUE_OR_CONVERGED_OWNER",
@@ -10717,7 +10787,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10100000122000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2619",
         "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md",
@@ -10817,7 +10887,19 @@
         "source_pr_only": true,
         "post_registration_exact_generation_gate_required": true,
         "external_sdk_write_approved": false
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10100000122000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -10952,7 +11034,10 @@
         "source_merge": "f69be90c2aec5de81f18d5715b36084b5b13c3c3",
         "tracking_authoritative": true,
         "session_admission_authentic_observed": false,
-        "execution_authority_effect": "NONE"
+        "execution_authority_effect": "NONE",
+        "source_state_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "vector_source_materialized_from_native_proposal": true
       },
       "research_source_evidence": {
         "schema": "stegverse.optical-real-original-evidence/v1",
@@ -11276,7 +11361,8 @@
         "worker_claim_fence_observed": false,
         "master_records_closure_observed": false,
         "authority_effect": "NONE_SOURCE_ONLY"
-      }
+      },
+      "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -11288,7 +11374,7 @@
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "10100000124000",
       "source_refs": [
         "https://github.com/StegVerse-Labs/.github/issues/2632",
         "https://github.com/StegVerse-Labs/Governance/issues/46",
@@ -11398,7 +11484,19 @@
         "external_repository_mutation_approved": false,
         "canonical_generation_before_source_proposal": 219,
         "old_source_pr_head": "f517598709b58ad37d37bc4b34a26a73926a290c"
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "10100000124000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -11565,7 +11663,7 @@
       "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; ungoverned/non-ChatGPT AI constrained at StegVerse-controlled consequence boundaries by a reusable defensive envelope that preserves external AI sovereignty; External AI Meeting Room as one concrete instantiation; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
-      "cosv_task_vector": null,
+      "cosv_task_vector": "20000000129000",
       "repository": "StegVerse-Labs/.github",
       "issue_ref": "StegVerse-Labs/.github#1620",
       "handoff_projection_refs": [
@@ -11724,7 +11822,19 @@
         "claimed": false,
         "validated": false,
         "runtime_observed": false
-      }
+      },
+      "cosv_tracking": {
+        "profile": "task.v1",
+        "vector": "20000000129000",
+        "vector_state": "EMITTED",
+        "evidence_class": "SOURCE_IMPLEMENTED",
+        "observed_registry_generation": 245,
+        "source_state_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "index_ref": "control/task-vector-index.json",
+        "session_admission_authentic_observed": false,
+        "execution_authority_effect": "NONE"
+      },
+      "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",

@@ -2,7 +2,7 @@
   "schema": "stegverse.ecosystem-open-source-org-census/v1",
   "goal_task_id": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001",
   "cosv": "20010010100000",
-  "snapshot_date": "2026-09-25",
+  "snapshot_date": "2026-09-26",
   "scope": "The 14 previously registered organizations visible to current connected GitHub org-scoped searches. Not proof all ecosystem organizations or inaccessible repositories have been discovered.",
   "baseline_manifest": "control/cosv-ecosystem-adoption-manifest.json",
   "historical_manifest_date": "2026-09-02",
@@ -16,12 +16,17 @@
     "historical_repository_entries": 222,
     "labs_licensed_metadata_verified": 119,
     "stegverse_org_licensed_metadata_verified": 18,
-    "all_other_orgs_license_metadata": "11_ORGANIZATIONS_NOT_YET_AUDITED",
+    "all_other_orgs_license_metadata": "14_OF_14_KNOWN_ORGS_SOURCE_OWNER_METADATA_OR_ROOT_PATH_CHECKED",
     "rights_verified": 0,
     "data_continuation_license_metadata_checked": 7,
-    "metadata_audited_organizations": 3,
-    "metadata_audited_repositories": 144,
-    "other_organizations_visibility_only": 11
+    "metadata_audited_organizations": 14,
+    "metadata_audited_repositories": 252,
+    "other_organizations_visibility_only": 0,
+    "admittedcode_root_license_checked": 6,
+    "gcat_bcat_root_license_checked": 15,
+    "aact_e_root_license_checked": 3,
+    "root_or_metadata_checked_registered_entries": 252,
+    "file_level_copyright_title_verified": 0
   },
   "organizations": [
     {
@@ -31,10 +36,12 @@
       "private_count": 27,
       "internal_count": 2,
       "baseline_20260902": 32,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "34/34",
+      "org_owned_inventory": "Admissible-Existence/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "1ad9ca46823a1877aa7598976c3173a10784abb7"
     },
     {
       "organization": "AdmittedCode",
@@ -43,10 +50,12 @@
       "private_count": 0,
       "internal_count": 0,
       "baseline_20260902": 6,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "6/6",
+      "org_owned_inventory": "AdmittedCode/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_OWNER_AUTHORIZED_SOURCE_FILE_READBACK_NO_PR_WORKFLOWS_OBSERVED",
+      "org_owned_inventory_merge": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148"
     },
     {
       "organization": "Data-Continuation",
@@ -69,10 +78,12 @@
       "private_count": 7,
       "internal_count": 1,
       "baseline_20260902": 14,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "15/15",
+      "org_owned_inventory": "GCAT-BCAT-Engine/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_OWNER_AUTHORIZED_SOURCE_FILE_READBACK_NO_PR_WORKFLOWS_OBSERVED",
+      "org_owned_inventory_merge": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314"
     },
     {
       "organization": "master-records",
@@ -81,10 +92,12 @@
       "private_count": 3,
       "internal_count": 1,
       "baseline_20260902": 4,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "5/5",
+      "org_owned_inventory": "master-records/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "0068ce0c6f6ec2fe22048fc9fff02732e562fe35"
     },
     {
       "organization": "StegGhost",
@@ -93,10 +106,12 @@
       "private_count": 6,
       "internal_count": 1,
       "baseline_20260902": 6,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "7/7",
+      "org_owned_inventory": "StegGhost/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "91401b6b6a5cde7b0831bdfe1f70934280c6c69b"
     },
     {
       "organization": "StegVerse-002",
@@ -105,10 +120,12 @@
       "private_count": 6,
       "internal_count": 1,
       "baseline_20260902": 8,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "9/9",
+      "org_owned_inventory": "StegVerse-002/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "64a2310a6919d60d9175e9ed178288d034e3f2ec"
     },
     {
       "organization": "StegVerse-Labs",
@@ -143,10 +160,12 @@
       "private_count": 8,
       "internal_count": 1,
       "baseline_20260902": 9,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "10/10",
+      "org_owned_inventory": "formalism-tests/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "f76f3b0681e136cb4d5475a3fc6d01a74acb58a6"
     },
     {
       "organization": "Infrastructure-Continuity-Ventures",
@@ -155,10 +174,12 @@
       "private_count": 6,
       "internal_count": 1,
       "baseline_20260902": 6,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "7/7",
+      "org_owned_inventory": "Infrastructure-Continuity-Ventures/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "e090d0b89d90f5c16534ed58b4a841620f755a76"
     },
     {
       "organization": "AaCT-E",
@@ -167,10 +188,12 @@
       "private_count": 0,
       "internal_count": 0,
       "baseline_20260902": 3,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "3/3",
+      "org_owned_inventory": "AaCT-E/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_OWNER_AUTHORIZED_SOURCE_FILE_READBACK_NO_PR_WORKFLOWS_OBSERVED",
+      "org_owned_inventory_merge": "f63382baca536a740324f8d1ede80f1d12f5cd07"
     },
     {
       "organization": "ECAT-ICAT-Formal",
@@ -179,10 +202,12 @@
       "private_count": 8,
       "internal_count": 1,
       "baseline_20260902": 8,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "9/9",
+      "org_owned_inventory": "ECAT-ICAT-Formal/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "21a10956301c57e50c3f2171ed63fd5cc5362421"
     },
     {
       "organization": "Triad-Test",
@@ -191,10 +216,12 @@
       "private_count": 2,
       "internal_count": 1,
       "baseline_20260902": 2,
-      "license_metadata_coverage": "NOT_AUDITED",
-      "org_owned_inventory": "NOT_YET_ESTABLISHED",
+      "license_metadata_coverage": "3/3",
+      "org_owned_inventory": "Triad-Test/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
       "contributor_rights": "UNVERIFIED",
-      "release_authorization": "NOT_ESTABLISHED"
+      "release_authorization": "NOT_AUTHORIZED",
+      "org_owned_inventory_status": "MERGED_EXACT_HEAD_SOURCE_CHECK_AND_MAIN_READBACK",
+      "org_owned_inventory_merge": "ce21996770709fe817c62d8e039314cfc85b9c4d"
     }
   ],
   "inventory_rules": [
@@ -206,6 +233,10 @@
     "Public GitHub visibility and GitHub-detected MIT are not exhaustive file-level scope/copyright provenance or authority to relicense.",
     "No license mutation, release authorization, WorkerCoordinator claim, InTr clearance, Master Records closure or private repo publication is inferred.",
     "Data-Continuation source-owner PR #7 merged as 21d5292c56961f3a32a814c63d67a61b0c255ae4; zero GitHub PR check runs or statuses were reported on its exact source HEAD; source-file readback and central CI are separate checks.",
-    "Exact SDK-pinned Core-Lite commit resolves, but contains no LICENSE or NOTICE in complete 335-entry tree, nor license field in pyproject; rights and release authorization remain unverified."
+    "Exact SDK-pinned Core-Lite commit resolves, but contains no LICENSE or NOTICE in complete 335-entry tree, nor license field in pyproject; rights and release authorization remain unverified.",
+    "September 26 owner-authorized source-owner PRs AdmittedCode #5, GCAT #7 and AaCT-E #6 merged with expected-head protection and independent main file readback; Data-Continuation #8 and Core-Lite #35 also merged, but Core-Lite #34 rights remediation remains open.",
+    "GCAT 15-row private/internal source inventory remains in its own organization repository; public central census contains aggregate organization counts only. No GitHub PR workflows or commit statuses were reported for the three new organization branches; source integrity checks and source merge/readback do not substitute for runtime, copyright or release authority.",
+    "2026-09-26: All eight previously visibility-only source-owner root inventories merged after exact-head source integrity checks. Corresponding main inventories independently read back with 84 source rows. Coverage 252/252 within 14 previously registered organizations. This is a bounded root-path/metadata census, NOT complete per-file license or rights verification; the organization universe may be incomplete.",
+    "Never promote missing LICENSE/LICENSE.md roots to no-license or no-rights conclusions; inspect historical grants, source headers, license variants and imported content under actual owners before redistribution."
   ]
 }

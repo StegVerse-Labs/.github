@@ -22,7 +22,19 @@
     "data/ecosystem-open-source-organization-census-20260925.json",
     "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
     "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
-    "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md"
+    "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md",
+    "AdmittedCode/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "GCAT-BCAT-Engine/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "AaCT-E/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "Data-Continuation/core-lite/docs/CORE_LITE_PINNED_RIGHTS_OWNER_DECISIONS_20260925.md",
+    "Admissible-Existence/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "master-records/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "StegGhost/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "StegVerse-002/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "formalism-tests/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "Infrastructure-Continuity-Ventures/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "ECAT-ICAT-Formal/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json",
+    "Triad-Test/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260926.json"
   ],
   "adjacent_task_refs": [
     "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -121,10 +133,22 @@
     "core_lite_pinned_license": "SOURCE_LICENSE_SCOPE_UNVERIFIED",
     "core_lite_author_rights": "351_COMMIT_ATTRIBUTIONS_RIGHTS_UNVERIFIED",
     "core_lite_dependencies": "PINNED_SOURCE_IMPORT_INSPECTION_PARTIAL",
-    "data_continuation_source_pr_checks": "NONE_REPORTED"
+    "data_continuation_source_pr_checks": "NONE_REPORTED",
+    "admittedcode_source_pr_merge": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+    "gcat_source_pr_merge": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+    "aact_e_source_pr_merge": "f63382baca536a740324f8d1ede80f1d12f5cd07",
+    "data_continuation_followup_pr_merge": "99ba313b296c3a5a1d82ae7c5368283f9869a11e",
+    "core_lite_rights_form_merge": "c8c423ebcebef002ed7b98af9fa1a3e58c28fcfd",
+    "core_lite_source_rights": "DENY_SOURCE_LICENSE_SCOPE_UNVERIFIED",
+    "organizations_with_source_owned_metadata": 14,
+    "metadata_audited_repositories": 252,
+    "remaining_visibility_only_organizations": 0,
+    "public_source_audit_status": "MERGED_SOURCE_ONLY_NO_NEW_RELEASE",
+    "root_only_census_eight_orgs": "MERGED_AND_MAIN_READBACK",
+    "core_lite_rights_issue": "Data-Continuation/core-lite#34_OPEN"
   },
   "ecosystem_inventory": {
-    "snapshot": "2026-09-25",
+    "snapshot": "2026-09-26",
     "known_organizations_observed": 14,
     "repository_entries_observed": 252,
     "public": 85,
@@ -133,18 +157,46 @@
     "manifest": "data/ecosystem-open-source-organization-census-20260925.json",
     "universe_complete": false,
     "metadata_audited": [
+      "Admissible-Existence",
+      "AdmittedCode",
+      "Data-Continuation",
+      "GCAT-BCAT-Engine",
+      "master-records",
+      "StegGhost",
+      "StegVerse-002",
       "StegVerse-Labs",
       "StegVerse-org",
-      "Data-Continuation"
+      "formalism-tests",
+      "Infrastructure-Continuity-Ventures",
+      "AaCT-E",
+      "ECAT-ICAT-Formal",
+      "Triad-Test"
     ],
     "second_org_source_owned_pr": "StegVerse-org/.github#11",
     "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
-    "other_organizations_count_only": 12,
+    "other_organizations_count_only": 0,
     "copyright_title_verified": 0,
     "release_authorized": false,
-    "metadata_checked_entries": 144,
+    "metadata_checked_entries": 252,
     "third_org_source_owned_pr": "Data-Continuation/.github#7",
     "third_org_source_owned_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4",
-    "other_organizations_count_visibility_only": 11
+    "other_organizations_count_visibility_only": 0,
+    "new_owner_merges": {
+      "AdmittedCode": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+      "GCAT-BCAT-Engine": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+      "AaCT-E": "f63382baca536a740324f8d1ede80f1d12f5cd07"
+    },
+    "remaining_file_level_rights_audits": "NOT_COMPLETE",
+    "latest_eight_owner_merges": {
+      "Admissible-Existence": "1ad9ca46823a1877aa7598976c3173a10784abb7",
+      "master-records": "0068ce0c6f6ec2fe22048fc9fff02732e562fe35",
+      "StegGhost": "91401b6b6a5cde7b0831bdfe1f70934280c6c69b",
+      "StegVerse-002": "64a2310a6919d60d9175e9ed178288d034e3f2ec",
+      "formalism-tests": "f76f3b0681e136cb4d5475a3fc6d01a74acb58a6",
+      "Infrastructure-Continuity-Ventures": "e090d0b89d90f5c16534ed58b4a841620f755a76",
+      "ECAT-ICAT-Formal": "21a10956301c57e50c3f2171ed63fd5cc5362421",
+      "Triad-Test": "ce21996770709fe817c62d8e039314cfc85b9c4d"
+    },
+    "known_universe_complete": false
   }
 }

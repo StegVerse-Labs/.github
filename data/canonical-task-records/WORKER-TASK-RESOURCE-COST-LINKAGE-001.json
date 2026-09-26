@@ -8,7 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "10100000122000",
   "source_refs": [
     "https://github.com/StegVerse-Labs/.github/issues/2619",
     "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md",
@@ -46,7 +46,6 @@
   ],
   "blockers": [
     "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-    "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
     "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
   ],
   "adjacent_task_refs": [
@@ -61,7 +60,7 @@
     "CANONICAL_REGISTRATION_MERGED_AND_REREAD_AT_CURRENT_GENERATION",
     "EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_AND_HASH_LINKED_EVENT",
     "COMPONENT_010_CANONICAL_SHARD_PROJECTION_RECONCILED_BY_EXISTING_OWNER",
-    "COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE",
+    "COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX",
     "VALID_TASK_NATIVE_FIVE_PART_BUDGET_WITH_EXACT_SOURCE_BINDING",
     "MALFORMED_DANGLING_MISMATCHED_RESOURCE_COST_FAIL_CLOSED",
     "REAL_SDK_MANIFEST_BUILDER_AND_PUBLISHED_PROCESSOR_POSITIVE_NEGATIVE_TESTS",
@@ -84,7 +83,7 @@
     "CANONICAL_SOURCE_PR_REVIEW_AND_MERGE",
     "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
     "RECONCILE_RETURNED_OWNER",
-    "DERIVE_CANONICAL_COSV",
+    "UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE",
     "AUTHORIZE_COMPONENT_OWNED_COMPATIBILITY",
     "SDK_MANIFEST_POSITIVE_NEGATIVE_EXECUTION",
     "EXACT_HEAD_CI_VALIDATION",
@@ -108,5 +107,17 @@
     "source_pr_only": true,
     "post_registration_exact_generation_gate_required": true,
     "external_sdk_write_approved": false
-  }
+  },
+  "cosv_tracking": {
+    "profile": "task.v1",
+    "vector": "10100000122000",
+    "vector_state": "EMITTED",
+    "evidence_class": "SOURCE_IMPLEMENTED",
+    "observed_registry_generation": 245,
+    "source_state_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
+    "index_ref": "control/task-vector-index.json",
+    "session_admission_authentic_observed": false,
+    "execution_authority_effect": "NONE"
+  },
+  "source_state_vector_ref": "control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json"
 }
