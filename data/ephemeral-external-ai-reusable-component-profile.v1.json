@@ -40,7 +40,7 @@
     {
       "id": "RTC-ROUNDTRIP-003",
       "role": "one provider request/response cycle with exact task, lease, claim/fence, request/response digests and usage",
-      "owner": "existing StegBrowser to LLM-adapter boundary",
+      "owner": "existing manifest-selected operation owner; LLM-adapter only when translation is required",
       "repeatable": true
     },
     {
@@ -70,11 +70,18 @@
       "provider_native_usage_extraction",
       "normalized_output_with_exact_hash_and_attribution"
     ],
-    "handoff": "STEGBROWSER_TO_LLM_ADAPTER_ON_BOUND_PROVIDER_REQUEST_AND_AUTHENTIC_INGRESS_ALLOW",
+    "handoff": "STEGBROWSER_TO_MANIFEST_SELECTED_EXISTING_OPERATION_ON_AUTHENTIC_INGRESS_ALLOW",
     "provider_adapter_termination": "ON_GENUINE_RESPONSE_OR_EXACT_RECORDED_PROVIDER_FAILURE_WITH_NORMALIZED_NONSECRET_EVIDENCE_RETURNED_TO_STEGBROWSER",
     "stegbrowser_session_termination": "AFTER_REQUEST_RESULT_OR_FAILURE_HANDED_TO_ORGANIZATION_RECORDING_AND_TEMPORARY_SESSION_DESTRUCTION_OBSERVED",
     "master_records_relation": "NOT_PROVIDER_SESSION_TERMINATION_AUTHORITY",
-    "web_ui_login_equivalent_to_approved_api_provider_call": false
+    "web_ui_login_equivalent_to_approved_api_provider_call": false,
+    "adapter_selection": "ONLY_WHEN_MANIFEST_SELECTED_OPERATION_REQUIRES_PROVIDER_TRANSLATION",
+    "api_adapter_handoff": "STEGBROWSER_TO_LLM_ADAPTER_ON_BOUND_PROVIDER_REQUEST_AND_AUTHENTIC_INGRESS_ALLOW",
+    "interaction_modes": [
+      "browser_session",
+      "provider_api",
+      "local_tool"
+    ]
   },
   "providers": [
     {
@@ -158,5 +165,41 @@
     "master_records_custody_when_required": "UNVERIFIED",
     "governed_site_publication": "NOT_AUTHORIZED"
   },
-  "authority_effect": "NONE_SOURCE_CONTRACT_ONLY"
+  "authority_effect": "NONE_SOURCE_CONTRACT_ONLY",
+  "reusable_task_composition": {
+    "constructor": "scripts/compose_ecosystem_chat_task.py",
+    "reusable_task_ids": [
+      "RT-ECOSYSTEM-CHAT-ANSWER-001",
+      "RT-STEGBROWSER-LLM-LEASE-001",
+      "RT-EPHEMERAL-LLM-ROUNDTRIP-001",
+      "RT-ECOSYSTEM-CHAT-COLLECT-001",
+      "RT-STEGBROWSER-LLM-CLOSE-001",
+      "RT-LOCAL-AI-PARTICIPANT-001",
+      "RT-LOCAL-AI-COLLABORATION-001"
+    ],
+    "runtime_runner_bound": false,
+    "local_participant_registration_issue": "StegVerse-Labs/.github#2721",
+    "local_order": [
+      "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001"
+    ]
+  },
+  "optional_provider_profiles": [
+    {
+      "provider": "xai",
+      "source_ref": "StegVerse-org/LLM-adapter:llm_adapter/http_provider_clients.py",
+      "source_state": "MERGED_PR_352",
+      "runtime": "UNVERIFIED"
+    },
+    {
+      "provider": "google",
+      "source_state": "EXACT_EXISTING_OPERATION_BINDING_REQUIRED",
+      "runtime": "UNVERIFIED"
+    },
+    {
+      "provider": "other",
+      "source_state": "EXPLICIT_MANIFEST_OPERATION_BINDING_REQUIRED",
+      "runtime": "UNVERIFIED"
+    }
+  ]
 }

@@ -64,6 +64,15 @@ Reuse `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` / `control/organization-batch-cust
 
 Reconcile the actual organization-level receipts for the current task and the original active StegBrowser successor. Resolve whether an admissible **existing** ephemeral StegBrowser execution path is available independently of the historical A3 invocation. If it is, pursue that path's exact claim/fence, scoped lease and InTr admissions rather than inheriting historical A3. If it is not, identify the first actual retained organization receipt showing a failed transition and assign remediation to the owning component; if authentic retained receipts are inaccessible preserve UNKNOWN_NOT_FALSE. No new runtime, scheduler, device gate or synthetic receipt is permitted. Authentic live OpenAI and Claude capabilities remain NOT_VERIFIED.
 
+## Ecosystem Chat multi-provider census and source repair — 2026-09-25
+
+Current Registry generation 243 was re-read. The task and emitted COSV are unchanged; no checkout or execution transition occurred. See `docs/ECOSYSTEM_CHAT_TASK_CENSUS_AND_BUILD_PLAN.md` and its two `data/ecosystem-chat-*-20260925.json` inventories for all inspected task records, open issue candidates, existing provider/Chat/sandbox owners, exact coverage limits and implementation sequence. The intended integration is manifest-selected user input -> existing ephemeral StegBrowser lease -> existing provider adapter -> attributed governed return, including optional ChatGPT, Claude, Grok, Gemini and other admitted providers. User Chat and sandbox development deliberation are separate processing purposes.
+
+Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelope request-hash and alias drift that prevented provider results from composing with the existing distributed Chat executor. It retains original admitted wire-response commitments, InTr receipt hashes and usage-event references. 115 focused offline tests and the existing mutation-safety gate passed. Automatic approval review rejected publication to the existing branch as insufficiently authorized external publication; GitHub readback still has #351 at `ddcaa3e4ad72befef601f2c99df03687e6cc191f`. The repair and central report are local/unpublished, not merged or deployed.
+
+Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
+
+Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
 
 ## Optional user-facing Grok/xAI source candidate — 2026-09-25
 
@@ -79,3 +88,12 @@ Source fixture coverage includes optional Grok failure while a local sovereign s
 Next evidence: exact admitted user-facing two-source Ecosystem Chat manifest, authentic xAI native response and measured usage, actual non-ALLOW or ALLOW InTr transitions, organization predecessor-linked receipts, observed session teardown and conditional Master Records reconstruction. If existing resident custody cannot be read, retain EVIDENCE_REACHABILITY/UNKNOWN_NOT_FALSE; do not fabricate a failure receipt, introduce another runtime/device or claim live activation.
 
 Source checkpoint: adapter PR #352 merged as f1a84b2628de65c6e463f87abde12c4842380dff after all eight listed exact-head checks PASS. This is source integration, not a runtime/release/deployment/propagation proof.
+
+
+## Current-state review and reusable composition — 2026-09-25
+
+Reviewed all original 73 open issue candidates (all still OPEN), newly located Local Claude Code coordination #2721, existing provider/ingress PRs and latest main source. Registry generation remains 243 and canonical task/claim/vector states are unchanged. Optional Grok #352 is source-merged; #351 now contains the approved provider-envelope repair. Central #2723 publishes the census. Source tree equality was verified despite connector-authored commit metadata.
+
+Seven reusable registry definitions and `scripts/compose_ecosystem_chat_task.py` use the existing constructor for source-only Chat answer/lease/roundtrip/collection/cleanup and local participant/collaboration plans. InTr admission, correlation and custody identities are reused. The adapter is conditional on a declared translation need; browser session, API and local-tool modes remain separate. No executable runner or authentic runtime receipt is claimed. Existing triggers stop honestly at the unbound runner boundary. FIRST local ChatGPT and SECOND local Claude Code remain proposals with COSV NOT_YET_EMITTED under #2721; actual Claude Code tool execution and separate participant evidence are required. See the updated census for exact source and runtime limits.
+
+Session count: 3. Goal cumulative count: UNVERIFIED historical +3 qualifying session prompts. No task checkout, fence, state, COSV, registry generation or runtime result is changed by this source work.
