@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.stcm-chf-native-capability-verification/v1",
   "source_review_scope": "Pinned current native STCM/CHF inspected original source plus installed SDK route declarations; source-only evidence",
-  "central_registry_generation_inspected": 239,
+  "central_registry_generation_inspected": 242,
   "math_goal_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
   "math_cosv": "10111110111000",
   "adjacent_comparison_goal_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
@@ -79,10 +79,31 @@
         "original result bytes/digest",
         "native revision and executable entrypoint"
       ],
-      "status": "NOT_ESTABLISHED_NOT_PERMISSION_TO_INVENT",
+      "status": "FOUR_SYMBOLIC_INEQUALITIES_NATIVE_IMPLEMENTED_FULL_HORIZON_NOT_ESTABLISHED",
       "owner": "Admissible-Existence/CHF"
     },
-    "same_specimen_mathematical_output": "NOT_ESTABLISHED"
+    "same_specimen_mathematical_output": "BOUNDED_ORIGINAL_DECLARED_THRESHOLD_SYNTHETIC_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED",
+    "bounded_original_native_threshold_evaluator": {
+      "native_callable": "tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen",
+      "original_owner_pr": "Admissible-Existence/CHF#5",
+      "merged_source_commit": "27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+      "validation_workflow_run": 36095046140,
+      "tri_form_workflow_run": 36095046224,
+      "original_artifact_id": 10847107096,
+      "artifact_zip_sha256": "sha256:7d3db6a52e1af1716894de8e75bbfb223496d8fa96da8275483531c01b2a4084",
+      "common_source_sha256": "sha256:fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02",
+      "evidence_class": "ORIGINAL_NATIVE_DECLARED_THRESHOLD_SYNTHETIC_ONLY",
+      "source_bytes_verified": true,
+      "four_synthetic_controls": [
+        "ALL_FOUR_DECLARED_THRESHOLDS_SATISFIED",
+        "BELOW_DECLARED_THRESHOLD",
+        "UNKNOWN_INPUT",
+        "DENY_ORIGINAL_SOURCE_HASH"
+      ],
+      "physical_heat": "NOT_OBSERVED",
+      "full_horizon": "NOT_ESTABLISHED",
+      "sdk_native_manifest": "NOT_ESTABLISHED"
+    }
   },
   "SDK": {
     "repository": "StegVerse-org/StegVerse-SDK",
@@ -97,7 +118,7 @@
     "native_math_published_binding": "NOT_ESTABLISHED",
     "source_only_next_action": "Existing registered generic SDK math owner verifies installed route reuse or submits authorized generic compatibility; no STCM/CHF-specific authority or new runtime"
   },
-  "overall_status": "STCM_SYNTHETIC_NATIVE_POSITIVE_NEGATIVE_VERIFIED_CHF_NUMERICAL_AND_SDK_BINDING_NOT_ESTABLISHED",
+  "overall_status": "STCM_AND_CHF_BOUNDED_ORIGINAL_NATIVE_SYNTHETIC_COMMON_SOURCE_VERIFIED_FULL_HORIZON_AND_SDK_NOT_ESTABLISHED",
   "runtime": {
     "authenticated_resident_gate": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "organization_ledger": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
