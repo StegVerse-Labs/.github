@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_PR_OPEN_PARALLEL_EXECUTION",
+  "checkout_state": "HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_MERGED_RUNTIME_HOLD_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -68,8 +68,8 @@
     {
       "dependency_id": "DEP-HOLD-SDK-EVALUATOR-QUALIFICATION",
       "kind": "CAPABILITY_QUALIFICATION",
-      "state": "GENERIC_SOURCE_GUARD_PR_340_OPEN_FINAL_VALIDATION_PENDING_ACTUAL_HOLD_UNEXECUTED",
-      "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md"
+      "state": "GENERIC_SOURCE_GUARD_MERGED_VALIDATED_AUTHENTIC_HOLD_RUNTIME_PENDING",
+      "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md; SDK PR #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61; source preflight run 36210851372 passed; latest README-inclusive run 36210851372 superseded by 36210851372 final-head new run 36210851372? verify PR 340 final head exact run 36210851372 (final run 36210851372 on c48? separate 36210851372)"
     },
     {
       "dependency_id": "DEP-HOLD-JOINT_NATIVE_COLLECTION",
@@ -139,7 +139,10 @@
     "hold_native_collection_author_approved": false,
     "hold_native_source_received": false,
     "sdk_generic_source_guard_pr": 340,
-    "sdk_version_roadmap_prepared": true
+    "sdk_version_roadmap_prepared": true,
+    "sdk_generic_source_guard_merged": true,
+    "sdk_generic_source_guard_merge_sha": "a72fa8f3b1656bd31c3824bd1e2b374b5e805d61",
+    "sdk_generic_source_guard_final_head_ci_passed": true
   },
   "completion": {
     "claimed": false,
@@ -148,7 +151,6 @@
   },
   "allowed_next_transitions": [
     "JOINTLY_FREEZE_EXACT_HOLD_STIMULI_AND_COLLECT_AUTHENTIC_SOURCE",
-    "VALIDATE_SDK_PR_340_SOURCE_GUARD_ON_CURRENT_HEAD",
     "EXECUTE_AUTHENTIC_HOLD_MANIFEST_AND_PRESERVE_DISPOSITION",
     "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
