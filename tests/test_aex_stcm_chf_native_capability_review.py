@@ -82,7 +82,7 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
                          "sha256:fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02")
         self.assertEqual(original["full_horizon"], "NOT_ESTABLISHED")
         self.assertEqual(original["sdk_native_manifest"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES")
-        self.assertEqual(original["sdk_original_source_invocation"]["hosted_validation_run"], 36231939908)
+        self.assertEqual(self.audit["CHF"]["original_source_sdk_invocation"]["hosted_validation_run"], 36231939908)
         self.assertEqual(self.census["native_math_manifest_invocations_verified"], 3)
         self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
         self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] != "Admissible-Existence/CHF"))
