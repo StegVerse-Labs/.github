@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.stcm-chf-native-capability-verification/v1",
   "source_review_scope": "Pinned current native STCM/CHF inspected original source plus installed SDK route declarations; source-only evidence",
-  "central_registry_generation_inspected": 242,
+  "central_registry_generation_inspected": 256,
   "math_goal_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
   "math_cosv": "10111110111000",
   "adjacent_comparison_goal_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
@@ -102,23 +102,73 @@
       ],
       "physical_heat": "NOT_OBSERVED",
       "full_horizon": "NOT_ESTABLISHED",
-      "sdk_native_manifest": "NOT_ESTABLISHED"
+      "sdk_native_manifest": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES"
+    },
+    "original_source_sdk_invocation": {
+      "private_original_owner_pr": "Admissible-Existence/CHF#6@86f61c94a6d7b8fae9c2b09986ce2326fbca94d2",
+      "private_source_owner_local_package": "aex-chf-native-source==0.1.0",
+      "private_original_native_blob": "784be9beb839fc42f337758363facba0ed3958e9",
+      "hosted_validation_run": 36231939908,
+      "hosted_tri_form_run": 36231939830,
+      "retained_private_artifact_id": 10902712193,
+      "retained_artifact_zip_sha256": "sha256:cde184d6c729e444470ceb87c969c29331d9b1d6c3d10e272d423d5228077f6a",
+      "frozen_original_specimen_sha256": "sha256:fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02",
+      "native_result_sha256": {
+        "positive": "40765ba64002847bb58d83a1d1745758be3f8b087beb58283f73b5ff479a2e3c",
+        "below_absorption": "40c855e6f41de8afa4faf195d34f8598795c9d172ea676802b891c4a5ba6b052",
+        "unknown_observability": "c97596105a3de44ecc473cf97c04005923439291c79bf4057453ba397bb247ea"
+      },
+      "sdk_pre_enrichment_processor_sha256": {
+        "positive": "1797b830cdf91607aaedceb55c1bc80be35eab2d322ac2ebcaffc805c762ec35",
+        "below_absorption": "8340f308d6386270135bc2e0a2fca6daed590f4b2aff9d7322d2e008a02d0ee6",
+        "unknown_observability": "dc866f5d1ec195aace91a3199b6c391f3c8db1af57650c8317371f9738918eb7"
+      },
+      "sdk_manifest_sha256": {
+        "positive": "11aa5396cb67a940e652c298908fdc153843ad4d808d5dd13f580e4449a39dff",
+        "below_absorption": "95303387496ace732f12fea0144d71a93ac47ed21336a5d0007d31f60118d102",
+        "unknown_observability": "28d73aa76593b21151a61a7378e5baaee5d9c04b2b85d786f2f0cf00c05071f7"
+      },
+      "sdk_request_sha256": {
+        "positive": "b5d42023288afc8b1ff67091e344bcf8220afb40bd69855af765928027cc7e3c",
+        "below_absorption": "dc8a7588e6c329e795b8aad4e8a5f8adc76ae6297db4dc25196e9f7541d02ef8",
+        "unknown_observability": "dcce6a535bdb1701c9ee48bb661978fed8892bc1b20a90ab1bf73c47b756a0a"
+      },
+      "original_source_file_unchanged": true,
+      "actual_original_source_invoked_through_sdk": true,
+      "production_or_general_distribution_proven": false,
+      "physical_heat": "NOT_OBSERVED",
+      "full_horizon": "NOT_ESTABLISHED",
+      "authentic_governed_runtime": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
     }
   },
   "SDK": {
     "repository": "StegVerse-org/StegVerse-SDK",
-    "route_resolution_git_blob": "d9241ee1fb7bf4d4a6c02f0e9d9cec717fcb92a1",
+    "route_resolution_git_blob": "af22dd538f7275321ea24b74993489ce52273a38",
     "manifest_execution_git_blob": "4f84f7b838d91a9348f7c4472fce283732a9c791",
     "published_processor_capabilities": [
       "governance",
       "ecosystem_diagnostic",
       "purpose_bound_worker",
-      "atomic_task_worker"
+      "atomic_task_worker",
+      "native_source_math"
     ],
-    "native_math_published_binding": "NOT_ESTABLISHED",
-    "source_only_next_action": "Existing registered generic SDK math owner verifies installed route reuse or submits authorized generic compatibility; no STCM/CHF-specific authority or new runtime"
+    "native_math_published_binding": "INSTALLED_GENERIC_ADAPTER_NOT_PRIVATE_SOURCE_PACKAGE_UNLESS_OWNER_INSTALLED",
+    "source_only_next_action": "Existing registered generic SDK math owner verifies installed route reuse or submits authorized generic compatibility; no STCM/CHF-specific authority or new runtime",
+    "generic_native_math": {
+      "existing_sdk_owner": "StegVerse-org/StegVerse-SDK#61",
+      "merged_pr": "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+      "source_head": "374c86ae13b395f955efa85c79c1fb89a845e763",
+      "native_adapter_git_blob": "33eab0dbd76da64d5a0fa93e40beec82a75a7aa7",
+      "route_id": "stegverse.route.source-native-math.v1",
+      "installed_sdk_generic_adapter": true,
+      "private_source_package_bundled_in_public_sdk": false,
+      "exact_head_hosted_workflows_success": 6,
+      "new_adapter_regressions_success": 5,
+      "run_manifest_executor_git_blob": "4f84f7b838d91a9348f7c4472fce283732a9c791",
+      "governance_authority_effect": "NONE"
+    }
   },
-  "overall_status": "STCM_AND_CHF_BOUNDED_ORIGINAL_NATIVE_SYNTHETIC_COMMON_SOURCE_VERIFIED_FULL_HORIZON_AND_SDK_NOT_ESTABLISHED",
+  "overall_status": "STCM_AND_CHF_BOUNDED_SYNTHETIC_NATIVE_VERIFIED_CHF_PRIVATE_SDK_MANIFEST_3_CASES_VERIFIED_FULL_HORIZON_AND_RUNTIME_NOT_ESTABLISHED",
   "runtime": {
     "authenticated_resident_gate": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "organization_ledger": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",

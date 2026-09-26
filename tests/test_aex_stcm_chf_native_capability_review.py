@@ -53,13 +53,15 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(self.rows["Admissible-Existence/STCM"]["same_specimen_math_status"],
                          "STCM_SYNTHETIC_ONLY_ORIGINAL_CALLABLE_VERIFIED")
 
-    def test_all_four_published_sdk_capabilities_exclude_native_math(self):
+    def test_published_generic_source_native_math_is_bounded_not_universal(self):
         sdk = self.audit["SDK"]
         self.assertEqual(
             set(sdk["published_processor_capabilities"]),
-            {"governance", "ecosystem_diagnostic", "purpose_bound_worker", "atomic_task_worker"},
+            {"governance", "ecosystem_diagnostic", "purpose_bound_worker", "atomic_task_worker", "native_source_math"},
         )
-        self.assertEqual(sdk["native_math_published_binding"], "NOT_ESTABLISHED")
+        self.assertEqual(sdk["native_math_published_binding"], "INSTALLED_GENERIC_ADAPTER_NOT_PRIVATE_SOURCE_PACKAGE_UNLESS_OWNER_INSTALLED")
+        self.assertFalse(sdk["generic_native_math"]["private_source_package_bundled_in_public_sdk"])
+        self.assertEqual(sdk["generic_native_math"]["new_adapter_regressions_success"], 5)
 
     def test_missing_chf_cannot_be_promoted_by_contract_ci(self):
         forged = copy.deepcopy(self.audit)
@@ -79,7 +81,11 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(original["common_source_sha256"],
                          "sha256:fa95f04d35e51df5892a35dc2dd28e823696334082320c60df29d06c50bead02")
         self.assertEqual(original["full_horizon"], "NOT_ESTABLISHED")
-        self.assertEqual(original["sdk_native_manifest"], "NOT_ESTABLISHED")
+        self.assertEqual(original["sdk_native_manifest"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES")
+        self.assertEqual(self.audit["CHF"]["original_source_sdk_invocation"]["hosted_validation_run"], 36231939908)
+        self.assertEqual(self.census["native_math_manifest_invocations_verified"], 3)
+        self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
+        self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] != "Admissible-Existence/CHF"))
         self.assertEqual(len(original["four_synthetic_controls"]), 4)
 
     def test_unobserved_runtime_and_physical_heat_remain_unobserved(self):
@@ -90,6 +96,21 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(self.audit["physical_heat_measurement"], "NOT_OBSERVED")
         self.assertEqual(self.audit["authority_effect"], "NONE")
 
+
+
+    def test_exact_original_native_and_sdk_pre_enrichment_sha_are_distinct(self):
+        observed = self.audit["CHF"]["original_source_sdk_invocation"]
+        expected_native = {
+            "positive": "40765ba64002847bb58d83a1d1745758be3f8b087beb58283f73b5ff479a2e3c",
+            "below_absorption": "40c855e6f41de8afa4faf195d34f8598795c9d172ea676802b891c4a5ba6b052",
+            "unknown_observability": "c97596105a3de44ecc473cf97c04005923439291c79bf4057453ba397bb247ea",
+        }
+        self.assertEqual(observed["native_result_sha256"], expected_native)
+        self.assertEqual(len(set(observed["sdk_pre_enrichment_processor_sha256"].values())), 3)
+        self.assertTrue(all(observed["sdk_pre_enrichment_processor_sha256"][case] != sha for case, sha in expected_native.items()))
+        self.assertEqual(observed["full_horizon"], "NOT_ESTABLISHED")
+        self.assertEqual(observed["physical_heat"], "NOT_OBSERVED")
+        self.assertFalse(observed["production_or_general_distribution_proven"])
 
 if __name__ == "__main__":
     unittest.main()

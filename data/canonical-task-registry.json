@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 256,
+  "generation": 257,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10693,7 +10693,10 @@
         "data/aex-stcm-chf-native-math-capability-review.json",
         "Admissible-Existence/.github#83@5425301bef8f3276bc9cd805c926f0661d9a6c70",
         "Admissible-Existence/CHF#5@27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
-        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3"
+        "Admissible-Existence/.github#84@615b1927e27acf916bd9dc502bdbcc2213b777f3",
+        "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+        "Admissible-Existence/CHF#6@86f61c94a6d7b8fae9c2b09986ce2326fbca94d2",
+        "Admissible-Existence/CHF/actions/runs/36231939908"
       ],
       "targets": {
         "organizations": [
@@ -10721,7 +10724,7 @@
       ],
       "blockers": [
         "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
-        "NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
+        "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
       ],
       "expected_evidence_predicates": [
         "AUTHENTIC_GENERATION_BOUND_AI_SESSION_GATE_CONTINUE_OR_CONVERGED_OWNER",

@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.native-math-processing-census/v1",
-  "status": "TWO_ORIGINAL_NATIVE_BOUNDED_SYNTHETIC_EVALUATORS_VERIFIED_NO_FULL_CHF_HORIZON_OR_SDK_BINDING",
-  "central_registry_generation_observed": 242,
+  "status": "ORIGINAL_CHF_PRIVATE_SDK_MANIFEST_3_SYNTHETIC_CASES_VERIFIED_OTHERS_UNESTABLISHED_NO_GOVERNED_RUNTIME",
+  "central_registry_generation_observed": 256,
   "canonical_org_role_registry": "Admissible-Existence/.github/data/formalism-worker-registry.json",
   "canonical_org_role_registry_sha": "d7c7086d6cb544f33112927a2e2a29a02fad4258",
   "registered_role_count": 32,
@@ -11,9 +11,10 @@
     "governance",
     "ecosystem_diagnostic",
     "purpose_bound_worker",
-    "atomic_task_worker"
+    "atomic_task_worker",
+    "native_source_math"
   ],
-  "native_math_manifest_invocations_verified": 0,
+  "native_math_manifest_invocations_verified": 3,
   "authentic_governed_math_runs_verified": 0,
   "entries": [
     {
@@ -125,9 +126,9 @@
       "owner": "NATIVE_SOURCE_REPOSITORY",
       "candidate_callable": "tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen",
       "inspected_surface_kind": "NATIVE_SOURCE_FOUR_ORIGINAL_DECLARED_INEQUALITIES_ON_SUPPLIED_SYNTHETIC_VALUES_ONLY",
-      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Original CHF PR #5 merged 27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a after exact-head six existing validators plus 14 new source tests and four synthetic frozen source cases, CHF Validation run 36095046140 and Tri-Form run 36095046224 SUCCESS. Both original native owners tested identical source digest fa95...bead02 but with different limited semantics. Original four inequalities only; supplied R/O/A/K are explicitly synthetic, physical heat and full consequence horizon NOT_ESTABLISHED; generic SDK manifest invocation not proved.",
+      "verification_note": "Original CHF PR #5 merged 27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a after exact-head six existing validators plus 14 new source tests and four synthetic frozen source cases, CHF Validation run 36095046140 and Tri-Form run 36095046224 SUCCESS. Both original native owners tested identical source digest fa95...bead02 but with different limited semantics. Original four inequalities only; supplied R/O/A/K are explicitly synthetic, physical heat and full consequence horizon NOT_ESTABLISHED; generic SDK manifest invocation not proved. Later private CHF PR #6 exact-source validation run 36231939908 invoked unchanged original owner callable through pinned public SDK PR #348 generic route on three frozen synthetic original cases; source/manifest/request/processor hashes verified, no general private-package distribution, full horizon, physical heat or governed runtime claim.",
       "native_exact_source_commit": "27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
       "same_specimen_math_status": "BOUNDED_DECLARED_THRESHOLD_NATIVE_EVALUATION_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED",
       "needed_native_callable_contract": {
@@ -136,7 +137,10 @@
         "status": "FOUR_ORIGINAL_DECLARED_INEQUALITIES_IMPLEMENTED_FULL_CONSEQUENCE_MODEL_STILL_NOT_ESTABLISHED",
         "authority": "NATIVE_CHF_OWNER_ONLY"
       },
-      "native_source_run_ref": "Admissible-Existence/CHF#5; workflow run 36095046140; artifact 10847107096"
+      "native_source_run_ref": "Admissible-Existence/CHF#5; workflow run 36095046140; artifact 10847107096",
+      "sdk_native_source_integration_ref": "Admissible-Existence/CHF#6@86f61c94a6d7b8fae9c2b09986ce2326fbca94d2",
+      "sdk_generic_route_ref": "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+      "sdk_original_source_invocation_count": 3
     },
     {
       "repository": "Admissible-Existence/RE",
