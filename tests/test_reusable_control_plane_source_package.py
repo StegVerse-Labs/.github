@@ -32,6 +32,12 @@ NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
 
 
 class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
+    def test_organization_readback_is_narrowly_source_allowlisted(self) -> None:
+        from workers import control_plane_source_package as controlpkg
+        self.assertEqual(controlpkg._safe_rel("resident-runtime/organization_custody_readback.py"), "resident-runtime/organization_custody_readback.py")
+        with self.assertRaises(controlpkg.ControlPlaneSourcePackageError):
+            controlpkg._safe_rel("resident-runtime/unapproved_organization_readback.py")
+
     def test_default_package_is_relay_bounded_and_self_carries_reusable_producer(self) -> None:
         package = builder.build(ROOT, builder.DEFAULT_PATHS)
         rendered = (json.dumps(package, indent=2, sort_keys=True) + "\n").encode("utf-8")

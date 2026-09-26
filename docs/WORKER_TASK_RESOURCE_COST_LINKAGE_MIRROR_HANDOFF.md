@@ -33,3 +33,10 @@ After existing SDK owner admission, pass the exact source specimen through `steg
 Initial candidate standalone validator: 24/24 local tests reported passing in the source review; the six actual-SDK-dependent tests were skipped in the earlier environment. These historical results are not CI on this PR, installed SDK integration or authentic runtime evidence. No authentic check-in disposition/event was observable through GitHub issue/comments/default-branch files as of 2026-09-24.
 
 **First next executable transition:** merge this reviewed coordination-only preregistration on exact-head CI; re-read current generation; obtain the existing AI_SESSION_GATE owner's authentic generation-bound check-in event and collision disposition; apply only separately admitted component-owned source changes.
+
+
+## Canonical COSV tracking reconciliation — source-state issuance (2026-09-25)
+
+**COSV-first task block**: COSV `10100000122000`; Goal Task ID `WORKER-TASK-RESOURCE-COST-LINKAGE-001`; native owner [issue #2619](https://github.com/StegVerse-Labs/.github/issues/2619); coordination `ACTIVE/UNCLAIMED`; baseline Registry generation 245; source-state record `control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json`; index `control/task-vector-index.json`; evidence class **SOURCE_IMPLEMENTED**, authority effect **NONE**.
+
+Derivation follows `management/COSV_PROFILE_V1.json` and `scripts/cosv.py::encode_task`: L=1 R=0 U=1 I=0 V=0 G=0 O=0 C=0 M=1 T=2 B=2 E=0 A=0 P=0. Only current exact-shard source state is encoded; no admission, other-owner clearance or runtime completion is implied. All 14 metric provenance fields are in the new record; unknown thread state is UNKNOWN=2 except the optical owner-authored T=1. Genuine AI_SESSION_GATE origin, retained CHECK_IN and predecessor, WorkerCoordinator/InTr, applicable independent owners and Master Records remain distinct; source-only task tracking does not require fabricated admission. Supersede any historical pre-registration/COSV-unassigned wording **only for the source tracking field**, not its remaining governed work. Do not treat this handoff as a runtime receipt.

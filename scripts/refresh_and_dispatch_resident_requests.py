@@ -42,16 +42,19 @@ STEGHEALTH_KV_INTERLOCK_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-0
 STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json")
 ERL_HOUSEHOLD_GOAL_TASK_ID = "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
 ERL_HOUSEHOLD_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-erl-household-economic-conditions-site-request-consumption.latest.json")
+AUTONOMOUS_PROGRESSION_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
+AUTONOMOUS_PROGRESSION_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-entity-autonomous-governed-progression-runtime-adoption-request-consumption.latest.json")
 CANONICAL_GOAL_CONSUMPTION_REL = {
     STEGHEALTH_KV_INTERLOCK_TASK_ID: STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL,
     ERL_HOUSEHOLD_GOAL_TASK_ID: ERL_HOUSEHOLD_CONSUMPTION_REL,
+    AUTONOMOUS_PROGRESSION_TASK_ID: AUTONOMOUS_PROGRESSION_CONSUMPTION_REL,
 }
 
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
 REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
 REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
 REUSABLE_TASK_PARAMETERS_ENV = "STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "ungoverned_ai_defensive_envelope", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "ungoverned_ai_defensive_envelope", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "organization_custody_readback", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
