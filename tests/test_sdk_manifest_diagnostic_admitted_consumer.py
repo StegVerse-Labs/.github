@@ -188,6 +188,28 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                             {"lease_expires_at": deadline, "lease_id": "old", "runtime_id": "historic"},
                         )
 
+    def test_native_lease_budget_is_rechecked_from_original_deadline(self):
+        from datetime import datetime, timedelta, timezone
+        future = (datetime.now(timezone.utc) + timedelta(seconds=45)).isoformat().replace("+00:00", "Z")
+        remaining = mod._remaining_authorized_lease_seconds({"lease_expires_at": future})
+        self.assertGreater(remaining, 0)
+        self.assertLessEqual(remaining, 45)
+        # A different expiring credential is not authority for this runtime.
+        with self.assertRaisesRegex(
+            mod.DiagnosticAdmissionError,
+            "CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRY_REQUIRED",
+        ):
+            mod._remaining_authorized_lease_seconds(
+                {"credential_mandate": {"expires_at": future}, "lease_state": "LEASE_OPEN"}
+            )
+        with self.assertRaisesRegex(
+            mod.DiagnosticAdmissionError,
+            "CURRENT_EVENT_EPHEMERAL_LEASE_EXPIRED",
+        ):
+            mod._remaining_authorized_lease_seconds(
+                {"lease_expires_at": "2020-01-01T00:00:00Z"}
+            )
+
     def test_future_deadline_still_requires_native_lease_snapshot(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(
