@@ -22,7 +22,11 @@
     "data/ecosystem-open-source-organization-census-20260925.json",
     "StegVerse-org/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
     "Data-Continuation/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
-    "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md"
+    "Data-Continuation/.github/docs/CORE_LITE_PINNED_SOURCE_RIGHTS_AUDIT_20260925.md",
+    "AdmittedCode/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "GCAT-BCAT-Engine/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "AaCT-E/.github/docs/OPEN_SOURCE_ORGANIZATION_INVENTORY_20260925.json",
+    "Data-Continuation/core-lite/docs/CORE_LITE_PINNED_RIGHTS_OWNER_DECISIONS_20260925.md"
   ],
   "adjacent_task_refs": [
     "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
@@ -121,7 +125,17 @@
     "core_lite_pinned_license": "SOURCE_LICENSE_SCOPE_UNVERIFIED",
     "core_lite_author_rights": "351_COMMIT_ATTRIBUTIONS_RIGHTS_UNVERIFIED",
     "core_lite_dependencies": "PINNED_SOURCE_IMPORT_INSPECTION_PARTIAL",
-    "data_continuation_source_pr_checks": "NONE_REPORTED"
+    "data_continuation_source_pr_checks": "NONE_REPORTED",
+    "admittedcode_source_pr_merge": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+    "gcat_source_pr_merge": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+    "aact_e_source_pr_merge": "f63382baca536a740324f8d1ede80f1d12f5cd07",
+    "data_continuation_followup_pr_merge": "99ba313b296c3a5a1d82ae7c5368283f9869a11e",
+    "core_lite_rights_form_merge": "c8c423ebcebef002ed7b98af9fa1a3e58c28fcfd",
+    "core_lite_source_rights": "DENY_SOURCE_LICENSE_SCOPE_UNVERIFIED",
+    "organizations_with_source_owned_metadata": 6,
+    "metadata_audited_repositories": 168,
+    "remaining_visibility_only_organizations": 8,
+    "public_source_audit_status": "MERGED_SOURCE_ONLY_NO_NEW_RELEASE"
   },
   "ecosystem_inventory": {
     "snapshot": "2026-09-25",
@@ -135,16 +149,24 @@
     "metadata_audited": [
       "StegVerse-Labs",
       "StegVerse-org",
-      "Data-Continuation"
+      "Data-Continuation",
+      "AdmittedCode",
+      "GCAT-BCAT-Engine",
+      "AaCT-E"
     ],
     "second_org_source_owned_pr": "StegVerse-org/.github#11",
     "second_org_source_owned_merge": "d68ff51efca20d175e2cf0c16d5ea7ab0cb00f63",
-    "other_organizations_count_only": 12,
+    "other_organizations_count_only": 8,
     "copyright_title_verified": 0,
     "release_authorized": false,
-    "metadata_checked_entries": 144,
+    "metadata_checked_entries": 168,
     "third_org_source_owned_pr": "Data-Continuation/.github#7",
     "third_org_source_owned_merge": "21d5292c56961f3a32a814c63d67a61b0c255ae4",
-    "other_organizations_count_visibility_only": 11
+    "other_organizations_count_visibility_only": 8,
+    "new_owner_merges": {
+      "AdmittedCode": "2d40e86c2fa7db5a41ca54fb75971caf0dde2148",
+      "GCAT-BCAT-Engine": "ee4f7175caad1f411ecad28c10cc6ba6c30ab314",
+      "AaCT-E": "f63382baca536a740324f8d1ede80f1d12f5cd07"
+    }
   }
 }

@@ -1752,3 +1752,8 @@ The existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` remain
 ### September 26 — source-owned open-source audit merges
 
 Existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`: owner-authorized source-only merges [AdmittedCode #5](https://github.com/AdmittedCode/.github/pull/5), [Data-Continuation #8](https://github.com/Data-Continuation/.github/pull/8), [GCAT #7](https://github.com/GCAT-BCAT-Engine/.github/pull/7), [AaCT-E #6](https://github.com/AaCT-E/.github/pull/6) and source rights-form [Core-Lite #35](https://github.com/Data-Continuation/core-lite/pull/35). Source-owner coverage is provisionally 168/252 entries across six organizations pending central canonical manifest and Registry reconciliation; 84 remain visibility-only. No license or release granted. See canonical open-source mirror handoff.
+
+
+#### Canonical source-owner audit coverage promoted — September 26
+
+After independent source-owner main readback of AdmittedCode #5, Data-Continuation #8, GCAT #7, AaCT-E #6 and Core-Lite rights form #35, existing open-source task canonical candidate generation 255 records 168/252 metadata/root-inspected repository entries across six known organizations. Eight organizations remain visibility-only; actual file-level legal title and source grants remain unverified, Core-Lite #34 remains open, and no release is authorized. This aggregate excludes private GCAT repository names. See `data/ecosystem-open-source-organization-census-20260925.json` and existing mirror handoff.
