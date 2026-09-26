@@ -42,9 +42,12 @@ STEGHEALTH_KV_INTERLOCK_TASK_ID = "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-0
 STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-steghealth-kv-interlock-production-endpoint-request-consumption.latest.json")
 ERL_HOUSEHOLD_GOAL_TASK_ID = "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
 ERL_HOUSEHOLD_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-erl-household-economic-conditions-site-request-consumption.latest.json")
+AUTONOMOUS_PROGRESSION_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
+AUTONOMOUS_PROGRESSION_CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-entity-autonomous-governed-progression-runtime-adoption-request-consumption.latest.json")
 CANONICAL_GOAL_CONSUMPTION_REL = {
     STEGHEALTH_KV_INTERLOCK_TASK_ID: STEGHEALTH_KV_INTERLOCK_CONSUMPTION_REL,
     ERL_HOUSEHOLD_GOAL_TASK_ID: ERL_HOUSEHOLD_CONSUMPTION_REL,
+    AUTONOMOUS_PROGRESSION_TASK_ID: AUTONOMOUS_PROGRESSION_CONSUMPTION_REL,
 }
 
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
