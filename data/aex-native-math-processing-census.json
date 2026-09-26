@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.native-math-processing-census/v1",
-  "status": "ORIGINAL_CHF_3_AND_ET_1_PRIVATE_SDK_SYNTHETIC_SOURCE_INVOCATIONS_VERIFIED_OTHERS_UNESTABLISHED_NO_GOVERNED_RUNTIME",
-  "central_registry_generation_observed": 257,
+  "status": "ORIGINAL_CHF_3_ET_1_HPS_3_PRIVATE_SYNTHETIC_SDK_MATH_INVOCATIONS_VERIFIED_OTHER_NATIVE_SOURCES_AND_GOVERNED_RUNTIME_NOT_ESTABLISHED",
+  "central_registry_generation_observed": 258,
   "canonical_org_role_registry": "Admissible-Existence/.github/data/formalism-worker-registry.json",
   "canonical_org_role_registry_sha": "d7c7086d6cb544f33112927a2e2a29a02fad4258",
   "registered_role_count": 32,
@@ -14,7 +14,7 @@
     "atomic_task_worker",
     "native_source_math"
   ],
-  "native_math_manifest_invocations_verified": 4,
+  "native_math_manifest_invocations_verified": 7,
   "authentic_governed_math_runs_verified": 0,
   "entries": [
     {
@@ -240,9 +240,17 @@
       "owner": "NATIVE_SOURCE_REPOSITORY",
       "candidate_callable": "tools/verify_standing_score.py::verify_standing_score",
       "inspected_surface_kind": "NUMERIC_STANDING_SCORE_VERIFIER",
-      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_SCORE_CLASSES",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+      "verification_note": "Original private HPS owner PR #7 merged 2d971d5..., original verify_standing_score.py exact blob unchanged. Exact-head HPS Verify run 36233899275 PASS privately installed unchanged owner source via generic SDK math route and ran three original synthetic standing-score source classifications (RESTORED, DEGRADED, FAILED hard fail) with four hash lineage per case and adversarial source/specimen/native mismatch refusals. This is source-only classifier evidence, NOT SPE standing or StegGate commit authority, full HPS proof or live runtime. Independently retrieved original private hashes-only artifact 10903218434.",
+      "sdk_native_source_integration_ref": "Admissible-Existence/HPS#7@2d971d5dba1b89b7bb001f9eb0127818f43d932e",
+      "original_native_git_blob": "91c205bae95d23b20e3814fcd58b5fdb0d603959",
+      "owner_adapter_git_blob": "c02e40569cec165399ffa743a70b7d65697ccbfa",
+      "hosted_verification_run": 36233899275,
+      "private_artifact_id": 10903218434,
+      "artifact_zip_sha256": "sha256:9a0d4358b8832012e678658e43814f48e6253347f8e93390229068d343c21b86",
+      "native_sdk_invocation_count": 3,
+      "standing_determination_authority": "NONE"
     },
     {
       "repository": "Admissible-Existence/FI",
