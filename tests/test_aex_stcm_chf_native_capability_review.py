@@ -83,9 +83,9 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(original["full_horizon"], "NOT_ESTABLISHED")
         self.assertEqual(original["sdk_native_manifest"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES")
         self.assertEqual(self.audit["CHF"]["original_source_sdk_invocation"]["hosted_validation_run"], 36231939908)
-        self.assertEqual(self.census["native_math_manifest_invocations_verified"], 3)
+        self.assertEqual(self.census["native_math_manifest_invocations_verified"], 4)
         self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
-        self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] != "Admissible-Existence/CHF"))
+        self.assertTrue(all(r["sdk_manifest_invocation"] == "NOT_ESTABLISHED" for r in self.census["entries"] if r["repository"] not in {"Admissible-Existence/CHF", "Admissible-Existence/ET"}))
         self.assertEqual(len(original["four_synthetic_controls"]), 4)
 
     def test_unobserved_runtime_and_physical_heat_remain_unobserved(self):
@@ -111,6 +111,23 @@ class OriginalNativeMathCapabilityReview(unittest.TestCase):
         self.assertEqual(observed["full_horizon"], "NOT_ESTABLISHED")
         self.assertEqual(observed["physical_heat"], "NOT_OBSERVED")
         self.assertFalse(observed["production_or_general_distribution_proven"])
+
+
+    def test_original_private_et_native_and_sdk_lineage_is_bounded(self):
+        et = self.audit["ET"]
+        row = self.rows["Admissible-Existence/ET"]
+        self.assertEqual(et["original_core_git_blob"], "b520bae77ea5cedda95672c5529a2bc5fefc7b33")
+        self.assertEqual(et["original_owner_hosted_run"], 36233578328)
+        self.assertTrue(et["original_native_source_unchanged"])
+        self.assertEqual(row["sdk_manifest_invocation"], "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_1_SYNTHETIC_CASE")
+        hashes = [et["original_native_result_sha256"].removeprefix("sha256:"),
+                  et["sdk_manifest_sha256"], et["sdk_request_sha256"],
+                  et["sdk_pre_enrichment_result_sha256"]]
+        self.assertTrue(all(len(x) == 64 for x in hashes))
+        self.assertEqual(len(set(hashes)), 4)
+        self.assertEqual(et["full_et_mathematical_completeness"], "NOT_ESTABLISHED")
+        self.assertEqual(et["governed_runtime"], "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
+        self.assertEqual(self.census["authentic_governed_math_runs_verified"], 0)
 
 if __name__ == "__main__":
     unittest.main()
