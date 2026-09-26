@@ -323,7 +323,19 @@ def _remaining_authorized_lease_seconds(binding: Mapping[str, Any]) -> float:
     return remaining
 
 
-def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding: Mapping[str, Any]) -> None:
+def _require_native_original_request_lineage(native: Mapping[str, Any], binding: Mapping[str, Any], admission_hash: str | None) -> None:
+    """Require the exact native original request, live deadline and authenticated admission."""
+    require(isinstance(admission_hash, str) and len(admission_hash) == 64,
+            "CURRENT_NATIVE_ORIGINAL_ADMISSION_REQUIRED")
+    require(native.get("original_request_sha256") == binding.get("request_sha256")
+            and native.get("original_wire_manifest_sha256") == binding.get("wire_manifest_sha256")
+            and native.get("original_admission_receipt_sha256") == admission_hash
+            and binding.get("original_admission_receipt_sha256") == admission_hash
+            and native.get("execution_lease_expires_at") == binding.get("lease_expires_at"),
+            "CURRENT_NATIVE_ORIGINAL_REQUEST_LEASE_LINEAGE_MISMATCH")
+
+
+def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding: Mapping[str, Any], *, ingress_digest: str | None = None) -> None:
     """Recheck actual current StegOS lease and relay; old HEAD is not live authority."""
     from workers.stegos_sovereign_relay_bridge import find_stegos_root
 
@@ -353,6 +365,15 @@ def _verify_current_native_lease(control_root: Path, runtime_root: Path, binding
             and machine.request.lease_id == binding["lease_id"]
             and machine.request.runtime_class.value == "EVENT_EPHEMERAL",
             "CURRENT_EVENT_EPHEMERAL_LEASE_MACHINE_MISMATCH")
+    _require_native_original_request_lineage(machine.request.as_dict(), binding, ingress_digest)
+    try:
+        machine.assert_current_original_execution_authority(
+            request_sha256=binding["request_sha256"],
+            wire_manifest_sha256=binding["wire_manifest_sha256"],
+            admission_receipt_sha256=ingress_digest,
+        )
+    except ValueError as exc:
+        raise DiagnosticAdmissionError("CURRENT_NATIVE_ORIGINAL_EXECUTION_AUTHORITY_INVALID") from exc
     ready = _read(runtime_root / "receipts/sovereign-network/ephemeral-relay.ready.json")
     require(ready.get("lease_id") == binding["lease_id"]
             and ready.get("runtime_id") == binding["runtime_id"]
@@ -474,7 +495,7 @@ def consume(
     # Existing native owner must revalidate the current lease at invocation.
     # A historical LEASE_OPEN receipt or immutable locator is never sufficient.
     if not source_test_doubles:
-        _verify_current_native_lease(control_root, ephemeral_root, binding)
+        _verify_current_native_lease(control_root, ephemeral_root, binding, ingress_digest=ingress_digest)
         _require_current_organization_lease_status(control_root, binding_digest, binding)
     # Fixed installed processor only: never load a callable or command from a
     # manifest payload, review document, untrusted binding or provider response.
