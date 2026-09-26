@@ -89,3 +89,15 @@ A Goal Task selects only the pieces it requires. These task identities may compo
 ## Next use
 
 New Goal Tasks should resolve these reusable identities before deriving new Interlock/InTr implementation work. A new protocol/adapter implementation is warranted only when the existing protocol and reusable tasks cannot represent the required boundary semantics without mutation or ambiguity.
+
+## Bounded participation clarification — 2026-09-25
+
+The relevant canonical coordination goal is `STEGVERSE-CANONICAL-WORK-COORDINATION-001`; this handoff is a reusable-protocol definition, not a new canonical goal or independent authority. At the observed main Task Registry generation 251, preserve the existing goal and reuse the five `RT-INTR-*` identities above.
+
+Every **presented** transition at a participating governed ingress/egress must be evaluated before its protected effect. An authenticated, scoped ALLOW admits only that attempt; DENY or FAIL_CLOSED terminates its attempted protected transition according to the native policy, while REVIEW/ESCALATE/REFUSE and other non-ALLOW dispositions remain distinct and non-authorizing. A correction is a new governed attempt, never silent continuation of the denied one.
+
+Interlock/InTr does not claim to observe all AI, all traffic or every possible bypass, and a missing observation does not constitute a DENY or evidence of nonoccurrence. Preserve `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` when authentic original evidence is inaccessible. Keep constraint/provenance evidence distinct from per-transition evaluation evidence, and retain exact predecessor-linked records for bounded Master Records reconstruction.
+
+Time, heartbeat cadence, timestamps and freshness cannot generate authority or make prior ALLOW perpetual. Verify separately applicable current standing at the consequential boundary. Reuse existing protocol/admission/transition/roundtrip/custody tasks to test these limits; do not add a new evaluator, transport, runtime, or universal-monitoring requirement.
+
+Source-only documentation clarification; no claimed resident disposition, deployment, proof of universal mediation, or change to Task Registry coordination state.
