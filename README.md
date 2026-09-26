@@ -1,3 +1,7 @@
+## SVG governance-cycle capability versioning admission proposal (2026-09-25)
+
+[Central intake #2757](https://github.com/StegVerse-Labs/.github/issues/2757) requests existing-owner collision reconciliation and authentic Task Registry / COSV admission for a hardware-neutral, measurable SVG governed-transition-cycle contract. The [provisional handoff](docs/SVG_GOVERNANCE_CAPABILITY_VERSIONING_MIRROR_HANDOFF.md) records Governance, repo-standards ST-020, StegCore, sovereign runtime/custody and optional Infra boundaries. SV-011 is an AI entity, not the version standard. **Proposal only:** no canonical task/COSV, runtime evidence, dedicated hardware prerequisite, release or new authority is claimed.
+
 ## Data-Continuation licensing scope added to existing open-source strategy (2026-09-25)
 
 Canonical `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000` now has three source-owned metadata audits: StegVerse-Labs 119/119, StegVerse-org 18/18 and Data-Continuation 7/7, totaling 144 metadata-checked entries within the existing 14-organization / 252-repository visibility census. Data-Continuation source owner merged its seven-repository inventory in [PR #7](https://github.com/Data-Continuation/.github/pull/7); the exact pinned SDK Core-Lite commit has no root LICENSE/NOTICE or project license metadata, and no rights clearance. The other 11 organizations remain visibility-only. See `data/ecosystem-open-source-organization-census-20260925.json` and `docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md`. No relicensing or release authorized.
