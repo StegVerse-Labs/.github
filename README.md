@@ -1536,6 +1536,7 @@ Draft task `WORKER-TASK-RESOURCE-COST-LINKAGE-001` has an intake record in [issu
 ## Optical physical-state and replay research — source preregistration
 
 Central [issue #2626](https://github.com/StegVerse-Labs/.github/issues/2626) proposes a coordination-only source row for `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001` at generation 214 (branch proposal from generation 213). The canonical continuation is [`docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md`](docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md). PAT-003 adaptive-scanner, Publisher reconstruction and existing SDK/governance owners retain their independent scopes. **A source row is not authentic AI_SESSION_GATE admission, a minted COSV, patent family identity or runtime proof.** The associated [Patents draft PR #6](https://github.com/StegVerse-Labs/Patents/pull/6) remains pending convergence. Keep confidential enabling claim material and restricted video out of public repositories.
+  - Optical v0.12 (2026-09-26): source-only exact-original audit prepared; dense/sparse synthetic context and selected-set equality pass. Original private trigger rows/media, independent physical reference, Mendeley file rights and authentic component-010 runtime remain unverified; see the same canonical handoff.
 
 ### Private-State Economy paper scope (2026-09-24)
 
