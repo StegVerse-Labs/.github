@@ -187,6 +187,7 @@ jobs:
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components
+          python -m py_compile tests/test_task_registry_session_status_projection.py
           python tests/test_task_registry_session_status_projection.py
           python -m py_compile scripts/evaluate_task_registry_collision_checkin.py scripts/materialize_task_session_close.py scripts/task_registry_checkin_event_history.py
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
