@@ -100,6 +100,14 @@ The source-corrected **FAccT 2027 abstract draft already exists on main** at `do
 
 Before sending an ordered HOLD execution packet to Élisabeth, the SDK's evaluator-visible path must be qualified. See `docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md` for the source-backed current capability matrix and D0–D7 evaluator preflight contract. The existing public SDK has generic manifested processing, declared routing, controlled evaluator test precedent and read-only diagnostic transport. Its historical `scripts/run_elan_stegverse_cross_evaluation.py` still hardcodes the superseded ÉLAN-presence annotation and fake InTr resolver: treat it as historical evidence only, NOT a current corrected experiment or live-runtime proof. A HOLD-specific no-invocation provenance negative control and exact evaluator-visible manifest/route/custody/replay qualification remain outstanding. Do not ask Élisabeth to run a purported SDK-integrated HOLD protocol before these source/runtime boundaries are established; distinguish independent ÉLAN-native trace collection from subsequent SDK evaluation.
 
+## September 25 parallel HOLD delivery and version roadmap
+
+Owner instruction supersedes indefinite SDK preflight sequencing: **the genuine HOLD native API test may start immediately once both authors agree the exact stimuli and logging method**, concurrently with SDK source qualification. Deliver ordered proposed series `docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md` to Élisabeth for rapid exact prompt agreement. Her authentic native results are private original evidence and are never replaced by synthetic SDK fixture output.
+
+General-purpose SDK source guard is proposed in SDK [PR #340](https://github.com/StegVerse-org/StegVerse-SDK/pull/340), reusing generic manifests and currently installed diagnostic/governance routes. This does not create an ÉLAN-specific processor. The versioned cross-component capability matrix, bounded v1.4 HOLD vertical slice and proposed v1.5/1.6 generalization gates are `docs/ELAN_HOLD_IMMEDIATE_EXECUTION_SDK_VERSION_ROADMAP.md`. The SDK 1.3.0 RELEASE_CANDIDATE is not a tagged published release; main declares 1.4.0.dev0. Publisher reviewer evidence package v1 is an existing profile, not a verified independently tagged Publisher component version.
+
+As of initial plan, SDK final-head source checks and authentic HOLD runtime proof are **not complete**. Source CI, local validation, actual InTr/organization/Master Records custody and Publisher review delivery are distinct predicates. Do not hold coauthor native evidence collection behind source CI, generic 1.5 roadmap or second-device access. Maintain the existing paper task and canonical SDK/Publisher owners; no duplicate task allocation without Registry authorization.
+
 ## Next work
 
 1. Editorial PR #2593 has merged. Keep manuscript and abstract marked DRAFT / NOT SUBMITTED and HOLD marked PROPOSED / NOT EXECUTED until separately authorized.
