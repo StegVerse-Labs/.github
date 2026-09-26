@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 251,
+  "generation": 252,
   "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -15114,6 +15114,387 @@
       "handoff_projection_refs": [
         "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md"
       ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "correlation_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "parent_task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "goal": "Prove one authentic ChatGPT-powered Local AI Entity participating as a resident participant on an admitted StegOS substrate, performing a governed task whose result is independently reconstructable, with external API interaction kept strictly separate from StegVerse governance authority.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/StegOS",
+      "cosv_task_vector": "10100000102000",
+      "source_refs": [
+        "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CHATGPT_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS:data/canonical-task-registration-proposals/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
+        "StegVerse-Labs/.github#2721",
+        "StegVerse-Labs/StegOS#412"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegOS"
+        ],
+        "components": [
+          "local-ai-entity-chatgpt-first"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "FIRST_CHATGPT_GOVERNED_TASK",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNKNOWN",
+          "ref": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001 / first ChatGPT manifest"
+        },
+        {
+          "dependency_id": "FIRST_SCOPED_MASTER_RECORDS_PROOF",
+          "kind": "EVIDENCE",
+          "state": "UNKNOWN",
+          "ref": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001 / first participant organization receipt chain"
+        }
+      ],
+      "blockers": [
+        {
+          "blocker_id": "CHATGPT_AUTHENTIC_GOVERNED_FIRST_TASK",
+          "dependency_id": "FIRST_CHATGPT_GOVERNED_TASK",
+          "reason": "First real manifested ChatGPT task has no authenticated governed outcome."
+        },
+        {
+          "blocker_id": "FIRST_PARTICIPANT_MASTER_RECORDS_CUSTODY",
+          "dependency_id": "FIRST_SCOPED_MASTER_RECORDS_PROOF",
+          "reason": "No matching predecessor-linked scoped organization and Master Records closure has been established."
+        }
+      ],
+      "adjacent_task_refs": [
+        "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+        "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+        "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_REGISTERED",
+        "RESIDENT_PARTICIPANT_ADMITTED_ON_ELIGIBLE_STEGOS_SUBSTRATE",
+        "GOVERNED_TASK_PERFORMED_UNDER_EXISTING_INTERLOCK_INTR_EVALUATION",
+        "EXTERNAL_API_BOUNDARY_SEPARATED_FROM_GOVERNANCE_AUTHORITY",
+        "EXTERNAL_MODEL_OUTPUT_GRANTS_NO_TRANSITION_AUTHORITY",
+        "RESULT_INDEPENDENTLY_RECONSTRUCTABLE_FROM_RETAINED_EVIDENCE",
+        "SCOPED_PARTICIPANT_EVIDENCE_RETAINED",
+        "NO_SECOND_RUNTIME_SCHEDULER_OR_AUTHORITY_PLANE_CREATED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "bounded_process_execution",
+          "provider_request_execution",
+          "intr_task_admission",
+          "master_records_reconciliation"
+        ],
+        "environment": "EXISTING_ADMITTED_STEGOS_OR_STEGBROWSER_SUBSTRATE",
+        "direction": "INTERNAL_WITH_MANIFESTED_PROVIDER_BOUNDARY",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CHATGPT_MIRROR_HANDOFF.md"
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CHATGPT_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "credential_authority": "TV/TVC",
+        "github_runtime_authority": "NONE"
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/StegOS:README.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/StegBrowser:src/stegbrowser/ecosystem_ephemeral.py"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "PENDING_EVIDENCE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/.github:docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "registration": {
+        "source": "StegVerse-Labs/.github#2721",
+        "first_participant_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+        "first_participant_independent_reconstruction_required_before_second_execution": false,
+        "source_registration_grants_execution_authority": false,
+        "benchmark_id": "S1_CHATGPT",
+        "benchmark_status": "NOT_VERIFIED",
+        "ecc_status": "DEFERRED_UNTIL_AUTHENTIC_EXECUTION",
+        "merged_stegos_source_commit": "462575d7df09faf8e1649147122b6417380e7435"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+      "correlation_id": "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+      "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "parent_task_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "goal": "Prove a second and distinct verified resident participant, Claude Code, collaborating with the first Local AI Entity on a governed task while preserving its own scoped evidence rather than sharing or inheriting the first entity's evidence.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/StegOS",
+      "cosv_task_vector": "10100000103000",
+      "source_refs": [
+        "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS:data/canonical-task-registration-proposals/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+        "StegVerse-Labs/.github#2721",
+        "StegVerse-Labs/StegOS#412"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegOS"
+        ],
+        "components": [
+          "local-ai-entity-claude-code-second"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "PREDECESSOR_CHATGPT_PROOF",
+          "kind": "TASK",
+          "state": "UNRESOLVED",
+          "ref": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001"
+        },
+        {
+          "dependency_id": "SECOND_REAL_CLAUDE_CODE_TOOL_EXECUTION",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNKNOWN",
+          "ref": "Existing StegOS / SDK / LLM-adapter native executor; Anthropic Messages reply alone insufficient"
+        },
+        {
+          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+          "kind": "EVIDENCE",
+          "state": "UNKNOWN",
+          "ref": "Two separately scoped organization receipt chains and matching Master Records reconstruction"
+        }
+      ],
+      "blockers": [
+        {
+          "blocker_id": "FIRST_CHATGPT_INDEPENDENT_RECONSTRUCTION",
+          "dependency_id": "PREDECESSOR_CHATGPT_PROOF",
+          "reason": "ChatGPT first participant must complete independent governed reconstruction before Claude collaboration is credited."
+        },
+        {
+          "blocker_id": "SECOND_CLAUDE_CODE_ACTUAL_TOOL_EXECUTION",
+          "dependency_id": "SECOND_REAL_CLAUDE_CODE_TOOL_EXECUTION",
+          "reason": "An Anthropic API response does not prove the distinct Claude Code tool executor ran."
+        },
+        {
+          "blocker_id": "SEPARATE_PARTICIPANT_CUSTODY_RECONSTRUCTION",
+          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+          "reason": "Independent scoped ChatGPT and Claude Code receipts and joint Master Records reconstruction remain unverified."
+        }
+      ],
+      "adjacent_task_refs": [
+        "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+        "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+        "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+        "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_REGISTERED",
+        "PREDECESSOR_ENTITY_INDEPENDENTLY_VERIFIED",
+        "SECOND_RESIDENT_PARTICIPANT_DISTINCT_FROM_FIRST",
+        "DISTINCTNESS_ESTABLISHED_BY_EVIDENCE_NOT_BY_SELF_ASSERTION",
+        "GOVERNED_COLLABORATIVE_TASK_PERFORMED_UNDER_INTERLOCK_INTR_EVALUATION",
+        "PER_PARTICIPANT_SCOPED_EVIDENCE_RETAINED_SEPARATELY",
+        "EXTERNAL_API_BOUNDARY_SEPARATED_FROM_GOVERNANCE_AUTHORITY",
+        "EXTERNAL_MODEL_OUTPUT_GRANTS_NO_TRANSITION_AUTHORITY",
+        "RESULT_INDEPENDENTLY_RECONSTRUCTABLE_FROM_RETAINED_EVIDENCE",
+        "NO_SECOND_RUNTIME_SCHEDULER_OR_AUTHORITY_PLANE_CREATED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "bounded_process_execution",
+          "claude_code_tool_execution",
+          "intr_task_admission",
+          "master_records_reconciliation"
+        ],
+        "environment": "EXISTING_ADMITTED_STEGOS_OR_STEGBROWSER_SUBSTRATE",
+        "direction": "INTERNAL_WITH_MANIFESTED_PROVIDER_BOUNDARY",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md"
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "credential_authority": "TV/TVC",
+        "github_runtime_authority": "NONE"
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/StegOS:README.md"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/StegBrowser:src/stegbrowser/ecosystem_ephemeral.py"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "PENDING_EVIDENCE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "StegVerse-Labs/.github:docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
+      },
+      "registration": {
+        "source": "StegVerse-Labs/.github#2721",
+        "first_participant_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+        "first_participant_independent_reconstruction_required_before_second_execution": true,
+        "source_registration_grants_execution_authority": false,
+        "benchmark_id": "S1_CLAUDE",
+        "benchmark_status": "NOT_VERIFIED",
+        "ecc_status": "DEFERRED_UNTIL_AUTHENTIC_EXECUTION",
+        "merged_stegos_source_commit": "462575d7df09faf8e1649147122b6417380e7435"
+      }
     }
   ],
   "human_actions": [],

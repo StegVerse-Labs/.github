@@ -1090,6 +1090,30 @@
     },
     {
       "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
+      "vector": "10100000102000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CHATGPT_MIRROR_HANDOFF.md"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
+      "task_id": "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-records/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+      "vector": "10100000103000",
+      "vector_state": "EMITTED",
+      "profile": "task.v1",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md"
+    },
+    {
+      "schema": "stegverse.cosv-task-vector-index-entry/v1",
       "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
@@ -1142,8 +1166,8 @@
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 111,
-    "local_cosv_record_tasks": 111,
+    "indexed_vectorized_tasks": 117,
+    "local_cosv_record_tasks": 117,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
