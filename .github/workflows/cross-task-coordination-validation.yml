@@ -192,6 +192,7 @@ jobs:
             tests.test_erl_household_targeted_consumer_priority \
             tests.test_canonical_work_resident_registry_preservation \
             tests.test_portable_refresh_targeted_execution \
+            tests.test_autonomous_progression_portable_consumption_binding \
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components
