@@ -27,6 +27,7 @@ on:
       - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_task_registry_session_status_projection.py'
       - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
@@ -92,6 +93,7 @@ on:
       - 'data/canonical-task-records/**'
       - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
       - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_task_registry_session_status_projection.py'
       - 'tests/test_sdk_untrusted_dependency_collision_checkin.py'
       - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_task_registry_ai_session_ingress.py'
@@ -187,6 +189,9 @@ jobs:
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components
+          python -m py_compile tests/test_task_registry_session_status_projection.py
+          python tests/test_task_registry_session_status_projection.py
+          python -m py_compile scripts/evaluate_task_registry_collision_checkin.py scripts/materialize_task_session_close.py scripts/task_registry_checkin_event_history.py
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_task_registration_substrate_resolution.py
           python scripts/validate_org_control_plane.py

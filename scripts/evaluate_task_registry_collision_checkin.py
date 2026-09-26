@@ -16,6 +16,8 @@ from task_registry_checkin_event_history import (
     DEFAULT_LEDGER,
     append_event,
     recent_collision_candidates,
+    load_events,
+    parse_time,
 )
 from validate_task_registration_substrate_resolution import validate_resolution
 
@@ -401,8 +403,79 @@ def record_event(envelope, context, event_type):
     })
 
 
+
+def project_session_status(envelope: dict, context: dict) -> dict:
+    """Project session-level collision evidence; never replace a registry disposition.
+
+    The existing ledger proves a retained hash chain, NOT authenticated chat
+    origin. Unknown/unavailable origin cannot become DUPLICATE: CONFIRMED.
+    """
+    task_id = str(envelope.get("task_id") or "")
+    session_id = str(context.get("session_id") or "")
+    hard_ids = list(envelope.get("hard_collision_task_ids") or [])
+    candidates = envelope.get("collision_candidates") or []
+    result = {
+        "schema": "stegverse.task-registry-session-status-projection/v1",
+        "task_lifecycle_state": None,
+        "duplicate": "UNVERIFIED",
+        "collision": "CONJOIN_REQUIRED" if hard_ids else "UNVERIFIED",
+        "colliding_task_ids": hard_ids,
+        "same_task_active_session_candidates": [],
+        "evidence_class": "REGISTRY_CHECKIN_PROJECTION_NOT_SESSION_ORIGIN_ATTESTATION",
+        "source_disposition": envelope.get("disposition"),
+        "authority_effect": "NONE",
+    }
+    # Distinguish a known cross-task, exclusive mutation from mere repo overlap.
+    if hard_ids:
+        result["collision_reason"] = "EXISTING_REGISTRY_HARD_COLLISION"
+    elif envelope.get("disposition") == "COORDINATE_CONVERGENCE":
+        result["collision"] = "REVIEW_REQUIRED"
+        result["collision_reason"] = "OVERLAP_NOT_YET_PROVEN_EXCLUSIVE"
+    elif envelope.get("disposition") == "CONTINUE":
+        result["collision"] = "NO_REGISTERED_COLLISION_OBSERVED"
+        result["collision_reason"] = "EXTERNAL_SESSION_CENSUS_NOT_ATTESTED"
+
+    # A shared task ID in two independently retained active check-ins is an
+    # observed duplicate candidate. The current source does not attest origin.
+    if session_id:
+        ledger = event_ledger_path()
+        events = load_events(ledger)
+        latest = {}
+        for event in events:
+            latest[(event["task_id"], event["session_id"])] = event
+        clock = context.get("checked_in_at")
+        now = parse_time(clock) if isinstance(clock, str) and clock.strip() else datetime.now(timezone.utc)
+        cutoff = now.timestamp() - 1800
+        own_comps = set(context.get("components_under_mutation") or [])
+        own_repos = set(context.get("repositories_under_mutation") or [])
+        for (other_task, other_session), event in latest.items():
+            if other_task != task_id or other_session == session_id or event.get("event_type") != "CHECK_IN":
+                continue
+            if parse_time(event["event_at"]).timestamp() < cutoff:
+                continue
+            other_context = event.get("context") or {}
+            same_component = sorted(own_comps & set(other_context.get("components") or []))
+            same_repository = sorted(own_repos & set(other_context.get("repositories") or []))
+            same_branch = bool(context.get("branch") and context.get("branch") == other_context.get("branch"))
+            same_pr = bool(context.get("pull_request") and str(context.get("pull_request")) == str(other_context.get("pull_request")))
+            if same_component or same_branch or same_pr:
+                result["same_task_active_session_candidates"].append({
+                    "task_id": task_id, "session_id": other_session,
+                    "event_sha256": event["event_sha256"],
+                    "matching_components": same_component,
+                    "matching_repositories": same_repository,
+                    "same_branch": same_branch, "same_pull_request": same_pr,
+                    "session_origin_attested": False,
+                })
+        if result["same_task_active_session_candidates"]:
+            result["collision"] = "CONJOIN_REQUIRED"
+            result["collision_reason"] = "SAME_TASK_ACTIVE_CHECKIN_OVERLAP_UNATTESTED"
+            result["evidence_class"] = "HASH_CHAIN_VALIDATED_SESSION_ORIGIN_UNVERIFIED"
+    return result
+
 def emit(payload, request_context):
     envelope = dict(payload)
+    envelope["session_status_projection"] = project_session_status(envelope, request_context)
     envelope["registry_global_invariants"] = load_global_invariants()
     envelope["checkin_context"] = request_context
     envelope["caller_surface"] = request_context.get("caller_surface")
@@ -536,6 +609,29 @@ def main():
         if marker not in known:
             collisions.append(row)
             known.add(marker)
+
+    # Existing source history may expose a same-goal, same-scope active
+    # session candidate. Without origin attestation it is NOT a confirmed
+    # duplicate, but overlapping mutation must not silently CONTINUE.
+    same_task_status = project_session_status({"task_id": tid}, context)
+    for candidate in same_task_status["same_task_active_session_candidates"]:
+        collisions.append({
+            "task_id": tid,
+            "session_id": candidate["session_id"],
+            "handoff": handoff(r),
+            "coordination_state": state,
+            "checkout_state": checkout,
+            "overlap": {
+                "repositories": candidate["matching_repositories"],
+                "components": candidate["matching_components"],
+                "same_branch": candidate["same_branch"],
+                "same_pull_request": candidate["same_pull_request"],
+            },
+            "event_sha256": candidate["event_sha256"],
+            "source": "ACTIVE_SAME_TASK_CHECKIN_UNATTESTED",
+            "blocking": False,
+            "origin_attested": False,
+        })
 
     hard=[c for c in collisions if c.get("source") in {"CANONICAL_TASK_REGISTRY", "CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE"} and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
