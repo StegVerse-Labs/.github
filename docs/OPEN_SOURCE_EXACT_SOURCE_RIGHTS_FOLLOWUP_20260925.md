@@ -32,3 +32,15 @@ A sample of individual Git commits attributes StegVerse or StegVerse Bot; that i
 ## Owner coordination
 
 The hybrid license scope issue is a scoped clarification within this existing goal, not a second Goal Task ID. The separate clone-attribution owner continues independently. Preserve earlier LICENSE blobs and issue provenance; no source-owner license file was edited during this audit.
+
+## September 25 — current upstream direct-license scope and generated-page hold
+
+Source-only SDK [PR #333](https://github.com/StegVerse-org/StegVerse-SDK/pull/333) merged as `175c1fa11967d14986682a72efb4171afe40aece` from exact-head 12/12 passing CI. Root LICENSE reads through the connected GitHub app identify the current upstream direct-package grants, not the eventual resolved/version-frozen dependency SBOM:
+
+| SDK baseline requirement | Current upstream license | LICENSE blob SHA | Remaining redistribution evidence |
+| --- | --- | --- | --- |
+| requests >=2.28.0 | Apache-2.0, `psf/requests` | `67db8588217f266eb561f75fae738656325deac9` | Exact resolved distribution, notices, patent terms and transitive components. |
+| PyYAML >=6.0 | MIT, `yaml/pyyaml` | `2f1b8e15e5627d92f0521605c9870bc8e5505cb4` | Exact package version and applicable copyright/permission notice. |
+| python-dotenv >=0.19.0 | BSD-style three-clause, `theskumar/python-dotenv` | `3a97119010ac82e15e917a69b7b8f9f59b5a4601` | Exact distribution, source/binary notice and SDK >=3.9 Python-compatibility testing against newer upstream releases. |
+
+The four historical optional Git-pinned dependency LICENSE reads remain unresolved at their respective exact references: 404 cannot distinguish path absence from access limitations. SDK root MIT is not a blanket license for those packages or for automatically generated public DeepWiki content. Cognition's [current terms](https://cognition.com/legal/platform-terms-of-service), section 3.1, are customer-output-specific and do not establish rights in this public auto-indexed result for StegVerse. The 38-page raw generated text and citation-corrected quarantine derivative are audit artifacts only. Reuse of their actual prose/diagrams requires an attributable grant or rights-holder determination; source-only first-party wording is kept separate. Existing owner, no new release or license changes.
