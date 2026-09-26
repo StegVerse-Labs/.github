@@ -71,7 +71,7 @@ class ChatCompositionTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "binding mismatch"):
             compose(spec)
         spec["task_id"] = FIRST
-        with self.assertRaisesRegex(SystemExit, "resolve exactly once"):
+        with self.assertRaisesRegex(SystemExit, "binding mismatch"):
             compose(spec)
 
     def test_local_proposals_are_not_treated_as_registered_or_runtime(self):
@@ -79,7 +79,7 @@ class ChatCompositionTests(unittest.TestCase):
         spec["scenario"] = "local_collaboration"
         for source, participant in zip(spec["sources"], (FIRST, SECOND)):
             source.update(participant_task_id=participant, participant_cosv="00000000000000", interaction_mode="local_tool")
-        with self.assertRaisesRegex(SystemExit, "resolve exactly once"):
+        with self.assertRaisesRegex(SystemExit, "binding mismatch"):
             compose(spec)
 
     def test_unsupported_modes_secrets_duplicate_sources_and_implicit_custody_rejected(self):

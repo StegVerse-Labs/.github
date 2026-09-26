@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 259,
-  "status": "EXACT_NATIVE_OWNER_PROJECTION_AND_COMPLETED_AI_SOURCE_RECONCILIATION_CANDIDATE",
+  "generation": 260,
+  "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -15565,6 +15565,58 @@
         "ecc_status": "DEFERRED_UNTIL_AUTHENTIC_EXECUTION",
         "merged_stegos_source_commit": "462575d7df09faf8e1649147122b6417380e7435"
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "correlation_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "root_correlation_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+      "parent_task_id": null,
+      "goal": "Complete sovereign Ecosystem Chat inference through the existing TVC-admitted local model, LLM-adapter carrier and same-execution Master Records reconstruction.",
+      "coordination_state": "ACTIVE",
+      "source_refs": [
+        "StegVerse-Labs/.github#60",
+        "StegVerse-Labs/.github#264",
+        "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+        "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+        "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+        "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json"
+      ],
+      "dependencies": [],
+      "blockers": [
+        {
+          "blocker_id": "AUTHENTIC_SOVEREIGN_RUNTIME_AND_RECONSTRUCTION_UNOBSERVED",
+          "reason": "Original same-execution local-model, TVC route, measured usage and Master Records reconstruction not established by the retained source receipt."
+        }
+      ],
+      "expected_evidence_predicates": [
+        "REAL_PRIVATE_LOCAL_MODEL_PROCESS_OBSERVED",
+        "EXACT_TVC_ADMITTED_LLM_ADAPTER_ROUTE_EXECUTED",
+        "MEASURED_PROVIDER_USAGE_PERSISTED",
+        "ORIGINAL_SAME_EXECUTION_MASTER_RECORDS_RECONSTRUCTION_PASS",
+        "ORIGINAL_RECEIPT_ENVELOPE_REPLAY_SHA256_EQUALITY"
+      ],
+      "existing_evidence_refs": [
+        "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+        "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
+      ],
+      "cosv_tracking": {
+        "vector": "50000000100000",
+        "source_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+        "evidence_class": "EXISTING_SOURCE_PROJECTION_NOT_RUNTIME_PROOF"
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false
+      },
+      "authority_model": {
+        "credential_authority": "TV/TVC",
+        "execution_authority": "EXISTING_WORKERCOORDINATOR_AND_INTR_ONLY",
+        "source_projection_grants_execution_authority": false
+      },
+      "handoff_projection_refs": [
+        "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
+      ]
     }
   ],
   "human_actions": [],
