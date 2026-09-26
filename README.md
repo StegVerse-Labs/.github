@@ -1759,3 +1759,6 @@ Existing `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`: owner-aut
 #### Canonical source-owner audit coverage promoted — September 26
 
 After independent source-owner main readback of AdmittedCode #5, Data-Continuation #8, GCAT #7, AaCT-E #6 and Core-Lite rights form #35, existing open-source task canonical candidate generation 255 records 168/252 metadata/root-inspected repository entries across six known organizations. Eight organizations remain visibility-only; actual file-level legal title and source grants remain unverified, Core-Lite #34 remains open, and no release is authorized. This aggregate excludes private GCAT repository names. See `data/ecosystem-open-source-organization-census-20260925.json` and existing mirror handoff.
+
+
+Linked participation history experiment (source-only): SDK PR #347 examines multi-receipt worker refusal and reported post-refusal activity without treating any receipt as proof of behavior. See docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md. Canonical task remains ACTIVE/HANDOFF_READY; no runtime promotion.
