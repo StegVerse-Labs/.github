@@ -19,6 +19,35 @@ Any evaluator can declare source-native data, experimental/processing parameters
 | Publisher | Manifest-defined paper publication surface, owner-authorized document conversion, `stegverse.publisher.evidence-report-package/v1` reviewer package, exact original `evaluator_assets` hashes and bounded transfer/return binding. | Package generation is not authenticated publication, Master Records custody, authorized disclosure or observed final delivery. Publisher component release number not verified here. |
 | Interlock/InTr, TV/TVC and Master Records | Distinct transition, credential and canonical-custody authority boundaries identified in the installed contracts. | A declared completion graph is not proof of actual original admission, receipts, reconstruction and far-side transitions. |
 
+## Manifest understanding, bounded adaptation and governed expansion requests
+
+**The ordinary path must adapt the SDK to the evaluator's declared parameters without requiring an expansion ticket.** The Manifest Builder and a generic capability-resolution step read a submitted manifest as a structured contract: declared purpose, source-native data class/provenance, exact protocol and parameter types, requested operations, evidence predicates, constraints, policy/authority requirements, expected delivery and return depth. Do not treat natural-language descriptions alone as authority or silently infer missing required inputs.
+
+**Case A — existing-capability adaptation (default).** Validate and hash the unchanged original manifest; compare every requirement to installed capability definitions, parameter bounds, available processors and compatible versioned adapters. Compose and bind an explicit **derived execution plan** selecting only already installed, authorized processing components, mappings, data validators and Publisher presentation profiles. This plan records which original field each derived value came from, exact component/build/route versions, any transformations and expected evidence, and the limits of observable source facts. Proposed adaptation is a new governed transition; it cannot hot-install code, change original input bytes, weaken governing policy, grant credentials, change evaluator expectations, silently substitute an unsupported processor or treat its own plan as permission. Execute only after the existing admissibility path authorizes applicable transitions and returns authentic dispositions. The SDK should ordinarily return the requested governed result and evidence without forcing the evaluator into development coordination.
+
+**Case B — input or capability limitation.** If required input, provider evidence, adapter compatibility or a declared capability is unavailable, return a **machine-readable capability disposition per requirement** (for example `SUPPORTED`, `MISSING_INPUT`, `UNSUPPORTED`, `PROBE_REQUIRED`, `VERSION_INCOMPATIBLE`) plus the exact failed predicate, evidence and permitted correction. If a safe supported subset remains, offer it as a separately declared partial run, not a silent success of the original manifest. Routine missing input should be corrected through a new submitted manifest, not elevated into a product expansion request.
+
+**Case C — genuine expansion exception.** Only when the existing capability graph and bounded adaptations cannot satisfy a legitimate requested requirement should the SDK prepare a **governed SDK expansion candidate** from that same immutable manifest. This is analogous to the Admissibility Wiki's proposal/review/publication model, not an automatic repository mutation:
+
+```text
+evaluator manifest + exact unmet capability / failure evidence
+  -> SDK compatibility and reuse assessment
+  -> bounded generic expansion candidate and affected-version analysis
+  -> independent review package and delegated reviewer receipt
+  -> existing Task Registry collision/owner/COSV/admission check
+  -> InTr decision on each applicable state transition
+  -> accepted task for existing component owners OR explicit DENY / FAIL_CLOSED
+  -> ordinary authorized code/test/review/release lifecycle
+  -> independently verified new capability and version
+  -> optional reevaluation of original manifest as a NEW attempt
+```
+
+The evaluator need not know GitHub, choose internal owners or manually coordinate requests. Submission produces a traceable candidate and explicit `ACCEPTED_FOR_REVIEW`, `NEEDS_EVIDENCE`, `REJECTED` or admissibility denial **only after the relevant actual authority acts**. The SDK does not self-approve expansion, allocate its own COSV, create a parallel Task Registry, claim that proposal acceptance is implementation, or hold the original experiment hostage to unbounded future releases. Review packages are derived evidence, not authority; Publisher can produce a private reviewer package where manifested, but it may not publish source data or approval status without the applicable governed transition.
+
+**Compatibility and precedence:** Reuse existing generic manifest schema, Manifest Builder, installed route resolution, diagnostic processor, SDK task handoff, canonical Registry, delegated review, InTr, Master Records and Publisher. New required semantics enter the smallest compatible versioned extension and must pass independent regression, negative-case, backward-compatibility and actual runtime evidence gates. A new evaluator requirement modifies the ecosystem roadmap only through its existing native owners and authorized general product planning, never by becoming the roadmap's owner. Every rejected/paused candidate still returns exact evidence and a terminal or actionable transition disposition.
+
+**Current implementation truth:** The inspected SDK provides generic manifest construction, declared processing and read-only diagnostic scaffolding. The fully automatic manifest-to-composed-plan and governed expansion-task routing described above are **requirements for development**, not existing, verified end-to-end capabilities. General adaptation should be introduced incrementally on the current development line; the reusable capability graph, qualification outputs and exception escalation belong in the proposed 1.5 milestone unless existing implementation demonstrates them earlier. The specific experiment currently in progress does not depend on the new exception pipeline.
+
 ## Release and acceptance sequence — general, independent of customer, evaluator or specific test
 
 | Planned unit | General-purpose release capability | Evidence-based acceptance gate |
