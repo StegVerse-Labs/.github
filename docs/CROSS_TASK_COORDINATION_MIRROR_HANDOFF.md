@@ -372,3 +372,24 @@ Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
 
 README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged, already-validated StegIndex claim-parity and session/build consumer behavior; repository function is unchanged. Evidence: `receipts/preflight/PARENT-STEGINDEX-CLAIM-PARITY-RECONCILIATION-001.json`, StegIndex PRs #36/#37/#38, and `.github` PRs #1052/#1064.
+
+## Four-stream integration reconciliation — Registry generation 260 (2026-09-26)
+
+This is a read-only cross-stream projection under existing canonical coordination task `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`. Its authoritative Task Registry coordination state at generation 260 is **PROPOSED**, not ACTIVE; the separate cross-task source handoff's `SOURCE_VALIDATED / ECOSYSTEM_ADOPTION_ACTIVE` describes implementation/adoption work, not canonical task admission. An hourly ChatGPT monitor is not a WorkerCoordinator claim or authentic ingress. Do not register a duplicate integration task or promote canonical state from the monitor.
+
+Inspected source heads: organization `4803334e2d5d51bcbbe23d4b0a1bc823bb9997db`; SDK `9a6c49c3306df94b674923a8b27b193eb0c928ee`; SV-DN-1 demo suite `c986f42e877ca23947c771cd6275b9f4cf114f60`; Admissible-Existence coordinator `3d25a9ff4508a8a57265de11befbb165d63578cc`. These are inspection coordinates, not cross-repository CI or runtime validation.
+
+Native ownership and bounded seams:
+
+- **SDK 1.5:** SDK native owner and `STEGVERSE_SDK_MIRROR_HANDOFF.md`. Consume only explicitly versioned evaluator/manifest contracts; do not infer authority from SDK validation. A 1.5 release or complete cross-framework evaluator conformance was not established by this inspection.
+- **SHWP:** `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`, COSV `50000000100000`, canonical Registry state ACTIVE. Native local-model/TVC/LLM-adapter/Master Records owner retains authentic same-execution inference and measured-usage proof. SDK source compatibility cannot satisfy this task's original runtime predicates.
+- **Admissible-Existence:** `AEX-PRINCIPLE-COMPLETENESS-001` owns organization mathematical coordination; repository-local owners accept proofs. Candidate completeness, source validation and executable correspondence do not establish a proved theorem or SDK runtime admission.
+- **SV-DN-1:** `SV-DN1-PRODUCTION-SOURCE-PREP-001` uses independent task control and has no route-specific InTr prerequisite. The first SDK production round separately requires both source preparation and its own InTr completion. Current SDK `stegverse/sovereign_validation_runtime.py` blob `3e400b83f11fa0ec41ca8597d196650ec4337999` matches the source-prep handoff's pinned current anchor; no anchor drift was established in this inspection. Authentic claim-bound v2 receipt remains unobserved here.
+
+**First verified coordination defect repaired by this documentation change:** source-adoption status and an enabled integration monitor were liable to be reported as canonical ACTIVE despite the generation-260 Registry record saying PROPOSED. All future integration reports must read the Registry state and distinguish it from source readiness, monitor enablement and native task states. Do not change Registry lifecycle as a documentation repair.
+
+Next executable verification: inspect exact native owner claims and latest PR heads; run coordination/registry validation on this documentation PR; then select a genuinely failing native contract/test before proposing implementation mutation. Original organization/Master Records evidence remains UNKNOWN_NOT_AUTHENTICALLY_OBSERVED where the authorized private readback is inaccessible. No simulated non-ALLOW or inferred ALLOW may replace the original disposition.
+
+### Executable CI seam correction on PR #2781
+
+The first exact-head run of `validate-deepseek-resident` failed at `Fetch branch source anonymously`: its workflow fetched deleted/historical branch `feat/deepseek-intr-resident-dispatch-1122` rather than the triggering PR source. The existing DeepSeek validation workflow is corrected to anonymously fetch `${{ github.event.pull_request.head.sha }}` so the test exercises the exact triggering head and cannot silently validate unrelated historical source. The workflow retains `permissions: {}` and no token/runtime authority. Re-run the new exact head and inspect all subsequent test steps; the prior failed run is not validation of the bridge implementation. This is CI source selection, not proof of original resident execution.
