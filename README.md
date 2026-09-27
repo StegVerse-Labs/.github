@@ -1,3 +1,7 @@
+## 2026-09-27 — first-wave open-source decision (scope only)
+
+The existing [first-release decision](docs/OPEN_SOURCE_FIRST_RELEASE_DECISION_20260927.md) selects the ARA dependency-free baseline and the StegVerse SDK **base-only** package as the only initial public-code *candidates*. Previously merged organization census: 14 registered organizations / 252 metadata-root-reviewed repositories, not 252 release candidates. The first wave excludes Core-Lite, private Git extras, hybrid-bridge, continuity-vault-kit, private/internal source and unlicensed external generated pages pending separately verified rights. Existing MIT grants remain intact; **no new public tag, release, copyright-holder consent, stable release authorization, runtime admission or Master Records closure is claimed.** Current first failure: `DENY:RELEASE_SCOPE_RIGHTS_UNVERIFIED`. Continue under `ECOSYSTEM-OPEN-SOURCE-STRATEGY-001` / COSV `20010010100000`, without another eight-organization inventory or replacement task.
+
 ## Distributed Coherence source-candidacy review (2026-09-27)
 
 The [DC nonempty-node and SDK provenance assessment](docs/AEX_DC_NONEMPTY_NODE_SDK_ASSESSMENT_G262.md) records the exact native evaluator's vacuous `all([])` counterexample: empty/missing nodes plus global PASS yields source ALLOW-CANDIDATE. Native DC owner must separately admit typed nonempty-node specimen binding through the existing generic SDK route. This is not theorem acceptance, InTr ALLOW or authentic SDK/runtime invocation.
