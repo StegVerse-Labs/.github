@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-KV-AI-END-TO-END-RUNTIME-EVIDENCE-001",
+  "correlation_id": "SV-KV-AI-END-TO-END-RUNTIME-EVIDENCE-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "upstream_task_id": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001",
+  "goal": "Complete the KV AI memory end-to-end runtime evidence chain after authentic WorkerCoordinator claim/fence observation is bound.",
+  "coordination_state": "IN_PROGRESS",
+  "handoff_ref": "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
+  "owner_issue": "StegVerse-Labs/.github#1883",
+  "cosv_task_vector": "20111110110002",
+  "decomposition": {
+    "decomposed_from": "SV-KV-AI-PERSISTENCE-001",
+    "blocked_by": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001",
+    "decomposition_reason": "Downstream runtime evidence chain is separable from first missing WorkerCoordinator claim/fence observation predicate."
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-AUTHENTIC-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVED","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001"},
+    {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Authentic shared-listener memory-packet admission plus downstream Interlock/InTr receipt chain"},
+    {"dependency_id":"DEP-LIVE-PROVIDER-MODEL-CHAIN","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"External provider ingress, model response, and egress evidence through governed LLM path"},
+    {"dependency_id":"DEP-LIVE-KV-WRITEBACK-READBACK","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Evidence-gated Personal-KV writeback plus exact readback and reconstruction"},
+    {"dependency_id":"DEP-MASTER-RECORDS-RECONSTRUCTION","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Master Records reconstruction binding for the same execution chain"}
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTERED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
+    "LIVE_MEMORY_PACKET_INTR_ADMISSION_RECEIPT_OBSERVED",
+    "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
+    "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
+    "LIVE_KV_WRITEBACK_READBACK_OBSERVED_BEFORE_ACTIVATION",
+    "MASTER_RECORDS_RECONSTRUCTION_BOUND"
+  ],
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1883"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"AUTHORITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]}
+    ]
+  },
+  "runtime_requirements": {
+    "capabilities": ["memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
+    "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
+    "direction": "MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true
+  },
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null}
+}
