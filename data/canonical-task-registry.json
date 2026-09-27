@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 262,
+  "generation": 263,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -4555,7 +4555,53 @@
         "external_device_required": false,
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE",
-        "disposition": "REUSE_EXISTING_ERL_RECURRING_DISCOVERY_AND_ACTIVE_RESEARCH_DISPATCH"
+        "disposition": "REUSE_EXISTING_ERL_RECURRING_DISCOVERY_AND_ACTIVE_RESEARCH_DISPATCH",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ]
       },
       "worker_claim": {
         "authority": "CURRENT_SESSION",
@@ -13809,7 +13855,53 @@
         "external_connector_required": false,
         "external_device_required": false,
         "second_user_operated_device_allowed": false,
-        "authority_effect": "NONE"
+        "authority_effect": "NONE",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SUITABLE",
+            "limitation_class": "NONE",
+            "evidence_refs": []
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ]
       },
       "runtime_resolution": {
         "producer_chain": "existing resident cycle -> standing Healer carrier -> neutral reusable scheduler -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> admitted ephemeral StegOS/Canonical Work -> retained resident receipts",
