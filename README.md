@@ -1828,3 +1828,12 @@ The canonical `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001` record remains 
 ### Cross-task same-executor continuation regression
 
 The cross-task coordination tests cover continuation under an existing same-task claim without treating that claim as a collision; overlapping claims on other tasks still block even for the same executor, while disjoint scopes remain independent. Coordination admission is non-authorizing and does not bypass WorkerCoordinator claim/fence or independent review. See `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`.
+
+
+### Economic publication source reconciliation — canonical generation 263 candidate (2026-09-27)
+
+For existing `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001`, the Site roadmap and benchmark-binding sources merged in Site #1458/#1463/#1465, closing only the stale `SITE_DRAFT_UNMERGED` source blocker. The canonical source successor preserves PROPOSED/no WorkerCoordinator claim, three outstanding blockers and derives non-authorizing observational COSV `10100000103000` (previous `10100000104000`). Publisher PR #72 and the older central #2589 are closed unmerged, not to be reopened. Publisher issue #76 and merged Volume III PR #77 carry separate continuing economic research under this existing goal, but do not establish the original white-paper release, independent economic/legal review, authentic publication or any of the 16 public benchmark proofs. See `docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md`. This source reconciliation grants no runtime or publication authority.
+
+## SVG governance-cycle source candidate (Registry generation 263)
+
+[SVG source handoff](docs/SVG_GOVERNANCE_CAPABILITY_VERSIONING_MIRROR_HANDOFF.md) records the unadmitted #2757 integration scope and StegCore's synthetic benchmark candidate. No Goal Task ID/COSV allocation or runtime authority is asserted.

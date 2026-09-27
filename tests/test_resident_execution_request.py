@@ -21,12 +21,12 @@ class ResidentExecutionRequestTests(unittest.TestCase):
     def request(self) -> dict:
         return {
             "schema": "stegverse.resident-execution-request/v1",
-            "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001",
+            "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
             "state": "REQUESTED",
             "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
             "mode": "DEDICATED_ECOSYSTEM_CHAT_PARENT",
             "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-            "fresh_fence_minimum_exclusive": 22,
+            "fresh_fence_minimum_exclusive": 24,
             "credential_authority": "TV/TVC",
             "github_token_required": False,
             "github_token_runtime_authority": "NONE",
@@ -57,7 +57,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             self.assertEqual(first["state"], "ATTEMPT_RECORDED")
             self.assertTrue(first["runtime_execution_attempted"])
             self.assertFalse(first["request_granted_authority"])
-            self.assertEqual(first["fresh_fence_minimum_exclusive"], 22)
+            self.assertEqual(first["fresh_fence_minimum_exclusive"], 24)
             self.assertEqual(len(calls), 1)
             self.assertFalse(first["post_parent_activation_projection"]["attempted"])
             command = calls[0][0]
@@ -95,13 +95,26 @@ class ResidentExecutionRequestTests(unittest.TestCase):
 
             receipt = mod.consume(source, runtime, runner=runner)
             self.assertEqual(receipt["state"], "ATTEMPT_RECORDED")
-            self.assertEqual(receipt["request_id"], "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001")
+            self.assertEqual(receipt["request_id"], "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002")
 
     def test_missing_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
             receipt = mod.consume(Path(td) / "source", Path(td) / "runtime")
             self.assertEqual(receipt["state"], "NO_REQUEST")
             self.assertFalse(receipt["runtime_execution_attempted"])
+
+    def test_exact_unchanged_canonical_g25_request_is_accepted(self):
+        canonical_path = ROOT / mod.REQUEST_REL
+        canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+        self.assertEqual(canonical["request_id"], "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002")
+        self.assertEqual(canonical["fresh_fence_minimum_exclusive"], 24)
+        mod.validate_request(canonical)
+
+    def test_historical_g23_fence_is_not_eligible_for_current_parent(self):
+        request = self.request()
+        request["fresh_fence_minimum_exclusive"] = 22
+        with self.assertRaisesRegex(RuntimeError, "fresh-fence floor mismatch"):
+            mod.validate_request(request)
 
     def test_request_cannot_expand_authority(self):
         request = self.request()
