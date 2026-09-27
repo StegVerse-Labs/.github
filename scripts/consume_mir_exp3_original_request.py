@@ -24,6 +24,7 @@ ORIGINAL_WIRE = "ad9b8b8aab2beeea04bff2aac34fd2e7bfa5915133bcaef9209c16de7d9bea6
 SCHEMA = "stegverse.mir-exp3-original-resident-attempt/v1"
 REQUEST_REL = Path("control/resident-execution-request.d/mir-exp3-original-001.json")
 RESULT_REL = Path("receipts/sovereign-host/mir-exp3-original")
+SOURCE_ATTEMPT_REL = RESULT_REL / "source-attempts"
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
               "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 HEX = re.compile(r"[0-9a-f]{64}\Z")
@@ -40,6 +41,50 @@ def boundary(reason: str, *, request_sha256: str | None = None) -> dict:
             "cosv_task_vector": COSV, "request_sha256": request_sha256,
             "authentic_intr_disposition_observed": False,
             "runtime_execution_proven": False, "authority_effect": "NONE"}
+
+
+
+def retain_source_attempt(runtime: Path, request_sha256: str, producer_result: dict) -> dict:
+    """Retain each observed source-level non-ALLOW without terminally caching it.
+
+    This is a private dispatcher attempt receipt, NOT an InTr disposition,
+    organization transition or Master Records closure. The existing original
+    request can be retried after owner repair. A changed predicate/result
+    produces a distinct content-addressed attempt; exact replay is idempotent.
+    """
+    if not HEX.fullmatch(request_sha256):
+        raise ValueError("SOURCE_ATTEMPT_ORIGINAL_REQUEST_HASH_INVALID")
+    record = {
+        "schema": "stegverse.mir-exp3-source-attempt/v1",
+        "state": "SOURCE_PROFILE_DISPOSITION",
+        "disposition": "DENY",
+        "evaluation_boundary": "EXISTING_RESIDENT_DISPATCH_SOURCE_PROFILE",
+        "task_id": GOAL,
+        "cosv_task_vector": COSV,
+        "request_sha256": request_sha256,
+        "wire_manifest_sha256": ORIGINAL_WIRE,
+        "first_failed_predicate": producer_result.get("failed_predicate"),
+        "producer_result": producer_result,
+        "authentic_intr_disposition_observed": False,
+        "runtime_execution_proven": False,
+        "organization_master_records_closure_observed": False,
+        "authority_effect": "NONE_SOURCE_PROFILE_ONLY",
+    }
+    raw = canon(record) + b"\n"
+    digest = hashlib.sha256(canon(record)).hexdigest()
+    path = runtime / SOURCE_ATTEMPT_REL / request_sha256 / (digest + ".json")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("xb") as out:
+            out.write(raw)
+    except FileExistsError:
+        if path.read_bytes() != raw:
+            raise ValueError("SOURCE_ATTEMPT_IMMUTABLE_COLLISION")
+    return {
+        "private_source_attempt_ref": str(path.relative_to(runtime)),
+        "private_source_attempt_sha256": digest,
+        "source_attempt_evidence_scope": "DISPATCH_SOURCE_ONLY_NOT_AUTHENTIC_INTR",
+    }
 
 
 def consume(source_root: Path, runtime_root: Path) -> dict:
@@ -124,12 +169,15 @@ def consume(source_root: Path, runtime_root: Path) -> dict:
         # The existing ingress already retains its exact write-once source disposition.
         terminal_local = result.get("terminal") is True
         if not is_live and not terminal_local:
+            source_attempt = retain_source_attempt(runtime, digest, result)
             return {"schema": record["schema"], "state": "SOURCE_PROFILE_DISPOSITION",
+                    "disposition": "DENY", "evaluation_boundary": "DISPATCH_SOURCE_ONLY",
                     "task_id": GOAL, "cosv_task_vector": COSV,
                     "request_sha256": digest, "wire_manifest_sha256": ORIGINAL_WIRE,
                     "original_disposition": result.get("disposition"),
                     "first_failed_predicate": result.get("failed_predicate"),
                     "source_disposition_ref": result.get("source_disposition_ref"),
+                    **source_attempt,
                     "authentic_intr_disposition_observed": False,
                     "runtime_execution_proven": False,
                     "authority_effect": "NONE_SOURCE_PROFILE_ONLY"}
