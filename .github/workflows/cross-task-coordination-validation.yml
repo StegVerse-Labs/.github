@@ -68,6 +68,8 @@ on:
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py'
       - 'tests/test_canonical_work_resident_registry_preservation.py'
+      - 'tests/test_canonical_work_registry_return_loop.py'
+      - 'tests/test_entity_autonomous_progression_canonical_work_ingress.py'
       - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
@@ -135,6 +137,8 @@ on:
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py'
       - 'control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py'
       - 'tests/test_canonical_work_resident_registry_preservation.py'
+      - 'tests/test_canonical_work_registry_return_loop.py'
+      - 'tests/test_entity_autonomous_progression_canonical_work_ingress.py'
       - 'control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json'
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
@@ -197,6 +201,8 @@ jobs:
             tests.test_erl_household_worker_evidence \
             tests.test_erl_household_targeted_consumer_priority \
             tests.test_canonical_work_resident_registry_preservation \
+            tests.test_canonical_work_registry_return_loop \
+            tests.test_entity_autonomous_progression_canonical_work_ingress \
             tests.test_portable_refresh_targeted_execution \
             tests.test_autonomous_progression_portable_consumption_binding \
             tests.test_ungoverned_ai_defensive_envelope_worker \

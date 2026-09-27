@@ -126,3 +126,10 @@ A user assertion or conversational correction is an architectural hypothesis unt
 2. Patch LLM Adapter hardwired governance ingress to delegate to canonical SDK route resolution without breaking governance compatibility.
 3. Patch MIR return path so source-native MIR artifact is first represented by canonical SDK ingress manifest; evaluator-read-review becomes a manifest-selected route for the current test, not a source-derived route.
 4. Add cross-repository regression evidence and reconcile canonical task record.
+
+
+## 2026-09-27 existing manifest-invariant owner projection
+
+Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
+
+The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.

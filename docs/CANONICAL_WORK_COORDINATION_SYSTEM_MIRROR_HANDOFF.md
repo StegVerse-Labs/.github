@@ -246,3 +246,10 @@ Preserve the current canonical handoff and its newer component-010/native-owner 
 ## Immutable native dispatch observation retention — PR #2630
 
 The existing `scripts/dispatch_resident_execution_requests.py` now retains every exact observed selector outcome at `receipts/sovereign-host/resident-request-dispatch.by-receipt/<sha256>.json`, preserving mutable `latest` consumer compatibility. Content-addressed replay is idempotent; symlinks and collisions are rejected. The focused regression workflow validates source behavior only. For the canonical autonomous progression goal, acceptance remains original manifest-bound Healer consumption, fresh WorkerCoordinator claim/fence, InTr disposition, organization/Master Records closure and declared successor reevaluation. Do not infer those events from GitHub CI or introduce any device prerequisite.
+
+
+## 2026-09-27 existing manifest-invariant owner projection
+
+Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
+
+The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
