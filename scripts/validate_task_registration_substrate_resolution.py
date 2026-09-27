@@ -18,7 +18,20 @@ REVIEW_ORDER = [
     "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
 ]
-DISPOSITIONS = {"SELECTED", "SUITABLE", "PENDING_EVIDENCE", "UNSUITABLE", "NOT_APPLICABLE"}
+# ELIGIBLE_WHEN_ADMITTED names a substrate whose availability depends on an
+# admission state transition rather than on evidence. It is distinct from
+# PENDING_EVIDENCE, which asserts an unresolved evidence/reachability gap, and
+# from NOT_APPLICABLE, which excludes the substrate from the transition space.
+# It never satisfies the external_device_required exhaustion rule below, because
+# a substrate that becomes eligible on admission is not exhausted.
+DISPOSITIONS = {
+    "SELECTED",
+    "SUITABLE",
+    "PENDING_EVIDENCE",
+    "ELIGIBLE_WHEN_ADMITTED",
+    "UNSUITABLE",
+    "NOT_APPLICABLE",
+}
 LIMITATIONS = {"NONE", "EVIDENCE_REACHABILITY", "ARCHITECTURAL", "AUTHORITY", "PLATFORM", "NOT_APPLICABLE"}
 USER_ACTION_SHARING = {"SHAREABLE", "EXCLUSIVE"}
 USER_ACTION_REQUIRED_FIELDS = (

@@ -155,6 +155,50 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "sharing must be SHAREABLE or EXCLUSIVE"):
             module.validate_user_action_surfaces(record)
 
+    def test_eligible_when_admitted_is_an_accepted_disposition(self):
+        """Names an admission state-transition dependency, not an evidence gap."""
+        reviews = [review(sid, "ELIGIBLE_WHEN_ADMITTED") for sid in module.REVIEW_ORDER[:4]]
+        reviews.append(review(module.REVIEW_ORDER[4], "SELECTED"))
+        reviews.append(review(module.REVIEW_ORDER[5], "NOT_APPLICABLE"))
+        record = record_with_resolution(reviews, module.REVIEW_ORDER[4])
+        module.validate_resolution(record)
+
+    def test_eligible_when_admitted_accepts_every_limitation_class_in_use(self):
+        for limitation in ("NONE", "EVIDENCE_REACHABILITY", "PLATFORM"):
+            with self.subTest(limitation=limitation):
+                reviews = [
+                    review(sid, "ELIGIBLE_WHEN_ADMITTED", limitation)
+                    for sid in module.REVIEW_ORDER[:5]
+                ]
+                reviews.append(review(module.REVIEW_ORDER[5], "NOT_APPLICABLE"))
+                module.validate_resolution(record_with_resolution(reviews, None))
+
+    def test_eligible_when_admitted_does_not_exhaust_same_device_options(self):
+        """A substrate eligible on admission is not exhausted, so it cannot
+        unlock the external-device last resort."""
+        reviews = [
+            review(sid, "ELIGIBLE_WHEN_ADMITTED") for sid in module.REVIEW_ORDER[:5]
+        ]
+        reviews.append(review(module.REVIEW_ORDER[5], "SELECTED"))
+        record = record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True)
+        with self.assertRaises(ValueError):
+            module.validate_resolution(record)
+
+    def test_eligible_when_admitted_cannot_be_the_selected_substrate(self):
+        reviews = [review(sid, "NOT_APPLICABLE") for sid in module.REVIEW_ORDER[:4]]
+        reviews.append(review(module.REVIEW_ORDER[4], "ELIGIBLE_WHEN_ADMITTED"))
+        reviews.append(review(module.REVIEW_ORDER[5], "NOT_APPLICABLE"))
+        record = record_with_resolution(reviews, module.REVIEW_ORDER[4])
+        with self.assertRaises(ValueError):
+            module.validate_resolution(record)
+
+    def test_unknown_disposition_is_still_rejected(self):
+        """Widening the vocabulary by one value does not open it."""
+        reviews = [review(sid, "NOT_APPLICABLE") for sid in module.REVIEW_ORDER[:5]]
+        reviews.append(review(module.REVIEW_ORDER[5], "ELIGIBLE_WHEN_INVENTED"))
+        with self.assertRaises(ValueError):
+            module.validate_resolution(record_with_resolution(reviews, None))
+
     def test_non_runtime_task_is_grandfather_compatible(self):
         module.validate_resolution({"task_id": "DOCS-ONLY-001"})
 
