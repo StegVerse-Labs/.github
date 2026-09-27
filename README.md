@@ -1,3 +1,7 @@
+## Admissible-Existence RE bounded readiness review (2026-09-27)
+
+The [RE readiness classifier and SDK assessment](docs/AEX_RE_READINESS_CLASSIFIER_SDK_ASSESSMENT_G261.md) records an independently enumerated 192-case source classifier partition (READY 1, INCOMPLETE 31, BLOCKED 160), demonstrates that wrong-boundary metadata can still yield source READY, and specifies original-owner specimen-binding controls for the existing generic SDK route. RE proof obligations remain tested_not_proven; source READY is not InTr ALLOW or entropy-reduction proof. Native RE source ownership remains separate.
+
 ## Admissible-Existence mathematical-processing coordination (2026-09-27)
 
 The [Standing Proof precedence and SDK assessment](docs/AEX_STANDING_PROOF_PRECEDENCE_SDK_ASSESSMENT_G260.md) under the existing mathematical-processing integration task records an independently checked bounded nine-surface classifier theorem and a source-document inconsistency: missing required key yields FAIL_CLOSED, while present UNKNOWN yields INCOMPLETE. Native source-owner review is required before correcting SPF-PC-003; SDK candidacy remains NOT_ESTABLISHED until an original-owner installed specimen-binding adapter passes the existing generic SDK route and lineage/negative controls. Unhashable malformed state values additionally raise TypeError in the native classifier; that source-owner hardening condition is recorded explicitly. This is source-level mathematical analysis, not governed runtime or proof acceptance.
