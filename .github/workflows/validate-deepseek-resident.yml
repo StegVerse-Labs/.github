@@ -27,7 +27,7 @@ jobs:
           set -euo pipefail
           git init source
           git -C source remote add origin https://github.com/StegVerse-Labs/.github.git
-          git -C source -c http.extraheader= fetch --depth 1 origin feat/deepseek-intr-resident-dispatch-1122
+          git -C source -c http.extraheader= fetch --depth 1 origin "${{ github.event.pull_request.head.sha }}"
           git -C source checkout --detach FETCH_HEAD
 
       - name: Validate pinned StegIndex reuse input
