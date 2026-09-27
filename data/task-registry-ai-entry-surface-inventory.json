@@ -5,7 +5,7 @@
   "reusable_component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
   "caller_inventory_ref": "data/task-registry-general-checkin-caller-inventory.json",
   "caller_policy_ref": "data/task-registry-general-checkin-caller-policy.json",
-  "classification": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_AND_SURFACE_GATE_RUNTIME_REACHABILITY_NOT_PROVEN",
+  "classification": "SOURCE_DECLARATION_GATE_FAIL_CLOSED_UNATTESTED_CHATGPT_RUNTIME_IDENTITY_NOT_PROVEN",
   "surfaces": [
     {
       "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
@@ -42,7 +42,9 @@
     "session_return_close_source_gate": "MERGED_SOURCE_VALIDATED",
     "caller_surface_declaration_is_authentic_origin_attestation": false,
     "general_checkin_external_ai_reachability": "NOT_PROVEN",
-    "runtime_identity_attestation_proven": false
+    "runtime_identity_attestation_proven": false,
+    "self_declared_chatgpt_checkin_before_ledger": "REFUSED_SOURCE_ONLY_PENDING_AUTHENTIC_ORIGIN",
+    "authentic_session_origin_caller_installed": false
   },
   "next_required_remediation": [
     "VALIDATE_AND_MERGE_GENERAL_CHECKIN_CALLER_SURFACE_GATE",

@@ -180,3 +180,22 @@ def test_workercoordinator_invokes_governed_close_and_releases_only_on_completed
     end = source.index("            return", clear)
     assert start < invoke < completed < clear < end
     assert '"test3_governed_close_invoked"' in source[start:end]
+
+
+def test_worker_bridge_requires_post_retirement_stale_fence_refusal():
+    source = WORKER_PATH.read_text(encoding="utf-8")
+    assert '"post_retirement_stale_fence_invocation_refused"' in source
+    assert '"POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED"' in source
+    assert 'probe.get("disposition") == "DENY"' in source
+    assert 'probe.get("executor_invoked") is False' in source
+    assert '_require_closed_transition(' in source
+    assert 'probe_reconstruction.get("operation_transition_custody_status") == "RECORDED"' in source
+
+
+def test_worker_bridge_retains_stale_fence_refusal_in_close_receipt():
+    source = WORKER_PATH.read_text(encoding="utf-8")
+    close_branch = source.index('elif mode == "GOVERNED_CLOSE":')
+    retain = source.index('receipt["post_retirement_stale_fence_refusal"]', close_branch)
+    retain_flag = source.index('receipt["post_retirement_stale_fence_invocation_refused"]', retain)
+    target = source.index("target = root / result_rel", retain_flag)
+    assert close_branch < retain < retain_flag < target

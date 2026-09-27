@@ -332,6 +332,26 @@ def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
         require(result.get("executor_reference_retained") is False, "records-only result retained executor reference")
         reconstruction = result.get("records_only_reconstruction")
         require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "records-only reconstruction missing")
+        probe = result.get("post_retirement_stale_fence_refusal")
+        require(isinstance(probe, Mapping), "post-retirement stale-fence refusal missing")
+        require(result.get("post_retirement_stale_fence_invocation_refused") is True, "post-retirement stale-fence refusal predicate missing")
+        require(probe.get("disposition") == "DENY", "post-retirement stale-fence disposition is not DENY")
+        require(probe.get("executor_invoked") is False, "post-retirement stale-fence executor ran")
+        _require_closed_transition(
+            probe.get("master_records_transition"),
+            "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
+        )
+        probe_reconstruction = probe.get("reconstruction")
+        require(
+            isinstance(probe_reconstruction, Mapping)
+            and probe_reconstruction.get("operation_transition_custody_status") == "RECORDED",
+            "post-retirement stale-fence reconstruction missing",
+        )
+        require(
+            isinstance(probe_reconstruction.get("operation_receipt_ids"), list)
+            and bool(probe_reconstruction.get("operation_receipt_ids")),
+            "post-retirement stale-fence reconstruction receipts missing",
+        )
         return
 
     require(result.get("state") == "GOVERNED_TASK_RESULT_READY_FOR_CLOSE", "Test 3 execution result state mismatch")
@@ -394,6 +414,8 @@ def retain_test3_result(root: Path, task: Mapping[str, Any], request: Mapping[st
         receipt["close_master_records_transition"] = result.get("close_master_records_transition")
         receipt["records_only_result"] = result.get("records_only_result")
         receipt["records_only_reconstruction"] = result.get("records_only_reconstruction")
+        receipt["post_retirement_stale_fence_refusal"] = result.get("post_retirement_stale_fence_refusal")
+        receipt["post_retirement_stale_fence_invocation_refused"] = result.get("post_retirement_stale_fence_invocation_refused")
         receipt["records_only"] = result.get("records_only")
         receipt["worker_live_after_close"] = result.get("worker_live_after_close")
         receipt["continued_authority_after_retirement"] = result.get("continued_authority_after_retirement")

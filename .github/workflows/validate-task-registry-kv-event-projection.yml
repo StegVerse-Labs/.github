@@ -1,0 +1,36 @@
+name: Validate Task Registry KV event projection — non-authorizing
+on:
+  pull_request:
+    paths:
+      - 'scripts/project_task_registry_event_to_sovereign_kv.py'
+      - 'scripts/task_registry_checkin_event_history.py'
+      - 'tests/test_task_registry_kv_event_lineage_adversarial.py'
+      - 'tests/test_task_registry_sovereign_kv_event_custody.py'
+      - '.github/workflows/validate-task-registry-kv-event-projection.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  test-exact-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous public checkout without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+      - name: Execute existing event custody and new adversarial tests
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'pytest==8.3.5'
+          python -m pytest -q tests/test_task_registry_sovereign_kv_event_custody.py tests/test_task_registry_kv_event_lineage_adversarial.py
+          python -m py_compile scripts/project_task_registry_event_to_sovereign_kv.py scripts/task_registry_checkin_event_history.py

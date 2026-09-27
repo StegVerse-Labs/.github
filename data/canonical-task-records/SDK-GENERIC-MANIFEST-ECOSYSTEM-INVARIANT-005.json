@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "correlation_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "goal": "Validate and enforce the StegVerse system-wide manifest-driven processing invariant across SDK, adapters, provider paths, InTr routes, processors, custody and reconstruction surfaces; remediate source/type/provider-driven processor selection and establish an architectural-claim validation gate.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100110",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1615",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:GENERIC_MANIFEST_PROCESSING_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/Continuity",
+      "StegVerse-Labs/.github",
+      "master-records"
+    ],
+    "components": [
+      "manifest-ingress",
+      "processor-route-resolution",
+      "llm-adapter-ingress",
+      "mir-return-adapter",
+      "provider-operation-broker",
+      "intr-materialization",
+      "manifested-transaction-processing",
+      "master-records-custody-reconstruction",
+      "architectural-claim-validation-gate"
+    ]
+  },
+  "initial_evidence": {
+    "sdk_manifest_capability_route_binding_enforced": true,
+    "llm_adapter_governance_handler_hardwired_observed": true,
+    "site_mir_return_evaluator_route_hardwired_observed": true,
+    "predecessor_downstream_propagation_complete": false,
+    "system_wide_enforcement_proven": false
+  },
+  "classification": {
+    "sdk_generic_manifest": "PASS",
+    "llm_adapter_governed_ingress": "VIOLATION",
+    "site_mir_return_adapter": "VIOLATION",
+    "tvc_mir_provider_broker": "PARTIAL_REQUIRES_BOUNDARY_CLASSIFICATION",
+    "remaining_required_surfaces": "NOT_PROVEN"
+  },
+  "remaining_predicates": [
+    "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
+    "LLM_ADAPTER_GENERIC_SDK_ROUTE_DELEGATION_PROVEN",
+    "MIR_RETURN_CANONICAL_SDK_MANIFEST_INGRESS_PROVEN",
+    "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
+    "STEGCORE_ENTRY_CONFORMANT",
+    "STEGOS_CONTINUITY_INTR_ENTRY_CONFORMANT",
+    "MASTER_RECORDS_BOUNDARY_CONFORMANT",
+    "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY_CONFORMANT",
+    "IDENTITY_DRIVEN_PROCESSOR_SELECTION_REGRESSION_GATE_INSTALLED",
+    "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+    "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+    "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+  ],
+  "authority_model": {
+    "manifest_selects_processing_semantics": true,
+    "source_identity_selects_processing_semantics": false,
+    "adapter_selects_processing_semantics": false,
+    "interlock_intr_processor_selection_authority": false,
+    "credential_authority": "TV/TVC",
+    "heartbeat_execution_authority": false,
+    "github_runtime_authority": "NONE"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  }
+}

@@ -1,32 +1,35 @@
 {
   "schema": "stegverse.open-source-repository-licensing-inventory/v1",
   "goal_task_id": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001",
-  "snapshot_date": "2026-09-22",
+  "snapshot_date": "2026-09-24",
   "scope": "Public repository detail only: 46 public StegVerse-Labs repositories; aggregate counts cover 119 accessible repositories across all visibility classes",
-  "completeness": "ALL_PUBLIC_GITHUB_LICENSE_METADATA_CHECKED_SELECTED_ROOT_LICENSE_TEXT_INSPECTED_COPYRIGHT_RIGHTS_NOT_PROVEN",
+  "completeness": "ALL_119_GITHUB_LICENSE_METADATA_CHECKED_FOUR_CANDIDATES_SOURCE_TRIAGED_COPYRIGHT_AND_THIRD_PARTY_RIGHTS_UNVERIFIED",
   "counts": {
     "repositories": 119,
     "public": 46,
     "private": 70,
-    "license_metadata_checked": 58,
-    "detected_licenses": 1,
+    "license_metadata_checked": 119,
+    "detected_licenses": 2,
     "ownership_verified": 0,
     "internal": 3,
-    "other_unrecognized_license": 5,
-    "no_license_detected": 52,
+    "other_unrecognized_license": 6,
+    "no_license_detected": 111,
     "root_license_files_examined": 6,
     "root_license_found": 5,
     "public_license_metadata_checked": 46,
     "public_repository_count": 46,
-    "metadata_unchecked": 61,
-    "public_inventory_rows": 46
+    "metadata_unchecked": 0,
+    "public_inventory_rows": 46,
+    "nonpublic_license_metadata_checked": 73
   },
   "limits": [
     "GitHub license metadata is not an audit of file-level notices, bundled code, contributors, assignments or third-party terms.",
     "Private repositories are inventoried as names/visibility only and should not be published in a public release register without an explicit scope review.",
     "Other organizations and GitHub inaccessible repositories require separate discovery; license detection does not grant release authority.",
     "Repository owner login is GitHub administrative ownership, not verified copyright title or contributor assignment.",
-    "Nonpublic repository identities intentionally excluded from public inventory. Separate restricted internal inventory required for detailed rights audit."
+    "Nonpublic repository identities intentionally excluded from public inventory. Separate restricted internal inventory required for detailed rights audit.",
+    "All 73 nonpublic repository metadata records were read through authorized GitHub access; only aggregate classifications are included in this public inventory; neither contents nor names are published here.",
+    "Initial first-wave candidate review discovered conflicting MIT versus custom constitutional LICENSE terms in hybrid-collab-bridge; scope clarification is required before release decisions."
   ],
   "repositories": [
     {
@@ -635,5 +638,15 @@
       "ownership_verification": "NOT_VERIFIED",
       "rights_release_decision": "NOT_AUTHORIZED"
     }
-  ]
+  ],
+  "nonpublic_aggregate": {
+    "scope": "70 private + 3 internal; names intentionally omitted from public inventory",
+    "metadata_checked": 73,
+    "spdx_mit": 1,
+    "unrecognized_noassertion": 2,
+    "no_detected_license": 70,
+    "independently_verified_copyright_title": 0
+  },
+  "first_wave_audit_ref": "docs/OPEN_SOURCE_FIRST_WAVE_RIGHTS_AUDIT.md",
+  "staged_policy_ref": "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md"
 }

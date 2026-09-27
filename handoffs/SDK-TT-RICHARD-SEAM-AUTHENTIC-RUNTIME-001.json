@@ -26,7 +26,8 @@
       "data/canonical-task-records/SDK-TT-ATOMIC-TASK-WORKER-BINDING-001.json",
       "workers/stegagents_governed_runtime_worker.py",
       "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
-      "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py"
+      "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py",
+      "StegVerse-Labs/StegAgents@f12abf3e062de95f7bbd5eb56247e91fdcd8481f:src/purpose_bound_worker_runtime.py"
     ],
     "dependencies": [],
     "coordination_refs": [
@@ -132,7 +133,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes the third GOVERNED_CLOSE phase for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; require canonical Master Records closure and records-only reconstruction before WorkerCoordinator releases W.",
+    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes GOVERNED_CLOSE for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; after canonical close custody, attempt one invocation with the just-retired claim/fence through the same governed path, require DENY plus retained POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED canonical Master Records closure and exact reconstruction before terminal WorkerCoordinator release.",
     "terminal_when": [
       "authentic_intr_atomic_activation_worker_binding_admission=true",
       "authentic_master_records_constitutive_transition_recorded=true",
@@ -140,7 +141,8 @@
       "authentic_result_bound_to_same_task_worker_lineage=true",
       "authentic_close_task_retire_worker_transition=true",
       "post_retirement_continued_authority=false",
-      "authentic_records_only_final_reconstruction=true"
+      "authentic_records_only_final_reconstruction=true",
+      "post_retirement_stale_fence_invocation_refused_and_refusal_retained=true"
     ],
     "governed_close_phase": {
       "worker_mode": "GOVERNED_CLOSE",
@@ -148,7 +150,29 @@
       "transition": "CLOSE_TASK_AND_RETIRE_WORKER",
       "release_worker_only_after_master_records_closure": true,
       "records_only_required": true,
-      "continued_authority_after_retirement": false
+      "continued_authority_after_retirement": false,
+      "post_retirement_falsification": {
+        "attempted_action": "INVOKE_RETIRED_TASK_BOUND_WORKER",
+        "reuse_retired_claim_and_fence": true,
+        "required_disposition": "DENY",
+        "executor_invoked": false,
+        "master_records_transition": "POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED",
+        "master_records_requirements": [
+          "state=RECORDED",
+          "reconstruction_status=PASS",
+          "required_evidence_validation_status=PASS",
+          "receipt_sha256==reconstructed_receipt_sha256"
+        ],
+        "release_worker_only_after_refusal_closure": true,
+        "authority_effect": "NONE_FALSIFICATION_EVIDENCE_ONLY",
+        "source_repair": {
+          "pr": 35,
+          "merge": "f12abf3e062de95f7bbd5eb56247e91fdcd8481f",
+          "exact_head": "a1772001cf8e6ee97214944e009d624df8c54f2b",
+          "exact_head_checks": "PASS_3_OF_3",
+          "authentic_runtime_evidence_observed": false
+        }
+      }
     }
   }
 }

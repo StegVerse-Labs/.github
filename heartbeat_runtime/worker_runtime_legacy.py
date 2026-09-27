@@ -215,6 +215,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             "required_evidence_validation_status": result.get("required_evidence_validation_status"),
             "required_evidence_count": result.get("required_evidence_count"),
             "master_record_ref": result.get("master_record_ref"),
+            "organization_receipt_sha256": result.get("organization_receipt_sha256"),
+            "organization_previous_receipt_sha256": result.get("organization_previous_receipt_sha256"),
+            "organization_source_transition_sha256": result.get("organization_source_transition_sha256"),
+            "organization_source_transition_id": result.get("organization_source_transition_id"),
+            "organization_custody_state": result.get("organization_custody_state"),
             "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
         }
 
@@ -560,6 +565,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 required_evidence_validation_status=assignment_custody.get("required_evidence_validation_status"),
                 receipt_sha256=assignment_custody.get("receipt_sha256"),
                 reconstructed_receipt_sha256=assignment_custody.get("reconstructed_receipt_sha256"),
+                organization_receipt_sha256=assignment_custody.get("organization_receipt_sha256"),
+                organization_previous_receipt_sha256=assignment_custody.get("organization_previous_receipt_sha256"),
+                organization_source_transition_sha256=assignment_custody.get("organization_source_transition_sha256"),
+                organization_source_transition_id=assignment_custody.get("organization_source_transition_id"),
+                organization_custody_state=assignment_custody.get("organization_custody_state"),
                 authority_effect=False,
             )
             task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"

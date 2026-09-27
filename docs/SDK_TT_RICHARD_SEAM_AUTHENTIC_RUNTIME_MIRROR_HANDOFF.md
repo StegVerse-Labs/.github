@@ -398,3 +398,60 @@ Tracing the already-REQUESTED request after the dispatcher custody fix exposed w
 The existing native dispatcher path now invokes the already-registered exact selector `sdk_tt_richard_seam_authentic_runtime` first whenever the canonical Test 3 request is present, then preserves the normal global dispatcher pass so unrelated resident work is not suppressed. The Test 3 consumer now drives a maximum of two targeted WorkerCoordinator cycles in the same request consumption, stopping early if the authentic terminal close receipt already exists.
 
 This adds no runtime, scheduler, dispatcher, authority plane, carrier requirement, source relay, or device prerequisite. It makes the existing `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` behave as one bounded Test 3 request rather than a globally delayed multi-visit sequence.
+
+
+## Option-A reconciliation and post-retirement stale-fence falsification — generation 216 resolved PR #2516
+
+Completed predecessor `SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001` is now reconciled into this existing authentic-runtime lineage rather than creating a duplicate task. The predecessor remains immutable RETIRED / COMPLETED / VALIDATED and contributes one additional runtime falsification predicate:
+
+`POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED_AND_REFUSAL_RETAINED`.
+
+The predecessor evidence is source/test evidence only: SDK PR #304 merged as `e1116e9cb5f5043c9198505d64560b710c517e88`; four-stage run `35648276053`; artifact `10661081336` with SHA-256 `82fd8e824fe5fb175ae17fc57ea34a729996dd37b02878b11969f10abcd93ba5`. None of that establishes authentic standing, retirement, stale-fence refusal, or runtime completion for this task.
+
+Tracing the existing Test-3 terminal path found one concrete source gap. `CLOSE_TASK_AND_RETIRE_WORKER` already closes through StegCore/InTr and canonical Master Records, but the state machine previously returned records-only completion immediately afterward. It did not attempt a post-retirement invocation using the just-retired claim/fence, so the required refusal could not be authentically observed or retained.
+
+The bounded repair reuses the existing StegAgents -> SDK/StegCore/InTr -> canonical Master Records path. After the close receipt is `RECORDED` and reconstructed, the same retired claim/fence is submitted as `INVOKE_RETIRED_TASK_BOUND_WORKER` with task state `COMPLETED`, worker state `RETIRED`, actor authority false, delegation false, validity-window false, capability disallowed, and permission absent. The consequence executor is forbidden from running. The canonical governance result must be `DENY`, and only then is `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` submitted to Master Records using the denied transaction/manifest identity as evidence.
+
+Terminal acceptance now requires that refusal transition to satisfy:
+
+`state=RECORDED`
+`reconstruction_status=PASS`
+`required_evidence_validation_status=PASS`
+`receipt_sha256 == reconstructed_receipt_sha256`
+
+The WorkerCoordinator bridge rejects a governed-close response unless the refusal, zero executor invocation, refusal Master Records closure, and refusal reconstruction are all present. No second runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential path, authority plane, carrier requirement, or device prerequisite is introduced.
+
+StegAgents PR #35 passed all three exact-head gates at `a1772001cf8e6ee97214944e009d624df8c54f2b` and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. This validates the source path only; source/CI validation must not be interpreted as authentic runtime evidence. The first still-unobserved authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`; only an actual machine-owned targeted one-shot can advance that predicate.
+
+
+## Existing targeted-consumer source correction — September 24, 2026
+
+Continuing the **existing checked-out Richard Test-3 lifecycle**, source inspection found two independently reproducible bounded-consumer defects, not an authenticated failed state transition. First, configured `STEGVERSE_ORG_LEDGER_ROOT` was absent from the dispatcher, local refresh, targeted consumer, and existing StegAgents process-adapter environment allowlists; a configured organization ledger location could therefore be silently replaced by the default directory along the resident path. This change carries only the existing non-secret path value end-to-end and preserves all prior credential/authority restrictions. Second, the two-cycle targeted consumer previously continued after a nonzero first attempt or invalid COSV result, allowing the later cycle to hide the earliest failure. It also accepted an unchanged `close.latest.json` from a prior invocation as a reason to stop. It now stops at and retains the earliest failed cycle in the *existing consumption receipt*, requires all attempted cycles to have zero exit status and exact pointer/result identity, and treats only a changed close snapshot as a candidate stop condition. Changed latest evidence is never itself Master Records closure.
+
+The existing `REQUESTED` targeted request, WorkerCoordinator claim/fence, TV/TVC, InTr and canonical Master Records authority remain unchanged. The source repair does **not** prove that the actual resident ledger ever used a nondefault path, that any authentic attempt failed, or that a changed close snapshot is authoritative. When the existing machine-owned invocation runs, inspect its earliest retained failure record and the actual organization-wide hash-linked receipt sequence; require an authentic same-claim/fence canonical transition and `RECORDED`/reconstruction PASS/required-evidence PASS/exact digest equality from Master Records before declaring a repaired runtime transition. External participation and Stage-1 three-worker independence remain unverified. No new runtime, connected device, scheduler, or governance authority.
+
+
+## Existing-owner Richard dispatch receipt retention and custody repair — successor candidate
+
+Source inspection of the already-REQUESTED Richard targeted path identified an evidence observability defect: the consumer retained only a mutable `targeted-request-consumption.latest.json`, and the native priority dispatch result could be overwritten by the subsequent global dispatch. The existing canonical dispatch-visit custody hook covered the SDK evaluator selector but not Richard. This is a reproducible source gap, **not** an inferred authentic resident transition failure.
+
+The repair preserves each actual Richard consumption outcome, including first failed cycle, as an immutable content-addressed file under the existing sovereign-host receipt tree, with `latest` retained as a convenience snapshot. It also submits each real Richard dispatch selector visit through the existing canonical state-transition custody client (organization-wide hash-linked receipt before Master Records). Exact-selector completion requires Master Records RECORDED, reconstruction PASS, required-evidence PASS and exact receipt/reconstructed digest equality; BOUNDARY otherwise. Evidence is explicitly scoped to dispatch observation, not to WorkerCoordinator claim/fence, TV/TVC, InTr, worker execution, governed retirement or stale-fence refusal. Existing independent consumers are not blocked by Richard's receipt state.
+
+Positive/adversarial tests cover immutable first-failure survival across later visits, exact first-cycle carriage into canonical dispatch evidence, successful closure, forged reconstruction digest and mismatched COSV. This source change must be validated on its exact PR head and merged under the existing owner before any resident result is promoted. No new scheduler, runtime, authority, device or custody store. The earliest unverified authentic predicate remains FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T until resident records prove otherwise.
+
+
+## Merged owner repair and canonical tracking reconciliation (generation 230)
+
+Existing Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001`; COSV `20010000110000`. PR #2672 merged at `ed5e366282c5e308dcf486f427f54d09aa56dea0` after all 12 exact-head checks passed on `d342aaf1718ef4234a8c51b0447382214bba77a9`, including Richard Test 3, organization-ledger validation, Cross-Framework Current-Basis and Task Registry Work Correlation. The SDK evaluator canonical inline-evidence producer is already corrected on current main; its existing owner PR #2579 remains separately draft and must not overwrite the landed correction.
+
+This source-level remediation preserves the native component-011 dispatcher work while retaining every actual Richard targeted-consumption result in content-addressed immutable custody and submitting an actual dispatch selector observation into the existing organization ledger and canonical Master Records. It does **not** establish resident execution. The authentic resident connection exposed no machine, and repository-published receipts do not include a Richard result, so no WorkerCoordinator claim/fence, TV/TVC, InTr, retirement, stale-fence denial or Master Records terminal transition has been authenticated. Canonical Registry remains ACTIVE/CHECKED_OUT under its existing owner; first outstanding runtime predicate is `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`. The existing resident must provide its actual priority-dispatch consumption and immutable first-cycle receipt, followed by contiguous organization-wide predecessor receipts and exact Master Records readback. Repair only the earliest authenticated failed transition under its existing owner; no extra device, runtime, scheduler, dispatcher, custody store or authority.
+
+
+## Pre-receipt exception retention candidate — existing owner
+
+A fresh source audit, separate from merged PRs #2672/#2690, found that the Richard targeted consumer's `runner(...)` exception and the shared dispatcher's Richard canonical-custody exception can escape before their existing receipt writes. Such exceptions are **not authenticated resident failures** without real resident records. This scoped additional source repair captures the earliest subprocess invocation exception in the existing immutable Richard consumption receipt, and preserves a fail-closed custody exception and exact consumer result in the existing dispatch snapshot. It must never claim organization-ledger or Master Records closure when custody raises. Tests inject timeout and canonical custody connection errors to verify first-failure retention and fail-closed dispatch. This does not add infrastructure, transfer task ownership, promote task state or modify the genuine outstanding runtime predicate. Exact-head validation and owner-controlled merge are required; authentic resident result remains unknown.
+
+
+## Verified source outcome — existing COSV 20010000110000
+
+PR #2696 is merged as `98cef18d7107f1bf234567e2ee7f9a6ff0a2f30e` from exact PR head `3a188d0608337bdf23d1f02b9f6c965792ec1df4`, with all 12 exact-head source validation workflows passing. The corrected existing targeted consumer retains the first runner exception in its immutable actual-consumption receipt. The existing dispatcher retains a fail-closed custody-exception observation and exact consumer result rather than losing its local dispatch snapshot. Synthetic fault-injection tests validate the two exception paths. This changes source-level evidence retention only. No authorized resident interface or authentic organization-wide receipt was accessible in the coordination session; authentic WorkerCoordinator claim/fence and subsequent TV/TVC, InTr, worker execution, retirement and stale-fence refusal remain unverified. The task remains ACTIVE / CHECKED_OUT, with first unverified actual predicate `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`; no new task, authority, runtime or device prerequisite.

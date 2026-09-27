@@ -1,0 +1,39 @@
+{
+  "reusable_task_id": "RT-ECOSYSTEM-CHAT-ANSWER-001",
+  "name": "Ecosystem Chat answer",
+  "purpose": "Compose one request into manifest-selected ephemeral sources and return independently attributable results through existing owners.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound invocation under existing ownership",
+  "parameter_keys": [
+    "request_hash",
+    "source_bindings",
+    "routing_mode",
+    "existing_operation_refs",
+    "custody_mode"
+  ],
+  "composes": [
+    "RT-STEGBROWSER-LLM-LEASE-001",
+    "RT-EPHEMERAL-LLM-ROUNDTRIP-001",
+    "RT-ECOSYSTEM-CHAT-COLLECT-001",
+    "RT-STEGBROWSER-LLM-CLOSE-001"
+  ],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "EXACT_USER_REQUEST_RESULT_BINDING",
+    "INDEPENDENT_SOURCE_ATTRIBUTION",
+    "REQUIRED_SOURCE_DISPOSITIONS_RETAINED",
+    "NO_MODEL_OUTPUT_AUTHORITY"
+  ],
+  "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY",
+  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and the existing reusable-task constructor. These are definitions, not an executable runner or admission. Existing StegBrowser / StegOS / WorkerCoordinator / InTr / TV-TVC / organization ledger / Master Records own execution and evidence. The existing trigger stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds its authentic entrypoint. No second runtime or synthetic receipt.",
+  "existing_owner_refs": [
+    "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ]
+}

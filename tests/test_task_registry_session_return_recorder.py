@@ -92,14 +92,17 @@ def test_chatgpt_return_requires_matching_gated_checkin(tmp_path):
     assert bad.returncode != 0
     assert not ledger.exists()
 
-    good = subprocess.run([
-        sys.executable, str(SCRIPT), "--task-id", "TASK-A", "--session-id", "session-a",
-        "--actor-kind", "CHATGPT_SESSION", "--ledger", str(ledger),
-    ], input=json.dumps(disposition("TASK-A", "CHATGPT_SESSION")), text=True, capture_output=True, check=True)
-    receipt = json.loads(good.stdout)
-    assert receipt["actor_kind"] == "CHATGPT_SESSION"
-    assert receipt["reusable_component_id"] == COMPONENT_ID
-    assert receipt["runtime_identity_attestation_proven"] is False
+    forged = disposition("TASK-A", "CHATGPT_SESSION")
+    forged["ai_session_ingress"]["runtime_identity_attestation_proven"] = True
+    forged["ai_session_ingress"]["authenticated_origin"] = True
+    for payload in (disposition("TASK-A", "CHATGPT_SESSION"), forged):
+        denied = subprocess.run([
+            sys.executable, str(SCRIPT), "--task-id", "TASK-A", "--session-id", "session-a",
+            "--actor-kind", "CHATGPT_SESSION", "--ledger", str(ledger),
+        ], input=json.dumps(payload), text=True, capture_output=True)
+        assert denied.returncode != 0
+        assert "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE" in denied.stderr
+        assert not ledger.exists()
 
 
 def test_return_recorder_rejects_wrong_task_disposition(tmp_path):

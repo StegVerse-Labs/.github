@@ -116,6 +116,7 @@ def test_rtc008_admission_is_canonically_custodied(monkeypatch, tmp_path: Path):
     assert result["master_records_state"] == "RECORDED"
     assert result["master_records_reconstruction_status"] == "PASS"
     assert result["master_records_required_evidence_validation_status"] == "PASS"
+    assert result["intr_admission_receipt_sha256"] == captured["receipt"]["resulting_state_ref_or_hash"].split(":",1)[1]
     assert result["far_side_transition_observed"] is False
     assert result["caller_consequence_observed"] is False
     receipt = captured["receipt"]
@@ -213,6 +214,7 @@ def test_rtc007_continuation_submits_exact_rtc008_to_existing_shared_ingress():
         "master_records_required_evidence_validation_status": "PASS",
         "master_records_receipt_sha256": "a" * 64,
         "master_records_reconstructed_receipt_sha256": "a" * 64,
+        "intr_admission_receipt_sha256": "c" * 64,
         "rtc008_evidence_complete": True,
         "far_side_transition_observed": False,
         "caller_consequence_observed": False,
@@ -272,6 +274,7 @@ def test_rtc008_submission_fails_closed_on_master_records_digest_mismatch():
         "master_records_required_evidence_validation_status": "PASS",
         "master_records_receipt_sha256": "a" * 64,
         "master_records_reconstructed_receipt_sha256": "b" * 64,
+        "intr_admission_receipt_sha256": "c" * 64,
         "rtc008_evidence_complete": True,
         "far_side_transition_observed": False,
         "caller_consequence_observed": False,
@@ -371,3 +374,75 @@ def test_rtc008_blocks_when_reconstructed_predecessor_identity_differs(monkeypat
     )
     with pytest.raises(ValueError, match="rtc008_predecessor_transition_reconstruction_mismatch"):
         ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
+
+
+def test_missing_exact_rtc008_admission_digest_fails_closed():
+    consumer = _load_return_consumer()
+    req = request()
+    response = {
+        "schema": consumer.MIR_RTC008_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": req["materialization_id"],
+        "request_hash": req["request_hash"],
+        "transport_intent_hash": req["transport_intent_hash"],
+        "payload_hash": req["payload_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
+        "transport_origin": "TVC_RELAY_EGRESS",
+        "transport_authorization_id": "TVC-RTC008-ALLOW-001",
+        "master_records_state": "RECORDED",
+        "master_records_reconstruction_status": "PASS",
+        "master_records_required_evidence_validation_status": "PASS",
+        "master_records_receipt_sha256": "a" * 64,
+        "master_records_reconstructed_receipt_sha256": "a" * 64,
+        "rtc008_evidence_complete": True,
+        "far_side_transition_observed": False,
+        "caller_consequence_observed": False,
+    }
+    with pytest.raises(consumer.KVPublisherReturnError, match="exact ingress admission digest missing"):
+        consumer._submit_rtc008_materialization(req, env={
+            consumer.MIR_RTC008_INGRESS_ENV: "http://localhost:8765/intr/materialization",
+            consumer.MIR_RTC008_AUTH_ENV: "TVC-RTC008-ALLOW-001",
+        }, opener=lambda *_args, **_kwargs: _Response(response))
+
+
+def test_sdk_return_consumer_retains_exact_failed_invocation_diagnostic(tmp_path: Path):
+    consumer = _load_return_consumer()
+    mid = "INTR-MAT-" + "8" * 24
+    request_path = tmp_path / consumer.REQUEST_DIR / f"{mid}.json"
+    request_path.parent.mkdir(parents=True)
+    request_path.write_text(json.dumps({
+        "downstream_owner_ref": consumer.SDK_DOWNSTREAM_OWNER,
+        "request_hash": "sha256:" + "f" * 64,
+    }), encoding="utf-8")
+    error = consumer.KVPublisherReturnError("RTC008 exact ingress admission digest missing")
+    first = consumer.retain_blocked_consumption(tmp_path, mid, error)
+    second = consumer.retain_blocked_consumption(tmp_path, mid, error)
+    assert first == second
+    path = tmp_path / first["diagnostic_receipt_ref"]
+    assert path.is_file()
+    retained = json.loads(path.read_text(encoding="utf-8"))
+    assert retained["state"] == "BLOCKED"
+    assert retained["request_hash"] == "sha256:" + "f" * 64
+    assert retained["downstream_owner_ref"] == consumer.SDK_DOWNSTREAM_OWNER
+    assert retained["first_failed_governed_transition"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert retained["rtc008_admission_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert retained["master_records_closure_claimed"] is False
+    assert retained["authority_effect"] == "NONE_DIAGNOSTIC_ONLY"
+    basis = {key: val for key, val in retained.items() if key != "diagnostic_sha256"}
+    assert retained["diagnostic_sha256"] == consumer.sha(basis)
+    assert (tmp_path / consumer.SDK_RECEIPT_DIR / "latest.blocked.json").read_bytes() == path.read_bytes()
+
+
+def test_sdk_return_consumer_retains_missing_request_failure_without_inventing_transition(tmp_path: Path):
+    consumer = _load_return_consumer()
+    mid = "INTR-MAT-" + "9" * 24
+    result = consumer.retain_blocked_consumption(
+        tmp_path, mid, RuntimeError("sensitive runtime error detail must not be persisted")
+    )
+    assert result["state"] == "BLOCKED"
+    assert result["request_present"] is False
+    assert result["downstream_owner_ref"] is None
+    assert result["reason_code"] == "RuntimeError"
+    assert result["caller_consequence_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert (tmp_path / consumer.RECEIPT_DIR / "latest.blocked.json").exists()

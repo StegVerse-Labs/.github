@@ -79,3 +79,14 @@ The root README already documents Task Registry resolution, cross-task collision
 ## Manual work
 
 None.
+
+## 2026-09-24 component-010 exact predecessor readback — owner review candidate
+
+The canonical evaluator already writes the arriving session's `CHECK_IN` through the existing hash-linked Task Registry event ledger and immediately records `STOPPED` for `STOP_*` dispositions. The previously returned gate disposition carried the check-in and STOP event hashes but omitted their exact immediate-predecessor hashes. The existing source-level check-in response now includes `checkin_event_predecessor_sha256` and (for a STOP event) `stopped_event_predecessor_sha256`, using exact values returned by the **existing** `append_event` call. Positive and STOP regression tests require parity with the actual retained JSONL events. No new ledger, runtime, caller, task identity, attestation, or governance authority is introduced. A check-in without an actual retained event cannot claim a predecessor, and an inaccessible resident ledger remains UNKNOWN.
+
+This source repair is a component-010 owner-review candidate, not authentic `AI_SESSION_GATE` invocation, actual component-010 registry/shard reconciliation, a COSV assignment, or governed execution evidence for `WORKER-TASK-RESOURCE-COST-LINKAGE-001` / issue #2619. The first authentic runtime chain remains exact-shard projection readback, genuine generation-bound session invocation, hash-linked event readback, and applicable organization/Master Records evidence separately.
+
+
+### Regression expansion for #2619 — same existing receipt chain
+
+Additional exact-head adversarial coverage under PR #2667 now checks two successive check-ins and their true predecessor continuity, a STOP disposition appended after a preexisting ledger tip (including STOP → its same-session CHECK_IN), and tampering of a retained predecessor before a subsequent check-in. Tampered history must fail closed and remain byte-for-byte unchanged. The existing evaluator returns `checkin_event_predecessor_sha256` and `stopped_event_predecessor_sha256` from the actual append events; these fields do not imply authentic session attestation or autonomous resident execution. Component-010's separate existing-shard source projection is under PR #2668, with no mutation by this receipt-readback PR. Do not merge or claim owner authorization from this documentation alone.

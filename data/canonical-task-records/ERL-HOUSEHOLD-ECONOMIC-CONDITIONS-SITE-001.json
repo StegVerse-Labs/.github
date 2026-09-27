@@ -28,7 +28,10 @@
     "StegVerse-Labs/StegVerse-Healer#100",
     "StegVerse-Labs/StegVerse-Healer@4b219f0acd207cbadaeaa7b040ab305bc5f6d68b",
     "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
-    "StegVerse-Labs/StegVerse-Healer:docs/ERL_HOUSEHOLD_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegVerse-Healer:docs/ERL_HOUSEHOLD_CANONICAL_WORK_CARRIER_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2635",
+    "StegVerse-Labs/.github#2659",
+    "StegVerse-Labs/Site#1461"
   ],
   "targets": {
     "organizations": [
@@ -107,7 +110,10 @@
     "StegVerse-Labs/.github#2443 merge c0b93e6c4ff88a038b6af32f45aae1afee34c3ba",
     "ERL Observe Household Economic Current Candidates run 35601531123 SUCCESS",
     ".github#2541 exact head 830819aa37db34ba1b1d26800d3c747103813b83 validated and merged f7043dfbc05455677b55b2ade18b4461dd048240",
-    "StegVerse-Healer#100 exact head ed7d691d0ac346695f29283a09bd286beb671c93 Test Readiness 35675227970 SUCCESS; merged 4b219f0acd207cbadaeaa7b040ab305bc5f6d68b"
+    "StegVerse-Healer#100 exact head ed7d691d0ac346695f29283a09bd286beb671c93 Test Readiness 35675227970 SUCCESS; merged 4b219f0acd207cbadaeaa7b040ab305bc5f6d68b",
+    ".github#2635 exact head e893501f32c5b8bd2f34fc546f4703416616209c Cross-Task CI 36030648493 SUCCESS; merged ddc01f4ee34bcc4b1f89173f2b703272b64fa234",
+    ".github#2659 exact head 14a4e9c22dae5fbd6431e9d3d64e3587d905994f Cross-Task 36072117909 / KV 36072117885 / DeepSeek 36072117934 SUCCESS; merged 6073c1e5e250f4f0ad8e3974733c380cebfc7e79",
+    "Site#1461 exact head b1285c87b5e751d427fb3146040eea80f0374af2 four returned CI lanes SUCCESS; merged b586a3afde36ae8577148457f9f4dc0b83b185dd"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_WORK_INTR_INGRESS_ADMITTED",
@@ -146,6 +152,14 @@
       "source_binding_state": "MERGED",
       "authentic_resident_invocation_state": "NOT_OBSERVED",
       "authority_effect": "NONE_SOURCE_ADDRESSABILITY_ONLY"
+    },
+    "source_readiness": {
+      "worker_fail_closed_repair": "MERGED",
+      "exact_goal_consumer_priority": "MERGED",
+      "same_origin_governed_site_consumer": "MERGED_DISABLED",
+      "site_publication_manifest": "PUBLIC_ACTIVATION_FALSE",
+      "live_transition_status": "UNPROVEN",
+      "authority_effect": "NONE_SOURCE_CAPABILITY_ONLY"
     }
   },
   "execution_substrate_resolution": {
@@ -223,7 +237,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "TVC#451@d7bbb9024ace0c1c41be35cda3269008139cae6f+stegfin-governance#111@a06ff7b6811128481bdc4b94f08f1a5540cc1c67+ERL#199@0281a717e720d111b76898232985f8f357d1af33+ERL#200@46bfe423472bc0b56072581bece0c8618f7e99eb+.github#2443@c0b93e6c4ff88a038b6af32f45aae1afee34c3ba; authentic runtime progression pending+.github#2541@f7043dfbc05455677b55b2ade18b4461dd048240+Healer#100@4b219f0acd207cbadaeaa7b040ab305bc5f6d68b; authentic ingress/claim-fence/Master Records still pending"
+    "reconciliation_ref": "TVC#451@d7bbb9024ace0c1c41be35cda3269008139cae6f+stegfin-governance#111@a06ff7b6811128481bdc4b94f08f1a5540cc1c67+ERL#199@0281a717e720d111b76898232985f8f357d1af33+ERL#200@46bfe423472bc0b56072581bece0c8618f7e99eb+.github#2443@c0b93e6c4ff88a038b6af32f45aae1afee34c3ba; authentic runtime progression pending+.github#2541@f7043dfbc05455677b55b2ade18b4461dd048240+Healer#100@4b219f0acd207cbadaeaa7b040ab305bc5f6d68b; authentic ingress/claim-fence/Master Records still pending+.github#2635@ddc01f4ee34bcc4b1f89173f2b703272b64fa234+.github#2659@6073c1e5e250f4f0ad8e3974733c380cebfc7e79+Site#1461@b586a3afde36ae8577148457f9f4dc0b83b185dd; authentic Interlock/InTr/WorkerCoordinator/Master Records/Publisher closure pending"
   },
   "allowed_next_transitions": [
     "INGRESS_ADMITTED"

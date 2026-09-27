@@ -20,7 +20,9 @@
     ".stegverse/transition-ledger/org-contract.json",
     "workers/canonical_state_transition_custody.py",
     "master-records/orchestration/services/ecosystem_transition_ledger.py",
-    "master-records/orchestration/services/canonical_state_transition_custody.py"
+    "master-records/orchestration/services/canonical_state_transition_custody.py",
+    "master-records/orchestration/services/organization_batch_ingress.py",
+    "master-records/orchestration/tests/test_organization_batch_ingress.py"
   ],
   "adjacent_task_refs": [
     "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
@@ -37,13 +39,47 @@
     "AUTHENTIC_RUNTIME_ORG_BATCH_TO_MASTER_RECORDS_END_TO_END_EVIDENCE_RETAINED"
   ],
   "current_truth": {
-    "registration": "PROPOSED_PENDING_PR_MERGE",
+    "registration": "MERGED_PR_2582_ED497116",
     "runtime_batch_custody": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "live_worker_failure_expiry_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
     "existing_org_receipt_emitter": "SOURCE_PRESENT",
     "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
     "existing_master_records_receipt_set_commitments": "SOURCE_PRESENT",
-    "new_runtime_or_ledger_authorized": false
+    "new_runtime_or_ledger_authorized": false,
+    "local_batch_replay_source": "CI_VALIDATED_SOURCE_REPAIR",
+    "local_batch_source_pr": 2643,
+    "local_batch_source_head": "3552330b88a38aae1ac91d0d26a72c3ca08be169",
+    "local_batch_source_merge": "f98ec19dcb3925f3019e6a3fcb064ec0d7c975d1",
+    "local_batch_source_validation_runs": [
+      36039580975,
+      36039581142,
+      36039580961
+    ],
+    "local_batch_runtime_proof": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "master_records_batch_ingress": "MERGED_SOURCE_CI_VALIDATED",
+    "concurrent_org_append_serialization": "NOT_PROVEN",
+    "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED",
+    "master_records_batch_ingress_pr": 111,
+    "master_records_batch_ingress_head": "4352bc5cb0632b941e01a03fc26551b398d81927",
+    "master_records_batch_ingress_merge": "5d44513d26d6529d98fdae36aeb8f989e9a9c331",
+    "master_records_batch_ingress_validation_runs": [
+      36075018546,
+      36075018524,
+      36075018823,
+      36075018744,
+      36075018671,
+      36075018706,
+      36075018513,
+      36075018549,
+      36075018527,
+      36075018541,
+      36075018805,
+      36075018621
+    ],
+    "master_records_batch_ingress_exact_source_validation": "PASS",
+    "master_records_batch_runtime_proof": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "required_evidence_bytes_master_records_ingress": "CI_VALIDATED",
+    "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",

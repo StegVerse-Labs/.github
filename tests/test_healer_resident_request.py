@@ -77,6 +77,64 @@ class HealerResidentRequestTests(unittest.TestCase):
             },
         })
 
+    def test_missing_request_and_source_retains_no_request_receipt_without_execution(self):
+        td, _source, runtime = self.roots()
+        try:
+            (runtime / consumer.REQUEST_REL).unlink()
+            calls = []
+            result = consumer.consume(
+                runtime, runtime,
+                runner=lambda *args, **kwargs: calls.append(args),
+                env={"PATH": "/usr/bin"},
+            )
+            persisted = json.loads((runtime / consumer.CONSUMPTION_REL).read_text(encoding="utf-8"))
+            self.assertEqual(result, persisted)
+            self.assertEqual(result["state"], "NO_REQUEST")
+            self.assertEqual(result["source_resolution"], "DISTINCT_SOURCE_ROOT_NOT_PROVIDED")
+            self.assertEqual(result["task_id"], consumer.TARGET_TASK)
+            self.assertIsNone(result["request_id"])
+            self.assertFalse(result["runtime_execution_attempted"])
+            self.assertFalse(result["request_consumed"])
+            self.assertFalse(result["scheduler_cycle_completion_observed"])
+            self.assertFalse(result["request_granted_authority"])
+            self.assertTrue(result["retry_allowed"])
+            self.assertEqual(calls, [])
+        finally:
+            td.cleanup()
+
+    def test_missing_request_observation_is_replaced_by_authentic_later_source_cycle(self):
+        td, source, runtime = self.roots()
+        try:
+            (runtime / consumer.REQUEST_REL).unlink()
+            before = consumer.consume(runtime, runtime, env={"PATH": "/usr/bin"})
+            self.assertEqual(before["state"], "NO_REQUEST")
+            after = consumer.consume(
+                source, runtime,
+                runner=lambda *args, **kwargs: self.completed_cycle(),
+                env={"PATH": "/usr/bin"},
+            )
+            retained = json.loads((runtime / consumer.CONSUMPTION_REL).read_text(encoding="utf-8"))
+            self.assertEqual(after, retained)
+            self.assertEqual(after["state"], "CYCLE_COMPLETED")
+            self.assertTrue(after["request_materialization"]["copied"])
+            self.assertFalse(after["request_consumed"])
+        finally:
+            td.cleanup()
+
+    def test_existing_request_missing_distinct_source_retains_retryable_failure(self):
+        td, _source, runtime = self.roots()
+        try:
+            result = consumer.consume(runtime, runtime, env={"PATH": "/usr/bin"})
+            retained = json.loads((runtime / consumer.CONSUMPTION_REL).read_text(encoding="utf-8"))
+            self.assertEqual(result, retained)
+            self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(result["blocker"], "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED")
+            self.assertFalse(result["runtime_execution_attempted"])
+            self.assertFalse(result["request_consumed"])
+            self.assertTrue(result["retry_allowed"])
+        finally:
+            td.cleanup()
+
     def test_missing_runtime_request_self_materializes_from_canonical_source(self):
         td, source, runtime = self.roots()
         try:

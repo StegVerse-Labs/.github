@@ -49,6 +49,16 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def retain_consumption(runtime: Path, receipt: dict[str, Any]) -> dict[str, Any]:
+    """Persist the existing consumer's earliest observation without granting authority."""
+    path = runtime / CONSUMPTION_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name("." + path.name + ".tmp")
+    temp.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(temp, path)
+    return receipt
+
+
 def clean_env(source: dict[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
     env = {key: values[key] for key in NONSECRET_ENV if values.get(key)}
@@ -310,15 +320,31 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if source is None:
         request_path = runtime / REQUEST_REL
         if not request_path.is_file():
-            return {
+            return retain_consumption(runtime, {
                 "schema": "stegverse.healer-resident-request-consumption/v1",
                 "state": "NO_REQUEST",
+                "request_id": None,
+                "request_sha256": None,
+                "task_id": TARGET_TASK,
+                "mode": TARGET_MODE,
                 "runtime_execution_attempted": False,
+                "scheduler_cycle_completion_observed": False,
+                "terminal_scheduler_completion_observed": False,
+                "request_consumed": False,
                 "standing_request": True,
                 "source_resolution": source_resolution,
+                "blocker": "STANDING_REQUEST_AND_DISTINCT_LOCAL_CANONICAL_SOURCE_UNAVAILABLE",
                 "retry_allowed": True,
-                "authority_effect": "NONE",
-            }
+                "request_granted_authority": False,
+                "heartbeat_grants_execution_authority": False,
+                "github_token_required": False,
+                "github_token_runtime_authority": "NONE",
+                "credential_authority": "TV/TVC",
+                "credential_requirement": "NONE",
+                "second_machine_required": False,
+                "network_source_fetch_performed": False,
+                "authority_effect": "NONE_REQUEST_OBSERVATION_ONLY",
+            })
         request = load_json(request_path)
         validate_request(request)
         request_hash = stable_hash(request)
@@ -348,10 +374,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "blocker": "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED",
             "authority_effect": "NONE_REQUEST_ONLY",
         }
-        path = runtime / CONSUMPTION_REL
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        return receipt
+        return retain_consumption(runtime, receipt)
 
     request_materialization = synchronize_standing_request(source, runtime)
     scheduler_materialization = ensure_neutral_scheduler_materialized(source, runtime, runner=runner, values=values)
@@ -417,10 +440,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "network_source_fetch_performed": False,
         "authority_effect": "NONE_REQUEST_ONLY",
     }
-    path = runtime / CONSUMPTION_REL
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return retain_consumption(runtime, receipt)
 
 
 def main() -> int:

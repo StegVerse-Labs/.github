@@ -218,3 +218,7 @@ parent_task_relationship=PROVENANCE_ONLY_NO_RUNTIME_PREDECESSOR
 ```
 
 No lineage identity is removed. No dependency, runtime, scheduler, dispatcher, WorkerCoordinator, source transport, credential path, authority plane, custody store, or device prerequisite is added. Fresh claim/fence and authentic source-prep receipt remain runtime evidence requirements.
+
+## 2026-09-26 current SDK anchor follow-up
+
+The historical `814d4cb607cc2cb4c7a605474fe845e13540898d` and intermediate `6bc0944633b6299c19f065f44dd5999434445dd7` blobs are retained as provenance, not live source-prep acceptance anchors. Current SDK main returns `3e400b83f11fa0ec41ca8597d196650ec4337999` for `stegverse/sovereign_validation_runtime.py`; the proposed source-prep worker and both executable handoffs now pin that current blob. Exact-head validation and an authentic claim-bound v2 receipt remain required before runtime promotion.

@@ -54,6 +54,12 @@ def select_return_owner(result:dict[str,Any])->str:
     """Select the next owner only from the already-verified Publisher return state."""
     if result.get("schema")!=RETURN_SCHEMA: raise PublisherInTrConsumerError("publisher_return_schema_invalid")
     binding=result.get("roundtrip_binding")
+    source_schema=result.get("source_export_schema")
+    if source_schema=="stegverse.publisher.evidence-report-package/v1":
+        if binding is not None: raise PublisherInTrConsumerError("generic_review_cannot_impersonate_specialized_mir_binding")
+        return MIR_SDK_RETURN_OWNER
+    if source_schema is not None:
+        raise PublisherInTrConsumerError("unsupported_publisher_source_export_schema")
     if binding is None: return KV_RETURN_OWNER
     if not isinstance(binding,dict) or binding.get("profile")!=MIR_ROUNDTRIP_BINDING_PROFILE:
         raise PublisherInTrConsumerError("publisher_return_roundtrip_binding_invalid")
@@ -70,7 +76,7 @@ def validate_request(r:dict[str,Any])->None:
     expected={"schema":"stegverse.universal-intr-materialization-request/v1","state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION","transport_schema":"stegverse.universal-intr-transport/v1","transport_protocol":"InTr","destination":DESTINATION,"downstream_owner_ref":OWNER,"event_triggered":True,"always_on_receiver_required":False,"second_user_device_required":False,"receiver_unavailable_disposition":"DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION","exact_packet_transport_retry_allowed":True,"blind_consequence_retry_allowed":False,"interlock_required":True,"request_grants_execution_authority":False,"claim_or_fence_minted":False,"transport_grants_execution_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_transfer":False,"authority_effect":"NONE_REQUEST_ONLY"}
     for k,v in expected.items():
         if r.get(k)!=v: raise PublisherInTrConsumerError("materialization_"+k+"_mismatch")
-    if r.get("boundary_path")!=["KV","DEVICE_SYSTEM","STEGOS_ECOSYSTEM"]: raise PublisherInTrConsumerError("boundary_path_invalid")
+    if r.get("boundary_path") not in (["KV","DEVICE_SYSTEM","STEGOS_ECOSYSTEM"],["STEGOS_ECOSYSTEM"]): raise PublisherInTrConsumerError("boundary_path_invalid")
     mid=str(r.get("materialization_id") or "")
     expected_payload_ref="runtime://"+str(PAYLOAD_DIR/f"{mid}.bin")
     if r.get("payload_ref")!=expected_payload_ref: raise PublisherInTrConsumerError("payload_ref_mismatch")
@@ -106,8 +112,23 @@ def consume(runtime:Path,mid:str)->dict[str,Any]:
     from stegos.intr_backbone import CanonicalInTrConnector, load_connector_registry
     from stegos.universal_intr_transport import sha256_uri
     from stegos.universal_intr_materialization import build_materialization_request, persist_materialization_request
+    from publisher.intr_artifact_transfer import parse_transfer_bytes
+    exact_transfer=parse_transfer_bytes(raw)
+    source_schema=(exact_transfer.get("export_bundle") or {}).get("schema_version")
+    if source_schema=="stegverse.publisher.evidence-report-package/v1":
+        if req["boundary_path"]!=["STEGOS_ECOSYSTEM"]:
+            raise PublisherInTrConsumerError("sdk_review_cannot_impersonate_kv_origin")
+        if "roundtrip_binding" in exact_transfer:
+            raise PublisherInTrConsumerError("generic_sdk_review_cannot_use_specialized_mir_binding")
+        required_profile="sdk-publisher-review"
+    else:
+        if req["boundary_path"]!=["KV","DEVICE_SYSTEM","STEGOS_ECOSYSTEM"]:
+            raise PublisherInTrConsumerError("kv_origin_requires_exact_kv_path")
+        required_profile=PROFILE_ID
     profiles=load_connector_registry(stegos/"specs/universal-intr-connector-profiles.v1.json")
-    connector=CanonicalInTrConnector(profiles[PROFILE_ID])
+    if required_profile not in profiles:
+        raise PublisherInTrConsumerError("authenticated_sdk_review_intr_profile_not_materialized")
+    connector=CanonicalInTrConnector(profiles[required_profile])
     packet=connector.prepare(raw,payload_schema=TRANSFER_SCHEMA,operation="TRANSFER",operation_id=req["operation_id"])
     if sha256_uri(dict(packet.intent))!=req["transport_intent_hash"] or packet.intent["packet_id"]!=req["packet_id"]: raise PublisherInTrConsumerError("canonical_intent_binding_mismatch")
     receipts=load(receipts_path)

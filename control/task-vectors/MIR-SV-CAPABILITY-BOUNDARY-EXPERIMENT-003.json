@@ -1,0 +1,13 @@
+{
+  "identity": "StegVerse-Labs/.github:task:MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+  "profile": "task.v1",
+  "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+  "vector": "50000000100000",
+  "parent_task_id": null,
+  "evidence_refs": [
+    "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+    "docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md"
+  ],
+  "authority_effect": "NONE",
+  "vector_state": "SOURCE_ONLY_ACTIVE"
+}

@@ -1,0 +1,36 @@
+{
+  "reusable_task_id": "RT-STEGBROWSER-LLM-CLOSE-001",
+  "name": "Close ephemeral LLM session",
+  "purpose": "Record result or failure and observe genuine browser session destruction on every terminal path, preserving durable scoped evidence.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound invocation under existing ownership",
+  "parameter_keys": [
+    "request_hash",
+    "source_bindings",
+    "routing_mode",
+    "existing_operation_refs",
+    "custody_mode"
+  ],
+  "composes": [
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "TERMINAL_SESSION_DESTRUCTION_OBSERVED",
+    "IMMEDIATE_ORGANIZATION_PREDECESSOR_VERIFIED",
+    "CONDITIONAL_MASTER_RECORDS_CUSTODY",
+    "NO_RETAINED_TEMPORARY_CREDENTIALS"
+  ],
+  "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY",
+  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and the existing reusable-task constructor. These are definitions, not an executable runner or admission. Existing StegBrowser / StegOS / WorkerCoordinator / InTr / TV-TVC / organization ledger / Master Records own execution and evidence. The existing trigger stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds its authentic entrypoint. No second runtime or synthetic receipt.",
+  "existing_owner_refs": [
+    "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ]
+}

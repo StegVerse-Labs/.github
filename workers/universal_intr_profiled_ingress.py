@@ -825,8 +825,10 @@ def admit_mir_southbound(*, runtime_root: Path, body: bytes, headers: Mapping[st
         latest.parent.mkdir(parents=True, exist_ok=True)
         latest.write_bytes(raw)
     custody = _record_rtc008_custody(request, ingress_receipt)
+    intr_admission_receipt_sha256 = sha_uri(dict(ingress_receipt)).split(":", 1)[1]
     return {
         **ingress_receipt,
+        "intr_admission_receipt_sha256": intr_admission_receipt_sha256,
         "master_records_state": custody["state"],
         "master_records_reconstruction_status": custody["reconstruction_status"],
         "master_records_required_evidence_validation_status": custody["required_evidence_validation_status"],

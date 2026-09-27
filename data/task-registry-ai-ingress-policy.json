@@ -3,15 +3,24 @@
   "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "reusable_component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
   "reusable_component_contract": "data/reusable-ai-ingress-component-contract.json",
-  "status": "SOURCE_DECLARATION_GATE_ACTIVE_RUNTIME_IDENTITY_ATTESTATION_NOT_PROVEN",
+  "status": "UNATTESTED_CHATGPT_SESSION_REFUSED_BEFORE_LEDGER_AUTHENTIC_ORIGIN_INTERFACE_NOT_OBSERVED",
   "scope": "SESSION_BEARING_TASK_REGISTRY_COORDINATION_LIFECYCLE",
   "covered_surfaces": [
     "scripts/evaluate_task_registry_ai_session_checkin.py",
     "scripts/record_task_registry_session_return.py",
     "scripts/materialize_task_session_close.py"
   ],
-  "allowed_actor_kinds": ["CHATGPT_SESSION", "HUMAN_OPERATOR", "NON_AI_SYSTEM_COORDINATOR"],
-  "denied_ai_actor_kinds": ["NON_CHATGPT_AI", "AI_MODEL", "AI_AGENT", "EXTERNAL_MODEL"],
+  "allowed_actor_kinds": [
+    "CHATGPT_SESSION",
+    "HUMAN_OPERATOR",
+    "NON_AI_SYSTEM_COORDINATOR"
+  ],
+  "denied_ai_actor_kinds": [
+    "NON_CHATGPT_AI",
+    "AI_MODEL",
+    "AI_AGENT",
+    "EXTERNAL_MODEL"
+  ],
   "invariants": {
     "chatgpt_is_only_ai_actor_kind_permitted": true,
     "human_operator_permitted": true,
@@ -22,7 +31,9 @@
     "session_close_must_preserve_actor_kind": true,
     "declaration_is_identity_attestation": false,
     "runtime_identity_attestation_proven": false,
-    "task_registry_grants_execution_authority": false
+    "task_registry_grants_execution_authority": false,
+    "unattested_chatgpt_session_cannot_append_checkin_event": true,
+    "authenticated_session_origin_interface_observed": false
   },
   "authority": {
     "task_registry": "COORDINATION_WORK_CONTROL_ONLY",
@@ -33,5 +44,26 @@
     "master_records": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_actions": "VALIDATION_EVIDENCE_TRANSPORT_ONLY"
-  }
+  },
+  "source_only_coordination_boundary": {
+    "classification": "NONAUTHORITATIVE_SOURCE_WORK_DOES_NOT_REQUIRE_AN_AUTHENTIC_AI_SESSION_DISPOSITION",
+    "scope": [
+      "EXACT_GENERATION_CANONICAL_SOURCE_RECONCILIATION",
+      "ISSUE_AND_OWNER_COORDINATION",
+      "SOURCE_ONLY_TESTS_AND_STATIC_VALIDATION",
+      "PR_SOURCE_PROPOSAL_UNDER_EXISTING_REPOSITORY_PROTECTION"
+    ],
+    "constraints": [
+      "MUST_USE_CANONICAL_TASK_REGISTRY_AND_EXISTING_OWNER",
+      "MUST_RECONCILE_CURRENT_GENERATION_AND_SOURCE_COLLISIONS",
+      "NO_WORKERCOORDINATOR_CLAIM_FENCE_OR_GOVERNED_TRANSITION",
+      "NO_COSV_DERIVATION_FROM_THIS_DECLARATION",
+      "NO_FAKE_AI_SESSION_OR_CHECKIN_LEDGER_EVENT",
+      "AUTHENTIC_AI_SESSION_GATE_REMAINS_REQUIRED_WHEN_ACTUAL_AI_SESSION_ADMISSION_IS_NEEDED",
+      "SELF_DECLARED_CHATGPT_SESSION_NEVER_CREATES_AUTHENTIC_CHECKIN_LEDGER_EVENT"
+    ],
+    "audit": "scripts/audit_task_registry_session_gate_backlog.py",
+    "authority_effect": "NONE"
+  },
+  "unattested_chatgpt_session_disposition": "STOP_AUTHENTIC_ORIGIN_UNAVAILABLE"
 }

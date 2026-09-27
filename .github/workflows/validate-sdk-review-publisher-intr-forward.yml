@@ -1,0 +1,21 @@
+name: Validate SDK Generic Publisher InTr Forward (Non-Authorizing)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/consume_publisher_intr_materialization_request.py
+      - tests/test_publisher_intr_materialization.py
+      - docs/SDK_REVIEW_PUBLISHER_INTR_FORWARD_MIRROR_HANDOFF.md
+      - .github/workflows/validate-sdk-review-publisher-intr-forward.yml
+  workflow_dispatch:
+permissions: {}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest tests.test_publisher_intr_materialization -v
+      - run: python -m py_compile scripts/consume_publisher_intr_materialization_request.py

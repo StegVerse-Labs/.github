@@ -1,0 +1,25 @@
+name: Validate Healer First Consumption Observation
+
+on:
+  pull_request:
+    paths:
+      - "scripts/consume_healer_sovereign_scheduler_request.py"
+      - "tests/test_healer_resident_request.py"
+      - ".github/workflows/validate-healer-first-consumption.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  healer-consumption-source-regressions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run first-boundary and existing Healer consumer regressions
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_healer_resident_request.py
