@@ -150,14 +150,49 @@ def consume(
             result = candidate
             break
 
-    projection = {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "PARENT_NOT_TERMINAL_PASS"}
-    llm_root_raw = os.environ.get("STEGVERSE_LLM_ADAPTER_ROOT", "").strip()
-    terminal_pass = bool(
-        isinstance(result, dict)
-        and result.get("state") == "PASS"
-        and result.get("same_execution") is True
-        and result.get("persistent_conversational_runtime_ready") is True
+    # The portable bridge returns an outer resident-refresh envelope. The actual
+    # parent returns COMPLETED/HANDOFF_READY one level deeper; only its
+    # independently reconstructed activation receipt has state PASS. An attempt
+    # or a subprocess return code cannot be promoted to completed execution.
+    bridge_ok = bool(
+        completed.returncode == 0
+        and isinstance(result, dict)
+        and result.get("schema") == "stegverse.resident-refresh-targeted-execution/v3"
+        and result.get("task_id") == TARGET_TASK
+        and result.get("mode") == TARGET_MODE
+        and result.get("execution_returncode") == 0
+        and result.get("execution_result_observed") is True
     )
+    parent_result = result.get("execution_result") if bridge_ok else None
+    parent_ok = isinstance(parent_result, dict) and (
+        parent_result.get("schema") == "stegverse.independent-ecosystem-chat-parent-execution/v1"
+        and parent_result.get("task_id") == TARGET_TASK
+        and parent_result.get("state") == "COMPLETED"
+        and isinstance(parent_result.get("attempt_fencing_token"), int)
+        and parent_result["attempt_fencing_token"] > MINIMUM_FENCE_EXCLUSIVE
+    )
+    activation = parent_result.get("terminal_activation_receipt") if parent_ok else None
+    terminal_pass = bool(
+        parent_ok and isinstance(activation, dict)
+        and activation.get("schema") == "stegverse.ecosystem-chat-independent-parent-activation/v1"
+        and activation.get("task_id") == TARGET_TASK
+        and activation.get("state") == "PASS"
+        and activation.get("fencing_token") == parent_result["attempt_fencing_token"]
+        and all(activation.get(key) is True for key in (
+            "sovereign_runtime_execution_surface_observed",
+            "ephemeral_e1_e2_execution_observed",
+            "measured_usage_persisted",
+            "provider_usage_reconstruction_pass",
+            "transition_reconstruction_pass",
+            "same_execution",
+            "persistent_conversational_runtime_ready",
+        ))
+        and activation.get("credential_authority") == "TV/TVC"
+        and activation.get("github_token_required") is False
+    )
+    projection = {"attempted": False, "state": "NOT_ELIGIBLE",
+                  "reason": "PARENT_NOT_TERMINAL_PASS"}
+    llm_root_raw = os.environ.get("STEGVERSE_LLM_ADAPTER_ROOT", "").strip()
     if terminal_pass and llm_root_raw:
         llm_root = Path(llm_root_raw).expanduser().resolve()
         projector = llm_root / "scripts/project_independent_parent_activation.py"
@@ -187,9 +222,30 @@ def consume(
     elif terminal_pass:
         projection = {"attempted": False, "state": "NOT_AVAILABLE", "reason": "LLM_ADAPTER_ROOT_NOT_MATERIALIZED"}
 
+    # This is a consumer-boundary outcome only. A source check, child JSON
+    # envelope or successful process exit cannot impersonate native InTr ALLOW.
+    if not bridge_ok:
+        failure_code = "PORTABLE_BRIDGE_RESULT_NOT_VERIFIED"
+    elif not terminal_pass:
+        failure_code = "PARENT_TERMINAL_RECONSTRUCTION_NOT_VERIFIED"
+    elif projection.get("state") != "VERIFIED":
+        failure_code = "ACTIVATION_EVIDENCE_PROJECTION_NOT_VERIFIED"
+    else:
+        failure_code = None
+    disposition = "ALLOW" if failure_code is None else "FAIL_CLOSED"
+
     receipt = {
         "schema": "stegverse.resident-execution-request-consumption/v1",
         "state": "ATTEMPT_RECORDED",
+        "disposition": disposition,
+        "disposition_scope": "CONSUMER_RETURN_AND_ACTIVATION_PROJECTION_ONLY",
+        "consequence_committed": failure_code is None,
+        "failed_predicate": failure_code,
+        "retry_entrypoint": None if failure_code is None else "EXISTING_MANIFEST_BOUND_OWNER_CORRECTION",
+        "next_attempt": None if failure_code is None else "REPAIR_FIRST_PROVEN_FAILED_STAGE_WITH_NEW_ADMITTED_MANIFEST",
+        "upstream_parent_terminal_claim_observed": terminal_pass,
+        "upstream_parent_receipt_sha256_verified_by_consumer": False,
+        "authentic_intr_disposition_observed_by_consumer": False,
         "request_id": request["request_id"],
         "request_sha256": request_hash,
         "task_id": TARGET_TASK,
@@ -225,7 +281,7 @@ def main() -> int:
     print(json.dumps(receipt, sort_keys=True))
     if receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED"}:
         return 0
-    return 0 if receipt.get("runtime_execution_attempted") is True else 1
+    return 0 if receipt.get("disposition") == "ALLOW" or receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED"} else 1
 
 
 if __name__ == "__main__":
