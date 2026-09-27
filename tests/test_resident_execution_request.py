@@ -55,6 +55,9 @@ class ResidentExecutionRequestTests(unittest.TestCase):
 
             first = mod.consume(source, runtime, runner=runner)
             self.assertEqual(first["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(first["disposition"], "FAIL_CLOSED")
+            self.assertEqual(first["failed_predicate"], "PORTABLE_BRIDGE_RESULT_NOT_VERIFIED")
+            self.assertFalse(first["consequence_committed"])
             self.assertTrue(first["runtime_execution_attempted"])
             self.assertFalse(first["request_granted_authority"])
             self.assertEqual(first["fresh_fence_minimum_exclusive"], 24)
@@ -96,6 +99,81 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             receipt = mod.consume(source, runtime, runner=runner)
             self.assertEqual(receipt["state"], "ATTEMPT_RECORDED")
             self.assertEqual(receipt["request_id"], "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002")
+
+    def test_nested_parent_handoff_is_not_terminal_even_on_zero_exit(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            runtime = root / "runtime"
+            (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
+            (runtime / mod.TARGET_ENTRYPOINT).parent.mkdir(parents=True)
+            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\\n", encoding="utf-8")
+            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\\n", encoding="utf-8")
+
+            def runner(command, **kwargs):
+                return SimpleNamespace(returncode=0, stdout=json.dumps({
+                    "schema": "stegverse.resident-refresh-targeted-execution/v3",
+                    "task_id": mod.TARGET_TASK,
+                    "mode": mod.TARGET_MODE,
+                    "execution_returncode": 0,
+                    "execution_result_observed": True,
+                    "execution_result": {
+                        "schema": "stegverse.independent-ecosystem-chat-parent-execution/v1",
+                        "task_id": mod.TARGET_TASK,
+                        "state": "HANDOFF_READY",
+                        "attempt_fencing_token": 25,
+                    },
+                }) + "\\n", stderr="")
+
+            receipt = mod.consume(root / "source", runtime, runner=runner)
+            self.assertEqual(receipt["disposition"], "FAIL_CLOSED")
+            self.assertEqual(receipt["failed_predicate"], "PARENT_TERMINAL_RECONSTRUCTION_NOT_VERIFIED")
+            self.assertFalse(receipt["upstream_parent_terminal_claim_observed"])
+            self.assertFalse(receipt["post_parent_activation_projection"]["attempted"])
+
+    def test_nested_parent_completed_fails_closed_without_original_projection(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            runtime = root / "runtime"
+            (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
+            (runtime / mod.TARGET_ENTRYPOINT).parent.mkdir(parents=True)
+            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\\n", encoding="utf-8")
+            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\\n", encoding="utf-8")
+            activation = {
+                "schema": "stegverse.ecosystem-chat-independent-parent-activation/v1",
+                "task_id": mod.TARGET_TASK,
+                "state": "PASS",
+                "fencing_token": 25,
+                "credential_authority": "TV/TVC",
+                "github_token_required": False,
+                **{key: True for key in (
+                    "sovereign_runtime_execution_surface_observed",
+                    "ephemeral_e1_e2_execution_observed", "measured_usage_persisted",
+                    "provider_usage_reconstruction_pass", "transition_reconstruction_pass",
+                    "same_execution", "persistent_conversational_runtime_ready",
+                )},
+            }
+
+            def runner(command, **kwargs):
+                return SimpleNamespace(returncode=0, stdout=json.dumps({
+                    "schema": "stegverse.resident-refresh-targeted-execution/v3",
+                    "task_id": mod.TARGET_TASK, "mode": mod.TARGET_MODE,
+                    "execution_returncode": 0, "execution_result_observed": True,
+                    "execution_result": {
+                        "schema": "stegverse.independent-ecosystem-chat-parent-execution/v1",
+                        "task_id": mod.TARGET_TASK,
+                        "state": "COMPLETED", "attempt_fencing_token": 25,
+                        "terminal_activation_receipt": activation,
+                    },
+                }) + "\\n", stderr="")
+
+            from unittest.mock import patch
+            with patch.dict("os.environ", {"STEGVERSE_LLM_ADAPTER_ROOT": ""}):
+                receipt = mod.consume(root / "source", runtime, runner=runner)
+            self.assertTrue(receipt["upstream_parent_terminal_claim_observed"])
+            self.assertEqual(receipt["disposition"], "FAIL_CLOSED")
+            self.assertEqual(receipt["failed_predicate"], "ACTIVATION_EVIDENCE_PROJECTION_NOT_VERIFIED")
+            self.assertFalse(receipt["authentic_intr_disposition_observed_by_consumer"])
+            self.assertFalse(receipt["consequence_committed"])
 
     def test_missing_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
