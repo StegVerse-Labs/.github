@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_MERGED_RUNTIME_HOLD_PENDING",
+  "checkout_state": "SOURCE_COMPLETE_AUTHENTIC_HOLD_RUNTIME_UNOBSERVED_NO_VERIFIED_SESSION_CHECKOUT",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
