@@ -1,3 +1,7 @@
+## Distributed Coherence source-candidacy review (2026-09-27)
+
+The [DC nonempty-node and SDK provenance assessment](docs/AEX_DC_NONEMPTY_NODE_SDK_ASSESSMENT_G262.md) records the exact native evaluator's vacuous `all([])` counterexample: empty/missing nodes plus global PASS yields source ALLOW-CANDIDATE. Native DC owner must separately admit typed nonempty-node specimen binding through the existing generic SDK route. This is not theorem acceptance, InTr ALLOW or authentic SDK/runtime invocation.
+
 ## Admissible-Existence RE bounded readiness review (2026-09-27)
 
 The [RE readiness classifier and SDK assessment](docs/AEX_RE_READINESS_CLASSIFIER_SDK_ASSESSMENT_G261.md) records an independently enumerated 192-case source classifier partition (READY 1, INCOMPLETE 31, BLOCKED 160), demonstrates that wrong-boundary metadata can still yield source READY, and specifies original-owner specimen-binding controls for the existing generic SDK route. RE proof obligations remain tested_not_proven; source READY is not InTr ALLOW or entropy-reduction proof. Native RE source ownership remains separate.
