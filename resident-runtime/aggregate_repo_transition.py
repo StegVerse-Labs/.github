@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,base64,hashlib,json,os,tempfile
+import argparse,base64,fcntl,hashlib,json,os,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -132,7 +132,46 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
         return row
     return None
 
-def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
+def _atomic_json(path, value):
+    """Durably replace a JSON record while holding the organization append lock."""
+    path = Path(path)
+    fd, name = tempfile.mkstemp(prefix=".append-", dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(name, path)
+        directory_fd = os.open(str(path.parent), os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
+                         predecessor_org_state_sha256=None, successor_org_state_sha256=None,
+                         boundary_evidence=None, authority_effect="NONE"):
+    """Serialize existing organization appends; never treat recording as authority."""
+    root = ledger_root()
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    with (root / ".append.lock").open("a+b") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            return _aggregate_transition_locked(
+                receipt, org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+            )
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+def _aggregate_transition_locked(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
     source=verify_source(receipt)
     root=ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
     existing=_existing_exact_source(
@@ -162,8 +201,8 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     }
     digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
     if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
-    if not fp.exists(): fp.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n")
-    h.write_text(json.dumps({"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)},indent=2,sort_keys=True)+"\n")
+    if not fp.exists(): _atomic_json(fp,record)
+    _atomic_json(h,{"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)})
     return record
 
 def main():
