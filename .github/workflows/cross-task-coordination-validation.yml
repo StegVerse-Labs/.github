@@ -190,6 +190,7 @@ jobs:
             tests.test_audit_canonical_task_projections \
             tests.test_task_runtime_resolution \
             tests.test_g236_exact_owner_projection \
+            tests.test_elan_hold_owner_continuity_projection \
             tests.test_component010_predecessor_unittest \
             tests.test_component010_source_refresh_carriage \
             tests.test_component010_unattested_origin_refusal \
