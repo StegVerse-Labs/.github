@@ -50,7 +50,8 @@ class ExternalAIOrgFirstTests(unittest.TestCase):
         b = p["boundary"]
         self.assertIn("provider_specific_payload_projection", b["llm_adapter_owns"])
         self.assertIn("terminal_session_destruction", b["stegbrowser_owns"])
-        self.assertEqual(b["handoff"], "STEGBROWSER_TO_LLM_ADAPTER_ON_BOUND_PROVIDER_REQUEST_AND_AUTHENTIC_INGRESS_ALLOW")
+        self.assertEqual(b["api_adapter_handoff"], "STEGBROWSER_TO_LLM_ADAPTER_ON_BOUND_PROVIDER_REQUEST_AND_AUTHENTIC_INGRESS_ALLOW")
+        self.assertEqual(b["adapter_selection"], "ONLY_WHEN_MANIFEST_SELECTED_OPERATION_REQUIRES_PROVIDER_TRANSLATION")
         self.assertFalse(b["web_ui_login_equivalent_to_approved_api_provider_call"])
         self.assertEqual({x["provider"] for x in p["providers"]}, {"openai", "anthropic"})
         claude = next(x for x in p["providers"] if x["provider"] == "anthropic")

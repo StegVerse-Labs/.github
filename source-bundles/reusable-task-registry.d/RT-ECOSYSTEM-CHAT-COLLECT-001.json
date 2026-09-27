@@ -1,0 +1,34 @@
+{
+  "reusable_task_id": "RT-ECOSYSTEM-CHAT-COLLECT-001",
+  "name": "Collect named Chat contributions",
+  "purpose": "Reuse the existing distributed workload and reconciliation contract for single, independent parallel or fallback sources; preserve disagreement without model voting becoming governance.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound invocation under existing ownership",
+  "parameter_keys": [
+    "request_hash",
+    "source_bindings",
+    "routing_mode",
+    "existing_operation_refs",
+    "custody_mode"
+  ],
+  "composes": [],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "EXACT_REQUEST_HASH_AND_SOURCE_IDENTITY",
+    "OPTIONAL_FAILURES_RETAINED",
+    "REQUIRED_SOURCES_ACCOUNTED_FOR",
+    "GOVERNED_RETURN_DISPOSITION"
+  ],
+  "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY",
+  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and the existing reusable-task constructor. These are definitions, not an executable runner or admission. Existing StegBrowser / StegOS / WorkerCoordinator / InTr / TV-TVC / organization ledger / Master Records own execution and evidence. The existing trigger stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds its authentic entrypoint. No second runtime or synthetic receipt.",
+  "existing_owner_refs": [
+    "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ]
+}

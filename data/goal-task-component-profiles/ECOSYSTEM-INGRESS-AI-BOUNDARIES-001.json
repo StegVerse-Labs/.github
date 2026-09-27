@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.goal-task-component-profile/v1",
   "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "20000000129000",
   "model": "data/reusable-task-component-model.json",
   "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
   "decomposition_evaluation": {
@@ -222,5 +222,8 @@
     "parallel AI sandbox or defensive-envelope implementations",
     "meeting-room-specific authority planes that duplicate component 011",
     "LLM Adapter duplication of RT-EXTERNAL-ADAPTER-ESTABLISH-001 or downstream canonical owners"
-  ]
+  ],
+  "cosv_source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+  "cosv_evidence_class": "SOURCE_IMPLEMENTED",
+  "cosv_authority_effect": "NONE"
 }

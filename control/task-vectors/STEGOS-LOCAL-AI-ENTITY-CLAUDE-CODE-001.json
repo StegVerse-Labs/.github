@@ -1,0 +1,41 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000103000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+    "StegVerse-Labs/.github#2721",
+    "StegVerse-Labs/StegOS#412",
+    "management/COSV_PROFILE_V1.json"
+  ],
+  "observed_at": "2026-09-25T21:32:44Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Registered coordination projection PROPOSED/UNCLAIMED; no authentic WorkerCoordinator claim/fence",
+    "unassigned_work": "No WorkerCoordinator execution claim exists for this participant; no chat-owned work asserted",
+    "canonical_owner_installed": "Proposed same-commit registration in canonical Registry with existing StegOS source owner, effective only after authorized PR merge",
+    "blocker_count": "Exact unresolved blocker_count derived from canonical task shard: 3",
+    "evidence_complete": "No authentic governed participant result with per-participant custody reconstructed",
+    "activated": "No authentic participant runtime transition is evidenced",
+    "propagated": "No benchmark public-release proof"
+  },
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}

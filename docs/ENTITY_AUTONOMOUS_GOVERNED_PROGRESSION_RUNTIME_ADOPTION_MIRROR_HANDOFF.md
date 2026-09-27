@@ -186,3 +186,12 @@ The two long-running goals are not permitted to remain open because of a false s
 ## Human action
 
 None currently required.
+
+
+## Current portable-dispatch completion evidence correction — source proposal, 2026-09-25
+
+The existing autonomous-progression Healer schedule and generic portable bridge already select the exact `canonical_work_coordination` consumer. Source trace disclosed a narrower evidence-classification defect in `scripts/refresh_and_dispatch_resident_requests.py`: the exact current per-task Canonical Work consumption receipt was mandatory for other scoped Canonical Work goals, but not for `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`. The portable bridge could therefore report `REFRESH_AND_DISPATCH_COMPLETE` for this goal based on generic dispatcher success without requiring evidence that the original request was consumed.
+
+This bounded source repair adds the existing original receipt path to `CANONICAL_GOAL_CONSUMPTION_REL`. The existing verifier already requires a current same-dispatch outcome for the exact task with matching original request digest and bootstrap receipt, `COMPLETED` retained task receipt, and no credential material/network source fetch. Missing, stale, mismatched, nonterminal or unrelated receipts must produce `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, not portable completion. This changes only proof-of-consumption classification: it does not imply WorkerCoordinator claim/fence, Interlock/InTr admission, original organization/Master Records custody, automatic successor selection or production runtime execution. No new selector, scheduler, machine, credential lane, authority or runtime is added.
+
+Exact source regression: `tests/test_autonomous_progression_portable_consumption_binding.py`. Validate this source repair through exact-head CI, current-main ancestry and the existing owner's authorized approval before protected merge. Original request and Healer schedule stay unchanged. The earliest authentic unobserved proof remains the standing Healer visit and corresponding same-invocation resident dispatcher plus original per-task consumption, followed by authentic WorkerCoordinator/InTr and reconstruction. A GitHub-only session and an empty optional Remote Desktop device list are not authentic resident failure evidence.

@@ -1,0 +1,24 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-READINESS-PROBE-DISCIPLINE-004",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_READINESS_PROBE_DISCIPLINE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:tasks/SDK-READINESS-PROBE-DISCIPLINE-004.json"
+  ],
+  "exact_metrics": {
+    "lifecycle": "ACTIVE",
+    "archive_ready": false,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false,
+    "parent_goal": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+    "readiness_model_source_implemented": true,
+    "readiness_regression_tests_authored": true,
+    "readme_reconciled": false,
+    "validation_observed": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-READINESS-PROBE-DISCIPLINE-004.json"
+}

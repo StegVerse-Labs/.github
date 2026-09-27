@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.mir-tvc-provider-roundtrip-healer-carrier-reconciliation/v1",
+  "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "observed_at": "2026-09-21",
+  "healer_pr": 99,
+  "healer_validated_head": "3ecb5adc92d5343f0cce2cf3298840fdb10a7c7f",
+  "healer_merge": "b883247840342b117fcc9ed07edebb77eed1916d",
+  "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+  "tracking_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "schedule_addressability": "CLOSED",
+  "device_dependency": {
+    "remote_desktop_required": false,
+    "persistent_runner_required": false,
+    "second_user_operated_device_required": false
+  },
+  "evidence_observation": {
+    "healer_scheduler_receipt": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "one_shot_activation_receipt": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "mir_request_consumption_receipt": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "mir_provider_operation_receipt": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "mir_reusable_trigger_receipt": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "next_real_boundary": "MACHINE_OWNED_EXISTING_NEUTRAL_REUSABLE_CARRIER_EXECUTION",
+  "no_new_scheduler": true,
+  "no_new_runtime": true,
+  "no_new_provider_broker": true,
+  "no_new_credential_path": true,
+  "authority_effect": "NONE_RECONCILIATION_ONLY"
+}

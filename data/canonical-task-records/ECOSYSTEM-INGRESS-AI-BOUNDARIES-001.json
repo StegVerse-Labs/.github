@@ -7,7 +7,7 @@
   "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; ungoverned/non-ChatGPT AI constrained at StegVerse-controlled consequence boundaries by a reusable defensive envelope that preserves external AI sovereignty; External AI Meeting Room as one concrete instantiation; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "20000000129000",
   "repository": "StegVerse-Labs/.github",
   "issue_ref": "StegVerse-Labs/.github#1620",
   "handoff_projection_refs": [
@@ -166,5 +166,17 @@
     "claimed": false,
     "validated": false,
     "runtime_observed": false
-  }
+  },
+  "cosv_tracking": {
+    "profile": "task.v1",
+    "vector": "20000000129000",
+    "vector_state": "EMITTED",
+    "evidence_class": "SOURCE_IMPLEMENTED",
+    "observed_registry_generation": 245,
+    "source_state_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+    "index_ref": "control/task-vector-index.json",
+    "session_admission_authentic_observed": false,
+    "execution_authority_effect": "NONE"
+  },
+  "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
 }

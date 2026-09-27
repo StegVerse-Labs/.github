@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.aex.native-math-processing-census/v1",
-  "status": "SOURCE_CENSUS_WITH_ORIGINAL_NATIVE_STCM_FIXTURE_EVIDENCE_AND_CHF_MATH_BOUNDARY",
-  "central_registry_generation_observed": 239,
+  "status": "ORIGINAL_CHF_3_ET_1_HPS_3_PRIVATE_SYNTHETIC_SDK_MATH_INVOCATIONS_VERIFIED_OTHER_NATIVE_SOURCES_AND_GOVERNED_RUNTIME_NOT_ESTABLISHED",
+  "central_registry_generation_observed": 258,
   "canonical_org_role_registry": "Admissible-Existence/.github/data/formalism-worker-registry.json",
   "canonical_org_role_registry_sha": "d7c7086d6cb544f33112927a2e2a29a02fad4258",
   "registered_role_count": 32,
@@ -11,9 +11,10 @@
     "governance",
     "ecosystem_diagnostic",
     "purpose_bound_worker",
-    "atomic_task_worker"
+    "atomic_task_worker",
+    "native_source_math"
   ],
-  "native_math_manifest_invocations_verified": 0,
+  "native_math_manifest_invocations_verified": 7,
   "authentic_governed_math_runs_verified": 0,
   "entries": [
     {
@@ -95,9 +96,21 @@
       "owner": "NATIVE_SOURCE_REPOSITORY",
       "candidate_callable": "src/et/temporal.py::resolve_version",
       "inspected_surface_kind": "DETERMINISTIC_TEMPORAL_RESOLUTION",
-      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_1_SYNTHETIC_CASE",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+      "verification_note": "ET private original source PR #11 merged 250d2c09... original src/et/temporal.py SHA1 blob unchanged; exact-head run 36233578328 SUCCESS installed existing public SDK generic native_source_math route and owner-local original ET adapter, genuinely returned synthetic v2 and verified distinct native/canonical-manifest/SDK request/pre-enrichment result hashes. Conflict and revoked cases, forged specimen/source/native digest are negative source tests. Private artifact 10903487505 independently downloaded; exact SHA256 retained. ET source-only compatibility only; no general distribution/standing/runtime/Master Records.",
+      "sdk_native_source_integration_ref": "Admissible-Existence/ET#11@250d2c09b54cefc0d4b7c3ba58babba6db379466",
+      "native_exact_source_commit": "ae7fe62ba3dd988f5509b1a9ba7a2d981ef7655c",
+      "original_native_git_blob": "b520bae77ea5cedda95672c5529a2bc5fefc7b33",
+      "sdk_native_adapter_git_blob": "a89787dfa797de288aec7afea2f4bd6bd26dc9be",
+      "original_owner_hosted_run": 36233578328,
+      "private_artifact_id": 10903487505,
+      "private_artifact_sha256": "sha256:556630bcb642a831d8e83226e83a6407d124f8eed12bd4a02fb9e592f0ee39d8",
+      "original_specimen_sha256": "sha256:d1b87fd8f46ad62aa5955d03d52eb2478253b40db507f73b14307ddfedae1946",
+      "original_native_result_sha256": "sha256:b4a660aba3d991db9771f6503a3e774212ff4c55655a42280097202c2bba6afe",
+      "sdk_canonical_manifest_sha256": "bd43df50edc5fec49fa5c96887da2a507d86148b5bcc920c75cef01f852f2676",
+      "sdk_request_sha256": "3665f049bd43f291265a32ecad191ed5aef9e486204941e2ecf5dd375b1f4e96",
+      "sdk_pre_enrichment_processor_sha256": "469736b01de7f65dc3b5c1da21cbd3a2f6ffe938c5d7831fa45ec094c18d42e3"
     },
     {
       "repository": "Admissible-Existence/learning-transition-governance",
@@ -123,19 +136,23 @@
       "repository": "Admissible-Existence/CHF",
       "role": "source",
       "owner": "NATIVE_SOURCE_REPOSITORY",
-      "candidate_callable": "tools/check_chf_thresholds.py; validators/c.py::classify",
-      "inspected_surface_kind": "DECLARATIVE_THRESHOLD_VALIDATOR_AND_SEPARATE_READY_CLASSIFIER_NOT_PER_SPECIMEN_MATH",
-      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "candidate_callable": "tools/evaluate_chf_specimen_thresholds.py::evaluate_specimen",
+      "inspected_surface_kind": "NATIVE_SOURCE_FOUR_ORIGINAL_DECLARED_INEQUALITIES_ON_SUPPLIED_SYNTHETIC_VALUES_ONLY",
+      "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_CASES",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Exact CHF tools/*, formalism/* and validators/c.py inspected; threshold/conditions scripts test JSON declarations, validators/c.py::classify checks ready/declared/mapped/scoped flags and no R/O/A/K values or horizon flux. Original-owner CHF six-checker and Tri-Form CI pass source contracts (runs 36086125184, 36086125211), not numerical same-specimen math.",
-      "native_exact_source_commit": "369737c3ca1985cd9b1e0a2696ebfbc7ecb84b93",
-      "same_specimen_math_status": "NOT_ESTABLISHED",
+      "verification_note": "Original CHF PR #5 merged 27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a after exact-head six existing validators plus 14 new source tests and four synthetic frozen source cases, CHF Validation run 36095046140 and Tri-Form run 36095046224 SUCCESS. Both original native owners tested identical source digest fa95...bead02 but with different limited semantics. Original four inequalities only; supplied R/O/A/K are explicitly synthetic, physical heat and full consequence horizon NOT_ESTABLISHED; generic SDK manifest invocation not proved. Later private CHF PR #6 exact-source validation run 36231939908 invoked unchanged original owner callable through pinned public SDK PR #348 generic route on three frozen synthetic original cases; source/manifest/request/processor hashes verified, no general private-package distribution, full horizon, physical heat or governed runtime claim.",
+      "native_exact_source_commit": "27b42eb19f8adc2dd2ee3d1130045a6c5d15a19a",
+      "same_specimen_math_status": "BOUNDED_DECLARED_THRESHOLD_NATIVE_EVALUATION_VERIFIED_FULL_HORIZON_NOT_ESTABLISHED",
       "needed_native_callable_contract": {
-        "input": "Frozen specimen's original source digest; explicit post-transition recoverability R, observability O, absorption A, coherence K, independently specified thresholds and horizon flux if defined by the CHF owner",
-        "output": "Source-owner-defined per-specimen threshold/horizon evaluation and reasoned unknown/deny decisions with untouched native result hash",
-        "status": "UNDEFINED_IN_INSPECTED_NATIVE_SOURCE",
+        "input": "Actual original-source frozen specimen bytes (SHA-256 verified), externally supplied four numerical R/O/A/K values and explicit source threshold provenance; fully derived consequence field and physical measurements NOT_ESTABLISHED",
+        "output": "Versioned original-source four-declared-threshold dispositions, UNKNOWN on absent measures, exact input/result hashes; full consequence horizon and thermodynamic heat NOT_ESTABLISHED",
+        "status": "FOUR_ORIGINAL_DECLARED_INEQUALITIES_IMPLEMENTED_FULL_CONSEQUENCE_MODEL_STILL_NOT_ESTABLISHED",
         "authority": "NATIVE_CHF_OWNER_ONLY"
-      }
+      },
+      "native_source_run_ref": "Admissible-Existence/CHF#5; workflow run 36095046140; artifact 10847107096",
+      "sdk_native_source_integration_ref": "Admissible-Existence/CHF#6@86f61c94a6d7b8fae9c2b09986ce2326fbca94d2",
+      "sdk_generic_route_ref": "StegVerse-org/StegVerse-SDK#348@3ba4de05b639059d1bffb036b32b99d53df7526e",
+      "sdk_original_source_invocation_count": 3
     },
     {
       "repository": "Admissible-Existence/RE",
@@ -223,9 +240,17 @@
       "owner": "NATIVE_SOURCE_REPOSITORY",
       "candidate_callable": "tools/verify_standing_score.py::verify_standing_score",
       "inspected_surface_kind": "NUMERIC_STANDING_SCORE_VERIFIER",
-      "sdk_manifest_invocation": "NOT_ESTABLISHED",
+      "sdk_manifest_invocation": "SDK_MANIFEST_INVOKABLE_BOUNDED_PRIVATE_ORIGINAL_SOURCE_3_SYNTHETIC_SCORE_CLASSES",
       "authentic_governed_runtime": "NOT_ESTABLISHED",
-      "verification_note": "Source presence and historic owner evidence are not fresh executable tests."
+      "verification_note": "Original private HPS owner PR #7 merged 2d971d5..., original verify_standing_score.py exact blob unchanged. Exact-head HPS Verify run 36233899275 PASS privately installed unchanged owner source via generic SDK math route and ran three original synthetic standing-score source classifications (RESTORED, DEGRADED, FAILED hard fail) with four hash lineage per case and adversarial source/specimen/native mismatch refusals. This is source-only classifier evidence, NOT SPE standing or StegGate commit authority, full HPS proof or live runtime. Independently retrieved original private hashes-only artifact 10903218434.",
+      "sdk_native_source_integration_ref": "Admissible-Existence/HPS#7@2d971d5dba1b89b7bb001f9eb0127818f43d932e",
+      "original_native_git_blob": "91c205bae95d23b20e3814fcd58b5fdb0d603959",
+      "owner_adapter_git_blob": "c02e40569cec165399ffa743a70b7d65697ccbfa",
+      "hosted_verification_run": 36233899275,
+      "private_artifact_id": 10903218434,
+      "artifact_zip_sha256": "sha256:9a0d4358b8832012e678658e43814f48e6253347f8e93390229068d343c21b86",
+      "native_sdk_invocation_count": 3,
+      "standing_determination_authority": "NONE"
     },
     {
       "repository": "Admissible-Existence/FI",

@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "EDITORIAL_PR_2593_MERGED_CORRECTED_SOURCE_VERIFIED_PUBLICATION_REVIEW_PENDING",
+  "checkout_state": "HOLD_NATIVE_PACKET_PREPARED_SDK_GENERIC_SOURCE_GUARD_MERGED_RUNTIME_HOLD_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "71000000100100",
@@ -23,7 +23,10 @@
     "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md",
     "docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md",
     "docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md",
-    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun"
+    "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun",
+    "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md",
+    "docs/ELAN_HOLD_IMMEDIATE_EXECUTION_SDK_VERSION_ROADMAP.md",
+    "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
   ],
   "dependencies": [
     {
@@ -61,6 +64,18 @@
       "kind": "AUTHOR_CONFIRMATION",
       "state": "RESOLVED_NO_REPRODUCTION_ATTEMPT",
       "ref": "Coauthor-confirmed 2026-09-23: earlier annotation corrected during transcript review, not reproduction"
+    },
+    {
+      "dependency_id": "DEP-HOLD-SDK-EVALUATOR-QUALIFICATION",
+      "kind": "CAPABILITY_QUALIFICATION",
+      "state": "GENERIC_SOURCE_GUARD_MERGED_VALIDATED_AUTHENTIC_HOLD_RUNTIME_PENDING",
+      "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md; SDK PR #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61 after thirteen applicable exact-head validations passed at c48bed6bfb347227313760f1974695bafa7a0800; authentic HOLD and Master Records completion not yet observed"
+    },
+    {
+      "dependency_id": "DEP-HOLD-JOINT_NATIVE_COLLECTION",
+      "kind": "COAUTHOR_PROTOCOL",
+      "state": "ORDERED_PACKET_PREPARED_EXACT_PROMPTS_NOT_YET_JOINTLY_FROZEN",
+      "ref": "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
     }
   ],
   "blockers": [],
@@ -116,7 +131,18 @@
     "coauthor_substantive_review_scope": "Original Experiment 2 source attribution correction and methodological objections in supplied LinkedIn messages; NOT manuscript Revision 3 or abstract approval",
     "editorial_pr_merge_author_approval_required": false,
     "publication_author_approval_required": true,
-    "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13"
+    "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13",
+    "hold_sdk_capability_source_assessed": true,
+    "hold_sdk_exact_experiment_qualified": false,
+    "sdk_historical_test2_fixture_provenance_defect_identified": true,
+    "hold_native_ordered_packet_prepared": true,
+    "hold_native_collection_author_approved": false,
+    "hold_native_source_received": false,
+    "sdk_generic_source_guard_pr": 340,
+    "sdk_version_roadmap_prepared": true,
+    "sdk_generic_source_guard_merged": true,
+    "sdk_generic_source_guard_merge_sha": "a72fa8f3b1656bd31c3824bd1e2b374b5e805d61",
+    "sdk_generic_source_guard_final_head_ci_passed": true
   },
   "completion": {
     "claimed": false,
@@ -124,13 +150,11 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
+    "JOINTLY_FREEZE_EXACT_HOLD_STIMULI_AND_COLLECT_AUTHENTIC_SOURCE",
+    "EXECUTE_AUTHENTIC_HOLD_MANIFEST_AND_PRESERVE_DISPOSITION",
     "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
-    "OBTAIN_COAUTHOR_FACCT_ABSTRACT_REVIEW",
-    "DRAFT_JOINT_HOLD_PROTOCOL_AND_REQUEST_SOURCE_METADATA",
     "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
-    "CONSUME_COAUTHOR_SUBSTANTIVE_REVIEW",
-    "RECORD_AUTHORSHIP_CONTRIBUTION_PROVENANCE",
-    "PREPARE_VENUE_SPECIFIC_SUBMISSION_MATERIALS_WHEN_AUTHORIZED"
+    "OBTAIN_FINAL_SUBMISSION_AUTHORIZATION"
   ],
   "handoff_projection_refs": [
     "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"

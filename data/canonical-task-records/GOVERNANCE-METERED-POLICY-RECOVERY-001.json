@@ -8,7 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "10100000124000",
   "source_refs": [
     "https://github.com/StegVerse-Labs/.github/issues/2632",
     "https://github.com/StegVerse-Labs/Governance/issues/46",
@@ -118,5 +118,17 @@
     "external_repository_mutation_approved": false,
     "canonical_generation_before_source_proposal": 219,
     "old_source_pr_head": "f517598709b58ad37d37bc4b34a26a73926a290c"
-  }
+  },
+  "cosv_tracking": {
+    "profile": "task.v1",
+    "vector": "10100000124000",
+    "vector_state": "EMITTED",
+    "evidence_class": "SOURCE_IMPLEMENTED",
+    "observed_registry_generation": 245,
+    "source_state_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json",
+    "index_ref": "control/task-vector-index.json",
+    "session_admission_authentic_observed": false,
+    "execution_authority_effect": "NONE"
+  },
+  "source_state_vector_ref": "control/task-vectors/GOVERNANCE-METERED-POLICY-RECOVERY-001.json"
 }

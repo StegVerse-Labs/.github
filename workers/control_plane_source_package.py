@@ -51,6 +51,7 @@ ALLOWED_EXACT = {
     ".stegverse/transition-ledger/org-contract.json",
     "resident-runtime/aggregate_repo_transition.py",
     "resident-runtime/organization_batch_custody.py",
+    "resident-runtime/organization_custody_readback.py",
 }
 FORBIDDEN_PREFIXES = (
     ".git/", "receipts/", "checkpoints/", "events/", "heartbeats/",

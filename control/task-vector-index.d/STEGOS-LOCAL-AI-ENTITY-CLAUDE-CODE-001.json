@@ -1,0 +1,12 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
+  "vector": "10100000103000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md"
+}
