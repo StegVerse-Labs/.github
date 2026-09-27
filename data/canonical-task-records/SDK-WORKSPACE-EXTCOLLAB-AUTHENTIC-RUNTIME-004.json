@@ -157,5 +157,58 @@
   "runtime_resolution": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
   "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
   "latest_runtime_observation": {"observed_at": "2026-09-13T15:21:00Z", "evidence_ref": "receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-NODE-KV-CONTINUITY-CORRECTION-20260913.json", "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE", "established_node_required": true, "specific_physical_device_required": false, "task_bound_established_node_execution_observed": false, "applicable_kv_skap_continuity_binding_observed": false, "retained_drive_reseal_receipt_matches": 0, "retained_drive_listener_receipt_matches": 0, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_AND_APPLICABLE_KV_SKAP_CONTINUITY", "authority_effect": "NONE_OBSERVATION_ONLY"},
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Task-specific projection is being brought into alignment with existing global invariants that already define device interchangeability, Node non-authority semantics, and KV/SKAP user-verification exclusivity.", "evidence_refs": ["README.md", "data/task-registry-global-invariants.json", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]}
+  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Task-specific projection is being brought into alignment with existing global invariants that already define device interchangeability, Node non-authority semantics, and KV/SKAP user-verification exclusivity.", "evidence_refs": ["README.md", "data/task-registry-global-invariants.json", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]},
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ]
+  }
 }
