@@ -1803,3 +1803,8 @@ Registry generation 260 projects existing `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` ex
 ### SV-DN-1 SDK source anchor reconciliation (2026-09-26)
 
 The proposed source-preparation correction pins the current SDK main `stegverse/sovereign_validation_runtime.py` blob `3e400b83f11fa0ec41ca8597d196650ec4337999` across the source-prep worker and both executable handoffs. Prior `814d4cb6...` and `6bc09446...` identities remain historical provenance. This does not establish exact-head CI, sovereign execution, the v2 source-prep receipt, SDK admission, Master Records reconstruction or public dashboard publication.
+
+
+## Cross-stream integration coordination (Registry generation 260)
+
+The existing [cross-task coordination handoff](docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md) now carries an evidence-bounded SDK 1.5 / SHWP / Admissible-Existence / SV-DN-1 seam matrix. Canonical owner `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`, is **PROPOSED** in Registry generation 260; an enabled hourly integration monitor and source-adoption activity are not canonical ACTIVE status or resident execution. Native owners retain source changes and authentic runtime/custody proof. SV-DN-1 source preparation remains independent of route-specific InTr; the first production round retains its separate InTr prerequisite. This update repairs documentation-state conflation only and grants no new authority or runtime capability.
