@@ -1412,31 +1412,9 @@ Direct receipt producers may not treat request-carried predecessor status or dig
 A successor cannot reuse an in-memory Master Records result merely because the upstream caller already validated it. `RTC-STEGVERSE-EGRESS-007` now reconstructs the exact `RTC-SDK-RETURN-006` predecessor at RTC007 receipt emission, verifies closure-field equality, and carries the shared `PREDECESSOR_MASTER_RECORDS_CLOSURE` evidence before canonical custody.
 
 
-## Public repository consumption attribution — 2026-09-21
+## Public repository consumption attribution — refreshed 2026-09-26
 
-`PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001` separates GitHub clone traffic from adoption claims. September `StegVerse-Labs/.github` traffic is attributed only from evidence: known StegVerse-controlled clone/checkout producers are inventoried first; generic external indexing/scanning remains distinct from StegVerse-specific downstream consumption; and unexplained traffic stays `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED`. Canonical handoff: `docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md`.
-
-
-### StegAgents purpose-worker warrant predecessor reconstruction
-
-The sequence-2 purpose-worker `TV_TVC_WARRANT_POLICY_VERIFIED` transition no longer accepts a worker-claim string or an un-reconstructed in-memory closure as predecessor state. Its existing graph predecessor receipt is reconstructed through canonical Master Records at the exact warrant receipt-emission boundary, and the resulting `PREDECESSOR_MASTER_RECORDS_CLOSURE` is carried before successor custody.
-
-
-### Device/KV executor import and test-isolation repair — 2026-09-21
-
-The existing Device/KV/SKAP event executor now resolves bare sibling-script imports identically whether invoked directly or loaded by a test/spec importer. The canonical predecessor-closure test fixture also confines its synthetic `heartbeat_runtime` package to the module-under-test import, preventing suite-order leakage that can shadow the real runtime package. This is source/validation hygiene only and grants no runtime, transition, credential, custody, installation, or device authority.
-
-### Device/KV validation repair merge evidence — 2026-09-21
-
-`.github` PR #2565 merged as `4661a8eb839241c0bff188a991374f45fac1b334` after exact-head PR validations `35686779849` and `35686779918` passed; push validation `35686765254` also passed. This closes only the executor import/test-isolation source defect and does not establish any authentic Device/KV/SKAP runtime, installation, authority, or Master Records predicate.
-
-### Device/KV execution-substrate registry reconciliation — 2026-09-21
-
-`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now carries the required canonical execution-substrate resolution, selecting the already-declared admitted ephemeral StegOS Node lane while preserving single-device-first review order, no external-device requirement, and no authority effect. This is registry conformance only; no authentic runtime or installation predicate is promoted.
-
-
-For `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, StegAgents PR #37 removes the purpose-bound state graph's predecessor-set hash from canonical `prior_state_ref_or_hash`. Every graph predecessor is reconstructed through canonical Master Records at the emission boundary; all causal branches remain required evidence, and the last observed completed branch is the exact immediate predecessor for the three-way join. Canonical reconciliation target is Task Registry generation 198.
-
+`PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001` / COSV `20010010100000` remains ACTIVE/CHECKED_OUT and owns attribution for `StegVerse-Labs/.github`. The latest owner-visible rolling 14-day screenshot shows **37,188 clones, 7,662 unique cloners, 24 views and 8 unique visitors**. Exact GitHub Actions reads for 2026-09-10 through 2026-09-23 found 6,636 workflow runs; 2,173 runs map to 25 current source-declared checkout/clone producer workflow paths. Those run counts demonstrate substantial internal clone-capable automation but are not one-to-one clone counts and do not explain the full traffic event. Public GitHub search also finds cross-organization StegVerse references in AdmittedCode, Data-Continuation and AaCT-E repositories; organizational independence and contribution to traffic are not authenticated. Generic external scanning remains plausible, StegVerse-specific external consumption remains unbound to the traffic counts, and all unexplained traffic stays `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED`. Canonical handoff: `docs/PUBLIC_REPOSITORY_CONSUMPTION_ATTRIBUTION_MIRROR_HANDOFF.md`.
 
 ## Ecosystem-scale repository hygiene — 2026-09-21
 

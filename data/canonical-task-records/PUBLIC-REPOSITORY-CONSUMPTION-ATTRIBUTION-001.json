@@ -4,7 +4,7 @@
   "correlation_id": "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
   "root_correlation_id": "PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001",
   "parent_task_id": null,
-  "goal": "Attribute the September 2026 StegVerse-Labs/.github clone spikes against known StegVerse-controlled workflows and repository events, classify only evidence-supported internal automation, generic external indexing/scanning, or StegVerse-specific external consumption, and do not infer adoption from traffic alone.",
+  "goal": "Attribute September 2026 StegVerse-Labs/.github clone spikes against known StegVerse-controlled workflows, repository events, and public downstream references; classify only evidence-supported internal automation, generic external indexing/scanning, or StegVerse-specific external consumption, and do not infer adoption from traffic alone.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "repository": "StegVerse-Labs/.github",
@@ -38,22 +38,27 @@
     "REPOSITORY-VISIBILITY-BOUNDARY-001"
   ],
   "existing_evidence_refs": [
-    "user-supplied GitHub Traffic screenshot showing 34,000 clones / 8,089 unique cloners / 9 views / 4 unique visitors over 14 days",
-    "GitHub Actions daily run counts 2026-09-07 through 2026-09-21 observed through repository API",
-    "2026-09-19 workflow-run distribution: 856 total; KV AI Memory 394; Cross-Task Coordination 175; Purpose-Bound Worker 112; DeepSeek resident 111",
-    "2026-09-13 workflow-run distribution: 748 total; organization control plane 245; Heartbeat Worker 235; Deterministic Suite 234",
-    "current workflow source proves KV AI Memory and Purpose-Bound Worker use actions/checkout while Cross-Task Coordination, DeepSeek resident, organization control plane, Heartbeat Worker, and Deterministic Suite do not",
-    "repository-hygiene reusable workflow currently contains an anonymous explicit git clone of StegVerse-Labs/.github but the introducing commit b8674abfd3a6e4090de188d451448d233e4b47b8 is dated 2026-09-21, after the 2026-09-19 spike",
-    "GitHub commit API observation: 300 commits on 2026-09-13 and 290 commits on 2026-09-19",
-    "GitHub connector traffic endpoints /traffic/clones, /traffic/views, /traffic/popular/referrers, and /traffic/popular/paths are not exposed by the connected fetch surface"
+    "user-supplied GitHub Traffic screenshot for StegVerse-Labs/.github showing 37,188 clones / 7,662 unique cloners / 24 views / 8 unique visitors over the rolling 14-day graph spanning 2026-09-10 through 2026-09-23",
+    "GitHub Actions API exact daily run counts for 2026-09-10 through 2026-09-23 total 6,636 workflow runs",
+    "current-main source scan identifies 25 workflow files containing actions/checkout and/or explicit git clone; 2,173 runs in the same date window map to those source-declared producer paths, which is workflow activity rather than a one-to-one clone-event count",
+    "daily total/source-declared-producer-path run counts 2026-09-10..23: 217/2, 806/42, 461/33, 748/10, 640/158, 453/25, 288/33, 266/69, 490/362, 856/566, 214/129, 602/391, 364/232, 231/121",
+    "2026-09-19 exact run inventory: 856 total; 566 mapped to current source-declared checkout/clone producer paths, including KV AI Memory 394 and Purpose-Bound Worker 112",
+    "repository-hygiene reusable workflow contains an explicit git clone of StegVerse-Labs/.github; its introducing commit b8674abfd3a6e4090de188d451448d233e4b47b8 is dated 2026-09-21 and cannot explain earlier peaks by itself",
+    "prior repository-event observation recorded 300 commits on 2026-09-13 and 290 commits on 2026-09-19, overlapping large unique-cloner peaks without proving causation",
+    "public GitHub code search found cross-organization StegVerse references in AdmittedCode/provider-harness, AdmittedCode/admissibility-receipt, AdmittedCode/coherency-scanner, Data-Continuation/core-lite, and AaCT-E/demo; these are verifiable downstream references but their organizational independence and contribution to clone traffic are not authenticated",
+    "public web search found StegVerse-controlled publication and package surfaces including stegverse.org, LinkedIn, and PyPI; these establish discoverability, not independent adoption",
+    "GitHub connector traffic endpoints /traffic/clones, /traffic/views, /traffic/popular/referrers, and /traffic/popular/paths remain unavailable, so source identity for the unexplained remainder is not authentically attributable"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
+    "LATEST_TRAFFIC_SNAPSHOT_BOUND_TO_CORRECT_REPOSITORY",
     "KNOWN_STEGVERSE_CONTROLLED_CLONE_PRODUCERS_INVENTORIED",
+    "ROLLING_WINDOW_WORKFLOW_ACTIVITY_RECONCILED",
     "SEPTEMBER_SPIKE_DATES_CORRELATED_WITH_REPOSITORY_EVENTS",
     "INTERNAL_AUTOMATION_CONTRIBUTION_BOUNDED_WITHOUT_OVERCLAIM",
     "GENERIC_EXTERNAL_INDEXING_SCANNING_NOT_CONFLATED_WITH_ADOPTION",
     "STEGVERSE_SPECIFIC_EXTERNAL_CONSUMPTION_REQUIRES_INDEPENDENT_DOWNSTREAM_EVIDENCE",
+    "PUBLIC_DOWNSTREAM_REFERENCES_CLASSIFIED_WITHOUT_OWNERSHIP_INFERENCE",
     "UNATTRIBUTED_REMAINDER_RETAINED_AS_UNKNOWN_WHEN_SOURCE_IDENTITY_IS_UNAVAILABLE"
   ],
   "worker_claim": {
