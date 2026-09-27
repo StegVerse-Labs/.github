@@ -473,7 +473,13 @@ def run_registry_cycle(
         command.extend(["--exclude-task-id", spec["task_id"]])
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
     result = parse_json_schema(completed.stdout, "stegverse.task-registry-canonical-work-cycle/v1")
-    accepted_states = {"DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH", "NO_ADMISSIBLE_NONCOLLIDING_TASK"}
+    # This is consumption of the selector's result, not proof of worker execution.
+    # Both existing delegation modes must retain their original result unchanged.
+    accepted_states = {
+        "DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH",
+        "DELEGATED_TO_EXISTING_WORKERCOORDINATOR_STATE_TRANSITION",
+        "NO_ADMISSIBLE_NONCOLLIDING_TASK",
+    }
     completed_ok = bool(completed.returncode == 0 and isinstance(result, dict) and result.get("state") in accepted_states)
     receipt = {
         "schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1",

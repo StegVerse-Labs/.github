@@ -1795,3 +1795,13 @@ Existing canonical coordination owner #1766 maintains a source-only validator fo
 ### Immutable native resident dispatch receipt retention (PR #2630)
 
 The existing resident dispatcher retains each exact selector outcome as a content-addressed immutable receipt before rotating its mutable latest pointer. This source-only retention does not authenticate a host, grant claim/fence authority, prove InTr admission, establish Master Records closure or verify automatic successor selection. See `tests/test_immutable_resident_dispatch_receipt.py` and the canonical handoff.
+
+
+## 2026-09-27 existing manifest-invariant owner projection
+
+Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
+
+The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
+### Canonical Work targeted delegation consumption correction (2026-09-27)
+
+Existing owner #1766 / `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`: the resident Registry-cycle consumer recognizes successful targeted WorkerCoordinator delegation alongside existing Canonical Work ingress delegation. It retains the original nested result and classifies only selector-result consumption; it grants no authority and proves no live worker execution. Nonzero returns and unknown/failure states remain `ATTEMPT_RECORDED`. See `docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md` for validation and the separate authentic evidence boundary.

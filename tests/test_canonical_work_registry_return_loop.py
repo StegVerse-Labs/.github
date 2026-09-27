@@ -1,4 +1,9 @@
 import unittest
+import importlib.util
+import json
+import subprocess
+import tempfile
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +47,49 @@ class CanonicalWorkRegistryReturnLoopTests(unittest.TestCase):
         self.assertIn('"claim_or_fence_minted": False', text)
         self.assertIn('"credential_authority": "TV/TVC"', text)
         self.assertIn('"github_token_runtime_authority": "NONE"', text)
+
+
+class RegistryCycleDelegationReceiptTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        path = CONSUMER.with_name("consume-canonical-work-coordination-bootstrap.legacy.py")
+        spec = importlib.util.spec_from_file_location("registry_return_consumer", path)
+        cls.consumer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.consumer)
+
+    def consume_result(self, result, returncode=0):
+        consumer = self.consumer
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runner = mock.Mock(return_value=subprocess.CompletedProcess(
+                [], returncode, json.dumps(result), ""))
+            with mock.patch.object(consumer, "resolve_local_canonical_source", return_value=root), \
+                 mock.patch.object(consumer, "materialize", return_value=[]), \
+                 mock.patch.object(consumer, "materialize_registry_task_shards", return_value=[]), \
+                 mock.patch.object(consumer, "clean_env", return_value={}):
+                receipt = consumer.run_registry_cycle(root, root, runner=runner)
+            retained = json.loads((root / consumer.TASK_REGISTRY_CYCLE_RECEIPT).read_text())
+            self.assertEqual(receipt, retained)
+            self.assertEqual(retained["result"], result)
+            self.assertFalse(retained["claim_or_fence_minted"])
+            self.assertEqual(retained["authority_effect"], "NONE_REGISTRY_SELECTION_AND_DELEGATION_EVIDENCE_ONLY")
+            return retained
+
+    def test_both_existing_delegation_modes_are_retained_as_completed_consumption(self):
+        for state in ("DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH",
+                      "DELEGATED_TO_EXISTING_WORKERCOORDINATOR_STATE_TRANSITION",
+                      "NO_ADMISSIBLE_NONCOLLIDING_TASK"):
+            with self.subTest(state=state):
+                result = {"schema": "stegverse.task-registry-canonical-work-cycle/v1", "state": state}
+                self.assertEqual(self.consume_result(result)["state"], "COMPLETED")
+
+    def test_failed_and_unknown_delegation_never_becomes_completed_consumption(self):
+        for state, returncode in (("DELEGATED_TO_EXISTING_WORKERCOORDINATOR_STATE_TRANSITION", 1),
+                                  ("EXISTING_PATH_DELEGATION_RECORDED_FAILURE", 0),
+                                  ("UNKNOWN", 0)):
+            with self.subTest(state=state, returncode=returncode):
+                result = {"schema": "stegverse.task-registry-canonical-work-cycle/v1", "state": state}
+                self.assertEqual(self.consume_result(result, returncode)["state"], "ATTEMPT_RECORDED")
 
 
 if __name__ == "__main__":
