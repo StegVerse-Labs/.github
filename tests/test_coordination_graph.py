@@ -133,6 +133,46 @@ class CoordinationGraphTests(unittest.TestCase):
         result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
         self.assertEqual(result["verdict"], "ADMIT_COORDINATION")
 
+    def test_same_task_active_claim_allows_continuation_without_second_worker(self):
+        ledger = self.ledger()
+        ledger["claims"] = [{
+            "claim_id": "C-EXISTING", "task_id": "T", "state": "ACTIVE",
+            "scope": {"repositories": ["O/R"], "paths": ["src/a"]},
+            "worker_id": "worker-1", "worker_instance_id": "worker-1-G9",
+            "fencing_token": 9, "authority_effect": "COORDINATION_ONLY",
+        }]
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        self.assertEqual(result["verdict"], "ADMIT_COORDINATION")
+        self.assertEqual(result["task_id"], "T")
+        self.assertEqual(result["collisions"], [])
+        self.assertEqual(result["authority_effect"], "NONE")
+
+    def test_same_executor_different_task_overlapping_scope_still_collides(self):
+        ledger = self.ledger()
+        ledger["claims"] = [{
+            "claim_id": "C-OTHER", "task_id": "OTHER", "state": "ACTIVE",
+            "scope": {"repositories": ["O/R"], "paths": ["src/a"]},
+            "worker_id": "worker-1", "worker_instance_id": "worker-1-G9",
+            "fencing_token": 9, "authority_effect": "COORDINATION_ONLY",
+        }]
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        self.assertEqual(result["verdict"], "BLOCK_COORDINATION")
+        self.assertIn("ACTIVE_SCOPE_COLLISION", result["reasons"])
+        self.assertEqual(result["collisions"][0]["claim_id"], "C-OTHER")
+
+    def test_same_executor_different_task_disjoint_scope_can_coordinate(self):
+        ledger = self.ledger()
+        ledger["claims"] = [{
+            "claim_id": "C-OTHER", "task_id": "OTHER", "state": "ACTIVE",
+            "scope": {"repositories": ["O/R"], "paths": ["docs/other.md"]},
+            "worker_id": "worker-1", "worker_instance_id": "worker-1-G9",
+            "fencing_token": 9, "authority_effect": "COORDINATION_ONLY",
+        }]
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        self.assertEqual(result["verdict"], "ADMIT_COORDINATION")
+        self.assertEqual(result["collisions"], [])
+        self.assertEqual(result["authority_effect"], "NONE")
+
     def test_missing_blast_radius_blocks_autonomous_augmentation(self):
         ledger = self.ledger()
         del ledger["tasks"][0]["expected_blast_radius"]
