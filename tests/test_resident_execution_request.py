@@ -108,8 +108,8 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             runtime = root / "runtime"
             (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
             (runtime / mod.TARGET_ENTRYPOINT).parent.mkdir(parents=True)
-            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\\n", encoding="utf-8")
-            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\\n", encoding="utf-8")
+            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\n", encoding="utf-8")
+            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\n", encoding="utf-8")
 
             def runner(command, **kwargs):
                 return SimpleNamespace(returncode=0, stdout=json.dumps({
@@ -124,7 +124,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
                         "state": "HANDOFF_READY",
                         "attempt_fencing_token": 25,
                     },
-                }) + "\\n", stderr="")
+                }) + "\n", stderr="")
 
             receipt = mod.consume(root / "source", runtime, runner=runner)
             self.assertEqual(receipt["disposition"], "FAIL_CLOSED")
@@ -138,8 +138,8 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             runtime = root / "runtime"
             (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
             (runtime / mod.TARGET_ENTRYPOINT).parent.mkdir(parents=True)
-            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\\n", encoding="utf-8")
-            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\\n", encoding="utf-8")
+            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\n", encoding="utf-8")
+            (runtime / mod.TARGET_ENTRYPOINT).write_text("# fixture\n", encoding="utf-8")
             activation = {
                 "schema": "stegverse.ecosystem-chat-independent-parent-activation/v1",
                 "task_id": mod.TARGET_TASK,
@@ -166,7 +166,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
                         "state": "COMPLETED", "attempt_fencing_token": 25,
                         "terminal_activation_receipt": activation,
                     },
-                }) + "\\n", stderr="")
+                }) + "\n", stderr="")
 
             from unittest.mock import patch
             with patch.dict("os.environ", {"STEGVERSE_LLM_ADAPTER_ROOT": ""}):
