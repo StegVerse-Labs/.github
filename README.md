@@ -1799,3 +1799,7 @@ SDK PR [#356](https://github.com/StegVerse-org/StegVerse-SDK/pull/356) proposes 
 ## Existing SHWP Ecosystem Chat canonical projection and original-envelope replay (2026-09-26)
 
 Registry generation 260 projects existing `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` exactly once using its pre-existing COSV `50000000100000`, handoff, authorization and source receipts; this is source reconciliation only, not a new task or runtime admission. The sovereign local-model execution and same-execution Master Records evidence remain unverified. For the separate external-AI activation task, `RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256` means independent reconstruction of the **original retained receipt/evidence envelope**, not re-execution of an LLM workload whose contribution timestamps change its execution hash. See `docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md` and `tests/test_shwp_registry_and_original_envelope_replay.py`.
+
+### SV-DN-1 SDK source anchor reconciliation (2026-09-26)
+
+The proposed source-preparation correction pins the current SDK main `stegverse/sovereign_validation_runtime.py` blob `3e400b83f11fa0ec41ca8597d196650ec4337999` across the source-prep worker and both executable handoffs. Prior `814d4cb6...` and `6bc09446...` identities remain historical provenance. This does not establish exact-head CI, sovereign execution, the v2 source-prep receipt, SDK admission, Master Records reconstruction or public dashboard publication.
