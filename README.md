@@ -1805,6 +1805,11 @@ Registry generation 260 projects existing `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` ex
 The proposed source-preparation correction pins the current SDK main `stegverse/sovereign_validation_runtime.py` blob `3e400b83f11fa0ec41ca8597d196650ec4337999` across the source-prep worker and both executable handoffs. Prior `814d4cb6...` and `6bc09446...` identities remain historical provenance. This does not establish exact-head CI, sovereign execution, the v2 source-prep receipt, SDK admission, Master Records reconstruction or public dashboard publication.
 
 
-### Immutable resident dispatch observation (source-only proposal)
+### Proposed state-transition disposition source validation (PR #2714)
 
-Existing PR #2630 ports content-addressed retention of the complete resident dispatcher outcome onto the current main dispatcher, preserving newer organization-custody logic. Each exact dispatch snapshot is retained under `receipts/sovereign-host/resident-request-dispatch.by-receipt/<sha256>.json` before `latest` advances; collision and symlink checks reject unsafe overwrites. Source regression: `tests/test_immutable_resident_dispatch_receipt.py`. Neither retained local JSON nor passing CI authenticates resident invocation, WorkerCoordinator claim/fence, InTr admission, organization custody, Master Records reconstruction or successor selection. Merge and deployment are separate evidence requirements.
+Existing canonical coordination owner #1766 maintains a source-only validator for supplied transition receipts and external-framework findings: `scripts/validate_transition_disposition.py`, `tests/test_transition_disposition_invariant.py`, and `docs/ECOSYSTEM_STATE_TRANSITION_DISPOSITION_INVARIANT.md`. Each actually invoked protected transition must have an applicable original ALLOW, DENY or FAIL_CLOSED disposition; a missing authenticated interface is separately UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, not an invented invocation. Source tests do not establish resident execution, InTr custody, organization/Master Records closure or successor selection. This proposed validator must pass current-head CI and applicable review before merge.
+
+
+### Immutable native resident dispatch receipt retention (PR #2630)
+
+The existing resident dispatcher retains each exact selector outcome as a content-addressed immutable receipt before rotating its mutable latest pointer. This source-only retention does not authenticate a host, grant claim/fence authority, prove InTr admission, establish Master Records closure or verify automatic successor selection. See `tests/test_immutable_resident_dispatch_receipt.py` and the canonical handoff.
