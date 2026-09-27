@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 262,
+  "generation": 263,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9840,16 +9840,17 @@
       "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
       "coordination_state": "PROPOSED",
       "source_refs": [
-        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (draft PR #72)",
-        "StegVerse-Labs/Site:economic-roadmap.html (draft PR #1458)",
-        "StegVerse-Labs/Site:data/economy/public-release-benchmarks.v1.json (draft PR #1458)",
+        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (historical closed-unmerged PR #72; original white-paper disposition pending)",
+        "StegVerse-Labs/Site:economic-roadmap.html (source merged Site #1458)",
+        "StegVerse-Labs/Site:data/economy/public-release-benchmarks.v1.json (source merged Site #1458)",
         "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md",
         "StegVerse-Labs/stegfin-governance:FINCO_PRIVATE_STATE_VALUE.md",
         "StegVerse-Labs/stegfin-governance:docs/STEGTOKEN_STEGCOIN_RECONCILIATION.md",
         "StegVerse-Labs/.github:data/canonical-task-records/GOVERNED-WIKI-PUBLICATION-TRANSITION-001.json",
         "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
         "StegVerse-org/LLM-adapter:docs/AI_ENTRY_PROVIDER_BOUNDARY.md",
-        "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md"
+        "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:papers/entity-economy-volume-iii-sovereign-ai-economics.md (merged PR #77; editorial research, not published)"
       ],
       "targets": {
         "organizations": [
@@ -9889,14 +9890,14 @@
         {
           "dependency_id": "SITE_INTEGRATION",
           "kind": "TASK",
-          "state": "UNRESOLVED",
-          "ref": "StegVerse-Labs/Site#1458 (draft)"
+          "state": "RESOLVED",
+          "ref": "StegVerse-Labs/Site PR #1458 merged 5c9ff16471d78331b978d4349f3fec9747e55138; #1463 task-binding source and #1465 branch repair also merged (source-only, no deployed readback)"
         },
         {
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
           "kind": "TASK",
           "state": "UNRESOLVED",
-          "ref": "GCAT-BCAT-Engine/Publisher#72 (draft)"
+          "ref": "GCAT-BCAT-Engine/Publisher PR #72 closed unmerged; issue #76 open; Volume III PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321 (research source-only); independent review and separate original white-paper disposition unobserved"
         },
         {
           "dependency_id": "GOVERNED_PUBLICATION",
@@ -9913,14 +9914,9 @@
       ],
       "blockers": [
         {
-          "blocker_id": "SITE_DRAFT_UNMERGED",
-          "dependency_id": "SITE_INTEGRATION",
-          "reason": "Site #1458 source checks passed after exact pre-work and derived Site projection repair, but release integration remains a draft."
-        },
-        {
           "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-          "reason": "Publisher #72 source checks passed but substantive editorial review and governed publication are pending."
+          "reason": "Original Publisher #72 closed unmerged. Volume III source merged in Publisher #77 under issue #76, but independent economic/legal review and distinct original Private-State Economy white-paper editorial disposition are not established; no publication inferred."
         },
         {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
@@ -9945,7 +9941,9 @@
         "StegVerse-Labs/Site draft PR #1458 and CI fail on absent active pre-work claim",
         "Site existing read-only autonomy-roadmap.html and data/autonomy/roadmap-status.json",
         "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS",
-        "Publisher PR #72 and Site PR #1458 draft source revisions distinguish parallel ephemeral external AI from native MyKV, without runtime-completion claim."
+        "Publisher PR #72 and Site PR #1458 draft source revisions distinguish parallel ephemeral external AI from native MyKV, without runtime-completion claim.",
+        "Site PR #1458 merged 5c9ff16471d78331b978d4349f3fec9747e55138; nested #1463 and #1465 merged; source-only roadmap with all 16 NOT_VERIFIED",
+        "Publisher PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321; Volume III manuscript under open issue #76; legacy Publisher #72 closed unmerged"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
@@ -9985,7 +9983,7 @@
       ],
       "handoff_projection_refs": [
         "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md",
+        "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (historical closed-unmerged #72, not present on Publisher main)",
         "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
       ]
     },
@@ -10376,7 +10374,7 @@
           "dependency_id": "PRIVATE_NATIVE_MYKV",
           "kind": "TASK",
           "state": "NOT_APPLICABLE",
-          "ref": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 \u2014 independent parallel release lane"
+          "ref": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 — independent parallel release lane"
         },
         {
           "dependency_id": "ORGANIZATION_FIRST_RECEIPT_REPLAY_AND_BATCH_CUSTODY",
@@ -15795,7 +15793,7 @@
         {
           "dependency_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
           "blocker_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
-          "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it \u2014 my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html \u2014 each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
+          "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
           "decision_owner": "REGISTRY_OWNER"
         },
         {
@@ -15823,7 +15821,7 @@
           "dependency_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
           "dependency_kind": "HUMAN_DECISION",
           "decision_owner": "REGISTRY_OWNER",
-          "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it \u2014 my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html \u2014 each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
+          "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
           "resolved": false
         },
         {
