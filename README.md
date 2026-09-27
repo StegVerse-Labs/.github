@@ -1,3 +1,8 @@
+## Admissible-Existence RE bounded readiness review (2026-09-27)
+
+The [RE readiness classifier and SDK assessment](docs/AEX_RE_READINESS_CLASSIFIER_SDK_ASSESSMENT_G261.md) records an independently enumerated 192-case source classifier partition (READY 1, INCOMPLETE 31, BLOCKED 160), demonstrates that wrong-boundary metadata can still yield source READY, and specifies original-owner specimen-binding controls for the existing generic SDK route. RE proof obligations remain tested_not_proven; source READY is not InTr ALLOW or entropy-reduction proof. Native RE source ownership remains separate.
+
+
 ## Admissible-Existence Existence typed-score review (2026-09-27)
 
 The [Existence source-schema and validator discrepancy assessment](docs/AEX_EXISTENCE_TYPED_SCORE_SDK_REVIEW_G260.md) records that JSON Schema number excludes Boolean while the original Python validator accepts Boolean as int. Source owner must separately admit any source repair. The existing generic SDK native-math route must not treat the current Path-based validator as a specimen-bound installed entry point or promote its output into runtime authority.
