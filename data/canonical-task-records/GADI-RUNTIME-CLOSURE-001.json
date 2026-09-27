@@ -30,5 +30,58 @@
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","user_verification_authority":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","user_verification_authority":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","request_grants_execution_authority":false},
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ]
+  }
 }
