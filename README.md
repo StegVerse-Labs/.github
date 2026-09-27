@@ -1808,3 +1808,8 @@ The proposed source-preparation correction pins the current SDK main `stegverse/
 ### Proposed state-transition disposition source validation (PR #2714)
 
 Existing canonical coordination owner #1766 maintains a source-only validator for supplied transition receipts and external-framework findings: `scripts/validate_transition_disposition.py`, `tests/test_transition_disposition_invariant.py`, and `docs/ECOSYSTEM_STATE_TRANSITION_DISPOSITION_INVARIANT.md`. Each actually invoked protected transition must have an applicable original ALLOW, DENY or FAIL_CLOSED disposition; a missing authenticated interface is separately UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, not an invented invocation. Source tests do not establish resident execution, InTr custody, organization/Master Records closure or successor selection. This proposed validator must pass current-head CI and applicable review before merge.
+
+
+### Immutable native resident dispatch receipt retention (PR #2630)
+
+The existing resident dispatcher retains each exact selector outcome as a content-addressed immutable receipt before rotating its mutable latest pointer. This source-only retention does not authenticate a host, grant claim/fence authority, prove InTr admission, establish Master Records closure or verify automatic successor selection. See `tests/test_immutable_resident_dispatch_receipt.py` and the canonical handoff.
