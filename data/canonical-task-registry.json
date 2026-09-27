@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 263,
+  "generation": 264,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -16003,6 +16003,175 @@
         "basis": "docs/WORKSPACE_MYKV_SKAP_REGISTRY_REVIEW.md",
         "supersedes_site_local_claim": "SITE-WORKSPACE-INTEROPERABILITY-001",
         "site_local_claim_note": "The Site claim remains the Site-side implementation claim. This task is the canonical coordination owner the claim's task_id never resolved to, and its next_task_after_release names this task's WU1 Org-KV binding."
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+      "correlation_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+      "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+      "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+      "goal": "Coordinate the evolving ELAN x StegVerse paper as a genuine co-authored publication, preserve authorship and contribution provenance, evaluate publication venues, and keep private correspondence separate from experiment evidence.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "SOURCE_COMPLETE_AUTHENTIC_HOLD_RUNTIME_UNOBSERVED_NO_VERIFIED_SESSION_CHECKOUT",
+      "cosv": {
+        "profile": "task.v1",
+        "vector": "71000000100100",
+        "source_state_vector_ref": "control/task-vectors/ELAN-PAPER-COAUTHOR-PUBLICATION-001.json",
+        "authority_effect": "NONE"
+      },
+      "source_refs": [
+        "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md",
+        "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV2.md",
+        "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md",
+        "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md",
+        "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
+        "USER_FORWARDED_PRIVATE_LINKEDIN_CORRESPONDENCE_2026-09-16",
+        "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md",
+        "docs/ELAN_HOLD_JOINT_PROTOCOL_PROPOSAL.md",
+        "docs/WIBS_FACCT_2027_ABSTRACT_AUTHOR_REVIEW.md",
+        "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun",
+        "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md",
+        "docs/ELAN_HOLD_IMMEDIATE_EXECUTION_SDK_VERSION_ROADMAP.md",
+        "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
+      ],
+      "dependencies": [
+        {
+          "dependency_id": "DEP-ELAN-COAUTHOR-ACCEPTANCE",
+          "kind": "COLLABORATION_EVIDENCE",
+          "state": "AVAILABLE_USER_FORWARDED_PRIVATE_CORRESPONDENCE",
+          "ref": "Élisabeth Correvon explicitly accepted co-authorship and offered future draft review"
+        },
+        {
+          "dependency_id": "DEP-WIBS-COAUTHORED-REVISION",
+          "kind": "MANUSCRIPT",
+          "state": "UPDATED_ON_DRAFT_BRANCH_AUTHOR_REVIEW_PENDING",
+          "ref": "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md"
+        },
+        {
+          "dependency_id": "DEP-WIBS-PUBLICATION-NOVELTY-REVIEW",
+          "kind": "LITERATURE_REVIEW",
+          "state": "ACTIVE",
+          "ref": "docs/WIBS_PUBLICATION_NOVELTY_REVIEW_MIRROR_HANDOFF.md"
+        },
+        {
+          "dependency_id": "DEP-ELAN-PUBLICATION-VENUE",
+          "kind": "EDITORIAL_DECISION",
+          "state": "FACCT_2027_TIMELINE_AGREED_SUBMISSION_NOT_AUTHORIZED",
+          "ref": "docs/WIBS_PUBLICATION_VENUE_EVALUATION.md"
+        },
+        {
+          "dependency_id": "DEP-ELAN-TEST2-CORRECTED-SOURCE",
+          "kind": "PRIMARY_EVIDENCE",
+          "state": "ORIGINAL_AND_CORRECTED_PDFS_DIRECTLY_VERIFIED",
+          "ref": "Confidential original 2026-09-16 sha256:403d9be7f253dbdbea0cef2640398d030333e25a6303f0fd0aca898f8eafafd9; corrected 2026-09-23 sha256:7231ab68bf00ecc92b163efd90773ccabbec82b21aa9cf6e6426b8de68d162ac (not published)"
+        },
+        {
+          "dependency_id": "DEP-ELAN-REPRODUCTION-INQUIRY",
+          "kind": "AUTHOR_CONFIRMATION",
+          "state": "RESOLVED_NO_REPRODUCTION_ATTEMPT",
+          "ref": "Coauthor-confirmed 2026-09-23: earlier annotation corrected during transcript review, not reproduction"
+        },
+        {
+          "dependency_id": "DEP-HOLD-SDK-EVALUATOR-QUALIFICATION",
+          "kind": "CAPABILITY_QUALIFICATION",
+          "state": "GENERIC_SOURCE_GUARD_MERGED_VALIDATED_AUTHENTIC_HOLD_RUNTIME_PENDING",
+          "ref": "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md; SDK PR #340 merged a72fa8f3b1656bd31c3824bd1e2b374b5e805d61 after thirteen applicable exact-head validations passed at c48bed6bfb347227313760f1974695bafa7a0800; authentic HOLD and Master Records completion not yet observed"
+        },
+        {
+          "dependency_id": "DEP-HOLD-JOINT_NATIVE_COLLECTION",
+          "kind": "COAUTHOR_PROTOCOL",
+          "state": "ORDERED_PACKET_PREPARED_EXACT_PROMPTS_NOT_YET_JOINTLY_FROZEN",
+          "ref": "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
+        }
+      ],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+        "WIBS-PUBLICATION-NOVELTY-REVIEW-001"
+      ],
+      "expected_evidence_predicates": [
+        "COAUTHORSHIP_ACCEPTANCE_PRESERVED",
+        "PRIVATE_CORRESPONDENCE_NOT_PUBLICLY_REPLICATED",
+        "EXPERIMENT_AND_PUBLICATION_LANES_REMAIN_SEPARATE",
+        "AUTHORSHIP_CONTRIBUTION_PROVENANCE_PRESERVED",
+        "COAUTHORED_WORKING_DRAFT_RECONCILED_WITH_COMPLETED_CROSS_EVALUATION",
+        "EXPERIMENT_SCOPE_LIMITATIONS_PRESERVED",
+        "PUBLICATION_VENUES_EVALUATED_WITHOUT_PREMATURE_SELECTION",
+        "PUBLICATION_VENUE_DECISION_RECORDED_WHEN_SELECTED",
+        "SUBMISSION_STATE_NOT_CLAIMED_WITHOUT_EVIDENCE",
+        "HUMAN_ANNOTATION_NEVER_ATTRIBUTED_AS_ELAN_OUTPUT",
+        "HOLD_INVOCATION_SEPARATE_FROM_NO_REQUEST_CONTROL",
+        "COAUTHOR_LABELING_CORRECTION_CONFIRMED",
+        "FACCT_TIMELINE_AGREEMENT_DISTINCT_FROM_SUBMISSION_AUTHORIZATION",
+        "NO_INVOCATION_NEVER_MODEL_OUTPUT",
+        "TIMEOUT_DISTINCT_FROM_EMPTY_RESPONSE",
+        "NO_UNOBSERVED_INTERNAL_STATE_ATTRIBUTION",
+        "EDITORIAL_MERGE_NOT_MISREPRESENTED_AS_PUBLICATION_AUTHORIZATION",
+        "CONFIDENTIAL_SOURCE_PDFS_NOT_PUBLISHED"
+      ],
+      "collaboration_state": {
+        "coauthorship_accepted": true,
+        "coauthored_working_draft_exists": true,
+        "future_draft_review_offered": true,
+        "publication_venues_evaluated": true,
+        "specific_venue_selected": true,
+        "submission_authorized": false,
+        "private_correspondence_publicly_replicated": false,
+        "final_author_order_confirmed": false,
+        "final_contribution_statement_confirmed": false,
+        "corrected_test2_annotation_attribution_acknowledged": true,
+        "corrected_test2_pdf_verified": true,
+        "elan_original_signal_reproduction_attempt_confirmed": false,
+        "proposed_hold_protocol_approved": false,
+        "elan_original_signal_reproduction_attempt_excluded_by_coauthor_confirmation": true,
+        "facct_2027_timeline_agreed": true,
+        "hold_joint_design_agreed": true,
+        "hold_protocol_operational_design_drafted": true,
+        "facct_abstract_drafted": true,
+        "facct_abstract_author_approved": false,
+        "original_test2_pdf_inspected": true,
+        "latest_final_head_ci_passed": true,
+        "coauthor_substantive_review_received": true,
+        "corrected_pdf_source_discovery_checked": true,
+        "pr_merged": true,
+        "coauthor_substantive_review_scope": "Original Experiment 2 source attribution correction and methodological objections in supplied LinkedIn messages; NOT manuscript Revision 3 or abstract approval",
+        "editorial_pr_merge_author_approval_required": false,
+        "publication_author_approval_required": true,
+        "editorial_merge_sha": "30cbc58d916fe03dcb8c5ac98e2d27343295cb13",
+        "hold_sdk_capability_source_assessed": true,
+        "hold_sdk_exact_experiment_qualified": false,
+        "sdk_historical_test2_fixture_provenance_defect_identified": true,
+        "hold_native_ordered_packet_prepared": true,
+        "hold_native_collection_author_approved": false,
+        "hold_native_source_received": false,
+        "sdk_generic_source_guard_pr": 340,
+        "sdk_version_roadmap_prepared": true,
+        "sdk_generic_source_guard_merged": true,
+        "sdk_generic_source_guard_merge_sha": "a72fa8f3b1656bd31c3824bd1e2b374b5e805d61",
+        "sdk_generic_source_guard_final_head_ci_passed": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "JOINTLY_FREEZE_EXACT_HOLD_STIMULI_AND_COLLECT_AUTHENTIC_SOURCE",
+        "EXECUTE_AUTHENTIC_HOLD_MANIFEST_AND_PRESERVE_DISPOSITION",
+        "CONSUME_COAUTHOR_MANUSCRIPT_AND_ABSTRACT_REVIEW",
+        "COMPLETE_PUBLICATION_NOVELTY_REVIEW",
+        "OBTAIN_FINAL_SUBMISSION_AUTHORIZATION"
+      ],
+      "handoff_projection_refs": [
+        "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"
+      ],
+      "readme_impact": {
+        "material_function_change": false,
+        "readme_updated_in_change_set": false,
+        "readme_path": "README.md",
+        "reviewed": true,
+        "reason": "Research/publication coordination and manuscript revision do not change repository function."
       }
     }
   ],
