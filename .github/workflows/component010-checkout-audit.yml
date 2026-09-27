@@ -1,0 +1,29 @@
+name: Component-010 stale-checkout source audit
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_component010_checkout.py'
+      - 'tests/test_component010_checkout_audit.py'
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json'
+      - '.github/workflows/component010-checkout-audit.yml'
+  workflow_dispatch:
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s tests -p 'test_component010_checkout_audit.py'
+      - name: Assert actionable non-ALLOW source projection
+        run: |
+          set +e
+          python scripts/audit_component010_checkout.py > /tmp/component010-audit.json
+          status=$?
+          set -e
+          test "$status" -eq 2
+          python -c 'import json; x=json.load(open("/tmp/component010-audit.json")); assert x["source_projection_disposition"] == "FAIL_CLOSED_STALE_CHECKOUT_EVIDENCE"; assert x["runtime_transition_observed"] is False'
