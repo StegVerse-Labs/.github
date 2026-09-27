@@ -91,7 +91,7 @@ StegVerse-org/StegVerse-SDK
   git_blob_sha1: 62c5ae4799ae018f6b100766215c3c68078c5b2e
 
   stegverse/sovereign_validation_runtime.py
-  git_blob_sha1: 6bc0944633b6299c19f065f44dd5999434445dd7
+  git_blob_sha1: 3e400b83f11fa0ec41ca8597d196650ec4337999
 
 StegVerse-Labs/StegCore
   src/stegcore/transaction_lifecycle.py
@@ -290,3 +290,7 @@ guard only.
 This reconciliation does not claim resident execution, SDK admission, custody,
 reconstruction, first-round analysis, public promotion, repository persistence, deployment,
 release, or certification.
+
+## 2026-09-26 current-main source anchor follow-up
+
+The previously reconciled `6bc0944633b6299c19f065f44dd5999434445dd7` anchor has itself been superseded on SDK main. Direct current-main blob readback returns `3e400b83f11fa0ec41ca8597d196650ec4337999` for `stegverse/sovereign_validation_runtime.py`. The executable source-preparation worker and both live executable handoffs are pinned to this current blob on the proposed correction branch. Historical anchors and readiness evidence remain unchanged. This is source reconciliation only; focused tests, exact-head CI, original v2 receipt and runtime evidence remain separate requirements.

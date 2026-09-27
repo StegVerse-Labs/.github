@@ -40,7 +40,7 @@ COMPONENTS={
         "legacy_coordinate":{"kind":"git","repository":"StegVerse-org/StegVerse-SDK","commit":"4461a1edf83549c51189ca4217dd75752caf604e"},
         "anchors":{
             "stegverse/governance_ingress_runtime.py":"62c5ae4799ae018f6b100766215c3c68078c5b2e",
-            "stegverse/sovereign_validation_runtime.py":"814d4cb607cc2cb4c7a605474fe845e13540898d",
+            "stegverse/sovereign_validation_runtime.py":"3e400b83f11fa0ec41ca8597d196650ec4337999",
         },
     },
     "stegverse.core-lite":{
