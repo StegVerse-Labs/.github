@@ -69,7 +69,9 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             self.assertIn("--runtime-root", command)
 
             second = mod.consume(source, runtime, runner=runner)
-            self.assertEqual(second["state"], "ALREADY_CONSUMED")
+            self.assertEqual(second["state"], "ALREADY_CONSUMED_NON_ALLOW")
+            self.assertEqual(second["disposition"], "FAIL_CLOSED")
+            self.assertEqual(second["failed_predicate"], "PORTABLE_BRIDGE_RESULT_NOT_VERIFIED")
             self.assertFalse(second["runtime_execution_attempted"])
             self.assertEqual(len(calls), 1)
 
