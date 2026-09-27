@@ -1,3 +1,7 @@
+## Admissible-Existence Existence typed-score review (2026-09-27)
+
+The [Existence source-schema and validator discrepancy assessment](docs/AEX_EXISTENCE_TYPED_SCORE_SDK_REVIEW_G260.md) records that JSON Schema number excludes Boolean while the original Python validator accepts Boolean as int. Source owner must separately admit any source repair. The existing generic SDK native-math route must not treat the current Path-based validator as a specimen-bound installed entry point or promote its output into runtime authority.
+
 ## Admissible-Existence mathematical-processing coordination (2026-09-27)
 
 The [Standing Proof precedence and SDK assessment](docs/AEX_STANDING_PROOF_PRECEDENCE_SDK_ASSESSMENT_G260.md) under the existing mathematical-processing integration task records an independently checked bounded nine-surface classifier theorem and a source-document inconsistency: missing required key yields FAIL_CLOSED, while present UNKNOWN yields INCOMPLETE. Native source-owner review is required before correcting SPF-PC-003; SDK candidacy remains NOT_ESTABLISHED until an original-owner installed specimen-binding adapter passes the existing generic SDK route and lineage/negative controls. Unhashable malformed state values additionally raise TypeError in the native classifier; that source-owner hardening condition is recorded explicitly. This is source-level mathematical analysis, not governed runtime or proof acceptance.
