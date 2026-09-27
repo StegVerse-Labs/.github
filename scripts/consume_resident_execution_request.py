@@ -110,12 +110,26 @@ def consume(
     validate_request(request)
     request_hash = stable_hash(request)
     if previously_consumed(runtime, request, request_hash):
+        # An earlier attempted invocation is not evidence of completion. Read the
+        # original retained local diagnostic; do not rerun unchanged source or
+        # invent a successor claim, manifest, receipt, or downstream disposition.
+        previous = load_json(runtime / CONSUMPTION_REL)
+        previous_allow = previous.get("disposition") == "ALLOW"
         return {
             "schema": "stegverse.resident-execution-request-consumption/v1",
-            "state": "ALREADY_CONSUMED",
+            "state": "ALREADY_CONSUMED" if previous_allow else "ALREADY_CONSUMED_NON_ALLOW",
+            "disposition": "ALLOW" if previous_allow else "FAIL_CLOSED",
+            "disposition_scope": "CONSUMER_REPLAY_PROTECTION_ONLY",
+            "consequence_committed": False,
+            "failed_predicate": None if previous_allow else (
+                previous.get("failed_predicate") or "EARLIER_ATTEMPT_OUTCOME_NOT_VERIFIED"
+            ),
+            "retry_entrypoint": None if previous_allow else "EXISTING_MANIFEST_BOUND_OWNER_CORRECTION",
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "runtime_execution_attempted": False,
+            "previous_execution_receipt_path": str(runtime / CONSUMPTION_REL),
+            "authentic_intr_disposition_observed_by_consumer": False,
             "authority_effect": "NONE",
         }
 
