@@ -2,7 +2,7 @@
 
 Updated: 2026-09-26T21:59:00-05:00
 Repository: `StegVerse-Labs/.github`
-Branch: `task/public-repository-consumption-attribution-001-refresh-20260926`
+Branch: `task/public-repository-attribution-step-proof-20260927`
 Goal Task ID: `PUBLIC-REPOSITORY-CONSUMPTION-ATTRIBUTION-001`
 COSV task.v1: `20010010100000`
 State: `ACTIVE / CHECKED_OUT / ATTRIBUTION_IN_PROGRESS`
@@ -105,3 +105,23 @@ Public web search also returns StegVerse-controlled publication and package surf
 ## Authority boundary
 
 Observation/attribution only. No repository mutation beyond this evidence update, credential, runtime, publication, governance, adoption, or external-consumer authority is granted by the traffic evidence. GitHub Actions and source/CI evidence do not become sovereign runtime authority.
+
+
+## 2026-09-27 original checkout-step follow-up
+
+The 2026-09-19 UTC PR #2314 head `0cea2567e535eb89e806aa46242b3a11a88b257c` provides **two original step-verified specimens**, not a census of all 566 peak-day source-path-mapped runs.
+
+| Workflow | Historical source | Original run/job | Observed original checkout |
+|---|---|---|---|
+| KV AI Memory | At both September 19 source commits `12c2527b1397470a5d606b0739ae0422e16530d2` and `aa4bf6fd0b39ae797ea9a49f86db17cc546e1be5`, blob `02792141635c18baba770d115c29eb7f753ea28a` declares `actions/checkout@v4`. | [run 35476732113](https://github.com/StegVerse-Labs/.github/actions/runs/35476732113), job `105987139410` | Checkout step SUCCESS; retained log records `Syncing repository: StegVerse-Labs/.github`, `Fetching the repository` and `Checking out the ref` at 23:39:57–59Z. |
+| Purpose-Bound Worker | Earlier historical blob `8cd5a5471269552f1a45463e4fa59a5ff7839ac2`; later `0e3e11a6aa1e534956edb7365914b851c2df61e1`; both declare `actions/checkout@v4`. | [run 35476732118](https://github.com/StegVerse-Labs/.github/actions/runs/35476732118), job `105987139470` | Checkout step SUCCESS; retained log records repository sync, fetch and ref checkout at 23:39:56–57Z. |
+
+These original job logs distinguish **actually reached checkout steps** from current-source declarations. The purpose-bound workflow changed during the sampled day, so current-main source cannot stand in for exact historical bytes. The connector's commit-run listing is first-page PR-triggered only, and run-job listing is first-page/latest-attempt only. Do not extrapolate two observed successes to 566 mapped peak-day runs, count them as two GitHub Traffic clones, or infer cloner identities.
+
+### Newly inspected public references
+
+- [pingoleon150-ctrl/agenttrace](https://github.com/pingoleon150-ctrl/agenttrace/blob/main/ledger/repos/github/stegverse-labs/.github.json) explicitly records `StegVerse-Labs/.github`, 22 observations, last checked August 18, and `no_high_confidence`. It is a public repository-monitoring artifact **predating** the September traffic window, not evidence of September clones or adoption.
+- [szabgab/pydigger-data](https://github.com/szabgab/pydigger-data/blob/main/data/pypi/st/stegverse-sdk.json) indexes PyPI metadata for `stegverse-sdk` 1.0.13 and its canonical SDK repository. This is package metadata indexing, not an installation or authenticated downstream use.
+- [StegGhost/entity-sandbox-runner](https://github.com/StegGhost/entity-sandbox-runner/blob/main/README.md) declares a StegVerse SDK-bound sandbox route. Actual independent organizational ownership, live usage and September clone contribution remain unverified.
+
+Code search does not exhaust dependency graphs, forks, package downloads, citations or protocol requests. No source authenticates a September traffic consumer. Preserve `UNKNOWN_NOT_AUTHENTICALLY_ATTRIBUTED` for the remainder. Next: obtain fully paginated peak-day runs and original per-attempt job steps/logs, independently inspect downstream ownership and usage, and seek authenticated owner-visible traffic exports. Observation and attribution only; no new authority.

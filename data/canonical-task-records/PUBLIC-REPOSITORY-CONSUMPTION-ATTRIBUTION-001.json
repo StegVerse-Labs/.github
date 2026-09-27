@@ -47,7 +47,10 @@
     "prior repository-event observation recorded 300 commits on 2026-09-13 and 290 commits on 2026-09-19, overlapping large unique-cloner peaks without proving causation",
     "public GitHub code search found cross-organization StegVerse references in AdmittedCode/provider-harness, AdmittedCode/admissibility-receipt, AdmittedCode/coherency-scanner, Data-Continuation/core-lite, and AaCT-E/demo; these are verifiable downstream references but their organizational independence and contribution to clone traffic are not authenticated",
     "public web search found StegVerse-controlled publication and package surfaces including stegverse.org, LinkedIn, and PyPI; these establish discoverability, not independent adoption",
-    "GitHub connector traffic endpoints /traffic/clones, /traffic/views, /traffic/popular/referrers, and /traffic/popular/paths remain unavailable, so source identity for the unexplained remainder is not authentically attributable"
+    "GitHub connector traffic endpoints /traffic/clones, /traffic/views, /traffic/popular/referrers, and /traffic/popular/paths remain unavailable, so source identity for the unexplained remainder is not authentically attributable",
+    "2026-09-19 PR #2314 head 0cea2567e535eb89e806aa46242b3a11a88b257c: run 35476732113/job 105987139410 and run 35476732118/job 105987139470 have successful original actions/checkout@v4 steps and original repository fetch/checkout logs; two step-verified specimens, not the full 566-run mapped peak-day census or GitHub Traffic clone events.",
+    "Historical September 19 KV AI Memory workflow blob 02792141635c18baba770d115c29eb7f753ea28a unchanged across sampled source commits; Purpose-Bound Worker changed from blob 8cd5a5471269552f1a45463e4fa59a5ff7839ac2 to 0e3e11a6aa1e534956edb7365914b851c2df61e1.",
+    "Public external-reference search: pingoleon150-ctrl/agenttrace August repository monitoring, szabgab/pydigger-data PyPI stegverse-sdk metadata indexing, and StegGhost/entity-sandbox-runner SDK route declaration; none authenticates independent adoption or attributes September .github traffic."
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
