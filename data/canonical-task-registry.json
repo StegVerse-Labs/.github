@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 270,
+  "generation": 271,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10214,7 +10214,7 @@
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "Publisher #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c research-review policy disposition; SDK #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530 manifest review-policy support; Publisher native source consumer remains installed via #86/#87. Review gate resolved for bounded research release. Exact manifest runtime, authentic Interlock/InTr disposition, organization custody, Master Records closure, Publisher release and deployed Site readback remain unobserved."
+          "ref": "Exact approved-source manifest prepared and independently inspected: SDK #387 merged a412cb40ccba25d5dca4ca63485e043a227ab46d; exact-head workflow 36469359331 SUCCESS; artifact 10990707853 digest sha256:73c1a081d7af9647fe33c7c755d43879a03e7d7ad6fcd5cb9b623e7cedea70ce; canonical manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3; universal request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be. Publisher #89 merged c8971fa8fab24a626942e2a6edf1c0f3e86ca167 records manifest_prepared=true. Runtime not invoked; no authenticated TV/TVC + Universal InTr execution interface exposed in current session."
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
@@ -10227,7 +10227,7 @@
         {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "Research-review policy gate is resolved and SDK/Publisher source contracts can represent the owner policy without fabricated review hashes. Remaining publication work is runtime-only: construct the exact approved-source manifest, validate the existing Publisher consumer, then invoke the existing universal manifest runtime through authenticated TV/TVC + Interlock/InTr when available. Preserve actual ALLOW/DENY/FAIL_CLOSED and same-transition organization/Master Records closure before release. No second device, resident inventory, hosted authority or duplicate task."
+          "reason": "Exact owner-approved manuscript manifest and universal execution request are now source-prepared and independently read back. Remaining state is the actual authenticated runtime transition: submit canonical manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be through existing TV/TVC + Universal Interlock/InTr when that authenticated interface is reachable. Preserve actual ALLOW/DENY/FAIL_CLOSED plus organization receipt/predecessor and same-transition Master Records RECORDED/reconstruction/evidence PASS before Publisher release. Do not rebuild, simulate authority, wait for resident inventory, or promote Site benchmarks."
         },
         {
           "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
@@ -10258,7 +10258,9 @@
         "Publisher PR #86 merged df6825e8d0138768ce2356d1edc8acfbb82040dc; native economic SDK manifest consumer source plus exact-head runs 36381775153/36381774995/36381774966/36381775016 SUCCESS; source-only, no authority.",
         "Publisher PR #87 merged 5de26e53f734ff68627663b0471cf60d52551982; economic preflight marks PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER SOURCE_REPAIRED; exact manifest runtime remains NOT_ATTEMPTED.",
         "SDK PR #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530: explicit bounded research review-policy mode; no fabricated professional review hashes.",
-        "Publisher PR #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c: Volume III v0.3 owner review-policy disposition, REVIEW_EVIDENCE...=POLICY_RESOLVED, exact-head Publisher checks SUCCESS."
+        "Publisher PR #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c: Volume III v0.3 owner review-policy disposition, REVIEW_EVIDENCE...=POLICY_RESOLVED, exact-head Publisher checks SUCCESS.",
+        "SDK PR #387 merged a412cb40ccba25d5dca4ca63485e043a227ab46d; exact-head workflow 36469359331 SUCCESS; artifact 10990707853 independently inspected, canonical manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3, request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be, runtime_invoked=false.",
+        "Publisher PR #89 merged c8971fa8fab24a626942e2a6edf1c0f3e86ca167 after five exact-head checks SUCCESS; preflight manifest_prepared=true, mutation_authorized=false, runtime pending."
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
