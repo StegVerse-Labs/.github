@@ -136,8 +136,36 @@ def invoke(source_root: Path, runtime_root: Path,
     if not isinstance(response, Mapping):
         return _nonallow("SHWP_SDK_RETURN_NOT_OBJECT",
                          request_id=request_id, manifest_sha256=manifest_hash)
+    # Only lineage-bound SDK results can advance the original request. A
+    # structurally plausible response with no exact manifest/request binding
+    # is not evidence of native ingress or authorized execution.
+    profile = response.get("schema")
+    if profile not in {
+        "stegverse.sdk.shwp-manifest-transition-result/v1",
+        "stegverse.sdk.manifest-attachment-disposition/v1",
+    }:
+        return _nonallow("SHWP_SDK_PROFILE_RESULT_SCHEMA_MISMATCH",
+                         request_id=request_id, manifest_sha256=manifest_hash)
+    for key, expected in {
+        "canonical_task_id": TASK_ID,
+        "processing_capability": "sovereign_inference",
+        "route_id": ROUTE,
+        "wire_manifest_sha256": manifest_hash,
+    }.items():
+        if response.get(key) != expected:
+            return _nonallow("SHWP_SDK_RETURN_LINEAGE_MISMATCH:" + key,
+                             request_id=request_id, manifest_sha256=manifest_hash)
+    if profile == "stegverse.sdk.shwp-manifest-transition-result/v1":
+        if response.get("original_request_sha256") != digest(manifest["payload"]):
+            return _nonallow("SHWP_SDK_RETURN_ORIGINAL_REQUEST_MISMATCH",
+                             request_id=request_id, manifest_sha256=manifest_hash)
+        if (response.get("organization_master_records_closure_observed") is not False
+                or response.get("terminal") is not False):
+            return _nonallow("SHWP_SDK_RETURN_CUSTODY_ESCALATION",
+                             request_id=request_id, manifest_sha256=manifest_hash)
     state = str(response.get("state") or "")
-    if state == "PROCESSING_RECORDED_CUSTODY_READBACK_REQUIRED":
+    if state == "PROCESSING_RECORDED_CUSTODY_READBACK_REQUIRED" and profile == (
+            "stegverse.sdk.shwp-manifest-transition-result/v1"):
         # A verified original child projection is nonterminal until the source
         # manifest is independently bound to original org HEAD and Master Records.
         return {
