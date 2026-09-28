@@ -148,3 +148,10 @@ Test 5 is now data in the generic request: two StegBrowser/llm.v1 manifests with
 Tracing the merged generic SDK request through Universal InTr identified a capability-dispatch fallthrough: the shared `SDK:ManifestStateTransition` consumer admitted arbitrary worker-bound graphs but then unconditionally searched for the purpose-worker Test-1 receipt and assembled `_assemble_purpose_result`. A valid `stegbrowser/llm.v1` graph therefore had no capability-correct return path.
 
 The repaired profile no longer sends non-purpose capabilities through the Test-1 receipt assembler. Until an existing manifest-selected StegBrowser/LLM operation owner is explicitly bound, the admitted profile retains an actionable `FAIL_CLOSED` at `UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH`, transition `INGRESS_ADMITTED`, failed predicate `MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND`. It does not claim provider execution or Organization/Master Records closure. The successor is to bind the existing operation owner, not create a Test-5 executor.
+
+
+## Generic Test 5 exact-dispatch repair — 2026-09-28
+
+Retry inspection found two source-level inconsistencies before authentic InTr visitation. The generic Test 5 request now binds worker A to `openai` and worker B to canonical provider identifier `anthropic`, matching the task's separately attributable OpenAI then Anthropic/Claude requirement. The existing portable `refresh_and_dispatch_resident_requests.py` bridge now admits exact selector `sdk_generic_manifest_execution`; it refreshes already-local sovereign source and invokes the existing resident dispatcher only. This adds no scheduler, runtime, credential plane, device requirement, or Test-5-specific consumer.
+
+The generic consumer remains responsible for manifest-time ONLINE/OFFLINE/UNKNOWN_CAPABILITY resolution. Source validation of this bridge is not an InTr disposition. Authentic completion still requires the exact generic request to reach existing Universal InTr and preserve disposition -> Organization Records -> Master Records -> successor.
