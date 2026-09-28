@@ -207,19 +207,36 @@ def _submit_http(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
 
 
 def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
-    """Carry one already-released organization batch through existing custody configuration."""
+    """Carry one already-released batch as execution evidence, never as a governance decision."""
+    def evidence_result(state: str, *, reason: str | None = None, batch_id: Any = None,
+                        destination_response: Mapping[str, Any] | None = None,
+                        authority_effect: str = "NONE") -> dict[str, Any]:
+        row: dict[str, Any] = {
+            "schema": "stegverse.organization-batch-custody-execution-result/v1",
+            "state": state,
+            "execution_result": state,
+            "batch_id": batch_id,
+            "governance_disposition": None,
+            "authority_effect": authority_effect,
+        }
+        if reason is not None:
+            row["reason"] = reason
+        if destination_response is not None:
+            row["destination_response"] = dict(destination_response)
+        return row
+
     if envelope.get("schema") != "stegverse.master-records.organization-batch-submission/v1":
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_SUBMISSION_SCHEMA_MISMATCH","authority_effect":"NONE"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_SUBMISSION_SCHEMA_MISMATCH")
     batch = envelope.get("batch")
     if not isinstance(batch, Mapping):
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_REQUIRED","authority_effect":"NONE"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_REQUIRED")
     batch_id = batch.get("batch_id")
     endpoint, token, timeout = _configuration()
     if endpoint:
         endpoint = endpoint.rsplit("/api/master-records/state-transitions", 1)[0] + "/api/master-records/organization-batches"
     if not endpoint or not token or not _endpoint_allowed(endpoint):
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
-                "batch_id":batch_id,"authority_effect":"NONE"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
+                               batch_id=batch_id)
     request = Request(
         endpoint,
         data=canonical_json(dict(envelope)).encode("utf-8"),
@@ -230,26 +247,27 @@ def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
         with urlopen(request, timeout=timeout) as response:
             payload=json.loads(response.read().decode("utf-8"))
     except Exception as exc:
-        return {"state":"FAIL_CLOSED","reason":f"ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:{type(exc).__name__}",
-                "batch_id":batch_id,"authority_effect":"NONE"}
+        return evidence_result("FAILED", reason=f"ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:{type(exc).__name__}",
+                               batch_id=batch_id)
     if not isinstance(payload, Mapping):
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_RESULT_INVALID",
-                "batch_id":batch_id,"authority_effect":"NONE"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_CUSTODY_RESULT_INVALID",
+                               batch_id=batch_id)
     if payload.get("state") not in {"RECORDED","ALLOW"}:
-        return {"state":"DENY" if payload.get("state")=="DENY" else "FAIL_CLOSED",
-                "reason":str(payload.get("reason") or "ORGANIZATION_BATCH_CUSTODY_NOT_RECORDED"),
-                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
+        return evidence_result("FAILED",
+                               reason=str(payload.get("reason") or "ORGANIZATION_BATCH_CUSTODY_NOT_RECORDED"),
+                               batch_id=batch_id, destination_response=payload)
     if payload.get("batch_id") not in {None,batch_id}:
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_ID_MISMATCH",
-                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_CUSTODY_ID_MISMATCH",
+                               batch_id=batch_id, destination_response=payload)
     reconstruction = payload.get("reconstruction_status")
     evidence = payload.get("required_evidence_validation_status")
     if reconstruction not in {None,"PASS"} or evidence not in {None,"PASS"}:
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_RECONSTRUCTION_NOT_PASS",
-                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
-    return {"state":"ALLOW","disposition":"ALLOW","batch_id":batch_id,
-            "destination_state":payload.get("state"),"destination_response":dict(payload),
-            "authority_effect":"NONE_CUSTODY_ONLY"}
+        return evidence_result("FAILED", reason="ORGANIZATION_BATCH_CUSTODY_RECONSTRUCTION_NOT_PASS",
+                               batch_id=batch_id, destination_response=payload)
+    result = evidence_result("COMPLETED", batch_id=batch_id, destination_response=payload,
+                             authority_effect="NONE_CUSTODY_ONLY")
+    result["destination_state"] = payload.get("state")
+    return result
 
 
 def _repo_roots() -> dict[str, str]:
