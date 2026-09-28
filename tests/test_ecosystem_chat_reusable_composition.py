@@ -1,4 +1,4 @@
-"""Source composition only; fixtures never establish live provider evidence."""
+"""Manifest composition contract; fixtures never establish live provider evidence."""
 import copy
 import unittest
 
@@ -30,8 +30,14 @@ class ChatCompositionTests(unittest.TestCase):
         self.assertEqual({n["manifest"]["reusable_task_id"] for n in operations}, {"RT-EPHEMERAL-LLM-ROUNDTRIP-001"})
         self.assertEqual([n["manifest"]["parameters"]["source"]["canonical_provider"] for n in operations], ["openai", "anthropic", "xai", "google", "other"])
         self.assertTrue(all("adapter_ref" not in n["manifest"]["parameters"]["source"] for n in operations))
-        self.assertFalse(result["parameters"]["execution_available"])
-        self.assertEqual(result["runner_plan"]["materialization_refs"], [])
+        self.assertTrue(result["parameters"]["execution_available"])
+        self.assertFalse(result["parameters"]["source_only"])
+        self.assertEqual(result["parameters"]["execution_owner_task_id"], "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001")
+        self.assertEqual(result["parameters"]["receipt_transport_owner_task_id"], "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001")
+        self.assertEqual(result["parameters"]["state_transition_order"], [
+            "INTERLOCK_INTR_DISPOSITION", "ORGANIZATION_RECORDS",
+            "MASTER_RECORDS_CUSTODY_RECONSTRUCTION", "SUCCESSOR_EVALUATION"
+        ])
 
     def test_fallback_and_cleanup_cover_failure_cancellation_and_skips(self):
         result = compose(specification("fallback", ("openai", "anthropic")))
@@ -63,7 +69,7 @@ class ChatCompositionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "translation_reason"):
             compose(spec)
         spec["sources"][0]["translation_reason"] = "project provider-native wire fields"
-        self.assertTrue(compose(spec)["parameters"]["source_only"])
+        self.assertFalse(compose(spec)["parameters"]["source_only"])
 
     def test_missing_or_wrong_canonical_identity_cannot_be_materialized(self):
         spec = specification()
