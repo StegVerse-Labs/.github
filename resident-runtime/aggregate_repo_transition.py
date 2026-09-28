@@ -162,19 +162,34 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
             released = None
+            release_disposition = None
+            effective_boundary_evidence = dict(boundary_evidence or {})
             if parent_manifest is not None:
-                # Import lazily to preserve the existing single ledger owner and
-                # avoid a second batching authority. The prior packet is released
-                # under this same append lock before the new receipt is appended.
+                # The governing parent manifest owns packet release. A satisfied
+                # prior packet is released and carried through the existing
+                # canonical custody client as part of this same governed
+                # transition, before the successor organization receipt is
+                # appended. The resulting ALLOW/DENY/FAIL_CLOSED is retained in
+                # that successor receipt's boundary evidence.
                 import organization_batch_custody as batches
                 released = batches.release_satisfied_packet_before_next_transition(
                     parent_manifest, root=root
                 )
+                if released is not None:
+                    release_disposition = batches.submit_released_batch(root, released["batch_id"])
+                    if release_disposition.get("state") not in {"ALLOW", "DENY", "FAIL_CLOSED"}:
+                        raise ValueError("released organization batch disposition invalid")
+                    effective_boundary_evidence["parent_manifest_released_batch"] = {
+                        "batch_id": released["batch_id"],
+                        "disposition": release_disposition["state"],
+                        "reason": release_disposition.get("reason"),
+                        "authority_effect": release_disposition.get("authority_effect"),
+                    }
             record = _aggregate_transition_locked(
                 receipt, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
-                boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
             )
             if released is not None:
                 state = batches.open_packet_state(parent_manifest, root=root)
@@ -242,6 +257,7 @@ def main():
             successor_org_state_sha256=a.successor_org_state_sha256,
             boundary_evidence=json.loads(a.boundary_evidence_json),
             authority_effect=a.authority_effect,
+            parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
         )
     except ValueError as exc:
         raise SystemExit(str(exc))
