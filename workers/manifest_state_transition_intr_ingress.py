@@ -337,7 +337,8 @@ def _repo_root(name: str) -> Path | None:
 
 
 def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
-                        outcome: str, prior: str | None, evidence: Mapping[str, Any]) -> dict[str, Any]:
+                        outcome: str, prior: str | None, evidence: Mapping[str, Any],
+                        proof_scope: str = "SDK_MANIFEST_SELECTED_STEGBROWSER_LLM_TRANSITION_ONLY") -> dict[str, Any]:
     receipt = build_state_receipt(
         transition_id=transition_id,
         transition_sequence=sequence,
@@ -347,7 +348,7 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
         resulting_state_ref_or_hash=sha256(evidence),
         governance_decision_ref_where_applicable=None,
         transition_evidence=evidence,
-        proof_scope="SDK_MANIFEST_SELECTED_STEGBROWSER_LLM_TRANSITION_ONLY",
+        proof_scope=proof_scope,
         proof_ceiling="ORGANIZATION_FIRST_THEN_MASTER_RECORDS_RECONSTRUCTION",
     )
     custody = submit_state_receipt(receipt)
@@ -528,6 +529,7 @@ def _governance_disposition(
         outcome=disposition,
         prior=prior_organization_receipt_sha256,
         evidence=evidence,
+        proof_scope="SDK_MANIFEST_SELECTED_GOVERNANCE_TRANSITION_ONLY",
     )
     closure = _closure_projection(
         governed,
@@ -589,6 +591,7 @@ def _execute_governance(
             "transport_authorization_id_sha256": sha256(authorization_id.encode("utf-8")),
             "transport_payload_sha256": transport.get("payload_sha256"),
         },
+        proof_scope="SDK_MANIFEST_SELECTED_GOVERNANCE_TRANSITION_ONLY",
     )
     ingress_closure = _closure_projection(ingress)
     prior_org = str((ingress["custody"]["organization_receipt"])["receipt_sha256"])
