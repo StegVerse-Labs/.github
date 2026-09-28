@@ -441,6 +441,7 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
                 runtime_root, validated, reason_code=exc.predicate, terminal=True)
     require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
     capability = validated.get("processing_capability")
+    graph = validated.get("state_graph") or {}
     # Purpose/atomic workers already have a canonical WorkerCoordinator result
     # assembler below. Other installed capabilities must be bound to their
     # existing manifest-selected operation owner before that owner is invoked;
