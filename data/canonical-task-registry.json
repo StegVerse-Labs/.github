@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 269,
+  "generation": 270,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10207,14 +10207,14 @@
         {
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
           "kind": "TASK",
-          "state": "UNRESOLVED",
-          "ref": "Owner-approved original PR #72 exact manuscript and owner-approved Volume III v0.2 editorial reconciliation. Owner attests independent banker/lawyer conclusions align with internal analysis; only original attributable exact-source report bytes/required signed reviewer evidence remain unverified under Publisher research-release policy. Publisher issue #76 and PR #77 are closed/merged."
+          "state": "RESOLVED",
+          "ref": "Owner approved existing PR #72 documentation and Volume III v0.3 research-review policy. Publisher PR #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c: signed external economics/legal reports are optional provenance for bounded theoretical research publication, with mandatory disclosure that authenticated signed external review is not evidenced. Operational licensing, settlement, token/payment, investment-solicitation and jurisdiction-specific compliance claims retain separate applicable review."
         },
         {
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "Publisher #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6 exact-source preflight; SDK #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941 exact Publisher paper manifest converter; SDK #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538 targeted tests; Publisher #86 merged df6825e8d0138768ce2356d1edc8acfbb82040dc native source consumer; Publisher #87 merged 5de26e53f734ff68627663b0471cf60d52551982 source preflight reconciliation. Actual exact manifest not prepared because applicable source-bound review digests are unauthenticated; no authenticated economic InTr/organization-ledger/Master Records execution interface available in this session."
+          "ref": "Publisher #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c research-review policy disposition; SDK #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530 manifest review-policy support; Publisher native source consumer remains installed via #86/#87. Review gate resolved for bounded research release. Exact manifest runtime, authentic Interlock/InTr disposition, organization custody, Master Records closure, Publisher release and deployed Site readback remain unobserved."
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
@@ -10225,14 +10225,9 @@
       ],
       "blockers": [
         {
-          "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
-          "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-          "reason": "Owner substantive editorial review approved; do not repeat manuscript/reviews. Existing Publisher Volume III v0.2 independent review packet calls for attributable signed source-bound economics and jurisdiction-specific legal reports. Original report bytes/identities are not authenticated in inspected evidence, so independently evidenced reviewer signoff is not claimed; resolve from existing custody or obtain an explicit applicable Publisher policy disposition."
-        },
-        {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "Publisher-native exact SDK paper-manifest consumer is now source-implemented and validated. Actual publication transition remains unattempted because the current exact manifest contract requires genuine economics/legal report digest references and inspected custody has no attributable originals; no authenticated economic Universal InTr or sovereign organization-ledger interface is exposed in this session. The discovered organization readback implementation is private resident-local and explicitly forbids hosted execution, so it is not a required external-machine/device prerequisite. Preserve UNKNOWN_NOT_AUTHENTICALLY_OBSERVED for historical runtime custody until an authenticated existing interface is reachable; on actual manifest attempt retain exact ALLOW/DENY/FAIL_CLOSED and same-transition Master Records reconstruction before Publisher release."
+          "reason": "Research-review policy gate is resolved and SDK/Publisher source contracts can represent the owner policy without fabricated review hashes. Remaining publication work is runtime-only: construct the exact approved-source manifest, validate the existing Publisher consumer, then invoke the existing universal manifest runtime through authenticated TV/TVC + Interlock/InTr when available. Preserve actual ALLOW/DENY/FAIL_CLOSED and same-transition organization/Master Records closure before release. No second device, resident inventory, hosted authority or duplicate task."
         },
         {
           "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
@@ -10261,7 +10256,9 @@
         "SDK PR #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941: distinct Publisher papers exact-source manifest converter; SDK PR #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538: targeted run 36366420354 SUCCESS, fixtures only.",
         "Publisher PR #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8: source preflight now points to PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER; targeted preflight 36366668553 and three Publisher source checks SUCCESS, no authority.",
         "Publisher PR #86 merged df6825e8d0138768ce2356d1edc8acfbb82040dc; native economic SDK manifest consumer source plus exact-head runs 36381775153/36381774995/36381774966/36381775016 SUCCESS; source-only, no authority.",
-        "Publisher PR #87 merged 5de26e53f734ff68627663b0471cf60d52551982; economic preflight marks PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER SOURCE_REPAIRED; exact manifest runtime remains NOT_ATTEMPTED."
+        "Publisher PR #87 merged 5de26e53f734ff68627663b0471cf60d52551982; economic preflight marks PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER SOURCE_REPAIRED; exact manifest runtime remains NOT_ATTEMPTED.",
+        "SDK PR #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530: explicit bounded research review-policy mode; no fabricated professional review hashes.",
+        "Publisher PR #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c: Volume III v0.3 owner review-policy disposition, REVIEW_EVIDENCE...=POLICY_RESOLVED, exact-head Publisher checks SUCCESS."
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
