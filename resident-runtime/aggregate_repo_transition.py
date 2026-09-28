@@ -162,28 +162,30 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
             released = None
-            release_disposition = None
+            release_execution_result = None
             effective_boundary_evidence = dict(boundary_evidence or {})
             if parent_manifest is not None:
                 # The governing parent manifest owns packet release. A satisfied
                 # prior packet is released and carried through the existing
-                # canonical custody client as part of this same governed
-                # transition, before the successor organization receipt is
-                # appended. The resulting ALLOW/DENY/FAIL_CLOSED is retained in
-                # that successor receipt's boundary evidence.
+                # canonical custody client as a manifest-directed consequence
+                # before the successor organization receipt is appended. This
+                # custody result is execution evidence only; it must never mint
+                # or replace the parent manifest's governance disposition.
                 import organization_batch_custody as batches
                 released = batches.release_satisfied_packet_before_next_transition(
                     parent_manifest, root=root
                 )
                 if released is not None:
-                    release_disposition = batches.submit_released_batch(root, released["batch_id"])
-                    if release_disposition.get("state") not in {"ALLOW", "DENY", "FAIL_CLOSED"}:
-                        raise ValueError("released organization batch disposition invalid")
+                    release_execution_result = batches.submit_released_batch(root, released["batch_id"])
+                    if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
+                        raise ValueError("released organization batch execution result invalid")
+                    if release_execution_result.get("governance_disposition") is not None:
+                        raise ValueError("released organization batch attempted governance escalation")
                     effective_boundary_evidence["parent_manifest_released_batch"] = {
                         "batch_id": released["batch_id"],
-                        "disposition": release_disposition["state"],
-                        "reason": release_disposition.get("reason"),
-                        "authority_effect": release_disposition.get("authority_effect"),
+                        "execution_result": release_execution_result["state"],
+                        "reason": release_execution_result.get("reason"),
+                        "authority_effect": release_execution_result.get("authority_effect"),
                     }
             record = _aggregate_transition_locked(
                 receipt, org_transition_class=org_transition_class,
