@@ -154,8 +154,8 @@ def _atomic_json(path, value):
 
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
-                         boundary_evidence=None, authority_effect="NONE"):
-    """Serialize existing organization appends; never treat recording as authority."""
+                         boundary_evidence=None, authority_effect="NONE", parent_manifest=None):
+    """Serialize appends; the governing parent manifest owns count-based batch release."""
     root = ledger_root()
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     with (root / ".append.lock").open("a+b") as lock:
