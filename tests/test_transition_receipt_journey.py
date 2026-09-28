@@ -3,7 +3,7 @@ import unittest
 
 from scripts.validate_transition_receipt_journey import validate
 
-MANIFEST="sha256:"+"a"*64
+OUTBOUND="sha256:"+"a"*64\nRETURN="sha256:"+"b"*64
 def receipt(leg,direction,endpoint,counterparty,**extra):
     e={"journey_id":"journey-001","leg":leg,"direction":direction,"endpoint":endpoint,
        "counterparty":counterparty,"manifest_sha256":MANIFEST,**extra}
