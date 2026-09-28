@@ -10,6 +10,10 @@ def test_generic_sdk_manifest_consumer_replaces_test5_selector():
     assert req["schema"]=="stegverse.sdk-generic-manifest-execution-request/v1"
     assert [x["build"]["process"] for x in req["requests"]]==["stegbrowser","stegbrowser"]
     assert [x["build"]["processor_request"]["response_marker"] for x in req["requests"]]==["TEST5_A","TEST5_B"]
+    assert [x["build"]["processor_request"]["provider"] for x in req["requests"]]==["openai","anthropic"]
+    portable=(ROOT/"scripts/refresh_and_dispatch_resident_requests.py").read_text()
+    assert 'SDK_GENERIC_MANIFEST_CONSUMER = "sdk_generic_manifest_execution"' in portable
+    assert "STEG_BROWSER_TVC_CONSUMER, SDK_GENERIC_MANIFEST_CONSUMER)" in portable
     consumer=(ROOT/"scripts/consume_sdk_generic_manifest_execution_request.py").read_text()
     assert "process=\"stegbrowser\"" not in consumer
     assert "build_manifest(**item[\"build\"])" in consumer
