@@ -129,3 +129,15 @@ StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-
 SDK PR #383 merged the generic evaluator-visible `stegbrowser` / `llm.v1` route into the existing `stegverse run-manifest` dispatcher. The existing sovereign resident dispatcher now carries one bounded request selector, `sdk_test5_stegbrowser_llm_profile`, whose consumer builds workers A and B as two distinct manifests and calls `stegverse.manifest_execution.execute_manifest` for each. The consumer does not discover/start a listener, create a scheduler, mint credentials, require another machine, or bypass Universal InTr. It consumes the existing resident SDK source root and inherited InTr/TVC bindings.
 
 The first non-ALLOW result terminates the current attempt and is retained; otherwise both worker results must come from the same generic executor. Authentic success remains disposition -> Organization Records -> Master Records reconstruction -> successor evaluation. Source/CI carriage validation is not the Test 5 runtime result.
+
+
+## Generic evaluator manifest execution migration — 2026-09-28
+
+The Test-5-specific resident selector is superseded by `sdk_generic_manifest_execution`. The generic consumer accepts build arguments from the request, calls the SDK Manifest Builder, and then:
+- ONLINE manifest -> same public `execute_manifest` / run-manifest path;
+- OFFLINE build resolution -> preserve active workaround-selection contract;
+- UNKNOWN_CAPABILITY build resolution -> preserve capability-development/deployment request;
+- actual DENY/FAIL_CLOSED -> retain and stop the current attempt;
+- successful execution -> continue according to the manifest and canonical Organization Records -> Master Records sequence.
+
+Test 5 is now data in the generic request: two StegBrowser/llm.v1 manifests with distinct markers. The consumer contains no Test-5 capability/profile hard-coding.
