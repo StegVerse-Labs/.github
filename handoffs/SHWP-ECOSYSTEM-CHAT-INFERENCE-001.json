@@ -269,7 +269,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the existing sovereign resident surface, consume the already-local current source. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. When the local source-refresh service is already installed and active, `control/resident-execution-request.d/ecosystem-chat-parent-001.json` may cause one exactly-once attempt through `scripts/consume_resident_execution_request.py`; the singleton `control/resident-execution-request.json` is compatibility-only. The request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >24 (first eligible fence G25), execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition.",
+    "next_authorized_action": "Invoke the existing manifest-bound SHWP transition through `scripts/consume_shwp_manifest_invocation.py`. That adapter must build the admitted `sovereign_inference` manifest from the unchanged `RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002`, bind current Registry generation and COSV `50000000100000`, resolve `stegverse.route.shwp-sovereign-inference.v1`, and enter the existing Universal InTr path. The first reached transition boundary must return its actual ALLOW, DENY or FAIL_CLOSED/profile non-ALLOW result with failed predicate and retry edge. No device inventory, external machine, new scheduler, duplicate task, or passive observation gate. On an evidenced parent ALLOW, continue immediately through original organization custody readback and same-execution Master Records reconstruction until terminal closure.",
     "terminal_when": [
       "real_model_process_observed=true",
       "private_endpoint_only=true",
@@ -284,25 +284,16 @@
       "github_token_required=false",
       "github_actions_activation_role=false",
       "third_party_inference_required=false"
-    ]
-  },
-  "block": {
-    "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
-    "class": "EXECUTION_PENDING",
-    "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "Resident source refresh/request consumption, fresh parent fence >24 (first eligible fence G25), terminal same-execution activation receipt, TVC persistence packet, and Site-local runtime import remain unobserved. Downstream source is now merged through Site local import; hosted GitHub writeback persistence has been retired.",
-    "solution_required": true,
-    "dependency": null,
-    "observer": "independent StegVerse task-control",
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while parent remains HANDOFF_READY",
-    "workaround_candidates": [
-      "Use the locally developed stegverse-reference-lm-v1 as the guaranteed zero-external-dependency runtime",
-      "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics",
-      "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
     ],
-    "next_solution_action": "OBSERVE_OR_TRIGGER_EXISTING_SOVEREIGN_RESIDENT_SOURCE_CONSUMPTION_WITHOUT_HOSTED_RUNTIME_AUTHORITY",
-    "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >24 (first eligible fence G25), same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
-    "third_party_blocker": false,
-    "human_action_required": false
+    "progression_rule": {
+      "model": "STATE_TRANSITION_DEPENDENT",
+      "task_level_block_state_allowed": false,
+      "passive_runtime_observation_gate_allowed": false,
+      "missing_evidence_semantics": "ATTEMPT_INPUT_OR_NON_ALLOW_EVIDENCE_NOT_TASK_BLOCK",
+      "next_entrypoint": "scripts/consume_shwp_manifest_invocation.py",
+      "manifest_route": "stegverse.route.shwp-sovereign-inference.v1",
+      "processing_capability": "sovereign_inference",
+      "authority_effect": "NONE"
+    }
   }
 }
