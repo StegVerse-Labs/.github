@@ -15,23 +15,53 @@
     "RT-INTR-BOUNDARY-ADMISSION-001",
     "RT-INTR-ROUNDTRIP-CORRELATION-001"
   ],
-  "runner_templates": [],
+  "runner_templates": [
+    "workers/stegbrowser_manifest_intr_ingress.py"
+  ],
   "recording_levels": [
     "operation",
     "task",
     "goal",
+    "organization_records",
     "master_records"
   ],
   "completion_predicates": [
-    "EXACT_INGRESS_EGRESS_DECISIONS",
+    "EXACT_INGRESS_DISPOSITION_ALLOW_DENY_OR_FAIL_CLOSED",
+    "PACKET_CARRIED_ORIGIN_EGRESS_RECEIPT",
+    "PACKET_CARRIED_EPHEMERAL_INGRESS_RECEIPT",
     "REAL_SOURCE_RESULT_OR_EXPLICIT_FAILURE",
+    "PACKET_CARRIED_EPHEMERAL_EGRESS_RECEIPT",
+    "PACKET_CARRIED_ORIGIN_RETURN_INGRESS_RECEIPT",
+    "ORGANIZATION_RECEIPT_RECORDED_BEFORE_MASTER_RECORDS",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS_BEFORE_SUCCESSOR_EVALUATION",
     "MEASURED_USAGE_OR_DECLARED_UNAVAILABLE",
     "NO_CREDENTIAL_EXPORT"
   ],
   "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY",
-  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and the existing reusable-task constructor. These are definitions, not an executable runner or admission. Existing StegBrowser / StegOS / WorkerCoordinator / InTr / TV-TVC / organization ledger / Master Records own execution and evidence. The existing trigger stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds its authentic entrypoint. No second runtime or synthetic receipt.",
+  "reuse_instructions": "Materialize with scripts/compose_ecosystem_chat_task.py and bind the manifested ACTION to the existing STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001 entrypoint. Each attempted governed transition must return ALLOW, DENY, or FAIL_CLOSED, then record/verify Organization Records before Master Records custody/reconstruction, then evaluate the declared successor. Packet-carried endpoint receipts follow origin EGRESS -> ephemeral INGRESS -> ephemeral EGRESS -> origin return INGRESS and are transported by the existing STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001 owner. No second runtime, transport, ledger, scheduler, credential route, device gate, or synthetic receipt.",
   "existing_owner_refs": [
     "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
-  ]
+  ],
+  "execution_binding": {
+    "existing_manifest_execution_owner": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "existing_receipt_transport_owner": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+    "entrypoint": "workers/stegbrowser_manifest_intr_ingress.py",
+    "transition_sequence": [
+      "INTERLOCK_INTR_DISPOSITION_ALLOW_DENY_OR_FAIL_CLOSED",
+      "ORGANIZATION_RECORDS_APPEND_AND_VERIFY",
+      "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+      "DECLARED_SUCCESSOR_EVALUATION"
+    ],
+    "roundtrip_receipt_sequence": [
+      "ORIGIN_EGRESS",
+      "EPHEMERAL_INGRESS",
+      "EPHEMERAL_EGRESS",
+      "ORIGIN_RETURN_INGRESS"
+    ],
+    "packet_carried_endpoint_receipts": true,
+    "duplicate_runtime_or_transport_allowed": false,
+    "external_machine_required": false,
+    "authority_effect": "NONE_EXISTING_OWNER_BINDING_ONLY"
+  }
 }
