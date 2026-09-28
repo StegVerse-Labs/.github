@@ -259,6 +259,14 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
     persist_request(runtime_root, validated)
+    if validated.get("processing_capability") == "sovereign_inference":
+        from workers.shwp_manifest_parent_consumer import execute as execute_shwp
+        # The installed SDK graph selects this route; task identity alone
+        # cannot select it, and the adapter independently verifies the exact
+        # unchanged original request and current canonical Registry/COSV.
+        require(validated.get("route_id") == "stegverse.route.shwp-sovereign-inference.v1",
+                "SHWP_DECLARED_SDK_ROUTE_REQUIRED")
+        return execute_shwp(Path(__file__).resolve().parents[1], runtime_root, validated)
     if validated.get("processing_capability") == "ecosystem_diagnostic" and task_id is None:
         from workers.sdk_manifest_diagnostic_admitted_consumer import (
             DiagnosticAdmissionError, DiagnosticExecutionFailClosed, consume,
