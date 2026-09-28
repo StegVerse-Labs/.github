@@ -275,7 +275,46 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     cycle = runtime.cycle(write=True, target_task_id=task_id)
     require(isinstance(cycle, Mapping), "workercoordinator_cycle_result_missing")
     latest = runtime_root / "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json"
-    require(latest.is_file(), "AUTHENTIC_PURPOSE_RUNTIME_RECEIPT_NOT_OBSERVED")
+    if not latest.is_file():
+        # The targeted worker cycle was invoked, but no original purpose receipt
+        # was returned. This is an actionable verdict at THIS profile boundary,
+        # never a claim that InTr denied an unobserved downstream transition.
+        record = {
+            "schema": "stegverse.sdk.manifest-profile-disposition/v1",
+            "state": "FAIL_CLOSED",
+            "disposition": "FAIL_CLOSED",
+            "evaluation_boundary": "SDK_MANIFEST_WORKER_RESULT_ATTACHMENT",
+            "reason_code": "AUTHENTIC_PURPOSE_RUNTIME_RECEIPT_NOT_OBSERVED",
+            "failed_predicate": "EXACT_REQUEST_BOUND_PURPOSE_RUNTIME_RECEIPT_PRESENT",
+            "canonical_task_id": task_id,
+            "graph_id": validated["graph_id"],
+            "processing_capability": validated["processing_capability"],
+            "route_id": validated["route_id"],
+            "request_sha256": validated["request_sha256"],
+            "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+            "consequence_committed_by_this_profile": False,
+            "authentic_intr_disposition_observed": False,
+            "organization_master_records_closure_observed": False,
+            "required_evidence_refs": [
+                "EXACT_REQUEST_BOUND_ORIGINAL_INTR_DISPOSITION",
+                "ORGANIZATION_LEDGER_RECEIPT_AND_PREDECESSOR",
+                "MATCHING_MASTER_RECORDS_RECONSTRUCTION",
+            ],
+            "repair_owner": "EXISTING_MANIFEST_WORKERCOORDINATOR_INTR_AND_CUSTODY_OWNERS",
+            "retry_entrypoint": "EXISTING_SDK_MANIFEST_UNIVERSAL_INTR_INGRESS",
+            "automatic_retry_permitted": False,
+            "authority_effect": "NONE_PROFILE_BOUNDARY_DISPOSITION_ONLY",
+        }
+        root = runtime_root / REQUEST_DIR / "dispositions" / "runtime-attachment"
+        root.mkdir(parents=True, exist_ok=True)
+        exact = root / (validated["request_sha256"] + ".json")
+        raw = json.dumps(record, sort_keys=True, indent=2) + "\n"
+        if exact.exists():
+            require(exact.read_text(encoding="utf-8") == raw,
+                    "runtime_attachment_disposition_immutable_collision")
+        else:
+            exact.write_text(raw, encoding="utf-8")
+        return {**record, "source_disposition_ref": str(exact)}
     receipt = json.loads(latest.read_text(encoding="utf-8"))
     require(receipt.get("task_id") == task_id, "purpose_runtime_receipt_task_mismatch")
     return _assemble_purpose_result(validated, receipt)
