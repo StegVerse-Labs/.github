@@ -56,6 +56,8 @@ STATIC_FILES = (
     Path("scripts/consume_hil_resident_execution_request.py"),
     Path("scripts/consume_evaluator_intr_resident_execution_request.py"),
     Path("scripts/consume_sdk_evaluator_governance_posture_request.py"),
+    Path("scripts/consume_sdk_test5_stegbrowser_llm_profile_request.py"),
+    Path("control/resident-execution-request.d/sdk-test5-stegbrowser-llm-profile-001.json"),
     Path("scripts/materialize_evaluator_intr_route_config.py"),
     Path("scripts/consume_sv002_public_observation_request.py"),
     Path("scripts/materialize_sv002_observation_route_config.py"),

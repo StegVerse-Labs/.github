@@ -1856,3 +1856,6 @@ Existing Goal `SV-KV-AI-END-TO-END-RUNTIME-EVIDENCE-001` now carries the owner-d
 ### September 28 — SDK Test 5 uses the packet-carried four-receipt journey
 
 Under `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001`, SDK Test 5 keeps StegBrowser as the capability and `llm.v1` as the profile while preserving manifest-only worker variation. StegBrowser PR #38 now exercises origin EGRESS, ephemeral INGRESS, ephemeral EGRESS on a separately manifested predecessor-linked return leg, and origin return INGRESS. The endpoint receipts travel with the packet; the ephemeral participant attests manifest read, manifest-directed action/routing, receipt append, and next-leg direction. Distinct response markers remain manifest-bound per worker. The returned four-receipt packet is for the existing organization/Master Records custody path; source tests are not runtime proof.
+
+
+Test 5 resident carriage now reuses the existing sovereign resident request dispatcher to invoke the public SDK `run-manifest` implementation for two manifest-distinguished StegBrowser/`llm.v1` workers. No external machine, new scheduler, listener, transport, credential authority, or custody plane is introduced. Runtime truth remains the actual Universal InTr disposition followed by Organization Records and Master Records reconstruction.
