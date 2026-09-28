@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -238,6 +239,24 @@ def export_batch(root: Path, batch_id: str) -> dict:
     }
 
 
+
+def submit_released_batch(root: Path, batch_id: str) -> dict:
+    """Submit an immutable released batch through the existing canonical custody transport."""
+    envelope = export_batch(root, batch_id)
+    module_path = Path(__file__).resolve().parents[1] / "workers" / "canonical_state_transition_custody.py"
+    spec = importlib.util.spec_from_file_location("canonical_state_transition_custody_for_org_batch", module_path)
+    if spec is None or spec.loader is None:
+        return {"state":"FAIL_CLOSED","reason":"CANONICAL_CUSTODY_CLIENT_UNAVAILABLE","batch_id":batch_id,"authority_effect":"NONE"}
+    custody = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(custody)
+    result = custody.submit_organization_batch(envelope)
+    if result.get("state") not in {"ALLOW","DENY","FAIL_CLOSED"}:
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_TRANSPORT_DISPOSITION_INVALID",
+                "batch_id":batch_id,"transport_result":result,"authority_effect":"NONE"}
+    return result
+
+
+
 def _atomic_json(path: Path, row: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, name = tempfile.mkstemp(prefix=".org-batch-", dir=str(path.parent))
@@ -358,17 +377,20 @@ def main() -> None:
     parser.add_argument("--closure-reason", choices=sorted(CLOSURE_REASONS))
     parser.add_argument("--verify-batch")
     parser.add_argument("--export-batch")
+    parser.add_argument("--submit-released-batch")
     parser.add_argument("--root")
     args = parser.parse_args()
     root = Path(args.root) if args.root else org.ledger_root()
-    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch)) != 1:
-        parser.error("provide exactly one of --closure-reason, --verify-batch or --export-batch")
+    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.submit_released_batch)) != 1:
+        parser.error("provide exactly one batch operation")
     if args.closure_reason:
         result=close_batch(args.closure_reason,root=root)
     elif args.verify_batch:
         result=verify_batch(root,args.verify_batch)
-    else:
+    elif args.export_batch:
         result=export_batch(root,args.export_batch)
+    else:
+        result=submit_released_batch(root,args.submit_released_batch)
     print(json.dumps(result, sort_keys=True))
 
 

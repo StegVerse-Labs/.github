@@ -167,3 +167,15 @@ def test_parent_manifest_batch_release_condition_fails_closed(monkeypatch, tmp_p
             "receipt_batch": {"release_condition": {"type": "COUNT", "count": 0}}
         })
     assert not (tmp_path / "HEAD.json").exists()
+
+
+def test_submit_released_batch_fail_closed_without_authentic_custody_surface(monkeypatch, tmp_path):
+    source, _ = append(monkeypatch, tmp_path, "BATCH-CUSTODY")
+    closed = batch.close_batch("TASK_CLOSURE", root=tmp_path)
+    monkeypatch.delenv("STEGVERSE_MASTER_RECORDS_ENDPOINT", raising=False)
+    monkeypatch.delenv("STEGVERSE_MASTER_RECORDS_TOKEN", raising=False)
+    result = batch.submit_released_batch(tmp_path, closed["batch_id"])
+    assert result["state"] == "FAIL_CLOSED"
+    assert result["reason"] == "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE"
+    assert result["batch_id"] == closed["batch_id"]
+
