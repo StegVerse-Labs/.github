@@ -31,10 +31,10 @@ LATEST_SUFFIX = ".latest.json"
 IMMUTABLE_DIR = "requests"
 
 GOVERNANCE_SOURCE_ROOTS = {
-    "sdk": ("STEGVERSE_SDK_SOURCE_ROOT", "stegverse/governance_ingress_runtime.py"),
-    "stegcore": ("STEGVERSE_STEGCORE_SOURCE_ROOT", "src/stegcore/transaction_lifecycle.py"),
-    "core_lite": ("STEGVERSE_CORE_LITE_SOURCE_ROOT", "core_lite/transaction_route.py"),
-    "master_records": ("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "services/manifest_receipt_custody.py"),
+    "sdk": ("STEGVERSE_SDK_SOURCE_ROOT", "StegVerse-org/StegVerse-SDK", "stegverse/governance_ingress_runtime.py"),
+    "stegcore": ("STEGVERSE_STEGCORE_SOURCE_ROOT", "StegVerse-Labs/StegCore", "src/stegcore/transaction_lifecycle.py"),
+    "core_lite": ("STEGVERSE_CORE_LITE_SOURCE_ROOT", "Data-Continuation/core-lite", "core_lite/transaction_route.py"),
+    "master_records": ("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "master-records/orchestration", "services/manifest_receipt_custody.py"),
 }
 GOVERNANCE_ROUTE_ID = "stegverse.route.canonical-governed.v1"
 
@@ -438,8 +438,14 @@ def _manifest_subject(validated: Mapping[str, Any]) -> str:
 
 def _governance_roots() -> dict[str, Path]:
     roots: dict[str, Path] = {}
-    for key, (env_name, marker) in GOVERNANCE_SOURCE_ROOTS.items():
-        raw = str(os.getenv(env_name) or "").strip()
+    try:
+        repo_roots = json.loads(os.getenv("STEGVERSE_REPO_ROOTS_JSON", "{}"))
+    except Exception:
+        repo_roots = {}
+    if not isinstance(repo_roots, Mapping):
+        repo_roots = {}
+    for key, (env_name, repo_key, marker) in GOVERNANCE_SOURCE_ROOTS.items():
+        raw = str(os.getenv(env_name) or repo_roots.get(repo_key) or "").strip()
         require(bool(raw), f"{env_name}_NOT_BOUND")
         root = Path(raw).expanduser().resolve()
         require((root / marker).is_file(), f"{env_name}_INVALID")
