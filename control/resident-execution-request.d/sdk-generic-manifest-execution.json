@@ -1,14 +1,74 @@
 {
-  "schema":"stegverse.sdk-generic-manifest-execution-request/v1",
-  "state":"REQUESTED",
-  "request_id":"SDK-GENERIC-MANIFEST-EXECUTION-TEST5-001",
-  "entrypoint":"stegverse.manifest_execution.execute_manifest",
-  "credential_authority":"TV/TVC",
-  "transition_authority":"Interlock/InTr",
-  "request_granted_authority":false,
-  "second_machine_required":false,
-  "requests":[
-    {"request_id":"test5-a","build":{"data":{"test":5,"worker":"A"},"data_class":"stegverse.sdk-test.v1","source_framework":"StegVerse-SDK-Evaluator","source_output_id":"test5-a","processor_request":{"schema":"stegbrowser.llm-profile-request.v1","profile":"llm.v1","prompt":"Return the exact marker TEST5_A and identify this session.","response_marker":"TEST5_A","provider":"openai","journey":{"schema":"stegverse.packet-carried-endpoint-receipt-journey/v1","journey_id":"test5-a","origin_endpoint":"stegverse:test5-origin","ephemeral_endpoint":"stegbrowser:ephemeral:a","outbound_manifest_sha256":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","return_manifest_sha256":"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","return_predecessor_manifest_sha256":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},"process":"stegbrowser","return_depth":"full-trace","publisher_required":false}},
-    {"request_id":"test5-b","build":{"data":{"test":5,"worker":"B"},"data_class":"stegverse.sdk-test.v1","source_framework":"StegVerse-SDK-Evaluator","source_output_id":"test5-b","processor_request":{"schema":"stegbrowser.llm-profile-request.v1","profile":"llm.v1","prompt":"Return the exact marker TEST5_B and identify this session.","response_marker":"TEST5_B","provider":"openai","journey":{"schema":"stegverse.packet-carried-endpoint-receipt-journey/v1","journey_id":"test5-b","origin_endpoint":"stegverse:test5-origin","ephemeral_endpoint":"stegbrowser:ephemeral:b","outbound_manifest_sha256":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","return_manifest_sha256":"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","return_predecessor_manifest_sha256":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}},"process":"stegbrowser","return_depth":"full-trace","publisher_required":false}}
+  "schema": "stegverse.sdk-generic-manifest-execution-request/v1",
+  "state": "REQUESTED",
+  "request_id": "SDK-GENERIC-MANIFEST-EXECUTION-TEST5-001",
+  "entrypoint": "stegverse.manifest_execution.execute_manifest",
+  "credential_authority": "TV/TVC",
+  "transition_authority": "Interlock/InTr",
+  "request_granted_authority": false,
+  "second_machine_required": false,
+  "requests": [
+    {
+      "request_id": "test5-a",
+      "build": {
+        "data": {
+          "test": 5,
+          "worker": "A"
+        },
+        "data_class": "stegverse.sdk-test.v1",
+        "source_framework": "StegVerse-SDK-Evaluator",
+        "source_output_id": "test5-a",
+        "processor_request": {
+          "schema": "stegbrowser.llm-profile-request.v1",
+          "profile": "llm.v1",
+          "prompt": "Return the exact marker TEST5_A and identify this session.",
+          "response_marker": "TEST5_A",
+          "provider": "openai",
+          "journey": {
+            "schema": "stegverse.packet-carried-endpoint-receipt-journey/v1",
+            "journey_id": "test5-a",
+            "origin_endpoint": "stegverse:test5-origin",
+            "ephemeral_endpoint": "stegbrowser:ephemeral:a",
+            "outbound_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "return_manifest_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "return_predecessor_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        "process": "stegbrowser",
+        "return_depth": "full-trace",
+        "publisher_required": false
+      }
+    },
+    {
+      "request_id": "test5-b",
+      "build": {
+        "data": {
+          "test": 5,
+          "worker": "B"
+        },
+        "data_class": "stegverse.sdk-test.v1",
+        "source_framework": "StegVerse-SDK-Evaluator",
+        "source_output_id": "test5-b",
+        "processor_request": {
+          "schema": "stegbrowser.llm-profile-request.v1",
+          "profile": "llm.v1",
+          "prompt": "Return the exact marker TEST5_B and identify this Claude session.",
+          "response_marker": "TEST5_B",
+          "provider": "anthropic",
+          "journey": {
+            "schema": "stegverse.packet-carried-endpoint-receipt-journey/v1",
+            "journey_id": "test5-b",
+            "origin_endpoint": "stegverse:test5-origin",
+            "ephemeral_endpoint": "stegbrowser:ephemeral:b",
+            "outbound_manifest_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "return_manifest_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "return_predecessor_manifest_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        },
+        "process": "stegbrowser",
+        "return_depth": "full-trace",
+        "publisher_required": false
+      }
+    }
   ]
 }
