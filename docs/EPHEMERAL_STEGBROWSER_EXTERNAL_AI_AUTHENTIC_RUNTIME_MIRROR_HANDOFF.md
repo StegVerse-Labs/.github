@@ -22,3 +22,8 @@ Required progression:
 
 ## Next transition
 The first permitted transition is `INGRESS_ADMITTED`. Invoke only through an existing authentic runtime boundary that can return the receipt. Do not reinterpret source dispatchability as invocation. Repair any implementation defect at its existing owner and retry the same manifest. TEST5_B follows only after TEST5_A authentic closure. Test 6 is prohibited before Test 5 closes.
+
+
+## Generic SDK manifest reusable addressability — 2026-09-28
+
+The existing portable resident bridge already admits `sdk_generic_manifest_execution`, but the neutral reusable trigger previously had no reusable identity permitted to select it. `RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001` binds that existing bridge and exact selector without creating a runner, runtime, scheduler, dispatcher or authority plane. Trigger acceptance remains non-authorizing and is not an execution claim; the child generic consumer disposition and its receipt chain are required before successor progression.
