@@ -47,7 +47,7 @@ def validate(receipts: list[dict]) -> dict:
         "schema":"stegverse.transition-journey-validation/v1",
         "disposition":"ALLOW",
         "journey_id":a["journey_id"],
-        "manifest_sha256":a["manifest_sha256"],
+        "outbound_manifest_sha256":a["manifest_sha256"],\n        "return_manifest_sha256":c["manifest_sha256"],
         "legs":2,
         "endpoint_receipts":4,
         "ephemeral_durable_custody_required":False,
