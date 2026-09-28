@@ -150,7 +150,7 @@
       {
         "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -159,7 +159,7 @@
       {
         "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -168,7 +168,7 @@
       {
         "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -177,7 +177,7 @@
       {
         "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -186,7 +186,7 @@
       {
         "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -195,7 +195,7 @@
       {
         "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
         "disposition": "NOT_APPLICABLE",
-        "limitation_class": "STATE_TRANSITION_AUTHORITY_AND_CUSTODY_ARE_SUBSTRATE_INDEPENDENT",
+        "limitation_class": "NOT_APPLICABLE",
         "evidence_refs": [
           "data/task-registry-global-invariants.json",
           "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
