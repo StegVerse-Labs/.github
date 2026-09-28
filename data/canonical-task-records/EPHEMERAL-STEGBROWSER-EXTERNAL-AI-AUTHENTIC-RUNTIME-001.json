@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+  "correlation_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+  "execution_lineage_task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001",
+  "goal": "Continue Test 5 from the exhausted coordination Goal and obtain authentic receipt-bearing TEST5_A then TEST5_B execution through the already-installed generic SDK manifest path, preserving receipt-before-claim, Organization Records before Master Records, and the existing StegBrowser/Universal InTr authority boundaries.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000103000"
+  },
+  "cosv_task_vector": "10100000103000",
+  "source_refs": [
+    "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
+    "control/resident-execution-request.d/sdk-generic-manifest-execution.json",
+    "scripts/consume_sdk_generic_manifest_execution_request.py",
+    "scripts/refresh_and_dispatch_resident_requests.py",
+    "workers/manifest_state_transition_intr_ingress.py",
+    "StegVerse-org/StegVerse-SDK@2f274bb56f836067a27a474d3bd7715afca3e3be",
+    "StegVerse-Labs/StegBrowser@8f8fc83c1bf8db838f75f03702b8304b2ebf7650",
+    "StegVerse-Labs/.github@12e815aa172f17b7a919dc25059e4de2b316a27d"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "organization_records_first": true,
+    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "second_user_operated_device_required": false
+  },
+  "receipt_before_claim": true,
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED"
+  ],
+  "expected_evidence_predicates": [
+    "TEST5_A_FIRST_GOVERNED_ACTION_RECEIPT",
+    "TEST5_A_FOUR_LEG_PACKET_JOURNEY",
+    "TEST5_A_ORGANIZATION_RECORDS_FIRST",
+    "TEST5_A_MASTER_RECORDS_RECONSTRUCTION_MATCH",
+    "TEST5_B_FIRST_GOVERNED_ACTION_RECEIPT",
+    "TEST5_B_FOUR_LEG_PACKET_JOURNEY",
+    "TEST5_B_ORGANIZATION_RECORDS_FIRST",
+    "TEST5_B_MASTER_RECORDS_RECONSTRUCTION_MATCH"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "test5_identity_preserved": true,
+    "test6_started": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "0/20",
+    "terminal_prompt_processed": false,
+    "further_parent_prompts_allowed": true
+  },
+  "status_reason": "PROMPT_LIMIT_CONTINUATION_ONLY; NO_RUNTIME_EXECUTION_CLAIMED; TEST5_IDENTITY_AND_COSV_LINEAGE_PRESERVED"
+}

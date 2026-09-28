@@ -165,3 +165,8 @@ Test 5 no longer assumes provider accounts or API credentials. The generic SDK r
 ## Test 5 attempted-browser disposition repair — 2026-09-28
 
 Execution-path review after the credential-free browser-owner binding found two attempted-operation exits that could still escape as Python exceptions: an absent existing StegBrowser repository-root binding and an exception from the manifested browser operation (navigation/model/selector/response failure). The existing Universal InTr owner now converts those conditions into retryable `FAIL_CLOSED` transitions and sends them through the canonical state-transition custody client. The source-binding predicate is `STEGBROWSER_SOURCE_ROOT_BOUND`; the browser-operation predicate is `MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED`. No alternate runner, runtime, provider credential path, or custody store is introduced. Organization Records remain recorded by the shared custody client before Master Records submission/reconstruction. The same Test 5 manifest is the required retry input after owner or manifest-data repair.
+
+
+## Prompt-limit decomposition — 2026-09-28
+
+This coordination Goal exhausted its 20-prompt budget without authentic Test 5 runtime closure. It is decomposed to `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001`, which preserves Test 5 identity, root correlation and COSV lineage `10100000103000`. This is not a counter-reset split: the successor is narrowly scoped to receipt-bearing TEST5_A then TEST5_B runtime closure. No governed action may be claimed without its authentic receipt; source/CI/trigger acceptance are not execution evidence.
