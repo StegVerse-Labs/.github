@@ -139,3 +139,19 @@ The canonical task remains PROPOSED and source-only. Two blockers remain:
 2. `BENCHMARK_EXPORT_UNWIRED` — all 16 public roadmap benchmarks remain NOT_VERIFIED until their own exact evidence is projected through the existing public-safe path.
 
 The new observational COSV is **`10100000102000`**, derived from blocker_count=2. It grants no authority. Registry generation advances 269 -> **270**. No WorkerCoordinator claim/fence, runtime receipt, publication or benchmark completion is inferred.
+
+
+## 2026-09-28 exact approved-source manifest prepared — generation 271 candidate
+
+SDK PR #387 merged `a412cb40ccba25d5dca4ca63485e043a227ab46d`. Corrected exact-head workflow `36469359331` succeeded and retained artifact `10990707853` with archive digest `sha256:73c1a081d7af9647fe33c7c755d43879a03e7d7ad6fcd5cb9b623e7cedea70ce`. Independent artifact readback verified:
+- exact approved PR #72 paper SHA-256 `3329a0c47161eb4613c32bbc5e0a393116f395cb8fa78368ed21fed8775c3dca`;
+- canonical manifest SHA-256 `ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3`;
+- universal execution-request SHA-256 `11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be`;
+- source build receipt states `EXACT_MANIFEST_PREPARED_SOURCE_ONLY`, `runtime_invoked=false`, `authority_effect=NONE_SOURCE_ONLY`;
+- request preserves TV/TVC credential authority, Interlock/InTr transition authority, Master Records custody authority, and `request_grants_authority=false`.
+
+Publisher PR #89 merged `c8971fa8fab24a626942e2a6edf1c0f3e86ca167` after all five exact-head Publisher workflows passed. Its machine preflight now records `manifest_prepared=true` and binds the retained artifact/hashes. The first PR #387 workflow artifact `10990018418` was independently found invalid (empty receipt after a hidden Python import failure); corrected workflow source added `pipefail` and non-empty assertions. Never cite the false-green artifact as execution evidence.
+
+No authenticated TV/TVC relay authorization or Universal InTr ingress is exposed in this session. Consequently the exact prepared manifest has **not** been submitted and no runtime disposition exists from this work. This is not a blocker requiring another device: it is the exact state-transition interface boundary. When an authenticated existing ingress is reachable, invoke the frozen canonical manifest `ba615d6e...` without source changes and preserve the actual ALLOW, DENY or FAIL_CLOSED plus original organization custody and matching Master Records reconstruction. Only an authentic ALLOW with required closure can advance Publisher mutation and Site propagation.
+
+Registry generation advances 270 -> **271** with unchanged two blockers and observational COSV **`10100000102000`**. All 16 public economic benchmarks remain NOT_VERIFIED.

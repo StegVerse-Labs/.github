@@ -13,9 +13,11 @@
     "StegVerse-Labs/Site PR #1458 merged 5c9ff16471d78331b978d4349f3fec9747e55138",
     "GCAT-BCAT-Engine/Publisher PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321; manuscript research only",
     "GCAT-BCAT-Engine/Publisher PR #88 merged 96bb119d65bd7c792bc47caba4a5c7cb53b5c95c; research signed-review provenance no longer blocks bounded publication.",
-    "StegVerse-org/StegVerse-SDK PR #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530; explicit review-policy manifest binding."
+    "StegVerse-org/StegVerse-SDK PR #386 merged 01fa178e1017275adfdd44fa7c9e1fcbe7061530; explicit review-policy manifest binding.",
+    "StegVerse-org/StegVerse-SDK PR #387 merged a412cb40ccba25d5dca4ca63485e043a227ab46d; exact approved manuscript manifest ba615d6e... prepared source-only.",
+    "GCAT-BCAT-Engine/Publisher PR #89 merged c8971fa8fab24a626942e2a6edf1c0f3e86ca167; preflight records manifest_prepared=true, runtime not invoked."
   ],
-  "observed_at": "2026-09-28T18:47:00Z",
+  "observed_at": "2026-09-28T19:04:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "UNCLAIMED",
@@ -38,7 +40,7 @@
     "unassigned_work": "No authoritative WorkerCoordinator execution claim for this task",
     "canonical_owner_installed": "Canonical Task Registry includes this task and mirror handoff following merged PR #2580",
     "blocker_count": "Two outstanding publication-program blockers after resolving the local signed-review provenance requirement as optional for bounded research publication: authentic governed publication and benchmark export remain unobserved.",
-    "evidence_complete": "No authentic governed publication or benchmark Master Records proof",
+    "evidence_complete": "Exact manifest prepared and independently inspected, but no authentic Universal InTr disposition, same-transition Master Records closure, Publisher release or benchmark proof.",
     "activated": "No authentic runtime publication transition observed",
     "propagated": "Site roadmap source merged, but governed Publisher white-paper publication, canonical released Site mirror and deployed HTTP readback are not observed",
     "ephemeral_ai_execution": "Source contract proposed only; no live OpenAI or Claude ephemeral task evidence"
