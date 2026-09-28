@@ -30,6 +30,14 @@ REQUEST_DIR = Path("runtime-state/sdk-manifest-state-transition")
 LATEST_SUFFIX = ".latest.json"
 IMMUTABLE_DIR = "requests"
 
+GOVERNANCE_SOURCE_ROOTS = {
+    "sdk": ("STEGVERSE_SDK_SOURCE_ROOT", "stegverse/governance_ingress_runtime.py"),
+    "stegcore": ("STEGVERSE_STEGCORE_SOURCE_ROOT", "src/stegcore/transaction_lifecycle.py"),
+    "core_lite": ("STEGVERSE_CORE_LITE_SOURCE_ROOT", "core_lite/transaction_route.py"),
+    "master_records": ("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "services/manifest_receipt_custody.py"),
+}
+GOVERNANCE_ROUTE_ID = "stegverse.route.canonical-governed.v1"
+
 REQUIRED_AUTHORITIES = {
     "credential_authority": "TV/TVC",
     "claim_fence_authority": "WORKERCOORDINATOR",
@@ -413,7 +421,244 @@ def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -
     }
 
 
-def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
+
+def _manifest_subject(validated: Mapping[str, Any]) -> str:
+    task_id = validated.get("canonical_task_id")
+    if isinstance(task_id, str) and task_id:
+        return task_id
+    manifest = validated.get("canonical_manifest")
+    payload = manifest.get("payload") if isinstance(manifest, Mapping) else None
+    candidate = payload.get("candidate") if isinstance(payload, Mapping) else None
+    goal = candidate.get("goal_task_id") if isinstance(candidate, Mapping) else None
+    if isinstance(goal, str) and goal:
+        return goal
+    return "SDK-MANIFEST-" + str(validated["canonical_manifest_sha256"])[:24]
+
+
+def _governance_roots() -> dict[str, Path]:
+    roots: dict[str, Path] = {}
+    for key, (env_name, marker) in GOVERNANCE_SOURCE_ROOTS.items():
+        raw = str(os.getenv(env_name) or "").strip()
+        require(bool(raw), f"{env_name}_NOT_BOUND")
+        root = Path(raw).expanduser().resolve()
+        require((root / marker).is_file(), f"{env_name}_INVALID")
+        roots[key] = root
+    return roots
+
+
+def _load_governance_owner():
+    roots = _governance_roots()
+    for path in (
+        roots["sdk"],
+        roots["stegcore"] / "src",
+        roots["core_lite"],
+        roots["master_records"],
+    ):
+        value = str(path)
+        if value not in sys.path:
+            sys.path.insert(0, value)
+    from stegverse.governance_ingress_runtime import external_manifest_to_public_request
+    from stegverse.sovereign_validation_runtime import run_sovereign_validation
+    return external_manifest_to_public_request, run_sovereign_validation
+
+
+def _run_governance_owner(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
+    external_manifest_to_public_request, run_sovereign_validation = _load_governance_owner()
+    manifest = validated.get("canonical_manifest")
+    require(isinstance(manifest, Mapping), "canonical_manifest_required")
+    public_request = external_manifest_to_public_request(manifest)
+    run_root = runtime_root / REQUEST_DIR / "governance-owner" / str(validated["request_sha256"])
+    run_root.mkdir(parents=True, exist_ok=True)
+    result = run_sovereign_validation(
+        public_request,
+        custody_db=run_root / "manifest-receipt-custody.db",
+        host_identity="universal-intr-manifest-governance",
+    )
+    require(isinstance(result, Mapping), "CANONICAL_GOVERNANCE_RESULT_OBJECT_REQUIRED")
+    return dict(result)
+
+
+def _closure_projection(row: Mapping[str, Any], *, predecessor_receipt_sha256: str | None = None) -> dict[str, Any]:
+    custody = row.get("custody")
+    receipt = row.get("receipt")
+    require(isinstance(custody, Mapping), "master_records_custody_result_required")
+    require(isinstance(receipt, Mapping), "canonical_state_transition_receipt_required")
+    organization = custody.get("organization_receipt")
+    require(isinstance(organization, Mapping), "organization_receipt_required")
+    projected = {
+        "transition_id": receipt.get("transition_id"),
+        "state": custody.get("state"),
+        "reconstruction_status": custody.get("reconstruction_status"),
+        "required_evidence_validation_status": custody.get("required_evidence_validation_status"),
+        "receipt_sha256": custody.get("receipt_sha256"),
+        "reconstructed_receipt_sha256": custody.get("reconstructed_receipt_sha256"),
+        "organization_receipt_sha256": organization.get("receipt_sha256"),
+        "organization_predecessor_receipt_sha256": organization.get("previous_receipt_sha256"),
+    }
+    if predecessor_receipt_sha256 is not None:
+        projected["predecessor_receipt_sha256"] = predecessor_receipt_sha256
+    for key in ("transition_id", "receipt_sha256", "reconstructed_receipt_sha256",
+                "organization_receipt_sha256"):
+        require(isinstance(projected.get(key), str) and projected[key], f"governance_closure_{key}_required")
+    require(projected["state"] == "RECORDED", "governance_closure_master_records_not_recorded")
+    require(projected["reconstruction_status"] == "PASS", "governance_closure_reconstruction_not_pass")
+    require(projected["required_evidence_validation_status"] == "PASS", "governance_closure_evidence_not_pass")
+    require(projected["receipt_sha256"] == projected["reconstructed_receipt_sha256"],
+            "governance_closure_receipt_reconstruction_mismatch")
+    return projected
+
+
+def _governance_disposition(
+    runtime_root: Path,
+    validated: Mapping[str, Any],
+    *,
+    disposition: str,
+    transition_id: str,
+    prior_organization_receipt_sha256: str,
+    ingress_closure: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+    reason_code: str | None = None,
+    failed_predicate: str | None = None,
+) -> dict[str, Any]:
+    subject = _manifest_subject(validated)
+    governed = _custody_transition(
+        transition_id=transition_id,
+        sequence=2,
+        task_id=subject,
+        outcome=disposition,
+        prior=prior_organization_receipt_sha256,
+        evidence=evidence,
+    )
+    closure = _closure_projection(
+        governed,
+        predecessor_receipt_sha256=str(ingress_closure["receipt_sha256"]),
+    )
+    result = {
+        "schema": RESULT_SCHEMA,
+        "state": "COMPLETE" if disposition == "ALLOW" else disposition,
+        "disposition": disposition,
+        "terminal": disposition != "ALLOW",
+        "communication_terminal": False,
+        "canonical_task_id": validated.get("canonical_task_id"),
+        "subject_or_correlation_id": subject,
+        "processing_capability": "governance",
+        "route_id": validated["route_id"],
+        "graph_id": validated["graph_id"],
+        "request_sha256": validated["request_sha256"],
+        "wire_manifest_sha256": validated.get("wire_manifest_sha256"),
+        "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+        "resolved_ordered_transitions": ["INGRESS_ADMITTED", transition_id],
+        "transition_closures": [dict(ingress_closure), closure],
+        "organization_records_before_master_records": True,
+        "organization_master_records_closure_observed": True,
+        "publisher_executed": False,
+        "site_propagation_executed": False,
+        "authority_effect": "NONE_GOVERNANCE_DISPOSITION_ONLY",
+    }
+    if reason_code:
+        result["reason_code"] = reason_code
+    if failed_predicate:
+        result["failed_predicate"] = failed_predicate
+    return result
+
+
+def _execute_governance(
+    runtime_root: Path,
+    validated: Mapping[str, Any],
+    transport: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    require(validated.get("route_id") == GOVERNANCE_ROUTE_ID, "CANONICAL_GOVERNANCE_ROUTE_REQUIRED")
+    require(isinstance(transport, Mapping), "AUTHENTIC_INTR_TRANSPORT_EVIDENCE_REQUIRED")
+    require(transport.get("origin") == "TVC_RELAY_EGRESS", "CANONICAL_GOVERNANCE_REQUIRES_TVC_RELAY_EGRESS")
+    authorization_id = transport.get("authorization_id")
+    require(isinstance(authorization_id, str) and authorization_id,
+            "CANONICAL_GOVERNANCE_TVC_RELAY_AUTHORIZATION_REQUIRED")
+    subject = _manifest_subject(validated)
+    ingress = _custody_transition(
+        transition_id="INGRESS_ADMITTED",
+        sequence=1,
+        task_id=subject,
+        outcome="ALLOW",
+        prior=None,
+        evidence={
+            "request_sha256": validated["request_sha256"],
+            "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+            "route_id": validated["route_id"],
+            "processing_capability": "governance",
+            "transport_origin": transport.get("origin"),
+            "transport_authorization_id_sha256": sha256(authorization_id.encode("utf-8")),
+            "transport_payload_sha256": transport.get("payload_sha256"),
+        },
+    )
+    ingress_closure = _closure_projection(ingress)
+    prior_org = str((ingress["custody"]["organization_receipt"])["receipt_sha256"])
+    try:
+        governance = _run_governance_owner(runtime_root, validated)
+    except Exception as exc:
+        return _governance_disposition(
+            runtime_root,
+            validated,
+            disposition="FAIL_CLOSED",
+            transition_id="GOVERNANCE_CAPABILITY_DISPATCH",
+            prior_organization_receipt_sha256=prior_org,
+            ingress_closure=ingress_closure,
+            reason_code="CANONICAL_GOVERNANCE_OWNER_EXECUTION_FAILED",
+            failed_predicate="MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND_AND_EXECUTABLE",
+            evidence={
+                "request_sha256": validated["request_sha256"],
+                "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+                "error_class": type(exc).__name__,
+                "error": str(exc),
+                "repair_owner": "EXISTING_SDK_CANONICAL_GOVERNANCE_OWNER",
+                "new_runtime_created": False,
+            },
+        )
+    raw_disposition = str(governance.get("governance_state") or "").upper()
+    if raw_disposition not in {"ALLOW", "DENY"}:
+        return _governance_disposition(
+            runtime_root,
+            validated,
+            disposition="FAIL_CLOSED",
+            transition_id="GOVERNANCE_DISPOSITION",
+            prior_organization_receipt_sha256=prior_org,
+            ingress_closure=ingress_closure,
+            reason_code="CANONICAL_GOVERNANCE_DISPOSITION_INVALID",
+            failed_predicate="EXACT_CANONICAL_GOVERNANCE_DISPOSITION_ALLOW_OR_DENY",
+            evidence={
+                "request_sha256": validated["request_sha256"],
+                "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+                "observed_governance_state": governance.get("governance_state"),
+                "result_binding_hash": governance.get("result_binding_hash"),
+            },
+        )
+    return _governance_disposition(
+        runtime_root,
+        validated,
+        disposition=raw_disposition,
+        transition_id="GOVERNANCE_DISPOSITION",
+        prior_organization_receipt_sha256=prior_org,
+        ingress_closure=ingress_closure,
+        evidence={
+            "request_sha256": validated["request_sha256"],
+            "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+            "governance_state": raw_disposition,
+            "manifest_receipt_id": governance.get("manifest_receipt_id"),
+            "transaction_id": governance.get("transaction_id"),
+            "result_binding_hash": governance.get("result_binding_hash"),
+            "sdk_master_records_custody_status": governance.get("master_records_custody_status"),
+            "sdk_chain_verified": governance.get("chain_verified"),
+            "external_side_effect": governance.get("external_side_effect"),
+            "publisher_executed": False,
+        },
+    )
+
+
+def execute(
+    runtime_root: Path,
+    request: Mapping[str, Any],
+    *,
+    transport: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
     persist_request(runtime_root, validated)
@@ -439,6 +684,8 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
         except DiagnosticExecutionFailClosed as exc:
             return _nonworker_diagnostic_deny(
                 runtime_root, validated, reason_code=exc.predicate, terminal=True)
+    if validated.get("processing_capability") == "governance":
+        return _execute_governance(runtime_root, validated, transport)
     require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
     capability = validated.get("processing_capability")
     graph = validated.get("state_graph") or {}
@@ -565,7 +812,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
         raise ValueError("manifest_state_transition_request_json_invalid") from exc
     require(isinstance(payload, dict), "manifest_state_transition_request_object_required")
     try:
-        return execute(runtime_root, payload)
+        return execute(runtime_root, payload, transport=transport)
     except ValueError as exc:
         reason_code = str(exc)
         # Only a concrete, correctable manifest-binding mismatch returns DENY.
