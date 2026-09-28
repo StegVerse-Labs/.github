@@ -176,12 +176,14 @@
       "direction",
       "endpoint",
       "counterparty",
-      "manifest_sha256"
+      "manifest_sha256",
+      "predecessor_manifest_sha256"
     ],
     "ephemeral_endpoint_custody": "RETURN_WITH_MANIFEST",
     "ephemeral_durable_storage_required": false,
     "organization_custody_required": true,
     "master_records_reconstruction_required": true,
-    "authority_effect": "NONE_SOURCE_CONTRACT"
+    "authority_effect": "NONE_SOURCE_CONTRACT",
+    "manifest_continuity": "SAME_DIGEST_WITHIN_EACH_ONE_WAY_LEG_RETURN_MANIFEST_PREDECESSOR_LINKS_OUTBOUND"
   }
 }
