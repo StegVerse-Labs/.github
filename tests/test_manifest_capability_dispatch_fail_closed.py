@@ -1,0 +1,11 @@
+from workers import manifest_state_transition_intr_ingress as mod
+
+def test_stegbrowser_does_not_fall_through_to_purpose_worker_receipt(tmp_path):
+    request={"processing_capability":"stegbrowser","route_id":"stegverse.route.stegbrowser.v1","state_graph":{"profile":"llm.v1"},"graph_id":"stegbrowser:test5-a","canonical_task_id":"EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001","wire_manifest_sha256":"0"*64,"canonical_manifest_sha256":"1"*64,"request_sha256":"3"*64}
+    result=mod._capability_dispatch_fail_closed(tmp_path,request)
+    assert result["disposition"]=="FAIL_CLOSED"
+    assert result["evaluation_boundary"]=="UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH"
+    assert result["processing_capability"]=="stegbrowser" and result["profile"]=="llm.v1"
+    assert result["transition_id"]=="INGRESS_ADMITTED"
+    assert result["failed_predicate"]=="MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND"
+    assert result["organization_master_records_closure_observed"] is False
