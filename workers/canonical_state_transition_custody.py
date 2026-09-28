@@ -205,6 +205,53 @@ def _submit_http(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
         return {"state":"BOUNDARY","reason":f"CANONICAL_MASTER_RECORDS_CUSTODY_SUBMISSION_FAILED:{type(exc).__name__}","authority_effect":"NONE"}
 
 
+
+def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
+    """Carry one already-released organization batch through existing custody configuration."""
+    if envelope.get("schema") != "stegverse.master-records.organization-batch-submission/v1":
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_SUBMISSION_SCHEMA_MISMATCH","authority_effect":"NONE"}
+    batch = envelope.get("batch")
+    if not isinstance(batch, Mapping):
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_REQUIRED","authority_effect":"NONE"}
+    batch_id = batch.get("batch_id")
+    endpoint, token, timeout = _configuration()
+    if endpoint:
+        endpoint = endpoint.rsplit("/api/master-records/state-transitions", 1)[0] + "/api/master-records/organization-batches"
+    if not endpoint or not token or not _endpoint_allowed(endpoint):
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
+                "batch_id":batch_id,"authority_effect":"NONE"}
+    request = Request(
+        endpoint,
+        data=canonical_json(dict(envelope)).encode("utf-8"),
+        method="POST",
+        headers={"Content-Type":"application/json", "Authorization":f"Bearer {token}"},
+    )
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            payload=json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        return {"state":"FAIL_CLOSED","reason":f"ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:{type(exc).__name__}",
+                "batch_id":batch_id,"authority_effect":"NONE"}
+    if not isinstance(payload, Mapping):
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_RESULT_INVALID",
+                "batch_id":batch_id,"authority_effect":"NONE"}
+    if payload.get("state") not in {"RECORDED","ALLOW"}:
+        return {"state":"DENY" if payload.get("state")=="DENY" else "FAIL_CLOSED",
+                "reason":str(payload.get("reason") or "ORGANIZATION_BATCH_CUSTODY_NOT_RECORDED"),
+                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
+    if payload.get("batch_id") not in {None,batch_id}:
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_ID_MISMATCH",
+                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
+    reconstruction = payload.get("reconstruction_status")
+    evidence = payload.get("required_evidence_validation_status")
+    if reconstruction not in {None,"PASS"} or evidence not in {None,"PASS"}:
+        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_CUSTODY_RECONSTRUCTION_NOT_PASS",
+                "batch_id":batch_id,"destination_response":dict(payload),"authority_effect":"NONE"}
+    return {"state":"ALLOW","disposition":"ALLOW","batch_id":batch_id,
+            "destination_state":payload.get("state"),"destination_response":dict(payload),
+            "authority_effect":"NONE_CUSTODY_ONLY"}
+
+
 def _repo_roots() -> dict[str, str]:
     raw = (os.getenv("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
     if not raw:
