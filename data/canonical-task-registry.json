@@ -10926,14 +10926,13 @@
         },
         {
           "dependency_id": "EXTERNAL_TECHNICAL_EXPORT",
-          "kind": "EXTERNAL_SOURCE",
-          "state": "NOT_RECEIVED",
+          "kind": "EXTERNAL_EXECUTION_INPUT",
+          "state": "NOT_RECEIVED_NON_BLOCKING_FOR_PROTOCOL_DEVELOPMENT",
           "ref": "Admissible-Existence/.github#79"
         }
       ],
       "blockers": [
-        "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN",
-        "EXTERNAL_EXPORT_AND_SCOPE_NOT_RECEIVED"
+        "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN"
       ],
       "expected_evidence_predicates": [
         "CANONICAL_ID_AND_COSV_PROJECTED",
@@ -10941,7 +10940,7 @@
         "EXACT_PR_HEAD_HOSTED_VALIDATION_SUCCESS",
         "FROZEN_SPECIMEN_BYTES_SHA256_BOUND",
         "NATIVE_STCM_AND_CHF_RECEIPTS_INDEPENDENT",
-        "EXTERNAL_EXPORT_PERMISSION_AND_EXACT_BYTES_BOUND",
+        "EXTERNAL_EXACT_BYTES_BOUND_BEFORE_COMMON_SPECIMEN_EXECUTION",
         "LANDAUER_DERIVATION_DISTINCT_FROM_PHYSICAL_HEAT_MEASUREMENT",
         "CAUSAL_WITNESS_INDEPENDENT_OF_COINCIDENT_TIMESTAMPS",
         "NEGATIVE_FIXTURES_NEVER_PROMOTED",
@@ -10959,11 +10958,14 @@
         "activation_proof_complete": false
       },
       "allowed_next_transitions": [
+        "COMPLETE_STEGVERSE_NATIVE_XF001_PROTOCOL_FOR_MUTUAL_REVIEW",
+        "MUTUAL_REVIEW_SHARED_EVIDENCE_BOUNDARY",
+        "BIND_COMMON_SPECIMEN_EXACT_BYTES_WHEN_MUTUALLY_SELECTED",
+        "INDEPENDENT_SOURCE_NATIVE_RECEIPT_COMPARISON_WHEN_AVAILABLE",
         "AUTHENTIC_TASK_REGISTRY_COLLISION_CHECKIN",
         "RECONCILE_COLLISION_OWNER",
         "INSTALL_INERT_SCHEMA_FIXTURES_AFTER_PERMISSIVE_CHECKIN",
-        "VALIDATE_EXACT_PR_HEAD",
-        "INDEPENDENT_SOURCE_NATIVE_RECEIPT_COMPARISON_WHEN_AVAILABLE"
+        "VALIDATE_EXACT_PR_HEAD"
       ],
       "handoff_projection_refs": [
         "Admissible-Existence/.github/docs/STCM_CHF_THERMODYNAMIC_WITNESS_RESEARCH_INTAKE_MIRROR_HANDOFF.md",
@@ -10985,8 +10987,15 @@
         "readme_path": "README.md"
       },
       "prompt_budget": {
-        "goal_prompt_count": "5/20",
+        "goal_prompt_count": "6/20",
         "split_merely_to_reset_counter": false
+      },
+      "mutual_development": {
+        "model": "INDEPENDENT_NATIVE_DEVELOPMENT_THEN_MUTUAL_REVIEW",
+        "stegverse_may_continue_without_external_specimen": true,
+        "external_specimen_blocks_protocol_development": false,
+        "external_specimen_required_before_common_specimen_execution": true,
+        "external_semantics_must_remain_opaque": true
       }
     },
     {
