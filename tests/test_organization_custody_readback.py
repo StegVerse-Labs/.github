@@ -150,13 +150,13 @@ def test_missing_head_returns_precise_local_boundary_not_intr_deny(tmp_path):
     assert result["runtime_execution_proven"] is False
 
 
-def test_hosted_source_environment_refused(monkeypatch, tmp_path):
+def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path):
     runtime = tmp_path / "runtime"
     request(runtime)
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "BOUNDARY"
-    assert result["reason"] == "HOSTED_ENVIRONMENT_FORBIDDEN"
+    assert result["reason"] == "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT"
 
 def test_exact_request_retry_keeps_original_immutable_snapshot_after_new_head(monkeypatch, tmp_path):
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
@@ -262,3 +262,56 @@ def test_existing_master_records_batch_reconstruction_exact_identity(monkeypatch
     proof = readback.reconcile_master_records(snapshot, get_json=fake_get)
     assert proof["state"] == "PASS"
     assert proof["batch_results"][0]["state"] == "MATCHING_INDEPENDENT_BATCH_RECONSTRUCTION_PASS"
+
+def _mr(receipt="a" * 64):
+    return {"state": "RECORDED", "reconstruction_status": "PASS",
+            "required_evidence_validation_status": "PASS",
+            "receipt_sha256": receipt, "reconstructed_receipt_sha256": receipt}
+
+def governed_attempt(runtime, disposition="ALLOW", request_id="governed-1"):
+    req_path = request(runtime, request_id=request_id)
+    req = json.loads(req_path.read_text())
+    req_path.unlink()
+    path = runtime / consumer.ATTEMPT_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    value = {"schema": consumer.ATTEMPT_SCHEMA, "task_id": consumer.TASK_ID,
+             "cosv_task_vector": consumer.COSV, "request_id": request_id,
+             "presented_to_intr": True, "intr_disposition": disposition,
+             "authentic_intr_disposition_observed": True,
+             "intr_master_records_closure": _mr("b" * 64),
+             "predecessor_master_records_closure": _mr("c" * 64),
+             "readback_request": req}
+    path.write_text(json.dumps(value))
+    return path
+
+def test_governed_intr_deny_is_preserved_without_readback(tmp_path):
+    runtime = tmp_path / "runtime"
+    governed_attempt(runtime, disposition="DENY")
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "DENY"
+    assert result["disposition"] == "DENY"
+    assert result["readback_executed"] is False
+    assert not (runtime / consumer.REQUEST_REL).exists()
+
+def test_governed_allow_executes_without_host_inventory_gate(monkeypatch, tmp_path):
+    ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    org.aggregate_transition(source("GOVERNED_ALLOW"))
+    governed_attempt(runtime, disposition="ALLOW")
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "RECORDED_LOCAL_READBACK"
+    assert result["governed_intr_disposition"] == "ALLOW"
+    assert result["intr_master_records_receipt_sha256"] == "b" * 64
+    assert result["predecessor_master_records_receipt_sha256"] == "c" * 64
+
+def test_governed_attempt_missing_master_records_closure_fails_closed(tmp_path):
+    runtime = tmp_path / "runtime"
+    path = governed_attempt(runtime, disposition="ALLOW")
+    attempt = json.loads(path.read_text())
+    del attempt["intr_master_records_closure"]
+    path.write_text(json.dumps(attempt))
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "FAIL_CLOSED"
+    assert result["disposition"] == "FAIL_CLOSED"
+    assert result["failed_predicate"] == "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY"

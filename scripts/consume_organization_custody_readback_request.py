@@ -29,6 +29,8 @@ HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
               "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 ID = re.compile(r"[A-Za-z0-9_.:/-]{1,150}\Z")
 SCHEMA = "stegverse.organization-custody-readback-request/v1"
+ATTEMPT_SCHEMA = "stegverse.organization-custody-readback-governed-attempt/v1"
+ATTEMPT_REL = Path("runtime-state/organization-custody-readback/governed-attempt.json")
 
 
 def canon(value: Any) -> bytes:
@@ -97,15 +99,92 @@ def _private_write(path: Path, value: dict[str, Any]) -> str:
     return digest
 
 
-def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
+def _closed_master_records(value: Any, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(label + "_MISSING")
+    if value.get("state") != "RECORDED":
+        raise ValueError(label + "_NOT_RECORDED")
+    if value.get("reconstruction_status") != "PASS":
+        raise ValueError(label + "_RECONSTRUCTION_NOT_PASS")
+    if value.get("required_evidence_validation_status") != "PASS":
+        raise ValueError(label + "_REQUIRED_EVIDENCE_NOT_PASS")
+    receipt = value.get("receipt_sha256")
+    if not isinstance(receipt, str) or receipt != value.get("reconstructed_receipt_sha256"):
+        raise ValueError(label + "_DIGEST_MISMATCH")
+    return value
+
+
+def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> dict[str, Any]:
+    if attempt.get("schema") != ATTEMPT_SCHEMA:
+        raise ValueError("GOVERNED_ATTEMPT_SCHEMA_INVALID")
+    if attempt.get("task_id") != TASK_ID or attempt.get("cosv_task_vector") != COSV:
+        raise ValueError("GOVERNED_ATTEMPT_OWNER_INVALID")
+    if attempt.get("presented_to_intr") is not True:
+        raise ValueError("GOVERNED_ATTEMPT_NOT_PRESENTED_TO_INTR")
+    disposition = attempt.get("intr_disposition")
+    if disposition not in {"ALLOW", "DENY", "FAIL_CLOSED"}:
+        raise ValueError("GOVERNED_ATTEMPT_DISPOSITION_INVALID")
+    if attempt.get("authentic_intr_disposition_observed") is not True:
+        raise ValueError("GOVERNED_ATTEMPT_INTR_EVIDENCE_NOT_OBSERVED")
+    intr_closure = _closed_master_records(attempt.get("intr_master_records_closure"), "INTR_MASTER_RECORDS_CLOSURE")
+    predecessor = _closed_master_records(attempt.get("predecessor_master_records_closure"), "PREDECESSOR_MASTER_RECORDS_CLOSURE")
+    request = attempt.get("readback_request")
+    if not isinstance(request, dict):
+        raise ValueError("GOVERNED_ATTEMPT_READBACK_REQUEST_MISSING")
+    request_id, _ = _validate_request(request)
+    if attempt.get("request_id") != request_id:
+        raise ValueError("GOVERNED_ATTEMPT_REQUEST_ID_MISMATCH")
+    if disposition != "ALLOW":
+        return {
+            "schema": "stegverse.organization-custody-readback-result/v1",
+            "state": disposition, "disposition": disposition,
+            "task_id": TASK_ID, "cosv_task_vector": COSV, "request_id": request_id,
+            "failed_predicate": attempt.get("failed_predicate"),
+            "intr_master_records_receipt_sha256": intr_closure["receipt_sha256"],
+            "predecessor_master_records_receipt_sha256": predecessor["receipt_sha256"],
+            "readback_executed": False,
+            "authority_effect": "NONE_GOVERNED_DISPOSITION_PRESERVED",
+        }
+    path = runtime / REQUEST_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    raw = json.dumps(request, sort_keys=True, separators=(",", ":")) + "\n"
+    if path.exists() and json.loads(path.read_text(encoding="utf-8")) != request:
+        raise ValueError("GOVERNED_ATTEMPT_REQUEST_COLLISION")
+    path.write_text(raw, encoding="utf-8")
+    result = consume(source, runtime, _from_governed_attempt=True)
+    result["governed_intr_disposition"] = "ALLOW"
+    result["intr_master_records_receipt_sha256"] = intr_closure["receipt_sha256"]
+    result["predecessor_master_records_receipt_sha256"] = predecessor["receipt_sha256"]
+    return result
+
+
+def consume(source_root: Path, runtime_root: Path, *, _from_governed_attempt: bool = False) -> dict[str, Any]:
     source, runtime = Path(source_root).resolve(), Path(runtime_root).resolve()
+    if not _from_governed_attempt:
+        attempt_path = runtime / ATTEMPT_REL
+        if attempt_path.is_file():
+            try:
+                attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+                if not isinstance(attempt, dict):
+                    raise ValueError("GOVERNED_ATTEMPT_MUST_BE_OBJECT")
+                return _governed_attempt(source, runtime, attempt)
+            except (ValueError, KeyError, OSError, json.JSONDecodeError) as exc:
+                return {
+                    "schema": "stegverse.organization-custody-readback-result/v1",
+                    "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+                    "reason": str(exc) if isinstance(exc, ValueError) else type(exc).__name__,
+                    "task_id": TASK_ID, "cosv_task_vector": COSV,
+                    "failed_predicate": "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY",
+                    "authority_effect": "NONE_FAIL_CLOSED",
+                }
     path = runtime / REQUEST_REL
     if not path.is_file():
         return {"schema": "stegverse.organization-custody-readback-result/v1",
-                "state": "NO_REQUEST", "authority_effect": "NONE"}
-    if any(os.environ.get(x, "").strip().lower() not in {"", "0", "false", "no"} for x in HOSTED_ENV):
+                "state": "NO_REQUEST", "attempted": False, "authority_effect": "NONE"}
+    if (not _from_governed_attempt and
+            any(os.environ.get(x, "").strip().lower() not in {"", "0", "false", "no"} for x in HOSTED_ENV)):
         return {"schema": "stegverse.organization-custody-readback-result/v1",
-                "state": "BOUNDARY", "reason": "HOSTED_ENVIRONMENT_FORBIDDEN",
+                "state": "BOUNDARY", "reason": "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT",
                 "runtime_execution_proven": False, "authority_effect": "NONE"}
     try:
         request = json.loads(path.read_text(encoding="utf-8"))
@@ -212,7 +291,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result["state"] in {"RECORDED_LOCAL_READBACK", "NO_REQUEST"} else 1
+    return 0 if result["state"] in {"RECORDED_LOCAL_READBACK", "ALREADY_CONSUMED"} else 1
 
 
 if __name__ == "__main__":
