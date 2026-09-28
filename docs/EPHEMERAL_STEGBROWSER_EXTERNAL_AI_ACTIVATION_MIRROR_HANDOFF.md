@@ -122,3 +122,16 @@ The execution under test is:
 The packet carries the endpoint receipts. The ephemeral StegBrowser must attest that it read the admitted manifest, acted/routed only as manifested, appended its INGRESS/EGRESS receipts, and directed the next manifested leg. The final origin INGRESS attests receipt of the returned endpoint evidence. Each worker's manifested response marker remains distinct so response substitution across sessions fails closed.
 
 StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-only transport, ledger, scheduler, runtime, or second device. The completed four-receipt packet is intended for the already-existing organization/Master Records custody path. Source tests establish the packet/profile contract only; authentic Test 5 execution still requires actual WorkerCoordinator/InTr/provider/session/custody transitions.
+
+
+## Test 5 ACTION-by-manifest execution binding repair — 2026-09-28
+
+Source tracing after the packet-carried journey merge found the earliest deterministic Test 5 progression defect in the reusable composition contract: `RT-EPHEMERAL-LLM-ROUNDTRIP-001` declared no runner and the composer hard-coded `execution_available=false` / `NO_EXECUTABLE_RUNNER_DECLARED`. That source-only boundary is invalid for an ACTION BY MANIFEST because it terminates before the existing transition authority can return a disposition.
+
+The repaired contract does not add a runtime or owner. It binds Test 5 to the already ACTIVE/CHECKED_OUT `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001` entrypoint and the already ACTIVE/CHECKED_OUT `STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001` receipt lane. The required transition order is now explicit:
+
+`Interlock/InTr ALLOW | DENY | FAIL_CLOSED -> Organization Records append+verify -> Master Records custody/reconstruction -> declared successor evaluation`.
+
+The Test 5 roundtrip remains two separately manifested one-way legs with four packet-carried endpoint receipts: origin EGRESS, ephemeral INGRESS, ephemeral EGRESS, origin return INGRESS. The return manifest predecessor-links to the outbound manifest. Organization Records are durable custody before Master Records; Master Records is reconstruction/custody authority, not transport or transition authority.
+
+This repair is source binding only until the existing owner consumes an admitted Test 5 manifest. It prohibits `NO_EXECUTABLE_RUNNER_DECLARED`, pending-interface, connected-device, external-machine, or observation-only states from substituting for the disposition of an actually attempted manifested transition. A seam that cannot return the required disposition/order must be repaired under its existing owner or submitted for a scoped exemption; it may not create a parallel runtime, transport, ledger, scheduler, credential route, or custody owner.
