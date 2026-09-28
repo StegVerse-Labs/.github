@@ -1874,3 +1874,6 @@ Execution-path review after the credential-free browser-owner binding found two 
 ## Parent-manifest organization receipt batching — source repair (2026-09-28)
 
 Organization receipt batching is manifest-governed state. The governing parent manifest owns the count release condition; satisfying it marks the current receipt packet release-ready. The next governed transition releases that completed packet under the existing organization append lock and its own disposition receipt initializes the successor packet at count 1. This adds no scheduler, ledger, runtime, transport or authority plane. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
+
+
+Released organization receipt batches now reuse the existing canonical Master Records custody client for authenticated carriage to the existing organization-batch endpoint. The batch path returns ALLOW, DENY or FAIL_CLOSED and fails closed when authentic custody configuration is unavailable; local federation-frame persistence is not treated as destination custody. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
