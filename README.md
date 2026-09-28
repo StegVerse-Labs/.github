@@ -1859,3 +1859,8 @@ Under `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001`, SDK Test 5 keeps StegB
 
 
 Test 5 resident carriage now reuses the existing sovereign resident request dispatcher to invoke the public SDK `run-manifest` implementation for two manifest-distinguished StegBrowser/`llm.v1` workers. No external machine, new scheduler, listener, transport, credential authority, or custody plane is introduced. Runtime truth remains the actual Universal InTr disposition followed by Organization Records and Master Records reconstruction.
+
+
+## Test 5 credential-free browser-owner binding — 2026-09-28
+
+Test 5 no longer assumes provider accounts or API credentials. The generic SDK request selects a credential-free HTTPS free-model surface in manifest data and carries its bounded DOM actions. Universal InTr now resolves `stegbrowser/llm.v1` to the existing StegBrowser owner through the resident repository-root binding `StegVerse-Labs/StegBrowser`; it does not copy browser execution into the control plane. The owner executes the manifested prompt/result interaction inside its existing ephemeral Playwright lease and four-leg packet journey. InTr records each actual admitted ingress, LLM interaction and egress through the canonical state-transition custody client, whose implementation records Organization Records first and only then submits/reconstructs Master Records. Missing StegBrowser source binding or browser execution evidence remains an actionable non-ALLOW/failure boundary; source validation alone is not runtime completion.

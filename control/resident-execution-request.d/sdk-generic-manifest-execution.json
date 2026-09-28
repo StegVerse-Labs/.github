@@ -23,7 +23,7 @@
           "profile": "llm.v1",
           "prompt": "Return the exact marker TEST5_A and identify this session.",
           "response_marker": "TEST5_A",
-          "provider": "openai",
+          "provider": "credential-free-huggingface-space",
           "journey": {
             "schema": "stegverse.packet-carried-endpoint-receipt-journey/v1",
             "journey_id": "test5-a",
@@ -32,7 +32,35 @@
             "outbound_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "return_manifest_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
             "return_predecessor_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-          }
+          },
+          "model": "Qwen3",
+          "secure_url": "https://huggingface.co/spaces/Zacheus10/free-ai-chat",
+          "browser_actions": [
+            {
+              "op": "fill",
+              "frame_selector": "iframe",
+              "selector": "#input",
+              "value": "Return the exact marker TEST5_A and identify this session."
+            },
+            {
+              "op": "click",
+              "frame_selector": "iframe",
+              "selector": "#send"
+            },
+            {
+              "op": "wait_for",
+              "frame_selector": "iframe",
+              "selector": ".msg.ai .bubble",
+              "state": "visible",
+              "timeout_ms": 120000
+            },
+            {
+              "op": "read_text",
+              "frame_selector": "iframe",
+              "selector": ".msg.ai .bubble",
+              "timeout_ms": 120000
+            }
+          ]
         },
         "process": "stegbrowser",
         "return_depth": "full-trace",
@@ -54,7 +82,7 @@
           "profile": "llm.v1",
           "prompt": "Return the exact marker TEST5_B and identify this Claude session.",
           "response_marker": "TEST5_B",
-          "provider": "anthropic",
+          "provider": "credential-free-huggingface-space",
           "journey": {
             "schema": "stegverse.packet-carried-endpoint-receipt-journey/v1",
             "journey_id": "test5-b",
@@ -63,7 +91,35 @@
             "outbound_manifest_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             "return_manifest_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
             "return_predecessor_manifest_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-          }
+          },
+          "model": "Qwen3",
+          "secure_url": "https://huggingface.co/spaces/Zacheus10/free-ai-chat",
+          "browser_actions": [
+            {
+              "op": "fill",
+              "frame_selector": "iframe",
+              "selector": "#input",
+              "value": "Return the exact marker TEST5_B and identify this Claude session."
+            },
+            {
+              "op": "click",
+              "frame_selector": "iframe",
+              "selector": "#send"
+            },
+            {
+              "op": "wait_for",
+              "frame_selector": "iframe",
+              "selector": ".msg.ai .bubble",
+              "state": "visible",
+              "timeout_ms": 120000
+            },
+            {
+              "op": "read_text",
+              "frame_selector": "iframe",
+              "selector": ".msg.ai .bubble",
+              "timeout_ms": 120000
+            }
+          ]
         },
         "process": "stegbrowser",
         "return_depth": "full-trace",
