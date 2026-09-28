@@ -1,0 +1,184 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+  "correlation_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+  "root_correlation_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+  "parent_task_id": null,
+  "goal": "Provide MyKV-governed evaluation of scheduled and completed healthcare transactions from applicable authoritative machine-readable provider and payer evidence, preserve patient counterparty evidence terms and provenance, verify later billing assertions, and produce evidence-directed validation/escalation states without transferring ambiguity to the patient.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv_task_vector": "20010000100000",
+  "source_refs": [
+    "docs/MYKV_HEALTHCARE_TRANSACTION_EVIDENCE_MIRROR_HANDOFF.md",
+    "control/task-vectors/MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001.json",
+    "https://github.com/StegVerse-Labs/.github/issues/2830"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/continuity-vault-kit"
+    ],
+    "components": [
+      "regulatory-applicability-resolver",
+      "authoritative-schema-registry",
+      "provider-machine-readable-adapter",
+      "payer-machine-readable-adapter",
+      "patient-counterparty-evidence-policy",
+      "pre-service-evaluation",
+      "post-service-billing-verification",
+      "unsupported-assertion-validation",
+      "evidence-directed-escalation"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MYKV-KV-CUSTODY",
+      "kind": "EXISTING_CAPABILITY",
+      "state": "AVAILABLE_SOURCE",
+      "ref": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "disposition": "REUSE_WITHOUT_EXPANDING_CONNECTIVITY_GOAL"
+    },
+    {
+      "dependency_id": "DEP-HEALTHCARE-AUTHORITY-SCHEMAS",
+      "kind": "AUTHORITATIVE_EXTERNAL_STANDARD",
+      "state": "IMPLEMENTATION_REQUIRED",
+      "ref": "applicable federal/state/other governing machine-readable healthcare requirements",
+      "disposition": "RESOLVE_BY_ENTITY_JURISDICTION_AND_SERVICE_CONTEXT"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "MYKV-PERSONAL-DATA-BACKUP-001"
+  ],
+  "existing_evidence_refs": [
+    "docs/MYKV_HEALTHCARE_TRANSACTION_EVIDENCE_MIRROR_HANDOFF.md",
+    "https://github.com/StegVerse-Labs/.github/issues/2830"
+  ],
+  "expected_evidence_predicates": [
+    "APPLICABLE_AUTHORITY_RESOLVED",
+    "AUTHORITATIVE_SCHEMA_VERSION_RESOLVED",
+    "PROVIDER_MACHINE_READABLE_EVIDENCE_PRESERVED",
+    "PAYER_MACHINE_READABLE_EVIDENCE_PRESERVED_WHEN_APPLICABLE",
+    "PATIENT_EVIDENCE_POLICY_PRESENTED",
+    "PATIENT_DECISION_NOT_INFERRED",
+    "PRE_SERVICE_ECONOMIC_EVALUATION_PROVENANCE_COMPLETE",
+    "POST_SERVICE_ASSERTION_RECONCILED",
+    "UNSUPPORTED_ASSERTION_REQUIRES_ASSERTING_PARTY_VALIDATION",
+    "COMPLIANCE_ESCALATION_AUTHORITY_RESOLVED",
+    "GOVERNED_TRANSITION_DISPOSITION_EXPLICIT",
+    "MASTER_RECORDS_RECONSTRUCTION_COMPLETE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "manifest_directed_healthcare_evidence_evaluation",
+      "authoritative_schema_resolution",
+      "provenance_preservation",
+      "billing_assertion_reconciliation",
+      "evidence_directed_escalation"
+    ],
+    "environment": "STATE_TRANSITION_DEPENDENT_NO_EXTERNAL_DEVICE_PREREQUISITE",
+    "direction": "AUTHORITATIVE_SOURCES_TO_MYKV_EVALUATION_TO_PATIENT",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": null,
+    "authority_basis": "Task Registry coordinates work only; actual transitions require existing WorkerCoordinator and Interlock/InTr authority.",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "IMPLEMENT_APPLICABILITY_RESOLVER",
+    "IMPLEMENT_AUTHORITATIVE_SCHEMA_ADAPTERS",
+    "IMPLEMENT_PATIENT_EVIDENCE_POLICY",
+    "IMPLEMENT_PRE_SERVICE_EVALUATION",
+    "IMPLEMENT_POST_SERVICE_RECONCILIATION",
+    "IMPLEMENT_ESCALATION_PACKAGE"
+  ],
+  "handoff_projection_refs": [
+    "docs/MYKV_HEALTHCARE_TRANSACTION_EVIDENCE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV_TVC_WHERE_APPLICABLE",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+    "github_runtime_authority": "NONE",
+    "patient_decision_must_not_be_inferred": true,
+    "provider_or_biller_assertion_not_self_authenticating": true,
+    "ambiguity_does_not_create_patient_liability": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ]
+  }
+}
