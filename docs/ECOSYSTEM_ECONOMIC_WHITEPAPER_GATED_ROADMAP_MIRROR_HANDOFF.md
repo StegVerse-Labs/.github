@@ -155,3 +155,24 @@ Publisher PR #89 merged `c8971fa8fab24a626942e2a6edf1c0f3e86ca167` after all fiv
 No authenticated TV/TVC relay authorization or Universal InTr ingress is exposed in this session. Consequently the exact prepared manifest has **not** been submitted and no runtime disposition exists from this work. This is not a blocker requiring another device: it is the exact state-transition interface boundary. When an authenticated existing ingress is reachable, invoke the frozen canonical manifest `ba615d6e...` without source changes and preserve the actual ALLOW, DENY or FAIL_CLOSED plus original organization custody and matching Master Records reconstruction. Only an authentic ALLOW with required closure can advance Publisher mutation and Site propagation.
 
 Registry generation advances 270 -> **271** with unchanged two blockers and observational COSV **`10100000102000`**. All 16 public economic benchmarks remain NOT_VERIFIED.
+
+
+## 2026-09-28 Universal InTr governance capability exposure repair — generation 273 candidate
+
+Tracing the frozen economic request through the existing shared `SDK:ManifestStateTransition` profile identified the first concrete exposure defect. The frozen request is a generic governance graph: `processing_capability=governance`, `route_id=stegverse.route.canonical-governed.v1`, `graph_id=RTC-GOVERNED-PROCESSING-002`, and `canonical_task_id=null`. The shared Universal InTr consumer had bindings for sovereign inference, diagnostics, StegBrowser and purpose/atomic workers, but no governance execution-owner binding. Therefore the already-prepared request could not reach the existing canonical SDK governance owner through that generic ingress.
+
+PR #2844 merged `e2939907b5a45a5a9981ae4320537129d9247591` from exact head `611821c0893680bc1454892eaa9477d384292e4b`. Existing workflow `36482416213` passed all steps, including the new governance binding tests. The repair:
+- reuses the existing shared `/intr/materialization` / `SDK:ManifestStateTransition` listener;
+- requires authenticated `TVC_RELAY_EGRESS` transport and a non-empty relay authorization id;
+- binds only `governance + stegverse.route.canonical-governed.v1` to the existing SDK `external_manifest_to_public_request` / `run_sovereign_validation` owner;
+- resolves the existing canonical SDK, StegCore, Core-Lite and Master Records source roots from the established per-root environment or `STEGVERSE_REPO_ROOTS_JSON`;
+- derives the economic Goal identity from the exact paper candidate when the generic SDK graph correctly has `canonical_task_id=null`;
+- records `INGRESS_ADMITTED` and the resulting governance disposition through the existing organization-first canonical state-transition custody path;
+- preserves canonical `ALLOW` or `DENY`, and returns an actionable `FAIL_CLOSED` if the existing governance owner cannot execute or returns an invalid disposition;
+- explicitly keeps Publisher execution and Site propagation false at this ingress boundary.
+
+No new listener, runtime, scheduler, device, task, credential authority, transition authority or custody store was added. GitHub CI validated source behavior only and did not invoke the frozen publication manifest.
+
+The active ChatGPT execution surface still exposes no authenticated TV/TVC relay/Universal InTr action connector, so no authentic request was submitted from this session. That absence is now an execution-surface boundary, not an unimplemented governance capability. The next authentic operation remains exactly the frozen manifest `ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3` / request `11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be`. Its first real result must be retained as `ALLOW`, `DENY` or `FAIL_CLOSED` together with organization receipt/predecessor and matching Master Records reconstruction before any Publisher release or Site propagation.
+
+Registry generation advances 272 -> **273** with unchanged two blockers and observational COSV **`10100000102000`**. All 16 public economic benchmarks remain `NOT_VERIFIED`.
