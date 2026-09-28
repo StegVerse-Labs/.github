@@ -15,14 +15,14 @@
     "COMPLEX_HISTORICAL_RECONSTRUCTION"
   ],
   "batch_closure_reasons": [
-    "ROUTINE_THRESHOLD",
+    "PARENT_MANIFEST_RELEASE_CONDITION",
     "TASK_CLOSURE",
     "WORKER_EXPIRY",
     "CONSEQUENTIAL_GOVERNANCE_BOUNDARY",
     "CUSTODY_RECOVERY",
     "INTER_ORGANIZATION_HANDOFF"
   ],
-  "batch_thresholds": "UNSPECIFIED_PENDING_AUTHENTIC_WORKLOAD",
+  "batch_thresholds": "OWNED_BY_GOVERNING_PARENT_MANIFEST_COUNT_RELEASE_CONDITION",
   "batch_required_fields": [
     "organization_id",
     "batch_id",
@@ -60,9 +60,20 @@
   "batch_ack_state": "PENDING_MASTER_RECORDS_NEVER_SELF_ASSERT",
   "batch_sequences": "CONTIGUOUS_GLOBAL_ORG_BATCH_ORDINALS",
   "batch_concurrent_append_serialization": "NOT_PROVEN",
-  "batch_delivery_to_master_records": "NOT_YET_IMPLEMENTED",
+  "batch_delivery_to_master_records": "EXISTING_AUTHORIZED_TRANSPORT_ONLY_AFTER_MANIFEST_GOVERNED_RELEASE",
   "master_records_ingress_ref": "master-records/orchestration/services/organization_batch_ingress.py",
   "master_records_ingress_schema": "stegverse.master-records.organization-batch-ack/v1",
   "master_records_ingress_source_validation_merge": "5d44513d26d6529d98fdae36aeb8f989e9a9c331",
-  "master_records_ingress_proof_limit": "CI_SOURCE_ONLY_AUTHENTIC_RUNTIME_UNOBSERVED"
+  "master_records_ingress_proof_limit": "CI_SOURCE_ONLY_AUTHENTIC_RUNTIME_UNOBSERVED",
+  "parent_manifest_batch_lifecycle": {
+    "release_condition_owner": "GOVERNING_PARENT_MANIFEST",
+    "accumulation": "CURRENT_RECEIPT_DATA_PACKET",
+    "threshold_effect": "MARK_CURRENT_PACKET_RELEASE_READY_ONLY",
+    "next_governed_transition": [
+      "RELEASE_COMPLETED_PRIOR_PACKET",
+      "APPEND_CURRENT_DISPOSITION_RECEIPT",
+      "INITIALIZE_SUCCESSOR_OPEN_PACKET_AT_COUNT_1"
+    ],
+    "independent_scheduler_or_batch_authority": false
+  }
 }
