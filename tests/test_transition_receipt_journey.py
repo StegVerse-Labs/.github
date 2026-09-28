@@ -45,6 +45,30 @@ class TransitionReceiptJourneyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"OUTBOUND_HANDOFF_MISMATCH"):
             validate(rows)
 
+    def test_ephemeral_node_must_read_manifest(self):
+        rows=complete()
+        rows[1]["evidence"]["manifest_read"]=False
+        with self.assertRaisesRegex(ValueError,"EPHEMERAL_MANIFEST_NOT_READ"):
+            validate(rows)
+
+    def test_ephemeral_node_action_must_be_manifest_directed(self):
+        rows=complete()
+        rows[2]["evidence"]["manifest_directed"]=False
+        with self.assertRaisesRegex(ValueError,"EPHEMERAL_ACTION_NOT_MANIFEST_DIRECTED"):
+            validate(rows)
+
+    def test_ephemeral_node_must_append_receipt(self):
+        rows=complete()
+        rows[2]["evidence"]["receipt_appended"]=False
+        with self.assertRaisesRegex(ValueError,"EPHEMERAL_RECEIPT_NOT_APPENDED"):
+            validate(rows)
+
+    def test_ephemeral_node_must_direct_next_manifested_leg(self):
+        rows=complete()
+        rows[2]["evidence"]["next_leg_directed"]=False
+        with self.assertRaisesRegex(ValueError,"EPHEMERAL_NEXT_LEG_NOT_DIRECTED"):
+            validate(rows)
+
     def test_ephemeral_receipt_must_return_with_manifest(self):
         rows=complete()
         rows[1]["evidence"]["custody"]="LOCAL_DISK"
