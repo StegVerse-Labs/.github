@@ -59,3 +59,30 @@ For StegVerse-organization to StegVerse-organization transfer, each organization
 `scripts/validate_transition_receipt_journey.py` validates the minimal two-leg/four-endpoint receipt journey and returns `ALLOW` only when correlation, manifest continuity, endpoint reversal, counterparty closure, returned ephemeral evidence, and custody semantics all agree. Missing or mismatched evidence returns an actionable `FAIL_CLOSED` from the CLI. Synthetic tests prove the validator contract only; they do not claim live InTr transport.
 
 This validator is independent source work that can proceed while the authentic WorkerCoordinator claim/fence observation remains pending. It does not bypass that runtime entry condition.
+
+
+## Source-interface reconciliation after PR #2824
+
+The receipt-journey contract is now mapped onto existing implementation owners rather than a new transport plane:
+
+- **Manifest / InTr request ingress:** `workers/manifest_state_transition_intr_ingress.py` already validates canonical manifest hash/projection, graph, capability, route, canonical task, and predecessor closure before using the existing WorkerCoordinator path.
+- **KV exact-packet InTr ingress:** `workers/kv_ai_memory_intr_transport.py` validates exact resident-local InTr bytes and `workers/kv_ai_memory_intr_profile.py` emits the existing `INGRESS_ADMITTED / ALLOW` admission receipt. This is the current KV ingress seam to extend with journey evidence; it is not a second listener.
+- **KV event bootstrap:** `workers/kv_ai_memory_intr_event_bootstrap.py` starts the existing shared Universal InTr listener for one request and continues only from real owner-custodied KV inputs.
+- **Ephemeral StegOS/Node packet surface:** `StegVerse-Labs/Site:stegos-node/stegos-node-impl.js` already maintains an InTr outbox and exact materialization/payload continuity, but its current entries remain `LOCAL_OUTBOX_PENDING_NETWORK_DELIVERY` and explicitly report `network_delivery_observed=false`, `runtime_materialization_observed=false`, and `receiver_receipt_observed=false`. That source therefore does **not** yet satisfy the four-receipt journey.
+- **Manifest-bound browser ingress owner:** `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001` / `docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md` already owns the manifest-defined Node -> Interlock -> InTr -> ephemeral StegOS runtime path.
+- **Resident receipt transport owner:** `STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001` / `docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md` already owns authentic receipt reachability/transport. The KV journey must consume that owner rather than create a parallel receipt transporter.
+- **Durable custody:** `workers/canonical_state_transition_custody.py` already records organization custody before Master Records submission and verifies reconstruction/evidence closure. `resident-runtime/aggregate_repo_transition.py` and `.stegverse/transition-ledger/org-contract.json` remain the organization ledger seam.
+
+### First real round-trip integration boundary
+
+The first authentic journey is not gated on another device or a new listener. The missing source integration is narrower:
+
+1. origin InTr EGRESS must append a packet-carried endpoint receipt with `journey_id`, leg 1, origin/counterparty, and outbound manifest digest;
+2. the admitted ephemeral node must read the manifest, append leg-1 INGRESS, act/route only as manifested, construct/select the predecessor-linked return manifest, append leg-2 EGRESS, and place both ephemeral receipts in the onward packet;
+3. origin leg-2 INGRESS must append its receipt and retain the returned endpoint receipts;
+4. the existing organization custody path must record the endpoint handoff evidence and Master Records must reconstruct the same journey;
+5. `scripts/validate_transition_receipt_journey.py` evaluates the retained four-receipt set. Until those authentic source calls exist and run, the runtime predicate remains pending.
+
+The source changes for browser/ephemeral receipt transport belong to the two existing StegBrowser owners above. This KV task consumes their result and must not duplicate their checked-out authority. The KV-specific ingress/profile may add the journey fields when those owner interfaces expose them.
+
+No source inspection here changes the authentic WorkerCoordinator claim/fence entry condition or claims a live round trip.
