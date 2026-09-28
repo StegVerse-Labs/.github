@@ -147,9 +147,12 @@ def compose(spec):
     return constructor.build_manifest(argparse.Namespace(
         reusable_task_id=reusable, invocation_id=invocation, task_id=task, cosv_task_vector=vector,
         parameters_json=json.dumps({"specification": spec, "nodes": nodes,
-            "execution_available": False, "source_only": True,
+            "execution_available": True, "source_only": False,
             "existing_owner_binding_required": True,
-            "runtime_boundary": "NO_EXECUTABLE_RUNNER_DECLARED",
+            "runtime_boundary": "EXISTING_STEGBROWSER_MANIFEST_INTR_OWNER",
+            "execution_owner_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+            "receipt_transport_owner_task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+            "state_transition_order": ["INTERLOCK_INTR_DISPOSITION", "ORGANIZATION_RECORDS", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION", "SUCCESSOR_EVALUATION"],
             "no_new_runtime_or_authority": True})))
 
 
