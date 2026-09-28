@@ -147,7 +147,7 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
     assert not (tmp_path / "BATCH_HEAD.json").exists()
 
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
-        "state": "ALLOW", "batch_id": batch_id, "authority_effect": "NONE_CUSTODY_ONLY"
+        "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id, "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY"
     })
     third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
 
@@ -158,7 +158,7 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
     assert released["last_org_receipt_sha256"] == second["receipt_sha256"]
     assert third["boundary_evidence"]["parent_manifest_released_batch"] == {
         "batch_id": released["batch_id"],
-        "disposition": "ALLOW",
+        "execution_result": "COMPLETED",
         "reason": None,
         "authority_effect": "NONE_CUSTODY_ONLY",
     }
@@ -184,24 +184,26 @@ def test_submit_released_batch_fail_closed_without_authentic_custody_surface(mon
     monkeypatch.delenv("STEGVERSE_MASTER_RECORDS_ENDPOINT", raising=False)
     monkeypatch.delenv("STEGVERSE_MASTER_RECORDS_TOKEN", raising=False)
     result = batch.submit_released_batch(tmp_path, closed["batch_id"])
-    assert result["state"] == "FAIL_CLOSED"
+    assert result["state"] == "FAILED"
+    assert result["execution_result"] == "FAILED"
+    assert result["governance_disposition"] is None
     assert result["reason"] == "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE"
     assert result["batch_id"] == closed["batch_id"]
 
 
 
-def test_parent_manifest_release_preserves_fail_closed_custody_disposition(monkeypatch, tmp_path):
+def test_parent_manifest_release_preserves_failed_custody_execution_evidence(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
     parent_manifest = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}
     org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
-        "state": "FAIL_CLOSED", "batch_id": batch_id,
+        "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
         "reason": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
-        "authority_effect": "NONE",
+        "governance_disposition": None, "authority_effect": "NONE",
     })
     successor = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
     evidence = successor["boundary_evidence"]["parent_manifest_released_batch"]
-    assert evidence["disposition"] == "FAIL_CLOSED"
+    assert evidence["execution_result"] == "FAILED"
     assert evidence["reason"] == "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE"
     assert evidence["batch_id"] == json.loads((tmp_path / "BATCH_HEAD.json").read_text())["batch_id"]
 
