@@ -390,7 +390,36 @@ def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -
                   "secure_url_host": host, "credential_required": False},
     )
     prior = ingress["custody"]["organization_receipt"]["receipt_sha256"]
-    result = execute_manifested_llm_browser_operation(op, lease)
+    try:
+        result = execute_manifested_llm_browser_operation(op, lease)
+    except Exception as exc:
+        failure_evidence = {
+            "request_sha256": validated["request_sha256"],
+            "route_id": validated["route_id"],
+            "processing_capability": "stegbrowser",
+            "profile": graph.get("profile"),
+            "secure_url_host": host,
+            "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED",
+            "error_type": type(exc).__name__,
+            "error_message": str(exc)[:1000],
+            "credential_required": False,
+            "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST",
+        }
+        failed = _custody_transition(
+            transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=prior, evidence=failure_evidence,
+        )
+        return {
+            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+            "terminal": False, "canonical_task_id": task_id,
+            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
+            "request_sha256": validated["request_sha256"],
+            "failed_predicate": failure_evidence["failed_predicate"],
+            "failure": failure_evidence,
+            "transition_closures": [ingress, failed],
+            "organization_records_before_master_records": True,
+            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+        }
     interaction = _custody_transition(
         transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id, outcome="ALLOW", prior=prior,
         evidence={"request_sha256": validated["request_sha256"], "browser_result": result},
