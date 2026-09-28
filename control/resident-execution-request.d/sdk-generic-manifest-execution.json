@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.sdk-generic-manifest-execution-request/v1",
   "state": "REQUESTED",
-  "request_id": "SDK-GENERIC-MANIFEST-EXECUTION-TEST5-001",
+  "request_id": "SDK-GENERIC-MANIFEST-EXECUTION-TEST5-SVG-001",
   "entrypoint": "stegverse.manifest_execution.execute_manifest",
   "credential_authority": "TV/TVC",
   "transition_authority": "Interlock/InTr",
@@ -122,6 +122,38 @@
           ]
         },
         "process": "stegbrowser",
+        "return_depth": "full-trace",
+        "publisher_required": false
+      }
+    },
+    {
+      "request_id": "svg-governance-cycle-001",
+      "build": {
+        "data": {
+          "benchmark_profile": "SVG-GOVERNANCE-CYCLE-V0.1",
+          "transition_subject": "native-governance-cycle",
+          "source_binding": "StegVerse-SDK@534645ab29b076b6f553f096937b033829176d08"
+        },
+        "data_class": "stegverse.svg-governance-cycle-input.v1",
+        "source_framework": "StegVerse-SVG",
+        "source_output_id": "svg-governance-cycle-001",
+        "processor_request": {
+          "schema": "stegverse.sdk.svg-governance-cycle.v1",
+          "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+          "correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+          "cosv_task_vector": "10100000100000",
+          "benchmark_profile": "SVG-GOVERNANCE-CYCLE-V0.1",
+          "transition_subject": "native-governance-cycle",
+          "native_evaluator": "stegcore.three_layer.evaluate_three_layer",
+          "governance_schema_ref": "StegVerse-Labs/Governance/schemas/admissibility_stage_vector.schema.json",
+          "expected_evidence": [
+            "ORIGINAL_INTR_DISPOSITION",
+            "ORGANIZATION_LEDGER_RECEIPT_AND_PREDECESSOR",
+            "MATCHING_MASTER_RECORDS_RECONSTRUCTION"
+          ],
+          "authority_effect": "NONE_MANIFEST_REQUEST_ONLY"
+        },
+        "process": "svg_governance_cycle",
         "return_depth": "full-trace",
         "publisher_required": false
       }
