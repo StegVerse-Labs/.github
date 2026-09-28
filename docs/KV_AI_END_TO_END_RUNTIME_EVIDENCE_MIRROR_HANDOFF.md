@@ -48,7 +48,7 @@ Interlock/InTr is a one-way manifested transport. A round trip is two manifested
 3. destination endpoint EGRESS for the separately manifested return leg;
 4. origin endpoint INGRESS.
 
-All four endpoint receipts for one out-and-return journey carry the same `journey_id` and `manifest_sha256`, plus `leg`, `direction`, `endpoint`, and `counterparty`. This evidence convention is additive inside the existing free-form receipt `evidence`; it does not change `.stegverse/transition-ledger/contract.json` or `emit.py`.
+All four endpoint receipts for one out-and-return journey carry the same `journey_id`, plus `leg`, `direction`, `endpoint`, `counterparty`, and the manifest digest for that one-way leg. Each leg's EGRESS/INGRESS pair carries the same `manifest_sha256`; the separately manifested return leg carries `predecessor_manifest_sha256` pointing to the outbound manifest. This evidence convention is additive inside the existing free-form receipt `evidence`; it does not change `.stegverse/transition-ledger/contract.json` or `emit.py`.
 
 For an ephemeral StegOS/Node, durable node-local receipt custody is not required and must not become an external-device prerequisite. Its endpoint receipts use `custody: RETURN_WITH_MANIFEST`; the return leg carries those endpoint receipts back to the organization, and the final organization ingress records that returned endpoint evidence. Organization receipt custody remains durable and Master Records reconstructs the governed communication from the organization chain.
 
