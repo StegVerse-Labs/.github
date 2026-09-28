@@ -107,3 +107,18 @@ The existing canonical Master Records service `master-records/orchestration:serv
 ## 2026-09-27 cross-repository task-state reconciliation (source-only)
 
 Current canonical record checks supersede this handoff's 2026-09-23 descriptions of historical owners as universally active. `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` is `SUPERSEDED`; `STEG-BROWSER-RUNTIME-CONSUMPTION-001` is `RETIRED` (prompt-limit decomposition); `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` is also `RETIRED`, with successor references to `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` and `STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001`. Resolve the current exact owner from canonical records and current worker claims at invocation, not historical handoff language. The formerly missing `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` has since been registered as `ACTIVE` with COSV `50000000100000` (Registry PR #2778); the Site PR #1467 generation-259 finding is historical, not an assertion of present absence. SHWP's source projection and receipt-replay contract do not prove original same-execution runtime reconstruction. The Site claim `SITE-KV-ENTRYPOINT-INTR-LAUNCHER-20260914` still names retired `STEG-BROWSER-RUNTIME-CONSUMPTION-001` and asserts ACTIVE in its own handoff. This is an existing Site claim-holder correction, not permission for this external-AI goal to appropriate or release that claim. The external-AI activation goal itself remains canonical `PROPOSED`, observational COSV `10100000103000`. For any selected manifest-bound invocation, require the original ALLOW, DENY or FAIL_CLOSED transition disposition and organization/Master Records receipts; inaccessible private evidence remains UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, not a synthetic failure or a connected-device prerequisite. No runtime execution, claim transfer or source validation is asserted by this documentation update.
+
+
+## SDK Test 5 packet-carried receipt journey binding — 2026-09-28
+
+Test 5 retains the frozen experiment rule that **only the manifest changes between workers**. StegBrowser is the capability and `llm.v1` is its interaction profile. Each worker manifest now also declares the correlation needed to exercise the existing two-leg/four-endpoint InTr receipt journey:
+
+`journey_id`, origin endpoint, ephemeral StegBrowser endpoint, outbound manifest digest, separately manifested return digest, and the return manifest's predecessor link to the outbound manifest.
+
+The execution under test is:
+
+`origin EGRESS -> ephemeral StegBrowser INGRESS -> manifested LLM interaction -> ephemeral StegBrowser EGRESS on predecessor-linked return manifest -> origin INGRESS`.
+
+The packet carries the endpoint receipts. The ephemeral StegBrowser must attest that it read the admitted manifest, acted/routed only as manifested, appended its INGRESS/EGRESS receipts, and directed the next manifested leg. The final origin INGRESS attests receipt of the returned endpoint evidence. Each worker's manifested response marker remains distinct so response substitution across sessions fails closed.
+
+StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-only transport, ledger, scheduler, runtime, or second device. The completed four-receipt packet is intended for the already-existing organization/Master Records custody path. Source tests establish the packet/profile contract only; authentic Test 5 execution still requires actual WorkerCoordinator/InTr/provider/session/custody transitions.
