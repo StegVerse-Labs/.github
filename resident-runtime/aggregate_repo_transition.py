@@ -227,7 +227,8 @@ def main():
     p.add_argument("--predecessor-org-state-sha256")
     p.add_argument("--successor-org-state-sha256")
     p.add_argument("--boundary-evidence-json",default="{}")
-    p.add_argument("--authority-effect",default="NONE")\n    p.add_argument("--parent-manifest")
+    p.add_argument("--authority-effect",default="NONE")
+    p.add_argument("--parent-manifest")
     a=p.parse_args()
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
