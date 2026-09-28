@@ -255,6 +255,61 @@ def _nonworker_diagnostic_deny(
     return {**record, "source_disposition_ref": str(exact)}
 
 
+def _capability_dispatch_fail_closed(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
+    """Retain a genuine admitted-profile failure when no executable owner is bound.
+
+    This is the evaluating Universal InTr profile's disposition. It does not claim
+    that the requested capability itself ran or that Organization/Master Records
+    closure occurred.
+    """
+    capability = str(validated["processing_capability"])
+    graph = validated.get("state_graph") or {}
+    profile = graph.get("profile") if isinstance(graph, Mapping) else None
+    record = {
+        "schema": "stegverse.sdk.manifest-profile-disposition/v1",
+        "state": "FAIL_CLOSED",
+        "disposition": "FAIL_CLOSED",
+        "terminal": False,
+        "automatic_retry_permitted": False,
+        "retry_condition": "BIND_EXISTING_MANIFEST_SELECTED_CAPABILITY_OWNER_THEN_NEW_GOVERNED_ATTEMPT",
+        "evaluation_boundary": "UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH",
+        "authentic_intr_disposition_observed": True,
+        "organization_master_records_closure_observed": False,
+        "transition_id": "INGRESS_ADMITTED",
+        "failed_predicate": "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND",
+        "reason_code": "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_NOT_BOUND",
+        "canonical_task_id": validated.get("canonical_task_id"),
+        "graph_id": validated["graph_id"],
+        "processing_capability": capability,
+        "profile": profile,
+        "route_id": validated["route_id"],
+        "wire_manifest_sha256": validated.get("wire_manifest_sha256"),
+        "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+        "request_sha256": validated["request_sha256"],
+        "evidence_refs": [
+            "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py",
+            "StegVerse-Labs/.github:data/ephemeral-external-ai-reusable-component-profile.v1.json",
+        ],
+        "required_evidence_refs": [
+            "EXISTING_MANIFEST_SELECTED_OPERATION_OWNER_ENTRYPOINT",
+            "ORGANIZATION_RECORDS_AFTER_CAPABILITY_DISPOSITION",
+            "MASTER_RECORDS_RECONSTRUCTION_AFTER_ORGANIZATION_RECORDS",
+        ],
+        "repair_owner": "EXISTING_MANIFEST_SELECTED_CAPABILITY_OWNER",
+        "consequence_committed": False,
+        "authority_effect": "NONE_INTR_PROFILE_DISPOSITION_ONLY",
+    }
+    root = runtime_root / REQUEST_DIR / "dispositions" / "capability-dispatch" / capability
+    root.mkdir(parents=True, exist_ok=True)
+    exact = root / (validated["request_sha256"] + ".json")
+    raw = json.dumps(record, indent=2, sort_keys=True) + "\n"
+    if exact.exists():
+        require(exact.read_text(encoding="utf-8") == raw, "capability_dispatch_disposition_immutable_collision")
+    else:
+        exact.write_text(raw, encoding="utf-8")
+    return {**record, "source_disposition_ref": str(exact)}
+
+
 def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
@@ -282,6 +337,13 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
             return _nonworker_diagnostic_deny(
                 runtime_root, validated, reason_code=exc.predicate, terminal=True)
     require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
+    capability = validated.get("processing_capability")
+    # Purpose/atomic workers already have a canonical WorkerCoordinator result
+    # assembler below. Other installed capabilities must be bound to their
+    # existing manifest-selected operation owner before that owner is invoked;
+    # never fall through to the Test-1 purpose-worker receipt path.
+    if capability not in {"purpose_bound_worker", "atomic_task_worker"}:
+        return _capability_dispatch_fail_closed(runtime_root, validated)
     runtime = WorkerCoordinator(runtime_root, adapters=load_adapters(runtime_root))
     cycle = runtime.cycle(write=True, target_task_id=task_id)
     require(isinstance(cycle, Mapping), "workercoordinator_cycle_result_missing")
