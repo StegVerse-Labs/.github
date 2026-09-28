@@ -107,7 +107,7 @@ CONSUMERS = (
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
     ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
     ("sdk_evaluator_governance_posture", "scripts/consume_sdk_evaluator_governance_posture_request.py"),
-    ("sdk_test5_stegbrowser_llm_profile", "scripts/consume_sdk_test5_stegbrowser_llm_profile_request.py"),
+    ("sdk_generic_manifest_execution", "scripts/consume_sdk_generic_manifest_execution_request.py"),
     ("sv002_public_observation", "scripts/consume_sv002_public_observation_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("cmc028_root_custody", "scripts/consume_cmc028_resident_execution_request.py"),
