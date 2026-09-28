@@ -250,9 +250,28 @@ def submit_released_batch(root: Path, batch_id: str) -> dict:
     custody = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(custody)
     result = custody.submit_organization_batch(envelope)
-    if result.get("state") not in {"ALLOW","DENY","FAIL_CLOSED"}:
-        return {"state":"FAIL_CLOSED","reason":"ORGANIZATION_BATCH_TRANSPORT_DISPOSITION_INVALID",
-                "batch_id":batch_id,"transport_result":result,"authority_effect":"NONE"}
+    if result.get("state") not in {"COMPLETED","FAILED"}:
+        return {
+            "schema":"stegverse.organization-batch-custody-execution-result/v1",
+            "state":"FAILED",
+            "execution_result":"FAILED",
+            "reason":"ORGANIZATION_BATCH_CUSTODY_EXECUTION_RESULT_INVALID",
+            "batch_id":batch_id,
+            "custody_result":result,
+            "governance_disposition":None,
+            "authority_effect":"NONE",
+        }
+    if result.get("governance_disposition") is not None:
+        return {
+            "schema":"stegverse.organization-batch-custody-execution-result/v1",
+            "state":"FAILED",
+            "execution_result":"FAILED",
+            "reason":"ORGANIZATION_BATCH_CUSTODY_GOVERNANCE_ESCALATION_DETECTED",
+            "batch_id":batch_id,
+            "custody_result":result,
+            "governance_disposition":None,
+            "authority_effect":"NONE",
+        }
     return result
 
 
