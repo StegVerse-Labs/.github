@@ -65,7 +65,11 @@
     "MANIFESTED_RETURN_EGRESS_INGRESS_RECEIPTS_CORRELATED",
     "EPHEMERAL_ENDPOINT_RECEIPTS_RETURN_WITH_MANIFEST",
     "ORGANIZATION_RECEIPT_CHAIN_BINDS_ENDPOINT_HANDOFF",
-    "MASTER_RECORDS_RECONSTRUCTS_SAME_GOVERNED_COMMUNICATION"
+    "MASTER_RECORDS_RECONSTRUCTS_SAME_GOVERNED_COMMUNICATION",
+    "EPHEMERAL_NODE_READS_ADMITTED_MANIFEST",
+    "EPHEMERAL_NODE_ACTS_OR_ROUTES_ONLY_AS_MANIFESTED",
+    "EPHEMERAL_NODE_APPENDS_INGRESS_EGRESS_RECEIPTS",
+    "EPHEMERAL_NODE_DIRECTS_PREDECESSOR_LINKED_NEXT_MANIFESTED_LEG"
   ],
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
@@ -145,7 +149,11 @@
       "kv_writeback_readback",
       "machine_kv_reconstruction",
       "hb_receipt_observation_binding",
-      "manifested_endpoint_receipt_journey_validation"
+      "manifested_endpoint_receipt_journey_validation",
+      "ephemeral_manifest_interpretation",
+      "manifest_directed_packet_action_or_routing",
+      "endpoint_receipt_append",
+      "manifested_next_leg_direction"
     ],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
     "direction": "MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP",
@@ -184,6 +192,16 @@
     "organization_custody_required": true,
     "master_records_reconstruction_required": true,
     "authority_effect": "NONE_SOURCE_CONTRACT",
-    "manifest_continuity": "SAME_DIGEST_WITHIN_EACH_ONE_WAY_LEG_RETURN_MANIFEST_PREDECESSOR_LINKS_OUTBOUND"
+    "manifest_continuity": "SAME_DIGEST_WITHIN_EACH_ONE_WAY_LEG_RETURN_MANIFEST_PREDECESSOR_LINKS_OUTBOUND",
+    "ephemeral_node_role": {
+      "manifest_read_required": true,
+      "admitted_manifest_action_capable": true,
+      "manifested_packet_routing_capable": true,
+      "endpoint_receipt_append_capable": true,
+      "separately_manifested_next_leg_capable": true,
+      "next_leg_predecessor_link_required": true,
+      "durable_local_receipt_custody_required": false,
+      "post_handoff_custody": "RETURN_WITH_MANIFEST_TO_DURABLE_ORGANIZATION_CUSTODY"
+    }
   }
 }
