@@ -51,6 +51,18 @@
       "kind": "SOURCE_CONTRACT",
       "state": "SOURCE_VALIDATOR_IMPLEMENTED_RUNTIME_EVIDENCE_PENDING",
       "ref": "scripts/validate_transition_receipt_journey.py"
+    },
+    {
+      "dependency_id": "DEP-MANIFEST-BOUND-EPHEMERAL-INTR-OWNER",
+      "kind": "EXISTING_TASK_OWNER",
+      "state": "ACTIVE_CHECKED_OUT_CONSUME_DONT_DUPLICATE",
+      "ref": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
+    },
+    {
+      "dependency_id": "DEP-RESIDENT-RECEIPT-TRANSPORT-OWNER",
+      "kind": "EXISTING_TASK_OWNER",
+      "state": "ACTIVE_CHECKED_OUT_CONSUME_DONT_DUPLICATE",
+      "ref": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001"
     }
   ],
   "expected_evidence_predicates": [
@@ -202,6 +214,18 @@
       "next_leg_predecessor_link_required": true,
       "durable_local_receipt_custody_required": false,
       "post_handoff_custody": "RETURN_WITH_MANIFEST_TO_DURABLE_ORGANIZATION_CUSTODY"
+    },
+    "source_interface_binding": {
+      "origin_manifest_ingress": "workers/manifest_state_transition_intr_ingress.py",
+      "kv_intr_transport": "workers/kv_ai_memory_intr_transport.py",
+      "kv_intr_ingress_receipt": "workers/kv_ai_memory_intr_profile.py",
+      "kv_event_bootstrap": "workers/kv_ai_memory_intr_event_bootstrap.py",
+      "ephemeral_node_packet_surface": "StegVerse-Labs/Site:stegos-node/stegos-node-impl.js",
+      "manifest_ephemeral_execution_owner": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "receipt_transport_owner": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "organization_master_records_custody": "workers/canonical_state_transition_custody.py",
+      "first_missing_integration": "PACKET_CARRIED_FOUR_ENDPOINT_RECEIPT_APPEND_AND_RETURN_CALLS_ACROSS_EXISTING_OWNERS",
+      "duplicate_transport_allowed": false
     }
   }
 }
