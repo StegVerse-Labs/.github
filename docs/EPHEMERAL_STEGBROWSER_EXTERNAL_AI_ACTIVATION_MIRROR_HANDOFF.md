@@ -122,3 +122,10 @@ The execution under test is:
 The packet carries the endpoint receipts. The ephemeral StegBrowser must attest that it read the admitted manifest, acted/routed only as manifested, appended its INGRESS/EGRESS receipts, and directed the next manifested leg. The final origin INGRESS attests receipt of the returned endpoint evidence. Each worker's manifested response marker remains distinct so response substitution across sessions fails closed.
 
 StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-only transport, ledger, scheduler, runtime, or second device. The completed four-receipt packet is intended for the already-existing organization/Master Records custody path. Source tests establish the packet/profile contract only; authentic Test 5 execution still requires actual WorkerCoordinator/InTr/provider/session/custody transitions.
+
+
+## Test 5 resident run-manifest carriage — 2026-09-28
+
+SDK PR #383 merged the generic evaluator-visible `stegbrowser` / `llm.v1` route into the existing `stegverse run-manifest` dispatcher. The existing sovereign resident dispatcher now carries one bounded request selector, `sdk_test5_stegbrowser_llm_profile`, whose consumer builds workers A and B as two distinct manifests and calls `stegverse.manifest_execution.execute_manifest` for each. The consumer does not discover/start a listener, create a scheduler, mint credentials, require another machine, or bypass Universal InTr. It consumes the existing resident SDK source root and inherited InTr/TVC bindings.
+
+The first non-ALLOW result terminates the current attempt and is retained; otherwise both worker results must come from the same generic executor. Authentic success remains disposition -> Organization Records -> Master Records reconstruction -> successor evaluation. Source/CI carriage validation is not the Test 5 runtime result.
