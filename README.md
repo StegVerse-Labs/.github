@@ -1856,3 +1856,8 @@ Existing Goal `SV-KV-AI-END-TO-END-RUNTIME-EVIDENCE-001` now carries the owner-d
 ### September 28 — SDK Test 5 uses the packet-carried four-receipt journey
 
 Under `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001`, SDK Test 5 keeps StegBrowser as the capability and `llm.v1` as the profile while preserving manifest-only worker variation. StegBrowser PR #38 now exercises origin EGRESS, ephemeral INGRESS, ephemeral EGRESS on a separately manifested predecessor-linked return leg, and origin return INGRESS. The endpoint receipts travel with the packet; the ephemeral participant attests manifest read, manifest-directed action/routing, receipt append, and next-leg direction. Distinct response markers remain manifest-bound per worker. The returned four-receipt packet is for the existing organization/Master Records custody path; source tests are not runtime proof.
+
+
+### September 28 — Test 5 ACTION-by-manifest owner binding
+
+The existing Test 5 reusable LLM roundtrip no longer terminates at `NO_EXECUTABLE_RUNNER_DECLARED`. Its manifest composition is bound to the existing `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001` owner and `STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001` receipt lane. An attempted Test 5 transition must produce Interlock/InTr `ALLOW`, `DENY`, or `FAIL_CLOSED`, record and verify Organization Records, complete applicable Master Records custody/reconstruction, then evaluate the declared successor. The packet-carried four-endpoint journey remains origin EGRESS -> ephemeral INGRESS -> ephemeral EGRESS -> origin return INGRESS. No external machine, connected-device inventory, new runtime, transport, scheduler, ledger, credential route, or custody owner is introduced.
