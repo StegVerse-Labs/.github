@@ -126,3 +126,16 @@ A search for the authorized sovereign organization-ledger readback found the exi
 Next runtime progression is state-transition dependent: after reconciling genuine review evidence or an explicit Publisher policy disposition, build the exact approved-source manifest through the merged SDK converter, validate it through the merged Publisher consumer, and invoke the **existing** universal manifest runtime through an authenticated TV/TVC + InTr surface when reachable. That attempted ingress must return or preserve its actual ALLOW/DENY/FAIL_CLOSED with exact failing predicate/evidence references. Require same-transition organization custody and Master Records `RECORDED`, reconstruction `PASS`, required-evidence `PASS`, exact digest equality, then Publisher release and independent Site readback. No resident inventory, scheduler, new runtime or duplicate task. All 16 economic roadmap benchmarks remain `NOT_VERIFIED` independently.
 
 This source reconciliation advances the canonical Registry from generation 268 to **269** with the same three blockers and unchanged observational COSV `10100000103000`; task remains PROPOSED, WorkerCoordinator claim/fence null and completion=false.
+
+
+## 2026-09-28 research-review policy resolved — canonical generation 270 candidate
+
+Publisher PR #88 merged `96bb119d65bd7c792bc47caba4a5c7cb53b5c95c` after its applicable exact-head checks passed. It records the owner policy that signed economics/legal reports are **optional provenance** for this bounded theoretical research publication, provided the manuscript truthfully discloses that authenticated signed external review is not evidenced and makes no operational legal-compliance, financial-product, settlement or measured-performance claim from that absence. SDK PR #386 merged `01fa178e1017275adfdd44fa7c9e1fcbe7061530`, allowing the economic paper candidate to carry that explicit review-policy disposition with `external_review_claimed=false` and null external report hashes instead of fabricating report identities.
+
+Therefore `PUBLISHER_EDITORIAL_REVIEW` is RESOLVED for the bounded research publication and `PUBLISHER_REVIEW_OUTSTANDING` is removed. This does not erase the owner's report that banker/lawyer reviews converged with the internal analysis; it preserves that as owner attestation, not an authenticated signed professional report.
+
+The canonical task remains PROPOSED and source-only. Two blockers remain:
+1. `AUTHENTIC_PUBLICATION_UNOBSERVED` — construct the exact approved-source manifest under the merged SDK policy binding and run it only through an authenticated existing TV/TVC + Universal Interlock/InTr interface. Preserve the first actual ALLOW/DENY/FAIL_CLOSED, original organization receipt/predecessor and matching Master Records RECORDED/reconstruction/evidence PASS before Publisher mutation or Site propagation.
+2. `BENCHMARK_EXPORT_UNWIRED` — all 16 public roadmap benchmarks remain NOT_VERIFIED until their own exact evidence is projected through the existing public-safe path.
+
+The new observational COSV is **`10100000102000`**, derived from blocker_count=2. It grants no authority. Registry generation advances 269 -> **270**. No WorkerCoordinator claim/fence, runtime receipt, publication or benchmark completion is inferred.
