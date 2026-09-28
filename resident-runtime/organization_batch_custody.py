@@ -22,7 +22,7 @@ ACK = "PENDING_MASTER_RECORDS"
 CLOSURE_REASONS = {
     "ROUTINE_THRESHOLD", "TASK_CLOSURE", "WORKER_EXPIRY",
     "CONSEQUENTIAL_GOVERNANCE_BOUNDARY", "CUSTODY_RECOVERY",
-    "INTER_ORGANIZATION_HANDOFF",
+    "INTER_ORGANIZATION_HANDOFF", "MANIFEST_RELEASE_CONDITION",
 }
 
 
@@ -251,6 +251,50 @@ def _atomic_json(path: Path, row: dict) -> None:
     finally:
         if os.path.exists(name):
             os.unlink(name)
+
+
+def _manifest_release_count(parent_manifest: dict) -> int:
+    """Read the receipt release count from the governing parent manifest."""
+    if not isinstance(parent_manifest, dict):
+        raise ValueError("governing parent manifest required")
+    policy = parent_manifest.get("receipt_batch")
+    if not isinstance(policy, dict):
+        raise ValueError("parent manifest receipt_batch policy required")
+    condition = policy.get("release_condition")
+    if not isinstance(condition, dict) or condition.get("type") != "COUNT":
+        raise ValueError("parent manifest COUNT receipt batch release condition required")
+    count = condition.get("count")
+    if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+        raise ValueError("parent manifest receipt batch release count invalid")
+    return count
+
+
+def open_packet_state(parent_manifest: dict, *, root: Path | None = None) -> dict:
+    """Return current unbatched receipt count under the parent-manifest policy."""
+    root = Path(root) if root else org.ledger_root()
+    release_count = _manifest_release_count(parent_manifest)
+    head_path = root / "HEAD.json"
+    if not head_path.exists():
+        return {"receipt_count": 0, "release_count": release_count, "release_condition_satisfied": False}
+    head = _read(head_path)
+    tip = head.get("receipt_sha256")
+    _verified_receipt(root, tip)
+    _, prior = _batch_head(root)
+    rows = _segment(root, tip, prior["last_org_receipt_sha256"] if prior else None)
+    return {
+        "receipt_count": len(rows),
+        "release_count": release_count,
+        "release_condition_satisfied": len(rows) >= release_count,
+    }
+
+
+def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None) -> dict | None:
+    """Release the satisfied packet immediately before the next receipt append."""
+    root = Path(root) if root else org.ledger_root()
+    state = open_packet_state(parent_manifest, root=root)
+    if not state["release_condition_satisfied"]:
+        return None
+    return close_batch("MANIFEST_RELEASE_CONDITION", root=root)
 
 
 def close_batch(reason: str, *, root: Path | None = None) -> dict:

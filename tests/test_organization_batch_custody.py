@@ -132,3 +132,38 @@ def test_empty_close_invalid_reason_and_missing_custody_proof(monkeypatch, tmp_p
     assert batch.verify_batch(tmp_path, closed["batch_id"])["master_records_acknowledgement"] == "NOT_ESTABLISHED"
     assert "master_record_ref" not in closed
     assert closed["authority_effect"] == "NONE_BATCH_CUSTODY_PROPOSAL_ONLY"
+
+
+def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    parent_manifest = {
+        "schema": "test.parent-manifest/v1",
+        "receipt_batch": {"release_condition": {"type": "COUNT", "count": 2}},
+    }
+    first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
+    before = batch.open_packet_state(parent_manifest, root=tmp_path)
+    assert before == {"receipt_count": 2, "release_count": 2, "release_condition_satisfied": True}
+    assert not (tmp_path / "BATCH_HEAD.json").exists()
+
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
+
+    batch_head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
+    released = batch._verified_batch(tmp_path, batch_head["batch_id"])
+    assert released["closure_reason"] == "MANIFEST_RELEASE_CONDITION"
+    assert released["ordered_receipt_hashes"] == [first["receipt_sha256"], second["receipt_sha256"]]
+    assert released["last_org_receipt_sha256"] == second["receipt_sha256"]
+    after = batch.open_packet_state(parent_manifest, root=tmp_path)
+    assert after == {"receipt_count": 1, "release_count": 2, "release_condition_satisfied": False}
+    assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == third["receipt_sha256"]
+
+
+def test_parent_manifest_batch_release_condition_fails_closed(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    with pytest.raises(ValueError, match="receipt_batch policy required"):
+        org.aggregate_transition(receipt("FIRST"), parent_manifest={"schema": "test.parent-manifest/v1"})
+    with pytest.raises(ValueError, match="release count invalid"):
+        org.aggregate_transition(receipt("FIRST"), parent_manifest={
+            "receipt_batch": {"release_condition": {"type": "COUNT", "count": 0}}
+        })
+    assert not (tmp_path / "HEAD.json").exists()

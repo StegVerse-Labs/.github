@@ -154,19 +154,33 @@ def _atomic_json(path, value):
 
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
-                         boundary_evidence=None, authority_effect="NONE"):
-    """Serialize existing organization appends; never treat recording as authority."""
+                         boundary_evidence=None, authority_effect="NONE", parent_manifest=None):
+    """Serialize appends; the governing parent manifest owns count-based batch release."""
     root = ledger_root()
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     with (root / ".append.lock").open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
-            return _aggregate_transition_locked(
+            released = None
+            if parent_manifest is not None:
+                # Import lazily to preserve the existing single ledger owner and
+                # avoid a second batching authority. The prior packet is released
+                # under this same append lock before the new receipt is appended.
+                import organization_batch_custody as batches
+                released = batches.release_satisfied_packet_before_next_transition(
+                    parent_manifest, root=root
+                )
+            record = _aggregate_transition_locked(
                 receipt, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=boundary_evidence, authority_effect=authority_effect,
             )
+            if released is not None:
+                state = batches.open_packet_state(parent_manifest, root=root)
+                if state["receipt_count"] != 1:
+                    raise ValueError("successor organization receipt packet did not initialize at count 1")
+            return record
         finally:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
@@ -214,6 +228,7 @@ def main():
     p.add_argument("--successor-org-state-sha256")
     p.add_argument("--boundary-evidence-json",default="{}")
     p.add_argument("--authority-effect",default="NONE")
+    p.add_argument("--parent-manifest")
     a=p.parse_args()
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")

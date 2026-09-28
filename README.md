@@ -1869,3 +1869,8 @@ Test 5 no longer assumes provider accounts or API credentials. The generic SDK r
 ## Test 5 attempted-browser disposition repair — 2026-09-28
 
 Execution-path review after the credential-free browser-owner binding found two attempted-operation exits that could still escape as Python exceptions: an absent existing StegBrowser repository-root binding and an exception from the manifested browser operation (navigation/model/selector/response failure). The existing Universal InTr owner now converts those conditions into retryable `FAIL_CLOSED` transitions and sends them through the canonical state-transition custody client. The source-binding predicate is `STEGBROWSER_SOURCE_ROOT_BOUND`; the browser-operation predicate is `MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED`. No alternate runner, runtime, provider credential path, or custody store is introduced. Organization Records remain recorded by the shared custody client before Master Records submission/reconstruction. The same Test 5 manifest is the required retry input after owner or manifest-data repair.
+
+
+## Parent-manifest organization receipt batching — source repair (2026-09-28)
+
+Organization receipt batching is manifest-governed state. The governing parent manifest owns the count release condition; satisfying it marks the current receipt packet release-ready. The next governed transition releases that completed packet under the existing organization append lock and its own disposition receipt initializes the successor packet at count 1. This adds no scheduler, ledger, runtime, transport or authority plane. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
