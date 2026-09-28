@@ -161,12 +161,26 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     with (root / ".append.lock").open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
-            return _aggregate_transition_locked(
+            released = None
+            if parent_manifest is not None:
+                # Import lazily to preserve the existing single ledger owner and
+                # avoid a second batching authority. The prior packet is released
+                # under this same append lock before the new receipt is appended.
+                import organization_batch_custody as batches
+                released = batches.release_satisfied_packet_before_next_transition(
+                    parent_manifest, root=root
+                )
+            record = _aggregate_transition_locked(
                 receipt, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=boundary_evidence, authority_effect=authority_effect,
             )
+            if released is not None:
+                state = batches.open_packet_state(parent_manifest, root=root)
+                if state["receipt_count"] != 1:
+                    raise ValueError("successor organization receipt packet did not initialize at count 1")
+            return record
         finally:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
@@ -213,7 +227,7 @@ def main():
     p.add_argument("--predecessor-org-state-sha256")
     p.add_argument("--successor-org-state-sha256")
     p.add_argument("--boundary-evidence-json",default="{}")
-    p.add_argument("--authority-effect",default="NONE")
+    p.add_argument("--authority-effect",default="NONE")\n    p.add_argument("--parent-manifest")
     a=p.parse_args()
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
