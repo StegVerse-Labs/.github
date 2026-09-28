@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 273,
-  "status": "ORGANIZATION_BATCH_CUSTODY_STATE_TRANSITION_LIFECYCLE_RECONCILED",
+  "generation": 274,
+  "status": "CANONICAL_WORK_COMPUTE_SUBSTRATE_MACHINE_INDEPENDENCE_SOURCE_CANDIDATE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -179,11 +179,14 @@
           "intr_task_admission",
           "canonical_artifact_validation"
         ],
-        "environment": "SOVEREIGN_RESIDENT",
+        "environment": "MANIFEST_SELECTED_EPHEMERAL",
         "direction": "INTERNAL",
         "mutation_required": true,
         "deployment_required": false,
-        "current_observation_required": false
+        "current_observation_required": false,
+        "compute_substrate_authority": "NONE",
+        "persistent_resident_host_required": false,
+        "external_machine_discovery_required": false
       },
       "runtime_resolution": {
         "map_ref": "control/runtime-profile-map.json",
