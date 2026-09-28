@@ -1869,3 +1869,8 @@ Test 5 no longer assumes provider accounts or API credentials. The generic SDK r
 ## Test 5 attempted-browser disposition repair — 2026-09-28
 
 Execution-path review after the credential-free browser-owner binding found two attempted-operation exits that could still escape as Python exceptions: an absent existing StegBrowser repository-root binding and an exception from the manifested browser operation (navigation/model/selector/response failure). The existing Universal InTr owner now converts those conditions into retryable `FAIL_CLOSED` transitions and sends them through the canonical state-transition custody client. The source-binding predicate is `STEGBROWSER_SOURCE_ROOT_BOUND`; the browser-operation predicate is `MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED`. No alternate runner, runtime, provider credential path, or custody store is introduced. Organization Records remain recorded by the shared custody client before Master Records submission/reconstruction. The same Test 5 manifest is the required retry input after owner or manifest-data repair.
+
+
+## Generic SDK manifest reusable addressability — 2026-09-28
+
+The existing portable resident bridge already admits `sdk_generic_manifest_execution`, but the neutral reusable trigger previously had no reusable identity permitted to select it. `RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001` binds that existing bridge and exact selector without creating a runner, runtime, scheduler, dispatcher or authority plane. Trigger acceptance remains non-authorizing and is not an execution claim; the child generic consumer disposition and its receipt chain are required before successor progression.
