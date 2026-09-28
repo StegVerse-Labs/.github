@@ -189,7 +189,7 @@ def execute(source_root: Path, runtime_root: Path, request: Mapping[str, Any],
         if not materialized.is_file() or _load(materialized) != original:
             return _outcome(request, predicate="SHWP_ORIGINAL_REQUEST_MATERIALIZATION_MISMATCH")
     except Exception as exc:
-        return _outcome(request, predicate="SHWP_EVENT_EPHEMERAL_SOURCE_MATERIALIZATION_FAILED:" + type(exc).__name__)
+        return _outcome(request, predicate="SHWP_EVENT_EPHEMERAL_SOURCE_MATERIALIZATION_FAILED:" + str(exc)[:180])
     try:
         attempt = consumer_fn(source, runtime)
     except Exception as exc:
@@ -202,6 +202,10 @@ def execute(source_root: Path, runtime_root: Path, request: Mapping[str, Any],
     if attempt.get("disposition") != "ALLOW":
         code = str(attempt.get("failed_predicate") or "SHWP_PARENT_CONSUMER_NON_ALLOW_UNSPECIFIED")
         return _outcome(request, predicate=code, attempt=attempt)
+    if attempt.get("runtime_execution_attempted") is not True:
+        # A cached verified attempt must progress through its original
+        # custody readback, not become an invented second live invocation.
+        return _outcome(request, predicate="SHWP_PREVIOUS_SUCCESS_ORIGINAL_READBACK_REQUIRED", attempt=attempt)
     # The existing consumer verifies its own original parent activation chain
     # and evidence projection. Independent organization ledger readback must
     # still be executed by the existing custody interface; no terminal ALLOW
@@ -209,4 +213,24 @@ def execute(source_root: Path, runtime_root: Path, request: Mapping[str, Any],
     return _outcome(request, predicate=None, attempt=attempt)
 
 
-__all__ = ["execute", "_check", "TASK_ID", "ROUTE", "RESULT_SCHEMA"]
+def retain_source_result(runtime_root: Path, value: Mapping[str, Any]) -> dict[str, Any]:
+    """Immutable *local source* diagnostic only; never an org custody receipt."""
+    root = runtime_root / "runtime-state/sdk-manifest-state-transition/dispositions/shwp"
+    root.mkdir(parents=True, exist_ok=True)
+    body = dict(value)
+    request_hash = str(body.get("request_sha256") or "unbound")
+    identity = _hash({key: val for key, val in body.items() if key != "diagnostic_sha256"})
+    exact = root / (request_hash + "." + identity + ".json")
+    body["source_disposition_ref"] = str(exact)
+    body.pop("diagnostic_sha256", None)
+    body["diagnostic_sha256"] = _hash(body)
+    raw = json.dumps(body, indent=2, sort_keys=True) + "\\n"
+    if exact.exists():
+        if exact.read_text(encoding="utf-8") != raw:
+            raise ValueError("SHWP_IMMUTABLE_SOURCE_DIAGNOSTIC_COLLISION")
+    else:
+        exact.write_text(raw, encoding="utf-8")
+    return body
+
+
+__all__ = ["execute", "_check", "retain_source_result", "TASK_ID", "ROUTE", "RESULT_SCHEMA"]
