@@ -22,7 +22,8 @@
     "master-records/orchestration/services/ecosystem_transition_ledger.py",
     "master-records/orchestration/services/canonical_state_transition_custody.py",
     "master-records/orchestration/services/organization_batch_ingress.py",
-    "master-records/orchestration/tests/test_organization_batch_ingress.py"
+    "master-records/orchestration/tests/test_organization_batch_ingress.py",
+    "control/resident-execution-request.d/canonical-work-organization-batch-custody-replay-001.json"
   ],
   "adjacent_task_refs": [
     "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
@@ -90,11 +91,11 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "authentic_runtime_proof": false
+    "terminal_model": "DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_CLOSURE",
+    "separate_runtime_observation_gate_required": false
   },
   "allowed_next_transitions": [
-    "HANDOFF_READY",
-    "CLAIMED_FOR_VALIDATION",
+    "INGRESS_ADMITTED",
     "BLOCKED_WITH_DURABLE_OWNER",
     "COMPLETE_ONLY_AFTER_EXACT_MASTER_RECORDS_PROOF"
   ],
@@ -108,7 +109,31 @@
     "registry_mints_execution_authority": false,
     "receipt_is_transition_authority": false,
     "master_records_offline_allows_local_replay": true,
-    "master_records_ack_required_where_declared": true
+    "master_records_ack_required_where_declared": true,
+    "task_registry_mints_execution_authority": false,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true
   },
-  "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+  "authority_effect": "NONE_TASK_REGISTRATION_ONLY",
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_work_ingress",
+      "organization_custody_readback",
+      "canonical_master_records_state_transition_custody"
+    ],
+    "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": {
+    "state": "STATE_TRIGGERED_CANONICAL_WORK_INGRESS_REQUIRED",
+    "canonical_work_request_ref": "control/resident-execution-request.d/canonical-work-organization-batch-custody-replay-001.json",
+    "exact_selector": "organization_custody_readback",
+    "next_transition": "INGRESS_ADMITTED",
+    "no_separate_runtime_observation_gate": true,
+    "connected_device_inventory_role": "NONE_PROHIBITED",
+    "external_machine_requirement": false,
+    "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY"
+  }
 }
