@@ -39,6 +39,15 @@ def validate(receipts: list[dict]) -> dict:
         fail("RETURN_HANDOFF_MISMATCH","leg 2 endpoint/counterparty pair does not close")
     if a["endpoint"]!=d["endpoint"] or b["endpoint"]!=c["endpoint"]:
         fail("ROUNDTRIP_ENDPOINT_MISMATCH","return leg does not reverse the outbound endpoints")
+    for endpoint_evidence in (b,c):
+        if endpoint_evidence.get("manifest_read") is not True:
+            fail("EPHEMERAL_MANIFEST_NOT_READ","ephemeral endpoint must attest reading the admitted manifest")
+        if endpoint_evidence.get("manifest_directed") is not True:
+            fail("EPHEMERAL_ACTION_NOT_MANIFEST_DIRECTED","ephemeral endpoint action/routing must be manifest-directed")
+        if endpoint_evidence.get("receipt_appended") is not True:
+            fail("EPHEMERAL_RECEIPT_NOT_APPENDED","ephemeral endpoint must append its transition receipt")
+    if c.get("next_leg_directed") is not True:
+        fail("EPHEMERAL_NEXT_LEG_NOT_DIRECTED","ephemeral egress must attest directing the separately manifested next leg")
     if b.get("custody")!="RETURN_WITH_MANIFEST" or c.get("custody")!="RETURN_WITH_MANIFEST":
         fail("EPHEMERAL_CUSTODY_INVALID","ephemeral endpoint receipts must return with the manifest, not require durable node custody")
     if d.get("returned_endpoint_receipts") is not True:
