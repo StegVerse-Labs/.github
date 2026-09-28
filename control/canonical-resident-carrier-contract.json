@@ -59,7 +59,10 @@
       "consumer_ref": "scripts/consume_stegverse001_bounded_autonomy_request.py",
       "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_transition": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-      "post_terminal": ["Master Records reconstruction PASS", "SV002 adversarial disposition"],
+      "post_terminal": [
+        "Master Records reconstruction PASS",
+        "SV002 adversarial disposition"
+      ],
       "terminal_reexecution_allowed": false
     },
     {
@@ -68,7 +71,10 @@
       "consumer_ref": "scripts/consume_sv002_org_runtime_activation_request.py",
       "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_predicate": "terminal_round_trip_observed=true",
-      "post_terminal": ["governed inference proof where required", "same-execution reconstruction where required"]
+      "post_terminal": [
+        "governed inference proof where required",
+        "same-execution reconstruction where required"
+      ]
     },
     {
       "entity_id": "SV-011",
@@ -94,6 +100,18 @@
     "The current-user iOS interaction queue serializes true human/device mutations only and must not become a scheduler, Task/COSV re-entry queue, or approval queue for resident machine transitions.",
     "Entity progression runtime adoption is tracked through canonical cross-task coordination and canonical work coordination; those records grant no authority and cannot substitute for authentic resident execution.",
     "Repository merge or CI success never substitutes for authentic resident execution evidence.",
-    "A terminal task is never rerun merely to prove shared-substrate membership."
-  ]
+    "A terminal task is never rerun merely to prove shared-substrate membership.",
+    "Compute substrate identity, residency, systemd presence, hosted-provider identity, or machine discovery never grants or gates execution authority."
+  ],
+  "compute_substrate": {
+    "semantic_name": "MANIFEST_SELECTED_EXECUTION_SUBSTRATE",
+    "authority_effect": "NONE_COMPUTE_ONLY",
+    "persistent_resident_host_required": false,
+    "machine_identity_binding_required": false,
+    "external_machine_discovery_required": false,
+    "systemd_is_deployment_adapter_only": true,
+    "ephemeral_execution_allowed": true,
+    "github_actions_may_grant_authority": false,
+    "hosted_provider_may_grant_authority": false
+  }
 }
