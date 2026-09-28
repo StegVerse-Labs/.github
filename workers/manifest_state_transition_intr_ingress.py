@@ -308,7 +308,7 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
         root = runtime_root / REQUEST_DIR / "dispositions" / "runtime-attachment"
         root.mkdir(parents=True, exist_ok=True)
         exact = root / (validated["request_sha256"] + ".json")
-        raw = json.dumps(record, sort_keys=True, indent=2) + "\\n"
+        raw = json.dumps(record, sort_keys=True, indent=2) + "\n"
         if exact.exists():
             require(exact.read_text(encoding="utf-8") == raw,
                     "runtime_attachment_disposition_immutable_collision")
