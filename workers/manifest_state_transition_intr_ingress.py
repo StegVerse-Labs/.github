@@ -12,11 +12,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 from typing import Any, Mapping
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
 from scripts.run_worker_runtime import load_adapters
+from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
 
 REQUEST_SCHEMA = "stegverse.sdk.manifest-state-transition-request/v1"
 RESULT_SCHEMA = "stegverse.sdk.manifest-state-transition-result/v1"
@@ -310,6 +315,104 @@ def _capability_dispatch_fail_closed(runtime_root: Path, validated: Mapping[str,
     return {**record, "source_disposition_ref": str(exact)}
 
 
+
+def _repo_root(name: str) -> Path | None:
+    try:
+        roots = json.loads(os.getenv("STEGVERSE_REPO_ROOTS_JSON", "{}"))
+    except Exception:
+        roots = {}
+    raw = roots.get(name) if isinstance(roots, Mapping) else None
+    if not raw:
+        return None
+    root = Path(str(raw)).expanduser().resolve()
+    return root if root.is_dir() else None
+
+
+def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
+                        outcome: str, prior: str | None, evidence: Mapping[str, Any]) -> dict[str, Any]:
+    receipt = build_state_receipt(
+        transition_id=transition_id,
+        transition_sequence=sequence,
+        subject_or_correlation_id=task_id,
+        transition_outcome=outcome,
+        prior_state_ref_or_hash=prior,
+        resulting_state_ref_or_hash=sha256(evidence),
+        governance_decision_ref_where_applicable=None,
+        transition_evidence=evidence,
+        proof_scope="SDK_MANIFEST_SELECTED_STEGBROWSER_LLM_TRANSITION_ONLY",
+        proof_ceiling="ORGANIZATION_FIRST_THEN_MASTER_RECORDS_RECONSTRUCTION",
+    )
+    custody = submit_state_receipt(receipt)
+    require(custody.get("state") == "RECORDED", f"{transition_id}_master_records_not_recorded")
+    require(custody.get("reconstruction_status") == "PASS", f"{transition_id}_reconstruction_not_pass")
+    require(custody.get("required_evidence_validation_status") == "PASS", f"{transition_id}_evidence_not_pass")
+    org = custody.get("organization_receipt")
+    require(isinstance(org, Mapping) and org.get("receipt_sha256"), f"{transition_id}_organization_receipt_missing")
+    return {"receipt": receipt, "custody": custody}
+
+
+def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
+    graph = validated.get("state_graph") or {}
+    op = graph.get("request") if isinstance(graph, Mapping) else None
+    require(isinstance(op, Mapping), "stegbrowser_llm_manifest_operation_missing")
+    secure_url = op.get("secure_url")
+    actions = op.get("browser_actions")
+    require(isinstance(secure_url, str) and secure_url.startswith("https://"),
+            "stegbrowser_llm_secure_url_required")
+    require(isinstance(actions, list) and actions, "stegbrowser_llm_browser_actions_required")
+    source = _repo_root("StegVerse-Labs/StegBrowser")
+    require(source is not None, "STEGBROWSER_SOURCE_ROOT_NOT_BOUND")
+    if str(source) not in sys.path:
+        sys.path.insert(0, str(source))
+    from src.stegbrowser.llm_browser_execution import execute_manifested_llm_browser_operation
+
+    task_id = str(validated["canonical_task_id"])
+    host = (urlsplit(secure_url).hostname or "").lower()
+    now = datetime.now(timezone.utc)
+    lease = {
+        "schema": "stegbrowser.ecosystem-ephemeral-lease.v1",
+        "lease_id": "sdk-" + str(validated["request_sha256"])[:20],
+        "task_id": task_id,
+        "requester": "SDK:ManifestStateTransition",
+        "purpose": "manifest-selected credential-free llm.v1 browser operation",
+        "issued_at": now.isoformat().replace("+00:00", "Z"),
+        "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z"),
+        "allowed_origins": [host],
+        "allowed_actions": ["navigate", "read_public", "submit_form"],
+        "retain_artifacts": ["navigation_receipt", "content_commitment", "governance_receipt"],
+        "max_navigations": 4,
+        "persistent_profile": False, "persist_cookies": False, "persist_history": False,
+    }
+    ingress = _custody_transition(
+        transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id, outcome="ALLOW", prior=None,
+        evidence={"request_sha256": validated["request_sha256"], "route_id": validated["route_id"],
+                  "processing_capability": "stegbrowser", "profile": graph.get("profile"),
+                  "secure_url_host": host, "credential_required": False},
+    )
+    prior = ingress["custody"]["organization_receipt"]["receipt_sha256"]
+    result = execute_manifested_llm_browser_operation(op, lease)
+    interaction = _custody_transition(
+        transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id, outcome="ALLOW", prior=prior,
+        evidence={"request_sha256": validated["request_sha256"], "browser_result": result},
+    )
+    prior = interaction["custody"]["organization_receipt"]["receipt_sha256"]
+    egress = _custody_transition(
+        transition_id="EGRESS_ADMITTED", sequence=3, task_id=task_id, outcome="ALLOW", prior=prior,
+        evidence={"request_sha256": validated["request_sha256"],
+                  "result_commitment": sha256(result.get("result") or {}),
+                  "endpoint_receipts": result.get("endpoint_receipts")},
+    )
+    return {
+        "schema": RESULT_SCHEMA, "state": "COMPLETE", "disposition": "ALLOW",
+        "canonical_task_id": task_id, "processing_capability": "stegbrowser",
+        "route_id": validated["route_id"], "request_sha256": validated["request_sha256"],
+        "browser_execution": result,
+        "transition_closures": [ingress, interaction, egress],
+        "organization_records_before_master_records": True,
+        "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+    }
+
+
 def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
@@ -342,6 +445,8 @@ def execute(runtime_root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     # assembler below. Other installed capabilities must be bound to their
     # existing manifest-selected operation owner before that owner is invoked;
     # never fall through to the Test-1 purpose-worker receipt path.
+    if capability == "stegbrowser" and graph.get("profile") == "llm.v1":
+        return _execute_stegbrowser_llm(runtime_root, validated)
     if capability not in {"purpose_bound_worker", "atomic_task_worker"}:
         return _capability_dispatch_fail_closed(runtime_root, validated)
     runtime = WorkerCoordinator(runtime_root, adapters=load_adapters(runtime_root))
