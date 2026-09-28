@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 268,
+  "generation": 269,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10214,7 +10214,7 @@
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "Publisher #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6 exact-source preflight, SDK #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941 Publisher paper converter, SDK #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538 targeted tests, Publisher #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8. Actual native Publisher paper manifest consumer/caller, original Interlock/InTr disposition and Master Records closure not observed."
+          "ref": "Publisher #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6 exact-source preflight; SDK #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941 exact Publisher paper manifest converter; SDK #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538 targeted tests; Publisher #86 merged df6825e8d0138768ce2356d1edc8acfbb82040dc native source consumer; Publisher #87 merged 5de26e53f734ff68627663b0471cf60d52551982 source preflight reconciliation. Actual exact manifest not prepared because applicable source-bound review digests are unauthenticated; no authenticated economic InTr/organization-ledger/Master Records execution interface available in this session."
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
@@ -10232,7 +10232,7 @@
         {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "Source-only Publisher exact-manuscript profile now installed and target-tested. First actionable source-to-runtime predicate is PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER: identify/wire existing authorized Publisher paper consumer and original manifest-bound caller. Retrieve any prior original attempt via authorized sovereign organization ledger readback; once reachable retain actual ALLOW/DENY/FAIL_CLOSED at attempted ingress with failing predicate. No authenticated paper-specific InTr decision, same-transition Master Records closure, Publisher release or deployed readback established; inaccessible original interface remains UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, not invented downstream failure."
+          "reason": "Publisher-native exact SDK paper-manifest consumer is now source-implemented and validated. Actual publication transition remains unattempted because the current exact manifest contract requires genuine economics/legal report digest references and inspected custody has no attributable originals; no authenticated economic Universal InTr or sovereign organization-ledger interface is exposed in this session. The discovered organization readback implementation is private resident-local and explicitly forbids hosted execution, so it is not a required external-machine/device prerequisite. Preserve UNKNOWN_NOT_AUTHENTICALLY_OBSERVED for historical runtime custody until an authenticated existing interface is reachable; on actual manifest attempt retain exact ALLOW/DENY/FAIL_CLOSED and same-transition Master Records reconstruction before Publisher release."
         },
         {
           "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
@@ -10259,7 +10259,9 @@
         "Publisher issue #76 closed; Volume III PR #77 source merged under same canonical economic program; its research manuscript remains separate from approved PR #72 documentation.",
         "Publisher PR #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6: exact original paper SHA256 3329a0..., separate Volume III v0.2 SHA256 32abef..., source preflight FAIL_CLOSED, reviewer evidence unverified, no runtime invocation.",
         "SDK PR #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941: distinct Publisher papers exact-source manifest converter; SDK PR #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538: targeted run 36366420354 SUCCESS, fixtures only.",
-        "Publisher PR #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8: source preflight now points to PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER; targeted preflight 36366668553 and three Publisher source checks SUCCESS, no authority."
+        "Publisher PR #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8: source preflight now points to PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER; targeted preflight 36366668553 and three Publisher source checks SUCCESS, no authority.",
+        "Publisher PR #86 merged df6825e8d0138768ce2356d1edc8acfbb82040dc; native economic SDK manifest consumer source plus exact-head runs 36381775153/36381774995/36381774966/36381775016 SUCCESS; source-only, no authority.",
+        "Publisher PR #87 merged 5de26e53f734ff68627663b0471cf60d52551982; economic preflight marks PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER SOURCE_REPAIRED; exact manifest runtime remains NOT_ATTEMPTED."
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
