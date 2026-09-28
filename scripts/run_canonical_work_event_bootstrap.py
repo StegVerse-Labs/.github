@@ -44,8 +44,8 @@ def validate_target_task(*, registry: Path, registry_shards: Path, task_id: str)
     correlation_id = task.get("correlation_id")
     require(isinstance(correlation_id, str) and bool(correlation_id), "canonical_task_correlation_missing")
     coordination_state = task.get("coordination_state")
-    active_checked_out = coordination_state == "ACTIVE" and task.get("checkout_state") == "CHECKED_OUT"
-    require(coordination_state == "PROPOSED" or active_checked_out, "canonical_task_not_ingress_projectable")
+    active_pre_ingress = coordination_state == "ACTIVE" and task.get("checkout_state") in {"HANDOFF_READY", "CHECKED_OUT"}
+    require(coordination_state == "PROPOSED" or active_pre_ingress, "canonical_task_not_ingress_projectable")
     require("INGRESS_ADMITTED" in task.get("allowed_next_transitions", []), "canonical_task_ingress_not_allowed")
     claim = task.get("worker_claim", {})
     require(claim.get("authority") == "WORKERCOORDINATOR", "canonical_task_workercoordinator_authority_missing")
