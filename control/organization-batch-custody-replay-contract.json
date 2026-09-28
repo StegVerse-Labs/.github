@@ -69,9 +69,9 @@
     "release_condition_owner": "GOVERNING_PARENT_MANIFEST",
     "accumulation": "CURRENT_RECEIPT_DATA_PACKET",
     "threshold_effect": "MARK_CURRENT_PACKET_RELEASE_READY_ONLY",
-    "next_governed_transition": [
+    "next_manifest_directed_action": [
       "RELEASE_COMPLETED_PRIOR_PACKET",
-      "APPEND_CURRENT_DISPOSITION_RECEIPT",
+      "APPEND_CURRENT_ACTION_EVIDENCE_RECEIPT",
       "INITIALIZE_SUCCESSOR_OPEN_PACKET_AT_COUNT_1"
     ],
     "independent_scheduler_or_batch_authority": false
