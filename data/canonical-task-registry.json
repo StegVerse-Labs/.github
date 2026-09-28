@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 267,
+  "generation": 268,
   "status": "EXISTING_SHWP_SOURCE_IDENTITY_RECONCILED_RUNTIME_EVIDENCE_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10208,13 +10208,13 @@
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
           "kind": "TASK",
           "state": "UNRESOLVED",
-          "ref": "Owner explicitly approved existing PR #72 Private-State Economy documentation and closed PR without merge; source retained at Publisher PR #72 head f9a140d02e162c8284db7fe22b9093e70c25207a, manuscript SHA-256 3329a0c47161eb4613c32bbc5e0a393116f395cb8fa78368ed21fed8775c3dca. No replacement manuscript required. Separate economic/legal external findings not authenticated or reconciled; Publisher Volume III #77 merged source and issue #76 closed."
+          "ref": "Owner-approved original PR #72 exact manuscript and owner-approved Volume III v0.2 editorial reconciliation. Owner attests independent banker/lawyer conclusions align with internal analysis; only original attributable exact-source report bytes/required signed reviewer evidence remain unverified under Publisher research-release policy. Publisher issue #76 and PR #77 are closed/merged."
         },
         {
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "existing SDK / Interlock-InTr / Master Records / Publisher"
+          "ref": "Publisher #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6 exact-source preflight, SDK #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941 Publisher paper converter, SDK #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538 targeted tests, Publisher #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8. Actual native Publisher paper manifest consumer/caller, original Interlock/InTr disposition and Master Records closure not observed."
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
@@ -10227,12 +10227,12 @@
         {
           "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
           "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-          "reason": "Original Private-State Economy documentation approved by owner; Publisher PR #72 intentionally closed without merge. No successor manuscript or renewed author approval required. Independent banker/lawyer findings not authenticated or reconciled; any applicable external substantive review remains a separate editorial-evidence requirement, not a prerequisite invented by PR closure. Publisher issue #76 closed and Volume III PR #77 merged as separate research source."
+          "reason": "Owner substantive editorial review approved; do not repeat manuscript/reviews. Existing Publisher Volume III v0.2 independent review packet calls for attributable signed source-bound economics and jurisdiction-specific legal reports. Original report bytes/identities are not authenticated in inspected evidence, so independently evidenced reviewer signoff is not claimed; resolve from existing custody or obtain an explicit applicable Publisher policy disposition."
         },
         {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "No authentic InTr/Master Records governed publisher closure or deployed public readback is established."
+          "reason": "Source-only Publisher exact-manuscript profile now installed and target-tested. First actionable source-to-runtime predicate is PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER: identify/wire existing authorized Publisher paper consumer and original manifest-bound caller. Retrieve any prior original attempt via authorized sovereign organization ledger readback; once reachable retain actual ALLOW/DENY/FAIL_CLOSED at attempted ingress with failing predicate. No authenticated paper-specific InTr decision, same-transition Master Records closure, Publisher release or deployed readback established; inaccessible original interface remains UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, not invented downstream failure."
         },
         {
           "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
@@ -10256,7 +10256,10 @@
         "Site PR #1458 merged 5c9ff16471d78331b978d4349f3fec9747e55138; nested #1463 and #1465 merged; source-only roadmap with all 16 NOT_VERIFIED",
         "Publisher PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321; Volume III manuscript under open issue #76; legacy Publisher #72 closed unmerged",
         "Owner confirmed PR #72 was closed upon approval of current documentation, not rejection; no replacement manuscript required. Review findings and governed publication remain distinct.",
-        "Publisher issue #76 closed; Volume III PR #77 source merged under same canonical economic program; its research manuscript remains separate from approved PR #72 documentation."
+        "Publisher issue #76 closed; Volume III PR #77 source merged under same canonical economic program; its research manuscript remains separate from approved PR #72 documentation.",
+        "Publisher PR #82 merged e3788974de29aac00433194960ec4e48bfb0e2c6: exact original paper SHA256 3329a0..., separate Volume III v0.2 SHA256 32abef..., source preflight FAIL_CLOSED, reviewer evidence unverified, no runtime invocation.",
+        "SDK PR #378 merged 250fd2c9f1dc833e5c1eb2abc5bad7ed4f536941: distinct Publisher papers exact-source manifest converter; SDK PR #379 merged f1c8ca3ae8d75b6391ec8ca589010d7721d4c538: targeted run 36366420354 SUCCESS, fixtures only.",
+        "Publisher PR #85 merged 21f7c60e12d4e8a56a27d3bd0f26657d26d778e8: source preflight now points to PUBLISHER_PAPERS_NATIVE_RUNTIME_CONSUMER; targeted preflight 36366668553 and three Publisher source checks SUCCESS, no authority."
       ],
       "expected_evidence_predicates": [
         "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
