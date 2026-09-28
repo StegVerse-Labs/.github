@@ -1169,7 +1169,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/worker-registry.json",
       "source_state_vector_ref": "control/task-vectors/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
-      "vector": "10500000114000",
+      "vector": "10500000113000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     }

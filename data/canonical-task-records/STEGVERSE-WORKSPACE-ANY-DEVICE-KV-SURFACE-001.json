@@ -4,7 +4,7 @@
   "correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "root_correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "parent_task_id": null,
-  "goal": "Make the StegVerse WorkSpace the canonical browser representation of MyKV and Org KV, including capability functions bound to admitted operations, and the single governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across any browser session, on any operating system, on any device. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as custody, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, and no browser-local root of truth for user-visible state.",
+  "goal": "Make the StegVerse WorkSpace the canonical shell/chrome and tab host for admitted MyKV, Org KV, and Company-Employee-KV projections while preserving each KV page as its standalone canonical entry point, including capability functions bound to admitted operations and the governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across browser sessions, operating systems, and interchangeable eligible devices. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as custody, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, no browser-local root of truth for user-visible state, and no external-machine prerequisite.",
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
@@ -84,15 +84,9 @@
   ],
   "blockers": [
     {
-      "dependency_id": "BLK1-CANONICAL-WORKSPACE-SURFACE-OWNER",
-      "blocker_id": "BLK1-CANONICAL-WORKSPACE-SURFACE-OWNER",
-      "statement": "Which browser surface is the canonical representation of MyKV: Site:workspace.html or Site:my-kv.html? Both ship today, neither links to the other, and my-kv.html is far larger (612 lines plus 18 modules, 12 record classes) than workspace.html (43 lines plus 150, 1 read-only record class).",
-      "decision_owner": "REGISTRY_OWNER"
-    },
-    {
       "dependency_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
       "blocker_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
-      "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it \u2014 my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html \u2014 each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
+      "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
       "decision_owner": "REGISTRY_OWNER"
     },
     {
@@ -114,13 +108,13 @@
       "dependency_kind": "HUMAN_DECISION",
       "decision_owner": "REGISTRY_OWNER",
       "statement": "Which browser surface is the canonical representation of MyKV: Site:workspace.html or Site:my-kv.html? Both ship today, neither links to the other, and my-kv.html is far larger (612 lines plus 18 modules, 12 record classes) than workspace.html (43 lines plus 150, 1 read-only record class).",
-      "resolved": false
+      "resolved": true
     },
     {
       "dependency_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
       "dependency_kind": "HUMAN_DECISION",
       "decision_owner": "REGISTRY_OWNER",
-      "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it \u2014 my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html \u2014 each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
+      "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
       "resolved": false
     },
     {
@@ -165,6 +159,18 @@
       "dependency_id": "TASK-TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
       "dependency_kind": "CANONICAL_TASK",
       "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "resolved": false
+    },
+    {
+      "dependency_id": "TASK-SV-KV-AI-PERSISTENCE-001",
+      "dependency_kind": "CANONICAL_TASK",
+      "task_id": "SV-KV-AI-PERSISTENCE-001",
+      "resolved": false
+    },
+    {
+      "dependency_id": "TASK-SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
+      "dependency_kind": "CANONICAL_TASK",
+      "task_id": "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
       "resolved": false
     }
   ],
@@ -229,9 +235,11 @@
       },
       {
         "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
-        "disposition": "PENDING_EVIDENCE",
-        "limitation_class": "EVIDENCE_REACHABILITY",
-        "evidence_refs": []
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
+        ]
       }
     ]
   },
@@ -242,7 +250,9 @@
     "MYKV-PERSONAL-DATA-BACKUP-001",
     "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
     "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
-    "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004"
+    "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "SV-KV-AI-PERSISTENCE-001",
+    "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001"
   ],
   "expected_evidence_predicates": [
     "WORKSPACE_PROJECTION_ROOT_OF_TRUTH_IS_NOT_BROWSER_LOCAL_STORAGE",
@@ -277,10 +287,13 @@
   ],
   "existing_evidence_refs": [
     "StegVerse-Labs/Randolph_Geneaology_Hub:pull/17",
-    "StegVerse-Labs/Randolph_Geneaology_Hub:pull/18"
+    "StegVerse-Labs/Randolph_Geneaology_Hub:pull/18",
+    "StegVerse-Labs/.github:pull/2819",
+    "StegVerse-Labs/.github:docs/WORKSPACE_KV_DESIGN_SESSION_CAPTURE.md",
+    "StegVerse-Labs/.github:docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
   ],
   "allowed_next_transitions": [
-    "PROPOSED_TO_ACTIVE_ON_REGISTRY_OWNER_DECISION_OF_ALL_FOUR_BLOCKERS",
+    "PROPOSED_TO_ACTIVE_ON_REGISTRY_OWNER_DECISION_OF_REMAINING_THREE_BLOCKERS",
     "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER"
   ],
   "completion": {
@@ -303,5 +316,7 @@
     "supersedes_site_local_claim": "SITE-WORKSPACE-INTEROPERABILITY-001",
     "site_local_claim_note": "The Site claim remains the Site-side implementation claim. This task is the canonical coordination owner the claim's task_id never resolved to, and its next_task_after_release names this task's WU1 Org-KV binding."
   },
-  "handoff_projection_refs": []
+  "handoff_projection_refs": [
+    "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
+  ]
 }
