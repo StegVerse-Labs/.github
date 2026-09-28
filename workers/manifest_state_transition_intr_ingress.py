@@ -360,14 +360,37 @@ def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -
     require(isinstance(secure_url, str) and secure_url.startswith("https://"),
             "stegbrowser_llm_secure_url_required")
     require(isinstance(actions, list) and actions, "stegbrowser_llm_browser_actions_required")
+    task_id = str(validated["canonical_task_id"])
+    host = (urlsplit(secure_url).hostname or "").lower()
     source = _repo_root("StegVerse-Labs/StegBrowser")
-    require(source is not None, "STEGBROWSER_SOURCE_ROOT_NOT_BOUND")
+    if source is None:
+        failed = _custody_transition(
+            transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=None,
+            evidence={
+                "request_sha256": validated["request_sha256"],
+                "route_id": validated["route_id"],
+                "processing_capability": "stegbrowser",
+                "profile": graph.get("profile"),
+                "failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND",
+                "required_repo_root": "StegVerse-Labs/StegBrowser",
+                "retry_condition": "MATERIALIZE_EXISTING_OWNER_SOURCE_AND_RETRY_SAME_MANIFEST",
+            },
+        )
+        return {
+            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+            "terminal": False, "canonical_task_id": task_id,
+            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
+            "request_sha256": validated["request_sha256"],
+            "failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND",
+            "transition_closures": [failed],
+            "organization_records_before_master_records": True,
+            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+        }
     if str(source) not in sys.path:
         sys.path.insert(0, str(source))
     from src.stegbrowser.llm_browser_execution import execute_manifested_llm_browser_operation
 
-    task_id = str(validated["canonical_task_id"])
-    host = (urlsplit(secure_url).hostname or "").lower()
     now = datetime.now(timezone.utc)
     lease = {
         "schema": "stegbrowser.ecosystem-ephemeral-lease.v1",
@@ -390,7 +413,36 @@ def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -
                   "secure_url_host": host, "credential_required": False},
     )
     prior = ingress["custody"]["organization_receipt"]["receipt_sha256"]
-    result = execute_manifested_llm_browser_operation(op, lease)
+    try:
+        result = execute_manifested_llm_browser_operation(op, lease)
+    except Exception as exc:
+        failure_evidence = {
+            "request_sha256": validated["request_sha256"],
+            "route_id": validated["route_id"],
+            "processing_capability": "stegbrowser",
+            "profile": graph.get("profile"),
+            "secure_url_host": host,
+            "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED",
+            "error_type": type(exc).__name__,
+            "error_message": str(exc)[:1000],
+            "credential_required": False,
+            "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST",
+        }
+        failed = _custody_transition(
+            transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=prior, evidence=failure_evidence,
+        )
+        return {
+            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+            "terminal": False, "canonical_task_id": task_id,
+            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
+            "request_sha256": validated["request_sha256"],
+            "failed_predicate": failure_evidence["failed_predicate"],
+            "failure": failure_evidence,
+            "transition_closures": [ingress, failed],
+            "organization_records_before_master_records": True,
+            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+        }
     interaction = _custody_transition(
         transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id, outcome="ALLOW", prior=prior,
         evidence={"request_sha256": validated["request_sha256"], "browser_result": result},

@@ -9,3 +9,12 @@ def test_stegbrowser_does_not_fall_through_to_purpose_worker_receipt(tmp_path):
     assert result["transition_id"]=="INGRESS_ADMITTED"
     assert result["failed_predicate"]=="MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND"
     assert result["organization_master_records_closure_observed"] is False
+
+
+def test_stegbrowser_owner_failures_are_custodied_and_retryable():
+    source=(mod.Path(__file__).resolve().parents[1]/"workers/manifest_state_transition_intr_ingress.py").read_text()
+    assert 'failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND"' in source
+    assert 'failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED"' in source
+    assert 'outcome="FAIL_CLOSED"' in source
+    assert "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST" in source
+    assert "organization_records_before_master_records" in source
