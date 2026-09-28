@@ -7,7 +7,7 @@
   "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
   "coordination_state": "PROPOSED",
   "source_refs": [
-    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (historical closed-unmerged PR #72; original white-paper disposition pending)",
+    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (owner-approved existing documentation at closed-unmerged PR #72; exact source retained, not yet governed-published)",
     "StegVerse-Labs/Site:economic-roadmap.html (source merged Site #1458)",
     "StegVerse-Labs/Site:data/economy/public-release-benchmarks.v1.json (source merged Site #1458)",
     "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md",
@@ -64,7 +64,7 @@
       "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
       "kind": "TASK",
       "state": "UNRESOLVED",
-      "ref": "GCAT-BCAT-Engine/Publisher PR #72 closed unmerged; issue #76 open; Volume III PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321 (research source-only); independent review and separate original white-paper disposition unobserved"
+      "ref": "Owner explicitly approved existing PR #72 Private-State Economy documentation and closed PR without merge; source retained at Publisher PR #72 head f9a140d02e162c8284db7fe22b9093e70c25207a, manuscript SHA-256 3329a0c47161eb4613c32bbc5e0a393116f395cb8fa78368ed21fed8775c3dca. No replacement manuscript required. Separate economic/legal external findings not authenticated or reconciled; Publisher Volume III #77 merged source and issue #76 closed."
     },
     {
       "dependency_id": "GOVERNED_PUBLICATION",
@@ -83,7 +83,7 @@
     {
       "blocker_id": "PUBLISHER_REVIEW_OUTSTANDING",
       "dependency_id": "PUBLISHER_EDITORIAL_REVIEW",
-      "reason": "Original Publisher #72 closed unmerged. Volume III source merged in Publisher #77 under issue #76, but independent economic/legal review and distinct original Private-State Economy white-paper editorial disposition are not established; no publication inferred."
+      "reason": "Original Private-State Economy documentation approved by owner; Publisher PR #72 intentionally closed without merge. No successor manuscript or renewed author approval required. Independent banker/lawyer findings not authenticated or reconciled; any applicable external substantive review remains a separate editorial-evidence requirement, not a prerequisite invented by PR closure. Publisher issue #76 closed and Volume III PR #77 merged as separate research source."
     },
     {
       "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
@@ -110,7 +110,9 @@
     "Site #1458 16b99c348dbadfedf1830863bcb6ed5560f298b8, four exact-head CI workflows SUCCESS",
     "Publisher PR #72 and Site PR #1458 draft source revisions distinguish parallel ephemeral external AI from native MyKV, without runtime-completion claim.",
     "Site PR #1458 merged 5c9ff16471d78331b978d4349f3fec9747e55138; nested #1463 and #1465 merged; source-only roadmap with all 16 NOT_VERIFIED",
-    "Publisher PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321; Volume III manuscript under open issue #76; legacy Publisher #72 closed unmerged"
+    "Publisher PR #77 merged e64f5fb9dac84ecca3b7e944761125859f700321; Volume III manuscript under open issue #76; legacy Publisher #72 closed unmerged",
+    "Owner confirmed PR #72 was closed upon approval of current documentation, not rejection; no replacement manuscript required. Review findings and governed publication remain distinct.",
+    "Publisher issue #76 closed; Volume III PR #77 source merged under same canonical economic program; its research manuscript remains separate from approved PR #72 documentation."
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTERED_AND_COSV_EMITTED",
@@ -150,7 +152,7 @@
   ],
   "handoff_projection_refs": [
     "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (historical closed-unmerged #72, not present on Publisher main)",
+    "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (owner-approved documentation, pinned original source at PR #72 head; closure without merge does not establish Publisher publication)",
     "StegVerse-Labs/Site:docs/ECONOMIC_ECOSYSTEM_ROADMAP_PUBLICATION_HANDOFF.md"
   ]
 }
