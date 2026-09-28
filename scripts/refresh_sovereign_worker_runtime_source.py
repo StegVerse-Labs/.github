@@ -48,6 +48,8 @@ STATIC_FILES = (
     Path("scripts/run_independent_ecosystem_chat_parent.py"),
     Path("scripts/consume_resident_execution_request.py"),
     Path("scripts/consume_shwp_manifest_invocation.py"),
+    Path("scripts/run_shwp_manifest_intr_event_bootstrap.py"),
+    Path("workers/shwp_manifest_intr_event_bootstrap.py"),
     Path("scripts/consume_kv_ai_memory_resident_request.py"),
     Path("scripts/prepare_kv_ai_memory_intr_runtime_source.py"),
     Path("scripts/install_kv_ai_memory_universal_intr_route.py"),
