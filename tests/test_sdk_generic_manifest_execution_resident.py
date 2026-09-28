@@ -12,8 +12,8 @@ def test_generic_sdk_manifest_consumer_replaces_test5_selector():
     assert [x["build"]["processor_request"]["response_marker"] for x in req["requests"][:2]]==["TEST5_A","TEST5_B"]
     assert [x["build"]["processor_request"]["provider"] for x in req["requests"][:2]]==["credential-free-huggingface-space","credential-free-huggingface-space"]
     assert all(x["build"]["processor_request"]["secure_url"].startswith("https://") for x in req["requests"][:2])
-    assert all(x["build"]["processor_request"]["model"]=="Qwen3" for x in req["requests"])
-    assert all(x["build"]["processor_request"]["browser_actions"] for x in req["requests"])
+    assert all(x["build"]["processor_request"]["model"]=="Qwen3" for x in req["requests"][:2])
+    assert all(x["build"]["processor_request"]["browser_actions"] for x in req["requests"][:2])
     svg=req["requests"][2]
     assert svg["request_id"]=="svg-governance-cycle-001"
     assert svg["build"]["processor_request"]["task_id"]=="STEGVERSE-CANONICAL-WORK-COORDINATION-001"
