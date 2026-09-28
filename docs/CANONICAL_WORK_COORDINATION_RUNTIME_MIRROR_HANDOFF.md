@@ -154,3 +154,7 @@ The bounded repair keeps the existing path and authority model unchanged. For cu
 - match the same dispatch's `canonical_work_request_set.outcomes[]` entry by task ID, request SHA-256, and bootstrap receipt reference.
 
 Until those predicates hold, the bridge returns `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, causing the existing reusable-task lifecycle to remain retryable rather than falsely satisfying the slot. This repair does not itself prove resident execution or create a WorkerCoordinator claim/fence, Interlock/InTr decision, or Master Records closure.
+
+
+## 2026-09-28 manifest-selected compute substrate
+Canonical execution authority is separate from compute substrate. Exact manifest selection may use interchangeable ephemeral compute; persistent resident identity, systemd presence, external-machine discovery, GitHub Actions identity, CI identity, or provider identity neither grants nor gates authority. Existing Interlock/InTr, WorkerCoordinator claim/fence, TV/TVC credential authority, organization custody, and Master Records reconstruction remain authoritative. Legacy resident/systemd launchers are deployment adapters only. Missing authenticated authority during an attempted transition must become its actionable non-ALLOW disposition, not a passive wait for a machine. This source candidate does not claim runtime execution.
