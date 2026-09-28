@@ -199,7 +199,8 @@
       "STEGOS-CURRENT-DEVICE-NODE",
       "STEG-BROWSER-EPHEMERAL-LEASE",
       "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE"
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
       {
@@ -231,6 +232,14 @@
         "disposition": "PENDING_EVIDENCE",
         "limitation_class": "EVIDENCE_REACHABILITY",
         "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
+        ]
       }
     ]
   },
