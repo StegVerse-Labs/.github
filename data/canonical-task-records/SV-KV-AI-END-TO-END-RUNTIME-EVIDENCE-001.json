@@ -16,11 +16,42 @@
     "decomposition_reason": "Downstream runtime evidence chain is separable from first missing WorkerCoordinator claim/fence observation predicate."
   },
   "dependencies": [
-    {"dependency_id":"DEP-AUTHENTIC-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVED","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001"},
-    {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Authentic shared-listener memory-packet admission plus downstream Interlock/InTr receipt chain"},
-    {"dependency_id":"DEP-LIVE-PROVIDER-MODEL-CHAIN","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"External provider ingress, model response, and egress evidence through governed LLM path"},
-    {"dependency_id":"DEP-LIVE-KV-WRITEBACK-READBACK","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Evidence-gated Personal-KV writeback plus exact readback and reconstruction"},
-    {"dependency_id":"DEP-MASTER-RECORDS-RECONSTRUCTION","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Master Records reconstruction binding for the same execution chain"}
+    {
+      "dependency_id": "DEP-AUTHENTIC-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVED",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001"
+    },
+    {
+      "dependency_id": "DEP-LIVE-INTR-ADMISSION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "Authentic shared-listener memory-packet admission plus downstream Interlock/InTr receipt chain"
+    },
+    {
+      "dependency_id": "DEP-LIVE-PROVIDER-MODEL-CHAIN",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "External provider ingress, model response, and egress evidence through governed LLM path"
+    },
+    {
+      "dependency_id": "DEP-LIVE-KV-WRITEBACK-READBACK",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "Evidence-gated Personal-KV writeback plus exact readback and reconstruction"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RECONSTRUCTION",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "Master Records reconstruction binding for the same execution chain"
+    },
+    {
+      "dependency_id": "DEP-MANIFESTED-ENDPOINT-RECEIPT-JOURNEY",
+      "kind": "SOURCE_CONTRACT",
+      "state": "SOURCE_VALIDATOR_IMPLEMENTED_RUNTIME_EVIDENCE_PENDING",
+      "ref": "scripts/validate_transition_receipt_journey.py"
+    }
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTERED",
@@ -29,26 +60,101 @@
     "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
     "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
     "LIVE_KV_WRITEBACK_READBACK_OBSERVED_BEFORE_ACTIVATION",
-    "MASTER_RECORDS_RECONSTRUCTION_BOUND"
+    "MASTER_RECORDS_RECONSTRUCTION_BOUND",
+    "MANIFESTED_OUTBOUND_EGRESS_INGRESS_RECEIPTS_CORRELATED",
+    "MANIFESTED_RETURN_EGRESS_INGRESS_RECEIPTS_CORRELATED",
+    "EPHEMERAL_ENDPOINT_RECEIPTS_RETURN_WITH_MANIFEST",
+    "ORGANIZATION_RECEIPT_CHAIN_BINDS_ENDPOINT_HANDOFF",
+    "MASTER_RECORDS_RECONSTRUCTS_SAME_GOVERNED_COMMUNICATION",
+    "EPHEMERAL_NODE_READS_ADMITTED_MANIFEST",
+    "EPHEMERAL_NODE_ACTS_OR_ROUTES_ONLY_AS_MANIFESTED",
+    "EPHEMERAL_NODE_APPENDS_INGRESS_EGRESS_RECEIPTS",
+    "EPHEMERAL_NODE_DIRECTS_PREDECESSOR_LINKED_NEXT_MANIFESTED_LEG"
   ],
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
     "authority_effect": "NONE",
     "second_user_operated_device_allowed": false,
     "external_device_required": false,
     "selected_substrate_id": null,
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1883"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"AUTHORITY","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/.github#1883"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "AUTHORITY",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      }
     ]
   },
   "runtime_requirements": {
-    "capabilities": ["memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
+    "capabilities": [
+      "memory_packet_intr_admission",
+      "fenced_worker_execution",
+      "llm_provider_request_bridge",
+      "provider_request_intr_admission",
+      "ai_context_delivery",
+      "memory_write_proposal",
+      "evidence_gated_kv_writeback",
+      "kv_writeback_readback",
+      "machine_kv_reconstruction",
+      "hb_receipt_observation_binding",
+      "manifested_endpoint_receipt_journey_validation",
+      "ephemeral_manifest_interpretation",
+      "manifest_directed_packet_action_or_routing",
+      "endpoint_receipt_append",
+      "manifested_next_leg_direction"
+    ],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
     "direction": "MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP",
     "mutation_required": true,
@@ -62,5 +168,40 @@
     "interlock_intr_required_for_governed_ingress_egress": true,
     "master_records_reality_authority": true
   },
-  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null}
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "receipt_journey_contract": {
+    "schema": "stegverse.transition-journey-validation/v1",
+    "transport_semantics": "INTERLOCK_INTR_ONE_WAY_EACH_LEG",
+    "roundtrip_legs": 2,
+    "endpoint_transition_receipts_per_roundtrip": 4,
+    "evidence_fields": [
+      "journey_id",
+      "leg",
+      "direction",
+      "endpoint",
+      "counterparty",
+      "manifest_sha256",
+      "predecessor_manifest_sha256"
+    ],
+    "ephemeral_endpoint_custody": "RETURN_WITH_MANIFEST",
+    "ephemeral_durable_storage_required": false,
+    "organization_custody_required": true,
+    "master_records_reconstruction_required": true,
+    "authority_effect": "NONE_SOURCE_CONTRACT",
+    "manifest_continuity": "SAME_DIGEST_WITHIN_EACH_ONE_WAY_LEG_RETURN_MANIFEST_PREDECESSOR_LINKS_OUTBOUND",
+    "ephemeral_node_role": {
+      "manifest_read_required": true,
+      "admitted_manifest_action_capable": true,
+      "manifested_packet_routing_capable": true,
+      "endpoint_receipt_append_capable": true,
+      "separately_manifested_next_leg_capable": true,
+      "next_leg_predecessor_link_required": true,
+      "durable_local_receipt_custody_required": false,
+      "post_handoff_custody": "RETURN_WITH_MANIFEST_TO_DURABLE_ORGANIZATION_CUSTODY"
+    }
+  }
 }
