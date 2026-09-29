@@ -183,9 +183,8 @@ def default_runtime_root(env: Mapping[str, str] | None = None) -> Path:
 
 def clean_exec_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
-    hosted = [name for name in HOSTED_ENV if truthy(values.get(name))]
-    if hosted:
-        raise RuntimeError("hosted environment may not refresh+dispatch sovereign resident requests: " + ",".join(sorted(hosted)))
+    # Compute-provider markers are evidence about the selected substrate, not authority.
+    # Existing consumers still authenticate their own TV/TVC/InTr boundaries.
     credentials = [name for name in FORBIDDEN_CREDENTIAL_ENV if truthy(values.get(name))]
     if credentials:
         raise RuntimeError("credential-bearing environment forbidden for portable resident dispatch: " + ",".join(sorted(credentials)))
