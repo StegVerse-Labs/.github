@@ -13,6 +13,7 @@ import importlib.util
 import json
 import os
 import re
+import time
 from pathlib import Path
 import tempfile
 
@@ -24,7 +25,15 @@ CLOSURE_REASONS = {
     "ROUTINE_THRESHOLD", "TASK_CLOSURE", "WORKER_EXPIRY",
     "CONSEQUENTIAL_GOVERNANCE_BOUNDARY", "CUSTODY_RECOVERY",
     "INTER_ORGANIZATION_HANDOFF", "MANIFEST_RELEASE_CONDITION",
+    "MANIFEST_RELEASE_DELTA_EXPIRY",
 }
+# A manifested receipt packet records its own establishment in its first
+# receipt. That t(0) accounting is what distinguishes "establishment never
+# occurred" from "a failure occurred after establishment"; without it an
+# absent packet is ambiguous. Expiry is then computable from the packet's own
+# member #1 with no external lookup.
+ESTABLISHMENT_KEY = "receipt_packet_establishment"
+ESTABLISHMENT_KINDS = {"MANIFEST_ASSIGNMENT_T0", "PRIOR_PACKET_RELEASE"}
 
 
 def _read(path: Path) -> dict:
@@ -307,32 +316,138 @@ def _manifest_release_count(parent_manifest: dict) -> int:
     return count
 
 
-def open_packet_state(parent_manifest: dict, *, root: Path | None = None) -> dict:
-    """Return current unbatched receipt count under the parent-manifest policy."""
-    root = Path(root) if root else org.ledger_root()
-    release_count = _manifest_release_count(parent_manifest)
-    head_path = root / "HEAD.json"
-    if not head_path.exists():
-        return {"receipt_count": 0, "release_count": release_count, "release_condition_satisfied": False}
-    head = _read(head_path)
-    tip = head.get("receipt_sha256")
-    _verified_receipt(root, tip)
-    _, prior = _batch_head(root)
-    rows = _segment(root, tip, prior["last_org_receipt_sha256"] if prior else None)
+def _oscillator():
+    """Canonical heartbeat derivation; HB is computed, never a running process."""
+    import sys
+    if str(org.ROOT) not in sys.path:
+        sys.path.insert(0, str(org.ROOT))
+    from heartbeat_runtime import independent_oscillator
+    return independent_oscillator
+
+
+def current_heartbeat_epoch(*, now_ns: int | None = None) -> int:
+    """Present heartbeat epoch. Requires no scheduler, sampler or live process."""
+    osc = _oscillator()
+    if now_ns is None:
+        now_ns = time.time_ns()
+    return int(osc.current_reference(now_ns=now_ns)["epoch"])
+
+
+def _manifest_establishment(parent_manifest: dict) -> dict | None:
+    """Read the optional t(0) establishment declared by the governing manifest.
+
+    Absent, the packet is count-governed only and cannot expire; this keeps
+    manifests written before establishment existed valid and unchanged.
+    """
+    policy = parent_manifest.get("receipt_batch")
+    if not isinstance(policy, dict):
+        raise ValueError("parent manifest receipt_batch policy required")
+    establishment = policy.get("establishment")
+    if establishment is None:
+        return None
+    if not isinstance(establishment, dict):
+        raise ValueError("parent manifest establishment invalid")
+    identifier = establishment.get("heartbeat_id")
+    delta = establishment.get("expiry_delta_heartbeats")
+    osc = _oscillator()
+    try:
+        epoch = osc.decode_heartbeat_id(identifier)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("parent manifest establishment heartbeat invalid") from exc
+    if not isinstance(delta, int) or isinstance(delta, bool) or delta < 1:
+        raise ValueError("parent manifest expiry delta invalid")
     return {
-        "receipt_count": len(rows),
-        "release_count": release_count,
-        "release_condition_satisfied": len(rows) >= release_count,
+        "establishment_heartbeat_id": identifier,
+        "establishment_heartbeat_epoch": epoch,
+        "expiry_delta_heartbeats": delta,
+        "expiry_heartbeat_epoch": epoch + delta,
+        "expiry_heartbeat_id": osc.encode_heartbeat_id(epoch + delta),
     }
 
 
-def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None) -> dict | None:
-    """Release the satisfied packet immediately before the next receipt append."""
+def manifest_declares_establishment(parent_manifest: dict) -> bool:
+    """True when the governing manifest declares a t(0) establishment."""
+    return _manifest_establishment(parent_manifest) is not None
+
+
+def establishment_record(parent_manifest: dict, *, kind: str, released_batch: dict | None = None) -> dict:
+    """Build the t(0) accounting carried by a packet's own first receipt."""
+    if kind not in ESTABLISHMENT_KINDS:
+        raise ValueError("unsupported receipt packet establishment kind")
+    declared = _manifest_establishment(parent_manifest)
+    if declared is None:
+        raise ValueError("parent manifest establishment required to establish a receipt packet")
+    return {
+        "establishment_kind": kind,
+        "establishment_heartbeat_id": declared["establishment_heartbeat_id"],
+        "expiry_delta_heartbeats": declared["expiry_delta_heartbeats"],
+        "expiry_heartbeat_id": declared["expiry_heartbeat_id"],
+        "release_authorized_at_establishment": True,
+        "released_batch": released_batch,
+        "authority_effect": "NONE_PACKET_ACCOUNTING_ONLY",
+    }
+
+
+def _packet_establishment(rows: list[dict]) -> dict | None:
+    """Read the establishment recorded by the open packet's own member #1."""
+    if not rows:
+        return None
+    record = (rows[0].get("boundary_evidence") or {}).get(ESTABLISHMENT_KEY)
+    if record is None:
+        return None
+    if not isinstance(record, dict) or record.get("establishment_kind") not in ESTABLISHMENT_KINDS:
+        raise ValueError("receipt packet establishment record invalid")
+    return record
+
+
+def open_packet_state(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None) -> dict:
+    """Return open-packet accounting: count, declared establishment and expiry."""
     root = Path(root) if root else org.ledger_root()
-    state = open_packet_state(parent_manifest, root=root)
+    release_count = _manifest_release_count(parent_manifest)
+    declared = _manifest_establishment(parent_manifest)
+    head_path = root / "HEAD.json"
+    if not head_path.exists():
+        rows: list[dict] = []
+    else:
+        head = _read(head_path)
+        tip = head.get("receipt_sha256")
+        _verified_receipt(root, tip)
+        _, prior = _batch_head(root)
+        rows = _segment(root, tip, prior["last_org_receipt_sha256"] if prior else None)
+    established = _packet_establishment(rows)
+    if declared is not None and rows and established is None:
+        raise ValueError("manifested receipt packet has no t(0) establishment record")
+    count_satisfied = len(rows) >= release_count
+    expired = False
+    expiry_heartbeat_id = None
+    if established is not None:
+        osc = _oscillator()
+        expiry_heartbeat_id = established["expiry_heartbeat_id"]
+        expired = current_heartbeat_epoch(now_ns=now_ns) >= osc.decode_heartbeat_id(expiry_heartbeat_id)
+    return {
+        "receipt_count": len(rows),
+        "release_count": release_count,
+        "establishment_heartbeat_id": established["establishment_heartbeat_id"] if established else None,
+        "expiry_heartbeat_id": expiry_heartbeat_id,
+        "expired": expired,
+        "release_condition_satisfied": bool(rows) and (count_satisfied or expired),
+    }
+
+
+def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None) -> dict | None:
+    """Release the satisfied packet immediately before the next receipt append.
+
+    Release is authorized once, at establishment, by the governing manifest.
+    Nothing decides anything here: the condition fires, it is not adjudicated.
+    """
+    root = Path(root) if root else org.ledger_root()
+    state = open_packet_state(parent_manifest, root=root, now_ns=now_ns)
     if not state["release_condition_satisfied"]:
         return None
-    return close_batch("MANIFEST_RELEASE_CONDITION", root=root)
+    reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (
+        state["expired"] and state["receipt_count"] < state["release_count"]
+    ) else "MANIFEST_RELEASE_CONDITION"
+    return close_batch(reason, root=root)
 
 
 def close_batch(reason: str, *, root: Path | None = None) -> dict:
