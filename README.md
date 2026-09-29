@@ -1897,3 +1897,8 @@ The first exact ephemeral invocation exposed a missing effective task-vector ind
 ### Fresh-runtime source refresh parent creation — 2026-09-29
 
 A real exact Canonical Work ephemeral invocation exposed that nested static directories could not be atomically installed into an empty runtime because the destination parent was not created before `Path.replace`. The active and base sovereign source refreshers now create that parent first, with regression coverage. This is local source materialization repair only; it does not grant WorkerCoordinator, Interlock/InTr, TV/TVC, organization, or Master Records authority.
+
+
+### Canonical Work inner bootstrap failure evidence retention — 2026-09-29
+
+The third exact ephemeral invocation reached the existing Canonical Work Goal consumer, whose child bootstrap exited nonzero before emitting a parseable bootstrap receipt. The consumer now retains bounded child stdout/stderr tails, and the exact ephemeral invocation artifact includes nested bootstrap receipt trees. This is evidence-retention repair only; an outer `ATTEMPT_RECORDED` or Actions result is not an organization-level ALLOW, DENY, or FAIL_CLOSED.
