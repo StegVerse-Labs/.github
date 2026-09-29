@@ -11,7 +11,11 @@
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
   "reusable_task_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-  "prompt_budget_history": {"prior_terminal_count":"20/20","prior_decomposition_preserved_as_history":true,"user_directed_resume":true},
+  "prompt_budget_history": {
+    "prior_terminal_count": "20/20",
+    "prior_decomposition_preserved_as_history": true,
+    "user_directed_resume": true
+  },
   "runtime_requirements": {
     "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "standing_runtime_required": false,
@@ -37,12 +41,55 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md","source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]}
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+          "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
+        ]
+      }
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "compatibility_projection_only": true,
@@ -61,17 +108,125 @@
     "cosv": "40000100100000"
   },
   "goal_chart": {
-    "A0": {"name":"MANIFEST_PATH_CONTRACT","predicate":"MANIFEST_BOUND_TO_INVOCATION","authority":"ROUTE_DECLARATION_ONLY","state":"SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING"},
-    "A1": {"name":"STEGVERSE_NODE_BINDING","predicate":"STEGVERSE_NODE_BOUND_TO_INVOCATION","authority":"CONTINUITY_ADMISSION_ANCHOR_ONLY","state":"AUTHENTIC_CURRENT_INVOCATION_PROOF_PENDING"},
-    "A2": {"name":"INTERLOCK_INTR_ENTRY","predicates":["INTERLOCK_BOUND_TO_NODE_AND_MANIFEST","INTR_MATERIALIZATION_ADMITTED"],"authority":"INTERLOCK_INTR","state":"NOT_AUTHENTICALLY_OBSERVED"},
-    "A2_1": {"name":"BOUNDED_LEASE_EXECUTION_BINDING","predicate":"INVOCATION_SCOPED_LEASE_ESTABLISHED","authority":"BOUNDED_INVOCATION_SCOPE_ONLY","state":"NOT_AUTHENTICALLY_OBSERVED"},
-    "A2_2": {"name":"EVENT_EPHEMERAL_STEGOS_MATERIALIZATION","predicates":["EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED","EXECUTION_TIME_RUNTIME_IDENTITY_BOUND","INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED"],"authority":"EVENT_EPHEMERAL_STEGOS_RUNTIME","state":"NOT_AUTHENTICALLY_OBSERVED"},
-    "A3": {"name":"WORKERCOORDINATOR_CLAIM_FENCE","predicate":"CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED","authority":"WORKERCOORDINATOR","state":"NOT_OBSERVED"},
-    "A4": {"name":"AUTHENTIC_INTERLOCK_INTR_INGRESS","predicates":["ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED","AUTHENTIC_INTR_INGRESS_OBSERVED"],"authority":"INTERLOCK_INTR","state":"NOT_OBSERVED"},
-    "A5_A7": {"name":"ROUND_TRIP_1","completion":"SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED","state":"NOT_ENTERED"},
-    "B1": {"name":"RECORD_RECONSTRUCT_PROCESS","completion":"MIRROR_BOUNDARY_PROCESSING_COMPLETE","authority":"MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY","state":"NOT_ENTERED"},
-    "C1_C4": {"name":"ROUND_TRIP_2","completion":"SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED","state":"NOT_ENTERED"},
-    "composition_success":"SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
+    "A0": {
+      "name": "MANIFEST_PATH_CONTRACT",
+      "predicate": "MANIFEST_BOUND_TO_INVOCATION",
+      "authority": "ROUTE_DECLARATION_ONLY",
+      "state": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING"
+    },
+    "A1": {
+      "name": "STEGVERSE_NODE_BINDING",
+      "predicate": "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+      "authority": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+      "state": "AUTHENTIC_CURRENT_INVOCATION_PROOF_PENDING"
+    },
+    "A2": {
+      "name": "INTERLOCK_INTR_ENTRY",
+      "predicates": [
+        "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+        "INTR_MATERIALIZATION_ADMITTED"
+      ],
+      "authority": "INTERLOCK_INTR",
+      "state": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "INTERLOCK_INTR_ENTRY_TRANSITION_NOT_ATTEMPTED",
+        "failed_predicate": "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST AND INTR_MATERIALIZATION_ADMITTED",
+        "required_evidence_or_repair": "ATTEMPT_THE_INTERLOCK_INTR_ENTRY_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
+        "retry_entrypoint": "INTERLOCK_INTR",
+        "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_ENTRY_ATTEMPT"
+      }
+    },
+    "A2_1": {
+      "name": "BOUNDED_LEASE_EXECUTION_BINDING",
+      "predicate": "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+      "authority": "BOUNDED_INVOCATION_SCOPE_ONLY",
+      "state": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "BOUNDED_LEASE_EXECUTION_BINDING_TRANSITION_NOT_ATTEMPTED",
+        "failed_predicate": "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+        "required_evidence_or_repair": "ATTEMPT_THE_BOUNDED_LEASE_EXECUTION_BINDING_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
+        "retry_entrypoint": "BOUNDED_INVOCATION_SCOPE_ONLY",
+        "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_BOUNDED_LEASE_EXECUTION_BINDING_ATTEMPT"
+      }
+    },
+    "A2_2": {
+      "name": "EVENT_EPHEMERAL_STEGOS_MATERIALIZATION",
+      "predicates": [
+        "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED",
+        "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+        "INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED"
+      ],
+      "authority": "EVENT_EPHEMERAL_STEGOS_RUNTIME",
+      "state": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_TRANSITION_NOT_ATTEMPTED",
+        "failed_predicate": "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED AND EXECUTION_TIME_RUNTIME_IDENTITY_BOUND AND INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED",
+        "required_evidence_or_repair": "ATTEMPT_THE_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
+        "retry_entrypoint": "EVENT_EPHEMERAL_STEGOS_RUNTIME",
+        "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_ATTEMPT"
+      }
+    },
+    "A3": {
+      "name": "WORKERCOORDINATOR_CLAIM_FENCE",
+      "predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+      "authority": "WORKERCOORDINATOR",
+      "state": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "WORKERCOORDINATOR_CLAIM_FENCE_TRANSITION_NOT_ATTEMPTED",
+        "failed_predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "required_evidence_or_repair": "ATTEMPT_THE_WORKERCOORDINATOR_CLAIM_FENCE_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
+        "retry_entrypoint": "WORKERCOORDINATOR",
+        "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_WORKERCOORDINATOR_CLAIM_FENCE_ATTEMPT"
+      }
+    },
+    "A4": {
+      "name": "AUTHENTIC_INTERLOCK_INTR_INGRESS",
+      "predicates": [
+        "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+        "AUTHENTIC_INTR_INGRESS_OBSERVED"
+      ],
+      "authority": "INTERLOCK_INTR",
+      "state": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "AUTHENTIC_INTERLOCK_INTR_INGRESS_TRANSITION_NOT_ATTEMPTED",
+        "failed_predicate": "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED AND AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "required_evidence_or_repair": "ATTEMPT_THE_AUTHENTIC_INTERLOCK_INTR_INGRESS_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
+        "retry_entrypoint": "INTERLOCK_INTR",
+        "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_AUTHENTIC_INTERLOCK_INTR_INGRESS_ATTEMPT"
+      }
+    },
+    "A5_A7": {
+      "name": "ROUND_TRIP_1",
+      "completion": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED",
+      "state": "NOT_ENTERED"
+    },
+    "B1": {
+      "name": "RECORD_RECONSTRUCT_PROCESS",
+      "completion": "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
+      "authority": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY",
+      "state": "NOT_ENTERED"
+    },
+    "C1_C4": {
+      "name": "ROUND_TRIP_2",
+      "completion": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
+      "state": "NOT_ENTERED"
+    },
+    "composition_success": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
   },
   "sv002_connection_component_binding": {
     "owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
@@ -109,31 +264,34 @@
     "ROUND_TRIP_2"
   ],
   "authentic_runtime_completion": {
-    "manifest_bound_to_invocation":"SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING",
-    "registered_stegverse_node_bound_to_invocation":false,
-    "interlock_bound_to_node_and_manifest":false,
-    "intr_materialization_admitted":false,
-    "invocation_scoped_lease_established":false,
-    "event_ephemeral_runtime_materialized":false,
-    "execution_time_runtime_identity_bound":false,
-    "workercoordinator_claim_fence_observed":false,
-    "organization_local_intr_ingress_receipt_verified":false,
-    "authentic_intr_ingress_observed":false,
-    "successful_recording_verification_round_trip_identified":false,
-    "mirror_boundary_processing_complete":false,
-    "successful_ecosystem_return_round_trip_identified":false,
-    "successful_data_transport_round_trips_identified":false
+    "manifest_bound_to_invocation": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING",
+    "registered_stegverse_node_bound_to_invocation": false,
+    "interlock_bound_to_node_and_manifest": false,
+    "intr_materialization_admitted": false,
+    "invocation_scoped_lease_established": false,
+    "event_ephemeral_runtime_materialized": false,
+    "execution_time_runtime_identity_bound": false,
+    "workercoordinator_claim_fence_observed": false,
+    "organization_local_intr_ingress_receipt_verified": false,
+    "authentic_intr_ingress_observed": false,
+    "successful_recording_verification_round_trip_identified": false,
+    "mirror_boundary_processing_complete": false,
+    "successful_ecosystem_return_round_trip_identified": false,
+    "successful_data_transport_round_trips_identified": false
   },
   "historical_decomposition": {
     "retained_for_lineage": true,
-    "successor_task_ids": ["STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001", "STEG-BROWSER-GOVERNED-ROUNDTRIP-001"],
+    "successor_task_ids": [
+      "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "STEG-BROWSER-GOVERNED-ROUNDTRIP-001"
+    ],
     "rule": "SUCCESSORS_MAY_REMAIN_AS_EVIDENCE_WORKSTREAMS_BUT_DO_NOT_REDEFINE_OR_REORDER_THE_RESUMED_GOAL_CHART"
   },
   "issue_1918": {
-    "classification":"REFRAME_CANDIDATE",
-    "original_assumption":"CHATGPT_NEEDED_GENERIC_PROCESS_EXECUTION_SURFACE",
-    "recovered_architecture":"INVOCATION_TO_NODE_TO_INTERLOCK_TO_INTR_TO_LEASE_TO_EVENT_EPHEMERAL_STEGOS",
-    "external_host_discovery_problem_may_not_be_created":true
+    "classification": "REFRAME_CANDIDATE",
+    "original_assumption": "CHATGPT_NEEDED_GENERIC_PROCESS_EXECUTION_SURFACE",
+    "recovered_architecture": "INVOCATION_TO_NODE_TO_INTERLOCK_TO_INTR_TO_LEASE_TO_EVENT_EPHEMERAL_STEGOS",
+    "external_host_discovery_problem_may_not_be_created": true
   },
   "allowed_next_transitions": [
     "TRACE_REUSABLE_SV002_CONNECTION_COMPONENTS_IN_CURRENT_STEGBROWSER_IMPLEMENTATION",
@@ -148,15 +306,15 @@
     "ENTER_ROUND_TRIP_1_ONLY_AFTER_A4"
   ],
   "authority_model": {
-    "manifest":"ROUTE_DECLARATION_ONLY",
-    "node":"CONTINUITY_ADMISSION_ANCHOR_ONLY",
-    "lease":"BOUNDED_INVOCATION_SCOPE_ONLY",
-    "event_ephemeral_stegos":"COMPUTE_EXECUTION_SURFACE",
-    "workercoordinator":"CLAIM_FENCE_AUTHORITY",
-    "interlock_intr":"TRANSITION_AND_GOVERNED_PACKET_MOVEMENT_AUTHORITY",
-    "tvc":"CREDENTIAL_AUTHORITY",
-    "master_records":"CUSTODY_OBSERVED_REALITY_RECONSTRUCTION_AUTHORITY_NOT_TRANSPORT_AUTHORITY",
-    "github_ci":"SOURCE_VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY_RUNTIME_AUTHORITY_NONE",
-    "second_user_operated_device_required":false
+    "manifest": "ROUTE_DECLARATION_ONLY",
+    "node": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+    "lease": "BOUNDED_INVOCATION_SCOPE_ONLY",
+    "event_ephemeral_stegos": "COMPUTE_EXECUTION_SURFACE",
+    "workercoordinator": "CLAIM_FENCE_AUTHORITY",
+    "interlock_intr": "TRANSITION_AND_GOVERNED_PACKET_MOVEMENT_AUTHORITY",
+    "tvc": "CREDENTIAL_AUTHORITY",
+    "master_records": "CUSTODY_OBSERVED_REALITY_RECONSTRUCTION_AUTHORITY_NOT_TRANSPORT_AUTHORITY",
+    "github_ci": "SOURCE_VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY_RUNTIME_AUTHORITY_NONE",
+    "second_user_operated_device_required": false
   }
 }

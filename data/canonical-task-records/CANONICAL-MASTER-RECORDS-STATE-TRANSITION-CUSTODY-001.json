@@ -282,7 +282,17 @@
     "canonical_state_transition_to_repo_receipt_bridge_materialized": false,
     "canonical_state_transition_to_organization_receipt_bridge_materialized": false,
     "organization_receipt_runtime_gap_authentically_observed": false,
-    "organization_receipt_runtime_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "organization_receipt_runtime_state": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_NOT_RECONCILED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_RECONCILED_WITH_CANONICAL_MASTER_RECORDS_CUSTODY",
+      "required_evidence_or_repair": "RECONCILE_THE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_AS_THE_RECORD_ALREADY_DECLARES",
+      "retry_entrypoint": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
+      "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "next_attempt": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM"
+    },
     "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
     "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
     "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",

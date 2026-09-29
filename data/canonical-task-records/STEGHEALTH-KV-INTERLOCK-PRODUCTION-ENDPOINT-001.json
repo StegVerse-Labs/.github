@@ -73,24 +73,24 @@
     "reviews": [
       {
         "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
         "evidence_refs": [
           "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
         ]
       },
       {
         "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
         "evidence_refs": [
           "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
         ]
       },
       {
         "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
         "evidence_refs": [
           "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
         ]
@@ -105,8 +105,8 @@
       },
       {
         "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
+        "disposition": "ELIGIBLE_WHEN_ADMITTED",
+        "limitation_class": "AUTHORITY",
         "evidence_refs": [
           "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
         ]
