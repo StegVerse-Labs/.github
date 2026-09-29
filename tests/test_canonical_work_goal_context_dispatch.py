@@ -69,7 +69,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
             runtime = Path(td) / "runtime"
             source.mkdir()
             runtime.mkdir()
-            with self.assertRaisesRegex(RuntimeError, "exact canonical_work_coordination selector"):
+            with self.assertRaisesRegex(RuntimeError, "reusable invocation selector mismatch"):
                 DISPATCHER.dispatch(
                     source,
                     runtime,
