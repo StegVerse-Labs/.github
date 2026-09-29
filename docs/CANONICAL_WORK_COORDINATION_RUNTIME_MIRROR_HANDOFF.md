@@ -154,3 +154,14 @@ The bounded repair keeps the existing path and authority model unchanged. For cu
 - match the same dispatch's `canonical_work_request_set.outcomes[]` entry by task ID, request SHA-256, and bootstrap receipt reference.
 
 Until those predicates hold, the bridge returns `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, causing the existing reusable-task lifecycle to remain retryable rather than falsely satisfying the slot. This repair does not itself prove resident execution or create a WorkerCoordinator claim/fence, Interlock/InTr decision, or Master Records closure.
+
+
+## 2026-09-29 manifest-selected ephemeral ingress exposure repair
+
+Current-main reconciliation identified a split in the already-existing portable Canonical Work path. `scripts/refresh_and_dispatch_resident_requests.py` already treats hosted/provider markers as compute-substrate evidence only, but the downstream `scripts/dispatch_resident_execution_requests.py` still rejected any invocation carrying `GITHUB_ACTIONS`, `CI`, Render, Vercel, Cloudflare Pages, or Cloudflare Workers markers before the selected `canonical_work_coordination` consumer could run.
+
+The bounded repair removes that compute-identity gate from the canonical dispatcher. Hosted/provider markers are observed into the dispatcher receipt as non-authorizing compute metadata and are stripped before child execution. They do not become GitHub authority, provider authority, WorkerCoordinator authority, Interlock/InTr authority, TV/TVC credential authority, organization custody authority, or Master Records authority. No new runtime, scheduler, device dependency, listener, request identity, or `AI_SESSION_GATE` is introduced.
+
+`control/canonical-work-runtime-profile.json` now names the execution class `MANIFEST_SELECTED_EPHEMERAL`, allows ephemeral execution, and explicitly forbids persistent host identity, external-machine discovery, systemd presence, GitHub Actions identity, or hosted-provider identity from granting or gating authority.
+
+This is an exposure/source repair only. It does not claim that an authentic manifest-bound Canonical Work transition has executed. After merge, the same exact `STEGVERSE-CANONICAL-WORK-COORDINATION-001` manifest must be re-attempted through the existing portable selector, and the first authentic ALLOW, DENY, or FAIL_CLOSED from the existing authority path must be retained before any downstream governed mutation claim.
