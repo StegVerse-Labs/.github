@@ -24,6 +24,7 @@ on:
       - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'scripts/audit_execution_substrate_resolution.py'
       - 'scripts/validate_task_record_actionable_disposition.py'
+      - 'scripts/registry_gate_findings.py'
       - 'schemas/canonical-task-record.schema.json'
       - 'data/canonical-task-registry.json'
       - 'data/canonical-task-records/**'
@@ -99,6 +100,7 @@ on:
       - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'scripts/audit_execution_substrate_resolution.py'
       - 'scripts/validate_task_record_actionable_disposition.py'
+      - 'scripts/registry_gate_findings.py'
       - 'schemas/canonical-task-record.schema.json'
       - 'data/canonical-task-registry.json'
       - 'data/canonical-task-records/**'
@@ -220,8 +222,17 @@ jobs:
           # Repo-wide, not diff-scoped: a conforming registry stays conforming.
           # A substrate-bound registration may not exclude every canonical
           # substrate, and no record state may stand as a bare unknown.
-          python scripts/audit_execution_substrate_resolution.py --strict
-          python scripts/validate_task_record_actionable_disposition.py --strict
+          # On failure emit Healer-intake findings before exiting, so the
+          # failure email carries deterministic findings rather than prose the
+          # error/failure graph would have to parse out of English.
+          python scripts/audit_execution_substrate_resolution.py --strict || {
+            python scripts/audit_execution_substrate_resolution.py --findings
+            exit 1
+          }
+          python scripts/validate_task_record_actionable_disposition.py --strict || {
+            python scripts/validate_task_record_actionable_disposition.py --findings
+            exit 1
+          }
           python scripts/validate_org_control_plane.py
       - name: Report complete local-shard / aggregate / COSV projection (non-authorizing)
         run: |
