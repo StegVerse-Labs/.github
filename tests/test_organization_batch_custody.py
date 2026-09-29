@@ -143,7 +143,10 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
     first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
     second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
     before = batch.open_packet_state(parent_manifest, root=tmp_path)
-    assert before == {"receipt_count": 2, "release_count": 2, "release_condition_satisfied": True}
+    assert before == {
+        "receipt_count": 2, "release_count": 2, "release_condition_satisfied": True,
+        "establishment_heartbeat_id": None, "expiry_heartbeat_id": None, "expired": False,
+    }
     assert not (tmp_path / "BATCH_HEAD.json").exists()
 
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
@@ -163,7 +166,10 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
         "authority_effect": "NONE_CUSTODY_ONLY",
     }
     after = batch.open_packet_state(parent_manifest, root=tmp_path)
-    assert after == {"receipt_count": 1, "release_count": 2, "release_condition_satisfied": False}
+    assert after == {
+        "receipt_count": 1, "release_count": 2, "release_condition_satisfied": False,
+        "establishment_heartbeat_id": None, "expiry_heartbeat_id": None, "expired": False,
+    }
     assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == third["receipt_sha256"]
 
 
@@ -207,3 +213,152 @@ def test_parent_manifest_release_preserves_failed_custody_execution_evidence(mon
     assert evidence["reason"] == "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE"
     assert evidence["batch_id"] == json.loads((tmp_path / "BATCH_HEAD.json").read_text())["batch_id"]
 
+
+
+# --- Manifested receipt packet: t(0) establishment and HB(delta) expiry ---
+
+sys.path.insert(0, str(ROOT))
+from heartbeat_runtime import independent_oscillator as osc  # noqa: E402
+
+
+def hb_now_ns(epoch: int) -> int:
+    """Exact wall time at a heartbeat epoch; HB is derived, never sampled."""
+    return osc.PROTOCOL_ANCHOR_UNIX_NS + (epoch - osc.PROTOCOL_ANCHOR_EPOCH) * osc.OSCILLATOR_PERIOD_NS
+
+
+T0_EPOCH = osc.PROTOCOL_ANCHOR_EPOCH + 1_000
+DELTA = 500
+
+
+def established_manifest(count: int = 3, delta: int = DELTA, epoch: int = T0_EPOCH) -> dict:
+    return {
+        "schema": "test.parent-manifest/v1",
+        "receipt_batch": {
+            "release_condition": {"type": "COUNT", "count": count},
+            "establishment": {
+                "heartbeat_id": osc.encode_heartbeat_id(epoch),
+                "expiry_delta_heartbeats": delta,
+            },
+        },
+    }
+
+
+def test_t0_establishment_is_the_packets_own_first_receipt(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    manifest = established_manifest()
+    first = org.aggregate_transition(
+        receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+    )
+    record = first["boundary_evidence"][batch.ESTABLISHMENT_KEY]
+    assert record["establishment_kind"] == "MANIFEST_ASSIGNMENT_T0"
+    assert record["establishment_heartbeat_id"] == osc.encode_heartbeat_id(T0_EPOCH)
+    assert record["expiry_heartbeat_id"] == osc.encode_heartbeat_id(T0_EPOCH + DELTA)
+    assert record["release_authorized_at_establishment"] is True
+    assert record["released_batch"] is None
+
+    state = batch.open_packet_state(manifest, root=tmp_path, now_ns=hb_now_ns(T0_EPOCH))
+    assert state["receipt_count"] == 1
+    assert state["establishment_heartbeat_id"] == osc.encode_heartbeat_id(T0_EPOCH)
+    assert state["expired"] is False
+    assert state["release_condition_satisfied"] is False
+
+
+def test_expiry_releases_a_short_packet_from_its_own_t0(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    manifest = established_manifest(count=3)
+    org.aggregate_transition(
+        receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+    )
+    # One receipt short of COUNT; without expiry this packet would never release.
+    before = batch.open_packet_state(manifest, root=tmp_path, now_ns=hb_now_ns(T0_EPOCH + DELTA - 1))
+    assert before["expired"] is False and before["release_condition_satisfied"] is False
+    at_expiry = batch.open_packet_state(manifest, root=tmp_path, now_ns=hb_now_ns(T0_EPOCH + DELTA))
+    assert at_expiry["expired"] is True and at_expiry["release_condition_satisfied"] is True
+
+    monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
+        "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id,
+        "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY",
+    })
+    work = org.aggregate_transition(
+        receipt("WORK"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + DELTA),
+    )
+    head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
+    released = batch._verified_batch(tmp_path, head["batch_id"])
+    assert released["closure_reason"] == "MANIFEST_RELEASE_DELTA_EXPIRY"
+    assert len(released["ordered_receipt_hashes"]) == 1  # short batch, below COUNT
+    assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == work["receipt_sha256"]
+
+
+def test_release_and_successor_establishment_are_one_receipt_at_member_one(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    manifest = established_manifest(count=2)
+    org.aggregate_transition(
+        receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+    )
+    org.aggregate_transition(receipt("WORK-1"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 1))
+    monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
+        "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
+        "reason": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
+        "governance_disposition": None, "authority_effect": "NONE",
+    })
+    work2 = org.aggregate_transition(receipt("WORK-2"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 2))
+
+    head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
+    released = batch._verified_batch(tmp_path, head["batch_id"])
+    rows = batch._segment(tmp_path, work2["receipt_sha256"], released["last_org_receipt_sha256"])
+    assert len(rows) == 2, "successor packet is establishment receipt + the work receipt"
+    establishment, work_row = rows
+    assert establishment["org_transition_class"] == "ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT"
+    record = establishment["boundary_evidence"][batch.ESTABLISHMENT_KEY]
+    assert record["establishment_kind"] == "PRIOR_PACKET_RELEASE"
+    # The release carries its own identity on its own receipt, and a FAILED
+    # carriage is retained rather than discarded.
+    assert record["released_batch"]["batch_id"] == released["batch_id"]
+    assert record["released_batch"]["execution_result"] == "FAILED"
+    assert establishment["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"] == released["batch_id"]
+    assert work_row["receipt_sha256"] == work2["receipt_sha256"]
+    assert batch.ESTABLISHMENT_KEY not in work_row["boundary_evidence"]
+
+
+def test_manifested_packet_without_t0_fails_closed(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    legacy = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 5}}}
+    org.aggregate_transition(receipt("UNESTABLISHED"), parent_manifest=legacy)
+    with pytest.raises(ValueError, match="no t\\(0\\) establishment record"):
+        batch.open_packet_state(established_manifest(count=5), root=tmp_path, now_ns=hb_now_ns(T0_EPOCH))
+
+
+def test_establishment_declaration_is_validated_and_required(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    with pytest.raises(ValueError, match="requires a manifest establishment declaration"):
+        org.aggregate_transition(
+            receipt("NO-DECLARATION"),
+            parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}},
+            establishes_packet=True,
+        )
+    bad_hb = established_manifest()
+    bad_hb["receipt_batch"]["establishment"]["heartbeat_id"] = "NOT-AN-HB"
+    with pytest.raises(ValueError, match="establishment heartbeat invalid"):
+        batch.open_packet_state(bad_hb, root=tmp_path)
+    bad_delta = established_manifest()
+    bad_delta["receipt_batch"]["establishment"]["expiry_delta_heartbeats"] = 0
+    with pytest.raises(ValueError, match="expiry delta invalid"):
+        batch.open_packet_state(bad_delta, root=tmp_path)
+    assert not (tmp_path / "HEAD.json").exists()
+
+
+def test_t0_cannot_also_release_a_prior_packet(monkeypatch, tmp_path):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
+    manifest = established_manifest(count=1)
+    org.aggregate_transition(
+        receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+    )
+    with pytest.raises(ValueError, match="cannot also release a prior packet"):
+        org.aggregate_transition(
+            receipt("SECOND-T0"), parent_manifest=manifest,
+            establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH + 1),
+        )

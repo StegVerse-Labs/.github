@@ -152,41 +152,111 @@ def _atomic_json(path, value):
             os.unlink(name)
 
 
+def _packet_establishment_source(released_batch):
+    """Deterministic source transition for a release-born packet establishment.
+
+    The organization append owner performs this transition itself, so no
+    external caller supplies its source receipt. It is derived from the exact
+    released batch id, which makes an exact retry idempotent.
+    """
+    return {
+        "schema": "stegverse.canonical-state-transition-receipt/v1",
+        "transition_id": "ORG-RECEIPT-PACKET-ESTABLISHMENT:" + released_batch["batch_id"],
+        "transition_sequence": 1,
+        "subject_or_correlation_id": released_batch["batch_id"],
+        "transition_outcome": "OBSERVED",
+        "required_evidence_manifest": [
+            {
+                "evidence_id": "released_batch_commitment",
+                "evidence_type": "ORGANIZATION_BATCH_COMMITMENT",
+                "origin_transition_id": "ORG-RECEIPT-PACKET-ESTABLISHMENT:" + released_batch["batch_id"],
+                "encoding": "canonical-json",
+                "content": {
+                    "batch_id": released_batch["batch_id"],
+                    "last_org_receipt_sha256": released_batch["last_org_receipt_sha256"],
+                    "closure_reason": released_batch["closure_reason"],
+                },
+                "sha256": hashlib.sha256(canon({
+                    "batch_id": released_batch["batch_id"],
+                    "last_org_receipt_sha256": released_batch["last_org_receipt_sha256"],
+                    "closure_reason": released_batch["closure_reason"],
+                })).hexdigest(),
+            }
+        ],
+    }
+
+
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
-                         boundary_evidence=None, authority_effect="NONE", parent_manifest=None):
-    """Serialize appends; the governing parent manifest owns count-based batch release."""
+                         boundary_evidence=None, authority_effect="NONE", parent_manifest=None,
+                         establishes_packet=False, now_ns=None):
+    """Serialize appends; the governing parent manifest owns packet release.
+
+    A manifested receipt packet's first receipt records its own establishment.
+    `establishes_packet` marks the four-part WorkerCoordinator transition whose
+    t(0) accounting opens the first packet; later packets are opened by the
+    single transition that releases their predecessor.
+    """
     root = ledger_root()
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     with (root / ".append.lock").open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
             released = None
-            release_execution_result = None
             effective_boundary_evidence = dict(boundary_evidence or {})
             if parent_manifest is not None:
-                # The governing parent manifest owns packet release. A satisfied
-                # prior packet is released and carried through the existing
-                # canonical custody client as a manifest-directed consequence
-                # before the successor organization receipt is appended. This
-                # custody result is execution evidence only; it must never mint
-                # or replace the parent manifest's governance disposition.
+                # The governing parent manifest owns packet release, authorized
+                # once at establishment. A satisfied or expired prior packet is
+                # released and carried through the existing canonical custody
+                # client as a manifest-directed consequence. That custody result
+                # is execution evidence only; it must never mint or replace the
+                # parent manifest's governance disposition.
                 import organization_batch_custody as batches
+                # Establishment is declared by the manifest. A manifest without
+                # one stays count-governed and unchanged, so manifests written
+                # before packets had a t(0) remain valid.
+                manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
+                if establishes_packet and not manifest_establishes:
+                    raise ValueError("t(0) establishment requires a manifest establishment declaration")
+                if establishes_packet:
+                    effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
+                        parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
+                    )
                 released = batches.release_satisfied_packet_before_next_transition(
-                    parent_manifest, root=root
+                    parent_manifest, root=root, now_ns=now_ns
                 )
                 if released is not None:
+                    if establishes_packet:
+                        raise ValueError("t(0) establishment cannot also release a prior packet")
                     release_execution_result = batches.submit_released_batch(root, released["batch_id"])
                     if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
                         raise ValueError("released organization batch execution result invalid")
                     if release_execution_result.get("governance_disposition") is not None:
                         raise ValueError("released organization batch attempted governance escalation")
-                    effective_boundary_evidence["parent_manifest_released_batch"] = {
+                    carried = {
                         "batch_id": released["batch_id"],
                         "execution_result": release_execution_result["state"],
                         "reason": release_execution_result.get("reason"),
                         "authority_effect": release_execution_result.get("authority_effect"),
                     }
+                    if manifest_establishes:
+                        # Release and successor establishment are one transition
+                        # and one receipt. It is member #1 of the packet it
+                        # opens, so the release has its own identity rather than
+                        # riding as an attribute of an unrelated work transition.
+                        _aggregate_transition_locked(
+                            _packet_establishment_source(released),
+                            org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
+                            boundary_evidence={
+                                batches.ESTABLISHMENT_KEY: batches.establishment_record(
+                                    parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
+                                ),
+                                "parent_manifest_released_batch": carried,
+                            },
+                            authority_effect="NONE",
+                        )
+                    else:
+                        effective_boundary_evidence["parent_manifest_released_batch"] = carried
             record = _aggregate_transition_locked(
                 receipt, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
@@ -194,9 +264,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
             )
             if released is not None:
-                state = batches.open_packet_state(parent_manifest, root=root)
-                if state["receipt_count"] != 1:
-                    raise ValueError("successor organization receipt packet did not initialize at count 1")
+                state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
+                if state["receipt_count"] != (2 if manifest_establishes else 1):
+                    raise ValueError("successor organization receipt packet did not initialize correctly")
             return record
         finally:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
