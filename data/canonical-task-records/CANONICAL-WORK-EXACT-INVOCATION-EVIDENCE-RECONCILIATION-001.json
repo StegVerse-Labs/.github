@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001",
+  "correlation_id": "CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001",
+  "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "successor_task_ids": [],
+  "goal": "Reconcile retained evidence from exact Canonical Work invocation run 36632388019, preserve its first authentic Goal-specific disposition and failing predicate/evidence references, and continue organization-ledger/Master Records evidence only when an authentic ALLOW makes those stages applicable.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/CANONICAL_WORK_EXACT_INVOCATION_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
+    "GitHub Actions run 36632388019",
+    "artifact 11063620337",
+    "artifact digest sha256:f9a6d399c7f6060ca3bfde5d3b85b0d47598b9595e65c126915a5b165bbfbd79",
+    "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "canonical-work-exact-invocation-evidence",
+      "task-registry-checkin",
+      "interlock-intr",
+      "organization-ledger-readback",
+      "master-records-reconstruction"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-EXACT-INVOCATION-ARTIFACT",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "GitHub Actions artifact 11063620337",
+      "disposition": "AUTHENTIC_ARTIFACT_CONTENT_RETRIEVED_AND_INSPECTED"
+    },
+    {
+      "dependency_id": "DEP-GOAL-SPECIFIC-DISPOSITION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "RESOLVED_FAIL_CLOSED",
+      "ref": "canonical-work-coordination-bootstrap-request-consumption.latest.json stderr_tail",
+      "disposition": "FAIL_CLOSED_EXECUTION_SUBSTRATE_RESOLUTION_REQUIRED"
+    },
+    {
+      "dependency_id": "DEP-ORGANIZATION-LEDGER-READBACK",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "NOT_APPLICABLE_TO_FAILED_ATTEMPT",
+      "ref": null,
+      "disposition": "NO_INTR_ALLOW_OCCURRED"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-RECONSTRUCTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "NOT_APPLICABLE_TO_FAILED_ATTEMPT",
+      "ref": null,
+      "disposition": "NO_INTR_ALLOW_OCCURRED"
+    }
+  ],
+  "blockers": [
+    {
+      "predicate": "EXECUTION_SUBSTRATE_RESOLUTION_PRESENT",
+      "state": "FAILED",
+      "evidence": "substrate_review_error: STEGVERSE-CANONICAL-WORK-COORDINATION-001: runtime-capable task registration requires execution_substrate_resolution"
+    }
+  ],
+  "allowed_next_transitions": [
+    "REPAIR_EXISTING_CANONICAL_TASK_EXECUTION_SUBSTRATE_RESOLUTION_WITHOUT_ADDING_RUNTIME_OR_AUTHORITY",
+    "RETRY_SAME_EXACT_MANIFEST_AFTER_GOVERNED_SOURCE_REPAIR"
+  ],
+  "handoff_projection_refs": [
+    "docs/CANONICAL_WORK_EXACT_INVOCATION_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "artifact_retrieved": true,
+    "goal_specific_disposition_observed": true,
+    "disposition": "FAIL_CLOSED",
+    "organization_ledger_readback_applicable": false,
+    "master_records_reconstruction_applicable": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  }
+}
