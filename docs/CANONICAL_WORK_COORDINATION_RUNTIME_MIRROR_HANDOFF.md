@@ -165,3 +165,12 @@ The bounded repair removes that compute-identity gate from the canonical dispatc
 `control/canonical-work-runtime-profile.json` now names the execution class `MANIFEST_SELECTED_EPHEMERAL`, allows ephemeral execution, and explicitly forbids persistent host identity, external-machine discovery, systemd presence, GitHub Actions identity, or hosted-provider identity from granting or gating authority.
 
 This is an exposure/source repair only. It does not claim that an authentic manifest-bound Canonical Work transition has executed. After merge, the same exact `STEGVERSE-CANONICAL-WORK-COORDINATION-001` manifest must be re-attempted through the existing portable selector, and the first authentic ALLOW, DENY, or FAIL_CLOSED from the existing authority path must be retained before any downstream governed mutation claim.
+
+
+## 2026-09-29 exact ephemeral invocation surface
+
+The merged compute-identity repair is followed by one narrow execution-surface binding at `.github/workflows/canonical-work-exact-ephemeral-invocation.yml`. A push only to `invoke/canonical-work-coordination-*` supplies interchangeable ephemeral compute with repository `contents: read` permission and no GitHub token, provider secret, scheduler, device, resident-host identity, or new authority plane.
+
+The workflow invokes the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` reusable task with the exact Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`, and `only_consumer=canonical_work_coordination`. It retains the reusable-task trigger receipt plus runtime receipt tree as an Actions artifact. GitHub Actions remains compute only. The workflow itself cannot upgrade source/trigger success into an authoritative transition; the existing WorkerCoordinator, Interlock/InTr, organization custody, and Master Records paths determine the actual result.
+
+The first invocation branch after merge must be treated as an attempted governed transition. Preserve the first authority-path ALLOW, DENY, or FAIL_CLOSED actually emitted. An Actions job result or artifact upload is not itself that disposition.
