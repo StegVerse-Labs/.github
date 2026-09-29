@@ -1887,3 +1887,8 @@ Existing Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001` / COSV `10100000100000
 ### Exact Canonical Work ephemeral invocation surface — 2026-09-29
 
 The existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` path is exposed to interchangeable ephemeral compute by a read-only branch-triggered Actions workflow for `invoke/canonical-work-coordination-*`. The workflow binds the exact canonical Goal/COSV and `canonical_work_coordination` selector, forwards no GitHub token or provider secret, retains attempt receipts as artifacts, and grants no authority. WorkerCoordinator claim/fence, Interlock/InTr transition, organization custody, and Master Records reconstruction remain the only relevant authority/evidence path. A workflow success/failure is compute evidence only; the underlying transition disposition controls all execution claims.
+
+
+### Canonical Work COSV pointer registration — 2026-09-29
+
+The first exact ephemeral invocation exposed a missing effective task-vector index row for existing Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`. The existing task-vector source remains `10100000100000`; the repair adds only its non-authorizing `control/task-vector-index.d` registration so the existing reusable manifest constructor can verify task/COSV parity before dispatch. This is source identity repair, not runtime admission or authority.
