@@ -1907,3 +1907,8 @@ The third exact ephemeral invocation reached the existing Canonical Work Goal co
 ### Organization-batch ChatGPT invocation-surface reconciliation — 2026-09-29
 
 For `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`, current ChatGPT tool-catalog inspection still exposes no authenticated non-caller-editable Universal InTr / TV-TVC resident invocation primitive. GitHub remains validation/evidence transport only and is not used as substitute execution authority. The existing host/runtime-evidence owner must expose that already-authorized operation; only then may the bound SDK ManifestStateTransition request yield authentic runtime disposition and custody evidence. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
+
+
+### Organization-batch PR #2871 evidence boundary — 2026-09-29
+
+`ORGANIZATION-BATCH-CUSTODY-REPLAY-001` records PR #2871 merged from exact head `559d3e0d4f7e1f1c9374603cb5a17a66f7d38ce5` as `1886d9149981aee7f1a831a404b20263f38f1481`, with all four observed exact-head checks successful. GitHub exposes zero submitted reviews and zero review threads for that PR, so the observed merge does not establish satisfaction of an independent-review predicate. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
