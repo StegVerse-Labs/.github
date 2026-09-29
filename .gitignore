@@ -1,0 +1,26 @@
+# Generated paths. This repository had no .gitignore, so every test run left the
+# working tree dirty and the noise had to be cleared by hand each time. Nothing
+# listed here is tracked, and every entry is a path the repository's own tooling
+# already treats as noise.
+
+# Byte-compiled Python. scripts/package_sovereign_control_plane_bundle.py,
+# scripts/run_stegos_ai_preexecution_runtime_proof_reusable.py,
+# scripts/run_independent_ecosystem_chat_parent.py and
+# heartbeat_runtime/process_adapter.py all exclude these when they copy or
+# package source, so no bundle, proof or adapter has ever depended on them.
+__pycache__/
+*.py[cod]
+
+# Test-run residue. scripts/task_registry_checkin_event_history.py and several
+# tests write check-in events here; the contents are synthetic fixture data
+# ("branch": "task-registry-test", "pull_request": 999), not records.
+runtime/
+
+# Generated site output.
+_site/
+
+# Local runtime lock, already named in process_adapter's ignore patterns.
+.heartbeat-runtime.lock
+
+# pytest writes its own self-ignoring .gitignore, but be explicit.
+.pytest_cache/
