@@ -37,6 +37,18 @@ def consume(source_root:Path,runtime_root:Path,*,env:dict[str,str]|None=None)->d
     results=[]
     for item in req.get("requests") or []:
         build=build_manifest(**item["build"])
+        extensions=item.get("manifest_extensions")
+        if extensions is not None:
+            if not isinstance(extensions,dict): raise RuntimeError("manifest_extensions must be an object")
+            if not isinstance(build,dict) or build.get("state") in {"CAPABILITY_WORKAROUND_REQUIRED","CAPABILITY_DEVELOPMENT_REQUESTED"}:
+                raise RuntimeError("manifest_extensions require a built manifest")
+            target=build.get("extensions")
+            if not isinstance(target,dict): raise RuntimeError("built manifest extensions missing")
+            overlap=sorted(set(extensions).intersection(target))
+            if overlap: raise RuntimeError("manifest_extensions may not replace SDK-owned extensions: "+",".join(overlap))
+            target.update(extensions)
+            from stegverse.manifest_contract import validate_ingress_manifest
+            validate_ingress_manifest(build)
         state=build.get("state") if isinstance(build,dict) else None
         if state in {"CAPABILITY_WORKAROUND_REQUIRED","CAPABILITY_DEVELOPMENT_REQUESTED"}:
             results.append({"request_id":item["request_id"],"manifest_build_resolution":build})
