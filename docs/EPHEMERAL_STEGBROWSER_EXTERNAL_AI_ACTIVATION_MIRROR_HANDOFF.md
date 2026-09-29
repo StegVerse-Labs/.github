@@ -170,3 +170,43 @@ Execution-path review after the credential-free browser-owner binding found two 
 ## Prompt-limit decomposition — 2026-09-28
 
 This coordination Goal exhausted its 20-prompt budget without authentic Test 5 runtime closure. It is decomposed to `EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001`, which preserves Test 5 identity, root correlation and COSV lineage `10100000103000`. This is not a counter-reset split: the successor is narrowly scoped to receipt-bearing TEST5_A then TEST5_B runtime closure. No governed action may be claimed without its authentic receipt; source/CI/trigger acceptance are not execution evidence.
+
+
+## Branch fan executor and the SDK/StegBrowser journey seam — 2026-09-29
+
+SDK #392 generalized the packet-carried endpoint receipt journey to a fan of N
+parallel round trips and merged as `6ce1f66`. It also broke the seam to the
+browser owner: the SDK began emitting a `journey/v2`, and
+`StegVerse-Labs/StegBrowser:src/stegbrowser/llm_profile.py` accepts `journey/v1`
+only. A single-worker manifest — TEST5_A as staged, unchanged — would have
+reached `MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED` with a
+journey schema error. Both repositories' suites were green; neither covers the
+seam between them.
+
+The repair keeps each owner's responsibility where it already sits. StegBrowser
+executes exactly one round trip, and `journey/v1` describes exactly one round
+trip, so this Universal InTr owner translates a v2 fan into N v1 operations
+rather than teaching the browser owner about fans or moving browser semantics
+into the control plane. StegBrowser source is unchanged.
+
+Each branch carries its own ephemeral lease, its own `journey_id` qualified by
+branch id so its four endpoint receipts are attributable, and its own manifested
+prompt, marker, provider, model, secure URL and DOM actions. Custody emits
+INGRESS / LLM_PROFILE_INTERACTION / EGRESS per branch on one continuous
+predecessor-linked sequence, so a fan of N branches closes 3N transitions over
+4N endpoint receipts.
+
+A partial fan is never a success. The first failing branch fails closed naming
+its `branch_id`, `branch_index` and `branches_completed`, and the branches that
+already ran keep their receipts: the packet is honestly incomplete rather than
+absent. A fan whose branches return fewer than 4N endpoint receipts fails closed
+at `BRANCH_FAN_ENDPOINT_RECEIPTS_COMPLETE` even when every branch reported
+success, because the packet is the evidence. Marker substitution across branches
+already fails closed inside the browser owner, which rejects a response not
+containing its manifested marker.
+
+This supersedes the `MANIFEST_SELECTED_STEGBROWSER_BRANCH_FAN_EXECUTION_SUPPORTED`
+guard added on 2026-09-29, whose repair condition this satisfies. Test 6 remains
+prohibited before Test 5 closes; source validation of the fan is not a runtime
+disposition, and authentic completion still requires disposition -> Organization
+Records -> Master Records reconstruction -> successor.

@@ -367,158 +367,234 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
     return {"receipt": receipt, "custody": custody}
 
 
-def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
-    graph = validated.get("state_graph") or {}
-    op = graph.get("request") if isinstance(graph, Mapping) else None
-    require(isinstance(op, Mapping), "stegbrowser_llm_manifest_operation_missing")
-    secure_url = op.get("secure_url")
-    actions = op.get("browser_actions")
-    require(isinstance(secure_url, str) and secure_url.startswith("https://"),
-            "stegbrowser_llm_secure_url_required")
-    require(isinstance(actions, list) and actions, "stegbrowser_llm_browser_actions_required")
-    task_id = str(validated["canonical_task_id"])
-    host = (urlsplit(secure_url).hostname or "").lower()
+JOURNEY_V1 = "stegverse.packet-carried-endpoint-receipt-journey/v1"
 
-    # A v2 journey may fan to N parallel branches, each its own round trip with
-    # its own LLM and its own four endpoint receipts. This owner executes the
-    # request-level operation only, so a fan would run branch one and return a
-    # result that looks complete while 4(N-1) receipts were never produced.
-    # Absent branch_count the graph is the single round trip, and this is inert.
-    branch_count = graph.get("branch_count", 1) if isinstance(graph, Mapping) else 1
-    if not isinstance(branch_count, int) or branch_count < 1:
-        branch_count = 1
-    if branch_count > 1:
-        failed = _custody_transition(
-            transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id,
-            outcome="FAIL_CLOSED", prior=None,
-            evidence={
-                "request_sha256": validated["request_sha256"],
-                "route_id": validated["route_id"],
-                "processing_capability": "stegbrowser",
-                "profile": graph.get("profile"),
-                "branch_count": branch_count,
-                "required_endpoint_receipts": 4 * branch_count,
-                "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BRANCH_FAN_EXECUTION_SUPPORTED",
-                "required_evidence_or_repair": (
-                    "bind a branch-fan executor at the existing StegBrowser owner that "
-                    "runs every branch and appends all four endpoint receipts per branch"
-                ),
-                "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_THEN_RETRY_SAME_MANIFEST",
-                "credential_required": False,
-            },
-        )
-        return {
-            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
-            "terminal": False, "canonical_task_id": task_id,
-            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
-            "request_sha256": validated["request_sha256"],
-            "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BRANCH_FAN_EXECUTION_SUPPORTED",
-            "transition_closures": [failed],
-            "organization_records_before_master_records": True,
-            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
-        }
-    source = _repo_root("StegVerse-Labs/StegBrowser")
-    if source is None:
-        failed = _custody_transition(
-            transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id,
-            outcome="FAIL_CLOSED", prior=None,
-            evidence={
-                "request_sha256": validated["request_sha256"],
-                "route_id": validated["route_id"],
-                "processing_capability": "stegbrowser",
-                "profile": graph.get("profile"),
-                "failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND",
-                "required_repo_root": "StegVerse-Labs/StegBrowser",
-                "retry_condition": "MATERIALIZE_EXISTING_OWNER_SOURCE_AND_RETRY_SAME_MANIFEST",
-            },
-        )
-        return {
-            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
-            "terminal": False, "canonical_task_id": task_id,
-            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
-            "request_sha256": validated["request_sha256"],
-            "failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND",
-            "transition_closures": [failed],
-            "organization_records_before_master_records": True,
-            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
-        }
-    if str(source) not in sys.path:
-        sys.path.insert(0, str(source))
-    from src.stegbrowser.llm_browser_execution import execute_manifested_llm_browser_operation
 
-    now = datetime.now(timezone.utc)
-    lease = {
-        "schema": "stegbrowser.ecosystem-ephemeral-lease.v1",
-        "lease_id": "sdk-" + str(validated["request_sha256"])[:20],
-        "task_id": task_id,
-        "requester": "SDK:ManifestStateTransition",
-        "purpose": "manifest-selected credential-free llm.v1 browser operation",
-        "issued_at": now.isoformat().replace("+00:00", "Z"),
-        "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z"),
-        "allowed_origins": [host],
-        "allowed_actions": ["navigate", "read_public", "submit_form"],
-        "retain_artifacts": ["navigation_receipt", "content_commitment", "governance_receipt"],
-        "max_navigations": 4,
-        "persistent_profile": False, "persist_cookies": False, "persist_history": False,
-    }
-    ingress = _custody_transition(
-        transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id, outcome="ALLOW", prior=None,
-        evidence={"request_sha256": validated["request_sha256"], "route_id": validated["route_id"],
-                  "processing_capability": "stegbrowser", "profile": graph.get("profile"),
-                  "secure_url_host": host, "credential_required": False},
-    )
-    prior = ingress["custody"]["organization_receipt"]["receipt_sha256"]
-    try:
-        result = execute_manifested_llm_browser_operation(op, lease)
-    except Exception as exc:
-        failure_evidence = {
-            "request_sha256": validated["request_sha256"],
-            "route_id": validated["route_id"],
-            "processing_capability": "stegbrowser",
-            "profile": graph.get("profile"),
-            "secure_url_host": host,
-            "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED",
-            "error_type": type(exc).__name__,
-            "error_message": str(exc)[:1000],
-            "credential_required": False,
-            "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST",
-        }
-        failed = _custody_transition(
-            transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id,
-            outcome="FAIL_CLOSED", prior=prior, evidence=failure_evidence,
-        )
-        return {
-            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
-            "terminal": False, "canonical_task_id": task_id,
-            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
-            "request_sha256": validated["request_sha256"],
-            "failed_predicate": failure_evidence["failed_predicate"],
-            "failure": failure_evidence,
-            "transition_closures": [ingress, failed],
-            "organization_records_before_master_records": True,
-            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
-        }
-    interaction = _custody_transition(
-        transition_id="LLM_PROFILE_INTERACTION", sequence=2, task_id=task_id, outcome="ALLOW", prior=prior,
-        evidence={"request_sha256": validated["request_sha256"], "browser_result": result},
-    )
-    prior = interaction["custody"]["organization_receipt"]["receipt_sha256"]
-    egress = _custody_transition(
-        transition_id="EGRESS_ADMITTED", sequence=3, task_id=task_id, outcome="ALLOW", prior=prior,
-        evidence={"request_sha256": validated["request_sha256"],
-                  "result_commitment": sha256(result.get("result") or {}),
-                  "endpoint_receipts": result.get("endpoint_receipts")},
-    )
+def _branch_operations(graph: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Project the manifest's journey into one v1 round trip per branch.
+
+    A v2 journey fans to N parallel branches; v1 describes exactly one round
+    trip, which is exactly what the StegBrowser owner executes. Translating here
+    keeps that owner single-operation and leaves the fan a custody concern, so
+    no browser semantics move into the control plane.
+
+    Each branch's journey_id is qualified by its branch id, so the four endpoint
+    receipts a branch produces are attributable to it and cannot be mistaken for
+    another branch's.
+    """
+    request = graph.get("request")
+    require(isinstance(request, Mapping), "stegbrowser_llm_manifest_operation_missing")
+    journey = request.get("journey") if isinstance(request.get("journey"), Mapping) else {}
+    origin = journey.get("origin_endpoint")
+    branches = graph.get("branches")
+    if not isinstance(branches, list) or not branches:
+        # A graph built before the journey generalized carries the round trip at
+        # request level; it is the single-branch case.
+        return [dict(request)]
+
+    journey_id = journey.get("journey_id")
+    operations: list[dict[str, Any]] = []
+    for branch in branches:
+        require(isinstance(branch, Mapping), "stegbrowser_llm_branch_object_required")
+        outbound = branch.get("outbound_manifest_sha256")
+        operations.append({
+            "schema": "stegbrowser.llm-profile-request.v1",
+            "profile": "llm.v1",
+            "prompt": branch.get("prompt"),
+            "response_marker": branch.get("response_marker"),
+            "provider": branch.get("provider"),
+            "model": branch.get("model"),
+            "secure_url": branch.get("secure_url"),
+            "browser_actions": branch.get("browser_actions"),
+            "journey": {
+                "schema": JOURNEY_V1,
+                "journey_id": f"{journey_id}:{branch.get('branch_id')}",
+                "origin_endpoint": origin,
+                "ephemeral_endpoint": branch.get("ephemeral_endpoint"),
+                "outbound_manifest_sha256": outbound,
+                "return_manifest_sha256": branch.get("return_manifest_sha256"),
+                "return_predecessor_manifest_sha256": outbound,
+            },
+        })
+    return operations
+
+
+def _stegbrowser_failure(*, task_id: str, validated: Mapping[str, Any], graph: Mapping[str, Any],
+                         predicate: str, closures: list, evidence: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "schema": RESULT_SCHEMA, "state": "COMPLETE", "disposition": "ALLOW",
-        "canonical_task_id": task_id, "processing_capability": "stegbrowser",
-        "route_id": validated["route_id"], "request_sha256": validated["request_sha256"],
-        "browser_execution": result,
-        "transition_closures": [ingress, interaction, egress],
+        "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+        "terminal": False, "canonical_task_id": task_id,
+        "processing_capability": "stegbrowser", "route_id": validated["route_id"],
+        "request_sha256": validated["request_sha256"],
+        "failed_predicate": predicate,
+        "failure": dict(evidence),
+        "transition_closures": closures,
         "organization_records_before_master_records": True,
         "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
     }
 
+
+def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -> dict[str, Any]:
+    graph = validated.get("state_graph") or {}
+    require(isinstance(graph, Mapping), "stegbrowser_llm_manifest_operation_missing")
+    task_id = str(validated["canonical_task_id"])
+    operations = _branch_operations(graph)
+
+    for index, op in enumerate(operations, start=1):
+        secure_url = op.get("secure_url")
+        actions = op.get("browser_actions")
+        require(isinstance(secure_url, str) and secure_url.startswith("https://"),
+                "stegbrowser_llm_secure_url_required")
+        require(isinstance(actions, list) and actions, "stegbrowser_llm_browser_actions_required")
+
+    source = _repo_root("StegVerse-Labs/StegBrowser")
+    if source is None:
+        evidence = {
+            "request_sha256": validated["request_sha256"],
+            "route_id": validated["route_id"],
+            "processing_capability": "stegbrowser",
+            "profile": graph.get("profile"),
+            "branch_count": len(operations),
+            "failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND",
+            "required_repo_root": "StegVerse-Labs/StegBrowser",
+            "retry_condition": "MATERIALIZE_EXISTING_OWNER_SOURCE_AND_RETRY_SAME_MANIFEST",
+        }
+        failed = _custody_transition(
+            transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=None, evidence=evidence,
+        )
+        return _stegbrowser_failure(task_id=task_id, validated=validated, graph=graph,
+                                    predicate="STEGBROWSER_SOURCE_ROOT_BOUND",
+                                    closures=[failed], evidence=evidence)
+    if str(source) not in sys.path:
+        sys.path.insert(0, str(source))
+    from src.stegbrowser.llm_browser_execution import execute_manifested_llm_browser_operation
+
+    closures: list = []
+    executions: list[dict[str, Any]] = []
+    prior = None
+    sequence = 0
+    for index, op in enumerate(operations, start=1):
+        branch_id = str(op["journey"]["journey_id"]).rsplit(":", 1)[-1] if len(operations) > 1 else "1"
+        host = (urlsplit(str(op["secure_url"])).hostname or "").lower()
+        now = datetime.now(timezone.utc)
+        lease = {
+            "schema": "stegbrowser.ecosystem-ephemeral-lease.v1",
+            # Each branch leases its own ephemeral session; no branch reuses another's.
+            "lease_id": f"sdk-{str(validated['request_sha256'])[:20]}-{index}",
+            "task_id": task_id,
+            "requester": "SDK:ManifestStateTransition",
+            "purpose": "manifest-selected credential-free llm.v1 browser operation",
+            "issued_at": now.isoformat().replace("+00:00", "Z"),
+            "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z"),
+            "allowed_origins": [host],
+            "allowed_actions": ["navigate", "read_public", "submit_form"],
+            "retain_artifacts": ["navigation_receipt", "content_commitment", "governance_receipt"],
+            "max_navigations": 4,
+            "persistent_profile": False, "persist_cookies": False, "persist_history": False,
+        }
+        sequence += 1
+        ingress = _custody_transition(
+            transition_id="INGRESS_ADMITTED", sequence=sequence, task_id=task_id,
+            outcome="ALLOW", prior=prior,
+            evidence={"request_sha256": validated["request_sha256"], "route_id": validated["route_id"],
+                      "processing_capability": "stegbrowser", "profile": graph.get("profile"),
+                      "branch_id": branch_id, "branch_index": index, "branch_count": len(operations),
+                      "secure_url_host": host, "credential_required": False},
+        )
+        closures.append(ingress)
+        prior = ingress["custody"]["organization_receipt"]["receipt_sha256"]
+        sequence += 1
+        try:
+            result = execute_manifested_llm_browser_operation(op, lease)
+        except Exception as exc:
+            # Branches already executed keep their receipts: what happened is
+            # recorded, and the packet is honestly incomplete rather than absent.
+            failure_evidence = {
+                "request_sha256": validated["request_sha256"],
+                "route_id": validated["route_id"],
+                "processing_capability": "stegbrowser",
+                "profile": graph.get("profile"),
+                "branch_id": branch_id,
+                "branch_index": index,
+                "branch_count": len(operations),
+                "branches_completed": len(executions),
+                "secure_url_host": host,
+                "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED",
+                "error_type": type(exc).__name__,
+                "error_message": str(exc)[:1000],
+                "credential_required": False,
+                "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST",
+            }
+            failed = _custody_transition(
+                transition_id="LLM_PROFILE_INTERACTION", sequence=sequence, task_id=task_id,
+                outcome="FAIL_CLOSED", prior=prior, evidence=failure_evidence,
+            )
+            closures.append(failed)
+            return _stegbrowser_failure(
+                task_id=task_id, validated=validated, graph=graph,
+                predicate=failure_evidence["failed_predicate"],
+                closures=closures, evidence=failure_evidence,
+            )
+        interaction = _custody_transition(
+            transition_id="LLM_PROFILE_INTERACTION", sequence=sequence, task_id=task_id,
+            outcome="ALLOW", prior=prior,
+            evidence={"request_sha256": validated["request_sha256"], "branch_id": branch_id,
+                      "browser_result": result},
+        )
+        closures.append(interaction)
+        prior = interaction["custody"]["organization_receipt"]["receipt_sha256"]
+        sequence += 1
+        egress = _custody_transition(
+            transition_id="EGRESS_ADMITTED", sequence=sequence, task_id=task_id,
+            outcome="ALLOW", prior=prior,
+            evidence={"request_sha256": validated["request_sha256"], "branch_id": branch_id,
+                      "result_commitment": sha256(result.get("result") or {}),
+                      "endpoint_receipts": result.get("endpoint_receipts")},
+        )
+        closures.append(egress)
+        prior = egress["custody"]["organization_receipt"]["receipt_sha256"]
+        executions.append({"branch_id": branch_id, "branch_index": index, "execution": result})
+
+    observed = sum(len(x["execution"].get("endpoint_receipts") or []) for x in executions)
+    required = 4 * len(operations)
+    if observed != required:
+        # The packet is the evidence. A fan that returns fewer endpoint receipts
+        # than its branches require is incomplete, whatever each branch reported.
+        evidence = {
+            "request_sha256": validated["request_sha256"],
+            "route_id": validated["route_id"],
+            "processing_capability": "stegbrowser",
+            "branch_count": len(operations),
+            "required_endpoint_receipts": required,
+            "observed_endpoint_receipts": observed,
+            "failed_predicate": "BRANCH_FAN_ENDPOINT_RECEIPTS_COMPLETE",
+            "required_evidence_or_repair": "return four endpoint receipts for every branch",
+            "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_THEN_RETRY_SAME_MANIFEST",
+        }
+        sequence += 1
+        failed = _custody_transition(
+            transition_id="EGRESS_ADMITTED", sequence=sequence, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=prior, evidence=evidence,
+        )
+        closures.append(failed)
+        return _stegbrowser_failure(task_id=task_id, validated=validated, graph=graph,
+                                    predicate=evidence["failed_predicate"],
+                                    closures=closures, evidence=evidence)
+
+    return {
+        "schema": RESULT_SCHEMA, "state": "COMPLETE", "disposition": "ALLOW",
+        "canonical_task_id": task_id, "processing_capability": "stegbrowser",
+        "route_id": validated["route_id"], "request_sha256": validated["request_sha256"],
+        "branch_count": len(operations),
+        "endpoint_receipt_count": observed,
+        "branch_executions": executions,
+        # Preserved for the single round trip so existing consumers keep working.
+        "browser_execution": executions[0]["execution"] if len(executions) == 1 else None,
+        "transition_closures": closures,
+        "organization_records_before_master_records": True,
+        "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+    }
 
 
 def _manifest_subject(validated: Mapping[str, Any]) -> str:
