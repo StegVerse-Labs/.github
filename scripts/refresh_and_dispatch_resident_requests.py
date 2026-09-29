@@ -109,7 +109,11 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     raw = str(values.get(REUSABLE_TASK_PARAMETERS_ENV) or "").strip()
     if not reusable_task_id and not raw:
         return None
-    if reusable_task_id != REUSABLE_CANONICAL_WORK_TASK_ID:
+    allowed_reusable = {
+        REUSABLE_CANONICAL_WORK_TASK_ID: "canonical_work_coordination",
+        REUSABLE_SDK_GENERIC_MANIFEST_TASK_ID: SDK_GENERIC_MANIFEST_CONSUMER,
+    }
+    if reusable_task_id not in allowed_reusable:
         raise RuntimeError("portable bridge reusable invocation identity mismatch")
     if not raw:
         raise RuntimeError("portable bridge reusable invocation parameters missing")
@@ -126,8 +130,8 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     normalized = {key: str(parsed.get(key) or "").strip() for key in allowed}
     if not normalized["source_root"] or not normalized["runtime_root"]:
         raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
-    if normalized["only_consumer"] != "canonical_work_coordination":
-        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector")
+    if normalized["only_consumer"] != allowed_reusable[reusable_task_id]:
+        raise RuntimeError("portable bridge reusable invocation selector mismatch")
     if not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
     return normalized
