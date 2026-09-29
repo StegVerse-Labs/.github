@@ -15,10 +15,13 @@
     "runtime_profile_discovery"
   ],
   "environment_classes": [
-    "SOVEREIGN_RESIDENT",
-    "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION"
+    "MANIFEST_SELECTED_EPHEMERAL"
   ],
-  "directions": ["INGRESS", "INTERNAL", "EGRESS"],
+  "directions": [
+    "INGRESS",
+    "INTERNAL",
+    "EGRESS"
+  ],
   "mutation_allowed": true,
   "deployment_allowed": false,
   "heartbeat": {
@@ -59,12 +62,25 @@
     "TASK_REGISTRY_NEVER_MINTS_CLAIM_OR_FENCE",
     "MASTER_RECORDS_EVIDENCE_NEVER_MINTS_EXECUTION_AUTHORITY",
     "INTERLOCK_INTR_ADMISSION_IS_REQUIRED_FOR_GOVERNED_INGRESS_EGRESS",
-    "EVERY_STATE_CHANGE_REQUIRES_CURRENT_APPLICABLE_GOVERNANCE"
+    "EVERY_STATE_CHANGE_REQUIRES_CURRENT_APPLICABLE_GOVERNANCE",
+    "COMPUTE_SUBSTRATE_NEVER_GRANTS_EXECUTION_ADMISSION_CREDENTIAL_OR_CUSTODY_AUTHORITY",
+    "MANIFEST_SELECTED_EXECUTION_MUST_NOT_REQUIRE_PERSISTENT_MACHINE_IDENTITY_OR_SYSTEMD"
   ],
   "nonclaims": [
     "SOURCE_PROFILE_DOES_NOT_PROVE_RESIDENT_RUNTIME_EXECUTION",
     "SOURCE_PROFILE_DOES_NOT_PROVE_INTERLOCK_INTR_ADMISSION",
     "SOURCE_PROFILE_DOES_NOT_PROVE_WORKERCOORDINATOR_CLAIM",
     "SOURCE_PROFILE_DOES_NOT_PROVE_MASTER_RECORDS_RECONCILIATION"
-  ]
+  ],
+  "compute_substrate": {
+    "selection_basis": "EXACT_MANIFEST",
+    "authority_effect": "NONE_COMPUTE_ONLY",
+    "machine_identity_authority": false,
+    "persistent_resident_host_required": false,
+    "external_machine_discovery_required": false,
+    "systemd_required": false,
+    "ephemeral_execution_allowed": true,
+    "github_actions_authority": "NONE",
+    "hosted_environment_authority": "NONE"
+  }
 }
