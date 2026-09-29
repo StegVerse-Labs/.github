@@ -11,6 +11,7 @@ produced by the canonical runtime chain.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import sys
@@ -37,6 +38,12 @@ GOVERNANCE_SOURCE_ROOTS = {
     "master_records": ("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "master-records/orchestration", "services/manifest_receipt_custody.py"),
 }
 GOVERNANCE_ROUTE_ID = "stegverse.route.canonical-governed.v1"
+ORGANIZATION_BATCH_TASK_ID = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+ORGANIZATION_BATCH_POLICY_EXTENSION = "stegverse_organization_receipt_batch"
+ORGANIZATION_BATCH_REQUEST_REF = (
+    "control/resident-execution-request.d/"
+    "canonical-work-organization-batch-custody-replay-001.json"
+)
 
 REQUIRED_AUTHORITIES = {
     "credential_authority": "TV/TVC",
@@ -567,7 +574,7 @@ def _closure_projection(row: Mapping[str, Any], *, predecessor_receipt_sha256: s
     return projected
 
 
-def _governance_disposition(
+def _governance_disposition_record(
     runtime_root: Path,
     validated: Mapping[str, Any],
     *,
@@ -578,7 +585,8 @@ def _governance_disposition(
     evidence: Mapping[str, Any],
     reason_code: str | None = None,
     failed_predicate: str | None = None,
-) -> dict[str, Any]:
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Record the one parent governance disposition and return its exact custody row."""
     subject = _manifest_subject(validated)
     governed = _custody_transition(
         transition_id=transition_id,
@@ -619,7 +627,254 @@ def _governance_disposition(
         result["reason_code"] = reason_code
     if failed_predicate:
         result["failed_predicate"] = failed_predicate
-    return result
+    return result, governed
+
+
+def _governance_disposition(
+    runtime_root: Path,
+    validated: Mapping[str, Any],
+    *,
+    disposition: str,
+    transition_id: str,
+    prior_organization_receipt_sha256: str,
+    ingress_closure: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+    reason_code: str | None = None,
+    failed_predicate: str | None = None,
+) -> dict[str, Any]:
+    return _governance_disposition_record(
+        runtime_root,
+        validated,
+        disposition=disposition,
+        transition_id=transition_id,
+        prior_organization_receipt_sha256=prior_organization_receipt_sha256,
+        ingress_closure=ingress_closure,
+        evidence=evidence,
+        reason_code=reason_code,
+        failed_predicate=failed_predicate,
+    )[0]
+
+
+def _load_organization_append_owner():
+    resident = Path(__file__).resolve().parents[1] / "resident-runtime"
+    module_path = resident / "aggregate_repo_transition.py"
+    require(module_path.is_file(), "ORGANIZATION_APPEND_OWNER_UNAVAILABLE")
+    if str(resident) not in sys.path:
+        sys.path.insert(0, str(resident))
+    spec = importlib.util.spec_from_file_location(
+        "stegverse_manifest_directed_organization_append", module_path
+    )
+    require(spec is not None and spec.loader is not None, "ORGANIZATION_APPEND_OWNER_IMPORT_UNAVAILABLE")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _organization_batch_parent_manifest(validated: Mapping[str, Any]) -> dict[str, Any]:
+    require(validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID,
+            "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED")
+    manifest = validated.get("canonical_manifest")
+    require(isinstance(manifest, Mapping), "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED")
+    extensions = manifest.get("extensions")
+    require(isinstance(extensions, Mapping), "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED")
+    task_binding = extensions.get("stegverse_canonical_task")
+    require(isinstance(task_binding, Mapping), "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED")
+    require(task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+            "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
+    require(task_binding.get("cosv_task_vector") == "10000000100000",
+            "ORGANIZATION_BATCH_COSV_MISMATCH")
+    require(task_binding.get("canonical_request_ref") == ORGANIZATION_BATCH_REQUEST_REF,
+            "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH")
+    require(task_binding.get("authority_effect") == "NONE",
+            "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION")
+    policy = extensions.get(ORGANIZATION_BATCH_POLICY_EXTENSION)
+    require(isinstance(policy, Mapping), "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED")
+    condition = policy.get("release_condition")
+    require(isinstance(condition, Mapping) and condition.get("type") == "COUNT",
+            "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED")
+    count = condition.get("count")
+    require(type(count) is int and count >= 1, "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID")
+    graph = validated.get("state_graph")
+    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
+    canonical_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
+    require(isinstance(canonical_binding, Mapping), "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED")
+    require(canonical_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+            "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH")
+    require(canonical_binding.get("receipt_batch") == dict(policy),
+            "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH")
+    return {"receipt_batch": dict(policy)}
+
+
+def _evidence_entry(transition_id: str, evidence_id: str, evidence_type: str,
+                    content: Mapping[str, Any]) -> dict[str, Any]:
+    body = dict(content)
+    return {
+        "evidence_id": evidence_id,
+        "evidence_type": evidence_type,
+        "origin_transition_id": transition_id,
+        "encoding": "canonical-json",
+        "sha256": sha256(body),
+        "content": body,
+    }
+
+
+def _execute_organization_batch_after_allow(
+    runtime_root: Path,
+    validated: Mapping[str, Any],
+    result: Mapping[str, Any],
+    governed: Mapping[str, Any],
+    governance: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Execute the declared organization action as a consequence of the parent ALLOW."""
+    parent_manifest = _organization_batch_parent_manifest(validated)
+    subject = ORGANIZATION_BATCH_TASK_ID
+    governance_receipt_sha256 = str((governed.get("custody") or {}).get("receipt_sha256") or "")
+    require(len(governance_receipt_sha256) == 64, "ORGANIZATION_BATCH_PARENT_GOVERNANCE_RECEIPT_REQUIRED")
+    governance_org = (governed.get("custody") or {}).get("organization_receipt")
+    require(isinstance(governance_org, Mapping) and governance_org.get("receipt_sha256"),
+            "ORGANIZATION_BATCH_PARENT_GOVERNANCE_ORG_RECEIPT_REQUIRED")
+    parent_evidence = {
+        "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+        "request_sha256": validated["request_sha256"],
+        "parent_governance_disposition": "ALLOW",
+        "parent_governance_transition_id": "GOVERNANCE_DISPOSITION",
+        "parent_governance_receipt_sha256": governance_receipt_sha256,
+        "parent_governance_organization_receipt_sha256": governance_org["receipt_sha256"],
+        "manifest_receipt_id": governance.get("manifest_receipt_id"),
+        "result_binding_hash": governance.get("result_binding_hash"),
+    }
+
+    dispatch = _custody_transition(
+        transition_id="MANIFEST_DIRECTED_ORGANIZATION_APPEND_DISPATCHED",
+        sequence=3,
+        task_id=subject,
+        outcome="EXECUTED",
+        prior=str(governance_org["receipt_sha256"]),
+        evidence=parent_evidence,
+        proof_scope="MANIFEST_DIRECTED_ORGANIZATION_ACTION_DISPATCH_ONLY",
+    )
+    dispatch_closure = _closure_projection(
+        dispatch, predecessor_receipt_sha256=governance_receipt_sha256
+    )
+    dispatch_receipt_sha256 = str((dispatch.get("custody") or {}).get("receipt_sha256") or "")
+    dispatch_org = (dispatch.get("custody") or {}).get("organization_receipt")
+    require(len(dispatch_receipt_sha256) == 64, "ORGANIZATION_BATCH_DISPATCH_RECEIPT_REQUIRED")
+    require(isinstance(dispatch_org, Mapping) and dispatch_org.get("receipt_sha256"),
+            "ORGANIZATION_BATCH_DISPATCH_ORG_RECEIPT_REQUIRED")
+
+    completion_id = "MANIFEST_DIRECTED_ORGANIZATION_APPEND_COMPLETED"
+    completion_evidence = {
+        **parent_evidence,
+        "dispatch_receipt_sha256": dispatch_receipt_sha256,
+        "dispatch_organization_receipt_sha256": dispatch_org["receipt_sha256"],
+    }
+    completion_receipt = build_state_receipt(
+        transition_id=completion_id,
+        transition_sequence=4,
+        subject_or_correlation_id=subject,
+        transition_outcome="COMPLETED",
+        prior_state_ref_or_hash="sha256:" + dispatch_receipt_sha256,
+        resulting_state_ref_or_hash=validated["canonical_manifest_sha256"],
+        governance_decision_ref_where_applicable="sha256:" + governance_receipt_sha256,
+        transition_evidence=completion_evidence,
+        required_evidence_manifest=[
+            _evidence_entry(
+                completion_id,
+                "parent-governance-allow",
+                "PARENT_GOVERNANCE_ALLOW_CLOSURE",
+                parent_evidence,
+            ),
+            _evidence_entry(
+                completion_id,
+                "organization-append-dispatch",
+                "MANIFEST_DIRECTED_ACTION_DISPATCH_CLOSURE",
+                {
+                    "receipt_sha256": dispatch_receipt_sha256,
+                    "organization_receipt_sha256": dispatch_org["receipt_sha256"],
+                    "state": "RECORDED",
+                    "reconstruction_status": "PASS",
+                    "required_evidence_validation_status": "PASS",
+                },
+            ),
+        ],
+        proof_scope="MANIFEST_DIRECTED_ORGANIZATION_ACTION_RESULT_ONLY",
+        proof_ceiling="ORGANIZATION_RECEIPT_PACKET_AND_BATCH_CUSTODY_ONLY",
+    )
+    owner = _load_organization_append_owner()
+    try:
+        organization_receipt = owner.aggregate_transition(
+            completion_receipt,
+            org_transition_class="MANIFEST_DIRECTED_ORGANIZATION_ACTION",
+            boundary_evidence={
+                "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+                "parent_governance_receipt_sha256": governance_receipt_sha256,
+                "parent_governance_result_binding_hash": governance.get("result_binding_hash"),
+                "parent_governance_disposition": "ALLOW",
+                "dispatch_receipt_sha256": dispatch_receipt_sha256,
+            },
+            authority_effect="NONE",
+            parent_manifest=parent_manifest,
+        )
+    except Exception as exc:
+        failure = _custody_transition(
+            transition_id="MANIFEST_DIRECTED_ORGANIZATION_APPEND_FAILED",
+            sequence=4,
+            task_id=subject,
+            outcome="FAILED",
+            prior=str(dispatch_org["receipt_sha256"]),
+            evidence={
+                **completion_evidence,
+                "error_class": type(exc).__name__,
+                "error": str(exc),
+                "failed_predicate": "MANIFEST_DIRECTED_ORGANIZATION_APPEND_COMPLETED",
+                "retry_entrypoint": (
+                    "resident-runtime/aggregate_repo_transition.py::aggregate_transition"
+                ),
+            },
+            proof_scope="MANIFEST_DIRECTED_ORGANIZATION_ACTION_FAILURE_ONLY",
+        )
+        failure_closure = _closure_projection(
+            failure, predecessor_receipt_sha256=dispatch_receipt_sha256
+        )
+        return {
+            **dict(result),
+            "manifest_directed_action": {
+                "schema": "stegverse.manifest-directed-action-execution/v1",
+                "action_id": "ORGANIZATION_APPEND",
+                "execution_result": "FAILED",
+                "governance_disposition": None,
+                "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+                "parent_governance_receipt_sha256": governance_receipt_sha256,
+                "dispatch_closure": dispatch_closure,
+                "failure_closure": failure_closure,
+                "reason": str(exc),
+                "failed_predicate": "MANIFEST_DIRECTED_ORGANIZATION_APPEND_COMPLETED",
+                "retry_entrypoint": (
+                    "resident-runtime/aggregate_repo_transition.py::aggregate_transition"
+                ),
+                "authority_effect": "NONE_EXECUTION_EVIDENCE_ONLY",
+            },
+        }
+
+    boundary = organization_receipt.get("boundary_evidence")
+    released = boundary.get("parent_manifest_released_batch") if isinstance(boundary, Mapping) else None
+    return {
+        **dict(result),
+        "manifest_directed_action": {
+            "schema": "stegverse.manifest-directed-action-execution/v1",
+            "action_id": "ORGANIZATION_APPEND",
+            "execution_result": "COMPLETED",
+            "governance_disposition": None,
+            "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
+            "parent_governance_receipt_sha256": governance_receipt_sha256,
+            "dispatch_closure": dispatch_closure,
+            "organization_receipt_sha256": organization_receipt.get("receipt_sha256"),
+            "organization_previous_receipt_sha256": organization_receipt.get("previous_receipt_sha256"),
+            "source_transition_sha256": organization_receipt.get("source_transition_sha256"),
+            "released_batch": released,
+            "authority_effect": "NONE_EXECUTION_EVIDENCE_ONLY",
+        },
+    }
 
 
 def _execute_governance(
@@ -692,7 +947,7 @@ def _execute_governance(
                 "result_binding_hash": governance.get("result_binding_hash"),
             },
         )
-    return _governance_disposition(
+    result, governed = _governance_disposition_record(
         runtime_root,
         validated,
         disposition=raw_disposition,
@@ -712,6 +967,11 @@ def _execute_governance(
             "publisher_executed": False,
         },
     )
+    if raw_disposition == "ALLOW" and validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID:
+        return _execute_organization_batch_after_allow(
+            runtime_root, validated, result, governed, governance
+        )
+    return result
 
 
 def execute(
