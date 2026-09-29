@@ -132,7 +132,7 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     if not normalized["source_root"] or not normalized["runtime_root"]:
         raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
     if normalized["only_consumer"] != allowed_reusable[reusable_task_id]:
-        raise RuntimeError("portable bridge reusable invocation selector mismatch")
+        raise RuntimeError("portable bridge reusable invocation selector mismatch: exact canonical_work_coordination selector required for canonical-work reusable identity")
     if not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
     return normalized
@@ -335,7 +335,7 @@ def refresh_and_dispatch(
         if not current_goal_task_id:
             raise RuntimeError("goal task id must be non-empty")
         if target_consumer != "canonical_work_coordination":
-            raise RuntimeError("goal task context requires canonical_work_coordination target")
+            raise RuntimeError("reusable invocation selector mismatch: goal task context requires canonical_work_coordination target")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
