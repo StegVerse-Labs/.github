@@ -422,6 +422,8 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         "command": command,
         "returncode": completed.returncode,
         "result": result,
+        "stdout_tail": completed.stdout[-4000:],
+        "stderr_tail": completed.stderr[-4000:],
         "bootstrap_receipt_ref": str(bootstrap_receipt),
         "network_source_fetch_performed": False,
         "credential_material_present": bool(
