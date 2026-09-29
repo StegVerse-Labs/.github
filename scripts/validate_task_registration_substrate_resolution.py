@@ -33,6 +33,8 @@ DISPOSITIONS = {
     "NOT_APPLICABLE",
 }
 LIMITATIONS = {"NONE", "EVIDENCE_REACHABILITY", "ARCHITECTURAL", "AUTHORITY", "PLATFORM", "NOT_APPLICABLE"}
+# Dispositions that affirmatively remove a substrate from the transition space.
+EXCLUDING_DISPOSITIONS = {"UNSUITABLE", "NOT_APPLICABLE"}
 USER_ACTION_SHARING = {"SHAREABLE", "EXCLUSIVE"}
 USER_ACTION_REQUIRED_FIELDS = (
     "surface_id",
@@ -131,6 +133,20 @@ def validate_resolution(record: dict) -> None:
             fail(f"{task_id}: UNSUITABLE substrate {sid} requires evidence_refs")
     if seen != REVIEW_ORDER:
         fail(f"{task_id}: substrate reviews must preserve canonical review order")
+
+    # A runtime-capable registration that excludes every canonical substrate
+    # declares an empty transition space: it asserts that it must execute and
+    # that nothing can execute it. Such a record can never produce the runtime
+    # evidence its own predicates require, yet the checks above pass it because
+    # they only constrain reviews that are present. UNSUITABLE and NOT_APPLICABLE
+    # are the two affirmative exclusions; PENDING_EVIDENCE and
+    # ELIGIBLE_WHEN_ADMITTED are unresolved rather than excluded, so they keep a
+    # substrate in the space and satisfy this rule.
+    if all(row.get("disposition") in EXCLUDING_DISPOSITIONS for row in reviews):
+        fail(
+            f"{task_id}: STOP_NO_ADMITTED_SUBSTRATE - runtime-capable registration "
+            "excludes every canonical substrate, leaving an empty transition space"
+        )
 
     selected = resolution.get("selected_substrate_id")
     if selected is not None and selected not in REVIEW_ORDER:

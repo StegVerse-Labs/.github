@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 274,
+  "generation": 275,
   "status": "EPHEMERAL_STEGBROWSER_EXTERNAL_AI_PROMPT_LIMIT_CONTINUATION_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -10456,8 +10456,8 @@
         "reviews": [
           {
             "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-            "disposition": "NOT_APPLICABLE",
-            "limitation_class": "NOT_APPLICABLE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "AUTHORITY",
             "evidence_refs": [
               "data/task-registry-global-invariants.json",
               "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -10465,8 +10465,8 @@
           },
           {
             "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-            "disposition": "NOT_APPLICABLE",
-            "limitation_class": "NOT_APPLICABLE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "AUTHORITY",
             "evidence_refs": [
               "data/task-registry-global-invariants.json",
               "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -10474,8 +10474,8 @@
           },
           {
             "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
-            "disposition": "NOT_APPLICABLE",
-            "limitation_class": "NOT_APPLICABLE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "AUTHORITY",
             "evidence_refs": [
               "data/task-registry-global-invariants.json",
               "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
@@ -10492,8 +10492,8 @@
           },
           {
             "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-            "disposition": "NOT_APPLICABLE",
-            "limitation_class": "NOT_APPLICABLE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "AUTHORITY",
             "evidence_refs": [
               "data/task-registry-global-invariants.json",
               "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"

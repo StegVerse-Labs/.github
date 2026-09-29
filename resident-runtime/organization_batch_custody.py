@@ -249,9 +249,46 @@ def export_batch(root: Path, batch_id: str) -> dict:
 
 
 
+def export_batch_record(root: Path, batch_id: str) -> dict:
+    """Prepare the batch COMMITMENT for Master Records custody. Contents stay local.
+
+    The organization reports the batched record, not the individual receipts that
+    compose it. It verifies the batch locally first - including exact source
+    digests and required-evidence bytes - and then carries only the immutable
+    batch commitment and the RESULT of that verification across the boundary.
+
+    Two properties depend on this. Master Records holding a commitment it did not
+    receive the contents of is what makes its reconstruction independent of the
+    organization's, so the delta between the two is evidence of tampering rather
+    than a comparison of one store with its own copy. And inline required-evidence
+    bytes - which may carry health PII on the VACC path - never leave the
+    organization's private ledger root by construction rather than by policy.
+    """
+    root = Path(root)
+    batch = _verified_batch(root, batch_id)
+    local = export_batch(root, batch_id)
+    verification = verify_batch(root, batch_id, source_receipts={
+        row["source_transition_sha256"]: source
+        for row, source in zip(local["organization_receipts"], local["source_receipts"])
+    })
+    return {
+        "schema": "stegverse.master-records.organization-batch-record-submission/v1",
+        "batch": batch,
+        "local_verification": {
+            "organization_chain": verification["organization_chain"],
+            "source_reconstruction": verification["source_reconstruction"],
+            "receipt_count": verification["receipt_count"],
+        },
+        "receipt_contents_scope": "ORGANIZATION_LOCAL_ONLY_NOT_TRANSMITTED",
+        "authority_requested": False,
+        "custody_requested": True,
+        "reconstruction_requested": True,
+    }
+
+
 def submit_released_batch(root: Path, batch_id: str) -> dict:
     """Submit an immutable released batch through the existing canonical custody transport."""
-    envelope = export_batch(root, batch_id)
+    envelope = export_batch_record(root, batch_id)
     module_path = Path(__file__).resolve().parents[1] / "workers" / "canonical_state_transition_custody.py"
     spec = importlib.util.spec_from_file_location("canonical_state_transition_custody_for_org_batch", module_path)
     if spec is None or spec.loader is None:
@@ -511,11 +548,12 @@ def main() -> None:
     parser.add_argument("--closure-reason", choices=sorted(CLOSURE_REASONS))
     parser.add_argument("--verify-batch")
     parser.add_argument("--export-batch")
+    parser.add_argument("--export-batch-record")
     parser.add_argument("--submit-released-batch")
     parser.add_argument("--root")
     args = parser.parse_args()
     root = Path(args.root) if args.root else org.ledger_root()
-    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.submit_released_batch)) != 1:
+    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,args.submit_released_batch)) != 1:
         parser.error("provide exactly one batch operation")
     if args.closure_reason:
         result=close_batch(args.closure_reason,root=root)
@@ -523,6 +561,8 @@ def main() -> None:
         result=verify_batch(root,args.verify_batch)
     elif args.export_batch:
         result=export_batch(root,args.export_batch)
+    elif args.export_batch_record:
+        result=export_batch_record(root,args.export_batch_record)
     else:
         result=submit_released_batch(root,args.submit_released_batch)
     print(json.dumps(result, sort_keys=True))

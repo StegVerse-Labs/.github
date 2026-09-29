@@ -362,3 +362,64 @@ def test_t0_cannot_also_release_a_prior_packet(monkeypatch, tmp_path):
             receipt("SECOND-T0"), parent_manifest=manifest,
             establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH + 1),
         )
+# --- Only the batched record crosses the organization boundary ---
+
+
+def test_export_batch_record_carries_commitment_without_receipt_contents(monkeypatch, tmp_path):
+    source1, _ = append(monkeypatch, tmp_path, "CLAIM")
+    source2, _ = append(monkeypatch, tmp_path, "WORK")
+    closed = batch.close_batch("TASK_CLOSURE", root=tmp_path)
+
+    record = batch.export_batch_record(tmp_path, closed["batch_id"])
+    assert record["schema"] == "stegverse.master-records.organization-batch-record-submission/v1"
+    assert record["batch"] == closed
+    assert record["receipt_contents_scope"] == "ORGANIZATION_LOCAL_ONLY_NOT_TRANSMITTED"
+    # The organization proved reconstruction locally and carries the RESULT only.
+    assert record["local_verification"] == {
+        "organization_chain": "PASS",
+        "source_reconstruction": "SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS",
+        "receipt_count": 2,
+    }
+    assert "organization_receipts" not in record
+    assert "source_receipts" not in record
+
+    # No individual receipt body, source body or evidence byte may appear anywhere
+    # in the serialized envelope - the commitment hashes are all that cross.
+    blob = json.dumps(record, sort_keys=True)
+    for transition_id in ("CLAIM", "WORK"):
+        assert transition_id not in blob
+    for schema in ("stegverse.organization-transition-receipt/v1",
+                   "stegverse.canonical-state-transition-receipt/v1"):
+        assert schema not in blob
+    assert "required_evidence_manifest" not in blob
+
+
+def test_released_batch_carriage_submits_the_record_not_the_contents(monkeypatch, tmp_path):
+    append(monkeypatch, tmp_path, "CARRIED")
+    closed = batch.close_batch("TASK_CLOSURE", root=tmp_path)
+    captured = {}
+
+    class FakeCustody:
+        @staticmethod
+        def submit_organization_batch(envelope):
+            captured["envelope"] = envelope
+            return {"state": "COMPLETED", "execution_result": "COMPLETED",
+                    "batch_id": envelope["batch"]["batch_id"],
+                    "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY"}
+
+    def fake_spec(name, path):
+        class Loader:
+            @staticmethod
+            def exec_module(module):
+                module.submit_organization_batch = FakeCustody.submit_organization_batch
+        class Spec:
+            loader = Loader()
+        return Spec()
+
+    monkeypatch.setattr(batch.importlib.util, "spec_from_file_location", fake_spec)
+    monkeypatch.setattr(batch.importlib.util, "module_from_spec", lambda spec: type("M", (), {})())
+    result = batch.submit_released_batch(tmp_path, closed["batch_id"])
+    assert result["state"] == "COMPLETED"
+    sent = captured["envelope"]
+    assert sent["schema"] == "stegverse.master-records.organization-batch-record-submission/v1"
+    assert "organization_receipts" not in sent and "source_receipts" not in sent

@@ -206,6 +206,12 @@ def _submit_http(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
 
 
 
+ORGANIZATION_BATCH_SUBMISSION_SCHEMAS = (
+    "stegverse.master-records.organization-batch-record-submission/v1",
+    "stegverse.master-records.organization-batch-submission/v1",
+)
+
+
 def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
     """Carry one already-released batch as execution evidence, never as a governance decision."""
     def evidence_result(state: str, *, reason: str | None = None, batch_id: Any = None,
@@ -225,7 +231,12 @@ def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
             row["destination_response"] = dict(destination_response)
         return row
 
-    if envelope.get("schema") != "stegverse.master-records.organization-batch-submission/v1":
+    # The organization reports the batched record. The record-only envelope is
+    # what carriage sends; the legacy contents-bearing envelope is still accepted
+    # so an already-released batch prepared before this change can still be
+    # carried, and so this client stays compatible with the merged Master Records
+    # ingress until that side accepts the record-only form.
+    if envelope.get("schema") not in ORGANIZATION_BATCH_SUBMISSION_SCHEMAS:
         return evidence_result("FAILED", reason="ORGANIZATION_BATCH_SUBMISSION_SCHEMA_MISMATCH")
     batch = envelope.get("batch")
     if not isinstance(batch, Mapping):
