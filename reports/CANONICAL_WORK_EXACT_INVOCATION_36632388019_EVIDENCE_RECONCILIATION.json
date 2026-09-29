@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.canonical-work-exact-invocation-evidence-reconciliation/v1",
+  "task_id": "CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001",
+  "parent_goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "cosv_task_vector": "10100000100000",
+  "invocation": {
+    "run_id": 36632388019,
+    "artifact_id": 11063620337,
+    "artifact_name": "canonical-work-coordination-attempt-36632388019-1",
+    "artifact_digest": "sha256:f9a6d399c7f6060ca3bfde5d3b85b0d47598b9595e65c126915a5b165bbfbd79"
+  },
+  "evidence": {
+    "receipt": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+    "state": "ATTEMPT_RECORDED",
+    "returncode": 1,
+    "result": null,
+    "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
+    "credential_material_present": false,
+    "github_token_runtime_authority": "NONE",
+    "claim_or_fence_minted": false,
+    "session_action": "END_AND_RECONCILE_EXECUTION_SUBSTRATE_REVIEW",
+    "substrate_review_error": "STEGVERSE-CANONICAL-WORK-COORDINATION-001: runtime-capable task registration requires execution_substrate_resolution"
+  },
+  "disposition": {
+    "value": "FAIL_CLOSED",
+    "predicate": "EXECUTION_SUBSTRATE_RESOLUTION_PRESENT",
+    "stage": "TASK_REGISTRY_CHECKIN_BEFORE_INTERLOCK_INTR_ADMISSION"
+  },
+  "downstream": {
+    "organization_ledger_readback": "NOT_APPLICABLE_NO_INTR_ALLOW",
+    "master_records_reconstruction": "NOT_APPLICABLE_NO_INTR_ALLOW"
+  },
+  "authority_effect": "NONE_EVIDENCE_RECONCILIATION_ONLY"
+}
