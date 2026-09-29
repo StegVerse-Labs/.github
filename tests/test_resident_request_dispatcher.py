@@ -210,15 +210,18 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 )
         self.assertEqual(calls, [])
 
-    def test_hosted_environment_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory() as td:
-            base = Path(td)
-            with self.assertRaises(RuntimeError):
-                mod.dispatch(
-                    base / "source",
-                    base / "runtime",
-                    env={"PATH": "/bin", "GITHUB_ACTIONS": "true"},
-                )
+    def test_hosted_environment_marker_is_compute_only(self) -> None:
+        env = mod.clean_exec_env({
+            "PATH": "/bin",
+            "GITHUB_ACTIONS": "true",
+            "CI": "true",
+            "GITHUB_TOKEN": "must-not-forward",
+        })
+        self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
+        self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
+        self.assertNotIn("GITHUB_ACTIONS", env)
+        self.assertNotIn("CI", env)
+        self.assertNotIn("GITHUB_TOKEN", env)
 
 
 if __name__ == "__main__":
