@@ -378,6 +378,45 @@ def _execute_stegbrowser_llm(runtime_root: Path, validated: Mapping[str, Any]) -
     require(isinstance(actions, list) and actions, "stegbrowser_llm_browser_actions_required")
     task_id = str(validated["canonical_task_id"])
     host = (urlsplit(secure_url).hostname or "").lower()
+
+    # A v2 journey may fan to N parallel branches, each its own round trip with
+    # its own LLM and its own four endpoint receipts. This owner executes the
+    # request-level operation only, so a fan would run branch one and return a
+    # result that looks complete while 4(N-1) receipts were never produced.
+    # Absent branch_count the graph is the single round trip, and this is inert.
+    branch_count = graph.get("branch_count", 1) if isinstance(graph, Mapping) else 1
+    if not isinstance(branch_count, int) or branch_count < 1:
+        branch_count = 1
+    if branch_count > 1:
+        failed = _custody_transition(
+            transition_id="INGRESS_ADMITTED", sequence=1, task_id=task_id,
+            outcome="FAIL_CLOSED", prior=None,
+            evidence={
+                "request_sha256": validated["request_sha256"],
+                "route_id": validated["route_id"],
+                "processing_capability": "stegbrowser",
+                "profile": graph.get("profile"),
+                "branch_count": branch_count,
+                "required_endpoint_receipts": 4 * branch_count,
+                "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BRANCH_FAN_EXECUTION_SUPPORTED",
+                "required_evidence_or_repair": (
+                    "bind a branch-fan executor at the existing StegBrowser owner that "
+                    "runs every branch and appends all four endpoint receipts per branch"
+                ),
+                "retry_condition": "REPAIR_EXISTING_STEGBROWSER_OWNER_THEN_RETRY_SAME_MANIFEST",
+                "credential_required": False,
+            },
+        )
+        return {
+            "schema": RESULT_SCHEMA, "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+            "terminal": False, "canonical_task_id": task_id,
+            "processing_capability": "stegbrowser", "route_id": validated["route_id"],
+            "request_sha256": validated["request_sha256"],
+            "failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BRANCH_FAN_EXECUTION_SUPPORTED",
+            "transition_closures": [failed],
+            "organization_records_before_master_records": True,
+            "authority_effect": "NONE_RETURN_ASSEMBLY_ONLY",
+        }
     source = _repo_root("StegVerse-Labs/StegBrowser")
     if source is None:
         failed = _custody_transition(
