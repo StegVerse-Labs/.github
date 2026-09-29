@@ -86,14 +86,9 @@ def validate_record(record: dict, task_id: str) -> list[str]:
                 + ", ".join(NON_ALLOW_REQUIRED)
             )
 
-    # A block named for observation asserts that something is awaited. Nothing
-    # is: every action is manifest-directed, and no external machine waits.
-    if isinstance(record.get("runtime_observation"), dict):
-        errors.append(
-            f"{task_id}: STOP_PASSIVE_OBSERVATION_BLOCK runtime_observation "
-            "- actions are manifest-directed state transitions; record the "
-            "actual attempted transition and its disposition instead"
-        )
+    # The violation is a value that awaits, not a block whose name mentions
+    # observation: such a block mostly holds binding references, which are
+    # legitimate. The walk below flags the awaiting values wherever they sit.
     for block in FINDING_BLOCKS:
         if block in record:
             walk(record[block], block)

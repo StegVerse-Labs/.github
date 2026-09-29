@@ -49,12 +49,18 @@ def test_non_allow_missing_repair_fields_is_rejected():
     assert "retry_entrypoint" in errors[0]
 
 
-def test_passive_observation_block_is_rejected():
+def test_runtime_observation_block_is_judged_by_content_not_name():
+    """A binding reference is fine; a value that awaits is not."""
+    assert validate_record(
+        {"runtime_observation": {"existing_resident_selector": "some_selector",
+                                 "intr_admission": actionable()}}, "TEST-001"
+    ) == []
     errors = validate_record(
-        {"runtime_observation": {"intr_admission": actionable()}}, "TEST-001"
+        {"runtime_observation": {"intr_admission": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"}},
+        "TEST-001",
     )
-    # The block itself is the finding: nothing is awaited, so nothing observes.
-    assert any("STOP_PASSIVE_OBSERVATION_BLOCK" in e for e in errors)
+    assert len(errors) == 1
+    assert "runtime_observation.intr_admission" in errors[0]
 
 
 def test_goal_chart_state_is_covered():

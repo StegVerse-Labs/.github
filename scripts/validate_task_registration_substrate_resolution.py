@@ -51,8 +51,30 @@ def fail(message: str) -> None:
     raise ValueError(message)
 
 
+TERMINAL_COORDINATION_STATES = {"CLOSED", "RETIRED"}
+
+
 def runtime_capable(record: dict) -> bool:
     return isinstance(record.get("runtime_requirements"), dict)
+
+
+def substrate_bound(record: dict) -> bool:
+    """True when the record declares execution on a canonical substrate.
+
+    The six canonical substrates are device, browser and node execution
+    surfaces. A task whose runtime_requirements are ordinary session
+    capabilities - repository read, pull request write, public web research -
+    is not device-bound, and excluding every device substrate is the accurate
+    answer for it rather than an empty transition space. The signal is the
+    record's own declaration: a runtime_resolution naming the state-triggered
+    path, or a requirement to deploy.
+    """
+    if not runtime_capable(record):
+        return False
+    resolution = record.get("runtime_resolution")
+    if isinstance(resolution, dict) and str(resolution.get("state") or "").strip():
+        return True
+    return record["runtime_requirements"].get("deployment_required") is True
 
 
 def validate_user_action_surfaces(record: dict) -> None:
@@ -142,9 +164,14 @@ def validate_resolution(record: dict) -> None:
     # are the two affirmative exclusions; PENDING_EVIDENCE and
     # ELIGIBLE_WHEN_ADMITTED are unresolved rather than excluded, so they keep a
     # substrate in the space and satisfy this rule.
-    if all(row.get("disposition") in EXCLUDING_DISPOSITIONS for row in reviews):
+    # Only a record that declares substrate-bound execution and is not already
+    # terminal needs an admitted substrate. A CLOSED or RETIRED task will not
+    # execute again, so it has no transition space to keep open.
+    if (substrate_bound(record)
+            and record.get("coordination_state") not in TERMINAL_COORDINATION_STATES
+            and all(row.get("disposition") in EXCLUDING_DISPOSITIONS for row in reviews)):
         fail(
-            f"{task_id}: STOP_NO_ADMITTED_SUBSTRATE - runtime-capable registration "
+            f"{task_id}: STOP_NO_ADMITTED_SUBSTRATE - substrate-bound registration "
             "excludes every canonical substrate, leaving an empty transition space"
         )
 

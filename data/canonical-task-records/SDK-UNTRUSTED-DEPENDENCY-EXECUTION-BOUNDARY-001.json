@@ -54,9 +54,39 @@
     "canonical_registry_registration": "MERGED_GENERATION_206_SOURCE_VALIDATED",
     "source_reconciliation": "MERGED_SOURCE_RECONCILED_SDK_310_311_COMPONENT011_2611",
     "source_tests": "PASSED_INERT_FIXTURES_AND_EXACT_HEAD_SOURCE_CI",
-    "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "sandbox_containment": "UNKNOWN_NOT_PROVEN",
-    "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "authentic_execution": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "DEFENSIVE_ENVELOPE_EXECUTION_NOT_ATTEMPTED",
+      "failed_predicate": "EXISTING_RESIDENT_SELECTOR_INVOKED_UNDER_AN_AUTHORIZED_SESSION",
+      "required_evidence_or_repair": "INVOKE_THE_EXISTING_RESIDENT_SELECTOR_AND_RETAIN_ITS_REQUEST_CONSUMPTION_RECEIPT",
+      "retry_entrypoint": "existing resident dispatch selector 'ungoverned_ai_defensive_envelope'",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "sandbox_containment": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SANDBOX_CONTAINMENT_NOT_EXERCISED",
+      "failed_predicate": "PER_OPERATION_DEFENSIVE_ENVELOPE_EXERCISED_AGAINST_AN_UNTRUSTED_DEPENDENCY_INSTALL",
+      "required_evidence_or_repair": "EXERCISE_THE_ENVELOPE_AND_RETAIN_THE_BOUNDARY_RECEIPT_IT_PRODUCES",
+      "retry_entrypoint": "existing resident dispatch selector 'ungoverned_ai_defensive_envelope'",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "master_records_reconstruction": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "MASTER_RECORDS_RECONSTRUCTION_NOT_REQUESTED",
+      "failed_predicate": "MASTER_RECORDS_RECONSTRUCTION_RETURNED_FOR_THIS_TASKS_TRANSITION",
+      "required_evidence_or_repair": "REQUEST_RECONSTRUCTION_THROUGH_THE_EXISTING_AUTHENTICATED_MASTER_RECORDS_PATH",
+      "retry_entrypoint": "GET /api/master-records/state-transitions/query",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
     "component011_terminal_binding": "MERGED_SOURCE_VALIDATED_PR_2611"
   },
   "worker_claim": {
@@ -131,11 +161,61 @@
     "independent_organization_observer": "UNRESOLVED_AUTHENTIC_OWNER_DISPOSITION",
     "global_runtime_profile": "NOT_ENROLLED_IN_FROZEN_18_LANES_NO_GLOBAL_GATE",
     "global_runtime_owner_coordination": "REQUESTED_ISSUE_1260_COMMENT_5813579260_NO_AUTHENTIC_REPLY_OBSERVED",
-    "workercoordinator_claim_fence": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "tvc_source_and_warrant": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "intr_when_governed_transition_required": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "organization_receipt_chain": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "master_records_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "workercoordinator_claim_fence": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "WORKERCOORDINATOR_CLAIM_FENCE_STAGE_NOT_ATTEMPTED",
+      "failed_predicate": "WORKERCOORDINATOR_CLAIM_FENCE_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
+      "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
+      "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_CLAIM_FENCE_PATH",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "tvc_source_and_warrant": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "TVC_SOURCE_AND_WARRANT_STAGE_NOT_ATTEMPTED",
+      "failed_predicate": "TVC_SOURCE_AND_WARRANT_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
+      "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
+      "retry_entrypoint": "EXISTING_TV_TVC_CREDENTIAL_PATH",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "intr_when_governed_transition_required": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "INTR_WHEN_GOVERNED_TRANSITION_REQUIRED_STAGE_NOT_ATTEMPTED",
+      "failed_predicate": "INTR_WHEN_GOVERNED_TRANSITION_REQUIRED_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
+      "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
+      "retry_entrypoint": "INTERLOCK_INTR",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "organization_receipt_chain": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_CHAIN_STAGE_NOT_ATTEMPTED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
+      "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
+      "retry_entrypoint": "EXISTING_ORGANIZATION_LEDGER_APPEND_OWNER",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
+    "master_records_reconstruction": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "MASTER_RECORDS_RECONSTRUCTION_STAGE_NOT_ATTEMPTED",
+      "failed_predicate": "MASTER_RECORDS_RECONSTRUCTION_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
+      "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
+      "retry_entrypoint": "EXISTING_AUTHENTICATED_MASTER_RECORDS_CUSTODY_PATH",
+      "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+    },
     "runtime_failure": "NOT_EVIDENCED",
     "authority_effect": "NONE_OBSERVATION_COORDINATION_ONLY"
   }

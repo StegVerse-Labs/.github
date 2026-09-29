@@ -51,9 +51,39 @@
   },
   "current_truth": {
     "registration": "MERGED_CANONICAL_GENERATION_203_CI_GREEN",
-    "independent_worker_evaluations": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "commit_time_intr_decision": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "records_only_reconstruction": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+    "independent_worker_evaluations": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "INDEPENDENT_MICRO_NODE_EVALUATIONS_NOT_ATTEMPTED",
+      "failed_predicate": "AT_LEAST_THREE_SEPARATELY_ATTRIBUTABLE_MICRO_NODE_WORKERS_EVALUATED_THE_SAME_COMMIT",
+      "required_evidence_or_repair": "DISPATCH_THE_THREE_MICRO_NODE_EVALUATIONS_AND_RETAIN_EACH_ATTRIBUTABLE_RESULT_INCLUDING_DISAGREEMENT",
+      "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_MICRO_NODE_DISPATCH",
+      "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+    },
+    "commit_time_intr_decision": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "COMMIT_TIME_INTR_DECISION_NOT_REQUESTED",
+      "failed_predicate": "INTERLOCK_INTR_RETURNED_A_COMMIT_TIME_ADMISSIBILITY_DISPOSITION",
+      "required_evidence_or_repair": "SUBMIT_THE_COMMIT_TIME_ADMISSIBILITY_TRANSITION_TO_THE_EXISTING_INTR_PATH",
+      "retry_entrypoint": "INTERLOCK_INTR",
+      "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+    },
+    "records_only_reconstruction": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "RECORDS_ONLY_RECONSTRUCTION_NOT_REQUESTED",
+      "failed_predicate": "MASTER_RECORDS_RECONSTRUCTED_THE_EVALUATION_SET_FROM_RECORDS_ALONE",
+      "required_evidence_or_repair": "REQUEST_RECONSTRUCTION_THROUGH_THE_EXISTING_AUTHENTICATED_MASTER_RECORDS_PATH",
+      "retry_entrypoint": "GET /api/master-records/state-transitions/query",
+      "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+    }
   },
   "completion": {
     "claimed": false,
