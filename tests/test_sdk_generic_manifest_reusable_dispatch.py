@@ -10,3 +10,5 @@ def test_generic_sdk_manifest_has_neutral_reusable_addressability():
     assert 'REUSABLE_SDK_GENERIC_MANIFEST_TASK_ID = "RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001"' in s
     assert 'REUSABLE_SDK_GENERIC_MANIFEST_TASK_ID: SDK_GENERIC_MANIFEST_CONSUMER' in s
     assert 'normalized["only_consumer"] != allowed_reusable[reusable_task_id]' in s
+
+# Exact-head validation touch: deterministic suite retry after cancelled run.
