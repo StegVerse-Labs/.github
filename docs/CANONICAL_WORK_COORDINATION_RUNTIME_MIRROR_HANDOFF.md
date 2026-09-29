@@ -181,3 +181,10 @@ The first invocation branch after merge must be treated as an attempted governed
 The first exact ephemeral invocation run reached the reusable manifest constructor and failed before runtime dispatch with `canonical COSV task pointer must resolve exactly once: STEGVERSE-CANONICAL-WORK-COORDINATION-001`. The canonical task vector already existed at `control/task-vectors/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json` with vector `10100000100000`, but the effective aggregate + `control/task-vector-index.d` registration surface had no row for this Goal.
 
 The bounded repair adds only the missing non-authorizing index shard at `control/task-vector-index.d/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json`, pointing to the existing vector source. It does not change the vector, Goal identity, registry state, execution authority, request identity, runtime, scheduler, or transport. The exact reusable invocation must be retried after this source registration repair.
+
+
+## 2026-09-29 second exact invocation — fresh-runtime source refresh repair
+
+After COSV pointer repair, exact invocation `canonical-work-coordination-36627073783-1` built the manifest and entered `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001`, then retained `BOUNDARY_RECORDED / DECLARED_RUNNER_STOPPED_BEFORE_COMPLETION`. The concrete runner error was a fresh-runtime source materialization defect: `refresh_sovereign_worker_runtime_source._replace_dir(...)` copied `control/worker-registry.d` into staging but attempted the atomic rename before creating the destination parent `runtime/control`.
+
+The repair makes destination-parent creation explicit before directory replacement in both the active refresher and its base source. This changes only filesystem materialization semantics. It grants no authority and does not convert the reusable orchestration boundary into an Interlock/InTr or organization disposition. Retry the same exact Goal/COSV after merge.

@@ -1892,3 +1892,8 @@ The existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` path is exposed to interc
 ### Canonical Work COSV pointer registration — 2026-09-29
 
 The first exact ephemeral invocation exposed a missing effective task-vector index row for existing Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`. The existing task-vector source remains `10100000100000`; the repair adds only its non-authorizing `control/task-vector-index.d` registration so the existing reusable manifest constructor can verify task/COSV parity before dispatch. This is source identity repair, not runtime admission or authority.
+
+
+### Fresh-runtime source refresh parent creation — 2026-09-29
+
+A real exact Canonical Work ephemeral invocation exposed that nested static directories could not be atomically installed into an empty runtime because the destination parent was not created before `Path.replace`. The active and base sovereign source refreshers now create that parent first, with regression coverage. This is local source materialization repair only; it does not grant WorkerCoordinator, Interlock/InTr, TV/TVC, organization, or Master Records authority.
