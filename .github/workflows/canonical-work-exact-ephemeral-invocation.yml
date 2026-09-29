@@ -54,5 +54,6 @@ jobs:
           path: |
             ${{ runner.temp }}/stegverse-canonical-work-receipts
             ${{ runner.temp }}/stegverse-canonical-work-runtime/receipts
+            ${{ runner.temp }}/stegverse-canonical-work-runtime/runtime/**/receipts/**
           if-no-files-found: warn
           retention-days: 30
