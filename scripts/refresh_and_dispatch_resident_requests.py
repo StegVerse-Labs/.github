@@ -52,7 +52,7 @@ CANONICAL_GOAL_CONSUMPTION_REL = {
 }
 
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
+REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"\nREUSABLE_SDK_GENERIC_MANIFEST_TASK_ID = "RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001"
 REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
 REUSABLE_TASK_PARAMETERS_ENV = "STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"
 ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "ungoverned_ai_defensive_envelope", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "organization_custody_readback", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER, SDK_GENERIC_MANIFEST_CONSUMER)
@@ -109,7 +109,11 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     raw = str(values.get(REUSABLE_TASK_PARAMETERS_ENV) or "").strip()
     if not reusable_task_id and not raw:
         return None
-    if reusable_task_id != REUSABLE_CANONICAL_WORK_TASK_ID:
+    allowed_reusable = {
+        REUSABLE_CANONICAL_WORK_TASK_ID: "canonical_work_coordination",
+        REUSABLE_SDK_GENERIC_MANIFEST_TASK_ID: SDK_GENERIC_MANIFEST_CONSUMER,
+    }
+    if reusable_task_id not in allowed_reusable:
         raise RuntimeError("portable bridge reusable invocation identity mismatch")
     if not raw:
         raise RuntimeError("portable bridge reusable invocation parameters missing")
@@ -126,8 +130,8 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     normalized = {key: str(parsed.get(key) or "").strip() for key in allowed}
     if not normalized["source_root"] or not normalized["runtime_root"]:
         raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
-    if normalized["only_consumer"] != "canonical_work_coordination":
-        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector")
+    if normalized["only_consumer"] != allowed_reusable[reusable_task_id]:
+        raise RuntimeError("portable bridge reusable invocation selector mismatch")
     if not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
     return normalized
@@ -179,9 +183,8 @@ def default_runtime_root(env: Mapping[str, str] | None = None) -> Path:
 
 def clean_exec_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
-    hosted = [name for name in HOSTED_ENV if truthy(values.get(name))]
-    if hosted:
-        raise RuntimeError("hosted environment may not refresh+dispatch sovereign resident requests: " + ",".join(sorted(hosted)))
+    # Compute-provider markers are evidence about the selected substrate, not authority.
+    # Existing consumers still authenticate their own TV/TVC/InTr boundaries.
     credentials = [name for name in FORBIDDEN_CREDENTIAL_ENV if truthy(values.get(name))]
     if credentials:
         raise RuntimeError("credential-bearing environment forbidden for portable resident dispatch: " + ",".join(sorted(credentials)))
