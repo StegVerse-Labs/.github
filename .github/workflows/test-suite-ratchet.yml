@@ -1,0 +1,41 @@
+name: Test suite ratchet
+
+# Every pull request, with no path filter. Every other workflow in this
+# repository names an explicit file list, so a test no workflow mentions is
+# never run by CI - 562 of 662 test files at the time this was added. That is
+# how a cross-repository seam break shipped with both repositories green.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ratchet:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+
+      - name: No pull request may add a test failure the baseline does not hold
+        run: python scripts/check_test_suite_ratchet.py
+
+      - name: Publish the run as Healer-intake findings
+        if: always()
+        run: |
+          python scripts/check_test_suite_ratchet.py --findings > /tmp/test-suite-ratchet.json || true
+          python - <<'PY'
+          import json
+          report = json.load(open("/tmp/test-suite-ratchet.json", encoding="utf-8"))
+          print(f"TEST_SUITE_RATCHET findings={report['finding_count']}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-suite-ratchet
+          path: /tmp/test-suite-ratchet.json
+          if-no-files-found: warn
