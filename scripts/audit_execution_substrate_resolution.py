@@ -31,7 +31,12 @@ from validate_task_registration_substrate_resolution import (  # noqa: E402
     validate_resolution,
 )
 
+from registry_gate_findings import evaluation, finding  # noqa: E402
+
 RECORDS = ROOT / "data" / "canonical-task-records"
+GATE = "EXECUTION_SUBSTRATE_RESOLUTION"
+REPAIR = ("give the substrate-bound registration at least one substrate that is "
+          "not affirmatively excluded, or declare it not substrate-bound")
 
 
 def audit() -> dict:
@@ -65,13 +70,27 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     parser.add_argument("--strict", action="store_true", help="exit 1 if any record fails")
+    parser.add_argument("--findings", action="store_true",
+                        help="emit Healer-intake findings instead of prose")
     args = parser.parse_args(argv)
 
     result = audit()
     blocked = result["missing"] + result["invalid"]
     total = len(result["conforming"]) + len(blocked)
 
-    if args.json:
+    if args.findings:
+        rows = []
+        for row in blocked:
+            detail = str(row.get("error", ""))
+            code = detail.split(":", 1)[-1].strip().split(" ", 1)[0] or "SUBSTRATE_RESOLUTION_INVALID"
+            rows.append(finding(
+                gate=GATE, task_id=row["task_id"], predicate_id=code, detail=detail,
+                evidence=[f"data/canonical-task-records/{row['task_id']}.json"],
+                repair=REPAIR,
+                retry_entrypoint="audit_execution_substrate_resolution.py --strict",
+            ))
+        print(json.dumps(evaluation(GATE, rows), indent=2, sort_keys=True))
+    elif args.json:
         print(json.dumps({
             "schema": "stegverse.execution-substrate-resolution-audit/v1",
             "authority_effect": "NONE",

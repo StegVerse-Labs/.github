@@ -36,6 +36,11 @@ from validate_transition_disposition import (  # noqa: E402
     NON_ALLOW,
     NON_ALLOW_REQUIRED,
 )
+from registry_gate_findings import evaluation, finding  # noqa: E402
+
+GATE = "TASK_RECORD_ACTIONABLE_DISPOSITION"
+REPAIR = ("state an actionable non-ALLOW disposition carrying "
+          + ", ".join(NON_ALLOW_REQUIRED))
 
 RECORD_ROOT = Path("data/canonical-task-records")
 # Blocks that assert the record's own standing findings. Other blocks carry
@@ -100,21 +105,36 @@ def main() -> int:
     parser.add_argument("--root", default=str(RECORD_ROOT))
     parser.add_argument("--strict", action="store_true",
                         help="exit non-zero when any record carries a bare finding")
+    parser.add_argument("--findings", action="store_true",
+                        help="emit Healer-intake findings instead of prose")
     args = parser.parse_args()
 
     failures: list[str] = []
+    rows: list[dict] = []
     records = sorted(Path(args.root).glob("*.json"))
     for path in records:
         record = json.loads(path.read_text(encoding="utf-8"))
-        failures.extend(validate_record(record, record.get("task_id", path.stem)))
+        task_id = record.get("task_id", path.stem)
+        for line in validate_record(record, task_id):
+            failures.append(line)
+            code, _, detail = line.partition(" ")[2].partition(" ")
+            rows.append(finding(
+                gate=GATE, task_id=task_id, predicate_id=code.strip(),
+                detail=detail.strip() or line, evidence=[str(path)],
+                repair=REPAIR,
+                retry_entrypoint=f"{Path(__file__).name} --strict",
+            ))
 
-    for line in failures:
-        print(line)
-    print(
-        f"TASK_RECORD_ACTIONABLE_DISPOSITION_AUDIT records={len(records)} "
-        f"conforming={len(records) - len({f.split(':')[0] for f in failures})} "
-        f"bare_findings={len(failures)}"
-    )
+    if args.findings:
+        print(json.dumps(evaluation(GATE, rows), indent=2, sort_keys=True))
+    else:
+        for line in failures:
+            print(line)
+        print(
+            f"TASK_RECORD_ACTIONABLE_DISPOSITION_AUDIT records={len(records)} "
+            f"conforming={len(records) - len({f.split(':')[0] for f in failures})} "
+            f"bare_findings={len(failures)}"
+        )
     return 1 if failures and args.strict else 0
 
 
