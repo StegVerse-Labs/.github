@@ -206,3 +206,26 @@ A demonstrated source defect occurred after the existing Registry selector succe
 The behavioral regression in `tests/test_canonical_work_registry_return_loop.py` executes the real consumer with synthetic delegated output and temporary retained receipts. It failed on the old source for the targeted-success case. Coverage includes both delegation modes, no-candidate handling, nonzero return, failed delegation, unknown states, exact retained result equality and unchanged nonauthority fields. Source-only local validation: seven return-loop tests, twenty selector tests, five ingress tests and four independence tests pass (36 total). The adjacent ingress test had a stale `runtime_resolution is None` assertion despite the existing persisted map-generation-2 resolution; it now validates exact canonical profile/map binding, projection-only classification and no selection authority instead of requiring that completed source resolution be absent. Merge only after current exact-head CI and applicable repository review requirements.
 
 No sovereign invocation was performed in this source repair. The current tools expose no authenticated manifest-bound sovereign ingress or original private organization/Master Records readback. The next authentic operation remains the existing authorized resident's `canonical_work_coordination` invocation followed by original request consumption, WorkerCoordinator claim/fence, applicable InTr disposition, predecessor-linked organization/Master Records reconstruction and returned-state successor selection. Keep component-010 host-origin ownership at #1620 separate; no device, runtime, scheduler, ledger or authority is introduced. Completion requires authentic retained evidence of the full selected-task and successor sequence, not this source validation.
+
+
+## 2026-09-29 exact-disposition feedback-loop reconciliation
+
+Current canonical `main` is Task Registry generation **278**. Parent `STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` with completion unclaimed/unvalidated. Merged PR #2872 registered `CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001` and preserved exact invocation run `36632388019`, whose first authentic Goal-specific result is `FAIL_CLOSED` at `EXECUTION_SUBSTRATE_RESOLUTION_PRESENT`.
+
+This supplies a concrete instance of the autonomous progression rule: an authentic non-ALLOW that names an admissible repair must feed Goal-scoped remediation rather than become a human/session wait. The immediate repair is the parent's missing `execution_substrate_resolution` using the existing `MANIFEST_SELECTED_EPHEMERAL` model, followed by repository-valid merge and retry of the same exact manifest.
+
+The required closed loop is:
+
+```text
+attempt
+-> original disposition
+-> canonical reconciliation
+-> machine-owned repair or successor selection
+-> governed retry/transition
+-> organization custody when applicable
+-> Master Records reconstruction
+-> returned-state re-ingestion
+-> next eligible Goal-scoped work
+```
+
+This is an application of the existing `run_task_registry_canonical_work_cycle.py` and autonomous-governance contracts, not authorization for a second scheduler/coordinator. Intermediate Task/COSV/handoff/evidence identifiers remain machine orchestration state. Human re-entry is reserved for a declared human-authority transition or another existing canonical stop condition. Documentation, CI, merge and GitHub Actions success remain non-runtime evidence and cannot substitute for the native disposition or reconstruction.

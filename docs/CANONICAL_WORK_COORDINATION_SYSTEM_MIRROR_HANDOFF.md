@@ -253,3 +253,56 @@ The existing `scripts/dispatch_resident_execution_requests.py` now retains every
 Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
 
 The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
+
+
+## 2026-09-29 current canonical state and autonomous completion path
+
+This section supersedes older generation-number and next-step projections above where they conflict with current canonical `main`; historical sections remain retained as provenance.
+
+- Canonical Task Registry generation observed: **278**.
+- Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`.
+- COSV: `10100000100000`.
+- Parent coordination state: `PROPOSED`.
+- Parent completion: `claimed=false`, `validated=false`.
+- Declared next transition: `INGRESS_ADMITTED`.
+- Runtime resolution remains projection-only against `canonical-work-coordination-runtime-v1`; it grants no execution authority.
+- PR #2872 merged as `c92812c4030484061358641996b4d5681477b7fb` from exact head `7fca87c90e0912522de2117591949b1315de0e07`.
+- Registered evidence-reconciliation child: `CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001`, `ACTIVE / CHECKED_OUT`.
+- Exact invocation run `36632388019` retained the first authentic Goal-specific disposition: `FAIL_CLOSED`.
+- Failed predicate: `EXECUTION_SUBSTRATE_RESOLUTION_PRESENT`.
+- Exact failure: `STEGVERSE-CANONICAL-WORK-COORDINATION-001: runtime-capable task registration requires execution_substrate_resolution`.
+- This failure occurred before Interlock/InTr ALLOW; organization-ledger readback and Master Records reconstruction are therefore not applicable to that failed attempt.
+
+### Immediate bounded remediation
+
+Repair only the existing parent's missing `execution_substrate_resolution` using the already-established `MANIFEST_SELECTED_EPHEMERAL` execution model. Preserve the canonical single-device/no-device-gating invariants: no connected-device inventory dependency, no second user-operated device, no new runtime, scheduler, dispatcher, credential path, `AI_SESSION_GATE`, GitHub execution authority, or parallel authority plane.
+
+After repository-valid source validation and protected merge, retry the **same exact manifest** and retain its first authentic ALLOW, DENY, or FAIL_CLOSED without upgrading CI/job success into transition success.
+
+### Autonomous closure invariant
+
+The existing Canonical Work cycle is the sole progression loop:
+
+```text
+exact governed attempt
+-> retain original ALLOW / DENY / FAIL_CLOSED
+-> reconcile disposition into canonical Task/COSV/handoff/evidence state
+-> if non-ALLOW has an admissible machine repair, select that repair
+-> otherwise evaluate the declared successor
+-> WorkerCoordinator claim/fence where required
+-> Interlock/InTr governed transition
+-> organization receipt/readback when applicable
+-> Master Records custody/reconstruction
+-> required-evidence validation + receipt/reconstruction digest equality
+-> re-ingest returned state
+-> select next admissible nonduplicate Goal-scoped machine work
+-> repeat until Goal completion is claimed and validated
+```
+
+A FAIL_CLOSED is not a passive runtime-evidence wait when it names a repairable predicate. Returned Task IDs, COSVs, handoffs, dependencies, adjacent tasks, integration candidates, and evidence remain internal orchestration inputs and must not require human re-presentation. Human interaction occurs only for an exact transition requiring a declared human authority class or another canonical stop condition from the existing autonomous-governance contract.
+
+### Documentation authority
+
+Handoffs and README remain projections. Registry state, native transition dispositions, WorkerCoordinator claim/fence evidence, organization receipts, and Master Records reconstruction retain their existing distinct authorities. Documentation updates do not mutate runtime state or prove execution.
+
+Human action: **None.**
