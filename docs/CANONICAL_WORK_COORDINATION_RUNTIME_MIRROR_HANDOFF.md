@@ -174,3 +174,10 @@ The merged compute-identity repair is followed by one narrow execution-surface b
 The workflow invokes the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` reusable task with the exact Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`, and `only_consumer=canonical_work_coordination`. It retains the reusable-task trigger receipt plus runtime receipt tree as an Actions artifact. GitHub Actions remains compute only. The workflow itself cannot upgrade source/trigger success into an authoritative transition; the existing WorkerCoordinator, Interlock/InTr, organization custody, and Master Records paths determine the actual result.
 
 The first invocation branch after merge must be treated as an attempted governed transition. Preserve the first authority-path ALLOW, DENY, or FAIL_CLOSED actually emitted. An Actions job result or artifact upload is not itself that disposition.
+
+
+## 2026-09-29 first ephemeral invocation — COSV pointer registration repair
+
+The first exact ephemeral invocation run reached the reusable manifest constructor and failed before runtime dispatch with `canonical COSV task pointer must resolve exactly once: STEGVERSE-CANONICAL-WORK-COORDINATION-001`. The canonical task vector already existed at `control/task-vectors/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json` with vector `10100000100000`, but the effective aggregate + `control/task-vector-index.d` registration surface had no row for this Goal.
+
+The bounded repair adds only the missing non-authorizing index shard at `control/task-vector-index.d/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json`, pointing to the existing vector source. It does not change the vector, Goal identity, registry state, execution authority, request identity, runtime, scheduler, or transport. The exact reusable invocation must be retried after this source registration repair.
