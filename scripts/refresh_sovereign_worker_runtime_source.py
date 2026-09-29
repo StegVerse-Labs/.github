@@ -256,6 +256,7 @@ def _replace_dir(source: Path, destination: Path, staging_root: Path, rel: Path)
     staged = staging_root / rel
     staged.parent.mkdir(parents=True, exist_ok=True)
     shutil.copytree(source / rel, staged)
+    destination.parent.mkdir(parents=True, exist_ok=True)
     backup = destination.with_name(destination.name + ".refresh-backup")
     if backup.exists():
         shutil.rmtree(backup)
