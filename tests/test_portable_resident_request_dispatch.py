@@ -21,9 +21,10 @@ SPEC.loader.exec_module(MOD)
 
 
 class PortableResidentDispatchTests(unittest.TestCase):
-    def test_hosted_environment_is_rejected(self):
-        with self.assertRaisesRegex(RuntimeError, "hosted environment"):
-            MOD.clean_exec_env({"PATH": "/bin", "HOME": "/tmp", "GITHUB_ACTIONS": "true"})
+    def test_compute_provider_marker_does_not_grant_or_block_authority(self):
+        env = MOD.clean_exec_env({"PATH": "/bin", "HOME": "/tmp", "GITHUB_ACTIONS": "true"})
+        self.assertNotIn("GITHUB_ACTIONS", env)
+        self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
 
     def test_credential_environment_is_rejected(self):
         with self.assertRaisesRegex(RuntimeError, "credential-bearing environment"):
