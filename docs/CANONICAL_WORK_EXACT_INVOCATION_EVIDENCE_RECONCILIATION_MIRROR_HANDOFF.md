@@ -42,3 +42,14 @@ Repair only the existing canonical task registration's missing `execution_substr
 ## Manual work
 
 None.
+
+
+## 2026-09-29 autonomous continuation clarification
+
+PR #2872 is merged on canonical `main` as `c92812c4030484061358641996b4d5681477b7fb`; its exact head was `7fca87c90e0912522de2117591949b1315de0e07`. Current aggregate Registry generation is **278**. This child remains `ACTIVE / CHECKED_OUT`; its purpose is to preserve and reconcile the exact failed-attempt evidence while the parent repair proceeds.
+
+The retained `FAIL_CLOSED` is actionable machine state, not a request for another human prompt. The next bounded operation is to repair the existing parent `STEGVERSE-CANONICAL-WORK-COORDINATION-001` registration with the established `MANIFEST_SELECTED_EPHEMERAL` `execution_substrate_resolution`, validate/merge that repair under repository rules, and retry the same exact manifest.
+
+After retry, the existing Canonical Work cycle must ingest the returned ALLOW/DENY/FAIL_CLOSED directly. A repairable non-ALLOW becomes Goal-scoped remediation work; an admitted transition proceeds through the existing WorkerCoordinator/InTr/organization/Master Records chain; reconstructed returned state drives successor selection. No human re-presentation of Task ID, COSV, handoff, dependency or evidence identifier is required.
+
+This clarification creates no new runtime, scheduler, dispatcher, credential route, device dependency, authority plane or completion evidence. Human action remains **None**.
