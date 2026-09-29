@@ -1902,3 +1902,8 @@ A real exact Canonical Work ephemeral invocation exposed that nested static dire
 ### Canonical Work inner bootstrap failure evidence retention — 2026-09-29
 
 The third exact ephemeral invocation reached the existing Canonical Work Goal consumer, whose child bootstrap exited nonzero before emitting a parseable bootstrap receipt. The consumer now retains bounded child stdout/stderr tails, and the exact ephemeral invocation artifact includes nested bootstrap receipt trees. This is evidence-retention repair only; an outer `ATTEMPT_RECORDED` or Actions result is not an organization-level ALLOW, DENY, or FAIL_CLOSED.
+
+
+### Organization-batch ChatGPT invocation-surface reconciliation — 2026-09-29
+
+For `ORGANIZATION-BATCH-CUSTODY-REPLAY-001`, current ChatGPT tool-catalog inspection still exposes no authenticated non-caller-editable Universal InTr / TV-TVC resident invocation primitive. GitHub remains validation/evidence transport only and is not used as substitute execution authority. The existing host/runtime-evidence owner must expose that already-authorized operation; only then may the bound SDK ManifestStateTransition request yield authentic runtime disposition and custody evidence. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
