@@ -1,6 +1,6 @@
 # KV-Bound Ephemeral Browser Projection Mirror Handoff
 
-Updated: 2026-09-14
+Updated: 2026-09-29
 
 Goal Task ID: `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`
 Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
@@ -81,3 +81,14 @@ The `.github` root README was reviewed. It already carries the canonical KV/SKAP
 ## Manual work
 
 None.
+
+
+## 2026-09-29 Site KV projection vocabulary reconciliation
+
+Site PR #1472 merged exact source head `76bb24765e5e686f01630b2326f9778950e3952e` as `ca537302289d9c9d22215f74030c79e9aebbf91e`. It reconciles the entrypoint consumer with the canonical three-state DEVICE_KV projection vocabulary without weakening fail-closed credential/provider/authority checks.
+
+Site PR #1473 merged exact validated head `4a0c1d743cd68fdc7dee5869e0eaf12324999543` as `dba57a80948313c299db8c4aa3d3adfc483d3cc3`. All exact-head workflows observed for that head completed successfully, and the temporary Site integration claim is terminal. GitHub submitted-review readback remains empty for both PRs; this handoff records the merge facts but does not manufacture an independent-review receipt.
+
+These are source/custody-coordination facts only. They do not satisfy `AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED`, do not constitute an Interlock/InTr disposition, and do not establish sovereign organization-ledger readback or Master Records reconstruction.
+
+The next admissible transition remains exactly one authentic governed KV attempt through the first reachable eligible admitted StegOS surface after this canonical reconciliation is merged and validated.
