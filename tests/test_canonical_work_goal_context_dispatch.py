@@ -69,7 +69,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
             runtime = Path(td) / "runtime"
             source.mkdir()
             runtime.mkdir()
-            with self.assertRaisesRegex(RuntimeError, "reusable invocation selector mismatch"):
+            with self.assertRaisesRegex(RuntimeError, "exact canonical_work_coordination selector"):
                 DISPATCHER.dispatch(
                     source,
                     runtime,
@@ -173,7 +173,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                 "only_consumer": "hil",
                 "goal_task_id": GOAL,
             }
-            with self.assertRaisesRegex(RuntimeError, "exact canonical_work_coordination selector"):
+            with self.assertRaisesRegex(RuntimeError, "reusable invocation selector mismatch"):
                 BRIDGE.resolve_main_inputs(args, {
                     BRIDGE.REUSABLE_TASK_ID_ENV: BRIDGE.REUSABLE_CANONICAL_WORK_TASK_ID,
                     BRIDGE.REUSABLE_TASK_PARAMETERS_ENV: json.dumps(params),
