@@ -1877,3 +1877,8 @@ Organization receipt batching is manifest-governed state. The governing parent m
 
 
 Released organization receipt batches now reuse the existing canonical Master Records custody client for authenticated carriage to the existing organization-batch endpoint. The batch path returns ALLOW, DENY or FAIL_CLOSED and fails closed when authentic custody configuration is unavailable; local federation-frame persistence is not treated as destination custody. See `docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md`.
+
+
+### Canonical Work manifest-selected ephemeral compute exposure — 2026-09-29
+
+Existing Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001` / COSV `10100000100000` uses the existing portable `canonical_work_coordination` dispatcher path on a manifest-selected interchangeable compute substrate. Compute-provider markers such as GitHub Actions/CI/hosted-platform identity are non-authorizing evidence only and are stripped before child execution; they neither grant nor gate WorkerCoordinator, Interlock/InTr, TV/TVC, organization custody, or Master Records authority. Persistent resident-host identity, external-machine discovery, systemd presence, a second device, and `AI_SESSION_GATE` are not canonical prerequisites. Source/CI/merge still do not prove authentic execution; the original manifest attempt must return its authentic ALLOW, DENY, or FAIL_CLOSED through the existing authority path.

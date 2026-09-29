@@ -166,9 +166,9 @@ def truthy(value: str | None) -> bool:
 
 def clean_exec_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
-    hosted = [name for name in HOSTED_ENV if truthy(values.get(name))]
-    if hosted:
-        raise RuntimeError("hosted environment may not dispatch sovereign resident requests: " + ",".join(sorted(hosted)))
+    # Compute-provider markers describe the selected substrate only. They neither
+    # grant nor gate WorkerCoordinator, Interlock/InTr, TV/TVC, organization custody,
+    # or Master Records authority, and they are not forwarded to child consumers.
     env = {name: values[name] for name in NONSECRET_ENV if values.get(name)}
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
@@ -636,7 +636,9 @@ def dispatch(
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    safe_env = clean_exec_env(env)
+    source_env = dict(os.environ if env is None else env)
+    observed_compute_markers = sorted(name for name in HOSTED_ENV if truthy(source_env.get(name)))
+    safe_env = clean_exec_env(source_env)
     selected = select_consumers(only_consumers)
     current_goal_task_id = None
     if goal_task_id is not None:
@@ -724,6 +726,16 @@ def dispatch(
         "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
         "selected_consumers": [name for name, _ in selected], "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
         "current_goal_task_id": current_goal_task_id,
+        "compute_substrate": {
+            "selection_basis": "EXACT_MANIFEST_OR_CALLER_SELECTION",
+            "observed_environment_markers": observed_compute_markers,
+            "authority_effect": "NONE_COMPUTE_ONLY",
+            "persistent_resident_host_required": False,
+            "external_machine_discovery_required": False,
+            "systemd_required_by_dispatcher": False,
+            "github_actions_authority": "NONE",
+            "hosted_provider_authority": "NONE",
+        },
         "goal_context_forwarded_to": "canonical_work_coordination" if current_goal_task_id else None,
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
