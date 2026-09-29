@@ -8,7 +8,7 @@ def test_generic_sdk_manifest_consumer_replaces_test5_selector():
     assert "sdk_test5_stegbrowser_llm_profile" not in dispatch
     req=json.loads((ROOT/"control/resident-execution-request.d/sdk-generic-manifest-execution.json").read_text())
     assert req["schema"]=="stegverse.sdk-generic-manifest-execution-request/v1"
-    assert [x["build"]["process"] for x in req["requests"]]==["stegbrowser","stegbrowser","svg_governance_cycle"]
+    assert [x["build"]["process"] for x in req["requests"]]==["stegbrowser","stegbrowser","svg_governance_cycle","governance"]
     assert [x["build"]["processor_request"]["response_marker"] for x in req["requests"][:2]]==["TEST5_A","TEST5_B"]
     assert [x["build"]["processor_request"]["provider"] for x in req["requests"][:2]]==["credential-free-huggingface-space","credential-free-huggingface-space"]
     assert all(x["build"]["processor_request"]["secure_url"].startswith("https://") for x in req["requests"][:2])
@@ -25,12 +25,21 @@ def test_generic_sdk_manifest_consumer_replaces_test5_selector():
         "ORGANIZATION_LEDGER_RECEIPT_AND_PREDECESSOR",
         "MATCHING_MASTER_RECORDS_RECONSTRUCTION",
     ]
+    org=req["requests"][3]
+    assert org["request_id"]=="organization-batch-custody-replay-001"
+    assert org["build"]["data"]["task_id"]=="ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+    assert org["build"]["process"]=="governance"
+    assert org["manifest_extensions"]["stegverse_canonical_task"]["cosv_task_vector"]=="10000000100000"
+    assert org["manifest_extensions"]["stegverse_canonical_task"]["observed_registry_generation"]==278
+    assert org["manifest_extensions"]["stegverse_organization_receipt_batch"]["release_condition"]=={"type":"COUNT","count":1}
     portable=(ROOT/"scripts/refresh_and_dispatch_resident_requests.py").read_text()
     assert 'SDK_GENERIC_MANIFEST_CONSUMER = "sdk_generic_manifest_execution"' in portable
     assert "STEG_BROWSER_TVC_CONSUMER, SDK_GENERIC_MANIFEST_CONSUMER)" in portable
     consumer=(ROOT/"scripts/consume_sdk_generic_manifest_execution_request.py").read_text()
     assert "process=\"stegbrowser\"" not in consumer
     assert "build_manifest(**item[\"build\"])" in consumer
+    assert "manifest_extensions" in consumer
+    assert "validate_ingress_manifest(build)" in consumer
     assert "CAPABILITY_WORKAROUND_REQUIRED" in consumer
     assert "CAPABILITY_DEVELOPMENT_REQUESTED" in consumer
 
