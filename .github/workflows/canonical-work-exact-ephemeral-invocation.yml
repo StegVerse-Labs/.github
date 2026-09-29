@@ -1,0 +1,58 @@
+name: Canonical Work exact ephemeral invocation
+
+on:
+  push:
+    branches:
+      - "invoke/canonical-work-coordination-*"
+
+permissions:
+  contents: read
+
+jobs:
+  invoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Invoke existing manifest-selected Canonical Work path
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime_root="${RUNNER_TEMP}/stegverse-canonical-work-runtime"
+          receipt_root="${RUNNER_TEMP}/stegverse-canonical-work-receipts"
+          mkdir -p "$runtime_root" "$receipt_root"
+          python scripts/trigger_reusable_task.py \
+            --reusable-task-id RT-CANONICAL-WORK-PORTABLE-DISPATCH-001 \
+            --invocation-id canonical-work-coordination-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT} \
+            --parameters-json "{\"source_root\":\"${GITHUB_WORKSPACE}\",\"runtime_root\":\"$runtime_root\",\"only_consumer\":\"canonical_work_coordination\",\"goal_task_id\":\"STEGVERSE-CANONICAL-WORK-COORDINATION-001\"}" \
+            --task-id STEGVERSE-CANONICAL-WORK-COORDINATION-001 \
+            --cosv-task-vector 10100000100000 \
+            --receipt "$receipt_root/trigger.latest.json"
+      - name: Require a retained attempted-invocation receipt
+        shell: bash
+        run: |
+          test -s "${RUNNER_TEMP}/stegverse-canonical-work-receipts/trigger.latest.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(os.environ["RUNNER_TEMP"]) / "stegverse-canonical-work-receipts" / "trigger.latest.json"
+          r = json.loads(p.read_text())
+          assert r["reusable_task_id"] == "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
+          assert r["task_id"] == "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+          assert r["cosv_task_vector"] == "10100000100000"
+          assert r["trigger_accepted"] is True
+          assert r["authority_effect"] == "NONE_ORCHESTRATION_ONLY"
+          PY
+      - name: Retain attempted transition evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-work-coordination-attempt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/stegverse-canonical-work-receipts
+            ${{ runner.temp }}/stegverse-canonical-work-runtime/receipts
+          if-no-files-found: warn
+          retention-days: 30
