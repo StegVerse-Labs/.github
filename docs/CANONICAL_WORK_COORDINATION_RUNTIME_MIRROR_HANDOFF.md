@@ -188,3 +188,12 @@ The bounded repair adds only the missing non-authorizing index shard at `control
 After COSV pointer repair, exact invocation `canonical-work-coordination-36627073783-1` built the manifest and entered `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001`, then retained `BOUNDARY_RECORDED / DECLARED_RUNNER_STOPPED_BEFORE_COMPLETION`. The concrete runner error was a fresh-runtime source materialization defect: `refresh_sovereign_worker_runtime_source._replace_dir(...)` copied `control/worker-registry.d` into staging but attempted the atomic rename before creating the destination parent `runtime/control`.
 
 The repair makes destination-parent creation explicit before directory replacement in both the active refresher and its base source. This changes only filesystem materialization semantics. It grants no authority and does not convert the reusable orchestration boundary into an Interlock/InTr or organization disposition. Retry the same exact Goal/COSV after merge.
+
+
+## 2026-09-29 third exact invocation — inner bootstrap evidence retention
+
+Exact invocation `canonical-work-coordination-36627401496-1` advanced through the repaired portable refresh/dispatch path on ephemeral compute. The exact Goal's existing consumer executed `install_and_run_canonical_work_event_bootstrap.py` and retained `state=ATTEMPT_RECORDED`, `returncode=1`, `result=null`. No Goal-specific WorkerCoordinator/Interlock-InTr organization-level ALLOW, DENY, or FAIL_CLOSED can be claimed from that outer receipt.
+
+The decisive child failure output was not retained: `consume_for_spec(...)` captured stdout/stderr but omitted them from its receipt, and the invocation workflow uploaded only top-level runtime receipts while the bootstrap writes under `runtime/<task-runtime>/receipts`. This repair retains bounded 4,000-character stdout/stderr tails in the existing consumption receipt and includes nested bootstrap receipt directories in the same evidence artifact. It changes evidence retention only and grants no execution, transition, credential, custody, or GitHub authority.
+
+Retry the exact Goal/COSV after merge and use the retained inner bootstrap evidence to identify the next authentic predicate. Do not treat the unrelated MIR task's retained FAIL_CLOSED as the Canonical Work Goal disposition.
