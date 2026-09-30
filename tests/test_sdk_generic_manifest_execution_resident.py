@@ -44,11 +44,21 @@ def test_generic_sdk_manifest_consumer_replaces_test5_selector():
     assert "CAPABILITY_DEVELOPMENT_REQUESTED" in consumer
 
 
-def test_universal_intr_binds_stegbrowser_llm_to_existing_browser_owner():
+def test_universal_intr_no_longer_owns_stegbrowser_llm_execution():
+    """The binding this used to assert has moved, deliberately.
+
+    Translating a v2 journey into one round trip per branch, leasing each
+    branch's ephemeral session and calling the browser owner is orchestration,
+    not authority, so it belongs where the capability is offered. This worker
+    stays a generic manifest state-transition ingress adapter.
+    """
     source=(ROOT/"workers/manifest_state_transition_intr_ingress.py").read_text()
-    assert 'capability == "stegbrowser"' in source
-    assert 'graph.get("profile") == "llm.v1"' in source
-    assert "execute_manifested_llm_browser_operation" in source
-    assert 'roots.get(name)' in source
+    assert 'capability == "stegbrowser"' not in source
+    assert "execute_manifested_llm_browser_operation" not in source
+    # Removed, not merely unreferenced: the relocation is declared and points at
+    # the owner, so a manifest naming the capability gets an actionable verdict.
+    assert 'RELOCATED_CAPABILITY_OWNERS' in source
+    assert 'stegverse.governed_llm_fan.run_governed_llm_fan' in source
+    # The generic adapter it remains is untouched.
     assert 'build_state_receipt' in source and 'submit_state_receipt' in source
     assert 'organization_records_before_master_records' in source
