@@ -1931,3 +1931,8 @@ Autonomous continuation is the existing loop, not a new coordinator: exact attem
 ## Entity Economy persistent-memory convergence treatment (2026-09-29)
 
 Canonical economic goal `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001` now has a Publisher source candidate (PR #90) for a dated comparison between 2026 persistent/portable AI-memory developments and previously documented Entity Economy/StegVerse architecture. The candidate preserves original Volume I/II artifact identities, distinguishes convergence from origin/validation, and uses the existing future-versioned cross-reference mechanism. Canonical runtime/publication blockers are unchanged; source documentation is not governed publication or benchmark evidence.
+
+
+### Entity Economy successor editions — 2026-09-29
+
+`ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001` decomposes separately versioned Volume I/II successor-edition work from parent `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001` after the parent reached its prompt ceiling. Publisher PR #90 convergence source is merged; historical Volume I/II PDF identities remain immutable. The child owns preparation/validation of new Publisher edition identities and subsequent use of the existing governed Publisher-to-Site publication path. Registration grants no publication/runtime authority. See `docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md`.
