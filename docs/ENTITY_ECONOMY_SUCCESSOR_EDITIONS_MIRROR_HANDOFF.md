@@ -52,3 +52,18 @@ Publisher PR #91 merged with expected-head protection as `ce63109a6b3ffb7ba4335a
 Publisher main now contains `data/economy/entity-economy-successor-editions.v1.json`, defining distinct composite successor identities `stegverse-entity-economy-volume-i-2026-09-29-convergence` and `stegverse-entity-economy-volume-ii-2026-09-29-convergence`. The historical Volume I/II bytes and hashes remain immutable predecessors; the appendix remains the merged convergence source rather than a retrospective rewrite.
 
 Therefore `SUCCESSOR_EDITION_SOURCE_CANDIDATES_PREPARED` is RESOLVED. No governed publication disposition, Publisher release receipt, Site successor route, or deployed readback has been observed. The next authentic transition is submission of these exact successor candidates through the existing Publisher-controlled governed publication path, retaining its first ALLOW, DENY, or FAIL_CLOSED and applicable custody/reconstruction evidence.
+
+
+## 2026-09-29 authenticated publication-interface inspection
+
+Current main and Publisher main were re-read before attempting the publication transition. The exact successor candidates remain the two IDs in Publisher `data/economy/entity-economy-successor-editions.v1.json`; predecessor hashes remain Volume I `a831891cee4c4e7a920ed6d38090672e0722b434a5941632620c3e11d8e4da95` and Volume II `129accea04dcef0c5b063ae5799d9952e97462859fb36842c93a3ca7776fe95f`.
+
+Repository inspection confirms the existing publication authority path is the generic SDK Publisher-paper manifest plus universal manifest state-transition runtime: TV/TVC credential authority -> Universal Interlock/InTr disposition -> same-transition organization custody -> Master Records RECORDED/reconstruction/evidence/digest checks -> Publisher release -> downstream Site propagation/readback. Publisher `economic_paper_manifest_consumer.py` and artifact-transfer/rendering surfaces are explicitly source/non-authorizing and cannot substitute for this path.
+
+The active ChatGPT operation catalog was inspected for an authenticated non-caller-editable TV/TVC + Universal InTr manifest invocation primitive. None is exposed. GitHub operations available here provide repository/Actions evidence transport, not that authority path; no workflow dispatch primitive for the sovereign transition is exposed, and repository truth explicitly forbids treating local Publisher consumption or GitHub success as runtime ALLOW.
+
+Therefore no authentic manifest invocation occurred in this inspection and no ALLOW/DENY/FAIL_CLOSED is fabricated. Runtime observation remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` at predicate `AUTHENTIC_TV_TVC_UNIVERSAL_INTR_PUBLISHER_PUBLICATION_INTERFACE_REACHABLE`. No organization-ledger readback, Master Records reconstruction, Publisher release, Site mutation, or deployed successor readback is applicable/claimed from this non-attempt.
+
+### Actionable remediation
+
+Expose the already-authorized universal manifest invocation operation to the ChatGPT execution surface (the existing SDK/TV-TVC/Universal-InTr owner; no new runtime, device, scheduler, AI_SESSION_GATE or authority plane). Then bind the exact two successor candidate identities to the existing Publisher-paper manifest contract and invoke each authorized transition once, preserving its first authentic disposition. Only an authentic ALLOW with same-transition custody/reconstruction and Publisher release may advance Site versioned-route propagation.
