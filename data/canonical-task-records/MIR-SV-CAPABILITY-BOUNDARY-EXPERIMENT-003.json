@@ -6,6 +6,53 @@
   "parent_task_id": null,
   "goal": "Produce an independently verifiable bilateral MIR/StegVerse capability-boundary experiment preserving claimed vs independently observed vs physical work vs unknown, and the observe/demonstrate/retain/reconstruct matrix with equal-weight limitations and first-class dissent.",
   "coordination_state": "ACTIVE",
+  "current_truth": {
+    "experiment_inputs_byte_identical_to_frozen_build": true,
+    "frozen_original_manifest_root_declared": "ad9b8b8aab2beeea04bff2aac34fd2e7bfa5915133bcaef9209c16de7d9bea68",
+    "current_builder_manifest_root_observed": "eeb79544f95cc046bd4bf4dd4ccda29fffe5b0e61a9915ff84e18ead4564dab3",
+    "current_builder_reproduces_frozen_original_root": false,
+    "drift_is_additive_builder_metadata_only": true,
+    "manifest_fields_removed_by_current_builder": 0,
+    "manifest_field_values_changed_by_current_builder": 0,
+    "manifest_fields_added_by_current_builder": [
+      "extensions.capability_resolution.authority_effect",
+      "extensions.capability_resolution.capability",
+      "extensions.capability_resolution.next_action",
+      "extensions.capability_resolution.route_id",
+      "extensions.capability_resolution.schema",
+      "extensions.capability_resolution.solution_required",
+      "extensions.capability_resolution.status",
+      "extensions.manifest_builder.capability_status"
+    ],
+    "builder_already_compensates_for_one_earlier_additive_release": true,
+    "compensation_extended_to_capability_resolution_block": false,
+    "frozen_guard_runs_on_sdk_default_branch": false,
+    "exact_original_manifest_root_check": {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "failure_code": "FROZEN_EXP3_ORIGINAL_MANIFEST_ROOT_DRIFT",
+      "failed_predicate": "EXACT_ORIGINAL_MANIFEST_ROOT_CHECKS_SOURCE_VALIDATED",
+      "required_evidence_or_repair": "Frozen-artifact owner decides between two repairs. (a) Extend the builder-metadata exclusion in scripts/build_mir_sv_exp3_manifest.py to extensions.capability_resolution and extensions.manifest_builder.capability_status, which is the same compensation already applied there to external_review_requested and publisher_required_by_review_default. (b) Deliberately re-freeze original_root and the workflow's wire_manifest_sha256 assertion, recording the reason. Re-freezing without recording the reason would erase the only evidence this guard exists to preserve.",
+      "retry_entrypoint": "StegVerse-org/StegVerse-SDK .github/workflows/mir-sv-exp3-sdk-manifest.yml via workflow_dispatch",
+      "owning_existing_goal": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "next_attempt": "Rebuild the manifest at StegVerse-org/StegVerse-SDK@2508068f5475364ed4b47db6f6349e9b91fdb290 and at current main, diff the two field by field, and confirm the difference is still additive-only before selecting a repair.",
+      "consequence_committed": false,
+      "observed_at": "2026-09-30",
+      "observed_on": [
+        "StegVerse-org/StegVerse-SDK@b21abcdc608dc445f5e0a511ebd3069898399909",
+        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36721315436/job/109906863350",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/406#issuecomment-5912269018"
+      ],
+      "failing_source_tests": [
+        "tests/test_mir_sv_exp3_manifest.py (9 of 9)",
+        "tests/test_universal_manifest_state_transition_runtime.py (3 of 7)"
+      ],
+      "guards_without_default_branch_trigger": [
+        ".github/workflows/mir-sv-exp3-sdk-manifest.yml",
+        ".github/workflows/svg-governance-cycle-manifest-route.yml"
+      ]
+    }
+  },
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
