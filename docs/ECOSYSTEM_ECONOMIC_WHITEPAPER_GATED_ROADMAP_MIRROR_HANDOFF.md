@@ -176,3 +176,12 @@ No new listener, runtime, scheduler, device, task, credential authority, transit
 The active ChatGPT execution surface still exposes no authenticated TV/TVC relay/Universal InTr action connector, so no authentic request was submitted from this session. That absence is now an execution-surface boundary, not an unimplemented governance capability. The next authentic operation remains exactly the frozen manifest `ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3` / request `11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be`. Its first real result must be retained as `ALLOW`, `DENY` or `FAIL_CLOSED` together with organization receipt/predecessor and matching Master Records reconstruction before any Publisher release or Site propagation.
 
 Registry generation advances 272 -> **273** with unchanged two blockers and observational COSV **`10100000102000`**. All 16 public economic benchmarks remain `NOT_VERIFIED`.
+
+
+## 2026-09-29 Entity Economy persistent-AI-memory convergence appendix — Publisher source candidate
+
+Publisher PR #90 stages a dated convergence/comparative treatment at `docs/ENTITY_ECONOMY_SECOND_BRAIN_CONVERGENCE_TREATMENT.md` under the existing economic program. It compares 2026 persistent/portable AI-memory and “second brain” developments with previously documented Entity Economy and adjacent StegVerse architecture. The treatment explicitly preserves chronology: those external developments are a convergence signal, not the origin of MyKV/OrgKV, plural/ephemeral intelligence, entity-role economics, StegOS or network-learning concepts.
+
+The treatment's provenance matrix separates (a) repository evidence that predates the 2026-09-29 treatment, (b) external convergence, and (c) StegVerse divergence/extension. Where exact first-documentation chronology for learning-graph language was not established by repository search, it remains unclaimed. Original Volume I/II PDFs are untouched; future incorporation uses separately versioned editions through the existing Publisher cross-reference/publication mechanism.
+
+This documentation candidate does not modify the frozen approved Private-State Economy manifest, invoke Universal InTr, resolve `AUTHENTIC_PUBLICATION_UNOBSERVED`, wire benchmark export, publish a successor edition, propagate Site, or establish economic/educational/health outcomes. The canonical task remains PROPOSED with the same runtime/publication boundaries until independently evidenced transitions occur.
