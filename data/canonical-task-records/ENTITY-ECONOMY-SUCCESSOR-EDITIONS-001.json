@@ -18,28 +18,100 @@
     "docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["GCAT-BCAT-Engine", "StegVerse-Labs"],
-    "repositories": ["GCAT-BCAT-Engine/Publisher", "StegVerse-Labs/Site", "StegVerse-Labs/.github"],
-    "components": ["entity-economy-volume-i-successor-edition", "entity-economy-volume-ii-successor-edition", "publisher-versioned-edition-publication", "site-downstream-mirror"]
+    "organizations": [
+      "GCAT-BCAT-Engine",
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "GCAT-BCAT-Engine/Publisher",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "entity-economy-volume-i-successor-edition",
+      "entity-economy-volume-ii-successor-edition",
+      "publisher-versioned-edition-publication",
+      "site-downstream-mirror"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"CONVERGENCE_TREATMENT_SOURCE","kind":"SOURCE","state":"RESOLVED","ref":"Publisher PR #90 merged eb357ecb69075e87334518ead401c5a32613b16d"},
-    {"dependency_id":"HISTORICAL_I_II_IDENTITIES","kind":"EVIDENCE","state":"RESOLVED","ref":"Volume I a831891c...; Volume II 129accea...; historical artifacts remain immutable"},
-    {"dependency_id":"SUCCESSOR_EDITION_SOURCE_CANDIDATES","kind":"TASK","state":"RESOLVED","ref":"Publisher PR #91 merged ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b; data/economy/entity-economy-successor-editions.v1.json"},
-    {"dependency_id":"GOVERNED_SUCCESSOR_PUBLICATION","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher publication path"},
-    {"dependency_id":"SITE_SUCCESSOR_PROPAGATION_READBACK","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher-to-Site mirror/readback path"}
+    {
+      "dependency_id": "CONVERGENCE_TREATMENT_SOURCE",
+      "kind": "SOURCE",
+      "state": "RESOLVED",
+      "ref": "Publisher PR #90 merged eb357ecb69075e87334518ead401c5a32613b16d"
+    },
+    {
+      "dependency_id": "HISTORICAL_I_II_IDENTITIES",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "Volume I a831891c...; Volume II 129accea...; historical artifacts remain immutable"
+    },
+    {
+      "dependency_id": "SUCCESSOR_EDITION_SOURCE_CANDIDATES",
+      "kind": "TASK",
+      "state": "RESOLVED",
+      "ref": "Publisher PR #91 merged ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b; data/economy/entity-economy-successor-editions.v1.json"
+    },
+    {
+      "dependency_id": "GOVERNED_SUCCESSOR_PUBLICATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing Publisher publication path"
+    },
+    {
+      "dependency_id": "SITE_SUCCESSOR_PROPAGATION_READBACK",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing Publisher-to-Site mirror/readback path"
+    }
   ],
   "blockers": [
-    
-    {"predicate":"GOVERNED_SUCCESSOR_PUBLICATION_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition publication disposition/receipt observed."},
-    {"predicate":"SITE_SUCCESSOR_PROPAGATION_READBACK_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition Site propagation/readback observed."}
+    {
+      "predicate": "SUCCESSOR_VERSIONED_PUBLISHER_ARTIFACT_IDENTITIES_MATERIALIZED",
+      "state": "FAIL_CLOSED",
+      "evidence": "Publisher #91 composite IDs preserve predecessor hashes but do not yet bind concrete distinct versioned papers/ target artifact paths and exact successor artifact bytes/digests required by the existing Publisher-paper manifest contract."
+    },
+    {
+      "predicate": "AUTHENTIC_TV_TVC_UNIVERSAL_INTR_PUBLISHER_PUBLICATION_INTERFACE_REACHABLE",
+      "state": "UNKNOWN",
+      "evidence": "SDK public run-manifest exists and routes to manifest_state_transition_runtime.execute_manifest, but the active ChatGPT host operation catalog exposes no callable authenticated TV/TVC + Universal InTr attachment operation."
+    },
+    {
+      "predicate": "GOVERNED_SUCCESSOR_PUBLICATION_OBSERVED",
+      "state": "UNKNOWN",
+      "evidence": "No successor-edition publication disposition/receipt observed."
+    },
+    {
+      "predicate": "SITE_SUCCESSOR_PROPAGATION_READBACK_OBSERVED",
+      "state": "UNKNOWN",
+      "evidence": "No successor-edition Site propagation/readback observed."
+    }
   ],
   "allowed_next_transitions": [
-    "PREPARE_PUBLISHER_VERSIONED_VOLUME_I_AND_II_SUCCESSOR_SOURCE_CANDIDATES",
-    "VALIDATE_SUCCESSOR_CANDIDATES_WITHOUT_MUTATING_HISTORICAL_ARTIFACTS",
-    "SUBMIT_VALIDATED_SUCCESSOR_CANDIDATES_THROUGH_EXISTING_PUBLISHER_PUBLICATION_PATH"
+    "MATERIALIZE_DETERMINISTIC_PUBLISHER_VERSIONED_SUCCESSOR_ARTIFACTS_FROM_EXACT_PR91_COMPOSITES",
+    "VALIDATE_SUCCESSOR_ARTIFACT_IDENTITIES_WITHOUT_MUTATING_HISTORICAL_ARTIFACTS",
+    "BIND_VALIDATED_SUCCESSOR_ARTIFACTS_THROUGH_EXISTING_GENERIC_MANIFEST_BUILDER",
+    "INVOKE_EXISTING_RUN_MANIFEST_ONLY_WHEN_AUTHENTIC_TV_TVC_UNIVERSAL_INTR_HOST_ATTACHMENT_IS_EXPOSED"
   ],
-  "handoff_projection_refs": ["docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"],
-  "completion": {"claimed":false,"validated":false,"historical_pdf_identities_preserved":true,"successor_editions_published":false,"site_readback_observed":false},
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"publisher_owns_editorial_mutation":true,"site_is_downstream_display":true,"github_runtime_authority":"NONE","interlock_intr_required_when_applicable":true,"master_records_reality_authority":true,"second_user_operated_device_required":false}
+  "handoff_projection_refs": [
+    "docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "historical_pdf_identities_preserved": true,
+    "successor_editions_published": false,
+    "site_readback_observed": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "publisher_owns_editorial_mutation": true,
+    "site_is_downstream_display": true,
+    "github_runtime_authority": "NONE",
+    "interlock_intr_required_when_applicable": true,
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  }
 }
