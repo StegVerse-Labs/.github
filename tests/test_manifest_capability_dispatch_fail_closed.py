@@ -11,10 +11,16 @@ def test_stegbrowser_does_not_fall_through_to_purpose_worker_receipt(tmp_path):
     assert result["organization_master_records_closure_observed"] is False
 
 
-def test_stegbrowser_owner_failures_are_custodied_and_retryable():
+def test_stegbrowser_owner_failure_custody_moved_with_the_execution():
+    """Those predicates belonged to the fan execution, which is no longer here.
+
+    Keeping them would assert custody for a path this worker cannot take. The
+    SDK owns the fan now and carries the per-branch failure evidence; what this
+    worker owes is a verdict that names where the owner went.
+    """
     source=(mod.Path(__file__).resolve().parents[1]/"workers/manifest_state_transition_intr_ingress.py").read_text()
-    assert 'failed_predicate": "STEGBROWSER_SOURCE_ROOT_BOUND"' in source
-    assert 'failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED"' in source
-    assert 'outcome="FAIL_CLOSED"' in source
-    assert "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST" in source
+    assert 'failed_predicate": "MANIFEST_SELECTED_STEGBROWSER_BROWSER_OPERATION_COMPLETED"' not in source
+    assert "REPAIR_EXISTING_STEGBROWSER_OWNER_OR_MANIFEST_DATA_THEN_RETRY_SAME_MANIFEST" not in source
+    assert mod.RELOCATED_CAPABILITY_OWNERS["stegbrowser"] == "stegverse.governed_llm_fan.run_governed_llm_fan"
+    # The generic adapter's own custody ordering is unaffected.
     assert "organization_records_before_master_records" in source
