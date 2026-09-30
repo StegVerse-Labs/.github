@@ -25,12 +25,12 @@
   "dependencies": [
     {"dependency_id":"CONVERGENCE_TREATMENT_SOURCE","kind":"SOURCE","state":"RESOLVED","ref":"Publisher PR #90 merged eb357ecb69075e87334518ead401c5a32613b16d"},
     {"dependency_id":"HISTORICAL_I_II_IDENTITIES","kind":"EVIDENCE","state":"RESOLVED","ref":"Volume I a831891c...; Volume II 129accea...; historical artifacts remain immutable"},
-    {"dependency_id":"SUCCESSOR_EDITION_SOURCE_CANDIDATES","kind":"TASK","state":"PENDING","ref":"Publisher-controlled separately versioned editions"},
+    {"dependency_id":"SUCCESSOR_EDITION_SOURCE_CANDIDATES","kind":"TASK","state":"RESOLVED","ref":"Publisher PR #91 merged ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b; data/economy/entity-economy-successor-editions.v1.json"},
     {"dependency_id":"GOVERNED_SUCCESSOR_PUBLICATION","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher publication path"},
     {"dependency_id":"SITE_SUCCESSOR_PROPAGATION_READBACK","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher-to-Site mirror/readback path"}
   ],
   "blockers": [
-    {"predicate":"SUCCESSOR_EDITION_SOURCE_CANDIDATES_PREPARED","state":"PENDING","evidence":"No separately versioned Volume I/II successor artifacts are yet evidenced on Publisher main."},
+    
     {"predicate":"GOVERNED_SUCCESSOR_PUBLICATION_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition publication disposition/receipt observed."},
     {"predicate":"SITE_SUCCESSOR_PROPAGATION_READBACK_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition Site propagation/readback observed."}
   ],

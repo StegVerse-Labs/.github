@@ -43,3 +43,12 @@ This child task is the clean decomposition of successor-edition work from the pa
 ## Manual work
 
 None.
+
+
+## 2026-09-29 Publisher source-candidate closure
+
+Publisher PR #91 merged with expected-head protection as `ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b` from exact head `b45d0fd9d78995ac08d484508593ed23f8d822e7`. No exact-head workflow/status checks were reported for that head by GitHub; mergeability was true and the PR carried only the bounded source-candidate record, Publisher handoff, and README index.
+
+Publisher main now contains `data/economy/entity-economy-successor-editions.v1.json`, defining distinct composite successor identities `stegverse-entity-economy-volume-i-2026-09-29-convergence` and `stegverse-entity-economy-volume-ii-2026-09-29-convergence`. The historical Volume I/II bytes and hashes remain immutable predecessors; the appendix remains the merged convergence source rather than a retrospective rewrite.
+
+Therefore `SUCCESSOR_EDITION_SOURCE_CANDIDATES_PREPARED` is RESOLVED. No governed publication disposition, Publisher release receipt, Site successor route, or deployed readback has been observed. The next authentic transition is submission of these exact successor candidates through the existing Publisher-controlled governed publication path, retaining its first ALLOW, DENY, or FAIL_CLOSED and applicable custody/reconstruction evidence.
