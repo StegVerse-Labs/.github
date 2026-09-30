@@ -1,8 +1,8 @@
 # Joint ÉLAN × StegVerse HOLD — evaluator reproducibility packet v0.2
 
-Status: **READY FOR COAUTHOR PROMPT/RECORDING AGREEMENT; PRE-RUN; NO HOLD RESULT CLAIMED.**  
+Status: **FROZEN FOR INDEPENDENT RUNS; PRE-RUN; NO HOLD RESULT CLAIMED.**  
 Parent: `ELAN-PAPER-COAUTHOR-PUBLICATION-001` / COSV `71000000100100`  
-Intended recipient/evaluator: Élisabeth Correvon.  
+Evaluators: Rigel Randolph on the StegVerse/ChatGPT-side environment and Élisabeth Correvon on her ÉLAN-side environment, executed independently. Neither run waits on the other and neither evaluator's environment is treated as the other's source.  
 Objective: collect source-native evidence for explicit HOLD and then submit the unchanged retained source through the current StegVerse SDK path, while keeping observation, interpretation, governance and reconstruction separately inspectable.
 
 This packet follows the evaluator-facing presentation discipline used by the StegVerse test-presentation specification: each key step binds the evaluator action, what should be visible, what must be retained, and what may be concluded. **All figures/screenshots captured before authentic execution are instructional/presentation captures only. They are not experimental evidence.** Authentic run screenshots become evidence only when they depict the actual run and are retained with their original file digest and event binding.
@@ -197,14 +197,10 @@ The HOLD result artifact may be called a completed experimental result only afte
 
 The evaluator-facing final report should present the authentic screenshots in chronological order, with the evidence ledger and exact source/receipt references. Instructional screenshots may remain in a separate walkthrough but must never be visually or textually represented as experimental results.
 
-## 10. Dispatch to Élisabeth
+## 10. Independent-run rule
 
-Before execution, ask Élisabeth to confirm or amend only:
-- exact prompt wording;
-- 60-second duration;
-- whether the API exposes same-session continuity;
-- availability of raw output/status/request metadata;
-- timeout;
-- private retention of source traces and actual-run screenshots.
+The sequence above is frozen as the common evaluator procedure for two independent runs. Rigel executes it on the StegVerse/ChatGPT-side environment; Élisabeth executes it on her ÉLAN-side environment. No pre-run message, synchronization handshake, shared session, shared device, or cross-environment approval is required to begin.
 
-Once confirmed, freeze this packet/version and attempt ID. Native ÉLAN collection can proceed immediately and does not await a future SDK release.
+Each evaluator preserves their own exposed model/runtime identity, continuity behavior, timeout, timestamps, exact source outputs/nonresults, screenshots and digests. Unexposed fields remain `NOT_EXPOSED`. The two evidence packages are compared only after collection; one evaluator's output must not be used to fill a missing field in the other's record.
+
+Any deviation from the frozen literal prompts, 60-second `NO_INVOCATION` interval, or repeat-control order is preserved as a separate attempt/version rather than silently normalized. Native collection does not await a future SDK release.
