@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
+  "correlation_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "successor_task_ids": [],
+  "goal": "Prepare and govern separately versioned successor editions of Entity Economy Volumes I and II that incorporate the merged 2026-09-29 convergence treatment without modifying, replacing, or re-identifying the historical PDF artifacts; preserve Publisher editorial ownership and require the existing Publisher-to-Site publication and readback path for any release.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "10100000102000",
+  "source_refs": [
+    "GCAT-BCAT-Engine/Publisher#90 merged eb357ecb69075e87334518ead401c5a32613b16d",
+    "GCAT-BCAT-Engine/Publisher:docs/ENTITY_ECONOMY_SECOND_BRAIN_CONVERGENCE_TREATMENT.md",
+    "GCAT-BCAT-Engine/Publisher:docs/ENTITY_ECONOMY_VOLUME_III_VERSIONED_CROSS_REFERENCES.md",
+    "StegVerse-Labs/Site:papers/stegverse-entity-economy/stegverse-entity-economy.pdf historical Volume I SHA-256 a831891cee4c4e7a920ed6d38090672e0722b434a5941632620c3e11d8e4da95",
+    "StegVerse-Labs/Site historical Volume II SHA-256 129accea04dcef0c5b063ae5799d9952e97462859fb36842c93a3ca7776fe95f",
+    "docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["GCAT-BCAT-Engine", "StegVerse-Labs"],
+    "repositories": ["GCAT-BCAT-Engine/Publisher", "StegVerse-Labs/Site", "StegVerse-Labs/.github"],
+    "components": ["entity-economy-volume-i-successor-edition", "entity-economy-volume-ii-successor-edition", "publisher-versioned-edition-publication", "site-downstream-mirror"]
+  },
+  "dependencies": [
+    {"dependency_id":"CONVERGENCE_TREATMENT_SOURCE","kind":"SOURCE","state":"RESOLVED","ref":"Publisher PR #90 merged eb357ecb69075e87334518ead401c5a32613b16d"},
+    {"dependency_id":"HISTORICAL_I_II_IDENTITIES","kind":"EVIDENCE","state":"RESOLVED","ref":"Volume I a831891c...; Volume II 129accea...; historical artifacts remain immutable"},
+    {"dependency_id":"SUCCESSOR_EDITION_SOURCE_CANDIDATES","kind":"TASK","state":"PENDING","ref":"Publisher-controlled separately versioned editions"},
+    {"dependency_id":"GOVERNED_SUCCESSOR_PUBLICATION","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher publication path"},
+    {"dependency_id":"SITE_SUCCESSOR_PROPAGATION_READBACK","kind":"RUNTIME_PREDICATE","state":"UNKNOWN","ref":"existing Publisher-to-Site mirror/readback path"}
+  ],
+  "blockers": [
+    {"predicate":"SUCCESSOR_EDITION_SOURCE_CANDIDATES_PREPARED","state":"PENDING","evidence":"No separately versioned Volume I/II successor artifacts are yet evidenced on Publisher main."},
+    {"predicate":"GOVERNED_SUCCESSOR_PUBLICATION_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition publication disposition/receipt observed."},
+    {"predicate":"SITE_SUCCESSOR_PROPAGATION_READBACK_OBSERVED","state":"UNKNOWN","evidence":"No successor-edition Site propagation/readback observed."}
+  ],
+  "allowed_next_transitions": [
+    "PREPARE_PUBLISHER_VERSIONED_VOLUME_I_AND_II_SUCCESSOR_SOURCE_CANDIDATES",
+    "VALIDATE_SUCCESSOR_CANDIDATES_WITHOUT_MUTATING_HISTORICAL_ARTIFACTS",
+    "SUBMIT_VALIDATED_SUCCESSOR_CANDIDATES_THROUGH_EXISTING_PUBLISHER_PUBLICATION_PATH"
+  ],
+  "handoff_projection_refs": ["docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"],
+  "completion": {"claimed":false,"validated":false,"historical_pdf_identities_preserved":true,"successor_editions_published":false,"site_readback_observed":false},
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"publisher_owns_editorial_mutation":true,"site_is_downstream_display":true,"github_runtime_authority":"NONE","interlock_intr_required_when_applicable":true,"master_records_reality_authority":true,"second_user_operated_device_required":false}
+}
