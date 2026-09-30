@@ -78,3 +78,17 @@ No missing SDK CLI/library exposure was found to repair: the operation is alread
 A separate exact-binding defect was also identified before any successor invocation: the existing `stegverse.publisher_paper_publication` converter is intentionally hard-bound to parent task `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001` and a single exact manuscript byte identity/Publisher `papers/` target. Publisher #91 defines composite successor identities and immutable predecessor hashes, but does not define a concrete successor `papers/` target artifact/path or exact successor artifact bytes. Reusing the parent converter would therefore violate task/source/target identity. The first source repair is to materialize each #91 composite candidate as a deterministic Publisher-owned successor artifact with a distinct versioned `papers/` target and exact digest, while preserving the historical predecessor bytes. Then bind those exact new artifact identities through the existing generic Manifest Builder/universal runtime; do not broaden the parent-specific converter or invent a second publication runtime.
 
 No Publisher release or Site propagation is admissible from this inspection.
+
+
+## 2026-09-30 adjacent Volume III / convergence public display
+
+Owner explicitly requested public Site display of the existing Publisher Volume III research manuscript and the existing convergence/comparative-signal treatment. This is adjacent collection publication work and does **not** satisfy this child task's Volume I/II successor-edition publication predicates.
+
+Site PR #1474 merged with expected-head protection from exact head `7b4b1adddb5cf26802518c6891240d8cbb2c5b5f` as merge commit `d7067b40280f9d43d3d853e52d1b205de3743cfd`. GitHub reported no exact-head workflow runs or commit statuses for that head; no CI success is inferred.
+
+Main now contains:
+- `papers/stegverse-entity-economy-volume-iii/index.html`, mirrored from Publisher `papers/entity-economy-volume-iii-sovereign-ai-economics.md` blob `df3c63689b5e13bbaf20413562fa0de82fbb3729`, preserving the Publisher label `editorial research draft v0.3`.
+- `papers/stegverse-entity-economy-convergence-signal/index.html`, mirrored from Publisher `docs/ENTITY_ECONOMY_SECOND_BRAIN_CONVERGENCE_TREATMENT.md` blob `4d99b1607d983d0a20bf6b877084ae95941d4a6b`, explicitly not Volume IV, not an origin claim, not empirical validation, and not a runtime/authority result.
+- Updated `Papers.html`, Entity Economy series-thesis discovery, and Site README collection semantics.
+
+Historical Volume I/II identities and routes are unchanged. Site remains a downstream public display surface. Fresh external observation attempted immediately after merge still returned the older `Papers.html` deployment and did not resolve the two new routes, so credential-free deployed readback for these adjacent pages remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; source merge is not substituted for deployment/readback evidence.
