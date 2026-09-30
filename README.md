@@ -1936,3 +1936,6 @@ Canonical economic goal `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001` now ha
 ### Entity Economy successor editions — 2026-09-29
 
 `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001` decomposes separately versioned Volume I/II successor-edition work from parent `ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001` after the parent reached its prompt ceiling. Publisher PR #90 convergence source is merged; historical Volume I/II PDF identities remain immutable. The child owns preparation/validation of new Publisher edition identities and subsequent use of the existing governed Publisher-to-Site publication path. Registration grants no publication/runtime authority. See `docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md`.
+
+
+Entity Economy successor publication inspection: the canonical child remains source-prepared but unpublished. Current ChatGPT operations expose no authenticated TV/TVC + Universal InTr Publisher-paper invocation primitive, so runtime state is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED rather than an inferred denial. See `docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md`.
