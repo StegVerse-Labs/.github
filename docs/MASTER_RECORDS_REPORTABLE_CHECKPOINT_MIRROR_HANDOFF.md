@@ -13,12 +13,45 @@ Define a witness-neutral, privacy-minimal checkpoint primitive that commits to a
 ## Authority boundary
 
 - Master Records remains custody/reconstruction authority.
-- Interlock/InTr remains governed transition/admission authority.
+- Interlock/InTr is the registered-node data-transfer protocol boundary. Node registration is required to communicate using Interlock/InTr; use of the protocol does not itself mean the external framework's input is a governed data set.
 - TV/TVC remains credential authority.
 - A witness observes/retains a bounded commitment only and obtains no StegVerse authority.
 - A checkpoint is not, by itself, independent proof. External observation/anchoring is a separate evidence layer.
 - No AILeash/sebbi-specific transport, cadence, Bitcoin requirement, membership semantics, or API is part of v1.
 - No external submission is authorized by this task until the counterpart's exact current payload/schema and submission procedure are received and mapped.
+
+## Successor interoperability boundary
+
+The checkpoint primitive MUST remain distinct from Interlock/InTr transport and ecosystem admission semantics:
+
+- one-way external evidence/data can exist without treating the external framework's data as a governed external data set;
+- communication **using Interlock/InTr** requires node registration;
+- a manifest declares intent to enter the StegVerse ecosystem and is evaluated at the ecosystem boundary;
+- StegVerse governs all output automatically, so any response/egress is a StegVerse-governed allowed transfer set;
+- that output property does not imply that the originating external framework supplied a governed data set or surrendered its own governance model;
+- witness status, node registration, manifest intent, admission, and permitted output are separate states and MUST NOT be collapsed;
+- future witness-to-node interoperability should bind a verified witness identity to node registration only through the existing registration/manifest boundary, not through checkpoint semantics.
+
+A useful directional model is:
+
+```text
+external data/evidence
+        |
+        | (not inherently a governed external data set)
+        v
+node registration + manifest intent
+        |
+        v
+Interlock/InTr ecosystem communication
+        |
+        v
+StegVerse processing
+        |
+        v
+allowed StegVerse-governed output set
+```
+
+This is a successor architecture requirement only. It does not add node-registration, manifest, or transport fields to `MasterRecordsCheckpoint/v1`.
 
 ## Required closure predicate
 
