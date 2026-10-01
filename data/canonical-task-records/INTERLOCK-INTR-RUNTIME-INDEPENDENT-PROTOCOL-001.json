@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "correlation_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "root_correlation_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "parent_task_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "goal": "Define and validate a runtime-independent Interlock/InTr state-transition-dependent data-transfer protocol and machine-readable conformance contract.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000102000",
+    "source_state_vector_ref": "control/task-vectors/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md",
+    "schemas/interlock-intr-runtime-independent-protocol-v1.schema.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "interlock",
+      "intr",
+      "manifest",
+      "state-transition-disposition",
+      "transfer-receipt",
+      "interoperability"
+    ]
+  },
+  "dependencies": [
+    "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001"
+  ],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "REGISTERED_NODE_IDENTITY_BOUND",
+    "MANIFEST_INTENT_BOUND",
+    "SOURCE_DESTINATION_BOUND",
+    "PAYLOAD_COMMITMENT_BOUND",
+    "APPLICABLE_STATE_OR_PREDECESSOR_BOUND",
+    "REQUESTED_CAPABILITY_BOUND",
+    "ALLOW_DENY_FAIL_CLOSED_DISPOSITION_REQUIRED",
+    "TRANSFER_RECEIPT_BOUND",
+    "RESULTING_STATE_COMMITMENT_BOUND_WHEN_APPLICABLE",
+    "EVIDENCE_REFERENCES_BOUND",
+    "PARTICIPATING_RUNTIME_IMPLEMENTATION_NOT_REQUIRED",
+    "NO_EXTERNAL_ADOPTION_OR_CONFORMANCE_CLAIM_WITHOUT_EVIDENCE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "specification",
+      "deterministic_conformance_vectors"
+    ],
+    "environment": "DOCUMENTARY_NON_AUTHORIZING",
+    "direction": "REGISTERED_NODE_TO_REGISTERED_NODE",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "PROTOCOL_SCHEMA_AND_CONFORMANCE_VECTORS_VALIDATED"
+  ],
+  "authority_model": {
+    "transport_protocol": "INTERLOCK_INTR",
+    "participating_runtime_authority": "LOCAL_TO_EACH_FRAMEWORK",
+    "stegverse_output_governance": "STEGVERSE",
+    "external_framework_governance": "NOT_ASSUMED"
+  }
+}
