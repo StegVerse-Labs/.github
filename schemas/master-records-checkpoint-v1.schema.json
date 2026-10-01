@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/master-records-checkpoint-v1.schema.json",
+  "title": "MasterRecordsCheckpoint/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "origin",
+    "checkpoint_sequence",
+    "first_sequence",
+    "last_sequence",
+    "tree_size",
+    "merkle_root",
+    "predecessor_checkpoint_digest",
+    "closure_receipt_sha256",
+    "canonicalization",
+    "hash_algorithm",
+    "signature_profile",
+    "signing_key_id",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.master-records-checkpoint/v1"
+    },
+    "origin": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checkpoint_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "first_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tree_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "merkle_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "predecessor_checkpoint_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "closure_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canonicalization": {
+      "const": "stegverse-master-records-merkle/v1"
+    },
+    "hash_algorithm": {
+      "const": "sha256"
+    },
+    "signature_profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signing_key_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signature": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
