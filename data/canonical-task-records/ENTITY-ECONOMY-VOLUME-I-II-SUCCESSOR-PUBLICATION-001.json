@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001",
+  "correlation_id": "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
+  "successor_task_ids": [],
+  "goal": "Complete only the unresolved Volume I/II successor-edition path: materialize deterministic distinct Publisher-owned versioned artifacts from the exact PR #91 composites, validate immutable predecessor identities, bind them through the existing generic manifest builder/governed Publisher publication path, and observe downstream Site versioned-route propagation/readback without inferring deployment from repository merge.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "10100000102000",
+  "source_refs": [
+    "StegVerse-Labs/.github:data/canonical-task-records/ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001.json",
+    "StegVerse-Labs/.github:docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md",
+    "GCAT-BCAT-Engine/Publisher#91 merged ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b",
+    "GCAT-BCAT-Engine/Publisher:data/economy/entity-economy-successor-editions.v1.json",
+    "Volume I predecessor SHA-256 a831891cee4c4e7a920ed6d38090672e0722b434a5941632620c3e11d8e4da95",
+    "Volume II predecessor SHA-256 129accea04dcef0c5b063ae5799d9952e97462859fb36842c93a3ca7776fe95f"
+  ],
+  "preserved_closed_adjacent_evidence": [
+    "Volume III provenance/scope correction complete as adjacent evidence; not a Volume I/II successor predicate.",
+    "Convergence / Comparative Signal Treatment public-display work complete as adjacent evidence; not Volume IV and not a Volume I/II successor publication disposition.",
+    "Entity Economy Empirical Research Proposal Publisher source and Site repository publication complete as adjacent evidence; deployed public readback remained UNKNOWN_NOT_AUTHENTICALLY_OBSERVED at transfer."
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "SUCCESSOR_EDITION_SOURCE_CANDIDATES",
+      "kind": "TASK",
+      "state": "RESOLVED",
+      "ref": "Publisher PR #91 merged ce63109a6b3ffb7ba4335ae4b8c7f8b4f2b3248b"
+    },
+    {
+      "dependency_id": "SUCCESSOR_VERSIONED_PUBLISHER_ARTIFACT_IDENTITIES_MATERIALIZED",
+      "kind": "SOURCE",
+      "state": "FAIL_CLOSED",
+      "ref": "PR #91 composite IDs do not yet bind concrete distinct versioned papers/ target paths plus exact successor bytes/digests."
+    },
+    {
+      "dependency_id": "GOVERNED_SUCCESSOR_PUBLICATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing Publisher publication path"
+    },
+    {
+      "dependency_id": "SITE_SUCCESSOR_PROPAGATION_READBACK",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNKNOWN",
+      "ref": "existing Publisher-to-Site mirror/readback path"
+    },
+    {
+      "dependency_id": "EMPIRICAL_PROPOSAL_PUBLIC_READBACK",
+      "kind": "OBSERVATION",
+      "state": "UNKNOWN",
+      "ref": "Re-check public proposal route independently during this successor Goal; do not infer deployment from repository merge."
+    }
+  ],
+  "allowed_next_transitions": [
+    "MATERIALIZE_DETERMINISTIC_PUBLISHER_VERSIONED_SUCCESSOR_ARTIFACTS_FROM_EXACT_PR91_COMPOSITES",
+    "VALIDATE_SUCCESSOR_ARTIFACT_IDENTITIES_WITHOUT_MUTATING_HISTORICAL_ARTIFACTS",
+    "BIND_VALIDATED_SUCCESSOR_ARTIFACTS_THROUGH_EXISTING_GENERIC_MANIFEST_BUILDER",
+    "INVOKE_EXISTING_GOVERNED_PUBLISHER_PATH_AND_RETAIN_FIRST_AUTHENTIC_DISPOSITION_WHEN_REACHABLE",
+    "PROPAGATE_TO_NEW_SITE_VERSIONED_ROUTES_ONLY_AFTER_AUTHENTIC_PUBLISHER_RELEASE_EVIDENCE",
+    "INDEPENDENTLY_OBSERVE_SITE_SUCCESSOR_AND_EMPIRICAL_PROPOSAL_PUBLIC_READBACK"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "historical_pdf_identities_preserved": true,
+    "successor_editions_published": false,
+    "site_readback_observed": false,
+    "adjacent_evidence_preserved": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "publisher_owns_editorial_mutation": true,
+    "site_is_downstream_display": true,
+    "github_runtime_authority": "NONE",
+    "interlock_intr_required_when_applicable": true,
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  }
+}

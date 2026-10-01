@@ -127,3 +127,14 @@ The Site page explicitly identifies the proposal as a non-numbered companion, no
 Credential-free public readback was attempted after merge. The direct proposal route was not accessible through the external public reader, and the externally crawled `Papers.html` remained on the older deployment without the proposal card. Therefore deployed proposal readback remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; repository merge is not substituted for deployment evidence.
 
 This adjacent companion publication does not satisfy or alter the Volume I/II successor-edition runtime predicates of `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001`.
+
+
+## 2026-09-30 prompt-limit decomposition
+
+`ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001` reached its 20/20 Goal Prompt ceiling and is retired for further work. Remaining work transfers without semantic expansion to `ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001` / COSV `10100000102000`.
+
+Closed adjacent evidence is preserved, not reopened: the corrected Volume III series continuation, the separate Convergence / Comparative Signal Treatment, and the non-numbered Entity Economy Empirical Research Proposal repository publication. None satisfies the Volume I/II successor-edition predicates.
+
+The successor retains exactly these unresolved conditions: deterministic concrete versioned Publisher artifacts/paths/bytes/digests must be materialized from the exact PR #91 composites while preserving historical predecessor identities; governed Publisher publication remains unobserved; downstream Site successor propagation/readback remains unobserved. The empirical-proposal public route must also be independently re-checked during the successor Goal because repository merge is not deployment evidence.
+
+Canonical successor handoff: `docs/ENTITY_ECONOMY_VOLUME_I_II_SUCCESSOR_PUBLICATION_MIRROR_HANDOFF.md`.

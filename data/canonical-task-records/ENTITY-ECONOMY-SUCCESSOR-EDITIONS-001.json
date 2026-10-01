@@ -4,10 +4,12 @@
   "correlation_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
   "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
   "parent_task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
-  "successor_task_ids": [],
+  "successor_task_ids": [
+    "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001"
+  ],
   "goal": "Prepare and govern separately versioned successor editions of Entity Economy Volumes I and II that incorporate the merged 2026-09-29 convergence treatment without modifying, replacing, or re-identifying the historical PDF artifacts; preserve Publisher editorial ownership and require the existing Publisher-to-Site publication and readback path for any release.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
   "cosv_task_vector": "10100000102000",
   "source_refs": [
     "GCAT-BCAT-Engine/Publisher#90 merged eb357ecb69075e87334518ead401c5a32613b16d",
@@ -89,10 +91,7 @@
     }
   ],
   "allowed_next_transitions": [
-    "MATERIALIZE_DETERMINISTIC_PUBLISHER_VERSIONED_SUCCESSOR_ARTIFACTS_FROM_EXACT_PR91_COMPOSITES",
-    "VALIDATE_SUCCESSOR_ARTIFACT_IDENTITIES_WITHOUT_MUTATING_HISTORICAL_ARTIFACTS",
-    "BIND_VALIDATED_SUCCESSOR_ARTIFACTS_THROUGH_EXISTING_GENERIC_MANIFEST_BUILDER",
-    "INVOKE_EXISTING_RUN_MANIFEST_ONLY_WHEN_AUTHENTIC_TV_TVC_UNIVERSAL_INTR_HOST_ATTACHMENT_IS_EXPOSED"
+    "CONTINUE_IN_SUCCESSOR_TASK_ENTITY_ECONOMY_VOLUME_I_II_SUCCESSOR_PUBLICATION_001"
   ],
   "handoff_projection_refs": [
     "docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md"
@@ -102,7 +101,8 @@
     "validated": false,
     "historical_pdf_identities_preserved": true,
     "successor_editions_published": false,
-    "site_readback_observed": false
+    "site_readback_observed": false,
+    "retired_by_prompt_limit_closeout": true
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -113,5 +113,6 @@
     "interlock_intr_required_when_applicable": true,
     "master_records_reality_authority": true,
     "second_user_operated_device_required": false
-  }
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED; ADJACENT_VOLUME_III_CONVERGENCE_AND_EMPIRICAL_PROPOSAL_EVIDENCE_PRESERVED; UNRESOLVED_VOLUME_I_II_SUCCESSOR_PUBLICATION_WORK_TRANSFERRED_TO_ENTITY_ECONOMY_VOLUME_I_II_SUCCESSOR_PUBLICATION_001"
 }
