@@ -1,3 +1,7 @@
+## Node Exchange Gate-1 execution-surface repair — 2026-10-01
+
+Verified canonical merge #2902 is reconciled with runtime predicate `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Existing-owner tracing selected the StegOS credential-free Universal InTr public-profile verifier as the minimum repair seam; StegOS PR #420 exposes only a bounded reciprocal-existence observation projection. Identity, health, credentials, checkpoint and meeting-point transport remain downstream and unattempted. Runtime Gate 1 remains unobserved.
+
 ## Node Exchange first executable conformance specimen — 2026-10-01
 
 Issue #2901 is projected into `data/node-exchange/first-executable-conformance-v0.1.json`: authenticated reciprocal existence -> identity -> current health -> `REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE` -> request authorization, with credential/checkpoint/ephemeral transport downstream only. Richard/Sebbi remains the first bounded target, but endpoint and credentials are deliberately unspecified; runtime disposition remains unobserved. Unknown health fails closed and credential-before-admission is non-ALLOW. See the canonical handoff.
