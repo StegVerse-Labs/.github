@@ -148,7 +148,7 @@ def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None 
             (args.runtime_root or default_runtime_root(env)).expanduser().resolve(),
             args.only_consumer or TARGET_CONSUMER,
             args.goal_task_id,
-            args.request_id,
+            getattr(args, "request_id", None),
         )
     source = Path(params["source_root"]).expanduser().resolve()
     runtime = Path(params["runtime_root"]).expanduser().resolve()
@@ -160,7 +160,7 @@ def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None 
         "runtime_root": str(args.runtime_root.expanduser().resolve()) if args.runtime_root is not None else None,
         "only_consumer": args.only_consumer,
         "goal_task_id": args.goal_task_id,
-        "request_id": args.request_id,
+        "request_id": getattr(args, "request_id", None),
     }
     expected = {
         "source_root": str(source),
@@ -342,7 +342,7 @@ def refresh_and_dispatch(
         if not current_goal_task_id:
             raise RuntimeError("goal task id must be non-empty")
         if target_consumer not in {"canonical_work_coordination", SDK_GENERIC_MANIFEST_CONSUMER}:
-            raise RuntimeError("reusable invocation selector mismatch: goal task context requires a goal-aware target")
+            raise RuntimeError("reusable invocation selector mismatch: goal task context requires canonical_work_coordination target or sdk_generic_manifest_execution target")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
