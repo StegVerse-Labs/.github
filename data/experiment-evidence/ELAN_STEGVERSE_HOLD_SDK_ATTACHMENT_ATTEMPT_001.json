@@ -1,0 +1,140 @@
+{
+  "schema": "stegverse.review.evidence-record.v1",
+  "record_id": "ELAN-STEGVERSE-HOLD-SDK-ATTACHMENT-ATTEMPT-001",
+  "created_for": "machine_review",
+  "task": {
+    "goal_task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+    "handoff_task_id": "StegVerse-Labs/.github/docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md",
+    "cosv_id": "71000000100100"
+  },
+  "experiment": {
+    "name": "Frozen HOLD ephemeral SDK attachment attempt",
+    "system_under_test": "StegVerse",
+    "result_status": "PARTIAL_BOUNDARY_OBSERVATION",
+    "completed_hold_result": false,
+    "provider_behavior_asserted": false,
+    "ordinary_chat_evidence_used": false
+  },
+  "execution": {
+    "repository": "StegVerse-org/StegVerse-SDK",
+    "workflow_run_id": 36797678324,
+    "workflow_artifact_id": 11134216722,
+    "workflow_artifact_archive_sha256": "94ba6455aeb14d6113ae344445c821350eb70a38b2c5e8a153b508c1b4bb085b",
+    "exact_sdk_head": "d7fbafd6526356e5cc190ebaca65564723b47dc4",
+    "invocation_count": 1,
+    "invocation_command_class": "stegverse run-manifest",
+    "invocation_surface": "ephemeral GitHub Actions SDK checkout",
+    "sdk_install_mode": "python -m pip install -e '.[dev]'",
+    "manifest_builder_used": true
+  },
+  "retained_artifact_hashes": {
+    "sdk-frozen-head.txt": "cb45e7b8fe81f7b1cd678d066ca2aea1f2d706157b3b73f7d5e62ac841e6a4cc",
+    "sdk-source-index.txt": "dc7877d72764d943d262e040433d537bb19a109b7f1637051955b37e1ad95a71",
+    "pip-freeze.txt": "21cbe00ef3fa1a12ac0c136231232a87fba5f8fe90b87b26b83ccc11e2dad404",
+    "hold-source.json": "f8cf4889d5b9e91dfed9cb073e5f1c0f52827d5568f566556f2f3bd8d2027e7f",
+    "hold-governance-request.json": "824b0f2d3be4f426647cb9ee2c72e9d092ad9be2bdeba105f45e72e4271cd21f",
+    "hold.manifest.json": "c6e92ead6962e2240750ac836d66643d305dffbb481458b038e0395697714e1b",
+    "hold.result.json": "3b4d188b5cd2c9bea5b460ed72e17c298908f56d6faa845f393e5d413664366d",
+    "run-manifest.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-manifest.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-manifest.exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "sdk_result": {
+    "schema": "stegverse.sdk.manifest-attachment-disposition/v1",
+    "state": "FAIL_CLOSED",
+    "disposition": "FAIL_CLOSED",
+    "evaluation_boundary": "SDK_MANIFEST_TRANSPORT_ATTACHMENT",
+    "evidence_class": "SDK_LOCAL_ATTACHMENT_ATTEMPT",
+    "failed_predicate": "UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED",
+    "reason_code": "UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED",
+    "required_evidence_or_repair": "Attach the existing manifest-selected transport ingress; no device discovery.",
+    "route_id": "stegverse.route.canonical-governed.v1",
+    "processing_capability": "governance",
+    "retry_entrypoint": "stegverse.manifest_state_transition_runtime.execute_manifest",
+    "authority_effect": "NONE",
+    "authentic_governance_disposition_observed": false,
+    "organization_receipt_observed": false,
+    "master_records_reconstruction_observed": false,
+    "consequence_committed": false,
+    "canonical_task_id": null,
+    "graph_id": "RTC-GOVERNED-PROCESSING-002",
+    "wire_manifest_sha256": "1e1186b4efd89bfe843b37cc9365df8b4f6b46b918660de3df7e5d17a5deffa5",
+    "canonical_manifest_sha256": "25080624b314b63b9fbe19971ee1ee85f0d2789ccac30b3ce853aac2de12be6e",
+    "request_sha256": "a9e4a2e8684dd5f49956c3b456056ce47e03dfc85b53a4b42f22677af9e27cd0",
+    "processor_request_sha256": "f22826eaf052b3dc91894ac83b35ae5656586c8e4b989441d519af98780dda46",
+    "processor_result_sha256": "a5d048408a863e252246b63ecace55bf045bae4e5c19ae19c528a7616fe319eb",
+    "diagnostic_sha256": "28e4d406727bc025cc8295f023cefac9effa02a97d1aafa91dee237dd1c9cc2f"
+  },
+  "run_manifest_lineage": {
+    "schema": "stegverse.sdk.run-manifest-lineage.v1",
+    "run_manifest_request": {
+      "schema": "stegverse.sdk.run-manifest-request.v1",
+      "authority_effect": "NONE_DISPATCH_BINDING_ONLY",
+      "canonical_manifest_sha256": "25080624b314b63b9fbe19971ee1ee85f0d2789ccac30b3ce853aac2de12be6e",
+      "processing_capability": "governance",
+      "route_declaration_hash": "38ebd0b634a30d0397558dadac7a737694854aa336d0bd7d0c61049d7c61cff0",
+      "route_id": "stegverse.route.canonical-governed.v1",
+      "runtime_binding": "stegverse.manifest_state_transition_runtime.execute_manifest",
+      "source_framework": "STEGVERSE_HOLD_EVALUATOR",
+      "source_instance": null,
+      "source_output_id": "ELAN-STEGVERSE-HOLD-FROZEN-ATTEMPT-001"
+    }
+  },
+  "source_boundary": {
+    "frozen_protocol_submitted": true,
+    "authentic_provider_outputs_included": false,
+    "chatgpt_behavior_claimed": false,
+    "elan_behavior_claimed": false,
+    "no_invocation_control_classified_as_provider_silence": false,
+    "notes": [
+      "The submission input is frozen evaluator protocol material, not a claim that ChatGPT or ÉLAN produced the listed conditions or outputs.",
+      "The attempt does not reuse ordinary-chat acknowledgements as experimental evidence.",
+      "The result establishes an SDK attachment-boundary observation only."
+    ]
+  },
+  "claim_boundary": {
+    "established": [
+      "The SDK checkout installed successfully in the ephemeral runner.",
+      "The HOLD manifest was built.",
+      "Exactly one public run-manifest invocation was attempted.",
+      "The canonical governed route was selected.",
+      "The SDK returned FAIL_CLOSED at SDK_MANIFEST_TRANSPORT_ATTACHMENT.",
+      "The failed predicate was UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED."
+    ],
+    "not_established": [
+      "Authentic sovereign governance disposition",
+      "Organization-ledger receipt",
+      "Consequence commit",
+      "Master Records reconstruction",
+      "Completed HOLD result",
+      "ChatGPT internal HOLD state",
+      "ÉLAN internal HOLD state",
+      "Cross-environment comparison"
+    ]
+  },
+  "repository_evidence": {
+    "sdk_pr": {
+      "number": 410,
+      "state": "MERGED",
+      "merge_commit_sha": "210dd58f7af42986332d67526890dda5e586d702"
+    },
+    "coordination_pr": {
+      "repository": "StegVerse-Labs/.github",
+      "number": 2892,
+      "state": "MERGED",
+      "merge_commit_sha": "b77cc5d960096b90da4fb571a732baff685e1545"
+    }
+  },
+  "review": {
+    "status": "PENDING_REVIEW",
+    "reviewer_identity": null,
+    "reviewed_at": null,
+    "findings": [],
+    "questions": [
+      "Does the record accurately distinguish SDK attachment failure from a downstream sovereign governance disposition?",
+      "Does any retained evidence contradict UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED as the first observed failed predicate?",
+      "Is the existing manifest-selected Universal InTr ingress expected to be available in this ephemeral evaluator context?",
+      "What exact existing attachment mechanism should satisfy the required repair without creating a new runtime or authority path?"
+    ]
+  }
+}
