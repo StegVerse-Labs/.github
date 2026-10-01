@@ -318,6 +318,70 @@
         "authentic_worker_source_refresh_after_continuation_repair_observed": false,
         "authentic_assignment_disposition_after_continuation_repair_observed": false,
         "authentic_functional_memory_receipt_after_continuation_repair_observed": false
+      },
+      "execution_substrate_resolution": {
+        "schema": "stegverse.execution-substrate-resolution/v1",
+        "review_order": [
+          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "STEGOS-CURRENT-DEVICE-NODE",
+          "STEG-BROWSER-EPHEMERAL-LEASE",
+          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+        ],
+        "reviews": [
+          {
+            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "disposition": "PENDING_EVIDENCE",
+            "limitation_class": "EVIDENCE_REACHABILITY",
+            "evidence_refs": [
+              "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "data/task-registry-global-invariants.json"
+            ]
+          },
+          {
+            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "data/reusable-task-ephemeral-construct-contract.json"
+            ]
+          },
+          {
+            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "disposition": "ELIGIBLE_WHEN_ADMITTED",
+            "limitation_class": "PLATFORM",
+            "evidence_refs": [
+              "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "disposition": "SELECTED",
+            "limitation_class": "NONE",
+            "evidence_refs": [
+              "control/canonical-work-runtime-profile.json",
+              "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+            ]
+          },
+          {
+            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+            "disposition": "NOT_APPLICABLE",
+            "limitation_class": "NOT_APPLICABLE",
+            "evidence_refs": []
+          }
+        ],
+        "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "external_device_required": false,
+        "second_user_operated_device_allowed": false,
+        "authority_effect": "NONE"
       }
     },
     {
