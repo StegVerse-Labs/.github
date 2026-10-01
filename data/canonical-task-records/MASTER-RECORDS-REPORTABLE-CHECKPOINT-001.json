@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "correlation_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "root_correlation_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "parent_task_id": null,
+  "goal": "Define and validate a witness-neutral Master Records checkpoint commitment and proof contract for bounded external witnessing without transferring authority.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000101000",
+    "source_state_vector_ref": "control/task-vectors/MASTER-RECORDS-REPORTABLE-CHECKPOINT-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md",
+    "schemas/master-records-checkpoint-v1.schema.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "master-records",
+      "checkpoint",
+      "merkle-proof",
+      "external-witness-projection"
+    ]
+  },
+  "dependencies": [
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "AUTHENTIC_MASTER_RECORDS_CLOSURE_REQUIRED",
+    "RECEIPT_RECONSTRUCTION_DIGEST_EQUALITY_REQUIRED",
+    "DETERMINISTIC_DOMAIN_SEPARATED_MERKLE_ROOT",
+    "PREDECESSOR_CONTINUITY_BOUND",
+    "INCLUSION_PROOF_VERIFIABLE",
+    "CONSISTENCY_PROOF_VERIFIABLE",
+    "PRIVACY_MINIMAL_EXTERNAL_PROJECTION",
+    "EXTERNAL_WITNESS_HAS_NO_STEGVERSE_AUTHORITY",
+    "NO_PROVIDER_SPECIFIC_TRANSPORT_IN_V1"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "specification",
+      "deterministic_test_vectors"
+    ],
+    "environment": "DOCUMENTARY_NON_AUTHORIZING",
+    "direction": "MASTER_RECORDS_TO_BOUNDED_EXTERNAL_COMMITMENT",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "CHECKPOINT_SCHEMA_AND_TEST_VECTOR_VALIDATED"
+  ],
+  "authority_model": {
+    "master_records_custody_authority": "MASTER_RECORDS",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV_TVC",
+    "external_witness_authority_effect": "NONE"
+  }
+}
