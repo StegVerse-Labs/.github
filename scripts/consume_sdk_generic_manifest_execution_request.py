@@ -14,7 +14,7 @@ def load(path:Path)->dict[str,Any]:
     if not isinstance(v,dict): raise RuntimeError("JSON object required")
     return v
 
-def consume(source_root:Path,runtime_root:Path,*,env:dict[str,str]|None=None)->dict[str,Any]:
+def consume(source_root:Path,runtime_root:Path,*,request_id:str|None=None,goal_task_id:str|None=None,env:dict[str,str]|None=None)->dict[str,Any]:
     source=source_root.expanduser().resolve(); runtime=runtime_root.expanduser().resolve()
     request_path=runtime/REQUEST_REL
     if not request_path.is_file(): request_path=source/REQUEST_REL
@@ -34,8 +34,15 @@ def consume(source_root:Path,runtime_root:Path,*,env:dict[str,str]|None=None)->d
     sys.path.insert(0,str(sdk.resolve()))
     from stegverse.manifest_builder import build_manifest
     from stegverse.manifest_execution import execute_manifest
+    requests=req.get("requests") or []
+    if request_id is not None:
+        request_id=str(request_id).strip()
+        if not request_id: raise RuntimeError("request id must be non-empty")
+        requests=[item for item in requests if item.get("request_id")==request_id]
+        if len(requests)!=1:
+            raise RuntimeError("exact SDK generic manifest child request not found or not unique")
     results=[]
-    for item in req.get("requests") or []:
+    for item in requests:
         build=build_manifest(**item["build"])
         extensions=item.get("manifest_extensions")
         if extensions is not None:
@@ -57,12 +64,12 @@ def consume(source_root:Path,runtime_root:Path,*,env:dict[str,str]|None=None)->d
         results.append({"request_id":item["request_id"],"manifest":build,"result":result})
         if result.get("disposition") in {"DENY","FAIL_CLOSED"}: break
     receipt={"schema":"stegverse.sdk-generic-manifest-execution-result/v1","state":"ATTEMPT_RECORDED",
-      "runtime_execution_attempted":True,"results":results,"authority_effect":"NONE_EVIDENCE_ONLY"}
+      "runtime_execution_attempted":True,"goal_task_id":goal_task_id,"selected_request_id":request_id,"results":results,"authority_effect":"NONE_EVIDENCE_ONLY"}
     out=runtime/RECEIPT_REL; out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 
 def main()->int:
-    p=argparse.ArgumentParser(); p.add_argument("--source-root",type=Path,default=ROOT); p.add_argument("--runtime-root",type=Path,required=True)
-    a=p.parse_args(); print(json.dumps(consume(a.source_root,a.runtime_root),sort_keys=True)); return 0
+    p=argparse.ArgumentParser(); p.add_argument("--source-root",type=Path,default=ROOT); p.add_argument("--runtime-root",type=Path,required=True); p.add_argument("--request-id"); p.add_argument("--goal-task-id")
+    a=p.parse_args(); print(json.dumps(consume(a.source_root,a.runtime_root,request_id=a.request_id,goal_task_id=a.goal_task_id),sort_keys=True)); return 0
 if __name__=="__main__": raise SystemExit(main())
