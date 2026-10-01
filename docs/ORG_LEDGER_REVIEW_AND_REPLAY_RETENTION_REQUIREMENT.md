@@ -133,16 +133,44 @@ into an archived or Merkle-committed state in which they remain replayable and
 reconstructable on a per-use fee basis. Nothing is destroyed; the cost basis
 changes.
 
-### Existing vocabulary to reuse rather than duplicate
+### Existing vocabulary: what to reuse, and what must not be reused
 
-- `expiry_basis: "TASK_CLASS_COST_BASIS"` already appears 19 times in this
-  repository. **Expiry is already cost-derived here**, by task class. Tiered
-  retention extends an existing pattern; it should not introduce a parallel clock.
-- Rich expiry vocabulary already exists: `expires_at`, `expiry_epoch`,
-  `expiry_basis`, `claim_expires_at`, `block_expires_at`. Prefer these over a new
-  `ttl`.
-- `run` / `replay` / `reconstruct` already exist as distinct operations — the SDK
-  CLI exposes them as `--fallback-operation` choices.
+**Retention must not reuse the existing expiry vocabulary.** In this repository
+`expiry` is exclusively worker and credential lease/fence lifetime:
+
+- `expiry_basis` is a **required field of `heartbeat_timing`** in
+  `schemas/worker-registry.schema.json`, sitting beside `fencing_token`,
+  `expiry_epoch`, `transition_sequence` and `max_missing_response_beats`. Its enum
+  is `STATIC_BOOTSTRAP`, `TASK_CLASS_COST_BASIS`, `OBSERVED_TRANSITION_COST_BASIS`,
+  `HUMAN_AUTHORITY`, `NONE`.
+- `lease` carries `issued_at`, `expires_at`, `heartbeat_due_at`,
+  `handoff_grace_expires_at`, `fencing_token`, `renewal_allowed`, `max_renewals`.
+- `claim_expires_at` and `block_expires_at` are claim/fence fields.
+- Every occurrence of `expiry_basis` sits in worker, heartbeat, lease or
+  credential source: `control/worker-registry.json`, `control/heartbeat-*.json`,
+  `heartbeat_runtime/engine_v9.py`, `cost-basis/worker-runtime/`, and their tests.
+- **`wall_clock_expiry_authority` is `false` in all 16 occurrences.** Wall clock is
+  explicitly not the authority for expiry here.
+
+These are two different mechanisms and must not share a field family:
+
+| | lease expiry | records retention |
+| --- | --- | --- |
+| purpose | liveness — a hold lapses so another worker can take over | durability and cost basis |
+| measured in | heartbeat epochs and beats | wall clock |
+| wall-clock authority | explicitly `false` | inherently wall clock |
+| on elapse | the hold is released | nothing is released; cost basis changes |
+
+`TASK_CLASS_COST_BASIS` is the cost basis for a **worker lease duration**, not
+evidence that record retention is already cost-derived. Retention needs its own
+basis.
+
+**Recommendation:** name retention fields so they cannot be confused with lease
+expiry — e.g. `retention_class`, `replayable_until`, `reconstructable_until`,
+`retention_basis` — and avoid the `expiry_*` family entirely.
+
+**Safe to reuse:** `run` / `replay` / `reconstruct` already exist as distinct
+operations — the SDK CLI exposes them as `--fallback-operation` choices.
 - **No tier, account, subscription, billing or metering vocabulary exists in this
   repository today.** `cost-basis/` contains only `worker-runtime`. This is new
   vocabulary and should be named deliberately.
@@ -231,8 +259,9 @@ surfaces.
    recommends write-time binding; the decision is the owner's.
 3. Is there a minimum retention floor at every tier for governance or regulatory
    reasons, independent of what tier is purchased?
-4. Does `expiry_basis` gain a new value (e.g. an account/tier cost basis alongside
-   `TASK_CLASS_COST_BASIS`), or does tiered retention carry its own basis field?
+4. What is the retention basis field called, and what are its values? It must be
+   separate from `expiry_basis`, which is worker/credential lease lifetime under
+   heartbeat authority with `wall_clock_expiry_authority: false` — see Part B.
 
 ## Suggested sequence
 
