@@ -1,0 +1,41 @@
+name: Validate Organization Role Deployment Packet (Non-Authorizing)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/organization-role-deployment/**"
+      - "scripts/verify_organization_role_deployment.py"
+      - "docs/ORGANIZATION_ROLE_PER_ORG_DEPLOYMENT.md"
+      - "tests/test_organization_role_deployment_packet.py"
+      - ".stegverse/transition-ledger/org-contract.json"
+      - "resident-runtime/aggregate_repo_transition.py"
+      - ".github/workflows/validate-organization-role-deployment-packet.yml"
+  pull_request:
+    paths:
+      - "data/organization-role-deployment/**"
+      - "scripts/verify_organization_role_deployment.py"
+      - "docs/ORGANIZATION_ROLE_PER_ORG_DEPLOYMENT.md"
+      - "tests/test_organization_role_deployment_packet.py"
+      - ".stegverse/transition-ledger/org-contract.json"
+      - "resident-runtime/aggregate_repo_transition.py"
+      - ".github/workflows/validate-organization-role-deployment-packet.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  organization-role-deployment-packet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: The reference organization passes its own verifier
+        run: python3 scripts/verify_organization_role_deployment.py --org-root .
+      - name: Packet source regressions
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_organization_role_deployment_packet.py
