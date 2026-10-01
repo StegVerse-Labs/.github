@@ -1,0 +1,10 @@
+{
+  "profile": "task.v1",
+  "task_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "vector": "50000000101000",
+  "parent_task_id": null,
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}
