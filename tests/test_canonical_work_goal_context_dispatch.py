@@ -433,5 +433,17 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
             )
 
 
+    def test_parent_canonical_work_goal_requires_original_consumption_receipt(self):
+        self.assertEqual(
+            BRIDGE.CANONICAL_GOAL_CONSUMPTION_REL[BRIDGE.CANONICAL_WORK_PARENT_TASK_ID],
+            BRIDGE.CANONICAL_WORK_PARENT_CONSUMPTION_REL,
+        )
+        self.assertEqual(
+            str(BRIDGE.CANONICAL_WORK_PARENT_CONSUMPTION_REL),
+            "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+        )
+
+
+
 if __name__ == "__main__":
     unittest.main()
