@@ -699,6 +699,39 @@ def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
         return {"state": "BOUNDARY", "reason": "MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED", "authority_effect": "NONE"}
     return {**payload, "authority_effect": "NONE_RECONSTRUCTION_ONLY"}
 
+def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str, Any]:
+    """Append one canonical state receipt to the organization ledger and stop there.
+
+    ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 makes the organization the
+    runtime_reality_authority, with the organization ledger root under the
+    organization ledger lock as its locus. This entry point establishes that
+    reality on its own: it performs no outbound submission, awaits no receiver,
+    and returns an organization-level disposition that does not depend on the
+    Master Records released-batch recording lane.
+
+    It is not a Master Records closure and may not be promoted to one. A caller
+    needing the MASTER_RECORDS_RECONSTRUCTED evidence class still calls
+    `submit_state_receipt`.
+    """
+    if receipt.get("schema") != RECEIPT_SCHEMA:
+        return {"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH", "authority_effect": "NONE"}
+    organization = _record_organization_transition(receipt)
+    if organization.get("state") != "RECORDED":
+        return organization
+    return {
+        **organization,
+        "runtime_reality_authority": "Organization",
+        "runtime_reality_locus": "ORGANIZATION_LEDGER_ROOT",
+        "runtime_reality_lock": "ORGANIZATION_LEDGER_LOCK",
+        "runtime_reality_write_mode": "MANIFEST_DIRECTED_APPEND",
+        "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+        "master_records_gates_organization_runtime_reality": False,
+        "master_records_closure_claimed": False,
+        "master_records_reconstructed_evidence_class_claimed": False,
+        "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY",
+    }
+
+
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     """Record organization custody first; retain its verified identity on every later failure."""
     if receipt.get("schema") != RECEIPT_SCHEMA:
@@ -718,7 +751,19 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     def blocked(reason: str, **details: Any) -> dict[str, Any]:
         # Diagnostic correlation only. Neither an org receipt nor this response
         # grants execution, Master Records closure or downstream authority.
+        #
+        # ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001: the organization
+        # ledger append above is runtime reality for this organization and is
+        # already established here. This BOUNDARY describes the Master Records
+        # released-batch recording lane only; it is not an organization-level
+        # non-occurrence and nothing awaits the recorder.
         return {"state": "BOUNDARY", "reason": reason, **correlation,
+                "organization_runtime_reality": "RECORDED",
+                "organization_runtime_reality_locus": "ORGANIZATION_LEDGER_ROOT",
+                "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+                "master_records_batch_release_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+                "master_records_gates_organization_runtime_reality": False,
+                "always_on_receiver_required": False,
                 **details, "authority_effect": "NONE"}
 
     payload = _submit_http(receipt)

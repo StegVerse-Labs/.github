@@ -13,5 +13,14 @@
   "propagation_target": "master-records/.github",
   "authority_effect": "NONE_CONTRACT_ONLY",
   "organization_scope_rule": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT",
-  "preserves_source_transition_receipt": true
+  "preserves_source_transition_receipt": true,
+  "ledger_root_is_organization_runtime_reality_locus": true,
+  "runtime_reality_authority": "Organization",
+  "ledger_lock": "ORGANIZATION_LEDGER_LOCK",
+  "write_mode": "MANIFEST_DIRECTED_APPEND",
+  "propagation_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+  "propagation_gates_organization_runtime_reality": false,
+  "propagation_receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+  "always_on_receiver_required": false,
+  "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
 }
