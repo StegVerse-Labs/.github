@@ -306,3 +306,7 @@ A FAIL_CLOSED is not a passive runtime-evidence wait when it names a repairable 
 Handoffs and README remain projections. Registry state, native transition dispositions, WorkerCoordinator claim/fence evidence, organization receipts, and Master Records reconstruction retain their existing distinct authorities. Documentation updates do not mutate runtime state or prove execution.
 
 Human action: **None.**
+
+## 2026-10-01 PR #2878 current-main reconstruction
+
+PR #2878 was reconstructed from canonical main rather than carrying its stale registry snapshot forward. The current `STEGVERSE-CANONICAL-WORK-COORDINATION-001` registration now restores the established `execution_substrate_resolution` with `ADMITTED-EPHEMERAL-STEGOS-NODE` selected, `external_device_required=false`, `second_user_operated_device_allowed=false`, and authority effect `NONE`. This is source registration only and does not claim authentic runtime execution or completion.
