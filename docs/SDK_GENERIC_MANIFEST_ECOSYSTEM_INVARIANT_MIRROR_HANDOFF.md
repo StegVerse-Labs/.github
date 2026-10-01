@@ -261,3 +261,10 @@ A bounded source inspection of the remaining evaluator-specific owners distingui
 No demonstrated actionable external-transfer bypass was found in these inspected evaluator-specific surfaces, so no Site, StegOS or SDK source repair is justified by this census. Removing the specialized `READ_REVIEW` capability would exceed the demonstrated defect boundary. This finding is bounded to the inspected current default-branch surfaces and does not prove universal absence of every possible bypass.
 
 Authentic Node -> Interlock/InTr -> distributed SDK endpoint execution remains `NOT_PROVEN`. Source inspection, repository merge and CI do not substitute for an authenticated runtime observation with the applicable endpoint evidence and Organization/Master Records closure.
+
+
+## 2026-10-01 Gate-1 execution-surface repair merge reconciliation
+
+Canonical source specimen PR #2902 remains verified merged from exact head `7092bd9e5c55b56a0749acc182a518fe7fa7d726` as merge commit `37b168d91be2872322cc41524550dab29d81940c`. Current execution inspection retains `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`; no authenticated external Gate-1 disposition is inferred from source or CI.
+
+The existing-owner StegOS repair is now merged: PR #420 exact repaired head `de2bbb44662f3c06a504b058fd6185bad0b0b54f`, merge commit `adceffaa6fcdf0e89bff7a091dddf92d790cc439`. It exposes only bounded credential-free reciprocal-existence observation through `stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence`. Identity, health, credential, checkpoint and meeting-point gates remain downstream and unobserved. The source repair does not itself establish an authentic external Node observation or runtime ALLOW/DENY/FAIL_CLOSED.
