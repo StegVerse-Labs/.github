@@ -4,7 +4,7 @@ Updated: 2026-10-01
 Goal Task ID: `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001`
 Issue: #2897
 COSV ID: `50000000102000`
-Status: `ACTIVE / CHECKED OUT / SPECIFICATION PREPARATION`
+Status: `ACTIVE / CHECKED OUT / CONFORMANCE VECTOR PREPARATION`
 
 ## Goal
 
@@ -50,6 +50,14 @@ No external adoption, external conformance, production interoperability, network
 
 Decomposed from `MASTER-RECORDS-REPORTABLE-CHECKPOINT-001` / issue #2895.
 
+## Reviewed implementation plan and vectors
+
+The accepted machine-readable implementation plan is `docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_IMPLEMENTATION_PLAN_v1.json`. Synthetic non-authorizing conformance fixtures are in `test-vectors/interlock-intr-runtime-independent-protocol-v1.json` and cover ALLOW, DENY, FAIL_CLOSED, node identity, payload, predecessor/state, manifest intent, requested capability, receipt binding, and the first bounded `MasterRecordsCheckpoint/v1` profile.
+
+Exact-head workflow evidence on the prior PR head demonstrated a missing `execution_substrate_resolution` for this documentary task. The task record now declares all runtime substrates NOT_APPLICABLE with no selected substrate. The prior test-suite ratchet also reported an unrelated/new registry-gate failure and one newly passing baseline test; fresh exact-head CI is required before attributing or repairing further defects.
+
+No external adoption, external conformance, production interoperability, runtime execution, deployment, or merge is claimed.
+
 ## Next action
 
-Create the machine-readable protocol schema and deterministic conformance vectors, then trace the existing Interlock/InTr and SDK surfaces against the specification without inventing missing runtime capabilities.
+Re-observe PR state and fresh exact-head workflows after these repairs. Repair only demonstrated failures. Then trace existing Interlock/InTr and SDK surfaces against the specification without inventing missing runtime capabilities.
