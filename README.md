@@ -1979,3 +1979,10 @@ A one-shot frozen HOLD submission used the established SDK ephemeral evaluator p
 ### Machine-readable HOLD attachment review record — 2026-09-30
 
 The frozen HOLD SDK attachment attempt now has a machine-readable review record at `data/experiment-evidence/ELAN_STEGVERSE_HOLD_SDK_ATTACHMENT_ATTEMPT_001.json`, preserving exact run/artifact identifiers, SHA-256 bindings, SDK disposition/lineage, explicit claim boundaries, and a pending-review section. The record remains attachment-boundary evidence only.
+
+
+### Runtime-independent Interlock/InTr interoperability protocol
+
+`INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` / issue #2897 defines the successor protocol boundary for registered-node, manifested, state-transition-dependent communication. The protocol binds node identity, manifest intent, source/destination, payload commitment, applicable predecessor/state context, requested capability, ALLOW/DENY/FAIL_CLOSED disposition, transfer receipt, resulting-state commitment when applicable, and evidence references without requiring participating frameworks to share internal runtimes or governance implementations.
+
+`MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
