@@ -1974,3 +1974,5 @@ A one-shot frozen HOLD submission used the established SDK ephemeral evaluator p
 ### Machine-readable HOLD attachment review record — 2026-09-30
 
 The frozen HOLD SDK attachment attempt now has a machine-readable review record at `data/experiment-evidence/ELAN_STEGVERSE_HOLD_SDK_ATTACHMENT_ATTEMPT_001.json`, preserving exact run/artifact identifiers, SHA-256 bindings, SDK disposition/lineage, explicit claim boundaries, and a pending-review section. The record remains attachment-boundary evidence only.
+
+- 2026-10-01: PR #2865 was reconstructed on current canonical main so generic SDK portable dispatch is bound to an exact child `request_id` as well as Goal context; source/CI evidence is not promoted to runtime execution.
