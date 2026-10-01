@@ -114,3 +114,16 @@ At owner direction, completed only the new non-numbered companion research propo
 Exact-head Publisher workflows all completed SUCCESS: Publisher Check run 388, Publisher Readiness run 385, Economic Paper SDK Manifest Consumer run 16, and Architecture Guard run 915.
 
 The proposal is explicitly not Volume IV and does not alter Volumes I-III or the Convergence / Comparative Signal Treatment. It defines six research questions, seven falsifiable hypotheses, matched admissible outcome design, economic/outcome/data-use/distributional measures, counterfactual and cost-allocation rules, confounders and sensitivity analysis, negative/adversarial controls, statistical analysis, falsification/stopping criteria, evidence/admissibility discipline, ethics/legal prerequisites, reproducibility/independent replication, and Phases 0-6. Empirical completion or favorable results are not publication prerequisites for Volumes I-III. No empirical result, runtime disposition, Publisher release, Site propagation or deployed readback is claimed by the source merge.
+
+
+## 2026-09-30 Empirical Research Proposal Site publication
+
+Published only the completed non-numbered Entity Economy Empirical Research Proposal to the Site collection. No Volume I, Volume II, Volume III, or Convergence / Comparative Signal Treatment paper body was modified.
+
+Canonical Publisher source remained `GCAT-BCAT-Engine/Publisher:papers/entity-economy-empirical-research-proposal.md`, blob `f08ae9c5055bae1de4bd82d6d3866d24f75e6c71`. Site PR #1476 exact head `85ae427baf76baac1a89b3f5937cca927ebef552` added `papers/stegverse-entity-economy-empirical-research-proposal/index.html` and updated only `Papers.html`, `README.md`, and `papers/stegverse-entity-economy-series/index.html` for collection discovery. GitHub reported no exact-head workflow runs or commit statuses; no CI success is inferred. PR #1476 merged with expected-head protection as `6cffda450b5f439d53ace622995f7f466bb45312`.
+
+The Site page explicitly identifies the proposal as a non-numbered companion, not Volume IV, containing no empirical result, and not making empirical completion/favorable findings a publication prerequisite for the numbered series. Site display is explicitly not empirical validation or a StegVerse runtime disposition.
+
+Credential-free public readback was attempted after merge. The direct proposal route was not accessible through the external public reader, and the externally crawled `Papers.html` remained on the older deployment without the proposal card. Therefore deployed proposal readback remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; repository merge is not substituted for deployment evidence.
+
+This adjacent companion publication does not satisfy or alter the Volume I/II successor-edition runtime predicates of `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001`.
