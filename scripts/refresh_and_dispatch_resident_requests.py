@@ -140,7 +140,7 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
     return normalized
 
 
-def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None = None) -> tuple[Path, Path, str, str | None, str | None]:
+def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None = None) -> tuple[Path, Path, str, str | None]:
     params = reusable_canonical_work_parameters(env)
     if params is None:
         return (
@@ -148,7 +148,6 @@ def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None 
             (args.runtime_root or default_runtime_root(env)).expanduser().resolve(),
             args.only_consumer or TARGET_CONSUMER,
             args.goal_task_id,
-            getattr(args, "request_id", None),
         )
     source = Path(params["source_root"]).expanduser().resolve()
     runtime = Path(params["runtime_root"]).expanduser().resolve()
@@ -172,7 +171,7 @@ def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None 
     mismatches = [key for key, value in explicit.items() if value is not None and value != expected[key]]
     if mismatches:
         raise RuntimeError("portable bridge reusable invocation conflicts with explicit CLI: " + ",".join(sorted(mismatches)))
-    return source, runtime, target, goal, request_id
+    return source, runtime, target, goal
 
 
 def truthy(value: str | None) -> bool:
@@ -450,7 +449,9 @@ def main() -> int:
     parser.add_argument("--goal-task-id")
     parser.add_argument("--request-id")
     args = parser.parse_args()
-    source_root, runtime_root, target_consumer, goal_task_id, request_id = resolve_main_inputs(args)
+    source_root, runtime_root, target_consumer, goal_task_id = resolve_main_inputs(args)
+    reusable_params = reusable_canonical_work_parameters()
+    request_id = ((reusable_params or {}).get("request_id") or getattr(args, "request_id", None) or None)
     receipt = refresh_and_dispatch(
         source_root,
         runtime_root,
