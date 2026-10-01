@@ -124,7 +124,7 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
         raise RuntimeError("portable bridge reusable invocation parameters invalid JSON") from exc
     if not isinstance(parsed, dict):
         raise RuntimeError("portable bridge reusable invocation parameters must be an object")
-    allowed = {"source_root", "runtime_root", "only_consumer", "goal_task_id"}
+    allowed = {"source_root", "runtime_root", "only_consumer", "goal_task_id", "request_id"}
     unknown = sorted(set(parsed) - allowed)
     if unknown:
         raise RuntimeError("portable bridge reusable invocation contains unsupported parameters: " + ",".join(unknown))
@@ -135,6 +135,8 @@ def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> 
         raise RuntimeError("portable bridge reusable invocation selector mismatch: exact canonical_work_coordination selector required for canonical-work reusable identity")
     if not normalized["goal_task_id"]:
         raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
+    if reusable_task_id == REUSABLE_SDK_GENERIC_MANIFEST_TASK_ID and not normalized["request_id"]:
+        raise RuntimeError("portable bridge SDK reusable invocation requires request_id")
     return normalized
 
 
@@ -151,17 +153,20 @@ def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None 
     runtime = Path(params["runtime_root"]).expanduser().resolve()
     target = params["only_consumer"]
     goal = params["goal_task_id"]
+    request_id = params["request_id"] or None
     explicit = {
         "source_root": str(args.source_root.expanduser().resolve()) if args.source_root is not None else None,
         "runtime_root": str(args.runtime_root.expanduser().resolve()) if args.runtime_root is not None else None,
         "only_consumer": args.only_consumer,
         "goal_task_id": args.goal_task_id,
+        "request_id": getattr(args, "request_id", None),
     }
     expected = {
         "source_root": str(source),
         "runtime_root": str(runtime),
         "only_consumer": target,
         "goal_task_id": goal,
+        "request_id": request_id,
     }
     mismatches = [key for key, value in explicit.items() if value is not None and value != expected[key]]
     if mismatches:
@@ -322,6 +327,7 @@ def refresh_and_dispatch(
     *,
     target_consumer: str = TARGET_CONSUMER,
     goal_task_id: str | None = None,
+    request_id: str | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
@@ -334,8 +340,8 @@ def refresh_and_dispatch(
         current_goal_task_id = str(goal_task_id).strip()
         if not current_goal_task_id:
             raise RuntimeError("goal task id must be non-empty")
-        if target_consumer != "canonical_work_coordination":
-            raise RuntimeError("reusable invocation selector mismatch: goal task context requires canonical_work_coordination target")
+        if target_consumer not in {"canonical_work_coordination", SDK_GENERIC_MANIFEST_CONSUMER}:
+            raise RuntimeError("reusable invocation selector mismatch: goal task context requires canonical_work_coordination target or sdk_generic_manifest_execution target")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
@@ -355,6 +361,8 @@ def refresh_and_dispatch(
     command = [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer]
     if current_goal_task_id:
         command.extend(["--goal-task-id", current_goal_task_id])
+    if request_id:
+        command.extend(["--request-id", request_id])
     completed = runner(
         command,
         cwd=runtime, capture_output=True, text=True, check=False, env=safe, timeout=3600,
@@ -373,7 +381,8 @@ def refresh_and_dispatch(
         or (
             dispatch_observed
             and dispatch_receipt.get("current_goal_task_id") == current_goal_task_id
-            and dispatch_receipt.get("goal_context_forwarded_to") == "canonical_work_coordination"
+            and dispatch_receipt.get("goal_context_forwarded_to") == target_consumer
+            and (request_id is None or dispatch_receipt.get("selected_request_id") == request_id)
         )
     )
     target_consumption_receipt, target_consumption_sha256, target_consumption_valid, target_consumption_matches_current_dispatch = stegbrowser_consumption_evidence(
@@ -403,6 +412,7 @@ def refresh_and_dispatch(
         "source_root": str(source), "runtime_root": str(runtime), "refresh_receipt": refresh_receipt,
         "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": target_consumer,
         "current_goal_task_id": current_goal_task_id,
+        "selected_request_id": request_id,
         "goal_context_forwarded_to_dispatcher": bool(current_goal_task_id),
         "goal_context_match_observed": bool(goal_context_match),
         "sv_dn1_browser_locator_persisted": browser_locator_persisted,
@@ -437,13 +447,17 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS)
     parser.add_argument("--goal-task-id")
+    parser.add_argument("--request-id")
     args = parser.parse_args()
     source_root, runtime_root, target_consumer, goal_task_id = resolve_main_inputs(args)
+    reusable_params = reusable_canonical_work_parameters()
+    request_id = ((reusable_params or {}).get("request_id") or getattr(args, "request_id", None) or None)
     receipt = refresh_and_dispatch(
         source_root,
         runtime_root,
         target_consumer=target_consumer,
         goal_task_id=goal_task_id,
+        request_id=request_id,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "REFRESH_AND_DISPATCH_COMPLETE" else 1
