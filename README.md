@@ -1988,3 +1988,5 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
 
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
+
+- 2026-10-01: Reconstructed PR #2865 exact-child SDK dispatch on current canonical main; the existing path now binds Goal context plus exact child request identity without creating another runtime or dispatcher.
