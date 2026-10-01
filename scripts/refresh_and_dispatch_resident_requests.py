@@ -342,6 +342,10 @@ def refresh_and_dispatch(
             raise RuntimeError("goal task id must be non-empty")
         if target_consumer not in {"canonical_work_coordination", SDK_GENERIC_MANIFEST_CONSUMER}:
             raise RuntimeError("reusable invocation selector mismatch: goal task context requires canonical_work_coordination target or sdk_generic_manifest_execution target")
+        # Same guard as the dispatcher: the SDK consumer runs its whole bundle
+        # when no request_id reaches it.
+        if target_consumer == SDK_GENERIC_MANIFEST_CONSUMER and not str(request_id or "").strip():
+            raise RuntimeError("exact child request_id required: goal task context on the sdk_generic_manifest_execution target without a request_id would execute every bundle entry")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)

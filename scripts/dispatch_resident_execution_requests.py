@@ -649,6 +649,12 @@ def dispatch(
         selected_names = tuple(name for name, _ in selected)
         if selected_names not in {("canonical_work_coordination",), ("sdk_generic_manifest_execution",)}:
             raise RuntimeError("reusable invocation selector mismatch: goal task context requires exact canonical_work_coordination selector or sdk_generic_manifest_execution selector")
+        # The SDK consumer filters its bundle only when it is given a request_id.
+        # Without one it runs every entry, which is exactly what exact-child
+        # selection exists to prevent, so require it here rather than relying on
+        # the caller to pass it.
+        if selected_names == ("sdk_generic_manifest_execution",) and not str(request_id or "").strip():
+            raise RuntimeError("exact child request_id required: goal task context on the sdk_generic_manifest_execution selector without a request_id would execute every bundle entry")
     outcomes: list[dict[str, Any]] = []
 
     for name, rel in selected:

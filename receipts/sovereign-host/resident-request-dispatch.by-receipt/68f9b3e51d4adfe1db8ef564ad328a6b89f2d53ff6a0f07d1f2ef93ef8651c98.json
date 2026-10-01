@@ -1,0 +1,59 @@
+{
+  "astra_class_standing_awareness_ready": false,
+  "authority_effect": "NONE_DISPATCH_ONLY",
+  "component011_organization_custody_failure": false,
+  "component011_organization_dispatch": null,
+  "compute_substrate": {
+    "authority_effect": "NONE_COMPUTE_ONLY",
+    "external_machine_discovery_required": false,
+    "github_actions_authority": "NONE",
+    "hosted_provider_authority": "NONE",
+    "observed_environment_markers": [],
+    "persistent_resident_host_required": false,
+    "selection_basis": "EXACT_MANIFEST_OR_CALLER_SELECTION",
+    "systemd_required_by_dispatcher": false
+  },
+  "consumer_count": 1,
+  "consumers_visited": 1,
+  "credential_authority": "TV/TVC",
+  "current_goal_task_id": "RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001",
+  "dispatch_exceptions": [],
+  "exact_selector_failure": true,
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "goal_context_forwarded_to": "sdk_generic_manifest_execution",
+  "heartbeat_grants_execution_authority": false,
+  "missing_consumers": [],
+  "network_source_fetch_performed": false,
+  "outcomes": [
+    {
+      "attempted": true,
+      "consumer": "sdk_generic_manifest_execution",
+      "consumer_ref": "scripts/consume_sdk_generic_manifest_execution_request.py",
+      "result": {
+        "state": "OK"
+      },
+      "returncode": 0,
+      "state": "OK"
+    }
+  ],
+  "quantum_resilience_standing_awareness_ready": false,
+  "registered_consumer_count": 56,
+  "request_dispatch_grants_authority": false,
+  "request_failure_blocks_later_requests": false,
+  "request_failures": [
+    "sdk_generic_manifest_execution"
+  ],
+  "richard_dispatch_master_records": null,
+  "runtime_root": "/home/user/.github",
+  "schema": "stegverse.resident-request-dispatch/v1",
+  "sdk_evaluator_dispatch_master_records": null,
+  "second_machine_required": false,
+  "selected_consumers": [
+    "sdk_generic_manifest_execution"
+  ],
+  "selected_request_id": "test5-a",
+  "selection_scope": "EXACT_SELECTOR",
+  "source_root": "/home/user/.github",
+  "state": "DISPATCH_INCOMPLETE"
+}
