@@ -633,6 +633,7 @@ def dispatch(
     env: Mapping[str, str] | None = None,
     only_consumers: tuple[str, ...] | None = None,
     goal_task_id: str | None = None,
+    request_id: str | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -646,8 +647,8 @@ def dispatch(
         if not current_goal_task_id:
             raise RuntimeError("goal task id must be non-empty")
         selected_names = tuple(name for name, _ in selected)
-        if selected_names != ("canonical_work_coordination",):
-            raise RuntimeError("reusable invocation selector mismatch: goal task context requires exact canonical_work_coordination selector")
+        if selected_names not in {("canonical_work_coordination",), ("sdk_generic_manifest_execution",)}:
+            raise RuntimeError("reusable invocation selector mismatch: goal task context requires exact canonical_work_coordination selector or sdk_generic_manifest_execution selector")
     outcomes: list[dict[str, Any]] = []
 
     for name, rel in selected:
@@ -662,8 +663,10 @@ def dispatch(
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
             continue
         command = [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(runtime)]
-        if name == "canonical_work_coordination" and current_goal_task_id:
+        if name in {"canonical_work_coordination", "sdk_generic_manifest_execution"} and current_goal_task_id:
             command.extend(["--goal-task-id", current_goal_task_id])
+        if name == "sdk_generic_manifest_execution" and request_id:
+            command.extend(["--request-id", request_id])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -736,7 +739,8 @@ def dispatch(
             "github_actions_authority": "NONE",
             "hosted_provider_authority": "NONE",
         },
-        "goal_context_forwarded_to": "canonical_work_coordination" if current_goal_task_id else None,
+        "goal_context_forwarded_to": ([name for name, _ in selected][0] if current_goal_task_id and len(selected) == 1 else None),
+        "selected_request_id": request_id,
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "sdk_evaluator_dispatch_master_records": sdk_evaluator_dispatch_master_records,
@@ -758,12 +762,14 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--only-consumer", action="append", default=None)
     parser.add_argument("--goal-task-id")
+    parser.add_argument("--request-id")
     args = parser.parse_args()
     receipt = dispatch(
         args.source_root,
         args.runtime_root,
         only_consumers=tuple(args.only_consumer) if args.only_consumer else None,
         goal_task_id=args.goal_task_id,
+        request_id=args.request_id,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1
