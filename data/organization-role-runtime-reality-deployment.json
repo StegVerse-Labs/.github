@@ -1,0 +1,285 @@
+{
+  "schema": "stegverse.organization-role-runtime-reality-deployment/v1",
+  "declaration_id": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
+  "organization": "StegVerse-Labs",
+  "declared_on": "2026-10-01",
+  "completion_evidence_contract_version": "v1",
+  "evidence_class": "SOURCE_IMPLEMENTED",
+  "authority_effect": "NONE_DECLARATION_ONLY",
+  "deployment_scope": "THIS_ORGANIZATION_ONLY_EACH_ORGANIZATION_DEPLOYS_IN_ITS_OWN_DOT_GITHUB",
+  "role_change": {
+    "invariant_key": "runtime_reality_authority",
+    "previous_value": "Master Records",
+    "current_value": "Organization",
+    "reality_locus": "ORGANIZATION_LEDGER_ROOT",
+    "reality_lock": "ORGANIZATION_LEDGER_LOCK",
+    "reality_write_mode": "MANIFEST_DIRECTED_APPEND",
+    "organization_ledger_contract": ".stegverse/transition-ledger/org-contract.json",
+    "organization_receipt_schema": "stegverse.organization-transition-receipt/v1",
+    "organization_scope_rule": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT"
+  },
+  "master_records_restated_role": {
+    "role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "runtime_reality_authority": "NONE",
+    "transition_authority": "NONE",
+    "records": "RELEASED_ORGANIZATION_BATCH_RECEIPTS",
+    "release_predecessor_required": "VERIFIED_ORGANIZATION_RECEIPT_CHAIN_SEGMENT",
+    "retained_capabilities": [
+      "CUSTODY",
+      "RECONSTRUCTION",
+      "CROSS_ORGANIZATION_HISTORY"
+    ],
+    "propagation_target": "master-records/.github",
+    "may_gate_organization_runtime_reality": false,
+    "may_be_awaited_by_a_transition": false
+  },
+  "conformance_standard": {
+    "actions_by_manifest_required": true,
+    "state_transition_dependent": true,
+    "external_machine_awaiting_allowed": false,
+    "destination_sufficiency_rule": "MANIFEST_DETERMINES_THE_DESTINATION_AND_AN_EXISTING_DESTINATION_IS_SUFFICIENT_FOR_INGRESS_AND_EGRESS",
+    "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+    "always_on_receiver_required": false,
+    "post_closure_authentic_observer_gate_allowed": false,
+    "non_conforming_surface_disposition": "DECLARED_EXEMPTION_REQUIRED",
+    "non_conforming_surface_failure_code": "ORGANIZATION_ROLE_CONFORMANCE_NOT_DECLARED"
+  },
+  "exemption_path": {
+    "register": "data/organization-role-exemption-register.json",
+    "required_fields": [
+      "surface",
+      "owning_existing_goal",
+      "failed_predicate",
+      "why_manifest_bound_state_transition_is_not_yet_possible",
+      "required_evidence_or_repair",
+      "retry_entrypoint",
+      "next_attempt",
+      "expires_or_review_on"
+    ],
+    "rule": "A_SURFACE_THAT_CANNOT_YET_BE_MANIFEST_BOUND_MUST_HOLD_A_REGISTERED_EXEMPTION_RATHER_THAN_REMAIN_SILENTLY_NON_CONFORMING",
+    "exemption_grants_authority": false
+  },
+  "superseded_prose_statements": {
+    "rule": "A_PROSE_STATEMENT_ASSIGNING_OBSERVED_OR_RUNTIME_REALITY_AUTHORITY_TO_MASTER_RECORDS_IS_SUPERSEDED_BY_THIS_DECLARATION_AT_ITS_OWNING_SURFACE",
+    "cross_owner_edit_performed": false,
+    "measured_on_commit_of_this_declaration": true,
+    "count": 28,
+    "files": [
+      "README.md",
+      "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+      "docs/CANONICAL_WORK_CORE_RESIDENT_PREDICATE_ADOPTION_MIRROR_HANDOFF.md",
+      "docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md",
+      "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+      "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+      "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
+      "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+      "docs/QUANTUM_CANONICAL_WORK_EXACT_VALUE_ADOPTION_MIRROR_HANDOFF.md",
+      "docs/QUI_STEGVERSE_ARCHITECTURE_PARTNERSHIP_EVALUATION_MIRROR_HANDOFF.md",
+      "docs/REUSABLE_TASKS_MIRROR_HANDOFF.md",
+      "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md",
+      "docs/SS_EVIDENCE_COMPARISON_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+      "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+      "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+      "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
+      "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+      "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+      "docs/TASK_REGISTRY_SESSION_RETURN_ORCHESTRATION_MIRROR_HANDOFF.md",
+      "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md"
+    ],
+    "occurrences": [
+      {
+        "path": "README.md",
+        "line": 294,
+        "statement": "Master Records remains observed-reality/reconstruction authority."
+      },
+      {
+        "path": "README.md",
+        "line": 703,
+        "statement": "Master Records remains observed-reality/reconstruction authority."
+      },
+      {
+        "path": "README.md",
+        "line": 823,
+        "statement": "Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution."
+      },
+      {
+        "path": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "line": 28,
+        "statement": "Master Records remains observed-reality/custody authority."
+      },
+      {
+        "path": "docs/CANONICAL_WORK_CORE_RESIDENT_PREDICATE_ADOPTION_MIRROR_HANDOFF.md",
+        "line": 81,
+        "statement": "Master Records remains authority for retained observed reality and reconstruction."
+      },
+      {
+        "path": "docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md",
+        "line": 94,
+        "statement": "Master Records remains observed-reality/reconstruction authority."
+      },
+      {
+        "path": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+        "line": 33,
+        "statement": "Master Records = observed reality / custody / reconstruction"
+      },
+      {
+        "path": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+        "line": 17,
+        "statement": "Master Records = observed runtime reality/custody/reconstruction"
+      },
+      {
+        "path": "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
+        "line": 157,
+        "statement": "Master Records remains observed-reality custody/reconstruction and does not become an authority issuer or governance evaluator."
+      },
+      {
+        "path": "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+        "line": 52,
+        "statement": "Master Records = observed-reality custody and reconstruction"
+      },
+      {
+        "path": "docs/QUANTUM_CANONICAL_WORK_EXACT_VALUE_ADOPTION_MIRROR_HANDOFF.md",
+        "line": 57,
+        "statement": "Master Records remains observed-reality/custody authority."
+      },
+      {
+        "path": "docs/QUI_STEGVERSE_ARCHITECTURE_PARTNERSHIP_EVALUATION_MIRROR_HANDOFF.md",
+        "line": 56,
+        "statement": "Master Records remains StegVerse observed-reality/reconstruction authority."
+      },
+      {
+        "path": "docs/REUSABLE_TASKS_MIRROR_HANDOFF.md",
+        "line": 43,
+        "statement": "Master Records = observed reality / reconstruction"
+      },
+      {
+        "path": "docs/REUSABLE_TASKS_MIRROR_HANDOFF.md",
+        "line": 67,
+        "statement": "Master Records remains observed-reality/reconstruction authority."
+      },
+      {
+        "path": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+        "line": 71,
+        "statement": "Master Records remains authority for authentic retained observed reality."
+      },
+      {
+        "path": "docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md",
+        "line": 70,
+        "statement": "Master Records      = observed-reality custody/reconstruction"
+      },
+      {
+        "path": "docs/SS_EVIDENCE_COMPARISON_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "line": 77,
+        "statement": "Master Records      = observed-reality custody/reconstruction"
+      },
+      {
+        "path": "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+        "line": 127,
+        "statement": "Master Records remains observed-reality custody/reconstruction authority."
+      },
+      {
+        "path": "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+        "line": 41,
+        "statement": "Master Records remains observed-reality/provenance authority."
+      },
+      {
+        "path": "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+        "line": 244,
+        "statement": "Master Records remains runtime-reality/provenance authority."
+      },
+      {
+        "path": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+        "line": 90,
+        "statement": "Master Records remains observed-reality/custody/reconstruction authority."
+      },
+      {
+        "path": "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "line": 26,
+        "statement": "Master Records remains observed-reality custody/reconstruction authority."
+      },
+      {
+        "path": "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
+        "line": 70,
+        "statement": "Master Records remains observed-reality/custody/reconstruction authority."
+      },
+      {
+        "path": "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+        "line": 14,
+        "statement": "Master Records remains observed-reality/reconstruction authority;"
+      },
+      {
+        "path": "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+        "line": 199,
+        "statement": "Master Records remains observed-reality/reconstruction authority;"
+      },
+      {
+        "path": "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+        "line": 66,
+        "statement": "Master Records remains observed-reality/reconstruction authority;"
+      },
+      {
+        "path": "docs/TASK_REGISTRY_SESSION_RETURN_ORCHESTRATION_MIRROR_HANDOFF.md",
+        "line": 29,
+        "statement": "Master Records remains observed-reality/reconstruction authority;"
+      },
+      {
+        "path": "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
+        "line": 188,
+        "statement": "Master Records remains observed-reality custody/reconstruction authority"
+      }
+    ],
+    "line_numbers_are_provenance_only": true,
+    "comparison_key": "PATH_AND_STATEMENT_TEXT"
+  },
+  "retained_statements": {
+    "rule": "A_STATEMENT_THAT_MASTER_RECORDS_IS_CUSTODY_RECONSTRUCTION_ONLY_AND_HOLDS_NO_TRANSITION_AUTHORITY_REMAINS_CORRECT_AND_IS_NOT_SUPERSEDED",
+    "reason": "THIS_DECLARATION_MOVES_RUNTIME_REALITY_NOT_CUSTODY"
+  },
+  "deferred_record_side_reconciliation": {
+    "gated_behind": "CANONICAL_TASK_RECORD_SCHEMA_RECONCILIATION_AND_REGISTRATION_BEFORE_MUTATION",
+    "spec_reference": "StegVerse-Labs/.github PR 2799",
+    "items": [
+      {
+        "target": "data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json",
+        "stale": [
+          "evidence.runtime_batch_custody.failed_predicate",
+          "completion.terminal_model"
+        ]
+      },
+      {
+        "target": "data/canonical-task-records/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+        "stale": [
+          "master_records_role"
+        ]
+      },
+      {
+        "target": "data/canonical-task-registry.json",
+        "stale": [
+          "master_records_role"
+        ]
+      },
+      {
+        "target": "data/task-registry-health-monitor-contract.json",
+        "stale": [
+          "master_records_role"
+        ]
+      }
+    ],
+    "completion_evidence_class_vocabulary": {
+      "key": "MASTER_RECORDS_RECONSTRUCTED",
+      "disposition": "UNCHANGED_IN_THIS_DECLARATION",
+      "reason": "RENAMING_A_COMPLETION_EVIDENCE_CLASS_IS_A_REGISTRY_WIDE_VOCABULARY_MIGRATION_WITH_ITS_OWN_REGISTRATION"
+    }
+  },
+  "this_declaration_does_not": [
+    "MUTATE_ANY_CANONICAL_TASK_RECORD",
+    "CLOSE_ANY_GOAL",
+    "CLAIM_RUNTIME_OBSERVATION",
+    "CREATE_A_SCHEDULER_RUNTIME_LEDGER_CREDENTIAL_OR_DEVICE",
+    "GRANT_TRANSITION_EXECUTION_CUSTODY_OR_CREDENTIAL_AUTHORITY",
+    "REQUIRE_AN_EXTERNAL_MACHINE_OR_SECOND_DEVICE"
+  ]
+}
