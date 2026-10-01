@@ -1,0 +1,119 @@
+# Master Records reportable checkpoint mirror handoff
+
+Updated: 2026-10-01
+Goal Task ID: `MASTER-RECORDS-REPORTABLE-CHECKPOINT-001`
+Issue: #2895
+COSV ID: `50000000101000`
+Status: `ACTIVE / CHECKED OUT / SPECIFICATION AND TEST VECTOR PREPARATION`
+
+## Goal
+
+Define a witness-neutral, privacy-minimal checkpoint primitive that commits to an authentically closed historical section of Master Records and can later be presented to an independent witness without transferring StegVerse custody, transition, credential, or governance authority.
+
+## Authority boundary
+
+- Master Records remains custody/reconstruction authority.
+- Interlock/InTr remains governed transition/admission authority.
+- TV/TVC remains credential authority.
+- A witness observes/retains a bounded commitment only and obtains no StegVerse authority.
+- A checkpoint is not, by itself, independent proof. External observation/anchoring is a separate evidence layer.
+- No AILeash/sebbi-specific transport, cadence, Bitcoin requirement, membership semantics, or API is part of v1.
+- No external submission is authorized by this task until the counterpart's exact current payload/schema and submission procedure are received and mapped.
+
+## Required closure predicate
+
+Every admitted leaf MUST derive from an existing Master Records closure satisfying all of:
+
+```text
+state = RECORDED
+reconstruction_status = PASS
+required_evidence_validation_status = PASS
+receipt_sha256 == reconstructed_receipt_sha256
+```
+
+Missing or mismatched predicates MUST fail closed. Repository artifacts, coordination state, receipts without reconstruction, or external evidence cannot substitute for this closure.
+
+## v1 construction
+
+### Canonical leaf
+
+A leaf commits only to the immutable closure identity required to reconstruct the underlying Master Record:
+
+```text
+leaf_preimage =
+  "stegverse-master-records-leaf/v1\n" ||
+  u64be(sequence) ||
+  receipt_sha256_bytes ||
+  reconstructed_receipt_sha256_bytes
+
+leaf_hash = SHA256(0x00 || leaf_preimage)
+```
+
+The sequence is the canonical Master Records sequence within the selected closed range. The two digests MUST be equal before leaf construction; carrying both makes the equality predicate independently checkable from retained verification material.
+
+### Merkle tree
+
+Internal nodes use domain separation:
+
+```text
+node_hash = SHA256(0x01 || left_hash || right_hash)
+```
+
+The tree follows RFC 6962-style history-tree splitting: for n > 1, split at the largest power of two strictly less than n. No duplicate-last-leaf padding is permitted.
+
+### Checkpoint
+
+`MasterRecordsCheckpoint/v1` contains:
+
+- `origin`: stable StegVerse Master Records origin identifier;
+- `checkpoint_sequence`: monotonic checkpoint number;
+- `first_sequence` / `last_sequence`;
+- `tree_size`;
+- `merkle_root`;
+- `predecessor_checkpoint_digest` (null only for genesis checkpoint);
+- `closure_receipt_sha256`: exact terminal closure binding the selected range;
+- `canonicalization`: `stegverse-master-records-merkle/v1`;
+- `hash_algorithm`: `sha256`;
+- `signature_profile`;
+- `signing_key_id`;
+- `signature`.
+
+The checkpoint digest is SHA-256 over canonical JSON of the unsigned fields using UTF-8, sorted keys, no insignificant whitespace, integers as decimal JSON numbers, lowercase hexadecimal digests, and a trailing LF. The signature covers that digest under the declared signature profile.
+
+### Public projection
+
+The privacy-minimal external projection contains only:
+
+`origin, checkpoint_sequence, tree_size, merkle_root, predecessor_checkpoint_digest, checkpoint_digest, canonicalization, hash_algorithm, signature_profile, signing_key_id, signature`.
+
+It MUST NOT expose record payloads, subjects, correlation IDs, manifests, KV material, credentials, private keys, or reconstruction contents.
+
+## Verification material
+
+A retained verification package MUST support:
+
+1. checkpoint digest/signature verification;
+2. leaf recomputation from an authorized disclosed closure identity;
+3. Merkle inclusion proof for a selected leaf;
+4. predecessor continuity;
+5. append-only consistency proof between checkpoints where the later checkpoint extends the same origin/history.
+
+External witnessing is separately evidenced by exact checkpoint-digest equality plus the witness's own independently retrievable receipt/commitment/anchor evidence.
+
+## Fail-closed cases
+
+Reject checkpoint construction or verification on: non-RECORDED state; reconstruction not PASS; required evidence validation not PASS; receipt/reconstruction digest mismatch; duplicate/non-monotonic sequence; range gap; root mismatch; invalid inclusion proof; invalid consistency proof; predecessor digest mismatch; unsupported canonicalization/hash/signature profile; signature failure; or public projection containing forbidden private fields.
+
+## Deterministic test vector
+
+The first vector is synthetic and non-authorizing. It MUST use fixed closure identities and fixed sequence numbers, calculate leaves/root/checkpoint digest reproducibly, prove one inclusion, and include negative mutations for digest mismatch, leaf mutation, predecessor mutation and root mutation. It MUST NOT be presented as authentic Master Records runtime evidence or submitted externally.
+
+## Current state
+
+Issue #2895 created. Branch `master-records-reportable-checkpoint-2895` created from canonical main `d2f0db79e2da691597e25c53d6e44c480bb26898`.
+
+No external witness submission, runtime execution, authentic Master Records checkpoint, Bitcoin anchor, deployment, or completion is claimed.
+
+## Next action
+
+Add the machine-readable schema and deterministic synthetic vector/verifier contract, update README, run repository validation at exact head, repair only demonstrated failures, then merge with expected-head protection when repository requirements are satisfied. Map an external witness only after its exact current submission schema/procedure is received.
