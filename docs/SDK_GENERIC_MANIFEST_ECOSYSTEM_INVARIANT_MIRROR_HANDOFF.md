@@ -246,3 +246,18 @@ A bounded default-branch source census across `StegVerse-org/LLM-adapter`, `Steg
 Historical/direct evaluator-specific ingress surfaces still exist as separately named capabilities: Site service-worker surfaces advertise `SDK:EvaluatorReviewIngress`; StegOS retains `evaluator_intr_roundtrip.py` and evaluator-specific handoffs; and the SDK connector capability overlay retains the `SDK:EvaluatorReviewIngress` / `evaluator-read-review` baseline. Their mere existence is not evidence that source identity selects processing: they remain valid only when explicitly requested as their declared capability/profile. This census does not establish that every possible call path is routed through generic `SDK:ManifestIngress`, so system-wide replacement of direct processor-specific ingress is `NOT_PROVEN`, not inferred.
 
 The repaired Site MIR return path is no longer one of those direct selectors: it requires manifest-declared `processing.capability` / `processing.route_id`, transports via `sdk-manifest-ingress`, binds KV custody to that profile ID, and hands off only after `SDK_MANIFEST_INGRESS_ADMITTED`. Authentic runtime execution remains `NOT_PROVEN` absent authenticated Node -> Interlock/InTr -> distributed SDK endpoint evidence and applicable Organization/Master Records closure.
+
+## 2026-10-01 post-#2912 specialized evaluator-ingress classification
+
+Canonical PR #2912 merged after exact-head ratchet success at head `a3468159a6f9c785a57156b6d6fa66030fcc8e9f`; merge commit `08c603e15a31d7e4bd1fea445b7abeca0a8d8700`.
+
+A bounded source inspection of the remaining evaluator-specific owners distinguishes the historical specialized capability from generic actionable manifest ingress:
+
+- Site `assets/evaluator-intr-connector.js` selects `evaluator-read-review` only for the explicit `EVALUATOR_REVIEW` + `READ_REVIEW` request class/operation and constructs its canonical Universal InTr intent. The generic MIR return path merged in Site #1481 separately uses `sdk-manifest-ingress` / `SDK:ManifestIngress` for the complete returned manifest.
+- StegOS `stegos/evaluator_intr_roundtrip.py` is a bounded evaluator-review transport adapter. It validates request/response bindings and canonical hop receipt chains, requires `authority_transfer=false`, rejects a non-`NONE` response authority effect, and does not itself create processing/runtime authority.
+- StegOS `specs/universal-intr-connector-profiles.v1.json` declares `evaluator-read-review` as `EVALUATOR_READ_REVIEW` / `READ_REVIEW` with `authority_effect=NONE`, while `sdk-manifest-ingress` is the separate `SDK_MANIFEST_INGRESS` / `SUBMIT_MANIFEST` profile targeting `SDK:ManifestIngress`.
+- SDK `stegverse/connector_capability_overlay.py` and its pinned baseline retain `SDK:EvaluatorReviewIngress` as that explicit connector capability. This is capability advertisement/overlay evidence, not source/provider-identity processing selection.
+
+No demonstrated actionable external-transfer bypass was found in these inspected evaluator-specific surfaces, so no Site, StegOS or SDK source repair is justified by this census. Removing the specialized `READ_REVIEW` capability would exceed the demonstrated defect boundary. This finding is bounded to the inspected current default-branch surfaces and does not prove universal absence of every possible bypass.
+
+Authentic Node -> Interlock/InTr -> distributed SDK endpoint execution remains `NOT_PROVEN`. Source inspection, repository merge and CI do not substitute for an authenticated runtime observation with the applicable endpoint evidence and Organization/Master Records closure.
