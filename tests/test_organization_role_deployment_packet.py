@@ -166,6 +166,41 @@ def test_repository_only_contract_is_reported_as_dropping_canonical_transitions(
     assert "dropped" in consumes_finding["required_evidence_or_repair"]
 
 
+def test_contract_driven_aggregator_passes_without_naming_the_canonical_schema(tmp_path):
+    """The generalization removes hard-coded schema names; the check must not demand one.
+
+    An aggregator that gates on the contract's consumes list never needs to mention
+    stegverse.canonical-state-transition-receipt/v1 in its own source. An earlier
+    revision of this verifier tested for that literal and so failed the correct
+    implementation while passing a hard-coded one.
+    """
+    contract_driven = (
+        "def verify_source(receipt):\n"
+        "    schema = receipt.get('schema')\n"
+        "    allowed = C.get('consumes')\n"
+        "    if isinstance(allowed, str): allowed = [allowed]\n"
+        "    if schema not in (allowed or []):\n"
+        "        raise SystemExit('organization source receipt schema mismatch')\n"
+    )
+    assert CANONICAL_RECEIPT not in contract_driven
+    write_org(tmp_path, contract=deployed_contract(), aggregator=contract_driven)
+    code, result = run_verifier(tmp_path)
+    assert code == 0, result["findings"]
+    assert result["state"] == "DEPLOYED"
+
+
+def test_an_aggregator_naming_only_the_repository_schema_still_fails(tmp_path):
+    """The opposite case: hard-coded admission is the defect, literal or not."""
+    write_org(tmp_path, contract=deployed_contract(), aggregator=REPO_ONLY_AGGREGATOR)
+    code, result = run_verifier(tmp_path)
+    assert code == 1
+    finding = next(
+        f for f in result["findings"] if f["failure_code"] == "AGGREGATOR_REJECTS_NON_REPOSITORY_SOURCE"
+    )
+    assert finding["observed_contract_driven_admission"] is False
+    assert finding["failed_predicate"] == "AGGREGATOR_ADMITS_BY_THE_CONTRACT_CONSUMES_LIST"
+
+
 def test_aggregator_hard_reject_is_located_by_line(tmp_path):
     write_org(tmp_path, contract=deployed_contract(), aggregator=REPO_ONLY_AGGREGATOR)
     _, result = run_verifier(tmp_path)

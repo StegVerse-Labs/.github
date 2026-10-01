@@ -171,22 +171,32 @@ def check_aggregator(root: Path, findings: list[dict[str, Any]]) -> None:
         ))
         return
     source = path.read_text(encoding="utf-8")
-    if CANONICAL_RECEIPT in source:
+    # Admission must be driven by the contract's consumes list. Naming the canonical
+    # schema literally is NOT the test: an aggregator that reads the contract never
+    # needs to, and testing for the literal would reward the hard-coding this check
+    # exists to remove.
+    contract_driven = re.search(
+        r'consumes["\']?\s*\)?.{0,200}?\bnot\s+in\b', source, re.DOTALL
+    ) or re.search(
+        r'\bin\b.{0,80}?consumes', source, re.DOTALL
+    )
+    if contract_driven:
         return
-    # A source verifier that names only the repository schema rejects every canonical
-    # governed transition, whatever the contract says it consumes.
+    # A source verifier that compares against one hard-coded schema rejects every
+    # canonical governed transition, whatever the contract says it consumes.
     hard_reject = re.search(
         r'schema.{0,40}!=\s*["\']' + re.escape(REPO_RECEIPT) + r'["\']', source
     )
     findings.append(finding(
         "AGGREGATOR_REJECTS_NON_REPOSITORY_SOURCE",
-        "AGGREGATOR_ACCEPTS_EVERY_SCHEMA_THE_CONTRACT_CONSUMES",
-        "Replace the hard-coded schema comparison with a check against the contract's "
-        "consumes list, and bind a canonical state transition by its own digest rather "
-        "than relabelling it as a repository transition. The reference organization's "
-        "verify_source is the implementation to copy.",
+        "AGGREGATOR_ADMITS_BY_THE_CONTRACT_CONSUMES_LIST",
+        "Gate admission on the contract's consumes list rather than a hard-coded "
+        "schema comparison, and bind a canonical state transition by its own digest "
+        "rather than relabelling it as a repository transition. The reference "
+        "organization's verify_source is the implementation to copy.",
         "GENERALIZE_THE_AGGREGATOR_SOURCE_VERIFIER",
         path=AGGREGATOR_PATH,
+        observed_contract_driven_admission=False,
         observed_hard_reject=bool(hard_reject),
         observed_line=source[:hard_reject.start()].count("\n") + 1 if hard_reject else None,
     ))

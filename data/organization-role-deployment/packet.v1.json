@@ -47,7 +47,7 @@
     },
     "aggregator": {
       "path": "resident-runtime/aggregate_repo_transition.py",
-      "requirement": "The source verifier must accept every schema the contract's consumes list names, not one hard-coded schema. A canonical state transition that is not a repository transition is bound by its own digest and is not relabelled as a repository transition.",
+      "requirement": "Admission must be gated on the contract's consumes list, not a hard-coded schema comparison. A correctly generalized aggregator never needs to name the canonical state transition schema in its own source, so the presence of that literal is not the test and its absence is not a defect. A canonical state transition is bound by its own digest and is not relabelled as a repository transition.",
       "failure_if_unmet": "Canonical governed transitions emit no organization receipt and are dropped, contradicting the organization scope rule the contract declares."
     },
     "declaration": {
@@ -119,7 +119,16 @@
             "detail": "No runtime_reality_authority, ledger locus, restated master-records role, declaration or exemption register."
           }
         ],
-        "urgency_note": "The SDK lives in this organization and, as of StegVerse-org/StegVerse-SDK pull request 416, manifests canonical state transitions. Under the organization scope rule each should emit an organization receipt; none currently can. The contract generalization is therefore due independently of the role change."
+        "urgency_note": "The SDK lives in this organization and, as of StegVerse-org/StegVerse-SDK pull request 416, manifests canonical state transitions. Under the organization scope rule each should emit an organization receipt; none currently can. The contract generalization is therefore due independently of the role change.",
+        "remediation_observed": {
+          "observed_on": "2026-10-01",
+          "branch": "deploy/organization-role-and-org-contract-generalization-20261001",
+          "head": "8dbba95",
+          "pull_request": 13,
+          "state": "REMEDIATION_PROPOSED_NOT_MERGED",
+          "verifier_disposition_on_branch": "ALLOW",
+          "note": "Deployed by a session created with this organization's .github as its source, which both confirms a dot-named repository is pushable when selected at session creation and exercised the packet end to end."
+        }
       }
     ],
     "organizations_not_yet_measured": [
