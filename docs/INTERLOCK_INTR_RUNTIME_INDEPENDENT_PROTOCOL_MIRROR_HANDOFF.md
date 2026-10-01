@@ -82,6 +82,22 @@ Machine-readable source mapping is retained at `docs/INTERLOCK_INTR_RUNTIME_INDE
 
 Authentic Interlock/InTr execution remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
 
+## Existing-owner seam resolution
+
+Current source makes the smallest ownership boundary explicit rather than requiring another SDK transport path:
+
+1. SDK/Manifest Builder owns canonical manifest validation, route resolution, state-graph derivation, destination binding and handoff commitment.
+2. TV/TVC remains credential authority; `derive_execution_request` declares `credential_authority = TV/TVC` without making the SDK a credential issuer.
+3. The receiving Interlock/InTr runtime is the existing owner that must authenticate registered-node identity, consume the manifested handoff, evaluate the receiving state/predecessor and produce the terminal ALLOW, DENY or FAIL_CLOSED.
+4. That same receiving boundary must produce the authentic transfer/admission receipt and resulting-state commitment where applicable.
+5. Master Records remains custody/replay/reconstruction authority for applicable retained closure evidence.
+
+Therefore the smallest unresolved seam is not a new SDK feature: it is exposure/observation of the existing receiving Interlock/InTr admission operation with authenticated node/TVC context and receipt/result return. Until that owner seam is authentically callable, the runtime state remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+## Exact-head validation
+
+PR #2915 exact head `182972c95ae734b43109580cff8ff391afcc306f` completed all five repository workflows successfully and was 9 commits ahead / 0 behind its parent. The generic deterministic repository suite ran 38 tests successfully, but its workflow did not explicitly execute the newly added standalone protocol verifier. A dedicated non-authorizing workflow has therefore been added to run `scripts/verify_interlock_intr_runtime_independent_protocol.py` and preserve the synthetic/external-conformance-false boundary. Fresh exact-head workflow evidence is required after that addition.
+
 ## Next action
 
-Observe exact-head CI for the reconciled branch, repair only demonstrated failures, and reconcile PR #2909 mergeability against the parent after content reconciliation. If exact-head requirements pass, validate the committed verifier output as repository evidence and continue only the demonstrated gaps: authenticated registered-node identity, receiving-boundary disposition, authentic transfer receipt, and resulting-state evidence.
+Observe the dedicated protocol-vector workflow and all repository-required workflows at the new exact head. Repair only demonstrated failures. If requirements are satisfied, reconcile PR #2915 mergeability and merge only with expected-head protection. After merge, trace the existing receiving Interlock/InTr owner surface for an authenticated node/TVC admission operation; do not add SDK transport/admission authority and preserve `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` unless that operation is actually invoked.
