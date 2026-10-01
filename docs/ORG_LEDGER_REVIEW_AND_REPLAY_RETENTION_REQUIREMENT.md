@@ -63,24 +63,40 @@ predicates emits a traceback for malformed input.
 
 **Repair:** call `verify_repo` before constructing `body`.
 
-### A2 — `boundary_evidence` is recorded but never verified
+### A2 — WITHDRAWN. Not a parity gap; a narrower scope difference
 
-StegVerse-Labs' `verify_required_evidence` requires a `required_evidence_manifest`
-list and, per entry, `evidence_id`, `evidence_type`, `origin_transition_id`,
-`encoding`, `sha256`, `content`; enforces unique `evidence_id`; binds
-`origin_transition_id` to the receipt's `transition_id`; decodes `canonical-json`,
-`utf-8` or `base64`; and verifies the SHA-256 of the decoded bytes.
+**The original A2 was wrong and is withdrawn.** It claimed StegVerse-org lacked
+evidence verification that StegVerse-Labs performs, and called that the gate on
+the SDK's `organization_receipt_observed`. It is not.
 
-StegVerse-org has none of this. `boundary_evidence` is an arbitrary dict stored
-verbatim into the hashed body, CLI-defaulted to `{}`. The repository's own test
-appends with `{}` / `"NONE"` and passes.
+What the source actually shows:
 
-Consequence: a receipt is tamper-evident **after** the fact, but nothing establishes
-the evidence was authentic **at** append time. This is the property that
-`organization_receipt_observed` flipping true is meant to carry, so A2 — not the
-append mechanics — is the gap that gates the SDK dependency.
+- Labs' `verify_source` **returns early** for `stegverse.repo-transition-receipt/v1`
+  (line 83). `verify_required_evidence` (line 93) is reached only for other source
+  schemas.
+- On the repo-receipt path — the only path StegVerse-org supports — Labs performs
+  exactly the three checks org performs: schema within the contract's `consumes`,
+  organization prefix, and `receipt_sha256`.
+- `boundary_evidence` is **not** digest-verified in either repository. Labs stores
+  it (line 298) and compares it for idempotency (line 127); it never verifies it.
+  The original finding contrasted org's `boundary_evidence` against Labs'
+  `required_evidence_manifest` as though they were the same field. They are not.
 
-**This is the highest-priority item in this document.** See C5.
+The real difference is one of scope, not rigour:
+
+| | `consumes` |
+| --- | --- |
+| StegVerse-Labs | `["stegverse.repo-transition-receipt/v1", "stegverse.canonical-state-transition-receipt/v1"]` |
+| StegVerse-org | `"stegverse.repo-transition-receipt/v1"` |
+
+The evidence-manifest verification belongs to the second schema. StegVerse-org has
+no gap on the path it supports; it does not yet support the second source type.
+**If org later adds `canonical-state-transition-receipt/v1` to `consumes`, it must
+port `verify_required_evidence` at the same time** — that is a future requirement,
+not a present defect.
+
+If unverified `boundary_evidence` is judged a weakness, it is ecosystem-wide and
+belongs to both repositories, not to StegVerse-org alone.
 
 ### A3 — `_sha256` state fields accept non-digests
 
@@ -226,13 +242,20 @@ reconstruction is a disclosure event and should emit its own receipt binding
 requester, tier, fee basis, and exactly what was served. Without this, the exposure
 record is incomplete precisely where money changes hands.
 
-### C5 — A2 must be fixed before merkling ships
+### C5 — A Merkle root attests bytes, not authenticity
 
-A Merkle root attests that bytes are what was written. It does not attest that they
-were authentic. Merkle-committing an unverified `boundary_evidence` blob
-permanently commits unverifiable evidence — and then charges per use for access to
-it. **Sequence A2 before any archival or Merkle work.** This is the strongest
-ordering constraint in this document.
+A Merkle root attests that bytes are what was written. It does not attest that
+they were authentic when written. So whatever a receipt's evidence fields are
+*not* verified against at append time, merkling preserves unverified — and the
+per-use fee then sells access to it.
+
+The original C5 made this an ordering constraint on A2 ("fix A2 before merkling").
+With A2 withdrawn, that constraint is withdrawn with it: `boundary_evidence` is
+unverified in both repositories, so it is not a StegVerse-org blocker.
+
+What survives is the general caution. Before archival or Merkle work ships,
+decide deliberately which receipt fields are verified at append time, because
+after merkling that decision is permanent for every record already committed.
 
 ### C6 — Chain anchors should be permanent at every tier
 
@@ -266,7 +289,12 @@ surfaces.
 ## Suggested sequence
 
 1. **A1 and A3** — small, local repairs to `aggregate_repo_transition.py`.
-2. **A2** — evidence verification parity with StegVerse-Labs. Gates both the SDK
-   `organization_receipt_observed` dependency and, per C5, all archival work.
-3. **C1** — anchor-bounded validation, which also resolves A4.
-4. **Part B** — tiered retention and per-use metering, once 1–3 hold.
+   Patches written and validated; see the correction PR for status.
+2. **C1** — anchor-bounded validation, which also resolves A4. This is what
+   actually unblocks Part B.
+3. **Part B** — tiered retention and per-use metering, once 1–2 hold, with C5's
+   question answered first: which receipt fields are verified at append time.
+
+A2 is withdrawn and gates nothing. If StegVerse-org later widens its contract's
+`consumes` to include `canonical-state-transition-receipt/v1`, port
+`verify_required_evidence` in the same change.
