@@ -105,3 +105,12 @@ The corrected manuscript removes the inherited banker/lawyer-review claim, state
 Site PR #1475 replaced the erroneous Volume III projection and merged with expected-head protection as `64be4ceba360e4f15cb974ab833ae280ff412cd4`. Site exact head reported no workflow runs or commit statuses; no CI success is inferred. Papers discovery, series presentation, and README were corrected consistently. The convergence/comparative-signal treatment remains separate and is not Volume IV.
 
 This repair is adjacent to, and does not satisfy, the Volume I/II successor-edition governed-publication predicates of `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001`.
+
+
+## 2026-09-30 standalone Entity Economy Empirical Research Proposal
+
+At owner direction, completed only the new non-numbered companion research proposal; no existing Entity Economy paper was modified in this action. Publisher source: `papers/entity-economy-empirical-research-proposal.md`. Publisher PR #93 exact head `5d1b1592f0bf0473bb929fa55387af6566867752` added one file (+138/-0) and merged with expected-head protection as `3cd9e03a2a417c2c99da6acb66e72e7f8fd57f60`.
+
+Exact-head Publisher workflows all completed SUCCESS: Publisher Check run 388, Publisher Readiness run 385, Economic Paper SDK Manifest Consumer run 16, and Architecture Guard run 915.
+
+The proposal is explicitly not Volume IV and does not alter Volumes I-III or the Convergence / Comparative Signal Treatment. It defines six research questions, seven falsifiable hypotheses, matched admissible outcome design, economic/outcome/data-use/distributional measures, counterfactual and cost-allocation rules, confounders and sensitivity analysis, negative/adversarial controls, statistical analysis, falsification/stopping criteria, evidence/admissibility discipline, ethics/legal prerequisites, reproducibility/independent replication, and Phases 0-6. Empirical completion or favorable results are not publication prerequisites for Volumes I-III. No empirical result, runtime disposition, Publisher release, Site propagation or deployed readback is claimed by the source merge.
