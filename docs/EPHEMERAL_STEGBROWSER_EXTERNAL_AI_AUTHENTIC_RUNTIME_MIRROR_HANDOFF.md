@@ -22,3 +22,7 @@ Required progression:
 
 ## Next transition
 The first permitted transition is `INGRESS_ADMITTED`. Invoke only through an existing authentic runtime boundary that can return the receipt. Do not reinterpret source dispatchability as invocation. Repair any implementation defect at its existing owner and retry the same manifest. TEST5_B follows only after TEST5_A authentic closure. Test 6 is prohibited before Test 5 closes.
+
+## 2026-10-01 PR #2865 current-main reconstruction
+
+The exact-child generic SDK portable-dispatch repair was reconstructed on current canonical main. The existing selector now carries both canonical Goal context and an exact child `request_id`; the consumer must resolve exactly one matching child before execution. This preserves TEST5_A-before-TEST5_B ordering and does not claim runtime execution, disposition, organization custody, or Master Records reconstruction.
