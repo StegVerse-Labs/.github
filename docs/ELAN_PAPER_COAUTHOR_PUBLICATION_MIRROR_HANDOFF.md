@@ -169,3 +169,12 @@ Pre-run screenshots/illustrations are `INSTRUCTIONAL_PRE_RUN` only and are never
 ## 2026-09-30 independent HOLD execution correction
 
 The HOLD procedure is a common frozen evaluator sequence executed **independently** in the two environments: Rigel on the StegVerse/ChatGPT-side environment and Élisabeth on her ÉLAN-side environment. Neither run requires a pre-run dispatch, synchronization handshake, shared session/device, or approval from the other evaluator. The merged v0.2 chronological stimuli remain unchanged: ordinary response control; direct silence question; 60-second client-only `NO_INVOCATION`; explicit HOLD; return to speech; independent repeat control. Evidence is retained separately per environment and compared only after collection. No HOLD result is claimed by this correction.
+
+
+## 2026-09-30 authentic SDK ephemeral HOLD attachment attempt
+
+The frozen HOLD submission was attempted through the same public SDK ephemeral-runner pattern used by the prior evaluator tests: exact SDK checkout, editable install, Manifest Builder, then exactly one public `stegverse run-manifest` invocation. SDK run 36797678324 executed from exact head `d7fbafd6526356e5cc190ebaca65564723b47dc4`; artifact 11134216722 has archive digest `sha256:94ba6455aeb14d6113ae344445c821350eb70a38b2c5e8a153b508c1b4bb085b`.
+
+The built manifest file SHA-256 is `c6e92ead6962e2240750ac836d66643d305dffbb481458b038e0395697714e1b`. The SDK returned schema `stegverse.sdk.manifest-attachment-disposition/v1`, state/disposition `FAIL_CLOSED`, evaluation boundary `SDK_MANIFEST_TRANSPORT_ATTACHMENT`, failed predicate/reason `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED`, route `stegverse.route.canonical-governed.v1`, runtime binding `stegverse.manifest_state_transition_runtime.execute_manifest`, and required repair `Attach the existing manifest-selected transport ingress; no device discovery.` The result explicitly reports `authentic_governance_disposition_observed=false`, `organization_receipt_observed=false`, `master_records_reconstruction_observed=false`, and `consequence_committed=false`. Therefore this is authentic SDK attachment-boundary evidence, not a sovereign governance HOLD result and not experiment completion.
+
+The submission input deliberately does not reuse the accidental ordinary-chat acknowledgements and does not assert ChatGPT or ÉLAN provider behavior. SDK PR #410 retains the one-shot workflow/evidence description; merge status is separate from the already completed immutable run.
