@@ -1,6 +1,6 @@
 # SDK Generic Manifest Ecosystem Invariant — Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-10-01
 Goal Task ID: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`
 Parent Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV ID: `71000000100110`
@@ -178,3 +178,18 @@ For every current or future actionable surface, repair toward the chain above th
 ### Runtime completion gate
 
 System-wide enforcement remains **NOT_PROVEN**. Completion requires representative authentic governance and non-governance state-transition observations, endpoint receipts, Organization-chain readback and applicable Master Records reconstruction. GitHub Actions remain validation/evidence transport only.
+
+
+## 2026-10-01 framework-neutral Node Exchange / interconnected capability custody
+
+Machine-readable source profile: `data/node-exchange/interconnected-capability-custody-v0.1.json`.
+
+The external-framework boundary is generalized from a framework-specific integration into the same Node exchange class used by ephemeral StegOS/Node participation. The ordered evidence model is: reciprocal Node existence exchange -> optional/persistent cryptographic identity binding when attribution is required -> state-dependent capability declaration -> manifest-bound request -> native capability action with ALLOW/DENY/FAIL_CLOSED -> endpoint evidence -> resulting-state commitment -> existing SDK/Organization retention -> applicable bounded Master Records custody/reconstruction.
+
+"Interconnected capability custody" means each independently governed Node retains authority over its own implementation and state while the exchange preserves attributable commitments/receipts sufficient to reconstruct the cross-boundary capability interaction. It does not transfer ownership of a capability, another framework's governance, runtime authority, or truth of that framework's substantive claims.
+
+For externally attributable experiments, `VERIFIED_NODE` is required. `UNVERIFIED_NODE` material may be explored but may not be represented as an authenticated external-framework result; `VERIFICATION_FAILED` fails attribution. Node verification proves participant provenance, not scientific/mathematical/governance claims.
+
+The first bounded falsification case is StegVerse <-> a Richard-operated Sebbi.Pro node. Phase 1 is generic reciprocal Node existence only, using the same semantics expected for an ephemeral Node. Identity/capability binding follows only after existence evidence. A single `MasterRecordsCheckpoint/v1` witness attempt follows only after those phases succeed. No Sebbi-specific runtime, scheduler, dispatcher, credential authority, logging/custody path or governance implementation is introduced.
+
+Multi-hop A->B->C capability composition remains explicitly `UNPROVEN` and MUST NOT be claimed from this profile or the single-hop demonstration. External adoption, Sebbi governance conformance, and system-wide runtime enforcement likewise remain unproven.
