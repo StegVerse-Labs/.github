@@ -648,7 +648,7 @@ def dispatch(
             raise RuntimeError("goal task id must be non-empty")
         selected_names = tuple(name for name, _ in selected)
         if selected_names not in {("canonical_work_coordination",), ("sdk_generic_manifest_execution",)}:
-            raise RuntimeError("reusable invocation selector mismatch: goal task context requires exact goal-aware selector")
+            raise RuntimeError("reusable invocation selector mismatch: goal task context requires exact canonical_work_coordination selector or sdk_generic_manifest_execution selector")
     outcomes: list[dict[str, Any]] = []
 
     for name, rel in selected:
