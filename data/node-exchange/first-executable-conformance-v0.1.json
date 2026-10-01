@@ -1,0 +1,129 @@
+{
+  "schema": "stegverse.node-exchange-conformance-specimen/v0.1",
+  "specimen_id": "NODE-EXCHANGE-FIRST-EXECUTABLE-CONFORMANCE-001",
+  "owner_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "cosv": "71000000100110",
+  "issue_ref": "StegVerse-Labs/.github#2901",
+  "status": "SOURCE_SPECIMEN_RUNTIME_UNOBSERVED",
+  "target": {
+    "class": "EXTERNAL_FRAMEWORK_NODE",
+    "first_bounded_target": "Richard-operated Sebbi.Pro Node",
+    "endpoint": "UNSPECIFIED",
+    "credentials": "UNSPECIFIED",
+    "prohibition": "Do not invent endpoint, credentials, identity evidence, health evidence, or external dispositions."
+  },
+  "existing_owners_only": {
+    "identity": "existing Node identity binding owner",
+    "health": "existing Node/Interlock-InTr authenticated observation surfaces",
+    "manifest_admission": "StegVerse SDK canonical manifest ingress/route resolution",
+    "credential_authority": "TV/TVC",
+    "transport": "Interlock/InTr and existing StegOS/Continuity Node surfaces",
+    "custody": "existing SDK/Organization receipt chain and applicable Master Records reconstruction"
+  },
+  "ordered_gates": [
+    {
+      "order": 1,
+      "id": "AUTHENTICATED_RECIPROCAL_NODE_EXISTENCE",
+      "required": true,
+      "on_unavailable": "FAIL_CLOSED",
+      "evidence": [
+        "challenge_commitment",
+        "authenticated reciprocal response",
+        "endpoint observation"
+      ]
+    },
+    {
+      "order": 2,
+      "id": "NODE_IDENTITY_BINDING",
+      "required": true,
+      "on_unavailable": "FAIL_CLOSED",
+      "evidence": [
+        "identity claim",
+        "cryptographic binding evidence",
+        "identity disposition"
+      ]
+    },
+    {
+      "order": 3,
+      "id": "CURRENT_NODE_HEALTH",
+      "required": true,
+      "predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "on_unknown": "FAIL_CLOSED",
+      "evidence": [
+        "authenticated health observation",
+        "applicable health profile",
+        "health disposition"
+      ]
+    },
+    {
+      "order": 4,
+      "id": "MANIFEST_BOUND_REQUEST_AUTHORIZATION",
+      "required": true,
+      "prerequisites": [
+        "AUTHENTICATED_RECIPROCAL_NODE_EXISTENCE",
+        "NODE_IDENTITY_BINDING",
+        "CURRENT_NODE_HEALTH"
+      ],
+      "dispositions": [
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED"
+      ]
+    },
+    {
+      "order": 5,
+      "id": "REQUEST_RELATIVE_CREDENTIAL_OR_MASTER_RECORDS_CHECKPOINT",
+      "required": false,
+      "admission_rule": "MUST_NOT_EXECUTE_BEFORE_REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "credential_authority": "TV/TVC",
+      "checkpoint_profile": "MasterRecordsCheckpoint/v1"
+    },
+    {
+      "order": 6,
+      "id": "OPTIONAL_EPHEMERAL_MEETING_POINT_TRANSPORT",
+      "required": false,
+      "admission_rule": "MUST_NOT_EXECUTE_BEFORE_REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "transport_authority": "Interlock/InTr"
+    }
+  ],
+  "first_disposition_rule": "Retain the first authentic ALLOW, DENY, or FAIL_CLOSED from the authenticated execution attempt; do not retry to obtain a preferred disposition.",
+  "custody_evidence": [
+    "exact predecessor/state binding",
+    "endpoint receipt(s)",
+    "resulting-state commitment",
+    "SDK retained transition evidence",
+    "Organization receipt/readback when authentically available",
+    "Master Records custody/reconstruction when authentically applicable and available"
+  ],
+  "negative_specimens": [
+    {
+      "id": "UNKNOWN_HEALTH_FAIL_CLOSED",
+      "given": {
+        "existence": "AUTHENTICATED",
+        "identity": "BOUND",
+        "health": "UNKNOWN"
+      },
+      "attempt": "REQUEST_RELATIVE_CREDENTIAL_OR_MASTER_RECORDS_CHECKPOINT",
+      "expected": "FAIL_CLOSED",
+      "failing_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE"
+    },
+    {
+      "id": "CREDENTIAL_BEFORE_ADMISSION_BYPASS",
+      "given": {
+        "node_admission": "NOT_ESTABLISHED",
+        "presented_credential": "PRESENT_OR_VALID_FORMAT"
+      },
+      "attempt": "CREDENTIAL_OR_TRANSPORT_INGRESS",
+      "expected": "NON_ALLOW",
+      "failing_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE"
+    }
+  ],
+  "execution_truth": {
+    "source_fixture_is_runtime_proof": false,
+    "ci_is_runtime_proof": false,
+    "merge_is_runtime_proof": false,
+    "authenticated_external_endpoint_required_for_external_disposition": true,
+    "current_authenticated_external_surface": "NOT_IDENTIFIED_IN_CANONICAL_SOURCE",
+    "runtime_claim": "UNOBSERVED"
+  }
+}
