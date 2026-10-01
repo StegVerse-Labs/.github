@@ -1,0 +1,196 @@
+{
+  "schema": "stegverse.node-exchange-profile/v0.1",
+  "profile_id": "INTERCONNECTED-CAPABILITY-CUSTODY-NODE-EXCHANGE-001",
+  "status": "SOURCE_PROFILE_UNVALIDATED",
+  "owner_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "cosv": "71000000100110",
+  "purpose": "Framework-neutral Node exchange profile for existence, identity, state-dependent capability exchange, evidence and reconstructable custody across independently governed systems.",
+  "invariants": {
+    "same_boundary_for_ephemeral_and_external_nodes": true,
+    "framework_native_runtime_retained": true,
+    "framework_native_governance_retained": true,
+    "sdk_manifest_selects_processing_semantics": true,
+    "interlock_intr_is_transport_not_processing_authority": true,
+    "adapter_authority": "NONE",
+    "bespoke_external_framework_runtime_forbidden": true,
+    "bespoke_external_framework_logging_path_forbidden": true
+  },
+  "stages": [
+    {
+      "order": 1,
+      "id": "NODE_EXISTENCE_EXCHANGE",
+      "required": true,
+      "input": [
+        "source_node_endpoint",
+        "destination_node_endpoint",
+        "challenge_commitment"
+      ],
+      "output": [
+        "reciprocal_response_commitment",
+        "endpoint_observation"
+      ],
+      "claim": "Establish live reciprocal participation only; does not establish persistent identity or truth of framework claims."
+    },
+    {
+      "order": 2,
+      "id": "NODE_IDENTITY_BINDING",
+      "required_for_attributed_external_result": true,
+      "input": [
+        "endpoint_observation",
+        "identity_claim",
+        "cryptographic_binding_evidence"
+      ],
+      "output": [
+        "node_identity_binding"
+      ],
+      "provenance_states": [
+        "VERIFIED_NODE",
+        "UNVERIFIED_NODE",
+        "VERIFICATION_FAILED"
+      ],
+      "claim": "Binds an observed participant to identity; does not validate substantive claims."
+    },
+    {
+      "order": 3,
+      "id": "STATE_DEPENDENT_CAPABILITY_DECLARATION",
+      "required": true,
+      "input": [
+        "node_identity_or_ephemeral_binding",
+        "applicable_state_commitment",
+        "capability_id",
+        "route_id",
+        "admission_conditions"
+      ],
+      "output": [
+        "capability_declaration_commitment"
+      ],
+      "claim": "Capability availability is state-dependent and does not grant caller authority."
+    },
+    {
+      "order": 4,
+      "id": "MANIFEST_BOUND_REQUEST",
+      "required": true,
+      "input": [
+        "source",
+        "destination",
+        "predecessor_or_state_binding",
+        "capability_id",
+        "route_id",
+        "payload_commitment"
+      ],
+      "output": [
+        "admitted_manifest_or_non_allow"
+      ],
+      "dispositions": [
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED"
+      ]
+    },
+    {
+      "order": 5,
+      "id": "CAPABILITY_ACTION_AND_ENDPOINT_DISPOSITION",
+      "required": true,
+      "input": [
+        "admitted_manifest",
+        "native_framework_execution"
+      ],
+      "output": [
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED",
+        "endpoint_evidence"
+      ],
+      "claim": "Native execution remains under destination framework authority; endpoint evidence is retained without importing that authority."
+    },
+    {
+      "order": 6,
+      "id": "RESULTING_STATE_COMMITMENT",
+      "required": true,
+      "input": [
+        "endpoint_disposition",
+        "endpoint_evidence"
+      ],
+      "output": [
+        "resulting_state_commitment",
+        "predecessor_link"
+      ]
+    },
+    {
+      "order": 7,
+      "id": "CUSTODY_RETENTION",
+      "required": true,
+      "input": [
+        "manifest",
+        "endpoint_receipts",
+        "endpoint_evidence",
+        "resulting_state_commitment"
+      ],
+      "output": [
+        "sdk_retained_transition_evidence",
+        "organization_receipt_chain"
+      ],
+      "claim": "SDK/Organization retention reuses existing custody paths; no experiment-specific logger."
+    },
+    {
+      "order": 8,
+      "id": "MASTER_RECORDS_RECONSTRUCTION",
+      "required_when_applicable": true,
+      "input": [
+        "bounded_organization_receipt_batch"
+      ],
+      "output": [
+        "custody_submission_disposition",
+        "reconstruction_evidence"
+      ],
+      "claim": "Master Records custody/reconstruction does not become transport or external-framework governance."
+    }
+  ],
+  "custody_semantics": {
+    "definition": "Each Node retains authority over its native implementation/state while the exchange preserves attributable commitments and receipts sufficient to reconstruct cross-boundary capability interactions.",
+    "does_not_mean": [
+      "ownership of another Node capability",
+      "control of another framework runtime",
+      "transfer of another framework governance",
+      "truth of substantive framework claims"
+    ]
+  },
+  "experimental_provenance_gate": {
+    "externally_attributable_result_requires": "VERIFIED_NODE",
+    "unverified_material_may_be_explored": true,
+    "unverified_material_must_not_be_represented_as_authenticated_external_framework_result": true,
+    "node_verification_does_not_equal_claim_validation": true
+  },
+  "composition": {
+    "single_hop": "PROFILE_TARGET",
+    "multi_hop": "UNPROVEN",
+    "prohibition": "Do not claim A->B->C capability composition or custody preservation until independently demonstrated."
+  },
+  "first_falsification_case": {
+    "participants": [
+      "StegVerse",
+      "Richard-operated Sebbi.Pro node"
+    ],
+    "scope": "SINGLE_HOP_ONLY",
+    "phase_1": "Prove generic reciprocal Node existence exchange using the same semantics expected for an ephemeral StegOS/Node.",
+    "phase_2": "Bind participant identity and declared capability only after phase_1 evidence exists.",
+    "phase_3": "Attempt one manifest-bound MasterRecordsCheckpoint/v1 witness capability only after phases 1-2 succeed.",
+    "success_requires": [
+      "reciprocal Node exchange evidence",
+      "identity binding evidence",
+      "state-dependent capability declaration",
+      "manifest-bound request",
+      "authentic endpoint disposition/evidence",
+      "resulting-state commitment",
+      "existing SDK/Organization retention evidence",
+      "applicable Master Records custody/reconstruction evidence"
+    ],
+    "nonclaims": [
+      "Sebbi governance conformance",
+      "StegVerse governance adoption by Sebbi",
+      "multi-hop composition",
+      "external adoption",
+      "system-wide runtime enforcement"
+    ]
+  }
+}
