@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/interlock-intr-runtime-independent-protocol-v1.schema.json",
+  "title": "Interlock/InTr Runtime-Independent Protocol v1",
+  "type": "object",
+  "required": [
+    "protocol",
+    "registered_node",
+    "manifest",
+    "payload_commitment",
+    "requested_capability",
+    "disposition",
+    "receipt"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "stegverse.interlock-intr/v1"
+    },
+    "registered_node": {
+      "type": "object",
+      "required": [
+        "source_node_id",
+        "destination_node_id"
+      ],
+      "properties": {
+        "source_node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "destination_node_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "required": [
+        "intent",
+        "source",
+        "destination"
+      ],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "destination": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predecessor_or_state_binding": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload_commitment": {
+      "type": "object",
+      "required": [
+        "algorithm",
+        "digest"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "requested_capability": {
+      "type": "string",
+      "minLength": 1
+    },
+    "disposition": {
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED"
+      ]
+    },
+    "receipt": {
+      "type": "object",
+      "required": [
+        "manifest_commitment",
+        "payload_commitment",
+        "disposition",
+        "evidence_refs"
+      ],
+      "properties": {
+        "manifest_commitment": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "payload_commitment": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "disposition": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "FAIL_CLOSED"
+          ]
+        },
+        "resulting_state_commitment": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
