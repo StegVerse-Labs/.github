@@ -223,3 +223,10 @@ Deeper representative classification:
 - **Shared-document/external collaboration: PARTIAL.** Existing Ecosystem Chat census states that the data packet carries the manifest selecting processing and that provider identity does not select processing; TVC external-collaboration handoffs preserve read-only provider-operation separation and explicitly deny gateway credential/governance/InTr/Master Records authority. This is stronger than NOT_PROVEN for the source architecture, but authentic end-to-end Node -> InTr -> SDK -> action -> Organization -> Master Records evidence remains unobserved here.
 
 No new `EXEMPTION_REQUESTED` classification is introduced. These PARTIAL classifications are source-evidence statements only and do not establish authentic runtime execution.
+
+
+## 2026-10-01 issue #2901 — first executable Node Exchange conformance specimen
+
+Issue `#2901` is reconciled as source specimen `data/node-exchange/first-executable-conformance-v0.1.json`. It uses existing owners only and orders the first authentic attempt as authenticated reciprocal Node existence -> identity binding -> current health -> `REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE` -> manifest-bound request authorization. A request-relative TV/TVC credential, `MasterRecordsCheckpoint/v1`, or optional ephemeral StegOS meeting-point transport MUST NOT be attempted before that ordering is authentically satisfied.
+
+The first bounded external target remains a Richard-operated Sebbi.Pro Node, but endpoint, credentials, identity evidence and health evidence remain `UNSPECIFIED`; none may be invented. When an authenticated execution surface is actually available, retain the first authentic `ALLOW`, `DENY` or `FAIL_CLOSED` and applicable custody evidence without retrying for a preferred disposition. Unknown required health fails closed; credential/transport presentation before Node admission is non-ALLOW. Source fixtures, CI and merge are not runtime proof.
