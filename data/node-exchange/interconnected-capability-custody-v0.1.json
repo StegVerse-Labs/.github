@@ -296,5 +296,17 @@
       "expected": "NON_ALLOW",
       "predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE"
     }
+  ],
+  "conformance_specimens": [
+    {
+      "id": "NODE-EXCHANGE-FIRST-EXECUTABLE-CONFORMANCE-001",
+      "issue_ref": "StegVerse-Labs/.github#2901",
+      "path": "data/node-exchange/first-executable-conformance-v0.1.json",
+      "status": "SOURCE_SPECIMEN_RUNTIME_UNOBSERVED",
+      "ordered_prerequisite": "AUTHENTICATED_RECIPROCAL_NODE_EXISTENCE -> NODE_IDENTITY_BINDING -> CURRENT_NODE_HEALTH -> REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE -> MANIFEST_BOUND_REQUEST_AUTHORIZATION",
+      "first_external_target": "Richard-operated Sebbi.Pro Node",
+      "endpoint": "UNSPECIFIED",
+      "credentials": "UNSPECIFIED"
+    }
   ]
 }
