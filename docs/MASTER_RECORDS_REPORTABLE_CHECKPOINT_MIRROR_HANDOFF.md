@@ -147,6 +147,10 @@ Issue #2895 created. Branch `master-records-reportable-checkpoint-2895` created 
 
 No external witness submission, runtime execution, authentic Master Records checkpoint, Bitcoin anchor, deployment, or completion is claimed.
 
+## Successor task
+
+The generalized runtime-independent state-transition data-transfer protocol has been decomposed into `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` / issue #2897. Its canonical handoff is `docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md`. `MasterRecordsCheckpoint/v1` remains the first bounded interoperability profile and remains provider-neutral; this parent task does not claim external adoption or conformance.
+
 ## Next action
 
 Add the machine-readable schema and deterministic synthetic vector/verifier contract, update README, run repository validation at exact head, repair only demonstrated failures, then merge with expected-head protection when repository requirements are satisfied. Map an external witness only after its exact current submission schema/procedure is received.
