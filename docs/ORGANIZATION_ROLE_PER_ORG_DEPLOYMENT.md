@@ -6,9 +6,13 @@ Evidence class: `SOURCE_IMPLEMENTED`. No runtime observation, no goal closure, a
 
 `ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001` says the Organization Role deploys **per organization, in each organization's own `.github`**. It did not say how. This is the how — the generalized sequence, not a procedure for one organization.
 
-## Why this is a packet rather than a sweep
+## Reaching the organizations you deploy to
 
-Each organization's `.github` is its own repository under its own owner. A session reaches exactly the repositories selected when it started, plus what it can attach afterwards — and a repository whose name begins with `.` cannot be attached mid-session at all. So one session cannot deploy across organizations, however the work is sequenced. The deployable unit is therefore one organization per session, and what travels between sessions is this packet.
+Each organization's `.github` is its own repository under its own owner. A session reaches the repositories selected when it was created, plus those it can attach afterwards — and a repository whose name begins with `.` can be a session **source** but cannot be **attached** once the session is running.
+
+The constraint is therefore selection timing, not count. Select every target organization's `.github` when the session is created and one session deploys to all of them. Discover a target after the session is running and that session cannot reach it, however the work is sequenced.
+
+That is what makes this a packet rather than a procedure someone retells: a session created without a target selected hands the work to one that has it, and the packet is what travels between them unchanged.
 
 ## Running it
 

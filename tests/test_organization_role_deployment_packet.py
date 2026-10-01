@@ -242,6 +242,19 @@ def test_register_records_measurement_not_instruction():
     assert register["organizations_not_yet_measured"]
 
 
+def test_the_constraint_is_selection_timing_not_one_organization_per_session():
+    """A session may deploy to many organizations; what it cannot do is reach a
+    dot-named repository it was not created with."""
+    reaching = load(PACKET)["reaching_target_organizations"]
+    assert reaching["constraint"] == "SELECTION_TIMING_NOT_COUNT"
+    assert reaching["one_session_may_deploy_to_many_organizations"] is True
+    assert reaching["every_target_dot_github_must_be_selected_at_session_creation"] is True
+    assert reaching["target_discovered_after_session_start_is_unreachable_from_that_session"] is True
+    text = DOC.read_text(encoding="utf-8")
+    assert "selection timing, not count" in text
+    assert "one organization per session" not in text
+
+
 def test_doc_states_the_sequence_and_the_urgent_gap():
     text = DOC.read_text(encoding="utf-8")
     assert "scripts/verify_organization_role_deployment.py --org-root" in text

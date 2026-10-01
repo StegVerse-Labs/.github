@@ -141,5 +141,13 @@
     "GRANT_TRANSITION_EXECUTION_CUSTODY_OR_CREDENTIAL_AUTHORITY",
     "REQUIRE_AN_EXTERNAL_MACHINE_OR_SECOND_DEVICE",
     "CLOSE_ANY_GOAL"
-  ]
+  ],
+  "reaching_target_organizations": {
+    "constraint": "SELECTION_TIMING_NOT_COUNT",
+    "rule": "A dot-named repository can be a session source but cannot be attached once the session is running.",
+    "one_session_may_deploy_to_many_organizations": true,
+    "every_target_dot_github_must_be_selected_at_session_creation": true,
+    "target_discovered_after_session_start_is_unreachable_from_that_session": true,
+    "packet_travels_between_sessions_for_that_case": true
+  }
 }
