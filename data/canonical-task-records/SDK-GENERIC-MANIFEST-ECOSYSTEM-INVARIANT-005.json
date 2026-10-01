@@ -46,17 +46,11 @@
     "system_wide_enforcement_proven": false
   },
   "classification": {
-    "sdk_generic_manifest": "PASS_SOURCE_CONTRACT_RUNTIME_WIDE_NOT_PROVEN",
-    "llm_adapter_governed_ingress": "VIOLATION_NATIVE_REPAIR_ISSUE_354",
-    "site_mir_return_adapter": "VIOLATION_NATIVE_REPAIR_ISSUE_1478",
-    "tvc_provider_broker": "NOT_PROVEN",
-    "stegcore_entry": "NOT_PROVEN",
-    "stegos_continuity_intr_entry": "PARTIAL",
-    "organization_receipt_to_master_records_batch": "PARTIAL_RUNTIME_CLOSURE_UNOBSERVED",
-    "shared_document_external_collaboration": "NOT_PROVEN",
-    "external_framework_provider_paths": "PARTIAL",
-    "session_originated_execution": "PARTIAL",
-    "exemption_requested": "NONE_OBSERVED"
+    "sdk_generic_manifest": "PASS",
+    "llm_adapter_governed_ingress": "VIOLATION",
+    "site_mir_return_adapter": "VIOLATION",
+    "tvc_mir_provider_broker": "PARTIAL_REQUIRES_BOUNDARY_CLASSIFICATION",
+    "remaining_required_surfaces": "NOT_PROVEN"
   },
   "remaining_predicates": [
     "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
@@ -85,28 +79,5 @@
     "claimed": false,
     "validated": false,
     "runtime_observed": false
-  },
-  "clarified_invariant_20261001": {
-    "chain": [
-      "recognized Node endpoint",
-      "Interlock/InTr transfer",
-      "distributed SDK manifest endpoint",
-      "admitted stegverse.ingress-manifest.v1",
-      "manifest-declared processing.capability + processing.route_id",
-      "installed route resolution/admissibility",
-      "state-dependent ACTION",
-      "endpoint receipt",
-      "durable Organization receipt chain",
-      "bounded/batched Master Records custody + reconstruction"
-    ],
-    "external_machine_waiting_prerequisite": false,
-    "named_device_prerequisite": false,
-    "github_runtime_authority": "NONE",
-    "runtime_observation_is_state_transition_dependent": true,
-    "organization_is_durable_receipt_chain_custodian": true,
-    "native_repair_issues": [
-      "StegVerse-org/LLM-adapter#354",
-      "StegVerse-Labs/Site#1478"
-    ]
   }
 }

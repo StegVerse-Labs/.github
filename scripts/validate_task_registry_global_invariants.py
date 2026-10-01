@@ -41,6 +41,28 @@ EXPECTED = {
     "legacy_unqualified_completion_may_support_user_facing_complete": False,
     "legacy_unqualified_completion_may_satisfy_terminal_predicate": False,
     "terminal_complete_default_evidence_class": "END_TO_END",
+    "runtime_reality_authority": "Organization",
+    "runtime_reality_locus": "ORGANIZATION_LEDGER_ROOT",
+    "runtime_reality_lock": "ORGANIZATION_LEDGER_LOCK",
+    "runtime_reality_write_mode": "MANIFEST_DIRECTED_APPEND",
+    "organization_role_deployment_scope": "PER_ORGANIZATION_IN_ITS_OWN_DOT_GITHUB",
+    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "master_records_runtime_reality_authority": "NONE",
+    "master_records_transition_authority": "NONE",
+    "master_records_may_gate_organization_runtime_reality": False,
+    "released_organization_batch_requires_verified_organization_receipt_chain": True,
+    "actions_by_manifest_required": True,
+    "manifest_determines_destination": True,
+    "destination_existence_sufficient_for_ingress_and_egress": True,
+    "destination_liveness_is_transition_predicate": False,
+    "external_machine_awaiting_allowed": False,
+    "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+    "always_on_receiver_required": False,
+    "post_closure_authentic_observer_gate_allowed": False,
+    "non_conforming_surface_disposition": "DECLARED_EXEMPTION_REQUIRED",
+    "transition_authority": "Interlock/InTr",
+    "worker_claim_authority": "WorkerCoordinator",
+    "credential_authority": "TV/TVC",
 }
 
 REVIEW_ORDER = [
@@ -69,6 +91,12 @@ FORBIDDEN_TRUE_KEYS = {
     "remote_computer_is_completion_predicate",
     "remote_computer_required",
     "remote_computer_availability_required",
+    "external_machine_awaiting_required",
+    "always_on_receiver_required",
+    "destination_liveness_required",
+    "post_closure_authentic_observer_required",
+    "master_records_gates_organization_runtime_reality",
+    "master_records_is_runtime_reality_authority",
 }
 
 FORBIDDEN_AUTHORIZED_DEVICE_KEYS = {
@@ -95,6 +123,16 @@ def walk(value, path=""):
             yield from walk(v, f"{path}[{i}]")
 
 
+PRE_DECLARATION_MASTER_RECORDS_ROLE_RECORDS = {
+    # Records written before ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001. Their
+    # reconciliation is record-side and gated behind canonical-task-record schema
+    # reconciliation and registration-before-mutation. Any *new* occurrence fails here.
+    "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+}
+
+ORGANIZATION_RUNTIME_REALITY_ROLE = "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER"
+
+
 def validate_record(path: Path) -> None:
     record = json.loads(path.read_text(encoding="utf-8"))
     for location, key, value in walk(record):
@@ -119,6 +157,75 @@ def validate_record(path: Path) -> None:
             fail(f"{path.name}: {location} must be false")
         if key == "execution_substrate_selection_authority_effect" and value != "NONE":
             fail(f"{path.name}: {location} must be NONE")
+        if key == "runtime_reality_authority" and value != "Organization":
+            fail(f"{path.name}: {location} must be Organization under ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001")
+        if key == "master_records_role" and value != ORGANIZATION_RUNTIME_REALITY_ROLE:
+            if path.name not in PRE_DECLARATION_MASTER_RECORDS_ROLE_RECORDS:
+                fail(
+                    f"{path.name}: {location} must be {ORGANIZATION_RUNTIME_REALITY_ROLE} "
+                    "under ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
+                )
+
+
+def validate_organization_role_deployment(invariants: dict) -> None:
+    declaration_path = ROOT / invariants.get("organization_role_declaration", "")
+    register_path = ROOT / invariants.get("organization_role_exemption_register", "")
+    if not declaration_path.is_file():
+        fail("organization role declaration missing")
+    if not register_path.is_file():
+        fail("organization role exemption register missing")
+    declaration = json.loads(declaration_path.read_text(encoding="utf-8"))
+    register = json.loads(register_path.read_text(encoding="utf-8"))
+    if declaration.get("schema") != "stegverse.organization-role-runtime-reality-deployment/v1":
+        fail("organization role declaration schema mismatch")
+    if declaration.get("authority_effect") != "NONE_DECLARATION_ONLY":
+        fail("organization role declaration must grant no authority")
+    change = declaration.get("role_change") or {}
+    if change.get("current_value") != invariants.get("runtime_reality_authority"):
+        fail("organization role declaration disagrees with runtime_reality_authority")
+    if change.get("reality_locus") != invariants.get("runtime_reality_locus"):
+        fail("organization role declaration disagrees with runtime_reality_locus")
+    if change.get("reality_lock") != invariants.get("runtime_reality_lock"):
+        fail("organization role declaration disagrees with runtime_reality_lock")
+    if change.get("reality_write_mode") != invariants.get("runtime_reality_write_mode"):
+        fail("organization role declaration disagrees with runtime_reality_write_mode")
+    restated = declaration.get("master_records_restated_role") or {}
+    if restated.get("role") != invariants.get("master_records_role"):
+        fail("organization role declaration disagrees with master_records_role")
+    if restated.get("runtime_reality_authority") != "NONE":
+        fail("restated master-records role must hold no runtime reality authority")
+    if restated.get("may_be_awaited_by_a_transition") is not False:
+        fail("restated master-records role may not be awaited by a transition")
+    conformance = declaration.get("conformance_standard") or {}
+    for key in (
+        "actions_by_manifest_required",
+        "external_machine_awaiting_allowed",
+        "always_on_receiver_required",
+        "post_closure_authentic_observer_gate_allowed",
+        "receiver_unavailable_disposition",
+        "non_conforming_surface_disposition",
+    ):
+        if conformance.get(key) != invariants.get(key):
+            fail(f"organization role conformance standard disagrees with invariant {key}")
+    if register.get("schema") != "stegverse.organization-role-exemption-register/v1":
+        fail("organization role exemption register schema mismatch")
+    if register.get("declaration") != declaration.get("declaration_id"):
+        fail("organization role exemption register is not bound to the declaration")
+    if register.get("silent_non_conformance_allowed") is not False:
+        fail("organization role exemption register must prohibit silent non-conformance")
+    if register.get("exemption_grants_authority") is not False:
+        fail("organization role exemption grants no authority")
+    required_fields = set(register.get("required_fields") or [])
+    declared_fields = set((declaration.get("exemption_path") or {}).get("required_fields") or [])
+    if not declared_fields or not declared_fields <= required_fields:
+        fail("organization role exemption register omits a declared required field")
+    for exemption in register.get("exemptions") or []:
+        missing_fields = sorted(required_fields - set(exemption))
+        if missing_fields:
+            fail(
+                f"organization role exemption {exemption.get('surface', '<unnamed>')} "
+                "missing required fields: " + ", ".join(missing_fields)
+            )
 
 
 def main() -> None:
@@ -157,15 +264,25 @@ def main() -> None:
         "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
         "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE",
         "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF",
+        "NO_MASTER_RECORDS_AS_RUNTIME_REALITY_AUTHORITY",
+        "NO_MASTER_RECORDS_RECORDING_AS_ORGANIZATION_RUNTIME_REALITY_GATE",
+        "NO_ORGANIZATION_BATCH_RELEASE_WITHOUT_VERIFIED_ORGANIZATION_RECEIPT_CHAIN",
+        "NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE",
+        "NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE",
+        "NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE",
+        "NO_SILENTLY_NON_CONFORMING_SURFACE_WITHOUT_REGISTERED_EXEMPTION",
+        "NO_EXEMPTION_AS_AUTHORITY_OR_TERMINAL_PROOF",
     }
     missing = sorted(required_prohibitions - prohibitions)
     if missing:
         fail("global invariant missing required prohibitions: " + ", ".join(missing))
     if policy.get("authority_effect") != "NONE_REGISTRY_INVARIANT_ONLY":
         fail("global invariant authority effect mismatch")
+    validate_organization_role_deployment(invariants)
     for path in sorted(RECORDS.glob("*.json")):
         validate_record(path)
     print("TASK_REGISTRY_GLOBAL_VERIFIER_NODE_SUBSTRATE_INVARIANTS_PASS")
+    print("ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT_PASS")
 
 if __name__ == "__main__":
     main()

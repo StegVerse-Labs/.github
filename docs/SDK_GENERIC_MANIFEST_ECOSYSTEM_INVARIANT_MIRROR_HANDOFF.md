@@ -1,6 +1,6 @@
 # SDK Generic Manifest Ecosystem Invariant — Mirror Handoff
 
-Updated: 2026-10-01
+Updated: 2026-09-12
 Goal Task ID: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`
 Parent Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV ID: `71000000100110`
@@ -133,63 +133,3 @@ A user assertion or conversational correction is an architectural hypothesis unt
 Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
 
 The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
-
-
-## 2026-10-01 clarified ACTION-BY-MANIFEST audit
-
-Owner clarification was reconciled against current source rather than promoted by assertion. The required actionable chain is:
-
-```text
-recognized Node endpoint
--> Interlock/InTr transfer
--> distributed SDK manifest endpoint
--> admitted stegverse.ingress-manifest.v1
--> manifest-declared processing.capability + processing.route_id
--> installed route resolution/admissibility
--> state-dependent ACTION
--> endpoint receipt
--> durable Organization receipt chain
--> bounded/batched Master Records custody + reconstruction
-```
-
-Runtime observation remains state-transition dependent. Source, CI, merge, fixtures and documentation do not prove authentic runtime execution. No external machine, named device, hosted service, scheduler or passive waiting endpoint is a prerequisite. An unavailable observation interface is an evidence-reachability condition, not authority and not permission to infer downstream execution.
-
-### Representative surface classification
-
-| Surface | Classification | Exact evidence / remediation |
-|---|---|---|
-| SDK manifest contract + route resolution | PASS (source contract) | `StegVerse-org/StegVerse-SDK:stegverse/manifest_contract.py`, `route_resolution.py`, `governance_ingress_runtime.py`; capability/route must match installed processor binding. Runtime-wide enforcement remains NOT_PROVEN. |
-| LLM Adapter governed ingress | VIOLATION | Current `llm_adapter/governed_manifest_ingress.py` still calls caller-injected `governance_handler(canonical_manifest)` after local validation. Native repair issue: StegVerse-org/LLM-adapter#354. Required topology is recognized Node -> Interlock/InTr -> SDK manifest endpoint; LLM Adapter must not choose governance processing. |
-| Site MIR return | VIOLATION | Current `assets/mir-accounting-return-v1.js` correctly uses Node/InTr materialization but preselects `evaluator-read-review` / `SDK:EvaluatorReviewIngress` from MIR-specific source shape. Native repair issue: StegVerse-Labs/Site#1478. MIR identity remains provenance only; SDK manifest route resolution must select processing. |
-| TVC provider-operation broker | NOT_PROVEN | Credential/provider authority may remain TV/TVC-specific, but current audit did not establish end-to-end proof that provider identity never selects ecosystem processing. No exemption inferred. |
-| StegCore manifested processing entry | NOT_PROVEN | Existing invariant requires admitted manifested route before processor execution; current bounded audit did not establish the full Node->SDK->ACTION->Organization-chain path for representative StegCore execution. |
-| Continuity/StegOS InTr materialization | PARTIAL | Existing Node/InTr materialization and receipt contracts exist, but full representative authentic runtime chain under this invariant is not yet established. |
-| Organization receipt custody -> Master Records batch | PARTIAL | `resident-runtime/organization_custody_readback.py` and ORGANIZATION-BATCH-CUSTODY-REPLAY-001 establish source contracts and exact-source validation. Its handoff explicitly retains authentic organization/Master Records runtime closure as unobserved; do not promote source/CI to runtime proof. |
-| Shared-document/external-collaboration ingestion | NOT_PROVEN | Reusable collaboration definitions exist, but no evidence in this audit proves every actionable path enters through the complete clarified chain. |
-| External framework/provider path (including Elyria) | PARTIAL | Existing external-framework work preserves foreign observations and generic SDK ingress concepts, but any translation layer is framing-only. Conformance now requires recognized Node + Interlock/InTr transfer to SDK before processing selection. |
-| Session-originated execution | PARTIAL | Universal work/AI preexecution documents reuse manifest + InTr components; authenticated runtime observation remains separate and must not be inferred from session/source/CI state. |
-
-No `EXEMPTION_REQUESTED` surface was found in this bounded audit. Any actionable surface that cannot conform must request an explicit exemption rather than silently bypassing the invariant.
-
-### Remediation rule
-
-For every current or future actionable surface, repair toward the chain above through the existing native owner. Translation/framing code may exist but has authority NONE and may not become a processor selector, governance owner, custody plane, credential authority, runtime, scheduler or dispatcher. Organizations retain their own predecessor-linked receipt chains and send bounded/batched segments to Master Records for custody/reconstruction.
-
-### Runtime completion gate
-
-System-wide enforcement remains **NOT_PROVEN**. Completion requires representative authentic governance and non-governance state-transition observations, endpoint receipts, Organization-chain readback and applicable Master Records reconstruction. GitHub Actions remain validation/evidence transport only.
-
-
-## 2026-10-01 framework-neutral Node Exchange / interconnected capability custody
-
-Machine-readable source profile: `data/node-exchange/interconnected-capability-custody-v0.1.json`.
-
-The external-framework boundary is generalized from a framework-specific integration into the same Node exchange class used by ephemeral StegOS/Node participation. The ordered evidence model is: reciprocal Node existence exchange -> optional/persistent cryptographic identity binding when attribution is required -> state-dependent capability declaration -> manifest-bound request -> native capability action with ALLOW/DENY/FAIL_CLOSED -> endpoint evidence -> resulting-state commitment -> existing SDK/Organization retention -> applicable bounded Master Records custody/reconstruction.
-
-"Interconnected capability custody" means each independently governed Node retains authority over its own implementation and state while the exchange preserves attributable commitments/receipts sufficient to reconstruct the cross-boundary capability interaction. It does not transfer ownership of a capability, another framework's governance, runtime authority, or truth of that framework's substantive claims.
-
-For externally attributable experiments, `VERIFIED_NODE` is required. `UNVERIFIED_NODE` material may be explored but may not be represented as an authenticated external-framework result; `VERIFICATION_FAILED` fails attribution. Node verification proves participant provenance, not scientific/mathematical/governance claims.
-
-The first bounded falsification case is StegVerse <-> a Richard-operated Sebbi.Pro node. Phase 1 is generic reciprocal Node existence only, using the same semantics expected for an ephemeral Node. Identity/capability binding follows only after existence evidence. A single `MasterRecordsCheckpoint/v1` witness attempt follows only after those phases succeed. No Sebbi-specific runtime, scheduler, dispatcher, credential authority, logging/custody path or governance implementation is introduced.
-
-Multi-hop A->B->C capability composition remains explicitly `UNPROVEN` and MUST NOT be claimed from this profile or the single-hop demonstration. External adoption, Sebbi governance conformance, and system-wide runtime enforcement likewise remain unproven.
