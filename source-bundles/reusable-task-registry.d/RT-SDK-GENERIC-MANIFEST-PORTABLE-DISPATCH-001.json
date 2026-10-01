@@ -3,12 +3,13 @@
   "name": "Portable SDK Generic Manifest Exact Dispatch",
   "purpose": "Invoke the existing already-local sovereign source refresh plus exact sdk_generic_manifest_execution resident consumer for one manifest-bound SDK generic request, without creating another runtime, scheduler, dispatcher, request identity or authority plane.",
   "trigger": "an existing canonical Goal requires on-demand execution of the already-staged generic SDK manifest request through the existing portable resident bridge",
-  "scope": "one invocation-bound local source root, one sovereign runtime root, exact sdk_generic_manifest_execution selector, and one tracking Goal/COSV",
+  "scope": "one invocation-bound local source root, one sovereign runtime root, exact sdk_generic_manifest_execution selector, one exact child request_id, and one tracking Goal/COSV",
   "parameter_keys": [
     "source_root",
     "runtime_root",
     "only_consumer",
-    "goal_task_id"
+    "goal_task_id",
+    "request_id"
   ],
   "runner_templates": [
     "scripts/refresh_and_dispatch_resident_requests.py"
@@ -23,9 +24,10 @@
   "completion_predicates": [
     "EXACT_SDK_GENERIC_MANIFEST_SELECTOR_BOUND",
     "EXACT_CURRENT_GOAL_CONTEXT_BOUND",
+    "EXACT_CHILD_REQUEST_ID_BOUND",
     "PORTABLE_REFRESH_AND_TARGETED_DISPATCH_ADVANCED_TO_AUTHENTIC_DISPOSITION",
     "NO_RUNTIME_SCHEDULER_DISPATCHER_OR_AUTHORITY_PLANE_CREATED"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger through scripts/trigger_reusable_task.py with task_id/COSV tracking. Parameters must bind source_root, runtime_root, only_consumer=sdk_generic_manifest_execution and goal_task_id. Trigger acceptance is not execution; the child consumer result and its receipt chain control all execution claims."
+  "reuse_instructions": "Trigger through scripts/trigger_reusable_task.py with task_id/COSV tracking. Parameters must bind source_root, runtime_root, only_consumer=sdk_generic_manifest_execution, request_id, and goal_task_id. Trigger acceptance is not execution; the exact selected child consumer result and its receipt chain control all execution claims."
 }
