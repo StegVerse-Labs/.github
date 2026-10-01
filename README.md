@@ -1949,3 +1949,8 @@ A one-shot frozen HOLD submission used the established SDK ephemeral evaluator p
 ### Entity Economy Volume I/II successor publication continuation — 2026-09-30
 
 `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001` reached its 20-prompt ceiling and transfers only its unresolved Volume I/II successor-edition work to `ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001` / COSV `10100000102000`. Volume III correction, the separate Convergence / Comparative Signal Treatment, and the non-numbered Empirical Research Proposal are preserved as closed adjacent evidence. The successor must materialize deterministic versioned Publisher artifacts from PR #91 composites, preserve historical Volume I/II identities, use the existing governed Publisher path, and independently observe Site deployment/readback. Repository merge does not prove deployment or runtime disposition. See `docs/ENTITY_ECONOMY_VOLUME_I_II_SUCCESSOR_PUBLICATION_MIRROR_HANDOFF.md`.
+
+
+### Machine-readable HOLD attachment review record — 2026-09-30
+
+The frozen HOLD SDK attachment attempt now has a machine-readable review record at `data/experiment-evidence/ELAN_STEGVERSE_HOLD_SDK_ATTACHMENT_ATTEMPT_001.json`, preserving exact run/artifact identifiers, SHA-256 bindings, SDK disposition/lineage, explicit claim boundaries, and a pending-review section. The record remains attachment-boundary evidence only.
