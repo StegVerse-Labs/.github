@@ -92,3 +92,16 @@ Main now contains:
 - Updated `Papers.html`, Entity Economy series-thesis discovery, and Site README collection semantics.
 
 Historical Volume I/II identities and routes are unchanged. Site remains a downstream public display surface. Fresh external observation attempted immediately after merge still returned the older `Papers.html` deployment and did not resolve the two new routes, so credential-free deployed readback for these adjacent pages remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; source merge is not substituted for deployment/readback evidence.
+
+
+## 2026-09-30 Volume III provenance/scope correction
+
+Owner identified that the Site-published Volume III v0.3 had conflated parent economic-program review evidence and a later research-lane posture with the paper's intended historical scope. Volume III is restored as the third Entity Economy paper: a theoretical and forward-looking economic application of the architecture and entity implications developed in Volumes I and II, not a separately originated experimental research lane.
+
+Publisher PR #92 merged with expected-head protection as `34114866b9e66fb4a623817febc02207adb3b44e`. Corrected manuscript identity: Publisher blob `051458958f00d7081d70d1d0da54d8282ae4615e`, SHA-256 `fb84269e41a5d4bed29d073d60d3eeb3d541970a8a802d0e0c79e6d686068e11`. Exact-head Publisher workflows passed after the economic-publication preflight was correctly rebound from the obsolete manuscript digest: Publisher Readiness, Publisher Check, Economic Paper SDK Manifest Consumer, Economic Publication Preflight (Source Only), and Architecture Guard. The preflight candidate kind was corrected from `ENTITY_ECONOMY_VOLUME_III_SEPARATE_RESEARCH` to `ENTITY_ECONOMY_VOLUME_III_SERIES_CONTINUATION`.
+
+The corrected manuscript removes the inherited banker/lawyer-review claim, states that no banker/lawyer/external economics/independent professional review is claimed for Volume III unless separately evidenced against that manuscript, and reframes its measurement protocol as a future evaluation framework whose completion is not a prerequisite for publication of the theoretical volume. No-demonstrated-performance, legal-compliance, financial-product, payment-service, and empirical-validation boundaries remain.
+
+Site PR #1475 replaced the erroneous Volume III projection and merged with expected-head protection as `64be4ceba360e4f15cb974ab833ae280ff412cd4`. Site exact head reported no workflow runs or commit statuses; no CI success is inferred. Papers discovery, series presentation, and README were corrected consistently. The convergence/comparative-signal treatment remains separate and is not Volume IV.
+
+This repair is adjacent to, and does not satisfy, the Volume I/II successor-edition governed-publication predicates of `ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001`.
