@@ -1,0 +1,162 @@
+{
+  "schema": "stegverse.organization-role-deployment-packet/v1",
+  "packet_id": "ORGANIZATION-ROLE-DEPLOYMENT-PACKET-001",
+  "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
+  "reference_organization": "StegVerse-Labs",
+  "built_on": "2026-10-01",
+  "authority_effect": "NONE_PACKET_ONLY",
+  "evidence_class": "SOURCE_IMPLEMENTED",
+  "purpose": "The declaration says the Organization Role deploys per organization, in each organization's own .github. It did not say how. This packet is the generalized sequence: the target state every organization must reach, a verifier that reports the exact gap at any organization, and the reference implementation to copy from. It is not specific to any one organization.",
+  "deployment_is_per_organization": true,
+  "packet_mutates_other_organizations": false,
+  "reference_implementation": {
+    "organization": "StegVerse-Labs",
+    "repository": "StegVerse-Labs/.github",
+    "contract": ".stegverse/transition-ledger/org-contract.json",
+    "aggregator": "resident-runtime/aggregate_repo_transition.py",
+    "aggregator_source_verifier": "verify_source",
+    "declaration": "data/organization-role-runtime-reality-deployment.json",
+    "exemption_register": "data/organization-role-exemption-register.json",
+    "invariant_block": "data/task-registry-global-invariants.json",
+    "deployed_in_pull_request": 2899
+  },
+  "target_state": {
+    "organization_ledger_contract": {
+      "path": ".stegverse/transition-ledger/org-contract.json",
+      "schema": "stegverse.organization-transition-ledger-contract/v1",
+      "required": {
+        "ledger_level": "ORGANIZATION",
+        "emits": "stegverse.organization-transition-receipt/v1",
+        "consumes_includes": [
+          "stegverse.repo-transition-receipt/v1",
+          "stegverse.canonical-state-transition-receipt/v1"
+        ],
+        "organization_scope_rule": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT",
+        "preserves_source_transition_receipt": true,
+        "append_only_receipts": true,
+        "runtime_reality_authority": "Organization",
+        "ledger_root_is_organization_runtime_reality_locus": true,
+        "ledger_lock": "ORGANIZATION_LEDGER_LOCK",
+        "write_mode": "MANIFEST_DIRECTED_APPEND",
+        "propagation_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+        "propagation_gates_organization_runtime_reality": false,
+        "propagation_receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+        "always_on_receiver_required": false,
+        "authority_effect": "NONE_CONTRACT_ONLY"
+      }
+    },
+    "aggregator": {
+      "path": "resident-runtime/aggregate_repo_transition.py",
+      "requirement": "Admission must be gated on the contract's consumes list, not a hard-coded schema comparison. A correctly generalized aggregator never needs to name the canonical state transition schema in its own source, so the presence of that literal is not the test and its absence is not a defect. A canonical state transition is bound by its own digest and is not relabelled as a repository transition.",
+      "failure_if_unmet": "Canonical governed transitions emit no organization receipt and are dropped, contradicting the organization scope rule the contract declares."
+    },
+    "declaration": {
+      "path": "data/organization-role-runtime-reality-deployment.json",
+      "schema": "stegverse.organization-role-runtime-reality-deployment/v1",
+      "note": "Organization-scoped copy. deployment_scope and organization name are the organization's own."
+    },
+    "exemption_register": {
+      "path": "data/organization-role-exemption-register.json",
+      "schema": "stegverse.organization-role-exemption-register/v1",
+      "opens_empty": true
+    }
+  },
+  "verifier": {
+    "path": "scripts/verify_organization_role_deployment.py",
+    "invocation": "python3 scripts/verify_organization_role_deployment.py --org-root <path-to-org-dot-github-checkout>",
+    "emits": "stegverse.organization-role-deployment-disposition/v1",
+    "non_allow_fields": [
+      "failure_code",
+      "failed_predicate",
+      "required_evidence_or_repair",
+      "retry_entrypoint",
+      "owning_existing_goal",
+      "next_attempt"
+    ],
+    "reads_only": true,
+    "contacts_no_receiver": true
+  },
+  "organization_register": {
+    "note": "Measured state, not a claim about what any organization should do. Each organization deploys in its own .github; this register records what was observed and when.",
+    "organizations": [
+      {
+        "organization": "StegVerse-Labs",
+        "repository": "StegVerse-Labs/.github",
+        "state": "DEPLOYED",
+        "observed_on": "2026-10-01",
+        "evidence": "merged pull request 2899; validate_task_registry_global_invariants.py passes"
+      },
+      {
+        "organization": "StegVerse-org",
+        "repository": "StegVerse-org/.github",
+        "state": "RECORDING_MECHANISM_PRESENT_ROLE_NOT_DEPLOYED",
+        "observed_on": "2026-10-01",
+        "observed_commit": "ef34106fd737f3faf8644c543ab7aef00663452a",
+        "present": [
+          ".stegverse/transition-ledger/org-contract.json",
+          "resident-runtime/aggregate_repo_transition.py",
+          "resident-runtime/submit_org_transition_to_master_records.py",
+          "tests/test_org_ledger_atomic_append.py",
+          "docs/ORGANIZATION_TRANSITION_LEDGER_MIRROR_HANDOFF.md"
+        ],
+        "gaps": [
+          {
+            "failure_code": "ORGANIZATION_CONTRACT_CONSUMES_REPOSITORY_RECEIPTS_ONLY",
+            "detail": "consumes is the string 'stegverse.repo-transition-receipt/v1'; the canonical state transition schema is absent.",
+            "consequence": "A canonical governed transition that is not a repository transition has no path to an organization receipt."
+          },
+          {
+            "failure_code": "ORGANIZATION_SCOPE_RULE_NOT_DECLARED",
+            "detail": "organization_scope_rule is absent from the contract."
+          },
+          {
+            "failure_code": "AGGREGATOR_REJECTS_NON_REPOSITORY_SOURCE",
+            "detail": "aggregate_repo_transition.py verify_repo hard-rejects any schema other than stegverse.repo-transition-receipt/v1.",
+            "observed_at": "resident-runtime/aggregate_repo_transition.py:41"
+          },
+          {
+            "failure_code": "ORGANIZATION_ROLE_NOT_DECLARED",
+            "detail": "No runtime_reality_authority, ledger locus, restated master-records role, declaration or exemption register."
+          }
+        ],
+        "urgency_note": "The SDK lives in this organization and, as of StegVerse-org/StegVerse-SDK pull request 416, manifests canonical state transitions. Under the organization scope rule each should emit an organization receipt; none currently can. The contract generalization is therefore due independently of the role change.",
+        "remediation_observed": {
+          "observed_on": "2026-10-01",
+          "branch": "deploy/organization-role-and-org-contract-generalization-20261001",
+          "head": "8dbba95",
+          "pull_request": 13,
+          "state": "REMEDIATION_PROPOSED_NOT_MERGED",
+          "verifier_disposition_on_branch": "ALLOW",
+          "note": "Deployed by a session created with this organization's .github as its source, which both confirms a dot-named repository is pushable when selected at session creation and exercised the packet end to end."
+        }
+      }
+    ],
+    "organizations_not_yet_measured": [
+      "master-records",
+      "GCAT-BCAT-Engine",
+      "Admissible-Existence",
+      "AdmittedCode",
+      "Data-Continuation",
+      "Infrastructure-Continuity-Ventures",
+      "StegGhost",
+      "StegVerse-002",
+      "SV-011",
+      "AaCT-E"
+    ]
+  },
+  "this_packet_does_not": [
+    "MUTATE_ANY_OTHER_ORGANIZATION",
+    "CLAIM_RUNTIME_OBSERVATION",
+    "GRANT_TRANSITION_EXECUTION_CUSTODY_OR_CREDENTIAL_AUTHORITY",
+    "REQUIRE_AN_EXTERNAL_MACHINE_OR_SECOND_DEVICE",
+    "CLOSE_ANY_GOAL"
+  ],
+  "reaching_target_organizations": {
+    "constraint": "SELECTION_TIMING_NOT_COUNT",
+    "rule": "A dot-named repository can be a session source but cannot be attached once the session is running.",
+    "one_session_may_deploy_to_many_organizations": true,
+    "every_target_dot_github_must_be_selected_at_session_creation": true,
+    "target_discovered_after_session_start_is_unreachable_from_that_session": true,
+    "packet_travels_between_sessions_for_that_case": true
+  }
+}
