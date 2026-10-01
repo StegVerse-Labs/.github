@@ -206,3 +206,12 @@ Request-relative credential projection separates `credential_type` (for example 
 `EPHEMERAL_MEETING_POINT_TRANSPORT` is source-specified and runtime-unproven: Framework A -> ephemeral StegOS E -> Framework B is represented as separate manifested A EGRESS -> E INGRESS and E EGRESS -> B INGRESS legs with endpoint receipts and predecessor/state binding. E is an observable transition participant, not a discretionary broker or durable custody authority. Durable custody remains the existing Organization receipt chain and applicable Master Records reconstruction. Transport mediation is explicitly distinct from multi-hop capability composition, which remains UNPROVEN.
 
 Deterministic profile fixtures cover healthy requester eligibility, unknown-health FAIL_CLOSED, degradation after issuance when consumption-time health is required, and attempted alternate-ingress credential bypass. These are source fixtures/specification, not authentic runtime dispositions.
+
+
+## 2026-10-01 issue #2901 — first executable Node Exchange conformance specimen
+
+Issue `#2901` is reconciled as source specimen `data/node-exchange/first-executable-conformance-v0.1.json`. It uses existing owners only and orders the first authentic attempt as authenticated reciprocal Node existence -> identity binding -> current health -> `REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE` -> manifest-bound request authorization. A request-relative TV/TVC credential, `MasterRecordsCheckpoint/v1`, or optional ephemeral StegOS meeting-point transport MUST NOT be attempted before that ordering is authentically satisfied.
+
+The first bounded external target remains a Richard-operated Sebbi.Pro Node, but endpoint, credentials, identity evidence and health evidence remain `UNSPECIFIED`; none may be invented from correspondence or source declarations. The source specimen therefore does not manufacture an external execution attempt. When an authenticated execution surface is actually available, retain the first authentic `ALLOW`, `DENY` or `FAIL_CLOSED`, exact predecessor/state binding, endpoint receipts/resulting-state commitment, and authentically available Organization/Master Records custody evidence without retrying for a preferred disposition.
+
+Negative source specimens require `FAIL_CLOSED` for authenticated identity with unknown required health, and non-ALLOW for credential/transport presentation before Node admission. Source fixtures, CI and merge are not runtime proof.
