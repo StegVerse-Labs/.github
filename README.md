@@ -1986,3 +1986,5 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` / issue #2897 defines the successor protocol boundary for registered-node, manifested, state-transition-dependent communication. The protocol binds node identity, manifest intent, source/destination, payload commitment, applicable predecessor/state context, requested capability, ALLOW/DENY/FAIL_CLOSED disposition, transfer receipt, resulting-state commitment when applicable, and evidence references without requiring participating frameworks to share internal runtimes or governance implementations.
 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
+
+- 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
