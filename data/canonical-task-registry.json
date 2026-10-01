@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 278,
+  "generation": 279,
   "status": "EPHEMERAL_STEGBROWSER_EXTERNAL_AI_PROMPT_LIMIT_CONTINUATION_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -16578,10 +16578,12 @@
       },
       "classification": {
         "sdk_generic_manifest": "PASS",
-        "llm_adapter_governed_ingress": "VIOLATION",
-        "site_mir_return_adapter": "VIOLATION",
-        "tvc_mir_provider_broker": "PARTIAL_REQUIRES_BOUNDARY_CLASSIFICATION",
-        "remaining_required_surfaces": "NOT_PROVEN"
+        "llm_adapter_governed_ingress": "VIOLATION_REPAIR_PR_355_VALIDATION_PENDING",
+        "site_mir_return_adapter": "VIOLATION_REPAIR_PR_1479_VALIDATION_PENDING_STEGOS_PROFILE_418",
+        "tvc_mir_provider_broker": "PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN",
+        "remaining_required_surfaces": "NOT_PROVEN",
+        "stegcore_entry": "PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN",
+        "shared_document_external_collaboration": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN"
       },
       "remaining_predicates": [
         "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
@@ -16610,6 +16612,22 @@
         "claimed": false,
         "validated": false,
         "runtime_observed": false
+      },
+      "followup_evidence_20261001": {
+        "canonical_audit_merge": {
+          "pr": 2900,
+          "final_head": "3559a1542bedc9aba750e95360eff692504f5c2a",
+          "merge_commit": "cc579a827e98f5b5dea8670a7b4f81d5df85946f",
+          "earlier_head": "ff98d97ab1408eb327b25a75443faa268b071e74",
+          "earlier_head_admissible": false,
+          "reason": "Cross-Task Coordination Validation failed at earlier head; final merged head differed."
+        },
+        "native_repairs": [
+          "StegVerse-org/LLM-adapter#354 -> PR #355",
+          "StegVerse-Labs/Site#1478 -> PR #1479",
+          "StegVerse-Labs/StegOS#418 generic SDK manifest InTr profile"
+        ],
+        "runtime_claim": "NOT_PROVEN"
       }
     },
     {
