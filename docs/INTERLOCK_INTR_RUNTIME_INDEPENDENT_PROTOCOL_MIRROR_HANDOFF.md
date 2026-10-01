@@ -58,6 +58,22 @@ Exact-head workflow evidence on the prior PR head demonstrated a missing `execut
 
 No external adoption, external conformance, production interoperability, runtime execution, deployment, or merge is claimed.
 
+## Replacement PR and exact-head validation
+
+PR #2898 remained unavailable through authoritative connector search. The preserved branch was therefore used to create replacement PR #2909 with explicit replacement evidence. At creation, #2909 targeted `master-records-reportable-checkpoint-2895` from exact head `5ec4bdf4b9244f19051048434df9380375532692`. All five observed workflows for that exact head completed SUCCESS, including Cross-Task Coordination Validation and Test suite ratchet. The branch remains diverged from its base (10 ahead / 2 behind), so mergeability is not inferred from CI success.
+
+## Initial source-level surface trace
+
+Default-branch source evidence identifies these existing seams:
+
+- Public SDK `run-manifest` exists and prior canonical evidence binds successful public results to the exact canonical ingress manifest and deterministic generic execution request.
+- Current canonical documentation traces public `run-manifest` through `stegverse/evaluator_console.py` and `stegverse/manifest_execution.py` to `stegverse.manifest_state_transition_runtime.execute_manifest`.
+- That runtime is documented as attaching through `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` and `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`; missing attachment returns typed SDK-local FAIL_CLOSED rather than creating a substitute runtime.
+- The shared canonical ingress profile is `SDK:ManifestStateTransition` at `/intr/materialization`; repository source includes `workers/manifest_state_transition_intr_ingress.py` and tests for the shared profile.
+- Repository evidence also states that GitHub is validation/evidence transport, not authentic Universal InTr runtime authority, and that the active ChatGPT execution surface did not expose a non-caller-editable authenticated Universal InTr/TVC invocation primitive in the cited observations.
+
+These are source-level findings only. An authentic current production invocation boundary has not been established in this task and remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
 ## Next action
 
-Re-observe PR state and fresh exact-head workflows after these repairs. Repair only demonstrated failures. Then trace existing Interlock/InTr and SDK surfaces against the specification without inventing missing runtime capabilities.
+Reconcile replacement PR #2909 against its current base and exact head without weakening the protocol. Validate the synthetic conformance fixtures with a deterministic verifier, then map each protocol field to the existing SDK ingress-manifest / ManifestStateTransition / Universal InTr / TV-TVC receipt seams. Preserve `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` for authentic runtime execution until a non-caller-editable execution interface is actually available.
