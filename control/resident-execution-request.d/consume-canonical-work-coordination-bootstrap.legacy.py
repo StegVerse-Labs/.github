@@ -405,6 +405,17 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
     result = parse_json_object(completed.stdout)
     bootstrap_receipt = bootstrap_runtime / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
     completed_ok = bool(completed.returncode == 0 and isinstance(result, dict) and result.get("state") == "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED" and result.get("task_id") == spec["task_id"] and bootstrap_receipt.is_file())
+    governed_disposition = result.get("governed_disposition") if isinstance(result, dict) else None
+    governed_authority = result.get("governed_disposition_authority") if isinstance(result, dict) else None
+    governed_evidence_refs = result.get("governed_disposition_evidence_refs") if isinstance(result, dict) else None
+    failed_predicate = None
+    if governed_disposition not in {"ALLOW", "DENY", "FAIL_CLOSED"}:
+        governed_disposition = "FAIL_CLOSED"
+        governed_authority = "CANONICAL_WORK_CONSUMER_PRE_TRANSITION_BOUNDARY"
+        marker = "FAIL_CLOSED:"
+        failure_text = (completed.stderr or "") + "\n" + (completed.stdout or "")
+        failed_predicate = failure_text.split(marker, 1)[1].strip().splitlines()[0] if marker in failure_text else "AUTHENTIC_GOVERNED_DISPOSITION_RETAINED"
+        governed_evidence_refs = [str(consumption_path), str(bootstrap_receipt)]
     receipt = {
         "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
@@ -425,6 +436,10 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         "stdout_tail": completed.stdout[-4000:],
         "stderr_tail": completed.stderr[-4000:],
         "bootstrap_receipt_ref": str(bootstrap_receipt),
+        "disposition": governed_disposition,
+        "disposition_authority": governed_authority,
+        "failed_predicate": failed_predicate,
+        "disposition_evidence_refs": governed_evidence_refs,
         "network_source_fetch_performed": False,
         "credential_material_present": bool(
             safe_env.get("STEGVERSE_MASTER_RECORDS_TOKEN")

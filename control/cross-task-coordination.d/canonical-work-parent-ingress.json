@@ -17,7 +17,12 @@
       "required_scope": "registered canonical task resident request staging",
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
       "max_age_seconds": null,
-      "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_fields": [
+        "task_id",
+        "request_id",
+        "state",
+        "authority_effect"
+      ],
       "required_field_values": {
         "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
         "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
@@ -25,7 +30,9 @@
         "authority_effect": "NONE_REQUEST_ONLY"
       },
       "expected_output_ref": "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
-      "consumers": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "consumers": [
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      ],
       "canonical_source_refs": [
         "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
@@ -47,13 +54,22 @@
       "required_scope": "authentic canonical work-coordination parent resident ingress",
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
       "max_age_seconds": null,
-      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_sha256",
+        "bootstrap_receipt_ref",
+        "disposition"
+      ],
       "required_field_values": {
         "state": "COMPLETED",
-        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "disposition": "ALLOW"
       },
       "expected_output_ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
-      "consumers": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "consumers": [
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      ],
       "canonical_source_refs": [
         "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
@@ -105,10 +121,17 @@
       "required_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
       "required_output_ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
       "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
-      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_sha256",
+        "bootstrap_receipt_ref",
+        "disposition"
+      ],
       "required_field_values": {
         "state": "COMPLETED",
-        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "disposition": "ALLOW"
       },
       "required_freshness": null,
       "collision_refs": [],

@@ -233,7 +233,8 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                         "result": {"canonical_work_request_set": {"outcomes": [{
                             "task_id": task_id, "state": "COMPLETED",
                             "request_sha256": "current-request-hash",
-                            "bootstrap_receipt_ref": "/runtime/current-bootstrap.json"
+                            "bootstrap_receipt_ref": "/runtime/current-bootstrap.json",
+                            "disposition": "ALLOW"
                         }]}}
                     }]
                 }) + "\n", encoding="utf-8")
@@ -263,6 +264,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                 "task_id": task_id, "state": "COMPLETED",
                 "request_sha256": "current-request-hash",
                 "bootstrap_receipt_ref": "/runtime/current-bootstrap.json",
+                "disposition": "ALLOW",
                 "credential_material_present": False,
                 "network_source_fetch_performed": False,
             }
@@ -325,6 +327,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                                     "state": "COMPLETED",
                                     "request_sha256": "abc",
                                     "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                                    "disposition": "ALLOW",
                                 }]
                             },
                         },
@@ -369,6 +372,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                 "task_id": task_id,
                 "request_sha256": "abc",
                 "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                                    "disposition": "ALLOW",
                 "credential_material_present": False,
                 "network_source_fetch_performed": False,
             }
@@ -401,6 +405,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                                     "state": "COMPLETED",
                                     "request_sha256": "abc",
                                     "bootstrap_receipt_ref": "/runtime/bootstrap.json",
+                                    "disposition": "ALLOW",
                                 }]
                             },
                         },
