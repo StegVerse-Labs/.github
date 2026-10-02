@@ -1998,3 +1998,8 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 
 - 2026-10-01: Reconstructed PR #2865 exact-child SDK dispatch on current canonical main; the existing path now binds Goal context plus exact child request identity without creating another runtime or dispatcher.
+
+
+### Canonical Work parent consumption-proof correction — 2026-10-01
+
+Exact invocation run `36942710854` cleared the repaired execution-substrate predicate but exposed a narrower proof-retention defect: `STEGVERSE-CANONICAL-WORK-COORDINATION-001` was not present in the existing `CANONICAL_GOAL_CONSUMPTION_REL` map. The portable bridge therefore accepted generic `DISPATCH_COMPLETE` with `target_consumption_evidence_required=false` and the reusable trigger reported `AUTOMATABLE_STEPS_EXHAUSTED` instead of retaining the parent task's existing `canonical-work-coordination-bootstrap-request-consumption.latest.json` evidence. The repair adds only that existing parent receipt path to the existing proof map. It adds no request, runtime, scheduler, dispatcher, credential route, device dependency, or authority plane and does not reinterpret run `36942710854` as ALLOW, DENY, or FAIL_CLOSED.
