@@ -14,7 +14,10 @@
   },
   "source_refs": [
     "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md",
-    "schemas/interlock-intr-runtime-independent-protocol-v1.schema.json"
+    "schemas/interlock-intr-runtime-independent-protocol-v1.schema.json",
+    "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_SOURCE_MAPPING_v1.json",
+    "test-vectors/interlock-intr-runtime-independent-protocol-v1.json",
+    "scripts/verify_interlock_intr_runtime_independent_protocol.py"
   ],
   "targets": {
     "organizations": [
@@ -68,12 +71,12 @@
     "projection_only": true
   },
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "reconciliation_ref": "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "PROTOCOL_SCHEMA_AND_CONFORMANCE_VECTORS_VALIDATED"
+    "PARENT_CHECKPOINT_PROFILE_INTEGRATION"
   ],
   "authority_model": {
     "transport_protocol": "INTERLOCK_INTR",
@@ -133,5 +136,28 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
+  },
+  "runtime_observation": {
+    "state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "disposition": "AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
+    "source_owner": "workers/universal_intr_profiled_ingress.py",
+    "operation": "POST /intr/materialization",
+    "required_authentication": [
+      "REGISTERED_NODE_BOUND_OUTBOX_IDENTITY",
+      "TVC_RELAY_EGRESS"
+    ],
+    "invocation_attempted": false,
+    "reason": "Active ChatGPT operation surface exposes repository/evidence operations but no authenticated non-caller-editable registered-node or TVC_RELAY_EGRESS invocation primitive for the existing listener.",
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "conformance_validation": {
+    "status": "PASS_SYNTHETIC_NON_AUTHORIZING",
+    "pull_request": 2915,
+    "exact_head": "f00400f2fd35bad2aacff368f8de9db4a5cbbd86",
+    "merge_commit": "03e043f4680612bcbaf14601bd799b71b662877d",
+    "verifier": "scripts/verify_interlock_intr_runtime_independent_protocol.py",
+    "workflow_run": 36946008125,
+    "external_conformance_claimed": false,
+    "authentic_runtime_execution_claimed": false
   }
 }
