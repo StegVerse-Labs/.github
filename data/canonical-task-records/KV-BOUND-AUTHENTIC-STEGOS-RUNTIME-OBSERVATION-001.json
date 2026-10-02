@@ -1,0 +1,91 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001",
+  "correlation_id": "KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001",
+  "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "parent_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "execution_lineage_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "goal": "Observe exactly one future independently authorized KV-bound StegOS/StegBrowser runtime attempt through the already-owned StegBrowser runtime-consumption surface, retain its exact ALLOW, DENY, or FAIL_CLOSED disposition and correlated evidence, and reconcile authentic retained runtime evidence without creating another request, runtime, dispatcher, credential path, authority plane, device identity gate, or second user-operated device.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000010100000"
+  },
+  "cosv_task_vector": "50000010100000",
+  "existing_execution_owner": {
+    "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "state": "ACTIVE/CHECKED_OUT",
+    "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "resident_request_id": "RESIDENT-EXEC-CANONICAL-WORK-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "resident_request_ref": "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "selected_execution_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "authority_effect": "NONE_FROM_SUCCESSOR_REGISTRATION"
+  },
+  "source_refs": [
+    "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+    "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "StegVerse-Labs/.github#2926@1d402a0dace0f74ff1acfc86b0e49d546d937584"
+  ],
+  "expected_evidence_predicates": [
+    "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+    "EXACT_ATTEMPT_CORRELATION_RETAINED",
+    "AUTHENTIC_TRANSITION_DISPOSITION_RETAINED",
+    "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_WHERE_APPLICABLE",
+    "INTERLOCK_INTR_DISPOSITION_OBSERVED",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED_WHERE_APPLICABLE"
+  ],
+  "runtime_resolution": {
+    "unresolved_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+    "execution_owner": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "authorized_operation_surface": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 via RESIDENT-EXEC-CANONICAL-WORK-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "attempt_cardinality": "EXACTLY_ONE_FUTURE_INDEPENDENTLY_AUTHORIZED_ATTEMPT",
+    "invocation_authorized_by_this_record": false,
+    "current_observation_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "source_only_registration_does_not_satisfy_runtime": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authentic_retained_runtime_observed": false
+  },
+  "prompt_budget": {
+    "goal_prompt_count": "0/20",
+    "terminal_prompt_processed": false,
+    "further_parent_prompts_allowed": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "physical_device_identity_grants_authority": false,
+    "second_user_operated_device_required": false
+  },
+  "device_invariants": {
+    "device_interchangeability_enforced": true,
+    "physical_device_identity_gate": "NONE_PROHIBITED",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false
+  },
+  "allowed_next_transitions": [
+    "OBSERVE_ONE_INDEPENDENTLY_AUTHORIZED_EXISTING_OWNER_ATTEMPT",
+    "RETAIN_ALLOW_DENY_OR_FAIL_CLOSED_WITH_EXACT_ATTEMPT_CORRELATION",
+    "RECONCILE_AUTHENTIC_RUNTIME_EVIDENCE_TO_PARENT_LINEAGE"
+  ],
+  "status_reason": "PROMPT_LIMIT_CONTINUATION_ONLY; SOURCE_CORRELATION_REPAIR_COMPLETE; AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED_UNRESOLVED; NO_RUNTIME_INVOCATION_AUTHORIZED_BY_REGISTRATION"
+}
