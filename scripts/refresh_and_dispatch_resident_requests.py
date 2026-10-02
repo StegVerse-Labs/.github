@@ -309,9 +309,10 @@ def canonical_work_goal_consumption_evidence(
     current_match = bool(
         isinstance(current, dict)
         and current.get("task_id") == goal_task_id
-        and current.get("state") in {"COMPLETED", "ALREADY_CONSUMED"}
+        and current.get("state") in {"COMPLETED", "ALREADY_CONSUMED", "ATTEMPT_RECORDED"}
         and current.get("request_sha256") == receipt.get("request_sha256")
         and current.get("bootstrap_receipt_ref") == receipt.get("bootstrap_receipt_ref")
+        and current.get("disposition") == receipt.get("disposition")
     )
     disposition = receipt.get("disposition")
     valid = bool(
