@@ -72,7 +72,8 @@ class CanonicalWorkDispositionRetentionTests(unittest.TestCase):
 
     def test_missing_disposition_is_not_completion_evidence(self):
         receipt, _sha, required, valid, current = self._case(None)
-        self.assertTrue(required and current)
+        self.assertTrue(required)
+        self.assertFalse(current)
         self.assertFalse(valid)
         self.assertIsNone(receipt["disposition"])
 
