@@ -6,8 +6,8 @@
   "parent_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
   "execution_lineage_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
   "goal": "Observe exactly one future independently authorized KV-bound StegOS/StegBrowser runtime attempt through the already-owned StegBrowser runtime-consumption surface, retain its exact ALLOW, DENY, or FAIL_CLOSED disposition and correlated evidence, and reconcile authentic retained runtime evidence without creating another request, runtime, dispatcher, credential path, authority plane, device identity gate, or second user-operated device.",
-  "coordination_state": "PROPOSED",
-  "checkout_state": "UNCLAIMED",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
   "cosv": {
@@ -52,7 +52,29 @@
     "attempt_cardinality": "EXACTLY_ONE_FUTURE_INDEPENDENTLY_AUTHORIZED_ATTEMPT",
     "invocation_authorized_by_this_record": false,
     "current_observation_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-    "source_only_registration_does_not_satisfy_runtime": true
+    "source_only_registration_does_not_satisfy_runtime": true,
+    "existing_request_state": "REQUESTED",
+    "existing_request_granted_authority": false,
+    "reusable_trigger_authority_effect": "NONE_ORCHESTRATION_ONLY",
+    "independent_authorization_operation": {
+      "stage": "A2_INTERLOCK_INTR_ENTRY",
+      "operation": "OBSERVE_AUTHENTIC_INTR_MATERIALIZATION_ADMISSION",
+      "preceding_non_authorizing_operation": "SUBMIT_NON_AUTHORIZING_INTR_MATERIALIZATION",
+      "authority_owner": "INTERLOCK_INTR",
+      "exact_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "immutable_invocation_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+      "required_same_attempt_evidence": [
+        "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+        "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+        "INTR_MATERIALIZATION_ADMITTED"
+      ],
+      "source_state": "TRANSITION_NOT_ATTEMPTED",
+      "callable_from_active_execution_context": false
+    },
+    "first_missing_existing_owner_authorization_predicate": "INTR_MATERIALIZATION_ADMITTED",
+    "pre_authorization_continuity_predicate": "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "pre_authorization_continuity_state": "AUTHENTIC_CURRENT_INVOCATION_PROOF_PENDING",
+    "active_context_boundary": "GITHUB_SOURCE_AND_EVIDENCE_INSPECTION_ONLY_NO_AUTHENTIC_RESIDENT_INTERLOCK_INTR_CALLER_EXPOSED"
   },
   "completion": {
     "claimed": false,
@@ -60,7 +82,7 @@
     "authentic_retained_runtime_observed": false
   },
   "prompt_budget": {
-    "goal_prompt_count": "0/20",
+    "goal_prompt_count": "2/20",
     "terminal_prompt_processed": false,
     "further_parent_prompts_allowed": true
   },
@@ -87,5 +109,18 @@
     "RETAIN_ALLOW_DENY_OR_FAIL_CLOSED_WITH_EXACT_ATTEMPT_CORRELATION",
     "RECONCILE_AUTHENTIC_RUNTIME_EVIDENCE_TO_PARENT_LINEAGE"
   ],
-  "status_reason": "PROMPT_LIMIT_CONTINUATION_ONLY; SOURCE_CORRELATION_REPAIR_COMPLETE; AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED_UNRESOLVED; NO_RUNTIME_INVOCATION_AUTHORIZED_BY_REGISTRATION"
+  "status_reason": "ACTIVE; EXISTING ONE-SHOT SURFACE IDENTIFIED; REQUEST_AND_TRIGGER_NON_AUTHORIZING; FIRST INDEPENDENT AUTHORIZATION IS A2 INTERLOCK_INTR MATERIALIZATION ADMISSION; INTR_MATERIALIZATION_ADMITTED NOT AUTHENTICALLY OBSERVED; NO INVOCATION",
+  "evidence_reconciliation": {
+    "canonical_main_re_read": "50762a27633fe61327400f1067885cd187795c3d",
+    "request_ref": "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+    "request_state": "REQUESTED",
+    "request_authority_effect": "NONE_REQUEST_ONLY",
+    "request_granted_authority": false,
+    "reusable_task_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "reusable_task_authority_effect": "NONE_ORCHESTRATION_ONLY",
+    "execution_goal_ref": "data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json",
+    "execution_goal_a2_failure_code": "INTERLOCK_INTR_ENTRY_TRANSITION_NOT_ATTEMPTED",
+    "authentic_runtime_observed": false,
+    "invocation_performed_in_this_reconciliation": false
+  }
 }
