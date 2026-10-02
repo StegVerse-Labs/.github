@@ -1,0 +1,111 @@
+{
+  "schema": "stegverse.interlock-intr-source-mapping/v1",
+  "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "observed_sdk_source": {
+    "repository": "StegVerse-org/StegVerse-SDK",
+    "commit": "bafb093797f75e4d1fc94f8b45eb278dda3809f9"
+  },
+  "observation_class": "SOURCE_LEVEL_ONLY",
+  "authentic_runtime_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "mappings": [
+    {
+      "protocol_field": "registered_node_identity",
+      "source_seams": [
+        "ingress manifest source_framework/source_instance/source_output_id"
+      ],
+      "status": "PARTIAL",
+      "gap": "source identity exists; this trace does not establish authenticated registered-node identity semantics"
+    },
+    {
+      "protocol_field": "manifest_intent",
+      "source_seams": [
+        "declared_intent",
+        "requested_consequence"
+      ],
+      "status": "OBSERVED_SOURCE_BINDING"
+    },
+    {
+      "protocol_field": "source_destination",
+      "source_seams": [
+        "source_framework/source_instance",
+        "completion.egress.final_stegverse_transition_surface",
+        "completion.egress.destination_profile"
+      ],
+      "status": "OBSERVED_SOURCE_BINDING"
+    },
+    {
+      "protocol_field": "payload_commitment",
+      "source_seams": [
+        "payload_commitment + payload_commitment_profile=sha256",
+        "hashes.payload_sha256",
+        "canonical_manifest_sha256"
+      ],
+      "status": "OBSERVED_SOURCE_BINDING"
+    },
+    {
+      "protocol_field": "predecessor_or_state_binding",
+      "source_seams": [
+        "context_refs",
+        "stegverse_governance_request continuity/state fields",
+        "derive_execution_request predecessor_closure_required",
+        "runtime closure validation"
+      ],
+      "status": "PROFILE_DEPENDENT"
+    },
+    {
+      "protocol_field": "requested_capability",
+      "source_seams": [
+        "processing.capability",
+        "processing.route_id",
+        "route_resolution published processor_capability"
+      ],
+      "status": "OBSERVED_SOURCE_BINDING"
+    },
+    {
+      "protocol_field": "disposition",
+      "source_seams": [
+        "manifest_state_transition_runtime handoff/result validation"
+      ],
+      "status": "PARTIAL",
+      "gap": "SDK handoff is not far-side admission; authentic ALLOW/DENY/FAIL_CLOSED must come from receiving state-transition boundary"
+    },
+    {
+      "protocol_field": "transfer_receipt",
+      "source_seams": [
+        "manifest handoff request_sha256/destination_sha256",
+        "runtime-result transition closures"
+      ],
+      "status": "PARTIAL",
+      "gap": "source can validate returned closure/receipt structures but current task has not observed authentic transfer receipt"
+    },
+    {
+      "protocol_field": "resulting_state_commitment",
+      "source_seams": [
+        "transition_closures receipt/reconstructed receipt equality",
+        "runtime result validation"
+      ],
+      "status": "PROFILE_DEPENDENT"
+    },
+    {
+      "protocol_field": "evidence_references",
+      "source_seams": [
+        "manifest context_refs",
+        "Master Records closure evidence requirements",
+        "run-manifest lineage commitments"
+      ],
+      "status": "OBSERVED_SOURCE_BINDING"
+    }
+  ],
+  "corrections": [
+    "Current SDK source does not use STEGVERSE_UNIVERSAL_INTR_INGRESS_URL or STEGVERSE_TVC_RELAY_AUTHORIZATION_ID in manifest_state_transition_runtime.",
+    "Current SDK resolves destination only from manifest completion.egress, opens no connection, supplies no transport credential, and treats SDK completion as a handoff to the receiving Interlock runtime.",
+    "SDK handoff is not Interlock/InTr admission and MUST NOT be promoted to an authentic runtime disposition."
+  ],
+  "authority_boundary": {
+    "sdk": "MANIFEST_AND_HANDOFF_REQUEST_ONLY",
+    "interlock_intr": "TRANSPORT_AND_ADMISSION_RECEIVER_BOUNDARY",
+    "tv_tvc": "CREDENTIAL_AUTHORITY_DECLARED_IN_EXECUTION_REQUEST",
+    "master_records": "CUSTODY_REPLAY_RECONSTRUCTION",
+    "external_framework_runtime": "OUTSIDE_PROTOCOL_IMPLEMENTATION_REQUIREMENT"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "stegverse.interlock-intr-conformance-vectors/v1",
+  "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "status": "SYNTHETIC_NON_AUTHORIZING",
+  "canonicalization": "JSON objects below are illustrative deterministic fixtures; no runtime execution or external conformance is claimed.",
+  "fixtures": {
+    "base": {
+      "protocol": "stegverse.interlock-intr/v1",
+      "source_node_id": "node:alpha",
+      "destination_node_id": "node:beta",
+      "intent": "TRANSFER_BOUND_PAYLOAD",
+      "requested_capability": "example.echo/v1",
+      "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "state_binding": "state:0001"
+    },
+    "allow": {
+      "mutation": null,
+      "expected": "ALLOW",
+      "reason": "all required synthetic bindings match"
+    },
+    "deny": {
+      "mutation": "policy_reject",
+      "expected": "DENY",
+      "reason": "authentic request evaluated but requested transition is not admitted"
+    },
+    "fail_closed": {
+      "mutation": "required_state_unavailable",
+      "expected": "FAIL_CLOSED",
+      "reason": "required authentic state cannot be established"
+    },
+    "negative_node_identity": {
+      "mutation": "source_node_id=node:forged",
+      "expected": "FAIL_CLOSED",
+      "predicate": "REGISTERED_NODE_IDENTITY_BOUND"
+    },
+    "negative_payload": {
+      "mutation": "payload_sha256 differs from receipt",
+      "expected": "FAIL_CLOSED",
+      "predicate": "PAYLOAD_COMMITMENT_BOUND"
+    },
+    "negative_state": {
+      "mutation": "state_binding=state:0000",
+      "expected": "FAIL_CLOSED",
+      "predicate": "APPLICABLE_STATE_OR_PREDECESSOR_BOUND"
+    },
+    "negative_manifest": {
+      "mutation": "intent=DIFFERENT_INTENT",
+      "expected": "FAIL_CLOSED",
+      "predicate": "MANIFEST_INTENT_BOUND"
+    },
+    "negative_capability": {
+      "mutation": "requested_capability=unknown/v1",
+      "expected": "FAIL_CLOSED",
+      "predicate": "REQUESTED_CAPABILITY_BOUND"
+    },
+    "negative_receipt": {
+      "mutation": "receipt manifest/payload commitment mismatch",
+      "expected": "FAIL_CLOSED",
+      "predicate": "TRANSFER_RECEIPT_BOUND"
+    },
+    "master_records_checkpoint_profile": {
+      "intent": "REPORT_MASTER_RECORDS_CHECKPOINT",
+      "profile": "MasterRecordsCheckpoint/v1",
+      "checkpoint_authority": "MASTER_RECORDS",
+      "transport": "INTERLOCK_INTR",
+      "expected": "ALLOW_DENY_OR_FAIL_CLOSED",
+      "external_conformance_claimed": false
+    }
+  }
+}

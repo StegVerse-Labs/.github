@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.interlock-intr-implementation-plan/v1",
+  "document_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-IMPLEMENTATION-PLAN-001",
+  "revision": "2026-10-01",
+  "status": "ACCEPTED_FOR_CANONICAL_REVIEW",
+  "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "reading": {
+    "thesis": "Standardize the observable state-transition-dependent data-transfer boundary between independently governed systems, not participating runtimes.",
+    "manifest": "Declares intent and binds source, destination, payload commitment, applicable predecessor/state context and requested capability; it is communication provenance, not payload authority.",
+    "disposition": "Every attempted transition-dependent communication terminates ALLOW, DENY or FAIL_CLOSED; transport success is not ALLOW.",
+    "runtime_independence": "Each framework retains its own runtime, governance implementation, state representation, database, credentials and internal authority."
+  },
+  "strategy": {
+    "layers": [
+      "REGISTERED_NODE_IDENTITY",
+      "MANIFEST_INTENT",
+      "PAYLOAD_COMMITMENT",
+      "STATE_OR_PREDECESSOR_BINDING",
+      "REQUESTED_CAPABILITY",
+      "ALLOW_DENY_FAIL_CLOSED",
+      "TRANSFER",
+      "RECEIPT"
+    ],
+    "no_bypass": true,
+    "sdk_role": "CALLER_CLIENT_NOT_PROTOCOL_AUTHORITY",
+    "checkpoint_profile": "MasterRecordsCheckpoint/v1"
+  },
+  "implementation": [
+    {
+      "phase": "EXACT_HEAD_RECONCILIATION",
+      "action": "Observe current PR/head/workflows and repair only demonstrated defects."
+    },
+    {
+      "phase": "NORMATIVE_SCHEMA",
+      "action": "Complete canonical protocol envelope and receipt constraints."
+    },
+    {
+      "phase": "DETERMINISTIC_CONFORMANCE",
+      "action": "Validate ALLOW, DENY, FAIL_CLOSED and negative binding mutations."
+    },
+    {
+      "phase": "EXISTING_SURFACE_TRACE",
+      "action": "Classify actual SDK/Interlock/InTr seams as LOCAL_PROCESS, NETWORK_NON_ECOSYSTEM, INTERLOCK_INTR, or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED."
+    },
+    {
+      "phase": "SDK_PROJECTION",
+      "action": "Expose local versus ecosystem capability while preserving SDK as caller/client."
+    },
+    {
+      "phase": "MASTER_RECORDS_PROFILE",
+      "action": "Exercise manifested checkpoint egress and witness-return ingress without moving checkpoint authority from Master Records."
+    },
+    {
+      "phase": "EXTERNAL_INTEROPERABILITY",
+      "action": "Map external protocols only from exact counterpart specifications and independently retained evidence."
+    }
+  ],
+  "claims_boundary": {
+    "external_adoption": false,
+    "external_conformance": false,
+    "production_interoperability": false,
+    "runtime_execution": false,
+    "deployment": false
+  }
+}
