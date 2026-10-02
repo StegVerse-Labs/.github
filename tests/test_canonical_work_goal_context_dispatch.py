@@ -264,6 +264,7 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                 "task_id": task_id, "state": "COMPLETED",
                 "request_sha256": "current-request-hash",
                 "bootstrap_receipt_ref": "/runtime/current-bootstrap.json",
+                "disposition": "ALLOW",
                 "credential_material_present": False,
                 "network_source_fetch_performed": False,
             }
