@@ -380,3 +380,8 @@ The stronger SDK generic-manifest invariant is not yet demonstrated end-to-end i
 Therefore SDK consumer identity, an admitted TVC capability lease, a matching provider profile, and InTr carriage are insufficient by themselves to prove canonical manifest-selected processing. The precise remaining source gap is a non-caller-editable binding from the admitted SDK manifest/route-resolution output into the TVC provider-operation request such that TVC can validate the canonical manifest identity plus `processing.capability` and `processing.route_id` (or an equivalent canonical SDK-derived binding) before provider execution. This finding does not require runtime evidence and does not alter any runtime predicate.
 
 `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` and every `remaining_runtime_predicate` remain unchanged.
+
+
+## 2026-10-02 Gate-1 replacement-merge and registry reconciliation
+
+Canonical PR #2930 closed unmerged after all four exact-head checks on `152f6d9e756a88ef9994ff48d1b4154952828316` succeeded because its base had become stale. Clean current-main replacement PR #2935 carried only the four-file reciprocal-existence catalog delta, passed all five exact-head checks at `f36615898dd7a06f8fceb752424eb0669eb8053d`, and merged as `3b623be5e075d1f44ced4f2caad4205c3cda2be1`. The canonical task record is reconciled to the merged StegOS #421 binding and canonical #2935 registration. This remains source evidence only: no external Node endpoint is supplied by the catalog and no authentic Gate-1 disposition is inferred.
