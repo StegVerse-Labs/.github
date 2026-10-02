@@ -379,6 +379,11 @@ def refresh_current_goal_registry_projection(runtime: Path, task_id: str) -> dic
     return result
 
 
+def completed_receipt_matches_execution_attempt(previous: Mapping[str, Any], execution_attempt_id: str | None) -> bool:
+    """Preserve historical idempotence, but never reuse another reusable-task attempt."""
+    return execution_attempt_id is None or previous.get("execution_attempt_id") == execution_attempt_id
+
+
 def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None, execution_attempt_id: str | None = None) -> dict[str, Any]:
     validate_spec(spec)
     runtime = runtime_root.expanduser().resolve()
@@ -393,7 +398,7 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         previous = load_json(consumption_path)
         if previous.get("request_sha256") == request_hash and previous.get("state") == "COMPLETED":
             bootstrap_ref = previous.get("bootstrap_receipt_ref")
-            same_attempt = execution_attempt_id is None or previous.get("execution_attempt_id") == execution_attempt_id
+            same_attempt = completed_receipt_matches_execution_attempt(previous, execution_attempt_id)
             if isinstance(bootstrap_ref, str) and Path(bootstrap_ref).is_file() and same_attempt:
                 return {**previous, "state": "ALREADY_CONSUMED"}
     materialized = materialize(source, runtime)
