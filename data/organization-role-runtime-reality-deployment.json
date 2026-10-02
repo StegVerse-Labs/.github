@@ -234,7 +234,7 @@
       {
         "path": "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
         "line": 38,
-        "statement": "Master Records remains observed-reality custody and reconstruction authority."
+        "statement": "Master Records remains observed-reality custody/reconstruction authority."
       }
     ],
     "line_numbers_are_provenance_only": true,
