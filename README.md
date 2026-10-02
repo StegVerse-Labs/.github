@@ -1,3 +1,8 @@
+
+## Gate-1 replacement merge reconciliation — 2026-10-02
+
+Canonical PR #2930 closed unmerged as superseded after its exact-head checks succeeded. Replacement PR #2935 passed all five exact-head checks at `f36615898dd7a06f8fceb752424eb0669eb8053d` and merged as `3b623be5e075d1f44ced4f2caad4205c3cda2be1`. The canonical task projection records the StegOS #421 existing-owner binding and #2935 operation-catalog registration as merged source evidence only; no authentic external Gate-1 runtime disposition is claimed.
+
 ## Node Exchange Gate-1 canonical operation registration — 2026-10-02
 
 StegOS PR #421 is verified merged from exact head `591f7225dea29aa93ec7d70af962bd1f0bedf3a1` as `d563aa5f68d5b31d5087dcb6cdde95596caba278`, after both exact-head checks succeeded. The canonical `STEGVERSE_NODE_EVENT_EPHEMERAL` discovery record now registers the existing `observe-reciprocal-node-existence` adapter as an operation-specific callable binding through registered Node -> Interlock -> Universal InTr materialization -> bounded invocation lease -> `EVENT_EPHEMERAL`. This catalog registration grants no runtime or authority and does not itself constitute an authentic Gate-1 invocation. Identity and health remain unestablished until separately proven.
