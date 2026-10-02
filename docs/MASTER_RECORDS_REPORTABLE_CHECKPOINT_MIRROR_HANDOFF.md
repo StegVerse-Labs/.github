@@ -159,6 +159,10 @@ The live receiving interface remains unavailable in this execution context: `AUT
 
 No additional listener, credential route, SDK transport authority, participating-runtime implementation requirement, external adoption or external conformance is introduced.
 
+## Deterministic checkpoint verifier
+
+Repository trace found no existing dedicated MasterRecordsCheckpoint/v1 construction verifier; the only existing deterministic verifier is the child Interlock/InTr protocol verifier and does not implement checkpoint Merkle construction. The smallest repository-convention addition is therefore `scripts/verify_master_records_checkpoint.py`, backed by `test-vectors/master-records-checkpoint-construction-v1.json` and the already-returned interoperability vectors. It validates the RECORDED/PASS/PASS receipt-reconstruction equality gate, contiguous sequence range, domain-separated RFC6962-style Merkle construction, terminal closure binding, predecessor digest binding, exact checkpoint-digest payload commitment, registered manifested transfer semantics, ALLOW/DENY/FAIL_CLOSED classifications and write-once receipt requirement. It remains synthetic and non-authorizing.
+
 ## Next action
 
-Add/extend a deterministic checkpoint verifier for the existing Merkle/checkpoint construction plus the new interoperability-envelope vectors, update README, and run repository validation at exact head. Repair only demonstrated failures and merge with expected-head protection only after repository requirements succeed. Map an external witness only after its exact current submission schema/procedure is received.
+Run the committed checkpoint verifier in repository CI at the exact branch head and observe every repository-required exact-head workflow. If the verifier is not currently executed by existing repository validation, add only the smallest workflow/test-discovery integration required to execute it. Repair only demonstrated failures. Preserve the runtime-observation predicates and make no external adoption, conformance, deployment or authentic-runtime claim.
