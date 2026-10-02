@@ -16725,7 +16725,34 @@
           "site_pr_1481_merge": "aaa8f0da87d36968f80e46918fc9b1cf1c126f92",
           "stegos_pr_419_merge": "aa1e1db945a45c89709d720319fb8a9515fc0ae4"
         },
-        "runtime_claim": "NOT_PROVEN"
+        "runtime_claim": "NOT_PROVEN",
+        "node_exchange_gate1": {
+          "source_repair": {
+            "repo": "StegVerse-Labs/StegOS",
+            "pr": 420,
+            "exact_head": "de2bbb44662f3c06a504b058fd6185bad0b0b54f",
+            "merge_commit": "adceffaa6fcdf0e89bff7a091dddf92d790cc439",
+            "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence"
+          },
+          "canonical_reconciliation": {
+            "superseded_pr": 2910,
+            "replacement_pr": 2916,
+            "exact_head": "a4dacdf5f82e9083aa9f2c33d12e0b516a142422",
+            "merge_commit": "8d6df90591ac245bbe29187753debd62a784d821"
+          },
+          "operation_surface_owner": {
+            "source": "scripts/list_stegverse_execution_surfaces.py",
+            "current_registered_ephemeral_operations": [
+              "REQUEST_SELF_CHARACTERIZATION",
+              "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS"
+            ],
+            "reciprocal_existence_registered": false,
+            "exact_gap": "REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG"
+          },
+          "runtime_observation": "AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
+          "external_endpoint": "UNSPECIFIED",
+          "authentic_gate1_disposition_observed": false
+        }
       }
     },
     {
