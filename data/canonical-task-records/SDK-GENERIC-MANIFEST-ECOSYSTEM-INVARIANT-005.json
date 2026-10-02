@@ -50,13 +50,12 @@
     "llm_adapter_governed_ingress": "SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN",
     "site_mir_return_adapter": "SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN",
     "tvc_mir_provider_broker": "PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN",
-    "remaining_required_surfaces": "NOT_PROVEN",
+    "remaining_required_surfaces": "INVENTORIED_CONFORMANCE_REMAINS_PARTIAL",
     "stegcore_entry": "PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN",
     "shared_document_external_collaboration": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN",
     "stegos_continuity_intr_entry": "SOURCE_REPAIR_MERGED_RECEIVING_OWNER_TRACED_RUNTIME_NOT_PROVEN"
   },
   "remaining_predicates": [
-    "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
     "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
     "STEGCORE_ENTRY_CONFORMANT",
     "MASTER_RECORDS_BOUNDARY_CONFORMANT",
@@ -173,10 +172,10 @@
     "STEGOS_GENERIC_SDK_MANIFEST_INTR_PROFILE_AND_RECEIVING_OWNER": "SATISFIED_MERGED_SOURCE_EVIDENCE",
     "TVC_PROVIDER_BOUNDARY": "PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN",
     "STEGCORE_ENTRY": "PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN",
-    "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN"
+    "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN",
+    "ECOSYSTEM_SURFACE_INVENTORY": "SATISFIED_CENSUS_ONLY_CONFORMANCE_AND_RUNTIME_SEPARATE"
   },
   "remaining_source_predicates": [
-    "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
     "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
     "STEGCORE_ENTRY_CONFORMANT",
     "MASTER_RECORDS_BOUNDARY_CONFORMANT",
@@ -191,6 +190,124 @@
     "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
     "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
   ],
+  "ecosystem_surface_inventory_20261002": {
+    "status": "COMPLETE_AS_CENSUS_ONLY",
+    "conformance_complete": false,
+    "runtime_proven": false,
+    "surfaces": [
+      {
+        "id": "SDK_MANIFEST_INGRESS_PROCESSOR_RESOLUTION",
+        "classification": "PASS",
+        "owner": "StegVerse-org/StegVerse-SDK",
+        "evidence": [
+          "stegverse/manifest_contract.py",
+          "stegverse/route_resolution.py",
+          "stegverse/governance_ingress_runtime.py"
+        ],
+        "boundary": "SOURCE_CONTRACT_ONLY_RUNTIME_WIDE_ENFORCEMENT_NOT_PROVEN"
+      },
+      {
+        "id": "LLM_ADAPTER_MANIFEST_INGRESS_EGRESS",
+        "classification": "PASS",
+        "owner": "StegVerse-org/LLM-adapter",
+        "evidence": [
+          "llm_adapter/governed_manifest_ingress.py",
+          "tests/test_governed_manifest_ingress.py",
+          "PR #355 merge 53e675f904a041a525a1aaa9578d2013fdbdbf49"
+        ],
+        "boundary": "MERGED_SOURCE_REPAIR_RUNTIME_NOT_PROVEN"
+      },
+      {
+        "id": "SITE_EXTERNAL_RETURN_ADAPTERS_MIR",
+        "classification": "PASS",
+        "owner": "StegVerse-Labs/Site",
+        "evidence": [
+          "assets/mir-accounting-return-v1.js",
+          "tests/mir_return_consumer_runtime.mjs",
+          "PR #1479 merge 0adcdafe868bd81dbb0dcaa759f5c48a4936e496",
+          "PR #1481 merge aaa8f0da87d36968f80e46918fc9b1cf1c126f92"
+        ],
+        "boundary": "MERGED_GENERIC_SDK_INGRESS_SOURCE_RUNTIME_NOT_PROVEN"
+      },
+      {
+        "id": "TVC_PROVIDER_OPERATION_BROKER_PROFILES",
+        "classification": "PARTIAL",
+        "owner": "StegVerse-Labs/TVC",
+        "evidence": [
+          "tvc_provider_operation_broker.py",
+          "config/provider_operation_profiles.json",
+          "StegVerse-Labs/.github:workers/mir_tvc_provider_roundtrip_worker.py"
+        ],
+        "boundary": "MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_NODE_INTR_SDK_CHAIN_NOT_PROVEN"
+      },
+      {
+        "id": "STEGCORE_MANIFESTED_TRANSACTION_GOVERNANCE_ENTRY",
+        "classification": "PARTIAL",
+        "owner": "StegVerse-Labs/StegCore",
+        "evidence": [
+          "docs/MANIFESTED_TRANSACTION_CONTINUITY.md",
+          "src/stegcore/manifest_receipts.py",
+          "src/stegcore/external_governance_adapter.py"
+        ],
+        "boundary": "MANIFEST_AND_NONEXECUTING_REPLAY_SOURCE_EVIDENCE_FULL_NODE_INTR_CUSTODY_CHAIN_NOT_PROVEN"
+      },
+      {
+        "id": "STEGOS_CONTINUITY_RESIDENT_DISPATCH_INTR_MATERIALIZATION",
+        "classification": "PASS",
+        "owner": "StegVerse-Labs/StegOS + StegVerse-Labs/.github receiving owner",
+        "evidence": [
+          "StegVerse-Labs/StegOS:stegos/universal_intr_materialization.py",
+          "StegVerse-Labs/StegOS:specs/universal-intr-connector-profiles.v1.json",
+          "StegVerse-Labs/.github:workers/universal_intr_profiled_ingress.py",
+          "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py"
+        ],
+        "boundary": "SOURCE_CHAIN_AND_RECEIVING_OWNER_TRACED_AUTHENTIC_RUNTIME_NOT_PROVEN"
+      },
+      {
+        "id": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
+        "classification": "PARTIAL",
+        "owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001 / canonical Master Records custody owner",
+        "evidence": [
+          "StegVerse-Labs/.github:resident-runtime/organization_custody_readback.py",
+          "StegVerse-Labs/.github:scripts/consume_organization_custody_readback_request.py",
+          "StegVerse-Labs/.github:docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md"
+        ],
+        "boundary": "SOURCE_CONTRACT_AND_EXACT_READBACK_VALIDATION_PRESENT_AUTHENTIC_ORGANIZATION_MASTER_RECORDS_CLOSURE_NOT_PROVEN"
+      },
+      {
+        "id": "SHARED_DOCUMENT_EXTERNAL_COLLABORATION_INGESTION",
+        "classification": "PARTIAL",
+        "owner": "existing Ecosystem Chat/shared collaboration manifest path",
+        "evidence": [
+          "StegVerse-Labs/.github:docs/ECOSYSTEM_CHAT_TASK_CENSUS_AND_BUILD_PLAN.md"
+        ],
+        "boundary": "MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_PRESENT_COMPLETE_ACTIONABLE_INGRESS_CHAIN_NOT_PROVEN"
+      },
+      {
+        "id": "PROVIDER_FRAMEWORK_ADAPTERS_ELYRIA_FUTURE",
+        "classification": "PARTIAL",
+        "owner": "RT-EXTERNAL-ADAPTER-ESTABLISH-001 + SDK generalized ingress",
+        "evidence": [
+          "StegVerse-org/StegVerse-SDK:stegverse/elyria_framework_adapter.py",
+          "StegVerse-Labs/.github:data/canonical-task-records/SDK-ELYRIA-INTR-ADAPTER-001.json",
+          "StegVerse-Labs/.github:data/goal-task-component-profiles/SDK-ELYRIA-INTR-ADAPTER-001.json"
+        ],
+        "boundary": "ELYRIA_TRANSLATION_OWNER_AND_GENERIC_COMPONENT_CONTRACT_IDENTIFIED_AUTHENTIC_EXTERNAL_TRANSPORT_AND_FUTURE_INSTANCE_CONFORMANCE_NOT_PROVEN"
+      },
+      {
+        "id": "SESSION_ORIGINATED_EXECUTION_BOUNDARY",
+        "classification": "PARTIAL",
+        "owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001 component-010",
+        "evidence": [
+          "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/.github:data/task-registry-ai-entry-surface-inventory.json",
+          "StegVerse-Labs/.github:data/task-registry-general-checkin-caller-inventory.json"
+        ],
+        "boundary": "PROTECTIVE_SOURCE_GATE_MERGED_AUTHENTIC_SESSION_ORIGIN_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
+      }
+    ],
+    "predicate_effect": "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE_SATISFIED_AS_CENSUS_ONLY"
+  },
   "successor_task_ids": [
     "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
   ],
