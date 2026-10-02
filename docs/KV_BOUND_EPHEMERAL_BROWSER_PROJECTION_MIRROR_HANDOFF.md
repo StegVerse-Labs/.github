@@ -92,3 +92,14 @@ Site PR #1473 merged exact validated head `4a0c1d743cd68fdc7dee5869e0eaf12324999
 These are source/custody-coordination facts only. They do not satisfy `AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED`, do not constitute an Interlock/InTr disposition, and do not establish sovereign organization-ledger readback or Master Records reconstruction.
 
 The next admissible transition remains exactly one authentic governed KV attempt through the first reachable eligible admitted StegOS surface after this canonical reconciliation is merged and validated.
+
+
+## 2026-10-02 prompt-limit decomposition after exact-attempt correlation repair
+
+Goal Prompt Count reached `20/20`. Canonical Work exact-attempt disposition correlation is returned to this parent as completed source evidence from PR #2926 merge `1d402a0dace0f74ff1acfc86b0e49d546d937584`. The repair does not satisfy runtime evidence.
+
+This parent is therefore `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT`, not completed. Its first unresolved runtime predicate remains exactly `AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED`.
+
+Continuation is transferred to `KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001` / COSV `50000010100000`, which is a narrow observation successor only. It reuses the already-active runtime owner `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`, reusable task `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, and existing request `RESIDENT-EXEC-CANONICAL-WORK-STEGBROWSER-RUNTIME-CONSUMPTION-001`. No duplicate runtime, request, scheduler, dispatcher, credential path, authority plane, device gate, or second user-operated device is created.
+
+The successor may observe exactly one future independently authorized attempt. This decomposition does not authorize, invoke, or retry that attempt.
