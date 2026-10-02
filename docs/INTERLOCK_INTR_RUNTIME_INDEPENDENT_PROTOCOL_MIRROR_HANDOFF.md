@@ -4,7 +4,7 @@ Updated: 2026-10-01
 Goal Task ID: `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001`
 Issue: #2897
 COSV ID: `50000000102000`
-Status: `ACTIVE / CHECKED OUT / CONFORMANCE VECTOR PREPARATION`
+Status: `ACTIVE / VALIDATED DOCUMENTARY PROTOCOL / RUNTIME OBSERVATION UNAVAILABLE`
 
 ## Goal
 
@@ -101,3 +101,21 @@ PR #2915 exact head `182972c95ae734b43109580cff8ff391afcc306f` completed all fiv
 ## Next action
 
 Observe the dedicated protocol-vector workflow and all repository-required workflows at the new exact head. Repair only demonstrated failures. If requirements are satisfied, reconcile PR #2915 mergeability and merge only with expected-head protection. After merge, trace the existing receiving Interlock/InTr owner surface for an authenticated node/TVC admission operation; do not add SDK transport/admission authority and preserve `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` unless that operation is actually invoked.
+
+
+## Verified merge and deterministic conformance reconciliation
+
+Replacement PR #2915 merged from exact head `f00400f2fd35bad2aacff368f8de9db4a5cbbd86` as merge commit `03e043f4680612bcbaf14601bd799b71b662877d`. All six exact-head workflows completed successfully. Dedicated run `36946008125` executed the committed verifier and returned `status=PASS`: ALLOW, DENY, FAIL_CLOSED, every negative binding fixture as FAIL_CLOSED, and the Master Records checkpoint profile as ALLOW_DENY_OR_FAIL_CLOSED. The workflow separately retained `INTERLOCK_INTR_VECTOR_VALIDATION_NON_AUTHORIZING_PASS`. This validates the documentary/synthetic protocol contract; it does not establish external conformance or authentic runtime execution.
+
+## Current receiving operation surface
+
+Current source identifies `workers/universal_intr_profiled_ingress.py` as the shared existing owner for `POST /intr/materialization`. Its transport boundary accepts authenticated `TVC_RELAY_EGRESS` authorization or a bound registered-node outbox identity and dispatches profile-specific admission without transferring credential or execution authority to the SDK. Existing TVC recipient admission source emits a write-once `INGRESS_ADMITTED` receipt with `transition_authority=Interlock/InTr` and `credential_authority=TV/TVC`.
+
+Current operation-surface inspection exposes repository and Actions evidence operations but no authenticated, non-caller-editable registered-node or `TVC_RELAY_EGRESS` invocation primitive for this listener. GitHub cannot substitute for that authority. No request was fabricated and no local listener was started.
+
+Current runtime observation disposition: `AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`.
+Authentic runtime execution: `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+## Successor action
+
+Return the validated protocol result to `MASTER-RECORDS-REPORTABLE-CHECKPOINT-001` for bounded `MasterRecordsCheckpoint/v1` integration. Any future authentic runtime observation must use the already-owned receiving listener through an exposed authenticated registered-node or TVC relay operation; do not create another listener, credential route, SDK transport authority or parallel admission plane.
