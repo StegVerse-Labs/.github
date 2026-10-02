@@ -25,6 +25,7 @@ class AutonomousProgressionPortableConsumptionBindingTests(unittest.TestCase):
             "state": "COMPLETED",
             "request_sha256": "original-request-digest",
             "bootstrap_receipt_ref": "original-bootstrap-receipt",
+            "disposition": "ALLOW",
             "credential_material_present": False,
             "network_source_fetch_performed": False,
         }
@@ -40,6 +41,7 @@ class AutonomousProgressionPortableConsumptionBindingTests(unittest.TestCase):
                 "state": state,
                 "request_sha256": request_sha,
                 "bootstrap_receipt_ref": bootstrap_ref,
+                "disposition": "ALLOW" if state in {"COMPLETED", "ALREADY_CONSUMED"} else None,
             }]}},
         }]}
 
