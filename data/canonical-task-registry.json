@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 281,
+  "generation": 282,
   "status": "KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_PROMPT_LIMIT_SUCCESSOR_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -16728,25 +16728,34 @@
         "node_exchange_gate1": {
           "source_repair": {
             "repo": "StegVerse-Labs/StegOS",
-            "pr": 420,
-            "exact_head": "de2bbb44662f3c06a504b058fd6185bad0b0b54f",
-            "merge_commit": "adceffaa6fcdf0e89bff7a091dddf92d790cc439",
-            "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence"
+            "pr": 421,
+            "exact_head": "591f7225dea29aa93ec7d70af962bd1f0bedf3a1",
+            "merge_commit": "d563aa5f68d5b31d5087dcb6cdde95596caba278",
+            "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence",
+            "binding": "register_reciprocal_node_existence_capability -> NodeEventExecutionBroker -> observe-reciprocal-node-existence CapabilityAdapter"
           },
           "canonical_reconciliation": {
-            "superseded_pr": 2910,
-            "replacement_pr": 2916,
-            "exact_head": "a4dacdf5f82e9083aa9f2c33d12e0b516a142422",
-            "merge_commit": "8d6df90591ac245bbe29187753debd62a784d821"
+            "superseded_pr": 2930,
+            "replacement_pr": 2935,
+            "exact_head": "f36615898dd7a06f8fceb752424eb0669eb8053d",
+            "merge_commit": "3b623be5e075d1f44ced4f2caad4205c3cda2be1"
           },
           "operation_surface_owner": {
             "source": "scripts/list_stegverse_execution_surfaces.py",
+            "surface": "STEGVERSE_NODE_EVENT_EPHEMERAL",
             "current_registered_ephemeral_operations": [
               "REQUEST_SELF_CHARACTERIZATION",
-              "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS"
+              "observe-reciprocal-node-existence"
             ],
-            "reciprocal_existence_registered": false,
-            "exact_gap": "REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG"
+            "reciprocal_existence_registered": true,
+            "materialization_path": [
+              "REGISTERED_STEGVERSE_NODE",
+              "INTERLOCK",
+              "UNIVERSAL_INTR_MATERIALIZATION",
+              "BOUNDED_INVOCATION_LEASE",
+              "EVENT_EPHEMERAL"
+            ],
+            "authority_effect": "NONE_OBSERVATION_ONLY"
           },
           "runtime_observation": "AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
           "external_endpoint": "UNSPECIFIED",
