@@ -38,3 +38,8 @@ jobs:
         run: |
           python org-runtime/runtime_boundary.py egress --peer-org validation-peer --interlock-id validation-interlock --payload-sha256 fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210 --transition-elements-ref validation-transition-elements | tee /tmp/egress.json
           python -c 'import json; x=json.load(open("/tmp/egress.json")); assert x["direction"]=="EGRESS"; assert x["protocol"]=="InTr"; assert x["github_token_runtime_authority"]=="NONE"'
+
+      - name: Validate SDK manifest ingress capability binding
+        run: |
+          python org-runtime/runtime_boundary.py resolve-ingress --profile-id sdk-manifest-ingress --profile-name SDK:ManifestIngress --operation SUBMIT_MANIFEST | tee /tmp/sdk-ingress.json
+          python -c 'import json; x=json.load(open("/tmp/sdk-ingress.json")); assert x["owner_repository"]=="StegVerse-Labs/.github"; assert x["receiving_operation"]["method"]=="POST"; assert x["receiving_operation"]["path"]=="/intr/materialization"; assert x["receiving_operation"]["delegate"]=="workers/manifest_state_transition_intr_ingress.py::admit"; assert x["environment_inputs"]==[]; assert x["authority_effect"]=="NONE_BINDING_ONLY"; assert x["grants_routing_authority"] is False; assert x["grants_admission_authority"] is False; assert x["grants_execution_authority"] is False'
