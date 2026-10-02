@@ -204,3 +204,12 @@ Therefore `REGISTERED_CAPABILITY_RESOLVES_TO_CANONICAL_ORGANIZATION_GITHUB_INGRE
 The exact existing-owner repair seam is the active organization `.github` ingress/egress capability-map owner: it must canonically bind `sdk-manifest-ingress / SDK:ManifestIngress` to the existing organization-owned receiving operation (currently source-traced as `POST /intr/materialization`) in a form the SDK can consume, without granting routing authority to SDK, completion.egress, LLM-adapter, Publisher, environment configuration, host identity, or device identity. This HOLD task does not duplicate that repair while the capability-map work is owned elsewhere.
 
 Frozen HOLD remains unexecuted. Reassess only after that canonical mapping is merged and source-visible; then consume the existing mapping in SDK and re-evaluate the same frozen manifest before any authentic HOLD invocation.
+
+
+## 2026-10-02 canonical organization capability endpoint binding merged
+
+The missing organization-owned source binding is now merged through central PR #2931 from exact head `3f7794b6feaed03e7d66561694e471cdec24e5a9` as merge commit `75d68c83e28178af053b8af097de4c8ca7e5017e`. Both registered exact-head workflows succeeded: `Validate Organization Resident Runtime and Interlock-InTr Boundary` and `Test suite ratchet`.
+
+The existing `org-runtime/interlock-intr.json` contract now binds `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST` to the existing organization-owned `POST /intr/materialization` receiving operation at `workers/universal_intr_profiled_ingress.py`, delegating manifest-state-transition admission to `workers/manifest_state_transition_intr_ingress.py::admit`. The binding is `NONE_BINDING_ONLY`, grants no routing/admission/execution authority, and is explicitly not environment-selected. `org-runtime/runtime_boundary.py resolve-ingress` exposes the deterministic machine-readable organization resolution.
+
+This satisfies the previously missing **organization source-map** half of `REGISTERED_CAPABILITY_RESOLVES_TO_CANONICAL_ORGANIZATION_GITHUB_INGRESS_ENDPOINT`. It does not by itself prove that the SDK currently consumes that merged organization contract, nor does it prove authentic Interlock/InTr admission or runtime execution. The next bounded step is SDK consumption of this existing canonical mapping followed by source-only reassessment of the unchanged frozen HOLD manifest. HOLD was not executed by #2931.
