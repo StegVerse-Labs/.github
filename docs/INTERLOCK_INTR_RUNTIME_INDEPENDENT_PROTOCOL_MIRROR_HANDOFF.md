@@ -58,6 +58,46 @@ Exact-head workflow evidence on the prior PR head demonstrated a missing `execut
 
 No external adoption, external conformance, production interoperability, runtime execution, deployment, or merge is claimed.
 
+## Replacement PR and exact-head validation
+
+PR #2898 remained unavailable through authoritative connector search. The preserved branch was therefore used to create replacement PR #2909 with explicit replacement evidence. At creation, #2909 targeted `master-records-reportable-checkpoint-2895` from exact head `5ec4bdf4b9244f19051048434df9380375532692`. All five observed workflows for that exact head completed SUCCESS, including Cross-Task Coordination Validation and Test suite ratchet. The branch remains diverged from its base (10 ahead / 2 behind), so mergeability is not inferred from CI success.
+
+## Initial source-level surface trace
+
+Default-branch source evidence identifies these existing seams:
+
+- Public SDK `run-manifest` exists and prior canonical evidence binds successful public results to the exact canonical ingress manifest and deterministic generic execution request.
+- Current SDK source at `StegVerse-org/StegVerse-SDK@bafb093797f75e4d1fc94f8b45eb278dda3809f9` traces public `run-manifest` through `stegverse/manifest_execution.py` to route-selected runtime bindings including `stegverse.manifest_state_transition_runtime.execute_manifest`.
+- The current manifest-state-transition runtime no longer uses `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` or `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`. It resolves the destination only from `completion.egress`, opens no connection, supplies no transport credential, and returns an SDK-bound handoff to the receiving Interlock runtime. That handoff is explicitly not admission and must not be promoted into an authentic far-side disposition.
+- The shared canonical ingress profile is `SDK:ManifestStateTransition` at `/intr/materialization`; repository source includes `workers/manifest_state_transition_intr_ingress.py` and tests for the shared profile.
+- Repository evidence also states that GitHub is validation/evidence transport, not authentic Universal InTr runtime authority, and that the active ChatGPT execution surface did not expose a non-caller-editable authenticated Universal InTr/TVC invocation primitive in the cited observations.
+
+These are source-level findings only. An authentic current production invocation boundary has not been established in this task and remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+## Parent reconciliation, verifier and field mapping
+
+The two parent-only changes were reconciled into this branch by carrying forward the current parent versions of the Master Records checkpoint task record and handoff; no successor artifact was discarded. A deterministic verifier now exists at `scripts/verify_interlock_intr_runtime_independent_protocol.py` for the synthetic fixture package. Its fixture semantics were independently exercised during this task and produced the expected ALLOW, DENY, FAIL_CLOSED and negative FAIL_CLOSED classifications; repository exact-head CI remains the required admission evidence for the committed verifier.
+
+Machine-readable source mapping is retained at `docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_SOURCE_MAPPING_v1.json`. It maps registered identity, manifest intent, source/destination, payload commitment, state/predecessor context, capability, disposition, transfer receipt, resulting-state commitment and evidence references to current SDK seams and explicitly records partial/profile-dependent gaps.
+
+Authentic Interlock/InTr execution remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+## Existing-owner seam resolution
+
+Current source makes the smallest ownership boundary explicit rather than requiring another SDK transport path:
+
+1. SDK/Manifest Builder owns canonical manifest validation, route resolution, state-graph derivation, destination binding and handoff commitment.
+2. TV/TVC remains credential authority; `derive_execution_request` declares `credential_authority = TV/TVC` without making the SDK a credential issuer.
+3. The receiving Interlock/InTr runtime is the existing owner that must authenticate registered-node identity, consume the manifested handoff, evaluate the receiving state/predecessor and produce the terminal ALLOW, DENY or FAIL_CLOSED.
+4. That same receiving boundary must produce the authentic transfer/admission receipt and resulting-state commitment where applicable.
+5. Master Records remains custody/replay/reconstruction authority for applicable retained closure evidence.
+
+Therefore the smallest unresolved seam is not a new SDK feature: it is exposure/observation of the existing receiving Interlock/InTr admission operation with authenticated node/TVC context and receipt/result return. Until that owner seam is authentically callable, the runtime state remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
+
+## Exact-head validation
+
+PR #2915 ultimately merged into its checkpoint parent as `03e043f4680612bcbaf14601bd799b71b662877d` from exact head `f00400f2fd35bad2aacff368f8de9db4a5cbbd86`. All six observed exact-head workflows succeeded, including the dedicated non-authorizing protocol-vector verifier and Test suite ratchet. This merge is parent-branch source evidence only; it does not establish runtime execution, external conformance, or canonical-main ancestry.
+
 ## Next action
 
-Re-observe PR state and fresh exact-head workflows after these repairs. Repair only demonstrated failures. Then trace existing Interlock/InTr and SDK surfaces against the specification without inventing missing runtime capabilities.
+Reconcile the completed parent-branch #2915 artifacts onto current canonical main through the repository's existing latest-main reconstruction pattern. Preserve synthetic/non-authorizing fixtures, runtime independence, external_conformance_claimed=false, and UNKNOWN_NOT_AUTHENTICALLY_OBSERVED for authentic Interlock/InTr execution. Repository merge is source integration only.

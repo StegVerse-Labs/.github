@@ -1,0 +1,28 @@
+name: Validate Interlock InTr protocol vectors
+on:
+  pull_request:
+    paths:
+      - 'test-vectors/interlock-intr-runtime-independent-protocol-v1.json'
+      - 'scripts/verify_interlock_intr_runtime_independent_protocol.py'
+      - '.github/workflows/validate-interlock-intr-protocol-vectors.yml'
+permissions: {}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous exact-source checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify deterministic synthetic protocol vectors
+        run: python scripts/verify_interlock_intr_runtime_independent_protocol.py
+      - name: Preserve non-authorizing boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          doc=json.loads(Path('test-vectors/interlock-intr-runtime-independent-protocol-v1.json').read_text())
+          assert doc['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert doc['fixtures']['master_records_checkpoint_profile']['external_conformance_claimed'] is False
+          print('INTERLOCK_INTR_VECTOR_VALIDATION_NON_AUTHORIZING_PASS')
+          PY
