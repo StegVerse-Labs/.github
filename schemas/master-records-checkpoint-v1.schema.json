@@ -18,7 +18,9 @@
     "hash_algorithm",
     "signature_profile",
     "signing_key_id",
-    "signature"
+    "signature",
+    "interoperability_profile",
+    "communication_contract"
   ],
   "properties": {
     "schema": {
@@ -76,6 +78,67 @@
     "signature": {
       "type": "string",
       "minLength": 1
+    },
+    "interoperability_profile": {
+      "const": "MasterRecordsCheckpoint/v1"
+    },
+    "communication_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "registered_node_required",
+        "manifest_intent_required",
+        "payload_commitment_field",
+        "checkpoint_digest_binding",
+        "receiving_disposition",
+        "write_once_transfer_admission_receipt_required",
+        "participating_runtime_implementation_required",
+        "external_conformance_claimed"
+      ],
+      "properties": {
+        "protocol": {
+          "const": "stegverse.interlock-intr/v1"
+        },
+        "registered_node_required": {
+          "const": true
+        },
+        "manifest_intent_required": {
+          "const": true
+        },
+        "payload_commitment_field": {
+          "const": "checkpoint_digest"
+        },
+        "checkpoint_digest_binding": {
+          "const": "EXACT"
+        },
+        "receiving_disposition": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "ALLOW"
+            },
+            {
+              "const": "DENY"
+            },
+            {
+              "const": "FAIL_CLOSED"
+            }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "write_once_transfer_admission_receipt_required": {
+          "const": true
+        },
+        "participating_runtime_implementation_required": {
+          "const": false
+        },
+        "external_conformance_claimed": {
+          "const": false
+        }
+      }
     }
   }
 }
