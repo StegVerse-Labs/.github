@@ -5,8 +5,8 @@
   "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "parent_task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
   "goal": "Complete the KV-bound ephemeral release/bootstrap flow with authentic KV projection, canonical successor claim/fence, TV/TVC signing/upload where applicable, retained StegOS/StegBrowser evidence, and return to one frozen global runtime measurement without binding completion to a physical device.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_INTEGRATION",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "cosv_task_vector": "50000010100000",
   "global_invariant_ref": "data/task-registry-global-invariants.json",
   "device_interchangeability_enforced": true,
@@ -62,7 +62,8 @@
     "StegVerse-Labs/.github:actions/run/34791777867",
     "StegVerse-Labs/.github/tasks/TASK-2026-0011.json",
     "StegVerse-Labs/Site#1472@ca537302289d9c9d22215f74030c79e9aebbf91e",
-    "StegVerse-Labs/Site#1473@dba57a80948313c299db8c4aa3d3adfc483d3cc3"
+    "StegVerse-Labs/Site#1473@dba57a80948313c299db8c4aa3d3adfc483d3cc3",
+    "StegVerse-Labs/.github#2926@1d402a0dace0f74ff1acfc86b0e49d546d937584"
   ],
   "targets": {
     "organizations": [
@@ -196,7 +197,8 @@
     "StegVerse-Labs/Site#1302:MERGED:39897d784922c8e1dc1eb3ddda6c82a6bf256753",
     "StegVerse-Labs/Site#1303:MERGED:61867fa9222a166cfff0a20b2153b146aa506344",
     "StegVerse-Labs/Site#1472:MERGED_SOURCE_HEAD:76bb24765e5e686f01630b2326f9778950e3952e:MERGE:ca537302289d9c9d22215f74030c79e9aebbf91e:SUBMITTED_REVIEWS_NONE_OBSERVED",
-    "StegVerse-Labs/Site#1473:MERGED_SOURCE_HEAD:4a0c1d743cd68fdc7dee5869e0eaf12324999543:MERGE:dba57a80948313c299db8c4aa3d3adfc483d3cc3:EXACT_HEAD_CI_PASS:SUBMITTED_REVIEWS_NONE_OBSERVED"
+    "StegVerse-Labs/Site#1473:MERGED_SOURCE_HEAD:4a0c1d743cd68fdc7dee5869e0eaf12324999543:MERGE:dba57a80948313c299db8c4aa3d3adfc483d3cc3:EXACT_HEAD_CI_PASS:SUBMITTED_REVIEWS_NONE_OBSERVED",
+    "StegVerse-Labs/.github#2926:MERGED:1d402a0dace0f74ff1acfc86b0e49d546d937584:EXACT_ATTEMPT_DISPOSITION_CORRELATION_SOURCE_REPAIR"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
@@ -246,14 +248,7 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": [
-    "EXECUTE_VIA_REUSABLE_COMPONENT_COMPOSITION_ON_ELIGIBLE_ADMITTED_STEGOS_SURFACE",
-    "CLASSIFY_AUTHENTIC_FAILURE_BY_OWNING_COMPONENT",
-    "OBSERVE_TVC_NATIVE_BUILD_UPLOAD_COMMITTED_WHERE_APPLICABLE",
-    "OBSERVE_AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME",
-    "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS_AND_CONFIRM_RECONSTRUCTION",
-    "RETURN_TO_FROZEN_GLOBAL_MEASUREMENT"
-  ],
+  "allowed_next_transitions": [],
   "handoff_projection_refs": [
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
@@ -328,5 +323,24 @@
         "evidence_refs": []
       }
     ]
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED; SOURCE_LEVEL_CANONICAL_WORK_EXACT_ATTEMPT_CORRELATION_REPAIR_RETURNED_TO_PARENT_EVIDENCE; AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED_TRANSFERRED_TO_SUCCESSOR",
+  "successor_task_ids": [
+    "KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001"
+  ],
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false,
+    "continuation_task_id": "KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001",
+    "split_merely_to_reset_counter": false
+  },
+  "decomposition": {
+    "required": true,
+    "reason": "SOURCE_LEVEL_EXACT_ATTEMPT_CORRELATION_REPAIR_COMPLETE; REMAINING_AUTHENTIC_RUNTIME_OBSERVATION_GENUINELY_SEPARABLE",
+    "canonical_successor_task_id": "KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001",
+    "canonical_successor_handoff": "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
+    "canonical_successor_task_record": "data/canonical-task-records/KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001.json",
+    "first_unresolved_successor_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED"
   }
 }
