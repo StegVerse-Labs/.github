@@ -82,6 +82,8 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
     receipt = {
         "schema": INGRESS_SCHEMA,
         "state": "INGRESS_ADMITTED",
+        "disposition": "ALLOW",
+        "disposition_authority": "INTERLOCK_INTR",
         "materialization_id": materialization_id,
         "request_hash": request["request_hash"],
         "transport_intent_hash": request["transport_intent_hash"],
