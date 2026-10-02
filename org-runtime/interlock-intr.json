@@ -8,7 +8,27 @@
     "interlock_required": true,
     "intr_required": true,
     "direction": "INGRESS",
-    "standing_resolution": "APPLICABLE_TRANSITION_ELEMENTS"
+    "standing_resolution": "APPLICABLE_TRANSITION_ELEMENTS",
+    "capability_endpoint_bindings": [
+      {
+        "profile_id": "sdk-manifest-ingress",
+        "profile_name": "SDK:ManifestIngress",
+        "operation": "SUBMIT_MANIFEST",
+        "receiving_operation": {
+          "method": "POST",
+          "path": "/intr/materialization",
+          "owner_repository": "StegVerse-Labs/.github",
+          "source": "workers/universal_intr_profiled_ingress.py",
+          "delegate": "workers/manifest_state_transition_intr_ingress.py::admit"
+        },
+        "binding_role": "ORGANIZATION_RECEIVING_OPERATION_RESOLUTION",
+        "authority_effect": "NONE_BINDING_ONLY",
+        "grants_routing_authority": false,
+        "grants_admission_authority": false,
+        "grants_execution_authority": false,
+        "environment_selected_ingress": false
+      }
+    ]
   },
   "egress": {
     "interlock_required": true,
