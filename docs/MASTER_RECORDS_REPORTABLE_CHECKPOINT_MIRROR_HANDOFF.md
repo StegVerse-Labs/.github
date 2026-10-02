@@ -51,7 +51,7 @@ StegVerse processing
 allowed StegVerse-governed output set
 ```
 
-This is a successor architecture requirement only. It does not add node-registration, manifest, or transport fields to `MasterRecordsCheckpoint/v1`.
+The successor protocol is now validated as a synthetic/non-authorizing documentary contract by merged PR #2915. `MasterRecordsCheckpoint/v1` therefore binds its communication profile to registered-node identity, manifest intent `REPORT_MASTER_RECORDS_CHECKPOINT`, exact checkpoint-digest payload commitment, receiving-framework `ALLOW`/`DENY`/`FAIL_CLOSED`, and a write-once transfer/admission receipt. These are interoperability-envelope requirements, not participating-runtime implementation requirements and not a transfer of checkpoint authority.
 
 ## Required closure predicate
 
@@ -151,6 +151,14 @@ No external witness submission, runtime execution, authentic Master Records chec
 
 The generalized runtime-independent state-transition data-transfer protocol has been decomposed into `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` / issue #2897. Its canonical handoff is `docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md`. `MasterRecordsCheckpoint/v1` remains the first bounded interoperability profile and remains provider-neutral; this parent task does not claim external adoption or conformance.
 
+## Returned validated protocol result
+
+Child `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` returned `PASS_SYNTHETIC_NON_AUTHORIZING` from PR #2915, merge commit `03e043f4680612bcbaf14601bd799b71b662877d`, dedicated verifier run `36946008125`. The parent now carries that contract in its task record, checkpoint schema and `test-vectors/master-records-checkpoint-interoperability-v1.json`.
+
+The live receiving interface remains unavailable in this execution context: `AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`; authentic runtime execution remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`. Those are runtime-observation facts only and are not prerequisites for documentary checkpoint-profile validation.
+
+No additional listener, credential route, SDK transport authority, participating-runtime implementation requirement, external adoption or external conformance is introduced.
+
 ## Next action
 
-Add the machine-readable schema and deterministic synthetic vector/verifier contract, update README, run repository validation at exact head, repair only demonstrated failures, then merge with expected-head protection when repository requirements are satisfied. Map an external witness only after its exact current submission schema/procedure is received.
+Add/extend a deterministic checkpoint verifier for the existing Merkle/checkpoint construction plus the new interoperability-envelope vectors, update README, and run repository validation at exact head. Repair only demonstrated failures and merge with expected-head protection only after repository requirements succeed. Map an external witness only after its exact current submission schema/procedure is received.
