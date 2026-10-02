@@ -26,3 +26,10 @@ The tool validates the contract and emits resident activation requests plus ingr
 ## Workflow surface registration
 
 The existing `.github/workflows/org-runtime-boundary.yml` is registered in `control/workflow-surface-registry.json` as `KEEP_STANDALONE_EXCEPTION` for source-only validation. This classification grants no resident execution, ingress/egress, credential, routing, transition, publication, or release authority. Authentic organization runtime execution remains resident-only.
+
+
+## 2026-10-02 organization-owned capability receiving-operation binding
+
+The existing organization boundary contract `org-runtime/interlock-intr.json` is the smallest canonical machine-readable owner for resolving registered connector capabilities to organization receiving operations. It now binds `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST` to the already-existing organization-owned `POST /intr/materialization` operation in `workers/universal_intr_profiled_ingress.py`, delegating manifest-state-transition admission to `workers/manifest_state_transition_intr_ingress.py::admit`.
+
+This binding does not duplicate the StegOS connector registry: StegOS remains the source of connector profile/capability registration, while this organization contract resolves that registered identity to this organization's receiving operation. The binding is explicitly `NONE_BINDING_ONLY`, grants no routing, admission or execution authority, and is not selected by environment configuration. `runtime_boundary.py resolve-ingress` exposes deterministic machine-readable resolution for consumers without creating a listener, runtime, scheduler, dispatcher, credential path, or authority plane.
