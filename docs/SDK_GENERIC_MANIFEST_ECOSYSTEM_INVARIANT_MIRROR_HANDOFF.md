@@ -316,3 +316,12 @@ No catalog entry currently binds `stegos/universal_intr_public_profile.py::obser
 `REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG`
 
 This source gap explains why the merged Gate-1 function is not exposed through the existing operation-specific discovery contract. It does not prove that adding a catalog record alone would create authentic host invocation. The runtime predicate remains `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Richard/Sebbi endpoint remains `UNSPECIFIED`; no Gate-1 invocation occurred and no identity/health/credential/checkpoint/meeting-point gate advanced.
+
+
+## 2026-10-02 source-vs-runtime predicate reconciliation
+
+The canonical task predicate model separates merged source evidence from predicates requiring authentic runtime observation. Completion remains false; no receiving runtime is modified or invoked.
+
+Merged source evidence satisfies SDK generic capability/route binding, LLM Adapter generic SDK delegation, Site MIR canonical SDK manifest ingress, and the StegOS generic SDK manifest InTr profile/receiving-owner trace. TVC remains `PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN`; StegCore remains `PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN`; shared-document/external collaboration remains `PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN`.
+
+The first existing-owner authentic Node/InTr observation boundary remains `workers/universal_intr_profiled_ingress.py POST /intr/materialization -> workers/manifest_state_transition_intr_ingress.py::admit`. Current observation remains `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Source, merge and CI evidence are not promoted to runtime proof. The task record carries distinct `remaining_source_predicates` and `remaining_runtime_predicates`, retaining `remaining_predicates` as their compatibility union.
