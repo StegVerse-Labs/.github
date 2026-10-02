@@ -30,6 +30,7 @@ EPHEMERAL_SURFACES = [
                 "callable_task": "STEGVERSE-002-EXPERIMENT-RERUN-001",
                 "execution_owner": "StegVerse-002/.github",
                 "authority_effect": "NONE_DISCOVERY_ONLY",
+                "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL", "STEGVERSE_002_ORG_SELF_CHARACTERIZATION_SURFACE"],
             },
             {
                 "operation": "observe-reciprocal-node-existence",
@@ -40,6 +41,7 @@ EPHEMERAL_SURFACES = [
                 "authority_effect": "NONE_OBSERVATION_ONLY",
                 "identity_established": False,
                 "health_established": False,
+                "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL"],
             },
         ],
         "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL", "STEGVERSE_002_ORG_SELF_CHARACTERIZATION_SURFACE"],
