@@ -470,7 +470,6 @@ def run_registry_cycle(
     runtime_root: Path,
     *,
     goal_task_id: str | None = None,
-    execution_attempt_id: str | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
@@ -587,6 +586,7 @@ def consume_all(
     runtime_root: Path,
     *,
     goal_task_id: str | None = None,
+    execution_attempt_id: str | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
