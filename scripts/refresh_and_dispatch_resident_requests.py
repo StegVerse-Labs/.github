@@ -316,10 +316,14 @@ def canonical_work_goal_consumption_evidence(
         and current.get("disposition") == receipt.get("disposition")
     )
     disposition = receipt.get("disposition")
+    disposition_state_valid = (
+        (disposition in {"ALLOW", "DENY"} and receipt.get("state") == "COMPLETED")
+        or (disposition == "FAIL_CLOSED" and receipt.get("state") == "ATTEMPT_RECORDED")
+    )
     valid = bool(
         receipt.get("schema") == "stegverse.canonical-work-bootstrap-request-consumption/v1"
         and receipt.get("task_id") == goal_task_id
-        and receipt.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"}
+        and disposition_state_valid
         and disposition in {"ALLOW", "DENY", "FAIL_CLOSED"}
         and receipt.get("credential_material_present") is False
         and receipt.get("network_source_fetch_performed") is False
