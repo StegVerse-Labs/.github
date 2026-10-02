@@ -259,6 +259,7 @@ def main() -> None:
     lifecycle.validate_runner_result(result, invocation_id=args.invocation_id, reusable_task_id=args.reusable_task_id, manifest_hash=manifest["manifest_hash"], completion_predicates=completion_predicates)
     if result.get("governed_disposition") in {"ALLOW", "DENY", "FAIL_CLOSED"}:
         receipt["governed_disposition"] = result["governed_disposition"]
+        receipt["execution_attempt_id"] = result.get("execution_attempt_id")
         receipt["governed_disposition_authority"] = result.get("governed_disposition_authority")
         receipt["failed_predicate"] = result.get("failed_predicate")
         receipt["governed_disposition_evidence_refs"] = result.get("evidence_refs") or []
