@@ -183,3 +183,24 @@ The submission input deliberately does not reuse the accidental ordinary-chat ac
 ## 2026-09-30 machine-readable HOLD attachment review record
 
 Machine-reviewable evidence for the authentic SDK attachment attempt is retained at `data/experiment-evidence/ELAN_STEGVERSE_HOLD_SDK_ATTACHMENT_ATTEMPT_001.json`. The record binds task/COSV identity, exact SDK run and artifact IDs, exact SDK head, retained artifact SHA-256 values, the full observed attachment disposition fields and run-manifest lineage, explicit source/claim boundaries, merged SDK/coordination PR evidence, and a review block initialized as `PENDING_REVIEW`. It does not promote the attachment attempt into a completed HOLD result or downstream sovereign governance evidence.
+
+
+## 2026-10-02 SDK #420 merge and canonical organization-ingress endpoint trace
+
+SDK PR #420 was reconciled against current SDK main after concurrent #419 and #421, preserving the manifest-first external-framework/HOLD source work while separating manifest processing, outbound organization routing, and requester-facing completion/return metadata. The final exact head `d8d90867db116a64203b408ad7341221b645aa35` completed all 20 observed PR workflows successfully and merged with expected-head protection as `0e2d1c4e5515ae27367440c407ef96792f066247`.
+
+The #421 HOLD source qualification was explicitly kept non-executing under this reconciliation: its PR workflow invokes the independent HOLD source script with `--skip-runtime-attempt`. No authentic HOLD runtime attempt or result is claimed here.
+
+Post-merge source trace establishes three separate facts:
+
+1. StegOS canonical Universal InTr registry defines `sdk-manifest-ingress` / `SDK:ManifestIngress`, operation `SUBMIT_MANIFEST`, and downstream owner `StegVerse-org/StegVerse-SDK`.
+2. `StegVerse-Labs/.github` is the canonical organization-level owner of resident-runtime activation and all organization ingress/egress generation; the existing receiving source operation is `workers/universal_intr_profiled_ingress.py POST /intr/materialization -> workers/manifest_state_transition_intr_ingress.py::admit`.
+3. Current canonical source does **not** bind fact (1) to fact (2) through an SDK-consumable capability-to-concrete-organization-`.github` endpoint mapping. `org-runtime/interlock-intr.json` declares the organization boundary policy but no capability endpoint map, and `org-runtime/runtime_boundary.py` validates/generates generic organization envelopes without resolving `sdk-manifest-ingress` to the concrete receiving operation.
+
+Therefore `REGISTERED_CAPABILITY_RESOLVES_TO_CANONICAL_ORGANIZATION_GITHUB_INGRESS_ENDPOINT` remains unsatisfied for the frozen HOLD path and the SDK correctly retains:
+
+`FAIL_CLOSED / CANONICAL_ORGANIZATION_INGRESS_ENDPOINT_NOT_RESOLVED`.
+
+The exact existing-owner repair seam is the active organization `.github` ingress/egress capability-map owner: it must canonically bind `sdk-manifest-ingress / SDK:ManifestIngress` to the existing organization-owned receiving operation (currently source-traced as `POST /intr/materialization`) in a form the SDK can consume, without granting routing authority to SDK, completion.egress, LLM-adapter, Publisher, environment configuration, host identity, or device identity. This HOLD task does not duplicate that repair while the capability-map work is owned elsewhere.
+
+Frozen HOLD remains unexecuted. Reassess only after that canonical mapping is merged and source-visible; then consume the existing mapping in SDK and re-evaluate the same frozen manifest before any authentic HOLD invocation.
