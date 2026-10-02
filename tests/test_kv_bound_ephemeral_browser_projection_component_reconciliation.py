@@ -116,9 +116,11 @@ class KVReusableComponentModelTests(unittest.TestCase):
         self.assertEqual(by_class["CANONICAL_ALLOCATOR_REPLAY"]["verification_modes"]["REPLAY"], "PASS")
         self.assertEqual(by_class["WORKERCOORDINATOR_RUNTIME_RECONSTRUCTION"]["verification_modes"]["RECONSTRUCTION"], "PASS")
 
-    def test_task_record_stays_active_without_runtime_upgrade(self):
+    def test_task_record_prompt_limit_decomposition_does_not_upgrade_runtime(self):
         record = load_json(f"data/canonical-task-records/{TASK_ID}.json")
-        self.assertEqual(record["coordination_state"], "ACTIVE")
+        self.assertEqual(record["coordination_state"], "RETIRED")
+        self.assertEqual(record["checkout_state"], "DECOMPOSED_AT_PROMPT_LIMIT")
+        self.assertEqual(record["decomposition"]["first_unresolved_successor_predicate"], "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED")
         self.assertFalse(record["completion"]["claimed"])
         self.assertFalse(record["completion"]["validated"])
         self.assertEqual(record["authority_model"]["device_user_verification_authority"], "NONE")

@@ -63,7 +63,7 @@
     "rule": "A_PROSE_STATEMENT_ASSIGNING_OBSERVED_OR_RUNTIME_REALITY_AUTHORITY_TO_MASTER_RECORDS_IS_SUPERSEDED_BY_THIS_DECLARATION_AT_ITS_OWNING_SURFACE",
     "cross_owner_edit_performed": false,
     "measured_on_commit_of_this_declaration": true,
-    "count": 28,
+    "count": 29,
     "files": [
       "README.md",
       "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
@@ -71,6 +71,7 @@
       "docs/CONVERSATION_EVIDENCE_SERVICE_PERFORMANCE_REGISTRY_MIRROR_HANDOFF.md",
       "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
       "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
+      "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
       "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
       "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
       "docs/QUANTUM_CANONICAL_WORK_EXACT_VALUE_ADOPTION_MIRROR_HANDOFF.md",
@@ -229,6 +230,11 @@
         "path": "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
         "line": 188,
         "statement": "Master Records remains observed-reality custody/reconstruction authority"
+      },
+      {
+        "path": "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
+        "line": 38,
+        "statement": "Master Records remains observed-reality custody/reconstruction authority."
       }
     ],
     "line_numbers_are_provenance_only": true,
