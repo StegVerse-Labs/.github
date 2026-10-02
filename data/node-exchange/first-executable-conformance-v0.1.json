@@ -138,6 +138,17 @@
       "head": "de2bbb44662f3c06a504b058fd6185bad0b0b54f",
       "merge_commit": "adceffaa6fcdf0e89bff7a091dddf92d790cc439",
       "scope": "AUTHENTICATED_RECIPROCAL_NODE_EXISTENCE_ONLY"
+    },
+    "operation_surface_trace": {
+      "owner": "StegVerse-Labs/.github:scripts/list_stegverse_execution_surfaces.py",
+      "observed_registered_ephemeral_operations": [
+        "REQUEST_SELF_CHARACTERIZATION",
+        "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS"
+      ],
+      "observe_reciprocal_node_existence_registered": false,
+      "tvc_relay_callable_operation_exposed": false,
+      "source_gap": "REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG",
+      "runtime_predicate": "AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
     }
   }
 }
