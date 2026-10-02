@@ -257,6 +257,12 @@ def main() -> None:
 
     result = lifecycle.load_json(result_path)
     lifecycle.validate_runner_result(result, invocation_id=args.invocation_id, reusable_task_id=args.reusable_task_id, manifest_hash=manifest["manifest_hash"], completion_predicates=completion_predicates)
+    if result.get("governed_disposition") in {"ALLOW", "DENY", "FAIL_CLOSED"}:
+        receipt["governed_disposition"] = result["governed_disposition"]
+        receipt["governed_disposition_authority"] = result.get("governed_disposition_authority")
+        receipt["failed_predicate"] = result.get("failed_predicate")
+        receipt["governed_disposition_evidence_refs"] = result.get("evidence_refs") or []
+        receipt["runner_result_ref"] = str(result_path)
     expiry = lifecycle.build_runner_expiry(invocation_id=args.invocation_id, reusable_task_id=args.reusable_task_id, manifest_hash=manifest["manifest_hash"], runner_ref=receipt["effective_runner_ref"], returncode=completed.returncode, result=result)
     residual = lifecycle.build_residual_recording(manifest=manifest, runner_result=result, runner_expiry=expiry)
     write_json(expiry_path, expiry)
