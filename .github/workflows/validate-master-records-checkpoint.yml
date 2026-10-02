@@ -1,0 +1,36 @@
+name: Validate Master Records checkpoint vectors
+on:
+  pull_request:
+    paths:
+      - 'schemas/master-records-checkpoint-v1.schema.json'
+      - 'test-vectors/master-records-checkpoint-construction-v1.json'
+      - 'test-vectors/master-records-checkpoint-interoperability-v1.json'
+      - 'scripts/verify_master_records_checkpoint.py'
+      - '.github/workflows/validate-master-records-checkpoint.yml'
+permissions: {}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous exact-source checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify deterministic synthetic checkpoint vectors
+        run: python scripts/verify_master_records_checkpoint.py
+      - name: Preserve documentary non-authorizing boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('test-vectors/master-records-checkpoint-construction-v1.json').read_text())
+          b=json.loads(Path('test-vectors/master-records-checkpoint-interoperability-v1.json').read_text())
+          assert a['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert b['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert b['runtime_observation']['required_for_documentary_validation'] is False
+          assert b['claims']['external_adoption'] is False
+          assert b['claims']['external_conformance'] is False
+          assert b['claims']['authentic_runtime_execution'] is False
+          assert b['claims']['deployment'] is False
+          print('MASTER_RECORDS_CHECKPOINT_VALIDATION_NON_AUTHORIZING_PASS')
+          PY
