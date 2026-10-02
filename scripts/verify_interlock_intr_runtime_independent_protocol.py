@@ -51,13 +51,24 @@ def main():
     assert doc["status"] == "SYNTHETIC_NON_AUTHORIZING"
     fixtures = doc["fixtures"]
     required = {
-        "allow","deny","fail_closed","negative_node_identity","negative_payload",
+        "base","allow","deny","fail_closed","negative_node_identity","negative_payload",
         "negative_state","negative_manifest","negative_capability","negative_receipt",
         "master_records_checkpoint_profile",
     }
     assert required == set(fixtures), "fixture set changed"
+    base = fixtures["base"]
+    required_base = {
+        "protocol": "stegverse.interlock-intr/v1",
+        "source_node_id": "node:alpha",
+        "destination_node_id": "node:beta",
+        "intent": "TRANSFER_BOUND_PAYLOAD",
+        "requested_capability": "example.echo/v1",
+        "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "state_binding": "state:0001",
+    }
+    assert base == required_base, "base fixture changed"
     results = {}
-    for name in sorted(fixtures):
+    for name in sorted(set(fixtures) - {"base"}):
         expected = fixtures[name]["expected"]
         actual = evaluate(name, fixtures[name])
         assert actual == expected, f"{name}: expected {expected}, got {actual}"
