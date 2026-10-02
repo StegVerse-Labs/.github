@@ -40,6 +40,32 @@ class EphemeralExecutionSurfaceDiscoveryTests(unittest.TestCase):
         self.assertEqual(node["execution_owner"], "StegVerse-002/.github")
         self.assertEqual(node["operation"], "REQUEST_SELF_CHARACTERIZATION")
         self.assertNotEqual(node["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
+        operations = {x["operation"]: x for x in node["registered_operations"]}
+        self.assertEqual(
+            set(operations),
+            {"REQUEST_SELF_CHARACTERIZATION", "observe-reciprocal-node-existence"},
+        )
+        gate1 = operations["observe-reciprocal-node-existence"]
+        self.assertEqual(gate1["callable_task"], "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005")
+        self.assertEqual(gate1["execution_owner"], "StegVerse-Labs/StegOS")
+        self.assertEqual(
+            gate1["implementation_ref"],
+            "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence",
+        )
+        self.assertEqual(gate1["adapter"], "observe-reciprocal-node-existence")
+        self.assertEqual(gate1["authority_effect"], "NONE_OBSERVATION_ONLY")
+        self.assertFalse(gate1["identity_established"])
+        self.assertFalse(gate1["health_established"])
+        self.assertEqual(
+            gate1["materialization_path"],
+            [
+                "REGISTERED_STEGVERSE_NODE",
+                "INTERLOCK",
+                "UNIVERSAL_INTR_MATERIALIZATION",
+                "BOUNDED_INVOCATION_LEASE",
+                "EVENT_EPHEMERAL",
+            ],
+        )
 
         browser = by_name["StegBrowser"]
         self.assertEqual(browser["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
