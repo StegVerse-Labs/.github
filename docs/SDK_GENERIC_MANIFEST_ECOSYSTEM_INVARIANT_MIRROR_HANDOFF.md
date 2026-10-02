@@ -347,3 +347,8 @@ health_established = false
 ```
 
 The catalog regression verifies that exact registration and preserves the existing two-surface discovery count rather than inventing a third runtime surface. Discovery/registration is still non-authorizing source evidence: it does not materialize a runtime, mint a WorkerCoordinator claim/fence, admit Interlock/InTr transport, establish an external endpoint, or produce an authentic Gate-1 disposition. Gate 1 must not be invoked merely because this source record exists.
+
+
+## 2026-10-02 Gate-1 replacement-merge and registry reconciliation
+
+Canonical PR #2930 closed unmerged after all four exact-head checks on `152f6d9e756a88ef9994ff48d1b4154952828316` succeeded because its base had become stale. Clean current-main replacement PR #2935 carried only the four-file reciprocal-existence catalog delta, passed all five exact-head checks at `f36615898dd7a06f8fceb752424eb0669eb8053d`, and merged as `3b623be5e075d1f44ced4f2caad4205c3cda2be1`. The canonical task record is reconciled to the merged StegOS #421 binding and canonical #2935 registration. This remains source evidence only: no external Node endpoint is supplied by the catalog and no authentic Gate-1 disposition is inferred.
