@@ -303,3 +303,23 @@ That observation is evidence reachability only. Authentic InTr admission/disposi
 - **StegOS generic SDK manifest InTr profile:** `SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN`. Existing-owner PR #419 merged as `aa1e1db945a45c89709d720319fb8a9515fc0ae4`. The current receiving owner is additionally traced above; no runtime disposition is inferred.
 
 System-wide enforcement remains `NOT_PROVEN`. The receiving runtime source is unchanged because this reconciliation demonstrated no source defect in that owner.
+
+
+## 2026-10-02 source-vs-runtime predicate reconciliation
+
+The canonical task predicate model now separates merged source evidence from predicates that require evidence native to authentic runtime observation. This is an evidence-class correction only; task completion remains false and no receiving runtime is modified or invoked.
+
+Merged source evidence satisfies the source-level SDK generic capability/route binding, LLM Adapter generic SDK route delegation, Site MIR canonical SDK manifest ingress, and StegOS generic SDK manifest InTr profile/receiving-owner trace. Those source predicates are no longer carried as unresolved runtime predicates. TVC remains `PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN`; StegCore remains `PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN`; shared-document/external collaboration remains `PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN`. No stronger evidence was introduced by this reconciliation.
+
+The first existing-owner boundary capable of producing evidence native to the outstanding Node/InTr runtime class remains:
+
+```text
+workers/universal_intr_profiled_ingress.py POST /intr/materialization
+-> workers/manifest_state_transition_intr_ingress.py::admit
+-> authenticated transport validation (STEGOS_NODE_OUTBOX or TVC_RELAY_EGRESS)
+-> manifest-selected capability owner
+```
+
+The current execution-context observation remains `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. No authenticated non-caller-editable invocation primitive for that resident operation is exposed here, so no runtime attempt is made. Source, merge and CI evidence MUST NOT be promoted to `AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED`, governance/non-governance runtime evidence, Organization runtime custody, Master Records reconstruction, or system-wide enforcement.
+
+The task record therefore carries distinct `remaining_source_predicates` and `remaining_runtime_predicates` while retaining a compatibility `remaining_predicates` union. `completion.claimed`, `completion.validated`, and `completion.runtime_observed` remain false.
