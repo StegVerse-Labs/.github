@@ -411,7 +411,7 @@ def refresh_and_dispatch(
         target_consumption_required = True
     canonical_disposition = target_consumption_receipt.get("disposition") if canonical_goal_required and isinstance(target_consumption_receipt, Mapping) else None
     successful_boundary = canonical_disposition in {"ALLOW", "DENY", "FAIL_CLOSED"}
-    state = ("REFRESH_AND_DISPATCH_COMPLETE" if canonical_disposition == "ALLOW" else "REFRESH_AND_DISPATCH_AUTHENTIC_BOUNDARY") if (
+    state = ("REFRESH_AND_DISPATCH_COMPLETE" if (not canonical_goal_required or canonical_disposition == "ALLOW") else "REFRESH_AND_DISPATCH_AUTHENTIC_BOUNDARY") if (
         completed.returncode == 0
         and dispatch_observed
         and exact_selection
