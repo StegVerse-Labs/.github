@@ -268,3 +268,38 @@ Authentic Node -> Interlock/InTr -> distributed SDK endpoint execution remains `
 Canonical source specimen PR #2902 remains verified merged from exact head `7092bd9e5c55b56a0749acc182a518fe7fa7d726` as merge commit `37b168d91be2872322cc41524550dab29d81940c`. Current execution inspection retains `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`; no authenticated external Gate-1 disposition is inferred from source or CI.
 
 The existing-owner StegOS repair is now merged: PR #420 exact repaired head `de2bbb44662f3c06a504b058fd6185bad0b0b54f`, merge commit `adceffaa6fcdf0e89bff7a091dddf92d790cc439`. It exposes only bounded credential-free reciprocal-existence observation through `stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence`. Identity, health, credential, checkpoint and meeting-point gates remain downstream and unobserved. The source repair does not itself establish an authentic external Node observation or runtime ALLOW/DENY/FAIL_CLOSED.
+
+
+## 2026-10-02 manifest-declared Interlock/InTr receiving-owner reconciliation
+
+The historical SDK execution evidence that retained `EXISTING_MANIFEST_SELECTED_UNIVERSAL_INTR_INGRESS_ATTACHED` with reason `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED` remains exact evidence for that earlier run and MUST NOT be rewritten. It is superseded only as a **current architectural predicate**.
+
+Current SDK source `stegverse/manifest_state_transition_runtime.py` resolves the destination exclusively from validated `completion.egress` via `manifest_declared_destination()`, records `destination_resolution_source=MANIFEST_COMPLETION_EGRESS`, requires `destination_resolution_environment_inputs=[]`, and declares `INTERLOCK_INTR` transport. The SDK opens no connection, supplies no transport credential and does not await receiver liveness. Receiver unavailability belongs to the Interlock transport/materialization boundary as `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`; environment-selected ingress configuration is not restored.
+
+The existing receiving owner is source-traced without modifying it:
+
+```text
+SDK manifest_state_transition_runtime handoff
+-> StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py
+-> POST /intr/materialization
+-> is_manifest_state_transition(...)
+-> workers/manifest_state_transition_intr_ingress.py::admit
+-> authenticated transport validation
+-> manifest-selected capability owner
+```
+
+`manifest_state_transition_intr_ingress.py::admit` accepts only the existing authenticated `STEGOS_NODE_OUTBOX` or `TVC_RELAY_EGRESS` transport origins after transport validation. This is source ownership/evidence only; it does not prove an authentic invocation occurred.
+
+No authenticated non-caller-editable invocation of that resident `POST /intr/materialization` operation is exposed to the current ChatGPT execution context. No runtime attempt was made. Current observation:
+
+`AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`
+
+That observation is evidence reachability only. Authentic InTr admission/disposition, endpoint receipt, Organization ledger append/readback, released batch custody and Master Records reconstruction remain `NOT_PROVEN`. GitHub Actions remain validation/evidence transport with runtime authority `NONE`; no workflow run may be promoted into runtime evidence.
+
+### Native-repair classification reconciliation
+
+- **LLM Adapter governed ingress:** `SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN`. PR #355 merged as `53e675f904a041a525a1aaa9578d2013fdbdbf49`; its generic Node/InTr-to-SDK framing is source evidence, not authentic runtime proof.
+- **Site MIR return:** `SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN`. PR #1479 merged as `0adcdafe868bd81dbb0dcaa759f5c48a4936e496`; subsequent generic-profile propagation PR #1481 merged as `aaa8f0da87d36968f80e46918fc9b1cf1c126f92`. These establish repository/source conformance only.
+- **StegOS generic SDK manifest InTr profile:** `SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN`. Existing-owner PR #419 merged as `aa1e1db945a45c89709d720319fb8a9515fc0ae4`. The current receiving owner is additionally traced above; no runtime disposition is inferred.
+
+System-wide enforcement remains `NOT_PROVEN`. The receiving runtime source is unchanged because this reconciliation demonstrated no source defect in that owner.
