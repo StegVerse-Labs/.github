@@ -14,7 +14,7 @@ TASK = bridge.CANONICAL_WORK_PARENT_TASK_ID
 
 
 class CanonicalWorkDispositionRetentionTests(unittest.TestCase):
-    def _case(self, disposition, state="COMPLETED", failed_predicate=None):
+    def _case(self, disposition, state="COMPLETED", failed_predicate=None, receipt_attempt_id="attempt-1", dispatch_attempt_id="attempt-1"):
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td)
             rel = bridge.CANONICAL_WORK_PARENT_CONSUMPTION_REL
@@ -23,6 +23,7 @@ class CanonicalWorkDispositionRetentionTests(unittest.TestCase):
                 "task_id": TASK,
                 "state": state,
                 "request_sha256": "request-sha",
+                "execution_attempt_id": receipt_attempt_id,
                 "bootstrap_receipt_ref": "/runtime/bootstrap.json",
                 "disposition": disposition,
                 "disposition_authority": "INTERLOCK_INTR" if disposition != "FAIL_CLOSED" else "CANONICAL_WORK_CONSUMER_PRE_TRANSITION_BOUNDARY",
@@ -42,13 +43,14 @@ class CanonicalWorkDispositionRetentionTests(unittest.TestCase):
                         "task_id": TASK,
                         "state": state,
                         "request_sha256": "request-sha",
+                        "execution_attempt_id": dispatch_attempt_id,
                         "bootstrap_receipt_ref": "/runtime/bootstrap.json",
                         "disposition": disposition,
                     }]}}
                 }]
             }
             return bridge.canonical_work_goal_consumption_evidence(
-                runtime, "canonical_work_coordination", TASK, dispatch
+                runtime, "canonical_work_coordination", TASK, dispatch, dispatch_attempt_id
             )
 
     def test_allow_is_retained(self):
@@ -69,6 +71,15 @@ class CanonicalWorkDispositionRetentionTests(unittest.TestCase):
         self.assertTrue(required and valid and current)
         self.assertEqual(receipt["disposition"], "FAIL_CLOSED")
         self.assertEqual(receipt["failed_predicate"], "AUTHENTIC_GOVERNED_DISPOSITION_RETAINED")
+
+    def test_stale_completed_disposition_cannot_satisfy_new_attempt(self):
+        receipt, _sha, required, valid, current = self._case(
+            "ALLOW", receipt_attempt_id="attempt-old", dispatch_attempt_id="attempt-new"
+        )
+        self.assertTrue(required)
+        self.assertFalse(current)
+        self.assertFalse(valid)
+        self.assertEqual(receipt["execution_attempt_id"], "attempt-old")
 
     def test_missing_disposition_is_not_completion_evidence(self):
         receipt, _sha, required, valid, current = self._case(None)
