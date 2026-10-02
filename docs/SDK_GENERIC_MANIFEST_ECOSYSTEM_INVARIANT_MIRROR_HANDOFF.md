@@ -349,6 +349,25 @@ health_established = false
 The catalog regression verifies that exact registration and preserves the existing two-surface discovery count rather than inventing a third runtime surface. Discovery/registration is still non-authorizing source evidence: it does not materialize a runtime, mint a WorkerCoordinator claim/fence, admit Interlock/InTr transport, establish an external endpoint, or produce an authentic Gate-1 disposition. Gate 1 must not be invoked merely because this source record exists.
 
 
+## 2026-10-02 required ecosystem surface census
+
+`ECOSYSTEM_SURFACE_INVENTORY_COMPLETE` is satisfied **as a census predicate only**. This does not assert conformance, runtime execution, or system-wide enforcement. Each of the ten required surfaces now has an existing owner/evidence locator and a bounded source classification:
+
+| # | Required surface | Classification | Existing owner / evidence locator | Preserved boundary |
+|---|---|---|---|---|
+| 1 | SDK manifest ingress + processor resolution | PASS | `StegVerse-org/StegVerse-SDK:stegverse/manifest_contract.py`; `route_resolution.py`; `governance_ingress_runtime.py` | Source contract; runtime-wide enforcement NOT_PROVEN. |
+| 2 | LLM Adapter manifest ingress/egress | PASS | `StegVerse-org/LLM-adapter:llm_adapter/governed_manifest_ingress.py`; merged PR #355 | Generic SDK delegation source merged; runtime NOT_PROVEN. |
+| 3 | Site external returns including MIR | PASS | `StegVerse-Labs/Site:assets/mir-accounting-return-v1.js`; merged #1479/#1481 | Generic SDK ingress source merged; runtime NOT_PROVEN. |
+| 4 | TVC provider broker/profiles | PARTIAL | `StegVerse-Labs/TVC:tvc_provider_operation_broker.py`; `config/provider_operation_profiles.json` | Capability lease/provider boundary exists; full Node/InTr/SDK chain NOT_PROVEN. |
+| 5 | StegCore manifested transaction/governance entry | PARTIAL | `StegVerse-Labs/StegCore:docs/MANIFESTED_TRANSACTION_CONTINUITY.md`; `src/stegcore/manifest_receipts.py`; `external_governance_adapter.py` | Manifest/replay boundaries located; full Node/InTr/custody chain NOT_PROVEN. |
+| 6 | StegOS/Continuity resident dispatch + InTr materialization | PASS | `StegVerse-Labs/StegOS:stegos/universal_intr_materialization.py`; profile registry; central `workers/universal_intr_profiled_ingress.py` -> `manifest_state_transition_intr_ingress.py::admit` | Source chain/receiver owner traced; authentic runtime NOT_PROVEN. |
+| 7 | Master Records custody/reconstruction | PARTIAL | `resident-runtime/organization_custody_readback.py`; `scripts/consume_organization_custody_readback_request.py`; ORGANIZATION-BATCH-CUSTODY-REPLAY-001 handoff | Source/readback contract exists; authentic organization/MR closure NOT_PROVEN. |
+| 8 | Shared-document/external collaboration | PARTIAL | `docs/ECOSYSTEM_CHAT_TASK_CENSUS_AND_BUILD_PLAN.md` and existing manifest-selected collaboration architecture | Complete actionable ingress chain NOT_PROVEN. |
+| 9 | Provider/framework adapters incl. Elyria/future | PARTIAL | `StegVerse-org/StegVerse-SDK:stegverse/elyria_framework_adapter.py`; `SDK-ELYRIA-INTR-ADAPTER-001`; reusable `RT-EXTERNAL-ADAPTER-ESTABLISH-001` component profile | Translation owner identified; authentic external transport and future-instance conformance NOT_PROVEN. |
+| 10 | Session-originated execution boundary | PARTIAL | `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001` component-010; `docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md`; AI entry/caller inventories | Protective source gate exists; `AUTHENTIC_SESSION_ORIGIN_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. |
+
+Inventory completeness means only that no required category remains ownerless/unclassified in this task. The remaining conformance predicates stay independent. Every authentic-runtime predicate remains unchanged, including `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`.
+
 ## 2026-10-02 prompt-ceiling decomposition — independent ÉLAN semantic analysis
 
 At Goal Prompt Count 20/20, the completed ÉLAN parallel-work plan is returned to this parent as evidence and the separable coauthor-analysis preparation is transferred to `ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001` / COSV `71000000100120` / issue #2937. The successor preserves the exact retained T0–T4 HOLD condition identities, HOLD as `UNDETERMINED`, and the fact that the abstract has already been sent. It asks only source-supported observation/representation/interpretation questions plus a separate conceptual question about representation/interpretation versus admissible execution. It must not disclose downstream StegVerse outcomes and does not own or continue this parent's SDK/runtime remediation.
