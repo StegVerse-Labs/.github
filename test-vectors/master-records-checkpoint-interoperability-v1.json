@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.master-records-checkpoint-interoperability-vectors/v1",
+  "task_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+  "status": "SYNTHETIC_NON_AUTHORIZING",
+  "profile": "MasterRecordsCheckpoint/v1",
+  "protocol": "stegverse.interlock-intr/v1",
+  "runtime_observation": {
+    "disposition": "AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
+    "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "required_for_documentary_validation": false
+  },
+  "base": {
+    "registered_node": {
+      "source_node_id": "node:master-records",
+      "destination_node_id": "node:witness"
+    },
+    "manifest": {
+      "intent": "REPORT_MASTER_RECORDS_CHECKPOINT",
+      "requested_capability": "MasterRecordsCheckpoint/v1",
+      "checkpoint_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "payload_commitment": {
+      "profile": "sha256",
+      "checkpoint_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "transfer": {
+      "transport": "INTERLOCK_INTR",
+      "write_once_transfer_admission_receipt_required": true,
+      "participating_runtime_implementation_required": false
+    }
+  },
+  "fixtures": {
+    "allow": {
+      "mutation": null,
+      "expected_disposition": "ALLOW",
+      "receipt_required": true,
+      "resulting_state_commitment_required": true
+    },
+    "deny": {
+      "mutation": "receiving_policy_reject",
+      "expected_disposition": "DENY",
+      "receipt_required": true,
+      "resulting_state_commitment_required": false
+    },
+    "fail_closed": {
+      "mutation": "required_predecessor_or_state_unavailable",
+      "expected_disposition": "FAIL_CLOSED",
+      "receipt_required": true,
+      "resulting_state_commitment_required": false
+    },
+    "negative_node_identity": {
+      "mutation": "registered_node_identity_mismatch",
+      "expected_disposition": "FAIL_CLOSED"
+    },
+    "negative_checkpoint_digest": {
+      "mutation": "checkpoint_digest_payload_commitment_mismatch",
+      "expected_disposition": "FAIL_CLOSED"
+    },
+    "negative_manifest_intent": {
+      "mutation": "manifest_intent_mismatch",
+      "expected_disposition": "FAIL_CLOSED"
+    },
+    "negative_receipt": {
+      "mutation": "write_once_transfer_admission_receipt_binding_mismatch",
+      "expected_disposition": "FAIL_CLOSED"
+    }
+  },
+  "claims": {
+    "external_adoption": false,
+    "external_conformance": false,
+    "authentic_runtime_execution": false,
+    "deployment": false
+  }
+}
