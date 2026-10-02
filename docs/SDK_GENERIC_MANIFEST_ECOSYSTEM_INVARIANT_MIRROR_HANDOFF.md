@@ -316,3 +316,25 @@ No catalog entry currently binds `stegos/universal_intr_public_profile.py::obser
 `REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG`
 
 This source gap explains why the merged Gate-1 function is not exposed through the existing operation-specific discovery contract. It does not prove that adding a catalog record alone would create authentic host invocation. The runtime predicate remains `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Richard/Sebbi endpoint remains `UNSPECIFIED`; no Gate-1 invocation occurred and no identity/health/credential/checkpoint/meeting-point gate advanced.
+
+
+## 2026-10-02 Gate-1 existing-owner consumption and catalog registration
+
+StegOS PR #421 is verified merged from exact head `591f7225dea29aa93ec7d70af962bd1f0bedf3a1` as `d563aa5f68d5b31d5087dcb6cdde95596caba278`. Its exact-head `StegOS CI` and `GADI native boundary defense validation` workflows both completed successfully. No review or review-thread requirement was present, and the repository ruleset query returned no applicable ruleset.
+
+That merge establishes the previously missing existing-owner consumption seam: `register_reciprocal_node_existence_capability()` binds the already-merged `observe_reciprocal_node_existence` function to the existing `NodeEventExecutionBroker` through the operation-specific `observe-reciprocal-node-existence` `CapabilityAdapter`. The broker retains the existing retained-Node, Universal InTr materialization, WorkerCoordinator claim/fence and open `EVENT_EPHEMERAL` lease prerequisites. The binding adds no runtime, scheduler, credential path, device prerequisite, transport authority, execution authority or parallel authority plane.
+
+The canonical execution-surface owner now registers that operation under `STEGVERSE_NODE_EVENT_EPHEMERAL` while preserving the pre-existing `REQUEST_SELF_CHARACTERIZATION` operation. The new operation-specific record binds:
+
+```text
+operation = observe-reciprocal-node-existence
+callable_task = SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005
+execution_owner = StegVerse-Labs/StegOS
+implementation_ref = stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence
+materialization_path = REGISTERED_STEGVERSE_NODE -> INTERLOCK -> UNIVERSAL_INTR_MATERIALIZATION -> BOUNDED_INVOCATION_LEASE -> EVENT_EPHEMERAL
+authority_effect = NONE_OBSERVATION_ONLY
+identity_established = false
+health_established = false
+```
+
+The catalog regression verifies that exact registration and preserves the existing two-surface discovery count rather than inventing a third runtime surface. Discovery/registration is still non-authorizing source evidence: it does not materialize a runtime, mint a WorkerCoordinator claim/fence, admit Interlock/InTr transport, establish an external endpoint, or produce an authentic Gate-1 disposition. Gate 1 must not be invoked merely because this source record exists.
