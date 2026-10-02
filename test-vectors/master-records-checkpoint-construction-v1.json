@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.master-records-checkpoint-construction-vectors/v1",
+  "status": "SYNTHETIC_NON_AUTHORIZING",
+  "closures": [
+    {
+      "sequence": 40,
+      "state": "RECORDED",
+      "reconstruction_status": "PASS",
+      "required_evidence_validation_status": "PASS",
+      "receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "reconstructed_receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "sequence": 41,
+      "state": "RECORDED",
+      "reconstruction_status": "PASS",
+      "required_evidence_validation_status": "PASS",
+      "receipt_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "reconstructed_receipt_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "sequence": 42,
+      "state": "RECORDED",
+      "reconstruction_status": "PASS",
+      "required_evidence_validation_status": "PASS",
+      "receipt_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "reconstructed_receipt_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    }
+  ],
+  "checkpoint": {
+    "origin": "stegverse:master-records:synthetic",
+    "checkpoint_sequence": 7,
+    "first_sequence": 40,
+    "last_sequence": 42,
+    "tree_size": 3,
+    "predecessor_checkpoint_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "closure_receipt_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "canonicalization": "stegverse-master-records-merkle/v1",
+    "hash_algorithm": "sha256",
+    "signature_profile": "SYNTHETIC_NOT_VERIFIED",
+    "signing_key_id": "synthetic:key:1",
+    "signature": "SYNTHETIC_NOT_AUTHORIZING"
+  },
+  "negative_mutations": [
+    "receipt_reconstruction_digest_mismatch",
+    "non_recorded_state",
+    "reconstruction_not_pass",
+    "evidence_validation_not_pass",
+    "sequence_gap",
+    "predecessor_digest_mismatch",
+    "merkle_root_mismatch"
+  ],
+  "claims": {
+    "authentic_master_records_checkpoint": false,
+    "external_conformance": false,
+    "authentic_runtime_execution": false
+  }
+}
