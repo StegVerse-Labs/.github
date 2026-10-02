@@ -135,6 +135,7 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--goal-task-id")
+    parser.add_argument("--execution-attempt-id")
     args = parser.parse_args()
 
     # Visit the explicit machine-owned MIR request first so the existing canonical
@@ -163,6 +164,7 @@ def main() -> int:
         args.source_root,
         args.runtime_root,
         goal_task_id=args.goal_task_id,
+        execution_attempt_id=args.execution_attempt_id,
     )
     combined = {
         "schema": "stegverse.canonical-work-bootstrap-plus-mir-request-consumption/v1",
@@ -170,6 +172,7 @@ def main() -> int:
         "mir_roundtrip_egress_authenticity": mir,
         "canonical_work_request_set": legacy,
         "current_goal_task_id": args.goal_task_id,
+        "execution_attempt_id": args.execution_attempt_id,
         "mir_visited_before_legacy_request_set": not household_targeted,
         "exact_household_request_prioritized": household_targeted,
         "later_request_attempts_blocked_by_mir_failure": False,
