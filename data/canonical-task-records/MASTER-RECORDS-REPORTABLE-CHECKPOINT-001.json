@@ -14,7 +14,9 @@
   },
   "source_refs": [
     "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md",
-    "schemas/master-records-checkpoint-v1.schema.json"
+    "schemas/master-records-checkpoint-v1.schema.json",
+    "test-vectors/master-records-checkpoint-interoperability-v1.json",
+    "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": [
@@ -31,7 +33,8 @@
     ]
   },
   "dependencies": [
-    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+    "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
   ],
   "blockers": [],
   "adjacent_task_refs": [
@@ -46,7 +49,13 @@
     "CONSISTENCY_PROOF_VERIFIABLE",
     "PRIVACY_MINIMAL_EXTERNAL_PROJECTION",
     "EXTERNAL_WITNESS_HAS_NO_STEGVERSE_AUTHORITY",
-    "NO_PROVIDER_SPECIFIC_TRANSPORT_IN_V1"
+    "NO_PROVIDER_SPECIFIC_TRANSPORT_IN_V1",
+    "REGISTERED_NODE_IDENTITY_BOUND",
+    "MANIFEST_INTENT_BOUND",
+    "CHECKPOINT_DIGEST_PAYLOAD_COMMITMENT_BOUND",
+    "ALLOW_DENY_FAIL_CLOSED_DISPOSITION_REQUIRED",
+    "WRITE_ONCE_TRANSFER_ADMISSION_RECEIPT_BOUND",
+    "PARTICIPATING_RUNTIME_IMPLEMENTATION_NOT_REQUIRED"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -131,5 +140,43 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
+  },
+  "interoperability_profile": {
+    "profile": "MasterRecordsCheckpoint/v1",
+    "protocol": "stegverse.interlock-intr/v1",
+    "validated_child_task": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+    "child_validation": {
+      "status": "PASS_SYNTHETIC_NON_AUTHORIZING",
+      "merge_commit": "03e043f4680612bcbaf14601bd799b71b662877d",
+      "workflow_run": 36946008125
+    },
+    "registered_node_required": true,
+    "manifest_intent": "REPORT_MASTER_RECORDS_CHECKPOINT",
+    "payload_commitment": "EXACT_CHECKPOINT_DIGEST",
+    "receiving_dispositions": [
+      "ALLOW",
+      "DENY",
+      "FAIL_CLOSED"
+    ],
+    "write_once_transfer_admission_receipt_required": true,
+    "participating_runtime_implementation_required": false,
+    "external_adoption_claimed": false,
+    "external_conformance_claimed": false
+  },
+  "runtime_observation": {
+    "state": "FAIL_CLOSED",
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "EVIDENCE_REACHABILITY",
+    "authentic_execution": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "receiving_runtime_disposition_observed": false,
+    "consequence_committed": false,
+    "failure_code": "AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
+    "failed_predicate": "AUTHENTIC_REGISTERED_NODE_INTR_ADMISSION_INTERFACE_EXPOSED_TO_CURRENT_EXECUTION_CONTEXT",
+    "required_evidence_or_repair": "EXPOSE_THE_EXISTING_AUTHENTIC_NON_CALLER_EDITABLE_REGISTERED_NODE_OR_TVC_RELAY_EGRESS_OPERATION_WITHOUT_CREATING_A_NEW_INTERFACE",
+    "retry_entrypoint": "EXISTING_RECEIVING_UNIVERSAL_INTR_OPERATION_OWNER",
+    "owning_existing_goal": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+    "next_attempt": "INVOKE_ONLY_THE_EXISTING_RECEIVING_OWNER_WHEN_THE_AUTHENTIC_INTERFACE_IS_EXPOSED_AND_RETAIN_ITS_ORIGINAL_DISPOSITION",
+    "required_for_documentary_checkpoint_profile_validation": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   }
 }
