@@ -379,7 +379,12 @@ def refresh_current_goal_registry_projection(runtime: Path, task_id: str) -> dic
     return result
 
 
-def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def completed_receipt_matches_execution_attempt(previous: Mapping[str, Any], execution_attempt_id: str | None) -> bool:
+    """Preserve historical idempotence, but never reuse another reusable-task attempt."""
+    return execution_attempt_id is None or previous.get("execution_attempt_id") == execution_attempt_id
+
+
+def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None, execution_attempt_id: str | None = None) -> dict[str, Any]:
     validate_spec(spec)
     runtime = runtime_root.expanduser().resolve()
     source = resolve_local_canonical_source(source_root, runtime, env)
@@ -393,7 +398,8 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         previous = load_json(consumption_path)
         if previous.get("request_sha256") == request_hash and previous.get("state") == "COMPLETED":
             bootstrap_ref = previous.get("bootstrap_receipt_ref")
-            if isinstance(bootstrap_ref, str) and Path(bootstrap_ref).is_file():
+            same_attempt = completed_receipt_matches_execution_attempt(previous, execution_attempt_id)
+            if isinstance(bootstrap_ref, str) and Path(bootstrap_ref).is_file() and same_attempt:
                 return {**previous, "state": "ALREADY_CONSUMED"}
     materialized = materialize(source, runtime)
     task_identity = ensure_task_identity_materialized(source, runtime, spec["task_id"])
@@ -421,6 +427,7 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
         "request_id": request.get("request_id"),
         "request_sha256": request_hash,
+        "execution_attempt_id": execution_attempt_id,
         "task_id": spec["task_id"],
         "entrypoint": str(TARGET_ENTRYPOINT),
         "resolved_local_source_root": str(source),
@@ -584,13 +591,14 @@ def consume_all(
     runtime_root: Path,
     *,
     goal_task_id: str | None = None,
+    execution_attempt_id: str | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     outcomes: list[dict[str, Any]] = []
     for spec in REQUEST_SPECS:
         try:
-            outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
+            outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env, execution_attempt_id=execution_attempt_id))
         except Exception as exc:
             try:
                 outcomes.append(retain_request_consumption_exception(runtime_root, spec, exc))
@@ -623,6 +631,7 @@ def consume_all(
         "schema": "stegverse.canonical-work-bootstrap-request-set-consumption/v1",
         "state": "COMPLETED" if all_acceptable and registry_cycle.get("state") == "COMPLETED" else "ATTEMPT_RECORDED",
         "request_count": len(REQUEST_SPECS),
+        "execution_attempt_id": execution_attempt_id,
         "outcomes": outcomes,
         "task_registry_cycle": registry_cycle,
         "task_registry_cycle_attempted": True,

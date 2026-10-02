@@ -280,6 +280,7 @@ def canonical_work_goal_consumption_evidence(
     target_consumer: str,
     goal_task_id: str | None,
     dispatch_receipt: Mapping[str, Any] | None,
+    execution_attempt_id: str | None = None,
 ) -> tuple[dict[str, Any] | None, str | None, bool, bool, bool]:
     relative_path = CANONICAL_GOAL_CONSUMPTION_REL.get(goal_task_id)
     required = target_consumer == "canonical_work_coordination" and relative_path is not None
@@ -314,6 +315,13 @@ def canonical_work_goal_consumption_evidence(
         and current.get("bootstrap_receipt_ref") == receipt.get("bootstrap_receipt_ref")
         and current.get("disposition") in {"ALLOW", "DENY", "FAIL_CLOSED"}
         and current.get("disposition") == receipt.get("disposition")
+        and (
+            execution_attempt_id is None
+            or (
+                current.get("execution_attempt_id") == execution_attempt_id
+                and receipt.get("execution_attempt_id") == execution_attempt_id
+            )
+        )
     )
     disposition = receipt.get("disposition")
     disposition_state_valid = (
@@ -374,10 +382,13 @@ def refresh_and_dispatch(
         raise RuntimeError("resident request dispatcher not materialized after refresh")
 
     command = [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer]
+    execution_attempt_id = str((env or os.environ).get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID") or "").strip() or None
     if current_goal_task_id:
         command.extend(["--goal-task-id", current_goal_task_id])
     if request_id:
         command.extend(["--request-id", request_id])
+    if target_consumer == "canonical_work_coordination" and execution_attempt_id:
+        command.extend(["--execution-attempt-id", execution_attempt_id])
     completed = runner(
         command,
         cwd=runtime, capture_output=True, text=True, check=False, env=safe, timeout=3600,
@@ -405,7 +416,7 @@ def refresh_and_dispatch(
     )
     target_consumption_required = target_consumer == STEG_BROWSER_TVC_CONSUMER
     canonical_goal_receipt, canonical_goal_sha256, canonical_goal_required, canonical_goal_valid, canonical_goal_matches_current_dispatch = canonical_work_goal_consumption_evidence(
-        runtime, target_consumer, current_goal_task_id, dispatch_receipt
+        runtime, target_consumer, current_goal_task_id, dispatch_receipt, execution_attempt_id
     )
     if canonical_goal_required:
         target_consumption_receipt = canonical_goal_receipt
@@ -431,6 +442,7 @@ def refresh_and_dispatch(
         "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": target_consumer,
         "current_goal_task_id": current_goal_task_id,
         "selected_request_id": request_id,
+        "execution_attempt_id": execution_attempt_id,
         "goal_context_forwarded_to_dispatcher": bool(current_goal_task_id),
         "goal_context_match_observed": bool(goal_context_match),
         "sv_dn1_browser_locator_persisted": browser_locator_persisted,
@@ -470,6 +482,7 @@ def refresh_and_dispatch(
             "invocation_id": str(os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID") or ""),
             "reusable_task_id": str(os.environ.get("STEGVERSE_REUSABLE_TASK_ID") or ""),
             "manifest_hash": manifest["manifest_hash"],
+            "execution_attempt_id": execution_attempt_id,
             "completion_predicates_satisfied": completion_predicates,
             "runtime_observed": True,
             "completion_evidence_observed": True,

@@ -23,7 +23,7 @@ def test_exact_household_request_first_without_mir_preemption(monkeypatch, capsy
     assert sum(item.get("task_id") == TASK for item in original) == 1
     visited = []
 
-    def fake_consume(source, runtime, *, goal_task_id):
+    def fake_consume(source, runtime, *, goal_task_id, execution_attempt_id=None):
         visited.extend(item["task_id"] for item in module.mod.REQUEST_SPECS)
         assert goal_task_id == TASK
         return {"state": "ATTEMPT_RECORDED", "outcomes": []}

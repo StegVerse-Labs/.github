@@ -634,6 +634,7 @@ def dispatch(
     only_consumers: tuple[str, ...] | None = None,
     goal_task_id: str | None = None,
     request_id: str | None = None,
+    execution_attempt_id: str | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -673,6 +674,8 @@ def dispatch(
             command.extend(["--goal-task-id", current_goal_task_id])
         if name == "sdk_generic_manifest_execution" and request_id:
             command.extend(["--request-id", request_id])
+        if name == "canonical_work_coordination" and execution_attempt_id:
+            command.extend(["--execution-attempt-id", execution_attempt_id])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -747,6 +750,7 @@ def dispatch(
         },
         "goal_context_forwarded_to": ([name for name, _ in selected][0] if current_goal_task_id and len(selected) == 1 else None),
         "selected_request_id": request_id,
+        "execution_attempt_id": execution_attempt_id,
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "sdk_evaluator_dispatch_master_records": sdk_evaluator_dispatch_master_records,
@@ -769,6 +773,7 @@ def main() -> int:
     parser.add_argument("--only-consumer", action="append", default=None)
     parser.add_argument("--goal-task-id")
     parser.add_argument("--request-id")
+    parser.add_argument("--execution-attempt-id")
     args = parser.parse_args()
     receipt = dispatch(
         args.source_root,
@@ -776,6 +781,7 @@ def main() -> int:
         only_consumers=tuple(args.only_consumer) if args.only_consumer else None,
         goal_task_id=args.goal_task_id,
         request_id=args.request_id,
+        execution_attempt_id=args.execution_attempt_id,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1
