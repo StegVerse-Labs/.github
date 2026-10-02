@@ -303,3 +303,16 @@ That observation is evidence reachability only. Authentic InTr admission/disposi
 - **StegOS generic SDK manifest InTr profile:** `SOURCE_REPAIR_MERGED_RUNTIME_NOT_PROVEN`. Existing-owner PR #419 merged as `aa1e1db945a45c89709d720319fb8a9515fc0ae4`. The current receiving owner is additionally traced above; no runtime disposition is inferred.
 
 System-wide enforcement remains `NOT_PROVEN`. The receiving runtime source is unchanged because this reconciliation demonstrated no source defect in that owner.
+
+
+## 2026-10-02 Gate-1 operation-surface owner trace
+
+Verified merge reconciliation is now explicit in the canonical Task Registry: StegOS #420 merged from exact repaired head `de2bbb44662f3c06a504b058fd6185bad0b0b54f` as `adceffaa6fcdf0e89bff7a091dddf92d790cc439`; stale canonical #2910 was superseded by #2916, which merged from exact head `a4dacdf5f82e9083aa9f2c33d12e0b516a142422` as `8d6df90591ac245bbe29187753debd62a784d821`.
+
+The current operation-surface owner is `scripts/list_stegverse_execution_surfaces.py`, governed by `docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md`. Its canonical ephemeral catalog currently registers only two operation-specific callable surfaces: StegVerseNode / `REQUEST_SELF_CHARACTERIZATION` and StegBrowser / `STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS`. The catalog explicitly says callable ownership is operation-specific and that discovery itself grants no authority.
+
+No catalog entry currently binds `stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence` to a registered-node or TVC_RELAY callable operation. The receiving Universal InTr owner accepts authenticated `STEGOS_NODE_OUTBOX` or `TVC_RELAY_EGRESS` transport origins, but that source admission contract is not an invocation surface and must not be promoted into one. The exact demonstrated source-level seam is therefore:
+
+`REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG`
+
+This source gap explains why the merged Gate-1 function is not exposed through the existing operation-specific discovery contract. It does not prove that adding a catalog record alone would create authentic host invocation. The runtime predicate remains `AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Richard/Sebbi endpoint remains `UNSPECIFIED`; no Gate-1 invocation occurred and no identity/health/credential/checkpoint/meeting-point gate advanced.
