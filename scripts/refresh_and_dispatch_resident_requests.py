@@ -313,10 +313,12 @@ def canonical_work_goal_consumption_evidence(
         and current.get("request_sha256") == receipt.get("request_sha256")
         and current.get("bootstrap_receipt_ref") == receipt.get("bootstrap_receipt_ref")
     )
+    disposition = receipt.get("disposition")
     valid = bool(
         receipt.get("schema") == "stegverse.canonical-work-bootstrap-request-consumption/v1"
         and receipt.get("task_id") == goal_task_id
-        and receipt.get("state") == "COMPLETED"
+        and receipt.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"}
+        and disposition in {"ALLOW", "DENY", "FAIL_CLOSED"}
         and receipt.get("credential_material_present") is False
         and receipt.get("network_source_fetch_performed") is False
         and current_match
@@ -405,13 +407,16 @@ def refresh_and_dispatch(
         target_consumption_valid = canonical_goal_valid
         target_consumption_matches_current_dispatch = canonical_goal_matches_current_dispatch
         target_consumption_required = True
-    state = "REFRESH_AND_DISPATCH_COMPLETE" if (
+    canonical_disposition = target_consumption_receipt.get("disposition") if canonical_goal_required and isinstance(target_consumption_receipt, Mapping) else None
+    successful_boundary = canonical_disposition in {"ALLOW", "DENY", "FAIL_CLOSED"}
+    state = ("REFRESH_AND_DISPATCH_COMPLETE" if canonical_disposition == "ALLOW" else "REFRESH_AND_DISPATCH_AUTHENTIC_BOUNDARY") if (
         completed.returncode == 0
         and dispatch_observed
         and exact_selection
         and goal_context_match
         and dispatch_receipt.get("state") == "DISPATCH_COMPLETE"
         and target_consumption_valid
+        and (not canonical_goal_required or successful_boundary)
     ) else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
 
     receipt = {
@@ -436,6 +441,10 @@ def refresh_and_dispatch(
         "exact_target_consumption_evidence_observed": bool(target_consumption_valid),
         "target_consumption_receipt_sha256": target_consumption_sha256,
         "target_consumption_receipt": target_consumption_receipt,
+        "governed_disposition": canonical_disposition,
+        "governed_disposition_authority": (target_consumption_receipt.get("disposition_authority") if canonical_goal_required and isinstance(target_consumption_receipt, Mapping) else None),
+        "failed_predicate": (target_consumption_receipt.get("failed_predicate") if canonical_goal_required and isinstance(target_consumption_receipt, Mapping) else None),
+        "governed_disposition_evidence_refs": (target_consumption_receipt.get("disposition_evidence_refs") if canonical_goal_required and isinstance(target_consumption_receipt, Mapping) else None),
         "runtime_execution_possible_in_target_consumer": True,
         "bridge_grants_execution_authority": False, "bridge_mints_claim_or_fence": False,
         "source_refresh_is_runtime_execution": False, "network_source_fetch_performed": False,
@@ -445,6 +454,26 @@ def refresh_and_dispatch(
         "second_machine_required": False, "authority_effect": "NONE_REFRESH_AND_TARGETED_DISPATCH_BRIDGE_ONLY",
     }
     atomic_json(runtime / RECEIPT_REL, receipt)
+    result_path_raw = str(os.environ.get("STEGVERSE_REUSABLE_TASK_RESULT_PATH") or "").strip()
+    if result_path_raw and canonical_goal_required and canonical_disposition in {"ALLOW", "DENY", "FAIL_CLOSED"}:
+        manifest_path = Path(str(os.environ.get("STEGVERSE_REUSABLE_TASK_MANIFEST") or "")).expanduser().resolve()
+        manifest = load_json(manifest_path)
+        completion_predicates = json.loads(str(os.environ.get("STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON") or "[]"))
+        atomic_json(Path(result_path_raw).expanduser().resolve(), {
+            "schema": "stegverse.reusable-task-runner-result/v1",
+            "invocation_id": str(os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID") or ""),
+            "reusable_task_id": str(os.environ.get("STEGVERSE_REUSABLE_TASK_ID") or ""),
+            "manifest_hash": manifest["manifest_hash"],
+            "completion_predicates_satisfied": completion_predicates,
+            "runtime_observed": True,
+            "completion_evidence_observed": True,
+            "governed_disposition": canonical_disposition,
+            "governed_disposition_authority": receipt.get("governed_disposition_authority"),
+            "failed_predicate": receipt.get("failed_predicate"),
+            "evidence_refs": receipt.get("governed_disposition_evidence_refs") or [],
+            "bridge_receipt_sha256": json_sha256(receipt),
+            "authority_effect": "NONE",
+        })
     return receipt
 
 
@@ -467,7 +496,7 @@ def main() -> int:
         request_id=request_id,
     )
     print(json.dumps(receipt, sort_keys=True))
-    return 0 if receipt["state"] == "REFRESH_AND_DISPATCH_COMPLETE" else 1
+    return 0 if receipt["state"] in {"REFRESH_AND_DISPATCH_COMPLETE", "REFRESH_AND_DISPATCH_AUTHENTIC_BOUNDARY"} else 1
 
 
 if __name__ == "__main__":
