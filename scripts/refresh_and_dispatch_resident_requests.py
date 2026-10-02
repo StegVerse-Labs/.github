@@ -312,6 +312,7 @@ def canonical_work_goal_consumption_evidence(
         and current.get("state") in {"COMPLETED", "ALREADY_CONSUMED", "ATTEMPT_RECORDED"}
         and current.get("request_sha256") == receipt.get("request_sha256")
         and current.get("bootstrap_receipt_ref") == receipt.get("bootstrap_receipt_ref")
+        and current.get("disposition") in {"ALLOW", "DENY", "FAIL_CLOSED"}
         and current.get("disposition") == receipt.get("disposition")
     )
     disposition = receipt.get("disposition")
