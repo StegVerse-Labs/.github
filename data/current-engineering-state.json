@@ -1,0 +1,102 @@
+{
+  "schema": "stegverse.current-engineering-state/v1",
+  "surface_id": "STEGVERSE-CURRENT-ENGINEERING-STATE-001",
+  "status": "EVALUATOR_FACING_PROVENANCE_SOURCE",
+  "purpose": "Living machine-readable provenance surface for independent evaluation against current canonical main.",
+  "historical_assessment": {
+    "status": "IMMUTABLE_EXTERNAL_HISTORICAL_EVIDENCE",
+    "title": "StegVerse — engineering assessment and remediation status",
+    "prepared": "2026-10-02",
+    "transport_sha256": "6229b2df78d44dfabcd041ff39c14744bf3216f221c1c5abc386217e28dc9bb0",
+    "repository_copy": null,
+    "rule": "This surface may reference but MUST NOT rewrite, supersede, or promote a historical assessment result."
+  },
+  "evidence_classes": [
+    "DECLARED",
+    "SOURCE_IMPLEMENTED",
+    "SOURCE_VALIDATED",
+    "RUNTIME_OBSERVED",
+    "EXTERNAL_EXECUTION_OBSERVED",
+    "CUSTODY_OBSERVED",
+    "RECONSTRUCTION_OBSERVED",
+    "INDEPENDENTLY_REPRODUCED"
+  ],
+  "promotion_rule": "Each evidence class requires evidence native to that class; source/CI/merge cannot satisfy runtime, external execution, custody, reconstruction, or independent reproduction.",
+  "authority_boundaries": {
+    "work_intent_and_coordination": "Task Registry",
+    "execution_claim_and_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "runtime_reality": "Organization ledger root under organization ledger lock",
+    "durable_cross_organization_custody_and_reconstruction": "Master Records"
+  },
+  "invariants": [
+    {
+      "invariant_id": "TASK_REGISTRY_WORK_INTENT_COORDINATION",
+      "original_assessment_state": "in_review",
+      "original_assessment_finding": "no Task Registry surface",
+      "current_claim": "Task Registry is the work-intent and coordination authority and does not mint execution claim/fence or transition authority.",
+      "claim_origin": "StegVerse-Labs/.github canonical organization source",
+      "canonical_owner": "StegVerse-Labs/.github",
+      "derivation_evidence_refs": [
+        "data/canonical-task-registry.json",
+        "data/task-registry-global-invariants.json",
+        "scripts/evaluate_task_registry_collision_checkin.py",
+        "scripts/validate_task_registry_global_invariants.py",
+        "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md"
+      ],
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "authority_boundaries": [
+        "work_intent_and_coordination",
+        "execution_claim_and_fence",
+        "transition"
+      ],
+      "unresolved_predicates": [
+        "INDEPENDENT_EVALUATOR_CURRENT_MAIN_REPRODUCTION_NOT_OBSERVED"
+      ],
+      "independent_observation_status": "NOT_OBSERVED"
+    },
+    {
+      "invariant_id": "MANIFEST_DRIVEN_PROCESSING_SELECTION",
+      "original_assessment_state": "assessment finding retained; exact row state not repository-resident",
+      "current_claim": "Actionable processing selection must derive from admitted manifest capability and route, not source/provider/framework/adapter/model identity.",
+      "claim_origin": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+      "canonical_owner": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json",
+      "derivation_evidence_refs": [
+        "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json"
+      ],
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "authority_boundaries": [
+        "transition",
+        "credential"
+      ],
+      "unresolved_predicates": [
+        "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE",
+        "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
+        "STEGCORE_ENTRY_CONFORMANT",
+        "MASTER_RECORDS_BOUNDARY_CONFORMANT",
+        "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY_CONFORMANT",
+        "IDENTITY_DRIVEN_PROCESSOR_SELECTION_REGRESSION_GATE_INSTALLED",
+        "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
+        "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+        "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+        "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
+        "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+        "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+      ],
+      "independent_observation_status": "NOT_OBSERVED"
+    }
+  ],
+  "coverage": {
+    "assessment_invariants_complete": false,
+    "reason": "The finalized assessment bytes are external historical evidence and are not repository-resident. This first contract refuses to invent unobserved assessment rows. Remaining assessed invariants must be added only from the exact finalized assessment artifact."
+  },
+  "evaluator_semantics": {
+    "observations_are_evidence_not_authority": true,
+    "independent_observation_may_contradict_current_claim": true,
+    "independent_observation_does_not_mutate_canonical_state": true,
+    "independent_observation_does_not_grant_authority": true
+  }
+}
