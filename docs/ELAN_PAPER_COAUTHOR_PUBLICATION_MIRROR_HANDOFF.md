@@ -235,3 +235,18 @@ Retain the next actionable non-ALLOW predicate as:
 `AUTHENTIC_CANONICAL_ORGANIZATION_BOUNDARY_INPUT_BOUND_TO_RUN_MANIFEST_INVOCATION`
 
 Current disposition: `FAIL_CLOSED`. Required repair/evidence: use an existing non-environment, non-caller-editable canonical source/custody seam to bind the merged organization boundary contract to the public run-manifest invocation without copying endpoint authority into the SDK or introducing a runtime/listener/scheduler/dispatcher/credential/device prerequisite. HOLD remains unexecuted.
+
+
+## 2026-10-02 public run-manifest canonical boundary binding merged
+
+SDK PR #425 merged from exact head `f6207603516284aaa091f7bbf898c078ca2397ae` as `e67851968fb6b45b0a02529152824770cbcf5f95` after all 24 registered exact-head workflows succeeded. The repair extends only the existing `AllowlistedRepositorySourceReader` / credential-free `GitHubRepositoryFetcher` source seam. For the universal manifest-state-transition binding, public `stegverse run-manifest` reads the immutable merged StegVerse-Labs organization boundary contract from fixed SDK-owned source identity `StegVerse-Labs/.github / org-runtime/interlock-intr.json / 75d68c83e28178af053b8af097de4c8ca7e5017e` and passes that contract to `manifest_state_transition_runtime.execute_manifest`.
+
+The caller cannot select repository, path, ref or endpoint. No environment-selected ingress, endpoint copy, runtime, listener, scheduler, dispatcher, credential path, device prerequisite or authority plane was added. The runtime still independently validates `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST`; `completion.egress` remains requester-facing completion/return metadata and does not control organization routing.
+
+During exact-head validation, three stale source-only expectations were repaired because they still asserted the pre-#2931 `CANONICAL_ORGANIZATION_INGRESS_ENDPOINT_NOT_RESOLVED` state: held-out ecosystem diagnostic fixtures, Test 5 StegBrowser, and the TT/four-stage manifest-only workflows. Their corrected expectation is `ALLOW / MANIFESTED_FOR_INTERLOCK_INTR_HANDOFF` at `SDK_MANIFEST_HANDOFF`, while `transport_performed_by_sdk=false`, `receiver_contacted=false`, `intr_admission_observed=false`, `far_side_transition_observed=false`, and `consequence_committed=false`. This is source/SDK handoff evidence only, not authentic governed execution.
+
+Source-only reassessment of the unchanged frozen HOLD manifest therefore satisfies `AUTHENTIC_CANONICAL_ORGANIZATION_BOUNDARY_INPUT_BOUND_TO_RUN_MANIFEST_INVOCATION` at the SDK source/invocation-binding layer. The next authentic runtime predicate is:
+
+`AUTHENTIC_MANIFEST_HANDOFF_ADMITTED_BY_ORGANIZATION_OWNED_INTERLOCK_INTR_RECEIVING_OPERATION`
+
+Current disposition remains `FAIL_CLOSED` / `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` because the SDK handoff does not perform transport, contact the receiving operation, observe InTr admission, observe the far-side transition, obtain an organization receipt, or reconstruct Master Records. The next attempt must use the already-owned organization receiving operation and retain its first authentic ALLOW, DENY or FAIL_CLOSED plus applicable sovereign organization-ledger and Master Records evidence. Frozen HOLD was not executed by this repair or reassessment.
