@@ -1,0 +1,30 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000010100000",
+  "evidence_refs": [
+    "data/canonical-task-records/KV-BOUND-AUTHENTIC-STEGOS-RUNTIME-OBSERVATION-001.json",
+    "docs/KV_BOUND_AUTHENTIC_STEGOS_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json"
+  ],
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "PROPOSED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
