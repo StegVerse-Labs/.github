@@ -325,3 +325,25 @@ The canonical task predicate model separates merged source evidence from predica
 Merged source evidence satisfies SDK generic capability/route binding, LLM Adapter generic SDK delegation, Site MIR canonical SDK manifest ingress, and the StegOS generic SDK manifest InTr profile/receiving-owner trace. TVC remains `PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN`; StegCore remains `PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN`; shared-document/external collaboration remains `PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN`.
 
 The first existing-owner authentic Node/InTr observation boundary remains `workers/universal_intr_profiled_ingress.py POST /intr/materialization -> workers/manifest_state_transition_intr_ingress.py::admit`. Current observation remains `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. Source, merge and CI evidence are not promoted to runtime proof. The task record carries distinct `remaining_source_predicates` and `remaining_runtime_predicates`, retaining `remaining_predicates` as their compatibility union.
+
+
+## 2026-10-02 Gate-1 existing-owner consumption and catalog registration
+
+StegOS PR #421 is verified merged from exact head `591f7225dea29aa93ec7d70af962bd1f0bedf3a1` as `d563aa5f68d5b31d5087dcb6cdde95596caba278`. Its exact-head `StegOS CI` and `GADI native boundary defense validation` workflows both completed successfully. No review or review-thread requirement was present, and the repository ruleset query returned no applicable ruleset.
+
+That merge establishes the previously missing existing-owner consumption seam: `register_reciprocal_node_existence_capability()` binds the already-merged `observe_reciprocal_node_existence` function to the existing `NodeEventExecutionBroker` through the operation-specific `observe-reciprocal-node-existence` `CapabilityAdapter`. The broker retains the existing retained-Node, Universal InTr materialization, WorkerCoordinator claim/fence and open `EVENT_EPHEMERAL` lease prerequisites. The binding adds no runtime, scheduler, credential path, device prerequisite, transport authority, execution authority or parallel authority plane.
+
+The canonical execution-surface owner now registers that operation under `STEGVERSE_NODE_EVENT_EPHEMERAL` while preserving the pre-existing `REQUEST_SELF_CHARACTERIZATION` operation. The new operation-specific record binds:
+
+```text
+operation = observe-reciprocal-node-existence
+callable_task = SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005
+execution_owner = StegVerse-Labs/StegOS
+implementation_ref = stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence
+materialization_path = REGISTERED_STEGVERSE_NODE -> INTERLOCK -> UNIVERSAL_INTR_MATERIALIZATION -> BOUNDED_INVOCATION_LEASE -> EVENT_EPHEMERAL
+authority_effect = NONE_OBSERVATION_ONLY
+identity_established = false
+health_established = false
+```
+
+The catalog regression verifies that exact registration and preserves the existing two-surface discovery count rather than inventing a third runtime surface. Discovery/registration is still non-authorizing source evidence: it does not materialize a runtime, mint a WorkerCoordinator claim/fence, admit Interlock/InTr transport, establish an external endpoint, or produce an authentic Gate-1 disposition. Gate 1 must not be invoked merely because this source record exists.
