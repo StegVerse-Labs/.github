@@ -5,6 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001`
 COSV: `10100000110000`
 Native owner: issue #2955
+Registration PR: #2956
 Status: `PROPOSED / UNCLAIMED`
 
 ## Purpose
