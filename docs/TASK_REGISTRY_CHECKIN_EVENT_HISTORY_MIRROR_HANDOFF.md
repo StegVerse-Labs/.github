@@ -90,3 +90,12 @@ This source repair is a component-010 owner-review candidate, not authentic `AI_
 ### Regression expansion for #2619 — same existing receipt chain
 
 Additional exact-head adversarial coverage under PR #2667 now checks two successive check-ins and their true predecessor continuity, a STOP disposition appended after a preexisting ledger tip (including STOP → its same-session CHECK_IN), and tampering of a retained predecessor before a subsequent check-in. Tampered history must fail closed and remain byte-for-byte unchanged. The existing evaluator returns `checkin_event_predecessor_sha256` and `stopped_event_predecessor_sha256` from the actual append events; these fields do not imply authentic session attestation or autonomous resident execution. Component-010's separate existing-shard source projection is under PR #2668, with no mutation by this receipt-readback PR. Do not merge or claim owner authorization from this documentation alone.
+
+## Repository-artifact responsibility binding — 2026-10-03
+
+The existing event context fields `repository`, `branch`, `pull_request`, and `source_head` are now the canonical non-authorizing repository-artifact binding input to `STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001`.
+
+A `RETURNED`, `CHECK_OUT`, or `STOPPED` session event ends that session's coordination lease but does **not** release the canonical Task's responsibility for a nonterminal repository artifact. Repository lifecycle responsibility ends only when Task Registry Health observes a compatible terminal artifact disposition or an explicit retained exception.
+
+No second event ledger, collision engine, cleanup owner, or repository authority is introduced.
+

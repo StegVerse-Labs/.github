@@ -4,7 +4,7 @@
   "correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
   "root_correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
   "parent_task_id": null,
-  "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and derive deduplicated StegHealth recovery tasks when expected worker history fails to return to Master Records.",
+  "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and repository-artifact lifecycle consistency; derive deduplicated StegHealth recovery when worker-return or bound repository lifecycle evidence shows unresolved governed work.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "20010000100000",
@@ -15,13 +15,31 @@
     "control/task-vectors/STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001.json"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegIndex", "StegVerse-Labs/StegDB", "StegVerse-Labs/StegHealth"],
-    "components": ["task-registry-census", "checked-out-task-review", "worker-return-reconciliation", "steghealth-recovery-derivation", "monitor-report"]
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegIndex",
+      "StegVerse-Labs/StegDB",
+      "StegVerse-Labs/StegHealth"
+    ],
+    "components": [
+      "task-registry-census",
+      "checked-out-task-review",
+      "worker-return-reconciliation",
+      "steghealth-recovery-derivation",
+      "monitor-report",
+      "repository-artifact-lifecycle-review",
+      "single-task-repository-artifact-binding",
+      "supersession-terminalization-check"
+    ]
   },
   "dependencies": [],
   "blockers": [],
-  "adjacent_task_refs": ["ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001"],
+  "adjacent_task_refs": [
+    "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001"
+  ],
   "existing_evidence_refs": [
     "data/task-lifecycle-status-contract.json",
     "data/worker-return-observation-contract.json",
@@ -42,5 +60,21 @@
     "completed": "completed with monitor findings"
   },
   "retired_terminal": true,
-  "retired_resurrection_review_only": true
+  "retired_resurrection_review_only": true,
+  "expected_evidence_predicates": [
+    "EVERY_GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_EXACTLY_ONE_CANONICAL_TASK_UNTIL_COMPATIBLE_TERMINAL_DISPOSITIONS_EXIST",
+    "OPEN_STALE_OR_CONFLICTED_REPOSITORY_ARTIFACTS_ARE_REPORTED_AS_HEALTH_FINDINGS",
+    "TASK_TERMINALIZATION_REQUIRES_COMPATIBLE_REPOSITORY_ARTIFACT_TERMINALIZATION_OR_EXPLICIT_RETAINED_EXCEPTION",
+    "REPLACEMENT_OR_SUCCESSOR_PR_DOES_NOT_RELEASE_PREDECESSOR_RESPONSIBILITY_WITHOUT_ATOMIC_PREDECESSOR_TERMINALIZATION"
+  ],
+  "repository_lifecycle_consistency": {
+    "owner_task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+    "binding_source_task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+    "remediation_owner": "StegVerse-Labs/StegHealth",
+    "durable_state_comparison_owner": "StegVerse-Labs/StegDB",
+    "repository_policy_owner": "StegVerse-Labs/repo-standards",
+    "architecture_guard_role": "STRUCTURAL_VALIDATION_SIGNAL",
+    "telemetry_role": "NON_AUTHORIZING_OBSERVATION",
+    "authority_effect": "NONE"
+  }
 }

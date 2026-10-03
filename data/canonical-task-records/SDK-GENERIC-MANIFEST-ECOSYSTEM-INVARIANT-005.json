@@ -133,34 +133,25 @@
     "node_exchange_gate1": {
       "source_repair": {
         "repo": "StegVerse-Labs/StegOS",
-        "pr": 421,
-        "exact_head": "591f7225dea29aa93ec7d70af962bd1f0bedf3a1",
-        "merge_commit": "d563aa5f68d5b31d5087dcb6cdde95596caba278",
-        "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence",
-        "binding": "register_reciprocal_node_existence_capability -> NodeEventExecutionBroker -> observe-reciprocal-node-existence CapabilityAdapter"
+        "pr": 420,
+        "exact_head": "de2bbb44662f3c06a504b058fd6185bad0b0b54f",
+        "merge_commit": "adceffaa6fcdf0e89bff7a091dddf92d790cc439",
+        "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence"
       },
       "canonical_reconciliation": {
-        "superseded_pr": 2930,
-        "replacement_pr": 2935,
-        "exact_head": "f36615898dd7a06f8fceb752424eb0669eb8053d",
-        "merge_commit": "3b623be5e075d1f44ced4f2caad4205c3cda2be1"
+        "superseded_pr": 2910,
+        "replacement_pr": 2916,
+        "exact_head": "a4dacdf5f82e9083aa9f2c33d12e0b516a142422",
+        "merge_commit": "8d6df90591ac245bbe29187753debd62a784d821"
       },
       "operation_surface_owner": {
         "source": "scripts/list_stegverse_execution_surfaces.py",
-        "surface": "STEGVERSE_NODE_EVENT_EPHEMERAL",
         "current_registered_ephemeral_operations": [
           "REQUEST_SELF_CHARACTERIZATION",
-          "observe-reciprocal-node-existence"
+          "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS"
         ],
-        "reciprocal_existence_registered": true,
-        "materialization_path": [
-          "REGISTERED_STEGVERSE_NODE",
-          "INTERLOCK",
-          "UNIVERSAL_INTR_MATERIALIZATION",
-          "BOUNDED_INVOCATION_LEASE",
-          "EVENT_EPHEMERAL"
-        ],
-        "authority_effect": "NONE_OBSERVATION_ONLY"
+        "reciprocal_existence_registered": false,
+        "exact_gap": "REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG"
       },
       "runtime_observation": "AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
       "external_endpoint": "UNSPECIFIED",
@@ -343,6 +334,58 @@
     ],
     "predicate_disposition": "REMAINS_PARTIAL_NOT_CONFORMANT_YET",
     "runtime_claim": "NOT_PROVEN",
+    "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
+  },
+  "successor_task_ids": [
+    "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
+  ],
+  "prompt_ceiling_reconciliation_20261002": {
+    "goal_prompt_count": "20/20",
+    "elan_parallel_work_returned_to_parent_evidence": true,
+    "elan_successor_task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+    "elan_successor_cosv": "71000000100120",
+    "abstract_already_sent": true,
+    "hold_status": "UNDETERMINED",
+    "local_remediation_transferred_to_elan_successor": false
+  },
+  "tvc_provider_boundary_smallest_source_repair_20261002": {
+    "classification": "IDENTIFIED_NOT_YET_IMPLEMENTED",
+    "existing_sdk_binding_source": "StegVerse-org/StegVerse-SDK:stegverse/manifest_state_transition_runtime.py",
+    "existing_receiving_validator": "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py::validate_request",
+    "existing_tvc_admission": "StegVerse-Labs/TVC:tvc_provider_operation_broker.py::validate_request",
+    "required_binding_fields": [
+      "request_sha256",
+      "canonical_manifest_sha256",
+      "processing_capability",
+      "route_id"
+    ],
+    "repair": [
+      "Do not create a new SDK schema or selector: reuse the already-emitted manifest-state-transition lineage fields.",
+      "At the existing manifest-selected provider-operation owner, construct the TVC provider request from the already-validated receiving-owner request and copy the four lineage fields into an sdk_manifest_binding; do not accept caller-supplied replacement values.",
+      "Mirror the same sdk_manifest_binding into the single-use TVC capability lease so credential admission is bound to the exact SDK-selected processing lineage.",
+      "Extend tvc_provider_operation_broker.py::validate_request to require sdk_manifest_binding for manifest-selected provider operations and fail closed unless request and lease bindings match exactly and contain non-empty/valid request_sha256, canonical_manifest_sha256, processing_capability and route_id.",
+      "TVC must compare/validate the binding only; it must not resolve, substitute or select processing_capability or route_id.",
+      "Add source tests proving missing/mutated manifest hash, SDK request hash, capability or route fail closed before forward_to_local_vault_broker, while exact inherited binding remains admissible under existing provider profile rules."
+    ],
+    "authority_boundaries": {
+      "processing_selection": "SDK_CANONICAL_MANIFEST_ROUTE_RESOLUTION",
+      "credential_authority": "TV/TVC",
+      "transition_transport": "INTERLOCK_INTR",
+      "tvc_binding_effect": "VALIDATION_ONLY_NO_PROCESSOR_SELECTION_AUTHORITY",
+      "new_runtime": false,
+      "new_transport": false,
+      "new_credential_path": false
+    },
+    "source_predicate_effect": "IMPLEMENTATION_AND_TESTS_REQUIRED_BEFORE_TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT_CAN_ADVANCE_FROM_PARTIAL",
+    "runtime_claim": "NOT_PROVEN",
+    "preserved_runtime_predicates": [
+      "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
+      "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
+      "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+      "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+    ],
     "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
   }
 }

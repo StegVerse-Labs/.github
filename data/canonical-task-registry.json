@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 282,
-  "status": "KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_PROMPT_LIMIT_SUCCESSOR_REGISTERED",
+  "generation": 286,
+  "status": "ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_SESSION_HANDOFF_RECORDED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -12682,7 +12682,9 @@
         "EVENTS_BIND_EXACT_DISPOSITION_HASH",
         "RECENT_RETURNED_SESSION_WINDOW_PARTICIPATES_IN_COLLISION_EVALUATION",
         "EVENT_HISTORY_IS_NON_AUTHORIZING",
-        "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV"
+        "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV",
+        "LATEST_SESSION_EVENT_CONTEXT_REMAINS_THE_CANONICAL_BRANCH_PR_SOURCE_HEAD_BINDING_INPUT_TO_TASK_REGISTRY_HEALTH",
+        "SESSION_RETURN_DOES_NOT_RELEASE_REPOSITORY_ARTIFACT_RESPONSIBILITY"
       ],
       "runtime_requirements": {
         "capabilities": [
@@ -12781,6 +12783,17 @@
             "evidence_refs": []
           }
         ]
+      },
+      "repository_lifecycle_binding": {
+        "health_owner_task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "retained_fields": [
+          "repository",
+          "branch",
+          "pull_request",
+          "source_head"
+        ],
+        "session_return_releases_repository_obligation": false,
+        "authority_effect": "NONE"
       }
     },
     {
@@ -15644,7 +15657,7 @@
       "correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
       "root_correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
       "parent_task_id": null,
-      "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and derive deduplicated StegHealth recovery tasks when expected worker history fails to return to Master Records.",
+      "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and repository-artifact lifecycle consistency; derive deduplicated StegHealth recovery when worker-return or bound repository lifecycle evidence shows unresolved governed work.",
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "20010000100000",
@@ -15669,7 +15682,10 @@
           "checked-out-task-review",
           "worker-return-reconciliation",
           "steghealth-recovery-derivation",
-          "monitor-report"
+          "monitor-report",
+          "repository-artifact-lifecycle-review",
+          "single-task-repository-artifact-binding",
+          "supersession-terminalization-check"
         ]
       },
       "dependencies": [],
@@ -15697,7 +15713,23 @@
         "completed": "completed with monitor findings"
       },
       "retired_terminal": true,
-      "retired_resurrection_review_only": true
+      "retired_resurrection_review_only": true,
+      "expected_evidence_predicates": [
+        "EVERY_GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_EXACTLY_ONE_CANONICAL_TASK_UNTIL_COMPATIBLE_TERMINAL_DISPOSITIONS_EXIST",
+        "OPEN_STALE_OR_CONFLICTED_REPOSITORY_ARTIFACTS_ARE_REPORTED_AS_HEALTH_FINDINGS",
+        "TASK_TERMINALIZATION_REQUIRES_COMPATIBLE_REPOSITORY_ARTIFACT_TERMINALIZATION_OR_EXPLICIT_RETAINED_EXCEPTION",
+        "REPLACEMENT_OR_SUCCESSOR_PR_DOES_NOT_RELEASE_PREDECESSOR_RESPONSIBILITY_WITHOUT_ATOMIC_PREDECESSOR_TERMINALIZATION"
+      ],
+      "repository_lifecycle_consistency": {
+        "owner_task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "binding_source_task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "remediation_owner": "StegVerse-Labs/StegHealth",
+        "durable_state_comparison_owner": "StegVerse-Labs/StegDB",
+        "repository_policy_owner": "StegVerse-Labs/repo-standards",
+        "architecture_guard_role": "STRUCTURAL_VALIDATION_SIGNAL",
+        "telemetry_role": "NON_AUTHORIZING_OBSERVATION",
+        "authority_effect": "NONE"
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -16728,34 +16760,25 @@
         "node_exchange_gate1": {
           "source_repair": {
             "repo": "StegVerse-Labs/StegOS",
-            "pr": 421,
-            "exact_head": "591f7225dea29aa93ec7d70af962bd1f0bedf3a1",
-            "merge_commit": "d563aa5f68d5b31d5087dcb6cdde95596caba278",
-            "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence",
-            "binding": "register_reciprocal_node_existence_capability -> NodeEventExecutionBroker -> observe-reciprocal-node-existence CapabilityAdapter"
+            "pr": 420,
+            "exact_head": "de2bbb44662f3c06a504b058fd6185bad0b0b54f",
+            "merge_commit": "adceffaa6fcdf0e89bff7a091dddf92d790cc439",
+            "operation": "stegos/universal_intr_public_profile.py::observe_reciprocal_node_existence"
           },
           "canonical_reconciliation": {
-            "superseded_pr": 2930,
-            "replacement_pr": 2935,
-            "exact_head": "f36615898dd7a06f8fceb752424eb0669eb8053d",
-            "merge_commit": "3b623be5e075d1f44ced4f2caad4205c3cda2be1"
+            "superseded_pr": 2910,
+            "replacement_pr": 2916,
+            "exact_head": "a4dacdf5f82e9083aa9f2c33d12e0b516a142422",
+            "merge_commit": "8d6df90591ac245bbe29187753debd62a784d821"
           },
           "operation_surface_owner": {
             "source": "scripts/list_stegverse_execution_surfaces.py",
-            "surface": "STEGVERSE_NODE_EVENT_EPHEMERAL",
             "current_registered_ephemeral_operations": [
               "REQUEST_SELF_CHARACTERIZATION",
-              "observe-reciprocal-node-existence"
+              "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS"
             ],
-            "reciprocal_existence_registered": true,
-            "materialization_path": [
-              "REGISTERED_STEGVERSE_NODE",
-              "INTERLOCK",
-              "UNIVERSAL_INTR_MATERIALIZATION",
-              "BOUNDED_INVOCATION_LEASE",
-              "EVENT_EPHEMERAL"
-            ],
-            "authority_effect": "NONE_OBSERVATION_ONLY"
+            "reciprocal_existence_registered": false,
+            "exact_gap": "REGISTERED_NODE_RECIPROCAL_EXISTENCE_OPERATION_NOT_REGISTERED_IN_CANONICAL_EXECUTION_SURFACE_CATALOG"
           },
           "runtime_observation": "AUTHENTIC_RECIPROCAL_NODE_EXISTENCE_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT",
           "external_endpoint": "UNSPECIFIED",
@@ -16938,6 +16961,58 @@
         ],
         "predicate_disposition": "REMAINS_PARTIAL_NOT_CONFORMANT_YET",
         "runtime_claim": "NOT_PROVEN",
+        "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
+      },
+      "successor_task_ids": [
+        "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
+      ],
+      "prompt_ceiling_reconciliation_20261002": {
+        "goal_prompt_count": "20/20",
+        "elan_parallel_work_returned_to_parent_evidence": true,
+        "elan_successor_task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+        "elan_successor_cosv": "71000000100120",
+        "abstract_already_sent": true,
+        "hold_status": "UNDETERMINED",
+        "local_remediation_transferred_to_elan_successor": false
+      },
+      "tvc_provider_boundary_smallest_source_repair_20261002": {
+        "classification": "IDENTIFIED_NOT_YET_IMPLEMENTED",
+        "existing_sdk_binding_source": "StegVerse-org/StegVerse-SDK:stegverse/manifest_state_transition_runtime.py",
+        "existing_receiving_validator": "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py::validate_request",
+        "existing_tvc_admission": "StegVerse-Labs/TVC:tvc_provider_operation_broker.py::validate_request",
+        "required_binding_fields": [
+          "request_sha256",
+          "canonical_manifest_sha256",
+          "processing_capability",
+          "route_id"
+        ],
+        "repair": [
+          "Do not create a new SDK schema or selector: reuse the already-emitted manifest-state-transition lineage fields.",
+          "At the existing manifest-selected provider-operation owner, construct the TVC provider request from the already-validated receiving-owner request and copy the four lineage fields into an sdk_manifest_binding; do not accept caller-supplied replacement values.",
+          "Mirror the same sdk_manifest_binding into the single-use TVC capability lease so credential admission is bound to the exact SDK-selected processing lineage.",
+          "Extend tvc_provider_operation_broker.py::validate_request to require sdk_manifest_binding for manifest-selected provider operations and fail closed unless request and lease bindings match exactly and contain non-empty/valid request_sha256, canonical_manifest_sha256, processing_capability and route_id.",
+          "TVC must compare/validate the binding only; it must not resolve, substitute or select processing_capability or route_id.",
+          "Add source tests proving missing/mutated manifest hash, SDK request hash, capability or route fail closed before forward_to_local_vault_broker, while exact inherited binding remains admissible under existing provider profile rules."
+        ],
+        "authority_boundaries": {
+          "processing_selection": "SDK_CANONICAL_MANIFEST_ROUTE_RESOLUTION",
+          "credential_authority": "TV/TVC",
+          "transition_transport": "INTERLOCK_INTR",
+          "tvc_binding_effect": "VALIDATION_ONLY_NO_PROCESSOR_SELECTION_AUTHORITY",
+          "new_runtime": false,
+          "new_transport": false,
+          "new_credential_path": false
+        },
+        "source_predicate_effect": "IMPLEMENTATION_AND_TESTS_REQUIRED_BEFORE_TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT_CAN_ADVANCE_FROM_PARTIAL",
+        "runtime_claim": "NOT_PROVEN",
+        "preserved_runtime_predicates": [
+          "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
+          "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+          "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+          "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
+          "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+          "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+        ],
         "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
       }
     },
@@ -18038,6 +18113,100 @@
         "PREPARE_AND_SEND_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET"
       ],
       "authority_effect": "NONE_RESEARCH_COORDINATION_ONLY"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+      "correlation_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+      "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+      "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+      "successor_task_ids": [],
+      "goal": "Prepare the smallest independence-preserving semantic-analysis packet for Élisabeth Correvon using the exact retained five-condition HOLD specification and the current When Interpretation Becomes State draft, without exposing downstream StegVerse outcomes or performing local SDK remediation.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "71000000100120",
+      "repository": "StegVerse-Labs/.github",
+      "issue_ref": "StegVerse-Labs/.github#2937",
+      "handoff_projection_refs": [
+        "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md"
+      ],
+      "source_refs": [
+        "StegVerse-org/StegVerse-SDK:scripts/experiment_sv_hold_independent.py",
+        "StegVerse-org/StegVerse-SDK:scripts/run_independent_hold_evaluator.py",
+        "StegVerse-Labs/.github:docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md",
+        "StegVerse-Labs/.github:docs/WIBS_FULL_PAPER_REVISION.md",
+        "StegVerse-Labs/.github:docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"
+      ],
+      "frozen_hold_conditions": [
+        {
+          "id": "T0",
+          "condition": "PRE_HOLD",
+          "semantic_status": "UNDETERMINED"
+        },
+        {
+          "id": "T1",
+          "condition": "HOLD_ENTERED",
+          "semantic_status": "UNDETERMINED"
+        },
+        {
+          "id": "T2",
+          "condition": "HOLD_PERSISTENCE_AFTER_TIME_ADVANCE",
+          "semantic_status": "UNDETERMINED"
+        },
+        {
+          "id": "T3",
+          "condition": "RESUME_PROPOSED_WITHOUT_FRESH_DELEGATION",
+          "semantic_status": "UNDETERMINED"
+        },
+        {
+          "id": "T4",
+          "condition": "RESUME_PROPOSED_WITH_NEW_DECLARED_DELEGATION",
+          "semantic_status": "UNDETERMINED"
+        }
+      ],
+      "preserved_facts": {
+        "abstract_already_sent": true,
+        "hold_result": "UNDETERMINED",
+        "downstream_stegverse_outcomes_disclosed_to_elisabeth": false,
+        "local_sdk_remediation_in_scope": false
+      },
+      "packet_question_scope": [
+        "What is directly observed or represented in each retained condition?",
+        "Which distinctions are source-supported versus interpretive?",
+        "What, if anything, can be said about continuity or persistence without inferring unexposed internal state?",
+        "Where does representation change while observation remains materially similar?",
+        "Which semantic claims must remain UNDETERMINED, UNRESOLVED, NOT_EXPOSED, or otherwise unsupported by source?",
+        "Separately: how should representation/interpretation be distinguished conceptually from admissible execution?"
+      ],
+      "forbidden_disclosures": [
+        "downstream StegVerse HOLD dispositions",
+        "StegVerse comparison outcomes",
+        "governance/custody/reconstruction outcomes that could bias independent characterization"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "packet_prepared": true,
+        "coauthor_response_observed": false
+      },
+      "packet_artifact_ref": "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET.md",
+      "session_continuation_20261003": {
+        "canonical_conversation_surface": true,
+        "consolidation_intent": "Use this Goal/handoff as the single continuation surface for Élisabeth HOLD independent-analysis contact; other open chat sessions may be closed after their distinct evidence is represented canonically.",
+        "verified_main_at_session_close": "f825c0b9a1ecaede5547269e96e6065f8a84c11b",
+        "prior_merges": {
+          "successor_registration": "9ace32d2976784532e51843c529e050be321c2d7",
+          "packet_preparation": "a8d86accdb4c28153fee6701e0fd0f52b5bb8da4"
+        },
+        "superseded_pr": "#2938 closed unmerged; replaced by #2946",
+        "packet_pr": "#2949 merged",
+        "packet_state": "PREPARED",
+        "delivery_state": "NOT_AUTHENTICALLY_RECONCILED_IN_THIS_SESSION",
+        "response_state": "NOT_OBSERVED",
+        "next_action": "In a new session, re-read this task and handoff first. Reconcile authentic coauthor delivery evidence if available; do not infer delivery. Preserve any Élisabeth response verbatim as independent evidence before downstream StegVerse comparison.",
+        "session_prompt_count_at_handoff": 25,
+        "goal_prompt_count_at_handoff": "4/20"
+      }
     }
   ],
   "human_actions": [],

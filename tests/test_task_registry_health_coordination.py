@@ -109,5 +109,45 @@ class TaskRegistryHealthCoordinationTests(unittest.TestCase):
         self.assertFalse(obs["recovery_required"])
 
 
+    def test_repository_artifact_conflict_is_health_failure(self):
+        records = [{"task_id": "TASK-1", "coordination_state": "ACTIVE"}]
+        bindings = [{"task_id": "TASK-1", "repository": "StegVerse-Labs/Site", "pull_request": 42, "branch": "repair/task-1", "source_head": "abc"}]
+        observations = [{"repository": "StegVerse-Labs/Site", "pull_request": 42, "state": "OPEN", "mergeability": "CONFLICTING", "behind_by": 3}]
+        findings = module._repository_lifecycle_findings(records, bindings, observations)
+        self.assertTrue(any(row["posture"] == "REPOSITORY_ARTIFACT_CONFLICTED" and row["recovery_required"] for row in findings))
+
+    def test_terminal_task_with_open_pr_is_blocked_without_exception(self):
+        records = [{"task_id": "TASK-1", "coordination_state": "RETIRED"}]
+        bindings = [{"task_id": "TASK-1", "repository": "StegVerse-Labs/.github", "pull_request": 99, "branch": "task-1", "source_head": "def"}]
+        observations = [{"repository": "StegVerse-Labs/.github", "pull_request": 99, "state": "OPEN", "mergeability": "CLEAN", "behind_by": 0}]
+        findings = module._repository_lifecycle_findings(records, bindings, observations)
+        self.assertTrue(any(row["posture"] == "TASK_TERMINAL_WITH_NONTERMINAL_REPOSITORY_ARTIFACT" for row in findings))
+
+    def test_terminal_task_open_pr_may_carry_explicit_retained_exception(self):
+        records = [{"task_id": "TASK-1", "coordination_state": "RETIRED", "repository_lifecycle_exception_ref": "evidence/exception.json"}]
+        bindings = [{"task_id": "TASK-1", "repository": "StegVerse-Labs/.github", "pull_request": 99}]
+        observations = [{"repository": "StegVerse-Labs/.github", "pull_request": 99, "state": "OPEN", "mergeability": "CLEAN"}]
+        findings = module._repository_lifecycle_findings(records, bindings, observations)
+        self.assertFalse(any(row["posture"] == "TASK_TERMINAL_WITH_NONTERMINAL_REPOSITORY_ARTIFACT" for row in findings))
+
+    def test_supersession_requires_predecessor_terminalization(self):
+        records = [{"task_id": "TASK-1", "coordination_state": "ACTIVE"}]
+        bindings = [{"task_id": "TASK-1", "repository": "StegVerse-Labs/.github", "pull_request": 10}]
+        observations = [{"repository": "StegVerse-Labs/.github", "pull_request": 10, "state": "OPEN", "superseded_by_pull_request": 11}]
+        findings = module._repository_lifecycle_findings(records, bindings, observations)
+        self.assertTrue(any(row["posture"] == "SUPERSESSION_NOT_ATOMIC" for row in findings))
+
+    def test_one_repository_artifact_cannot_bind_multiple_tasks(self):
+        records = [{"task_id": "TASK-1", "coordination_state": "ACTIVE"}, {"task_id": "TASK-2", "coordination_state": "ACTIVE"}]
+        bindings = [
+            {"task_id": "TASK-1", "repository": "StegVerse-Labs/Site", "pull_request": 42},
+            {"task_id": "TASK-2", "repository": "StegVerse-Labs/Site", "pull_request": 42},
+        ]
+        observations = [{"repository": "StegVerse-Labs/Site", "pull_request": 42, "state": "OPEN"}]
+        findings = module._repository_lifecycle_findings(records, bindings, observations)
+        self.assertTrue(any(row["posture"] == "MULTIPLE_CANONICAL_TASK_BINDINGS" for row in findings))
+
+
+
 if __name__ == "__main__":
     unittest.main()
