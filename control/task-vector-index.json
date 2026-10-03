@@ -1184,7 +1184,7 @@
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 121,
+    "indexed_vectorized_tasks": 119,
     "local_cosv_record_tasks": 118,
     "external_owner_projection_tasks": 0
   },
