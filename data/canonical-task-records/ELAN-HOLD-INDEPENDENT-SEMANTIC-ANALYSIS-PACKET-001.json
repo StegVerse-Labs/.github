@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "correlation_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "successor_task_ids": [],
+  "goal": "Prepare the smallest independence-preserving semantic-analysis packet for Élisabeth Correvon using the exact retained five-condition HOLD specification and the current When Interpretation Becomes State draft, without exposing downstream StegVerse outcomes or performing local SDK remediation.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100120",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#2937",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md"
+  ],
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:scripts/experiment_sv_hold_independent.py",
+    "StegVerse-org/StegVerse-SDK:scripts/run_independent_hold_evaluator.py",
+    "StegVerse-Labs/.github:docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md",
+    "StegVerse-Labs/.github:docs/WIBS_FULL_PAPER_REVISION.md",
+    "StegVerse-Labs/.github:docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md"
+  ],
+  "frozen_hold_conditions": [
+    {
+      "id": "T0",
+      "condition": "PRE_HOLD",
+      "semantic_status": "UNDETERMINED"
+    },
+    {
+      "id": "T1",
+      "condition": "HOLD_ENTERED",
+      "semantic_status": "UNDETERMINED"
+    },
+    {
+      "id": "T2",
+      "condition": "HOLD_PERSISTENCE_AFTER_TIME_ADVANCE",
+      "semantic_status": "UNDETERMINED"
+    },
+    {
+      "id": "T3",
+      "condition": "RESUME_PROPOSED_WITHOUT_FRESH_DELEGATION",
+      "semantic_status": "UNDETERMINED"
+    },
+    {
+      "id": "T4",
+      "condition": "RESUME_PROPOSED_WITH_NEW_DECLARED_DELEGATION",
+      "semantic_status": "UNDETERMINED"
+    }
+  ],
+  "preserved_facts": {
+    "abstract_already_sent": true,
+    "hold_result": "UNDETERMINED",
+    "downstream_stegverse_outcomes_disclosed_to_elisabeth": false,
+    "local_sdk_remediation_in_scope": false
+  },
+  "packet_question_scope": [
+    "What is directly observed or represented in each retained condition?",
+    "Which distinctions are source-supported versus interpretive?",
+    "What, if anything, can be said about continuity or persistence without inferring unexposed internal state?",
+    "Where does representation change while observation remains materially similar?",
+    "Which semantic claims must remain UNDETERMINED, UNRESOLVED, NOT_EXPOSED, or otherwise unsupported by source?",
+    "Separately: how should representation/interpretation be distinguished conceptually from admissible execution?"
+  ],
+  "forbidden_disclosures": [
+    "downstream StegVerse HOLD dispositions",
+    "StegVerse comparison outcomes",
+    "governance/custody/reconstruction outcomes that could bias independent characterization"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "packet_prepared": true,
+    "coauthor_response_observed": false
+  },
+  "packet_artifact_ref": "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET.md",
+  "session_continuation_20261003": {
+    "canonical_conversation_surface": true,
+    "consolidation_intent": "Use this Goal/handoff as the single continuation surface for Élisabeth HOLD independent-analysis contact; other open chat sessions may be closed after their distinct evidence is represented canonically.",
+    "verified_main_at_session_close": "f825c0b9a1ecaede5547269e96e6065f8a84c11b",
+    "prior_merges": {
+      "successor_registration": "9ace32d2976784532e51843c529e050be321c2d7",
+      "packet_preparation": "a8d86accdb4c28153fee6701e0fd0f52b5bb8da4"
+    },
+    "superseded_pr": "#2938 closed unmerged; replaced by #2946",
+    "packet_pr": "#2949 merged",
+    "packet_state": "PREPARED",
+    "delivery_state": "NOT_AUTHENTICALLY_RECONCILED_IN_THIS_SESSION",
+    "response_state": "NOT_OBSERVED",
+    "next_action": "In a new session, re-read this task and handoff first. Reconcile authentic coauthor delivery evidence if available; do not infer delivery. Preserve any Élisabeth response verbatim as independent evidence before downstream StegVerse comparison.",
+    "session_prompt_count_at_handoff": 25,
+    "goal_prompt_count_at_handoff": "4/20"
+  }
+}

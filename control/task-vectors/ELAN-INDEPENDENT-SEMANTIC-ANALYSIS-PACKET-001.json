@@ -1,0 +1,11 @@
+{
+  "identity": "StegVerse-Labs/.github:task:ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "profile": "task.v1",
+  "task_id": "ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "vector": "71000000100120",
+  "evidence_refs": [
+    "data/canonical-task-records/ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001.json",
+    "docs/ELAN_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}

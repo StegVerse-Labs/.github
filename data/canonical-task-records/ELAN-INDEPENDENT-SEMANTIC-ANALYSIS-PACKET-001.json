@@ -1,0 +1,115 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "correlation_id": "ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "parent_task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+  "goal": "Prepare an unbiased independent semantic-analysis packet for Élisabeth Correvon using only retained HOLD source conditions and the current When Interpretation Becomes State draft, without exposing downstream StegVerse outcomes.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100120",
+    "source_state_vector_ref": "control/task-vectors/ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001.json",
+    "authority_effect": "NONE"
+  },
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#2939",
+  "source_refs": [
+    "docs/ELAN_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md",
+    "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md",
+    "docs/WIBS_COAUTHORED_WORKING_DRAFT_REV3.md",
+    "StegVerse-org/StegVerse-SDK:scripts/experiment_sv_hold_independent.py"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ELAN-ABSTRACT-DELIVERY",
+      "kind": "COAUTHOR_COMMUNICATION",
+      "state": "ALREADY_SENT",
+      "ref": "When Interpretation Becomes State abstract previously sent to Élisabeth; do not resend in this packet."
+    },
+    {
+      "dependency_id": "DEP-HOLD-RESULT",
+      "kind": "EXPERIMENT_RESULT",
+      "state": "UNDETERMINED",
+      "ref": "No authentic HOLD result may be supplied or inferred."
+    }
+  ],
+  "expected_evidence_predicates": [
+    "EXACT_T0_T4_HOLD_CONDITIONS_PRESERVED",
+    "HOLD_RESULT_REMAINS_UNDETERMINED",
+    "ABSTRACT_ALREADY_SENT_NOT_REDUNDANTLY_DELIVERED",
+    "SOURCE_OBSERVATION_DISTINCT_FROM_INTERPRETATION",
+    "DOWNSTREAM_STEGVERSE_OUTCOMES_WITHHELD_FROM_INDEPENDENT_ANALYSIS",
+    "ADMISSIBLE_EXECUTION_QUESTION_SEPARATE_FROM_SEMANTIC_CHARACTERIZATION",
+    "NO_LOCAL_REMEDIATION_IN_SUCCESSOR"
+  ],
+  "hold_conditions": [
+    {
+      "relative_time": "T0",
+      "condition_id": "PRE_HOLD",
+      "actor_current": true,
+      "validity_window_open": true,
+      "delegation_current": true,
+      "permission_present": true
+    },
+    {
+      "relative_time": "T1",
+      "condition_id": "HOLD_ENTERED",
+      "actor_current": false,
+      "validity_window_open": true,
+      "delegation_current": false,
+      "permission_present": false
+    },
+    {
+      "relative_time": "T2",
+      "condition_id": "HOLD_PERSISTENCE_AFTER_TIME_ADVANCE",
+      "actor_current": false,
+      "validity_window_open": false,
+      "delegation_current": false,
+      "permission_present": false
+    },
+    {
+      "relative_time": "T3",
+      "condition_id": "RESUME_PROPOSED_WITHOUT_FRESH_DELEGATION",
+      "actor_current": true,
+      "validity_window_open": true,
+      "delegation_current": false,
+      "permission_present": true
+    },
+    {
+      "relative_time": "T4",
+      "condition_id": "RESUME_PROPOSED_WITH_NEW_DECLARED_DELEGATION",
+      "actor_current": true,
+      "validity_window_open": true,
+      "delegation_current": true,
+      "permission_present": true
+    }
+  ],
+  "analysis_scope": {
+    "allowed": [
+      "source-supported observation",
+      "representation",
+      "interpretation",
+      "temporal/state-transition resolution",
+      "provenance/attribution",
+      "conceptual distinction between representation/interpretation and admissible execution"
+    ],
+    "prohibited": [
+      "downstream StegVerse outcomes",
+      "HOLD result disclosure or inference",
+      "local remediation",
+      "runtime execution",
+      "governance-result priming"
+    ]
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/ELAN_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "PREPARE_AND_SEND_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET"
+  ],
+  "authority_effect": "NONE_RESEARCH_COORDINATION_ONLY"
+}

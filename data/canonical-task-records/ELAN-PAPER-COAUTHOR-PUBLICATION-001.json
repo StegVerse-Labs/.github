@@ -26,7 +26,8 @@
     "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md#provenance-erratum--2026-09-23-historical-experiment-no-runtime-rerun",
     "docs/ELAN_HOLD_SDK_CAPABILITY_ASSESSMENT.md",
     "docs/ELAN_HOLD_IMMEDIATE_EXECUTION_SDK_VERSION_ROADMAP.md",
-    "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md"
+    "docs/ELAN_HOLD_CHRONOLOGICAL_EVALUATOR_PACKET.md",
+    "docs/ELAN_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md"
   ],
   "dependencies": [
     {
@@ -81,7 +82,8 @@
   "blockers": [],
   "adjacent_task_refs": [
     "ELAN-STEGVERSE-CROSS-EVALUATION-001",
-    "WIBS-PUBLICATION-NOVELTY-REVIEW-001"
+    "WIBS-PUBLICATION-NOVELTY-REVIEW-001",
+    "ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
   ],
   "expected_evidence_predicates": [
     "COAUTHORSHIP_ACCEPTANCE_PRESERVED",
@@ -165,5 +167,11 @@
     "readme_path": "README.md",
     "reviewed": true,
     "reason": "Research/publication coordination and manuscript revision do not change repository function."
+  },
+  "parallel_work_return_20261002": {
+    "abstract_delivery": "ALREADY_SENT_TO_ELISABETH",
+    "hold_result": "UNDETERMINED",
+    "semantic_analysis_successor": "ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+    "independence_boundary": "DOWNSTREAM_STEGVERSE_OUTCOMES_WITHHELD_UNTIL_INDEPENDENT_CHARACTERIZATION_RETAINED"
   }
 }

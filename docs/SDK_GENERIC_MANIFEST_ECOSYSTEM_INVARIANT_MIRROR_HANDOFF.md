@@ -367,3 +367,31 @@ The catalog regression verifies that exact registration and preserves the existi
 | 10 | Session-originated execution boundary | PARTIAL | `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001` component-010; `docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md`; AI entry/caller inventories | Protective source gate exists; `AUTHENTIC_SESSION_ORIGIN_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. |
 
 Inventory completeness means only that no required category remains ownerless/unclassified in this task. The remaining conformance predicates stay independent. Every authentic-runtime predicate remains unchanged, including `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`.
+
+
+## 2026-10-02 TVC provider-boundary source-conformance trace
+
+`TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT` remains **PARTIAL** for a demonstrated source-chain reason, not because authentic runtime evidence is absent.
+
+Current TVC owner `StegVerse-Labs/TVC:tvc_provider_operation_broker.py` fail-closes around `stegverse.vault.non_exportable_operation_request.v1`, requires an admitted single-use TVC capability lease, rejects protected credential material and authority drift, and constrains provider operations through `config/provider_operation_profiles.json`. Those are valid TV/TVC credential/provider-boundary controls.
+
+The stronger SDK generic-manifest invariant is not yet demonstrated end-to-end in source. The broker request contract contains no canonical-manifest binding, no `processing.capability`, and no `processing.route_id`. The existing `workers/mir_tvc_provider_roundtrip_worker.py` identifies `StegVerse-org/StegVerse-SDK` as consumer and wraps the TVC broker transaction in Universal InTr, but its provider request is constructed directly as MIR / `mir_history_accounting` / `SUBMIT_EVENT`; the bridge contains no processing-capability or route-id binding proving that provider semantics were derived from the already-admitted SDK manifest route.
+
+Therefore SDK consumer identity, an admitted TVC capability lease, a matching provider profile, and InTr carriage are insufficient by themselves to prove canonical manifest-selected processing. The precise remaining source gap is a non-caller-editable binding from the admitted SDK manifest/route-resolution output into the TVC provider-operation request such that TVC can validate the canonical manifest identity plus `processing.capability` and `processing.route_id` (or an equivalent canonical SDK-derived binding) before provider execution. This finding does not require runtime evidence and does not alter any runtime predicate.
+
+`AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` and every `remaining_runtime_predicate` remain unchanged.
+
+## 2026-10-02 prompt-ceiling decomposition — independent ÉLAN semantic analysis
+
+At Goal Prompt Count 20/20, the completed ÉLAN parallel-work plan is returned to this parent as evidence and the separable coauthor-analysis preparation is transferred to `ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001` / COSV `71000000100120` / issue #2937. The successor preserves the exact retained T0–T4 HOLD condition identities, HOLD as `UNDETERMINED`, and the fact that the abstract has already been sent. It asks only source-supported observation/representation/interpretation questions plus a separate conceptual question about representation/interpretation versus admissible execution. It must not disclose downstream StegVerse outcomes and does not own or continue this parent's SDK/runtime remediation.
+
+
+## 2026-10-02 smallest existing-owner TVC/SDK source repair
+
+The smallest repair requires **no new SDK manifest schema, selector, runtime, transport, credential path, or authority plane**. Current SDK manifest-state-transition source already emits `request_sha256`, `canonical_manifest_sha256`, `processing_capability`, and `route_id`. The existing Universal InTr receiving owner in `workers/manifest_state_transition_intr_ingress.py::validate_request` already validates the request digest, canonical-manifest digest, and capability/route equality against the installed state graph before manifest-selected dispatch.
+
+The missing source seam is downstream of that validation. The existing manifest-selected provider-operation owner must construct the TVC provider request from that already-validated request and copy those four fields into an `sdk_manifest_binding`; caller-supplied replacement values are not an admissible source. The same binding must be present in the single-use TVC capability lease. `StegVerse-Labs/TVC:tvc_provider_operation_broker.py::validate_request` then needs only to require the binding and fail closed unless request and lease match exactly before `forward_to_local_vault_broker` can reach credential-bearing execution.
+
+TVC's role in this repair is validation-only. It must not resolve, infer, substitute, or select `processing_capability` or `route_id`; SDK canonical manifest route resolution remains processing-selection authority, TV/TVC remains credential authority, and Interlock/InTr remains transition transport authority. Source tests must demonstrate fail-closed behavior for missing or mutated SDK request hash, canonical manifest hash, capability, or route, plus acceptance of an exact inherited binding under the existing provider-profile constraints.
+
+Until that implementation and its source tests exist, `TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT` remains PARTIAL. Runtime evidence is not required to close this source-only predicate, and source closure must not promote any runtime predicate. Every `remaining_runtime_predicate` and `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` remain unchanged.

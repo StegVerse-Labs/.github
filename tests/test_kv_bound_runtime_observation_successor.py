@@ -42,7 +42,7 @@ def test_registry_and_cosv_index_project_successor():
     registry = load("data/canonical-task-registry.json")
     rows = [x for x in registry["tasks"] if x["task_id"] == SUCCESSOR_ID]
     assert len(rows) == 1
-    assert rows[0]["coordination_state"] == "ACTIVE"
+    assert rows[0]["coordination_state"] == "PROPOSED"
     vector = load(f"control/task-vectors/{SUCCESSOR_ID}.json")
     index = load(f"control/task-vector-index.d/{SUCCESSOR_ID}.json")
     assert vector["vector"] == COSV

@@ -213,3 +213,40 @@ The missing organization-owned source binding is now merged through central PR #
 The existing `org-runtime/interlock-intr.json` contract now binds `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST` to the existing organization-owned `POST /intr/materialization` receiving operation at `workers/universal_intr_profiled_ingress.py`, delegating manifest-state-transition admission to `workers/manifest_state_transition_intr_ingress.py::admit`. The binding is `NONE_BINDING_ONLY`, grants no routing/admission/execution authority, and is explicitly not environment-selected. `org-runtime/runtime_boundary.py resolve-ingress` exposes the deterministic machine-readable organization resolution.
 
 This satisfies the previously missing **organization source-map** half of `REGISTERED_CAPABILITY_RESOLVES_TO_CANONICAL_ORGANIZATION_GITHUB_INGRESS_ENDPOINT`. It does not by itself prove that the SDK currently consumes that merged organization contract, nor does it prove authentic Interlock/InTr admission or runtime execution. The next bounded step is SDK consumption of this existing canonical mapping followed by source-only reassessment of the unchanged frozen HOLD manifest. HOLD was not executed by #2931.
+
+
+## 2026-10-02 independent semantic-analysis parallel-work return
+
+The coauthor abstract has already been sent to Élisabeth and is not repeated in the next communication. The completed parallel-work plan is returned here with HOLD still `UNDETERMINED`. Preparation of the independent semantic-analysis packet is decomposed to `ELAN-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001` / COSV `71000000100120` / issue #2939 and canonical handoff `docs/ELAN_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md`.
+
+That successor preserves the exact retained T0–T4 source conditions from the SDK independent HOLD specification and asks only source-supported observation/representation/interpretation questions plus a separately framed conceptual question about representation/interpretation versus admissible execution. Downstream StegVerse outcomes, runtime dispositions, custody/replay/reconstruction results and local remediation are deliberately withheld so they cannot bias Élisabeth's characterization. No HOLD execution or result is claimed by this decomposition.
+
+
+## 2026-10-02 SDK consumption of canonical organization ingress binding
+
+SDK PR #422 merged from exact head `f0c61d5bba76a8fb00b0790e98fbf24303d0641f` as `c3b085a5d5ea677634c71bd0b8c9bc1d58a0d846` after all 23 observed exact-head workflows succeeded. The repair uses the existing `connector_capability_overlay` / manifest-state-transition runtime seam. It does not copy the organization endpoint into the SDK connector baseline. Instead, `resolve_organization_ingress` validates a passed-in canonical `stegverse.organization-interlock-intr-boundary/v1` contract and resolves exactly `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST` to its organization-owned receiving operation. The accepted binding must be owned by `<organization>/.github`, `NONE_BINDING_ONLY`, non-routing, non-admitting, non-executing and non-environment-selected.
+
+Regression evidence preserves the separation: `completion.egress` cannot override organization routing; LLM_ADAPTER and Publisher remain outside organization-destination authority; a resolved organization contract produces a non-authorizing SDK handoff with no SDK transport, receiver contact or observed InTr admission.
+
+Source-only reassessment of the unchanged frozen HOLD manifest finds the previous source-map predicate resolved but a new invocation-boundary predicate remains: the public `stegverse run-manifest` dispatcher currently calls the installed runtime binding with only the manifest. The manifest-state-transition runtime can consume the canonical organization boundary when it is supplied, but the public dispatcher does not yet bind an authentic canonical organization-boundary input to that invocation. Therefore source merge alone does not make an authentic HOLD attempt admissible.
+
+Retain the next actionable non-ALLOW predicate as:
+
+`AUTHENTIC_CANONICAL_ORGANIZATION_BOUNDARY_INPUT_BOUND_TO_RUN_MANIFEST_INVOCATION`
+
+Current disposition: `FAIL_CLOSED`. Required repair/evidence: use an existing non-environment, non-caller-editable canonical source/custody seam to bind the merged organization boundary contract to the public run-manifest invocation without copying endpoint authority into the SDK or introducing a runtime/listener/scheduler/dispatcher/credential/device prerequisite. HOLD remains unexecuted.
+
+
+## 2026-10-02 public run-manifest canonical boundary binding merged
+
+SDK PR #425 merged from exact head `f6207603516284aaa091f7bbf898c078ca2397ae` as `e67851968fb6b45b0a02529152824770cbcf5f95` after all 24 registered exact-head workflows succeeded. The repair extends only the existing `AllowlistedRepositorySourceReader` / credential-free `GitHubRepositoryFetcher` source seam. For the universal manifest-state-transition binding, public `stegverse run-manifest` reads the immutable merged StegVerse-Labs organization boundary contract from fixed SDK-owned source identity `StegVerse-Labs/.github / org-runtime/interlock-intr.json / 75d68c83e28178af053b8af097de4c8ca7e5017e` and passes that contract to `manifest_state_transition_runtime.execute_manifest`.
+
+The caller cannot select repository, path, ref or endpoint. No environment-selected ingress, endpoint copy, runtime, listener, scheduler, dispatcher, credential path, device prerequisite or authority plane was added. The runtime still independently validates `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST`; `completion.egress` remains requester-facing completion/return metadata and does not control organization routing.
+
+During exact-head validation, three stale source-only expectations were repaired because they still asserted the pre-#2931 `CANONICAL_ORGANIZATION_INGRESS_ENDPOINT_NOT_RESOLVED` state: held-out ecosystem diagnostic fixtures, Test 5 StegBrowser, and the TT/four-stage manifest-only workflows. Their corrected expectation is `ALLOW / MANIFESTED_FOR_INTERLOCK_INTR_HANDOFF` at `SDK_MANIFEST_HANDOFF`, while `transport_performed_by_sdk=false`, `receiver_contacted=false`, `intr_admission_observed=false`, `far_side_transition_observed=false`, and `consequence_committed=false`. This is source/SDK handoff evidence only, not authentic governed execution.
+
+Source-only reassessment of the unchanged frozen HOLD manifest therefore satisfies `AUTHENTIC_CANONICAL_ORGANIZATION_BOUNDARY_INPUT_BOUND_TO_RUN_MANIFEST_INVOCATION` at the SDK source/invocation-binding layer. The next authentic runtime predicate is:
+
+`AUTHENTIC_MANIFEST_HANDOFF_ADMITTED_BY_ORGANIZATION_OWNED_INTERLOCK_INTR_RECEIVING_OPERATION`
+
+Current disposition remains `FAIL_CLOSED` / `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` because the SDK handoff does not perform transport, contact the receiving operation, observe InTr admission, observe the far-side transition, obtain an organization receipt, or reconstruct Master Records. The next attempt must use the already-owned organization receiving operation and retain its first authentic ALLOW, DENY or FAIL_CLOSED plus applicable sovereign organization-ledger and Master Records evidence. Frozen HOLD was not executed by this repair or reassessment.

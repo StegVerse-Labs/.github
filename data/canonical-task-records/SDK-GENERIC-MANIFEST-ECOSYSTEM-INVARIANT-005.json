@@ -170,7 +170,7 @@
     "LLM_ADAPTER_GENERIC_SDK_ROUTE_DELEGATION": "SATISFIED_MERGED_SOURCE_EVIDENCE",
     "MIR_RETURN_CANONICAL_SDK_MANIFEST_INGRESS": "SATISFIED_MERGED_SOURCE_EVIDENCE",
     "STEGOS_GENERIC_SDK_MANIFEST_INTR_PROFILE_AND_RECEIVING_OWNER": "SATISFIED_MERGED_SOURCE_EVIDENCE",
-    "TVC_PROVIDER_BOUNDARY": "PARTIAL_MANIFEST_HASH_CAPABILITY_LEASE_SOURCE_PROVEN_FULL_INTR_CHAIN_NOT_PROVEN",
+    "TVC_PROVIDER_BOUNDARY": "PARTIAL_TVC_LEASE_PROFILE_CONSTRAINTS_PROVEN_CANONICAL_SDK_PROCESSING_ROUTE_BINDING_NOT_DEMONSTRATED",
     "STEGCORE_ENTRY": "PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN",
     "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN",
     "ECOSYSTEM_SURFACE_INVENTORY": "SATISFIED_CENSUS_ONLY_CONFORMANCE_AND_RUNTIME_SEPARATE"
@@ -307,5 +307,85 @@
       }
     ],
     "predicate_effect": "ECOSYSTEM_SURFACE_INVENTORY_COMPLETE_SATISFIED_AS_CENSUS_ONLY"
+  },
+  "tvc_provider_boundary_source_conformance_20261002": {
+    "classification": "PARTIAL",
+    "source_only_assessment": true,
+    "runtime_absence_used_as_failure_reason": false,
+    "tvc_owner": "StegVerse-Labs/TVC:tvc_provider_operation_broker.py",
+    "profile_owner": "StegVerse-Labs/TVC:config/provider_operation_profiles.json",
+    "existing_bridge": "StegVerse-Labs/.github:workers/mir_tvc_provider_roundtrip_worker.py",
+    "canonical_sdk_contract": [
+      "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py",
+      "StegVerse-org/StegVerse-SDK:docs/GENERIC_MANIFEST_PROCESSING_CONTRACT.md"
+    ],
+    "proven": [
+      "TVC broker requires admitted single-use capability lease",
+      "TVC broker constrains provider operation to native provider profile",
+      "TVC rejects protected credential material and authority drift",
+      "MIR bridge uses Universal InTr around TVC broker and identifies StegVerse SDK as consumer"
+    ],
+    "precise_source_gap": [
+      "TVC broker request schema does not bind canonical manifest hash",
+      "TVC broker request schema does not bind processing.capability",
+      "TVC broker request schema does not bind processing.route_id",
+      "MIR TVC bridge constructs provider-specific MIR operation without demonstrating derivation from an admitted SDK processing capability/route",
+      "SDK consumer identity and InTr carriage do not themselves prove manifest-selected provider semantics"
+    ],
+    "predicate_disposition": "REMAINS_PARTIAL_NOT_CONFORMANT_YET",
+    "runtime_claim": "NOT_PROVEN",
+    "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
+  },
+  "successor_task_ids": [
+    "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
+  ],
+  "prompt_ceiling_reconciliation_20261002": {
+    "goal_prompt_count": "20/20",
+    "elan_parallel_work_returned_to_parent_evidence": true,
+    "elan_successor_task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+    "elan_successor_cosv": "71000000100120",
+    "abstract_already_sent": true,
+    "hold_status": "UNDETERMINED",
+    "local_remediation_transferred_to_elan_successor": false
+  },
+  "tvc_provider_boundary_smallest_source_repair_20261002": {
+    "classification": "IDENTIFIED_NOT_YET_IMPLEMENTED",
+    "existing_sdk_binding_source": "StegVerse-org/StegVerse-SDK:stegverse/manifest_state_transition_runtime.py",
+    "existing_receiving_validator": "StegVerse-Labs/.github:workers/manifest_state_transition_intr_ingress.py::validate_request",
+    "existing_tvc_admission": "StegVerse-Labs/TVC:tvc_provider_operation_broker.py::validate_request",
+    "required_binding_fields": [
+      "request_sha256",
+      "canonical_manifest_sha256",
+      "processing_capability",
+      "route_id"
+    ],
+    "repair": [
+      "Do not create a new SDK schema or selector: reuse the already-emitted manifest-state-transition lineage fields.",
+      "At the existing manifest-selected provider-operation owner, construct the TVC provider request from the already-validated receiving-owner request and copy the four lineage fields into an sdk_manifest_binding; do not accept caller-supplied replacement values.",
+      "Mirror the same sdk_manifest_binding into the single-use TVC capability lease so credential admission is bound to the exact SDK-selected processing lineage.",
+      "Extend tvc_provider_operation_broker.py::validate_request to require sdk_manifest_binding for manifest-selected provider operations and fail closed unless request and lease bindings match exactly and contain non-empty/valid request_sha256, canonical_manifest_sha256, processing_capability and route_id.",
+      "TVC must compare/validate the binding only; it must not resolve, substitute or select processing_capability or route_id.",
+      "Add source tests proving missing/mutated manifest hash, SDK request hash, capability or route fail closed before forward_to_local_vault_broker, while exact inherited binding remains admissible under existing provider profile rules."
+    ],
+    "authority_boundaries": {
+      "processing_selection": "SDK_CANONICAL_MANIFEST_ROUTE_RESOLUTION",
+      "credential_authority": "TV/TVC",
+      "transition_transport": "INTERLOCK_INTR",
+      "tvc_binding_effect": "VALIDATION_ONLY_NO_PROCESSOR_SELECTION_AUTHORITY",
+      "new_runtime": false,
+      "new_transport": false,
+      "new_credential_path": false
+    },
+    "source_predicate_effect": "IMPLEMENTATION_AND_TESTS_REQUIRED_BEFORE_TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT_CAN_ADVANCE_FROM_PARTIAL",
+    "runtime_claim": "NOT_PROVEN",
+    "preserved_runtime_predicates": [
+      "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
+      "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
+      "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+      "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+    ],
+    "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
   }
 }
