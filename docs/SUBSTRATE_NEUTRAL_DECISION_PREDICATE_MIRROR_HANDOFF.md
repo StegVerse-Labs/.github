@@ -33,7 +33,7 @@ No mapping between those namespaces grants authority. In particular, experimenta
 The experimental terminal state is `DECISION_EVENT_OBSERVED`. Any later proposed transition remains independently subject to the existing authority/admissibility/execution/receipt pipeline.
 
 ## Current work
-Source registration and schemas are proposed in the bounded registration PR. No experiment has been run. No participant result exists. No WorkerCoordinator claim/fence, Interlock/InTr admission, runtime execution, Master Records experimental custody, deployment, or propagation is claimed.
+Source registration and schemas are proposed in the bounded registration PR. The repository-required execution substrate review is present: the five same-device/ephemeral candidates remain PENDING_EVIDENCE / EVIDENCE_REACHABILITY, the external-device last resort is NOT_APPLICABLE, no substrate is selected, and no external or second user-operated device is required. This is registration validation only. No experiment has been run. No participant result exists. No WorkerCoordinator claim/fence, Interlock/InTr admission, runtime execution, Master Records experimental custody, deployment, or propagation is claimed.
 
 ## Completion
 Completion requires controlled trial families across eligible subject classes, adversarial controls, retained receipts satisfying the receipt schema, reproducible predicate evaluation, and evidence sufficient to distinguish PASS, FAIL, or INDETERMINATE without substrate-specific assumptions.
