@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
   "generation": 286,
-  "status": "SUBSTRATE_NEUTRAL_DECISION_PREDICATE_SUBSTRATE_REVIEW_REPAIRED",
+  "status": "ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_SESSION_HANDOFF_RECORDED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -12682,7 +12682,9 @@
         "EVENTS_BIND_EXACT_DISPOSITION_HASH",
         "RECENT_RETURNED_SESSION_WINDOW_PARTICIPATES_IN_COLLISION_EVALUATION",
         "EVENT_HISTORY_IS_NON_AUTHORIZING",
-        "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV"
+        "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV",
+        "LATEST_SESSION_EVENT_CONTEXT_REMAINS_THE_CANONICAL_BRANCH_PR_SOURCE_HEAD_BINDING_INPUT_TO_TASK_REGISTRY_HEALTH",
+        "SESSION_RETURN_DOES_NOT_RELEASE_REPOSITORY_ARTIFACT_RESPONSIBILITY"
       ],
       "runtime_requirements": {
         "capabilities": [
@@ -12781,6 +12783,17 @@
             "evidence_refs": []
           }
         ]
+      },
+      "repository_lifecycle_binding": {
+        "health_owner_task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "retained_fields": [
+          "repository",
+          "branch",
+          "pull_request",
+          "source_head"
+        ],
+        "session_return_releases_repository_obligation": false,
+        "authority_effect": "NONE"
       }
     },
     {
@@ -15644,7 +15657,7 @@
       "correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
       "root_correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
       "parent_task_id": null,
-      "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and derive deduplicated StegHealth recovery tasks when expected worker history fails to return to Master Records.",
+      "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and repository-artifact lifecycle consistency; derive deduplicated StegHealth recovery when worker-return or bound repository lifecycle evidence shows unresolved governed work.",
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "20010000100000",
@@ -15669,7 +15682,10 @@
           "checked-out-task-review",
           "worker-return-reconciliation",
           "steghealth-recovery-derivation",
-          "monitor-report"
+          "monitor-report",
+          "repository-artifact-lifecycle-review",
+          "single-task-repository-artifact-binding",
+          "supersession-terminalization-check"
         ]
       },
       "dependencies": [],
@@ -15697,7 +15713,23 @@
         "completed": "completed with monitor findings"
       },
       "retired_terminal": true,
-      "retired_resurrection_review_only": true
+      "retired_resurrection_review_only": true,
+      "expected_evidence_predicates": [
+        "EVERY_GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_EXACTLY_ONE_CANONICAL_TASK_UNTIL_COMPATIBLE_TERMINAL_DISPOSITIONS_EXIST",
+        "OPEN_STALE_OR_CONFLICTED_REPOSITORY_ARTIFACTS_ARE_REPORTED_AS_HEALTH_FINDINGS",
+        "TASK_TERMINALIZATION_REQUIRES_COMPATIBLE_REPOSITORY_ARTIFACT_TERMINALIZATION_OR_EXPLICIT_RETAINED_EXCEPTION",
+        "REPLACEMENT_OR_SUCCESSOR_PR_DOES_NOT_RELEASE_PREDECESSOR_RESPONSIBILITY_WITHOUT_ATOMIC_PREDECESSOR_TERMINALIZATION"
+      ],
+      "repository_lifecycle_consistency": {
+        "owner_task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+        "binding_source_task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "remediation_owner": "StegVerse-Labs/StegHealth",
+        "durable_state_comparison_owner": "StegVerse-Labs/StegDB",
+        "repository_policy_owner": "StegVerse-Labs/repo-standards",
+        "architecture_guard_role": "STRUCTURAL_VALIDATION_SIGNAL",
+        "telemetry_role": "NON_AUTHORIZING_OBSERVATION",
+        "authority_effect": "NONE"
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -18174,153 +18206,6 @@
         "next_action": "In a new session, re-read this task and handoff first. Reconcile authentic coauthor delivery evidence if available; do not infer delivery. Preserve any Élisabeth response verbatim as independent evidence before downstream StegVerse comparison.",
         "session_prompt_count_at_handoff": 25,
         "goal_prompt_count_at_handoff": "4/20"
-      }
-    },
-    {
-      "schema": "stegverse.canonical-task-record/v1",
-      "task_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
-      "correlation_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
-      "root_correlation_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
-      "parent_task_id": null,
-      "goal": "Define and experimentally validate a substrate-neutral operational decision predicate using controlled evidence perturbation, adversarial controls, reproducible trial families, and retained receipts, while keeping decision observation semantically separate from consciousness, personhood, free will, execution authority, governance authority, and Interlock/InTr dispositions.",
-      "coordination_state": "PROPOSED",
-      "checkout_state": "UNCLAIMED",
-      "repository": "StegVerse-Labs/.github",
-      "cosv_task_vector": "10100000110000",
-      "native_owner_issue": 2955,
-      "authority_effect": "NONE_EXPERIMENT_REGISTRATION_ONLY",
-      "authority_model": {
-        "work_intent_and_coordination": "TASK_REGISTRY",
-        "execution_claim_and_fence": "WORKERCOORDINATOR",
-        "governed_transition": "INTERLOCK_INTR",
-        "observed_reality_and_reconstruction": "MASTER_RECORDS",
-        "experimental_decision_observation": "NON_AUTHORIZING",
-        "github_runtime_authority": "NONE"
-      },
-      "worker_claim": {
-        "authority": "WORKERCOORDINATOR",
-        "claim_ref": null,
-        "fence_ref": null,
-        "projection_only": true
-      },
-      "targets": {
-        "organizations": [
-          "StegVerse-Labs"
-        ],
-        "repositories": [
-          "StegVerse-Labs/.github"
-        ],
-        "components": [
-          "substrate-neutral-decision-experiment",
-          "decision-observation-receipts",
-          "adversarial-trial-families",
-          "decision-authority-semantic-firewall"
-        ]
-      },
-      "dependencies": [],
-      "blockers": [],
-      "expected_evidence_predicates": [
-        "ALTERNATIVE_AVAILABILITY_OBSERVED",
-        "EVIDENCE_SENSITIVITY_OBSERVED",
-        "RELEVANCE_DISCRIMINATION_OBSERVED",
-        "COUNTERFACTUAL_DIFFERENTIATION_OBSERVED",
-        "SELECTION_COMMITMENT_OBSERVED",
-        "TRACEABLE_CONSEQUENCE_OBSERVED",
-        "DECISION_OBSERVATION_SEMANTICALLY_SEPARATE_FROM_GOVERNANCE_DISPOSITION"
-      ],
-      "runtime_requirements": {
-        "capabilities": [
-          "controlled-experiment-execution",
-          "immutable-trial-evidence-retention"
-        ],
-        "environment": "EXPERIMENTAL",
-        "direction": "INTERNAL",
-        "mutation_required": false,
-        "deployment_required": false,
-        "current_observation_required": false
-      },
-      "allowed_next_transitions": [
-        "INGRESS_ADMITTED",
-        "SUPERSEDED"
-      ],
-      "completion": {
-        "claimed": false,
-        "validated": false,
-        "evidence_complete": false,
-        "experimental_result": null
-      },
-      "nonclaims": [
-        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_CONSCIOUSNESS",
-        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_PERSONHOOD",
-        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_FREE_WILL",
-        "DECISION_OBSERVATION_PASS_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
-        "DECISION_OBSERVATION_PASS_DOES_NOT_GRANT_GOVERNANCE_AUTHORITY",
-        "DECISION_OBSERVATION_PASS_IS_NOT_INTERLOCK_INTR_ALLOW",
-        "DECISION_OBSERVATION_FAIL_IS_NOT_INTERLOCK_INTR_DENY",
-        "DECISION_OBSERVATION_INDETERMINATE_IS_NOT_INTERLOCK_INTR_FAIL_CLOSED"
-      ],
-      "source_refs": [
-        "experiments/substrate-neutral-decision-predicate.v1.json",
-        "schemas/substrate-neutral-decision-receipt.v1.schema.json",
-        "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md"
-      ],
-      "handoff_projection_refs": [
-        "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md"
-      ],
-      "execution_substrate_resolution": {
-        "schema": "stegverse.execution-substrate-resolution/v1",
-        "authority_effect": "NONE",
-        "second_user_operated_device_allowed": false,
-        "external_device_required": false,
-        "selected_substrate_id": null,
-        "review_order": [
-          "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-          "STEGOS-CURRENT-DEVICE-NODE",
-          "STEG-BROWSER-EPHEMERAL-LEASE",
-          "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-          "ADMITTED-EPHEMERAL-STEGOS-NODE",
-          "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-        ],
-        "reviews": [
-          {
-            "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-            "disposition": "PENDING_EVIDENCE",
-            "limitation_class": "EVIDENCE_REACHABILITY",
-            "evidence_refs": []
-          },
-          {
-            "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-            "disposition": "PENDING_EVIDENCE",
-            "limitation_class": "EVIDENCE_REACHABILITY",
-            "evidence_refs": []
-          },
-          {
-            "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
-            "disposition": "PENDING_EVIDENCE",
-            "limitation_class": "EVIDENCE_REACHABILITY",
-            "evidence_refs": []
-          },
-          {
-            "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-            "disposition": "PENDING_EVIDENCE",
-            "limitation_class": "EVIDENCE_REACHABILITY",
-            "evidence_refs": []
-          },
-          {
-            "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-            "disposition": "PENDING_EVIDENCE",
-            "limitation_class": "EVIDENCE_REACHABILITY",
-            "evidence_refs": []
-          },
-          {
-            "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
-            "disposition": "NOT_APPLICABLE",
-            "limitation_class": "NOT_APPLICABLE",
-            "evidence_refs": [
-              "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md"
-            ]
-          }
-        ]
       }
     }
   ],
