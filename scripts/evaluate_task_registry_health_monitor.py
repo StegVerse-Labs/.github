@@ -494,6 +494,54 @@ def evaluate(now: datetime | None = None, repository_artifact_observations: list
         recovery_specs.append(spec)
         action_events.append(_task_creation_event(record, candidate, str(obs.get("posture")), now))
 
+    existing_recovery_ids = {str(row.get("recovery_task_id") or row.get("task_id") or "") for row in recovery_specs}
+    for finding in repository_findings:
+        if not finding.get("recovery_required"):
+            continue
+        source_ids = finding.get("task_ids") if isinstance(finding.get("task_ids"), list) else [finding.get("task_id")]
+        for raw_source_task_id in source_ids:
+            source_task_id = str(raw_source_task_id or "").strip()
+            if not source_task_id or source_task_id not in by_id:
+                continue
+            candidate = _recovery_task_id(source_task_id)
+            if candidate in existing_recovery_ids:
+                continue
+            if candidate in by_id:
+                recovery_specs.append({
+                    "source_task_id": source_task_id,
+                    "recovery_task_id": candidate,
+                    "recovery_task_cosv": by_id[candidate].get("cosv_task_vector"),
+                    "action": "REUSE_REGISTERED_RECOVERY_TASK",
+                    "task_registry_registered": True,
+                    "symptom": finding.get("posture"),
+                    "source_kind": "REPOSITORY_LIFECYCLE",
+                })
+                existing_recovery_ids.add(candidate)
+                continue
+            source = by_id[source_task_id]
+            spec = {
+                "schema": "stegverse.steghealth-recovery-task-spec/v1",
+                "task_id": candidate,
+                "cosv_task_vector": _recovery_cosv(),
+                "owner": "StegVerse-Labs/StegHealth",
+                "coordination_state": "ACTIVE",
+                "checkout_state": "NOT_CHECKED_OUT",
+                "source_task_id": source_task_id,
+                "source_cosv_task_vector": source.get("cosv_task_vector"),
+                "root_correlation_id": source.get("root_correlation_id") or source.get("correlation_id") or source_task_id,
+                "symptom": finding.get("posture"),
+                "source_kind": "REPOSITORY_LIFECYCLE",
+                "repository_artifact": {key: finding.get(key) for key in ("repository", "branch", "pull_request", "source_head", "artifact") if finding.get(key) is not None},
+                "failure_observation_refs": [finding.get("event_sha256")] if finding.get("event_sha256") else [],
+                "action": "CREATE_AND_REGISTER_THROUGH_CANONICAL_TASK_INGRESS",
+                "task_registry_registration_required": True,
+                "master_records_recording_required": True,
+                "execution_authority_effect": "NONE",
+            }
+            recovery_specs.append(spec)
+            action_events.append(_task_creation_event(source, candidate, str(finding.get("posture")), now))
+            existing_recovery_ids.add(candidate)
+
     symptom_counts: dict[str, int] = {}
     for obs in checked_out:
         symptom = str(obs.get("posture") or "UNKNOWN")
