@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MONOLITHIC_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 SHARDED_RECORDS = ROOT / "data" / "canonical-task-records"
 CONTRACT = ROOT / "data" / "task-registry-health-monitor-contract.json"
+CHECKIN_LEDGER = ROOT / "runtime" / "task-registry" / "checkin-events.jsonl"
 
 OPEN_LIFECYCLES = {"ACTIVE", "COMPLETED"}
 RELATION_FIELDS = (
@@ -266,6 +267,138 @@ def _worker_return_observation(record: dict[str, Any], now: datetime) -> dict[st
     }
 
 
+
+def _repository_bindings_from_checkin_events(path: Path = CHECKIN_LEDGER) -> list[dict[str, Any]]:
+    if not path.is_file():
+        return []
+    latest: dict[tuple[str, str], dict[str, Any]] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        task_id = str(row.get("task_id") or "").strip()
+        session_id = str(row.get("session_id") or "").strip()
+        if task_id and session_id:
+            latest[(task_id, session_id)] = row
+    bindings: list[dict[str, Any]] = []
+    for row in latest.values():
+        context = row.get("context") if isinstance(row.get("context"), dict) else {}
+        repository = context.get("repository")
+        branch = context.get("branch")
+        pull_request = context.get("pull_request")
+        source_head = context.get("source_head")
+        if not any((repository, branch, pull_request, source_head)):
+            continue
+        bindings.append({
+            "task_id": row.get("task_id"),
+            "session_id": row.get("session_id"),
+            "event_type": row.get("event_type"),
+            "coordination_state": row.get("coordination_state"),
+            "repository": repository,
+            "branch": branch,
+            "pull_request": pull_request,
+            "source_head": source_head,
+            "event_sha256": row.get("event_sha256"),
+        })
+    return bindings
+
+
+def _artifact_key(row: dict[str, Any]) -> tuple[str, str] | None:
+    repository = str(row.get("repository") or "").strip()
+    if not repository:
+        return None
+    if row.get("pull_request") is not None:
+        return repository, f"pr:{int(row['pull_request'])}"
+    branch = str(row.get("branch") or "").strip()
+    if branch:
+        return repository, f"branch:{branch}"
+    return None
+
+
+def _repository_lifecycle_findings(
+    records: list[dict[str, Any]],
+    bindings: list[dict[str, Any]],
+    observations: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    by_task = {str(row.get("task_id")): row for row in records if row.get("task_id")}
+    observed_by_key = {key: row for row in observations if (key := _artifact_key(row)) is not None}
+    tasks_by_key: dict[tuple[str, str], set[str]] = {}
+    findings: list[dict[str, Any]] = []
+
+    for binding in bindings:
+        key = _artifact_key(binding)
+        task_id = str(binding.get("task_id") or "")
+        if key is None or not task_id:
+            continue
+        tasks_by_key.setdefault(key, set()).add(task_id)
+        obs = observed_by_key.get(key)
+        if obs is None:
+            findings.append({
+                "task_id": task_id,
+                "repository": binding.get("repository"),
+                "branch": binding.get("branch"),
+                "pull_request": binding.get("pull_request"),
+                "posture": "REPOSITORY_OBSERVATION_MISSING",
+                "recovery_required": False,
+                "reason": "governed repository artifact is bound by Task Registry session history but no current repository-lifecycle observation was supplied",
+            })
+            continue
+
+        state = str(obs.get("state") or "UNKNOWN").upper()
+        mergeability = str(obs.get("mergeability") or obs.get("mergeable_state") or "UNKNOWN").upper()
+        stale = bool(obs.get("stale")) or int(obs.get("behind_by") or 0) > 0
+        terminal_artifact = state in {"MERGED", "CLOSED"}
+        lifecycle = _lifecycle(by_task.get(task_id, {}))
+        exception_ref = obs.get("terminal_exception_ref") or by_task.get(task_id, {}).get("repository_lifecycle_exception_ref")
+
+        if state == "OPEN" and mergeability in {"CONFLICTING", "CONFLICTED", "DIRTY", "FALSE"}:
+            findings.append({
+                "task_id": task_id, **{k: binding.get(k) for k in ("repository", "branch", "pull_request", "source_head")},
+                "posture": "REPOSITORY_ARTIFACT_CONFLICTED", "recovery_required": True,
+                "reason": "bound pull request remains open and conflict-dirty",
+            })
+        elif state == "OPEN" and stale:
+            findings.append({
+                "task_id": task_id, **{k: binding.get(k) for k in ("repository", "branch", "pull_request", "source_head")},
+                "posture": "REPOSITORY_ARTIFACT_STALE", "recovery_required": True,
+                "reason": "bound pull request remains open behind current base",
+            })
+        elif state == "OPEN":
+            findings.append({
+                "task_id": task_id, **{k: binding.get(k) for k in ("repository", "branch", "pull_request", "source_head")},
+                "posture": "REPOSITORY_ARTIFACT_OPEN", "recovery_required": False,
+                "reason": "bound repository artifact is nonterminal",
+            })
+
+        if lifecycle in {"COMPLETED", "RETIRED", "SUPERSEDED", "INVALID", "CLOSED"} and not terminal_artifact and not exception_ref:
+            findings.append({
+                "task_id": task_id, **{k: binding.get(k) for k in ("repository", "branch", "pull_request", "source_head")},
+                "posture": "TASK_TERMINAL_WITH_NONTERMINAL_REPOSITORY_ARTIFACT", "recovery_required": True,
+                "reason": "canonical Task lifecycle is terminal while its attributable repository artifact is not terminal and no retained exception exists",
+            })
+
+        superseded_by = obs.get("superseded_by_pull_request")
+        if superseded_by and state == "OPEN":
+            findings.append({
+                "task_id": task_id, **{k: binding.get(k) for k in ("repository", "branch", "pull_request", "source_head")},
+                "posture": "SUPERSESSION_NOT_ATOMIC", "recovery_required": True,
+                "reason": "replacement/successor PR exists while predecessor artifact remains open; supersession did not terminalize predecessor",
+                "superseded_by_pull_request": superseded_by,
+            })
+
+    for key, task_ids in tasks_by_key.items():
+        if len(task_ids) > 1:
+            findings.append({
+                "task_ids": sorted(task_ids),
+                "repository": key[0],
+                "artifact": key[1],
+                "posture": "MULTIPLE_CANONICAL_TASK_BINDINGS",
+                "recovery_required": True,
+                "reason": "one governed repository artifact is bound to more than one canonical Task Registry obligation",
+            })
+    return findings
+
+
 def _recovery_task_id(source_task_id: str) -> str:
     safe = source_task_id.upper().replace("_", "-")
     return f"STEGHEALTH-RECOVER-{safe}-001"
@@ -293,7 +426,7 @@ def _task_creation_event(source: dict[str, Any], recovery_task_id: str, symptom:
     }
 
 
-def evaluate(now: datetime | None = None) -> dict[str, Any]:
+def evaluate(now: datetime | None = None, repository_artifact_observations: list[dict[str, Any]] | None = None, checkin_ledger: Path = CHECKIN_LEDGER) -> dict[str, Any]:
     _ = _load(CONTRACT)
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     records = _all_records()
@@ -303,6 +436,8 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
     retirement_blocks: list[dict[str, Any]] = []
     recovery_specs: list[dict[str, Any]] = []
     action_events: list[dict[str, Any]] = []
+    repository_bindings = _repository_bindings_from_checkin_events(checkin_ledger)
+    repository_findings = _repository_lifecycle_findings(records, repository_bindings, repository_artifact_observations or [])
 
     for record in records:
         posture = _posture(record)
@@ -370,6 +505,8 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
     counts["COMPLETED_BLOCKED_FROM_RETIREMENT_BY_OPEN_ONE_HOP_RELATED_TASKS"] = len(retirement_blocks)
     counts["RECOVERY_TASKS_DERIVED"] = sum(1 for row in recovery_specs if row.get("action") == "CREATE_AND_REGISTER_THROUGH_CANONICAL_TASK_INGRESS")
     counts["RECOVERY_TASKS_ALREADY_REGISTERED"] = sum(1 for row in recovery_specs if row.get("task_registry_registered") is True)
+    counts["REPOSITORY_LIFECYCLE_FINDINGS"] = len(repository_findings)
+    counts["REPOSITORY_LIFECYCLE_RECOVERY_REQUIRED"] = sum(1 for row in repository_findings if row.get("recovery_required"))
 
     return {
         "schema": "stegverse.task-registry-health-monitor-report/v1",
@@ -382,6 +519,7 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
         "completed_retirement_blocks": retirement_blocks,
         "steghealth_recovery_tasks": recovery_specs,
         "recordable_action_events": action_events,
+        "repository_lifecycle_findings": repository_findings,
         "inactive_is_reporting_posture_not_lifecycle": True,
         "retired_is_terminal_for_execution": True,
         "retired_history_review_only_revive": True,
@@ -395,9 +533,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate canonical task registry and checked-out worker-return health.")
     parser.add_argument("--now", help="Optional ISO-8601 reference time")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--repository-artifacts", type=Path, help="Optional current repository artifact observations emitted by existing telemetry/repository governance surfaces")
+    parser.add_argument("--checkin-ledger", type=Path, default=CHECKIN_LEDGER)
     args = parser.parse_args()
     now = _parse_time(args.now) if args.now else None
-    report = evaluate(now=now)
+    observations: list[dict[str, Any]] = []
+    if args.repository_artifacts:
+        payload = _load(args.repository_artifacts)
+        observations = payload.get("artifacts", []) if isinstance(payload, dict) else []
+    report = evaluate(now=now, repository_artifact_observations=observations, checkin_ledger=args.checkin_ledger)
     text = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
