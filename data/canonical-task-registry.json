@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 284,
-  "status": "ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_SESSION_HANDOFF_RECORDED",
+  "generation": 285,
+  "status": "SUBSTRATE_NEUTRAL_DECISION_PREDICATE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -18175,6 +18175,98 @@
         "session_prompt_count_at_handoff": 25,
         "goal_prompt_count_at_handoff": "4/20"
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
+      "correlation_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
+      "root_correlation_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
+      "parent_task_id": null,
+      "goal": "Define and experimentally validate a substrate-neutral operational decision predicate using controlled evidence perturbation, adversarial controls, reproducible trial families, and retained receipts, while keeping decision observation semantically separate from consciousness, personhood, free will, execution authority, governance authority, and Interlock/InTr dispositions.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "repository": "StegVerse-Labs/.github",
+      "cosv_task_vector": "10100000110000",
+      "native_owner_issue": 2955,
+      "authority_effect": "NONE_EXPERIMENT_REGISTRATION_ONLY",
+      "authority_model": {
+        "work_intent_and_coordination": "TASK_REGISTRY",
+        "execution_claim_and_fence": "WORKERCOORDINATOR",
+        "governed_transition": "INTERLOCK_INTR",
+        "observed_reality_and_reconstruction": "MASTER_RECORDS",
+        "experimental_decision_observation": "NON_AUTHORIZING",
+        "github_runtime_authority": "NONE"
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "substrate-neutral-decision-experiment",
+          "decision-observation-receipts",
+          "adversarial-trial-families",
+          "decision-authority-semantic-firewall"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "expected_evidence_predicates": [
+        "ALTERNATIVE_AVAILABILITY_OBSERVED",
+        "EVIDENCE_SENSITIVITY_OBSERVED",
+        "RELEVANCE_DISCRIMINATION_OBSERVED",
+        "COUNTERFACTUAL_DIFFERENTIATION_OBSERVED",
+        "SELECTION_COMMITMENT_OBSERVED",
+        "TRACEABLE_CONSEQUENCE_OBSERVED",
+        "DECISION_OBSERVATION_SEMANTICALLY_SEPARATE_FROM_GOVERNANCE_DISPOSITION"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "controlled-experiment-execution",
+          "immutable-trial-evidence-retention"
+        ],
+        "environment": "EXPERIMENTAL",
+        "direction": "INTERNAL",
+        "mutation_required": false,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED",
+        "SUPERSEDED"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "evidence_complete": false,
+        "experimental_result": null
+      },
+      "nonclaims": [
+        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_CONSCIOUSNESS",
+        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_PERSONHOOD",
+        "DECISION_OBSERVATION_PASS_DOES_NOT_IMPLY_FREE_WILL",
+        "DECISION_OBSERVATION_PASS_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
+        "DECISION_OBSERVATION_PASS_DOES_NOT_GRANT_GOVERNANCE_AUTHORITY",
+        "DECISION_OBSERVATION_PASS_IS_NOT_INTERLOCK_INTR_ALLOW",
+        "DECISION_OBSERVATION_FAIL_IS_NOT_INTERLOCK_INTR_DENY",
+        "DECISION_OBSERVATION_INDETERMINATE_IS_NOT_INTERLOCK_INTR_FAIL_CLOSED"
+      ],
+      "source_refs": [
+        "experiments/substrate-neutral-decision-predicate.v1.json",
+        "schemas/substrate-neutral-decision-receipt.v1.schema.json",
+        "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md"
+      ],
+      "handoff_projection_refs": [
+        "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md"
+      ]
     }
   ],
   "human_actions": [],
