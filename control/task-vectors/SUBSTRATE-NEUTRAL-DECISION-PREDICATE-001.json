@@ -1,0 +1,31 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000110000",
+  "evidence_refs": [
+    "data/canonical-task-registry.json",
+    "data/canonical-task-records/SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001.json",
+    "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md",
+    "experiments/substrate-neutral-decision-predicate.v1.json",
+    "schemas/substrate-neutral-decision-receipt.v1.schema.json",
+    "github-issue:2955"
+  ],
+  "observed_at": "2026-10-03T14:18:57-05:00",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
