@@ -63,3 +63,21 @@ Where recovery is warranted, the monitor must generate a unique StegHealth recov
 ## Next admissible work
 
 Implement and execute the registry census + checked-out worker-return reconciliation and persist the first monitor report.
+
+## Repository lifecycle consistency binding — 2026-10-03
+
+The existing Task Registry Health owner now consumes repository-artifact bindings already retained by `TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001` (`repository`, `branch`, `pull_request`, `source_head`) and classifies current repository observations supplied by existing repository-governance/telemetry surfaces.
+
+Canonical predicate:
+
+```text
+EVERY_GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_EXACTLY_ONE_CANONICAL_TASK
+UNTIL_COMPATIBLE_TERMINAL_TASK_AND_REPOSITORY_DISPOSITIONS_EXIST
+```
+
+Health findings now include open, stale, conflict-dirty, terminal-Task/nonterminal-artifact, multiple-task-binding, and non-atomic supersession conditions. Stale/conflicted repository lifecycle findings route to the existing deduplicated StegHealth remediation owner; StegDB remains durable-state comparison, repo-standards remains repository-policy/validation, Architecture Guard remains a structural signal, and telemetry remains non-authorizing observation. None becomes a second task authority.
+
+A replacement/successor PR does not release predecessor responsibility unless the predecessor artifact is terminalized in the same lifecycle transition or an explicit retained exception is bound. Task completion/retirement is not compatible with an attributable nonterminal repository artifact absent such an explicit retained exception.
+
+This change creates no scheduler, monitor, database, cleanup Goal, branch, or replacement PR.
+
