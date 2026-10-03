@@ -34,8 +34,16 @@
     }
   },
   "transitions": {
-    "ACTIVE": ["COMPLETED", "SUPERSEDED", "INVALID"],
-    "COMPLETED": ["RETIRED", "SUPERSEDED", "INVALID"],
+    "ACTIVE": [
+      "COMPLETED",
+      "SUPERSEDED",
+      "INVALID"
+    ],
+    "COMPLETED": [
+      "RETIRED",
+      "SUPERSEDED",
+      "INVALID"
+    ],
     "RETIRED": [],
     "SUPERSEDED": [],
     "INVALID": []
@@ -83,7 +91,10 @@
       "successor_task_id",
       "superseded_by_task_id"
     ],
-    "open_related_lifecycles": ["ACTIVE", "COMPLETED"],
+    "open_related_lifecycles": [
+      "ACTIVE",
+      "COMPLETED"
+    ],
     "retirement_blocked_while_any_immediate_or_one_hop_related_task_is_open": true,
     "recommended_predicates": [
       "IMPLEMENTATION_COMPLETE",
@@ -92,8 +103,22 @@
       "REQUIRED_PROPAGATION_COMPLETE",
       "REQUIRED_RELEASE_OR_TAG_COMPLETE",
       "NO_UNRESOLVED_TASK_OWNED_WORK",
-      "NO_OPEN_IMMEDIATE_OR_ONE_HOP_RELATED_TASKS"
-    ]
+      "NO_OPEN_IMMEDIATE_OR_ONE_HOP_RELATED_TASKS",
+      "REPOSITORY_ARTIFACTS_TERMINAL_OR_EXPLICIT_EXCEPTION_RETAINED",
+      "NO_MULTIPLE_CANONICAL_TASK_BINDINGS_FOR_ONE_REPOSITORY_ARTIFACT"
+    ],
+    "repository_lifecycle_consistency": {
+      "required_for_governed_repository_artifacts": true,
+      "binding_source": "TASK_REGISTRY_CHECKIN_EVENT_HISTORY_CONTEXT",
+      "health_owner": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+      "completion_or_retirement_blocked_when_attributable_artifact_nonterminal": true,
+      "allowed_terminal_artifact_states": [
+        "MERGED",
+        "CLOSED"
+      ],
+      "explicit_exception_field": "repository_lifecycle_exception_ref",
+      "successor_or_replacement_requires_atomic_predecessor_terminalization": true
+    }
   },
   "invariants": [
     "RETIRED_IS_TERMINAL_FOR_EXECUTION",
@@ -105,6 +130,9 @@
     "INVALID_FAILS_CLOSED",
     "COMPLETED_MAY_ONLY_PERFORM_EXPLICIT_CLOSURE_WORK",
     "COMPLETED_IS_NOT_RETIREMENT_READY_WHILE_AN_IMMEDIATE_OR_ONE_HOP_RELATED_TASK_REMAINS_OPEN",
-    "STALE_HANDOFF_CANNOT_OVERRIDE_CANONICAL_TASK_STATE"
+    "STALE_HANDOFF_CANNOT_OVERRIDE_CANONICAL_TASK_STATE",
+    "GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_ONE_CANONICAL_TASK_UNTIL_COMPATIBLE_TERMINAL_DISPOSITIONS",
+    "COMPLETED_OR_RETIRED_IS_INVALID_WHILE_ATTRIBUTABLE_REPOSITORY_ARTIFACT_IS_NONTERMINAL_WITHOUT_EXPLICIT_EXCEPTION",
+    "REPLACEMENT_OR_SUCCESSOR_DOES_NOT_RELEASE_PREDECESSOR_REPOSITORY_RESPONSIBILITY_WITHOUT_ATOMIC_TERMINALIZATION"
   ]
 }
