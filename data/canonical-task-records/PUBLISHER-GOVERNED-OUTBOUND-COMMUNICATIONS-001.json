@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001",
+  "correlation_id": "PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+  "successor_task_ids": [],
+  "goal": "Establish the minimum reusable Publisher-governed outbound-media contract, beginning with email: retain immutable references to inbound communication events and predecessor chains; derive required context from outbound purpose; retrieve authoritative relationship/history, correspondence and workstream evidence; require explicit VERIFIED, NOT_APPLICABLE, NO_PRIOR_HISTORY or INSUFFICIENT_EVIDENCE dispositions; admit composition only after required context resolution; bind outbound manifests to exact composed bytes and authority evidence; and retain separate authentic send evidence and publication/communication receipts without creating duplicate storage, transport, credentials or authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100121",
+  "repository": "GCAT-BCAT-Engine/Publisher",
+  "issue_ref": "StegVerse-Labs/.github#2959",
+  "handoff_projection_refs": [
+    "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md"
+  ],
+  "source_refs": [
+    "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md",
+    "GCAT-BCAT-Engine/Publisher:README.md",
+    "GCAT-BCAT-Engine/Publisher:src/publication_plane/core/receipt_writer.py",
+    "GCAT-BCAT-Engine/Publisher:docs/MIR_ROUNDTRIP_PUBLISHER_ARTIFACT_RETURN_MIRROR_HANDOFF.md"
+  ],
+  "context_dispositions": [
+    "VERIFIED",
+    "NOT_APPLICABLE",
+    "NO_PRIOR_HISTORY",
+    "INSUFFICIENT_EVIDENCE"
+  ],
+  "invariants": {
+    "insufficient_evidence_is_non_allow": true,
+    "external_send_requires_separate_observation": true,
+    "duplicate_email_store": false,
+    "duplicate_relationship_database": false,
+    "new_transport": false,
+    "new_credential_route": false,
+    "new_authority_plane": false
+  }
+}
