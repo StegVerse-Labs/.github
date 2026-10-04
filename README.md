@@ -2042,3 +2042,8 @@ This repair creates no runtime, scheduler, dispatcher, credential path, device p
 ### ÉLAN independent HOLD semantic-analysis successor — 2026-10-02
 
 `ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001` / COSV `71000000100120` decomposes the independence-preserving coauthor packet from `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005` at its 20/20 prompt ceiling. It preserves exact T0–T4 HOLD condition identities, HOLD as `UNDETERMINED`, and records that the abstract was already sent. The child is research-packet-only: source-supported observation/representation/interpretation questions plus a separate conceptual admissible-execution question; downstream StegVerse outcomes and local SDK remediation are excluded. See `docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md`.
+
+
+## Publisher-governed outbound communications successor
+
+Canonical Goal `PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001` (issue #2959) owns the ecosystem-wide repair derived from the ÉLAN communication incident: purpose-derived authoritative context resolution before outbound composition, explicit context dispositions including non-ALLOW `INSUFFICIENT_EVIDENCE`, manifest-bound exact composed bytes, and separate send evidence. Publisher must reuse existing communication/history sources, transports, credentials and authority rather than duplicate them. The implementation handoff is `GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md`.
