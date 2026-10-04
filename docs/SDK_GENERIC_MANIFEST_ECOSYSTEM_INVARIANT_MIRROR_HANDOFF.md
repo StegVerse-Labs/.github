@@ -395,3 +395,14 @@ The missing source seam is downstream of that validation. The existing manifest-
 TVC's role in this repair is validation-only. It must not resolve, infer, substitute, or select `processing_capability` or `route_id`; SDK canonical manifest route resolution remains processing-selection authority, TV/TVC remains credential authority, and Interlock/InTr remains transition transport authority. Source tests must demonstrate fail-closed behavior for missing or mutated SDK request hash, canonical manifest hash, capability, or route, plus acceptance of an exact inherited binding under the existing provider-profile constraints.
 
 Until that implementation and its source tests exist, `TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT` remains PARTIAL. Runtime evidence is not required to close this source-only predicate, and source closure must not promote any runtime predicate. Every `remaining_runtime_predicate` and `AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` remain unchanged.
+
+
+## 2026-10-04 Console SDK execution-profile correction
+
+SDK source owner remains this Goal. Current SDK source already publishes both governance routes but the Manifest Builder previously bound `--process governance` only to `stegverse.route.canonical-governed.v1`; the customer-local route therefore remained a declared capability-map exemption rather than an ordinary console-selectable route.
+
+The bounded SDK candidate introduces an explicit non-authorizing execution-scope selector: `LOCAL_CONFORMANCE` deterministically selects `stegverse.route.customer-local-governed.v1`; `ECOSYSTEM_CONNECTED` deterministically selects `stegverse.route.canonical-governed.v1` and remains the compatibility default. The selected route remains canonical manifest data and is revalidated by existing route resolution. No profile/route fallback is permitted. Local construction omits federated completion metadata because the existing customer-local runtime rejects federated completion and still requires independently trusted host callbacks for consequential execution.
+
+Disposition semantics remain `ALLOW | DENY | FAIL_CLOSED`; execution scope is separate and does not introduce `LOCAL_RESULT`. Production source execution remains bounded at `SDK_MANIFEST_HANDOFF` until authentic request-bound InTr receiving-operation admission/refusal, organization transition receipt/readback and applicable Master Records custody bind the exact attempted manifest/transition. SDK-local source or CI assertions do not satisfy that runtime evidence requirement.
+
+This correction creates no second SDK, ingress, runtime, credential route, device prerequisite, scheduler, dispatcher or authority plane. Exact-head SDK CI and repository-required review remain required before merge; this canonical handoff update is coordination evidence only and does not promote the SDK candidate to runtime proof.
