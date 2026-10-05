@@ -37,5 +37,20 @@
   },
   "handoff_projection_refs": [
     "docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"
-  ]
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/Site#1500",
+    "StegVerse-Labs/Site@565cd816f7d8799a1cde9d968562c23fb3f23a53",
+    "StegVerse-Labs/Site:actions/runs/37385542714",
+    "StegVerse-Labs/Site:artifact/11378940616",
+    "docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"
+  ],
+  "evidence_state": {
+    "shared_and_va_runtime_ownership_separated": true,
+    "what_is_the_sdk_does_not_initialize_or_enter_va_routing": true,
+    "va_prompt_enters_va_specialization_only": true,
+    "public_homepage_loads_exact_canonical_chat_asset_identities": true,
+    "registered_node_deterministic_observation_retained": false
+  },
+  "remaining_predicate": "REGISTERED_NODE_DETERMINISTIC_OBSERVATION_RETAINED"
 }
