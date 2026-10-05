@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001",
+  "correlation_id": "PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001",
+  "successor_task_ids": [],
+  "goal": "Complete the genuinely separable post-admission outbound execution/evidence phase by binding an admitted Publisher governed-outbound ALLOW to existing authorized communication transport, credential/provider-operation authority, provider send observation, and communication/publication receipt machinery; retain authentic provider event identity and timestamp when exposed plus exact admitted-manifest/body/attachment digest, predecessor, and Publisher-receipt linkage without creating another transport, credential route, mailbox/history store, or authority plane.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100122",
+  "repository": "GCAT-BCAT-Engine/Publisher",
+  "issue_ref": "StegVerse-Labs/.github#2969",
+  "handoff_projection_refs": [
+    "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_EXECUTION_EVIDENCE_MIRROR_HANDOFF.md"
+  ],
+  "source_refs": [
+    "GCAT-BCAT-Engine/Publisher merge 7caf5906dc417f318e0f5b0456e899e43d7a61b0",
+    "StegVerse-Labs/Comms-Gateway:adapters/base.py",
+    "StegVerse-Labs/Comms-Gateway:gateway/delivery.py",
+    "StegVerse-Labs/Comms-Gateway:gateway/lifecycle.py",
+    "StegVerse-Labs/Comms-Gateway:schemas/delivery-result.schema.json",
+    "StegVerse-Labs/Comms-Gateway:adapters/microsoft365.py",
+    "StegVerse-Labs/StegOps-Orchestrator:README_GMAIL.md",
+    "StegVerse-Labs/TVC:docs/NATIVE_EMAIL_GMAIL_PROVIDER_MIRROR_HANDOFF.md"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "PUBLISHER_ADMISSION_ALLOW",
+      "kind": "SOURCE_CONTRACT",
+      "state": "RESOLVED",
+      "ref": "Publisher merge 7caf5906dc417f318e0f5b0456e899e43d7a61b0"
+    },
+    {
+      "dependency_id": "COMMUNICATION_DISPATCH_AND_DELIVERY_RECEIPT_MACHINERY",
+      "kind": "SOURCE_CONTRACT",
+      "state": "RESOLVED",
+      "ref": "Comms-Gateway dispatch receipt + delivery result + lifecycle contracts"
+    },
+    {
+      "dependency_id": "TV_TVC_PROVIDER_CREDENTIAL_AUTHORITY",
+      "kind": "AUTHORITY",
+      "state": "RESOLVED",
+      "ref": "Current canonical email authority posture assigns credential-bearing provider operations to TV/TVC"
+    },
+    {
+      "dependency_id": "AUTHORIZED_EMAIL_PROVIDER_SEND_OPERATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "FAIL_CLOSED",
+      "ref": "Current Microsoft365 Comms-Gateway adapter is read-only; current TV/TVC Gmail owner-session and canonical StegOps broker posture admit read/search/archive operations but no send operation."
+    }
+  ],
+  "first_unsatisfied_transition": {
+    "disposition": "FAIL_CLOSED",
+    "predicate": "AUTHORIZED_EMAIL_PROVIDER_SEND_OPERATION_ADMITTED_THROUGH_EXISTING_TV_TVC_AND_COMMS_GATEWAY_PATH",
+    "cause": "Existing canonical transport/receipt contracts can authorize and record delivery, but no current credential-bearing email provider adapter is admitted for outbound send. Historical StegOps Gmail draft-send source is not active authority under current README_GMAIL posture.",
+    "remedy": "Extend the existing TV/TVC provider-operation authority with a bounded SEND_EMAIL operation and bind that operation to the existing Comms-Gateway CommunicationAdapter delivery contract; do not restore consumer-side OAuth, create a new transport, or infer send from admission. The provider response must feed the existing delivery-result and lifecycle records and then be linked back to the Publisher admission receipt and exact digests."
+  },
+  "required_evidence": [
+    "provider_event_id or provider message identity when exposed",
+    "provider_timestamp/send timestamp when exposed",
+    "admitted outbound manifest digest",
+    "exact body digest",
+    "exact attachment digests",
+    "predecessor communication linkage",
+    "Publisher admission receipt reference",
+    "Comms-Gateway dispatch receipt",
+    "Comms-Gateway delivery result",
+    "Comms-Gateway lifecycle record"
+  ],
+  "invariants": {
+    "new_transport": false,
+    "new_credential_route": false,
+    "new_mailbox_store": false,
+    "new_relationship_store": false,
+    "new_authority_plane": false,
+    "send_must_be_observed": true,
+    "ci_or_merge_never_proves_send": true
+  }
+}
