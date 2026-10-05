@@ -1,15 +1,29 @@
 #!/usr/bin/env python3
-import importlib.util, json, tempfile
+import importlib.util, json, shutil, tempfile
 from pathlib import Path
 spec=importlib.util.spec_from_file_location("kernel","org-kernel/kernel.py"); k=importlib.util.module_from_spec(spec); spec.loader.exec_module(k)
+
+TREE=Path("org-kernel/kernel.py").resolve().parents[1]
+CONTRACT="docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
+#: A synthetic root is a dispatch root like any other, so it has to carry the
+#: standing surfaces the kernel resolves from it. Copied rather than stubbed:
+#: a test root that admits a crossing this organization's real root would refuse
+#: proves nothing about the real root.
+def provision_standing(root:Path)->None:
+    (root/"org-boundary/runtime").mkdir(parents=True,exist_ok=True)
+    shutil.copy2(TREE/"org-boundary/runtime/node_standing.py",root/"org-boundary/runtime/node_standing.py")
+    (root/"docs").mkdir(parents=True,exist_ok=True)
+    shutil.copy2(TREE/CONTRACT,root/CONTRACT)
+
+STANDING={"mode":"ESTABLISH_GENESIS","node_ref":"kernel-test-node","predecessor":None}
 with tempfile.TemporaryDirectory() as td:
- root=Path(td); (root/"org-boundary/registry").mkdir(parents=True)
+ root=Path(td); (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
  reg={"organization":"Kernel-Test","services":[{"service_id":"kernel-test.boundary-diagnostic","repository":"Kernel-Test/.github","boundary_role":"BOUNDARY_LOCAL_DIAGNOSTIC"}]}
  (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
  packet={"schema_version":"stegverse.intr.org-boundary.v1","packet_id":"kernel-test-001","direction":"INGRESS",
  "origin":{"org":"Peer","service":"peer.boundary-diagnostic"},"destination":{"org":"Kernel-Test","service":"kernel-test.boundary-diagnostic"},
  "carrier":{"kind":"HB_DERIVED","reference":"canonical"},"intr_profile":"stegverse.intr.org-boundary.v1",
- "transition":{"reference":"diagnostic","authority_effect":"NONE"},"payload":{"probe":"ping"},
+ "transition":{"reference":"diagnostic","authority_effect":"NONE"},"payload":{"probe":"ping"},"standing":STANDING,
  "evidence":{"ingress_receipt":None,"dispatch_receipt":None,"consumption_receipt":None,"egress_receipt":None,"reconstruction_reference":None}}
  frame=k.carrier_frame(packet,now_ns=k.HB_ANCHOR_UNIX_NS+1_000_000_000)
  recovered=k.recover_packet(frame); assert recovered==packet
@@ -23,13 +37,13 @@ with tempfile.TemporaryDirectory() as td:
     mesh=Path(td)/"mesh"
     a=Path(td)/"a"; b=Path(td)/"b"
     for root,org in ((a,"Org-A"),(b,"Org-B")):
-        (root/"org-boundary/registry").mkdir(parents=True)
+        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
         slug=org.lower()
         reg={"organization":org,"services":[{"service_id":slug+".boundary-diagnostic","repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_DIAGNOSTIC"}]}
         (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
     packet=k.build_packet(origin_org="Org-A",origin_service="org-a.boundary-diagnostic",
                           destination_org="Org-B",destination_service="org-b.boundary-diagnostic",
-                          payload={"probe":"mesh"},packet_id="mesh-a-to-b-001")
+                          payload={"probe":"mesh"},standing=STANDING,packet_id="mesh-a-to-b-001")
     pub=k.publish_packet(packet,root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+2_000_000_000)
     assert Path(pub["path"]).exists()
     assert k.consume_addressed_frames(a,mesh_root=mesh)==[]
@@ -49,7 +63,7 @@ with tempfile.TemporaryDirectory() as td:
     roots={}
     for org in orgs:
         root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True)
+        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
         service=k.organization_slug(org)+".org-control"
         reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
         (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
@@ -58,6 +72,7 @@ with tempfile.TemporaryDirectory() as td:
         origin_org="StegVerse-Labs",
         origin_service="stegverse-labs.org-control",
         organizations=orgs,
+        standing=STANDING,
         message_class="ecosystem.monitor.request",
         subject="ecosystem-broadcast-001",
         body={"monitor":"runtime-status"},
@@ -85,7 +100,7 @@ with tempfile.TemporaryDirectory() as td:
     directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
     for org in orgs:
         root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True)
+        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
         (root/"resident-runtime").mkdir(parents=True)
         service=k.organization_slug(org)+".org-control"
         reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
@@ -96,6 +111,7 @@ with tempfile.TemporaryDirectory() as td:
     origin=roots["StegVerse-Labs"]
     pub=k.publish_ecosystem_from_directory(
         origin,
+        standing=STANDING,
         message_class="ecosystem.monitor.request",
         subject="ecosystem-monitor-response-001",
         body={"monitor":"resident-status"},
@@ -121,7 +137,7 @@ with tempfile.TemporaryDirectory() as td:
     directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
     for org in orgs:
         root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True)
+        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
         service=k.organization_slug(org)+".org-control"
         reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
         (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
@@ -130,6 +146,7 @@ with tempfile.TemporaryDirectory() as td:
     origin=roots["StegVerse-Labs"]
     pub=k.publish_ecosystem_from_directory(
         origin,
+        standing=STANDING,
         message_class="ecosystem.work.request",
         subject="ecosystem-work-intake-001",
         body={"goal":"perform local status reconciliation"},
@@ -155,7 +172,7 @@ print("ECOSYSTEM_CONTROL_RESPONSE_PASS")
 with tempfile.TemporaryDirectory() as td:
     mesh=Path(td)/"mesh"
     root=Path(td)/"node"
-    (root/"org-boundary/registry").mkdir(parents=True)
+    (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
     (root/"resident-runtime").mkdir(parents=True)
     org="Replay-Test"
     reg={"organization":org,"services":[{"service_id":"replay-test.org-control","repository":"Replay-Test/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
@@ -165,6 +182,7 @@ with tempfile.TemporaryDirectory() as td:
     (root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST","kernel":{"version":"1.3.1"}}))
     pub=k.publish_ecosystem_from_directory(
         root,
+        standing=STANDING,
         message_class="ecosystem.communication",
         subject="dedup",
         body={"value":1},
@@ -180,3 +198,58 @@ with tempfile.TemporaryDirectory() as td:
     originals=[x for x in second if ((x.get("result") or {}).get("packet") or {}).get("packet_id")=="ecosystem-dedup-001:replay-test"]
     assert originals==[]
 print("ECOSYSTEM_DEDUP_PASS")
+
+
+# node-standing gate proof: kernel_required 1.3.0 declares this gate, so the
+# gate is proven here rather than implied by the declared version.
+with tempfile.TemporaryDirectory() as td:
+    root=Path(td)/"gate"
+    (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
+    org="Gate-Test"
+    reg={"organization":org,"services":[{"service_id":"gate-test.org-control","repository":"Gate-Test/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+    (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+
+    # A standing-less packet cannot be constructed: `standing` has no default.
+    try:
+        k.build_packet(origin_org="Anyone-At-All",origin_service="anyone.org-control",
+                       destination_org=org,destination_service="gate-test.org-control",
+                       payload={"probe":"unstanding"})
+        raise AssertionError("build_packet accepted a packet with no standing")
+    except TypeError as expected:
+        assert "standing" in str(expected)
+
+    # A hand-forged envelope that skips the constructor is refused fail-closed,
+    # as the contract's own disposition rather than a bare error.
+    forged={"schema_version":k.PACKET_SCHEMA,"packet_id":"gate-test-001","direction":"INGRESS",
+            "origin":{"org":"Anyone-At-All","service":"anyone.org-control"},
+            "destination":{"org":org,"service":"gate-test.org-control"},
+            "carrier":{"kind":"HB_DERIVED","reference":"org-federation"},
+            "intr_profile":"stegverse.intr.org-boundary.v1",
+            "transition":{"reference":"federation.v1","authority_effect":"NONE","conditions":[]},
+            "payload":{"probe":"unstanding"},
+            "evidence":{"ingress_receipt":None,"dispatch_receipt":None,"consumption_receipt":None,"egress_receipt":None,"reconstruction_reference":None}}
+    try:
+        k.dispatch(root,forged)
+        raise AssertionError("dispatch consumed a crossing with no standing")
+    except ValueError as refused:
+        assert str(refused).startswith("node_standing_refused:"), refused
+        assert "no-standing-declared" in str(refused), refused
+
+    # The same crossing, carrying standing, is admitted and the resolved
+    # standing travels on the result.
+    admitted=k.dispatch(root,{**forged,"standing":STANDING})
+    assert admitted["consumed"] is True
+    assert admitted["application_result"]["execution_authority_inferred"] is False
+    assert admitted["node_standing_disposition"]=="ALLOW"
+    assert admitted["standing_mode"]=="ESTABLISH_GENESIS"
+    assert admitted["standing_node_ref"]=="kernel-test-node"
+    assert admitted["standing_generation"]==1
+    # The gate makes the crossing provable by node chain. It does not validate
+    # the caller-written origin string, and the result says so rather than
+    # letting a reader of the chain assume otherwise -- the origin above is
+    # still "Anyone-At-All" and the crossing is admitted on its standing.
+    assert admitted["caller_editable_origin_established_identity"] is False
+    assert admitted["structural_standing_only"] is True
+    assert admitted["structural_standing_is_authenticated_standing"] is False
+    assert admitted["standing_authority_effect"]=="NONE_STANDING_ONLY"
+print("NODE_STANDING_GATE_PASS")
