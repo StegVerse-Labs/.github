@@ -81,3 +81,11 @@ A replacement/successor PR does not release predecessor responsibility unless th
 
 This change creates no scheduler, monitor, database, cleanup Goal, branch, or replacement PR.
 
+
+## CHECKED_OUT coordination-state reconciliation — 2026-10-05
+
+Component-010 and the session-return recorder were re-read on current main. The source policy still records `authenticated_session_origin_interface_observed=false`, the entry-surface inventory still records `authentic_session_origin_caller_installed=false`, and ChatGPT session return still stops before ledger mutation with `STOP_AUTHENTIC_ORIGIN_UNAVAILABLE` unless independently verified resident session origin and retained same-session CHECK_IN continuity are available. No such authenticated interface or retained runtime ledger is exposed to this execution context; therefore no CHECK_IN/RETURNED/STOPPED event was synthesized.
+
+The health monitor now separates explicit canonical `CHECKED_OUT` metadata from active WorkerCoordinator execution. A checked-out task with no matching active WorkerCoordinator task carrying both a claim ID and fencing token is reported as `COORDINATION_STATE_UNVERIFIED`, with `recovery_required=false`. This posture is neither proof of an active worker nor a worker-return failure. Authentic session-event continuity is required before returning or otherwise normalizing such a checkout.
+
+This reconciliation does not add a scheduler, ledger, AI_SESSION_GATE, worker-return obligation, recovery task, replacement task, branch, or PR.
