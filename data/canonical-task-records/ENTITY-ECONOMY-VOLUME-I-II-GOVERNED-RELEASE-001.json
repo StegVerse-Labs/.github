@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ENTITY-ECONOMY-VOLUME-I-II-GOVERNED-RELEASE-001",
+  "correlation_id": "ENTITY-ECONOMY-VOLUME-I-II-GOVERNED-RELEASE-001",
+  "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+  "parent_task_id": "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001",
+  "successor_task_ids": [],
+  "goal": "After canonical source binding succeeds, invoke the existing governed Publisher publication path for the exact Volume I/II successor identities, retain the first authentic ALLOW/DENY/FAIL_CLOSED dispositions and applicable Master Records evidence, release only when authorized, propagate versioned Site routes only after authentic Publisher release evidence, and independently observe credential-free public readback.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "10100000102000",
+  "source_refs": [
+    "GCAT-BCAT-Engine/Publisher@1b4b7b1defd46fe5c537ef67fe4a12085143f777",
+    "StegVerse-org/StegVerse-SDK#428"
+  ],
+  "dependencies": [
+    {
+      "predicate": "CANONICAL_SUCCESSOR_SOURCE_BINDING",
+      "state": "IN_PROGRESS",
+      "ref": "StegVerse-org/StegVerse-SDK#428"
+    },
+    {
+      "predicate": "GOVERNED_PUBLISHER_PUBLICATION",
+      "state": "UNKNOWN"
+    },
+    {
+      "predicate": "PUBLISHER_RELEASE_EVIDENCE",
+      "state": "UNKNOWN"
+    },
+    {
+      "predicate": "SITE_VERSIONED_PROPAGATION",
+      "state": "UNKNOWN"
+    },
+    {
+      "predicate": "CREDENTIAL_FREE_PUBLIC_READBACK",
+      "state": "UNKNOWN"
+    }
+  ],
+  "authority_effect": "NONE_TASK_COORDINATION_ONLY",
+  "completion_claimed": false,
+  "validated": false
+}

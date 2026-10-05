@@ -4,10 +4,12 @@
   "correlation_id": "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001",
   "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
   "parent_task_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
-  "successor_task_ids": [],
+  "successor_task_ids": [
+    "ENTITY-ECONOMY-VOLUME-I-II-GOVERNED-RELEASE-001"
+  ],
   "goal": "Complete only the unresolved Volume I/II successor-edition path: materialize deterministic distinct Publisher-owned versioned artifacts from the exact PR #91 composites, validate immutable predecessor identities, bind them through the existing generic manifest builder/governed Publisher publication path, and observe downstream Site versioned-route propagation/readback without inferring deployment from repository merge.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "RETURNED",
   "cosv_task_vector": "10100000102000",
   "source_refs": [
     "StegVerse-Labs/.github:data/canonical-task-records/ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001.json",
@@ -79,5 +81,9 @@
     "interlock_intr_required_when_applicable": true,
     "master_records_reality_authority": true,
     "second_user_operated_device_required": false
-  }
+  },
+  "completion_claimed": false,
+  "validated": false,
+  "source_binding_state": "IN_PROGRESS_SDK_PR_428",
+  "prompt_limit_disposition": "DECOMPOSED_AT_20"
 }
