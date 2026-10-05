@@ -20,6 +20,7 @@
     "CHECKED_OUT",
     "CHECKED_OUT_WITH_RETURN_OVERDUE",
     "CHECKED_OUT_WITH_WORKER_NONREPORT",
+    "CHECKED_OUT_COORDINATION_STATE_UNVERIFIED",
     "COMPLETED_BLOCKED_FROM_RETIREMENT_BY_OPEN_ONE_HOP_RELATED_TASKS",
     "RECOVERY_TASKS_DERIVED",
     "RECOVERY_TASKS_ALREADY_REGISTERED",
@@ -37,7 +38,8 @@
       "WORKER_RETRY_COUNTER",
       "CLAIM_OR_EXECUTION_REF",
       "CHECKOUT_STATE",
-      "CURRENT_CANONICAL_LIFECYCLE"
+      "CURRENT_CANONICAL_LIFECYCLE",
+      "ACTIVE_WORKERCOORDINATOR_CLAIM_AND_FENCE"
     ],
     "symptoms": {
       "RETURN_PENDING": "Worker return expectation has not yet elapsed.",
@@ -45,7 +47,8 @@
       "RETURN_OVERDUE": "Expected return window elapsed, matching Master Records return is absent, and StegDB independently classifies the same bound return as missing.",
       "WORKER_NONREPORT": "Independent evidence confirms the expected worker return never reached Master Records.",
       "RECONCILIATION_REQUIRED": "Partial/conflicting evidence prevents safe classification.",
-      "HEALTHY": "Expected worker return/history is present and reconciled."
+      "HEALTHY": "Expected worker return/history is present and reconciled.",
+      "COORDINATION_STATE_UNVERIFIED": "Canonical CHECKED_OUT metadata has no matching active WorkerCoordinator claim/fence and authentic session-event continuity is unavailable; this is neither worker-return failure nor proof of an active worker."
     }
   },
   "completed_retirement_review": {
@@ -133,7 +136,8 @@
     "EVERY_GOVERNED_REPOSITORY_ARTIFACT_REMAINS_BOUND_TO_EXACTLY_ONE_CANONICAL_TASK_UNTIL_COMPATIBLE_TERMINAL_DISPOSITIONS_EXIST",
     "OPEN_STALE_OR_CONFLICTED_BOUND_REPOSITORY_ARTIFACTS_ARE_HEALTH_FINDINGS_NOT_TERMINAL_WORK",
     "SUCCESSOR_OR_REPLACEMENT_PR_DOES_NOT_RELEASE_PREDECESSOR_RESPONSIBILITY_WITHOUT_ATOMIC_PREDECESSOR_TERMINALIZATION_OR_EXPLICIT_EXCEPTION",
-    "TASK_COMPLETION_OR_RETIREMENT_IS_BLOCKED_BY_ATTRIBUTABLE_NONTERMINAL_REPOSITORY_ARTIFACTS_ABSENT_EXPLICIT_EXCEPTION"
+    "TASK_COMPLETION_OR_RETIREMENT_IS_BLOCKED_BY_ATTRIBUTABLE_NONTERMINAL_REPOSITORY_ARTIFACTS_ABSENT_EXPLICIT_EXCEPTION",
+    "CHECKED_OUT_WITHOUT_ACTIVE_WORKERCOORDINATOR_CLAIM_FENCE_IS_COORDINATION_STATE_UNVERIFIED_UNTIL_AUTHENTIC_SESSION_EVENT_CONTINUITY_IS_OBSERVED"
   ],
   "refs": {
     "lifecycle_contract": "data/task-lifecycle-status-contract.json",
