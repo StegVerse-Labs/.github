@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.substrate-neutral-decision-receipt/v1",
+  "title": "Substrate-Neutral Decision Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "experiment_id",
+    "subject_id",
+    "subject_class",
+    "trial_id",
+    "trial_family_id",
+    "input_digest",
+    "output_digest",
+    "perturbation_id",
+    "predicate_results",
+    "overall_result",
+    "selected_alternative"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.substrate-neutral-decision-receipt/v1"
+    },
+    "experiment_id": {
+      "const": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001"
+    },
+    "subject_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject_class": {
+      "enum": [
+        "HUMAN",
+        "LLM",
+        "OTHER_COMPUTATIONAL_SYSTEM",
+        "OTHER_BIOLOGICAL_SYSTEM"
+      ]
+    },
+    "trial_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trial_family_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "output_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "perturbation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selected_alternative": {
+      "type": [
+        "string",
+        "number",
+        "null"
+      ]
+    },
+    "predicate_results": {
+      "type": "object",
+      "required": [
+        "P1_ALTERNATIVE_AVAILABILITY",
+        "P2_EVIDENCE_SENSITIVITY",
+        "P3_RELEVANCE_DISCRIMINATION",
+        "P4_COUNTERFACTUAL_DIFFERENTIATION",
+        "P5_SELECTION_COMMITMENT",
+        "P6_TRACEABLE_CONSEQUENCE"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "P1_ALTERNATIVE_AVAILABILITY": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        },
+        "P2_EVIDENCE_SENSITIVITY": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        },
+        "P3_RELEVANCE_DISCRIMINATION": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        },
+        "P4_COUNTERFACTUAL_DIFFERENTIATION": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        },
+        "P5_SELECTION_COMMITMENT": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        },
+        "P6_TRACEABLE_CONSEQUENCE": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INDETERMINATE"
+          ]
+        }
+      }
+    },
+    "overall_result": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INDETERMINATE"
+      ]
+    },
+    "governance_disposition": {
+      "enum": [
+        "NOT_EVALUATED",
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED"
+      ]
+    }
+  }
+}

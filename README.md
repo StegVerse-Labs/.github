@@ -2047,3 +2047,8 @@ This repair creates no runtime, scheduler, dispatcher, credential path, device p
 ## Publisher-governed outbound communications successor
 
 Canonical Goal `PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001` (issue #2959) owns the ecosystem-wide repair derived from the ÉLAN communication incident: purpose-derived authoritative context resolution before outbound composition, explicit context dispositions including non-ALLOW `INSUFFICIENT_EVIDENCE`, manifest-bound exact composed bytes, and separate send evidence. Publisher must reuse existing communication/history sources, transports, credentials and authority rather than duplicate them. The implementation handoff is `GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md`.
+
+
+## Substrate-neutral decision predicate experiment
+
+Canonical experimental Goal `SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001` / COSV `10100000110000` defines a substrate-neutral operational decision test using controlled evidence perturbation, adversarial trial families, and retained PASS/FAIL/INDETERMINATE receipts. Experimental `DECISION_OBSERVATION` is explicitly non-authorizing and remains separate from `GOVERNANCE_DISPOSITION`: PASS is not ALLOW, FAIL is not DENY, and INDETERMINATE is not FAIL_CLOSED. Registration creates no WorkerCoordinator claim/fence, runtime, scheduler, credential path, device prerequisite, Interlock/InTr admission, execution authority, or governance authority. See `docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md`.
