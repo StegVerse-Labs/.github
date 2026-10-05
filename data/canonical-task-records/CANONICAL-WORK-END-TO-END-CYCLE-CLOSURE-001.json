@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+  "correlation_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+  "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "successor_task_ids": [],
+  "goal": "Close the distinct post-implementation verification obligation for Canonical Work by executing one current end-to-end coordination cycle through the already-implemented canonical substrate, retaining the first governed disposition and all applicable organization-ledger, reconciliation, and next-state evidence without creating or redesigning runtime, transport, credential, device, scheduler, or authority infrastructure.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md",
+    "data/canonical-work-coordination-goal-definition.json",
+    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+    "control/cross-task-coordination.d/canonical-work-parent-ingress.json",
+    "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+    "scripts/refresh_and_dispatch_resident_requests.py",
+    "workers/canonical_work_intr_ingress.py",
+    "workers/universal_intr_profiled_ingress.py",
+    "workers/manifest_state_transition_intr_ingress.py",
+    "org-runtime/interlock-intr.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "canonical-work-parent-ingress",
+      "sdk-manifest-ingress",
+      "universal-interlock-intr",
+      "workercoordinator-claim-fence",
+      "organization-transition-ledger",
+      "canonical-task-reconciliation",
+      "successor-determination"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-CURRENT-PARENT-GOVERNED-CYCLE",
+      "kind": "RUNTIME_VERIFICATION",
+      "state": "UNRESOLVED",
+      "ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+      "disposition": "REQUIRE_CURRENT_EXACT_PARENT_ATTEMPT_TO_RETAIN_ALLOW_deny_or_fail_closed_AND_CORRELATED_CYCLE_EVIDENCE"
+    }
+  ],
+  "blockers": [],
+  "allowed_next_transitions": [
+    "ATTEMPT_CURRENT_PARENT_CANONICAL_WORK_CYCLE",
+    "RETAIN_FIRST_GOVERNED_DISPOSITION",
+    "RECONCILE_APPLICABLE_ORGANIZATION_EVIDENCE_AND_NEXT_STATE",
+    "CLOSE_AFTER_MACHINE_READABLE_CONTINUATION_OR_TERMINAL_STATE"
+  ],
+  "handoff_projection_refs": [
+    "docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "implementation_parent_source_complete": true,
+    "current_parent_cycle_observed": false,
+    "current_governed_disposition_retained": false,
+    "organization_transition_receipt_retained": false,
+    "canonical_task_state_reconciled": false,
+    "dependency_successor_or_completion_determined": false,
+    "continuation_or_terminal_state_machine_readable": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "runtime_reality_authority": "Organization",
+    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "second_user_operated_device_required": false,
+    "authority_transfer_created_by_successor": false
+  }
+}

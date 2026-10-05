@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-work-goal-definition/v1",
   "document_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001-GOAL-DEFINITION",
-  "status": "CANONICAL_GOAL_DEFINITION_PROPOSED",
+  "status": "PROMPT_LIMIT_DECOMPOSED_TO_RUNTIME_CYCLE_CLOSURE_SUCCESSOR",
   "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "cosv_id": "10100000100000",
   "authoritative_work_intent_source": "data/canonical-task-registry.json",
@@ -77,5 +77,16 @@
     "receipts_are_evidence_not_authority": true,
     "master_records_is_not_transition_authority": true,
     "organization_transition_is_real_at_organization_ledger_append": true
+  },
+  "decomposition": {
+    "parent_goal_completed": false,
+    "parent_prompt_workstream_decomposed": true,
+    "canonical_parent_registry_state_preserved": "PROPOSED",
+    "goal_prompt_count": "20/20",
+    "successor_task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+    "successor_record": "data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json",
+    "successor_scope": "CURRENT_END_TO_END_RUNTIME_VERIFICATION_AND_CLOSURE_ONLY",
+    "aggregate_registry_mutation_performed": false,
+    "rationale": "Repository validation proves the parent remains a live root coordination substrate whose aggregate Registry state must stay PROPOSED. Prompt-limit decomposition therefore creates a dedicated canonical successor record for the distinct verification/closure obligation without changing the parent operational Registry state or resetting its unfinished evidence."
   }
 }
