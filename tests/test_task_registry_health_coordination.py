@@ -58,6 +58,25 @@ class TaskRegistryHealthCoordinationTests(unittest.TestCase):
             "checkout_state": "CHECKED_OUT",
         }))
 
+    def test_checked_out_without_active_worker_claim_is_coordination_state_unverified(self):
+        record = {
+            "task_id": "TASK-1",
+            "coordination_state": "ACTIVE",
+            "checkout_state": "CHECKED_OUT",
+        }
+        obs = module._checked_out_coordination_observation(record, set())
+        self.assertIsNotNone(obs)
+        self.assertEqual(obs["posture"], "COORDINATION_STATE_UNVERIFIED")
+        self.assertFalse(obs["recovery_required"])
+
+    def test_checked_out_with_active_worker_claim_defers_to_worker_return_review(self):
+        record = {
+            "task_id": "TASK-1",
+            "coordination_state": "ACTIVE",
+            "checkout_state": "CHECKED_OUT",
+        }
+        self.assertIsNone(module._checked_out_coordination_observation(record, {"TASK-1"}))
+
     def test_master_records_absence_without_stegdb_comparison_requires_reconciliation(self):
         now = datetime(2026, 9, 19, 23, 0, tzinfo=timezone.utc)
         record = {
