@@ -52,6 +52,20 @@ class TaskRegistryHealthCoordinationTests(unittest.TestCase):
         }
         self.assertFalse(module._checked_out(record))
 
+
+    def test_terminal_task_with_historical_claim_fence_is_not_checkout(self):
+        self.assertFalse(module._checked_out({
+            "task_id": "TASK-RETIRED",
+            "coordination_state": "RETIRED",
+            "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+            "worker_claim": {
+                "authority": "WORKERCOORDINATOR",
+                "claim_ref": "CLAIM-OLD",
+                "fence_ref": "FENCE-OLD",
+                "projection_only": False,
+            },
+        }))
+
     def test_explicit_checkout_state_remains_checkout(self):
         self.assertTrue(module._checked_out({
             "coordination_state": "ACTIVE",
