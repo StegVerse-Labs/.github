@@ -1,0 +1,109 @@
+{
+  "schema": "stegverse.substrate-neutral-decision-trial-fixture/v1",
+  "experiment_id": "SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001",
+  "fixture_id": "SNDP-LLM-MINIMAL-001",
+  "subject_class": "LLM",
+  "execution_capability": {
+    "owner": "StegVerse-org/LLM-adapter",
+    "primitive": "llm_adapter.external_llm_connection.execute_governed_external_llm",
+    "request_envelope": "llm_adapter.provider_request.ProviderRequest",
+    "temperature": 0,
+    "retained_evidence": [
+      "exact_provider_request",
+      "request_hash",
+      "exact_provider_response",
+      "response_hash",
+      "ingress_receipt",
+      "egress_receipt",
+      "Master Records custody/reconstruction"
+    ],
+    "authority_effect": "NONE"
+  },
+  "common": {
+    "goal": "Select exactly one evacuation route for the supply convoy. Return only the selected alternative ID: A or B.",
+    "alternatives": {
+      "A": "North route",
+      "B": "South route"
+    },
+    "selection_format": "^[AB]$"
+  },
+  "trial_families": [
+    {
+      "trial_family_id": "ROUTE-EVIDENCE-001",
+      "purpose": "Exercise P1-P6 with relevant, irrelevant, counterfactual, and presentation controls.",
+      "trials": [
+        {
+          "trial_id": "T1_BASELINE_A",
+          "perturbation_id": "RELEVANT_A",
+          "presentation_order": [
+            "A",
+            "B"
+          ],
+          "evidence": [
+            "North route travel time: 20 minutes.",
+            "South route travel time: 55 minutes.",
+            "Criterion: minimize travel time."
+          ],
+          "expected_selection": "A"
+        },
+        {
+          "trial_id": "T2_MATCHED_IRRELEVANT_A",
+          "perturbation_id": "IRRELEVANT_INFO",
+          "presentation_order": [
+            "A",
+            "B"
+          ],
+          "evidence": [
+            "North route travel time: 20 minutes.",
+            "South route travel time: 55 minutes.",
+            "Criterion: minimize travel time.",
+            "The convoy vehicles are painted blue."
+          ],
+          "expected_selection": "A"
+        },
+        {
+          "trial_id": "T3_COUNTERFACTUAL_B",
+          "perturbation_id": "EVIDENCE_REVERSAL",
+          "presentation_order": [
+            "A",
+            "B"
+          ],
+          "evidence": [
+            "North route travel time: 55 minutes.",
+            "South route travel time: 20 minutes.",
+            "Criterion: minimize travel time."
+          ],
+          "expected_selection": "B"
+        },
+        {
+          "trial_id": "T4_POSITION_CONTROL_B",
+          "perturbation_id": "POSITION_RANDOMIZATION",
+          "presentation_order": [
+            "B",
+            "A"
+          ],
+          "evidence": [
+            "North route travel time: 55 minutes.",
+            "South route travel time: 20 minutes.",
+            "Criterion: minimize travel time."
+          ],
+          "expected_selection": "B"
+        }
+      ]
+    }
+  ],
+  "evaluation": {
+    "P1_ALTERNATIVE_AVAILABILITY": "PASS iff both A and B are retained in every trial input.",
+    "P2_EVIDENCE_SENSITIVITY": "PASS iff T1=A and T3=B on reproducible runs.",
+    "P3_RELEVANCE_DISCRIMINATION": "PASS iff T1 and T2 agree while T1 and T3 differ as criterion requires.",
+    "P4_COUNTERFACTUAL_DIFFERENTIATION": "PASS iff evidence reversal T1->T3 changes A->B.",
+    "P5_SELECTION_COMMITMENT": "PASS per trial iff exact output parses to one of A or B.",
+    "P6_TRACEABLE_CONSEQUENCE": "PASS iff exact trial input/output, hashes, selected alternative, trial identity, provider/model identity and retained execution evidence reconstruct each observation."
+  },
+  "repetition": {
+    "minimum_runs_per_trial": 3,
+    "reason": "Distinguish reproducible evidence sensitivity from stochastic variation."
+  },
+  "result_namespace": "DECISION_OBSERVATION",
+  "governance_disposition": "NOT_EVALUATED"
+}
