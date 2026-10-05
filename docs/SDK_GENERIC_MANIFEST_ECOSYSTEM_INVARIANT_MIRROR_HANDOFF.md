@@ -406,3 +406,19 @@ The bounded SDK candidate introduces an explicit non-authorizing execution-scope
 Disposition semantics remain `ALLOW | DENY | FAIL_CLOSED`; execution scope is separate and does not introduce `LOCAL_RESULT`. Production source execution remains bounded at `SDK_MANIFEST_HANDOFF` until authentic request-bound InTr receiving-operation admission/refusal, organization transition receipt/readback and applicable Master Records custody bind the exact attempted manifest/transition. SDK-local source or CI assertions do not satisfy that runtime evidence requirement.
 
 This correction creates no second SDK, ingress, runtime, credential route, device prerequisite, scheduler, dispatcher or authority plane. Exact-head SDK CI and repository-required review remain required before merge; this canonical handoff update is coordination evidence only and does not promote the SDK candidate to runtime proof.
+
+
+### SDK #426 exact-head completion reconciliation — 2026-10-04
+
+SDK PR #426 initial exact head `cc39b84d009cbb1f5be459d2e83a64b548bf0406` exposed one compatibility defect: execution-profile metadata was emitted into non-governance manifests, changing the frozen MIR Experiment 3 root and transitively failing the SVG universal-runtime lane. The repair was bounded to Manifest Builder metadata scope; frozen experiment bytes and SVG semantics were not changed.
+
+Final exact head `0b08b7ab2077df5a1e623e680e7bc12e2ff247da` completed all 27 attached checks successfully except the intentionally skipped deploy job; the full test-suite ratchet and SVG governance-cycle route both succeeded. GitHub recorded no PR review object, branch-protection configuration was not readable through the integration, and GitHub admitted the expected-head merge. SDK #426 merged as `84d78a9c31c652ae2314e2db94872af39c7f2dc1`.
+
+Canonical SDK main now source-verifies:
+`LOCAL_CONFORMANCE -> stegverse.route.customer-local-governed.v1`
+`ECOSYSTEM_CONNECTED -> stegverse.route.canonical-governed.v1`
+with `ECOSYSTEM_CONNECTED` as compatibility default, no route substitution/fallback, and execution scope separate from `ALLOW | DENY | FAIL_CLOSED`.
+
+Canonical coordination PR #2957 had already been merged by the owner at `abc39eb5f0eafe6e9365dc590ff5e9ac7d65cb52` after its ratchet succeeded, before SDK #426 completed. This entry reconciles that ordering; it does not rewrite #2957 history.
+
+Runtime evidence boundary is unchanged: `SDK_MANIFEST_HANDOFF` is source/handoff evidence only. Authentic InTr admission or far-side execution remains unproven absent request-bound receiver-produced admission/refusal, organization transition receipt/readback, and applicable Master Records custody for the exact attempted transition.
