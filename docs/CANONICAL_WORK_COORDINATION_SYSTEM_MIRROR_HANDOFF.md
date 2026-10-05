@@ -333,3 +333,38 @@ The existing reusable-task `invocation_id` is now carried unchanged as `executio
 When no reusable invocation/attempt identifier is supplied, historical idempotent request consumption is unchanged. When an independently authorized reusable attempt does supply `execution_attempt_id`, a prior `COMPLETED` consumption receipt may return `ALREADY_CONSUMED` only for that same attempt. A prior receipt from another attempt is stale evidence and cannot satisfy the new dispatch. The bridge likewise requires the current dispatch outcome and task-specific receipt to carry the exact current attempt identifier before retaining ALLOW, DENY, or FAIL_CLOSED.
 
 This repair creates no runtime, scheduler, dispatcher, credential path, device prerequisite, request identity, WorkerCoordinator authority, Interlock/InTr authority, or retry path. Historical receipts remain valid historical evidence; run `36942710854` remains `NO_STANDARDIZED_GOVERNED_DISPOSITION_RETAINED_FOR_ATTEMPT`. No Canonical Work manifest was invoked or retried by this repair.
+
+
+## 2026-10-04 cross-repository native SDK / InTr prerequisite contamination audit
+
+This reconciliation follows current canonical ownership before interpreting repository-local evidence limitations.
+
+Authoritative current invariants:
+- `data/task-registry-global-invariants.json::actions_by_manifest` prohibits destination liveness, receiver availability, an always-on listener, an external machine, a second user-operated device, and a post-closure observer from becoming transition predicates. An unavailable receiver resolves through `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`.
+- This Goal's current canonical Task Registry record declares `deployment_required=false`, `current_observation_required=false`, `interlock_intr_is_transition_path_not_precondition=true`, and selects `ADMITTED-EPHEMERAL-STEGOS-NODE` with no external device requirement.
+- Organization Role runtime reality is organization-ledger manifest-directed append; Master Records is released-batch custody/reconstruction and is not awaited by a transition.
+- Existing organization `.github` repositories own their organization Interlock/InTr boundaries; native SDK execution must follow those owners rather than inserting an external-framework adapter as a prerequisite.
+
+Audit classification:
+1. The LLM-adapter statement that production endpoint binding, authenticated standing, runtime execution, deployment and custody remain NOT_PROVEN is valid only for that adapter/external-framework surface. It does not establish a native SDK prerequisite and is not imported into this Goal.
+2. Historical task-specific names containing `production-endpoint` (including the StegHealth KV task and retained receipt filenames) are provenance identities. Their names do not create a current persistent-endpoint, receiver-liveness or deployment prerequisite for this Goal.
+3. External-framework, provider, public-readback and experiment-specific requirements for authentic endpoint/provider observation remain valid at their own surfaces. They are not generalized to native SDK -> Universal Interlock/InTr transition admission.
+4. `AUTHENTIC_SESSION_ORIGIN_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` remains bounded to component-010's authenticated ChatGPT-origin question. It is not a substitute predicate for native SDK/InTr execution and does not authorize an AI_SESSION_GATE prerequisite.
+5. The previously proposed `AUTHENTIC_DEPLOYED_STANDING_GATED_SDK_BOUNDARY_NOT_EXPOSED_TO_ACTIVE_EXECUTION_CONTEXT` is rejected as a Goal predicate because it incorrectly promotes LLM-adapter deployment/standing into the native execution dependency graph.
+
+Authoritative dependency graph for the next Canonical Work attempt:
+
+```text
+current canonical Goal predecessor
+-> native SDK manifest-state-transition request
+-> canonical organization destination resolution
+-> existing organization-owned Universal Interlock/InTr transition path
+-> ALLOW / DENY / FAIL_CLOSED
+-> organization-ledger manifest-directed append / organization transition receipt
+-> applicable released-batch Master Records custody/reconstruction
+-> successor evaluation
+```
+
+No LLM-adapter deployment, `/api/node-standing`, `/api/sdk/*`, persistent endpoint, always-on receiver, receiver-liveness observation, external host, second user-operated device or separate runtime-proof class is inserted into this graph.
+
+This audit is a documentation/projection reconciliation only. It does not claim that the next Canonical Work transition was invoked, admitted, executed, appended, released, reconstructed or completed. The next execution attempt must identify and use the already-owned native Universal Interlock/InTr invocation/materialization operation and retain its actual first disposition.
