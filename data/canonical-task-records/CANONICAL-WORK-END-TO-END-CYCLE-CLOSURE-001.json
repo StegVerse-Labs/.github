@@ -76,7 +76,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC",
-    "runtime_reality_authority": "ORGANIZATION_LEDGER_MANIFEST_DIRECTED_APPEND",
+    "runtime_reality_authority": "Organization",
     "master_records_role": "RELEASED_BATCH_CUSTODY_AND_RECONSTRUCTION",
     "second_user_operated_device_required": false,
     "authority_transfer_created_by_successor": false
