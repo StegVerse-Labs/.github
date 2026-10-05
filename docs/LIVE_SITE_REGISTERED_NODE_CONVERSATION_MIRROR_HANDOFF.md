@@ -39,6 +39,16 @@ After source validation/merge, compare the deployed homepage, shared runtime, VA
 
 ## Current transition
 
-Site repair branch: `fix/chat-asset-identity` / PR #1500.
+Site PR #1500 merged as `565cd816f7d8799a1cde9d968562c23fb3f23a53` from exact validated head `6dfffc8355930b56332991e9606be305ab06fb5f`.
 
-The source extraction is being implemented on that existing branch. No alternate runtime, endpoint, device, credential, authority plane or transport path is introduced.
+Exact-head validation on the PR passed all task-relevant repository requirements, including Site Homepage Chat, Site Node Continuity, Site Handoff Orchestrator, Site Bootstrap Validate, Ecosystem Heartbeat Orchestration, No Required Third-Party Runtime, and the split-runtime public-asset observer validation.
+
+Post-merge main validation also passed for the same runtime surfaces. Public observation run `37385542714` completed successfully after the merge and emitted `SITE_HOMEPAGE_CHAT_PUBLIC_ASSET_OBSERVATION_PASS`. Its retained artifact is `site-homepage-chat-public-assets-37385542714` / artifact ID `11378940616`. That observer compared the deployed homepage, shared runtime, VA specialization, simple router, and Node continuity bytes against canonical Site main and enforced the shared/VA ownership markers.
+
+Therefore these predicates are now satisfied by retained source/CI/public-deployment evidence:
+- `SHARED_AND_VA_RUNTIME_OWNERSHIP_SEPARATED`
+- `WHAT_IS_THE_SDK_DOES_NOT_INITIALIZE_OR_ENTER_VA_ROUTING`
+- `VA_PROMPT_ENTERS_VA_SPECIALIZATION_ONLY`
+- `PUBLIC_HOMEPAGE_LOADS_EXACT_CANONICAL_CHAT_ASSET_IDENTITIES`
+
+The remaining predicate is `REGISTERED_NODE_DETERMINISTIC_OBSERVATION_RETAINED`. Public-byte observation is not substituted for that browser-local Receipt #1-bound execution evidence. No alternate runtime, endpoint, device, credential, authority plane or transport path was introduced.
