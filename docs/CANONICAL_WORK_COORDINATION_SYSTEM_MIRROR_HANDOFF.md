@@ -333,3 +333,36 @@ The existing reusable-task `invocation_id` is now carried unchanged as `executio
 When no reusable invocation/attempt identifier is supplied, historical idempotent request consumption is unchanged. When an independently authorized reusable attempt does supply `execution_attempt_id`, a prior `COMPLETED` consumption receipt may return `ALREADY_CONSUMED` only for that same attempt. A prior receipt from another attempt is stale evidence and cannot satisfy the new dispatch. The bridge likewise requires the current dispatch outcome and task-specific receipt to carry the exact current attempt identifier before retaining ALLOW, DENY, or FAIL_CLOSED.
 
 This repair creates no runtime, scheduler, dispatcher, credential path, device prerequisite, request identity, WorkerCoordinator authority, Interlock/InTr authority, or retry path. Historical receipts remain valid historical evidence; run `36942710854` remains `NO_STANDARDIZED_GOVERNED_DISPOSITION_RETAINED_FOR_ATTEMPT`. No Canonical Work manifest was invoked or retried by this repair.
+
+
+## 2026-10-05 PR #2963 node-standing reconciliation
+
+Canonical main merge `5f14de9ac686b0b6b4f77ece31087a0e980b537b` / PR #2963 installs peer migration 002 in this organization's `org-kernel/kernel.py`. The migration requires a structural `standing` declaration on covered organization-kernel federation/ecosystem packets, validates explicit genesis or SDK-owned predecessor lineage through `org-boundary/runtime/node_standing.py`, and refuses absent or unverifiable standing before organization-kernel dispatch.
+
+This is a native organization-kernel ingress rule, not an LLM-adapter HTTP dependency. PR #2963 explicitly retains `structural_standing_is_authenticated_standing=false`, `caller_editable_origin_established_identity=false`, `attestation_owner_state=NOT_PROVEN`, and `standing_authority_effect=NONE_STANDING_ONLY`. It therefore does not establish authenticated caller origin and must not be promoted into an AI-session identity gate.
+
+The native SDK manifest path remains separately resolved by the canonical organization boundary:
+- SDK: `stegverse.manifest_state_transition_runtime.execute_manifest` resolves `sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST` through the canonical organization boundary.
+- Organization owner: `org-runtime/interlock-intr.json` resolves that profile to `workers/universal_intr_profiled_ingress.py` at `POST /intr/materialization`, delegating to `workers/manifest_state_transition_intr_ingress.py::admit`.
+- The organization boundary declares `standing_resolution=APPLICABLE_TRANSITION_ELEMENTS`; current source does not bind the PR #2963 `org-kernel/kernel.py` structural-standing envelope as a prerequisite for this SDK profile.
+- StegOS remains the canonical Universal InTr profile owner for `sdk-manifest-ingress`; its profile preserves TV/TVC credential authority, `authority_effect=NONE`, event-triggered transport, no always-on receiver requirement, and no second-device requirement.
+
+Accordingly, the contamination-audit classification is preserved with one refinement: canonical node standing is now source-enforced for the organization-kernel ingress classes covered by PR #2963, but neither LLM-adapter `/api/node-standing` nor the organization-kernel packet constructor is inserted into the native SDK manifest route absent an explicit owner binding. Do not infer such a binding from the shared word “standing.”
+
+The Canonical Work native dependency graph remains:
+
+```text
+current canonical Goal predecessor
+-> native SDK manifest-state-transition request
+-> canonical organization destination resolution
+-> sdk-manifest-ingress / SDK:ManifestIngress / SUBMIT_MANIFEST
+-> organization-owned Universal Interlock/InTr receiving operation
+   workers/universal_intr_profiled_ingress.py
+   -> workers/manifest_state_transition_intr_ingress.py::admit
+-> first governed ALLOW / DENY / FAIL_CLOSED
+-> organization-ledger manifest-directed append / organization transition receipt
+-> applicable released-batch Master Records custody/reconstruction
+-> declared successor evaluation
+```
+
+PR #2963 does not authorize a persistent endpoint, receiver-liveness gate, external host, second user-operated device, LLM-adapter prerequisite, or new authority plane. This reconciliation records source ownership only and does not claim a Canonical Work execution attempt.
