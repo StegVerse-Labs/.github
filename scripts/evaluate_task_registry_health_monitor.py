@@ -76,6 +76,8 @@ def _lifecycle(record: dict[str, Any]) -> str:
 
 
 def _checked_out(record: dict[str, Any]) -> bool:
+    if _lifecycle(record) in {"RETIRED", "SUPERSEDED", "INVALID", "CLOSED"}:
+        return False
     checkout = str(record.get("checkout_state") or "").strip().upper()
     if checkout == "CHECKED_OUT":
         return True
