@@ -80,11 +80,13 @@
   },
   "decomposition": {
     "parent_goal_completed": false,
-    "parent_retired_by_prompt_limit": true,
+    "parent_prompt_workstream_decomposed": true,
+    "canonical_parent_registry_state_preserved": "PROPOSED",
     "goal_prompt_count": "20/20",
     "successor_task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+    "successor_record": "data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json",
     "successor_scope": "CURRENT_END_TO_END_RUNTIME_VERIFICATION_AND_CLOSURE_ONLY",
-    "unfinished_parent_work_renamed_to_reset_counter": false,
-    "rationale": "The implementation substrate and source contracts are distinct from the remaining current-cycle verification/closure obligation. The successor must use the existing parent request/path and cannot redesign or reimplement the substrate."
+    "aggregate_registry_mutation_performed": false,
+    "rationale": "Repository validation proves the parent remains a live root coordination substrate whose aggregate Registry state must stay PROPOSED. Prompt-limit decomposition therefore creates a dedicated canonical successor record for the distinct verification/closure obligation without changing the parent operational Registry state or resetting its unfinished evidence."
   }
 }
