@@ -2046,7 +2046,7 @@ This repair creates no runtime, scheduler, dispatcher, credential path, device p
 
 ## Publisher-governed outbound communications successor
 
-Canonical Goal `PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001` (issue #2959) owns the ecosystem-wide repair derived from the ÉLAN communication incident: purpose-derived authoritative context resolution before outbound composition, explicit context dispositions including non-ALLOW `INSUFFICIENT_EVIDENCE`, manifest-bound exact composed bytes, and separate send evidence. Publisher must reuse existing communication/history sources, transports, credentials and authority rather than duplicate them. The implementation handoff is `GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md`.
+`PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001` (issue #2959) is retired at its 20/20 boundary after the reusable contract/schema/purpose/context/admission scope merged in Publisher at `7caf5906dc417f318e0f5b0456e899e43d7a61b0`. Its genuinely separable post-admission execution/evidence obligation continues as `PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001` (issue #2969, COSV `71000000100122`). The successor reuses Comms-Gateway dispatch/delivery/lifecycle receipts and TV/TVC credential authority. Current first transition is `FAIL_CLOSED` at `AUTHORIZED_EMAIL_PROVIDER_SEND_OPERATION_ADMITTED_THROUGH_EXISTING_TV_TVC_AND_COMMS_GATEWAY_PATH`: Microsoft 365 delivery is read-only and the current TV/TVC Gmail lane does not admit send. No send is claimed.
 
 
 ## Substrate-neutral decision predicate experiment
