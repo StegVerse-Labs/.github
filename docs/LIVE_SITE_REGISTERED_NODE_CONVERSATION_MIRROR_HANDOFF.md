@@ -9,26 +9,36 @@ Status: `ACTIVE`
 
 ## Goal
 
-Trace the public stegverse.org Send action through the exact registered-Node conversation path and reconcile the bytes actually served for the homepage, `assets/ecosystem-chat-va-runtime.js`, and `assets/ecosystem-chat-simple.js` with current canonical `StegVerse-Labs/Site` source.
+Restore the intended Site runtime ownership boundary and then reconcile the exact public `stegverse.org` bytes used by registered-Node Ecosystem Chat.
 
 Acceptance prompt: `What is the SDK?`
 
-Current canonical Site source resolves that prompt through `canonicalProductDefinitionCapability()` before `executeDeviceRaw()`. The deterministic SDK definition must not depend on local-model readiness.
+## Demonstrated architectural defect
 
-## Demonstrated observation gap
+`assets/ecosystem-chat-va-runtime.js` was created as the VA/VACC specialization in commit `9ed2dbfe8560618be41225b47b37e19c31bc7d0d`. Commit `f43190e4108f5c881f1c64d3e17505090e33d9ca` then promoted general/shared runtime behavior into that VA-owned file and aliased the same object as both `window.EcosystemRuntime` and `window.EcosystemVARuntime`. Later Math, weather/Node status, deterministic product definitions and SDK lifecycle behavior accumulated on the same mixed owner.
 
-The existing public asset observer covers `assets/stegverse-node-continuity-impl.js` and `assets/ecosystem-chat-simple.js`, but not the homepage asset references or `assets/ecosystem-chat-va-runtime.js`, which contains the exact `canonical_product_definition_sdk` decision path. Existing propagation evidence therefore cannot establish that the live page loaded the runtime bytes required by this acceptance prompt.
+That responsibility inversion is a demonstrated source defect. It is distinct from the still-separate public deployment/runtime observation question.
 
-The homepage references both conversation scripts without an explicit version identity while other critical browser assets already use version query strings. The current HTML contract therefore does not bind one identifiable conversation-runtime release.
+## Corrected ownership contract
+
+- shared runtime owner: `StegVerse-Labs/Site/assets/ecosystem-chat-runtime.js`
+- VA/VACC specialization owner: `StegVerse-Labs/Site/assets/ecosystem-chat-va-runtime.js`
+- browser composition/router: `StegVerse-Labs/Site/assets/ecosystem-chat-simple.js`
+
+The shared runtime owns the device-local bridge, general conversation, deterministic homepage/product definitions, Math, weather/Node-status capabilities and SDK lifecycle access. It is the sole owner of `window.EcosystemRuntime`.
+
+The VA specialization owns VA intent detection, VA history/grounding, VA projection state and VA-specific server/device invocation. It is the sole owner of `window.EcosystemVARuntime` and consumes the shared runtime's bounded device-execution primitive when VA needs device-local inference.
+
+VA projection initialization is lazy. Canonical product-definition discovery is evaluated by the shared runtime before VA intent evaluation. Therefore `What is the SDK?` does not initialize or enter VA routing.
 
 ## Bounded repair
 
-Repair only the Site asset-identity boundary: bind the two conversation scripts in the homepage to one explicit release identity; extend the existing public asset observer to verify the homepage references and exact deployed runtime/simple bytes; require the runtime marker `canonical_product_definition_sdk` and ordering before `executeDeviceRaw`; preserve node registration, LLM-adapter, SDK ingress, transport, device topology, hosting architecture, and authority boundaries unchanged.
+Update Site load order to shared runtime -> VA specialization -> composition/router; preserve all external StegVerse Node, Receipt #1, StegOS, local-model bridge protocol, LLM-adapter, SDK ingress, Interlock/InTr, device topology, hosting and authority contracts. Add regression tests that reject a shared/VA alias, reject shared capabilities inside the VA file, prove the SDK acceptance prompt short-circuits VA routing, and prove an explicit VA prompt enters the VA specialization.
 
-## Evidence rule
+After source validation/merge, compare the deployed homepage, shared runtime, VA specialization and simple-router bytes with canonical Site main. Public byte equality proves propagation only. Authentic registered-Node execution is complete only when the existing Node observation path retains the deterministic `What is the SDK?` invocation/result evidence.
 
-Source/CI proves deterministic routing and observer correctness only. Public observation separately proves deployed homepage/script bytes. Registered-Node execution is complete only when the existing Node observation path retains the deterministic invocation/result evidence for the acceptance prompt.
+## Current transition
 
-## Next transition
+Site repair branch: `fix/chat-asset-identity` / PR #1500.
 
-Create the bounded Site repair, validate exact-head tests, then run the existing public observer after merge. If deployed bytes match canonical main, invoke the acceptance prompt on the registered Node and retain its existing exportable observation. If they do not match, the first mismatched asset identity is the actionable non-ALLOW boundary.
+The source extraction is being implemented on that existing branch. No alternate runtime, endpoint, device, credential, authority plane or transport path is introduced.
