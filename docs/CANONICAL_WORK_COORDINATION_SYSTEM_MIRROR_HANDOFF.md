@@ -366,3 +366,17 @@ current canonical Goal predecessor
 ```
 
 PR #2963 does not authorize a persistent endpoint, receiver-liveness gate, external host, second user-operated device, LLM-adapter prerequisite, or new authority plane. This reconciliation records source ownership only and does not claim a Canonical Work execution attempt.
+
+
+## 2026-10-05 Goal Prompt 20/20 terminal reconciliation and bounded decomposition
+
+Merged PR #2968 established `data/canonical-work-coordination-goal-definition.json` as the machine-readable completion contract. Re-evaluation against current canonical evidence does **not** support parent completion: `control/cross-task-coordination.d/canonical-work-parent-ingress.json` still records `PRED-CANONICAL-WORK-PARENT-INGRESS-OBSERVED-001 = UNKNOWN`, and no current post-repair exact parent attempt was found that retains a correlated task-specific `ALLOW | DENY | FAIL_CLOSED` and then drives applicable organization-ledger/reconciliation/next-state closure.
+
+This does not reopen source implementation. Runtime/capability resolution, parent request staging, Canonical Work ingress source, disposition retention, and exact-attempt correlation are already implemented. The historical run `36632388019` remains an authentic old `FAIL_CLOSED / EXECUTION_SUBSTRATE_RESOLUTION_PRESENT`; that defect was subsequently repaired and the result cannot stand in for a current attempt. Historical run `36942710854` remains explicitly `NO_STANDARDIZED_GOVERNED_DISPOSITION_RETAINED_FOR_ATTEMPT`.
+
+Because the parent has reached Goal Prompt Count `20/20`, it is canonically retired by **prompt-limit decomposition, not completion**. The genuinely separable residual verification/closure obligation is registered as `CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001`. That successor must reuse the exact existing parent task/request/COSV lineage and native execution path; it may not rename or reimplement unfinished substrate work, create another authority plane, or reset the evidence chain.
+
+Successor record: `data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json`
+Successor handoff: `docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md`
+
+Parent completion remains `claimed=false / validated=false`; retirement means the exhausted implementation thread has handed its distinct verification obligation to the registered successor, not that the end-to-end cycle has been proven.
