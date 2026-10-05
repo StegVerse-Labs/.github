@@ -12,6 +12,7 @@ MONOLITHIC_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 SHARDED_RECORDS = ROOT / "data" / "canonical-task-records"
 CONTRACT = ROOT / "data" / "task-registry-health-monitor-contract.json"
 CHECKIN_LEDGER = ROOT / "runtime" / "task-registry" / "checkin-events.jsonl"
+WORKER_REGISTRY = ROOT / "control" / "worker-registry.json"
 
 OPEN_LIFECYCLES = {"ACTIVE", "COMPLETED"}
 RELATION_FIELDS = (
@@ -158,6 +159,42 @@ def _stegdb_comparison(record: dict[str, Any], obligation: dict[str, Any]) -> tu
     if normalized not in {None, "MATCH", "MISSING", "STALE", "INCONSISTENT"}:
         normalized = "INCONSISTENT"
     return (str(ref).strip() if isinstance(ref, str) and ref.strip() else None, normalized)
+
+
+def _active_workercoordinator_task_ids(path: Path = WORKER_REGISTRY) -> set[str]:
+    if not path.is_file():
+        return set()
+    try:
+        payload = _load(path)
+    except (OSError, json.JSONDecodeError):
+        return set()
+    active: set[str] = set()
+    for row in payload.get("tasks", []):
+        if not isinstance(row, dict):
+            continue
+        task_id = str(row.get("task_id") or "").strip()
+        state = str(row.get("state") or "").strip().upper()
+        claim_id = str(row.get("claim_id") or "").strip()
+        timing = row.get("heartbeat_timing") if isinstance(row.get("heartbeat_timing"), dict) else {}
+        fence = timing.get("fencing_token")
+        if task_id and state in {"ACTIVE", "RUNNING", "CLAIMED", "BLOCKED"} and claim_id and fence is not None:
+            active.add(task_id)
+    return active
+
+
+def _checked_out_coordination_observation(record: dict[str, Any], active_worker_tasks: set[str]) -> dict[str, Any] | None:
+    task_id = str(record.get("task_id") or "").strip()
+    explicit_checkout = str(record.get("checkout_state") or "").strip().upper() == "CHECKED_OUT"
+    if explicit_checkout and task_id not in active_worker_tasks:
+        return {
+            "task_id": task_id,
+            "posture": "COORDINATION_STATE_UNVERIFIED",
+            "reason": "canonical CHECKED_OUT marker has no matching active WorkerCoordinator claim/fence; authentic session-event continuity is required before return or failure classification",
+            "workercoordinator_active_claim_fence_observed": False,
+            "session_event_continuity_observed": False,
+            "recovery_required": False,
+        }
+    return None
 
 
 def _worker_return_observation(record: dict[str, Any], now: datetime) -> dict[str, Any]:
@@ -426,7 +463,7 @@ def _task_creation_event(source: dict[str, Any], recovery_task_id: str, symptom:
     }
 
 
-def evaluate(now: datetime | None = None, repository_artifact_observations: list[dict[str, Any]] | None = None, checkin_ledger: Path = CHECKIN_LEDGER) -> dict[str, Any]:
+def evaluate(now: datetime | None = None, repository_artifact_observations: list[dict[str, Any]] | None = None, checkin_ledger: Path = CHECKIN_LEDGER, worker_registry: Path = WORKER_REGISTRY) -> dict[str, Any]:
     _ = _load(CONTRACT)
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     records = _all_records()
@@ -437,6 +474,7 @@ def evaluate(now: datetime | None = None, repository_artifact_observations: list
     recovery_specs: list[dict[str, Any]] = []
     action_events: list[dict[str, Any]] = []
     repository_bindings = _repository_bindings_from_checkin_events(checkin_ledger)
+    active_worker_tasks = _active_workercoordinator_task_ids(worker_registry)
     repository_findings = _repository_lifecycle_findings(records, repository_bindings, repository_artifact_observations or [])
 
     for record in records:
@@ -454,7 +492,7 @@ def evaluate(now: datetime | None = None, repository_artifact_observations: list
 
         if not _checked_out(record):
             continue
-        obs = _worker_return_observation(record, now)
+        obs = _checked_out_coordination_observation(record, active_worker_tasks) or _worker_return_observation(record, now)
         checked_out.append(obs)
         if not obs.get("recovery_required"):
             continue
@@ -550,6 +588,7 @@ def evaluate(now: datetime | None = None, repository_artifact_observations: list
     counts["CHECKED_OUT"] = len(checked_out)
     counts["CHECKED_OUT_WITH_RETURN_OVERDUE"] = symptom_counts.get("RETURN_OVERDUE", 0)
     counts["CHECKED_OUT_WITH_WORKER_NONREPORT"] = symptom_counts.get("WORKER_NONREPORT", 0)
+    counts["CHECKED_OUT_COORDINATION_STATE_UNVERIFIED"] = symptom_counts.get("COORDINATION_STATE_UNVERIFIED", 0)
     counts["COMPLETED_BLOCKED_FROM_RETIREMENT_BY_OPEN_ONE_HOP_RELATED_TASKS"] = len(retirement_blocks)
     counts["RECOVERY_TASKS_DERIVED"] = sum(1 for row in recovery_specs if row.get("action") == "CREATE_AND_REGISTER_THROUGH_CANONICAL_TASK_INGRESS")
     counts["RECOVERY_TASKS_ALREADY_REGISTERED"] = sum(1 for row in recovery_specs if row.get("task_registry_registered") is True)
@@ -583,13 +622,14 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--repository-artifacts", type=Path, help="Optional current repository artifact observations emitted by existing telemetry/repository governance surfaces")
     parser.add_argument("--checkin-ledger", type=Path, default=CHECKIN_LEDGER)
+    parser.add_argument("--worker-registry", type=Path, default=WORKER_REGISTRY)
     args = parser.parse_args()
     now = _parse_time(args.now) if args.now else None
     observations: list[dict[str, Any]] = []
     if args.repository_artifacts:
         payload = _load(args.repository_artifacts)
         observations = payload.get("artifacts", []) if isinstance(payload, dict) else []
-    report = evaluate(now=now, repository_artifact_observations=observations, checkin_ledger=args.checkin_ledger)
+    report = evaluate(now=now, repository_artifact_observations=observations, checkin_ledger=args.checkin_ledger, worker_registry=args.worker_registry)
     text = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
