@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-work-goal-definition/v1",
   "document_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001-GOAL-DEFINITION",
-  "status": "CANONICAL_GOAL_DEFINITION_PROPOSED",
+  "status": "PROMPT_LIMIT_DECOMPOSED_TO_RUNTIME_CYCLE_CLOSURE_SUCCESSOR",
   "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "cosv_id": "10100000100000",
   "authoritative_work_intent_source": "data/canonical-task-registry.json",
@@ -77,5 +77,14 @@
     "receipts_are_evidence_not_authority": true,
     "master_records_is_not_transition_authority": true,
     "organization_transition_is_real_at_organization_ledger_append": true
+  },
+  "decomposition": {
+    "parent_goal_completed": false,
+    "parent_retired_by_prompt_limit": true,
+    "goal_prompt_count": "20/20",
+    "successor_task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+    "successor_scope": "CURRENT_END_TO_END_RUNTIME_VERIFICATION_AND_CLOSURE_ONLY",
+    "unfinished_parent_work_renamed_to_reset_counter": false,
+    "rationale": "The implementation substrate and source contracts are distinct from the remaining current-cycle verification/closure obligation. The successor must use the existing parent request/path and cannot redesign or reimplement the substrate."
   }
 }
