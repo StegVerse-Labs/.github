@@ -6,12 +6,36 @@
   "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "goal": "Reconcile public stegverse.org registered-Node conversation bytes with current canonical Site source and restore the deterministic SDK-definition path with retained execution evidence.",
   "coordination_state": "ACTIVE",
-  "source_refs": ["StegVerse-Labs/Site:index.html","StegVerse-Labs/Site:assets/ecosystem-chat-va-runtime.js","StegVerse-Labs/Site:assets/ecosystem-chat-simple.js","docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"],
+  "source_refs": [
+    "StegVerse-Labs/Site:index.html",
+    "StegVerse-Labs/Site:assets/ecosystem-chat-runtime.js",
+    "StegVerse-Labs/Site:assets/ecosystem-chat-va-runtime.js",
+    "StegVerse-Labs/Site:assets/ecosystem-chat-simple.js",
+    "docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"
+  ],
   "dependencies": [],
   "blockers": [],
-  "expected_evidence_predicates": ["PUBLIC_HOMEPAGE_LOADS_EXACT_CANONICAL_CHAT_ASSET_IDENTITIES","PUBLIC_RUNTIME_CONTAINS_CANONICAL_PRODUCT_DEFINITION_SDK","WHAT_IS_THE_SDK_RESOLVES_BEFORE_DEVICE_LOCAL_MODEL","REGISTERED_NODE_DETERMINISTIC_OBSERVATION_RETAINED"],
-  "cosv_tracking": {"vector": "50000000100000","evidence_class": "SUCCESSOR_REUSES_PARENT_ECOSYSTEM_CHAT_EXECUTION_CLASS"},
-  "completion": {"claimed": false,"validated": false},
-  "authority_model": {"credential_authority":"UNCHANGED","execution_authority":"EXISTING_SITE_NODE_AND_ECOSYSTEM_CHAT_ONLY","source_projection_grants_execution_authority":false},
-  "handoff_projection_refs": ["docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"]
+  "expected_evidence_predicates": [
+    "SHARED_AND_VA_RUNTIME_OWNERSHIP_SEPARATED",
+    "WHAT_IS_THE_SDK_DOES_NOT_INITIALIZE_OR_ENTER_VA_ROUTING",
+    "VA_PROMPT_ENTERS_VA_SPECIALIZATION_ONLY",
+    "PUBLIC_HOMEPAGE_LOADS_EXACT_CANONICAL_CHAT_ASSET_IDENTITIES",
+    "REGISTERED_NODE_DETERMINISTIC_OBSERVATION_RETAINED"
+  ],
+  "cosv_tracking": {
+    "vector": "50000000100000",
+    "evidence_class": "SUCCESSOR_REUSES_PARENT_ECOSYSTEM_CHAT_EXECUTION_CLASS"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false
+  },
+  "authority_model": {
+    "credential_authority": "UNCHANGED",
+    "execution_authority": "EXISTING_SITE_NODE_AND_ECOSYSTEM_CHAT_ONLY",
+    "source_projection_grants_execution_authority": false
+  },
+  "handoff_projection_refs": [
+    "docs/LIVE_SITE_REGISTERED_NODE_CONVERSATION_MIRROR_HANDOFF.md"
+  ]
 }
