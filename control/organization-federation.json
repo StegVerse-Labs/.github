@@ -5,7 +5,7 @@
   "canonical_response_network_owner": "StegVerse-Labs/Site#234",
   "heartbeat_model": "SINGLE_STEGVERSE_HEARTBEAT",
   "authority_effect": false,
-  "organization_count": 14,
+  "organization_count": 15,
   "detail_classes": [
     "MEMORY",
     "ACTION",
@@ -195,6 +195,29 @@
       "kernel_ref": "StegVerse-org/.github:org-kernel/kernel.py"
     },
     {
+      "organization": "SV-LLM",
+      "evidence_repository": "SV-LLM/.github",
+      "connector_state": "BOUNDARY_SOURCE_IMPLEMENTED_CI_VALIDATED_UNMERGED",
+      "heartbeat_response": "NOT_OBSERVED",
+      "subsignal": "HB_DERIVED_INTR_KERNEL_SOURCE_UNMERGED",
+      "worker": "ORG_RESIDENT_KERNEL_SOURCE_IMPLEMENTED_UNMERGED",
+      "task_registry": "ORG_BOUNDARY_REGISTERED",
+      "release_condition": "Merge SV-LLM/.github PR #3 (organization boundary source-implemented and CI-validated, unmerged), then observe an authentic addressed Interlock/InTr frame at this organization resident kernel and retain ingress/consumption/egress evidence.",
+      "next_action": "MERGE_SV_LLM_DOT_GITHUB_PR_3_THEN_OBSERVE_AUTHENTIC_ORG_KERNEL_FEDERATION_FRAME",
+      "kernel_version": "1.3.0",
+      "kernel_ref": "SV-LLM/.github:org-kernel/kernel.py (SV-LLM/.github#3, unmerged)",
+      "completion_evidence_contract_version": "v1",
+      "completion_evidence_classes": [
+        "SOURCE_IMPLEMENTED",
+        "CI_VALIDATED"
+      ],
+      "completion_evidence_refs": [
+        "SV-LLM/.github#3"
+      ],
+      "merged": false,
+      "runtime_observed": false
+    },
+    {
       "organization": "Triad-Test",
       "evidence_repository": "Triad-Test/.github",
       "connector_state": "CONNECTED_WRITE_KERNEL_INSTALLED",
@@ -209,16 +232,17 @@
     }
   ],
   "coverage": {
-    "registered": 14,
+    "registered": 15,
     "resident_kernel_installed": 14,
     "intr_transport_installed": 14,
     "organization_boundary_present": 14,
     "source_federation_ready": 14,
     "live_federation_observed": 0,
     "observation_pending": 14,
-    "unassigned": 0
+    "unassigned": 0,
+    "source_implemented_merge_pending": 1
   },
-  "completion_rule": "All 14 organizations must retain authentic addressed federation evidence through their .github resident kernels; source/kernel installation alone is not federation observation.",
+  "completion_rule": "All 15 organizations must retain authentic addressed federation evidence through their .github resident kernels; source/kernel installation alone is not federation observation.",
   "source_refs": [
     "StegVerse-Labs/Site#234",
     "StegVerse-Labs/Site/data/ecosystem-heartbeat-response-network.json",

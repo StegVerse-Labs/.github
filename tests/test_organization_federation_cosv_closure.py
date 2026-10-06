@@ -16,7 +16,7 @@ class OrganizationFederationCOSVClosureTests(unittest.TestCase):
         registry = json.loads((ROOT / "control/organization-task-registry.json").read_text())
         index = json.loads((ROOT / "control/task-vector-index.json").read_text())
         indexed = {x["task_id"]: x for x in index["tasks"]}
-        self.assertEqual(len(registry["tasks"]), 14)
+        self.assertEqual(len(registry["tasks"]), 15)
         for task in registry["tasks"]:
             record = json.loads((ROOT / f"control/task-vectors/{task['task_id']}.json").read_text())
             blocked = task["state"] == "BLOCKED"
