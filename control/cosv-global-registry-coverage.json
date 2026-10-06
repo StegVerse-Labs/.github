@@ -103,7 +103,7 @@
     {"task_id":"ORG-FED-STEGVERSE-002-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-STEGVERSE-LABS-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-STEGVERSE-ORG-001","vector":"50000000100000"},
-    {"task_id":"ORG-FED-SV-LLM-001","vector":"60000000101000"},
+    {"task_id":"ORG-FED-SV-LLM-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-TRIAD-TEST-001","vector":"60000000101000"},
     {"task_id":"SV-DN1-PUBLICATION-OBSERVER-001","vector":"50000000101000"},
     {"task_id":"SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001","vector":"50000000101000"},

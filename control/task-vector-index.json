@@ -740,7 +740,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/organization-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/ORG-FED-SV-LLM-001.json",
-      "vector": "60000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },

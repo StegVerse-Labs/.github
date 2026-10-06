@@ -197,24 +197,26 @@
     {
       "organization": "SV-LLM",
       "evidence_repository": "SV-LLM/.github",
-      "connector_state": "BOUNDARY_SOURCE_IMPLEMENTED_CI_VALIDATED_UNMERGED",
-      "heartbeat_response": "NOT_OBSERVED",
-      "subsignal": "HB_DERIVED_INTR_KERNEL_SOURCE_UNMERGED",
-      "worker": "ORG_RESIDENT_KERNEL_SOURCE_IMPLEMENTED_UNMERGED",
+      "connector_state": "KERNEL_INSTALLED_MERGED",
+      "heartbeat_response": "KERNEL_CAPABLE_OBSERVATION_PENDING",
+      "subsignal": "HB_DERIVED_INTR_KERNEL_INSTALLED",
+      "worker": "ORG_RESIDENT_KERNEL_INSTALLED",
       "task_registry": "ORG_BOUNDARY_REGISTERED",
-      "release_condition": "Merge SV-LLM/.github PR #3 (organization boundary source-implemented and CI-validated, unmerged), then observe an authentic addressed Interlock/InTr frame at this organization resident kernel and retain ingress/consumption/egress evidence.",
-      "next_action": "MERGE_SV_LLM_DOT_GITHUB_PR_3_THEN_OBSERVE_AUTHENTIC_ORG_KERNEL_FEDERATION_FRAME",
-      "kernel_version": "1.3.0",
-      "kernel_ref": "SV-LLM/.github:org-kernel/kernel.py (SV-LLM/.github#3, unmerged)",
+      "release_condition": "Observe an authentic addressed Interlock/InTr frame at this organization resident kernel and retain ingress/consumption/egress evidence.",
+      "next_action": "OBSERVE_AUTHENTIC_ORG_KERNEL_FEDERATION_FRAME",
+      "kernel_version": "1.3.2",
+      "kernel_ref": "SV-LLM/.github:org-kernel/kernel.py",
       "completion_evidence_contract_version": "v1",
       "completion_evidence_classes": [
         "SOURCE_IMPLEMENTED",
+        "MERGED",
         "CI_VALIDATED"
       ],
       "completion_evidence_refs": [
-        "SV-LLM/.github#3"
+        "SV-LLM/.github#3",
+        "SV-LLM/.github@f8e07dfd327194f9659cf9d10f3d43f656c0ade1"
       ],
-      "merged": false,
+      "merged": true,
       "runtime_observed": false
     },
     {
@@ -233,14 +235,13 @@
   ],
   "coverage": {
     "registered": 15,
-    "resident_kernel_installed": 14,
-    "intr_transport_installed": 14,
-    "organization_boundary_present": 14,
-    "source_federation_ready": 14,
+    "resident_kernel_installed": 15,
+    "intr_transport_installed": 15,
+    "organization_boundary_present": 15,
+    "source_federation_ready": 15,
     "live_federation_observed": 0,
-    "observation_pending": 14,
-    "unassigned": 0,
-    "source_implemented_merge_pending": 1
+    "observation_pending": 15,
+    "unassigned": 0
   },
   "completion_rule": "All 15 organizations must retain authentic addressed federation evidence through their .github resident kernels; source/kernel installation alone is not federation observation.",
   "source_refs": [
