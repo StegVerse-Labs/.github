@@ -4,10 +4,12 @@
   "correlation_id": "PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001",
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
-  "successor_task_ids": [],
+  "successor_task_ids": [
+    "PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001"
+  ],
   "goal": "Establish the minimum reusable Publisher-governed outbound-media contract, beginning with email: retain immutable references to inbound communication events and predecessor chains; derive required context from outbound purpose; retrieve authoritative relationship/history, correspondence and workstream evidence; require explicit VERIFIED, NOT_APPLICABLE, NO_PRIOR_HISTORY or INSUFFICIENT_EVIDENCE dispositions; admit composition only after required context resolution; bind outbound manifests to exact composed bytes and authority evidence; and retain separate authentic send evidence and publication/communication receipts without creating duplicate storage, transport, credentials or authority.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "PROMPT_LIMIT_DECOMPOSED",
   "cosv_task_vector": "71000000100121",
   "repository": "GCAT-BCAT-Engine/Publisher",
   "issue_ref": "StegVerse-Labs/.github#2959",
@@ -15,10 +17,10 @@
     "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md"
   ],
   "source_refs": [
-    "StegVerse-Labs/.github:docs/ELAN_HOLD_INDEPENDENT_SEMANTIC_ANALYSIS_PACKET_MIRROR_HANDOFF.md",
-    "GCAT-BCAT-Engine/Publisher:README.md",
-    "GCAT-BCAT-Engine/Publisher:src/publication_plane/core/receipt_writer.py",
-    "GCAT-BCAT-Engine/Publisher:docs/MIR_ROUNDTRIP_PUBLISHER_ARTIFACT_RETURN_MIRROR_HANDOFF.md"
+    "GCAT-BCAT-Engine/Publisher merge 7caf5906dc417f318e0f5b0456e899e43d7a61b0",
+    "GCAT-BCAT-Engine/Publisher:publisher/governed_outbound_communication.py",
+    "GCAT-BCAT-Engine/Publisher:schemas/publisher-governed-outbound-communication.v1.schema.json",
+    "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_GOVERNED_OUTBOUND_COMMUNICATIONS_MIRROR_HANDOFF.md"
   ],
   "context_dispositions": [
     "VERIFIED",
@@ -26,6 +28,11 @@
     "NO_PRIOR_HISTORY",
     "INSUFFICIENT_EVIDENCE"
   ],
+  "completion": {
+    "contract_schema_context_admission_complete": true,
+    "external_send_observed": false,
+    "post_admission_execution_transferred_to": "PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001"
+  },
   "invariants": {
     "insufficient_evidence_is_non_allow": true,
     "external_send_requires_separate_observation": true,
@@ -34,5 +41,6 @@
     "new_transport": false,
     "new_credential_route": false,
     "new_authority_plane": false
-  }
+  },
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED; CONTRACT_SCHEMA_PURPOSE_CONTEXT_AND_ADMISSION_SCOPE_COMPLETED_THROUGH_PUBLISHER_MERGE_7caf5906dc417f318e0f5b0456e899e43d7a61b0; GENUINELY_SEPARABLE_POST_ADMISSION_SEND_EXECUTION_AND_EVIDENCE_SCOPE_TRANSFERRED_TO_PUBLISHER_GOVERNED_OUTBOUND_EXECUTION_EVIDENCE_001"
 }
