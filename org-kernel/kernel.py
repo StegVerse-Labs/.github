@@ -5,7 +5,7 @@ Organization-neutral runtime behavior extracted from StegVerse-Labs/.github.
 No GitHub, hosted scheduler, provider, or carrier grants authority.
 """
 from __future__ import annotations
-import base64, hashlib, importlib.util, json, os
+import base64, hashlib, importlib.util, json, os, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -96,6 +96,40 @@ def carried_standing(request_packet:dict[str,Any])->dict[str,Any]:
     if not isinstance(declared,dict): raise ValueError("response_requires_request_standing")
     return {**declared,"standing_carried_forward_from_request":True}
 
+def resolve_endpoint_adapter(root:Path, service:dict[str,Any])->Path:
+    """Resolve only an adapter the capability map explicitly admits.
+
+    An INTERNAL_ENDPOINT is consumed here, inside this organization, when its
+    row declares an adapter and admits it. Filesystem presence is not
+    admissibility: the registry's disposition is the policy, and the path is
+    only where the admitted adapter is materialized.
+    """
+    if service.get("endpoint_adapter_disposition")!="ALLOW_DECLARED_ADAPTER":
+        raise ValueError(str(service.get("endpoint_adapter_disposition") or "FAIL_CLOSED_ENDPOINT_ADAPTER_UNDECLARED"))
+    candidate=Path(str(service["endpoint_adapter"]))
+    candidate=(candidate if candidate.is_absolute() else root/candidate).resolve()
+    if not candidate.is_file(): raise ValueError("FAIL_CLOSED_ENDPOINT_ADAPTER_NOT_MATERIALIZED")
+    return candidate
+
+def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any])->dict[str,Any]:
+    """Run an admitted adapter on the packet that crossed, and return its result.
+
+    The adapter runs under this interpreter, so what it can import is what this
+    boundary was materialized with rather than whatever a bare `python3` on the
+    host path resolves to.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        envelope=Path(td)/"packet.json"; out=Path(td)/"endpoint-response.json"
+        envelope.write_text(json.dumps(packet,indent=2,sort_keys=True)+"\n")
+        completed=subprocess.run([sys.executable,str(adapter),"--packet",str(envelope),"--out",str(out)],
+                                 cwd=root,capture_output=True,text=True,check=False)
+        if completed.returncode!=0 or not out.is_file():
+            detail=(completed.stderr or completed.stdout or "").strip().splitlines()
+            raise ValueError("endpoint_adapter_execution_failed"+(":"+detail[-1] if detail else ""))
+        result=json.loads(out.read_text())
+    if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
+    return result
+
 def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
     registry=load_registry(root)
     if packet["destination"]["org"]!=registry["organization"]: raise ValueError("wrong_destination_org")
@@ -111,13 +145,19 @@ def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
     except SystemExit as refused:
         raise ValueError("node_standing_refused:"+str(refused)) from None
     role=service.get("boundary_role")
-    if role not in {"BOUNDARY_LOCAL_DIAGNOSTIC","BOUNDARY_LOCAL_CONTROL"}:
+    endpoint=role=="INTERNAL_ENDPOINT" and bool(service.get("endpoint_adapter"))
+    if not endpoint and role not in {"BOUNDARY_LOCAL_DIAGNOSTIC","BOUNDARY_LOCAL_CONTROL"}:
         raise ValueError("endpoint_adapter_not_installed")
+    # Resolved before any receipt is minted: an adapter the registry does not
+    # admit must not leave a chain implying the crossing was consumed.
+    adapter=resolve_endpoint_adapter(root,service) if endpoint else None
     prev=None; receipts=[]
     for kind in ("INGRESS_ACCEPTED","DISPATCHED","CONSUMED","RESULT_BOUND","EGRESS_EMITTED"):
         r=receipt(kind,packet["packet_id"],service["service_id"],prev,{"payload_hash":sha(packet["payload"])})
         receipts.append(r); prev=r["receipt_id"]
-    if role=="BOUNDARY_LOCAL_CONTROL":
+    if endpoint:
+        application_result=run_endpoint_adapter(root,adapter,packet)
+    elif role=="BOUNDARY_LOCAL_CONTROL":
         application_result=handle_control_message(root,packet,registry)
     else:
         application_result={"echo":packet["payload"]}

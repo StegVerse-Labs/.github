@@ -1,0 +1,43 @@
+name: Validate Governance Endpoint
+
+on:
+  pull_request:
+    paths:
+      - 'resident-runtime/governance_endpoint.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
+      - '.stegverse/transition-ledger/**'
+      - 'org-kernel/kernel.py'
+      - 'org-boundary/registry/services.json'
+      - 'org-boundary/runtime/node_standing.py'
+      - 'tests/test_governance_endpoint.py'
+      - 'GOVERNANCE_ENDPOINT_MIRROR_HANDOFF.md'
+      - '.github/workflows/governance-endpoint-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'resident-runtime/governance_endpoint.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
+      - '.stegverse/transition-ledger/**'
+      - 'org-kernel/kernel.py'
+      - 'org-boundary/registry/services.json'
+      - 'org-boundary/runtime/node_standing.py'
+      - 'tests/test_governance_endpoint.py'
+      - 'GOVERNANCE_ENDPOINT_MIRROR_HANDOFF.md'
+      - '.github/workflows/governance-endpoint-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # The tests redirect both ledger roots and the mesh themselves, and stand
+      # a stub StegCore on the adapter's path, so nothing here needs StegCore
+      # installed or appends into an operator's runtime reality.
+      - name: StegVerse-Labs decides a governance request that crossed InTr
+        run: python -m unittest tests.test_governance_endpoint -v
