@@ -366,3 +366,19 @@ current canonical Goal predecessor
 ```
 
 PR #2963 does not authorize a persistent endpoint, receiver-liveness gate, external host, second user-operated device, LLM-adapter prerequisite, or new authority plane. This reconciliation records source ownership only and does not claim a Canonical Work execution attempt.
+
+
+## 2026-10-05 Goal Prompt 20/20 terminal reconciliation and bounded decomposition
+
+Merged PR #2968 established `data/canonical-work-coordination-goal-definition.json` as the machine-readable completion contract. Re-evaluation against current canonical evidence does **not** support parent completion: `control/cross-task-coordination.d/canonical-work-parent-ingress.json` still records `PRED-CANONICAL-WORK-PARENT-INGRESS-OBSERVED-001 = UNKNOWN`, and no current post-repair exact parent attempt was found that retains a correlated task-specific `ALLOW | DENY | FAIL_CLOSED` and then drives applicable organization-ledger/reconciliation/next-state closure.
+
+This does not reopen source implementation. Runtime/capability resolution, parent request staging, Canonical Work ingress source, disposition retention, and exact-attempt correlation are already implemented. Historical run `36632388019` remains an authentic old `FAIL_CLOSED / EXECUTION_SUBSTRATE_RESOLUTION_PRESENT`; that defect was subsequently repaired and the result cannot stand in for a current attempt. Historical run `36942710854` remains explicitly `NO_STANDARDIZED_GOVERNED_DISPOSITION_RETAINED_FOR_ATTEMPT`.
+
+At Goal Prompt Count `20/20`, the prompt-limited implementation workstream is canonically decomposed to the genuinely separable verification/closure successor `CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001`. The parent Goal is **not completed** and its operational aggregate Task Registry row remains `PROPOSED`: exact-head validation demonstrated that Canonical Work runtime resolution intentionally depends on that root state, so changing it to `RETIRED` would alter live coordination semantics and is not part of prompt-limit decomposition.
+
+Successor record: `data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json`
+Successor handoff: `docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md`
+
+The successor owns only one current end-to-end verification/closure cycle using the already-built parent substrate and exact parent task/request/COSV lineage. It may not reimplement Canonical Work, manufacture a new parent request, reset the parent evidence chain, or introduce another runtime, scheduler, dispatcher, credential route, device requirement, ledger, WorkerCoordinator, transition authority, persistent endpoint, receiver-liveness gate, LLM-adapter prerequisite, or AI_SESSION_GATE.
+
+Parent completion remains `claimed=false / validated=false`. The decomposition changes prompt ownership of the remaining verification obligation, not canonical runtime truth.

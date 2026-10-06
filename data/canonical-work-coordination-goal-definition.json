@@ -1,0 +1,92 @@
+{
+  "schema": "stegverse.canonical-work-goal-definition/v1",
+  "document_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001-GOAL-DEFINITION",
+  "status": "PROMPT_LIMIT_DECOMPOSED_TO_RUNTIME_CYCLE_CLOSURE_SUCCESSOR",
+  "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "cosv_id": "10100000100000",
+  "authoritative_work_intent_source": "data/canonical-task-registry.json",
+  "canonical_handoff": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+  "purpose": "Define the end-to-end completion objective of STEGVERSE-CANONICAL-WORK-COORDINATION-001 so an implementation boundary such as ingress cannot be substituted for the Goal.",
+  "goal": "Implement the canonical coordination substrate for multi-entity StegVerse development so admitted canonical work can progress through existing StegVerse authority boundaries, retain evidence of what occurred, reconcile the result into canonical task state, and deterministically continue, complete, derive adjacent work, or return an actionable non-ALLOW disposition without manual orchestration deciding what happens next.",
+  "completion_criterion": {
+    "statement": "Given an admitted canonical Goal and its current predecessor state, StegVerse can execute one complete Canonical Work coordination cycle through existing authority boundaries, retain the resulting organization evidence, reconcile the result into canonical task state, and determine the next state or work without inventing another execution or authority plane.",
+    "required_cycle": [
+      "CANONICAL_TASK_ADMITTED_WITH_CURRENT_PREDECESSOR",
+      "RUNTIME_AND_CAPABILITY_RESOLVED",
+      "WORKERCOORDINATOR_CLAIM_AND_FENCE_APPLIED_WHEN_REQUIRED",
+      "INTERLOCK_INTR_TRANSITION_ATTEMPTED",
+      "CANONICAL_WORK_EXECUTION_PERFORMED_OR_ACTIONABLE_NON_ALLOW_RETURNED",
+      "ORGANIZATION_TRANSITION_RECEIPT_RETAINED",
+      "CANONICAL_TASK_STATE_RECONCILED",
+      "DEPENDENCY_SUCCESSOR_OR_COMPLETION_DETERMINED",
+      "CONTINUATION_OR_TERMINAL_STATE_MACHINE_READABLE"
+    ],
+    "terminal_success_requires_all_required_cycle_elements": true,
+    "ingress_alone_satisfies_goal": false,
+    "source_presence_alone_satisfies_goal": false,
+    "ci_success_alone_satisfies_goal": false,
+    "receipt_presence_without_reconciliation_satisfies_goal": false
+  },
+  "authority_boundaries": {
+    "work_intent_and_coordination": "TASK_REGISTRY",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "runtime_reality": "ORGANIZATION_LEDGER_MANIFEST_DIRECTED_APPEND",
+    "custody_and_reconstruction": "MASTER_RECORDS",
+    "authority_transfer_created_by_this_definition": false
+  },
+  "native_transition_path": [
+    "CURRENT_CANONICAL_GOAL_PREDECESSOR",
+    "NATIVE_SDK_MANIFEST_STATE_TRANSITION_REQUEST",
+    "CANONICAL_ORGANIZATION_DESTINATION_RESOLUTION",
+    "SDK_MANIFEST_INGRESS__SDK_MANIFESTINGRESS__SUBMIT_MANIFEST",
+    "ORGANIZATION_OWNED_UNIVERSAL_INTERLOCK_INTR",
+    "ALLOW_DENY_OR_FAIL_CLOSED",
+    "ORGANIZATION_LEDGER_APPEND_AND_TRANSITION_RECEIPT",
+    "APPLICABLE_RELEASED_BATCH_MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
+    "CANONICAL_RECONCILIATION",
+    "DEPENDENCY_SUCCESSOR_OR_COMPLETION_DETERMINATION"
+  ],
+  "non_goals": [
+    "TREAT_INGRESS_AS_THE_GOAL",
+    "CREATE_NEW_AUTHORITY_PLANE",
+    "CREATE_PARALLEL_RUNTIME_OR_DISPATCHER",
+    "REQUIRE_PERSISTENT_OR_ALWAYS_ON_RECEIVER",
+    "REQUIRE_RECEIVER_LIVENESS",
+    "REQUIRE_EXTERNAL_HOST",
+    "REQUIRE_SECOND_USER_OPERATED_DEVICE",
+    "REQUIRE_LLM_ADAPTER_FOR_NATIVE_SDK_EXECUTION_WITHOUT_EXPLICIT_OWNER_BINDING",
+    "REQUIRE_AI_SESSION_GATE",
+    "PROMOTE_REPOSITORY_LOCAL_NOT_PROVEN_TO_ECOSYSTEM_PREREQUISITE"
+  ],
+  "disposition_contract": {
+    "every_attempt": [
+      "ALLOW",
+      "DENY",
+      "FAIL_CLOSED"
+    ],
+    "bare_blocked_forbidden": true,
+    "bare_unknown_forbidden": true,
+    "bare_not_observed_forbidden_when_transition_was_attempted": true,
+    "non_allow_must_identify_failed_predicate_and_evidence": true
+  },
+  "evidence_semantics": {
+    "source_merge_is_runtime_execution": false,
+    "registration_is_transition_observation": false,
+    "receipts_are_evidence_not_authority": true,
+    "master_records_is_not_transition_authority": true,
+    "organization_transition_is_real_at_organization_ledger_append": true
+  },
+  "decomposition": {
+    "parent_goal_completed": false,
+    "parent_prompt_workstream_decomposed": true,
+    "canonical_parent_registry_state_preserved": "PROPOSED",
+    "goal_prompt_count": "20/20",
+    "successor_task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+    "successor_record": "data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json",
+    "successor_scope": "CURRENT_END_TO_END_RUNTIME_VERIFICATION_AND_CLOSURE_ONLY",
+    "aggregate_registry_mutation_performed": false,
+    "rationale": "Repository validation proves the parent remains a live root coordination substrate whose aggregate Registry state must stay PROPOSED. Prompt-limit decomposition therefore creates a dedicated canonical successor record for the distinct verification/closure obligation without changing the parent operational Registry state or resetting its unfinished evidence."
+  }
+}
