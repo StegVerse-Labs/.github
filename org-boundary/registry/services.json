@@ -20,6 +20,25 @@
       "boundary_role": "BOUNDARY_LOCAL_DIAGNOSTIC",
       "profile_status": "ACTIVE",
       "runtime_required_for_consumption": false
+    },
+    {
+      "service_id": "stegverse-labs.governance",
+      "repository": "StegVerse-Labs/.github",
+      "boundary_role": "INTERNAL_ENDPOINT",
+      "profile_status": "ACTIVE",
+      "accepts": [
+        "ecosystem.work.request"
+      ],
+      "runtime_required_for_consumption": true,
+      "endpoint_adapter": "resident-runtime/governance_endpoint.py",
+      "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
+      "admits_processing": [
+        {
+          "capability": "governance",
+          "route_id": "stegverse.route.canonical-governed.v1"
+        }
+      ],
+      "decision_authority": "StegVerse-Labs/StegCore:stegcore.steggate.evaluate_admissibility"
     }
   ],
   "boundary_rule": "All organization-crossing communication is generated and consumed through StegVerse-Labs/.github using Interlock/InTr; endpoint authority remains transition-governed."
