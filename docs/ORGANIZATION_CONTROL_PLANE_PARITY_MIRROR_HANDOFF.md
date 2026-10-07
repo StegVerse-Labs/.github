@@ -40,3 +40,7 @@ Machine-readable audit: `data/organization-control-plane-parity-v1.json`.
 ## Evidence state
 
 Source repair is not runtime proof. Required closure is exact-head CI for parity and bypass-negative controls, followed by an authentic cross-org attempt when the existing authorized InTr surface is available. Every attempted transition retains ALLOW, DENY, or FAIL_CLOSED. Master Records remains organization-record/reconstruction only and is not a runtime gate.
+
+## Exact-head validation progression
+
+At repaired head `1b3bd8359e634a9abd30e182ebef3b2c6ada036d`, Organization Control Plane Parity, Validate Organization Resident Runtime and Interlock-InTr Boundary, Validate Governance Endpoint, and validate-deepseek-resident completed SUCCESS. The governance suite supplies the positive source/CI traversal from a StegVerse-org-origin packet into the Labs organization-owned governance service and a recomputable response chain. The parity suite supplies direct-component bypass negative controls: Labs .github is the sole organization boundary, manifest ingress is repository-owned/non-host, and no StegCore service is registered as BOUNDARY_LOCAL organization ingress. KV AI Memory, Cross-Task Coordination, and the test-suite ratchet were still running when this evidence snapshot was persisted; merge remains prohibited until the final exact head is green.
