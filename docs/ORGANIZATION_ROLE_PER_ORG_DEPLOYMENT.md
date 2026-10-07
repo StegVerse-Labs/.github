@@ -30,9 +30,9 @@ The verifier lives in `StegVerse-Labs/.github`, which is public. A session worki
 
 Four artifacts, described exactly in the packet's `target_state`:
 
-1. **`.stegverse/transition-ledger/org-contract.json`** — consumes **both** `stegverse.repo-transition-receipt/v1` and `stegverse.canonical-state-transition-receipt/v1`; declares the organization scope rule; preserves the source transition receipt; and carries the Organization Role fields (`runtime_reality_authority: Organization`, ledger root as locus, ledger lock, manifest-directed append, master-records as released-batch recorder that does not gate the organization's reality, `always_on_receiver_required: false`).
+1. **`.stegverse/transition-ledger/org-contract.json`** — consumes **both** `stegverse.repo-transition-receipt/v1` and `stegverse.canonical-state-transition-receipt/v1`; declares the organization scope rule; preserves the source transition receipt; and carries the Organization Role fields (`runtime_reality_authority: Organization`, ledger root as locus, ledger lock, manifest-directed append, Master Records as organization-record custody and reconstruction only, which does not gate the organization's reality, `always_on_receiver_required: false`).
 
-2. **`resident-runtime/aggregate_repo_transition.py`** — its source verifier accepts every schema the contract's `consumes` names, rather than one hard-coded schema, and binds a canonical state transition by its own digest instead of relabelling it a repository transition. `StegVerse-Labs`' `verify_source` is the implementation to copy.
+2. **`resident-runtime/aggregate_repo_transition.py`** — its source verifier accepts every schema the contract's `consumes` names, rather than one hard-coded schema, and binds a canonical state transition by its own digest instead of relabelling it a repository transition. Copy from the current reference implementation (below), not from this repository.
 
 3. **`data/organization-role-runtime-reality-deployment.json`** — the organization's own copy of the declaration, with its own name and deployment scope.
 
@@ -46,11 +46,13 @@ It is live in `StegVerse-org`: the SDK lives there and, as of `StegVerse-org/Ste
 
 ## Reference implementation
 
-`StegVerse-Labs/.github` on `main`, deployed in PR #2899. The contract, the aggregator's `verify_source`, the declaration, the exemption register and the enforcing validator are all there to copy from rather than re-derive.
+The current, version-bound reference coordinates are resolved from StegDB (`StegVerse-Labs/StegDB` `registry/organization-role/versions.json`); the packet is a projection of that state and cannot override it. At the time of writing the current reference is `StegVerse-org/.github`, whose organization-ledger mechanics (LedgerStore-backed append) are newer than this repository's. See `docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md` for the exact bound commit.
+
+`StegVerse-Labs/.github` (PR #2899) is retained as **historical provenance only** (`reference_implementation.historical_reference` in the packet). It is not the implementation to copy. The verifier, `scripts/verify_organization_role_deployment.py`, still lives here.
 
 ## Measured state
 
-`organization_register` in the packet records what was observed and when, per organization — `DEPLOYED` for `StegVerse-Labs`, `RECORDING_MECHANISM_PRESENT_ROLE_NOT_DEPLOYED` for `StegVerse-org` at commit `ef34106`, and the organizations not yet measured. It is an observation record, not an instruction to any organization.
+`organization_register` in the packet is a historical measured projection retained for provenance; current adopter, version and conformance state is resolved from StegDB (`registry/organization-role/adoptions.json` and `conformance.json`). It records what was observed and when, per organization — `DEPLOYED` for `StegVerse-Labs`, `RECORDING_MECHANISM_PRESENT_ROLE_NOT_DEPLOYED` for `StegVerse-org` at commit `ef34106`, and the organizations not yet measured. It is an observation record, not an instruction to any organization.
 
 ## What this packet does not do
 
