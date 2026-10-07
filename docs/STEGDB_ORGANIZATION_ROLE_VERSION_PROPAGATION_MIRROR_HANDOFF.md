@@ -66,5 +66,24 @@ Until that evidence exists, StegDB may retain `VERSION_DIVERGENCE_DETECTED` and 
 - SHA-256 contract digest: `sha256:902bea00cdd2f4260fd01565b2beef6b1346f1d28d5540877ecb80b090723695`.
 - This binding is source/version evidence only and is explicitly not runtime migration evidence.
 
+## Acceptance reconciliation — 2026-10-07
+- Exact Organization Role reference binding merged in StegDB PR #33 as `2c13247aa48c707dc4155f2599cdaff44a5a3db8`.
+- Canonical handoff reference binding merged in .github PR #2981 as `4fdfd0a07cd37245747d03b8fcd6534ba6600f98`.
+- Acceptance evaluation and exemption semantics merged in StegDB PR #34 as `2a81f754a8ffbf580308c6f25daf1409127d2390`.
+- `registry/organization-role/acceptance.json` evaluates all 13 acceptance predicates without granting runtime authority.
+- `registry/organization-role/exemptions.json` requires exemptions to be explicit, version-bound, scope-bound and non-authorizing; there are no active exemptions.
+
+### Current non-ALLOW acceptance results
+1. `EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION` = `FAIL_CLOSED` for `GCAT-BCAT-Engine` and `StegGhost`.
+   - failed predicate: `REGISTERED_ADOPTER_DECLARED_VERSION_PRESENT`
+   - repair: owning Organization publishes an explicit Organization Role declaration or valid version-bound exemption.
+   - retry: `MANIFEST_BOUND_CONFORMANCE_RETRY`
+   - next attempt: re-evaluate after Organization-owned declaration/exemption evidence is retained.
+2. `CONFORMANCE_ATTEMPT_TERMINATES_ALLOW_DENY_OR_FAIL_CLOSED` = `FAIL_CLOSED` because no Organization-owned terminal conformance-attempt evidence has yet been retained for `GCAT-BCAT-Engine`, `StegGhost`, `StegVerse-Labs`, or `SV-LLM`.
+   - failed predicate: `ORGANIZATION_OWNED_CONFORMANCE_ATTEMPT_EVIDENCE_PRESENT`
+   - repair: materialize the manifest-bound conformance work at each owning Organization and retain its terminal disposition plus organization-ledger evidence.
+   - retry: `MANIFEST_BOUND_CONFORMANCE_RETRY`
+   - next attempt: evaluate retained Organization-owned evidence; never infer a disposition from repository or StegDB state.
+
 ## Current continuation
-Validate and merge the exact reference binding in StegDB and this canonical handoff. Continue Organization-owned manifest-bound conformance work for stale/missing adopters without inferring runtime migration from repository state; every consequential attempt must terminate `ALLOW | DENY | FAIL_CLOSED`.
+Materialize the existing non-authorizing manifest-bound conformance work at each owning Organization. Preserve runtime migration as `UNOBSERVED` until an Organization-owned transition produces retained evidence. Do not create direct StegDB mutation authority or treat source-state merges as `ALLOW`.
