@@ -1,12 +1,33 @@
+# Canonical Master Records organization-record and reconstruction boundary
 
-## 2026-10-07 active-surface repair tranche
+Updated: 2026-10-07
+Goal Task ID: `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`
+COSV ID: `50000000100000`
+Status: `ACTIVE / ECOSYSTEM SEMANTIC REPAIR`
 
-Canonical boundary source is merged commit `4a2280a3e886e4a7e8060fe4ef34013eb14fb532`. The active `.github` tranche removes automatic general transition submission to Master Records from `workers/canonical_state_transition_custody.py`, makes predecessor reconstruction non-gating, repairs current Task Registry authority projections, and updates current handoffs. Master Records remains limited to organization records and reconstruction. Historical evidence and historical repository/file references are preserved as provenance rather than rewritten as current authority.
-# 2026-10-07 OWNER BOUNDARY REPAIR
+## Current authoritative rule
 
-Canonical rule: **Master Records relates to organization records; the only other permitted reference is reconstruction.** Any earlier statement assigning Master Records general state-transition custody, general evidence custody, runtime/observed-reality authority, admission/closure authority, propagation gating, or a transition prerequisite is superseded and must be repaired. Historical evidence remains historical evidence and is not rewritten merely because it records an earlier architecture.
+Master Records relates to **organization records**. Its only other permitted role is **reconstruction**. It is not general transition custody, general evidence custody, runtime or observed-reality authority, admission authority, closure authority, a propagation gate, or a prerequisite for another governed transition.
 
-Current repair inventory: 10,161 candidate references; first-pass classification found 3,815 affirmative prohibited-role references across 1,212 files, 2,064 ambiguous references requiring full-context review, 3,583 negation/test references, 397 historical-evidence references, and 302 permitted references. The classification is a repair manifest, not proof that every line-window classification is final.
+Current authority separation:
+
+- Organization owns runtime/observed reality and sovereign organization ledger readback.
+- Interlock/InTr owns governed ingress/egress and transition admission.
+- Task Registry/COSV owns work coordination.
+- WorkerCoordinator owns execution claim/fence where applicable.
+- Master Records may record an organization record and may reconstruct retained records/evidence; reconstruction does not create or gate an unrelated transition.
+
+Receipts remain evidence. A historical Master Records `RECORDED`, `PASS`, custody, write-through, predecessor-closure, or state-transition API result may be retained as provenance, but it has **no current authorizing or gating effect** unless the operation is specifically the recording of an organization record or reconstruction.
+
+## Current implementation state
+
+PR #2974 established the boundary; PR #2975 repaired active .github executable/contract/task/test surfaces; PR #2976 reconciled subsequent canonical task invariants; PR #2978 moved Organization Role version/reference/adoption/conformance registry state to StegDB projection semantics. Historical source and runtime claims below are retained for reconstruction/provenance only.
+
+The current repair remains ecosystem-wide because other repositories may still contain live references that assign prohibited roles to Master Records. Ambiguous references require context review before mutation. Historical/retired evidence is not rewritten as if the earlier architecture never existed.
+
+## Historical architecture and evidence — non-authorizing
+
+Everything below this heading is retained verbatim as historical evidence of the prior architecture and prior repair chronology. **Nothing below defines current Master Records authority, transition prerequisites, runtime truth, admission, closure, or propagation gates.** Any conflicting statement below is superseded by the current authoritative rule above.
 
 # Canonical Master Records state-transition custody mirror handoff
 
