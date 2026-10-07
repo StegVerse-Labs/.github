@@ -1,3 +1,7 @@
+
+## 2026-10-07 active-surface repair tranche
+
+Canonical boundary source is merged commit `4a2280a3e886e4a7e8060fe4ef34013eb14fb532`. The active `.github` tranche removes automatic general transition submission to Master Records from `workers/canonical_state_transition_custody.py`, makes predecessor reconstruction non-gating, repairs current Task Registry authority projections, and updates current handoffs. Master Records remains limited to organization records and reconstruction. Historical evidence and historical repository/file references are preserved as provenance rather than rewritten as current authority.
 ## Master Records authority boundary repair — 2026-10-07
 
 Owner boundary is canonical: **Master Records relates to organization records; the only other permitted reference is reconstruction.** General state-transition custody, general evidence custody, runtime/observed-reality authority, admission/closure authority, propagation gating, and transition prerequisites assigned to Master Records are superseded and are being removed. Historical evidence is preserved. The canonical repair task is `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` / COSV `50000000100000`.
