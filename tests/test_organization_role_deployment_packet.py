@@ -74,7 +74,7 @@ def deployed_contract(organization: str = "Example-Org") -> dict:
         "ledger_root_is_organization_runtime_reality_locus": True,
         "ledger_lock": "ORGANIZATION_LEDGER_LOCK",
         "write_mode": "MANIFEST_DIRECTED_APPEND",
-        "propagation_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+        "propagation_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
         "propagation_gates_organization_runtime_reality": False,
         "propagation_receiver_unavailable_disposition":
             "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
@@ -112,7 +112,7 @@ def test_target_state_requires_both_receipt_schemas():
     required = load(PACKET)["target_state"]["organization_ledger_contract"]["required"]
     assert required["consumes_includes"] == [REPO_RECEIPT, CANONICAL_RECEIPT]
     assert required["runtime_reality_authority"] == "Organization"
-    assert required["propagation_role"] == "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER"
+    assert required["propagation_role"] == "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
     assert required["propagation_gates_organization_runtime_reality"] is False
     assert required["always_on_receiver_required"] is False
 
