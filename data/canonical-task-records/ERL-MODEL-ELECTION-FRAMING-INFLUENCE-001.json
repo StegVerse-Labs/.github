@@ -1,0 +1,149 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001",
+  "correlation_id": "ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001",
+  "root_correlation_id": "ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001",
+  "parent_task_id": null,
+  "goal": "Measure whether AI political/election answers produce framing influence through proposition substitution, interpretation-to-fact conversion, unasserted-hypothesis rebuttal, or evidentiary burden shifts, while separating observable influence from intent or motive.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000101000",
+  "handoff": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/MODEL_ELECTION_FRAMING_INFLUENCE_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#212",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#212",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/MODEL_ELECTION_FRAMING_INFLUENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/research-candidates/2026-10-07-model-election-framing-influence.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger"
+    ],
+    "components": [
+      "research-candidate",
+      "model-behavior",
+      "election-information",
+      "framing-influence",
+      "matched-controls"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "INITIATING_OUTPUTS_RECONSTRUCTED_WITHOUT_SILENT_REWRITE",
+    "ATOMIC_PROPOSITION_DELTAS_RECORDED",
+    "INTERPRETATION_AND_FACT_SEPARATED",
+    "USER_ALLEGATION_AND_MODEL_INTRODUCED_HYPOTHESIS_SEPARATED",
+    "MATCHED_CROSS_ADMINISTRATION_AND_NONPOLITICAL_CONTROLS_EXECUTED",
+    "OBSERVABLE_INFLUENCE_SEPARATED_FROM_INTENT_OR_MOTIVE",
+    "NO_PARTISAN_OR_MOTIVE_FINDING_WITHOUT_INDEPENDENT_CAUSAL_EVIDENCE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "public_record_research"
+    ],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_RECORD_RESEARCH",
+    "direction": "MODEL_OUTPUT_AND_PUBLIC_RECORDS_TO_ERL_RESEARCH_CANDIDATE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#212",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "PRESERVE_INITIATING_SOURCE_PACKET",
+    "BUILD_ATOMIC_PROPOSITION_DELTA_DATASET",
+    "DEFINE_MATCHED_CONTROLS",
+    "EXECUTE_CONTROL_COMPARISON",
+    "REVIEW_INFLUENCE_VS_INTENT"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/MODEL_ELECTION_FRAMING_INFLUENCE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "CURRENT_SESSION",
+    "master_records_reality_authority": false,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": null,
+    "no_readme_update_reason": "Substantive ERL README and canonical scoped handoff are updated in the owning Executive_Rhetoric_Ledger repository; this file is coordination-only Task Registry projection.",
+    "evidence_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/MODEL_ELECTION_FRAMING_INFLUENCE_MIRROR_HANDOFF.md"
+    ]
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ]
+  }
+}

@@ -2064,3 +2064,7 @@ This repair creates no runtime, scheduler, dispatcher, credential path, device p
 ## Substrate-neutral decision predicate experiment
 
 Canonical experimental Goal `SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001` / COSV `10100000110000` defines a substrate-neutral operational decision test using controlled evidence perturbation, adversarial trial families, and retained PASS/FAIL/INDETERMINATE receipts. Experimental `DECISION_OBSERVATION` is explicitly non-authorizing and remains separate from `GOVERNANCE_DISPOSITION`: PASS is not ALLOW, FAIL is not DENY, and INDETERMINATE is not FAIL_CLOSED. Registration creates no WorkerCoordinator claim/fence, runtime, scheduler, credential path, device prerequisite, Interlock/InTr admission, execution authority, or governance authority. See `docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md`.
+
+### ERL model election-framing influence research lane
+
+Canonical Task Registry now includes `ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001` (COSV `50000000101000`) as ACTIVE/CHECKED_OUT coordination for the bounded ERL model-behavior research lane owned by Executive_Rhetoric_Ledger Issue #212. The lane measures proposition substitution and framing effects while explicitly separating observable influence from intent/motive; Task Registry remains coordination-only.
