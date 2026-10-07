@@ -15,11 +15,11 @@ established or recovered StegOS node + KV/SKAP continuity
 -> bounded TV/TVC provider/credential session where required
 -> component execution
 -> exact receipt commitment
--> Master Records reconstruction
+-> optional Master Records reconstruction
 -> downstream propagation
 ```
 
-HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction. GitHub Actions are validation/evidence transport only.
+HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Organization ledger owns observed reality; Master Records is reconstruction-only outside organization-record retention. GitHub Actions are validation/evidence transport only.
 
 ## Device / node invariant correction
 
@@ -66,7 +66,7 @@ The authentic G7/fence7 allocation root is established. The next evidence may co
 
 The global measurement loop has not yet been entered: no frozen measurement run ID and no authentic `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` are currently observed.
 
-Until authentic retained StegOS/StegBrowser runtime evidence and applicable Master Records predicates are satisfied, the 18 profiled child lanes must not be advanced by inference from source state alone.
+Until authentic retained StegOS/StegBrowser runtime evidence and applicable organization-record predicates and any explicit Master Records reconstruction predicates are satisfied, the 18 profiled child lanes must not be advanced by inference from source state alone.
 
 ## Runtime substrate order
 
@@ -93,7 +93,7 @@ Current pre-measurement classification:
 category 1 - advanced automatically from reusable runtime evidence: 0
 category 2 - ready for task-specific bounded execution after authentic admitted runtime is observed: 18
 category 3 - blocked by a named physical-device requirement: 0
-category 4 - terminal with exact receipt + Master Records + propagation: 0
+category 4 - terminal with exact receipt + organization recording + any explicit reconstruction + propagation: 0
 ```
 
 This classification does not claim the lanes executed. It removes the invalid physical-device prerequisite and returns each lane to its exact subject-bound runtime predicate.
@@ -104,4 +104,4 @@ This classification does not claim the lanes executed. It removes the invalid ph
 
 ## Manual work
 
-None. No specific physical device must be operated to satisfy this Goal. Continue through the first reachable eligible StegOS execution surface that can bind KV/SKAP continuity, WorkerCoordinator G7/fence7 lineage, and Interlock/InTr admission, then preserve authentic runtime and Master Records evidence.
+None. No specific physical device must be operated to satisfy this Goal. Continue through the first reachable eligible StegOS execution surface that can bind KV/SKAP continuity, WorkerCoordinator G7/fence7 lineage, and Interlock/InTr admission, then preserve authentic runtime and organization-record evidence; use Master Records only for explicit reconstruction.

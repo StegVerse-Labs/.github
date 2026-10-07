@@ -75,12 +75,15 @@ def test_org_contract_applies_to_every_transition_inside_organization():
     assert "stegverse.canonical-state-transition-receipt/v1" in contract["consumes"]
 
 
-def test_canonical_custody_records_org_receipt_before_master_records():
+def test_canonical_transition_records_organization_without_general_master_records_submission():
     client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
     submit = client.index("def submit_state_receipt")
-    org = client.index("organization = _record_organization_transition(receipt)", submit)
-    master = client.index("payload = _submit_http(receipt)", submit)
-    assert org < master
+    end = client.index("def require_predecessor_master_records_closure", submit)
+    body = client[submit:end]
+    assert "organization = _record_organization_transition(receipt)" in body
+    assert "_submit_http(receipt)" not in body
+    assert "_submit_local(receipt)" not in body
+    assert '"master_records_submission_performed": False' in body
     assert "ORGANIZATION_TRANSITION_RECEIPT_BINDING_INVALID" in client
 
 
@@ -161,7 +164,7 @@ def test_exact_source_retry_rejects_tampered_existing_receipt():
                 os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
 
 
-def test_master_records_unavailable_keeps_exact_organization_receipt_correlation():
+def test_master_records_unavailable_does_not_gate_organization_recording():
     from unittest.mock import patch
     from workers import canonical_state_transition_custody as client
     source = canonical_receipt()
@@ -174,38 +177,34 @@ def test_master_records_unavailable_keeps_exact_organization_receipt_correlation
     }
     with patch.object(client, "_record_organization_transition",
                       return_value={"state": "RECORDED", "organization_receipt": organization}), \
-         patch.object(client, "_submit_http", return_value=None), \
-         patch.object(client, "_submit_local", return_value=None):
+         patch.object(client, "_submit_http", side_effect=AssertionError("must not submit")), \
+         patch.object(client, "_submit_local", side_effect=AssertionError("must not submit")):
         result = client.submit_state_receipt(source)
-    assert result["state"] == "BOUNDARY"
-    assert result["reason"] == "CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE"
-    assert result["organization_receipt_sha256"] == organization["receipt_sha256"]
-    assert result["organization_previous_receipt_sha256"] == organization["previous_receipt_sha256"]
-    assert result["organization_source_transition_sha256"] == organization["source_transition_sha256"]
-    assert result["organization_source_transition_id"] == source["transition_id"]
-    assert result["organization_custody_state"] == "RECORDED"
-    assert result["authority_effect"] == "NONE"
+    assert result["state"] == "RECORDED"
+    assert result["organization_receipt"] == organization
+    assert result["master_records_submission_performed"] is False
+    assert result["master_records_role"] == "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
+    assert result["authority_effect"] == "NONE_ORGANIZATION_RECORDING_ONLY"
 
 
-def test_master_records_boundary_retains_exact_failure_and_org_identity():
+def test_master_records_failure_helper_cannot_override_recorded_organization_state():
     from unittest.mock import patch
     from workers import canonical_state_transition_custody as client
     source = canonical_receipt()
-    organization = {"receipt_sha256": "sha256:" + "a" * 64,
-                    "previous_receipt_sha256": None,
-                    "source_transition_sha256": client.sha256_uri(source),
-                    "source_transition_id": source["transition_id"]}
-    failure = {"state": "BOUNDARY", "reason": "CANONICAL_MASTER_RECORDS_LOCAL_AUTHORITY_CALL_FAILED",
-               "authority_effect": "NONE"}
+    organization = {
+        "receipt_sha256": "sha256:" + "a" * 64,
+        "previous_receipt_sha256": None,
+        "source_transition_sha256": client.sha256_uri(source),
+        "source_transition_id": source["transition_id"],
+    }
     with patch.object(client, "_record_organization_transition",
                       return_value={"state": "RECORDED", "organization_receipt": organization}), \
-         patch.object(client, "_submit_http", return_value=failure):
+         patch.object(client, "_submit_http", side_effect=AssertionError("must not submit")):
         result = client.submit_state_receipt(source)
-    assert result["reason"] == failure["reason"]
-    assert result["master_records_response"] == failure
-    assert result["organization_receipt_sha256"] == organization["receipt_sha256"]
-    assert result["state"] == "BOUNDARY"
-    assert result["authority_effect"] == "NONE"
+    assert result["state"] == "RECORDED"
+    assert result["organization_receipt"] == organization
+    assert result["master_records_submission_performed"] is False
+    assert result["authority_effect"] == "NONE_ORGANIZATION_RECORDING_ONLY"
 
 
 def test_failed_organization_recording_does_not_fabricate_correlation():

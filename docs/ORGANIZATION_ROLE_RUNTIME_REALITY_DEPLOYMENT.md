@@ -2,7 +2,7 @@
 
 Organization: `StegVerse-Labs`
 Declaration: `ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001`
-Date: 2026-10-01
+Date: 2026-10-07
 Evidence class: `SOURCE_IMPLEMENTED` (completion contract v1). No runtime observation, no Master Records closure, no canonical task-record mutation and no goal closure is claimed.
 Deployment scope: this organization. The Organization Role is deployed per organization, in each organization's own `.github`. This declaration deploys it here and does not deploy it elsewhere.
 
@@ -20,14 +20,14 @@ Unchanged by this declaration: Interlock/InTr remains transition authority, Work
 
 ## master-records restated
 
-`master-records` is the **recorder of released organization batch receipts**.
+`master-records` is limited to **organization records and reconstruction**.
 
-- It records organization batches that the organization has independently verified and released, for durable cross-organization custody and complex reconstruction (`propagation_target: master-records/.github`).
+- It may retain organization records released by the organization and may perform reconstruction (`propagation_target: master-records/.github`).
 - Its release predecessor is a verified organization receipt-chain segment. It cannot create, admit, authorize, infer or repair a transition, and it never held transition authority.
 - It is **not** the runtime-reality authority of this organization and is **not** a gate on this organization's runtime reality. An organization transition is real when it is appended under the organization ledger lock, not when a batch carrying it is recorded downstream.
 - Nothing in this organization awaits it. A batch that has not been released or recorded is a value in the attempted transition's evidence state, not a blocker and not proof of non-occurrence.
 
-Master Records retains custody, reconstruction and cross-organization history. Every existing statement that Master Records is *custody/reconstruction only and holds no transition authority* remains correct and is strengthened, not superseded, by this declaration.
+Master Records has no general custody role. Statements assigning it general custody, observed reality, runtime reality, transition gating, or evidence closure are superseded. The only current positive roles are organization-record retention and reconstruction.
 
 ## Conformance standard
 

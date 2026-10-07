@@ -42,8 +42,10 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
             assert source["required_evidence_manifest"][0]["encoding"]=="canonical-json"
             assert source["required_evidence_manifest"][0]["content"]["task_id"]==MOD.TARGET_TASK
             assert org_receipt["source_transition_sha256"]==org_receipt["canonical_state_transition_receipt_sha256"]
-            self.assertEqual(result["state"],"MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED")
-            self.assertEqual(result["master_records_reason"],"CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE")
+            self.assertEqual(result["state"],"COMPLETED")
+            self.assertEqual(result["organization_recording_state"],"RECORDED")
+            self.assertFalse(result["master_records_submission_performed"])
+            self.assertEqual(result["master_records_role"],"ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY")
             self.assertTrue(result["posture_bound_execution"])
             self.assertFalse(result["sdk_resolved_posture"])
             self.assertEqual(result["resolution_authority"],"INTERLOCK_INTR")

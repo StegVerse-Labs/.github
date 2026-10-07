@@ -46,7 +46,7 @@ EXPECTED = {
     "runtime_reality_lock": "ORGANIZATION_LEDGER_LOCK",
     "runtime_reality_write_mode": "MANIFEST_DIRECTED_APPEND",
     "organization_role_deployment_scope": "PER_ORGANIZATION_IN_ITS_OWN_DOT_GITHUB",
-    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "master_records_runtime_reality_authority": "NONE",
     "master_records_transition_authority": "NONE",
     "master_records_may_gate_organization_runtime_reality": False,

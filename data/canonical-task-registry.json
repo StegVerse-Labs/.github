@@ -1,12 +1,13 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 289,
-  "status": "TASK_REGISTRY_HEALTH_MONITOR_OWNER_PROJECTION_RECONCILED",
+  "generation": 290,
+  "status": "MASTER_RECORDS_ORGANIZATION_RECORDS_RECONSTRUCTION_BOUNDARY_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
-    "observed_reality_and_reconstruction": "MASTER_RECORDS",
-    "governed_task_ingress_egress": "INTERLOCK_INTR"
+    "observed_reality_and_reconstruction": "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY",
+    "governed_task_ingress_egress": "INTERLOCK_INTR",
+    "organization_records_and_reconstruction": "MASTER_RECORDS"
   },
   "tasks": [
     {
@@ -5433,7 +5434,7 @@
       "correlation_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
       "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
       "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
-      "goal": "Make canonical Master Records custody/reconstruction an intrinsic consequence of every observed governed state transition across StegVerse, replacing task-specific diagnostic fanout as the primary recording mechanism while preserving separation of powers and exact transition lineage.",
+      "goal": "Repair the ecosystem so Master Records is referenced only for organization records and reconstruction; remove general transition custody, evidence custody, runtime-reality, admission, closure, propagation-gate, and transition-gate roles while preserving historical evidence.",
       "coordination_state": "ACTIVE",
       "checkout_state": "HANDOFF_READY",
       "cosv_task_vector": "50000000100000",
@@ -5463,23 +5464,13 @@
         "tests": "StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py"
       },
       "expected_evidence_predicates": [
-        "EVERY_GOVERNED_STATE_CHANGE_EMITS_CANONICAL_STATE_RECEIPT",
-        "EVERY_OBSERVED_STATE_RECEIPT_IS_SUBMITTED_TO_MASTER_RECORDS",
-        "MASTER_RECORDS_RECONSTRUCTS_CURRENT_STATE_WITHOUT_GRANTING_AUTHORITY",
-        "ALLOW_DENY_EXECUTION_AND_FAILURE_STATES_HAVE_CUSTODY",
-        "TASK_SPECIFIC_DIAGNOSTICS_ARE_NOT_PRIMARY_CUSTODY_PATH",
-        "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
-        "SV002_SEMANTICS_PRESERVED",
-        "MIR_INITIATION_REUSES_VALIDATED_BROWSER_EVENT_SURFACE",
-        "CURRENT_INTR_ADMISSION_PRECEDES_MIR_EVENT_RUNTIME",
-        "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_DECLARED",
-        "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_SUBMITTED_TO_MASTER_RECORDS",
-        "EVERY_REQUIRED_TRANSITION_EVIDENCE_ITEM_IS_BOUND_TO_ORIGIN_TRANSITION",
-        "ALL_REQUIRED_TRANSITION_EVIDENCE_DIGESTS_VALIDATE",
-        "ALL_REQUIRED_TRANSITION_EVIDENCE_RECONSTRUCTS_PASS",
-        "NEXT_MACHINE_TRANSITION_BLOCKS_ON_REQUIRED_EVIDENCE_GAP",
-        "EVERY_IN_ORGANIZATION_STATE_TRANSITION_EMITS_ORGANIZATION_RECEIPT",
-        "ORGANIZATION_RECEIPT_PRECEDES_MASTER_RECORDS_CUSTODY"
+        "MASTER_RECORDS_REFERENCES_ARE_ORGANIZATION_RECORDS_OR_RECONSTRUCTION_ONLY",
+        "MASTER_RECORDS_IS_NOT_GENERAL_TRANSITION_CUSTODY",
+        "MASTER_RECORDS_IS_NOT_GENERAL_EVIDENCE_CUSTODY",
+        "MASTER_RECORDS_DOES_NOT_GATE_TRANSITIONS",
+        "MASTER_RECORDS_DOES_NOT_OWN_RUNTIME_OR_OBSERVED_REALITY",
+        "HISTORICAL_EVIDENCE_IS_PRESERVED",
+        "AMBIGUOUS_REFERENCES_ARE_CONTEXT_REVIEWED_BEFORE_MUTATION"
       ],
       "current_truth": {
         "ecosystem_inventory_materialized": true,
@@ -5856,7 +5847,25 @@
         "publisher_return_failure_diagnostic_merge": "0f976b6b050ea761da2cffcfe35e81d6a090081b",
         "publisher_return_failure_diagnostic_exact_head": "a6ab3cc81f8300fcc45dc158cdf5338c741e0263",
         "publisher_return_failure_diagnostic_validation_run": 36069544761,
-        "authentic_publisher_return_failure_diagnostic_observed": false
+        "authentic_publisher_return_failure_diagnostic_observed": false,
+        "owner_boundary_repaired": "MASTER_RECORDS_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+        "previous_every_transition_custody_semantics_superseded": true,
+        "semantic_inventory_total": 10161,
+        "initial_prohibited_role_references": 3815,
+        "initial_prohibited_role_files": 1212,
+        "initial_ambiguous_references": 2064,
+        "canonical_boundary_merge": "4a2280a3e886e4a7e8060fe4ef34013eb14fb532",
+        "active_repo_tranche_branch": "repair/master-records-active-surfaces-20261007",
+        "active_repo_tranche_scope": [
+          "canonical-task-registry",
+          "canonical-state-transition-client",
+          "global-invariant-validator",
+          "active-component-profile",
+          "current-handoffs",
+          "README"
+        ],
+        "general_master_records_transition_submission_removed_from_canonical_client": true,
+        "predecessor_master_records_reconstruction_is_not_transition_gate": true
       },
       "completion": {
         "claimed": false,

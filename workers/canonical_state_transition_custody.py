@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-"""Reusable canonical state-transition custody client.
+"""Reusable canonical organization-record and reconstruction client.
 
-Every observed governed transition can be wrapped in one canonical receipt and
-submitted to the existing Master Records custody authority. This module grants no
-transition, execution, credential, routing, or publication authority.
+Every observed governed transition may emit a canonical transition receipt into
+the organization ledger. Master Records is not the general transition/evidence
+custody path and is never a prerequisite for unrelated transition progression.
+Master Records is used only for organization records and explicit reconstruction.
 
-The preferred path is the canonical Master Records state-transition API. When a
-resident execution is operating with the canonical Master Records repository
-mounted locally, the local adapter calls the repository's existing canonical
-state-transition custody implementation against an explicitly configured durable
-Master Records database. It does not use the reusable-task lifecycle ingester or
-create a second custody store.
+Legacy Master Records submission/query helpers remain temporarily for bounded
+organization-record/reconstruction compatibility while call sites are repaired.
+They grant no transition, execution, credential, routing, publication, runtime-
+reality, or observability authority.
 """
 from __future__ import annotations
 
@@ -45,7 +44,7 @@ def sha256_uri(value: Any) -> str:
 
 
 def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    """Record the exact governed transition in the existing organization ledger before Master Records."""
+    """Record the exact governed transition in the existing organization ledger."""
     module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "aggregate_repo_transition.py"
     if not module_path.is_file():
         return {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
@@ -60,7 +59,7 @@ def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any
             org_transition_class="ORGANIZATION_STATE_TRANSITION",
             boundary_evidence={
                 "canonical_state_transition_receipt_sha256": sha256_uri(dict(receipt)),
-                "ordering": "ORGANIZATION_RECEIPT_BEFORE_MASTER_RECORDS_CUSTODY",
+                "ordering": "ORGANIZATION_RECORD_IS_CANONICAL_BEFORE_ANY_OPTIONAL_RECONSTRUCTION",
             },
             authority_effect="NONE",
         )
@@ -119,7 +118,7 @@ def build_state_receipt(
     transition_evidence: Mapping[str, Any],
     required_evidence_manifest: list[Mapping[str, Any]] | None = None,
     proof_scope: str = "THIS_TRANSITION_ONLY",
-    proof_ceiling: str = "OBSERVED_STATE_TRANSITION_AND_CUSTODY_ONLY",
+    proof_ceiling: str = "OBSERVED_STATE_TRANSITION_AND_ORGANIZATION_RECORD_ONLY",
     recorded_at: str | None = None,
 ) -> dict[str, Any]:
     if not transition_id or not subject_or_correlation_id:
@@ -709,9 +708,9 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
     and returns an organization-level disposition that does not depend on the
     Master Records released-batch recording lane.
 
-    It is not a Master Records closure and may not be promoted to one. A caller
-    needing the MASTER_RECORDS_RECONSTRUCTED evidence class still calls
-    `submit_state_receipt`.
+    It is not a Master Records closure and may not be promoted to one. Explicit
+    reconstruction is a separate diagnostic/readback operation and is never a
+    progression prerequisite for an unrelated transition.
     """
     if receipt.get("schema") != RECEIPT_SCHEMA:
         return {"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH", "authority_effect": "NONE"}
@@ -733,61 +732,30 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
 
 
 def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    """Record organization custody first; retain its verified identity on every later failure."""
+    """Compatibility entry point: record the transition in the organization ledger only.
+
+    The legacy function name is retained while callers migrate. It MUST NOT submit
+    a general state-transition receipt to Master Records. Master Records may receive
+    organization records through the bounded organization-batch lane, and may be
+    queried for explicit reconstruction separately.
+    """
     if receipt.get("schema") != RECEIPT_SCHEMA:
-        return {"state":"BOUNDARY","reason":"CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH","authority_effect":"NONE"}
+        return {"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH", "authority_effect": "NONE"}
     organization = _record_organization_transition(receipt)
     if organization.get("state") != "RECORDED":
         return organization
-    org_receipt = organization["organization_receipt"]
-    correlation = {
-        "organization_receipt_sha256": org_receipt["receipt_sha256"],
-        "organization_previous_receipt_sha256": org_receipt.get("previous_receipt_sha256"),
-        "organization_source_transition_sha256": org_receipt["source_transition_sha256"],
-        "organization_source_transition_id": org_receipt["source_transition_id"],
-        "organization_custody_state": "RECORDED",
-    }
-
-    def blocked(reason: str, **details: Any) -> dict[str, Any]:
-        # Diagnostic correlation only. Neither an org receipt nor this response
-        # grants execution, Master Records closure or downstream authority.
-        #
-        # ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001: the organization
-        # ledger append above is runtime reality for this organization and is
-        # already established here. This BOUNDARY describes the Master Records
-        # released-batch recording lane only; it is not an organization-level
-        # non-occurrence and nothing awaits the recorder.
-        return {"state": "BOUNDARY", "reason": reason, **correlation,
-                "organization_runtime_reality": "RECORDED",
-                "organization_runtime_reality_locus": "ORGANIZATION_LEDGER_ROOT",
-                "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
-                "master_records_batch_release_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
-                "master_records_gates_organization_runtime_reality": False,
-                "always_on_receiver_required": False,
-                **details, "authority_effect": "NONE"}
-
-    payload = _submit_http(receipt)
-    if payload is None:
-        payload = _submit_local(receipt)
-    if payload is None:
-        return blocked("CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE")
-    if payload.get("state") == "BOUNDARY":
-        return blocked(str(payload.get("reason") or "CANONICAL_MASTER_RECORDS_CUSTODY_BOUNDARY"),
-                       master_records_response=payload)
-    expected_hash = sha256_uri(dict(receipt)).split(":", 1)[1]
-    if payload.get("state") != "RECORDED" or payload.get("reconstruction_status") != "PASS":
-        return blocked("CANONICAL_MASTER_RECORDS_CUSTODY_NOT_RECORDED", response=payload)
-    if payload.get("required_evidence_validation_status") != "PASS":
-        return blocked("CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED", response=payload)
-    if payload.get("receipt_sha256") != expected_hash or payload.get("reconstructed_receipt_sha256") != expected_hash:
-        return blocked("CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH", response=payload)
-    if payload.get("master_records_grants_transition_authority") is not False:
-        return blocked("MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED")
+    receipt_sha256 = sha256_uri(dict(receipt)).split(":", 1)[1]
     return {
-        **payload,
-        **correlation,
-        "organization_receipt": org_receipt,
-        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+        "state": "RECORDED",
+        "receipt_sha256": receipt_sha256,
+        "organization_receipt": organization["organization_receipt"],
+        "organization_runtime_reality": "RECORDED",
+        "organization_runtime_reality_locus": "ORGANIZATION_LEDGER_ROOT",
+        "master_records_submission_performed": False,
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+        "reconstruction_status": "NOT_REQUESTED",
+        "required_evidence_validation_status": "ORGANIZATION_RECORD_ONLY",
+        "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY",
     }
 
 
@@ -796,55 +764,50 @@ def require_predecessor_master_records_closure(
     *,
     successor_transition_id: str,
 ) -> tuple[str | None, list[dict[str, Any]]]:
-    """Reconstruct and bind one canonical predecessor closure for direct callers.
+    """Legacy-name reconstruction helper; never a transition-progression gate.
 
-    A missing predecessor is allowed only when the caller has no predecessor
-    receipt to claim. Any supplied predecessor must reconstruct through canonical
-    Master Records with required evidence PASS and exact digest equality.
+    If a predecessor digest is supplied, preserve it as the prior-state reference.
+    An available Master Records reconstruction may be attached as non-authorizing
+    reconstruction evidence. Reconstruction absence or failure must not prevent an
+    otherwise governed successor transition from being evaluated or executed.
     """
     if receipt_sha256 is None:
         return None, []
     if not isinstance(receipt_sha256, str) or not receipt_sha256:
         raise RuntimeError("canonical_predecessor_receipt_sha_invalid")
     raw = receipt_sha256.split(":", 1)[1] if receipt_sha256.startswith("sha256:") else receipt_sha256
-    reconstructed = reconstruct_state_receipt(raw)
-    if (
-        reconstructed.get("state") != "PASS"
-        or reconstructed.get("required_evidence_validation_status") != "PASS"
-        or reconstructed.get("receipt_sha256") != raw
-        or reconstructed.get("reconstructed_receipt_sha256") != raw
-    ):
-        raise RuntimeError(str(reconstructed.get("reason") or "canonical_predecessor_master_records_closure_incomplete"))
-    receipt = reconstructed.get("receipt")
-    predecessor_transition_id = receipt.get("transition_id") if isinstance(receipt, Mapping) else None
-    closure = {
-        "transition_id": predecessor_transition_id,
-        "state": "RECORDED",
-        "reconstruction_status": "PASS",
-        "required_evidence_validation_status": "PASS",
+    reconstruction = reconstruct_state_receipt(raw)
+    reconstruction_pass = (
+        reconstruction.get("state") == "PASS"
+        and reconstruction.get("receipt_sha256") == raw
+        and reconstruction.get("reconstructed_receipt_sha256") == raw
+    )
+    content = {
         "receipt_sha256": raw,
-        "reconstructed_receipt_sha256": raw,
-        "master_record_ref": reconstructed.get("master_record_ref"),
-        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+        "reconstruction_status": "PASS" if reconstruction_pass else "NOT_AUTHENTICALLY_OBSERVED",
+        "master_records_role": "RECONSTRUCTION_ONLY",
+        "transition_gate": False,
+        "authority_effect": "NONE_RECONSTRUCTION_ONLY",
     }
+    if reconstruction_pass:
+        content["master_record_ref"] = reconstruction.get("master_record_ref")
     evidence = {
-        "evidence_id": f"predecessor-master-records-closure:{successor_transition_id}",
-        "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "evidence_id": f"predecessor-reconstruction:{successor_transition_id}",
+        "evidence_type": "PREDECESSOR_RECONSTRUCTION_STATUS",
         "origin_transition_id": successor_transition_id,
         "encoding": "canonical-json",
-        "sha256": sha256_uri(closure).split(":", 1)[1],
-        "content": closure,
+        "sha256": sha256_uri(content).split(":", 1)[1],
+        "content": content,
     }
     return f"sha256:{raw}", [evidence]
 
 
 class CanonicalTransitionCustody:
-    """Sequence-aware helper used by governed transition consumers.
+    """Sequence-aware organization-record helper used by governed consumers.
 
-    The immediately preceding canonical Master Records closure is the predecessor
-    state for every successor recorded through this helper. Domain/result hashes
-    remain transition evidence; they do not replace the custody closure as the
-    progression dependency.
+    Transition progression follows governed state and organization-ledger state.
+    Master Records is not a progression dependency. Explicit reconstruction may be
+    requested independently where reconstruction is the actual operation.
     """
     def __init__(self, subject_or_correlation_id: str) -> None:
         if not subject_or_correlation_id:
@@ -852,33 +815,7 @@ class CanonicalTransitionCustody:
         self.subject = subject_or_correlation_id
         self.sequence = 0
         self.last_state_ref: str | None = None
-        self.last_master_records_closure: dict[str, Any] | None = None
         self.records: list[dict[str, Any]] = []
-
-    @staticmethod
-    def _closure_complete(result: Mapping[str, Any]) -> bool:
-        return (
-            result.get("state") == "RECORDED"
-            and result.get("reconstruction_status") == "PASS"
-            and result.get("required_evidence_validation_status") == "PASS"
-            and isinstance(result.get("receipt_sha256"), str)
-            and bool(result.get("receipt_sha256"))
-            and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
-        )
-
-    def _predecessor_required_evidence(self, transition_id: str) -> list[dict[str, Any]]:
-        closure = self.last_master_records_closure
-        if closure is None:
-            return []
-        content = dict(closure)
-        return [{
-            "evidence_id": f"predecessor-master-records-closure:{self.sequence}",
-            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
-            "origin_transition_id": transition_id,
-            "encoding": "canonical-json",
-            "sha256": sha256_uri(content).split(":", 1)[1],
-            "content": content,
-        }]
 
     def record(
         self,
@@ -892,8 +829,6 @@ class CanonicalTransitionCustody:
         require_return: bool = True,
     ) -> dict[str, Any]:
         self.sequence += 1
-        required_evidence = self._predecessor_required_evidence(transition_id)
-        required_evidence.extend(dict(item) for item in (required_evidence_manifest or []))
         receipt = build_state_receipt(
             transition_id=transition_id,
             transition_sequence=self.sequence,
@@ -903,27 +838,20 @@ class CanonicalTransitionCustody:
             resulting_state_ref_or_hash=resulting_state_ref_or_hash,
             governance_decision_ref_where_applicable=governance_decision_ref,
             transition_evidence=evidence,
-            required_evidence_manifest=required_evidence,
+            required_evidence_manifest=[dict(item) for item in (required_evidence_manifest or [])],
         )
         result = submit_state_receipt(receipt)
-        row = {"receipt":receipt, "master_records":result}
+        row = {"receipt": receipt, "organization_recording": result}
         self.records.append(row)
-        complete = self._closure_complete(result)
-        if require_return and not complete:
-            raise RuntimeError(str(result.get("reason") or "canonical_master_records_custody_not_returned"))
-        if complete:
-            receipt_sha256 = str(result["receipt_sha256"])
-            self.last_state_ref = f"sha256:{receipt_sha256}"
-            self.last_master_records_closure = {
-                "transition_id": transition_id,
-                "state": "RECORDED",
-                "reconstruction_status": "PASS",
-                "required_evidence_validation_status": "PASS",
-                "receipt_sha256": receipt_sha256,
-                "reconstructed_receipt_sha256": receipt_sha256,
-                "master_record_ref": result.get("master_record_ref"),
-                "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
-            }
+        recorded = (
+            result.get("state") == "RECORDED"
+            and isinstance(result.get("organization_receipt"), Mapping)
+            and bool(result.get("receipt_sha256"))
+        )
+        if require_return and not recorded:
+            raise RuntimeError(str(result.get("reason") or "canonical_organization_record_not_returned"))
+        if recorded:
+            self.last_state_ref = f"sha256:{result['receipt_sha256']}"
         return row
 
 

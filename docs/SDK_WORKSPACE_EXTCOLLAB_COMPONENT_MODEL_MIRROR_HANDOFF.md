@@ -40,7 +40,7 @@ A historical receipt may identify an iPhone, iPad, browser node, or other eligib
 - Governed request/response cycles -> reuse `RTC-ROUNDTRIP-003` for resident reseal, resident listener, sovereign callback, and authoritative provider probe. Each requires independent evidence.
 - Provider/session handling -> reuse TV/TVC; KV/SKAP Vault remains the user-verification/custody source where applicable.
 - Evidence validation -> reuse canonical validators; source/CI/static compatibility never upgrades runtime evidence.
-- Custody/reconstruction -> reuse `RTC-EVIDENCE-CUSTODY-004`; Master Records owns observed reality, custody, and reconstruction.
+- Custody/reconstruction -> reuse `RTC-EVIDENCE-CUSTODY-004`; Organization ledger owns observed reality; Master Records is limited to organization records and reconstruction.
 - SDK return assembly -> reuse `RTC-SDK-RETURN-006` when required.
 - Publication/distribution -> reuse `RTC-PUBLISHER-005` only after applicable release authority exists.
 - Final local/far-side transition -> reuse `RTC-STEGVERSE-EGRESS-007`, `RTC-INTERLOCK-INTR-TRANSPORT-008`, and `RTC-FARSIDE-FINAL-009` only for targets that require them.
@@ -55,7 +55,7 @@ The prior `CURRENT_USER_IPHONE` task binding is superseded as a Goal-level execu
 
 ## Authority invariants
 
-Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/release authority. KV/SKAP Vault is the sole user verifier. StegOS devices are interchangeable transport/execution nodes. Node identity is correlation only. Master Records owns observed reality/custody/reconstruction. HeartBeat is observability only. GitHub has no runtime authority.
+Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/release authority. KV/SKAP Vault is the sole user verifier. StegOS devices are interchangeable transport/execution nodes. Node identity is correlation only. Organization ledger owns observed reality; Master Records is limited to organization records and reconstruction. HeartBeat is observability only. GitHub has no runtime authority.
 
 ## Runtime and completion truth
 

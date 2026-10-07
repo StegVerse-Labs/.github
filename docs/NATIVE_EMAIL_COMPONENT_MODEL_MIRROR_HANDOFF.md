@@ -24,7 +24,7 @@ The decomposition policy score is 25: repeated subflows, multiple authority cros
 - Governed archive decision: reuse `RTC-MANIFEST-001` + `RTC-GOVERNED-PROCESSING-002`; Interlock/InTr owns governed transition/admission. Exact reviewed IDs and verified KV receipts are inputs; caller cannot self-enable the provider consequence.
 - Gmail archive consequence: reuse `RTC-ROUNDTRIP-003` with parameter `tvc_gmail_archive_consequence`; TV/TVC owns provider execution authority. Expected evidence: authentic provider result.
 - Governed movement: reuse `RTC-INTERLOCK-INTR-TRANSPORT-008` only at actual governed transition boundaries.
-- Evidence custody/reconstruction: reuse `RTC-EVIDENCE-CUSTODY-004`; Master Records owns observed reality, custody, readback, and reconstruction.
+- Evidence custody/reconstruction: reuse `RTC-EVIDENCE-CUSTODY-004`; Organization records are retained by the organization; Master Records is limited to organization records and reconstruction.
 
 Transport selector: `data/goal-task-transport-profiles/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json`.
 
@@ -38,7 +38,7 @@ Existing native-email broker, KV guard/writer, source-prep adapter, and resident
 
 ## Authority invariants
 
-Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns credential/provider/release authority. KV/SKAP Vault is sole user-verification authority. StegOS devices are interchangeable transport/execution nodes only. Master Records owns custody/reconstruction. HeartBeat is observability only. GitHub has no runtime authority. No device-local user verification is introduced.
+Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns credential/provider/release authority. KV/SKAP Vault is sole user-verification authority. StegOS devices are interchangeable transport/execution nodes only. Master Records is limited to organization records and reconstruction. HeartBeat is observability only. GitHub has no runtime authority. No device-local user verification is introduced.
 
 ## Remaining Goal predicates
 
