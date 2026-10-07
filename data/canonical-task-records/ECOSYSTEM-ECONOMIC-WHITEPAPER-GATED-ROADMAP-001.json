@@ -5,7 +5,7 @@
   "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
   "parent_task_id": null,
   "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
-  "coordination_state": "PROPOSED",
+  "coordination_state": "ACTIVE",
   "source_refs": [
     "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (owner-approved existing documentation at closed-unmerged PR #72; exact source retained, not yet governed-published)",
     "StegVerse-Labs/Site:economic-roadmap.html (source merged Site #1458)",
@@ -83,12 +83,12 @@
     {
       "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
       "dependency_id": "GOVERNED_PUBLICATION",
-      "reason": "The prior source exposure defect is repaired: shared SDK:ManifestStateTransition can dispatch processing_capability=governance / stegverse.route.canonical-governed.v1 to the existing SDK governance owner, using existing canonical source-root bindings and authenticated TVC_RELAY_EGRESS transport. The remaining transition is the authentic attempt of frozen manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be through an actually exposed authenticated TV/TVC + Universal InTr execution surface. Preserve its first ALLOW, DENY or FAIL_CLOSED, organization receipt/predecessor and matching Master Records closure before Publisher release. No resident inventory, new runtime, scheduler, device or duplicate task is required."
+      "reason": "The prior source exposure defect is repaired: shared SDK:ManifestStateTransition can dispatch processing_capability=governance / stegverse.route.canonical-governed.v1 to the existing SDK governance owner, using existing canonical source-root bindings and authenticated TVC_RELAY_EGRESS transport. The remaining transition is the authentic attempt of frozen manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be through an actually exposed authenticated TV/TVC + Universal InTr execution surface. Preserve its first ALLOW, DENY or FAIL_CLOSED, organization receipt/predecessor and applicable Master Records reconstruction/organization-record evidence before Publisher release. No resident inventory, new runtime, scheduler, device or duplicate task is required."
     },
     {
       "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
       "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
-      "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic Master Records proof and a Publisher-owned public-safe projector."
+      "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic organization receipt proof, applicable Master Records reconstruction/organization-record evidence, and a Publisher-owned public-safe projector."
     }
   ],
   "adjacent_task_refs": [
@@ -126,7 +126,7 @@
     "PUBLISHER_EDITORIAL_CANDIDATE_REVIEWED",
     "SIX_STAGE_16_BENCHMARK_PUBLIC_PROJECTION_FAILS_CLOSED",
     "EXACT_TASK_AND_COSV_BENCHMARK_BINDINGS",
-    "AUTHENTIC_RUNTIME_MASTER_RECORDS_CLOSURE_FOR_CHECKMARKS",
+    "AUTHENTIC_ORGANIZATION_RECEIPT_AND_APPLICABLE_RECONSTRUCTION_EVIDENCE_FOR_CHECKMARKS",
     "EXACT_EXTERNAL_INTR_ALLOW_REQUIRED_WHEN_APPLICABLE",
     "GOVERNED_PUBLISHER_PUBLICATION_CLOSURE",
     "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED",
@@ -149,7 +149,9 @@
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
+    "runtime_reality_authority": "ORGANIZATION",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "interlock_intr_required_for_governed_ingress_egress": true
   },
   "allowed_next_transitions": [
