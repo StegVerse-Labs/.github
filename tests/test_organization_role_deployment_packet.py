@@ -117,10 +117,14 @@ def test_target_state_requires_both_receipt_schemas():
     assert required["always_on_receiver_required"] is False
 
 
-def test_packet_points_at_a_real_reference_implementation():
-    reference = load(PACKET)["reference_implementation"]
-    for key in ("contract", "aggregator", "declaration", "exemption_register", "invariant_block"):
-        assert (ROOT / reference[key]).exists(), f"reference {key} missing: {reference[key]}"
+def test_packet_deprecates_repository_local_reference_and_resolves_through_stegdb():
+    packet = load(PACKET)
+    reference = packet["reference_implementation"]
+    assert reference["status"] == "DEPRECATED_AS_CANONICAL_REFERENCE"
+    assert reference["resolution"] == "RESOLVE_VERSION_BOUND_REFERENCE_COORDINATES_FROM_STEGDB"
+    assert packet["canonical_registry"]["repository"] == "StegVerse-Labs/StegDB"
+    assert packet["canonical_registry"]["authority_effect"] == "NONE_DURABLE_REGISTRY_STATE_ONLY"
+    assert "DIRECTLY_INSTALL_OR_MUTATE_AN_ADOPTER_REPOSITORY" in packet["this_packet_does_not"]
 
 
 def test_reference_organization_passes_its_own_verifier():
@@ -277,17 +281,11 @@ def test_register_records_measurement_not_instruction():
     assert register["organizations_not_yet_measured"]
 
 
-def test_the_constraint_is_selection_timing_not_one_organization_per_session():
-    """A session may deploy to many organizations; what it cannot do is reach a
-    dot-named repository it was not created with."""
-    reaching = load(PACKET)["reaching_target_organizations"]
-    assert reaching["constraint"] == "SELECTION_TIMING_NOT_COUNT"
-    assert reaching["one_session_may_deploy_to_many_organizations"] is True
-    assert reaching["every_target_dot_github_must_be_selected_at_session_creation"] is True
-    assert reaching["target_discovered_after_session_start_is_unreachable_from_that_session"] is True
-    text = DOC.read_text(encoding="utf-8")
-    assert "selection timing, not count" in text
-    assert "one organization per session" not in text
+def test_packet_contains_no_session_selection_propagation_dependency():
+    packet = load(PACKET)
+    assert "reaching_target_organizations" not in packet
+    assert packet["packet_mutates_other_organizations"] is False
+    assert packet["canonical_registry"]["authority_effect"] == "NONE_DURABLE_REGISTRY_STATE_ONLY"
 
 
 def test_doc_states_the_sequence_and_the_urgent_gap():
