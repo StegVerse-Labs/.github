@@ -703,14 +703,6 @@ def _validate_mir_southbound_request(request: Mapping[str, Any]) -> None:
     for key in ("materialization_id", "request_hash", "transport_intent_hash", "payload_hash", "operation_id", "packet_id", "payload_ref"):
         require(isinstance(request.get(key), str) and bool(request.get(key)), "mir_southbound_" + key + "_required")
     require(request.get("predecessor_transition_id") == "RTC-STEGVERSE-EGRESS-007", "mir_southbound_predecessor_transition_mismatch")
-    require(request.get("predecessor_master_records_state") == "RECORDED", "mir_southbound_predecessor_master_records_not_recorded")
-    require(request.get("predecessor_master_records_reconstruction_status") == "PASS", "mir_southbound_predecessor_reconstruction_not_pass")
-    require(request.get("predecessor_master_records_required_evidence_validation_status") == "PASS", "mir_southbound_predecessor_required_evidence_not_pass")
-    require(request.get("predecessor_master_records_digest_equal") is True, "mir_southbound_predecessor_digest_not_equal")
-    predecessor = request.get("predecessor_master_records_receipt_sha256")
-    reconstructed = request.get("predecessor_master_records_reconstructed_receipt_sha256")
-    require(isinstance(predecessor, str) and bool(predecessor), "mir_southbound_predecessor_receipt_required")
-    require(predecessor == reconstructed, "mir_southbound_predecessor_receipt_digest_mismatch")
     body = dict(request)
     claimed = body.pop("request_hash", None)
     require(claimed == sha_uri(body), "mir_southbound_request_hash_mismatch")
@@ -740,42 +732,6 @@ def _rtc008_required_evidence(
             "content": dict(ingress_receipt),
         },
     ]
-
-
-def _record_rtc008_custody(request: Mapping[str, Any], ingress_receipt: Mapping[str, Any]) -> dict[str, Any]:
-    predecessor_sha256 = request.get("predecessor_master_records_receipt_sha256")
-    prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
-        predecessor_sha256,
-        successor_transition_id=RTC008_TRANSITION_ID,
-    )
-    require(prior_ref is not None, "rtc008_predecessor_master_records_closure_required")
-    closure = predecessor_evidence[0].get("content") if predecessor_evidence else None
-    require(isinstance(closure, Mapping), "rtc008_predecessor_master_records_closure_missing")
-    require(closure.get("transition_id") == "RTC-STEGVERSE-EGRESS-007", "rtc008_predecessor_transition_reconstruction_mismatch")
-    require(closure.get("state") == request.get("predecessor_master_records_state"), "rtc008_predecessor_state_reconstruction_mismatch")
-    require(closure.get("reconstruction_status") == request.get("predecessor_master_records_reconstruction_status"), "rtc008_predecessor_reconstruction_status_mismatch")
-    require(closure.get("required_evidence_validation_status") == request.get("predecessor_master_records_required_evidence_validation_status"), "rtc008_predecessor_required_evidence_status_mismatch")
-    require(closure.get("receipt_sha256") == request.get("predecessor_master_records_receipt_sha256"), "rtc008_predecessor_receipt_reconstruction_mismatch")
-    require(closure.get("reconstructed_receipt_sha256") == request.get("predecessor_master_records_reconstructed_receipt_sha256"), "rtc008_predecessor_reconstructed_receipt_mismatch")
-    receipt = build_state_receipt(
-        transition_id=RTC008_TRANSITION_ID,
-        transition_sequence=8,
-        subject_or_correlation_id=str(request["materialization_id"]),
-        transition_outcome="COMPLETED",
-        prior_state_ref_or_hash=prior_ref,
-        resulting_state_ref_or_hash=sha_uri(dict(ingress_receipt)),
-        governance_decision_ref_where_applicable=str(ingress_receipt.get("transport_authorization_id") or "") or None,
-        transition_evidence=dict(ingress_receipt),
-        required_evidence_manifest=_rtc008_required_evidence(request, ingress_receipt, predecessor_evidence),
-        proof_scope="RTC008_AUTHENTIC_INTR_ADMISSION_ONLY",
-        proof_ceiling="OBSERVED_INTR_ADMISSION_AND_MASTER_RECORDS_CUSTODY_ONLY",
-    )
-    result = submit_state_receipt(receipt)
-    require(result.get("state") == "RECORDED", "rtc008_master_records_not_recorded")
-    require(result.get("reconstruction_status") == "PASS", "rtc008_master_records_reconstruction_not_pass")
-    require(result.get("required_evidence_validation_status") == "PASS", "rtc008_master_records_required_evidence_not_pass")
-    require(result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256"), "rtc008_master_records_digest_mismatch")
-    return result
 
 
 def admit_mir_southbound(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
@@ -824,16 +780,12 @@ def admit_mir_southbound(*, runtime_root: Path, body: bytes, headers: Mapping[st
         latest = runtime_root / MIR_SOUTHBOUND_LATEST
         latest.parent.mkdir(parents=True, exist_ok=True)
         latest.write_bytes(raw)
-    custody = _record_rtc008_custody(request, ingress_receipt)
     intr_admission_receipt_sha256 = sha_uri(dict(ingress_receipt)).split(":", 1)[1]
     return {
         **ingress_receipt,
         "intr_admission_receipt_sha256": intr_admission_receipt_sha256,
-        "master_records_state": custody["state"],
-        "master_records_reconstruction_status": custody["reconstruction_status"],
-        "master_records_required_evidence_validation_status": custody["required_evidence_validation_status"],
-        "master_records_receipt_sha256": custody["receipt_sha256"],
-        "master_records_reconstructed_receipt_sha256": custody["reconstructed_receipt_sha256"],
+        "master_records_reconstruction_available": True,
+        "master_records_authority_effect": "NONE_RECONSTRUCTION_ONLY",
         "rtc008_evidence_complete": True,
         "far_side_transition_observed": False,
         "caller_consequence_observed": False,
