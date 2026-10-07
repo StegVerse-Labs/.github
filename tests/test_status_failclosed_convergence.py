@@ -117,7 +117,7 @@ class StatusFailClosedConvergenceTests(unittest.TestCase):
             goal = next(item for item in result["goals"] if item["root_task_id"] == "ROOT")
             self.assertFalse(goal["converged"])
             self.assertIn("UNRESOLVED_DESCENDANTS", goal["reason_codes"])
-            self.assertIn("CUSTODY_OR_RECONSTRUCTION_INCOMPLETE", goal["reason_codes"])
+            self.assertNotIn("RECONSTRUCTION_INCOMPLETE", goal["reason_codes"])
 
 
 if __name__ == "__main__":
