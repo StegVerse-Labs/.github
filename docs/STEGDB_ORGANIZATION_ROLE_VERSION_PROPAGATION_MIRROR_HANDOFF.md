@@ -87,3 +87,22 @@ Until that evidence exists, StegDB may retain `VERSION_DIVERGENCE_DETECTED` and 
 
 ## Current continuation
 Materialize the existing non-authorizing manifest-bound conformance work at each owning Organization. Preserve runtime migration as `UNOBSERVED` until an Organization-owned transition produces retained evidence. Do not create direct StegDB mutation authority or treat source-state merges as `ALLOW`.
+
+## Conformance-attempt reconciliation — 2026-10-07
+- StegDB PR #35 merged as `2acc6890ef11a48bcfe07264e8f8a155f6c68a13`.
+- StegVerse-Labs and StegGhost both have current Organization Role source declarations; their prior missing-declaration classification was stale and is corrected.
+- Attempted conformance materialization for GCAT-BCAT-Engine, StegGhost, StegVerse-Labs and SV-LLM terminates `FAIL_CLOSED` in the current execution context wherever an authentic Organization-owned conformance execution surface cannot be reached.
+- `materialization: UNOBSERVED` is retained for those attempts and no source/repository state is promoted to runtime migration evidence.
+
+## Concrete GCAT-BCAT-Engine repair surface
+The remaining `EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION` failure is GCAT-BCAT-Engine only. Its owning `GCAT-BCAT-Engine/.github` already contains:
+- `resident-runtime/activation-manifest.json` (blob `29299ce9080d6957b39e1cf5876c9bbd168072b4`), naming this repository as activation and ingress/egress owner;
+- `org-boundary/registry/services.json` (blob `108099e925af7e52cbbfe2d5acfe1e0e98d68fbe`);
+- `org-boundary/runtime/process_boundary.py` (blob `1b67443a19feed665bcebbc93cf9604a73d6c8e8`).
+
+It does not currently expose the Organization Role declaration or `.stegverse/transition-ledger/org-contract.json`. Its boundary processor currently accepts only `BOUNDARY_LOCAL_DIAGNOSTIC` and returns `endpoint-adapter-not-installed` for other service roles.
+
+Repair is therefore bounded to the owning GCAT `.github`: publish the version-bound Organization Role declaration and organization-ledger contract, register Organization Role conformance on the existing org-boundary, and install/bind the applicable endpoint adapter. Do not create a second ingress. Only a later Organization-owned manifest-bound Interlock/InTr invocation with retained organization-ledger evidence can change runtime migration from `UNOBSERVED`.
+
+## Current continuation
+Validate and merge the exact GCAT repair-surface binding in StegDB and this handoff, then materialize that repair through GCAT-BCAT-Engine's owning Organization repository. Preserve explicit `ALLOW | DENY | FAIL_CLOSED` for every attempted transition and never infer runtime migration from repository mutation.
