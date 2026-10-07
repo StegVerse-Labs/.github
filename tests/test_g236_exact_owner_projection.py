@@ -43,7 +43,10 @@ class ExactOwnerProjectionTest(unittest.TestCase):
                 self.assertIn(task_id, self.by_id)
                 shard = json.loads((ROOT / "data/canonical-task-records" / (task_id + ".json")).read_text())
                 self.assertEqual(self.by_id[task_id], shard)
-                self.assertEqual((shard["coordination_state"], shard["checkout_state"]), ("ACTIVE", "CHECKED_OUT"))
+                if task_id == "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005":
+                    self.assertEqual((shard["coordination_state"], shard["checkout_state"]), ("RETIRED", "DECOMPOSED_AT_PROMPT_LIMIT"))
+                else:
+                    self.assertEqual((shard["coordination_state"], shard["checkout_state"]), ("ACTIVE", "CHECKED_OUT"))
                 vector = shard.get("cosv_task_vector")
                 if vector and task_id in self.indexed:
                     self.assertEqual(vector, self.indexed[task_id])
