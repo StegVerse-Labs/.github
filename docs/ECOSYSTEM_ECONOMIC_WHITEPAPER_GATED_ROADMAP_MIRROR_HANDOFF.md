@@ -185,3 +185,33 @@ Publisher PR #90 stages a dated convergence/comparative treatment at `docs/ENTIT
 The treatment's provenance matrix separates (a) repository evidence that predates the 2026-09-29 treatment, (b) external convergence, and (c) StegVerse divergence/extension. Where exact first-documentation chronology for learning-graph language was not established by repository search, it remains unclaimed. Original Volume I/II PDFs are untouched; future incorporation uses separately versioned editions through the existing Publisher cross-reference/publication mechanism.
 
 This documentation candidate does not modify the frozen approved Private-State Economy manifest, invoke Universal InTr, resolve `AUTHENTIC_PUBLICATION_UNOBSERVED`, wire benchmark export, publish a successor edition, propagate Site, or establish economic/educational/health outcomes. The canonical task remains PROPOSED with the same runtime/publication boundaries until independently evidenced transitions occur.
+
+
+## 2026-10-07 self-reconstructing canonical-state reconciliation
+
+Owner clarification establishes the record-keeping target as stronger than an append-only historical archive. A valid governed state transition and its canonical receipt are inseparable: **NO_RECEIPT_NO_CANONICAL_TRANSITION**. A state-changing action that does not produce the required canonical receipt is a process-contract failure and cannot silently advance canonical state.
+
+The target reconstruction invariant is: a bounded recent canonical receipt window plus canonical reconstruction rules must be sufficient to deterministically regenerate the complete valid canonical receipt/state history back to genesis, without depending on an older receipt database, expired worker, permanent witness, GitHub artifact, or Master Records copy as the hidden historical authority. A predecessor hash alone proves linkage but cannot reconstruct discarded information, so the receipt/reconstruction contract must retain whatever minimum lossless reconstructive state is required. No storage-reduction claim is established until that bounded representation exists and passes destructive validation.
+
+Required proof milestone:
+1. generate a large deterministic transition history (target benchmark: 1,000,000 transitions);
+2. retain only the declared bounded recent receipt window (initial target: latest five canonical receipts) plus canonical schemas/algorithms/policies required by the contract;
+3. remove the older materialized receipt/history store from the reconstruction environment;
+4. reconstruct every preceding canonical receipt/state to genesis;
+5. require byte-identical canonical serialization and exact receipt-hash equality for regenerated receipts;
+6. fail closed on missing reconstructive information, ambiguous policy/schema identity, tamper, discontinuity, or non-determinism;
+7. measure retained bytes and reconstruction cost so storage/economic claims remain empirical.
+
+This milestone does not authorize deletion of existing evidence before proof. Historical receipts, papers and evidence remain preserved under their existing retention rules until a separately admitted retention policy is backed by successful reconstruction evidence.
+
+### Authority correction
+
+Current architecture assigns runtime reality to each Organization's own append-only/hash-linked organization receipt ledger. Master Records is limited to organization records and reconstruction; it is not the runtime-reality authority, a universal transition gate, or the only copy whose survival makes history valid. Public roadmap benchmark proof must therefore bind the exact canonical organization receipt and applicable Interlock/InTr evidence first, with Master Records evidence used only where an organization-record or reconstruction predicate actually requires it.
+
+### Richard Whitney / Justin Dobson research consequence
+
+The Evidence Custody Seam and witness-topology work remains historical research evidence and is not rewritten. The new reconstruction milestone tests a StegVerse design response to the custody/availability questions surfaced there: witnesses establish or validate transitions at the applicable boundary; canonical receipts preserve valid transition state; deterministic reconstruction regenerates history; no participant is required merely to remain a permanent custodian of old materialized receipts. Witness/control-domain independence, authentic transition observation, admission and cross-organization authority remain separate predicates and are not claimed solved by reconstruction alone.
+
+### Versioning and publication
+
+Do not mutate historical Private-State Economy or Entity Economy editions to retrofit this architecture. Publisher must carry the new storage/reconstruction economics and custody implications in a separately identified successor/reconciliation treatment, with explicit predecessor references. Site roadmap projection may expose the new milestone only as NOT_VERIFIED until destructive bounded reconstruction is authentically demonstrated.
