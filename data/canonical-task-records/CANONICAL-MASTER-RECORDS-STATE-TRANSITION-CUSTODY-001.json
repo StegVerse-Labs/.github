@@ -179,7 +179,7 @@
       35569145993
     ],
     "authentic_production_purpose_bound_post_claim_runtime_observed": false,
-    "active_scope": "ECOSYSTEM_WIDE_CANONICAL_STATE_TRANSITION_CUSTODY",
+    "active_scope": "ECOSYSTEM_WIDE_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION_SEMANTIC_REPAIR",
     "mir_rtc007_rtc008_role": "CONFORMANCE_CASE_ONLY",
     "rtc008_admission_custody_source_repair_merged": true,
     "rtc008_admission_custody_pr": 2290,
@@ -199,14 +199,9 @@
       35598195572,
       35598195638
     ],
-    "generic_successor_prior_state_contract": "IMMEDIATELY_PRECEDING_MASTER_RECORDS_RECEIPT_SHA256",
-    "generic_successor_required_evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
-    "generic_successor_progression_gate": [
-      "state=RECORDED",
-      "reconstruction_status=PASS",
-      "required_evidence_validation_status=PASS",
-      "receipt_sha256==reconstructed_receipt_sha256"
-    ],
+    "generic_successor_prior_state_contract": "HISTORICAL_NON_AUTHORIZING_PRIOR_ARCHITECTURE",
+    "generic_successor_required_evidence_type": "HISTORICAL_NON_AUTHORIZING_PRIOR_ARCHITECTURE",
+    "generic_successor_progression_gate": [],
     "direct_caller_predecessor_bypass_identified": true,
     "direct_caller_predecessor_bypass_transition": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
     "direct_caller_predecessor_bypass_repaired": true,
@@ -435,7 +430,14 @@
       "README"
     ],
     "general_master_records_transition_submission_removed_from_canonical_client": true,
-    "predecessor_master_records_reconstruction_is_not_transition_gate": true
+    "predecessor_master_records_reconstruction_is_not_transition_gate": true,
+    "current_authority_rule": "MASTER_RECORDS_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+    "master_records_general_transition_custody": false,
+    "master_records_general_evidence_custody": false,
+    "master_records_transition_gate": false,
+    "master_records_runtime_reality_authority": false,
+    "organization_runtime_reality_authority": true,
+    "legacy_custody_and_gating_fields_below_are_historical_non_authorizing": true
   },
   "completion": {
     "claimed": false,
