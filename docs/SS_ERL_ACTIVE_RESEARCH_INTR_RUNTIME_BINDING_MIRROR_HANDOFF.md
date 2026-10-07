@@ -54,7 +54,7 @@ ERL resident-local manifest/binding
 -> scripts/consume_device_kv_intr_materialization_request.py
 -> existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator execution
 -> exact terminal KV readback/evidence
--> Master Records custody/reconstruction
+-> organization recording; optional Master Records reconstruction only
 ```
 
 No new scheduler, WorkerCoordinator, listener, transport owner, credential path, provider operation, heartbeat authority, runtime plane, remote-device dependency, or user-verification path is required or permitted as a substitute.
@@ -66,7 +66,7 @@ No new scheduler, WorkerCoordinator, listener, transport owner, credential path,
 - Interlock/InTr: governed transition/admission authority.
 - TV/TVC: credential/provider/release authority when separately required.
 - KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality custody/reconstruction authority.
+- Master Records: organization records and reconstruction only; no observed-reality authority.
 - HeartBeat: synchronization/timing/freshness/liveness/correlation/observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 
