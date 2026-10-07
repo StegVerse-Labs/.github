@@ -1,3 +1,7 @@
+## SDK manifest invariant prompt-ceiling decomposition — 2026-10-07
+
+Canonical parent `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005` reached 20/20 and is retired without a completion claim. Satisfied source predicates remain closed; Master Records boundary conformance is reconciled to organization records/reconstruction only and non-gating. Remaining genuinely separable TVC, StegCore, collaboration-ingress, regression-gate, and post-source transition-disposition work is registered as five canonical successors with dedicated handoffs. ACTIONS BY MANIFEST, terminal `ALLOW | DENY | FAIL_CLOSED`, Organization-ledger runtime reality, non-gating Master Records reconstruction, and zero external-machine waiting are inherited unchanged.
+
 ## Master Records live-gate repair — 2026-10-07
 
 Active runtime/schema review removed generic Master Records prerequisites from executable handoff continuity, reusable-task entropy recovery, heartbeat convergence/archive/recovery, SV002 activation, and RTC008 InTr admission. Reconstruction remains available as evidence/reconstruction only; Organization remains runtime-reality authority and InTr remains transition admission authority. Historical references are preserved as provenance.
