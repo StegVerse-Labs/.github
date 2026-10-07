@@ -20,6 +20,8 @@ on:
       - 'tests/test_audit_canonical_task_projections.py'
       - 'tests/test_g236_exact_owner_projection.py'
       - 'scripts/evaluate_task_registry_collision_checkin.py'
+      - 'scripts/evaluate_pr_precreation_gate.py'
+      - 'tests/test_pr_precreation_gate.py'
       - 'scripts/evaluate_task_registry_ai_session_checkin.py'
       - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'scripts/audit_execution_substrate_resolution.py'
