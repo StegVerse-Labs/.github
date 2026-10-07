@@ -170,6 +170,42 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical_manifest_projection_source_mismatch"):
             mod.validate_request(tampered)
 
+    def test_tvc_binding_is_derived_only_from_validated_manifest_lineage(self):
+        value = request("tvc-binding")
+        caller = {
+            "schema": "stegverse.vault.non_exportable_operation_request.v1",
+            "sdk_manifest_binding": {
+                "request_sha256": "f" * 64,
+                "canonical_manifest_sha256": "f" * 64,
+                "processing_capability": "caller-selected",
+                "route_id": "caller-selected",
+            },
+            "lease_receipt": {
+                "decision": "ALLOW_CAPABILITY_LEASE",
+                "sdk_manifest_binding": {
+                    "request_sha256": "e" * 64,
+                    "canonical_manifest_sha256": "e" * 64,
+                    "processing_capability": "lease-selected",
+                    "route_id": "lease-selected",
+                },
+            },
+        }
+        bound = mod.bind_tvc_provider_request(value, caller)
+        expected = {
+            "request_sha256": value["request_sha256"],
+            "canonical_manifest_sha256": value["canonical_manifest_sha256"],
+            "processing_capability": value["processing_capability"],
+            "route_id": value["route_id"],
+        }
+        self.assertEqual(bound["sdk_manifest_binding"], expected)
+        self.assertEqual(bound["lease_receipt"]["sdk_manifest_binding"], expected)
+
+    def test_tvc_binding_rejects_unvalidated_manifest_request(self):
+        value = request("tvc-tampered")
+        value["processing_capability"] = "caller-selected"
+        with self.assertRaises(ValueError):
+            mod.bind_tvc_provider_request(value, {"lease_receipt": {"decision": "ALLOW_CAPABILITY_LEASE"}})
+
     def test_diagnostic_nonworker_attempt_exposes_exact_unrepaired_predicate(self):
         diagnostic = request("diagnostic")
         diagnostic["canonical_task_id"] = None
