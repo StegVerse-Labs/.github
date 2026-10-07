@@ -130,7 +130,11 @@ PRE_DECLARATION_MASTER_RECORDS_ROLE_RECORDS = {
     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
 }
 
-ORGANIZATION_RUNTIME_REALITY_ROLE = "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER"
+ALLOWED_MASTER_RECORDS_ROLES = {
+    "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+    "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+    "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+}
 
 
 def validate_record(path: Path) -> None:
@@ -159,10 +163,10 @@ def validate_record(path: Path) -> None:
             fail(f"{path.name}: {location} must be NONE")
         if key == "runtime_reality_authority" and value != "Organization":
             fail(f"{path.name}: {location} must be Organization under ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001")
-        if key == "master_records_role" and value != ORGANIZATION_RUNTIME_REALITY_ROLE:
+        if key == "master_records_role" and value not in ALLOWED_MASTER_RECORDS_ROLES:
             if path.name not in PRE_DECLARATION_MASTER_RECORDS_ROLE_RECORDS:
                 fail(
-                    f"{path.name}: {location} must be {ORGANIZATION_RUNTIME_REALITY_ROLE} "
+                    f"{path.name}: {location} must be an organization-record/reconstruction-only role "
                     "under ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
                 )
 
