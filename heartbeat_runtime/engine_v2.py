@@ -247,7 +247,7 @@ class HeartbeatRuntime:
             "state": "HANDOFF_READY",
             "goal": {
                 "goal_id": task_id,
-                "objective": "Reconcile a worker lifecycle whose known heartbeat-relative expiry lacks the required Master Records final worker report.",
+                "objective": "Reconcile a worker lifecycle whose known heartbeat-relative expiry lacks the required durable final worker report.",
                 "success_predicates": [
                     "Lifecycle evidence is reconciled",
                     "Failure cause is identified",
@@ -266,7 +266,7 @@ class HeartbeatRuntime:
                 "source_refs": [parent["handoff_ref"], parent.get("last_checkpoint_ref") or parent["task_id"]],
                 "dependencies": [],
                 "parent_task_id": parent["task_id"],
-                "derivation_reason": "Known HB-relative expiry reached without required Master Records final worker report.",
+                "derivation_reason": "Known HB-relative expiry reached without required durable final worker report.",
                 "priority": "critical"
             },
             "authority": {
@@ -291,11 +291,11 @@ class HeartbeatRuntime:
             "continuity": {
                 "checkpoint_ref": parent.get("last_checkpoint_ref"),
                 "handoff_destination": "StegVerse-Labs/.github/control/worker-registry.json",
-                "master_records_required": True,
+                "organization_record_required": False,
                 "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
             },
             "completion": {
-                "next_authorized_action": "Investigate missing finalization, reconstruct the parent from checkpoint plus Master Records evidence, and admit only validated remediation work.",
+                "next_authorized_action": "Investigate missing finalization, reconstruct the parent from checkpoint plus retained reconstruction evidence, and admit only validated remediation work.",
                 "terminal_when": ["Reconciliation is durable", "Parent lifecycle is reconstructable", "Any remediation is separately admitted or complete"]
             },
             "block": None
@@ -318,7 +318,7 @@ class HeartbeatRuntime:
             "block_ref": None,
             "archive_eligible": False,
             "archive_reason_codes": ["RECOVERY_RECONCILIATION_REQUIRED", "EXECUTOR_NOT_BOUND", "SUCCESSOR_RECONSTRUCTION_REQUIRED"],
-            "evidence_refs": [parent["task_id"], f"heartbeat-epoch:{epoch}", "MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING"]
+            "evidence_refs": [parent["task_id"], f"heartbeat-epoch:{epoch}", "FINAL_WORKER_REPORT_MISSING"]
         })
         self._event(events, epoch, "recovery_task_admitted", task_id=task_id, parent_task_id=parent["task_id"])
         return task_id
@@ -333,7 +333,7 @@ class HeartbeatRuntime:
         if recovery_id:
             task["state"] = "BLOCKED"
             task["block_ref"] = f"handoffs/generated/{recovery_id}.json"
-            task["archive_reason_codes"] = ["KNOWN_EXPIRY_REACHED", "MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING", "RECOVERY_RECONCILIATION_REQUIRED"]
+            task["archive_reason_codes"] = ["KNOWN_EXPIRY_REACHED", "FINAL_WORKER_REPORT_MISSING", "RECOVERY_RECONCILIATION_REQUIRED"]
             self._event(events, epoch, "expired_parent_blocked_on_recovery", task_id=task["task_id"], recovery_task_id=recovery_id)
         else:
             task["state"] = "HANDOFF_READY"

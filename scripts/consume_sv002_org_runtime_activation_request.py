@@ -5,7 +5,7 @@ This consumer is executed by the existing native HeartBeat-separated
 WorkerCoordinator resident runtime. It does not create or require a second
 resident executor or resident request. It invokes the current StegVerse-002 rerun
 callable from that resident substrate; StegVerse-002 remains the execution owner
-and canonical Master Records remains custody/reconstruction authority.
+while Organization remains runtime-reality authority and Master Records is limited to organization records and reconstruction.
 """
 from __future__ import annotations
 import argparse, hashlib, json, os, subprocess, sys
@@ -66,7 +66,7 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
       "operation":"REQUEST_SELF_CHARACTERIZATION",
       "deterministic_packet_id":"SV002-RERUN-C796D0BFD181CEC5D99E4C23",
       "current_callable_ref":"StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
-      "request_bound_master_records_required":True,
+      "request_bound_master_records_required":False,
       "request_bound_required_evidence_exact_bytes":True,
       "credential_authority":"TV/TVC",
       "github_token_required":False,"github_token_runtime_authority":"NONE",
@@ -83,8 +83,6 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
             return {"schema":prior["schema"],"state":"ALREADY_CONSUMED","request_sha256":request_hash,"runtime_execution_attempted":False,"authority_effect":"NONE"}
 
     source=source_root.expanduser().resolve()
-    if not (source/"workers/canonical_state_transition_custody.py").is_file():
-        raise RuntimeError("canonical Master Records custody client not materialized in resident source")
     target_org=resolve(
         "STEGVERSE_SV002_ORG_ROOT","StegVerse-002",".github",
         ("resident-runtime/invoke_sv002_experiment_rerun.py","resident-runtime/activation-manifest.json"),
@@ -113,27 +111,7 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
     cmd=[sys.executable,str(target_org/"resident-runtime/invoke_sv002_experiment_rerun.py")]
     completed=runner(cmd,cwd=target_org,capture_output=True,text=True,check=False,env=env,timeout=2300)
     result=parse_last(completed.stdout)
-    request_bound_custodied=bool(
-      isinstance(result,dict)
-      and result.get("goal_task_id")=="STEGVERSE-002-EXPERIMENT-RERUN-001"
-      and result.get("cosv_id")=="50000000107000"
-      and result.get("packet_id")=="SV002-RERUN-C796D0BFD181CEC5D99E4C23"
-      and result.get("experiment_id")=="STEGVERSE-002-SELF-CHARACTERIZATION-001"
-      and result.get("operation")=="REQUEST_SELF_CHARACTERIZATION"
-      and result.get("invocation_count")==1
-      and result.get("manifest_sha256")=="29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828"
-      and isinstance(result.get("packet_sha256"),str) and bool(result.get("packet_sha256"))
-      and isinstance(result.get("request_sha256"),str) and bool(result.get("request_sha256"))
-      and isinstance(result.get("frame_sha256"),str) and bool(result.get("frame_sha256"))
-      and result.get("request_bound_claimed") is True
-      and result.get("request_bound_master_records_state")=="RECORDED"
-      and result.get("request_bound_master_records_reconstruction_status")=="PASS"
-      and result.get("request_bound_master_records_required_evidence_validation_status")=="PASS"
-      and result.get("request_bound_master_records_required_evidence_count")==1
-      and isinstance(result.get("request_bound_master_records_receipt_sha256"),str)
-      and result.get("request_bound_master_records_receipt_sha256")
-      == result.get("request_bound_master_records_reconstructed_receipt_sha256")
-    )
+    request_bound_custodied=False
     terminal=False
     receipt={
       "schema":"stegverse.sv002-org-runtime-activation-consumption/v1",
@@ -162,7 +140,7 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
       "cross_org_principal_execution":False,
       "github_token_runtime_authority":"NONE",
       "credential_authority":"TV/TVC",
-      "master_records_custody_authority":"MASTER_RECORDS",
+      "master_records_authority":"ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
       "authority_effect":"NONE_REQUEST_CONSUMPTION_ONLY",
     }
     receipt_path.parent.mkdir(parents=True,exist_ok=True)

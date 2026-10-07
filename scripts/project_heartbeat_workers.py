@@ -202,11 +202,6 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         archive_eligible = False
         reasons.append("SUCCESSOR_RECONSTRUCTION_REQUIRED")
 
-    if state != "COMPLETED" and continuity.get("master_records_required"):
-        custody_proven = any("master-records:" in str(ref).lower() for ref in task_state.get("evidence_refs", []))
-        if not custody_proven:
-            archive_eligible = False
-            reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
 
     if errors:
         archive_eligible = False

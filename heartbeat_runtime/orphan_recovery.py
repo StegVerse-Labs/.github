@@ -8,7 +8,6 @@ RECOVERY_REQUIRED_CODES = [
     "ORPHAN_RECOVERY_REQUIRED",
     "SUCCESSOR_RECONSTRUCTION_REQUIRED",
     "EXECUTOR_NOT_BOUND",
-    "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
 ]
 RECOVERY_ONLY_CAPABILITY = "orphan_lifecycle_reconstruction"
 
@@ -183,8 +182,6 @@ def orphan_recovery_contract_valid(
     if block.get("dependency") != f"file:{(handoff.get('activation') or {}).get('authorization_ref')}":
         return False, "RECOVERY_AUTHORIZATION_DEPENDENCY_MISMATCH"
     continuity = handoff.get("continuity") or {}
-    if continuity.get("master_records_required") is not True or not continuity.get("master_records_custody_ref"):
-        return False, "RECOVERY_MASTER_RECORDS_REQUIRED"
     if (handoff.get("goal") or {}).get("successor_policy") != "NONE":
         return False, "RECOVERY_MAY_NOT_CREATE_NESTED_SUCCESSORS"
     return True, "AUTHORIZED_NARROW_ORPHAN_RECOVERY_CONTRACT_VALID"
@@ -249,8 +246,6 @@ def independent_orphan_recovery_contract_valid(
     if "greater than" not in rule.lower() or "20" not in rule:
         return False, "RECOVERY_FRESH_FENCE_RULE_MISSING"
     continuity = handoff.get("continuity") or {}
-    if continuity.get("master_records_required") is not True or not continuity.get("master_records_custody_ref"):
-        return False, "RECOVERY_MASTER_RECORDS_REQUIRED"
     if (handoff.get("goal") or {}).get("successor_policy") != "NONE":
         return False, "RECOVERY_MAY_NOT_CREATE_NESTED_SUCCESSORS"
     return True, "AUTHORIZED_INDEPENDENT_ORPHAN_RECOVERY_CONTRACT_VALID"

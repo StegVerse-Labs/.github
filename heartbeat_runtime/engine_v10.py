@@ -374,7 +374,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
             "continuity": {
                 "checkpoint_ref": parent.get("last_checkpoint_ref"),
                 "handoff_destination": "control/worker-registry.json",
-                "master_records_required": True,
+                "organization_record_required": False,
                 "status_projection": "control/worker-status.json",
             },
             "completion": {
