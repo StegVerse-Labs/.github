@@ -117,7 +117,7 @@ def validate(root: Path = ROOT) -> dict:
 
     assert task_policy["canonical_truth"]["work_intent_and_coordination"] == "CANONICAL_TASK_REGISTRY"
     assert task_policy["canonical_truth"]["execution_claim_and_fence"] == "WORKERCOORDINATOR"
-    assert task_policy["canonical_truth"]["observed_reality_and_reconstruction"] == "MASTER_RECORDS"
+    assert task_policy["canonical_truth"]["observed_reality_and_reconstruction"] == "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY"
     assert task_policy["canonical_truth"]["governed_ingress_egress"] == "INTERLOCK_INTR"
     assert "SELECT_HIGHEST_PRIORITY_ADMISSIBLE_NON_DUPLICATE_NON_COLLIDING_TASK" in task_policy["new_session_entry_contract"]["sequence"]
 
