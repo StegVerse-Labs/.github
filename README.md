@@ -1,3 +1,7 @@
+## Master Records live-gate repair — 2026-10-07
+
+Active runtime/schema review removed generic Master Records prerequisites from executable handoff continuity, reusable-task entropy recovery, heartbeat convergence/archive/recovery, SV002 activation, and RTC008 InTr admission. Reconstruction remains available as evidence/reconstruction only; Organization remains runtime-reality authority and InTr remains transition admission authority. Historical references are preserved as provenance.
+
 
 ## 2026-10-07 active-surface repair tranche
 
