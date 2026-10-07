@@ -97,7 +97,7 @@
     "source_state_proves_provider_execution": false,
     "provider_authority": "TV/TVC",
     "transition_authority": "Interlock/InTr",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "freeze_module_grants_provider_write_authority": false
   },
   "execution_substrate_resolution": {

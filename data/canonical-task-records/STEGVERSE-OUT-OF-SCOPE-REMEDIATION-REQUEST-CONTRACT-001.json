@@ -75,7 +75,7 @@
     "originating_goal_may_repair_foreign_domain": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_transition_authority": true,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "github_runtime_authority": "NONE"
   }
 }

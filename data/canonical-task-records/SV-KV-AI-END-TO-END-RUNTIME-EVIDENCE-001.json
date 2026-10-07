@@ -166,7 +166,7 @@
     "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_reality_authority": true
+    "master_records_reality_authority": false
   },
   "completion": {
     "claimed": false,

@@ -227,7 +227,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_governed_ingress_egress": true,
     "credential_authority": "TV/TVC",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "github_runtime_authority": "NONE",
     "human_reentry_required_for_machine_owned_continuation": false
   }

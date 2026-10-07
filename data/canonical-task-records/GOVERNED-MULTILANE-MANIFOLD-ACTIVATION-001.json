@@ -149,7 +149,7 @@
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"full_lineage_traversed":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true},
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority": false,"interlock_intr_required_for_governed_ingress_egress":true},
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
     "authority_effect": "NONE",

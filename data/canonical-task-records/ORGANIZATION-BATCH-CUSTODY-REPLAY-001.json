@@ -162,7 +162,7 @@
     "master_records_ack_required_where_declared": true,
     "task_registry_mints_execution_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_reality_authority": true
+    "master_records_reality_authority": false
   },
   "authority_effect": "NONE_TASK_REGISTRATION_ONLY",
   "runtime_requirements": {

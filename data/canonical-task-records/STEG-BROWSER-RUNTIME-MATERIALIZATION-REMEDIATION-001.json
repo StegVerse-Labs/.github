@@ -145,7 +145,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "master_records_transport_authority": false,
     "heartbeat_role": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE",

@@ -71,7 +71,7 @@
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "github_runtime_authority": "NONE",
     "physical_device_identity_grants_authority": false,
     "second_user_operated_device_required": false

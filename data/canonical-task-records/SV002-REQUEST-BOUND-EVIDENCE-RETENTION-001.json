@@ -239,7 +239,7 @@
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true
   },
   "state_transition_graph": {

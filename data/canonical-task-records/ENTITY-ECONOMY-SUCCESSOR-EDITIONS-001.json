@@ -111,7 +111,7 @@
     "site_is_downstream_display": true,
     "github_runtime_authority": "NONE",
     "interlock_intr_required_when_applicable": true,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "second_user_operated_device_required": false
   },
   "status_reason": "GOAL_PROMPT_COUNT_20_REACHED; ADJACENT_VOLUME_III_CONVERGENCE_AND_EMPIRICAL_PROPOSAL_EVIDENCE_PRESERVED; UNRESOLVED_VOLUME_I_II_SUCCESSOR_PUBLICATION_WORK_TRANSFERRED_TO_ENTITY_ECONOMY_VOLUME_I_II_SUCCESSOR_PUBLICATION_001"

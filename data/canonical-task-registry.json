@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 293,
+  "generation": 291,
   "status": "MASTER_RECORDS_ORGANIZATION_RECORDS_RECONSTRUCTION_BOUNDARY_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -224,7 +224,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
         "master_records_is_transition_custody_not_precondition": true,
@@ -522,7 +522,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -683,7 +683,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -796,7 +796,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -920,7 +920,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -1062,7 +1062,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -1165,7 +1165,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -1577,7 +1577,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "checkout_state": "RETIRED",
@@ -2023,7 +2023,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "second_user_operated_device_required": false
       },
@@ -2154,7 +2154,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "execution_substrate_resolution": {
@@ -2416,7 +2416,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "healer_role": "TRIGGERED_REMEDIATION_ONLY",
         "second_user_operated_device_required": false
@@ -3859,7 +3859,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_physical_flow": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
         "publication_authorized": false
@@ -4471,7 +4471,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "state_transition_graph": {
@@ -4689,7 +4689,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_legislative_status_only_to_cited_sources": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
         "publication_authorized": false,
@@ -4905,7 +4905,7 @@
         "task_registry_mints_execution_authority": false,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
         "task_registry_coordination_only": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "finding_authorized": false,
         "publication_authorized": false,
@@ -6565,7 +6565,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": false
       },
       "checkout_state": "RETIRED",
@@ -7174,7 +7174,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "execution_substrate_resolution": {
@@ -7385,7 +7385,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
         "master_records_is_transition_custody_not_precondition": true,
@@ -7488,7 +7488,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -7629,7 +7629,7 @@
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_transition_authority": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE"
       },
       "authority_effect": "NONE_COORDINATION_ONLY"
@@ -7732,7 +7732,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -7945,7 +7945,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "execution_substrate_resolution": {
@@ -8173,7 +8173,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -8760,7 +8760,7 @@
         "task_registry_mints_execution_authority": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE"
       },
       "prompt_budget": {
@@ -9264,7 +9264,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "authority_effect": "NONE_COORDINATION_ONLY"
@@ -9633,7 +9633,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -9741,7 +9741,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "public_wiki_grants_authority": false
       },
@@ -9861,7 +9861,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       }
     },
@@ -10018,7 +10018,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_external_adoption": false,
         "traffic_counts_prove_identity": false,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "credential_authority": "TV/TVC"
       },
       "authority_effect": "NONE_OBSERVATION_AND_ATTRIBUTION_ONLY"
@@ -10107,7 +10107,7 @@
         "github_licenses_are_release_authority": false,
         "license_discovery_proves_copyright_ownership": false,
         "public_clones_prove_external_reuse": false,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "credential_authority": "TV/TVC"
       },
       "authority_effect": "NONE_COORDINATION_AND_DISCOVERY_ONLY",
@@ -10231,8 +10231,8 @@
       "correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
       "root_correlation_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
       "parent_task_id": null,
-      "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV, authentic organization receipts, applicable Master Records organization-record/reconstruction evidence, and Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
-      "coordination_state": "ACTIVE",
+      "goal": "Establish the governed canonical release program and mirror handoffs for the StegVerse Private-State Economy white paper and the six-stage, 16-benchmark public evidence-gated roadmap. Reconcile existing Publisher Entity Economy and FinCo doctrine; register exact Site pre-work claim; validate drafts; bind public-safe benchmark projections to existing canonical Task Registry/COSV and authentic Master Records plus Universal Interlock/InTr decision evidence; obtain governed Publisher publication closure, Site mirror, deployment and automatic check-off only for authenticated proof.",
+      "coordination_state": "PROPOSED",
       "source_refs": [
         "GCAT-BCAT-Engine/Publisher:papers/StegVerse_Private_State_Economy_White_Paper_v0.1.md (owner-approved existing documentation at closed-unmerged PR #72; exact source retained, not yet governed-published)",
         "StegVerse-Labs/Site:economic-roadmap.html (source merged Site #1458)",
@@ -10263,7 +10263,7 @@
           "canonical-release-task",
           "site-prework-claim",
           "public-roadmap-projection",
-          "benchmark-organization-receipt-and-reconstruction-evidence",
+          "benchmark-master-records-evidence",
           "governed-publication",
           "public-propagation-verification"
         ]
@@ -10297,25 +10297,25 @@
           "dependency_id": "GOVERNED_PUBLICATION",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "Exact approved-source manifest remains frozen at ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / universal request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be. Universal InTr governance capability exposure repaired by .github PR #2844 merged e2939907b5a45a5a9981ae4320537129d9247591 from exact head 611821c0893680bc1454892eaa9477d384292e4b; workflow 36482416213 SUCCESS. Existing SDK:ManifestStateTransition now binds governance + canonical-governed route to the existing SDK governance owner, requires authenticated TVC_RELAY_EGRESS authorization, and records ingress/disposition through organization-owned receipt custody; Master Records is limited to organization records and reconstruction. No authentic frozen-manifest runtime attempt has occurred from this chat execution surface."
+          "ref": "Exact approved-source manifest remains frozen at ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / universal request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be. Universal InTr governance capability exposure repaired by .github PR #2844 merged e2939907b5a45a5a9981ae4320537129d9247591 from exact head 611821c0893680bc1454892eaa9477d384292e4b; workflow 36482416213 SUCCESS. Existing SDK:ManifestStateTransition now binds governance + canonical-governed route to the existing SDK governance owner, requires authenticated TVC_RELAY_EGRESS authorization, and records ingress/disposition through organization-first Master Records custody. No authentic frozen-manifest runtime attempt has occurred from this chat execution surface."
         },
         {
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
           "kind": "RUNTIME_PREDICATE",
           "state": "UNKNOWN",
-          "ref": "existing organization receipt ledger, applicable Master Records reconstruction/organization-record evidence, and Publisher public-safe export"
+          "ref": "existing Master Records and Publisher public-safe export"
         }
       ],
       "blockers": [
         {
           "blocker_id": "AUTHENTIC_PUBLICATION_UNOBSERVED",
           "dependency_id": "GOVERNED_PUBLICATION",
-          "reason": "The prior source exposure defect is repaired: shared SDK:ManifestStateTransition can dispatch processing_capability=governance / stegverse.route.canonical-governed.v1 to the existing SDK governance owner, using existing canonical source-root bindings and authenticated TVC_RELAY_EGRESS transport. The remaining transition is the authentic attempt of frozen manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be through an actually exposed authenticated TV/TVC + Universal InTr execution surface. Preserve its first ALLOW, DENY or FAIL_CLOSED, organization receipt/predecessor and applicable Master Records reconstruction/organization-record evidence before Publisher release. No resident inventory, new runtime, scheduler, device or duplicate task is required."
+          "reason": "The prior source exposure defect is repaired: shared SDK:ManifestStateTransition can dispatch processing_capability=governance / stegverse.route.canonical-governed.v1 to the existing SDK governance owner, using existing canonical source-root bindings and authenticated TVC_RELAY_EGRESS transport. The remaining transition is the authentic attempt of frozen manifest ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3 / request 11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be through an actually exposed authenticated TV/TVC + Universal InTr execution surface. Preserve its first ALLOW, DENY or FAIL_CLOSED, organization receipt/predecessor and matching Master Records closure before Publisher release. No resident inventory, new runtime, scheduler, device or duplicate task is required."
         },
         {
           "blocker_id": "BENCHMARK_EXPORT_UNWIRED",
           "dependency_id": "BENCHMARK_PUBLIC_EXPORT",
-          "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic organization receipt proof, applicable Master Records reconstruction/organization-record evidence, and a Publisher-owned public-safe projector."
+          "reason": "All sixteen benchmarks remain NOT_VERIFIED pending exact canonical task/COSV, authentic Master Records proof and a Publisher-owned public-safe projector."
         }
       ],
       "adjacent_task_refs": [
@@ -10353,7 +10353,7 @@
         "PUBLISHER_EDITORIAL_CANDIDATE_REVIEWED",
         "SIX_STAGE_16_BENCHMARK_PUBLIC_PROJECTION_FAILS_CLOSED",
         "EXACT_TASK_AND_COSV_BENCHMARK_BINDINGS",
-        "AUTHENTIC_ORGANIZATION_RECEIPT_AND_APPLICABLE_RECONSTRUCTION_EVIDENCE_FOR_CHECKMARKS",
+        "AUTHENTIC_RUNTIME_MASTER_RECORDS_CLOSURE_FOR_CHECKMARKS",
         "EXACT_EXTERNAL_INTR_ALLOW_REQUIRED_WHEN_APPLICABLE",
         "GOVERNED_PUBLISHER_PUBLICATION_CLOSURE",
         "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED",
@@ -10377,8 +10377,6 @@
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": false,
-        "runtime_reality_authority": "ORGANIZATION",
-        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "allowed_next_transitions": [
@@ -10554,7 +10552,7 @@
         "master_records_ack_required_where_declared": true,
         "task_registry_mints_execution_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true
+        "master_records_reality_authority": false
       },
       "authority_effect": "NONE_TASK_REGISTRATION_ONLY",
       "runtime_requirements": {
@@ -11133,7 +11131,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "execution_substrate_resolution": {
@@ -12489,7 +12487,6 @@
         "sdk_role": "CANONICAL_MANIFEST_PROCESSING_INGRESS_AND_EXTERNAL_EVALUATOR_INGRESS",
         "credential_authority": "TV/TVC",
         "governed_transition_authority": "Interlock/InTr",
-        "master_records_role": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
         "github_runtime_authority": "NONE",
         "heartbeat_execution_authority": false,
         "ungoverned_ai_internal_role": "SOVEREIGN_INTERNAL_REASONING_AND_WORK_WITHIN_BOUNDARY_NO_STEGVERSE_AUTHORITY",
@@ -12738,7 +12735,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "heartbeat_execution_authority": false
       },
@@ -13076,7 +13073,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "readme_impact": {
@@ -13305,7 +13302,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "security_posture_resolution_authority": "INTERLOCK_INTR",
         "sdk_posture_authority": "REQUEST_INPUT_AND_REPORTING_ONLY",
@@ -14843,7 +14840,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true
+        "master_records_reality_authority": false
       }
     },
     {
@@ -15092,7 +15089,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "master_records_transport_authority": false,
         "heartbeat_role": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE",
@@ -15653,7 +15650,7 @@
         "task_registry_mints_execution_authority": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "heartbeat_execution_authority": false,
         "github_runtime_authority": "NONE",
@@ -16098,7 +16095,7 @@
         "transport_user_verifier_authority": "NONE",
         "credential_authority": "TV/TVC",
         "transition_authority": "Interlock/InTr",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "heartbeat_authority": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE",
         "github_ci_model_may_create_production_signing_key": false,
@@ -16309,7 +16306,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
         "github_runtime_authority": "NONE"
@@ -16506,7 +16503,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
         "github_runtime_authority": "NONE"
@@ -17839,7 +17836,7 @@
         "hb_grants_execution_authority": false,
         "worker_claim_authority": "WorkerCoordinator",
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "kv_is_private_state_transition_continuity_boundary": true,
         "kv_skap_sole_user_verification_authority": true,
@@ -17993,7 +17990,7 @@
         "transition_authority": "INTERLOCK_INTR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "physical_device_identity_grants_authority": false,
         "second_user_operated_device_required": false
@@ -18403,100 +18400,6 @@
             ]
           }
         ]
-      }
-    },
-    {
-      "schema": "stegverse.canonical-task-record/v1",
-      "task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
-      "correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
-      "root_correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
-      "parent_task_id": null,
-      "goal": "Make StegDB the canonical durable registry for Organization Role version, reference coordinates, adoption state, migration requirements, conformance evidence and version-bound exemptions, while consequential propagation remains manifest-bound through Interlock/InTr and each Organization remains runtime-reality authority.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CHECKED_OUT",
-      "cosv_task_vector": "20000000100000",
-      "source_refs": [
-        "docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md",
-        "data/task-registry-global-invariants.json",
-        "StegVerse-Labs/StegDB:docs/STEGDB_MIRROR_HANDOFF.md"
-      ],
-      "targets": {
-        "organizations": [
-          "StegVerse-Labs",
-          "StegVerse-org",
-          "SV-LLM"
-        ],
-        "repositories": [
-          "StegVerse-Labs/StegDB",
-          "StegVerse-Labs/.github",
-          "StegVerse-org/.github",
-          "SV-LLM/.github"
-        ],
-        "components": [
-          "organization-role-version-registry",
-          "organization-role-adoption-registry",
-          "organization-role-migration-registry",
-          "organization-role-conformance-evaluator"
-        ]
-      },
-      "dependencies": [],
-      "blockers": [],
-      "expected_evidence_predicates": [
-        "STEGDB_HAS_VERSIONED_ORGANIZATION_ROLE_REGISTRY",
-        "CANONICAL_REFERENCE_COORDINATES_ARE_VERSION_BOUND_STEGDB_STATE_AND_REPOSITORY_LOCAL_PACKETS_CANNOT_OVERRIDE_THEM",
-        "ORGANIZATION_ROLE_ADOPTER_DENOMINATOR_IS_DERIVED_FROM_CANONICAL_ECOSYSTEM_STATE",
-        "EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION",
-        "ROLE_VERSION_ADVANCE_DETERMINISTICALLY_IDENTIFIES_STALE_ADOPTERS",
-        "STALE_ADOPTER_PRODUCES_MANIFEST_BOUND_CONFORMANCE_WORK",
-        "CONFORMANCE_ATTEMPT_TERMINATES_ALLOW_DENY_OR_FAIL_CLOSED",
-        "NON_ALLOW_INCLUDES_FAILED_PREDICATE_REPAIR_RETRY_AND_NEXT_ATTEMPT",
-        "EXEMPTION_IS_EXPLICIT_VERSION_BOUND_AND_NON_AUTHORIZING",
-        "NO_EXTERNAL_MACHINE_LISTENER_OR_SESSION_IS_AWAITED",
-        "LABS_DEPLOYMENT_PACKET_IS_PROJECTION_OR_DEPRECATED_AS_CANONICAL_REFERENCE",
-        "SV_LLM_DRIFT_IS_DETECTED_FROM_CANONICAL_STATE",
-        "NO_SECOND_TASK_OR_TRANSITION_AUTHORITY_IS_CREATED"
-      ],
-      "runtime_requirements": {
-        "capabilities": [
-          "durable_registry_comparison",
-          "manifest_bound_conformance_work_specification"
-        ],
-        "environment": "REPOSITORY_AND_ORGANIZATION_GOVERNED",
-        "direction": "CROSS_ORGANIZATION",
-        "mutation_required": true,
-        "deployment_required": false,
-        "current_observation_required": false
-      },
-      "worker_claim": {
-        "authority": "WORKERCOORDINATOR",
-        "claim_ref": null,
-        "fence_ref": null,
-        "projection_only": true
-      },
-      "completion": {
-        "claimed": false,
-        "validated": false,
-        "reconciliation_ref": null,
-        "completion_semantics": "END_TO_END",
-        "terminal_state_is_completion_truth": true
-      },
-      "allowed_next_transitions": [
-        "IN_PROGRESS",
-        "RECONCILIATION_REQUIRED"
-      ],
-      "handoff_projection_refs": [
-        "docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md"
-      ],
-      "authority_model": {
-        "task_registry_mints_execution_authority": false,
-        "worker_claim_authority": "WORKERCOORDINATOR",
-        "runtime_reality_authority": "Organization",
-        "transition_authority": "Interlock/InTr",
-        "credential_authority": "TV/TVC",
-        "stegdb_authority": "VERSION_ADOPTION_MIGRATION_CONFORMANCE_STATE_ONLY",
-        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
-        "manifest_determines_destination": true,
-        "direct_repository_install_authority": false
       }
     }
   ],

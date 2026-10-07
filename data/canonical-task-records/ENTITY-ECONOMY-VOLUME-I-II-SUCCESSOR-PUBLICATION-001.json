@@ -79,7 +79,7 @@
     "site_is_downstream_display": true,
     "github_runtime_authority": "NONE",
     "interlock_intr_required_when_applicable": true,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "second_user_operated_device_required": false
   },
   "completion_claimed": false,

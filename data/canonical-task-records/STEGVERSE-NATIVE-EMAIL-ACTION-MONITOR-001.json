@@ -335,6 +335,6 @@
     "github_token_runtime_authority": "NONE",
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_reality_authority": true
+    "master_records_reality_authority": false
   }
 }

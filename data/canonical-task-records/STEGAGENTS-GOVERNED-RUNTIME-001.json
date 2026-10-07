@@ -132,7 +132,7 @@
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
   "allowed_next_transitions": ["OBSERVE_RESIDENT_CUSTODY_ROOT", "INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true,"provider_credential_authority":"TV/TVC","github_runtime_authority":"NONE"},
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority": false,"interlock_intr_required_for_governed_ingress_egress":true,"provider_credential_authority":"TV/TVC","github_runtime_authority":"NONE"},
   "readme_impact": {
     "material_function_change": false,
     "readme_updated_in_change_set": false,

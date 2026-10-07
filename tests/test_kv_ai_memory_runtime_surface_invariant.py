@@ -124,7 +124,7 @@ def test_task_coordination_policy_must_be_resolved_before_runtime_state_mutation
     policy = load_json("data/task-coordination-policy.json")
 
     assert policy["canonical_truth"]["work_intent_and_coordination"] == "CANONICAL_TASK_REGISTRY"
-    assert policy["canonical_truth"]["observed_reality_and_reconstruction"] == "MASTER_RECORDS"
+    assert policy["canonical_truth"]["observed_reality_and_reconstruction"] == "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY"
     assert policy["runtime_profile_discovery"]["task_requirements_field"] == "runtime_requirements"
     assert policy["runtime_profile_discovery"]["task_resolution_field"] == "runtime_resolution"
     assert policy["runtime_profile_discovery"]["generic_runtime_missing_claim_allowed_before_resolution"] is False
@@ -219,7 +219,7 @@ def test_kv_runtime_routing_readiness_reaches_workercoordinator_review_without_c
     assert result["claim_or_fence_minted"] is False
     assert result["workercoordinator_admission_still_required"] is True
     assert result["interlock_intr_transition_admission_still_required"] is True
-    assert result["master_records_reconciliation_still_required"] is True
+    assert result["master_records_reconciliation_still_required"] is False
     assert result["source_or_ci_validation_satisfies_completion"] is False
 
     predicates = result["predicates"]

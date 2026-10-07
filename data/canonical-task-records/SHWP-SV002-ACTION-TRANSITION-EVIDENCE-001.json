@@ -131,7 +131,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_every_governed_transition": true,
     "credential_authority": "TV/TVC",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "github_runtime_authority": "NONE",
     "second_user_operated_device_required": false
   },

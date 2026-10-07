@@ -47,5 +47,5 @@
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":"StegVerse-Labs/.github#1294","activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"hb_grants_execution_authority":false,"physical_device_identity_grants_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","credential_authority":"TV/TVC","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true}
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"hb_grants_execution_authority":false,"physical_device_identity_grants_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","credential_authority":"TV/TVC","master_records_reality_authority": false,"interlock_intr_required_for_governed_ingress_egress":true}
 }

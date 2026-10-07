@@ -137,7 +137,7 @@
     "user_verification_authority": "KV/SKAP Vault",
     "device_user_verifier_authority": "NONE",
     "credential_provider_release_authority": "TV/TVC",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "heartbeat_execution_authority": false,
     "github_runtime_authority": "NONE",
     "interlock_intr_required_for_governed_ingress_egress": true

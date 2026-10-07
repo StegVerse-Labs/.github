@@ -160,7 +160,7 @@
     "source_state_proves_execution": false,
     "source_side_predicate_recognizer_mints_runtime_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true
   }
 }
