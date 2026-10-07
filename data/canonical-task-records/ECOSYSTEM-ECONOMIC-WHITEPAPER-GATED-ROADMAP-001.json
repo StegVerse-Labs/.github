@@ -151,7 +151,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": false,
     "runtime_reality_authority": "Organization",
-    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "interlock_intr_required_for_governed_ingress_egress": true
   },
   "allowed_next_transitions": [
