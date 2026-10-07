@@ -47,5 +47,16 @@ Expected finding: `VERSION_DIVERGENCE_DETECTED`, with exact affected adopters an
 12. SV_LLM_DRIFT_IS_DETECTED_FROM_CANONICAL_STATE
 13. NO_SECOND_TASK_OR_TRANSITION_AUTHORITY_IS_CREATED
 
+## Reconciled source state — 2026-10-07
+- StegDB Organization Role registry/evaluator merged through PR #29 as `a69f53c510e4794aac7d7b8219ddea6ec8260aff`.
+- Exact SV-LLM SOURCE_IMPLEMENTED adoption lineage and organization-contract evidence merged through StegDB PR #30 as `e40c9d9b200cabd44def99835b1f9eb700ae44e5`.
+- Labs deployment packet is now a StegDB projection and deprecated as canonical reference through .github PR #2978 as `27149bde855593f974d50f0fc76d06cf803e060c`.
+- These are repository/source-state observations. They do **not** establish that SV-LLM or another adopter has completed the current Organization Role runtime migration.
+
+## Runtime migration boundary
+Runtime migration remains `UNOBSERVED` until the owning Organization performs a manifest-bound transition through Interlock/InTr and supplies the resulting Organization-owned disposition and organization-ledger evidence. Repository merge state, StegDB findings, compatibility-packet projection, or source declarations MUST NOT be promoted to runtime migration evidence.
+
+Until that evidence exists, StegDB may retain `VERSION_DIVERGENCE_DETECTED` and emit non-authorizing conformance work. It may not directly mutate the adopter or infer `ALLOW`.
+
 ## Current continuation
-Implement the smallest compatible StegDB registry extension and evaluator first. Do not broaden into a replacement propagation runtime. Update StegDB README so "pushes correctness outward" cannot be read as direct mutation authority.
+Validate and merge the source-state reconciliation in both owning repositories. Then derive the canonical adopter denominator from ecosystem state and issue Organization-owned manifest-bound conformance work for stale adopters; preserve every attempted consequential transition as `ALLOW | DENY | FAIL_CLOSED`.
