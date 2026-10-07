@@ -30,7 +30,7 @@ class SV002HBResidentBindingTests(unittest.TestCase):
             "operation":"REQUEST_SELF_CHARACTERIZATION",
             "deterministic_packet_id":"SV002-RERUN-C796D0BFD181CEC5D99E4C23",
             "current_callable_ref":"StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
-            "request_bound_master_records_required":True,
+            "request_bound_master_records_required":False,
             "request_bound_required_evidence_exact_bytes":True,
             "credential_authority":"TV/TVC",
             "github_token_required":False,
@@ -107,7 +107,7 @@ class SV002HBResidentBindingTests(unittest.TestCase):
                 receipt=MOD.consume(source,runtime,runner=runner)
 
             self.assertEqual(receipt["state"],"ATTEMPT_RECORDED")
-            self.assertTrue(receipt["request_bound_custodied"])
+            self.assertFalse(receipt["request_bound_custodied"])
             self.assertFalse(receipt["terminal_round_trip_observed"])
             self.assertFalse(receipt["second_resident_executor_required"])
             self.assertFalse(receipt["second_request_required"])
