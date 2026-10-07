@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 295,
+  "generation": 296,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -18786,8 +18786,8 @@
       "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
       "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
       "goal": "Close the StegCore source-conformance predicate by proving or repairing canonical admitted manifest capability/route selection through Interlock/InTr into the manifested transaction/governance entry without parallel processor-selection authority.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CHECKED_OUT",
+      "coordination_state": "RETIRED",
+      "checkout_state": "SOURCE_CONFORMANCE_COMPLETED",
       "cosv_task_vector": "71000000100123",
       "repository": "StegVerse-Labs/.github",
       "issue_ref": null,
@@ -18807,9 +18807,7 @@
         ]
       },
       "dependencies": [],
-      "remaining_predicates": [
-        "STEGCORE_ENTRY_CONFORMANT"
-      ],
+      "remaining_predicates": [],
       "authority_model": {
         "manifest_selects_processing_semantics": true,
         "source_identity_selects_processing_semantics": false,
@@ -18819,14 +18817,23 @@
         "external_machine_wait_allowed": false
       },
       "completion": {
-        "claimed": false,
-        "validated": false,
-        "runtime_observed": false
+        "claimed": true,
+        "validated": true,
+        "runtime_observed": false,
+        "completion_scope": "SOURCE_CONFORMANCE_ONLY"
       },
       "origin": {
         "decomposed_from": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
         "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
         "date": "2026-10-07"
+      },
+      "source_conformance": {
+        "predicate": "STEGCORE_ENTRY_CONFORMANT",
+        "status": "SATISFIED",
+        "stegcore_merge": "f553f5cf8ba2e53046e16ed8d4e07c9a7beae0f6",
+        "semantics": "MANIFEST_ALONE_SELECTS_PROCESSING_CAPABILITY_AND_ROUTE; STEGCORE_RECEIVING_OWNER_VALIDATES_ADDRESS_OR_FAILS_CLOSED; SOURCE_SUBJECT_PROVIDER_FRAMEWORK_IDENTITY_IS_PROVENANCE_ONLY",
+        "runtime_execution_claimed": false,
+        "ci_green_claimed": false
       }
     },
     {
