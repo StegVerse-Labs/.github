@@ -21,7 +21,7 @@ DOC = ROOT / "docs" / "ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md"
 VALIDATOR = ROOT / "scripts" / "validate_task_registry_global_invariants.py"
 CUSTODY = ROOT / "workers" / "canonical_state_transition_custody.py"
 
-MASTER_RECORDS_ROLE = "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER"
+MASTER_RECORDS_ROLE = "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
 
 
 def load_json(path: Path) -> dict:
@@ -42,13 +42,15 @@ def test_global_invariant_assigns_runtime_reality_to_the_organization():
     assert inv["user_verification_authority"] == "KV/SKAP Vault"
 
 
-def test_master_records_is_restated_as_released_batch_recorder_without_reality_authority():
+def test_master_records_is_limited_to_organization_records_and_reconstruction_without_reality_authority():
     inv = load_json(POLICY)["invariants"]
     assert inv["master_records_role"] == MASTER_RECORDS_ROLE
     assert inv["master_records_runtime_reality_authority"] == "NONE"
     assert inv["master_records_transition_authority"] == "NONE"
     assert inv["master_records_may_gate_organization_runtime_reality"] is False
     assert inv["released_organization_batch_requires_verified_organization_receipt_chain"] is True
+    assert inv["master_records_general_transition_custody"] is False
+    assert inv["master_records_general_evidence_custody"] is False
 
 
 def test_manifest_bound_state_transition_standard_is_declared_as_invariant():
@@ -157,9 +159,9 @@ def test_superseded_prose_inventory_is_measured_and_still_exact():
     assert inventory["files"] == sorted({entry["path"] for entry in occurrences})
 
 
-def test_retained_custody_only_statements_are_not_claimed_as_superseded():
+def test_only_organization_record_or_reconstruction_statements_remain_current():
     retained = load_json(DECLARATION)["retained_statements"]
-    assert "CUSTODY_RECONSTRUCTION_ONLY" in retained["rule"]
+    assert "ORGANIZATION_RECORDS_OR_RECONSTRUCTION" in retained["rule"]
     statements = [entry["statement"] for entry in load_json(DECLARATION)["superseded_prose_statements"]["occurrences"]]
     for statement in statements:
         assert "observed" in statement or "runtime-reality" in statement or "runtime reality" in statement
@@ -251,22 +253,22 @@ def test_organization_lane_refuses_a_schema_mismatch_without_touching_the_ledger
     assert result["authority_effect"] == "NONE"
 
 
-def test_master_records_boundary_no_longer_reads_as_organization_non_occurrence():
+def test_general_transition_submission_to_master_records_is_removed():
     source = CUSTODY.read_text(encoding="utf-8")
     submit = source.index("def submit_state_receipt")
-    blocked = source.index("def blocked(", submit)
-    body = source[blocked : source.index("payload = _submit_http(receipt)", blocked)]
+    end = source.index("def require_predecessor_master_records_closure", submit)
+    body = source[submit:end]
     assert '"organization_runtime_reality": "RECORDED"' in body
-    assert '"master_records_gates_organization_runtime_reality": False' in body
-    assert '"master_records_batch_release_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION"' in body
-    # Still a Master Records boundary: the stronger evidence class is not claimed.
-    assert '"state": "BOUNDARY"' in body
+    assert '"master_records_submission_performed": False' in body
+    assert '"master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"' in body
+    assert "_submit_http(receipt)" not in body
+    assert "_submit_local(receipt)" not in body
 
 
 def test_declaration_doc_states_the_change_and_the_exemption_path():
     text = DOC.read_text(encoding="utf-8")
     assert "runtime_reality_authority:  Master Records  ->  Organization" in text
-    assert "recorder of released organization batch receipts" in text
+    assert "organization records and reconstruction" in text
     assert "data/organization-role-exemption-register.json" in text
     assert "SOURCE_IMPLEMENTED" in text
     assert "MASTER_RECORDS_RECONSTRUCTED" in text
