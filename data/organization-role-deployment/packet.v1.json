@@ -2,23 +2,22 @@
   "schema": "stegverse.organization-role-deployment-packet/v1",
   "packet_id": "ORGANIZATION-ROLE-DEPLOYMENT-PACKET-001",
   "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
-  "reference_organization": "StegVerse-Labs",
-  "built_on": "2026-10-01",
+  "reference_organization": null,
+  "built_on": "2026-10-07",
   "authority_effect": "NONE_PACKET_ONLY",
   "evidence_class": "SOURCE_IMPLEMENTED",
-  "purpose": "The declaration says the Organization Role deploys per organization, in each organization's own .github. It did not say how. This packet is the generalized sequence: the target state every organization must reach, a verifier that reports the exact gap at any organization, and the reference implementation to copy from. It is not specific to any one organization.",
+  "purpose": "Compatibility projection of Organization Role target-state and verifier semantics. Canonical version/reference coordinates, adopter denominator, migration requirements and conformance state are owned by StegVerse-Labs/StegDB registry/organization-role. This packet cannot override StegDB version state and is not an implementation source to copy.",
   "deployment_is_per_organization": true,
   "packet_mutates_other_organizations": false,
   "reference_implementation": {
-    "organization": "StegVerse-Labs",
-    "repository": "StegVerse-Labs/.github",
-    "contract": ".stegverse/transition-ledger/org-contract.json",
-    "aggregator": "resident-runtime/aggregate_repo_transition.py",
-    "aggregator_source_verifier": "verify_source",
-    "declaration": "data/organization-role-runtime-reality-deployment.json",
-    "exemption_register": "data/organization-role-exemption-register.json",
-    "invariant_block": "data/task-registry-global-invariants.json",
-    "deployed_in_pull_request": 2899
+    "status": "DEPRECATED_AS_CANONICAL_REFERENCE",
+    "resolution": "RESOLVE_VERSION_BOUND_REFERENCE_COORDINATES_FROM_STEGDB",
+    "historical_reference": {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/.github",
+      "deployed_in_pull_request": 2899
+    },
+    "authority_effect": "NONE"
   },
   "target_state": {
     "organization_ledger_contract": {
@@ -77,7 +76,7 @@
     "contacts_no_receiver": true
   },
   "organization_register": {
-    "note": "Measured state, not a claim about what any organization should do. Each organization deploys in its own .github; this register records what was observed and when.",
+    "note": "Historical measured projection retained for provenance. Current adopter denominator/version/conformance state is resolved from StegDB; this packet is not canonical adoption state.",
     "organizations": [
       {
         "organization": "StegVerse-Labs",
@@ -149,14 +148,29 @@
     "CLAIM_RUNTIME_OBSERVATION",
     "GRANT_TRANSITION_EXECUTION_CUSTODY_OR_CREDENTIAL_AUTHORITY",
     "REQUIRE_AN_EXTERNAL_MACHINE_OR_SECOND_DEVICE",
-    "CLOSE_ANY_GOAL"
+    "CLOSE_ANY_GOAL",
+    "OVERRIDE_STEGDB_ORGANIZATION_ROLE_VERSION_ADOPTION_MIGRATION_OR_CONFORMANCE_STATE",
+    "DIRECTLY_INSTALL_OR_MUTATE_AN_ADOPTER_REPOSITORY"
   ],
-  "reaching_target_organizations": {
-    "constraint": "SELECTION_TIMING_NOT_COUNT",
-    "rule": "A dot-named repository can be a session source but cannot be attached once the session is running.",
-    "one_session_may_deploy_to_many_organizations": true,
-    "every_target_dot_github_must_be_selected_at_session_creation": true,
-    "target_discovered_after_session_start_is_unreachable_from_that_session": true,
-    "packet_travels_between_sessions_for_that_case": true
+  "canonical_registry": {
+    "repository": "StegVerse-Labs/StegDB",
+    "paths": {
+      "versions": "registry/organization-role/versions.json",
+      "adoptions": "registry/organization-role/adoptions.json",
+      "migrations": "registry/organization-role/migrations.json",
+      "conformance": "registry/organization-role/conformance.json"
+    },
+    "authority_effect": "NONE_DURABLE_REGISTRY_STATE_ONLY"
+  },
+  "sv_llm_exact_evidence": {
+    "repository": "SV-LLM/.github",
+    "declaration_path": "data/organization-role-runtime-reality-deployment.json",
+    "declaration_blob_sha": "c7eb810ecf58a60348cefadc66ae9a2972c9fab0",
+    "organization_contract_path": ".stegverse/transition-ledger/org-contract.json",
+    "organization_contract_blob_sha": "b9178ae83a01bb05d5926137eaf3e052b0e06591",
+    "observed_declaration_date": "2026-10-06",
+    "adopted_from_repository": "StegVerse-Labs/.github",
+    "evidence_class": "SOURCE_IMPLEMENTED",
+    "finding": "EXACT_SOURCE_EVIDENCE_BINDS_HISTORICAL_LABS_ADOPTION_LINEAGE_BUT_CURRENT_CONFORMANCE_MUST_BE_EVALUATED_AGAINST_STEGDB_VERSION_STATE"
   }
 }
