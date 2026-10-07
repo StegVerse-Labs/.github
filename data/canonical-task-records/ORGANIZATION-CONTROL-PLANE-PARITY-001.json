@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ORGANIZATION-CONTROL-PLANE-PARITY-001",
+  "correlation_id": "ORGANIZATION-CONTROL-PLANE-PARITY-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "goal": "Establish StegVerse-Labs/.github organization-specific capability parity with StegVerse-org/.github for sovereign ingress/egress, internal routing, organization ledger/HEAD, custody/readback, Task Registry/WorkerCoordinator, and Master Records reconstruction boundaries; bind StegCore to Labs-owned organization ingress.",
+  "cosv_id": "71000000100127",
+  "status": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "completion": false,
+  "source_refs": [
+    "docs/ORGANIZATION_CONTROL_PLANE_PARITY_MIRROR_HANDOFF.md",
+    "data/organization-control-plane-parity-v1.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/.github",
+      "StegVerse-Labs/StegCore"
+    ]
+  },
+  "invariants": [
+    "STEGVERSE_LABS_DOT_GITHUB_IS_SOLE_LABS_ORGANIZATION_INGRESS_EGRESS",
+    "NO_SECOND_AUTHORITY_PLANE",
+    "DIRECT_EXTERNAL_STEGCORE_ORGANIZATION_INGRESS_FORBIDDEN",
+    "ORGANIZATION_LEDGER_IS_RUNTIME_REALITY",
+    "MASTER_RECORDS_IS_RECORDS_AND_RECONSTRUCTION_ONLY"
+  ]
+}
