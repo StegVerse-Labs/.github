@@ -437,3 +437,5 @@ Current reconciliation disposition is `FAIL_CLOSED` for each unresolved attempte
 No exemption is registered by this reconciliation because no identified gap has a valid exemption justification: each has an existing repair/retry path, and external-machine/reachability/observer absence is explicitly prohibited as an exemption justification. Any future surface that cannot satisfy ACTIONS BY MANIFEST must be repaired or entered in `data/organization-role-exemption-register.json`; silent non-conformance is prohibited.
 
 This reconciliation does not claim system-wide enforcement or completion. Remaining source-conformance repairs stay owned by this Goal.
+
+Candidate branch: `repair/sdk-manifest-runtime-observation-reconciliation-20261007`; exact-head validation is required before merge and no runtime execution is inferred from CI.
