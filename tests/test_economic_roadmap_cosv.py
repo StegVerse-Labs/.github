@@ -12,7 +12,7 @@ class EconomicRoadmapCosvTests(unittest.TestCase):
         matches=[x for x in registry["tasks"] if x["task_id"]==TASK_ID]
         self.assertEqual(len(matches),1)
         task=matches[0]
-        self.assertEqual(task["coordination_state"],"PROPOSED")
+        self.assertEqual(task["coordination_state"],"ACTIVE")
         self.assertIsNone(task["worker_claim"]["claim_ref"])
         self.assertIsNone(task["worker_claim"]["fence_ref"])
         self.assertFalse(task["completion"]["validated"])
