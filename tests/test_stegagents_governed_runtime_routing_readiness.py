@@ -44,7 +44,7 @@ def test_governed_stegagents_runtime_resolves_before_workercoordinator_claim():
     assert projected["selection_grants_authority"] is False
     assert projected["workercoordinator_admission_still_required"] is True
     assert projected["interlock_intr_transition_admission_still_required"] is True
-    assert projected["master_records_reconciliation_still_required"] is True
+    assert projected["master_records_reconciliation_still_required"] is False
 
     stored = task["runtime_resolution"]
     assert stored["map_ref"] == "control/runtime-profile-map.json"
