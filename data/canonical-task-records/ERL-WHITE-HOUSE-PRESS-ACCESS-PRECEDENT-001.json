@@ -143,7 +143,7 @@
     "task_registry_mints_execution_authority": false,
     "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
     "task_registry_coordination_only": true,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "finding_authorized": false,
     "publication_authorized": false,
