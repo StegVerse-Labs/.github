@@ -3,7 +3,7 @@
   "task_id": "ORGANIZATION-CONTROL-PLANE-PARITY-001",
   "reference": "StegVerse-org/.github",
   "target": "StegVerse-Labs/.github",
-  "disposition": "SOURCE_REPAIR_IN_PROGRESS",
+  "disposition": "SOURCE_REPAIRED_EXACT_HEAD_VALIDATION_PARTIAL_SUCCESS",
   "capabilities": [
     {
       "id": "ORGANIZATION_IDENTITY",
@@ -69,5 +69,21 @@
       "state": "PREEXISTING_LABS_INTERNAL_ONLY",
       "negative_control": "Cross-org callers address stegverse-labs.governance at Labs .github; they do not invoke StegCore directly."
     }
-  ]
+  ],
+  "evidence": {
+    "exact_head": "1b3bd8359e634a9abd30e182ebef3b2c6ada036d",
+    "successful_workflows": [
+      "Validate Organization Resident Runtime and Interlock-InTr Boundary",
+      "Validate Governance Endpoint",
+      "Organization Control Plane Parity",
+      "validate-deepseek-resident"
+    ],
+    "pending_workflows": [
+      "Validate KV AI Memory Resident Binding",
+      "Cross-Task Coordination Validation - Non-Authorizing",
+      "Test suite ratchet"
+    ],
+    "positive_traversal": "Validate Governance Endpoint exercises StegVerse-org-origin packet through stegverse-labs.governance and recomputable return chain",
+    "negative_controls": "Organization Control Plane Parity asserts Labs .github sole boundary, repository-owned non-host manifest ingress, and no StegCore BOUNDARY_LOCAL service."
+  }
 }
