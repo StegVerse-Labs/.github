@@ -68,7 +68,7 @@ Presence is not request consumption, task execution, claim/fence proof, transiti
 
 ## Master Records
 
-Master Records remains authority for authentic retained observed reality. No current authentic runtime-presence event was available during the original or corrective preflight that established a stable shared `runtime_root`/`resident.node_id` binding across the proposed consumers.
+Organization remains authority for authentic retained runtime/observed reality; Master Records retains organization records/reconstruction only. No current authentic runtime-presence event was available during the original or corrective preflight that established a stable shared `runtime_root`/`resident.node_id` binding across the proposed consumers.
 
 A bounded local custody path now reuses the existing presence producer and an already-local `master-records/orchestration` checkout. After the carrier-owned supervision path emits `runtime-presence.latest.json`, `scripts/repair_resident_worker_presence.py` may invoke `master-records/orchestration/scripts/intake_resident_runtime_presence.py` only when `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` is already declared and the importer exists locally.
 
