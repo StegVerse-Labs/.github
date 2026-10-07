@@ -437,7 +437,32 @@
     "master_records_transition_gate": false,
     "master_records_runtime_reality_authority": false,
     "organization_runtime_reality_authority": true,
-    "legacy_custody_and_gating_fields_below_are_historical_non_authorizing": true
+    "legacy_custody_and_gating_fields_below_are_historical_non_authorizing": true,
+    "completed_repository_tranches_20261007": {
+      "Site": {
+        "pr": 1504,
+        "merge": "343490542ed19d6d10989a89c78cb02f2ada3c69"
+      },
+      "StegOS": {
+        "pr": 422,
+        "merge": "d61378a6666e7c06dde28bd73ed4b27a48e60d27"
+      },
+      "StegAgents": {
+        "pr": 40,
+        "merge": "d78e8d07debdd4d1e846b0ff4de76f6e63ab3ae9"
+      },
+      "continuity-vault-kit": {
+        "pr": 231,
+        "merge": "82f17940e15ff2175a5fa73b128382df381cc6ac"
+      },
+      "TVC": {
+        "pr": 481,
+        "merge": "ee10b800c6a2bbd9ba198082ba6bd7e0b009c4a3"
+      }
+    },
+    "completed_tranches_preserve_historical_and_reconstruction_evidence": true,
+    "fresh_active_surface_inventory_required_from_current_heads": true,
+    "bulk_semantic_remediation_lane_independent": true
   },
   "completion": {
     "claimed": false,

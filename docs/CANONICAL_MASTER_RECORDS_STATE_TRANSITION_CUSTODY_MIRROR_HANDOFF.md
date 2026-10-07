@@ -732,3 +732,12 @@ The pre-existing `repair/master-records-active-surfaces-20261007` branch is the 
 Current canonical boundary remains unchanged: Master Records may be referenced for **organization records** and **reconstruction only**. Current executable, task-record, contract, README, and active-handoff language that makes Master Records general transition/evidence custody, runtime/observed-reality authority, admission/closure authority, propagation gate, or a prerequisite for unrelated state progression is prohibited current-role language. Historical evidence may retain superseded wording when clearly historical/non-authorizing.
 
 Active-surface continuation begins from the already repaired organization-first worker and v2 contract. Older handoff passages such as `RECORDED + PASS before next transition`, authoritative Master Records state-transition write-through, and Master Records evidence-completeness gating are historical provenance, superseded as current authority by this dated section and the 2026-10-07 OWNER BOUNDARY REPAIR above, and must not be consumed as current executable requirements.
+
+
+## 2026-10-07 repository-tranche reconciliation
+
+Completed current-role tranches: Site #1504 / `343490542ed19d6d10989a89c78cb02f2ada3c69`; StegOS #422 / `d61378a6666e7c06dde28bd73ed4b27a48e60d27`; StegAgents #40 / `d78e8d07debdd4d1e846b0ff4de76f6e63ab3ae9`; continuity-vault-kit #231 / `82f17940e15ff2175a5fa73b128382df381cc6ac`; TVC #481 / `ee10b800c6a2bbd9ba198082ba6bd7e0b009c4a3`.
+
+These repairs remove current executable progression, admission, runtime, and release dependencies on Master Records while preserving historical evidence and explicit organization-record/reconstruction functions. Older passages that make Master Records `RECORDED`/`PASS`, custody, evidence-completeness, or reconstruction a prerequisite for unrelated transition progression are historical non-authorizing architecture.
+
+Fresh inventory must use current repository heads and semantic control effect, not raw mention counts. The separate `MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002` lane remains independently owned and must not be superseded by this reconciliation.
