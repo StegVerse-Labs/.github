@@ -5,8 +5,8 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
   "goal": "Implement and validate the existing-owner TVC source repair so provider operations inherit a non-caller-editable SDK manifest lineage binding and TVC validates, but never selects, processing capability/route before credential-bearing execution.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "SOURCE_CONFORMANCE_COMPLETED",
   "cosv_task_vector": "71000000100122",
   "repository": "StegVerse-Labs/.github",
   "issue_ref": null,
@@ -26,9 +26,7 @@
     ]
   },
   "dependencies": [],
-  "remaining_predicates": [
-    "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT"
-  ],
+  "remaining_predicates": [],
   "authority_model": {
     "manifest_selects_processing_semantics": true,
     "source_identity_selects_processing_semantics": false,
@@ -38,13 +36,24 @@
     "external_machine_wait_allowed": false
   },
   "completion": {
-    "claimed": false,
-    "validated": false,
-    "runtime_observed": false
+    "claimed": true,
+    "validated": true,
+    "runtime_observed": false,
+    "completion_scope": "SOURCE_CONFORMANCE_ONLY"
   },
   "origin": {
     "decomposed_from": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
     "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
     "date": "2026-10-07"
+  },
+  "source_conformance": {
+    "predicate": "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
+    "status": "SATISFIED",
+    "tvc_merge": "248eb6df0986055bab88ee37231feb3891da49bc",
+    "canonical_merge": "7d1c83fd6e0eceb56981a67da44e7cb97985b606",
+    "semantics": "MANIFEST_SELECTS_TESTING_EXPERIMENT_PROCESSING_AND_ROUTE; FRAMEWORK_PROVIDER_IDENTITY_IS_PROVENANCE_ONLY",
+    "tvc_role": "VALIDATE_EXACT_MANIFEST_LINEAGE_BEFORE_CREDENTIAL_BEARING_FORWARDING_ONLY",
+    "runtime_execution_claimed": false,
+    "ci_green_claimed": false
   }
 }
