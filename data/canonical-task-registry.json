@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 290,
+  "generation": 291,
   "status": "MASTER_RECORDS_ORGANIZATION_RECORDS_RECONSTRUCTION_BOUNDARY_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -224,11 +224,13 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
         "master_records_is_transition_custody_not_precondition": true,
-        "separate_runtime_observer_is_completion_authority": false
+        "separate_runtime_observer_is_completion_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "functional_memory_runtime_exercise": {
         "state": "EXISTING_RELAY_CONTINUATION_REPAIRED_AUTHENTIC_MATERIALIZATION_REQUIRED",
@@ -522,8 +524,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -683,8 +687,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -796,8 +802,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -920,8 +928,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -1062,8 +1072,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -1165,8 +1177,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -1577,8 +1591,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "checkout_state": "RETIRED",
       "cosv_task_vector": "71000000100101",
@@ -2023,9 +2039,11 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
-        "second_user_operated_device_required": false
+        "second_user_operated_device_required": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "readme_impact": {
         "material_function_change": true,
@@ -2154,8 +2172,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -2416,10 +2436,12 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "healer_role": "TRIGGERED_REMEDIATION_ONLY",
-        "second_user_operated_device_required": false
+        "second_user_operated_device_required": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_A1_A4_COMPLETION_UNPROVEN; APPLICABLE_BROWSER_CUSTODY_BINDING_TRANSFERRED_TO_MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001; GENERIC_LOCAL_ADAPTER_DEFECT_TRANSFERRED_SEPARATELY",
       "prompt_budget": {
@@ -3859,10 +3881,12 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_physical_flow": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
-        "publication_authorized": false
+        "publication_authorized": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "prompt_budget": {
         "goal_prompt_count": "4/20",
@@ -4471,8 +4495,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "state_transition_graph": {
         "schema": "stegverse.state-transition-dependency-graph/v1",
@@ -4689,11 +4715,13 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_legislative_status_only_to_cited_sources": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
         "publication_authorized": false,
-        "stegverse_applicability_finding_authorized": false
+        "stegverse_applicability_finding_authorized": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "prompt_budget": {
         "goal_prompt_count": "3/20",
@@ -4905,12 +4933,14 @@
         "task_registry_mints_execution_authority": false,
         "research_authority": "StegVerse-Labs/Executive_Rhetoric_Ledger",
         "task_registry_coordination_only": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "finding_authorized": false,
         "publication_authorized": false,
         "partisan_evaluation_authorized": false,
-        "constitutional_final_judgment_authorized": false
+        "constitutional_final_judgment_authorized": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "prompt_budget": {
         "goal_prompt_count": "1/20",
@@ -6565,8 +6595,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": false
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "checkout_state": "RETIRED",
       "retired_terminal": true,
@@ -7174,8 +7206,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -7385,11 +7419,13 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
         "master_records_is_transition_custody_not_precondition": true,
-        "separate_runtime_observer_is_completion_authority": false
+        "separate_runtime_observer_is_completion_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "remaining_predicate": "INGRESS_ADMITTED",
       "authority_effect": "NONE_COORDINATION_ONLY",
@@ -7488,8 +7524,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -7629,8 +7667,10 @@
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_transition_authority": true,
-        "master_records_reality_authority": true,
-        "github_runtime_authority": "NONE"
+        "master_records_reality_authority": false,
+        "github_runtime_authority": "NONE",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "authority_effect": "NONE_COORDINATION_ONLY"
     },
@@ -7732,8 +7772,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -7945,8 +7987,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -8173,8 +8217,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -8760,8 +8806,10 @@
         "task_registry_mints_execution_authority": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true,
-        "github_runtime_authority": "NONE"
+        "master_records_reality_authority": false,
+        "github_runtime_authority": "NONE",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "prompt_budget": {
         "goal_prompt_count": "9/20",
@@ -9264,8 +9312,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "authority_effect": "NONE_COORDINATION_ONLY"
     },
@@ -9633,8 +9683,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -9741,9 +9793,11 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "public_wiki_grants_authority": false
+        "public_wiki_grants_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "checkout_state": "COMPLETED"
     },
@@ -9861,8 +9915,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -10018,8 +10074,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_external_adoption": false,
         "traffic_counts_prove_identity": false,
-        "master_records_reality_authority": true,
-        "credential_authority": "TV/TVC"
+        "master_records_reality_authority": false,
+        "credential_authority": "TV/TVC",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "authority_effect": "NONE_OBSERVATION_AND_ATTRIBUTION_ONLY"
     },
@@ -10107,8 +10165,10 @@
         "github_licenses_are_release_authority": false,
         "license_discovery_proves_copyright_ownership": false,
         "public_clones_prove_external_reuse": false,
-        "master_records_reality_authority": true,
-        "credential_authority": "TV/TVC"
+        "master_records_reality_authority": false,
+        "credential_authority": "TV/TVC",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "authority_effect": "NONE_COORDINATION_AND_DISCOVERY_ONLY",
       "source_progress": {
@@ -10376,8 +10436,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "allowed_next_transitions": [
         "INGRESS_ADMITTED"
@@ -10552,7 +10614,9 @@
         "master_records_ack_required_where_declared": true,
         "task_registry_mints_execution_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true
+        "master_records_reality_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "authority_effect": "NONE_TASK_REGISTRATION_ONLY",
       "runtime_requirements": {
@@ -11131,8 +11195,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -12736,9 +12802,11 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
-        "heartbeat_execution_authority": false
+        "heartbeat_execution_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -13074,8 +13142,10 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "CURRENT_SESSION",
-        "master_records_reality_authority": true,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "readme_impact": {
         "material_function_change": false,
@@ -13303,7 +13373,7 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "security_posture_resolution_authority": "INTERLOCK_INTR",
         "sdk_posture_authority": "REQUEST_INPUT_AND_REPORTING_ONLY",
@@ -13312,7 +13382,9 @@
         "github_runtime_authority": "NONE",
         "heartbeat_execution_authority": false,
         "model_output_authority": false,
-        "hosted_execution_fallback": false
+        "hosted_execution_fallback": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -14841,7 +14913,9 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true
+        "master_records_reality_authority": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -15090,11 +15164,13 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "master_records_transport_authority": false,
         "heartbeat_role": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE",
-        "second_user_operated_device_required": false
+        "second_user_operated_device_required": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       }
     },
     {
@@ -15651,11 +15727,13 @@
         "task_registry_mints_execution_authority": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "heartbeat_execution_authority": false,
         "github_runtime_authority": "NONE",
-        "hosted_execution_fallback": false
+        "hosted_execution_fallback": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "cosv_task_vector": "40000100100000",
       "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json"
@@ -16096,14 +16174,16 @@
         "transport_user_verifier_authority": "NONE",
         "credential_authority": "TV/TVC",
         "transition_authority": "Interlock/InTr",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "heartbeat_authority": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE",
         "github_ci_model_may_create_production_signing_key": false,
         "recipient_key_may_be_promoted_to_authority_key": false,
         "alternate_credential_path_authorized": false,
         "hosted_execution_fallback": false,
-        "second_user_operated_device_required": false
+        "second_user_operated_device_required": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "allowed_next_transitions": [
         "OBSERVE_AUTHENTIC_CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE",
@@ -16307,10 +16387,12 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "github_runtime_authority": "NONE"
+        "github_runtime_authority": "NONE",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -16504,10 +16586,12 @@
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
         "worker_claim_authority": "WORKERCOORDINATOR",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "credential_authority": "TV/TVC",
-        "github_runtime_authority": "NONE"
+        "github_runtime_authority": "NONE",
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -17837,13 +17921,15 @@
         "hb_grants_execution_authority": false,
         "worker_claim_authority": "WorkerCoordinator",
         "credential_authority": "TV/TVC",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "kv_is_private_state_transition_continuity_boundary": true,
         "kv_skap_sole_user_verification_authority": true,
         "device_user_verification_authority": "NONE",
         "physical_device_identity_grants_authority": false,
-        "retroactive_claim_scope_widening_allowed": false
+        "retroactive_claim_scope_widening_allowed": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -17991,10 +18077,12 @@
         "transition_authority": "INTERLOCK_INTR",
         "credential_authority": "TV/TVC",
         "user_verification_authority": "KV/SKAP Vault",
-        "master_records_reality_authority": true,
+        "master_records_reality_authority": false,
         "github_runtime_authority": "NONE",
         "physical_device_identity_grants_authority": false,
-        "second_user_operated_device_required": false
+        "second_user_operated_device_required": false,
+        "runtime_reality_authority": "ORGANIZATION",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
       },
       "device_invariants": {
         "device_interchangeability_enforced": true,
