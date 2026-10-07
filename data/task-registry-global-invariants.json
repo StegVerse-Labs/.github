@@ -160,5 +160,12 @@
     "NO_SILENTLY_NON_CONFORMING_SURFACE_WITHOUT_REGISTERED_EXEMPTION",
     "NO_EXEMPTION_AS_AUTHORITY_OR_TERMINAL_PROOF"
   ],
-  "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
+  "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY",
+  "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+  "master_records_runtime_reality_authority": "NONE",
+  "master_records_transition_authority": "NONE",
+  "master_records_may_gate_organization_runtime_reality": false,
+  "master_records_general_transition_custody": false,
+  "master_records_general_evidence_custody": false,
+  "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
 }
