@@ -83,7 +83,7 @@
     "selection_grants_authority": false,
     "workercoordinator_admission_still_required": true,
     "interlock_intr_transition_admission_still_required": true,
-    "master_records_reconciliation_still_required": true,
+    "master_records_reconciliation_still_required": false,
     "authority_effect": "NONE_ROUTING_CANDIDATE_PROJECTION_ONLY"
   },
   "execution_substrate_resolution": {
