@@ -57,7 +57,7 @@ def resolve_routing_projection(task: dict[str, Any], runtime_map: dict[str, Any]
     """Resolve routing candidates for WorkerCoordinator review without claiming observation.
 
     Current observation remains a completion/runtime-evidence predicate. Routing review only
-    needs a declared compatible route; WorkerCoordinator, Interlock/InTr, and Master Records
+    needs a declared compatible route; WorkerCoordinator and Interlock/InTr; Master Records reconstruction is non-gating
     still decide admission, transition, and observed reality.
     """
     requirements = task.get("runtime_requirements")
@@ -89,7 +89,7 @@ def resolve_routing_projection(task: dict[str, Any], runtime_map: dict[str, Any]
         "current_observation_required_for_completion": bool(requirements.get("current_observation_required", False)),
         "workercoordinator_admission_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
-        "master_records_reconciliation_still_required": True,
+        "master_records_reconciliation_still_required": False,
         "authority_effect": "NONE_ROUTING_CANDIDATE_PROJECTION_ONLY",
     }
 
@@ -215,7 +215,7 @@ def main() -> int:
         "claim_or_fence_minted": False,
         "interlock_intr_transition_admission_still_required": True,
         "workercoordinator_admission_still_required": True,
-        "master_records_reconciliation_still_required": True,
+        "master_records_reconciliation_still_required": False,
         "source_or_ci_validation_satisfies_completion": False,
         "authority_effect": "NONE_ROUTING_READINESS_ONLY",
     }
