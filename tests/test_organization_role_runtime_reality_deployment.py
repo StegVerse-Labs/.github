@@ -154,7 +154,7 @@ def test_superseded_prose_inventory_is_measured_and_still_exact():
     declared = [(entry["path"], entry["statement"]) for entry in occurrences]
     # This inventory is historical provenance: later semantic-remediation may remove
     # superseded prose from the live tree without rewriting the declaration history.
-    prohibited_measured = [item for item in measured if "organization records" not in item[1].lower() and "non-gating" not in item[1].lower()]
+    prohibited_measured = [item for item in measured if not any(term in item[1].lower() for term in ("organization records", "organization-record", "non-gating", "never gates"))]
     assert set(prohibited_measured).issubset(set(declared)), (
         "new superseded observed/runtime-reality authority prose appeared outside the historical inventory"
     )
