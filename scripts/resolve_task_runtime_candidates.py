@@ -88,7 +88,7 @@ def resolve(task: dict[str, Any], runtime_map: dict[str, Any], map_ref: str) -> 
         "selection_grants_authority": False,
         "workercoordinator_admission_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
-        "master_records_reconciliation_still_required": True,
+        "master_records_reconciliation_still_required": False,
         "credential_authority": "TV/TVC",
         "authority_effect": "NONE_RUNTIME_CANDIDATE_PROJECTION_ONLY",
     }
