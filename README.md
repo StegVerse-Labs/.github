@@ -2095,3 +2095,7 @@ Master Records bulk semantic remediation evidence is retained in `data/master-re
 ### Manifest-selected StegCore entry — 2026-10-07
 
 `SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001` removes StegCore-local semantic selection from transaction continuity. The receiving governance owner now validates that the admitted manifest addresses `governance` / `stegverse.route.canonical-governed.v1`; a mismatch fails closed rather than being rewritten. Source/framework/provider identity is provenance only. StegCore PR #235 merged as `f553f5cf8ba2e53046e16ed8d4e07c9a7beae0f6`. See `docs/SDK_MANIFEST_STEGCORE_ENTRY_CONFORMANCE_MIRROR_HANDOFF.md`.
+
+## Organization control-plane parity — 2026-10-07
+
+Canonical task `ORGANIZATION-CONTROL-PLANE-PARITY-001` / COSV `71000000100127` makes `StegVerse-Labs/.github` the sole Labs organization ingress/egress boundary using the existing `StegVerse-org/.github` organization-control contracts as the reference implementation. The source repair replaces the Labs HTTP-shaped manifest receiving binding with the organization-owned non-host `ORGANIZATION_SDK_MANIFEST_INGRESS`, installs the generic boundary/crossing/egress primitives and atomic ledger store, and preserves StegCore as an internal decision authority reached only after Labs organization admission. No second authority plane is created; Master Records remains records/reconstruction only and non-gating. See `docs/ORGANIZATION_CONTROL_PLANE_PARITY_MIRROR_HANDOFF.md` and `data/organization-control-plane-parity-v1.json`.
