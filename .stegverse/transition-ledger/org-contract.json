@@ -18,7 +18,7 @@
   "runtime_reality_authority": "Organization",
   "ledger_lock": "ORGANIZATION_LEDGER_LOCK",
   "write_mode": "MANIFEST_DIRECTED_APPEND",
-  "propagation_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+  "propagation_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
   "propagation_gates_organization_runtime_reality": false,
   "propagation_receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
   "always_on_receiver_required": false,
