@@ -47,3 +47,9 @@ The declared 2,329-entry source was checked by exact historical path and is not 
 Runtime contextual repair on PR #2992 corrected seven additional active surfaces: README; MIR AgentEnvelope reconciliation; reusable tasks; runtime-presence coordination; StegBrowser runtime connection ingress; StegOS device-continuity packet tunnel; and SV002 request-bound evidence retention. Existing machine-readable supersession quotations in `data/organization-role-runtime-reality-deployment.json` remain preserved as historical evidence.
 
 The runtime 95/63 and custody 689/289 baseline classes are **not yet claimed fully dispositioned** because the original row-identity source is absent. Exact current remaining count is likewise not asserted without that source. The continuation must use retained canonical evidence and current-source contextual disposition, and must not convert aggregate counts into invented entries.
+
+## Post-#2992 continuation
+
+PR #2992 exact head `16495442752982ad706e353459eb1b3cd9b92c95` was 1 ahead / 0 behind current main, all three observed exact-head workflows completed SUCCESS, and the PR merged with expected-head protection as `65174f538888de298158f007718da00f48e6f7d5`. The canonical registry remains ACTIVE / CHECKED_OUT and does not claim completion.
+
+Continue on `repair/master-records-custody-semantic-continuation-20261007`. Do not invent the missing original 2,329 row identities. Use the persisted classifier contract, retained canonical evidence, and contextual current-source evidence to resolve the GENERIC_CUSTODY baseline. Preserve organization-record retention and reconstruction uses plus explicitly historical/test/supersession evidence; repair active generic transition/evidence-custody semantics. Persist evidence-backed current burn-down and update this handoff/README before exact-head validation and any merge.
