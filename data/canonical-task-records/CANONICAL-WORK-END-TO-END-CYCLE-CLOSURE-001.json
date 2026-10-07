@@ -77,7 +77,7 @@
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC",
     "runtime_reality_authority": "Organization",
-    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
     "second_user_operated_device_required": false,
     "authority_transfer_created_by_successor": false
   }
