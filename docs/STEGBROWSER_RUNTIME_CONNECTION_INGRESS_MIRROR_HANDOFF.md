@@ -87,7 +87,7 @@ A4 ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
 A4 INTR_ADMISSION_OBSERVED
 ```
 
-WorkerCoordinator remains the only A3 claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential/provider authority. Master Records remains observed-reality/custody/reconstruction authority. GitHub/CI remains source validation/evidence only with runtime authority `NONE`.
+WorkerCoordinator remains the only A3 claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential/provider authority. Organization owns runtime/observed reality; Master Records is limited to organization records/reconstruction. GitHub/CI remains source validation/evidence only with runtime authority `NONE`.
 
 ## Proven SV002 execution reuse
 

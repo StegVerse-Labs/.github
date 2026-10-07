@@ -154,7 +154,7 @@ Disposition: AgentEnvelope demonstrates a useful derived action-identity techniq
 
 ### Evidence custody / Master Records
 
-Deterministic re-derivation can be represented as a verification method for a proposition. Master Records remains observed-reality custody/reconstruction and does not become an authority issuer or governance evaluator.
+Deterministic re-derivation can be represented as a verification method for a proposition. Organization owns runtime/observed reality; Master Records is limited to organization records/reconstruction and does not become an authority issuer or governance evaluator.
 
 The minimum generic distinction worth retaining is:
 

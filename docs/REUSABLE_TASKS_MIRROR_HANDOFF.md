@@ -40,7 +40,7 @@ Reusable-task execution must remain bounded to materially affected scope. `RT-SE
 Reusable Task Registry = reusable task definition/discovery
 Canonical Task Registry = work intent / coordination
 WorkerCoordinator = execution claim / fence
-Master Records = observed reality / reconstruction
+Organization = runtime/observed reality; Master Records = organization records / reconstruction
 Interlock/InTr = governed ingress / egress
 TV/TVC = credential authority
 StegIndex = read/discovery projection

@@ -67,7 +67,7 @@ Only exact authentic bytes may promote the parent `REQUEST_BOUND` predicate.
 
 ## Authority
 
-WorkerCoordinator remains execution claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential authority. Master Records remains observed-reality/custody/reconstruction authority. GitHub/CI/source grants no runtime authority.
+WorkerCoordinator remains execution claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential authority. Organization owns runtime/observed reality; Master Records is limited to organization records/reconstruction. GitHub/CI/source grants no runtime authority.
 
 ## Manual work
 

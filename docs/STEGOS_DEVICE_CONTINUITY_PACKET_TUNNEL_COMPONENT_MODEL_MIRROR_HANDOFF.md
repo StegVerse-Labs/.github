@@ -23,7 +23,7 @@ Interlock/InTr remains the canonical governed admission/state-transition authori
 
 ### Authentic runtime observation
 
-Component/owner: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`. Measurement machinery is non-authorizing; Master Records remains observed-reality custody/reconstruction authority.
+Component/owner: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`. Measurement machinery is non-authorizing; Organization owns runtime/observed reality; Master Records is limited to organization records/reconstruction.
 
 The observation is subject-bound:
 
@@ -81,7 +81,7 @@ Generic WorkerCoordinator/runtime-presence evidence, HeartBeat liveness/freshnes
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS Node: interchangeable transport/execution node, never a user verifier.
-- Master Records: observed-reality custody/reconstruction authority.
+- Organization: runtime/observed reality authority. Master Records: organization records/reconstruction only.
 - HeartBeat: timing, liveness, freshness, state correlation, observability only.
 - GitHub: source/evidence coordination only; no runtime authority.
 

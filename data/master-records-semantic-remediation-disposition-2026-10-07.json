@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.master-records-semantic-remediation-disposition/v1",
+  "goal_task_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+  "generated_on": "2026-10-07",
+  "repository": "StegVerse-Labs/.github",
+  "baseline_classifier": "data/master-records-prohibited-reference-classifier-2026-10-07.json",
+  "baseline": {
+    "prohibited_references": 2329,
+    "unique_files": 614,
+    "classes": {
+      "RUNTIME_OBSERVED_REALITY": {
+        "references": 95,
+        "unique_files": 63
+      },
+      "GENERIC_CUSTODY": {
+        "references": 689,
+        "unique_files": 289
+      },
+      "TRANSITION_GATE_CLOSURE": {
+        "references": 230,
+        "unique_files": 114
+      },
+      "GENERIC_TRANSITION_API": {
+        "references": 201,
+        "unique_files": 86
+      },
+      "CONTEXT_SPECIFIC": {
+        "references": 1114,
+        "unique_files": 408
+      }
+    }
+  },
+  "source_recovery": {
+    "declared_source": "master_records_semantic_repair_set_2026-10-07.json",
+    "result": "FAIL_CLOSED_SOURCE_NOT_RETAINED_IN_GIT_HISTORY",
+    "checked_paths": [
+      "master_records_semantic_repair_set_2026-10-07.json",
+      "data/master_records_semantic_repair_set_2026-10-07.json",
+      "data/master-records-semantic-repair-set-2026-10-07.json",
+      "reports/master_records_semantic_repair_set_2026-10-07.json"
+    ],
+    "implication": "The 2,329 original entry identities cannot be truthfully reconstructed from aggregate counts alone. Completion is measured from retained canonical evidence plus current-source contextual disposition; missing source is preserved as a reproducibility defect rather than synthesized."
+  },
+  "retained_canonical_evidence": [
+    {
+      "path": "data/organization-role-runtime-reality-deployment.json",
+      "role": "machine-readable exact supersession evidence; do not mutate embedded historical statements"
+    },
+    {
+      "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+      "role": "canonical runtime/observed-reality authority declaration"
+    },
+    {
+      "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+      "role": "canonical current boundary plus explicitly historical section"
+    }
+  ],
+  "runtime_observed_reality": {
+    "baseline": {
+      "references": 95,
+      "unique_files": 63
+    },
+    "disposition_state": "IN_PROGRESS_CONTEXT_RESOLVED_ACTIVE_SURFACES_PLUS_PRESERVED_SUPERSESSION_EVIDENCE",
+    "active_repairs_this_pr": [
+      "README.md",
+      "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
+      "docs/REUSABLE_TASKS_MIRROR_HANDOFF.md",
+      "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+      "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+    ],
+    "prior_repairs_merged_in_2988": [
+      "data/goal-task-component-profiles/PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001.json",
+      "data/canonical-task-records/SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001.json"
+    ],
+    "preserved_evidence_rule": "Quoted superseded statements embedded in canonical deployment/historical/test evidence remain unchanged when clearly non-authorizing."
+  },
+  "generic_custody": {
+    "baseline": {
+      "references": 689,
+      "unique_files": 289
+    },
+    "disposition_state": "NOT_YET_COMPLETE",
+    "rule": "Master Records positive custody semantics are permitted only when semantically organization-record retention or reconstruction; generic transition/evidence custody is active-prohibited unless explicitly historical/test/supersession evidence."
+  },
+  "burn_down": {
+    "baseline": {
+      "references": 2329,
+      "unique_files": 614
+    },
+    "exact_current_remaining": "NOT_ASSERTED_WITHOUT_ORIGINAL_ENTRY_IDENTITY_SOURCE",
+    "repaired_active_files_this_pr": 7,
+    "preserved_historical_evidence": true
+  },
+  "authority_effect": "NONE_EVIDENCE_ONLY"
+}
