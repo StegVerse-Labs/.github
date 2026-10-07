@@ -2090,3 +2090,8 @@ Under `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, remaining runtime-observat
 
 
 Master Records bulk semantic remediation evidence is retained in `data/master-records-semantic-remediation-disposition-2026-10-07.json`. The original 2,329-entry classifier source was not retained in Git history, so aggregate baseline counts are not treated as reconstructed row identities; current completion requires contextual source evidence rather than invented entries.
+
+
+### Manifest-selected StegCore entry — 2026-10-07
+
+`SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001` removes StegCore-local semantic selection from transaction continuity. The receiving governance owner now validates that the admitted manifest addresses `governance` / `stegverse.route.canonical-governed.v1`; a mismatch fails closed rather than being rewritten. Source/framework/provider identity is provenance only. StegCore PR #235 merged as `f553f5cf8ba2e53046e16ed8d4e07c9a7beae0f6`. See `docs/SDK_MANIFEST_STEGCORE_ENTRY_CONFORMANCE_MIRROR_HANDOFF.md`.
