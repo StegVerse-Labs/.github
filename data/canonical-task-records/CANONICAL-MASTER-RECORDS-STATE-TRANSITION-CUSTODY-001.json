@@ -423,7 +423,19 @@
     "semantic_inventory_total": 10161,
     "initial_prohibited_role_references": 3815,
     "initial_prohibited_role_files": 1212,
-    "initial_ambiguous_references": 2064
+    "initial_ambiguous_references": 2064,
+    "canonical_boundary_merge": "4a2280a3e886e4a7e8060fe4ef34013eb14fb532",
+    "active_repo_tranche_branch": "repair/master-records-active-surfaces-20261007",
+    "active_repo_tranche_scope": [
+      "canonical-task-registry",
+      "canonical-state-transition-client",
+      "global-invariant-validator",
+      "active-component-profile",
+      "current-handoffs",
+      "README"
+    ],
+    "general_master_records_transition_submission_removed_from_canonical_client": true,
+    "predecessor_master_records_reconstruction_is_not_transition_gate": true
   },
   "completion": {
     "claimed": false,
