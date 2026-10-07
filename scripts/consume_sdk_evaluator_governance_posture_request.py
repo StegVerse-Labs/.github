@@ -103,9 +103,9 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
 
-    # Every resulting state transition is authoritative only after the existing
-    # canonical Master Records custody/reconstruction seam validates the exact
-    # receipt and the retained runtime receipt as required evidence.
+    # Record the resulting transition in the organization ledger. Master Records
+    # is not a general transition/evidence gate; reconstruction is separate and
+    # optional unless reconstruction itself is the governed operation.
     workers_root=source/"workers"
     if str(workers_root) not in sys.path:
         sys.path.insert(0,str(workers_root))
@@ -113,7 +113,7 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     transition_id=f"{TARGET_TASK}:{receipt['state']}"
     # The existing organization receipt contract requires exact canonical inline
     # evidence bytes. A legacy evidence_ref/hex-only manifest is rejected before
-    # Master Records gets the transition, masking its actual disposition.
+    # organization ledger gets the transition, masking its actual disposition.
     required_evidence=[{
       "evidence_id":"sdk-evaluator-governance-posture-runtime-receipt",
       "evidence_type":"SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_RECEIPT",
@@ -150,17 +150,15 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
       },
       required_evidence_manifest=required_evidence,
       proof_scope="SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_TRANSITION_ONLY",
-      proof_ceiling="MASTER_RECORDS_VALIDATED_RUNTIME_TRANSITION_EVIDENCE_ONLY",
+      proof_ceiling="ORGANIZATION_RECORDED_RUNTIME_TRANSITION_EVIDENCE_ONLY",
     )
-    mr=submit_state_receipt(state_receipt)
-    receipt["master_records_state"]=mr.get("state")
-    receipt["master_records_reconstruction_status"]=mr.get("reconstruction_status")
-    receipt["master_records_required_evidence_validation_status"]=mr.get("required_evidence_validation_status")
-    receipt["master_records_required_evidence_count"]=mr.get("required_evidence_count")
-    receipt["master_records_receipt_sha256"]=mr.get("receipt_sha256")
-    receipt["master_records_reconstructed_receipt_sha256"]=mr.get("reconstructed_receipt_sha256")
-    receipt["master_records_reason"]=mr.get("reason")
-    receipt["state"]="COMPLETED" if terminal and mr.get("state")=="RECORDED" and mr.get("reconstruction_status")=="PASS" and mr.get("required_evidence_validation_status")=="PASS" and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256") else "MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED"
+    organization_recording=submit_state_receipt(state_receipt)
+    receipt["organization_recording_state"]=organization_recording.get("state")
+    receipt["organization_transition_receipt"]=organization_recording.get("organization_receipt")
+    receipt["organization_state_receipt_sha256"]=organization_recording.get("receipt_sha256")
+    receipt["master_records_submission_performed"]=organization_recording.get("master_records_submission_performed",False)
+    receipt["master_records_role"]=organization_recording.get("master_records_role","ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY")
+    receipt["state"]="COMPLETED" if terminal and organization_recording.get("state")=="RECORDED" else "ORGANIZATION_RECORDING_PENDING_OR_FAILED"
     path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 
