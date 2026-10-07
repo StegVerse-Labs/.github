@@ -61,12 +61,12 @@
     "MASTER_RECORDS_BOUNDARY_CONFORMANT",
     "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY_CONFORMANT",
     "IDENTITY_DRIVEN_PROCESSOR_SELECTION_REGRESSION_GATE_INSTALLED",
-    "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
-    "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
-    "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
-    "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
-    "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
-    "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+    "MANIFEST_BOUND_INTR_ADMISSION_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "NON_GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "APPLICABLE_ORGANIZATION_STATE_TRANSITION_RECEIPT_RETAINED",
+    "APPLICABLE_POST_ORGANIZATION_RECORD_RECONSTRUCTION_EVIDENCE_RETAINED",
+    "ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION"
   ],
   "authority_model": {
     "manifest_selects_processing_semantics": true,
@@ -183,12 +183,12 @@
     "IDENTITY_DRIVEN_PROCESSOR_SELECTION_REGRESSION_GATE_INSTALLED"
   ],
   "remaining_runtime_predicates": [
-    "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
-    "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
-    "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
-    "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
-    "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
-    "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+    "MANIFEST_BOUND_INTR_ADMISSION_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "NON_GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "APPLICABLE_ORGANIZATION_STATE_TRANSITION_RECEIPT_RETAINED",
+    "APPLICABLE_POST_ORGANIZATION_RECORD_RECONSTRUCTION_EVIDENCE_RETAINED",
+    "ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION"
   ],
   "ecosystem_surface_inventory_20261002": {
     "status": "COMPLETE_AS_CENSUS_ONLY",
@@ -387,5 +387,88 @@
       "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
     ],
     "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
+  },
+  "runtime_observation_reconciliation_20261007": {
+    "standard": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
+    "standard_semantics": {
+      "actions_by_manifest_required": true,
+      "state_transition_dependent": true,
+      "external_machine_awaiting_allowed": false,
+      "destination_liveness_is_transition_predicate": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "post_closure_authentic_observer_gate_allowed": false
+    },
+    "historical_observation_preservation": "PRESERVE_AS_HISTORICAL_EVIDENCE_ONLY_DO_NOT_USE_AS_PASSIVE_WAIT_OR_COMPLETION_STATE",
+    "passive_waiting_predicates_superseded": [
+      "AUTHENTIC_NODE_INTR_SDK_MANIFEST_INGRESS_OBSERVED",
+      "GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "NON_GOVERNANCE_ROUTE_RUNTIME_EVIDENCE_OBSERVED",
+      "ORGANIZATION_RUNTIME_CUSTODY_OBSERVED",
+      "MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+      "SYSTEM_WIDE_ENFORCEMENT_PROVEN"
+    ],
+    "current_transition_dispositions": [
+      {
+        "surface": "NODE_INTR_SDK_MANIFEST_INGRESS",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "MANIFEST_BOUND_INTR_ADMISSION_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+        "failure_code": "MANIFEST_BOUND_TRANSITION_DISPOSITION_NOT_RETAINED",
+        "required_evidence_or_repair": "Invoke the existing manifest-bound Interlock/InTr admission path for the attempted action and retain its ALLOW, DENY, or FAIL_CLOSED disposition; receiver liveness and external-machine reachability are not predicates.",
+        "retry_entrypoint": "EXISTING_MANIFEST_BOUND_INTR_ADMISSION",
+        "next_attempt": "Retry the same manifest-bound attempted transition through the existing owner; if the receiver is unavailable use DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION."
+      },
+      {
+        "surface": "GOVERNANCE_ROUTE",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+        "failure_code": "MANIFEST_BOUND_TRANSITION_DISPOSITION_NOT_RETAINED",
+        "required_evidence_or_repair": "Evaluate the governance action as its explicit predecessor-to-successor manifest-bound transition and retain terminal disposition and Organization receipt when a state transition occurs.",
+        "retry_entrypoint": "SDK_GOVERNANCE_MANIFEST_ROUTE",
+        "next_attempt": "Attempt the declared governance route without waiting for an external machine, listener, session, or observer."
+      },
+      {
+        "surface": "NON_GOVERNANCE_ROUTE",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "NON_GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+        "failure_code": "MANIFEST_BOUND_TRANSITION_DISPOSITION_NOT_RETAINED",
+        "required_evidence_or_repair": "Evaluate the non-governance action through its admitted manifest capability and route and retain terminal disposition.",
+        "retry_entrypoint": "SDK_NON_GOVERNANCE_MANIFEST_ROUTE",
+        "next_attempt": "Attempt the declared non-governance route under the same state-transition-dependent standard."
+      },
+      {
+        "surface": "ORGANIZATION_RUNTIME_CUSTODY",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "APPLICABLE_ORGANIZATION_STATE_TRANSITION_RECEIPT_RETAINED",
+        "failure_code": "ORGANIZATION_TRANSITION_RECEIPT_NOT_RETAINED",
+        "required_evidence_or_repair": "For an action that actually transitions Organization state, append the Organization receipt at the Organization ledger root under the existing manifest-directed append contract. Do not use Master Records or observer reachability as a runtime-reality gate.",
+        "retry_entrypoint": "ORGANIZATION_TRANSITION_LEDGER_APPEND",
+        "next_attempt": "On the next applicable manifest-bound state transition, retain the Organization receipt in the same attempt lineage."
+      },
+      {
+        "surface": "MASTER_RECORDS_RECONSTRUCTION",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "APPLICABLE_POST_ORGANIZATION_RECORD_RECONSTRUCTION_EVIDENCE_RETAINED",
+        "failure_code": "RECONSTRUCTION_EVIDENCE_NOT_RETAINED_WHEN_APPLICABLE",
+        "required_evidence_or_repair": "After verified Organization receipt release, perform or queue bounded Master Records organization-record retention/reconstruction as evidence only; it may not gate Organization runtime reality.",
+        "retry_entrypoint": "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION",
+        "next_attempt": "Consume the verified released Organization receipt chain when reconstruction is applicable; unavailable receivers use durable queue/event-ephemeral materialization."
+      },
+      {
+        "surface": "SYSTEM_WIDE_ENFORCEMENT",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION",
+        "failure_code": "ECOSYSTEM_MANIFEST_CONFORMANCE_NOT_YET_PROVEN",
+        "required_evidence_or_repair": "Complete source conformance repairs for every actionable surface and require a registered Organization Role exemption for any surface that cannot yet be manifest-bound. Runtime reachability is not an exemption justification.",
+        "retry_entrypoint": "SDK_GENERIC_MANIFEST_ECOSYSTEM_CONFORMANCE_REEVALUATION",
+        "next_attempt": "Re-evaluate the bounded surface inventory after source repairs and exemption-register validation."
+      }
+    ],
+    "exemption_assessment": {
+      "required_now": false,
+      "reason": "NO_SURFACE_HAS_A_VALID_NONCONFORMANCE_JUSTIFICATION_REQUIRING_EXEMPTION_IN_THIS_RECONCILIATION; identified gaps have explicit repair/retry paths.",
+      "register": "data/organization-role-exemption-register.json",
+      "silent_non_conformance_allowed": false
+    },
+    "completion_effect": "NONE_GOAL_REMAINS_ACTIVE_SOURCE_CONFORMANCE_REPAIRS_REMAIN"
   }
 }
