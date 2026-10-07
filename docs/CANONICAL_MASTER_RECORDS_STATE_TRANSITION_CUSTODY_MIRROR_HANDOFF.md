@@ -1,3 +1,9 @@
+# 2026-10-07 OWNER BOUNDARY REPAIR
+
+Canonical rule: **Master Records relates to organization records; the only other permitted reference is reconstruction.** Any earlier statement assigning Master Records general state-transition custody, general evidence custody, runtime/observed-reality authority, admission/closure authority, propagation gating, or a transition prerequisite is superseded and must be repaired. Historical evidence remains historical evidence and is not rewritten merely because it records an earlier architecture.
+
+Current repair inventory: 10,161 candidate references; first-pass classification found 3,815 affirmative prohibited-role references across 1,212 files, 2,064 ambiguous references requiring full-context review, 3,583 negation/test references, 397 historical-evidence references, and 302 permitted references. The classification is a repair manifest, not proof that every line-window classification is final.
+
 # Canonical Master Records state-transition custody mirror handoff
 
 Updated: 2026-09-17
