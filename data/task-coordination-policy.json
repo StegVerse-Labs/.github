@@ -292,5 +292,49 @@
     "workercoordinator_claim_fence_authority_unchanged": true,
     "interlock_intr_transition_authority_unchanged": true,
     "github_platform_admin_bypass_is_not_claimed_prevented": true
+  },
+  "pull_request_precreation_gate": {
+    "state": "SOURCE_POLICY_REQUIRED",
+    "purpose": "Prevent unresolved predecessor PR lanes from accumulating before any new PR is opened.",
+    "required_before": [
+      "PULL_REQUEST_CREATE"
+    ],
+    "repository_scope": "TARGET_REPOSITORY",
+    "predecessor_lane_resolution_order": [
+      "EXACT_TASK_OR_CORRELATION_ID",
+      "EXACT_HEAD_BRANCH",
+      "DECLARED_PREDECESSOR_PR",
+      "OPEN_PR_FALLBACK_FOR_SAME_AUTOMATION_LANE"
+    ],
+    "allow_only_when": [
+      "NO_PREDECESSOR_LANE_EXISTS",
+      "PREDECESSOR_PR_IS_CLOSED_AND_MERGED_WITH_REQUIRED_EXACT_HEAD_VALIDATION_SUCCESS",
+      "PREDECESSOR_PR_IS_CLOSED_UNMERGED_WITH_EXPLICIT_SUPERSESSION_OR_TERMINAL_DISPOSITION_EVIDENCE"
+    ],
+    "deny_when": [
+      "PREDECESSOR_PR_OPEN",
+      "PREDECESSOR_PR_SUPERSEDED_BUT_OPEN",
+      "PREDECESSOR_REQUIRED_CHECK_FAILED",
+      "PREDECESSOR_REQUIRED_CHECK_PENDING_OR_MISSING",
+      "PREDECESSOR_HEAD_CHANGED_AFTER_VALIDATION",
+      "PREDECESSOR_TERMINAL_DISPOSITION_UNPROVEN"
+    ],
+    "disposition": "STOP_PREDECESSOR_PR_LANE_UNRESOLVED",
+    "same_branch_repair_required": true,
+    "successor_pr_creation_prohibited_until_terminal": true,
+    "evidence_required": [
+      "predecessor_pr_number_or_explicit_none",
+      "predecessor_state",
+      "predecessor_head_sha",
+      "required_exact_head_check_conclusions",
+      "merge_or_supersession_evidence"
+    ],
+    "enforcement_boundary": "Every PR-creating caller must invoke/adopt this gate before GitHub PR mutation; policy text alone does not intercept repository-local callers.",
+    "known_unadopted_callers": [
+      "StegVerse-Labs/StegDB:tools/bootstrap_canonical_prs.py",
+      "StegVerse-Labs/governance-observatory:iosnoperiod/github/workflows/promote-open-pr.yml",
+      "StegVerse-Labs/StegVerse-SCW:.github/autopatch/autopatch-probe-runner.patch.yml"
+    ],
+    "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
