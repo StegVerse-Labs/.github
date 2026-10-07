@@ -219,7 +219,7 @@ def test_kv_runtime_routing_readiness_reaches_workercoordinator_review_without_c
     assert result["claim_or_fence_minted"] is False
     assert result["workercoordinator_admission_still_required"] is True
     assert result["interlock_intr_transition_admission_still_required"] is True
-    assert result["master_records_reconciliation_still_required"] is True
+    assert result["master_records_reconciliation_still_required"] is False
     assert result["source_or_ci_validation_satisfies_completion"] is False
 
     predicates = result["predicates"]
