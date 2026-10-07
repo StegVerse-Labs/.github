@@ -444,7 +444,7 @@
           "const": "WORKERCOORDINATOR"
         },
         "master_records_reality_authority": {
-          "const": true
+          "const": false
         },
         "interlock_intr_required_for_governed_ingress_egress": {
           "const": true
