@@ -1,3 +1,7 @@
+## 2026-10-07 live executable/schema gate repair
+
+Context review classified generic Master Records continuity, recovery, convergence, entropy-recovery, SV002 activation, and RTC008 predecessor/post-admission requirements as prohibited active gates rather than organization-record or reconstruction-only uses. The active implementations now remove those generic prerequisites. Reconstruction-specific evidence remains admissible but does not authorize or gate unrelated transitions. Organization owns runtime reality; Interlock/InTr owns governed admission. Historical tests/docs may retain old names as provenance until separately context-reviewed.
+
 # Canonical Master Records organization-record and reconstruction boundary
 
 Updated: 2026-10-07
