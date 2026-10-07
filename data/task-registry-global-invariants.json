@@ -46,7 +46,7 @@
     "runtime_reality_write_mode": "MANIFEST_DIRECTED_APPEND",
     "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT",
     "organization_role_deployment_scope": "PER_ORGANIZATION_IN_ITS_OWN_DOT_GITHUB",
-    "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "master_records_runtime_reality_authority": "NONE",
     "master_records_transition_authority": "NONE",
     "master_records_may_gate_organization_runtime_reality": false,
@@ -100,7 +100,10 @@
     "zero_connected_devices_may_be_used_to_stop_task_progression": false,
     "zero_connected_devices_may_trigger_source_repair": false,
     "zero_connected_devices_may_create_manual_work": false,
-    "connected_device_inventory_exception": "ONLY_WHEN_THE_TASK_EXPLICITLY_TARGETS_CONNECTOR_OR_DEVICE_INVENTORY_MANAGEMENT_ITSELF"
+    "connected_device_inventory_exception": "ONLY_WHEN_THE_TASK_EXPLICITLY_TARGETS_CONNECTOR_OR_DEVICE_INVENTORY_MANAGEMENT_ITSELF",
+    "master_records_general_transition_custody": false,
+    "master_records_general_evidence_custody": false,
+    "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
@@ -160,12 +163,5 @@
     "NO_SILENTLY_NON_CONFORMING_SURFACE_WITHOUT_REGISTERED_EXEMPTION",
     "NO_EXEMPTION_AS_AUTHORITY_OR_TERMINAL_PROOF"
   ],
-  "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY",
-  "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
-  "master_records_runtime_reality_authority": "NONE",
-  "master_records_transition_authority": "NONE",
-  "master_records_may_gate_organization_runtime_reality": false,
-  "master_records_general_transition_custody": false,
-  "master_records_general_evidence_custody": false,
-  "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
+  "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
 }
