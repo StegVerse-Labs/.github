@@ -60,7 +60,7 @@
     "source_state_proves_execution": false,
     "source_side_predicate_recognizer_mints_runtime_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true
+    "master_records_reality_authority": false
   },
   "completion": {"claimed": false, "validated": false, "reconciliation_ref": null}
 }
