@@ -171,11 +171,11 @@ class HeartbeatRuntime(HeartbeatRuntimeV2):
             "continuity": {
                 "checkpoint_ref": parent.get("last_checkpoint_ref"),
                 "handoff_destination": "control/worker-registry.json",
-                "master_records_required": True,
+                "organization_record_required": False,
                 "status_projection": "control/worker-status.json"
             },
             "completion": {
-                "next_authorized_action": "Create a PASS reconstruction proof from the last valid checkpoint plus Master Records evidence, then separately authorize successor acquisition.",
+                "next_authorized_action": "Create a PASS reconstruction proof from the last valid checkpoint plus retained reconstruction evidence, then separately authorize successor acquisition.",
                 "terminal_when": [
                     "Reconstruction proof is durable",
                     "Successor claim uses a higher fence or work is safely terminated"
