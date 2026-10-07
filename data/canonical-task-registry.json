@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 292,
+  "generation": 293,
   "status": "MASTER_RECORDS_ORGANIZATION_RECORDS_RECONSTRUCTION_BOUNDARY_REPAIRED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -18403,6 +18403,100 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+      "correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+      "root_correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+      "parent_task_id": null,
+      "goal": "Make StegDB the canonical durable registry for Organization Role version, reference coordinates, adoption state, migration requirements, conformance evidence and version-bound exemptions, while consequential propagation remains manifest-bound through Interlock/InTr and each Organization remains runtime-reality authority.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_task_vector": "20000000100000",
+      "source_refs": [
+        "docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md",
+        "data/task-registry-global-invariants.json",
+        "StegVerse-Labs/StegDB:docs/STEGDB_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "StegVerse-org",
+          "SV-LLM"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegDB",
+          "StegVerse-Labs/.github",
+          "StegVerse-org/.github",
+          "SV-LLM/.github"
+        ],
+        "components": [
+          "organization-role-version-registry",
+          "organization-role-adoption-registry",
+          "organization-role-migration-registry",
+          "organization-role-conformance-evaluator"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "expected_evidence_predicates": [
+        "STEGDB_HAS_VERSIONED_ORGANIZATION_ROLE_REGISTRY",
+        "CANONICAL_REFERENCE_COORDINATES_ARE_VERSION_BOUND_STEGDB_STATE_AND_REPOSITORY_LOCAL_PACKETS_CANNOT_OVERRIDE_THEM",
+        "ORGANIZATION_ROLE_ADOPTER_DENOMINATOR_IS_DERIVED_FROM_CANONICAL_ECOSYSTEM_STATE",
+        "EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION",
+        "ROLE_VERSION_ADVANCE_DETERMINISTICALLY_IDENTIFIES_STALE_ADOPTERS",
+        "STALE_ADOPTER_PRODUCES_MANIFEST_BOUND_CONFORMANCE_WORK",
+        "CONFORMANCE_ATTEMPT_TERMINATES_ALLOW_DENY_OR_FAIL_CLOSED",
+        "NON_ALLOW_INCLUDES_FAILED_PREDICATE_REPAIR_RETRY_AND_NEXT_ATTEMPT",
+        "EXEMPTION_IS_EXPLICIT_VERSION_BOUND_AND_NON_AUTHORIZING",
+        "NO_EXTERNAL_MACHINE_LISTENER_OR_SESSION_IS_AWAITED",
+        "LABS_DEPLOYMENT_PACKET_IS_PROJECTION_OR_DEPRECATED_AS_CANONICAL_REFERENCE",
+        "SV_LLM_DRIFT_IS_DETECTED_FROM_CANONICAL_STATE",
+        "NO_SECOND_TASK_OR_TRANSITION_AUTHORITY_IS_CREATED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "durable_registry_comparison",
+          "manifest_bound_conformance_work_specification"
+        ],
+        "environment": "REPOSITORY_AND_ORGANIZATION_GOVERNED",
+        "direction": "CROSS_ORGANIZATION",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null,
+        "completion_semantics": "END_TO_END",
+        "terminal_state_is_completion_truth": true
+      },
+      "allowed_next_transitions": [
+        "IN_PROGRESS",
+        "RECONCILIATION_REQUIRED"
+      ],
+      "handoff_projection_refs": [
+        "docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "runtime_reality_authority": "Organization",
+        "transition_authority": "Interlock/InTr",
+        "credential_authority": "TV/TVC",
+        "stegdb_authority": "VERSION_ADOPTION_MIGRATION_CONFORMANCE_STATE_ONLY",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+        "manifest_determines_destination": true,
+        "direct_repository_install_authority": false
       }
     }
   ],
