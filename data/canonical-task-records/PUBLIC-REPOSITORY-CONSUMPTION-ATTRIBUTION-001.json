@@ -79,7 +79,7 @@
     "task_registry_mints_execution_authority": false,
     "source_state_proves_external_adoption": false,
     "traffic_counts_prove_identity": false,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "credential_authority": "TV/TVC"
   },
   "authority_effect": "NONE_OBSERVATION_AND_ATTRIBUTION_ONLY"
