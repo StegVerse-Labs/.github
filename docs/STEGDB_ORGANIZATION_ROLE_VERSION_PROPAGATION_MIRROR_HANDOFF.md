@@ -106,3 +106,13 @@ Repair is therefore bounded to the owning GCAT `.github`: publish the version-bo
 
 ## Current continuation
 Validate and merge the exact GCAT repair-surface binding in StegDB and this handoff, then materialize that repair through GCAT-BCAT-Engine's owning Organization repository. Preserve explicit `ALLOW | DENY | FAIL_CLOSED` for every attempted transition and never infer runtime migration from repository mutation.
+
+## GCAT merged source-state reconciliation — 2026-10-07
+- GCAT-BCAT-Engine/.github PR #8 merged as `0120f47ff65412185a43760521826759e0583c82`. That repository has no configured/observed exact-head workflow or commit-status checks for the merged head; the merge was protected by expected-head equality, not represented as CI-green.
+- Post-merge inspection found literal newline escape text in `org-boundary/runtime/process_boundary.py`; repair PR #9 corrected the executable source and merged as `0e6cde1125a211ec8959b9485f8129ef42333a0c`. The repository likewise exposed no workflow/status checks for that repair head.
+- Current GCAT declaration: `data/organization-role-runtime-reality-deployment.json` blob `ee5e10293d1bdcc2617750e386b5187b27050e54`, declared version `org-role-2026-10-07`.
+- Current GCAT organization-ledger contract: `.stegverse/transition-ledger/org-contract.json` blob `47f2d947e7c05ad513d8a182fbbde7d8e81e87aa`.
+- Existing org-boundary now registers `gcat-bcat-engine.organization-role-conformance` as `BOUNDARY_LOCAL_CONFORMANCE`; source handler blob `fde4bde83abb24a4324cee678492ffe82dc0098a`.
+- `EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION` is now source-state `ALLOW` for the current denominator.
+- No authenticated Organization-owned interface available in the active execution context can invoke GCAT's resident `run_once.py`/org-boundary. The consequential conformance attempt therefore remains `FAIL_CLOSED`, materialization/runtime migration `UNOBSERVED`.
+- Repair/retry: expose the existing GCAT org-boundary through an authenticated Organization-owned invocation interface, then retry the same manifest-bound conformance operation and retain terminal organization-ledger evidence. Do not create a second ingress.
