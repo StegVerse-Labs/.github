@@ -41,25 +41,24 @@ custody_module = _load_custody_module()
 CanonicalTransitionCustody = custody_module.CanonicalTransitionCustody
 
 
-def recorded(digest: str, *, master_record_ref: str) -> dict:
+def recorded(digest: str) -> dict:
     return {
         "state": "RECORDED",
-        "reconstruction_status": "PASS",
-        "required_evidence_validation_status": "PASS",
         "receipt_sha256": digest,
-        "reconstructed_receipt_sha256": digest,
-        "master_record_ref": master_record_ref,
-        "master_records_grants_transition_authority": False,
+        "organization_receipt": {
+            "schema": "stegverse.organization-transition-receipt/v1",
+            "receipt_sha256": "sha256:" + digest,
+        },
+        "master_records_submission_performed": False,
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+        "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY",
     }
 
 
 class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
-    def test_successor_consumes_immediately_preceding_master_records_closure(self) -> None:
+    def test_successor_consumes_immediately_preceding_organization_recorded_transition(self) -> None:
         custody = CanonicalTransitionCustody("subject-1")
-        results = [
-            recorded("a" * 64, master_record_ref="master-record:first"),
-            recorded("b" * 64, master_record_ref="master-record:second"),
-        ]
+        results = [recorded("a" * 64), recorded("b" * 64)]
         with patch(
             "canonical_state_transition_custody_under_test.submit_state_receipt",
             side_effect=results,
@@ -70,7 +69,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
                 evidence={"state": "FIRST"},
                 resulting_state_ref_or_hash="sha256:" + "1" * 64,
             )
-            second = custody.record(
+            custody.record(
                 "TRANSITION-2",
                 outcome="COMPLETED",
                 evidence={"state": "SECOND"},
@@ -90,49 +89,34 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
         self.assertEqual(successor["prior_state_ref_or_hash"], "sha256:" + "a" * 64)
         self.assertEqual(
             [item["evidence_type"] for item in successor["required_evidence_manifest"]],
-            ["PREDECESSOR_MASTER_RECORDS_CLOSURE", "DOMAIN_EVIDENCE"],
+            ["DOMAIN_EVIDENCE"],
         )
-        predecessor = successor["required_evidence_manifest"][0]["content"]
-        self.assertEqual(predecessor["transition_id"], "TRANSITION-1")
-        self.assertEqual(predecessor["state"], "RECORDED")
-        self.assertEqual(predecessor["reconstruction_status"], "PASS")
-        self.assertEqual(predecessor["required_evidence_validation_status"], "PASS")
-        self.assertEqual(predecessor["receipt_sha256"], "a" * 64)
-        self.assertEqual(predecessor["reconstructed_receipt_sha256"], "a" * 64)
-        self.assertEqual(predecessor["master_record_ref"], "master-record:first")
         self.assertEqual(custody.last_state_ref, "sha256:" + "b" * 64)
-        self.assertEqual(custody.last_master_records_closure["transition_id"], "TRANSITION-2")
 
-    def test_incomplete_closure_cannot_become_successor_predecessor(self) -> None:
+    def test_incomplete_organization_record_cannot_advance_successor_predecessor(self) -> None:
         custody = CanonicalTransitionCustody("subject-2")
         incomplete = {
             "state": "RECORDED",
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "FAIL_CLOSED",
             "receipt_sha256": "c" * 64,
-            "reconstructed_receipt_sha256": "c" * 64,
+            "master_records_submission_performed": False,
         }
         with patch(
             "canonical_state_transition_custody_under_test.submit_state_receipt",
             return_value=incomplete,
         ):
-            with self.assertRaisesRegex(RuntimeError, "canonical_master_records_custody_not_returned"):
+            with self.assertRaisesRegex(RuntimeError, "canonical_organization_record_not_returned"):
                 custody.record(
                     "TRANSITION-1",
                     outcome="COMPLETED",
                     evidence={"state": "FIRST"},
                 )
         self.assertIsNone(custody.last_state_ref)
-        self.assertIsNone(custody.last_master_records_closure)
 
-    def test_resulting_domain_state_never_replaces_canonical_closure_dependency(self) -> None:
+    def test_resulting_domain_state_never_replaces_prior_recorded_transition_digest(self) -> None:
         custody = CanonicalTransitionCustody("subject-3")
         with patch(
             "canonical_state_transition_custody_under_test.submit_state_receipt",
-            side_effect=[
-                recorded("d" * 64, master_record_ref="master-record:d"),
-                recorded("e" * 64, master_record_ref="master-record:e"),
-            ],
+            side_effect=[recorded("d" * 64), recorded("e" * 64)],
         ) as submit:
             custody.record(
                 "TRANSITION-A",
