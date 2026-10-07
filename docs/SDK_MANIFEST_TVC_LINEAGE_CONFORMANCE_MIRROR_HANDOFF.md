@@ -4,7 +4,7 @@ Updated: 2026-10-07
 Goal Task ID: `SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001`
 Parent Task ID: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`
 COSV ID: `71000000100122`
-Status: `ACTIVE / CHECKED_OUT`
+Status: `RETIRED / SOURCE_CONFORMANCE_COMPLETED`
 
 ## Goal
 
@@ -22,7 +22,7 @@ Implement and validate the existing-owner TVC source repair so provider operatio
 
 ## Remaining predicates
 
-- `TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT`
+None. `TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT` is satisfied at source-conformance scope.
 
 ## Completion discipline
 
@@ -39,3 +39,10 @@ The Universal manifest ingress now owns a generic `bind_tvc_provider_request` pr
 
 TVC exact head exposed zero GitHub workflow runs and zero combined status checks, so no CI-green claim is made. Added source regressions cover missing/mutated lineage fields and prove capability/route values are validation-only at TVC.
 
+
+
+## 2026-10-07 closure reconciliation
+
+The source predicate is closed. TVC #482 merged as `248eb6df0986055bab88ee37231feb3891da49bc`; canonical #2996 merged as `7d1c83fd6e0eceb56981a67da44e7cb97985b606`. The generic manifest ingress is the lineage projection owner. TVC is validation/credential-boundary only. No framework/provider identity has authority to select testing, experiment, processing capability, or route.
+
+Both exact implementation heads exposed zero GitHub workflow runs and zero combined status checks. Closure therefore claims source conformance from merged source and regression coverage, not CI-green status and not runtime execution. No runtime observation is required to reinterpret this source predicate, and none is claimed.
