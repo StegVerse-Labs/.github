@@ -53,5 +53,5 @@
   "allowed_next_transitions": ["CONTINUE_SUCCESSOR_STEG_BROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION"],
   "handoff_projection_refs": ["docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"],
   "completion": {"claimed": false, "validated": false, "runtime_consumption_observed": false, "resident_custody_root_observed": false, "owner_ingress_ready_observed": false, "master_records_reconstruction_observed": false, "retired_by_prompt_limit_decomposition": true},
-  "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "github_runtime_authority": "NONE", "worker_claim_authority": "WORKERCOORDINATOR", "interlock_intr_required_for_governed_ingress_egress": true, "credential_authority": "TV/TVC", "master_records_reality_authority": true, "second_user_operated_device_required": false}
+  "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "github_runtime_authority": "NONE", "worker_claim_authority": "WORKERCOORDINATOR", "interlock_intr_required_for_governed_ingress_egress": true, "credential_authority": "TV/TVC", "master_records_reality_authority": false, "second_user_operated_device_required": false}
 }
