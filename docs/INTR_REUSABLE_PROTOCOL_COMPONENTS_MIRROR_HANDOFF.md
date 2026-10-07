@@ -77,7 +77,7 @@ A Goal Task selects only the pieces it requires. These task identities may compo
 - WorkerCoordinator: execution claim/fence authority.
 - Interlock/InTr: admission, governed transition, and packet-movement authority.
 - TV/TVC: credential/provider authority.
-- Master Records: observed reality, custody, and reconstruction authority.
+- Organization: runtime/observed reality authority. Master Records: organization records and reconstruction.
 - Provider/framework adapters: translation only unless separately authorized for provider operation.
 - Model output: no self-granted authority.
 - GitHub: no runtime authority.

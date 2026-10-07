@@ -36,7 +36,7 @@ The scheduler may not schedule itself. It creates no scheduler-specific WorkerCo
 - Interlock/InTr: governed transition/admission authority.
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality custody/reconstruction.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction.
 - HeartBeat or another resident carrier: may trigger the scheduler, but grants no scheduler authority.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 

@@ -135,7 +135,7 @@ The requested chain cannot reach targeted consumption until the existing one-dev
 - TV/TVC: provider credential/provider-operation authority and source of authentic warrant/policy evidence where applicable.
 - canonical-task identity does not substitute for pinned TV policy-bundle evidence.
 - KV/SKAP Vault: user-verification authority where applicable.
-- Master Records: observed-reality custody/reconstruction authority.
+- Organization: runtime/observed reality authority. Master Records: organization records and reconstruction.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - no second user-operated device is required or authorized.
 

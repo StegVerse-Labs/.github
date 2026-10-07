@@ -2068,3 +2068,8 @@ Canonical experimental Goal `SUBSTRATE-NEUTRAL-DECISION-PREDICATE-001` / COSV `1
 ### ERL model election-framing influence research lane
 
 Canonical Task Registry now includes `ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001` (COSV `50000000101000`) as ACTIVE/CHECKED_OUT coordination for the bounded ERL model-behavior research lane owned by Executive_Rhetoric_Ledger Issue #212. The lane measures proposition substitution and framing effects while explicitly separating observable influence from intent/motive; Task Registry remains coordination-only.
+
+
+## Master Records semantic boundary
+
+Active remediation is tracked by `MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002` and PR #2988. Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction. The current .github baseline is 2,329 prohibited references across 614 files. Exact class completion requires the persisted per-entry disposition artifact; aggregate classifier counts alone do not establish remediation.

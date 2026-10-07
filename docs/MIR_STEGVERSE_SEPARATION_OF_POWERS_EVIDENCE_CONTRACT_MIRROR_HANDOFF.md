@@ -101,7 +101,7 @@ Separately from canonical custody adoption, independently checkable Bitcoin anch
 - TV/TVC: credential authority where required.
 - WorkerCoordinator: task control/ownership where required; not universal event-creation authority.
 - execution runtime: performs only admitted consequences.
-- Master Records: canonical observed-reality custody/reconstruction only.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction only.
 - GitHub/GitHub Actions: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Next action

@@ -61,11 +61,11 @@
       "family": "runtime_observation",
       "capability_provided": "authentic_resident_runtime_observation_without_source_to_runtime_evidence_upgrade",
       "existing": true,
-      "canonical_implementation_or_owner": "existing sovereign WorkerCoordinator/resident request execution and runtime observation lanes; observed-reality custody remains Master Records",
+      "canonical_implementation_or_owner": "existing sovereign WorkerCoordinator/resident request execution and runtime observation lanes; runtime/observed reality remains Organization-owned",
       "inputs": ["PA-001 resident proof request", "locally materialized StegCore source", "existing SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001 execution owner"],
       "outputs": ["claim/fence observation", "resident execution observation", "exact first failure or terminal receipt"],
       "preconditions": ["source merged/validated", "canonical resident worker source present", "WorkerCoordinator independently admits and claims work"],
-      "authority_owner": "WorkerCoordinator for claim/fence; Master Records for observed-reality custody/reconstruction",
+      "authority_owner": "WorkerCoordinator for claim/fence; Organization for runtime/observed reality; Master Records for organization records/reconstruction",
       "authority_effect": "NONE_OBSERVATION_ONLY",
       "expected_evidence": ["authentic WorkerCoordinator claim/fence", "authentic resident present-state enforcement receipt", "resident execution/non-execution disposition"],
       "repeatability_cardinality": "REPEATABLE_BY_NEW_GOVERNED_RUNTIME_ATTEMPT; no synthetic retry success",
@@ -75,18 +75,18 @@
     },
     {
       "component_id": "RTC-EVIDENCE-CUSTODY-004",
-      "family": "custody_reconstruction",
-      "capability_provided": "evidence_capture_custody_readback_and_reconstruction",
+      "family": "organization_records_reconstruction",
+      "capability_provided": "organization_record_retention_readback_and_reconstruction",
       "existing": true,
       "canonical_implementation_or_owner": "Master Records",
-      "inputs": ["resident execution receipt", "present-state evidence", "request/return InTr lineage", "consequence evidence"],
-      "outputs": ["custody acknowledgement", "same-execution reconstruction result", "durable observed-reality record"],
+      "inputs": ["organization record set", "retained transition receipts", "reconstruction request"],
+      "outputs": ["organization-record acknowledgement", "same-execution reconstruction result", "durable organization record"],
       "preconditions": ["authentic evidence exists", "hash/lineage validation passes", "no source or CI substitution"],
-      "authority_owner": "Master Records",
-      "authority_effect": "NONE_CUSTODY_ONLY",
-      "expected_evidence": ["destination custody accepted", "same-execution present-state decision reconstructed", "receipt/commit-state hash verified"],
+      "authority_owner": "Organization for runtime/observed reality; Master Records for organization records/reconstruction",
+      "authority_effect": "NONE_RECORDS_RECONSTRUCTION_ONLY",
+      "expected_evidence": ["organization record accepted", "same-execution present-state decision reconstructed", "receipt/commit-state hash verified"],
       "repeatability_cardinality": "ONCE_PER_DISTINCT_AUTHENTIC_EVIDENCE_SET; validation may be repeated without re-executing consequence",
-      "failure_remediation_semantics": "reject tampered/incomplete evidence; preserve failure; reacquire missing authentic evidence rather than synthesize custody",
+      "failure_remediation_semantics": "reject tampered/incomplete organization records; preserve failure; reacquire missing authentic evidence rather than synthesize records or reconstruction",
       "requirement": "REQUIRED",
       "version_or_schema_binding": "stegverse.reusable-transport-component-contract/v1"
     }
@@ -129,7 +129,7 @@
     "authentic WorkerCoordinator claim/fence observed for resident proof",
     "authentic resident present-state enforcement receipt observed",
     "authentic request/return InTr evidence observed where applicable",
-    "Master Records custody and same-execution reconstruction observed",
+    "organization record retained and Master Records same-execution reconstruction observed",
     "target-native ecosystem propagation evidence or durable continuation recorded"
   ],
   "authority_invariants": {
@@ -139,7 +139,8 @@
     "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
     "credential_provider_release": "TV/TVC",
     "governed_transition": "Interlock/InTr",
-    "observed_reality_custody_reconstruction": "Master Records",
+    "runtime_observed_reality_authority": "Organization",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "heartbeat": "TIMING_FRESHNESS_CORRELATION_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },
@@ -150,7 +151,7 @@
     "any PA-001-specific transport wrapper duplicating Universal InTr",
     "any second resident scheduler/worker duplicating SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
     "any consequence-path present-state validator duplicating StegCore evaluate_present_state()",
-    "any task-specific custody/reconstruction path duplicating Master Records",
+    "any task-specific organization-record/reconstruction path duplicating Master Records",
     "any device-local user verification or device identity promotion"
   ]
 }

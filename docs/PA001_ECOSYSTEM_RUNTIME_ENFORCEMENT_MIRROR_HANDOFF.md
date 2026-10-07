@@ -49,7 +49,7 @@ Interlock/InTr = governed transition/admission authority
 TV/TVC = credential/provider/release authority
 KV/SKAP Vault = sole user-verification authority
 StegOS devices = interchangeable transport/execution nodes, never user verifiers
-Master Records = observed-reality custody and reconstruction
+Organization = runtime/observed reality; Master Records = organization records/reconstruction
 HeartBeat = synchronization/timing/freshness/liveness/correlation/observability only
 GitHub = source/evidence coordination only; runtime authority NONE
 ```

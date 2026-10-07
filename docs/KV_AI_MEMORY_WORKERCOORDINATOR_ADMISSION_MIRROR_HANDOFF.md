@@ -22,7 +22,7 @@ Routing-readiness evaluator: non-authorizing review gate only
 WorkerCoordinator: execution claim/fence authority
 Interlock/InTr: governed ingress/egress authority
 TV/TVC: provider credential authority
-Master Records: observed reality and reconstruction authority
+Organization: runtime/observed reality authority; Master Records: organization records and reconstruction
 GitHub Actions: validation/evidence transport only
 ```
 

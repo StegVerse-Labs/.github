@@ -16,7 +16,7 @@ This handoff does not create a second coordination resolver, WorkerCoordinator, 
 
 - work intent / coordination: `data/canonical-task-registry.json`;
 - execution claim/fence: `control/worker-registry.json` / WorkerCoordinator;
-- observed reality / reconstruction: `master-records/orchestration`;
+- runtime/observed reality: Organization; organization-record reconstruction: `master-records/orchestration`;
 - governed task ingress/egress: Interlock/InTr;
 - canonical coordination composition: `control/cross-task-coordination.json` + sorted `control/cross-task-coordination.d/*.json`.
 

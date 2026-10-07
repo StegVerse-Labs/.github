@@ -72,7 +72,7 @@ Network-native must not mean network-dependent. An isolated Device Substrate ret
 - InTr/StegGate: consequential transition admission.
 - TV/TVC: credential/capability authority.
 - resident runtime: effect execution and closed-loop reassessment.
-- Continuity/Master Records: custody, receipts, observed reality, exact reconstruction.
+- Continuity/Organization: runtime/observed reality. Master Records: organization records, receipts, exact reconstruction.
 
 ## Remaining implementation
 

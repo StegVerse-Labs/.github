@@ -172,7 +172,7 @@ ENTROPY_RECOVERY_RECORDED
 - WorkerCoordinator: execution claim / fence
 - Interlock/InTr: governed transitions
 - TV/TVC: credential authority
-- Master Records: observed reality / custody / reconstruction
+- Organization: runtime/observed reality. Master Records: organization records / reconstruction
 - COSV: compact state projection
 - Trigger driver: non-authorizing dependency orchestration
 - Healer scheduler: scheduling only; successful-state recognition does not mint execution or completion evidence

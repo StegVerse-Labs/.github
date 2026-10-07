@@ -69,7 +69,7 @@ Governance completion, Publisher rendering, SDK return assembly, adapter emissio
 - WorkerCoordinator: execution claim/fence authority.
 - Interlock/InTr: governed ingress/egress and transition authority.
 - TV/TVC: credential authority.
-- Master Records: observed reality, custody, reconstruction.
+- Organization: runtime/observed reality. Master Records: organization records / reconstruction.
 - SDK: manifested processing ingress and caller-return assembly.
 - Publisher: manifest-declared presentation/evidence assembly only.
 - LLM Adapter: protocol/framing and applicable final StegVerse-side egress transition only.

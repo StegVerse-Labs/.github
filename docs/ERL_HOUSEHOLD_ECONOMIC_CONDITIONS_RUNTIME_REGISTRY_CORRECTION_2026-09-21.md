@@ -14,7 +14,7 @@ Task Registry = work/dependency/coordination truth
 Interlock/InTr = governed ingress/transition admission
 WorkerCoordinator = executable assignment/claim/fence
 TV/TVC = credential/bounded capability authority
-Master Records = observed runtime reality/custody/reconstruction
+Organization = runtime/observed reality; Master Records = organization records/reconstruction
 ```
 
 Source, merge, CI, runtime-profile compatibility, connector availability, and handoff prose do not prove runtime execution.

@@ -42,7 +42,7 @@ Evaluate componentization at task creation, scope change, new repositories/autho
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS devices: interchangeable transport/execution nodes, not user verifiers.
-- Master Records: observed reality, custody, reconstruction.
+- Organization: runtime/observed reality. Master Records: organization records / reconstruction.
 - HeartBeat: timing, freshness, liveness, correlation, observability only.
 - GitHub: source/evidence coordination only.
 

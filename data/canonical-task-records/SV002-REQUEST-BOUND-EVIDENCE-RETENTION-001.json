@@ -4,7 +4,7 @@
   "correlation_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
   "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
   "parent_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
-  "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes validated and reconstructed through canonical Master Records custody, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
+  "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes retained as organization records and reconstructed through canonical Master Records, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
   "coordination_state": "IN_PROGRESS",
   "source_refs": [
     "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
@@ -38,7 +38,7 @@
       "sv002-request-bound-evidence-retention",
       "sv002-rerun-callable-result",
       "sv002-resident-executor-heartbeat",
-      "master-records-observed-reality"
+      "organization-runtime-reality"
     ]
   },
   "dependencies": [
@@ -91,7 +91,7 @@
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
       "ref": "StegVerse-Labs/.github:receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
-      "disposition": "REQUIRE_EXISTING_CANONICAL_RESIDENT_REQUEST_CONSUMPTION_OF_CURRENT_RERUN_CALLABLE_AND_REQUEST_BOUND_CUSTODY"
+      "disposition": "REQUIRE_EXISTING_CANONICAL_RESIDENT_REQUEST_CONSUMPTION_OF_CURRENT_RERUN_CALLABLE_AND_REQUEST_BOUND_ORGANIZATION_RECORD_RETENTION"
     }
   ],
   "blockers": [],
@@ -144,7 +144,8 @@
     "capabilities": [
       "task_registry_reconciliation",
       "bounded_process_execution",
-      "master_records_reconciliation"
+      "organization_record_retention",
+      "master_records_reconstruction"
     ],
     "environment": "EVENT_EPHEMERAL_SOVEREIGN",
     "direction": "INTERNAL",

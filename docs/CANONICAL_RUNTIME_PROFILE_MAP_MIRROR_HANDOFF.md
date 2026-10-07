@@ -25,7 +25,7 @@ No task request, map/profile/observation/match/readiness/custody/reconciliation/
 4. Runtime matching is deterministic from explicit task requirements.
 5. Generic `runtime missing` is inadmissible until current-map resolution identifies the failed predicate.
 6. Candidate selection, routing readiness, reconciliation, transition readiness, governance-review packaging, authority-review routing, and chain validation are non-authorizing projections.
-7. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition authority; TV/TVC remains credential authority; Master Records remains observed-reality/custody authority.
+7. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition authority; TV/TVC remains credential authority; Organization remains runtime/observed reality authority; Master Records is limited to organization records and reconstruction.
 8. Existing WorkerCoordinator ownership must be reused/waited/transferred rather than duplicated.
 9. Every transition requires current governance; prior receipts do not authorize later transitions.
 10. Exact SHA-256 evidence bindings are preserved across custody, review, and routing.

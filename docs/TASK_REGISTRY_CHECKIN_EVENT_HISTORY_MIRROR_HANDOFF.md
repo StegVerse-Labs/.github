@@ -63,7 +63,7 @@ Implementation PR #1390 is merged. Historical exact-head validation for the impl
 
 ## Authority invariants
 
-Task Registry event history is coordination evidence only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
+Task Registry event history is coordination evidence only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.; HB remains observability only; GitHub runtime authority remains NONE.
 
 ## Remaining
 

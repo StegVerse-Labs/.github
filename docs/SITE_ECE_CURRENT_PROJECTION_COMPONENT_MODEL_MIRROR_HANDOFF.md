@@ -23,7 +23,7 @@ The task consumes only the reusable capabilities it actually needs. The maximal 
 - Inputs: exact retained ECE evaluation/projection lineage and custody references from the parent ECE cycle.
 - Outputs: exact retained bytes/hash/readback/reconstruction evidence sufficient to bind the Site-safe projection to observed reality.
 - Preconditions: authentic parent-cycle evidence; no CI/source substitution.
-- Authority owner: Master Records for observed-reality custody/reconstruction.
+- Authority owner: Organization for runtime/observed reality; Master Records for organization records/reconstruction.
 - Expected evidence: exact-byte hash equality, custody record, reconstruction/readback evidence for the same ECE cycle.
 - Cardinality: once per ECE cycle consumed by this child.
 - Failure semantics: missing/conflicting/unreconstructable evidence blocks materialization; do not synthesize a projection.
@@ -46,7 +46,7 @@ The task consumes only the reusable capabilities it actually needs. The maximal 
 ### Canonical runtime observation capability
 
 - Exists: yes as the model's `runtime_observation` canonical-existing-owner family; no new reusable component is created.
-- Canonical owner: observed runtime/public Site evidence surface, with Master Records retaining observed-reality reconstruction where retained.
+- Canonical owner: observed runtime/public Site evidence surface with Organization owning runtime/observed reality; Master Records retains organization records/reconstruction where retained.
 - Inputs: served `data/ecosystem-continuity/current.json`, expected materialized SHA-256, user-facing continuity page.
 - Outputs: independent observation that the served bytes and rendered page correspond to the materialized projection.
 - Preconditions: successful RTC-PUBLISHER-005 materialization.

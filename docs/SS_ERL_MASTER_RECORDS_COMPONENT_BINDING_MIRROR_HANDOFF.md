@@ -60,7 +60,7 @@ The importer independently recomputes operation and receipt hashes, adjacency, p
 
 This binding changes no authority.
 
-- Master Records: observed-reality custody/reconstruction only.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction only.
 - Interlock/InTr: transition/admission authority.
 - WorkerCoordinator: claim/fence authority.
 - TV/TVC: credential/provider/release authority.

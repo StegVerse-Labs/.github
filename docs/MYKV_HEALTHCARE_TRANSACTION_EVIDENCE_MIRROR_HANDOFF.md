@@ -137,7 +137,7 @@ Canonical authority separation remains:
 - WorkerCoordinator: execution claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential authority where applicable.
-- Master Records: observed reality, custody, replay, reconstruction.
+- Organization: runtime/observed reality. Master Records: organization records / reconstruction.
 - SDK/MyKV capability: manifest-directed evaluation and user-facing result assembly.
 - GitHub/CI: source/validation evidence only; runtime authority NONE.
 

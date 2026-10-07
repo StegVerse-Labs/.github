@@ -82,7 +82,7 @@ It may only classify an already-observed resident custody root as missing, inval
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification/custody authority.
-- Master Records: observed-reality/reconstruction authority.
+- Organization: runtime/observed reality authority; Master Records: organization records/reconstruction.
 - HeartBeat: observability/timing/freshness and resident carrier timing only.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - StegOS nodes/devices: interchangeable execution/transport surfaces; no second user-operated device prerequisite.

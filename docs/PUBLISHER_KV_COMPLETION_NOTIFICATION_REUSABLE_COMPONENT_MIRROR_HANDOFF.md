@@ -38,7 +38,7 @@ GitHub email delivery is downstream of the GitHub notification event and remains
 - Interlock/InTr: KV state-transition admission.
 - KV/SKAP Vault: sole user-verification authority.
 - TV/TVC: GitHub provider credential/mutation authority.
-- Master Records: observed-reality custody/reconstruction.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction.
 - Task Registry: coordination only.
 - GitHub Actions: validation/evidence transport only.
 

@@ -29,7 +29,7 @@ No replacement third-party host is authorized.
 - Interlock/InTr: governed state-transition/admission authority.
 - TV/TVC: credential/provider/release authority where credentials are required.
 - KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality custody/reconstruction.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction.
 - HeartBeat: observability/timing/freshness only.
 - GitHub: source/evidence coordination only; runtime authority NONE.
 

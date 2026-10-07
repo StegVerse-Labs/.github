@@ -82,7 +82,7 @@ Do not create another scheduler, dispatcher, runtime, credential route, evidence
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
-- Master Records: observed-reality/reconstruction authority.
+- Organization: runtime/observed reality authority; Master Records: organization records/reconstruction.
 - GitHub/CI: validation and evidence transport only; runtime authority `NONE`.
 - External connectors: not applicable to this task and confer no StegVerse runtime evidence or authority.
 

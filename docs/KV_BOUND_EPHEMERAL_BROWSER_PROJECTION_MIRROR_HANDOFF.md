@@ -32,7 +32,7 @@ The Goal Task and COSV identity are unchanged. Componentization changes source c
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS devices: interchangeable transport/execution nodes; user-verification authority `NONE`.
-- Master Records: observed-reality custody and reconstruction authority.
+- Organization: runtime/observed reality authority. Master Records: organization records and reconstruction.
 - HeartBeat: synchronization/timing/freshness/liveness/state correlation/observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 

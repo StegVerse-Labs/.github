@@ -38,7 +38,7 @@ For this task:
 - an empty connector inventory is only `EVIDENCE_REACHABILITY` and cannot create an external-device requirement;
 - `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected and no second user-operated device is allowed.
 
-Presence or connectivity never grants execution. Interlock/InTr remains admission/transition authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential/provider authority, KV/SKAP Vault remains sole user-verification authority, and Master Records remains observed-reality/provenance authority.
+Presence or connectivity never grants execution. Interlock/InTr remains admission/transition authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential/provider authority, KV/SKAP Vault remains sole user-verification authority, and Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.
 
 ## Reusable Task Component composition
 
@@ -241,7 +241,7 @@ LinkedIn publication/readback:                NOT OBSERVED
 Master Records custody/reconstruction:        NOT OBSERVED
 ```
 
-GitHub Actions remains validation/evidence transport only. TV/TVC remains credential/provider authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; Master Records remains runtime-reality/provenance authority.
+GitHub Actions remains validation/evidence transport only. TV/TVC remains credential/provider authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.
 
 ## Runtime preflight convergence boundary discovered 2026-09-13
 

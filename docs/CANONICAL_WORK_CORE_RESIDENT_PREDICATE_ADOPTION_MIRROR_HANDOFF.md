@@ -78,7 +78,7 @@ GitHub source, merge, CI, heartbeat progression, request presence, or handoff pr
 
 ## Authority boundary
 
-Task Registry remains authority for work intent and coordination. WorkerCoordinator remains authority for executable assignment, claims, and fences. Master Records remains authority for retained observed reality and reconstruction. Universal Interlock/InTr remains transition-admission authority. TV/TVC remains credential authority. HeartBeat and GitHub Actions remain non-authorizing.
+Task Registry remains authority for work intent and coordination. WorkerCoordinator remains authority for executable assignment, claims, and fences. Organization remains authority for runtime/observed reality; Master Records is limited to organization records and reconstruction. Universal Interlock/InTr remains transition-admission authority. TV/TVC remains credential authority. HeartBeat and GitHub Actions remain non-authorizing.
 
 ## README completeness
 

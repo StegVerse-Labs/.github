@@ -39,7 +39,7 @@ If applicable, retain the existing WorkerCoordinator claim/fence, Interlock/InTr
 
 ## Authority and device invariants
 
-Task Registry remains coordination only. WorkerCoordinator remains claim/fence authority. Interlock/InTr remains governed transition authority. TV/TVC remains credential/provider/release authority. KV/SKAP Vault remains sole user-verification authority. Master Records remains observed-reality custody/reconstruction authority. GitHub runtime authority remains `NONE`.
+Task Registry remains coordination only. WorkerCoordinator remains claim/fence authority. Interlock/InTr remains governed transition authority. TV/TVC remains credential/provider/release authority. KV/SKAP Vault remains sole user-verification authority. Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction. GitHub runtime authority remains `NONE`.
 
 Eligible StegOS devices remain interchangeable. Physical-device identity is prohibited as a completion or authority gate. No connected-device inventory, external device, second user-operated device, standing host, new runtime, scheduler, dispatcher, credential path, authority plane, or `AI_SESSION_GATE` is introduced.
 
