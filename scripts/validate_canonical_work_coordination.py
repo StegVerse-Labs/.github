@@ -42,14 +42,14 @@ def main() -> int:
 
     require(registry.get("schema") == "stegverse.canonical-task-registry/v1", "canonical registry schema missing")
     require(registry.get("authoritative_roles", {}).get("execution_claim_and_fence") == "control/worker-registry.json / WorkerCoordinator", "registry must reference WorkerCoordinator for claim/fence authority")
-    require(registry.get("authoritative_roles", {}).get("observed_reality_and_reconstruction") == "MASTER_RECORDS", "Master Records reality authority missing")
+    require(registry.get("authoritative_roles", {}).get("observed_reality_and_reconstruction") == "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY", "organization-ledger reality / Master Records reconstruction boundary missing")
     require(registry.get("authoritative_roles", {}).get("governed_task_ingress_egress") == "INTERLOCK_INTR", "Interlock/InTr ingress-egress authority missing")
 
     task_props = task_schema.get("properties", {})
     authority_props = task_props.get("authority_model", {}).get("properties", {})
     require(authority_props.get("task_registry_mints_execution_authority", {}).get("const") is False, "task schema must deny registry execution authority")
     require(authority_props.get("worker_claim_authority", {}).get("const") == "WORKERCOORDINATOR", "task schema must bind WorkerCoordinator claim authority")
-    require(authority_props.get("master_records_reality_authority", {}).get("const") is True, "task schema must bind Master Records reality authority")
+    require(authority_props.get("master_records_reality_authority", {}).get("const") is False, "task schema must deny Master Records reality authority")
 
     runtime_resolution_props = task_props.get("runtime_resolution", {}).get("properties", {})
     require(runtime_resolution_props.get("projection_only", {}).get("const") is True, "runtime resolution must be projection-only")
@@ -64,7 +64,7 @@ def main() -> int:
         "ONE_CANONICAL_WORK_TRUTH_MANY_PROJECTIONS",
         "TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY",
         "WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
-        "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
+        "ORGANIZATION_LEDGER_OWNS_OBSERVED_REALITY_MASTER_RECORDS_RECONSTRUCTION_ONLY",
         "RUNTIME_PROFILE_MAP_IS_DISCOVERY_AND_COMPATIBILITY_PROJECTION_ONLY",
         "RUNTIME_PROFILE_MATCH_DOES_NOT_GRANT_TASK_ADMISSION_OR_EXECUTION_AUTHORITY",
         "COMPLETION_CLAIM_REQUIRES_RECONCILIATION_BEFORE_CLOSURE",
