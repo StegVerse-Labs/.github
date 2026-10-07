@@ -103,7 +103,7 @@ provider operation reexecution authorized: false
 - TV/TVC: credential/provider/release authority where credentials are actually required.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS: portable execution substrate only.
-- Master Records: observed-reality custody/reconstruction.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction.
 - HeartBeat: observability/timing/freshness/correlation only.
 - GitHub: runtime authority `NONE`.
 

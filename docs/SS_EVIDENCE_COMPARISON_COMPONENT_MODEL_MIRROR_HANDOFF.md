@@ -74,7 +74,7 @@ KV/SKAP Vault       = sole user-verification authority
 StegOS device       = interchangeable transport/execution node only
 Interlock/InTr      = governed transition/admission authority
 TV/TVC              = credential/provider/release authority
-Master Records      = observed-reality custody/reconstruction
+Organization = runtime/observed reality; Master Records = organization records/reconstruction
 HeartBeat           = timing/freshness/liveness/correlation/observability only
 GitHub              = source/evidence coordination only; runtime authority NONE
 ```

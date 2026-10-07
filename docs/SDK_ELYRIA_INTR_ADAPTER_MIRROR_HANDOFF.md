@@ -67,7 +67,7 @@ WorkerCoordinator   = claim/fence authority
 Interlock/InTr      = governed admission/state-transition authority
 TV/TVC              = credential/provider/release authority
 KV/SKAP Vault       = user-verification authority
-Master Records      = observed-reality custody/reconstruction
+Organization = runtime/observed reality; Master Records = organization records/reconstruction
 HeartBeat           = observability only
 GitHub              = source/evidence coordination only
 Elyria adapter      = NONE_TRANSLATION_ONLY

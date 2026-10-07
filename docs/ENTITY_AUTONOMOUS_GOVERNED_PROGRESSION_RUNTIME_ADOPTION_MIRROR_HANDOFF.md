@@ -30,7 +30,7 @@ Organization AI Entities own autonomous progression inside the scope of their ow
 WorkerCoordinator = task ownership / claim / fence where required
 Interlock/InTr = governed transition admission and movement
 TV/TVC = credential / bounded capability authority
-Master Records = observed reality / custody / reconstruction
+Organization = runtime/observed reality; Master Records = organization records/reconstruction
 HB = timing / freshness / liveness / correlation only
 ```
 

@@ -41,7 +41,7 @@ Task Registry: work intent and coordination only
 WorkerCoordinator: execution claim/fence authority
 Interlock/InTr: governed ingress/egress transition authority
 TV/TVC: credential/provider authority
-Master Records: observed reality and reconstruction authority
+Organization: runtime/observed reality authority; Master Records: organization records and reconstruction
 GitHub Actions: validation/evidence transport only
 HeartBeat: observation/correlation only
 ```

@@ -43,7 +43,7 @@ The component is transport-only and non-authorizing.
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS node reference: routing only, never user verification.
-- Master Records: observed-reality custody/reconstruction.
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction.
 - HeartBeat: timing/freshness/liveness/correlation/observability only.
 - GitHub: no runtime authority.
 

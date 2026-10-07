@@ -64,7 +64,7 @@ Not selected: fresh manifest intake, generic provider/framework round trip, SDK 
 - TV/TVC: credential/provider/release authority when required.
 - KV/SKAP Vault: sole user-verification authority.
 - StegOS devices: interchangeable transport/execution nodes, never user verifiers.
-- Master Records: observed-reality custody/readback/reconstruction.
+- Organization: runtime/observed reality. Master Records: organization records/readback and reconstruction.
 - HeartBeat: timing, freshness, liveness, correlation, and observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 

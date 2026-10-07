@@ -14,7 +14,7 @@ Reconcile the canonical cross-task coordination continuation state with already-
 - Canonical Task Registry: `data/canonical-task-registry.json`, generation 15.
 - Work intent/coordination authority: Canonical Task Registry.
 - Claim/fence authority: `control/worker-registry.json` / WorkerCoordinator.
-- Observed reality, custody, and reconstruction authority: Master Records.
+- Runtime/observed reality authority: Organization. Master Records: organization records and reconstruction.
 - Governed task ingress/egress authority: Interlock/InTr.
 - Coordination and index projections infer no runtime execution.
 

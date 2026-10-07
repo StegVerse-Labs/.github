@@ -185,7 +185,7 @@ SKAP custody/readback alone is not user verification
 local key possession / Secure Enclave presence is not user verification
 TV/TVC remains credential/signing authority
 Interlock/InTr remains transition authority
-Master Records remains observed-reality custody/reconstruction authority
+Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.
 HeartBeat remains timing/freshness/liveness/correlation observability only
 GitHub has no runtime authority
 existing /run/stegverse/vault-agent.sock remains the resident credential process boundary

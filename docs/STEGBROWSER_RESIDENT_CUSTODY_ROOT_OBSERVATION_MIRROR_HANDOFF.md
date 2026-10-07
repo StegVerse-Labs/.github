@@ -132,7 +132,7 @@ Task Registry CONTINUE
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification/custody authority.
-- Master Records: observed-reality/reconstruction authority.
+- Organization: runtime/observed reality authority; Master Records: organization records/reconstruction.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Completion predicate

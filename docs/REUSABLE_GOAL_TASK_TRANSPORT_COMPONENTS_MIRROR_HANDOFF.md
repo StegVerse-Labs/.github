@@ -91,7 +91,7 @@ Component reuse creates no new authority and does not collapse existing authorit
 - StegOS devices: interchangeable transport nodes, not user verifiers.
 - TV/TVC: credential/provider/release authority.
 - Interlock/InTr: governed transition and packet-movement authority.
-- Master Records: observed reality, custody, and reconstruction authority.
+- Organization: runtime/observed reality authority. Master Records: organization records and reconstruction.
 - HeartBeat: timing/freshness/correlation/carriage only.
 - GitHub: no runtime authority.
 

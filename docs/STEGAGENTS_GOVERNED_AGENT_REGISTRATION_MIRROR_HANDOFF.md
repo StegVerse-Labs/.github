@@ -124,7 +124,7 @@ a7fbc77081330d074b0202c70a4fa835f04e7f39
 - StegCore/InTr remains governance/state-transition authority.
 - TV/TVC remains provider credential and provider-operation authority.
 - KV/SKAP Vault remains sole user-verification authority.
-- Master Records remains observed-reality custody/reconstruction authority.
+- Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.
 - HeartBeat remains synchronization/timing/freshness/liveness/correlation/observability only.
 - GitHub remains source/evidence coordination only with runtime authority `NONE`.
 

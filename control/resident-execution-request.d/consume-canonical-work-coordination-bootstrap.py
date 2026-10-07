@@ -51,7 +51,7 @@ if not any(spec.get("task_id") == STEGHEALTH_KV_INTERLOCK_TASK for spec in mod.R
 
 # Reuse the same Canonical Work consumer for the ERL household-economic-conditions Goal.
 # This stages canonical ingress only; WorkerCoordinator retains claim/fence authority,
-# TV/TVC retains credential authority, and Master Records remains runtime-reality authority.
+# TV/TVC retains credential authority, and Organization remains runtime-reality authority; Master Records is limited to organization records and reconstruction.
 ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK = "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
 ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SPEC = {
     "request_rel": Path("control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json"),

@@ -102,7 +102,7 @@
     {
       "reusable_task_id": "RT-CANONICAL-STATE-RECONCILIATION-001",
       "name": "Canonical State Reconciliation",
-      "purpose": "Reconcile Task Registry intent, WorkerCoordinator claim/fence projections, Master Records observed reality, applicable receipts, mirror handoffs, README completeness determinations, and StegIndex/index state before handoff.",
+      "purpose": "Reconcile Task Registry intent, WorkerCoordinator claim/fence projections, Organization runtime/observed reality and Master Records organization records/reconstruction, applicable receipts, mirror handoffs, README completeness determinations, and StegIndex/index state before handoff.",
       "trigger": "session closeout after material work",
       "scope": "current task chain and materially affected artifacts",
       "parameter_keys": ["task_chain", "affected_artifacts", "evidence_refs"],
@@ -110,7 +110,7 @@
       "recording_levels": ["task", "goal", "system", "ecosystem", "master_records"],
       "completion_predicates": ["CANONICAL_SURFACES_RECONCILED", "CONTRADICTIONS_REPAIRED_WHERE_MACHINE_ADMISSIBLE_OR_EXPLICITLY_RECORDED", "OBSERVED_EVIDENCE_NOT_SILENTLY_REWRITTEN"],
       "authority_effect": "NONE",
-      "reuse_instructions": "Reconcile rather than overwrite authority domains. Master Records remains observed-reality authority; WorkerCoordinator remains claim/fence authority; InTr remains governed transition boundary."
+      "reuse_instructions": "Reconcile rather than overwrite authority domains. Organization remains runtime/observed reality authority; Master Records is limited to organization records and reconstruction; WorkerCoordinator remains claim/fence authority; InTr remains governed transition boundary."
     },
     {
       "reusable_task_id": "RT-SESSION-CLOSEOUT-001",

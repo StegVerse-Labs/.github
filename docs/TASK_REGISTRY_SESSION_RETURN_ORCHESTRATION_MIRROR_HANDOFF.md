@@ -26,7 +26,7 @@ PR #1412 merged on 2026-09-11 as `bba6467fd324ba0b97ec759c76b65bb9a73ef2fa`. Fin
 The previous handoff wording that exact-head validation and merge were still pending was stale and is superseded by this merged state.
 
 ## Authority
-Task/session close evidence is coordination only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
+Task/session close evidence is coordination only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition authority; TV/TVC remains credential authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.; HB remains observability only; GitHub runtime authority remains NONE.
 
 ## Remaining
 1. preserve this merged session-close coordinator as the sole footer/handoff return gate;

@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 292,
-  "status": "MASTER_RECORDS_ORGANIZATION_RECORDS_RECONSTRUCTION_BOUNDARY_REPAIRED",
+  "generation": 293,
+  "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4270,7 +4270,7 @@
           "sv002-request-bound-evidence-retention",
           "sv002-rerun-callable-result",
           "sv002-resident-executor-heartbeat",
-          "master-records-observed-reality"
+          "organization-runtime-reality"
         ]
       },
       "dependencies": [
@@ -18401,6 +18401,86 @@
           }
         ]
       }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+      "correlation_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+      "root_correlation_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+      "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "goal": "Complete inventory-driven ecosystem remediation so Master Records is referenced only for organization records or reconstruction, using deterministic bulk mutation classes and bounded contextual resolution for ambiguous references.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "repository": "StegVerse-Labs/.github",
+      "cosv_task_vector": "50000000100000",
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "authority_model": {
+        "work_intent_and_coordination": "TASK_REGISTRY",
+        "execution_claim_and_fence": "WORKERCOORDINATOR",
+        "governed_transition": "INTERLOCK_INTR",
+        "runtime_reality_authority": "Organization",
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
+      },
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "StegVerse-org",
+          "SV-LLM"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/StegCore",
+          "StegVerse-Labs/StegBrowser",
+          "StegVerse-org/.github",
+          "StegVerse-org/StegVerse-SDK",
+          "SV-LLM/.github",
+          "SV-LLM/sandbox",
+          "SV-LLM/schemas",
+          "SV-LLM/Anthropic",
+          "SV-LLM/OpenAI"
+        ],
+        "components": [
+          "master-records-semantic-bulk-remediation"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "expected_evidence_predicates": [
+        "MASTER_RECORDS_REFERENCES_ARE_ORGANIZATION_RECORDS_OR_RECONSTRUCTION_ONLY",
+        "DETERMINISTIC_PROHIBITED_REFERENCE_CLASSES_ARE_BULK_REMEDIATED",
+        "AMBIGUOUS_REFERENCES_ARE_CONTEXT_RESOLVED_BEFORE_MUTATION",
+        "REFERENCE_AND_UNIQUE_FILE_BURNDOWN_IS_RETAINED",
+        "HISTORICAL_EVIDENCE_IS_PRESERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "repository_semantic_repair",
+          "inventory_burndown"
+        ],
+        "environment": "REPOSITORY_GOVERNED",
+        "direction": "ECOSYSTEM_WIDE",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "allowed_next_transitions": [
+        "IN_PROGRESS",
+        "RECONCILIATION_REQUIRED",
+        "COMPLETED"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "evidence_complete": false
+      },
+      "source_refs": [
+        "docs/MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_002_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md"
+      ],
+      "handoff_projection_refs": [
+        "docs/MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_002_MIRROR_HANDOFF.md"
+      ]
     },
     {
       "schema": "stegverse.canonical-task-record/v1",

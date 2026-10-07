@@ -53,7 +53,7 @@ Evaluate potential architectural complementarity and partnership boundaries betw
 - Task Registry provides work-intent and coordination only.
 - WorkerCoordinator remains StegVerse claim/fence authority where execution is later required.
 - Interlock/InTr remains StegVerse governed transition authority.
-- Master Records remains StegVerse observed-reality/reconstruction authority.
+- Organization remains StegVerse runtime/observed reality authority; Master Records is limited to organization records and reconstruction.
 - TV/TVC remains credential authority when credentials are required.
 - QUI statements, model output, or cognitiveOS output are not automatically governance evidence.
 - This task does not itself authorize integration, external execution, credential use, or a partnership announcement.

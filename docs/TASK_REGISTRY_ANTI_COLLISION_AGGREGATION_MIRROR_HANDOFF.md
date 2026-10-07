@@ -11,7 +11,7 @@ Status: `RETIRED / COMPLETED / GENERATION FENCE MERGED+VALIDATED / USER-ACTION-S
 
 Every task/session reaching the canonical Task Registry must receive a deterministic pre-mutation disposition from current canonical coordination state. New runtime-capable task registrations must also resolve execution-substrate dependencies before a reachability/evidence gap can be promoted into an external-device requirement.
 
-Task Registry sorting is coordination only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
+Task Registry sorting is coordination only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.; HB remains observability only; GitHub runtime authority remains NONE.
 
 ## Canonical dispositions
 
@@ -196,7 +196,7 @@ Its only admissible next action is to re-read current GitHub `main`, the current
 
 The existing Canonical Work selector and bootstrap now carry the exact generation they just read into the check-in request, so a resident/local projection that has advanced or diverged fails closed rather than silently continuing from older coordination state. The AI-session gate passes the same request through to the canonical evaluator; missing/stale generation therefore stops before canonical mutation.
 
-This is a coordination fence, not a new execution fence. WorkerCoordinator remains execution claim/fence authority; Interlock/InTr remains transition authority; Master Records remains observed-reality/reconstruction authority; TV/TVC remains credential authority.
+This is a coordination fence, not a new execution fence. WorkerCoordinator remains execution claim/fence authority; Interlock/InTr remains transition authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.; TV/TVC remains credential authority.
 
 ### Platform-enforcement boundary
 

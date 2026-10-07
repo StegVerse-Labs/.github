@@ -93,7 +93,7 @@ These tests prove allocator source semantics only. They do not assert an authent
 - TV/TVC: credentials/provider/release authority;
 - KV/SKAP Vault: sole user-verification authority;
 - StegOS Nodes: interchangeable transport/execution surfaces, user-verification authority `NONE`;
-- Master Records: observed-reality custody/reconstruction;
+- Organization: runtime/observed reality; Master Records: organization records/reconstruction;
 - HeartBeat: timing/freshness/correlation/observability only;
 - GitHub/CI: source validation only, runtime authority `NONE`;
 - second user-operated device: prohibited and unnecessary.

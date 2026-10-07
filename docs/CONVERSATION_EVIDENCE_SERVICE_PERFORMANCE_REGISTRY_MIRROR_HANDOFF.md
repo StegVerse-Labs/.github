@@ -91,7 +91,7 @@ Progression requires:
 Task Registry records work intent only.
 WorkerCoordinator remains claim/fence authority.
 Interlock/InTr remains governed transition authority.
-Master Records remains observed-reality/reconstruction authority.
+Organization remains runtime/observed reality authority; Master Records is limited to organization records and reconstruction.
 TV/TVC remains credential/scoped authority where applicable.
 
 This task registration does not authenticate an existing conversation, identify a wrongdoer, establish legal liability, publish evidence, or authorize enforcement.

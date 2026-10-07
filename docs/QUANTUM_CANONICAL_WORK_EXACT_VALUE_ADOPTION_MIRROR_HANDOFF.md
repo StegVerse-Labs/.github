@@ -54,7 +54,7 @@ A staged `REQUESTED` object remains source/control evidence only. It does not pr
 
 A future runtime receipt cannot satisfy the authentic-ingress predicate merely by containing `state` and `task_id`; it must carry the exact terminal values required above and still satisfy producer, schema, scope, subject-binding, execution-instance, and other qualification rules.
 
-Task Registry remains work-intent authority. WorkerCoordinator remains execution admission/claim/fence authority. Master Records remains observed-reality/custody authority. Interlock/InTr remains transition-admissibility authority. TV/TVC remains credential authority. HeartBeat and GitHub Actions remain non-authorizing.
+Task Registry remains work-intent authority. WorkerCoordinator remains execution admission/claim/fence authority. Organization remains runtime/observed reality authority; Master Records is limited to organization records and reconstruction. Interlock/InTr remains transition-admissibility authority. TV/TVC remains credential authority. HeartBeat and GitHub Actions remain non-authorizing.
 
 ## README completeness
 

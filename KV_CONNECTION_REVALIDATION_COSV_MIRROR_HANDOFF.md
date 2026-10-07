@@ -176,7 +176,7 @@ The TVC observer is diagnostic only. Even a `READY_PRIMARY_RUNTIME_PROVIDER_OPER
 - Interlock/InTr: governed transition/admission.
 - TV/TVC: credential and TVC runtime/provider authority.
 - `process:kv-connection-revalidation-v1`: bounded non-secret KV revalidation only.
-- Master Records: observed reality / custody / reconstruction.
+- Organization: runtime/observed reality. Master Records: organization records / reconstruction.
 - GitHub/CI: source and validation evidence only; runtime authority `NONE`.
 - No connected-device prerequisite exists for this reusable invocation.
 

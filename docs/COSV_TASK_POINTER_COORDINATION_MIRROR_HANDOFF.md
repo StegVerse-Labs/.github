@@ -29,7 +29,7 @@ On receipt of `task_id + cosv_task_vector`, the receiving session/runtime must:
 1. verify the vector is a valid `task.v1` vector and is bound to the supplied task ID;
 2. resolve the canonical task record and its source vector/evidence references;
 3. resolve applicable `*_MIRROR_HANDOFF.md` continuation records;
-4. reconcile Master Records observed reality;
+4. reconcile Organization runtime/observed reality and Master Records organization records/reconstruction;
 5. resolve active WorkerCoordinator claim/fence state;
 6. resolve dependencies, adjacent tasks, shared predicates, systemic incidents, and non-collision boundaries;
 7. resolve applicable reusable-task identities and invocation parameters;
@@ -84,7 +84,7 @@ A genuinely new adjacent task must receive:
 - runtime requirements when applicable;
 - existing evidence references and known completion predicates.
 
-Creation of the task is coordination only. WorkerCoordinator still owns execution claim/fence, Interlock/InTr still owns governed task transitions, Master Records still owns observed reality/reconstruction, and TV/TVC remains credential authority.
+Creation of the task is coordination only. WorkerCoordinator still owns execution claim/fence, Interlock/InTr still owns governed task transitions, Organization owns runtime/observed reality; Master Records owns organization records/reconstruction, and TV/TVC remains credential authority.
 
 ## Prompt form
 
