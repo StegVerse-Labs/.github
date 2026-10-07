@@ -53,16 +53,13 @@ def evaluate(registry: dict, root: Path = ROOT) -> dict:
         success = task.get("state") == "COMPLETED"
         unresolved_desc = [item for item in desc if tasks.get(item, {}).get("state") in UNRESOLVED]
         active_claims = [item for item in family if tasks.get(item, {}).get("claim_id") or tasks.get(item, {}).get("worker_id")]
-        custody_missing = []
+        reconstruction_missing = []
         for item in family:
             h = handoffs.get(item) or {}
             t = tasks.get(item) or {}
-            if (h.get("continuity") or {}).get("master_records_required"):
-                # Terminal completed tasks are accepted when their completion evidence is
-                # durable; otherwise explicit Master Records evidence is required.
-                custody = t.get("state") == "COMPLETED" or any("master-records" in str(ref).lower() for ref in t.get("evidence_refs", []))
-                if not custody:
-                    custody_missing.append(item)
+            reconstruction_ref = (h.get("continuity") or {}).get("reconstruction_ref")
+            if reconstruction_ref and not any(str(reconstruction_ref) == str(ref) for ref in t.get("evidence_refs", [])):
+                reconstruction_missing.append(item)
         authorized_remaining = []
         for item in family:
             t = tasks.get(item) or {}
@@ -75,14 +72,14 @@ def evaluate(registry: dict, root: Path = ROOT) -> dict:
             "success_predicates_satisfied": success,
             "no_unresolved_descendants": not unresolved_desc,
             "no_active_claims": not active_claims,
-            "custody_reconstruction_complete": not custody_missing,
+            "reconstruction_complete": not reconstruction_missing,
             "no_authorized_remaining_action": not authorized_remaining,
         }
         reasons = []
         if not success: reasons.append("ROOT_SUCCESS_PREDICATES_NOT_SATISFIED")
         if unresolved_desc: reasons.append("UNRESOLVED_DESCENDANTS")
         if active_claims: reasons.append("ACTIVE_CLAIMS_REMAIN")
-        if custody_missing: reasons.append("CUSTODY_OR_RECONSTRUCTION_INCOMPLETE")
+        if reconstruction_missing: reasons.append("RECONSTRUCTION_INCOMPLETE")
         if authorized_remaining: reasons.append("AUTHORIZED_REMAINING_ACTION")
         goals.append({
             "goal_id": task.get("goal_id") or (handoff.get("goal") or {}).get("goal_id"),
