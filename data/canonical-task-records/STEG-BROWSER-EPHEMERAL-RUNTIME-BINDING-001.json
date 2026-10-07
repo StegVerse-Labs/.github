@@ -346,6 +346,6 @@
     "publication_requires_external_object_identity_and_readback": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true
+    "master_records_reality_authority": false
   }
 }
