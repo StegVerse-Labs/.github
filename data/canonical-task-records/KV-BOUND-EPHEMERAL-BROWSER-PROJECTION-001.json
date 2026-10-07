@@ -263,7 +263,7 @@
     "hb_grants_execution_authority": false,
     "worker_claim_authority": "WorkerCoordinator",
     "credential_authority": "TV/TVC",
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "kv_is_private_state_transition_continuity_boundary": true,
     "kv_skap_sole_user_verification_authority": true,
