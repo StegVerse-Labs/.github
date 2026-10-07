@@ -2,7 +2,7 @@
 
 Goal Task ID: `STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001`
 COSV: `20000000100000`
-Coordination: `ACTIVE / CHECKED_OUT` — closure-ready after this reconciliation merges
+Coordination: `RETIRED / COMPLETED`
 Owner: `StegVerse-Labs/StegDB`
 
 ## Goal
@@ -134,3 +134,11 @@ Each retained attempt includes its failed predicate, repair, `MANIFEST_BOUND_CON
 The Goal's 13 acceptance predicates are satisfied in canonical merged StegDB state. The remaining `FAIL_CLOSED / UNOBSERVED` entries are runtime observations deliberately outside what repository/source state can prove and are preserved as actionable successor work, not hidden blockers and not `ALLOW`.
 
 After this handoff reconciliation passes exact-head validation and merges, retire `STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001` in the canonical Task Registry and create/continue successor Organization-owned runtime-materialization work only when an authenticated invocation surface is available. Closure MUST preserve the four non-ALLOW runtime observations and MUST NOT claim runtime migration.
+
+## Terminal retirement reconciliation — 2026-10-07
+- Closure-ready handoff PR #2989 passed its exact-head ratchet and merged as `2d5855ecd6e18e270d8a62936ce5228ddd9614d3`.
+- Canonical Registry inspection then found this admitted Goal absent from current `main` generation 291 even though its admission branch retained the generation-291 record. Retirement therefore restores the admitted record into the current canonical Registry rather than inventing a different task identity.
+- Restored terminal state: `coordination_state=RETIRED`, `checkout_state=COMPLETED`, completion claimed/validated against the 13/13 merged StegDB acceptance matrix.
+- Completion semantics are `GOAL_ACCEPTANCE_COMPLETE_RUNTIME_MIGRATION_NOT_CLAIMED`.
+- Runtime materialization remains successor work, not completion evidence: StegVerse-Labs, StegGhost, GCAT-BCAT-Engine and SV-LLM each remain `FAIL_CLOSED / UNOBSERVED` in StegDB conformance-attempt evidence, with `MANIFEST_BOUND_CONFORMANCE_RETRY` and organization-specific repair/next-attempt instructions.
+- No runtime migration is claimed or inferred by retirement.
