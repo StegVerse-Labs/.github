@@ -47,11 +47,11 @@
     },
     "recording": {
       "type": "object",
-      "required": ["levels", "receipt_chain_required", "master_records_required_before_entropy_recovery"],
+      "required": ["levels", "receipt_chain_required"],
       "properties": {
         "levels": {"type": "array", "items": {"enum": ["operation", "task", "goal", "component", "subsystem", "system", "ecosystem", "master_records"]}},
         "receipt_chain_required": {"const": true},
-        "master_records_required_before_entropy_recovery": {"const": true}
+        "organization_record_required": {"type": "boolean"}
       },
       "additionalProperties": true
     },
@@ -62,7 +62,7 @@
         "execution_claim_and_fence": {"const": "WORKERCOORDINATOR"},
         "governed_transition": {"const": "INTERLOCK_INTR"},
         "credential_authority": {"const": "TV/TVC"},
-        "observed_reality_and_reconstruction": {"const": "MASTER_RECORDS"},
+        "observed_reality_and_reconstruction": {"const": "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY"},
         "automation_trigger": {"const": "NON_AUTHORIZING_ORCHESTRATION_ONLY"},
         "github_token_runtime_authority": {"const": "NONE"}
       },
