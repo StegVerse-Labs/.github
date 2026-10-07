@@ -2,7 +2,7 @@
 
 Goal Task ID: `STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001`
 COSV: `20000000100000`
-Coordination: `ACTIVE / CHECKED_OUT`
+Coordination: `ACTIVE / CHECKED_OUT` — closure-ready after this reconciliation merges
 Owner: `StegVerse-Labs/StegDB`
 
 ## Goal
@@ -116,3 +116,21 @@ Validate and merge the exact GCAT repair-surface binding in StegDB and this hand
 - `EVERY_REGISTERED_ADOPTER_HAS_DECLARED_ROLE_VERSION` is now source-state `ALLOW` for the current denominator.
 - No authenticated Organization-owned interface available in the active execution context can invoke GCAT's resident `run_once.py`/org-boundary. The consequential conformance attempt therefore remains `FAIL_CLOSED`, materialization/runtime migration `UNOBSERVED`.
 - Repair/retry: expose the existing GCAT org-boundary through an authenticated Organization-owned invocation interface, then retry the same manifest-bound conformance operation and retain terminal organization-ledger evidence. Do not create a second ingress.
+
+## Closure-ready acceptance state — 2026-10-07
+Canonical .github PR #2987 merged as `1e902c62f25f4303df6f94aac73d3696220ce4e6`. StegDB PR #37 merged as `cad7b8f9f7422633fee7615e4fb6b79591482904`.
+
+The current merged `registry/organization-role/acceptance.json` evaluates all 13 Goal acceptance predicates as `ALLOW`. These ALLOW results mean the registry, versioning, denominator, declaration, drift-detection, manifest-work, terminal-disposition, non-ALLOW structure, exemption, no-listener, packet-projection, SV-LLM-drift and authority-boundary requirements are satisfied. They do **not** mean that any Organization completed runtime migration.
+
+Runtime materialization remains separately and explicitly unresolved:
+- StegVerse-Labs — `FAIL_CLOSED`; materialization `UNOBSERVED`; authentic Organization-owned conformance execution surface unreachable in the current execution context.
+- StegGhost — `FAIL_CLOSED`; materialization `UNOBSERVED`; declared endpoint path is not authentically addressable.
+- GCAT-BCAT-Engine — `FAIL_CLOSED`; materialization `UNOBSERVED`; source implementation is merged, but no authenticated Organization-owned invocation interface is reachable from the current execution context.
+- SV-LLM — `FAIL_CLOSED`; materialization `UNOBSERVED`; source declaration/ledger evidence exists but no authenticated Organization-owned conformance invocation surface is reachable here.
+
+Each retained attempt includes its failed predicate, repair, `MANIFEST_BOUND_CONFORMANCE_RETRY`, and next attempt in `registry/organization-role/conformance-attempts.json`. No external machine/listener/session is awaited. No runtime migration is inferred.
+
+## Goal closure posture
+The Goal's 13 acceptance predicates are satisfied in canonical merged StegDB state. The remaining `FAIL_CLOSED / UNOBSERVED` entries are runtime observations deliberately outside what repository/source state can prove and are preserved as actionable successor work, not hidden blockers and not `ALLOW`.
+
+After this handoff reconciliation passes exact-head validation and merges, retire `STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001` in the canonical Task Registry and create/continue successor Organization-owned runtime-materialization work only when an authenticated invocation surface is available. Closure MUST preserve the four non-ALLOW runtime observations and MUST NOT claim runtime migration.
