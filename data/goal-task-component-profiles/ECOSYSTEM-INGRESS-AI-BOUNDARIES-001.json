@@ -152,7 +152,7 @@
       "component_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
       "family": "runtime_observation",
       "existing": true,
-      "canonical_implementation_or_owner": "Canonical runtime observation lane; Master Records owns custody and reconstruction",
+      "canonical_implementation_or_owner": "Canonical runtime observation lane; Master Records applies only to organization records and reconstruction",
       "inputs": [
         "selected interface under test",
         "runtime subject",
