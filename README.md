@@ -2073,3 +2073,8 @@ Canonical Task Registry now includes `ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001` 
 ## Master Records semantic boundary
 
 Active remediation is tracked by `MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002` and PR #2988. Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction. The current .github baseline is 2,329 prohibited references across 614 files. Exact class completion requires the persisted per-entry disposition artifact; aggregate classifier counts alone do not establish remediation.
+
+
+### SDK manifest runtime-observation reconciliation — 2026-10-07
+
+Under `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, remaining runtime-observation conditions are now interpreted by the canonical Organization Role standard: every ACTION is a manifest-bound attempted state transition; no external machine/listener/session or receiver liveness is awaited; unavailable receivers use durable queue/event-ephemeral materialization; and unresolved attempts terminate with actionable `ALLOW | DENY | FAIL_CLOSED` semantics at their actual boundary. Historical observation records remain evidence only. Organization ledger append is runtime reality for applicable Organization transitions; Master Records is downstream records/reconstruction only. Non-conforming surfaces must be repaired or hold a registered exemption; no exemption is added where an explicit repair/retry path exists. See `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`.

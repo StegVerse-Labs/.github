@@ -422,3 +422,20 @@ with `ECOSYSTEM_CONNECTED` as compatibility default, no route substitution/fallb
 Canonical coordination PR #2957 had already been merged by the owner at `abc39eb5f0eafe6e9365dc590ff5e9ac7d65cb52` after its ratchet succeeded, before SDK #426 completed. This entry reconciles that ordering; it does not rewrite #2957 history.
 
 Runtime-evidence reconciliation correction: `SDK_MANIFEST_HANDOFF` remains source/handoff evidence owned by the SDK, but it is not the terminal ecosystem boundary. Current canonical organization runtime contains downstream ingress and receipt machinery capable of recording observed InTr admission, observed far-side transition, independently reconstructed boundary receipt chains and observed organization receipts, with organization-ledger and Master Records transition/custody paths also present. Consequently an `ECOSYSTEM_CONNECTED` attempt must resolve its final observed state from the exact request-bound downstream receipts and custody records that exist for that attempt. This handoff does not downgrade those implemented downstream capabilities to NOT_PROVEN merely because SDK #426 does not itself emit their evidence, and it does not claim that any specific downstream receipt exists without matching request-bound evidence.
+
+
+## 2026-10-07 ACTIONS-BY-MANIFEST runtime-observation reconciliation
+
+Canonical Organization Role standard now governs the remaining runtime-observation vocabulary for this Goal. Every ACTION is a manifest-bound attempted state transition. No external machine, listener, session, receiver liveness condition, or later authentic observer may be awaited as a transition or completion predicate.
+
+Historical `*_OBSERVED` and `*_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT` records remain retained evidence about prior attempts or evidence state; they are not deleted or rewritten as runtime success. Their current actionable meaning is evaluated at the actual attempted boundary and terminates `ALLOW | DENY | FAIL_CLOSED`. A receiver that is unavailable follows `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`; it does not create a passive wait state.
+
+The six former future-observation predicates are therefore reconciled to explicit transition/evidence predicates in the canonical task record: manifest-bound InTr admission disposition; governance-route disposition; non-governance-route disposition; applicable Organization ledger receipt; applicable post-Organization Master Records reconstruction evidence; and all-actionable-surface conformance-or-registered-exemption.
+
+Current reconciliation disposition is `FAIL_CLOSED` for each unresolved attempted/evidence boundary, with a failed predicate, failure code, repair, retry entrypoint and next attempt. These are actionable non-ALLOW states, not blockers. Organization runtime reality is established only by its manifest-directed ledger append when an Organization state transition occurs. Master Records remains downstream organization-record retention/reconstruction evidence and never gates that runtime reality.
+
+No exemption is registered by this reconciliation because no identified gap has a valid exemption justification: each has an existing repair/retry path, and external-machine/reachability/observer absence is explicitly prohibited as an exemption justification. Any future surface that cannot satisfy ACTIONS BY MANIFEST must be repaired or entered in `data/organization-role-exemption-register.json`; silent non-conformance is prohibited.
+
+This reconciliation does not claim system-wide enforcement or completion. Remaining source-conformance repairs stay owned by this Goal.
+
+Candidate branch: `repair/sdk-manifest-runtime-observation-reconciliation-20261007`; exact-head validation is required before merge and no runtime execution is inferred from CI.
