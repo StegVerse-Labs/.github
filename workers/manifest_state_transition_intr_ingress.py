@@ -122,6 +122,35 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(request.get("predecessor_closure_required") is True, "predecessor_closure_required")
     return dict(request)
 
+def sdk_manifest_binding(validated: Mapping[str, Any]) -> dict[str, str]:
+    """Project only authenticated manifest lineage for downstream boundary validation."""
+    validated = validate_request(validated)
+    return {
+        "request_sha256": str(validated["request_sha256"]),
+        "canonical_manifest_sha256": str(validated["canonical_manifest_sha256"]),
+        "processing_capability": str(validated["processing_capability"]),
+        "route_id": str(validated["route_id"]),
+    }
+
+
+def bind_tvc_provider_request(
+    validated: Mapping[str, Any], provider_request: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Bind a TVC credential request to manifest-selected semantics without selecting them.
+
+    Provider/framework identity is provenance only. The four processing-lineage
+    fields come exclusively from the already-validated SDK request; caller values
+    are neither accepted nor consulted.
+    """
+    binding = sdk_manifest_binding(validated)
+    request = dict(provider_request)
+    lease = request.get("lease_receipt")
+    require(isinstance(lease, Mapping), "tvc_capability_lease_required")
+    request["sdk_manifest_binding"] = dict(binding)
+    request["lease_receipt"] = {**dict(lease), "sdk_manifest_binding": dict(binding)}
+    return request
+
+
 def _request_path(runtime_root: Path, task_id: str) -> Path:
     return runtime_root / REQUEST_DIR / (task_id + LATEST_SUFFIX)
 
@@ -1049,4 +1078,4 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
             raise
         return _manifest_binding_deny(runtime_root, payload, reason_code=reason_code)
 
-__all__ = ["PROFILE", "REQUEST_SCHEMA", "RESULT_SCHEMA", "admit", "execute", "is_manifest_state_transition", "validate_request"]
+__all__ = ["PROFILE", "REQUEST_SCHEMA", "RESULT_SCHEMA", "admit", "bind_tvc_provider_request", "execute", "is_manifest_state_transition", "sdk_manifest_binding", "validate_request"]

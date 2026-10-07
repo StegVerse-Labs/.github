@@ -2082,3 +2082,9 @@ Active remediation is tracked by `MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002` 
 ### SDK manifest runtime-observation reconciliation — 2026-10-07
 
 Under `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, remaining runtime-observation conditions are now interpreted by the canonical Organization Role standard: every ACTION is a manifest-bound attempted state transition; no external machine/listener/session or receiver liveness is awaited; unavailable receivers use durable queue/event-ephemeral materialization; and unresolved attempts terminate with actionable `ALLOW | DENY | FAIL_CLOSED` semantics at their actual boundary. Historical observation records remain evidence only. Organization ledger append is runtime reality for applicable Organization transitions; Master Records is downstream records/reconstruction only. Non-conforming surfaces must be repaired or hold a registered exemption; no exemption is added where an explicit repair/retry path exists. See `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`.
+
+
+### Manifest-derived TVC credential boundary — 2026-10-07
+
+`SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001` enforces ACTIONS BY MANIFEST at the TVC credential boundary. Framework/provider identity does not select testing, experiment, processing capability, or route. The already-validated Universal manifest request projects `request_sha256`, `canonical_manifest_sha256`, `processing_capability`, and `route_id` into both the TVC provider request and its single-use lease; TVC validates exact equality before credential-bearing forwarding and does not interpret those fields as selection authority. TVC PR #482 merged as `248eb6df0986055bab88ee37231feb3891da49bc`. See `docs/SDK_MANIFEST_TVC_LINEAGE_CONFORMANCE_MIRROR_HANDOFF.md`.
+
