@@ -58,5 +58,13 @@ Runtime migration remains `UNOBSERVED` until the owning Organization performs a 
 
 Until that evidence exists, StegDB may retain `VERSION_DIVERGENCE_DETECTED` and emit non-authorizing conformance work. It may not directly mutate the adopter or infer `ALLOW`.
 
+## Exact version-bound reference
+- StegVerse-org Organization Role reference commit: `ac0f2d96e3339974005f746ba89024c420b55019` (current main at verification).
+- Reference path: `resident-runtime/organization_egress_boundary.py`.
+- Git blob: `536d77031842e22da0d9a23d76bbc36619636d96`.
+- UTF-8 file bytes: `44937`.
+- SHA-256 contract digest: `sha256:902bea00cdd2f4260fd01565b2beef6b1346f1d28d5540877ecb80b090723695`.
+- This binding is source/version evidence only and is explicitly not runtime migration evidence.
+
 ## Current continuation
-Validate and merge the source-state reconciliation in both owning repositories. Then derive the canonical adopter denominator from ecosystem state and issue Organization-owned manifest-bound conformance work for stale adopters; preserve every attempted consequential transition as `ALLOW | DENY | FAIL_CLOSED`.
+Validate and merge the exact reference binding in StegDB and this canonical handoff. Continue Organization-owned manifest-bound conformance work for stale/missing adopters without inferring runtime migration from repository state; every consequential attempt must terminate `ALLOW | DENY | FAIL_CLOSED`.
