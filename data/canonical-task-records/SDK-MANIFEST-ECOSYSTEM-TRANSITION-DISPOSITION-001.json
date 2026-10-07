@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+  "correlation_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "goal": "After source-conformance repairs, exercise representative governance and non-governance ACTIONS as manifest-bound state transitions and retain terminal ALLOW/DENY/FAIL_CLOSED dispositions, applicable Organization ledger receipts, and non-gating post-Organization Master Records reconstruction evidence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100126",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": null,
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "manifest-driven-processing",
+      "actions-by-manifest",
+      "allow-deny-fail-closed"
+    ]
+  },
+  "dependencies": [],
+  "remaining_predicates": [
+    "MANIFEST_BOUND_INTR_ADMISSION_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "NON_GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED",
+    "APPLICABLE_ORGANIZATION_STATE_TRANSITION_RECEIPT_RETAINED",
+    "APPLICABLE_POST_ORGANIZATION_RECORD_RECONSTRUCTION_EVIDENCE_RETAINED",
+    "ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION"
+  ],
+  "authority_model": {
+    "manifest_selects_processing_semantics": true,
+    "source_identity_selects_processing_semantics": false,
+    "interlock_intr_is_transition_path": true,
+    "organization_ledger_is_runtime_reality": true,
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+    "external_machine_wait_allowed": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "origin": {
+    "decomposed_from": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+    "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
+    "date": "2026-10-07"
+  }
+}

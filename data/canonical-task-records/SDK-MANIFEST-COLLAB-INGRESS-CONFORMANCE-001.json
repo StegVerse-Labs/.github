@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001",
+  "correlation_id": "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "goal": "Close shared-document and external-collaboration source conformance so every actionable collaboration ingress enters canonical SDK manifest admission and route resolution and source/provider/document identity remains provenance only.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100124",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": null,
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_MANIFEST_COLLAB_INGRESS_CONFORMANCE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "manifest-driven-processing",
+      "actions-by-manifest",
+      "allow-deny-fail-closed"
+    ]
+  },
+  "dependencies": [],
+  "remaining_predicates": [
+    "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY_CONFORMANT"
+  ],
+  "authority_model": {
+    "manifest_selects_processing_semantics": true,
+    "source_identity_selects_processing_semantics": false,
+    "interlock_intr_is_transition_path": true,
+    "organization_ledger_is_runtime_reality": true,
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+    "external_machine_wait_allowed": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "origin": {
+    "decomposed_from": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+    "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
+    "date": "2026-10-07"
+  }
+}

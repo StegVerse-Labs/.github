@@ -5,8 +5,8 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Validate and enforce the StegVerse system-wide manifest-driven processing invariant across SDK, adapters, provider paths, InTr routes, processors, custody and reconstruction surfaces; remediate source/type/provider-driven processor selection and establish an architectural-claim validation gate.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "cosv_task_vector": "71000000100110",
   "repository": "StegVerse-Labs/.github",
   "issue_ref": "StegVerse-Labs/.github#1615",
@@ -80,7 +80,8 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "runtime_observed": false
+    "runtime_observed": false,
+    "retired_by_prompt_limit_decomposition": true
   },
   "followup_evidence_20261001": {
     "canonical_audit_merge": {
@@ -173,12 +174,12 @@
     "TVC_PROVIDER_BOUNDARY": "PARTIAL_TVC_LEASE_PROFILE_CONSTRAINTS_PROVEN_CANONICAL_SDK_PROCESSING_ROUTE_BINDING_NOT_DEMONSTRATED",
     "STEGCORE_ENTRY": "PARTIAL_MANIFEST_ROUTE_AND_NONALLOW_MUTATION_SOURCE_PROVEN_FULL_INTR_CUSTODY_NOT_PROVEN",
     "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY": "PARTIAL_MANIFEST_SELECTS_PROCESSING_SOURCE_ARCHITECTURE_RUNTIME_CHAIN_NOT_PROVEN",
-    "ECOSYSTEM_SURFACE_INVENTORY": "SATISFIED_CENSUS_ONLY_CONFORMANCE_AND_RUNTIME_SEPARATE"
+    "ECOSYSTEM_SURFACE_INVENTORY": "SATISFIED_CENSUS_ONLY_CONFORMANCE_AND_RUNTIME_SEPARATE",
+    "MASTER_RECORDS_BOUNDARY": "SATISFIED_CURRENT_ROLE_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING"
   },
   "remaining_source_predicates": [
     "TVC_PROVIDER_BOUNDARY_CLASSIFIED_AND_CONFORMANT",
     "STEGCORE_ENTRY_CONFORMANT",
-    "MASTER_RECORDS_BOUNDARY_CONFORMANT",
     "SHARED_DOC_EXTERNAL_COLLAB_BOUNDARY_CONFORMANT",
     "IDENTITY_DRIVEN_PROCESSOR_SELECTION_REGRESSION_GATE_INSTALLED"
   ],
@@ -337,7 +338,12 @@
     "preserved_runtime_observation": "AUTHENTIC_MANIFEST_DECLARED_INTERLOCK_INTR_RECEIVING_OPERATION_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT"
   },
   "successor_task_ids": [
-    "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001"
+    "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+    "SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001",
+    "SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001",
+    "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001",
+    "SDK-MANIFEST-IDENTITY-ROUTING-REGRESSION-GATE-001",
+    "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
   ],
   "prompt_ceiling_reconciliation_20261002": {
     "goal_prompt_count": "20/20",
@@ -470,5 +476,27 @@
       "silent_non_conformance_allowed": false
     },
     "completion_effect": "NONE_GOAL_REMAINS_ACTIVE_SOURCE_CONFORMANCE_REPAIRS_REMAIN"
+  },
+  "prompt_ceiling_reconciliation_20261007": {
+    "goal_prompt_count": "20/20",
+    "parent_disposition": "RETIRED_DECOMPOSED_AT_PROMPT_LIMIT",
+    "closed_on_current_main": [
+      "SDK_GENERIC_MANIFEST_CAPABILITY_ROUTE_BINDING",
+      "LLM_ADAPTER_GENERIC_SDK_ROUTE_DELEGATION",
+      "MIR_RETURN_CANONICAL_SDK_MANIFEST_INGRESS",
+      "STEGOS_GENERIC_SDK_MANIFEST_INTR_PROFILE_AND_RECEIVING_OWNER",
+      "ECOSYSTEM_SURFACE_INVENTORY_CENSUS",
+      "MASTER_RECORDS_BOUNDARY_CONFORMANT"
+    ],
+    "successor_task_ids": [
+      "SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001",
+      "SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001",
+      "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001",
+      "SDK-MANIFEST-IDENTITY-ROUTING-REGRESSION-GATE-001",
+      "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
+    ],
+    "master_records_boundary": "Organization records and reconstruction only; non-gating; no general runtime/admission/closure authority",
+    "runtime_predicates_transferred_to": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "completion_claimed": false
   }
 }

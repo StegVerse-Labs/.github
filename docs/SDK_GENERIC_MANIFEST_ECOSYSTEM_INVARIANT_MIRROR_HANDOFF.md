@@ -439,3 +439,18 @@ No exemption is registered by this reconciliation because no identified gap has 
 This reconciliation does not claim system-wide enforcement or completion. Remaining source-conformance repairs stay owned by this Goal.
 
 Candidate branch: `repair/sdk-manifest-runtime-observation-reconciliation-20261007`; exact-head validation is required before merge and no runtime execution is inferred from CI.
+
+
+## 2026-10-07 prompt-ceiling closeout and canonical successor decomposition
+
+Goal Prompt Count reached 20/20. The parent is retired without a completion claim and remaining genuinely separable work is transferred to canonical successors:
+
+- `SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001` / `71000000100122`: TVC inherited SDK manifest-lineage binding and validation-only conformance.
+- `SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001` / `71000000100123`: StegCore manifested entry source conformance.
+- `SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001` / `71000000100124`: shared-document/external-collaboration canonical manifest ingress.
+- `SDK-MANIFEST-IDENTITY-ROUTING-REGRESSION-GATE-001` / `71000000100125`: cross-surface identity-routing shortcut regression gate.
+- `SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001` / `71000000100126`: representative governance/non-governance terminal transition dispositions and applicable Organization/reconstruction evidence after source repairs.
+
+Current main closes `MASTER_RECORDS_BOUNDARY_CONFORMANT` as a source-role predicate: Master Records is limited to organization records and reconstruction and is non-gating for Organization runtime reality. Historical references remain evidence; no runtime success is inferred.
+
+Already satisfied source predicates are not reopened: SDK capability/route binding, LLM Adapter generic SDK delegation, MIR return canonical SDK ingress, StegOS generic SDK manifest InTr profile/receiving-owner trace, and ecosystem census completeness. The parent remains evidence history only and must not consume additional Goal prompts.
