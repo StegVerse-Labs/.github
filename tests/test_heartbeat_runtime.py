@@ -415,7 +415,7 @@ class HeartbeatRuntimeTests(unittest.TestCase):
         finally:
             fx.close()
 
-    def test_known_expiry_without_master_records_final_blocks_parent_and_admits_recovery(self):
+    def test_known_expiry_without_final_report_blocks_parent_and_admits_recovery(self):
         fx = RuntimeFixture()
         try:
             basis = fx.cost_basis("fixture", beats=1)
@@ -433,7 +433,7 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             recovery = [t for t in state["tasks"] if t["task_id"].startswith("RECOVER-TASK-A-HB2")]
             self.assertEqual(parent["state"], "BLOCKED")
             self.assertIsNone(parent["worker_id"])
-            self.assertIn("MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING", parent["archive_reason_codes"])
+            self.assertIn("FINAL_WORKER_REPORT_MISSING", parent["archive_reason_codes"])
             self.assertEqual(len(recovery), 1)
             self.assertEqual(recovery[0]["state"], "HANDOFF_READY")
             self.assertEqual(parent["block_ref"], recovery[0]["handoff_ref"])
