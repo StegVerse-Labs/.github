@@ -372,7 +372,7 @@
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_reality_authority": true,
+    "master_records_reality_authority": false,
     "github_runtime_authority": "NONE"
   },
   "prompt_budget": {
