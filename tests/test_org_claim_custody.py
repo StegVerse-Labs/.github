@@ -974,5 +974,57 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.consume(), replay)
         self.assertEqual([g["boundary_evidence"]["fencing_token"] for g in env.grants()], [8])
 
+    # RESPONSE-032 names -------------------------------------------------------
+    def test_empty_chain_refuses_fence(self):
+        self.test_empty_chain_claim_refused_without_dummy_genesis()
+
+    def test_post_floor_missing_org_receipt_sha_fails_closed(self):
+        self.test_post_floor_grant_missing_org_receipt_sha_fails_closed()
+
+    def test_predecessor_provenance_scope_bound(self):
+        self.test_legacy_predecessor_floor_evidence_is_immutable_and_scope_bound()
+
+    def test_repo_append_org_failure_replay_idempotent(self):
+        self.test_org_append_failure_retry_reuses_repository_receipt()
+
+    def test_repository_only_disposition_not_org_readback(self):
+        self.test_repository_only_refusal_not_counted_as_organization_readback()
+
+    def test_exact_head_test_delta_no_regression(self):
+        # The per-test-id delta itself is produced against the base and carried
+        # in the pull request; this guards that no acceptance test is dropped.
+        required = (
+            "nonempty_hash_chain_without_credential_not_authentic_custody",
+            "empty_chain_claim_refused_without_dummy_genesis",
+            "uninitialized_empty_receipts_directory_is_not_authenticated_genesis",
+            "authenticated_empty_genesis_binds_exact_organization_identity",
+            "repository_only_refusal_not_counted_as_organization_readback",
+            "post_floor_grant_missing_org_receipt_sha_fails_closed",
+            "post_floor_receipt_task_fence_scope_match",
+            "legacy_predecessor_floor_evidence_is_immutable_and_scope_bound",
+            "org_append_failure_retry_reuses_repository_receipt",
+            "empty_chain_refuses_fence", "post_floor_missing_org_receipt_sha_fails_closed",
+            "predecessor_provenance_scope_bound", "repo_append_org_failure_replay_idempotent",
+            "repository_only_disposition_not_org_readback",
+        )
+        for name in required:
+            self.assertTrue(callable(getattr(self, "test_" + name, None)), name)
+        self.assertFalse(hasattr(self, "test_verified_empty_chain_with_valid_predecessor_floor_selects_unique_next_fence"))
+
+    def test_task_record_retains_3023_known_defect_provenance(self):
+        record = json.loads((ROOT / "data/canonical-task-records/"
+                             "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001.json").read_text())
+        entry = next(e for e in record["evidence_history"] if e["ref"] == "StegVerse-Labs/.github#3023")
+        self.assertEqual(entry["evidence_class"], "SOURCE_MERGED_WITH_KNOWN_DEFECTS")
+        self.assertEqual((entry["merge_commit"], entry["head"]), ("3bb146d", "4ec41d7"))
+        self.assertEqual(len(entry["known_defects"]), 2)
+        self.assertEqual(entry["authentic_claim_attempts_through_defective_source"], 0)
+        self.assertTrue(entry["repaired_by"])
+        self.assertEqual(len(record["remaining_predicates"]), 6)
+        self.assertEqual(record["completion"], {"claimed": False, "validated": False, "runtime_observed": False})
+        # Provenance only: nothing in the history marks a runtime DENY.
+        self.assertNotIn("DENY", json.dumps(record["evidence_history"]))
+        self.assertNotIn("runtime_disposition", record)
+
 if __name__ == "__main__":
     unittest.main()
