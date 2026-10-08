@@ -8,6 +8,6 @@ Publisher: `resident-runtime/submit_org_transition_to_master_records.py`
 
 Route:
 
-`StegVerse-Labs/.github -> InTr -> master-records/.github -> master-records.ecosystem-transition-ledger -> master-records/orchestration`
+`StegVerse-Labs/.github -> InTr -> master-records/.github -> organization.ecosystem-transition-ledger -> master-records/orchestration`
 
 The packet carries the already-hash-bound organization receipt. Transport and custody do not create source authority and do not replace repo/org replay.

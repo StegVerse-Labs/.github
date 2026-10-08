@@ -53,7 +53,7 @@ def build(root: Path) -> dict[str, Any]:
     require(runtime_map.get("schema") == "stegverse.runtime-profile-map/v1", "runtime map schema mismatch")
     require(isinstance(runtime_map.get("generated_at"), str) and runtime_map.get("generated_at"), "runtime map must be generated")
     return {
-        "schema": "stegverse.runtime-profile-map-custody-package/v1",
+        "schema": "stegverse.runtime-profile-map-organization-record-package/v1",
         "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
         "map_ref": str(map_path),
         "map_generation": runtime_map.get("generation"),

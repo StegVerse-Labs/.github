@@ -249,3 +249,102 @@ def test_organization_batch_submission_emits_organization_record_authority_effec
     source = (ROOT / "workers/canonical_state_transition_custody.py").read_text(encoding="utf-8")
     assert 'authority_effect="NONE_ORGANIZATION_RECORD_ONLY"' in source
     assert '"NONE_CUSTODY_ONLY"' not in source
+
+
+# --- Owner-approved identifier renames (destination record, runtime profile map, transition ledger) ---
+
+coordination_graph = load("compat_coordination_graph", "heartbeat_runtime/coordination_graph.py")
+universal_worker_source = (ROOT / "workers/universal_governance_enforced_reference_worker.py").read_text(encoding="utf-8")
+
+
+def test_reusable_task_request_emits_destination_record_accepted() -> None:
+    manifest = {"invocation_id": "I1", "reusable_task_id": "RT1", "manifest_hash": "sha256:" + "0" * 64}
+    request = lifecycle.build_custody_request(
+        manifest=manifest, trigger_receipt={}, runner_result={}, runner_expiry={}, residual_recording={},
+    )
+    assert request["destination_record_accepted"] is False
+    assert "destination_custody_accepted" not in request
+
+
+@pytest.mark.parametrize("field", ["destination_record_accepted", "destination_custody_accepted"])
+def test_destination_record_accepted_reader_accepts_new_and_legacy(field: str) -> None:
+    assert lifecycle.destination_record_accepted({field: True}) is True
+    assert lifecycle.destination_record_accepted({field: False}) is False
+    assert lifecycle.destination_record_accepted({}) is None
+
+
+def test_destination_record_accepted_new_name_wins_over_legacy() -> None:
+    record = {"destination_record_accepted": False, "destination_custody_accepted": True}
+    assert lifecycle.destination_record_accepted(record) is False
+
+
+@pytest.mark.parametrize("rel", ["workers/reusable_task_lifecycle.py", "workers/universal_governance_enforced_reference_worker.py"])
+def test_destination_record_readers_keep_one_legacy_constant(rel: str) -> None:
+    source = (ROOT / rel).read_text(encoding="utf-8")
+    assert source.count('"destination_custody_accepted"') == 1
+    line = next(l for l in source.splitlines() if '"destination_custody_accepted"' in l)
+    assert line.startswith("LEGACY_")
+    assert '"destination_record_accepted"' in source
+
+
+@pytest.mark.parametrize("field", ["destination_record_accepted", "destination_custody_accepted"])
+def test_universal_worker_reads_destination_record_accepted_new_and_legacy(field: str) -> None:
+    namespace: dict = {}
+    for line in universal_worker_source.splitlines():
+        if line.startswith(("DESTINATION_RECORD_ACCEPTED_FIELD =", "LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD =")):
+            exec(line, namespace)
+    expr = 'effect.get(DESTINATION_RECORD_ACCEPTED_FIELD, effect.get(LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD))'
+    assert expr in universal_worker_source
+    assert eval(expr, {**namespace, "effect": {field: True}}) is True
+
+
+RUNTIME_PROFILE_MAP_CONSUMPTION_SCHEMA = "stegverse.runtime-profile-map-organization-record-consumption/v1"
+
+
+def _runtime_profile_map_predicate() -> dict:
+    data = json.loads((ROOT / "control/cross-task-coordination.d/runtime-profile-map-lifecycle-predicates.json").read_text(encoding="utf-8"))
+    return next(p for p in data["predicates"] if p.get("required_schema", "").startswith("stegverse.runtime-profile-map-organization-record"))
+
+
+@pytest.mark.parametrize("schema", [RUNTIME_PROFILE_MAP_CONSUMPTION_SCHEMA, "stegverse.runtime-profile-map-custody-consumption/v1"])
+def test_runtime_profile_map_predicate_accepts_new_and_legacy_consumption_schema(schema: str) -> None:
+    predicate = _runtime_profile_map_predicate()
+    assert predicate["required_schema"] == RUNTIME_PROFILE_MAP_CONSUMPTION_SCHEMA
+    evidence = {"schema": schema}
+    reasons = coordination_graph._evidence_rejection_reasons(predicate, evidence, coordination_graph._now(None))
+    assert "SCHEMA_MISMATCH" not in reasons
+    evidence["schema"] = "stegverse.other/v1"
+    assert "SCHEMA_MISMATCH" in coordination_graph._evidence_rejection_reasons(predicate, evidence, coordination_graph._now(None))
+
+
+def test_runtime_profile_map_writers_emit_organization_record_schema_ids() -> None:
+    consumer = (ROOT / "control/resident-execution-request.d/consume-runtime-profile-map-custody.py").read_text(encoding="utf-8")
+    assert f'CONSUMPTION_SCHEMA = "{RUNTIME_PROFILE_MAP_CONSUMPTION_SCHEMA}"' in consumer
+    assert "runtime-profile-map-custody-consumption" not in consumer
+    builder = (ROOT / "scripts/build_runtime_profile_map_custody_package.py").read_text(encoding="utf-8")
+    assert '"schema": "stegverse.runtime-profile-map-organization-record-package/v1"' in builder
+    assert "runtime-profile-map-custody-package/v1" not in builder
+
+
+@pytest.mark.parametrize("schema", [
+    "stegverse.runtime-profile-map-organization-record-package/v1",
+    "stegverse.runtime-profile-map-custody-package/v1",
+])
+def test_runtime_profile_map_package_schema_accepts_new_and_legacy(schema: str) -> None:
+    contract = json.loads((ROOT / "schemas/runtime-profile-map-custody-package.schema.json").read_text(encoding="utf-8"))
+    assert schema in contract["properties"]["schema"]["enum"]
+
+
+def test_org_transition_submission_targets_organization_transition_ledger() -> None:
+    source = (ROOT / "resident-runtime/submit_org_transition_to_master_records.py").read_text(encoding="utf-8")
+    assert 'destination_service="organization.ecosystem-transition-ledger"' in source
+    assert "master-records.ecosystem-transition-ledger" not in source
+
+
+def test_master_records_owner_keys_use_record_owner_names() -> None:
+    handoff = json.loads((ROOT / "handoffs/VACC-LONGITUDINAL-CONTINUITY-001.json").read_text(encoding="utf-8"))
+    assert handoff["record_owner"] == "master-records/orchestration#15"
+    assert "custody_owner" not in handoff
+    intake = json.loads((ROOT / "control/repository-hygiene-ref-retirement-admin-intake-20260924.json").read_text(encoding="utf-8"))
+    assert "master_records_organization_record_owner" in intake
+    assert "master_records_custody_owner" not in intake

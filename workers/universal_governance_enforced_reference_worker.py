@@ -13,6 +13,9 @@ TASK_ID = "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001"
 WORKER_ID = "universal-governance-enforced-reference-worker"
 STEGCORE_ENV = "STEGVERSE_STEGCORE_SOURCE_ROOT"
 MASTER_RECORDS_ENV = "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+DESTINATION_RECORD_ACCEPTED_FIELD = "destination_record_accepted"
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: legacy acceptance field still read from older Master Records output.
+LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD = "destination_custody_accepted"
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 REPO_ROOTS_ENV = "STEGVERSE_REPO_ROOTS_JSON"
 NODE_MARKERS = (Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json")
@@ -243,7 +246,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         raise RuntimeError("Master Records organization record PASS marker missing")
     custody = json.loads(lines[-1])
     effect = custody.get("custody_effect") or {}
-    if effect.get("destination_custody_accepted") is not True:
+    if effect.get(DESTINATION_RECORD_ACCEPTED_FIELD, effect.get(LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD)) is not True:
         raise RuntimeError("Master Records organization record not accepted")
     if effect.get("runtime_activation") is not False or effect.get("execution_authority_granted") is not False:
         raise RuntimeError("Master Records organization record authority escalation")

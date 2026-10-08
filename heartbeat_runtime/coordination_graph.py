@@ -8,6 +8,11 @@ LEDGER_SCHEMA = "stegverse.cross-task-coordination-ledger/v1"
 PREFLIGHT_SCHEMA = "stegverse.cross-task-coordination-preflight/v1"
 PREDICATE_STATES = {"SATISFIED", "UNSATISFIED", "IN_PROGRESS", "UNKNOWN", "CONFLICTED"}
 ACTIVE_CLAIM_STATES = {"ACTIVE"}
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: evidence written before the rename
+# carries the legacy schema id; it still satisfies the renamed required_schema.
+LEGACY_REQUIRED_SCHEMA_ALIASES = {
+    "stegverse.runtime-profile-map-organization-record-consumption/v1": "stegverse.runtime-profile-map-custody-consumption/v1",
+}
 
 
 def _parse_time(value: str | None) -> datetime | None:
@@ -67,7 +72,7 @@ def _evidence_rejection_reasons(predicate: dict[str, Any], evidence: dict[str, A
     if evidence.get("producer") != predicate.get("authoritative_producer"):
         reasons.append("AUTHORITATIVE_PRODUCER_MISMATCH")
     required_schema = predicate.get("required_schema")
-    if required_schema and evidence.get("schema") != required_schema:
+    if required_schema and evidence.get("schema") not in {required_schema, LEGACY_REQUIRED_SCHEMA_ALIASES.get(required_schema, required_schema)}:
         reasons.append("SCHEMA_MISMATCH")
     required_scope = predicate.get("required_scope")
     if required_scope and evidence.get("scope") != required_scope:
