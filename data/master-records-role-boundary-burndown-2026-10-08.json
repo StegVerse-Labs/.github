@@ -34,35 +34,36 @@
  },
  "after": {
   "prohibited_role": {
-   "references": 827,
-   "unique_files": 336,
+   "references": 691,
+   "unique_files": 278,
    "by_primary_class": {
-    "GENERIC_CUSTODY": 356,
-    "GENERIC_TRANSITION_API": 175,
-    "RUNTIME_OBSERVED_REALITY": 66,
-    "TRANSITION_GATE_CLOSURE": 230
+    "GENERIC_CUSTODY": 298,
+    "GENERIC_TRANSITION_API": 176,
+    "RUNTIME_OBSERVED_REALITY": 58,
+    "TRANSITION_GATE_CLOSURE": 159
    }
   },
   "boundary_statement": {
-   "references": 191,
-   "unique_files": 100,
+   "references": 161,
+   "unique_files": 81,
    "by_primary_class": {
-    "GENERIC_CUSTODY": 65,
+    "GENERIC_CUSTODY": 50,
     "GENERIC_TRANSITION_API": 26,
     "RUNTIME_OBSERVED_REALITY": 30,
-    "TRANSITION_GATE_CLOSURE": 70
+    "TRANSITION_GATE_CLOSURE": 55
    }
   }
  },
  "after_by_disposition": {
-  "OPEN_CONTEXTUAL_REWRITE_REQUIRED": 446,
-  "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT": 172,
+  "OPEN_CONTEXTUAL_REWRITE_REQUIRED": 272,
+  "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER": 6,
+  "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT": 173,
   "PRESERVED_CLOSED_CHANGE_RECORD": 112,
   "PRESERVED_DATED_RECORD": 36,
   "PRESERVED_HASH_BOUND": 26,
   "PRESERVED_HASH_LINE": 68,
   "PRESERVED_HISTORICAL_PATH": 77,
-  "PRESERVED_LEGACY_CONSTANT": 23,
+  "PRESERVED_LEGACY_CONSTANT": 24,
   "PRESERVED_LEGACY_READER_TEST": 24,
   "PRESERVED_REMEDIATION_LEDGER": 2,
   "PRESERVED_RETAINED_EVIDENCE": 32
@@ -76,12 +77,49 @@
   "PRESERVED_RETAINED_EVIDENCE": "machine-readable supersession evidence and the 2026-10-07 classifier/disposition artifacts",
   "PRESERVED_LEGACY_CONSTANT": "the single LEGACY_ constant through which a reader still accepts a pre-migration name",
   "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT": "route and configuration names that master-records/orchestration and resident deployments own; renaming them here alone would break the call path",
-  "OPEN_CONTEXTUAL_REWRITE_REQUIRED": "no deterministic rule applies; needs line-by-line rewording"
+  "OPEN_CONTEXTUAL_REWRITE_REQUIRED": "no deterministic rule applies; needs line-by-line rewording",
+  "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER": "prose line whose remaining flagged term sits inside a backticked code identifier, path or flow string quoted verbatim"
  },
  "entries": [
   {
+   "path": ".github/workflows/validate-deepseek-resident.yml",
+   "line": 68,
+   "kind": "workflow",
+   "semantic_class": "prohibited-role",
+   "primary_class": "GENERIC_CUSTODY",
+   "text_sha256": "1c5ffb74605f7f2ebb41d4d108a65971b89926dc13058c4f5a44876e19f98e96",
+   "disposition": "PRESERVED_LEGACY_CONSTANT"
+  },
+  {
    "path": ".pytest_cache/v/cache/nodeids",
-   "line": 96,
+   "line": 12,
+   "kind": "other",
+   "semantic_class": "prohibited-role",
+   "primary_class": "GENERIC_CUSTODY",
+   "text_sha256": "b8a5a876de90613ffca0a5426898f6f50420800f728f3478bb3ce30d6f59b011",
+   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+  },
+  {
+   "path": ".pytest_cache/v/cache/nodeids",
+   "line": 19,
+   "kind": "other",
+   "semantic_class": "boundary-statement",
+   "primary_class": "TRANSITION_GATE_CLOSURE",
+   "text_sha256": "20291aa9088a123ed683264eaeab435b87b8b38eaca4c7289e7c17303743b7f3",
+   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+  },
+  {
+   "path": ".pytest_cache/v/cache/nodeids",
+   "line": 22,
+   "kind": "other",
+   "semantic_class": "prohibited-role",
+   "primary_class": "TRANSITION_GATE_CLOSURE",
+   "text_sha256": "29474f9347622ee8acff922b2c2b957904f58b300325744b116215867f0eac5a",
+   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+  },
+  {
+   "path": ".pytest_cache/v/cache/nodeids",
+   "line": 113,
    "kind": "other",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -90,7 +128,7 @@
   },
   {
    "path": ".pytest_cache/v/cache/nodeids",
-   "line": 133,
+   "line": 167,
    "kind": "other",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -99,7 +137,7 @@
   },
   {
    "path": ".pytest_cache/v/cache/nodeids",
-   "line": 152,
+   "line": 186,
    "kind": "other",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -107,26 +145,17 @@
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
-   "path": "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
-   "line": 297,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
+   "path": ".pytest_cache/v/cache/nodeids",
+   "line": 196,
+   "kind": "other",
+   "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "5e6f015ac691162686ddc41f098ffc4fcff457b993cadebee343d1ae084daa43",
+   "text_sha256": "5342a32daac44c3d9b2c2973ae7694a91332628ce7d00e1f21398c9c1e7e0f12",
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "README.md",
-   "line": 7,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "5329041e49ae352ee63d3a2418a5a640811cb557361ed5e79574af445bf70554",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "README.md",
-   "line": 9,
+   "line": 13,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -135,7 +164,7 @@
   },
   {
    "path": "README.md",
-   "line": 11,
+   "line": 15,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -144,25 +173,16 @@
   },
   {
    "path": "README.md",
-   "line": 19,
+   "line": 23,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
    "text_sha256": "4ee2580974bcd62aef47f31e7736fb2f54837a68d0d3517a3ed41195321d5498",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 51,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "287b40ac3475a6ec86b821bf42fa83f158ec29bf5cda18b3de4d58367cb12695",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "README.md",
-   "line": 55,
+   "line": 59,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -171,7 +191,7 @@
   },
   {
    "path": "README.md",
-   "line": 114,
+   "line": 118,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -180,7 +200,7 @@
   },
   {
    "path": "README.md",
-   "line": 122,
+   "line": 126,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -189,7 +209,7 @@
   },
   {
    "path": "README.md",
-   "line": 130,
+   "line": 134,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -198,7 +218,7 @@
   },
   {
    "path": "README.md",
-   "line": 141,
+   "line": 145,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -207,7 +227,7 @@
   },
   {
    "path": "README.md",
-   "line": 155,
+   "line": 159,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -216,7 +236,7 @@
   },
   {
    "path": "README.md",
-   "line": 171,
+   "line": 175,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -225,16 +245,16 @@
   },
   {
    "path": "README.md",
-   "line": 754,
+   "line": 758,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "3003febacf0e9a30aaf89b5923b3d8e81b4a8325eed10a6071222d6047a278e8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 798,
+   "line": 802,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -243,7 +263,7 @@
   },
   {
    "path": "README.md",
-   "line": 827,
+   "line": 831,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -252,7 +272,7 @@
   },
   {
    "path": "README.md",
-   "line": 858,
+   "line": 862,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -261,7 +281,7 @@
   },
   {
    "path": "README.md",
-   "line": 874,
+   "line": 878,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -270,7 +290,7 @@
   },
   {
    "path": "README.md",
-   "line": 881,
+   "line": 885,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -279,7 +299,7 @@
   },
   {
    "path": "README.md",
-   "line": 929,
+   "line": 933,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -288,7 +308,7 @@
   },
   {
    "path": "README.md",
-   "line": 932,
+   "line": 936,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -297,7 +317,7 @@
   },
   {
    "path": "README.md",
-   "line": 935,
+   "line": 939,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -306,7 +326,7 @@
   },
   {
    "path": "README.md",
-   "line": 959,
+   "line": 963,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -315,7 +335,7 @@
   },
   {
    "path": "README.md",
-   "line": 973,
+   "line": 977,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -324,7 +344,7 @@
   },
   {
    "path": "README.md",
-   "line": 976,
+   "line": 980,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -333,7 +353,7 @@
   },
   {
    "path": "README.md",
-   "line": 1019,
+   "line": 1023,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -342,7 +362,7 @@
   },
   {
    "path": "README.md",
-   "line": 1036,
+   "line": 1040,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -351,7 +371,7 @@
   },
   {
    "path": "README.md",
-   "line": 1061,
+   "line": 1065,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -360,16 +380,16 @@
   },
   {
    "path": "README.md",
-   "line": 1076,
+   "line": 1080,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "05dae2dac1e64f6fad8298f6b6fc41187d56edd1c1e816d8d56d565464c709e0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 1086,
+   "line": 1090,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -378,16 +398,16 @@
   },
   {
    "path": "README.md",
-   "line": 1107,
+   "line": 1111,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
    "text_sha256": "7f7b79e082f8df329f38b2be9d2896ceae99862654a4962c7deaa2000b693947",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 1148,
+   "line": 1152,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -396,7 +416,7 @@
   },
   {
    "path": "README.md",
-   "line": 1153,
+   "line": 1157,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -405,7 +425,7 @@
   },
   {
    "path": "README.md",
-   "line": 1174,
+   "line": 1178,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -414,7 +434,7 @@
   },
   {
    "path": "README.md",
-   "line": 1197,
+   "line": 1201,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -423,7 +443,7 @@
   },
   {
    "path": "README.md",
-   "line": 1206,
+   "line": 1210,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -432,7 +452,7 @@
   },
   {
    "path": "README.md",
-   "line": 1211,
+   "line": 1215,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -441,7 +461,7 @@
   },
   {
    "path": "README.md",
-   "line": 1234,
+   "line": 1238,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -450,7 +470,7 @@
   },
   {
    "path": "README.md",
-   "line": 1261,
+   "line": 1265,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -459,7 +479,7 @@
   },
   {
    "path": "README.md",
-   "line": 1264,
+   "line": 1268,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -468,7 +488,7 @@
   },
   {
    "path": "README.md",
-   "line": 1269,
+   "line": 1273,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -477,7 +497,7 @@
   },
   {
    "path": "README.md",
-   "line": 1391,
+   "line": 1395,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -486,25 +506,25 @@
   },
   {
    "path": "README.md",
-   "line": 1485,
+   "line": 1489,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "8c6689f8a70ff55d7d757eb126272235c9b54c7aa2e144632095cf8e31c5e616",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 1490,
+   "line": 1494,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "7d4c07151b14ca5b00c80cbcf2d0cd57ea1f1c17268fd6124d7abc9bd8ec60c9",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "disposition": "OPEN_TERM_ONLY_IN_BACKTICKED_IDENTIFIER"
   },
   {
    "path": "README.md",
-   "line": 1532,
+   "line": 1536,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -513,7 +533,7 @@
   },
   {
    "path": "README.md",
-   "line": 1537,
+   "line": 1541,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -522,7 +542,7 @@
   },
   {
    "path": "README.md",
-   "line": 1542,
+   "line": 1546,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -531,7 +551,7 @@
   },
   {
    "path": "README.md",
-   "line": 1564,
+   "line": 1568,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -540,7 +560,7 @@
   },
   {
    "path": "README.md",
-   "line": 1567,
+   "line": 1571,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -549,7 +569,7 @@
   },
   {
    "path": "README.md",
-   "line": 1582,
+   "line": 1586,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -558,7 +578,7 @@
   },
   {
    "path": "README.md",
-   "line": 1607,
+   "line": 1611,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -567,7 +587,7 @@
   },
   {
    "path": "README.md",
-   "line": 1766,
+   "line": 1770,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -576,7 +596,7 @@
   },
   {
    "path": "README.md",
-   "line": 1768,
+   "line": 1772,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -585,7 +605,7 @@
   },
   {
    "path": "README.md",
-   "line": 1783,
+   "line": 1787,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -594,7 +614,7 @@
   },
   {
    "path": "README.md",
-   "line": 1803,
+   "line": 1807,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -603,7 +623,7 @@
   },
   {
    "path": "README.md",
-   "line": 1811,
+   "line": 1815,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -612,7 +632,7 @@
   },
   {
    "path": "README.md",
-   "line": 1863,
+   "line": 1867,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -621,7 +641,7 @@
   },
   {
    "path": "README.md",
-   "line": 1868,
+   "line": 1872,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -630,7 +650,7 @@
   },
   {
    "path": "README.md",
-   "line": 1873,
+   "line": 1877,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -639,7 +659,7 @@
   },
   {
    "path": "README.md",
-   "line": 1905,
+   "line": 1909,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -648,7 +668,7 @@
   },
   {
    "path": "README.md",
-   "line": 1910,
+   "line": 1914,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -657,7 +677,7 @@
   },
   {
    "path": "README.md",
-   "line": 1923,
+   "line": 1927,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
@@ -666,7 +686,7 @@
   },
   {
    "path": "README.md",
-   "line": 1928,
+   "line": 1932,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -675,7 +695,7 @@
   },
   {
    "path": "README.md",
-   "line": 1941,
+   "line": 1945,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -684,7 +704,7 @@
   },
   {
    "path": "README.md",
-   "line": 1946,
+   "line": 1950,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
@@ -693,7 +713,7 @@
   },
   {
    "path": "README.md",
-   "line": 2105,
+   "line": 2109,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "TRANSITION_GATE_CLOSURE",
@@ -3581,42 +3601,6 @@
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
-   "path": "docs/ADMISSIBLE_EXISTENCE_MATHEMATICAL_PROCESSING_INTEGRATION_MIRROR_HANDOFF.md",
-   "line": 66,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "b4566e37796fd71afe1fad01304436c4b70599bacb43a6cd1769d4990e741cf7",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
-   "line": 232,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "1bdde5c0399d4b17a482b2bbbdd6b24cf86ecbdc7adfbf67b94ce4605d6fb2d5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 24,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "497dc799a2dee58fccff10feef392a06e719bb6b0e563dfabbf2715d05e27aa5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 34,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "e5e9cbfa4a0863a3498d7a6c88acb2a7ada055278a692405f9da52490ec33a7c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
    "line": 64,
    "kind": "prose",
@@ -3624,15 +3608,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "55d9358b43ef506e30eb2e6fce2e0ccf53ecff281d37a43d6d19a011f13d71b0",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 103,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "a7fb8ff16f3669b03c3aa4f3052240d57681d663b887385b5c53691efbc02179",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
@@ -3681,42 +3656,6 @@
   },
   {
    "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 331,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "73b9336c40591ec4050f51197c980cf0d8c46d2a5dcbc9f8181e988b6c2f92c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 340,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c627bd95ca01dbeee93f9b35fd33ede0eaa8def901bdf0bbd5d725b6dc7226cc",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 364,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "963fb8e05df8c102562d6cdfdbe024731fde9c570fc80c5d29fc943f2889f316",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 371,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "ec863d55f2f9bce1f8d57761a84fcd7cabb63400b5dd447caa576ff52acad360",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
    "line": 375,
    "kind": "prose",
    "semantic_class": "prohibited-role",
@@ -3741,15 +3680,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "53f0a89b010bc2835dbee74a603e6613d53ea2ab484f2b9f9633733c9966ea07",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 400,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "25e06785aa26deb15220f727b42fe1c34013ed739a85a3b7faa06addc15eb904",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
@@ -3780,51 +3710,6 @@
   },
   {
    "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 617,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "a194a426ec8b6235ff3289039c006051bbad0bb2fc3ddd7db955d1ed52ebd440",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 618,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "8faa2eab298708e9152ba1c0fce3cf9d94b79f2fb5b0f6fdb5c664cf84c0599b",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 659,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c7fc737da875aae9997503de72efa735fb116601640b693062425e14a4b2b4f7",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 666,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "9651b4bc4116a43bda1c49000bc926c20297eba5f35a353b95d1e26573ca719b",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 681,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "928cc4d1fa1f1e375f926aa119bfff03541ca3cd9e770d6be9df9ad7ceba4f8d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
    "line": 707,
    "kind": "prose",
    "semantic_class": "prohibited-role",
@@ -3833,120 +3718,12 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 732,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "3d93b5a269e798699e9f6537d6a4861031605590710d36998110ec9363525bf2",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 734,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "97e9a85c570de3a4d9b99608b0224746dff2e4159866bad0ec2ea4c4f865e628",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 741,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "3b8878ad122046f567da4102a2bfe6408381dcbefa995858c18842ca769f5f2d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/CANONICAL_POLICY_CONTEXT_PREFLIGHT_MIRROR_HANDOFF.md",
    "line": 68,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "RUNTIME_OBSERVED_REALITY",
    "text_sha256": "ce34404d17491a1dcb165c3b87619752a75b0c55e7a5ea14b23b0499a38063a5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
-   "line": 145,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "82f0aeec0245b2e663eada87b21f3388e1fd87a6963e142bc7bf406f0e038d29",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
-   "line": 153,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "3c252cbf9113156f2f3fc7bc309f162f0aa0bbbe9867af49a5ec6d125a47ae2d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
-   "line": 164,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "51c306ff66d4a1dee025457490e8e8b7e69fc03d5b6fd462fa424ff9967bbcd2",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
-   "line": 193,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "ee4873e61502bba29b32cb06971d520b928223b0f501d8642d5d681627399f0e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 126,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "2633f070c1c57aafc75794014f33ffa186d0ce4e22dee6ac8eee91672cc86f3c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 128,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "8f96f1c878f229e55e106c0ec00b546493510f7ce0fed7a3f672a9f3e3976ef4",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 163,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "5f7955e6f56daa5c9dad2054ae9a9623da5810e3dba6286f6c6992f138398867",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 174,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c70332ab27bd125cbfce281f6425349f5b199eda8134271440d4487b993d3df8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
-   "line": 105,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "0e78631160f98ce3dab939f83f73d0ab753f4981b4a6a7951554c2f1b5162872",
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
@@ -3960,39 +3737,12 @@
   },
   {
    "path": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
-   "line": 170,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "86f37c57bee3f1632a35f622c33225c9d3dbc103b58f93592730c9f72a4da45d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
    "line": 238,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "11de890dfb940ed01806f9471f4855a8223a7524c6fff3b281a68891c5515f49",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/CANONICAL_WORK_PARENT_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 78,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e9311f6b48ba193eedbaeb3bc5051787dce6d3d9873a3959721108daf69537fd",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
-   "line": 21,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "9f4d5595e1643d424e5164cfc02163fafb55adfa2318979e03242b2da4fa3bf6",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/COSV_REPOSITORY_OPERATIONAL_STATE_MIRROR_HANDOFF.md",
@@ -4002,24 +3752,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "4ebcf87ae507cb7476f7ce52481a25d1af12257725e5995e130af96b1b136109",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 32,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "fb221015bf3aa25ee2c2a7cf3c73bbc6137ed915c3a9b3152ba1bd58c815b3c7",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 61,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "fa5791f368d0722b3810faf69ea14067bb4cd7dc6ed622bf81c2df5da102c20f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
@@ -4041,15 +3773,6 @@
   },
   {
    "path": "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 396,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "b17c788807fbc1323c78b1956d3d86a1d4c35d51afb06673edd7f483db75fe2e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
    "line": 404,
    "kind": "prose",
    "semantic_class": "prohibited-role",
@@ -4064,15 +3787,6 @@
    "semantic_class": "boundary-statement",
    "primary_class": "TRANSITION_GATE_CLOSURE",
    "text_sha256": "289a9278334ace00fab1662ee3bfb302cbbac8d4b61fad64065d893f1d0b636b",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
-   "line": 84,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "db54aad363c9b2f5c6a0b28b401fc44bd4512631c31d538bbfef6da6713317de",
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
@@ -4094,24 +3808,6 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
-   "line": 97,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "76d47df3ac1f733897560f581f2f58e826d72f4e25a11b3e6efb6b0ebfb53693",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-   "line": 24,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "f31aaf1284acdcffdf54aedd3008ab9a7f74c212d8b7f3ba0dcc39f02860f1da",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
    "line": 72,
    "kind": "prose",
@@ -4128,15 +3824,6 @@
    "primary_class": "TRANSITION_GATE_CLOSURE",
    "text_sha256": "4b2175e87b0091e2c229c1fc253633cac1d06ff3bfea02c76bee02222dc51854",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-   "line": 94,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "d5ba06171c582c2a54548f327d659a4300bcfcedf8a363e3e5816b32cbcae31c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
@@ -4157,24 +3844,6 @@
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
-   "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-   "line": 126,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "74f8016346f818ec7187d1dcfa128303002ec749038c3e39335afca05e60262e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md",
-   "line": 155,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "943eceac741b2fab9063d413754f51d2cac4b1ce16c77c27acc30cb61e5dc7fb",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md",
    "line": 107,
    "kind": "prose",
@@ -4184,15 +3853,6 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/ECOSYSTEM_INGRESS_AI_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 22,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "75171265560fd87f6bfa189d6a3f28356229b412685f6586efd794ea237593c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
    "line": 97,
    "kind": "prose",
@@ -4200,15 +3860,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "35cc954d9cf8b333ce0fcd6e390f206724e73c612f3ced366e280f6c7e8d3fea",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
-   "line": 101,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c8c3afa58037f4fbc5d59b411b417b0da278e1210fccd35b10d91e78072f5e90",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
@@ -4230,75 +3881,12 @@
   },
   {
    "path": "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
-   "line": 145,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "ece5b1faeb25dc9f3fb957e02a8a44dcc0626de035d621611d555d089ff06f17",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_OPEN_SOURCE_STRATEGY_MIRROR_HANDOFF.md",
    "line": 212,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "4144d2207d6a64ebb546b845d1d35564d0c5a0a28833801ca686ae5cca63a068",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 16,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "22545b45f6652a3db33c80ee6d6bb8ee5d244ee3c6eeb330662c55dc7ffa24cc",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 35,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "6bf2dbb067034bda83e0a9e32f6d008c04d52addcb4cd37ab810dff4bc70129e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 62,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "402811aaba1057fb7dbf0edc938e5508916a5781acd312f6e361f2d83d2222e9",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 274,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "36e49174660d3397496a7b434ebeebd091f5f2f4890a2ffd7b1f5f7810b04f63",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 319,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "776a1565de5745d8b37708d37e5c786b62aab2282a68489035f3bf636c4ab3ce",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 320,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "97067b2434110be9c3331236ec3c41ab375a2eb10007dd1cb2359b49e248edd4",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
@@ -4311,24 +3899,6 @@
   },
   {
    "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 390,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "a16a81a6626338f64649e1eb4570060142675e8f3e697216d2a859da28c3c2f7",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 419,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "6a25378a25a6675ca8aa302594ceecf148ffaad6f7303e47581062c940b84763",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
    "line": 423,
    "kind": "prose",
    "semantic_class": "prohibited-role",
@@ -4338,30 +3908,12 @@
   },
   {
    "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
-   "line": 565,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "dae8dbcbfe6feaad2aa5a24905ebea3826e37f46bdffa849c3d393eca91eb6b1",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ECOSYSTEM_RECEIPT_HB_CREATION_RECORDING_STAMP_MIRROR_HANDOFF.md",
    "line": 570,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "845c623983cb5d43c418660a0f374417f124fe28f7f0f953429ac94a70d1e2ea",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/ECOSYSTEM_STATE_TRANSITION_DISPOSITION_INVARIANT.md",
-   "line": 12,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "f6b8a97de573da00fa8ddade1751027a896d85f9f135361a6fb07b4a3b3c45c8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ELAN_PAPER_COAUTHOR_PUBLICATION_MIRROR_HANDOFF.md",
@@ -4382,33 +3934,6 @@
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
-   "path": "docs/ENTITY_ECONOMY_SUCCESSOR_EDITIONS_MIRROR_HANDOFF.md",
-   "line": 61,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "a46a2aa21dcddabfedbf3557723e85dbff0e760bf34882295cf87a58c37b8bf8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
-   "line": 61,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e8a2171d8400f8f98ec3adc442d63a5f8c3f38243d97530c25661ee28d69dfb3",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
-   "line": 103,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c01ac5a377aa0b771915e5dbaf1bd61fceecf0e03b20bacf3c074d7522209afb",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
    "line": 162,
    "kind": "prose",
@@ -4416,33 +3941,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "94fbf18eda58e561676c698cef9e5bb63764899692644f922c10a4abdadff4c9",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_ACTIVATION_MIRROR_HANDOFF.md",
-   "line": 167,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "688f3d48b28e1392ad630671eef4482cede413e6f6b052e7cb9f4f353756fa5a",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/EPHEMERAL_STEGBROWSER_EXTERNAL_AI_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 28,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "f662270f9a4697b2ee2e296c5587894e620fccd3000f418d7d442fb0efd7d670",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_RUNTIME_PRESENCE_EVIDENCE.md",
-   "line": 54,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "747071ef4e0e872a8c23e59a9285a48a4634fc81a2e261bb2bbc3955b2863a57",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_RUNTIME_REGISTRY_CORRECTION_2026-09-21.md",
@@ -4517,84 +4015,12 @@
    "disposition": "PRESERVED_DATED_RECORD"
   },
   {
-   "path": "docs/GADI_MIRROR_HANDOFF.md",
-   "line": 97,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "2617ee56390e4f066fe6bf72c2264a47a0b9e8ecce7a5800e31d78226729fdda",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/GADI_MIRROR_HANDOFF.md",
-   "line": 114,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "76894f3bbc6b7f96027e07b93cb8809e972b5c6e98688b38df00148e253f6957",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/HB32_CARRIER_FIRST_BOOTSTRAP_RECONCILIATION_MIRROR_HANDOFF.md",
    "line": 69,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "05f0201518b2f1091cacba08766a5f15530c050f24723b65f75a198d7350cfdf",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
-   "line": 75,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "6c2ce21836882b1cc7b945a508bf93859ba5620f112ebd99aa7a3a611383e6fc",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
-   "line": 147,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "a0993146b3c2a60fe246c2c023a224eb4d74bc13fa5c37980674795938fa661a",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
-   "line": 35,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "67e256ba606ff0b9a3e2a0d6cd1afac9b0787f2cbe7311d7146c4bbd1272957b",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HF_PUBLIC_PRECURSOR_REPLAY_MIRROR_HANDOFF.md",
-   "line": 18,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "0ac7c43985073a0a7967bb25279770a5d21bb3e06e4c6ef540bd547b97866ce3",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HIL_REQUEST_CONSUMPTION_LOCAL_READY_MIRROR_HANDOFF.md",
-   "line": 49,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "bf57381b2028416a47c4e0220ae0d4d7aaef3ba72c4da8a3a11bc39d824d1467",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/HIL_RESIDENT_SESSION_COHORT_MIRROR_HANDOFF.md",
-   "line": 94,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e8ffecac7bbcfbe9862b8fb6534d95dbddad49501f99608d7b4b4e960f96663c",
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
@@ -4607,57 +4033,12 @@
    "disposition": "PRESERVED_DATED_RECORD"
   },
   {
-   "path": "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md",
-   "line": 35,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "dd771bc327bcf195cd47879a5b7a6ffe21033e1cfac0c031d392aa5344901dbb",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_SOURCE_MAPPING_v1.json",
    "line": 108,
    "kind": "data",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "fb9549fafcc616aab810003a999647e94655a52a8f60d7c7c03e70d85460d6d5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/INTR_REUSABLE_PROTOCOL_COMPONENTS_MIRROR_HANDOFF.md",
-   "line": 51,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "d38c079b5911b895521ced52e6f53303e8dd8aef91d772b251c7613695c05f90",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md",
-   "line": 60,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c5aacfb7582dd43fbfefb821ed1619453059579381f871b2df32a95d88fcf32e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/KV_AI_END_TO_END_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
-   "line": 53,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "94b2b99f012670ab8c7d7b4f7eb966ffea4d2a8b92cfb7af308940c5e2c8beb8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
-   "line": 265,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "aa821fc8d317740a26c103a8c155f1634e29489490b32491087eb424e7669e9a",
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
@@ -4677,24 +4058,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "482886bbe4cae1f215a88e8155a45dbd7c4a2123566b55edaf4c5bc1f05f3dc7",
    "disposition": "PRESERVED_REMEDIATION_LEDGER"
-  },
-  {
-   "path": "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md",
-   "line": 11,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "0d150e2876728d4c95ef05f714299923830cdd6a692151d1cdffbd59647836a5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md",
-   "line": 85,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "1c9740945c03b85d46452e9dd5070443d11332a4117de08e40a898a235d5d427",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/MASTER_RECORDS_REPORTABLE_CHECKPOINT_MIRROR_HANDOFF.md",
@@ -4752,15 +4115,6 @@
   },
   {
    "path": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
-   "line": 46,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "d9b43e4643da44cc5dc015ba8a62185ead923b8790bec2dfad6a6e6ad7a7c4c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
    "line": 102,
    "kind": "prose",
    "semantic_class": "prohibited-role",
@@ -4794,42 +4148,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "6f855ea95d5f2df6e68f798e002cd0e2bdeab24bf20e2cacdc6ae2e0a265d782",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
-   "line": 230,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "76c3688b226b2d05b4f51cde1d3b9e437f0cfedb92dd2e6f5a369e6df61e5ee5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
-   "line": 770,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "6776d424aa8a413687e195a94b0add76ca77418530709dd5d98fcf4d25236c0b",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
-   "line": 155,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "61546f07e3bb1c2d7cf638979196ecce805048a8f9e4adb42cf287e548426610",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
-   "line": 281,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "bf53c4b447abd9cd1ba034cd651bdff522ce7bf4c10e22c36bd1499cfc1dc023",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
@@ -4886,15 +4204,6 @@
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
-   "path": "docs/MIR_SDK_RETURN_INGRESS_MATERIALIZATION_MIRROR_HANDOFF.md",
-   "line": 90,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "40447cc2ccc0eaf23adc6aca59ac75792c7cc1979d1b7edeff64bf83955f919a",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md",
    "line": 46,
    "kind": "prose",
@@ -4914,57 +4223,12 @@
   },
   {
    "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
-   "line": 50,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "d4d9caedef1cbbf6c2065707b5bca23eb210fbc3cd7fc7a296b29f7497452568",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
-   "line": 95,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "e7e4aa2e22c920ad3458eaf2aa447df5bb64609b83eb1b3ad081d131824622f2",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
-   "line": 152,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "6f6af2cf1768c411ea36bb0b1f92a90c696185b15e5e83c2dd56830f8ef46a6e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
-   "line": 160,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "fb39a31e467b04794460b900ce438846d6be3c0e6dc33aa232caeb70db0d65bb",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
    "line": 181,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "31d7cf022ec6199496fac4ef2e0f0a38d501a37b67400dfef8bfba952035ce71",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
-   "line": 193,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "8f330bc40cd5a2a6075b56ddaed74f029b2116fbf115eb42c714ae9c501f980c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
@@ -4977,93 +4241,12 @@
   },
   {
    "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 74,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "35ca04229a98c5b27c2b49c8fe82d358c79878a737dceff933d5d72110ef2b18",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
    "line": 82,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "5c44c5cbf73c5def398d1ebc5a4a342a2a533f415acd1848ed9486b643db767e",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 141,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c0f40026e36d74c25aec3b8c6585e577c46e73efa31aa0dfd52fdc904cabb6ee",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 145,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "aeaf63021100531ebc40d15de3149e3b7cdebb9919508af041d4a54c15320dc3",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 168,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "56c742a8d3308b8fd264280ab2390e046e462e565337b421e280a12717916709",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 172,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c91d1ab9ba444bb1d801a63de694fd12274212e5cf150a8dfc2ba8ed1a66bdb7",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/MYKV_NATIVE_IOS_PACKAGING_DISTRIBUTION_MIRROR_HANDOFF.md",
-   "line": 13,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c4db79b44e4e8d9d6d4f2c303668921ff30544f14cea3616364d9dd539236bc4",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
-   "line": 91,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "307d3202c814091cc89daba6713ef2342cefeae74df6fc36dd6ad5211018d20e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
-   "line": 134,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "7b622a0e7512488c10b5f5baeec4ec0988fbc5f31bf20ba54c7a548379cfab34",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
-   "line": 145,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "db6a6ae00a53d66132f429025d5f82c60558e91c573b92f0b34790078cb27a6c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md",
@@ -5082,51 +4265,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "e21ed5c3ded3a4bb3a2ed3231ac1d2953d55e28e69800c5f2e2173cf92cb75da",
    "disposition": "PRESERVED_DATED_RECORD"
-  },
-  {
-   "path": "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
-   "line": 111,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "e8708566e0618a9037ff4f15e81573c94c4c7bef85b3fd1ac92fe8e573e6b6b4",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
-   "line": 135,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "1270764014a53d81a665395155736b74e27d05581401bdef2a87ddce2fabf8e9",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/OPTICAL_PHYSICAL_STATE_REPLAY_RESEARCH_MIRROR_HANDOFF.md",
-   "line": 190,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c0cc179c40d7cc29d05cb64f4972caadd041255a0acad996f59f4a42a0a7e94c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
-   "line": 11,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c016825d225fa44d3e18ffc5d78d5e7ed62e30be5107c0c0891b964488fce2f3",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
-   "line": 17,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "d6b75f8a27a979b46949617d31b963268be89b562c67c0169d04f8c2f5bce48c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
@@ -5159,10 +4297,10 @@
    "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
    "line": 75,
    "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "50f53d82279364deb2f5d011d503f67e9ae391cd4a06063be34ff458e8d4165c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
+   "semantic_class": "prohibited-role",
+   "primary_class": "GENERIC_TRANSITION_API",
+   "text_sha256": "2d18c843f470aa4a187a81f9a178b25ece7a6276b76a390795bdeb823ccc4466",
+   "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
    "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
@@ -5181,24 +4319,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "a3d8b0507a0aae92110d2ebb97cd59d62b1e99d14da7a466397d5cdd4530fc98",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/ORGANIZATION_BATCH_CUSTODY_REPLAY_MIRROR_HANDOFF.md",
-   "line": 115,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "b0cbf39e72e6f670072d6419ec8bc36e32c883eee0f84624e5bd4feb6885d77a",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/ORGANIZATION_CONTROL_PLANE_PARITY_MIRROR_HANDOFF.md",
-   "line": 42,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "19c8d4bc8ce59caa70c0c5e6cfa6f30e212b846741199f8eef01f61310870655",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
@@ -5246,51 +4366,6 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
-   "line": 113,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e9700abaa69ad16ef76385ce0ab29d6449a83246c3ccbbfdadf662ce84042890",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
-   "line": 187,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "bf485f38fffd41d9cfd57597add8d03aed68ab2c03f9e49b88e35598cba53731",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
-   "line": 387,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "f23721fc89fcdcc7c4634942f05b46540e990013cc097f4032b062eaa8dbcb7e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
-   "line": 398,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c446c12a72ad0a7802fafa26ca68367e0ce2029e66fba08a6499bd8d9befe91c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
-   "line": 417,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "08441716690a7d28d3c418f03ff3a41f07f54593b48860fbf70b43d2a89a445f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
    "line": 698,
    "kind": "prose",
@@ -5301,93 +4376,12 @@
   },
   {
    "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
-   "line": 700,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "1ff74329d202a0c9b67d2918eb4df1cfd873f1391ec9ecae347732c3f8ddc762",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
    "line": 857,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "73eb75ffe9f203d2c8e53f9e0a08ee25853bfc5b90a60c3af32570fbddac77fe",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/REUSABLE_TASKS_MIRROR_HANDOFF.md",
-   "line": 12,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "9c72576db450aa2934e78317e7324e3e242eba38a32cda3104e3523b88bff6e1",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
-   "line": 148,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "5267bd24911d68327aa7675915265ce67ab12332200c9dc1a807ff298690ec45",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
-   "line": 203,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "e47b1a3f3bcff6bbbc7fa78adb5f414a98738bebe5b336ae4b24495633d9fc5e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 95,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "9163bea04dd430f69008e52f24ef529e4f20f2aac3ea94e1a4b069692caa533e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/RUNTIME_PROFILE_MAP_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
-   "line": 50,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "f5a5465f4da994f902dadea9a4209f18c5a98821b7a1e231b5de1b28f6333335",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md",
-   "line": 26,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "d72ddbdbe06ad2f5e2d3104f68a1c6b14127e6f1a7c8e1f6def0a516e6a750b3",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-   "line": 51,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "95c21ae169c4f6fe289b478d9c05f26ae85e6afc8f9fa80c03ccf52524c82f24",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
-   "line": 167,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "43e99f201b008e24be5286ee9d02666ca873759d4ac918899b59f5b1c9f9398f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
@@ -5400,156 +4394,12 @@
   },
   {
    "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
-   "line": 297,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "06554bbd5f5979080d1254d8ae08ecdccf77056b5c4989e8bb3940a332b7767d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
-   "line": 424,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "a50f78727304cf243c80be64b64e82bfccad36ec4e72bd18ec2d63e01ff4e8fe",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
    "line": 433,
    "kind": "prose",
    "semantic_class": "prohibited-role",
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "4d427d74e644874891c3a510c4872dfb57005385b618e76b781ccf646418b0b8",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md",
-   "line": 454,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "ac34410144535d19dadf27007524c4e48797476d9652d909f64cee9904d21dca",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_COLLAB_INGRESS_CONFORMANCE_MIRROR_HANDOFF.md",
-   "line": 19,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "037e086021468a5f7106b1b10a30c468ed6284096608d3f267411ef8cd8d18c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md",
-   "line": 11,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "f46a53e7843d706bdfdf97e1f1c185a6e3f35c9cc5ff9d35a1c89537794e897e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md",
-   "line": 19,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "037e086021468a5f7106b1b10a30c468ed6284096608d3f267411ef8cd8d18c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md",
-   "line": 42,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "60fbfb80c90a2640edd4c0960511cb058b09ce518f74eda106cf000ead062c9c",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_IDENTITY_ROUTING_REGRESSION_GATE_MIRROR_HANDOFF.md",
-   "line": 19,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "037e086021468a5f7106b1b10a30c468ed6284096608d3f267411ef8cd8d18c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_STEGCORE_ENTRY_CONFORMANCE_MIRROR_HANDOFF.md",
-   "line": 19,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "037e086021468a5f7106b1b10a30c468ed6284096608d3f267411ef8cd8d18c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MANIFEST_TVC_LINEAGE_CONFORMANCE_MIRROR_HANDOFF.md",
-   "line": 19,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "037e086021468a5f7106b1b10a30c468ed6284096608d3f267411ef8cd8d18c0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
-   "line": 32,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "7ad45bd064a76077cb8f8d50d279bc4cd95ccd3f81239007a0b3f376ff87c9b9",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_MICRO_NODE_COMMIT_TIME_ADMISSIBILITY_MIRROR_HANDOFF.md",
-   "line": 109,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "db7c63f436f423e83e49a91447fb706984c993db48ae49e9fa9dcd6c5bfa3a64",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-   "line": 168,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "536761ca4bee291141b7f5741fe16b2a3a7cbf5ae00a0d3abf937cf53ff90880",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-   "line": 315,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "f35f46580f6dea179f588b57888ab78fd8d8d27ccd637e526d3e6d3ec0bbe805",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-   "line": 321,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "7402298820a5141f6e945cf6f343fbd301b3d9d82c77f89076472e7a67c0db52",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-   "line": 342,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "3586440e0a2bd2ee15df68da06794182991c88fb706d05f3d4d302f33f2368d6",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
@@ -5568,33 +4418,6 @@
    "primary_class": "TRANSITION_GATE_CLOSURE",
    "text_sha256": "ab4a2592b500bd8a584aaccb978f57a4e4439497d928cb655b80685c4c1866c8",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 55,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "cbafb68a5b098b66e3bebee3f425e373f5b4fb2734c4f736f7fcdbbe6d8fd840",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 98,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "94ed28d2e10ba8ee32b7233044c888eea48a1d77f7d3681f4596cbcfddc0a05f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 371,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "69b4d089a0b3bce0bb2cb793eabeb17c3c931ef6ecb5ded686b5cc3ee87c1997",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
@@ -5642,24 +4465,6 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md",
-   "line": 16,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "c69e0c77320dab3fb0792582fc6e9455dfe373aa72d39be9b78777e5776223c2",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 52,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "0e502cac2f1048ecb173fd83df1a2970f4e29c14a934bb6d01ae3f6f517e0630",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/SESSION_ARCHIVE_RECEIPT_2026-08-12_ECOSYSTEM_CHAT_LOCAL_MODEL.md",
    "line": 82,
    "kind": "prose",
@@ -5667,15 +4472,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "5149aa0e62b5c82415c31d4fce8297e7b8ccd835c1be99ff12573dbfe9eb4b9d",
    "disposition": "PRESERVED_DATED_RECORD"
-  },
-  {
-   "path": "docs/SITE_ECE_PUBLISHER_OWNER_BINDING_MIRROR_HANDOFF.md",
-   "line": 18,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "613f3b19d4ecba497ad861f39d8fda7503f50c35d83742a13246b5827d88cbb6",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/SS_ERL_MASTER_RECORDS_COMPONENT_BINDING_MIRROR_HANDOFF.md",
@@ -5687,33 +4483,6 @@
    "disposition": "PRESERVED_HASH_LINE"
   },
   {
-   "path": "docs/SS_EVIDENCE_COMPARISON_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 63,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "4b9d7e1cf06e97977ee807e7b16497e4dc9ec8db389dfc1f981f71ffe35f8e23",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STALE_HEARTBEAT_RECLAMATION_MIRROR_HANDOFF.md",
-   "line": 144,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "08be7fa4d2832a25bb2d03dea5999533f1824468adb038bd777a849f088fd5e6",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STATE_LANGUAGE_HANDOFF_RECONCILIATION_MIRROR_HANDOFF.md",
-   "line": 135,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "04d4c629128b41b72c51e0579108a973ad50cb9490f7aef166b57c37622d742a",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/STATE_LANGUAGE_HANDOFF_RECONCILIATION_MIRROR_HANDOFF.md",
    "line": 155,
    "kind": "prose",
@@ -5721,24 +4490,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "b078aa8fd3a67cc851eaa17204d5598854e4c5db755a8dc73a80079c2ca92b4e",
    "disposition": "PRESERVED_HASH_LINE"
-  },
-  {
-   "path": "docs/STATE_LANGUAGE_HANDOFF_RECONCILIATION_MIRROR_HANDOFF.md",
-   "line": 162,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "3c934b9992d6ad27191d5d8ff8dd624aa67943dffde50b885152e7db3c6a2f65",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STATE_LANGUAGE_HANDOFF_RECONCILIATION_MIRROR_HANDOFF.md",
-   "line": 167,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "f81c55261d00948ace1777833137af894c77c207a33a153c4c55321a811190fc",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/STATE_LANGUAGE_HANDOFF_RECONCILIATION_MIRROR_HANDOFF.md",
@@ -5841,75 +4592,12 @@
   },
   {
    "path": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
-   "line": 237,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "76ca0d1b23a876a410a282e53aa20cab03f900c00680250ee1d926313af24c90",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
    "line": 254,
    "kind": "prose",
    "semantic_class": "boundary-statement",
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "d9f580ab74d51e0f8bbf4faf2459e5f6f9eba4b2fed39ffa9846816bb99106d9",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
-   "line": 258,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "048d257b68e3a138ca42021153ad715be45667aaafc42b3555daad73b0460bb6",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_IMMUTABLE_NONCE_A3_RESULT_OBSERVATION_MIRROR_HANDOFF.md",
-   "line": 277,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "2efc80c00939e5b41b9707ff45c1cc467d84790ab99744cedf1abae340bd6b63",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
-   "line": 174,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "a7d4428adf7ae7ff4067c5c6fd9453ba64d522b0c84a1fc72834978e75d14c69",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_REUSABLE_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 161,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "62316704c2db6dedad7e81294604585f33697988c6cafa0293caab890598784f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
-   "line": 39,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "9a022063626d30db6e4fe59d27ea5954cc2df17a296139b74b7271f7aab6cd88",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
-   "line": 225,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e861966910d22fb8bc01c89622f9e7916a0ce3d85a37744d589024ce97d3e2c8",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
@@ -5993,96 +4681,6 @@
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
-   "path": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
-   "line": 232,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "06d981a80903151b5af47092aa32abe92e3258bc6c1b860ad01d80bdc8c55507",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGBROWSER_TRANSPORT_BOUNDARY_IMPLEMENTATION_MIRROR_HANDOFF.md",
-   "line": 26,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "e986236be68a940595830bb50ca576b810ec8e5561b4cd110151379c0bc12981",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGSOCIALS_BOUNDED_INTR_ADMISSION_ROUTE_MIRROR_HANDOFF.md",
-   "line": 77,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "9bcc7958583599022adfe0dccbda9ca0676cdf4369188624523ea773d3f5ff5f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 166,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "RUNTIME_OBSERVED_REALITY",
-   "text_sha256": "cc988eda40e97a415efcd0d22fbf7459278de7a0fc98e14443f39d1fe370621e",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-   "line": 197,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "3ea59c8d9ca69a1eef6cb133f1716c5afe32aca3d51f32243ab5876762a9d19f",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 164,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "81743c0c74222d77fec3242a5bff4aab405c3616da635b4f448616cd666deee0",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGVERSE_STAGED_OPEN_SOURCE_RELEASE_POLICY_DRAFT.md",
-   "line": 13,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "a284f457e8eee886705914ea1313e0fd1e2356c756b846c7c7dc1c549080da69",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md",
-   "line": 70,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "bfa292d17256c7ae893670d2f7d26cb7a1cf615e9c67dceadd5a19895117d407",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SUBSTRATE_NEUTRAL_DECISION_PREDICATE_MIRROR_HANDOFF.md",
-   "line": 36,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "56d68f5596214a4064c6dffb2eb52f4f4a952cc29f4571be85ec4fc12a99c71d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md",
-   "line": 47,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "5c13a00e61b20e13cba9d5a51db82b15f2eb7e78c84f9e7fb6b2ff9363a8a738",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_DEPENDENCY_UPDATE_2026-09-17.md",
    "line": 38,
    "kind": "prose",
@@ -6090,15 +4688,6 @@
    "primary_class": "GENERIC_CUSTODY",
    "text_sha256": "359d1e98b6cb5984ac96dc57ba09e918c409c96807e4854d7f547624fb647111",
    "disposition": "PRESERVED_DATED_RECORD"
-  },
-  {
-   "path": "docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 388,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "ef1bfc9485c96560d2489fab5ee6e2a37ba04243ea4e3b5c1e8b06b94165a55d",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
@@ -6110,78 +4699,6 @@
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
   },
   {
-   "path": "docs/SV002_SELF_CHARACTERIZATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 125,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "66cc58e0b3bbed26e25ca99f3164ffacc61b9ac6b65fb7c9f603ad837ef4babf",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SV002_SELF_CHARACTERIZATION_RUNTIME_MIRROR_HANDOFF.md",
-   "line": 158,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "c191ac366acb8c91f39181ef40b052fd5ce06e2027c1c9554a4b8dc0330dd740",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
-   "line": 15,
-   "kind": "prose",
-   "semantic_class": "boundary-statement",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "e482eda5dbff25d127bcc40ae4707e99f36ce6f2015a5355942452fa8c8638e2",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
-   "line": 165,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "cce2172d7df14649d100bcfc697ee47178da84cc4e470760071c2ad438afbd03",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/TEST_QUEUE_MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
-   "line": 67,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "59ff4ab4934090ec57af82974c46a08777aa7a77c9aa9f2e9238471936b058ce",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
-   "line": 51,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "ae6cdcbae22169849075f4dded23af8bcd9180850ac6f5190185907a6ee26782",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
-   "line": 147,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "GENERIC_CUSTODY",
-   "text_sha256": "2bca00f0330c2676d21c9905a441e080cfd269a5c1dcdcd270f5a43dca164c80",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
-   "path": "docs/WORKER_TASK_RESOURCE_COST_LINKAGE_MIRROR_HANDOFF.md",
-   "line": 29,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "b97c19547542fb7c41970e1fcf375c52effc4aa076196d9b196bc5e725d4f087",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
-  },
-  {
    "path": "docs/mir-exp3/STEGVERSE_SIDE_OBSERVE_DEMONSTRATE_RETAIN_RECONSTRUCT.md",
    "line": 25,
    "kind": "prose",
@@ -6189,15 +4706,6 @@
    "primary_class": "GENERIC_TRANSITION_API",
    "text_sha256": "36f8f03cd31e987aacc94ea12b6b2effc73d83918979df50361a3cf68f681e03",
    "disposition": "OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT"
-  },
-  {
-   "path": "docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md",
-   "line": 93,
-   "kind": "prose",
-   "semantic_class": "prohibited-role",
-   "primary_class": "TRANSITION_GATE_CLOSURE",
-   "text_sha256": "2d33d12b6cf91c2882d9a262b7ba45abcfeb7435968cff5e611ed9cb40bb1cd5",
-   "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   },
   {
    "path": "evidence/erl-kv-propagation/2026-09-09-verification-receipt.json",
@@ -9244,5 +7752,6 @@
    "disposition": "OPEN_CONTEXTUAL_REWRITE_REQUIRED"
   }
  ],
- "path_encoding_note": "Entries whose file name embeds a 40-hex content id carry path_template plus content_id instead of path."
+ "path_encoding_note": "Entries whose file name embeds a 40-hex content id carry path_template plus content_id instead of path.",
+ "after_commit_note": "after = rule-based tranche (#3004) plus contextual prose rewrites"
 }

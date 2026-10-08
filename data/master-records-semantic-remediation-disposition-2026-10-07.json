@@ -112,6 +112,13 @@
       "after": 191
     },
     "method": "owner identifier mapping and deterministic phrase rewrites on live files; writers emit organization-record names; readers keep one LEGACY_ constant per pre-migration name",
-    "disposition_state": "IN_PROGRESS_NOT_CLAIMED_COMPLETE"
+    "disposition_state": "IN_PROGRESS_NOT_CLAIMED_COMPLETE",
+    "contextual_prose_followup": {
+      "prohibited_role_after": {
+        "references": 691,
+        "unique_files": 278
+      },
+      "boundary_statement_after": 161
+    }
   }
 }

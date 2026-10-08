@@ -70,3 +70,7 @@ Per-entry disposition is persisted in `data/master-records-role-boundary-burndow
 Open, not claimed complete:
 - `OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT`: route and configuration names that master-records/orchestration and resident deployments own (for example the organization-record service URL variable); they need a coordinated rename there first.
 - `OPEN_CONTEXTUAL_REWRITE_REQUIRED`: lines no deterministic rule covers; they need line-by-line rewording.
+
+### Contextual prose continuation — 2026-10-08
+
+After #3004, live prose lines no deterministic rule covered were reworded in place (no lines added or removed): prohibited-role references **827 → 691 across 278 files**; negated boundary statements **191 → 161**. Lines carrying hashes, terms only inside backticked identifiers, and the canonical runtime-reality deployment declaration are unchanged. Per-entry disposition in `data/master-records-role-boundary-burndown-2026-10-08.json` is regenerated for this head. Still open: data and code lines whose wording is bound to keys or identifiers, and route/configuration names owned by master-records/orchestration.
