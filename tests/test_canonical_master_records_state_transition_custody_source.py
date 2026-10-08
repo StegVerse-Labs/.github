@@ -64,7 +64,15 @@ def test_canonical_custody_goal_is_projected_into_monolithic_registry() -> None:
     )
     assert task["coordination_state"] == "ACTIVE"
     assert task["required_evidence_validation"]["manifest_field"] == "required_evidence_manifest"
-    assert task["required_evidence_validation"]["progression_gate"] == [
+    # Registry R1 (StegVerse-Labs/.github#3012): the verified Organization
+    # receipt gates progression; Master Records reconstruction is evidence only.
+    gate = task["required_evidence_validation"]["progression_gate"]
+    assert gate[0] == "state=RECORDED"
+    assert any("verified_organization_receipt" in item for item in gate)
+    assert "organization_receipt.source_transition_sha256==sha256:receipt_sha256" in gate
+    assert "reconstruction_status=PASS" not in gate
+    assert "master_records_reconstruction=EVIDENCE_ONLY_NEVER_A_PROGRESSION_GATE" in gate
+    assert task["required_evidence_validation"]["superseded_progression_gate"]["value"] == [
         "state=RECORDED",
         "reconstruction_status=PASS",
         "required_evidence_validation_status=PASS",
