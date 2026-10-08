@@ -130,7 +130,10 @@ def _read_existing_authenticated_locator(
         sys.path.insert(0, str(root))
     org = import_module("aggregate_repo_transition")
     batch = import_module("organization_batch_custody")
-    ledger = org.ledger_root()
+    try:
+        ledger = org.ledger_root()
+    except org.LedgerLocationRequired:
+        return None  # No materializer-supplied ledger: unreadable, never derived.
     head_path = ledger / "HEAD.json"
     if not head_path.is_file():
         return None  # No invented runtime transition from inaccessible readback.
@@ -253,7 +256,10 @@ def _require_current_organization_lease_status(
         sys.path.insert(0, str(root))
     org = import_module("aggregate_repo_transition")
     batch = import_module("organization_batch_custody")
-    ledger = org.ledger_root()
+    try:
+        ledger = org.ledger_root()
+    except org.LedgerLocationRequired as exc:
+        raise DiagnosticAdmissionError(exc.failed_predicate) from None
     head_path = ledger / "HEAD.json"
     require(head_path.is_file(), "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
     try:
