@@ -9,13 +9,14 @@
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "71000000100126",
   "repository": "StegVerse-Labs/.github",
+  "registry_home": "StegVerse-Labs/.github",
   "issue_ref": null,
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": [
-      "StegVerse-Labs/.github",
+      "StegVerse-org/.github",
       "StegVerse-org/StegVerse-SDK"
     ],
     "components": [
@@ -23,6 +24,13 @@
       "actions-by-manifest",
       "allow-deny-fail-closed"
     ]
+  },
+  "allocator_projection": {
+    "task_ref": "tasks/TASK-2026-0013.json",
+    "task_id": "TASK-2026-0013",
+    "role": "ALLOCATOR_PROJECTION_ONLY_NOT_A_SECOND_GOAL",
+    "resident_request_ref": "control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json",
+    "registry_home_is_claim_target": false
   },
   "dependencies": [],
   "remaining_predicates": [

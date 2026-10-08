@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0013",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001 (COSV 71000000100126): governance and non-governance manifest routes of StegVerse-org/.github and StegVerse-org/StegVerse-SDK as manifest-bound transitions through Interlock/InTr admission, each terminal ALLOW/DENY/FAIL_CLOSED retained on the Organization ledgers. Not a second goal.",
+  "status": "queued",
+  "requested_at": "2026-10-08T23:08:06Z",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-org",
+          "name": ".github",
+          "full_name": "StegVerse-org/.github",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "resident-runtime/organization_manifest_ingress.py",
+            "org-boundary/runtime/manifest_selection.py"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "governance-manifest-route",
+            "non-governance-manifest-route"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "stegverse-org:manifest-route-transition-disposition"
+          ]
+        }
+      },
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-org",
+          "name": "StegVerse-SDK",
+          "full_name": "StegVerse-org/StegVerse-SDK",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegverse/manifest_state_transition_runtime.py",
+            "stegverse/route_resolution.py",
+            "stegverse/manifest_contract.py"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "governance-manifest-route",
+            "non-governance-manifest-route"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "stegverse-org:manifest-route-transition-disposition"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/sdk-manifest-ecosystem-transition-disposition-r1",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001.json",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}
