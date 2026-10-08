@@ -20,7 +20,7 @@ Inspect the existing HeartBeat and Master Records contracts to determine whether
 ## Canonical authority boundaries
 
 - HeartBeat: synchronization/timing/freshness/liveness/correlation/observability only.
-- Master Records: custody, required-evidence validation, replay/query, and reconstruction authority only.
+- Master Records: organization records/reconstruction, required-evidence validation, replay/query, and reconstruction authority only.
 - Interlock/InTr: governed transition authority.
 - WorkerCoordinator: claim/fence authority.
 - TV/TVC: credential/scoped-authority issuance where applicable.
@@ -40,7 +40,7 @@ Therefore, current HeartBeat provides deterministic reference/correlation semant
 
 `workers/canonical_state_transition_custody.py` constructs canonical transition receipts, submits them through the existing Master Records HTTP or durable-local authority, requires `RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256`.
 
-Master Records therefore provides exact per-receipt custody/reconstruction identity. The current canonical receipt schema includes `recorded_at` but does not require `hb_creation_reference`, `hb_recording_reference`, or an HB checkpoint that commits the resulting canonical receipt set.
+Master Records therefore provides exact per-receipt organization records and reconstruction identity. The current canonical receipt schema includes `recorded_at` but does not require `hb_creation_reference`, `hb_recording_reference`, or an HB checkpoint that commits the resulting canonical receipt set.
 
 ### Bound conclusion
 
@@ -59,13 +59,13 @@ Every canonical state-transition receipt capable of participating in this eviden
 - `hb_creation_reference`: deterministic HB reference observed when the receipt body is first frozen;
 - `hb_creation_protocol`: protocol/profile identifier used to derive/verify that reference.
 
-Master Records custody must additionally retain, as custody metadata rather than mutating the already-frozen receipt body:
+Master Records organization record must additionally retain, as custody metadata rather than mutating the already-frozen receipt body:
 
 - `hb_recording_reference`: deterministic HB reference observed when Master Records durably records the receipt;
 - `recorded_receipt_sha256`: exact canonical receipt digest;
 - `master_record_ref`: existing custody locator.
 
-The creation reference belongs to the producer-side evidence. The recording reference belongs to Master Records custody evidence. Neither reference authorizes anything.
+The creation reference belongs to the producer-side evidence. The recording reference belongs to Master Records organization record evidence. Neither reference authorizes anything.
 
 ### Master Records commitment checkpoint
 
@@ -87,7 +87,7 @@ Minimum fields:
 
 The receipt-set root must be reproducible from canonical Master Records receipt identities ordered by a deterministic rule independent of wall-clock timestamps. The simplest admissible initial rule is ordered canonical `receipt_sha256` leaves selected by a closed sequence/query boundary, with the exact canonicalization and tree/root profile versioned.
 
-This checkpoint does not copy or replace Master Records custody. It commits the observed custody state.
+This checkpoint does not copy or replace Master Records organization record. It commits the observed custody state.
 
 ### External checkpoint anchor interface
 
@@ -115,7 +115,7 @@ The contract MUST NOT hard-code OpenTimestamps, Bitcoin, GitHub, or another prov
 ## Required invariants
 
 1. HB reference does not authorize creation, recording, transition, execution, custody, admission, routing, or credentials.
-2. Master Records custody does not authorize transitions or execution.
+2. Master Records organization record does not authorize transitions or execution.
 3. External anchoring does not authorize any StegVerse action.
 4. An HB checkpoint cannot claim a Master Records commitment unless the root is deterministically reproducible from retained canonical receipt identities.
 5. Deleting, inserting, replacing, or reordering any in-scope canonical receipt must change the committed root or fail reconstruction.
@@ -271,7 +271,7 @@ The confirmed temporal bound inherits only to receipts inside the explicit post-
 
 ### Authority invariants
 
-This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, Master Records, GitHub, or external provider execution, transition, admission, custody, credential, routing, publication, or governance authority. Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; TV/TVC remains credential authority; Master Records remains custody/reconstruction authority.
+This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, Master Records, GitHub, or external provider execution, transition, admission, custody, credential, routing, publication, or governance authority. Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; TV/TVC remains credential authority; Master Records remains limited to organization records and reconstruction.
 
 ### Validation ceiling
 
@@ -346,7 +346,7 @@ existing resident/canonical task execution
 -> build_state_receipt(...)
 -> hb_creation_reference frozen into exact receipt bytes
 -> submit_state_receipt(...)
--> canonical Master Records RECORDED custody
+-> canonical Master Records RECORDED organization records
 -> hb_recording_reference retained as custody metadata
 -> exact reconstruction
 -> successor custody ordinal
@@ -441,7 +441,7 @@ PR #2453 merged as `7b767ddce7b1ecb54f7eda6730875e788f1027de` after generation-1
 The deterministic conclusion is now explicit:
 
 - no fresh post-update resident cycle is retained, so no claim is made that execution reached `build_state_receipt(...)`;
-- the first concrete source execution defect on the restart path was loss of the existing canonical Master Records custody binding at worker process launch;
+- the first concrete source execution defect on the restart path was loss of the existing canonical Master Records organization record binding at worker process launch;
 - that defect is merged;
 - no receipt location, Master Records row, reconstruction result, bounded root, or HB checkpoint is inferred until the existing carrier/worker path actually executes and returns the exact machine result.
 
@@ -463,7 +463,7 @@ No new runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credent
 
 PR #2480 merged as `70300377311b9a949fd0f126cf1f31dacaaf55cd`. Exact head `dde5f1e172b11582739e92947137a6859dfe738b` passed `Validate Ecosystem Receipt HB Successor` run `35605040349` with `13 passed`, and every other observed applicable exact-head workflow completed SUCCESS.
 
-This closes the second source-level process-startup defect on the carrier-first path: the carrier process now receives the same already-declared safe local worker bindings needed by its existing `ensure_worker_presence(...)` self-heal path to launch WorkerCoordinator with canonical Master Records custody connectivity.
+This closes the second source-level process-startup defect on the carrier-first path: the carrier process now receives the same already-declared safe local worker bindings needed by its existing `ensure_worker_presence(...)` self-heal path to launch WorkerCoordinator with canonical Master Records organization record connectivity.
 
 The evidence boundary remains execution-specific. Canonical retained state is still historical; no fresh post-merge carrier/worker process cycle is retained here. Therefore execution reaching `build_state_receipt(...)`, any receipt SHA/HB creation reference, Master Records recording metadata, reconstruction equality, or bounded receipt-set root remains unclaimed.
 
@@ -552,7 +552,7 @@ existing canonical task/runtime execution
 -> build_state_receipt(...)
 -> freeze exact hb_creation_reference from independent oscillator reference derivation
 -> submit_state_receipt(...)
--> Master Records RECORDED custody + hb_recording_reference
+-> Master Records RECORDED organization records + hb_recording_reference
 -> reconstruction_status=PASS
 -> required_evidence_validation_status=PASS
 -> receipt_sha256 == reconstructed_receipt_sha256

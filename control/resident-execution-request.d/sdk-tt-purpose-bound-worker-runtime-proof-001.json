@@ -23,5 +23,5 @@
   "request_granted_authority": false,
   "provider_credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Request the existing WorkerCoordinator targeted one-shot for the canonical purpose-bound four-case state graph. WorkerCoordinator remains the sole claim/fence authority; TV/TVC remains credential authority; StegCore/InTr remains transition authority; Master Records remains custody. The request itself grants no authority and introduces no carrier or device dependency."
+  "note": "Request the existing WorkerCoordinator targeted one-shot for the canonical purpose-bound four-case state graph. WorkerCoordinator remains the sole claim/fence authority; TV/TVC remains credential authority; StegCore/InTr remains transition authority; Master Records remains limited to organization records and reconstruction. The request itself grants no authority and introduces no carrier or device dependency."
 }

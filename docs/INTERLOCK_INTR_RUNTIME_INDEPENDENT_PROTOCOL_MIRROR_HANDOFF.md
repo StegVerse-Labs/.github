@@ -90,7 +90,7 @@ Current source makes the smallest ownership boundary explicit rather than requir
 2. TV/TVC remains credential authority; `derive_execution_request` declares `credential_authority = TV/TVC` without making the SDK a credential issuer.
 3. The receiving Interlock/InTr runtime is the existing owner that must authenticate registered-node identity, consume the manifested handoff, evaluate the receiving state/predecessor and produce the terminal ALLOW, DENY or FAIL_CLOSED.
 4. That same receiving boundary must produce the authentic transfer/admission receipt and resulting-state commitment where applicable.
-5. Master Records remains custody/replay/reconstruction authority for applicable retained closure evidence.
+5. Master Records remains limited to organization records and reconstruction for applicable retained closure evidence.
 
 Therefore the smallest unresolved seam is not a new SDK feature: it is exposure/observation of the existing receiving Interlock/InTr admission operation with authenticated node/TVC context and receipt/result return. Until that owner seam is authentically callable, the runtime state remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`.
 

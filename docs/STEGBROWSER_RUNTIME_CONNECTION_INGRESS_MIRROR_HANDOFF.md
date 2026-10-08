@@ -17,7 +17,7 @@ Updated: 2026-09-17
 
 For this task, a chat statement, copied Next Prompt, handoff narrative, PR body/comment, issue text, or earlier session summary is a recovery coordinate only. Repetition never upgrades an assertion into evidence.
 
-Before any mutable claim is used as a predicate, continuation MUST re-read the current authoritative source for that claim. Examples include the Task Registry for coordination/lifecycle state, workflow files and current runs for validation policy/results, the current PR/commit graph for merge state, WorkerCoordinator for claim/fence state, Interlock/InTr for transition state, and Master Records for custody/reconstruction state.
+Before any mutable claim is used as a predicate, continuation MUST re-read the current authoritative source for that claim. Examples include the Task Registry for coordination/lifecycle state, workflow files and current runs for validation policy/results, the current PR/commit graph for merge state, WorkerCoordinator for claim/fence state, Interlock/InTr for transition state, and Master Records for organization records/reconstruction state.
 
 A prior statement may be cited as provenance that the statement was made; it MUST NOT be cited as proof that the statement is true. When current authority contradicts inherited text, the inherited text is immediately `SUPERSEDED_BY_CURRENT_AUTHORITY` and MUST NOT be propagated into a later handoff or Next Prompt as an operative predicate.
 
@@ -37,7 +37,7 @@ A1 authentic invocation-bound connection-state observation
 -> export that retained entry through existing SV002 evidence export
 -> bind the exact exported tuple into the existing registered Node intr_outbox
 -> existing root Universal InTr -> MASTER_RECORDS StegBrowser custody ingress
--> authentic Master Records custody/reconstruction evidence required
+-> authentic Master Records organization records and reconstruction evidence required
 -> A3 existing organization-local WorkerCoordinator claim/fence
 -> A4 existing exact manifest Interlock/InTr ingress
 -> STOP CHILD / Round Trip 1 owner
@@ -171,7 +171,7 @@ The existing SV001 implementation was not generic: it was correctly hard-bound t
 
 ```text
 source sha = sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
-transition = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+transition = SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION
 task = MR-STEGVERSE001-BOUNDED-AUTONOMY-001
 admission schema = stegverse.master-records.sv001-custody-intr-admission/v1
 ```
@@ -180,7 +180,7 @@ Those SV001 identities were not reused or falsified for StegBrowser.
 
 The existing root worker already provides the bounded generic extension seam: specialized profiles wrap the same `profile` and `admitValidatedTrigger` functions through `importScripts(...)` while falling through to the previous handler. This preserves one root Universal InTr runtime rather than creating a second transport/runtime plane.
 
-## Site #1375 — StegBrowser Master Records custody binding
+## Site #1375 — StegBrowser Master Records organization record binding
 
 Site PR `#1375` repaired only the StegBrowser-specific Master Records source/governance binding while preserving the existing registered Node outbox, root Universal InTr worker, and MASTER_RECORDS destination.
 
@@ -189,7 +189,7 @@ New distinct StegBrowser identities:
 ```text
 governance schema = stegverse.master-records.stegbrowser-readiness-custody-transition-request/v1
 admission schema = stegverse.master-records.stegbrowser-readiness-custody-intr-admission/v1
-transition = STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY
+transition = STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_ORGANIZATION_RECORD
 task = STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001
 COSV = 40000100100000
 destination subsystem = StegBrowser:RuntimeReadinessCustody
@@ -215,14 +215,14 @@ The admission receipt is explicitly non-authorizing and fail-closed:
 state = INGRESS_ADMITTED
 site_custody_authority = false
 site_execution_authority = false
-master_records_custody_observed = false
+master_records_organization_record_observed = false
 master_records_reconstruction_observed = false
 workercoordinator_claim_observed = false
 workercoordinator_fence_observed = false
 authority_effect = NONE_INGRESS_ONLY
 ```
 
-Therefore Master Records ingress admission must never be promoted into Master Records custody/reconstruction completion.
+Therefore Master Records ingress admission must never be promoted into Master Records organization records and reconstruction completion.
 
 Exact-head validation on `6e81eedeaeb59e8b71f8a0b83a764c2410b84c32`:
 
@@ -240,9 +240,9 @@ PR `#1375` merged with expected-head protection as `4f4b6c3db36f6d4a2e2916fda4f8
 
 The implementation claim was subsequently released through Site PR `#1376`; no stale implementation ownership should gate runtime observation.
 
-## Site #1377 — canonical Master Records custody/reconstruction reuse
+## Site #1377 — canonical Master Records organization records and reconstruction reuse
 
-Post-#1375 re-observation identified the next bounded defect: the StegBrowser path stopped at `INGRESS_ADMITTED_CUSTODY_RECONSTRUCTION_PENDING` and did not invoke the already-existing canonical Master Records state-transition custody component.
+Post-#1375 re-observation identified the next bounded defect: the StegBrowser path stopped at `INGRESS_ADMITTED_CUSTODY_RECONSTRUCTION_PENDING` and did not invoke the already-existing canonical Master Records state-transition organization records component.
 
 Site PR `#1377` repaired only that handoff. It reuses the existing `assets/canonical-master-records-transition-custody-browser.js` client and the canonical `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` contract against the existing authoritative endpoint:
 
@@ -302,7 +302,7 @@ Post-merge re-observation found no authentic record in canonical authority-owned
 
 ```text
 stegverse.master-records.stegbrowser-readiness-custody-intr-admission/v1
-STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY
+STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_ORGANIZATION_RECORD
 ```
 
 combined with the immutable nonce.
@@ -333,7 +333,7 @@ Expected invocation boundary remains:
 
 `AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_EXACT_STEGBROWSER_RUNTIME_READINESS_TUPLE`
 
-The source path from runtime readiness through Node journal, SV002 export, registered Node outbox, Universal InTr, StegBrowser-specific MASTER_RECORDS ingress, and the existing authoritative canonical Master Records state-transition custody client is now implemented and exact-head validated. Post-merge searches found no authority-owned `RECORDED + PASS` reconstruction carrying the immutable nonce and complete tuple. What remains unproven is that this immutable invocation actually traversed the repaired path and that Master Records authentically retained/reconstructed the exact tuple.
+The source path from runtime readiness through Node journal, SV002 export, registered Node outbox, Universal InTr, StegBrowser-specific MASTER_RECORDS ingress, and the existing authoritative canonical Master Records state-transition organization records client is now implemented and exact-head validated. Post-merge searches found no authority-owned `RECORDED + PASS` reconstruction carrying the immutable nonce and complete tuple. What remains unproven is that this immutable invocation actually traversed the repaired path and that Master Records authentically retained/reconstructed the exact tuple.
 
 ## Validation-policy correction after Actions cost containment
 
@@ -351,7 +351,7 @@ The stale branch for `#2069` is not retained as truth merely because its handoff
 
 ## Immediate continuation
 
-Do not emit a second request. Do not require a standing device, manual Safari/IndexedDB inspection, Remote Desktop, another machine, or a second user-operated device. Re-observe only existing authority-owned Master Records custody/reconstruction evidence surfaces for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`.
+Do not emit a second request. Do not require a standing device, manual Safari/IndexedDB inspection, Remote Desktop, another machine, or a second user-operated device. Re-observe only existing authority-owned Master Records organization records and reconstruction evidence surfaces for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`.
 
 Require exactly one authentic reconstruction that correlates the same runtime-readiness receipt SHA, Node continuity receipt SHA, Node ID, Interlock ID, Receipt #1 SHA, lease ID, runtime ID, exported bundle SHA, and StegBrowser custody transition. If and only if that reconstruction exists, promote only the A1/A2 predicates directly proven by it and continue to A3 through the existing WorkerCoordinator claim/fence authority. Otherwise bind the first concrete remaining Master Records runtime retention/reconstruction visibility defect without creating a new transport/runtime/device path.
 
@@ -359,7 +359,7 @@ A3, A4, and Round Trip 1 remain unentered until their own authentic evidence exi
 
 ## README review
 
-README reviewed. No byte change is required. The authority/runtime topology remains the existing registered Node -> Universal InTr -> EVENT_EPHEMERAL StegOS -> canonical Master Records custody/reconstruction -> WorkerCoordinator architecture; #1372, #1375, and #1377 repair evidence export/custody bindings within that existing topology.
+README reviewed. No byte change is required. The authority/runtime topology remains the existing registered Node -> Universal InTr -> EVENT_EPHEMERAL StegOS -> canonical Master Records organization records and reconstruction -> WorkerCoordinator architecture; #1372, #1375, and #1377 repair evidence export/custody bindings within that existing topology.
 
 ## Manual work
 
@@ -394,7 +394,7 @@ The unresolved condition is existing Site-to-authority route/authentication/depl
 
 Render is excluded from all consideration and use by explicit user direction. The previous workspace-confirmation prerequisite is withdrawn. Do not inspect, configure, deploy, query, or route through Render; do not request its workspace or credentials.
 
-Continue through the existing StegVerse-owned callable custody contract `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, preserving Interlock/InTr transition authority, TV/TVC credential authority and Master Records custody/reconstruction authority. Resolve the existing authority-owned binding and authentic retained evidence without making a provider, platform, operating system, browser implementation, or device class a prerequisite. No new request, host, runtime, dispatcher, transport, credential path, or custody store is introduced by this correction.
+Continue through the existing StegVerse-owned callable custody contract `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, preserving Interlock/InTr transition authority, TV/TVC credential authority and Master Records organization records and reconstruction. Resolve the existing authority-owned binding and authentic retained evidence without making a provider, platform, operating system, browser implementation, or device class a prerequisite. No new request, host, runtime, dispatcher, transport, credential path, or custody store is introduced by this correction.
 
 A1/A2 remain unpromoted; A3/A4/Round Trip 1 remain unentered. No Actions were dispatched, no runtime was launched, and no release or propagation success is claimed. README is updated with a concise pointer to this evidence correction.
 
@@ -465,7 +465,7 @@ MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001
 issue = StegVerse-Labs/.github#2078
 handoff = docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md
 COSV = 40000100100000
-scope = resolve only the provider/platform/OS/device-neutral browser binding to the existing authoritative Master Records state-transition custody API and require authentic RECORDED + reconstruction PASS for the exact immutable tuple
+scope = resolve only the provider/platform/OS/device-neutral browser binding to the existing authoritative Master Records state-transition organization records API and require authentic RECORDED + reconstruction PASS for the exact immutable tuple
 
 CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001
 issue = StegVerse-Labs/.github#2079

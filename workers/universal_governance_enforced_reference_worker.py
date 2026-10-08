@@ -237,16 +237,16 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         check=False,
     )
     if mr_proc.returncode != 0:
-        raise RuntimeError("Master Records custody validation failed: " + (mr_proc.stdout + mr_proc.stderr)[-4000:])
+        raise RuntimeError("Master Records organization record validation failed: " + (mr_proc.stdout + mr_proc.stderr)[-4000:])
     lines = [line.strip() for line in mr_proc.stdout.splitlines() if line.strip()]
     if not lines or lines[0] != "MASTER RECORDS UNIVERSAL GOVERNANCE CUSTODY: PASS":
-        raise RuntimeError("Master Records custody PASS marker missing")
+        raise RuntimeError("Master Records organization record PASS marker missing")
     custody = json.loads(lines[-1])
     effect = custody.get("custody_effect") or {}
     if effect.get("destination_custody_accepted") is not True:
-        raise RuntimeError("Master Records custody not accepted")
+        raise RuntimeError("Master Records organization record not accepted")
     if effect.get("runtime_activation") is not False or effect.get("execution_authority_granted") is not False:
-        raise RuntimeError("Master Records custody authority escalation")
+        raise RuntimeError("Master Records organization record authority escalation")
     if effect.get("credential_authority") != "TV/TVC":
         raise RuntimeError("Master Records credential authority drift")
 
@@ -268,7 +268,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "reference_enforced_boundary_observed": True,
         "bypass_negative_control_passed": True,
         "governed_target_mutation_count": 1,
-        "master_records_custody_accepted": True,
+        "master_records_organization_record_accepted": True,
         "real_external_system_enforced_activation": False,
         "runner_receipt_ref": "stegcore-reference/receipts/reference-boundary.latest.json",
         "custody_record_ref": "master-records/custody.json",

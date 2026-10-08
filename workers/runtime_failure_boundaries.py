@@ -18,7 +18,7 @@ STAGES: tuple[dict[str, Any], ...] = (
     {"index":6,"stage":"EPHEMERAL_TRANSPORT_PROVIDER_LEASE","code":"RUNTIME_STAGE_06_TRANSPORT_PROVIDER_LEASE_NOT_BOUND","next":"bind the bounded transport/provider/lease required by this operation"},
     {"index":7,"stage":"COMPONENT_EXECUTION","code":"RUNTIME_STAGE_07_COMPONENT_EXECUTION_FAILED","next":"execute or re-execute the exact component operation on the admitted node"},
     {"index":8,"stage":"EXACT_RECEIPT_COMMITMENT","code":"RUNTIME_STAGE_08_RECEIPT_COMMITMENT_FAILED","next":"commit the exact execution/result receipt into retained node evidence lineage"},
-    {"index":9,"stage":"MASTER_RECORDS_RECONSTRUCTION","code":"RUNTIME_STAGE_09_MASTER_RECORDS_RECONSTRUCTION_FAILED","next":"perform exact same-execution Master Records custody/reconstruction"},
+    {"index":9,"stage":"MASTER_RECORDS_RECONSTRUCTION","code":"RUNTIME_STAGE_09_MASTER_RECORDS_RECONSTRUCTION_FAILED","next":"perform exact same-execution Master Records organization records and reconstruction"},
     {"index":10,"stage":"DOWNSTREAM_PROPAGATION","code":"RUNTIME_STAGE_10_PROPAGATION_NOT_VERIFIED","next":"verify required downstream propagation from the reconstructed receipt"},
 )
 BY_STAGE = {row["stage"]: row for row in STAGES}

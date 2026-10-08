@@ -90,7 +90,7 @@
       "protocol_field": "evidence_references",
       "source_seams": [
         "manifest context_refs",
-        "Master Records closure evidence requirements",
+        "Master Records organization record evidence requirements",
         "run-manifest lineage commitments"
       ],
       "status": "OBSERVED_SOURCE_BINDING"

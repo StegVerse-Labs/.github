@@ -318,8 +318,8 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
                 prior_memory_reason=None,
             )
         predecessor_evidence = {
-            "evidence_id": "predecessor-master-records-closure:WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
-            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "evidence_id": "predecessor-master-records-organization-record:WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
+            "evidence_type": "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
             "origin_transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
             "encoding": "canonical-json",
             "sha256": "8" * 64,
@@ -341,7 +341,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             "master_record_ref": "master-record:successor",
         }
         with patch(
-            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_closure",
+            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_organization_record",
             return_value=(f"sha256:{previous_hash}", [predecessor_evidence]),
         ) as require_predecessor, patch(
             "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",
@@ -362,7 +362,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertEqual(receipt["prior_state_ref_or_hash"], f"sha256:{previous_hash}")
         self.assertEqual(
             [item["evidence_type"] for item in receipt["required_evidence_manifest"]],
-            ["PREDECESSOR_MASTER_RECORDS_CLOSURE", "WORKERCOORDINATOR_NON_ALLOW_ASSIGNMENT_FUNCTIONAL_MEMORY"],
+            ["PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD", "WORKERCOORDINATOR_NON_ALLOW_ASSIGNMENT_FUNCTIONAL_MEMORY"],
         )
 
     def test_emit_boundary_reconstruction_failure_blocks_successor_submission(self):
@@ -388,7 +388,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
                 prior_memory_reason=None,
             )
         with patch(
-            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_closure",
+            "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_organization_record",
             side_effect=RuntimeError("CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH"),
         ), patch(
             "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",

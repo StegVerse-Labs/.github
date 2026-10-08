@@ -67,7 +67,7 @@ def test_dispatcher_has_exactly_one_test3_selector():
     assert source.count(row)==1
 
 
-def test_dispatcher_preserves_test3_master_records_custody_binding():
+def test_dispatcher_preserves_test3_master_records_organization_record_binding():
     spec = importlib.util.spec_from_file_location("test3_dispatcher", DISPATCHER)
     assert spec is not None and spec.loader is not None
     dispatcher = importlib.util.module_from_spec(spec)

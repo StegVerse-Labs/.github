@@ -33,7 +33,7 @@ Canonical coordination fragment:
 ## Existing producers reused
 
 - build: `control/resident-execution-request.d/consume-runtime-profile-map-build.py`
-- Master Records custody: `control/resident-execution-request.d/consume-runtime-profile-map-custody.py` plus `master-records/orchestration/scripts/ingest_runtime_profile_map_custody.py`
+- Master Records organization record: `control/resident-execution-request.d/consume-runtime-profile-map-custody.py` plus `master-records/orchestration/scripts/ingest_runtime_profile_map_custody.py`
 - Master Records reconciliation: `control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py`
 - post-reconciliation readiness: `control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py`
 - governance-review packaging/routing: `control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py`
@@ -54,11 +54,11 @@ Required terminal facts include:
 - `resident_chain_preflight.state=SOURCE_CHAIN_VALID`
 - `custody_input_package_generated=true`
 - existing WorkerCoordinator registry, shared InTr router, and resident dispatcher preserved
-- `master_records_custody_performed=false`
+- `master_records_organization_record_performed=false`
 
 Build completion does not imply custody.
 
-### Master Records custody
+### Master Records organization record
 
 Qualifying receipt:
 

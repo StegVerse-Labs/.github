@@ -40,7 +40,7 @@ def test_request_is_non_authorizing_and_single_machine():
     assert value["heartbeat_grants_execution_authority"] is False
     assert value["provider_credential_material_allowed"] is False
     assert value["second_machine_required"] is False
-    assert value["master_records_custody_required_for_egress"] is True
+    assert value["master_records_organization_record_required_for_egress"] is True
     assert value["same_execution_required"] is True
 
 
@@ -131,6 +131,6 @@ def test_worker_source_requires_exact_runtime_boundaries():
     assert "tvc_issue_deepseek_intr_lease" in worker
     assert "execute_governed_deepseek_via_tvc_runtime" in worker
     assert "admit_deepseek_tvc_runtime_egress" in worker
-    assert "MASTER_RECORDS_CUSTODY_NOT_RECORDED" in worker
+    assert "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_RECORDED" in worker
     assert '"credential_material_present": False' in worker
     assert '"second_machine_required": False' in worker

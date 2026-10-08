@@ -45,7 +45,7 @@
     "workercoordinator": "CLAIM_FENCE",
     "interlock_intr": "TRANSITION_ADMISSION",
     "credential_authority": "TV/TVC",
-    "master_records": "OBSERVED_REALITY_RECONSTRUCTION",
+    "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },

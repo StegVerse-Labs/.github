@@ -42,7 +42,7 @@ Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/In
 
 ## Remaining Goal predicates
 
-Componentization does not prove runtime completion. The task still requires authentic evidence of resident execution; source-prep claim/fence and v2 receipt when needed; eligible hourly invocation; TV/TVC provider search; KV resolution and `KV_STORED_VERIFIED`; exact reviewed-ID/KV manifest binding; Interlock/InTr admission; canonical governed ALLOW/commit coherence; TV/TVC archive provider result; Master Records custody/reconstruction; bounded mailbox progression; and durable StegHealth/Canonical Work reconciliation.
+Componentization does not prove runtime completion. The task still requires authentic evidence of resident execution; source-prep claim/fence and v2 receipt when needed; eligible hourly invocation; TV/TVC provider search; KV resolution and `KV_STORED_VERIFIED`; exact reviewed-ID/KV manifest binding; Interlock/InTr admission; canonical governed ALLOW/commit coherence; TV/TVC archive provider result; Master Records organization records and reconstruction; bounded mailbox progression; and durable StegHealth/Canonical Work reconciliation.
 
 ## Canonical-source impact
 

@@ -26,7 +26,7 @@
     "every_required_transition_evidence_item_is_exactly_reconstructable": true,
     "transition_custody_pass_requires_all_required_evidence_pass": true,
     "every_state_transition_within_organization_emits_organization_receipt": true,
-    "organization_receipt_precedes_master_records_custody": false,
+    "organization_receipt_precedes_master_records_organization_record": false,
     "only_organization_records_may_be_recorded_in_master_records": true,
     "reconstruction_is_the_only_other_permitted_master_records_reference": true,
     "master_records_may_not_gate_transition_execution": true,

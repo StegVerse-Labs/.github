@@ -122,7 +122,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV_TVC_WHERE_APPLICABLE",
-    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+    "master_records_authority": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "github_runtime_authority": "NONE",
     "patient_decision_must_not_be_inferred": true,
     "provider_or_biller_assertion_not_self_authenticating": true,

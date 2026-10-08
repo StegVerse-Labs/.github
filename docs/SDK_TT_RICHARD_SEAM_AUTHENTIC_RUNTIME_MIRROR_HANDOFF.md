@@ -50,7 +50,7 @@ registered HANDOFF_READY task T + no task-bound W
 -> records-only reconstruction after W disappears
 ```
 
-WorkerCoordinator coordination, TV/TVC credential/warrant facts, and Master Records custody are not substitutes for the constitutive task transition. No valid state may expose ACTIVE T without its newly created W, nor a task-bound W without ACTIVE T.
+WorkerCoordinator coordination, TV/TVC credential/warrant facts, and Master Records organization record are not substitutes for the constitutive task transition. No valid state may expose ACTIVE T without its newly created W, nor a task-bound W without ACTIVE T.
 
 ## Master Records progression gate
 
@@ -106,7 +106,7 @@ For the Test 3 atomic-seam path only:
 ```text
 HANDOFF_READY T + no task-bound W
 -> WorkerCoordinator prepares fresh claim/fence as pending coordination state
--> Master Records closes claim/fence custody
+-> Master Records closes claim/fence organization records
 -> TV/TVC warrant/policy verification closes
 -> StegCore/InTr evaluates ACTIVATE(T)+CREATE_AND_BIND(W,T)
 -> Master Records closes/reconstructs that constitutive transition
@@ -127,7 +127,7 @@ The reconciled .github repair preserves the Test-3-only pending-activation seam:
 ```text
 HANDOFF_READY T + no authoritative claim_id/worker_id/worker_instance_id
 -> fresh WorkerCoordinator claim/fence retained only in pending_atomic_activation
--> Master Records closes claim/fence custody
+-> Master Records closes claim/fence organization records
 -> existing ProcessWorkerAdapter invokes shared StegAgents bridge in ATOMIC_ACTIVATION mode
 -> TV/TVC verification
 -> StegCore/InTr evaluates ACTIVATE(T)+CREATE_AND_BIND(W,T)
@@ -228,7 +228,7 @@ Current-main SDK validation PR #274 triggered the existing Test 1 and Test 2 wor
 The first focused Test 3 run produced 11 PASS / 1 FAIL. The failure was not a runtime-seam violation. The test `test_workercoordinator_projects_active_only_after_closed_constitutive_receipt` incorrectly labeled the first `registry["generation"] = generation` inside the Test 3 branch as the later generic activation boundary. Current source inspection confirms the actual Test 3 ordering is:
 
 ```text
-Master Records closure predicates
+Master Records organization record predicates
 -> first authoritative registry generation/task projection
 -> ACTIVE T <-> W
 -> invocation
@@ -324,13 +324,13 @@ The current machine-owned Test 3 progression therefore begins:
 ```text
 HANDOFF_READY T + no task-bound W
 -> FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T
--> Master Records closes claim/fence custody
+-> Master Records closes claim/fence organization records
 -> TV/TVC warrant/policy verification
 -> InTr ACTIVATE(T)+CREATE_AND_BIND(W,T)
--> Master Records closure
+-> Master Records organization record
 -> invocation/result
 -> CLOSE(T)+RETIRE(W,T)
--> Master Records closure
+-> Master Records organization record
 -> records-only reconstruction
 ```
 
@@ -343,7 +343,7 @@ The first concrete post-generation-102 execution defect was in `scripts/refresh_
 
 The repair removes the carrier prerequisite for independent `--task-id` execution while preserving the historical carrier requirement only for `--resume-claimed-task-id`, where an existing claim/fence is being resumed. Regression coverage proves the Test 3 task reaches the targeted runner without a carrier file.
 
-This is a source-path repair only. It does not claim that the fresh claim/fence transition has already occurred. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`, followed immediately by Master Records custody and the existing TV/TVC -> InTr atomic activation sequence.
+This is a source-path repair only. It does not claim that the fresh claim/fence transition has already occurred. The next authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`, followed immediately by Master Records organization record and the existing TV/TVC -> InTr atomic activation sequence.
 
 
 ## Same-root resident execution repair — generation 104
@@ -355,11 +355,11 @@ For an already-materialized resident source tree, copying the tree onto itself i
 Regression coverage executes the Test 3 independent task with one same root, no carrier file, and verifies that the targeted runner is reached. Authentic claim/fence evidence remains required before progression.
 
 
-## Master Records custody-binding carriage repair — generation 105
+## Master Records organization record-binding carriage repair — generation 105
 
-Tracing the first post-WorkerCoordinator transition found that the Test 3 request consumer and targeted bridge sanitized the environment before `run_worker_runtime.py`, but did not preserve the variables consumed by `workers/canonical_state_transition_custody.py`. As a result, even a correctly prepared fresh claim/fence would reach `submit_state_receipt()` with neither a configured canonical Master Records HTTP custody surface nor the durable local Master Records binding, forcing `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE` before progression.
+Tracing the first post-WorkerCoordinator transition found that the Test 3 request consumer and targeted bridge sanitized the environment before `run_worker_runtime.py`, but did not preserve the variables consumed by `workers/canonical_state_transition_custody.py`. As a result, even a correctly prepared fresh claim/fence would reach `submit_state_receipt()` with neither a configured canonical Master Records HTTP organization records surface nor the durable local Master Records binding, forcing `CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE` before progression.
 
-The existing path now preserves the canonical Master Records custody binding through both sanitization boundaries. Supported carriage includes the existing HTTP endpoint/token/timeout and the existing durable local database/receipt-key/storage-durability tuple plus the already-supported Master Records repository roots. GitHub credentials remain stripped, no new custody store or authority plane is created, and Master Records still grants no transition authority.
+The existing path now preserves the canonical Master Records organization record binding through both sanitization boundaries. Supported carriage includes the existing HTTP endpoint/token/timeout and the existing durable local database/receipt-key/storage-durability tuple plus the already-supported Master Records repository roots. GitHub credentials remain stripped, no new custody store or authority plane is created, and Master Records still grants no transition authority.
 
 The next authentic state remains a fresh WorkerCoordinator claim/fence followed by Master Records `RECORDED`, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality. Only that closure permits TV/TVC and InTr progression.
 
@@ -388,7 +388,7 @@ This generation implements the previously missing state-machine edge. It does no
 
 The first concrete remaining `REQUESTED -> WorkerCoordinator` defect was in `scripts/dispatch_resident_execution_requests.py`. Its environment sanitizer preserved the canonical Master Records HTTP endpoint/token/timeout but dropped the durable-local binding variables `MASTER_RECORDS_DB`, `MASTER_RECORDS_RECEIPT_KEY`, and `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS` before invoking the Test 3 consumer. That made the downstream generation-105/106 custody-carriage fixes unreachable for resident installations using the durable local Master Records binding.
 
-The existing dispatcher now preserves those three canonical custody inputs. No runtime, scheduler, dispatcher, authority plane, source relay, carrier dependency, or device prerequisite was added. The next authentic transition remains the fresh WorkerCoordinator claim/fence and canonical Master Records closure.
+The existing dispatcher now preserves those three canonical custody inputs. No runtime, scheduler, dispatcher, authority plane, source relay, carrier dependency, or device prerequisite was added. The next authentic transition remains the fresh WorkerCoordinator claim/fence and canonical Master Records organization record.
 
 
 ## Targeted one-shot dispatch/drive repair — generation 114
@@ -410,7 +410,7 @@ The predecessor evidence is source/test evidence only: SDK PR #304 merged as `e1
 
 Tracing the existing Test-3 terminal path found one concrete source gap. `CLOSE_TASK_AND_RETIRE_WORKER` already closes through StegCore/InTr and canonical Master Records, but the state machine previously returned records-only completion immediately afterward. It did not attempt a post-retirement invocation using the just-retired claim/fence, so the required refusal could not be authentically observed or retained.
 
-The bounded repair reuses the existing StegAgents -> SDK/StegCore/InTr -> canonical Master Records path. After the close receipt is `RECORDED` and reconstructed, the same retired claim/fence is submitted as `INVOKE_RETIRED_TASK_BOUND_WORKER` with task state `COMPLETED`, worker state `RETIRED`, actor authority false, delegation false, validity-window false, capability disallowed, and permission absent. The consequence executor is forbidden from running. The canonical governance result must be `DENY`, and only then is `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` submitted to Master Records using the denied transaction/manifest identity as evidence.
+The bounded repair reuses the existing StegAgents -> SDK/StegCore/InTr -> canonical Master Records path. After the close receipt is `RECORDED` and reconstructed, the same retired claim/fence is submitted as `INVOKE_RETIRED_TASK_BOUND_WORKER` with task state `COMPLETED`, worker state `RETIRED`, actor authority false, delegation false, validity-window false, capability disallowed, and permission absent. The consequence executor is forbidden from running. The canonical governance result must be `DENY`, and only then is `POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED` recorded as organization records in Master Records using the denied transaction/manifest identity as evidence.
 
 Terminal acceptance now requires that refusal transition to satisfy:
 
@@ -419,14 +419,14 @@ Terminal acceptance now requires that refusal transition to satisfy:
 `required_evidence_validation_status=PASS`
 `receipt_sha256 == reconstructed_receipt_sha256`
 
-The WorkerCoordinator bridge rejects a governed-close response unless the refusal, zero executor invocation, refusal Master Records closure, and refusal reconstruction are all present. No second runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential path, authority plane, carrier requirement, or device prerequisite is introduced.
+The WorkerCoordinator bridge rejects a governed-close response unless the refusal, zero executor invocation, refusal Master Records organization record, and refusal reconstruction are all present. No second runtime, scheduler, dispatcher, WorkerCoordinator, custody store, credential path, authority plane, carrier requirement, or device prerequisite is introduced.
 
 StegAgents PR #35 passed all three exact-head gates at `a1772001cf8e6ee97214944e009d624df8c54f2b` and merged as `f12abf3e062de95f7bbd5eb56247e91fdcd8481f`. This validates the source path only; source/CI validation must not be interpreted as authentic runtime evidence. The first still-unobserved authentic transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T`; only an actual machine-owned targeted one-shot can advance that predicate.
 
 
 ## Existing targeted-consumer source correction — September 24, 2026
 
-Continuing the **existing checked-out Richard Test-3 lifecycle**, source inspection found two independently reproducible bounded-consumer defects, not an authenticated failed state transition. First, configured `STEGVERSE_ORG_LEDGER_ROOT` was absent from the dispatcher, local refresh, targeted consumer, and existing StegAgents process-adapter environment allowlists; a configured organization ledger location could therefore be silently replaced by the default directory along the resident path. This change carries only the existing non-secret path value end-to-end and preserves all prior credential/authority restrictions. Second, the two-cycle targeted consumer previously continued after a nonzero first attempt or invalid COSV result, allowing the later cycle to hide the earliest failure. It also accepted an unchanged `close.latest.json` from a prior invocation as a reason to stop. It now stops at and retains the earliest failed cycle in the *existing consumption receipt*, requires all attempted cycles to have zero exit status and exact pointer/result identity, and treats only a changed close snapshot as a candidate stop condition. Changed latest evidence is never itself Master Records closure.
+Continuing the **existing checked-out Richard Test-3 lifecycle**, source inspection found two independently reproducible bounded-consumer defects, not an authenticated failed state transition. First, configured `STEGVERSE_ORG_LEDGER_ROOT` was absent from the dispatcher, local refresh, targeted consumer, and existing StegAgents process-adapter environment allowlists; a configured organization ledger location could therefore be silently replaced by the default directory along the resident path. This change carries only the existing non-secret path value end-to-end and preserves all prior credential/authority restrictions. Second, the two-cycle targeted consumer previously continued after a nonzero first attempt or invalid COSV result, allowing the later cycle to hide the earliest failure. It also accepted an unchanged `close.latest.json` from a prior invocation as a reason to stop. It now stops at and retains the earliest failed cycle in the *existing consumption receipt*, requires all attempted cycles to have zero exit status and exact pointer/result identity, and treats only a changed close snapshot as a candidate stop condition. Changed latest evidence is never itself Master Records organization record.
 
 The existing `REQUESTED` targeted request, WorkerCoordinator claim/fence, TV/TVC, InTr and canonical Master Records authority remain unchanged. The source repair does **not** prove that the actual resident ledger ever used a nondefault path, that any authentic attempt failed, or that a changed close snapshot is authoritative. When the existing machine-owned invocation runs, inspect its earliest retained failure record and the actual organization-wide hash-linked receipt sequence; require an authentic same-claim/fence canonical transition and `RECORDED`/reconstruction PASS/required-evidence PASS/exact digest equality from Master Records before declaring a repaired runtime transition. External participation and Stage-1 three-worker independence remain unverified. No new runtime, connected device, scheduler, or governance authority.
 
@@ -449,7 +449,7 @@ This source-level remediation preserves the native component-011 dispatcher work
 
 ## Pre-receipt exception retention candidate — existing owner
 
-A fresh source audit, separate from merged PRs #2672/#2690, found that the Richard targeted consumer's `runner(...)` exception and the shared dispatcher's Richard canonical-custody exception can escape before their existing receipt writes. Such exceptions are **not authenticated resident failures** without real resident records. This scoped additional source repair captures the earliest subprocess invocation exception in the existing immutable Richard consumption receipt, and preserves a fail-closed custody exception and exact consumer result in the existing dispatch snapshot. It must never claim organization-ledger or Master Records closure when custody raises. Tests inject timeout and canonical custody connection errors to verify first-failure retention and fail-closed dispatch. This does not add infrastructure, transfer task ownership, promote task state or modify the genuine outstanding runtime predicate. Exact-head validation and owner-controlled merge are required; authentic resident result remains unknown.
+A fresh source audit, separate from merged PRs #2672/#2690, found that the Richard targeted consumer's `runner(...)` exception and the shared dispatcher's Richard canonical-custody exception can escape before their existing receipt writes. Such exceptions are **not authenticated resident failures** without real resident records. This scoped additional source repair captures the earliest subprocess invocation exception in the existing immutable Richard consumption receipt, and preserves a fail-closed custody exception and exact consumer result in the existing dispatch snapshot. It must never claim organization-ledger or Master Records organization record when organization records raises. Tests inject timeout and canonical custody connection errors to verify first-failure retention and fail-closed dispatch. This does not add infrastructure, transfer task ownership, promote task state or modify the genuine outstanding runtime predicate. Exact-head validation and owner-controlled merge are required; authentic resident result remains unknown.
 
 
 ## Verified source outcome — existing COSV 20010000110000

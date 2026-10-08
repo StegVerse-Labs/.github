@@ -25,7 +25,7 @@ def sha256_uri(value):
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
-def test_sdk_evaluator_dispatch_visit_enters_existing_master_records_custody(tmp_path, monkeypatch):
+def test_sdk_evaluator_dispatch_visit_enters_existing_master_records_organization_record(tmp_path, monkeypatch):
     source = tmp_path / "source"
     runtime = tmp_path / "runtime"
     (source / "workers").mkdir(parents=True)

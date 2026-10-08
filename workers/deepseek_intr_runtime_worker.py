@@ -97,7 +97,7 @@ def validate_request(request: Mapping[str, Any]) -> None:
         "request_granted_authority": False,
         "provider_credential_material_allowed": False,
         "hosted_runtime_allowed": False,
-        "master_records_custody_required_for_egress": True,
+        "master_records_organization_record_required_for_egress": True,
         "same_execution_required": True,
         "authority_effect": "NONE_REQUEST_ONLY",
     }
@@ -335,13 +335,13 @@ def main() -> int:
         write_json(ROOT / EGRESS_REL, egress_receipt)
         if not custody_recorded:
             result = {
-                "reason": "MASTER_RECORDS_CUSTODY_NOT_RECORDED",
+                "reason": "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_RECORDED",
                 "master_records_status": execution.master_records_usage.get("status"),
                 "response_hash": execution.response_hash,
                 "tvc_use_receipt_hash": execution.egress_handoff.get("tvc_use_receipt_hash"),
                 "egress_disposition": egress_disposition,
             }
-            raise RuntimeError("MASTER_RECORDS_CUSTODY_NOT_RECORDED")
+            raise RuntimeError("MASTER_RECORDS_ORGANIZATION_RECORD_NOT_RECORDED")
         if egress_disposition != "ALLOW":
             result = {
                 "reason": "EGRESS_STEGGATE_NOT_ALLOWED",
@@ -372,7 +372,7 @@ def main() -> int:
             "response_hash": execution.response_hash,
             "provider_usage_event_sha256": execution.provider_usage_event.get("event_sha256"),
             "master_records_status": execution.master_records_usage.get("status"),
-            "master_records_custody_recorded": execution.master_records_usage.get("custody_recorded") is True,
+            "master_records_organization_record_recorded": execution.master_records_usage.get("custody_recorded") is True,
             "master_records_reconstructability": execution.master_records_usage.get("reconstructability"),
             "egress_receipt_hash": admission.egress_receipt_hash,
             "egress_state": admission.state,

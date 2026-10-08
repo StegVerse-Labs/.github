@@ -78,7 +78,7 @@ def test_org_contract_applies_to_every_transition_inside_organization():
 def test_canonical_transition_records_organization_without_general_master_records_submission():
     client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
     submit = client.index("def submit_state_receipt")
-    end = client.index("def require_predecessor_master_records_closure", submit)
+    end = client.index("def require_predecessor_master_records_organization_record", submit)
     body = client[submit:end]
     assert "organization = _record_organization_transition(receipt)" in body
     assert "_submit_http(receipt)" not in body

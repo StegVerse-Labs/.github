@@ -41,7 +41,7 @@
     "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001"
   ],
   "expected_evidence_predicates": [
-    "AUTHENTIC_MASTER_RECORDS_CLOSURE_REQUIRED",
+    "AUTHENTIC_MASTER_RECORDS_ORGANIZATION_RECORD_REQUIRED",
     "RECEIPT_RECONSTRUCTION_DIGEST_EQUALITY_REQUIRED",
     "DETERMINISTIC_DOMAIN_SEPARATED_MERKLE_ROOT",
     "PREDECESSOR_CONTINUITY_BOUND",
@@ -83,7 +83,7 @@
     "CHECKPOINT_SCHEMA_AND_TEST_VECTOR_VALIDATED"
   ],
   "authority_model": {
-    "master_records_custody_authority": "MASTER_RECORDS",
+    "master_records_organization_record_authority": "MASTER_RECORDS",
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV_TVC",
     "external_witness_authority_effect": "NONE"

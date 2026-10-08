@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Consume the bounded runtime-profile-map Master Records reconciliation request.
 
-This consumer waits for authentic local Master Records custody completion, projects
+This consumer waits for authentic local Master Records organization record completion, projects
 retained Master Records work events from the already-local Master Records checkout,
 and reconciles each canonical task carrying runtime requirements against that
 projection. It performs no network fetch, credential use, HB/oscillator progression,
@@ -126,10 +126,10 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
 
     custody_path = runtime / CUSTODY_CONSUMPTION_REL
     if not custody_path.is_file():
-        return {"schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1", "state": "WAITING_FOR_MASTER_RECORDS_CUSTODY", "task_id": TARGET_TASK, "authority_effect": "NONE_WAIT_ONLY"}
+        return {"schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1", "state": "WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD", "task_id": TARGET_TASK, "authority_effect": "NONE_WAIT_ONLY"}
     custody = load_json(custody_path)
     if custody.get("state") != "COMPLETED":
-        return {"schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1", "state": "WAITING_FOR_MASTER_RECORDS_CUSTODY", "task_id": TARGET_TASK, "custody_state": custody.get("state"), "authority_effect": "NONE_WAIT_ONLY"}
+        return {"schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1", "state": "WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD", "task_id": TARGET_TASK, "custody_state": custody.get("state"), "authority_effect": "NONE_WAIT_ONLY"}
 
     registry_path = runtime / REGISTRY_REL
     require(registry_path.is_file(), "canonical task registry missing")
@@ -223,7 +223,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result.get("state") in {"NO_REQUEST", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+    return 0 if result.get("state") in {"NO_REQUEST", "WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
 
 
 if __name__ == "__main__":

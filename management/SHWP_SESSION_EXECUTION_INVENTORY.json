@@ -46,7 +46,7 @@
       "destination": "StegVerse-Labs/.github + master-records/orchestration",
       "branch": "main",
       "location": "heartbeat_runtime/engine_v2.py; engine_v3.py; master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md",
-      "owner": "StegVerse-Labs/.github#12 + Master Records custody owner",
+      "owner": "StegVerse-Labs/.github#12 + Master Records organization record owner",
       "claim_state": "COMPLETE",
       "completion_state": "COMPLETE_VALIDATED",
       "validation_state": "Hosted lifecycle/reconstruction tests PASS",

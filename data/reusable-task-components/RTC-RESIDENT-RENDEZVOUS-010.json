@@ -18,7 +18,7 @@
   "preconditions": ["consumer already registered in canonical resident dispatcher","consumer-specific exact request validator remains authoritative for request shape","target node is routing only","no credential-bearing fields in transport envelope","network source-code fetch remains prohibited"],
   "authority_owner": "NONE_TRANSPORT_ONLY",
   "authority_effect": "NONE",
-  "canonical_authority_dependencies": {"user_verification":"KV/SKAP Vault","claim_fence":"WorkerCoordinator","transition_admission":"Interlock/InTr","credential_provider_release":"TV/TVC","custody_reconstruction":"Master Records"},
+  "canonical_authority_dependencies": {"user_verification":"KV/SKAP Vault","claim_fence":"WorkerCoordinator","transition_admission":"Interlock/InTr","credential_provider_release":"TV/TVC","organization_records_and_reconstruction":"Master Records"},
   "expected_evidence": ["request envelope hash","target-node delivery observation","consumer-specific consumption receipt","ACK correlated to exact request digest"],
   "repeatability": "REPEATABLE_PER_BOUNDED_REQUEST",
   "failure_classes": ["NO_REACHABLE_RESIDENT_TRANSPORT","TARGET_NODE_UNAVAILABLE","CONSUMER_NOT_REGISTERED","REQUEST_DIGEST_MISMATCH","REQUEST_EXPIRED","CONSUMER_VALIDATION_FAIL_CLOSED","ACK_NOT_OBSERVED"],

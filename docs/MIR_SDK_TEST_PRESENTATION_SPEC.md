@@ -132,7 +132,7 @@ Explain the SDK in plain technical language and provide evaluator-usable instruc
 
 The SDK allows an external framework or evaluator to submit manifested data of a supported class, identify the intended processing path, and receive bounded outputs that may range from a governance/evidence artifact to the applicable state-transition information represented by that artifact.
 
-The SDK does not convert evidence into authority. MIR remains historical custodian for MIR-held history; StegVerse governance evaluates admissibility; Interlock/InTr governs transitions where applicable; TV/TVC retains credential authority; Master Records retains observed-reality/reconstruction responsibilities where applicable.
+The SDK does not convert evidence into authority. MIR remains historical custodian for MIR-held history; StegVerse governance evaluates admissibility; Interlock/InTr governs transitions where applicable; TV/TVC retains credential authority; Master Records is limited to organization records and reconstruction responsibilities where applicable.
 
 ### Canonical usage flow
 

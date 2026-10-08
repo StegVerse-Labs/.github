@@ -4,7 +4,7 @@
   "correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "root_correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "parent_task_id": null,
-  "goal": "Make the StegVerse WorkSpace the canonical shell/chrome and tab host for admitted MyKV, Org KV, and Company-Employee-KV projections while preserving each KV page as its standalone canonical entry point, including capability functions bound to admitted operations and the governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across browser sessions, operating systems, and interchangeable eligible devices. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as custody, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, no browser-local root of truth for user-visible state, and no external-machine prerequisite.",
+  "goal": "Make the StegVerse WorkSpace the canonical shell/chrome and tab host for admitted MyKV, Org KV, and Company-Employee-KV projections while preserving each KV page as its standalone canonical entry point, including capability functions bound to admitted operations and the governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across browser sessions, operating systems, and interchangeable eligible devices. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as organization records, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, no browser-local root of truth for user-visible state, and no external-machine prerequisite.",
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
@@ -15,7 +15,7 @@
     "governed_transition": "INTERLOCK_INTR",
     "user_verification": "KV_SKAP_VAULT",
     "credential_authority": "TV/TVC",
-    "observed_reality_custody": "MASTER_RECORDS",
+    "observed_reality_authority": "Organization",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },
@@ -179,7 +179,7 @@
       "browser-kv-projection",
       "interlock-intr-governed-transition",
       "skap-vault-user-verification",
-      "master-records-custody",
+      "master-records-organization-record",
       "cross-platform-browser-runtime"
     ],
     "mutation_required": true,

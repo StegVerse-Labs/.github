@@ -40,7 +40,7 @@ The runner resolves `StegVerse-Labs/StegVerse-Healer` only from the already-loca
 
 - Reusable identity/manifest construction is orchestration only.
 - ECE remains diagnostic/classification only.
-- Master Records retains exact-byte custody/reconstruction authority.
+- Master Records retains exact-byte organization records and reconstruction authority.
 - Healer receives immutable finding intake but does not verify recovery.
 - Site receives only the safe projection.
 - Missing observations remain explicit `NOT_OBSERVED`; no synthetic PASS is permitted.

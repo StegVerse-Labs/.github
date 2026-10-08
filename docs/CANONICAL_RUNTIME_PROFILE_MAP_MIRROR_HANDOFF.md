@@ -115,7 +115,7 @@ canonical_work_coordination visits Runtime Profile Map registered-task request
 -> atomically persist runtime_resolution projections
 -> emit routing-readiness receipts
 -> build exact-hash custody package
--> Master Records exact-hash custody
+-> Master Records exact-hash organization records
 -> project retained Master Records work events
 -> reconcile every runtime-bound canonical task
 -> emit transition-readiness receipts
@@ -142,7 +142,7 @@ The build proceeds only when the validator returns `SOURCE_CHAIN_VALID` with a r
 
 ## Master Records boundary
 
-The corresponding Master Records handoff is `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`. Master Records validates exact-hash custody input and remains reality/custody authority only. Custody acceptance or reconstruction does not grant runtime selection, WorkerCoordinator ownership, InTr admission, execution, or task completion.
+The corresponding Master Records handoff is `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`. Master Records validates exact-hash organization records input and remains reality/custody authority only. Custody acceptance or reconstruction does not grant runtime selection, WorkerCoordinator ownership, InTr admission, execution, or task completion.
 
 ## Completion predicates
 
@@ -150,7 +150,7 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 2. HB32/oscillator authority separation. **SOURCE COMPLETE**
 3. Explicit runtime requirements and deterministic candidate resolution. **SOURCE COMPLETE**
 4. Atomic runtime-resolution persistence and routing readiness. **SOURCE COMPLETE**
-5. Exact-hash Master Records custody package and custody consumer. **SOURCE COMPLETE**
+5. Exact-hash Master Records organization record package and custody consumer. **SOURCE COMPLETE**
 6. Retained-event projection and Task Registry ↔ Master Records reconciliation. **SOURCE COMPLETE**
 7. Post-reconciliation transition-readiness classification. **SOURCE COMPLETE**
 8. Exact-evidence governance-review packaging and closed-allowlist authority routing. **SOURCE COMPLETE**
@@ -184,7 +184,7 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 - `receipts/sovereign-host/runtime-profile-map-governance-review-request-consumption.latest.json`
 - generated `control/runtime-profile-map.json` with non-null `generated_at`
 - resident `data/canonical-task-registry.json` with current-map runtime-resolution projections
-- Master Records runtime-profile-map custody record
+- Master Records runtime-profile-map organization records
 
 ## Current boundary
 

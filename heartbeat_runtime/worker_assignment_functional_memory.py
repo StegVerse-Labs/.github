@@ -17,7 +17,7 @@ from workers.canonical_state_transition_custody import (
     build_state_receipt,
     query_state_receipts,
     reconstruct_state_receipt,
-    require_predecessor_master_records_closure,
+    require_predecessor_master_records_organization_record,
     sha256_uri,
     submit_state_receipt,
 )
@@ -265,7 +265,7 @@ def record_non_allow_functional_memory(
     }
     predecessor_sha256 = previous.get("receipt_sha256") if isinstance(previous, dict) else None
     try:
-        prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+        prior_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
             predecessor_sha256,
             successor_transition_id=TRANSITION_ID,
         )
@@ -305,7 +305,7 @@ def record_non_allow_functional_memory(
     if not complete:
         return {
             "state": "BOUNDARY",
-            "reason": str(result.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_CUSTODY_INCOMPLETE"),
+            "reason": str(result.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_ORGANIZATION_RECORD_INCOMPLETE"),
             "sequence": sequence,
             "authority_effect": "NONE",
         }

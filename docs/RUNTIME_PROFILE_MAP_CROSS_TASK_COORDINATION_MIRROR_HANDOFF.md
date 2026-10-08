@@ -11,7 +11,7 @@ Authority effect: `NONE_COORDINATION_ONLY`
 
 Bind the already-staged Runtime Profile Map Canonical Work resident request into the existing composed cross-task coordination ledger using the same subject-bound evidence semantics already used by other canonical tasks.
 
-This handoff does not create or grant execution, WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, Master Records custody, routing, publication, runtime, or completion authority.
+This handoff does not create or grant execution, WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, Master Records organization record, routing, publication, runtime, or completion authority.
 
 ## Exact subject
 

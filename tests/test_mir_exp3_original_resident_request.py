@@ -102,7 +102,7 @@ class ResidentOriginalRequestTests(unittest.TestCase):
             stored = json.loads((root / one["private_source_attempt_ref"]).read_text())
             self.assertEqual(stored["first_failed_predicate"], first_deny["failed_predicate"])
             self.assertEqual(stored["authority_effect"], "NONE_SOURCE_PROFILE_ONLY")
-            self.assertFalse(stored["organization_master_records_closure_observed"])
+            self.assertFalse(stored["organization_master_records_organization_record_observed"])
             self.assertEqual(len(list((root / mod.SOURCE_ATTEMPT_REL / digest).glob("*.json"))), 2)
             self.assertFalse((root / mod.RESULT_REL / (digest + ".json")).exists())
 

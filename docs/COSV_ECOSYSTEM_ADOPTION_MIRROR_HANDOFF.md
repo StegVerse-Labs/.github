@@ -388,7 +388,7 @@ Both tasks are `HANDOFF_READY_MACHINE_OWNED`, manually non-startable, independen
 - InTr runtime has two blockers: resident source-capture receipt and route-specific InTr receipt not yet observed.
 - SDK first round has three blockers: route-specific InTr receipt, production-source-preparation receipt, and first-production-round analysis receipt not yet observed.
 
-Neither vector claims runtime activation, SDK completion, Master Records custody, public dashboard publication, governance completion, or external consequence.
+Neither vector claims runtime activation, SDK completion, Master Records organization record, public dashboard publication, governance completion, or external consequence.
 
 ### Resident observer fail-closed exclusion
 

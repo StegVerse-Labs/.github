@@ -96,7 +96,7 @@ class ShwpManifestInvocationTests(unittest.TestCase):
                 "route_id": mod.ROUTE,
                 "wire_manifest_sha256": sha256(manifest),
                 "original_request_sha256": sha256(manifest["payload"]),
-                "organization_master_records_closure_observed": False,
+                "organization_master_records_organization_record_observed": False,
                 "terminal": False,
                 "runtime_execution_attempted": True,
             }
@@ -105,7 +105,7 @@ class ShwpManifestInvocationTests(unittest.TestCase):
         self.assertEqual(result["state"],
                          "PROCESSING_RECORDED_CUSTODY_READBACK_REQUIRED")
         self.assertFalse(result["terminal"])
-        self.assertFalse(result["organization_master_records_closure_observed"])
+        self.assertFalse(result["organization_master_records_organization_record_observed"])
         self.assertEqual(result["next_transition"],
                          "EXISTING_ORIGINAL_ORGANIZATION_HEAD_AND_MASTER_RECORDS_READBACK")
 

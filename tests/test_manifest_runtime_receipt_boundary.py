@@ -25,7 +25,7 @@ def test_missing_purpose_receipt_returns_immutable_nonallow(tmp_path):
     assert first["disposition"] == "FAIL_CLOSED"
     assert first["evaluation_boundary"] == "SDK_MANIFEST_WORKER_RESULT_ATTACHMENT"
     assert first["authentic_intr_disposition_observed"] is False
-    assert first["organization_master_records_closure_observed"] is False
+    assert first["organization_master_records_organization_record_observed"] is False
     assert first["failed_predicate"] == "EXACT_REQUEST_BOUND_PURPOSE_RUNTIME_RECEIPT_PRESENT"
     with open(first["source_disposition_ref"], encoding="utf-8") as stream:
         persisted = json.load(stream)

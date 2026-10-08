@@ -114,7 +114,7 @@ class ShwpManifestNativeProfileTests(unittest.TestCase):
         self.assertEqual(receipt["failed_predicate"],
                          "SHWP_SDK_GRAPH_REQUEST_BINDING_MISMATCH:cosv_task_vector")
         self.assertFalse(receipt["runtime_execution_attempted"])
-        self.assertFalse(receipt["organization_master_records_closure_observed"])
+        self.assertFalse(receipt["organization_master_records_organization_record_observed"])
         self.assertEqual(calls, [])
 
     def test_invoked_consumer_fail_closed_preserves_original_failed_predicate(self):
@@ -164,7 +164,7 @@ class ShwpManifestNativeProfileTests(unittest.TestCase):
             self.assertEqual(result["state"],
                              "PROCESSING_RECORDED_CUSTODY_READBACK_REQUIRED")
             self.assertFalse(result["terminal"])
-            self.assertFalse(result["organization_master_records_closure_observed"])
+            self.assertFalse(result["organization_master_records_organization_record_observed"])
             self.assertFalse(result["consequence_committed_by_this_adapter"])
 
 

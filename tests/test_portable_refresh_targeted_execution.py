@@ -72,7 +72,7 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
         self.assertNotIn("GITHUB_ACTIONS", env)
         self.assertNotIn("ZEROEX_API_KEY", env)
 
-    def test_clean_exec_env_preserves_master_records_custody_binding(self) -> None:
+    def test_clean_exec_env_preserves_master_records_organization_record_binding(self) -> None:
         env = mod.clean_exec_env({
             "PATH": "/bin",
             "HOME": "/home/stegverse",

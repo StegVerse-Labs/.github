@@ -21,7 +21,7 @@
         "runtime_surfaces": ["governed-object-ingress"],
         "evidence_responsibilities": ["authentic-object-lineage", "reverse-source-resolution"]
       },
-      "expected_blast_radius": "Canonical StegOS ingress/provenance execution and evidence only; Master Records remains custody/reconstruction only and Workspace/ERL/Site remain downstream projection/reference consumers.",
+      "expected_blast_radius": "Canonical StegOS ingress/provenance execution and evidence only; Master Records remains limited to organization records and reconstruction only and Workspace/ERL/Site remain downstream projection/reference consumers.",
       "readme_impact_required": true,
       "readme_impact": {
         "material_function_change": false,
@@ -93,13 +93,13 @@
     },
     {
       "predicate_id": "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
-      "semantic_predicate_id": "object_provenance_master_records_custody_merged",
+      "semantic_predicate_id": "object_provenance_master_records_organization_record_merged",
       "subject_binding": {
         "repository": "master-records/orchestration",
         "source_schema": "stegos.object_provenance_lineage.v1"
       },
       "state": "SATISFIED",
-      "description": "Existing Universal Interlock Master Records custody/reconstruction path accepts the exact merged StegOS object-provenance schema and is merged/validated.",
+      "description": "Existing Universal Interlock Master Records organization records and reconstruction path accepts the exact merged StegOS object-provenance schema and is merged/validated.",
       "authoritative_producer": "master-records/orchestration",
       "required_schema": null,
       "required_scope": "object provenance Universal Interlock custody support",

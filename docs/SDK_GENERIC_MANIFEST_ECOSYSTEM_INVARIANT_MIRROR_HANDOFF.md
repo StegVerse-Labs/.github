@@ -64,7 +64,7 @@ Classify representative surfaces as `PASS`, `PARTIAL`, `VIOLATION`, or `NOT_PROV
 4. TVC provider-operation broker and provider profiles.
 5. StegCore manifested transaction/governance entry.
 6. StegOS/Continuity resident dispatcher and InTr materialization entry.
-7. Master Records custody/reconstruction interfaces.
+7. Master Records organization records and reconstruction interfaces.
 8. Shared-document/external-collaboration ingestion.
 9. Provider/framework adapters including Elyria and future integrations.
 10. Session-originated execution boundary, documented separately from non-session external ingress.
@@ -132,7 +132,7 @@ A user assertion or conversational correction is an architectural hypothesis unt
 
 Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
 
-The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
+The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records organization record or autonomous successor selection.
 
 
 ## 2026-10-01 clarified ACTION-BY-MANIFEST audit
@@ -149,7 +149,7 @@ recognized Node endpoint
 -> state-dependent ACTION
 -> endpoint receipt
 -> durable Organization receipt chain
--> bounded/batched Master Records custody + reconstruction
+-> bounded/batched Master Records organization record + reconstruction
 ```
 
 Runtime observation remains state-transition dependent. Source, CI, merge, fixtures and documentation do not prove authentic runtime execution. No external machine, named device, hosted service, scheduler or passive waiting endpoint is a prerequisite. An unavailable observation interface is an evidence-reachability condition, not authority and not permission to infer downstream execution.
@@ -164,7 +164,7 @@ Runtime observation remains state-transition dependent. Source, CI, merge, fixtu
 | TVC provider-operation broker | NOT_PROVEN | Credential/provider authority may remain TV/TVC-specific, but current audit did not establish end-to-end proof that provider identity never selects ecosystem processing. No exemption inferred. |
 | StegCore manifested processing entry | NOT_PROVEN | Existing invariant requires admitted manifested route before processor execution; current bounded audit did not establish the full Node->SDK->ACTION->Organization-chain path for representative StegCore execution. |
 | Continuity/StegOS InTr materialization | PARTIAL | Existing Node/InTr materialization and receipt contracts exist, but full representative authentic runtime chain under this invariant is not yet established. |
-| Organization receipt custody -> Master Records batch | PARTIAL | `resident-runtime/organization_custody_readback.py` and ORGANIZATION-BATCH-CUSTODY-REPLAY-001 establish source contracts and exact-source validation. Its handoff explicitly retains authentic organization/Master Records runtime closure as unobserved; do not promote source/CI to runtime proof. |
+| Organization receipt custody -> Master Records batch | PARTIAL | `resident-runtime/organization_custody_readback.py` and ORGANIZATION-BATCH-CUSTODY-REPLAY-001 establish source contracts and exact-source validation. Its handoff explicitly retains authentic organization/Master Records runtime organization record as unobserved; do not promote source/CI to runtime proof. |
 | Shared-document/external-collaboration ingestion | NOT_PROVEN | Reusable collaboration definitions exist, but no evidence in this audit proves every actionable path enters through the complete clarified chain. |
 | External framework/provider path (including Elyria) | PARTIAL | Existing external-framework work preserves foreign observations and generic SDK ingress concepts, but any translation layer is framing-only. Conformance now requires recognized Node + Interlock/InTr transfer to SDK before processing selection. |
 | Session-originated execution | PARTIAL | Universal work/AI preexecution documents reuse manifest + InTr components; authenticated runtime observation remains separate and must not be inferred from session/source/CI state. |
@@ -173,7 +173,7 @@ No `EXEMPTION_REQUESTED` surface was found in this bounded audit. Any actionable
 
 ### Remediation rule
 
-For every current or future actionable surface, repair toward the chain above through the existing native owner. Translation/framing code may exist but has authority NONE and may not become a processor selector, governance owner, custody plane, credential authority, runtime, scheduler or dispatcher. Organizations retain their own predecessor-linked receipt chains and send bounded/batched segments to Master Records for custody/reconstruction.
+For every current or future actionable surface, repair toward the chain above through the existing native owner. Translation/framing code may exist but has authority NONE and may not become a processor selector, governance owner, custody plane, credential authority, runtime, scheduler or dispatcher. Organizations retain their own predecessor-linked receipt chains and send bounded/batched segments to Master Records for organization records/reconstruction.
 
 ### Runtime completion gate
 
@@ -184,7 +184,7 @@ System-wide enforcement remains **NOT_PROVEN**. Completion requires representati
 
 Machine-readable source profile: `data/node-exchange/interconnected-capability-custody-v0.1.json`.
 
-The external-framework boundary is generalized from a framework-specific integration into the same Node exchange class used by ephemeral StegOS/Node participation. The ordered evidence model is: reciprocal Node existence exchange -> optional/persistent cryptographic identity binding when attribution is required -> state-dependent capability declaration -> manifest-bound request -> native capability action with ALLOW/DENY/FAIL_CLOSED -> endpoint evidence -> resulting-state commitment -> existing SDK/Organization retention -> applicable bounded Master Records custody/reconstruction.
+The external-framework boundary is generalized from a framework-specific integration into the same Node exchange class used by ephemeral StegOS/Node participation. The ordered evidence model is: reciprocal Node existence exchange -> optional/persistent cryptographic identity binding when attribution is required -> state-dependent capability declaration -> manifest-bound request -> native capability action with ALLOW/DENY/FAIL_CLOSED -> endpoint evidence -> resulting-state commitment -> existing SDK/Organization retention -> applicable bounded Master Records organization records and reconstruction.
 
 "Interconnected capability custody" means each independently governed Node retains authority over its own implementation and state while the exchange preserves attributable commitments/receipts sufficient to reconstruct the cross-boundary capability interaction. It does not transfer ownership of a capability, another framework's governance, runtime authority, or truth of that framework's substantive claims.
 
@@ -245,7 +245,7 @@ A bounded default-branch source census across `StegVerse-org/LLM-adapter`, `Steg
 
 Historical/direct evaluator-specific ingress surfaces still exist as separately named capabilities: Site service-worker surfaces advertise `SDK:EvaluatorReviewIngress`; StegOS retains `evaluator_intr_roundtrip.py` and evaluator-specific handoffs; and the SDK connector capability overlay retains the `SDK:EvaluatorReviewIngress` / `evaluator-read-review` baseline. Their mere existence is not evidence that source identity selects processing: they remain valid only when explicitly requested as their declared capability/profile. This census does not establish that every possible call path is routed through generic `SDK:ManifestIngress`, so system-wide replacement of direct processor-specific ingress is `NOT_PROVEN`, not inferred.
 
-The repaired Site MIR return path is no longer one of those direct selectors: it requires manifest-declared `processing.capability` / `processing.route_id`, transports via `sdk-manifest-ingress`, binds KV custody to that profile ID, and hands off only after `SDK_MANIFEST_INGRESS_ADMITTED`. Authentic runtime execution remains `NOT_PROVEN` absent authenticated Node -> Interlock/InTr -> distributed SDK endpoint evidence and applicable Organization/Master Records closure.
+The repaired Site MIR return path is no longer one of those direct selectors: it requires manifest-declared `processing.capability` / `processing.route_id`, transports via `sdk-manifest-ingress`, binds KV custody to that profile ID, and hands off only after `SDK_MANIFEST_INGRESS_ADMITTED`. Authentic runtime execution remains `NOT_PROVEN` absent authenticated Node -> Interlock/InTr -> distributed SDK endpoint evidence and applicable Organization/Master Records organization record.
 
 ## 2026-10-01 post-#2912 specialized evaluator-ingress classification
 
@@ -260,7 +260,7 @@ A bounded source inspection of the remaining evaluator-specific owners distingui
 
 No demonstrated actionable external-transfer bypass was found in these inspected evaluator-specific surfaces, so no Site, StegOS or SDK source repair is justified by this census. Removing the specialized `READ_REVIEW` capability would exceed the demonstrated defect boundary. This finding is bounded to the inspected current default-branch surfaces and does not prove universal absence of every possible bypass.
 
-Authentic Node -> Interlock/InTr -> distributed SDK endpoint execution remains `NOT_PROVEN`. Source inspection, repository merge and CI do not substitute for an authenticated runtime observation with the applicable endpoint evidence and Organization/Master Records closure.
+Authentic Node -> Interlock/InTr -> distributed SDK endpoint execution remains `NOT_PROVEN`. Source inspection, repository merge and CI do not substitute for an authenticated runtime observation with the applicable endpoint evidence and Organization/Master Records organization record.
 
 
 ## 2026-10-01 Gate-1 execution-surface repair merge reconciliation
@@ -361,7 +361,7 @@ The catalog regression verifies that exact registration and preserves the existi
 | 4 | TVC provider broker/profiles | PARTIAL | `StegVerse-Labs/TVC:tvc_provider_operation_broker.py`; `config/provider_operation_profiles.json` | Capability lease/provider boundary exists; full Node/InTr/SDK chain NOT_PROVEN. |
 | 5 | StegCore manifested transaction/governance entry | PARTIAL | `StegVerse-Labs/StegCore:docs/MANIFESTED_TRANSACTION_CONTINUITY.md`; `src/stegcore/manifest_receipts.py`; `external_governance_adapter.py` | Manifest/replay boundaries located; full Node/InTr/custody chain NOT_PROVEN. |
 | 6 | StegOS/Continuity resident dispatch + InTr materialization | PASS | `StegVerse-Labs/StegOS:stegos/universal_intr_materialization.py`; profile registry; central `workers/universal_intr_profiled_ingress.py` -> `manifest_state_transition_intr_ingress.py::admit` | Source chain/receiver owner traced; authentic runtime NOT_PROVEN. |
-| 7 | Master Records custody/reconstruction | PARTIAL | `resident-runtime/organization_custody_readback.py`; `scripts/consume_organization_custody_readback_request.py`; ORGANIZATION-BATCH-CUSTODY-REPLAY-001 handoff | Source/readback contract exists; authentic organization/MR closure NOT_PROVEN. |
+| 7 | Master Records organization records and reconstruction | PARTIAL | `resident-runtime/organization_custody_readback.py`; `scripts/consume_organization_custody_readback_request.py`; ORGANIZATION-BATCH-CUSTODY-REPLAY-001 handoff | Source/readback contract exists; authentic organization/MR closure NOT_PROVEN. |
 | 8 | Shared-document/external collaboration | PARTIAL | `docs/ECOSYSTEM_CHAT_TASK_CENSUS_AND_BUILD_PLAN.md` and existing manifest-selected collaboration architecture | Complete actionable ingress chain NOT_PROVEN. |
 | 9 | Provider/framework adapters incl. Elyria/future | PARTIAL | `StegVerse-org/StegVerse-SDK:stegverse/elyria_framework_adapter.py`; `SDK-ELYRIA-INTR-ADAPTER-001`; reusable `RT-EXTERNAL-ADAPTER-ESTABLISH-001` component profile | Translation owner identified; authentic external transport and future-instance conformance NOT_PROVEN. |
 | 10 | Session-originated execution boundary | PARTIAL | `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001` component-010; `docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md`; AI entry/caller inventories | Protective source gate exists; `AUTHENTIC_SESSION_ORIGIN_INTERFACE_UNAVAILABLE_IN_CURRENT_EXECUTION_CONTEXT`. |
@@ -403,7 +403,7 @@ SDK source owner remains this Goal. Current SDK source already publishes both go
 
 The bounded SDK candidate introduces an explicit non-authorizing execution-scope selector: `LOCAL_CONFORMANCE` deterministically selects `stegverse.route.customer-local-governed.v1`; `ECOSYSTEM_CONNECTED` deterministically selects `stegverse.route.canonical-governed.v1` and remains the compatibility default. The selected route remains canonical manifest data and is revalidated by existing route resolution. No profile/route fallback is permitted. Local construction omits federated completion metadata because the existing customer-local runtime rejects federated completion and still requires independently trusted host callbacks for consequential execution.
 
-Disposition semantics remain `ALLOW | DENY | FAIL_CLOSED`; execution scope is separate and does not introduce `LOCAL_RESULT`. `SDK_MANIFEST_HANDOFF` is the SDK-owned handoff boundary, not an ecosystem terminal evidence boundary. Current canonical organization runtime includes downstream organization-manifest ingress capable of recording `intr_admission_observed=true`, `far_side_transition_observed=true`, independently reconstructed boundary-receipt chains and observed organization receipts, together with existing organization-transition/ledger and Master Records custody paths. The exact `ECOSYSTEM_CONNECTED` execution state therefore must be resolved from the request-bound downstream evidence chain rather than frozen at SDK handoff. SDK-local source or CI assertions alone still do not prove a particular downstream observation.
+Disposition semantics remain `ALLOW | DENY | FAIL_CLOSED`; execution scope is separate and does not introduce `LOCAL_RESULT`. `SDK_MANIFEST_HANDOFF` is the SDK-owned handoff boundary, not an ecosystem terminal evidence boundary. Current canonical organization runtime includes downstream organization-manifest ingress capable of recording `intr_admission_observed=true`, `far_side_transition_observed=true`, independently reconstructed boundary-receipt chains and observed organization receipts, together with existing organization-transition/ledger and Master Records organization record paths. The exact `ECOSYSTEM_CONNECTED` execution state therefore must be resolved from the request-bound downstream evidence chain rather than frozen at SDK handoff. SDK-local source or CI assertions alone still do not prove a particular downstream observation.
 
 This correction creates no second SDK, ingress, runtime, credential route, device prerequisite, scheduler, dispatcher or authority plane. Exact-head SDK CI and repository-required review remain required before merge; this canonical handoff update is coordination evidence only and does not promote the SDK candidate to runtime proof.
 

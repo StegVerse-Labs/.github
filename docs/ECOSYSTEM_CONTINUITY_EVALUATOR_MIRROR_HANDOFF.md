@@ -78,7 +78,7 @@ connected Drive ECE artifacts: none found
 authentic resident reusable ECE slot: NOT OBSERVED
 authentic SDK diagnostic request/result: NOT OBSERVED
 authentic retained ECE evaluation: NOT OBSERVED
-authentic Master Records ECE custody/reconstruction: NOT OBSERVED
+authentic Master Records ECE organization records and reconstruction: NOT OBSERVED
 Healer live ECE finding intake: NOT OBSERVED
 Site-safe current projection bytes: NOT OBSERVED
 Site live continuity projection: NOT OBSERVED
@@ -108,7 +108,7 @@ Device verification / device attestation / pinned-device gate: PROHIBITED / NOT 
 Authentic SDK diagnostic request/result: NOT OBSERVED
 Authentic resident ECE schedule slot consumed: NOT OBSERVED
 Authentic retained ECE evaluation: NOT OBSERVED
-Authentic Master Records custody/reconstruction: NOT OBSERVED
+Authentic Master Records organization records and reconstruction: NOT OBSERVED
 Authentic Site-safe current projection materialized: NOT OBSERVED
 Healer live ECE finding intake: NOT OBSERVED
 Site live continuity projection: NOT OBSERVED
@@ -119,7 +119,7 @@ Independent repair -> later ECE recovery verification: NOT PROVEN
 
 1. Observe one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation from any eligible interchangeable StegOS execution node through the existing runtime path. Do not require or select a particular physical device.
 2. Require the exact SDK diagnostic result and its SHA binding into ECE.
-3. Require the exact ECE evaluation, Master Records custody/reconstruction, Healer intake, Site-safe projection, and Site materialization receipt from the same cycle.
+3. Require the exact ECE evaluation, Master Records organization records and reconstruction, Healer intake, Site-safe projection, and Site materialization receipt from the same cycle.
 4. Require exact SHA equality between retained Site-safe projection and served `data/ecosystem-continuity/current.json`.
 5. Independently observe `ecosystem-continuity.html` rendering that projection.
 6. Prove recovery only after a later independent ECE evaluation observes repaired predicates PASS with acceptable freshness/evidence.

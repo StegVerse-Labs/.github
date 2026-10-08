@@ -19,7 +19,7 @@ established or recovered StegOS node + KV/SKAP continuity
 -> downstream propagation
 ```
 
-HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Organization ledger owns observed reality; Master Records is reconstruction-only outside organization-record retention. GitHub Actions are validation/evidence transport only.
+HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Organization ledger owns observed reality; Master Records is limited to organization records and reconstruction-only outside organization-record retention. GitHub Actions are validation/evidence transport only.
 
 ## Device / node invariant correction
 

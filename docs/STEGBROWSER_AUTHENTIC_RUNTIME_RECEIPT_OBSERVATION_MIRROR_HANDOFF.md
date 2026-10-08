@@ -73,7 +73,7 @@ Task Registry CONTINUE
 -> immutable observer 4c78f8653b8a5899350479d57c58e936b50e023a
 -> simultaneous 127.0.0.1:8765 + 127.0.0.1:8775
 -> OWNER_INGRESS_READY_OBSERVED
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 ```
 
 ## Required execution discipline
@@ -97,7 +97,7 @@ Task Registry CONTINUE
 
 ## Completion predicate
 
-Complete only when authentic evidence establishes successor Canonical Work consumption; current WorkerCoordinator claim/fence; InTr admission; current-dispatch-bound TVC source promotion; pinned TVC materialization/restart; immutable observer execution; simultaneous TVC 8765 + SKAP 8775; `OWNER_INGRESS_READY_OBSERVED`; Master Records custody/reconstruction; and no parallel scheduler/dispatcher/credential/device path.
+Complete only when authentic evidence establishes successor Canonical Work consumption; current WorkerCoordinator claim/fence; InTr admission; current-dispatch-bound TVC source promotion; pinned TVC materialization/restart; immutable observer execution; simultaneous TVC 8765 + SKAP 8775; `OWNER_INGRESS_READY_OBSERVED`; Master Records organization records and reconstruction; and no parallel scheduler/dispatcher/credential/device path.
 
 This task has not met that predicate. It is retired solely because the goal prompt budget reached 20/20 and the remaining work is now owned by the successor resident-custody-root observation task.
 

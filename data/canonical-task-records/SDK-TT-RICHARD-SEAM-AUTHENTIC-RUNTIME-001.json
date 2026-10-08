@@ -64,7 +64,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "transition_authority": "StegCore/InTr",
     "credential_warrant_authority": "TV/TVC",
-    "observed_reality_custody": "Master Records",
+    "observed_reality_authority": "Organization",
     "github_runtime_authority": "NONE",
     "new_runtime_allowed": false,
     "new_scheduler_allowed": false,
@@ -140,7 +140,7 @@
     "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
     "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
     "observed_sequence": [
-      "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+      "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
       "TASK_STATE_SET_ACTIVE_AND_WORKER_INSTANCE_BOUND",
       "WORKER_INVOKED",
       "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
@@ -152,7 +152,7 @@
     "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
     "pending_claim_fence_coordination_only": true,
     "intr_constitutive_transition_required_before_active_projection": true,
-    "master_records_closure_required_before_active_projection": true,
+    "master_records_organization_record_required_before_active_projection": true,
     "post_activation_invocation_separated": true,
     "non_test3_worker_paths_intended_unchanged": true,
     "resident_request_carriage_repair_implemented": true,
@@ -199,7 +199,7 @@
     "suite_test3_focused_validation_pr": 2239,
     "suite_test3_focused_initial_result": "11_PASS_1_FAIL",
     "suite_test3_failure_classification": "TEST_HARNESS_BOUNDARY_LABELING_DEFECT_NOT_RUNTIME_SEAM_FAILURE",
-    "suite_test3_ordering_source_observed": "MASTER_RECORDS_CLOSURE_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
+    "suite_test3_ordering_source_observed": "MASTER_RECORDS_ORGANIZATION_RECORD_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
     "suite_harness_repair_implemented": true,
     "suite_harness_existing_workflow_extended": true,
     "suite_test1_current_main_run": 35450287407,
@@ -265,9 +265,9 @@
     "authentic_runtime_transition_observed": false,
     "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE"
   },
-  "execution_path_repair_master_records_custody": {
-    "defect": "TEST3_TARGETED_ENV_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
-    "defect_effect": "fresh WorkerCoordinator claim/fence could be prepared but canonical custody client would see neither HTTP nor durable-local Master Records binding and fail CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE",
+  "execution_path_repair_master_records_organization_record": {
+    "defect": "TEST3_TARGETED_ENV_STRIPPED_MASTER_RECORDS_ORGANIZATION_RECORD_BINDING",
+    "defect_effect": "fresh WorkerCoordinator claim/fence could be prepared but canonical custody client would see neither HTTP nor durable-local Master Records binding and fail CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE",
     "repaired_http_inputs": [
       "STEGVERSE_MASTER_RECORDS_ENDPOINT",
       "STEGVERSE_MASTER_RECORDS_TOKEN",
@@ -287,7 +287,7 @@
     "authority_effect": "NONE_CUSTODY_BINDING_CARRIAGE_ONLY"
   },
   "execution_path_repair_stegagents_master_records_env": {
-    "defect": "STEGAGENTS_PROCESS_ADAPTER_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
+    "defect": "STEGAGENTS_PROCESS_ADAPTER_STRIPPED_MASTER_RECORDS_ORGANIZATION_RECORD_BINDING",
     "defect_effect": "after claim/fence custody, Test 3 atomic activation worker could launch without the Master Records binding required for TV_TVC_WARRANT_POLICY_VERIFIED and ACTIVATE_TASK_AND_CREATE_BIND_WORKER closure",
     "repaired_adapter": "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
     "master_records_binding_carried": true,
@@ -301,7 +301,7 @@
     "repaired_stegagents_commit": "eae52ac20b06846bc0fca55980d778d57108ef9f",
     "repaired_workercoordinator_path": "same existing process:stegagents-governed-runtime-v1 adapter invoked in GOVERNED_CLOSE mode on next targeted cycle",
     "close_transition": "CLOSE_TASK_AND_RETIRE_WORKER",
-    "master_records_gate": [
+    "master_records_organization_record": [
       "RECORDED",
       "reconstruction_status=PASS",
       "required_evidence_validation_status=PASS",
@@ -320,7 +320,7 @@
   },
   "execution_path_repair_dispatch_master_records": {
     "defect": "RESIDENT_DISPATCHER_STRIPPED_DURABLE_MASTER_RECORDS_BINDING",
-    "defect_effect": "Test 3 REQUESTED consumer could be invoked but durable-local Master Records custody inputs were removed before the consumer/targeted WorkerCoordinator path",
+    "defect_effect": "Test 3 REQUESTED consumer could be invoked but durable-local Master Records organization record inputs were removed before the consumer/targeted WorkerCoordinator path",
     "repaired_dispatcher": "scripts/dispatch_resident_execution_requests.py",
     "carried_inputs": [
       "MASTER_RECORDS_DB",

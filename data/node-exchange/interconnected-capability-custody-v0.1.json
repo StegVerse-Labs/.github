@@ -145,7 +145,7 @@
         "custody_submission_disposition",
         "reconstruction_evidence"
       ],
-      "claim": "Master Records custody/reconstruction does not become transport or external-framework governance."
+      "claim": "Master Records organization records and reconstruction does not become transport or external-framework governance."
     }
   ],
   "custody_semantics": {
@@ -185,7 +185,7 @@
       "authentic endpoint disposition/evidence",
       "resulting-state commitment",
       "existing SDK/Organization retention evidence",
-      "applicable Master Records custody/reconstruction evidence"
+      "applicable Master Records organization records and reconstruction evidence"
     ],
     "nonclaims": [
       "Sebbi governance conformance",

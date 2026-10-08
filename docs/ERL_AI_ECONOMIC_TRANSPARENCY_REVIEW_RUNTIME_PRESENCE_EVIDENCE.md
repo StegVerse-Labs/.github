@@ -35,7 +35,7 @@ StegVerse-Labs/.github PR #1005 / merge `f564aeec9eb8a5bf195a59f2f00a458c3a50fa2
 
 This repair changes source identity and observability validity only. It does not prove that an ephemeral or native resident runtime is presently alive and does not advance ERL review state.
 
-## 2026-09-05 local Master Records custody return path
+## 2026-09-05 local Master Records organization record return path
 
 A later source audit identified a distinct observability gap after presence emission: `runtime-presence.latest.json` was written only into the resident runtime root, while source refresh intentionally excludes mutable `receipts/` and Master Records had no intake contract for this exact projection. Therefore absence from repository-visible evidence could not distinguish `not emitted` from `emitted locally but not retained by Master Records`.
 
@@ -58,7 +58,7 @@ The newer cross-task subject-binding rule remains controlling: exact `runtime_ro
 The current evidence order remains:
 
 `runtime-presence.latest.json` with `present_worker_runtime_observed=true`
-→ optional local Master Records custody of that exact observation
+→ optional local Master Records organization record of that exact observation
 → `resident-request-dispatch.latest.json`
 → ERL request-consumption receipt
 → `resident-targeted-execution.latest.json`

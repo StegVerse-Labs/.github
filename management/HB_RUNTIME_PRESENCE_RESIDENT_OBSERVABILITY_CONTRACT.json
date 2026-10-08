@@ -15,7 +15,7 @@
     "merge": "execution",
     "workflow_pass": "runtime",
     "master_records_intake_available": "runtime_presence_observed",
-    "master_records_custody": "cross_task_reuse_authorized"
+    "master_records_organization_record": "cross_task_reuse_authorized"
   },
   "canonical_evidence_slots": {
     "resident_runtime_presence": "receipts/sovereign-host/runtime-presence.latest.json",
@@ -33,7 +33,7 @@
     "heartbeat_grants_execution_authority": false,
     "projection_grants_execution_authority": false
   },
-  "master_records_custody": {
+  "master_records_organization_record": {
     "owner": "master-records/orchestration",
     "trigger": "existing carrier-owned presence emission visit",
     "source": "receipts/sovereign-host/runtime-presence.latest.json",

@@ -133,7 +133,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes GOVERNED_CLOSE for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; after canonical close custody, attempt one invocation with the just-retired claim/fence through the same governed path, require DENY plus retained POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED canonical Master Records closure and exact reconstruction before terminal WorkerCoordinator release.",
+    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes GOVERNED_CLOSE for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; after canonical close custody, attempt one invocation with the just-retired claim/fence through the same governed path, require DENY plus retained POST_RETIREMENT_STALE_FENCE_INVOCATION_REFUSED canonical Master Records organization record and exact reconstruction before terminal WorkerCoordinator release.",
     "terminal_when": [
       "authentic_intr_atomic_activation_worker_binding_admission=true",
       "authentic_master_records_constitutive_transition_recorded=true",
@@ -148,7 +148,7 @@
       "worker_mode": "GOVERNED_CLOSE",
       "request_schema": "stegverse.stegagents-atomic-task-worker-close-request/v1",
       "transition": "CLOSE_TASK_AND_RETIRE_WORKER",
-      "release_worker_only_after_master_records_closure": true,
+      "release_worker_only_after_master_records_organization_record": true,
       "records_only_required": true,
       "continued_authority_after_retirement": false,
       "post_retirement_falsification": {

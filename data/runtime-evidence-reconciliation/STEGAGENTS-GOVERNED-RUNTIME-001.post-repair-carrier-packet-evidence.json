@@ -48,6 +48,6 @@
   "resident_custody_root_claimed": false,
   "workercoordinator_claim_fence_claimed": false,
   "tv_warrant_or_policy_verified": false,
-  "master_records_custody_claimed": false,
+  "master_records_organization_record_claimed": false,
   "manual_work": "None."
 }

@@ -20,13 +20,13 @@
       "Parent DEVICE_KV_INTR evidence is missing or authority-invalid.",
       "Network source fetch or GitHub token becomes runtime authority.",
       "KV candidate is represented as canonical mutation.",
-      "Workflow-local Master Records custody is represented as LIVE_AUTHENTICATED_EXTERNAL."
+      "Workflow-local Master Records organization record is represented as LIVE_AUTHENTICATED_EXTERNAL."
     ],
     "authority_ceiling": [
       "sovereign endpoint fanout observation only",
       "no canonical KV mutation",
       "no provider operation",
-      "no external Master Records custody authority",
+      "no external Master Records organization record authority",
       "no credential issuance"
     ],
     "successor_policy": "INHERIT_OR_NARROW",

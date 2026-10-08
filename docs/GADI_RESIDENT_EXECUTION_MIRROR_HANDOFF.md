@@ -258,7 +258,7 @@ CURRENT_GADI_RESIDENT_CONSUMPTION
 
 ## Collision boundary
 
-No second heartbeat, resident service, runtime scheduler, listener, activation page, hosted GADI rendezvous route, WorkerCoordinator, claim/fence plane, InTr authority, Governance evaluator, credential route, evidence-provider authority, actuator implementation, or Master Records custody path may be created.
+No second heartbeat, resident service, runtime scheduler, listener, activation page, hosted GADI rendezvous route, WorkerCoordinator, claim/fence plane, InTr authority, Governance evaluator, credential route, evidence-provider authority, actuator implementation, or Master Records organization record path may be created.
 
 ## README impact
 

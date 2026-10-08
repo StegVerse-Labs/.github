@@ -70,7 +70,7 @@
     "LANDAUER_DERIVATION_DISTINCT_FROM_PHYSICAL_HEAT_MEASUREMENT",
     "CAUSAL_WITNESS_INDEPENDENT_OF_COINCIDENT_TIMESTAMPS",
     "NEGATIVE_FIXTURES_NEVER_PROMOTED",
-    "AUTHENTIC_ORGANIZATION_RECEIPT_AND_MASTER_RECORDS_CLOSURE_BEFORE_EVIDENCE_PROMOTION"
+    "AUTHENTIC_ORGANIZATION_RECEIPT_AND_MASTER_RECORDS_ORGANIZATION_RECORD_BEFORE_EVIDENCE_PROMOTION"
   ],
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -103,7 +103,7 @@
     "synthetic_fixtures_prove_physical_measurement": false,
     "workercoordinator_claim_fence_only": true,
     "interlock_intr_governed_transition_only": true,
-    "master_records_custody_reconstruction_only": true,
+    "master_records_organization_record_reconstruction_only": true,
     "tv_tvc_credentials_only": true,
     "no_second_user_operated_device_required": true
   },

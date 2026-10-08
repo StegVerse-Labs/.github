@@ -35,7 +35,7 @@
     "objective": "Duplicate the proven StegVerse-002 event-triggered Interlock/InTr to EVENT_EPHEMERAL route first, bind only current MIR Goal/COSV/destination requirements, canonically retain and reconstruct every observed governed transition in Master Records, and complete governed return without a second execution or transport plane.",
     "success_predicates": [
       "current MIR-bound event is admitted through the existing Interlock/InTr route",
-      "every observed governed transition is retained and reconstructed through canonical Master Records custody",
+      "every observed governed transition is retained and reconstructed through canonical Master Records organization record",
       "RTC-007, RTC-008, RTC-009, and the StegVerse return exit are observed for the current MIR-bound execution",
       "the exact governed return packet is retained without introducing a second execution or transport plane"
     ],
@@ -50,7 +50,7 @@
       "existing admitted MIR task authority only",
       "Interlock/InTr transition authority unchanged",
       "TV/TVC credential authority unchanged",
-      "Master Records custody and reconstruction authority unchanged",
+      "Master Records organization records and reconstruction unchanged",
       "heartbeat remains reference-only and non-authorizing"
     ],
     "successor_policy": "INHERIT_OR_NARROW",

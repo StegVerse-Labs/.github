@@ -95,7 +95,7 @@ def test_purpose_bound_graph_request_reuses_same_targeted_resident_consumer():
     assert "PURPOSE_REQUEST_REL" in consumer
 
 
-def test_targeted_consumer_preserves_master_records_custody_transport_inputs():
+def test_targeted_consumer_preserves_master_records_organization_record_transport_inputs():
     import importlib.util
     module_path = ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py"
     spec = importlib.util.spec_from_file_location("targeted_consumer", module_path)

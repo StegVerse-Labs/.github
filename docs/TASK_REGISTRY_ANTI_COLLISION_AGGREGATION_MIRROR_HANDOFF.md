@@ -257,7 +257,7 @@ Require focused source tests and the broad validation lanes available to this re
 
 ## Exact-head validation and Master Records evidence review — 2026-09-18
 
-Master Records was reviewed before treating missing CI as a reason to pause. The canonical Master Records work-event custody contract explicitly distinguishes retained/source/CI evidence from authentic runtime execution and requires exact observed evidence to be interpreted according to its class rather than waiting on an absent signal. The relevant evidence trail showed a source-validation problem, not a runtime or custody blocker.
+Master Records was reviewed before treating missing CI as a reason to pause. The canonical Master Records work-event organization records contract explicitly distinguishes retained/source/CI evidence from authentic runtime execution and requires exact observed evidence to be interpreted according to its class rather than waiting on an absent signal. The relevant evidence trail showed a source-validation problem, not a runtime or custody blocker.
 
 The first Cross-Task Coordination validation run on this slice failed because the task-registration validator compared the PR against stale event field `pull_request.base.sha=3ad023ab...` after current main had advanced. That caused unrelated later task records to be revalidated as if they were part of this PR. The failure was therefore a false change-set expansion, not a failure of the action-surface collision semantics.
 

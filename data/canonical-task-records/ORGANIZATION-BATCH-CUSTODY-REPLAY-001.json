@@ -4,7 +4,7 @@
   "correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
   "root_correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
   "parent_task_id": null,
-  "goal": "Reconcile existing organizational transition receipts, worker expiry and task-registry transitions, local replay, bounded organization batch closure, and independently verified Master Records custody/reconstruction without introducing another ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, or device dependency.",
+  "goal": "Reconcile existing organizational transition receipts, worker expiry and task-registry transitions, local replay, bounded organization batch closure, and independently verified Master Records organization records and reconstruction without introducing another ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, or device dependency.",
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY",
   "repository": "StegVerse-Labs/.github",
@@ -46,7 +46,7 @@
       "evidence_class": "SOURCE_VALIDATION",
       "consequence_committed": false,
       "failure_code": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
-      "failed_predicate": "EXISTING_AUTHORIZED_MASTER_RECORDS_CUSTODY_CONFIGURATION_PRESENT_AT_MANIFEST_DIRECTED_INVOCATION",
+      "failed_predicate": "EXISTING_AUTHORIZED_MASTER_RECORDS_ORGANIZATION_RECORD_CONFIGURATION_PRESENT_AT_MANIFEST_DIRECTED_INVOCATION",
       "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_THE_EXISTING_AUTHORIZED_RESIDENT_LEDGER_ROOT_AND_CUSTODY_ENDPOINT_TOKEN",
       "retry_entrypoint": "resident-runtime/organization_batch_custody.py::submit_released_batch",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
@@ -141,7 +141,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "terminal_model": "DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_CLOSURE",
+    "terminal_model": "DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_ORGANIZATION_RECORD",
     "separate_runtime_observation_gate_required": false
   },
   "allowed_next_transitions": [
@@ -154,7 +154,7 @@
     "worker_lifecycle_authority": "EXISTING_WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "local_ledger_authority": "EXISTING_ORGANIZATION_LEDGER_CUSTODY_ONLY",
-    "master_records_authority": "GLOBAL_CUSTODY_AND_RECONSTRUCTION_ONLY",
+    "master_records_authority": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "github_action_authority": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
     "registry_mints_execution_authority": false,
     "receipt_is_transition_authority": false,
@@ -169,7 +169,7 @@
     "capabilities": [
       "canonical_work_ingress",
       "organization_custody_readback",
-      "canonical_master_records_state_transition_custody"
+      "canonical_master_records_state_transition_organization_record"
     ],
     "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS",
     "mutation_required": true,

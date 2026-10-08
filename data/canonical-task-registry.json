@@ -109,7 +109,7 @@
           "runtime-profile-discovery",
           "runtime-resolution-batch-persistence",
           "task-runtime-routing-readiness",
-          "master-records-custody",
+          "master-records-organization-record",
           "post-custody-reconciliation",
           "post-reconciliation-transition-readiness",
           "governance-review-packaging"
@@ -227,7 +227,7 @@
         "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
-        "master_records_is_transition_custody_not_precondition": true,
+        "master_records_is_transition_organization_record_not_precondition": true,
         "separate_runtime_observer_is_completion_authority": false
       },
       "functional_memory_runtime_exercise": {
@@ -441,7 +441,7 @@
           "task-runtime-resolution-persistence",
           "task-runtime-routing-readiness",
           "runtime-profile-custody-package",
-          "master-records-custody-consumption",
+          "master-records-organization-record-consumption",
           "master-records-reconciliation",
           "post-reconciliation-transition-readiness",
           "governance-review-packaging",
@@ -483,7 +483,7 @@
         "AUTHENTIC_RUNTIME_PROFILE_MAP_RECEIPT_OBSERVED",
         "AUTHENTIC_TASK_RUNTIME_RESOLUTION_PROJECTIONS_OBSERVED",
         "AUTHENTIC_TASK_ROUTING_READINESS_RECEIPTS_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_CUSTODY_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED",
         "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
         "AUTHENTIC_POST_RECONCILIATION_TRANSITION_READINESS_OBSERVED",
         "AUTHENTIC_GOVERNANCE_REVIEW_PACKAGE_OBSERVED"
@@ -834,7 +834,7 @@
           "object-provenance-continuity",
           "displayed-surface-provenance-ingress",
           "universal-interlock-intr",
-          "master-records-custody-reconstruction",
+          "master-records-organization-record-reconstruction",
           "workspace-projection"
         ]
       },
@@ -873,11 +873,11 @@
       "expected_evidence_predicates": [
         "OBJECT_PROVENANCE_SOURCE_MERGED",
         "OBJECT_PROVENANCE_DISPLAYED_SURFACE_INGRESS_MERGED",
-        "OBJECT_PROVENANCE_MASTER_RECORDS_CUSTODY_SOURCE_MERGED",
+        "OBJECT_PROVENANCE_MASTER_RECORDS_ORGANIZATION_RECORD_SOURCE_MERGED",
         "AUTHENTIC_TASK_INGRESS_OBSERVED",
         "AUTHENTIC_OBJECT_PROVENANCE_INGRESS_OBSERVED",
         "AUTHENTIC_RECEIPT_BOUND_DERIVATION_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_CUSTODY_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_ORGANIZATION_RECORD_OBSERVED",
         "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_RECONSTRUCTION_OBSERVED",
         "AUTHENTIC_REVERSE_SOURCE_RESOLUTION_OBSERVED",
         "WORKSPACE_PROJECTION_ONLY_NAVIGATION_OBSERVED",
@@ -1341,8 +1341,8 @@
         "ERL_PROVIDER_RECEIPT_BACKED_READBACK_REQUIRES_EXPLICIT_PROVIDER_OPERATION_RECEIPT",
         "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
         "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT",
-        "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PASS",
-        "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_CUSTODY_REFERENCES_PRESENT",
+        "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION_PASS",
+        "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_ORGANIZATION_RECORD_REFERENCES_PRESENT",
         "ERL_NATIVE_WRITER_PROVIDER_UPLOAD_AND_EXACT_READBACK_PASS",
         "ERL_PROVIDER_OPERATION_RECEIPT_RETAINED",
         "ERL_NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_MASTER_RECORDS_RECONSTRUCTION_PASS"
@@ -1404,7 +1404,7 @@
         "acquired_evidence_and_publication_records_are_distinct": true,
         "provider_resource_identity_is_not_operation_receipt": true,
         "live_provider_publication_authority_remains_separate": true,
-        "master_records_owns_receipt_custody_not_publication": true
+        "master_records_owns_receipt_organization_record_not_publication": true
       },
       "readme_impact": {
         "material_function_change": false,
@@ -1836,7 +1836,7 @@
       "correlation_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
       "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
       "parent_task_id": null,
-      "goal": "Obtain one authentic rerun of the original StegVerse-002 v0.3 self-characterization experiment through the existing registered StegVerseNode -> Interlock -> Universal InTr -> bounded invocation lease -> EVENT_EPHEMERAL -> StegVerse-002 principal -> governed egress/return -> Master Records custody/reconstruction -> origin-return sequence, without making frozen-corpus bulk materialization a prerequisite.",
+      "goal": "Obtain one authentic rerun of the original StegVerse-002 v0.3 self-characterization experiment through the existing registered StegVerseNode -> Interlock -> Universal InTr -> bounded invocation lease -> EVENT_EPHEMERAL -> StegVerse-002 principal -> governed egress/return -> Master Records organization records and reconstruction -> origin-return sequence, without making frozen-corpus bulk materialization a prerequisite.",
       "coordination_state": "ACTIVE",
       "checkout_state": "UNCLAIMED",
       "cosv_task_vector": "50000000107000",
@@ -1865,7 +1865,7 @@
           "sv002-self-characterization-surface",
           "frozen-v0.3-principal",
           "governed-egress-origin-return",
-          "master-records-custody-reconstruction"
+          "master-records-organization-record-reconstruction"
         ]
       },
       "dependencies": [
@@ -1911,7 +1911,7 @@
         "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
         "EGRESS_EMITTED",
         "GOVERNED_RETURN_OBSERVED",
-        "MASTER_RECORDS_CUSTODY_OBSERVED",
+        "MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED",
         "MASTER_RECORDS_RECONSTRUCTION_PASS",
         "ORIGIN_RETURN_OBSERVED",
         "NO_SECOND_USER_OPERATED_DEVICE",
@@ -4236,7 +4236,7 @@
       "correlation_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
       "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
       "parent_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
-      "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes validated and reconstructed through canonical Master Records custody, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
+      "goal": "Promote the frozen v0.3 rerun REQUEST_BOUND predicate only from authentic canonical resident-carrier consumption of the current deterministic rerun callable, with exact request-bound bytes validated and reconstructed through canonical Master Records organization record, while preserving the existing single WorkerCoordinator/dispatcher/request and all authority boundaries.",
       "coordination_state": "IN_PROGRESS",
       "source_refs": [
         "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
@@ -5630,7 +5630,7 @@
           35598195638
         ],
         "generic_successor_prior_state_contract": "IMMEDIATELY_PRECEDING_MASTER_RECORDS_RECEIPT_SHA256",
-        "generic_successor_required_evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "generic_successor_required_evidence_type": "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
         "generic_successor_progression_gate": [
           "state=RECORDED",
           "reconstruction_status=PASS",
@@ -5707,7 +5707,7 @@
           "evidence_class": "SOURCE_VALIDATION",
           "consequence_committed": false,
           "failure_code": "ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_NOT_RECONCILED",
-          "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_RECONCILED_WITH_CANONICAL_MASTER_RECORDS_CUSTODY",
+          "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_RECONCILED_WITH_CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD",
           "required_evidence_or_repair": "RECONCILE_THE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_AS_THE_RECORD_ALREADY_DECLARES",
           "retry_entrypoint": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
           "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
@@ -5715,7 +5715,7 @@
         },
         "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
         "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
-        "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
+        "canonical_master_records_organization_record_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
         "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_WITHIN_ORGANIZATION",
         "organization_receipt_contract_generalized_to_canonical_state_transitions": true,
         "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
@@ -5764,11 +5764,11 @@
           35674317853,
           35674317860
         ],
-        "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
+        "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
         "organization_receipt_runtime_reobservation_performed": true,
         "organization_receipt_runtime_reobservation_source_head": "292c96d8cd61391f61689e94fb643c66bd53e568",
         "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
-        "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
+        "organization_receipt_runtime_reobservation_same_transition_master_records_organization_record_found": false,
         "organization_receipt_runtime_reobservation_repository_evidence_only": true,
         "organization_receipt_runtime_reobservation_defect_inferred": false,
         "rtc008_exact_boundary_predecessor_reconstruction_identified": true,
@@ -5780,7 +5780,7 @@
           35677960202,
           35677960211
         ],
-        "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY",
+        "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_ORGANIZATION_RECORD_EMISSION_BOUNDARY",
         "rtc007_exact_boundary_predecessor_reconstruction_identified": true,
         "rtc007_exact_boundary_predecessor_reconstruction_repaired": true,
         "rtc007_exact_boundary_predecessor_reconstruction_pr": 2562,
@@ -5870,7 +5870,7 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "source_adoption_complete_for_master_records_custody": true,
+        "source_adoption_complete_for_master_records_organization_record": true,
         "mir_final_browser_event_activation_adoption_pending": false,
         "runtime_completion_pending": true,
         "local_adapter_source_defect_pending": false,
@@ -5961,7 +5961,7 @@
           "pull_request": 2230,
           "exact_validated_head": "7da7591625b493380ebca5ca0409af559f55d806",
           "merge_commit": "20f5ccc966d3d9e3165c9302e55bb335337f01e8",
-          "master_records_gate": [
+          "master_records_organization_record": [
             "state=RECORDED",
             "reconstruction_status=PASS",
             "required_evidence_validation_status=PASS",
@@ -5981,7 +5981,7 @@
           "merge_commit": "83e1ef20b28c2fd033f242c12cd2320cbe95871f",
           "predecessor": "RTC-SDK-RETURN-006",
           "downstream_prepared_boundary": "RTC-INTERLOCK-INTR-TRANSPORT-008_MATERIALIZATION_REQUEST_ONLY",
-          "master_records_gate": [
+          "master_records_organization_record": [
             "state=RECORDED",
             "reconstruction_status=PASS",
             "required_evidence_validation_status=PASS",
@@ -6008,7 +6008,7 @@
             35569145993
           ],
           "repaired_order": [
-            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
             "CANONICAL_TASK_REMAINS_HANDOFF_READY_UNBOUND",
             "EXISTING_TV_TVC_INTR_PURPOSE_BOUND_LIFECYCLE_EXECUTES_WITH_PROVISIONAL_CLAIM_BOUND_VIEW",
             "RECORDS_ONLY_TERMINAL_CLOSURE_RETAINED",
@@ -6032,7 +6032,7 @@
         },
         "generic_predecessor_closure": {
           "state": "SOURCE_REPAIR_MERGED_VALIDATED",
-          "defect": "CANONICALTRANSITIONCUSTODY_ADVANCED_SUCCESSOR_PRIOR_STATE_TO_DOMAIN_RESULT_HASH_INSTEAD_OF_IMMEDIATELY_PRECEDING_MASTER_RECORDS_CLOSURE",
+          "defect": "CANONICALTRANSITIONCUSTODY_ADVANCED_SUCCESSOR_PRIOR_STATE_TO_DOMAIN_RESULT_HASH_INSTEAD_OF_IMMEDIATELY_PRECEDING_MASTER_RECORDS_ORGANIZATION_RECORD",
           "effect": "SHARED_HELPER_DID_NOT_ITSELF_FORCE_STATE_DEPENDENT_SUCCESSOR_CONSUMPTION_OF_CANONICAL_CUSTODY_CLOSURE",
           "pull_request": 2421,
           "exact_head": "8749ffb55fa753d98a0d55b9fc478c1bd3275d75",
@@ -6043,7 +6043,7 @@
           ],
           "repaired_contract": [
             "SUCCESSOR_PRIOR_STATE_REF_IS_PREDECESSOR_MASTER_RECORDS_RECEIPT_SHA256",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_AUTO_CARRIED_AS_REQUIRED_EVIDENCE",
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_AUTO_CARRIED_AS_REQUIRED_EVIDENCE",
             "ADVANCE_ONLY_AFTER_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_EXACT_DIGEST_EQUALITY",
             "DOMAIN_RESULT_HASH_REMAINS_TRANSITION_EVIDENCE_NOT_PROGRESSION_AUTHORITY"
           ],
@@ -6078,7 +6078,7 @@
           ],
           "continuity_sidecar_schema": "stegverse.mir-southbound-continuity/v1",
           "caller_handoff_schema": "stegverse.mir-caller-consequence-handoff/v1",
-          "master_records_gate": [
+          "master_records_organization_record": [
             "state=RECORDED",
             "reconstruction_status=PASS",
             "required_evidence_validation_status=PASS",
@@ -6110,7 +6110,7 @@
             35601926185
           ],
           "repaired_sequence": [
-            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+            "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
             "NONSECRET_TVC_EXECUTION_WARRANT_REQUEST_WRITTEN_FOR_CURRENT_CLAIM_AND_EXACT_STEGAGENTS_COMMIT",
             "EXISTING_STEGTVC_TV_EXECUTION_WARRANT_ONESHOT_INVOKED",
             "SECRET_FREE_SIGNED_WARRANT_PUBLIC_KEY_POLICY_TUPLE_VALIDATED",
@@ -6191,7 +6191,7 @@
             "SUPPLIED_PREDECESSOR_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RECEIPT_EMISSION",
             "PREDECESSOR_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
             "PREDECESSOR_RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
             "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
           ],
           "runtime_execution_claimed": false,
@@ -6210,11 +6210,11 @@
           ],
           "defect": "DIRECT_RTC008_CUSTODY_EMITTER_TRUSTED_REQUEST_CARRIED_PREDECESSOR_STATUS_AND_DIGEST_FIELDS_WITHOUT_RECONSTRUCTING_THE_EXACT_PREDECESSOR_RECEIPT_AT_EMISSION_BOUNDARY",
           "repaired_contract": [
-            "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_CUSTODY_BOUNDARY",
+            "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_ORGANIZATION_RECORD_BOUNDARY",
             "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-STEGVERSE-EGRESS-007",
             "RECONSTRUCTED_CLOSURE_MUST_MATCH_CARRIED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
             "SUCCESSOR_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE"
           ],
           "rtc009_or_far_side_execution_changed": false,
           "runtime_execution_claimed": false,
@@ -6234,7 +6234,7 @@
             "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-SDK-RETURN-006",
             "RECONSTRUCTED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_MUST_MATCH_PASSED_RTC006_CLOSURE",
             "RTC007_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE"
           ],
           "rtc008_or_rtc009_execution_changed": false,
           "runtime_execution_claimed": false,
@@ -6259,7 +6259,7 @@
             "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_CUSTODY_CLIENT_AT_WARRANT_RECEIPT_EMISSION",
             "RECONSTRUCTED_TRANSITION_ID_AND_CLOSURE_FIELDS_MUST_MATCH_CARRIED_GRAPH_PREDECESSOR",
             "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
             "WORKER_CLAIM_STRING_FALLBACK_REMOVED"
           ],
           "runtime_execution_claimed": false,
@@ -6279,9 +6279,9 @@
           ],
           "defect": "GRAPH_TRANSITION_COLLAPSED_PREDECESSOR_RECEIPT_REFS_INTO_A_SET_HASH_USED_AS_PRIOR_STATE_REF_INSTEAD_OF_RECONSTRUCTING_THE_EXACT_IMMEDIATE_PREDECESSOR_AT_EMISSION",
           "repaired_contract": [
-            "EVERY_SUPPLIED_GRAPH_PREDECESSOR_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_MASTER_RECORDS_CUSTODY_CLIENT",
+            "EVERY_SUPPLIED_GRAPH_PREDECESSOR_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_CLIENT",
             "RECONSTRUCTED_PREDECESSOR_CLOSURE_MUST_MATCH_CARRIED_TRANSITION_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
-            "ALL_CAUSAL_BRANCH_PREDECESSORS_CARRIED_AS_PREDECESSOR_MASTER_RECORDS_CLOSURE_REQUIRED_EVIDENCE",
+            "ALL_CAUSAL_BRANCH_PREDECESSORS_CARRIED_AS_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_REQUIRED_EVIDENCE",
             "THREE_WAY_JOIN_USES_EXISTING_COMPLETED_NS_OBSERVED_COMPLETION_ORDER",
             "LAST_OBSERVED_COMPLETION_RECONSTRUCTED_RECEIPT_IS_PRIOR_STATE_REF_OR_HASH"
           ],
@@ -6307,7 +6307,7 @@
             "EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_PREDECESSOR_RECONSTRUCTED_AT_WARRANT_RECEIPT_EMISSION",
             "CARRIED_AND_RECONSTRUCTED_TRANSITION_ID_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_EXACTLY_MATCH",
             "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
-            "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+            "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
             "WORKER_CLAIM_STRING_PREDECESSOR_REMOVED",
             "EXISTING_CANONICAL_HASH_HELPER_REUSED_INSTEAD_OF_MISSING_CANONICAL_JSON_SYMBOL"
           ],
@@ -6327,7 +6327,7 @@
             36036227461
           ],
           "defect": "ATOMIC_ACTIVATION_SEQUENCE_3_COPIED_UNRECONSTRUCTED_SEQUENCE_2_WARRANT_RECEIPT_SHA",
-          "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+          "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_ORGANIZATION_RECORD_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
           "authentic_resident_runtime_observed": false,
           "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
         },
@@ -6743,7 +6743,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "transition_authority": "StegCore/InTr",
         "credential_warrant_authority": "TV/TVC",
-        "observed_reality_custody": "Master Records",
+        "observed_reality_authority": "Organization",
         "github_runtime_authority": "NONE",
         "new_runtime_allowed": false,
         "new_scheduler_allowed": false,
@@ -6819,7 +6819,7 @@
         "first_concrete_existing_path_defect": "WORKERCOORDINATOR_PROMOTES_TASK_ACTIVE_AND_BINDS_WORKER_AFTER_CLAIM_FENCE_CUSTODY_BUT_BEFORE_STEGCORE_INTR_CONSTITUTIVE_ACTIVATION_ADMISSION",
         "defect_source": "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger",
         "observed_sequence": [
-          "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+          "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
           "TASK_STATE_SET_ACTIVE_AND_WORKER_INSTANCE_BOUND",
           "WORKER_INVOKED",
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
@@ -6831,7 +6831,7 @@
         "stegagents_exact_head_validated": "bd0d349af1f1b03bacd0d5b020d3dc0cdb683c65",
         "pending_claim_fence_coordination_only": true,
         "intr_constitutive_transition_required_before_active_projection": true,
-        "master_records_closure_required_before_active_projection": true,
+        "master_records_organization_record_required_before_active_projection": true,
         "post_activation_invocation_separated": true,
         "non_test3_worker_paths_intended_unchanged": true,
         "resident_request_carriage_repair_implemented": true,
@@ -6878,7 +6878,7 @@
         "suite_test3_focused_validation_pr": 2239,
         "suite_test3_focused_initial_result": "11_PASS_1_FAIL",
         "suite_test3_failure_classification": "TEST_HARNESS_BOUNDARY_LABELING_DEFECT_NOT_RUNTIME_SEAM_FAILURE",
-        "suite_test3_ordering_source_observed": "MASTER_RECORDS_CLOSURE_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
+        "suite_test3_ordering_source_observed": "MASTER_RECORDS_ORGANIZATION_RECORD_THEN_AUTHORITATIVE_PROJECTION_THEN_INVOCATION",
         "suite_harness_repair_implemented": true,
         "suite_harness_existing_workflow_extended": true,
         "suite_test1_current_main_run": 35450287407,
@@ -6944,9 +6944,9 @@
         "authentic_runtime_transition_observed": false,
         "authority_effect": "NONE_ALREADY_MATERIALIZED_SOURCE"
       },
-      "execution_path_repair_master_records_custody": {
-        "defect": "TEST3_TARGETED_ENV_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
-        "defect_effect": "fresh WorkerCoordinator claim/fence could be prepared but canonical custody client would see neither HTTP nor durable-local Master Records binding and fail CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE",
+      "execution_path_repair_master_records_organization_record": {
+        "defect": "TEST3_TARGETED_ENV_STRIPPED_MASTER_RECORDS_ORGANIZATION_RECORD_BINDING",
+        "defect_effect": "fresh WorkerCoordinator claim/fence could be prepared but canonical custody client would see neither HTTP nor durable-local Master Records binding and fail CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE",
         "repaired_http_inputs": [
           "STEGVERSE_MASTER_RECORDS_ENDPOINT",
           "STEGVERSE_MASTER_RECORDS_TOKEN",
@@ -6966,7 +6966,7 @@
         "authority_effect": "NONE_CUSTODY_BINDING_CARRIAGE_ONLY"
       },
       "execution_path_repair_stegagents_master_records_env": {
-        "defect": "STEGAGENTS_PROCESS_ADAPTER_STRIPPED_MASTER_RECORDS_CUSTODY_BINDING",
+        "defect": "STEGAGENTS_PROCESS_ADAPTER_STRIPPED_MASTER_RECORDS_ORGANIZATION_RECORD_BINDING",
         "defect_effect": "after claim/fence custody, Test 3 atomic activation worker could launch without the Master Records binding required for TV_TVC_WARRANT_POLICY_VERIFIED and ACTIVATE_TASK_AND_CREATE_BIND_WORKER closure",
         "repaired_adapter": "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
         "master_records_binding_carried": true,
@@ -6980,7 +6980,7 @@
         "repaired_stegagents_commit": "eae52ac20b06846bc0fca55980d778d57108ef9f",
         "repaired_workercoordinator_path": "same existing process:stegagents-governed-runtime-v1 adapter invoked in GOVERNED_CLOSE mode on next targeted cycle",
         "close_transition": "CLOSE_TASK_AND_RETIRE_WORKER",
-        "master_records_gate": [
+        "master_records_organization_record": [
           "RECORDED",
           "reconstruction_status=PASS",
           "required_evidence_validation_status=PASS",
@@ -6999,7 +6999,7 @@
       },
       "execution_path_repair_dispatch_master_records": {
         "defect": "RESIDENT_DISPATCHER_STRIPPED_DURABLE_MASTER_RECORDS_BINDING",
-        "defect_effect": "Test 3 REQUESTED consumer could be invoked but durable-local Master Records custody inputs were removed before the consumer/targeted WorkerCoordinator path",
+        "defect_effect": "Test 3 REQUESTED consumer could be invoked but durable-local Master Records organization record inputs were removed before the consumer/targeted WorkerCoordinator path",
         "repaired_dispatcher": "scripts/dispatch_resident_execution_requests.py",
         "carried_inputs": [
           "MASTER_RECORDS_DB",
@@ -7237,7 +7237,7 @@
       "correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
       "root_correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
       "parent_task_id": null,
-      "goal": "Bind the validated StegHealth KnowledgeVault/Interlock client and generic InTr adapter to the existing canonical resident runtime, then prove the production path with authentic Interlock/InTr-governed execution and Master Records custody/reconstruction without direct KnowledgeVault record access or a duplicate runtime lane.",
+      "goal": "Bind the validated StegHealth KnowledgeVault/Interlock client and generic InTr adapter to the existing canonical resident runtime, then prove the production path with authentic Interlock/InTr-governed execution and Master Records organization records and reconstruction without direct KnowledgeVault record access or a duplicate runtime lane.",
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "repository": "StegVerse-Labs/StegHealth",
@@ -7285,7 +7285,7 @@
           "canonical_resident_request_dispatch",
           "workercoordinator_claim_fence",
           "interlock_intr_transition",
-          "master_records_custody_reconstruction"
+          "master_records_organization_record_reconstruction"
         ],
         "environment": "SOVEREIGN_RESIDENT",
         "direction": "INTERNAL",
@@ -7388,7 +7388,7 @@
         "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true,
         "interlock_intr_is_transition_path_not_precondition": true,
-        "master_records_is_transition_custody_not_precondition": true,
+        "master_records_is_transition_organization_record_not_precondition": true,
         "separate_runtime_observer_is_completion_authority": false
       },
       "remaining_predicate": "INGRESS_ADMITTED",
@@ -7742,7 +7742,7 @@
       "correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
       "root_correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
       "parent_task_id": null,
-      "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records custody/reconstruction before any later public Site projection.",
+      "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records organization records and reconstruction before any later public Site projection.",
       "coordination_state": "ACTIVE",
       "source_refs": [
         "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
@@ -7778,7 +7778,7 @@
           "authenticity-envelope",
           "transaction-performance-binding",
           "required-evidence-manifest",
-          "canonical-master-records-custody"
+          "canonical-master-records-organization-record"
         ]
       },
       "dependencies": [
@@ -7818,7 +7818,7 @@
       "runtime_requirements": {
         "capabilities": [
           "canonical_artifact_validation",
-          "canonical_master_records_state_transition_custody",
+          "canonical_master_records_state_transition_organization_record",
           "canonical_work_ingress",
           "workercoordinator_targeted_one_shot",
           "conversation_evidence_synthetic_ingestion_custody"
@@ -7853,7 +7853,7 @@
         "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY",
         "separate_runtime_presence_gate_required": false,
         "carrier_trigger_required": false,
-        "authentic_completion_still_requires_master_records_closure": true,
+        "authentic_completion_still_requires_master_records_organization_record": true,
         "remote_connected_device_requirement": "PROHIBITED",
         "wait_for_resident_execution_opportunity": false,
         "carrier_binding": {
@@ -7935,7 +7935,7 @@
       },
       "allowed_next_transitions": [
         "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-        "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
+        "MASTER_RECORDS_AUTHENTIC_RUNTIME_ORGANIZATION_RECORD_OBSERVED",
         "COMPLETION_CLAIMED"
       ],
       "handoff_projection_refs": [
@@ -9020,7 +9020,7 @@
         ],
         "components": [
           "heartbeat-reference-correlation",
-          "canonical-master-records-custody",
+          "canonical-master-records-organization-record",
           "receipt-hb-creation-reference",
           "master-records-hb-recording-reference",
           "master-records-checkpoint-root",
@@ -9088,7 +9088,7 @@
         "interlock_intr_remains_transition_authority": true,
         "workercoordinator_remains_claim_fence_authority": true,
         "tv_tvc_remains_credential_authority": true,
-        "master_records_remains_custody_reconstruction_authority": true
+        "master_records_limited_to_organization_records_and_reconstruction": true
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -9753,7 +9753,7 @@
       "correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
       "root_correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
       "parent_task_id": null,
-      "goal": "Bind an already-reviewed external_framework_wiki_publication_transition candidate through the existing StegVerse SDK external-manifest ingress and canonical governed runtime, require Interlock/InTr-governed Master Records closure with RECORDED + reconstruction PASS + required-evidence PASS + exact receipt digest equality, and permit repository mutation only after that closure is verified. Preserve direct-submitter non-authority and make the publication transition reusable by Admissibility, StegGuardian, StegTalk, and a future SDK public wiki.",
+      "goal": "Bind an already-reviewed external_framework_wiki_publication_transition candidate through the existing StegVerse SDK external-manifest ingress and canonical governed runtime, require Interlock/InTr-governed Master Records organization record with RECORDED + reconstruction PASS + required-evidence PASS + exact receipt digest equality, and permit repository mutation only after that closure is verified. Preserve direct-submitter non-authority and make the publication transition reusable by Admissibility, StegGuardian, StegTalk, and a future SDK public wiki.",
       "coordination_state": "PROPOSED",
       "source_refs": [
         "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/schemas/external-chat-publication-transition.schema.json",
@@ -9782,7 +9782,7 @@
           "reviewed-publication-candidate",
           "sdk-manifest-ingress",
           "interlock-intr-governed-decision",
-          "master-records-closure",
+          "master-records-organization-record",
           "publisher-mutation-gate"
         ]
       },
@@ -9806,7 +9806,7 @@
           "ref": "StegVerse-org/StegVerse-SDK:external_framework_runner.py"
         },
         {
-          "dependency_id": "CANONICAL_MASTER_RECORDS_CLOSURE",
+          "dependency_id": "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD",
           "kind": "SOURCE_CONTRACT",
           "state": "AVAILABLE",
           "ref": "master-records/orchestration:canonical_state_transition_custody.py"
@@ -10353,7 +10353,7 @@
         "PUBLISHER_EDITORIAL_CANDIDATE_REVIEWED",
         "SIX_STAGE_16_BENCHMARK_PUBLIC_PROJECTION_FAILS_CLOSED",
         "EXACT_TASK_AND_COSV_BENCHMARK_BINDINGS",
-        "AUTHENTIC_RUNTIME_MASTER_RECORDS_CLOSURE_FOR_CHECKMARKS",
+        "AUTHENTIC_RUNTIME_MASTER_RECORDS_ORGANIZATION_RECORD_FOR_CHECKMARKS",
         "EXACT_EXTERNAL_INTR_ALLOW_REQUIRED_WHEN_APPLICABLE",
         "GOVERNED_PUBLISHER_PUBLICATION_CLOSURE",
         "CANONICAL_SITE_MIRROR_AND_DEPLOYED_READBACK_VERIFIED",
@@ -10394,7 +10394,7 @@
       "correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
       "root_correlation_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
       "parent_task_id": null,
-      "goal": "Reconcile existing organizational transition receipts, worker expiry and task-registry transitions, local replay, bounded organization batch closure, and independently verified Master Records custody/reconstruction without introducing another ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, or device dependency.",
+      "goal": "Reconcile existing organizational transition receipts, worker expiry and task-registry transitions, local replay, bounded organization batch closure, and independently verified Master Records organization records and reconstruction without introducing another ledger, runtime, scheduler, dispatcher, WorkerCoordinator, custody store, authority plane, source transport, or device dependency.",
       "coordination_state": "ACTIVE",
       "checkout_state": "HANDOFF_READY",
       "repository": "StegVerse-Labs/.github",
@@ -10436,7 +10436,7 @@
           "evidence_class": "SOURCE_VALIDATION",
           "consequence_committed": false,
           "failure_code": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
-          "failed_predicate": "EXISTING_AUTHORIZED_MASTER_RECORDS_CUSTODY_CONFIGURATION_PRESENT_AT_MANIFEST_DIRECTED_INVOCATION",
+          "failed_predicate": "EXISTING_AUTHORIZED_MASTER_RECORDS_ORGANIZATION_RECORD_CONFIGURATION_PRESENT_AT_MANIFEST_DIRECTED_INVOCATION",
           "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_THE_EXISTING_AUTHORIZED_RESIDENT_LEDGER_ROOT_AND_CUSTODY_ENDPOINT_TOKEN",
           "retry_entrypoint": "resident-runtime/organization_batch_custody.py::submit_released_batch",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
@@ -10531,7 +10531,7 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "terminal_model": "DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_CLOSURE",
+        "terminal_model": "DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_ORGANIZATION_RECORD",
         "separate_runtime_observation_gate_required": false
       },
       "allowed_next_transitions": [
@@ -10544,7 +10544,7 @@
         "worker_lifecycle_authority": "EXISTING_WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "local_ledger_authority": "EXISTING_ORGANIZATION_LEDGER_CUSTODY_ONLY",
-        "master_records_authority": "GLOBAL_CUSTODY_AND_RECONSTRUCTION_ONLY",
+        "master_records_authority": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
         "github_action_authority": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
         "registry_mints_execution_authority": false,
         "receipt_is_transition_authority": false,
@@ -10559,7 +10559,7 @@
         "capabilities": [
           "canonical_work_ingress",
           "organization_custody_readback",
-          "canonical_master_records_state_transition_custody"
+          "canonical_master_records_state_transition_organization_record"
         ],
         "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS",
         "mutation_required": true,
@@ -10654,7 +10654,7 @@
       "correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
       "root_correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
       "parent_task_id": null,
-      "goal": "Falsify and authentically test commit-time admissibility using at least three separately attributable independently evaluated micro-node workers, retained disagreement/unknowns, existing CTA/StegCore/InTr admission, exact predecessor canonical Master Records custody, and worker-absent records-only replay, without introducing duplicate runtime or authority.",
+      "goal": "Falsify and authentically test commit-time admissibility using at least three separately attributable independently evaluated micro-node workers, retained disagreement/unknowns, existing CTA/StegCore/InTr admission, exact predecessor canonical Master Records organization record, and worker-absent records-only replay, without introducing duplicate runtime or authority.",
       "coordination_state": "ACTIVE",
       "checkout_state": "HANDOFF_READY",
       "repository": "StegVerse-Labs/.github",
@@ -10684,7 +10684,7 @@
         "CURRENT_COMMIT_TIME_STANDING_EVALUATED_BY_EXISTING_INTR_WITH_TV_TVC",
         "UNANIMOUS_SHARED_MISSING_EVIDENCE_FAILS_CLOSED",
         "EXACT_PREDECESSOR_RECONSTRUCTED_AT_EACH_SUCCESSOR_EMISSION",
-        "CANONICAL_MASTER_RECORDS_CLOSURE_EXACT_HASH_PASS",
+        "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_EXACT_HASH_PASS",
         "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_VERIFIED",
         "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
       ],
@@ -10778,7 +10778,7 @@
         "EXACT_OPERATION_SCOPED_TV_TVC_AND_CURRENT_INTR_STANDING",
         "DENIED_FILESYSTEM_NETWORK_CREDENTIAL_AND_TOOL_EFFECTS_INDEPENDENTLY_OBSERVED",
         "UNKNOWN_AND_UNOBSERVED_EFFECTS_NOT_PROMOTED_TO_ALLOW",
-        "EXACT_IMMEDIATE_PREDECESSOR_CANONICAL_MASTER_RECORDS_CLOSURE",
+        "EXACT_IMMEDIATE_PREDECESSOR_CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD",
         "ORGANIZATION_LEVEL_DENIED_OPERATION_AND_WORKER_EXPIRY_RECEIPTS",
         "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_NO_SIDE_EFFECT_REEXECUTION",
         "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
@@ -10956,7 +10956,7 @@
           "failure_code": "MASTER_RECORDS_RECONSTRUCTION_STAGE_NOT_ATTEMPTED",
           "failed_predicate": "MASTER_RECORDS_RECONSTRUCTION_SATISFIED_FOR_THIS_TASKS_MANIFEST_DIRECTED_TRANSITION",
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
-          "retry_entrypoint": "EXISTING_AUTHENTICATED_MASTER_RECORDS_CUSTODY_PATH",
+          "retry_entrypoint": "EXISTING_AUTHENTICATED_MASTER_RECORDS_ORGANIZATION_RECORD_PATH",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
           "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
         },
@@ -11296,7 +11296,7 @@
         "LANDAUER_DERIVATION_DISTINCT_FROM_PHYSICAL_HEAT_MEASUREMENT",
         "CAUSAL_WITNESS_INDEPENDENT_OF_COINCIDENT_TIMESTAMPS",
         "NEGATIVE_FIXTURES_NEVER_PROMOTED",
-        "AUTHENTIC_ORGANIZATION_RECEIPT_AND_MASTER_RECORDS_CLOSURE_BEFORE_EVIDENCE_PROMOTION"
+        "AUTHENTIC_ORGANIZATION_RECEIPT_AND_MASTER_RECORDS_ORGANIZATION_RECORD_BEFORE_EVIDENCE_PROMOTION"
       ],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -11329,7 +11329,7 @@
         "synthetic_fixtures_prove_physical_measurement": false,
         "workercoordinator_claim_fence_only": true,
         "interlock_intr_governed_transition_only": true,
-        "master_records_custody_reconstruction_only": true,
+        "master_records_organization_record_reconstruction_only": true,
         "tv_tvc_credentials_only": true,
         "no_second_user_operated_device_required": true
       },
@@ -11411,7 +11411,7 @@
         "EXISTING_INSTALLED_SDK_BINDINGS_EVALUATED_BEFORE_NEW_WORK",
         "GENERIC_FROZEN_MANIFEST_INVOCATION_POSITIVE_AND_NEGATIVE_CONTROLS",
         "EXACT_SOURCE_COMMIT_RESULT_AND_PRE_ENRICHMENT_HASH_LINEAGE",
-        "AUTHENTIC_WORKERCOORDINATOR_TV_TVC_INTR_AND_MASTER_RECORDS_CLOSURE_WHEN_RUNTIME_CLAIMED"
+        "AUTHENTIC_WORKERCOORDINATOR_TV_TVC_INTR_AND_MASTER_RECORDS_ORGANIZATION_RECORD_WHEN_RUNTIME_CLAIMED"
       ],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -11439,7 +11439,7 @@
         "workercoordinator_claim_fence_only": true,
         "credential_authority": "TV/TVC",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_custody_required": true,
+        "master_records_organization_record_required": true,
         "no_second_device": true,
         "source_math_owner_remains_each_native_repository": true
       },
@@ -11554,7 +11554,7 @@
         "workercoordinator_claim_fence_only": true,
         "interlock_intr_governed_transition_only": true,
         "tv_tvc_credentials_only": true,
-        "master_records_custody_reconstruction_only": true,
+        "master_records_organization_record_reconstruction_only": true,
         "organization_receipt_measurement_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
         "sdk_semantic_test_is_runtime_proof": false,
         "no_second_device": true
@@ -11680,7 +11680,7 @@
         "workercoordinator_claim_fence_only": true,
         "credential_authority": "TV/TVC",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_custody_required": true,
+        "master_records_organization_record_required": true,
         "no_second_device": true,
         "patent_family_numbering_authorized": false,
         "clinical_monitoring_assertion_authorized": false
@@ -12035,7 +12035,7 @@
         "adaptive_benefit_with_current_required_context_demonstrated": false,
         "authentic_component010_event_observed": false,
         "worker_claim_fence_observed": false,
-        "master_records_closure_observed": false,
+        "master_records_organization_record_observed": false,
         "authority_effect": "NONE_SOURCE_ONLY"
       },
       "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json"
@@ -12150,7 +12150,7 @@
         "workercoordinator_claim_fence_only": true,
         "credential_authority": "TV/TVC",
         "interlock_intr_required_for_governed_ingress_egress": true,
-        "master_records_custody_required_for_governed_transitions": true,
+        "master_records_organization_record_required_for_governed_transitions": true,
         "provider_retirement_authorized": false,
         "no_second_device": true
       },
@@ -12288,7 +12288,7 @@
         "credential_authority": "TV/TVC",
         "native_node_identity_is_not_webkit_node_identity_without_proof": true,
         "interlock_intr_required_for_state_changes": true,
-        "master_records_custody_required": true,
+        "master_records_organization_record_required": true,
         "github_apple_credential_custody": false,
         "no_second_device": true
       },
@@ -12609,7 +12609,7 @@
         "AUTHENTIC_PROVIDER_WRITE_ADMITTED_AND_EXECUTED_BY_EXISTING_OWNER",
         "EXACT_STORED_EVENT_HASH_READBACK_MATCHES_CANONICAL_EVENT_HASH",
         "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
-        "REQUIRED_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED"
+        "REQUIRED_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION_OBSERVED"
       ],
       "runtime_owner_transition_observation": {
         "canonical_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
@@ -12630,7 +12630,7 @@
         "credential_authority": "TV/TVC",
         "user_verification": "KV/SKAP Vault",
         "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
-        "master_records": "OBSERVED_REALITY_RECONSTRUCTION",
+        "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
         "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE"
       }
@@ -13601,7 +13601,7 @@
         "BUILD_MIR_BOUND_UNIVERSAL_INTR_INTENT",
         "BUILD_NON_AUTHORIZING_EVENT_MATERIALIZATION_REQUEST",
         "PERSIST_EVENT_MATERIALIZATION_REQUEST",
-        "CANONICAL_MASTER_RECORDS_CUSTODY_OF_OBSERVED_EVENT_STATE",
+        "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_OF_OBSERVED_EVENT_STATE",
         "INTERLOCK_INTR_ADMISSION",
         "EVENT_EPHEMERAL_RUNTIME_MATERIALIZATION",
         "RTC-STEGVERSE-EGRESS-007",
@@ -13609,7 +13609,7 @@
         "RTC-FARSIDE-FINAL-009",
         "RETAIN_MIR_DESTINATION_EVIDENCE",
         "RETAIN_EXACT_GOVERNED_RETURN_PACKET",
-        "CANONICAL_MASTER_RECORDS_CUSTODY_AFTER_EACH_OBSERVED_STATE",
+        "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_AFTER_EACH_OBSERVED_STATE",
         "GOVERNED_RETURN_STEGVERSE_RETURN_EXIT"
       ],
       "current_truth": {
@@ -13618,7 +13618,7 @@
         "generic_sv002_route_reproof_gate_removed": true,
         "event_driven_execution_source_materialized": true,
         "workercoordinator_event_creation_gate_removed": true,
-        "canonical_master_records_custody_source_bound": true,
+        "canonical_master_records_organization_record_source_bound": true,
         "mir_profile_runtime_canonical_custody_source_bound": true,
         "temporary_probe_disabled_for_primary_execution": true,
         "mir_destination_profile_id": "MIR",
@@ -13911,7 +13911,7 @@
           "linkedin-stegverse-transport",
           "instagram-stegverse-ai-transport",
           "publication-receipt",
-          "master-records-custody"
+          "master-records-organization-record"
         ]
       },
       "dependencies": [
@@ -14129,7 +14129,7 @@
         "heartbeat_execution_authority": false,
         "github_runtime_authority": "NONE",
         "hosted_execution_fallback": false,
-        "master_records_owns_receipt_custody_not_publication": true
+        "master_records_owns_receipt_organization_record_not_publication": true
       },
       "execution_substrate_resolution": {
         "schema": "stegverse.execution-substrate-resolution/v1",
@@ -14526,7 +14526,7 @@
         "B1": {
           "name": "RECORD_RECONSTRUCT_PROCESS",
           "completion": "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
-          "authority": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY",
+          "authority": "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_ONLY",
           "state": "NOT_ENTERED"
         },
         "C1_C4": {
@@ -14989,7 +14989,7 @@
             "PROCESSING",
             "MIRROR_BOUNDARY_PROCESSING"
           ],
-          "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+          "master_records_authority": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
           "transport_authority": "NONE",
           "mirror_boundary_initiates_next_interlock_intr": true
         },
@@ -15318,7 +15318,7 @@
         "workercoordinator_remains_claim_fence_authority": true,
         "interlock_intr_remains_transition_authority": true,
         "tvc_remains_credential_provider_release_authority": true,
-        "master_records_remains_custody_reconstruction_authority": true,
+        "master_records_limited_to_organization_records_and_reconstruction": true,
         "model_output_grants_execution_authority": false,
         "physical_device_identity_grants_authority": false,
         "github_runtime_authority": "NONE"
@@ -15781,7 +15781,7 @@
         "workercoordinator": "CLAIM_FENCE",
         "interlock_intr": "TRANSITION_ADMISSION",
         "credential_authority": "TV/TVC",
-        "master_records": "OBSERVED_REALITY_AND_RECONSTRUCTION",
+        "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
         "heartbeat": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE"
       }
@@ -15988,7 +15988,7 @@
         "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
         "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED",
         "FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED",
-        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED"
+        "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_NOT_YET_OBSERVED"
       ],
       "expected_evidence_predicates": [
         "KV_SKAP_USER_VERIFICATION_PRESERVED_AS_SOLE_USER_VERIFIER",
@@ -16005,7 +16005,7 @@
         "TVC_ADMISSION_AUTHORITY_BACKEND_BOUND_TO_EXISTING_VAULT_AGENT",
         "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
         "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
-        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_CONFIRMED",
+        "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_CONFIRMED",
         "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
         "RECIPIENT_SECURE_ENCLAVE_KEY_NOT_REPURPOSED_AS_AUTHORITY_KEY",
         "NO_SECOND_SIGNER_DAEMON_OR_CREDENTIAL_PATH"
@@ -16250,9 +16250,9 @@
           "reason": "First real manifested ChatGPT task has no authenticated governed outcome."
         },
         {
-          "blocker_id": "FIRST_PARTICIPANT_MASTER_RECORDS_CUSTODY",
+          "blocker_id": "FIRST_PARTICIPANT_MASTER_RECORDS_ORGANIZATION_RECORD",
           "dependency_id": "FIRST_SCOPED_MASTER_RECORDS_PROOF",
-          "reason": "No matching predecessor-linked scoped organization and Master Records closure has been established."
+          "reason": "No matching predecessor-linked scoped organization and Master Records organization record has been established."
         }
       ],
       "adjacent_task_refs": [
@@ -16427,7 +16427,7 @@
           "ref": "Existing StegOS / SDK / LLM-adapter native executor; Anthropic Messages reply alone insufficient"
         },
         {
-          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_ORGANIZATION_RECORD",
           "kind": "EVIDENCE",
           "state": "UNKNOWN",
           "ref": "Two separately scoped organization receipt chains and matching Master Records reconstruction"
@@ -16446,7 +16446,7 @@
         },
         {
           "blocker_id": "SEPARATE_PARTICIPANT_CUSTODY_RECONSTRUCTION",
-          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+          "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_ORGANIZATION_RECORD",
           "reason": "Independent scoped ChatGPT and Claude Code receipts and joint Master Records reconstruction remain unverified."
         }
       ],
@@ -17142,7 +17142,7 @@
       "correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
       "root_correlation_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
       "parent_task_id": null,
-      "goal": "Make the StegVerse WorkSpace the canonical browser representation of MyKV and Org KV, including capability functions bound to admitted operations, and the single governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across any browser session, on any operating system, on any device. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as custody, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, and no browser-local root of truth for user-visible state.",
+      "goal": "Make the StegVerse WorkSpace the canonical browser representation of MyKV and Org KV, including capability functions bound to admitted operations, and the single governed input surface for sensitive material entering the SKAP Vault, such that WorkSpace state is derived entirely from admitted state transitions and remains exact and consistent for the same principal across any browser session, on any operating system, on any device. Preserve KV/SKAP Vault as the exclusive user verifier, Interlock/InTr as transition authority, TV/TVC as credential authority, Master Records as organization records, and the global invariant that eligible StegOS devices are interchangeable transport nodes with no physical-device identity gate. Create no second user verifier, no duplicate runtime, no duplicate KV authority, and no browser-local root of truth for user-visible state.",
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/.github",
@@ -17153,7 +17153,7 @@
         "governed_transition": "INTERLOCK_INTR",
         "user_verification": "KV_SKAP_VAULT",
         "credential_authority": "TV/TVC",
-        "observed_reality_custody": "MASTER_RECORDS",
+        "observed_reality_authority": "Organization",
         "heartbeat": "OBSERVABILITY_ONLY",
         "github_runtime_authority": "NONE"
       },
@@ -17311,7 +17311,7 @@
           "browser-kv-projection",
           "interlock-intr-governed-transition",
           "skap-vault-user-verification",
-          "master-records-custody",
+          "master-records-organization-record",
           "cross-platform-browser-runtime"
         ],
         "mutation_required": true,
@@ -18073,7 +18073,7 @@
         "AUTHENTIC_TRANSITION_DISPOSITION_RETAINED",
         "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_WHERE_APPLICABLE",
         "INTERLOCK_INTR_DISPOSITION_OBSERVED",
-        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED_WHERE_APPLICABLE"
+        "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED_WHERE_APPLICABLE"
       ],
       "runtime_resolution": {
         "unresolved_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
@@ -19013,7 +19013,7 @@
     "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY",
     "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY",
     "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY",
-    "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY",
+    "MASTER_RECORDS_ORGANIZATION_RECORD_DOES_NOT_GRANT_TASK_AUTHORITY",
     "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE",
     "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION",
     "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",

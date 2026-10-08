@@ -8,4 +8,4 @@ This source patch validates exact SDK generic Publisher evidence-report payload,
 
 Authentic reverse SDK:ReviewerReturn admission and binding to original SDK manifest/Master Records remains the first unproven transition: the existing reverse consumer is KV-origin or specialized MIR-only. Do not route generic SDK return through KV or call a local fixture runtime proof.
 
-No authentic resident organization ledger, current Master Records closure, actual Publisher host operation or far-side evaluator receipt was observed. Original PDF and ten screenshots remain available privately in the source-only evaluator archive.
+No authentic resident organization ledger, current Master Records organization record, actual Publisher host operation or far-side evaluator receipt was observed. Original PDF and ten screenshots remain available privately in the source-only evaluator archive.

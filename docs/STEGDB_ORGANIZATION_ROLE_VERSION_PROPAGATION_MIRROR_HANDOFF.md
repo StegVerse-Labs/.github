@@ -14,7 +14,7 @@ Make StegDB the durable ecosystem registry for Organization Role versions, versi
 - Interlock/InTr owns consequential transition/admission.
 - Each Organization owns repository-local implementation and runtime reality in its organization ledger.
 - TV/TVC owns credentials.
-- Master Records owns organization-record custody and reconstruction only.
+- Master Records owns organization-record organization records and reconstruction only.
 - StegDB MUST NOT directly install or mutate adopter repositories.
 
 ## ACTIONS BY MANIFEST

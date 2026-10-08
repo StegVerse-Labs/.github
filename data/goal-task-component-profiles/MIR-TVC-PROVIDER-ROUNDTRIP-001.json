@@ -98,11 +98,11 @@
     "authentic_tvc_mir_provider_session_observed": false,
     "provider_session_receipt_manifest_bound": true,
     "provider_session_receipt_intr_admission_required": true,
-    "provider_session_receipt_master_records_custody_required": true,
+    "provider_session_receipt_master_records_organization_record_required": true,
     "provider_session_receipt_master_records_reconstruction_required": true,
     "provenance": "MIR_NODE_MIRROR_BUILD_TEST_PLUS_AUTHENTIC_EXTERNAL_RESULT",
     "duplicate_reexecution_required": false,
-    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed for the MIR mirror round-trip. The remaining authentic TV/TVC provider-session receipt now has an explicit manifest-bound trajectory: current-source and vault-backed provider-operation verification, Interlock/InTr admission, then Master Records custody/reconstruction before the final MIR predicate may be satisfied."
+    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed for the MIR mirror round-trip. The remaining authentic TV/TVC provider-session receipt now has an explicit manifest-bound trajectory: current-source and vault-backed provider-operation verification, Interlock/InTr admission, then Master Records organization records and reconstruction before the final MIR predicate may be satisfied."
   },
   "satisfied_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
@@ -115,14 +115,14 @@
   "predicate_classes": {
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED": "BUILD_TEST_RUNTIME",
     "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK": "BUILD_TEST_RUNTIME",
-    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT_PLUS_MASTER_RECORDS_CUSTODY",
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT_PLUS_MASTER_RECORDS_ORGANIZATION_RECORD",
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED": "AUTHENTIC_EXTERNAL_ENDPOINT"
   },
   "authority_invariants": {
     "transition_authority": "Interlock/InTr",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
-    "observed_reality_custody": "Master Records",
+    "observed_reality_authority": "Organization",
     "github_runtime_authority": "NONE",
     "mirror_authority_effect": "NONE"
   },

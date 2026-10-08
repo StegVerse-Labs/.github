@@ -65,7 +65,7 @@
       "authentic_projection_materialized": false,
       "live_panel_claimed": false
     },
-    "master_records_custody": {
+    "master_records_organization_record": {
       "pull_request": 92,
       "exact_head": "fdb23972256e0f126d73c3422cdf39d9543ae626",
       "runtime_evidence_validation_run": 34654171547,
@@ -127,7 +127,7 @@
     "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED",
     "AUTHENTIC_HEALER_REUSABLE_ECE_SLOT_CONSUMED",
     "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
-    "MASTER_RECORDS_AUTHENTIC_ECE_CUSTODY_RECONSTRUCTION_OBSERVED",
+    "MASTER_RECORDS_AUTHENTIC_ECE_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED",
     "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
     "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED",
     "HEALER_LIVE_FINDING_INTAKE_OBSERVED",

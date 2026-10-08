@@ -51,7 +51,7 @@ class UniversalGovernanceResidentRequestTests(unittest.TestCase):
             observed.write_text(json.dumps({
                 "reference_enforced_boundary_observed": True,
                 "bypass_negative_control_passed": True,
-                "master_records_custody_accepted": True,
+                "master_records_organization_record_accepted": True,
                 "real_external_system_enforced_activation": False,
             }), encoding="utf-8")
 
@@ -86,7 +86,7 @@ class UniversalGovernanceResidentRequestTests(unittest.TestCase):
             self.assertEqual(receipt["state"], "COMPLETED")
             self.assertTrue(receipt["reference_enforced_boundary_observed"])
             self.assertTrue(receipt["bypass_negative_control_passed"])
-            self.assertTrue(receipt["master_records_custody_accepted"])
+            self.assertTrue(receipt["master_records_organization_record_accepted"])
             self.assertFalse(receipt["real_external_system_enforced_activation"])
             self.assertIn("--task-id", receipt["command"])
             self.assertIn(TARGET_TASK, receipt["command"])

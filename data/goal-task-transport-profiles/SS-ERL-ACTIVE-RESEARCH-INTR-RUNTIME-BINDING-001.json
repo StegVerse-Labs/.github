@@ -80,9 +80,9 @@
       "component_id": "RTC-EVIDENCE-CUSTODY-004",
       "instance_id": "ERL-THREE-HOP-RECONSTRUCTION",
       "inputs": ["binding evidence", "hop_1_receipt", "hop_2_receipt", "hop_3_receipt", "terminal_kv_exact_byte_readback", "existing_provider_proof_binding"],
-      "outputs": ["Master Records custody acceptance", "same-execution reconstruction evidence", "final proof references"],
+      "outputs": ["Master Records organization record acceptance", "same-execution reconstruction evidence", "final proof references"],
       "preconditions": ["all required authentic evidence exists", "provider operation is not replayed"],
-      "expected_evidence": ["Master Records custody receipt", "Master Records reconstruction confirmation"],
+      "expected_evidence": ["Master Records organization record receipt", "Master Records reconstruction confirmation"],
       "authority_owner": "Master Records",
       "authority_effect": "NONE_COMPONENT"
     }

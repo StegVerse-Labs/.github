@@ -11,7 +11,7 @@
       "production-source-prep v2 receipt is COMPLETE and supplies four sha256-content-manifest source identities + local roots",
       "canonical sovereign SDK result is emitted",
       "SDK result binds to exact submitted candidate and route",
-      "Master Records custody status is RECORDED",
+      "Master Records organization record status is RECORDED",
       "replay consequence_reexecuted=false",
       "reconstruction consequence_reexecuted=false",
       "reconstruction original_record_mutated=false",
@@ -27,7 +27,7 @@
       "hosted execution is treated as sovereign runtime",
       "parallel/mock evaluator or route is used",
       "SDK result does not bind to exact manifest/route/state",
-      "Master Records custody/replay/reconstruction fails",
+      "Master Records organization records and reconstruction fails",
       "replay or reconstruction reexecutes consequence",
       "GitHub/provider credential is present",
       "repository writeback or public publication is attempted"
@@ -36,7 +36,7 @@
       "bounded_process_execution",
       "canonical_sdk_governed_execution",
       "canonical_stegcore_governance_execution",
-      "master_records_local_custody_replay_reconstruction",
+      "master_records_local_organization_record_replay_reconstruction",
       "first_round_analysis",
       "local_receipt_derived_dashboard_generation",
       "no external consequence authority",
@@ -209,7 +209,7 @@
       "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
       "candidate_readiness=READY_FOR_SDK_0B",
       "sdk_admission=SDK_ADMITTED",
-      "master_records_custody_status=RECORDED",
+      "master_records_organization_record_status=RECORDED",
       "replay_consequence_reexecuted=false",
       "reconstruction_consequence_reexecuted=false",
       "first_round_analysis=ANALYZED",
@@ -219,7 +219,7 @@
       "github_platform_required=false",
       "github_token_used=false"
     ],
-    "release_condition": "One authentic production round is bound end-to-end from resident/InTr evidence through canonical SDK/StegCore governance, Master Records custody/reconstruction, deterministic SV-DN-1 evaluation and local receipt-derived dashboard generation."
+    "release_condition": "One authentic production round is bound end-to-end from resident/InTr evidence through canonical SDK/StegCore governance, Master Records organization records and reconstruction, deterministic SV-DN-1 evaluation and local receipt-derived dashboard generation."
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:sv-dn1-sdk-governed-first-round:v1",

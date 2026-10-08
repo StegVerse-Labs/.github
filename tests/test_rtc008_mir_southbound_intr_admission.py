@@ -65,7 +65,7 @@ def headers(raw: bytes):
     }
 
 
-def test_rtc008_admission_is_authorized_by_intr_without_master_records_gate(tmp_path: Path):
+def test_rtc008_admission_is_authorized_by_intr_without_master_records_organization_record(tmp_path: Path):
     req = request()
     raw = canonical(req)
     result = ingress.admit_mir_southbound(runtime_root=tmp_path, body=raw, headers=headers(raw))
@@ -245,7 +245,7 @@ def test_sdk_return_consumer_retains_exact_failed_invocation_diagnostic(tmp_path
     assert retained["downstream_owner_ref"] == consumer.SDK_DOWNSTREAM_OWNER
     assert retained["first_failed_governed_transition"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
     assert retained["rtc008_admission_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
-    assert retained["master_records_closure_claimed"] is False
+    assert retained["master_records_organization_record_claimed"] is False
     assert retained["authority_effect"] == "NONE_DIAGNOSTIC_ONLY"
     basis = {key: val for key, val in retained.items() if key != "diagnostic_sha256"}
     assert retained["diagnostic_sha256"] == consumer.sha(basis)

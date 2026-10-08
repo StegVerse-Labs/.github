@@ -368,7 +368,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             task["reconciliation_reason"] = ",".join(packet["review"]["reasons"])
             if memory.get("state") != "RECORDED":
                 task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"
-                task["reconciliation_reason"] = str(memory.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_CUSTODY_INCOMPLETE")
+                task["reconciliation_reason"] = str(memory.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_ORGANIZATION_RECORD_INCOMPLETE")
                 self._event(
                     events,
                     carrier_epoch,

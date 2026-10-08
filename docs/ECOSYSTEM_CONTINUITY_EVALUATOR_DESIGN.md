@@ -32,4 +32,4 @@ registered ecosystem components
 
 ## v1 implementation boundary
 
-The initial implementation is source-only and fixture-testable. Live probes, Master Records custody, scheduled Healer execution, and Site rendering are separate evidence-bearing integration steps and must not be inferred from this source implementation.
+The initial implementation is source-only and fixture-testable. Live probes, Master Records organization record, scheduled Healer execution, and Site rendering are separate evidence-bearing integration steps and must not be inferred from this source implementation.

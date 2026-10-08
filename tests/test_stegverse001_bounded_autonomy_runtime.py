@@ -55,7 +55,7 @@ def test_autonomous_cycle_is_bounded_and_receipted():
         assert rec["financial_binding_performed"] is False
         assert rec["self_accreditation"] is False
         assert rec["sovereign_authority_claimed"] is False
-        assert rec["master_records_custody"]=="PENDING"
+        assert rec["master_records_organization_record"]=="PENDING"
         assert (base/"state/receipts/latest.json").is_file()
 
 

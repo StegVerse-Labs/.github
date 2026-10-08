@@ -158,7 +158,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
             self.assertEqual(result["state"], "SOURCE_SIMULATION_ONLY")
             self.assertEqual(result["disposition"], "SIMULATED")
             self.assertFalse(result["authentic_intr_disposition_observed"])
-            self.assertFalse(result["organization_master_records_closure_observed"])
+            self.assertFalse(result["organization_master_records_organization_record_observed"])
 
 
     def test_historical_lease_open_without_current_native_expiration_cannot_run(self):

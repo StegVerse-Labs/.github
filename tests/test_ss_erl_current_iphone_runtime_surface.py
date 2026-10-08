@@ -84,7 +84,7 @@ class ERLCurrentIPhoneRuntimeSurfaceTests(unittest.TestCase):
             "TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED",
         )
         self.assertIn("TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED", self.handoff)
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", self.record["expected_evidence_predicates"])
+        self.assertIn("MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED", self.record["expected_evidence_predicates"])
 
 
 if __name__ == "__main__":

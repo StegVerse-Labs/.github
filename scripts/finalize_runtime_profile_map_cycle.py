@@ -66,7 +66,7 @@ def maybe_custody(root: Path, custody_package: Path) -> dict[str, Any]:
     consumer = mr_root / "scripts/ingest_runtime_profile_map_custody.py"
     if not consumer.is_file():
         return {
-            "state": "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED",
+            "state": "MASTER_RECORDS_ORGANIZATION_RECORD_CONSUMER_NOT_MATERIALIZED",
             "attempted": False,
             "custody_performed": False,
             "master_records_root": str(mr_root),
@@ -88,7 +88,7 @@ def maybe_custody(root: Path, custody_package: Path) -> dict[str, Any]:
         "result": parsed,
         "stdout_tail": completed.stdout[-4000:],
         "stderr_tail": completed.stderr[-4000:],
-        "authority_effect": "NONE_MASTER_RECORDS_CUSTODY_ONLY",
+        "authority_effect": "NONE_MASTER_RECORDS_ORGANIZATION_RECORD_ONLY",
     }
 
 
@@ -158,13 +158,13 @@ def main() -> int:
         "canonical_coordination_validation_passed": True,
         "custody_package_ref": str(custody_package),
         "custody_package_sha256": sha256(custody_package),
-        "master_records_custody": custody_result,
+        "master_records_organization_record": custody_result,
         "coordination_state_changed": False,
         "claim_or_fence_minted": False,
         "execution_authority_granted": False,
         "workercoordinator_admission_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
-        "master_records_custody_still_required": not bool(custody_result.get("custody_performed")),
+        "master_records_organization_record_still_required": not bool(custody_result.get("custody_performed")),
         "authority_effect": "NONE_COORDINATION_PROJECTION_FINALIZATION_ONLY",
     }
     print(json.dumps(result, sort_keys=True))

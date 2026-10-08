@@ -36,7 +36,7 @@ Required components only:
 1. `RTC-GOVERNED-PROCESSING-002` — canonical StegCore present-state/admissibility/commit processing via the shared `evaluate_present_state()` path.
 2. `RTC-INTERLOCK-INTR-TRANSPORT-008` — existing Universal InTr request/return transport where the resident proof requires each transition.
 3. `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` — existing resident WorkerCoordinator/runtime-observation machinery; `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` remains the resident proof owner.
-4. `RTC-EVIDENCE-CUSTODY-004` — Master Records custody/readback/reconstruction.
+4. `RTC-EVIDENCE-CUSTODY-004` — Master Records organization records and reconstruction.
 
 No PA-001-specific transport wrapper, second scheduler/worker, second present-state evaluator, task-local custody system, device-local user verification, or device/transport identity promotion is admissible.
 
@@ -71,7 +71,7 @@ Still unobserved for this Goal Task:
 - authentic WorkerCoordinator claim/fence for the resident reference proof;
 - authentic resident present-state enforcement receipt;
 - authentic request/return InTr receipts where applicable;
-- Master Records custody/readback of the resident evidence;
+- Master Records organization record/readback of the resident evidence;
 - same-execution resident reconstruction without repeating the consequence;
 - target-native ecosystem propagation.
 
@@ -82,13 +82,13 @@ No evidence class is upgraded from source or CI.
 1. Authentic WorkerCoordinator claim/fence is observed for `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` consuming the merged StegCore source.
 2. Authentic resident receipt proves the present-state contract at the consequence boundary.
 3. Required request/return InTr transitions are authentically observed and receipt-linked.
-4. Master Records accepts custody and reconstructs the same resident decision from retained evidence without repeating the consequence.
+4. Master Records accepts organization records and reconstructs the same resident decision from retained evidence without repeating the consequence.
 5. Applicable ecosystem targets receive target-native propagation evidence or a named durable machine-owned continuation where runtime enforcement lies outside their authority domain.
 6. README/handoffs remain current and no duplicate execution, credential, publication, transition, custody, or user-verification authority is introduced.
 
 ## Next executable work
 
-Use only the existing resident execution owner and current merged source. Attempt the canonical WorkerCoordinator/reference execution path. If an authorized sovereign runtime is reachable, preserve its exact claim/fence, resident receipt, InTr lineage, and Master Records custody/reconstruction results. If runtime reachability is absent, record that exact observation; do not synthesize or replace it with GitHub evidence.
+Use only the existing resident execution owner and current merged source. Attempt the canonical WorkerCoordinator/reference execution path. If an authorized sovereign runtime is reachable, preserve its exact claim/fence, resident receipt, InTr lineage, and Master Records organization records and reconstruction results. If runtime reachability is absent, record that exact observation; do not synthesize or replace it with GitHub evidence.
 
 ## Manual work
 

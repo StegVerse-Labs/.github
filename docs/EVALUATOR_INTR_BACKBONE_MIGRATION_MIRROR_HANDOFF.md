@@ -62,7 +62,7 @@ hosted repository validation: PASS — 33319176529; 33319176468
 ## Non-claims
 
 This migration does not establish public HTTPS reachability, resident receiver
-activation, Master Records custody, approval, freeze, test execution, or a new
+activation, Master Records organization record, approval, freeze, test execution, or a new
 authentic browser round trip.
 
 ## Next connector migration

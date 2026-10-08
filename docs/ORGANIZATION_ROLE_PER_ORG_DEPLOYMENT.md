@@ -30,7 +30,7 @@ The verifier lives in `StegVerse-Labs/.github`, which is public. A session worki
 
 Four artifacts, described exactly in the packet's `target_state`:
 
-1. **`.stegverse/transition-ledger/org-contract.json`** — consumes **both** `stegverse.repo-transition-receipt/v1` and `stegverse.canonical-state-transition-receipt/v1`; declares the organization scope rule; preserves the source transition receipt; and carries the Organization Role fields (`runtime_reality_authority: Organization`, ledger root as locus, ledger lock, manifest-directed append, Master Records as organization-record custody and reconstruction only, which does not gate the organization's reality, `always_on_receiver_required: false`).
+1. **`.stegverse/transition-ledger/org-contract.json`** — consumes **both** `stegverse.repo-transition-receipt/v1` and `stegverse.canonical-state-transition-receipt/v1`; declares the organization scope rule; preserves the source transition receipt; and carries the Organization Role fields (`runtime_reality_authority: Organization`, ledger root as locus, ledger lock, manifest-directed append, Master Records as organization-record organization records and reconstruction only, which does not gate the organization's reality, `always_on_receiver_required: false`).
 
 2. **`resident-runtime/aggregate_repo_transition.py`** — its source verifier accepts every schema the contract's `consumes` names, rather than one hard-coded schema, and binds a canonical state transition by its own digest instead of relabelling it a repository transition. Copy from the current reference implementation (below), not from this repository.
 

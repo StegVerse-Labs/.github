@@ -64,7 +64,7 @@ A. Build a read-only full-shard/aggregate/index reconciliation report for **all*
 
 B. Trace the real authorized component-010 session-origin → exact-generation AI_SESSION_GATE → predecessor-linked check-in → sovereign KV projection → organization receipt. On a verified no-invocation boundary repair existing caller/supervision; on failed generation/owner check perform collision convergence; on missing durable custody repair existing event producer/transport. Source tests are separate from authentic retained results.
 
-C. Add an existing-ledger first-failure classifier (NO_VISIT, REFRESH_FAILURE, REQUEST_CONSUMPTION_FAILURE, WORKER_DENY, GOVERNED_TRANSITION_DENY, ORGANIZATION_RECORD_FAILURE, MASTER_RECORDS_CLOSURE_FAILURE, RECORDED_PASS), based only on reconstructed retained receipts. Do not promote UNKNOWN to execution failure and do not mint a new authority plane.
+C. Add an existing-ledger first-failure classifier (NO_VISIT, REFRESH_FAILURE, REQUEST_CONSUMPTION_FAILURE, WORKER_DENY, GOVERNED_TRANSITION_DENY, ORGANIZATION_RECORD_FAILURE, MASTER_RECORDS_ORGANIZATION_RECORD_FAILURE, RECORDED_PASS), based only on reconstructed retained receipts. Do not promote UNKNOWN to execution failure and do not mint a new authority plane.
 
 D. For task-specific execution, resume only the next uniquely owned admissible transition. Keep human coauthor approval, genuine external research rights, signing/provisioning and publication authorization as task-local prerequisites; they must not serialize unrelated autonomous Canonical Work.
 

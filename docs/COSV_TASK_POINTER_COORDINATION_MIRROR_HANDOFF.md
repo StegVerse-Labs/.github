@@ -58,7 +58,7 @@ Recording = at necessary levels
 
 A runner expires before recording continuity expires. If required recording remains, a residual non-executing TT/RTG/GTG construct may remain solely to preserve identity/manifest binding, carry chained receipts, project required task/COSV state, complete required scoped recording, carry evidence to Master Records, and support reconstruction verification.
 
-After required recording and Master Records custody/reconstruction are complete, the residual construct is displaced through **entropy recovery**. Entropy recovery does not delete durable evidence or Master Records history and does not reactivate the original runner.
+After required recording and Master Records organization records and reconstruction are complete, the residual construct is displaced through **entropy recovery**. Entropy recovery does not delete durable evidence or Master Records history and does not reactivate the original runner.
 
 Canonical source: `docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md`.
 
@@ -104,7 +104,7 @@ No unique task continuity should remain only in chat prose. Before session close
 - newly discovered distinct same-goal work must be registered as adjacent task(s);
 - current vectors must be projected through the canonical COSV path;
 - reusable invocation evidence must reach required recording levels;
-- residual recording constructs must remain only until Master Records custody/reconstruction allows entropy recovery;
+- residual recording constructs must remain only until Master Records organization records and reconstruction allows entropy recovery;
 - applicable handoffs/indexes/docs must be reconciled;
 - the successor prompt should collapse back to `task_id + cosv_task_vector` for each task that still requires continuation.
 
@@ -123,12 +123,12 @@ The canonical bifurcation is:
 assignment candidate
 -> assignment/admissibility review
    -> ALLOW: carry task-generation/COSV + prior-memory context into the existing claim/fence assignment record and worker path
-   -> non-ALLOW: materialize Functional Memory records pack -> canonical Master Records state-transition custody
+   -> non-ALLOW: materialize Functional Memory records pack -> canonical Master Records state-transition organization records
 ```
 
 Functional Memory is reconstructable prior state, not narrative history. A retained non-ALLOW pack binds the exact task identity, Task Registry generation, generation-bound COSV identifier, admission predicate matrix + digest, disposition/reasons, assignment request identity, and explicit worker_materialized=false / claim_minted=false / fence_minted=false facts. The next assignment review must reconstruct the retained Master Records receipt with exact digest equality and required-evidence PASS before consuming it. If reconstruction fails, assignment fails closed and no worker authority artifact is minted.
 
-This contract creates no scheduler, runtime, WorkerCoordinator replacement, Interlock/InTr replacement, credential path, or custody store. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains custody/reconstruction authority.
+This contract creates no scheduler, runtime, WorkerCoordinator replacement, Interlock/InTr replacement, credential path, or custody store. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains limited to organization records and reconstruction.
 
 
 ## Functional Memory implementation evidence — 2026-09-19
@@ -142,7 +142,7 @@ Exact-head validation evidence:
 Merged behavior:
 - assignment review is bound to task identity, canonical Task Registry generation, and task.v1 COSV context;
 - only ALLOW may continue into the existing WorkerCoordinator claim/fence assignment path;
-- every non-ALLOW assignment disposition materializes a Functional Memory records pack through the existing canonical Master Records state-transition custody client;
+- every non-ALLOW assignment disposition materializes a Functional Memory records pack through the existing canonical Master Records state-transition organization records client;
 - retained Functional Memory must reconstruct with exact receipt digest equality and required-evidence PASS before later assignment review may consume it;
 - the ALLOW branch carries the same task-generation/COSV and prior-memory context into the existing worker-assignment record.
 
@@ -178,7 +178,7 @@ The repair adds no Functional Memory implementation, worker runtime, scheduler, 
 
 Post-merge canonical evidence search found no authentic `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW`, `stegverse.worker-assignment-functional-memory/v1`, or `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` receipt for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. A direct resident targeted invocation was attempted after merge, but the authorized command surface was unavailable before command execution. This condition is not a Task Registry predicate or task blocker and does not alter the task state.
 
-The remaining authentic predicate is unchanged: execute the existing targeted WorkerCoordinator task on an authorized resident surface; if its current admissibility matrix resolves non-ALLOW, require Functional Memory Master Records custody with no worker/claim/fence; then modify only the exact same-task predicate that caused the non-ALLOW state and re-evaluate the same task, requiring prior Functional Memory reconstruction before any ALLOW materialization.
+The remaining authentic predicate is unchanged: execute the existing targeted WorkerCoordinator task on an authorized resident surface; if its current admissibility matrix resolves non-ALLOW, require Functional Memory Master Records organization record with no worker/claim/fence; then modify only the exact same-task predicate that caused the non-ALLOW state and re-evaluate the same task, requiring prior Functional Memory reconstruction before any ALLOW materialization.
 
 
 ## Functional Memory authentic assignment result — 2026-09-20 continuation
@@ -195,7 +195,7 @@ A direct targeted invocation of the existing resident path was attempted after t
 No worker, claim, fence, task state, Functional Memory pack, Master Records receipt, or runtime predicate was created or promoted. The absence of an available command surface in this session is not a Task Registry predicate, task blocker, connected-device requirement, or authority condition.
 
 The authentic next transition remains exactly one existing targeted WorkerCoordinator execution for this task. The first observed matrix disposition controls the branch:
-- non-ALLOW -> zero worker/claim/fence materialization + Functional Memory Master Records custody and exact reconstruction;
+- non-ALLOW -> zero worker/claim/fence materialization + Functional Memory Master Records organization record and exact reconstruction;
 - ALLOW -> do not manufacture a negative control; search only for an authentic prior same-task non-ALLOW disposition, and if none exists retain the conclusion that authentic non-ALLOW Functional Memory runtime proof has not yet occurred.
 
 
@@ -225,7 +225,7 @@ End-to-end inspection confirms Functional Memory uses the same canonical state-t
 - `record_receipt(...)` re-reads canonical receipt bytes and evidence bytes immediately after persistence, returns `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, `master_record_ref`, and exact `receipt_sha256/reconstructed_receipt_sha256`.
 - Later `reconstruct_state_receipt(receipt_sha256)` uses the same HTTP reconstruction endpoint or local canonical tables and requires exact receipt digest equality plus required-evidence PASS before Functional Memory is reusable.
 
-The inspection also identified the first concrete current resident-carriage defect: `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` preserves Master Records source-root discovery variables but strips both supported custody transports' runtime configuration. It does not preserve HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT` / `STEGVERSE_MASTER_RECORDS_TOKEN`, and it does not preserve local-binding `MASTER_RECORDS_DB` / `MASTER_RECORDS_RECEIPT_KEY` / `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Therefore the existing targeted SDK consumer can reach `submit_state_receipt(...)` with neither canonical custody transport configured, causing `CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE`.
+The inspection also identified the first concrete current resident-carriage defect: `scripts/consume_stegagents_governed_runtime_targeted_request.py::clean_env(...)` preserves Master Records source-root discovery variables but strips both supported custody transports' runtime configuration. It does not preserve HTTP `STEGVERSE_MASTER_RECORDS_ENDPOINT` / `STEGVERSE_MASTER_RECORDS_TOKEN`, and it does not preserve local-binding `MASTER_RECORDS_DB` / `MASTER_RECORDS_RECEIPT_KEY` / `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS`. Therefore the existing targeted SDK consumer can reach `submit_state_receipt(...)` with neither canonical custody transport configured, causing `CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE`.
 
 This is a transport-carriage defect in the existing targeted consumer, not a Functional Memory schema/storage divergence and not a new runtime/custody requirement.
 
@@ -248,7 +248,7 @@ If predecessor reconstruction fails, the admitted WorkerCoordinator now stops at
 
 The existing canonical Master Records subject/transition query is also used as a non-authorizing recovery index when the mutable task pointer is absent. Recovery is accepted only when every retained `WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW` record reconstructs successfully, sequences are contiguous from 1, and each successor receipt's `prior_state_ref_or_hash` exactly names the preceding receipt digest. Only after that full chain passes is `task.functional_memory` restored as a convenience pointer to the latest retained record.
 
-Master Records remains the custody/reconstruction authority; the recovered task pointer grants no authority.
+Master Records remains limited to organization records and reconstruction; the recovered task pointer grants no authority.
 
 
 ### Functional Memory lineage repair merged and validated

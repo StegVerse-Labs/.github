@@ -14,7 +14,7 @@ wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
 ```
 
-This handoff is scoped to stuck-carrier reclamation and does not replace `docs/ORG_MIRROR_HANDOFF.md`, the canonical heartbeat lifecycle, StegFin trade authority, TV/TVC credential authority, or Master Records custody authority.
+This handoff is scoped to stuck-carrier reclamation and does not replace `docs/ORG_MIRROR_HANDOFF.md`, the canonical heartbeat lifecycle, StegFin trade authority, TV/TVC credential authority, or Master Records organization record authority.
 
 ## Finding
 
@@ -73,7 +73,7 @@ Organization control-plane validation run: 31840751015 SUCCESS
 
 The predecessor run `31840596350` failed because older continuity-claim fixtures omitted `last_cycle_at`. That diagnostic exposed a compatibility requirement: missing liveness metadata must not create permission to override a resident collision. Commit `eb1f4fc8ba443180d27bd8d6e15d4a2737dee53f` implemented that fail-closed compatibility and the successor full-suite run passed.
 
-## Master Records custody — COMPLETE
+## Master Records organization record — COMPLETE
 
 The directly observed HB29 history is now retained in:
 
@@ -200,8 +200,8 @@ release condition for this scoped implementation claim: SATISFIED; claim is rele
   manual_execution_allowed: false
   manual_allowed_role: NONE
   worker_registry_ref: NONE_RELEASED_IMPLEMENTATION
-  collision_scope: scripts/acquire_stegfin_continuity_claim.py, stale-heartbeat tests, this handoff, Master Records custody projection
-  release_condition: SATISFIED; canonical StegFin continuation and Master Records custody consumed the result
+  collision_scope: scripts/acquire_stegfin_continuity_claim.py, stale-heartbeat tests, this handoff, Master Records organization record projection
+  release_condition: SATISFIED; canonical StegFin continuation and Master Records organization record consumed the result
   next_executable_action: NONE; do not recreate stale resident authority or a second heartbeat
 ```
 

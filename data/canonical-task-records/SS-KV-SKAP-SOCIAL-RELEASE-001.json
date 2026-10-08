@@ -54,7 +54,7 @@
       "linkedin-stegverse-transport",
       "instagram-stegverse-ai-transport",
       "publication-receipt",
-      "master-records-custody"
+      "master-records-organization-record"
     ]
   },
   "dependencies": [
@@ -216,7 +216,7 @@
     "heartbeat_execution_authority": false,
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false,
-    "master_records_owns_receipt_custody_not_publication": true
+    "master_records_owns_receipt_organization_record_not_publication": true
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",

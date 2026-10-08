@@ -133,7 +133,7 @@
       "interlock_intr_transition",
       "tvc_provider_credential_readiness",
       "public_economic_data_acquisition",
-      "master_records_custody_reconstruction",
+      "master_records_organization_record_reconstruction",
       "governed_erl_output_consumption"
     ],
     "environment": "SOVEREIGN_RESIDENT_PLUS_GOVERNED_PUBLIC_SITE",

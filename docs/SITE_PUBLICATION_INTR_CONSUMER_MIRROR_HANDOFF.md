@@ -28,7 +28,7 @@ runtime class = EVENT_EPHEMERAL
 - PR #1373 merged the strict candidate consumer.
 - PR #1381 merged the Site publication adapter and shared Universal InTr route integration.
 - PR #1398 merged the independently claimable WorkerCoordinator child at `7444aefbdd2c644c46ae105192af4a524ef02172` after Heartbeat `34615815337`, Deterministic Repository Suite `34615815364`, and Organization Control `34615815476` passed.
-- Reusable Task Component reconciliation later bound the parent runtime Goal to existing reusable source-refresh, governed processing, publication, InTr transport, runtime observation, and Master Records custody components rather than adding bespoke orchestration.
+- Reusable Task Component reconciliation later bound the parent runtime Goal to existing reusable source-refresh, governed processing, publication, InTr transport, runtime observation, and Master Records organization record components rather than adding bespoke orchestration.
 
 Machine-owned registration surfaces:
 
@@ -105,7 +105,7 @@ already-local source refresh through RT-SOVEREIGN-SOURCE-REFRESH-001 / existing 
 -> independent /intr/profile + exact HTTP byte/path observation
 -> lease closure
 -> final Interlock/InTr publication transition admission
--> Master Records publication evidence custody/reconstruction
+-> Master Records publication evidence organization records and reconstruction
 -> conditional DNS/TLS recovery proof when applicable
 ```
 

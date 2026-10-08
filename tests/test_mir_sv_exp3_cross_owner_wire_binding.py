@@ -52,7 +52,7 @@ class OriginalExperiment3CrossOwnerTests(unittest.TestCase):
                              "AUTHENTIC_EVENT_EPHEMERAL_BINDING_LOCATOR_REQUIRED")
             self.assertEqual(outcome["evaluation_boundary"], "SDK_MANIFEST_PROFILE_SOURCE_ONLY")
             self.assertFalse(outcome["authentic_intr_disposition_observed"])
-            self.assertFalse(outcome["organization_master_records_closure_observed"])
+            self.assertFalse(outcome["organization_master_records_organization_record_observed"])
             self.assertFalse(outcome["terminal"])
             self.assertFalse(outcome["automatic_retry_permitted"])
             self.assertEqual(outcome["goal_task_id"], original["payload"]["goal_task_id"])

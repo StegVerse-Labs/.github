@@ -27,7 +27,7 @@
         "TMPDIR"
       ],
       "notes": [
-        "Comparator only: this adapter is not the canonical MIR execution or Master Records custody path.",
+        "Comparator only: this adapter is not the canonical MIR execution or Master Records organization record path.",
         "Canonical MIR event creation now uses scripts/execute_mir_event_driven_roundtrip.py and does not require a WorkerCoordinator claim/fence to create the event.",
         "Canonical state custody uses RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001 after each observed governed transition.",
         "The probe may be enabled only for bounded conformance comparison against canonical receipts and may not promote runtime state or custody.",

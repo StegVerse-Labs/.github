@@ -32,7 +32,7 @@
     "retained_build_test_runtime_reconciliation": true,
     "promotion_is_runtime_proof": false,
     "qualifying_real_provider_session_evidence_still_required": true,
-    "master_records_custody_still_required": true
+    "master_records_organization_record_still_required": true
   },
   "authority_effect": "NONE",
   "rule": "This projection promotes lifecycle status only. READY may be derived from qualifying real TVC provider-operation execution evidence; the synthetic observer is diagnostic fallback and does not independently prove an authentic provider session. No registry identity or authority plane is duplicated."

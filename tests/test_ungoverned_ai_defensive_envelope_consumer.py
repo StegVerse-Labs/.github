@@ -172,7 +172,7 @@ class DefensiveEnvelopeResidentConsumerTests(unittest.TestCase):
             self.assertTrue(third["boundary_receipt_sha256"].startswith("sha256:"))
             self.assertFalse(third["runtime_proof_promoted"])
             self.assertFalse(third["organization_ledger_custody_proven"])
-            self.assertFalse(third["master_records_custody_proven"])
+            self.assertFalse(third["master_records_organization_record_proven"])
             (runtime / mod.BOUNDARY_REL).unlink()
             self.assertFalse(mod.previously_terminal(runtime, request, mod.stable(request)))
 

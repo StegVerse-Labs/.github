@@ -61,7 +61,7 @@ F6 is canonically corrected. Preregistration commit `0127082e415fb220c709962ab7d
 ## Option-C successor reconciliation
 
 Do not create a duplicate retained-standing/retirement task. Existing canonical Goal Task `SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001` already owns the authentic sequence:
-`HANDOFF_READY -> fresh WorkerCoordinator claim/fence -> TV/TVC -> InTr ACTIVATE+CREATE_AND_BIND -> Master Records closure -> invocation/result -> InTr CLOSE+RETIRE -> Master Records closure -> records-only reconstruction`.
+`HANDOFF_READY -> fresh WorkerCoordinator claim/fence -> TV/TVC -> InTr ACTIVATE+CREATE_AND_BIND -> Master Records organization record -> invocation/result -> InTr CLOSE+RETIRE -> Master Records organization record -> records-only reconstruction`.
 
 The v2 review contributes one additional falsification predicate that should be made explicit when that existing checked-out task is next reconciled:
 

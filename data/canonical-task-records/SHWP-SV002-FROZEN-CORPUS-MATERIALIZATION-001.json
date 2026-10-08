@@ -50,7 +50,7 @@
       "native-resource-bundle",
       "native-action-policy",
       "v0.3-artifact-export",
-      "post-egress-master-records-custody",
+      "post-egress-master-records-organization-record",
       "origin-return-delivery"
     ]
   },
@@ -118,7 +118,7 @@
     "REAL_NATIVE_POLICY_EXECUTED_AGAINST_COMPLETE_FROZEN_BUNDLE",
     "V03_ARTIFACT_RECONSTRUCTION_PASS",
     "AUTHENTIC_RESPONSE_EGRESS_BOUND",
-    "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS",
+    "MASTER_RECORDS_ORGANIZATION_RECORD_AND_READBACK_PASS",
     "ORIGIN_RETURN_DELIVERED_AFTER_CUSTODY",
     "NO_HISTORICAL_PYTHON_PRINCIPAL_RERUN",
     "NO_SECOND_USER_OPERATED_DEVICE",
@@ -205,7 +205,7 @@
       {
         "from": "FULL_CHAIN_REEXECUTED",
         "to": "GOAL_EVIDENCE_RECONCILED",
-        "predicate": "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS_AND_ORIGIN_RETURN_DELIVERED",
+        "predicate": "MASTER_RECORDS_ORGANIZATION_RECORD_AND_READBACK_PASS_AND_ORIGIN_RETURN_DELIVERED",
         "state": "BLOCKED_ON_PREDECESSOR"
       }
     ]

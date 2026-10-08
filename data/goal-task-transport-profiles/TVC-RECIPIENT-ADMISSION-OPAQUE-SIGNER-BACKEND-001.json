@@ -42,7 +42,7 @@
         "canonical runtime/node execution receipt",
         "public JWK/key ID projection",
         "fresh signed-admission evidence",
-        "Master Records custody/reconstruction"
+        "Master Records organization records and reconstruction"
       ]
     },
     "RTC-INTERLOCK-INTR-TRANSPORT-008": {

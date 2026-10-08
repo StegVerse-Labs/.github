@@ -61,7 +61,7 @@ The next advancement requires authentic governed runtime evidence, not more sour
 8. Socials runtime-input materialization;
 9. shared-listener invocation yielding authentic `INGRESS_ADMITTED`.
 
-No CI or fixture satisfies those predicates. No live grant, relay authorization, runtime pointer, `INGRESS_ADMITTED`, TV/TVC-SKAP receipt, provider publication/destruction, KV readback, second bounded use/refusal proof, or Master Records custody is claimed.
+No CI or fixture satisfies those predicates. No live grant, relay authorization, runtime pointer, `INGRESS_ADMITTED`, TV/TVC-SKAP receipt, provider publication/destruction, KV readback, second bounded use/refusal proof, or Master Records organization record is claimed.
 
 ## Downstream sequence
 

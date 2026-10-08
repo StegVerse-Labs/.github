@@ -89,7 +89,7 @@ resident heartbeat/carrier processes: NOT MUTATED
 production carrier switch: OWNED BY #122
 TV/TVC protected values: NOT READ/WRITTEN
 provider/model/wallet state: OUT OF SCOPE
-Master Records custody mutation: PROHIBITED
+Master Records organization record mutation: PROHIBITED
 ```
 
 ## Completion and continuation

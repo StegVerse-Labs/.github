@@ -55,7 +55,7 @@
     "source_ci_may_substitute": false,
     "cross_task_presence_reuse_requires_exact_subject_binding": true,
     "observer_owner": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
-    "observed_reality_owner": "Master Records",
+    "observed_reality_owner": "Organization",
     "authority_effect": "NONE_OBSERVATION_CONFIGURATION_ONLY"
   },
   "task_specific_configuration": ["DeviceContinuityCarrierController host activation binding", "DeviceContinuityPacketTunnel NEPacketTunnelProvider target", "provider bundle org.stegverse.stegosmobile.devicecontinuity", "bounded loopback endpoint 127.0.0.1:8766"],

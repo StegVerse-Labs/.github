@@ -218,7 +218,7 @@
     "B1": {
       "name": "RECORD_RECONSTRUCT_PROCESS",
       "completion": "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
-      "authority": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY",
+      "authority": "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_ONLY",
       "state": "NOT_ENTERED"
     },
     "C1_C4": {

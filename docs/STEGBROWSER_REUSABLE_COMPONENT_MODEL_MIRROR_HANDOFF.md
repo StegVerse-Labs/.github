@@ -115,7 +115,7 @@ This stops additional bespoke orchestration only. It does not stop the Goal Task
 - Inputs: authentic component receipts and final provider/readback evidence.
 - Outputs: custody, readback, reconstruction confirmation.
 - Preconditions: authentic evidence exists.
-- Evidence: Master Records custody/reconstruction receipts.
+- Evidence: Master Records organization records and reconstruction receipts.
 - Failure semantics: source/CI cannot substitute for custody; no entropy recovery before required reconstruction.
 
 ### RTC-STEGVERSE-EGRESS-007 / RTC-FARSIDE-FINAL-009
@@ -158,7 +158,7 @@ Work already completed in this session is reconciled as follows:
 - TVC #413 post-restart App Store Connect SKAP observer: existing canonical runtime-observation family implementation; reuse it and retain its observation receipt independently.
 - Apple SKAP and App Store Connect path: existing TV/TVC credential/session/provider implementation; reuse it.
 - Facebook/LinkedIn publication callers: existing Publisher/provider-specific implementations; reuse them.
-- publication custody/readback: existing Master Records custody/reconstruction responsibility; reuse it.
+- publication custody/readback: existing Master Records organization records and reconstruction responsibility; reuse it.
 - Remote Computer discovery: runtime observation only; not a reusable execution authority, task predicate, or second-machine dependency.
 
 No historical evidence is deleted. No completed source work is upgraded to authentic runtime evidence.
@@ -191,7 +191,7 @@ Component reuse does not satisfy these predicates. Authentic evidence is still r
 - authentic Facebook publication and readback;
 - authentic LinkedIn publication and readback;
 - terminal browser/provider-session destruction;
-- Master Records custody/reconstruction.
+- Master Records organization records and reconstruction.
 
 ## Runtime truth
 

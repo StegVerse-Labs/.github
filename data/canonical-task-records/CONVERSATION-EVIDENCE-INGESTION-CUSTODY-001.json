@@ -4,7 +4,7 @@
   "correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
   "root_correlation_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
   "parent_task_id": null,
-  "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records custody/reconstruction before any later public Site projection.",
+  "goal": "Implement the first bounded phase of the governed conversation-evidence registry by preserving immutable conversation and attachment evidence, generating explicit authenticity and service/transaction/performance bindings, and requiring exact canonical Master Records organization records and reconstruction before any later public Site projection.",
   "coordination_state": "ACTIVE",
   "source_refs": [
     "docs/CONVERSATION_EVIDENCE_INGESTION_CUSTODY_MIRROR_HANDOFF.md",
@@ -40,7 +40,7 @@
       "authenticity-envelope",
       "transaction-performance-binding",
       "required-evidence-manifest",
-      "canonical-master-records-custody"
+      "canonical-master-records-organization-record"
     ]
   },
   "dependencies": [
@@ -80,7 +80,7 @@
   "runtime_requirements": {
     "capabilities": [
       "canonical_artifact_validation",
-      "canonical_master_records_state_transition_custody",
+      "canonical_master_records_state_transition_organization_record",
       "canonical_work_ingress",
       "workercoordinator_targeted_one_shot",
       "conversation_evidence_synthetic_ingestion_custody"
@@ -115,7 +115,7 @@
     "authority_effect": "NONE_RUNTIME_RESOLUTION_METADATA_ONLY",
     "separate_runtime_presence_gate_required": false,
     "carrier_trigger_required": false,
-    "authentic_completion_still_requires_master_records_closure": true,
+    "authentic_completion_still_requires_master_records_organization_record": true,
     "remote_connected_device_requirement": "PROHIBITED",
     "wait_for_resident_execution_opportunity": false,
     "carrier_binding": {
@@ -197,7 +197,7 @@
   },
   "allowed_next_transitions": [
     "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-    "MASTER_RECORDS_AUTHENTIC_RUNTIME_CUSTODY_OBSERVED",
+    "MASTER_RECORDS_AUTHENTIC_RUNTIME_ORGANIZATION_RECORD_OBSERVED",
     "COMPLETION_CLAIMED"
   ],
   "handoff_projection_refs": [

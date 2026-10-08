@@ -158,7 +158,7 @@
     "workspace_authentic_provider_probe_proven": false,
     "workspace_shared_docs_runtime_proven": false,
     "workspace_mir_transition_reporting_proven": false,
-    "workspace_master_records_custody_reconstruction_proven": false,
+    "workspace_master_records_organization_record_reconstruction_proven": false,
     "workspace_one_device_end_to_end_proven": false,
     "readme_review_current_for_internal_workspace_source": true,
     "sdk_downstream_regression_guard_authority_effect": "NONE",

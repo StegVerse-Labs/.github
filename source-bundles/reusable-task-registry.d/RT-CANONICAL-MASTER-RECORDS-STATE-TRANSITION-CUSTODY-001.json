@@ -1,7 +1,7 @@
 {
   "reusable_task_id": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
-  "name": "Canonical Master Records State Transition Custody",
-  "purpose": "Submit each observed governed state transition receipt and every required evidence artifact resulting from that transition to the existing Master Records custody/reconstruction authority; require exact validation and reconstruction of the receipt plus the complete required-evidence set before machine-owned progression continues, without promoting custody into transition authority.",
+  "name": "Canonical Master Records State Transition organization records",
+  "purpose": "Submit each observed governed state transition receipt and every required evidence artifact resulting from that transition to the existing Master Records organization records and reconstruction; require exact validation and reconstruction of the receipt plus the complete required-evidence set before machine-owned progression continues, without promoting custody into transition authority.",
   "trigger": "a governed state transition decision, execution consequence, denial, failure, partial outcome, or fail-closed state has been observed",
   "scope": "one observed governed state transition receipt plus its complete required evidence manifest",
   "parameter_keys": [
@@ -33,7 +33,7 @@
   ],
   "completion_predicates": [
     "CANONICAL_STATE_RECEIPT_EMITTED",
-    "MASTER_RECORDS_CUSTODY_RECORDED",
+    "MASTER_RECORDS_ORGANIZATION_RECORD_RECORDED",
     "EXACT_RECEIPT_RECONSTRUCTION_PASS",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_ENUMERATED",
     "ALL_REQUIRED_TRANSITION_EVIDENCE_MASTER_RECORDS_VALIDATED",

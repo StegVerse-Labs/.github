@@ -16,7 +16,7 @@ import time
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .independent_oscillator import current_reference
-from workers.canonical_state_transition_custody import build_state_receipt, require_predecessor_master_records_closure, sha256_uri, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, require_predecessor_master_records_organization_record, sha256_uri, submit_state_receipt
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -25,12 +25,16 @@ from .assignment_timer import (
 )
 
 
+#: Master Records boundary migration: activation contracts written before the rename carry this legacy flag.
+LEGACY_PROJECT_ACTIVE_AFTER_ORGANIZATION_RECORD_FIELD = "project_active_only_after_master_records_closure"
+
+
 class WorkerCoordinator(LegacyWorkerCoordinator):
     """Control-plane worker runtime synchronized to, but not controlled by, HB.
 
     Carrier packets remain a compatibility observation path. A HANDOFF_READY task
     that is explicitly admitted under INDEPENDENT_TASK_CONTROL can instead enter
-    the same worker-selection, fencing, timer, and Master Records custody path
+    the same worker-selection, fencing, timer, and Master Records organization record path
     directly. The observed carrier epoch is context only and grants no execution,
     claim, fence, timer, route, credential, or lifecycle authority.
     """
@@ -178,7 +182,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         }
         functional_context = record.get("functional_memory_context") if isinstance(record.get("functional_memory_context"), dict) else {}
         predecessor_receipt_sha256 = functional_context.get("prior_functional_memory_receipt_sha256")
-        prior_state_ref, predecessor_evidence = require_predecessor_master_records_closure(
+        prior_state_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
             predecessor_receipt_sha256,
             successor_transition_id=transition_id,
         )
@@ -202,7 +206,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             },
             required_evidence_manifest=[*predecessor_evidence, required_evidence],
             proof_scope="WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT_ONLY",
-            proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_CUSTODY_ONLY",
+            proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_ORGANIZATION_RECORD_ONLY",
         )
         result = submit_state_receipt(receipt)
         return {
@@ -227,7 +231,8 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         activation = handoff.get("activation") if isinstance(handoff.get("activation"), dict) else {}
         return (
             activation.get("constitutive_transition") == "ACTIVATE_TASK_AND_CREATE_BIND_WORKER"
-            and activation.get("project_active_only_after_master_records_closure") is True
+            and activation.get("project_active_only_after_master_records_organization_record",
+                               activation.get(LEGACY_PROJECT_ACTIVE_AFTER_ORGANIZATION_RECORD_FIELD)) is True
         )
 
     @staticmethod
@@ -305,7 +310,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             receipt.get("atomic_activation_master_records_transition"),
             "ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
         ):
-            raise RuntimeError("atomic constitutive activation Master Records closure incomplete")
+            raise RuntimeError("atomic constitutive activation Master Records organization record incomplete")
         projection = receipt.get("activation_projection") if isinstance(receipt.get("activation_projection"), dict) else {}
         if (
             projection.get("task_pre_state") != "HANDOFF_READY"
@@ -528,7 +533,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 "group_fencing_token": generation,
                 "claims": claims,
                 "case1_is_outer_assignment": True,
-                "case2_case3_admission_requires_predecessor_master_records_closure": True,
+                "case2_case3_admission_requires_predecessor_master_records_organization_record": True,
                 "task4_atomic_three_child_binding_required": True,
                 "claim_authority": "WORKERCOORDINATOR",
                 "authority_effect": "EXISTING_WORKERCOORDINATOR_CLAIM_AUTHORITY_ONLY",
@@ -573,7 +578,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 authority_effect=False,
             )
             task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"
-            task["reconciliation_reason"] = str(assignment_custody.get("reason") or "WORKER_ASSIGNMENT_MASTER_RECORDS_CUSTODY_INCOMPLETE")
+            task["reconciliation_reason"] = str(assignment_custody.get("reason") or "WORKER_ASSIGNMENT_MASTER_RECORDS_ORGANIZATION_RECORD_INCOMPLETE")
             return False
 
         if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":

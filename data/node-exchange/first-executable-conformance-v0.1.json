@@ -93,7 +93,7 @@
     "resulting-state commitment",
     "SDK retained transition evidence",
     "Organization receipt/readback when authentically available",
-    "Master Records custody/reconstruction when authentically applicable and available"
+    "Master Records organization records and reconstruction when authentically applicable and available"
   ],
   "negative_specimens": [
     {

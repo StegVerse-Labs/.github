@@ -12,7 +12,7 @@ Authority effect: `NONE_COORDINATION_EVIDENCE_ONLY`
 
 Register the two remaining core Canonical Work resident-request subjects that were already staged through the generalized `canonical_work_coordination` dispatcher/consumer but were not yet represented as reusable subject-bound cross-task predicates.
 
-This work reuses the existing requests, consumer, dispatcher selector, `resident_request_consumed` semantic predicate, exact-value evidence qualification mechanism, canonical Task Registry, WorkerCoordinator registry, Master Records custody contract, and Universal Interlock/InTr path. It creates no runtime, scheduler, WorkerCoordinator, request dispatcher, claim/fence, credential route, resident request, or runtime evidence producer.
+This work reuses the existing requests, consumer, dispatcher selector, `resident_request_consumed` semantic predicate, exact-value evidence qualification mechanism, canonical Task Registry, WorkerCoordinator registry, Master Records organization record contract, and Universal Interlock/InTr path. It creates no runtime, scheduler, WorkerCoordinator, request dispatcher, claim/fence, credential route, resident request, or runtime evidence producer.
 
 ## Canonical subjects
 

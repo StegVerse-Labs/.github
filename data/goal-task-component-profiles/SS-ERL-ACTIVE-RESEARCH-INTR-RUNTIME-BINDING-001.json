@@ -100,7 +100,7 @@
       "outputs": ["custody acceptance", "same-execution reconstruction confirmation", "durable final evidence refs"],
       "preconditions": ["required authentic component evidence complete"],
       "authority_owner": "Master Records",
-      "expected_evidence": ["Master Records custody receipt", "Master Records reconstruction confirmation"],
+      "expected_evidence": ["Master Records organization record receipt", "Master Records reconstruction confirmation"],
       "failure_remediation": "retain residual evidence construct and retry custody/reconstruction without replaying transport or provider operation unless separately authorized",
       "cardinality": "ONE_FINAL_RECONSTRUCTION_FOR_COMPLETION"
     }
@@ -116,7 +116,7 @@
     "remote_device_connector": "NOT_APPLICABLE: this Goal Task must not discover, confirm, probe, authorize, identify, poll for, wait for, or require any iPhone or remotely connected resident device."
   },
   "conditional_families": {
-    "terminal_cleanup_entropy_recovery": "Applicable only after required Master Records custody/reconstruction and any residual recording obligations complete. It is not a prerequisite for obtaining the three-hop proof itself."
+    "terminal_cleanup_entropy_recovery": "Applicable only after required Master Records organization records and reconstruction and any residual recording obligations complete. It is not a prerequisite for obtaining the three-hop proof itself."
   },
   "task_specific_configuration": [
     "ERL source_id/group_id and acquisition-envelope schema",
@@ -154,7 +154,7 @@
     "device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE",
     "device_confirmation": "PROHIBITED",
     "device_user_verification_authority": "NONE",
-    "master_records": "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION",
+    "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "heartbeat": "SYNCHRONIZATION_TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },

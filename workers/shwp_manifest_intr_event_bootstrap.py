@@ -168,7 +168,7 @@ def run_cycle(
         "tvc_relay_authorization_present": True,
         "tvc_relay_authorization_value_retained": False,
         "runtime_execution_attempted": result.get("runtime_execution_attempted") is True,
-        "organization_master_records_closure_observed": organization_record_observed(result) is True,
+        "organization_master_records_organization_record_observed": organization_record_observed(result) is True,
         "next_transition": result.get("next_transition"),
         "second_machine_required": False,
         "device_inventory_queried": False,

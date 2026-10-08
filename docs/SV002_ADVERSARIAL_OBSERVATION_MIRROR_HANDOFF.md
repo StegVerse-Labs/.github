@@ -52,8 +52,8 @@ Each layer has a distinct failure mode and must remain separately testable.
 The current SV002 public-observation lane already provides important prerequisites:
 - observer traffic terminates at a read-only projection;
 - `observer_direct_relation_to_stegverse_002=false`;
-- public projection is Master Records custody/reconstruction derived;
-- execution-host state is not an accepted substitute for Master Records custody;
+- public projection is Master Records organization records and reconstruction derived;
+- execution-host state is not an accepted substitute for Master Records organization record;
 - missing evidence remains explicit;
 - receipt lineage and hashes are independently recomputed before terminalization.
 
@@ -115,7 +115,7 @@ The lane may claim ADVERSARIALLY_CREDIBLE_OBSERVATION only after:
 1. all implemented adversarial fixtures execute against the current observation/custody/reconstruction path;
 2. no fixture can promote missing evidence into observed evidence;
 3. no forged/replayed/substituted receipt can terminalize the observer;
-4. no principal-local reconstruction can substitute for Master Records custody;
+4. no principal-local reconstruction can substitute for Master Records organization record;
 5. alternate histories and contradictory evidence remain visible;
 6. disposition logic cannot promote a correct output into compliant execution when authority/path evidence fails;
 7. evidence is reconstructable after principal runtime termination;

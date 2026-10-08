@@ -73,13 +73,13 @@ Third-party process hosts, GitHub Actions, and compatibility deployment provider
 - `RTC-INTERLOCK-INTR-TRANSPORT-008` — required; Interlock/InTr owns admission/transition.
 - `RTC-STEGVERSE-EGRESS-007` — required when action crosses the local StegVerse state boundary.
 - `RTC-FARSIDE-FINAL-009` — conditional on the external controlled test surface.
-- `RTC-EVIDENCE-CUSTODY-004` — required; Master Records owns custody/readback/reconstruction.
+- `RTC-EVIDENCE-CUSTODY-004` — required; Master Records is limited to organization records and reconstruction/readback/reconstruction.
 
 Not selected: `RTC-MANIFEST-001`, `RTC-PUBLISHER-005`, `RTC-SDK-RETURN-006`.
 
 ## Authority invariants
 
-Task Registry: coordination only. WorkerCoordinator: claim/fence. Interlock/InTr: governed admission/transition. TV/TVC: credential/provider/release. KV/SKAP Vault: sole user verification. StegOS devices: interchangeable transport/execution nodes, never user verifiers. Master Records: observed-reality custody/reconstruction. HeartBeat: timing/freshness/liveness/state correlation/observability only. GitHub: no runtime authority.
+Task Registry: coordination only. WorkerCoordinator: claim/fence. Interlock/InTr: governed admission/transition. TV/TVC: credential/provider/release. KV/SKAP Vault: sole user verification. StegOS devices: interchangeable transport/execution nodes, never user verifiers. Master Records: organization records/reconstruction. HeartBeat: timing/freshness/liveness/state correlation/observability only. GitHub: no runtime authority.
 
 No runtime subject, node identity, Secure Enclave identity, transport identity, or device identity may become user-verification authority.
 

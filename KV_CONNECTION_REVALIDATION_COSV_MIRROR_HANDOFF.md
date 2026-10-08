@@ -152,7 +152,7 @@ REUSABLE_TRIGGER_RECEIPT_OBSERVED = false
 REUSABLE_RUNNER_RESULT_OBSERVED = false
 TVC_RUNTIME_BINDING_EVIDENCE_OBSERVED = false
 INTERLOCK_INTR_ADMISSION_OBSERVED = false
-MASTER_RECORDS_CUSTODY_OBSERVED = false
+MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED = false
 DEPLOYED_QUERY_SECRET_SAFE_INGRESS_OBSERVED = false
 GOOGLE_DRIVE_CONNECT_VERIFIED = false
 GOOGLE_DRIVE_KV2_MATERIALIZED = false
@@ -235,7 +235,7 @@ REUSABLE_TRIGGER_RECEIPT_OBSERVED = false
 REUSABLE_RUNNER_RESULT_OBSERVED = false
 TVC_RUNTIME_BINDING_EVIDENCE_OBSERVED = false
 INTERLOCK_INTR_ADMISSION_OBSERVED = false
-MASTER_RECORDS_CUSTODY_OBSERVED = false
+MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED = false
 DEPLOYED_QUERY_SECRET_SAFE_INGRESS_OBSERVED = false
 ```
 
@@ -294,7 +294,7 @@ receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNT
 receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.runner-result.json
 ```
 
-Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, Master Records custody, or deployed query-secret-safe ingress observation is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
+Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, Master Records organization record, or deployed query-secret-safe ingress observation is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
 
 
 ## Post-schedule resident cadence trace — 2026-09-21
@@ -346,7 +346,7 @@ Until that visit is authentically retained, do not promote:
 - reusable TVC trigger/result;
 - TVC runtime binding;
 - Interlock/InTr admission;
-- Master Records custody;
+- Master Records organization record;
 - deployed query-secret-safe ingress.
 
 No new scheduler, dispatcher, runtime, worker, request, invocation, device prerequisite, Google consent, CONNECT/VERIFY, or KV #2 materialization is required or authorized at this boundary.

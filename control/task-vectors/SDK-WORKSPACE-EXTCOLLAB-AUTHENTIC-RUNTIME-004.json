@@ -48,7 +48,7 @@
     "authoritative_provider_file_probe_proven": false,
     "sdk_active_probe_complete_predicate_reevaluation_proven": false,
     "mir_transition_reporting_proven": false,
-    "master_records_custody_reconstruction_proven": false,
+    "master_records_organization_record_reconstruction_proven": false,
     "established_node_end_to_end_proven": false,
     "downstream_propagation_complete": false,
     "public_distributions_complete": false,

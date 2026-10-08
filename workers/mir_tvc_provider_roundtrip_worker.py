@@ -39,6 +39,10 @@ INTR_SOURCE_SUBSYSTEM = CONSUMER
 INTR_DESTINATION_SUBSYSTEM = "TVC:ProviderOperationBroker"
 
 
+#: Master Records boundary migration: trigger receipts written before the rename carry this legacy field.
+LEGACY_ORGANIZATION_RECORD_REF_FIELD = "master_records_custody_ref"
+
+
 class ProviderOutcomeUnknown(RuntimeError):
     pass
 
@@ -345,7 +349,7 @@ def _retain_failure(root: Path, invocation: object, exc: Exception) -> dict[str,
         "failure": str(exc),
         "retry_requires_fresh_workercoordinator_cycle": True,
         "intr_admission_required": True,
-        "master_records_custody_required": True,
+        "master_records_organization_record_required": True,
         "credential_material_retained": False,
         "secret_values_exported": False,
         "protected_values_exposed": False,
@@ -403,7 +407,7 @@ def _continue_reusable_lifecycle(root: Path) -> dict[str, Any]:
             "evidence_refs": [
                 RECEIPT_REF,
                 REUSABLE_TRIGGER_RECEIPT_REF,
-                str(result.get("master_records_custody_ref") or ""),
+                str(result.get("master_records_organization_record_ref") or result.get(LEGACY_ORGANIZATION_RECORD_REF_FIELD) or ""),
                 str(result.get("master_records_reconstructed_request_ref") or ""),
                 str(result.get("entropy_recovery_ref") or ""),
             ],
@@ -546,7 +550,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
         "completion_candidate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
         "intr_transport": {"component_id": INTR_COMPONENT, "request": request_lane, "response": None},
-        "master_records_custody_required": True,
+        "master_records_organization_record_required": True,
         "provider_operation_retry_allowed": False,
         "blind_consequence_retry_allowed": False,
         "credential_material_retained": False,

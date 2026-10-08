@@ -56,10 +56,10 @@ ERL resident-local manifest/binding
 -> scripts/consume_device_kv_intr_materialization_request.py
 -> existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator execution
 -> exact terminal KV readback/evidence
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 ```
 
-Task Registry remains coordination only. WorkerCoordinator retains claim/fence authority. Interlock/InTr retains governed transition/admission authority. TV/TVC remains credential/provider/release authority when credentials are actually required. KV/SKAP Vault remains sole user-verification authority. Master Records remains custody/reconstruction authority. HeartBeat remains observability/timing/freshness/correlation only. GitHub runtime authority remains `NONE`.
+Task Registry remains coordination only. WorkerCoordinator retains claim/fence authority. Interlock/InTr retains governed transition/admission authority. TV/TVC remains credential/provider/release authority when credentials are actually required. KV/SKAP Vault remains sole user-verification authority. Master Records remains limited to organization records and reconstruction. HeartBeat remains observability/timing/freshness/correlation only. GitHub runtime authority remains `NONE`.
 
 ## Existing provider proof
 
@@ -84,10 +84,10 @@ hop 2: NOT OBSERVED
 hop 3 / terminal DEVICE_KV execution: NOT OBSERVED
 terminal exact-byte KV readback: NOT OBSERVED
 provider-proof binding for this runtime chain: NOT OBSERVED
-Master Records custody/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 ```
 
-No runtime traversal, KV readback, provider-proof runtime binding, Master Records custody/reconstruction, activation, propagation, or completion is claimed.
+No runtime traversal, KV readback, provider-proof runtime binding, Master Records organization records and reconstruction, activation, propagation, or completion is claimed.
 
 ## Completion predicates
 
@@ -98,7 +98,7 @@ No runtime traversal, KV readback, provider-proof runtime binding, Master Record
 - exact terminal KV byte readback;
 - terminal KV evidence bound to the existing provider proof without replay;
 - complete three-hop chain validation;
-- Master Records custody acceptance and reconstruction confirmation;
+- Master Records organization record acceptance and reconstruction confirmation;
 - no device confirmation, discovery, presence probing, remote-device enumeration, synthetic receipt, second runtime owner, second user-operated device, or device/user-verification substitution.
 
 ## Next admissible work
@@ -110,7 +110,7 @@ No runtime traversal, KV readback, provider-proof runtime binding, Master Record
 5. Observe hop 3 and exact terminal KV byte readback.
 6. Validate operation/packet/payload/prior-receipt continuity across the complete chain.
 7. Bind terminal evidence to the existing provider proof without replay.
-8. Submit the authentic chain to the existing Master Records custody interface and require reconstruction confirmation.
+8. Submit the authentic chain to the existing Master Records organization record interface and require reconstruction confirmation.
 9. Reconcile the predecessor and root handoffs only after the authentic predicates above are observed.
 
 ## README maintenance
@@ -119,4 +119,4 @@ The repository README already states the applicable invariant: Task Registry coo
 
 ## Current state
 
-`SOURCE_CORRECTION_VALIDATED_AND_MERGED / IPHONE_DEVICE_CONFIRMATION_INFERENCE_REMOVED / SUCCESSOR_RUNTIME_EVIDENCE_TASK_ACTIVE / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / TERMINAL_KV_READBACK_NOT_YET_OBSERVED / MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED`
+`SOURCE_CORRECTION_VALIDATED_AND_MERGED / IPHONE_DEVICE_CONFIRMATION_INFERENCE_REMOVED / SUCCESSOR_RUNTIME_EVIDENCE_TASK_ACTIVE / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / TERMINAL_KV_READBACK_NOT_YET_OBSERVED / MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_NOT_YET_OBSERVED`

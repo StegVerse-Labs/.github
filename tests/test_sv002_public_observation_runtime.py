@@ -152,7 +152,7 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
                 "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
             }), encoding="utf-8")
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(p["observation_source"], "MASTER_RECORDS_CUSTODY_ONLY")
+            self.assertEqual(p["observation_source"], "MASTER_RECORDS_ORGANIZATION_RECORD_ONLY")
             self.assertNotIn("knowledge", p)
             self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
 
@@ -198,8 +198,8 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             self.assertEqual(target.read_bytes(),source.read_bytes())
             self.assertEqual(projection["materialization"]["state"],"MATERIALIZED")
             self.assertEqual(projection["state"]["master_records_reconstruction"],"PASS")
-            self.assertEqual(projection["observation_source"],"MASTER_RECORDS_CUSTODY_ONLY")
-            self.assertEqual(projection["topology"]["relationship_state_source"],"MASTER_RECORDS_CUSTODY_ONLY")
+            self.assertEqual(projection["observation_source"],"MASTER_RECORDS_ORGANIZATION_RECORD_ONLY")
+            self.assertEqual(projection["topology"]["relationship_state_source"],"MASTER_RECORDS_ORGANIZATION_RECORD_ONLY")
             self.assertEqual(projection["artifacts"]["ordered_transition_receipts"][0]["transition_receipt_id"],"TR-1")
             self.assertEqual(projection["artifacts"]["repository_ledger_root"]["root_hash"],"d"*64)
             self.assertEqual(projection["artifacts"]["organization_ledger_root"]["root_hash"],"e"*64)

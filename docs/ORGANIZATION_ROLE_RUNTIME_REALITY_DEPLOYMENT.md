@@ -3,7 +3,7 @@
 Organization: `StegVerse-Labs`
 Declaration: `ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001`
 Date: 2026-10-07
-Evidence class: `SOURCE_IMPLEMENTED` (completion contract v1). No runtime observation, no Master Records closure, no canonical task-record mutation and no goal closure is claimed.
+Evidence class: `SOURCE_IMPLEMENTED` (completion contract v1). No runtime observation, no Master Records organization record, no canonical task-record mutation and no goal closure is claimed.
 Deployment scope: this organization. The Organization Role is deployed per organization, in each organization's own `.github`. This declaration deploys it here and does not deploy it elsewhere.
 
 ## The change
@@ -63,7 +63,7 @@ They are not edited here. Those paragraphs belong to other goals' handoff surfac
 
 Deferred, gated behind `canonical-task-record.schema.json` reconciliation and registration-before-mutation (spec: `.github` PR #2799):
 
-- `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` — stale `failed_predicate` naming `MASTER_RECORDS_CUSTODY_CONFIGURATION`, and `completion.terminal_model: DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_CLOSURE`.
+- `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` — stale `failed_predicate` naming `MASTER_RECORDS_ORGANIZATION_RECORD_CONFIGURATION`, and `completion.terminal_model: DECLARED_STATE_TRANSITIONS_WITH_MASTER_RECORDS_ORGANIZATION_RECORD`.
 - `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001`, `data/canonical-task-registry.json`, `data/task-registry-health-monitor-contract.json` — `master_records_role` values predating this declaration.
 
 The completion evidence class `MASTER_RECORDS_RECONSTRUCTED` is **unchanged**. Renaming a completion evidence class is a registry-wide vocabulary migration requiring its own registration; it is not folded into this declaration.

@@ -83,20 +83,20 @@ packet_id: SV002-RERUN-C796D0BFD181CEC5D99E4C23
 manifest_sha256: 29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828
 ```
 
-Neither identity existed in canonical Master Records custody. The canonical custody contract requires every observed governed state transition to emit a canonical state receipt and every state receipt to be submitted to Master Records, while the SV002 rerun callable had retained `REQUEST_BOUND` only as resident-local evidence.
+Neither identity existed in canonical Master Records organization record. The canonical custody contract requires every observed governed state transition to emit a canonical state receipt and every state receipt to be recorded as organization records in Master Records, while the SV002 rerun callable had retained `REQUEST_BOUND` only as resident-local evidence.
 
 StegVerse-002/.github PR #40 repaired that exact seam and merged at:
 
 `70d5179f543b6954b6c574d66fcd9675fcbec79c`
 
-The merged callable now reuses the existing canonical Master Records state-transition custody client, emits one canonical `SV002_REQUEST_BOUND` receipt bound to the exact Goal/COSV/experiment/operation/invocation_count/packet/request/manifest/frame identity, requires `state=RECORDED` plus `reconstruction_status=PASS`, retains the returned custody/master-record identity, and only then permits the existing federation publication path to continue.
+The merged callable now reuses the existing canonical Master Records state-transition organization records client, emits one canonical `SV002_REQUEST_BOUND` receipt bound to the exact Goal/COSV/experiment/operation/invocation_count/packet/request/manifest/frame identity, requires `state=RECORDED` plus `reconstruction_status=PASS`, retains the returned custody/master-record identity, and only then permits the existing federation publication path to continue.
 
 This is source repair only. Authentic resident execution after the merge and authentic Master Records `RECORDED + PASS` for the real rerun remain unobserved. The parent `REQUEST_BOUND` predicate therefore remains unpromoted.
 
 
 ## 2026-09-18 canonical resident-carrier binding repair
 
-Tracing the deterministic packet upstream from absent Master Records custody established that the existing canonical resident request had not been reaching the current rerun callable. The already-requested `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001` / selector `sv002_org_runtime_activation` still invoked the retired `StegVerse-org/.github/resident-runtime/run_sv002_self_characterization_roundtrip.py` one-shot path. That path is excluded by the experiment attempt map and cannot produce the current deterministic rerun packet.
+Tracing the deterministic packet upstream from absent Master Records organization record established that the existing canonical resident request had not been reaching the current rerun callable. The already-requested `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001` / selector `sv002_org_runtime_activation` still invoked the retired `StegVerse-org/.github/resident-runtime/run_sv002_self_characterization_roundtrip.py` one-shot path. That path is excluded by the experiment attempt map and cannot produce the current deterministic rerun packet.
 
 The existing request has therefore been retained in place and rebound to:
 
@@ -120,14 +120,14 @@ Two source repairs are now immutable:
 ```text
 StegVerse-002/.github PR #41
 merge: 9d79719995edb30ef60f6764331d97506977522f
-effect: exact RERUN_REQUEST_BOUND.json bytes are required evidence in canonical Master Records custody
+effect: exact RERUN_REQUEST_BOUND.json bytes are required evidence in canonical Master Records organization record
 
 StegVerse-Labs/.github PR #2165
 merge: b50c124aca3ec12a7e1d8734a268b81c61b1650f
 effect: the existing RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001 request/selector invokes the current deterministic rerun callable rather than the retired one-shot path
 ```
 
-The child runtime observation owner is therefore the existing canonical HeartBeat-separated WorkerCoordinator request-consumption path, not a second StegVerse-002 persistent resident executor. The first authentic evidence now required is the existing `sv002_org_runtime_activation` consumption/dispatch evidence carrying the exact current Goal/COSV/packet and Master Records REQUEST_BOUND custody result.
+The child runtime observation owner is therefore the existing canonical HeartBeat-separated WorkerCoordinator request-consumption path, not a second StegVerse-002 persistent resident executor. The first authentic evidence now required is the existing `sv002_org_runtime_activation` consumption/dispatch evidence carrying the exact current Goal/COSV/packet and Master Records REQUEST_BOUND organization records result.
 
 Runtime completion remains unclaimed until that authentic consumption exists.
 

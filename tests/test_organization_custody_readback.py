@@ -278,8 +278,8 @@ def governed_attempt(runtime, disposition="ALLOW", request_id="governed-1"):
              "cosv_task_vector": consumer.COSV, "request_id": request_id,
              "presented_to_intr": True, "intr_disposition": disposition,
              "authentic_intr_disposition_observed": True,
-             "intr_master_records_closure": _mr("b" * 64),
-             "predecessor_master_records_closure": _mr("c" * 64),
+             "intr_master_records_organization_record": _mr("b" * 64),
+             "predecessor_master_records_organization_record": _mr("c" * 64),
              "readback_request": req}
     path.write_text(json.dumps(value))
     return path
@@ -305,11 +305,11 @@ def test_governed_allow_executes_without_host_inventory_gate(monkeypatch, tmp_pa
     assert result["intr_master_records_receipt_sha256"] == "b" * 64
     assert result["predecessor_master_records_receipt_sha256"] == "c" * 64
 
-def test_governed_attempt_missing_master_records_closure_fails_closed(tmp_path):
+def test_governed_attempt_missing_master_records_organization_record_fails_closed(tmp_path):
     runtime = tmp_path / "runtime"
     path = governed_attempt(runtime, disposition="ALLOW")
     attempt = json.loads(path.read_text())
-    del attempt["intr_master_records_closure"]
+    del attempt["intr_master_records_organization_record"]
     path.write_text(json.dumps(attempt))
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "FAIL_CLOSED"

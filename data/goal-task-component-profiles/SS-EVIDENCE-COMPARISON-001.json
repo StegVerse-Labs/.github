@@ -123,7 +123,7 @@
     "device_attestation_user_authority": "NONE",
     "runtime_subject_binding_is_user_verification": false,
     "secure_enclave_identity_is_user_verification": false,
-    "master_records": "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION",
+    "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "heartbeat": "SYNCHRONIZATION_TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },

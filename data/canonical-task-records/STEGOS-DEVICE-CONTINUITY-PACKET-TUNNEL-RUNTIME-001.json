@@ -91,7 +91,7 @@
     "governed_transition_required_for_goal_completion": false,
     "interlock_intr_condition": "REQUIRED_ONLY_FOR_ACTUAL_GOVERNED_STEGVERSE_TRANSITION_OR_ADMITTED_RECOVERY_ENVELOPE_MOVEMENT",
     "observation_owner": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
-    "observed_reality_owner": "Master Records",
+    "observed_reality_owner": "Organization",
     "runtime_subject": "DeviceContinuityPacketTunnel",
     "provider_bundle": "org.stegverse.stegosmobile.devicecontinuity",
     "endpoint": "http://127.0.0.1:8766/api/device-continuity/v1/status",

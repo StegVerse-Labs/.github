@@ -123,7 +123,7 @@
     "receipt_chain_required": true,
     "record_at_necessary_levels_only": true,
     "post_runner_residual_recording_construct_non_executing": true,
-    "master_records_custody_and_reconstruction_required_before_entropy_recovery": false,
+    "master_records_organization_record_and_reconstruction_required_before_entropy_recovery": false,
     "organization_receipt_and_reconstructability_required_before_entropy_recovery": true,
     "entropy_recovery_displaces_residual_construct_only": true,
     "entropy_recovery_deletes_required_evidence": false,

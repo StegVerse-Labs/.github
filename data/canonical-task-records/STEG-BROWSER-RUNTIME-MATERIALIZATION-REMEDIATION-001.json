@@ -85,7 +85,7 @@
     "between_round_trips": {
       "begins_at": "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
       "includes": ["RECORDING", "CUSTODY_RECONSTRUCTION", "PROCESSING", "MIRROR_BOUNDARY_PROCESSING"],
-      "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+      "master_records_authority": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
       "transport_authority": "NONE",
       "mirror_boundary_initiates_next_interlock_intr": true
     },

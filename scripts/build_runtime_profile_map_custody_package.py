@@ -72,7 +72,7 @@ def build(root: Path) -> dict[str, Any]:
         "observed_reality_authority": "ORGANIZATION",
         "authority_effect": "NONE_CUSTODY_INPUT_ONLY",
         "nonclaims": [
-            "PACKAGE_DOES_NOT_PERFORM_MASTER_RECORDS_CUSTODY",
+            "PACKAGE_DOES_NOT_PERFORM_MASTER_RECORDS_ORGANIZATION_RECORD",
             "PACKAGE_DOES_NOT_GRANT_EXECUTION_OR_TASK_ADMISSION",
             "PACKAGE_DOES_NOT_MINT_WORKERCOORDINATOR_CLAIM_OR_FENCE",
             "PACKAGE_DOES_NOT_ADVANCE_HB_OR_OSCILLATOR",

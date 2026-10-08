@@ -34,7 +34,7 @@ ended parent fence: 20
 checkpoint_valid: true
 old_authority_ended: true
 old_authority_reused: false
-master_records_custody_valid: true
+master_records_organization_record_valid: true
 successor_authority_granted: false
 next_transition: SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION
 github_token_required: false
@@ -442,7 +442,7 @@ Current Registry generation 243 was re-read. The task and emitted COSV are uncha
 
 Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelope request-hash and alias drift that prevented provider results from composing with the existing distributed Chat executor. It retains original admitted wire-response commitments, InTr receipt hashes and usage-event references. 115 focused offline tests and the existing mutation-safety gate passed. Automatic approval review rejected publication to the existing branch as insufficiently authorized external publication; GitHub readback still has #351 at `ddcaa3e4ad72befef601f2c99df03687e6cc191f`. The repair and central report are local/unpublished, not merged or deployed.
 
-Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
+Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records organization record or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
 
 Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
 

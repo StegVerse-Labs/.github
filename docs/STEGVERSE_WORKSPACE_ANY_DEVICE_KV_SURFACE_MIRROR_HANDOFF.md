@@ -45,7 +45,7 @@ PR #2819 predates or omits several live canonical facts that must govern continu
 - Runtime evidence is produced by the original manifest-bound state transition and its authentic organization/Master Records evidence, not by device inventory.
 - `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` remains the active Device/KV/SKAP runtime owner for the sovereign single-device lane.
 - `SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001` is adjacent to this goal because WorkSpace admitted write capabilities must not outrun the canonical KV/AI admission path.
-- Task Registry state is coordination-only; WorkerCoordinator owns claim/fence, Interlock/InTr owns transition authority, KV/SKAP Vault owns user verification, TV/TVC owns credentials, and Master Records owns custody/reconstruction.
+- Task Registry state is coordination-only; WorkerCoordinator owns claim/fence, Interlock/InTr owns transition authority, KV/SKAP Vault owns user verification, TV/TVC owns credentials, and Master Records is limited to organization records and reconstruction.
 - A failed or unavailable authenticated transition interface is not an indefinite blocker. An actually attempted transition must return ALLOW, DENY, or FAIL_CLOSED; when no authenticated attempt can be made, preserve UNKNOWN_NOT_AUTHENTICALLY_OBSERVED without inventing a transition.
 
 ## PR #2819 findings retained as source-gap evidence
@@ -67,4 +67,4 @@ The following remain useful source findings, but are not themselves runtime proo
 
 ## Non-claims
 
-This handoff does not claim runtime execution, provider execution, WorkSpace deployment, InTr admission, Master Records closure, a WorkerCoordinator claim, or completion of any WorkSpace evidence predicate.
+This handoff does not claim runtime execution, provider execution, WorkSpace deployment, InTr admission, Master Records organization record, a WorkerCoordinator claim, or completion of any WorkSpace evidence predicate.

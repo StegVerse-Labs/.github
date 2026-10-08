@@ -113,7 +113,7 @@ The bounded correction aligns routing requirements with the existing `canonical-
 
 Generation 152 also extends the existing registry-first cycle with a targeted WorkerCoordinator state-transition mode for already-admitted ACTIVE/CHECKED_OUT work. That path invokes the existing `scripts/run_worker_runtime.py --task-id <task>` one-shot with `carrier_trigger_required=false` when the canonical WorkerCoordinator fragment authorizes independent task control. Therefore persistent carrier/WorkerCoordinator presence is not a universal prerequisite for Canonical Work progression. Resident self-heal remains valid for the resident runtime substrate, but absence of `runtime-presence.latest.json` cannot globally serialize this task.
 
-No profile match, routing-ready disposition, source change, CI result, targeted invocation request, or prior receipt grants execution/transition authority. WorkerCoordinator claim/fence, Interlock/InTr governance, TV/TVC credential authority, and Master Records transition custody/reconstruction remain mandatory at their exact state boundaries.
+No profile match, routing-ready disposition, source change, CI result, targeted invocation request, or prior receipt grants execution/transition authority. WorkerCoordinator claim/fence, Interlock/InTr governance, TV/TVC credential authority, and Master Records transition organization records and reconstruction remain mandatory at their exact state boundaries.
 
 ## Standalone runtime-resolution persistence repair
 
@@ -152,7 +152,7 @@ existing Healer standing request
 -> existing immediate carrier-independent WorkerCoordinator successor
 -> Interlock/InTr governed transition
 -> execution or retained DENY
--> Master Records closure/reconstruction
+-> Master Records organization record/reconstruction
 -> returned-state re-ingestion
 -> automatic continuation
 ```
@@ -192,7 +192,7 @@ None currently required.
 
 The existing autonomous-progression Healer schedule and generic portable bridge already select the exact `canonical_work_coordination` consumer. Source trace disclosed a narrower evidence-classification defect in `scripts/refresh_and_dispatch_resident_requests.py`: the exact current per-task Canonical Work consumption receipt was mandatory for other scoped Canonical Work goals, but not for `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`. The portable bridge could therefore report `REFRESH_AND_DISPATCH_COMPLETE` for this goal based on generic dispatcher success without requiring evidence that the original request was consumed.
 
-This bounded source repair adds the existing original receipt path to `CANONICAL_GOAL_CONSUMPTION_REL`. The existing verifier already requires a current same-dispatch outcome for the exact task with matching original request digest and bootstrap receipt, `COMPLETED` retained task receipt, and no credential material/network source fetch. Missing, stale, mismatched, nonterminal or unrelated receipts must produce `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, not portable completion. This changes only proof-of-consumption classification: it does not imply WorkerCoordinator claim/fence, Interlock/InTr admission, original organization/Master Records custody, automatic successor selection or production runtime execution. No new selector, scheduler, machine, credential lane, authority or runtime is added.
+This bounded source repair adds the existing original receipt path to `CANONICAL_GOAL_CONSUMPTION_REL`. The existing verifier already requires a current same-dispatch outcome for the exact task with matching original request digest and bootstrap receipt, `COMPLETED` retained task receipt, and no credential material/network source fetch. Missing, stale, mismatched, nonterminal or unrelated receipts must produce `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`, not portable completion. This changes only proof-of-consumption classification: it does not imply WorkerCoordinator claim/fence, Interlock/InTr admission, original organization/Master Records organization record, automatic successor selection or production runtime execution. No new selector, scheduler, machine, credential lane, authority or runtime is added.
 
 Exact source regression: `tests/test_autonomous_progression_portable_consumption_binding.py`. Validate this source repair through exact-head CI, current-main ancestry and the existing owner's authorized approval before protected merge. Original request and Healer schedule stay unchanged. The earliest authentic unobserved proof remains the standing Healer visit and corresponding same-invocation resident dispatcher plus original per-task consumption, followed by authentic WorkerCoordinator/InTr and reconstruction. A GitHub-only session and an empty optional Remote Desktop device list are not authentic resident failure evidence.
 

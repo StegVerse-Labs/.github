@@ -48,7 +48,7 @@
     "governed_transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
     "user_verification": "KV/SKAP Vault",
-    "custody_reconstruction": "Master Records",
+    "organization_records_and_reconstruction": "Master Records",
     "github_runtime_authority": "NONE"
   }
 }

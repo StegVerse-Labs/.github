@@ -5,7 +5,7 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [
-        "AUTHENTIC_SYNTHETIC_MASTER_RECORDS_CUSTODY_NOT_YET_RECONCILED"
+        "AUTHENTIC_SYNTHETIC_MASTER_RECORDS_ORGANIZATION_RECORD_NOT_YET_RECONCILED"
       ],
       "authorized_policy_version": "conversation-evidence-ingestion-custody-v0.1",
       "block_ref": null,

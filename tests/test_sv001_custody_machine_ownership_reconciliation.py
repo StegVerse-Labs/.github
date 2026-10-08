@@ -12,9 +12,9 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 
-def test_sv001_master_records_custody_routes_to_machine_governance():
+def test_sv001_master_records_organization_record_routes_to_machine_governance():
     result = mod.evaluate({
-        "transition_id": "SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+        "transition_id": "SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION",
         "authority_class": "MACHINE_GOVERNED",
         "execution_surface": "CURRENT_USER_IPHONE",
         "human_approval_required": False,
@@ -31,7 +31,7 @@ def test_human_queue_no_longer_contains_sv001_custody_action():
     assert queue["active_action_id"] is None
     assert queue["candidate_actions"] == []
     exclusions = {row["transition_id"]: row for row in queue["machine_owned_exclusions"]}
-    row = exclusions["SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION"]
+    row = exclusions["SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION"]
     assert row["authority_class"] == "MACHINE_GOVERNED"
     assert row["human_interaction_required"] is False
     assert row["queue_blocks_transition"] is False
@@ -50,6 +50,6 @@ def test_old_user_admission_is_superseded():
 
 def test_readme_documents_material_sv001_authority_semantics():
     readme = (ROOT / "README.md").read_text()
-    assert "SV001 Master Records custody/reconstruction is explicitly classified" in readme
+    assert "SV001 Master Records organization records and reconstruction is explicitly classified" in readme
     assert "former `IPHONE-MR-SV001-CUSTODY-001` human-action admission is superseded" in readme
     assert "neither authorizes nor proves custody" in readme

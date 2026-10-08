@@ -111,7 +111,7 @@ Task Registry CONTINUE
 -> TVC source-promotion consumption evidence
 -> pinned TVC materialization/restart evidence
 -> immutable observer / OWNER_INGRESS_READY evidence
--> Master Records custody/reconstruction evidence
+-> Master Records organization records and reconstruction evidence
 ```
 
 ## Required execution discipline
@@ -217,7 +217,7 @@ The existing native source refresh now uses the same provider-neutral local prec
 
 The generation-70 retention-seam reconciliation incorrectly elevated the first pointer-bearing Healer checkpoint into a required progression gate for the immutable StegBrowser invocation. That was a coordination error: the canonical resident request for nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` binds directly to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and the manifest-bound Browser runtime. It does not require `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`.
 
-The parent now continues directly through the existing Browser execution owner: current WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser runtime evidence -> canonical Master Records custody/reconstruction. The direct receipt surface is `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`; no Healer packet is required before classifying authentic owner-bound evidence.
+The parent now continues directly through the existing Browser execution owner: current WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser runtime evidence -> canonical Master Records organization records and reconstruction. The direct receipt surface is `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`; no Healer packet is required before classifying authentic owner-bound evidence.
 
 All prior Healer work is preserved as historical remediation evidence only. Healer role is `TRIGGERED_REMEDIATION_ONLY`; its scheduler/checkpoint/retention pointer is not an execution prerequisite, carrier requirement, transition authority, or Master Records predecessor for this invocation.
 

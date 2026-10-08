@@ -62,7 +62,7 @@
     "BUILD_MIR_BOUND_UNIVERSAL_INTR_INTENT",
     "BUILD_NON_AUTHORIZING_EVENT_MATERIALIZATION_REQUEST",
     "PERSIST_EVENT_MATERIALIZATION_REQUEST",
-    "CANONICAL_MASTER_RECORDS_CUSTODY_OF_OBSERVED_EVENT_STATE",
+    "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_OF_OBSERVED_EVENT_STATE",
     "INTERLOCK_INTR_ADMISSION",
     "EVENT_EPHEMERAL_RUNTIME_MATERIALIZATION",
     "RTC-STEGVERSE-EGRESS-007",
@@ -70,7 +70,7 @@
     "RTC-FARSIDE-FINAL-009",
     "RETAIN_MIR_DESTINATION_EVIDENCE",
     "RETAIN_EXACT_GOVERNED_RETURN_PACKET",
-    "CANONICAL_MASTER_RECORDS_CUSTODY_AFTER_EACH_OBSERVED_STATE",
+    "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_AFTER_EACH_OBSERVED_STATE",
     "GOVERNED_RETURN_STEGVERSE_RETURN_EXIT"
   ],
   "current_truth": {
@@ -79,7 +79,7 @@
     "generic_sv002_route_reproof_gate_removed": true,
     "event_driven_execution_source_materialized": true,
     "workercoordinator_event_creation_gate_removed": true,
-    "canonical_master_records_custody_source_bound": true,
+    "canonical_master_records_organization_record_source_bound": true,
     "mir_profile_runtime_canonical_custody_source_bound": true,
     "temporary_probe_disabled_for_primary_execution": true,
     "mir_destination_profile_id": "MIR",

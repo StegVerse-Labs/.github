@@ -59,7 +59,7 @@ valid reusable-task trigger
 -> if standardized completion evidence is present: validate every declared completion predicate
 -> observe runner process return / expiry
 -> create non-executing residual recording construct
--> create source-only Master Records custody/reconstruction request
+-> create source-only Master Records organization records and reconstruction request
 -> if existing local master-records/orchestration source is available:
      invoke destination-owned custody ingestion
      invoke destination-owned reconstruction
@@ -101,7 +101,7 @@ durable reusable identity
 -> required scoped recording
 -> source custody/reconstruction request
 -> existing local master-records/orchestration destination ingestion
--> independent Master Records custody record
+-> independent Master Records organization record
 -> exact request-byte reconstruction
 -> source verifies exact reconstructed bytes + destination record
 -> entropy recovery
@@ -110,7 +110,7 @@ durable reusable identity
 
 ## Residual recording construct
 
-After runner expiry, the remaining construct has no original execution purpose and no provider-operation, credential-acquisition, claim/fence, self-extension, or transition authority. It preserves invocation identity and manifest binding, carries the receipt chain and required recording levels, and remains until independent Master Records custody/reconstruction is returned.
+After runner expiry, the remaining construct has no original execution purpose and no provider-operation, credential-acquisition, claim/fence, self-extension, or transition authority. It preserves invocation identity and manifest binding, carries the receipt chain and required recording levels, and remains until independent Master Records organization records and reconstruction is returned.
 
 ## Master Records integration
 
@@ -186,7 +186,7 @@ ENTROPY_RECOVERY_RECORDED
 - `.github` PR #1694 merged the resident Master Records roundtrip integration at `c35a12fdf1fa32b7890e923cf0889bb0ba570010` after exact-head Organization Control `34735304336`, Deterministic Repository Suite `34735304388`, and Heartbeat Worker Project `34735304350` all passed.
 - `.github` PR #1696 merged the runtime-only remainder reconciliation at `57cc26b1c76c68c07c673012b1ae93c5c0fea59e` after exact-head Organization Control `34735381200`, Deterministic Repository Suite `34735381206`, and Heartbeat Worker Project `34735381218` all passed.
 - StegVerse-Healer PR #67 merged scheduler terminal-state compatibility at `c2bea205411397c7ad7bb5fc6ad5f8c81c007f1c`; exact-head Test Readiness run `34735804770` passed.
-- The reusable trigger now advances from authentic standardized runner evidence through runner expiry, residual recording, destination-owned Master Records custody/reconstruction, exact reconstructed-request byte equality, and entropy recovery when the existing local runtime dependencies are present.
+- The reusable trigger now advances from authentic standardized runner evidence through runner expiry, residual recording, destination-owned Master Records organization records and reconstruction, exact reconstructed-request byte equality, and entropy recovery when the existing local runtime dependencies are present.
 - The existing Healer reusable-task schedule already enables `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly with bounded retries, recognizes entropy-complete execution as successful, and adds no second scheduler.
 
 ## Current runtime/evidence state
@@ -194,7 +194,7 @@ ENTROPY_RECOVERY_RECORDED
 - No connector-visible resident device is currently available.
 - No repository-retained post-merge invocation was found for `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` carrying `ENTROPY_RECOVERY_RECORDED`.
 - GitHub Actions validation cannot substitute for the resident heartbeat carrier and does not prove local source materialization or execution.
-- No authentic same-invocation manifest -> runner result -> expiry -> residual -> Master Records lifecycle custody/reconstruction -> entropy chain is therefore claimed yet.
+- No authentic same-invocation manifest -> runner result -> expiry -> residual -> Master Records lifecycle organization records and reconstruction -> entropy chain is therefore claimed yet.
 
 ## Work remaining to satisfy the goal
 

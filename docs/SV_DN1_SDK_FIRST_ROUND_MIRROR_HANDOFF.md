@@ -212,7 +212,7 @@ Completion requires:
 candidate execution_readiness: READY_FOR_SDK_0B
 SDK result schema: canonical sovereign production validation
 SDK admission: SDK_ADMITTED
-Master Records custody: RECORDED
+Master Records organization record: RECORDED
 replay consequence_reexecuted: false
 reconstruction consequence_reexecuted: false
 reconstruction original_record_mutated: false
@@ -253,7 +253,7 @@ chain validation runs: 33138330575 PASS / 33138330592 PASS
 
 The first-round worker now has a complete machine-executable predecessor chain and resident request bridge. Its execution dependencies are now both `SV-DN1-INTR-RUNTIME-001=COMPLETED` and `SV-DN1-PRODUCTION-SOURCE-PREP-001=COMPLETED`. The latter guarantees exact SDK/StegCore/Core-Lite/Master Records roots before canonical production execution. Independent fresh fence >22 and HeartBeat reference-only semantics remain unchanged.
 
-Authentic SDK execution, Master Records custody, and first-round analysis remain NOT OBSERVED.
+Authentic SDK execution, Master Records organization record, and first-round analysis remain NOT OBSERVED.
 
 ## Archive readiness
 

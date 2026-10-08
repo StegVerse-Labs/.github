@@ -37,7 +37,7 @@ A benchmark check is a claim about its *own* authenticated predicate, not a gene
 - No additional user-operated device; no user-managed installation step is an allowed dependency.
 
 ## Publication evidence required for closure
-Canonical task/COSV registration; Site claim and exact-head validation; Publisher reviewed source; authenticated external decision and Master Records closure; original Publisher release; mirrored Site assets; machine-readable exact status and tests; deployed mobile HTTP readback. Until then, preserve DRAFT / NOT_VERIFIED / UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
+Canonical task/COSV registration; Site claim and exact-head validation; Publisher reviewed source; authenticated external decision and Master Records organization record; original Publisher release; mirrored Site assets; machine-readable exact status and tests; deployed mobile HTTP readback. Until then, preserve DRAFT / NOT_VERIFIED / UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
 
 
 ## Source-derived canonical task COSV — 2026-09-22
@@ -148,7 +148,7 @@ SDK PR #387 merged `a412cb40ccba25d5dca4ca63485e043a227ab46d`. Corrected exact-h
 - canonical manifest SHA-256 `ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3`;
 - universal execution-request SHA-256 `11db25adc816acb91d806bfbd6a0060859eba4d8898dbd488bf4526eb97f65be`;
 - source build receipt states `EXACT_MANIFEST_PREPARED_SOURCE_ONLY`, `runtime_invoked=false`, `authority_effect=NONE_SOURCE_ONLY`;
-- request preserves TV/TVC credential authority, Interlock/InTr transition authority, Master Records custody authority, and `request_grants_authority=false`.
+- request preserves TV/TVC credential authority, Interlock/InTr transition authority, Master Records organization record authority, and `request_grants_authority=false`.
 
 Publisher PR #89 merged `c8971fa8fab24a626942e2a6edf1c0f3e86ca167` after all five exact-head Publisher workflows passed. Its machine preflight now records `manifest_prepared=true` and binds the retained artifact/hashes. The first PR #387 workflow artifact `10990018418` was independently found invalid (empty receipt after a hidden Python import failure); corrected workflow source added `pipefail` and non-empty assertions. Never cite the false-green artifact as execution evidence.
 

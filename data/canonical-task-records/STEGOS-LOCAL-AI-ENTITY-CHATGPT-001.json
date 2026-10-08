@@ -47,9 +47,9 @@
       "reason": "First real manifested ChatGPT task has no authenticated governed outcome."
     },
     {
-      "blocker_id": "FIRST_PARTICIPANT_MASTER_RECORDS_CUSTODY",
+      "blocker_id": "FIRST_PARTICIPANT_MASTER_RECORDS_ORGANIZATION_RECORD",
       "dependency_id": "FIRST_SCOPED_MASTER_RECORDS_PROOF",
-      "reason": "No matching predecessor-linked scoped organization and Master Records closure has been established."
+      "reason": "No matching predecessor-linked scoped organization and Master Records organization record has been established."
     }
   ],
   "adjacent_task_refs": [

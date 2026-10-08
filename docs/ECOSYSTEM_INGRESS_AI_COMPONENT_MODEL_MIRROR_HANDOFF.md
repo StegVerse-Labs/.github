@@ -19,7 +19,7 @@ Conditional capabilities are selected only when a representative test actually r
 
 Not forced into this goal: Publisher, mandatory SDK return assembly, mandatory StegVerse final egress, far-side final transition, or terminal cleanup/entropy recovery.
 
-Authority remains external to reusable components: Task Registry coordination only; WorkerCoordinator claim/fence; Interlock/InTr governed transitions; TV/TVC credential/provider/release; KV/SKAP Vault sole user verification; Master Records observed-reality custody/reconstruction; HeartBeat observability only; GitHub runtime authority none.
+Authority remains external to reusable components: Task Registry coordination only; WorkerCoordinator claim/fence; Interlock/InTr governed transitions; TV/TVC credential/provider/release; KV/SKAP Vault sole user verification; Master Records observed-reality organization records and reconstruction; HeartBeat observability only; GitHub runtime authority none.
 
 The prior PR #1624 is historical provenance for the task-specific session-return/session-close implementation. Its reusable logic is being reconstituted on current main under component 010; do not merge the stale branch after the replacement is validated.
 

@@ -7,7 +7,7 @@ Status: `RETIRED / TERMINAL_VALIDATED`
 
 ## Scope
 
-Bind the Personal Data Inventory, authorized SKAP account/provider topology, and deterministic `stegverse.reclamation-target-set/v1` output to authentic KnowledgeVault persistence, exact-byte readback, receipted proof, and reconstructable Master Records custody.
+Bind the Personal Data Inventory, authorized SKAP account/provider topology, and deterministic `stegverse.reclamation-target-set/v1` output to authentic KnowledgeVault persistence, exact-byte readback, receipted proof, and reconstructable Master Records organization record.
 
 ## Terminal evidence
 
@@ -23,7 +23,7 @@ Master Records PR #91 pinned those exact source blobs, installed byte-identical 
 
 1. `TARGET_SET_WRITTEN_TO_AUTHORIZED_KV` — PASS by authentic connected-provider KnowledgeVault operation.
 2. `EXACT_BYTE_READBACK_MATCHES_WRITER_COMMITMENT` — PASS, 1810 bytes and exact SHA-256 match.
-3. `WRITE_AND_READBACK_RECEIPTS_CUSTODIED` — PASS through merged ERL provider-operation receipt and Master Records custody receipt.
+3. `WRITE_AND_READBACK_RECEIPTS_CUSTODIED` — PASS through merged ERL provider-operation receipt and Master Records organization record receipt.
 4. `CUSTODY_CHAIN_RECONSTRUCTS_WITHOUT_SOURCE_THREAD` — PASS through byte-exact source mirrors and deterministic Master Records verifier.
 5. Proof non-promotion — PASS: `native_writer_executed=false`, `native_writer_proof=false`, and `provider_deletion_success=false` are preserved end to end.
 

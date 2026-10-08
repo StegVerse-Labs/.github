@@ -74,7 +74,7 @@ This child Goal Task does not require `RTC-MANIFEST-001`, `RTC-GOVERNED-PROCESSI
 
 ## Authority preservation
 
-Task Registry remains coordination only. WorkerCoordinator retains claim/fence authority when work is claimed. KV/SKAP Vault remains sole user-verification authority. StegOS nodes are interchangeable transport/execution nodes and are not user verifiers. Interlock/InTr remains governed transition/admission authority where an actual governed transition is required. TV/TVC remains credential/provider/release authority. Master Records retains observed-reality custody/reconstruction. HeartBeat remains timing/freshness/liveness/correlation/observability only. GitHub has no runtime authority.
+Task Registry remains coordination only. WorkerCoordinator retains claim/fence authority when work is claimed. KV/SKAP Vault remains sole user-verification authority. StegOS nodes are interchangeable transport/execution nodes and are not user verifiers. Interlock/InTr remains governed transition/admission authority where an actual governed transition is required. TV/TVC remains credential/provider/release authority. Master Records is limited to organization records and reconstruction. HeartBeat remains timing/freshness/liveness/correlation/observability only. GitHub has no runtime authority.
 
 No device-verification policy, process, attestation gate, pinned-device requirement, or device-local user-verification step is introduced.
 

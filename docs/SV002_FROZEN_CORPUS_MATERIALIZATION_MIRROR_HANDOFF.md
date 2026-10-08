@@ -59,7 +59,7 @@ The parent established provisional sandbox evidence for:
 - native-result-to-v0.3 exporter passing current Master Records reconstruction predicates;
 - response publication before `EGRESS_EMITTED`;
 - organization-root finalization after actual egress;
-- Master Records reconstruction/custody/readback before origin delivery;
+- Master Records organization records/reconstruction/readback before origin delivery;
 - forced response-publication failure producing no false `EGRESS_EMITTED`;
 - tampered egress and custody rejection blocking origin delivery.
 
@@ -201,7 +201,7 @@ Future continuation must inspect the neutral scheduler/reusable-task receipt sur
 4. Run the real native action-policy against that complete bundle.
 5. Feed that same native execution into the already-proven v0.3 exporter.
 6. Publish the correlated response packet; only then finalize `EGRESS_EMITTED`.
-7. Run Master Records reconstruction/custody/readback.
+7. Run Master Records organization records/reconstruction/readback.
 8. Deliver the same correlated return to origin only after custody/readback.
 9. Close Goal 1 and Goal 2 only from that complete authentic run.
 

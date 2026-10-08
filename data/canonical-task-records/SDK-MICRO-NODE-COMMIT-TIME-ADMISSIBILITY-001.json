@@ -4,7 +4,7 @@
   "correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
   "root_correlation_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
   "parent_task_id": null,
-  "goal": "Falsify and authentically test commit-time admissibility using at least three separately attributable independently evaluated micro-node workers, retained disagreement/unknowns, existing CTA/StegCore/InTr admission, exact predecessor canonical Master Records custody, and worker-absent records-only replay, without introducing duplicate runtime or authority.",
+  "goal": "Falsify and authentically test commit-time admissibility using at least three separately attributable independently evaluated micro-node workers, retained disagreement/unknowns, existing CTA/StegCore/InTr admission, exact predecessor canonical Master Records organization record, and worker-absent records-only replay, without introducing duplicate runtime or authority.",
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY",
   "repository": "StegVerse-Labs/.github",
@@ -34,7 +34,7 @@
     "CURRENT_COMMIT_TIME_STANDING_EVALUATED_BY_EXISTING_INTR_WITH_TV_TVC",
     "UNANIMOUS_SHARED_MISSING_EVIDENCE_FAILS_CLOSED",
     "EXACT_PREDECESSOR_RECONSTRUCTED_AT_EACH_SUCCESSOR_EMISSION",
-    "CANONICAL_MASTER_RECORDS_CLOSURE_EXACT_HASH_PASS",
+    "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_EXACT_HASH_PASS",
     "POST_EXPIRY_RECORDS_ONLY_RECONSTRUCTION_VERIFIED",
     "AUTHENTIC_GOVERNED_RUNTIME_PROOF_RETAINED"
   ],

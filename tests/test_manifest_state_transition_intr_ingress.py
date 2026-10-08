@@ -228,7 +228,7 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
             self.assertFalse(first["terminal"])
             self.assertFalse(first["automatic_retry_permitted"])
             self.assertFalse(first["authentic_intr_disposition_observed"])
-            self.assertFalse(first["organization_master_records_closure_observed"])
+            self.assertFalse(first["organization_master_records_organization_record_observed"])
             self.assertEqual(first["request_sha256"], diagnostic["request_sha256"])
             self.assertTrue(Path(first["source_disposition_ref"]).is_file())
             self.assertEqual(json.loads(Path(first["source_disposition_ref"]).read_text())["disposition"], "DENY")

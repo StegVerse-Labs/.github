@@ -37,7 +37,7 @@ def test_runtime_intake_preserves_authority_boundaries():
     assert authority["workercoordinator"] == "CLAIM_FENCE"
     assert authority["interlock_intr"] == "TRANSITION_ADMISSION"
     assert authority["credential_authority"] == "TV/TVC"
-    assert authority["master_records"] == "OBSERVED_REALITY_RECONSTRUCTION"
+    assert authority["master_records"] == "ORGANIZATION_RECORDS_AND_RECONSTRUCTION"
     assert authority["heartbeat"] == "OBSERVABILITY_ONLY"
     assert authority["github_runtime_authority"] == "NONE"
     assert contract["credential_material_present"] is False

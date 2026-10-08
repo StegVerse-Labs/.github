@@ -4,7 +4,7 @@
 The standing request is itself the event input. This consumer invokes the bounded
 event driver directly; it does not require WorkerCoordinator to create the event,
 mint a claim/fence, or authorize execution. Interlock/InTr remains transition
-authority. Canonical Master Records custody/reconstruction is required after every
+authority. Canonical Master Records organization records and reconstruction is required after every
 observed governed state transition.
 """
 from __future__ import annotations
@@ -110,7 +110,7 @@ def validate_request(request: dict[str, Any]) -> None:
         "network_source_fetch_allowed": False,
         "credential_authority": "TV/TVC",
         "transition_authority": "INTERLOCK_INTR",
-        "custody_authority": "MASTER_RECORDS",
+        "custody_authority": "ORGANIZATION",
         "github_token_required": False,
         "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False,

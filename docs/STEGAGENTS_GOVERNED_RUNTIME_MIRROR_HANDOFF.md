@@ -52,7 +52,7 @@ resident source refresh
 -> existing SDK / StegCore/InTr disposition
 -> proposal returned with no consequential execution
 -> exact claim-bound receipt
--> Master Records custody RECORDED + same-run reconstruction
+-> Master Records organization record RECORDED + same-run reconstruction
 -> WorkerCoordinator reconciliation/egress
 ```
 
@@ -123,7 +123,7 @@ The requested chain cannot reach targeted consumption until the existing one-dev
 13. no unauthorized provider operation and no provider credentials visible to StegAgents;
 14. governed proposal returned without consequential execution;
 15. exact claim-bound receipt retained;
-16. Master Records custody `RECORDED` and same-run reconstruction with matching identities;
+16. Master Records organization record `RECORDED` and same-run reconstruction with matching identities;
 17. WorkerCoordinator reconciliation/egress complete.
 
 ## Authority invariants

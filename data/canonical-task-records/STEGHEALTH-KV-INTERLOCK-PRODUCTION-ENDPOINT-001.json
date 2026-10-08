@@ -4,7 +4,7 @@
   "correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
   "root_correlation_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
   "parent_task_id": null,
-  "goal": "Bind the validated StegHealth KnowledgeVault/Interlock client and generic InTr adapter to the existing canonical resident runtime, then prove the production path with authentic Interlock/InTr-governed execution and Master Records custody/reconstruction without direct KnowledgeVault record access or a duplicate runtime lane.",
+  "goal": "Bind the validated StegHealth KnowledgeVault/Interlock client and generic InTr adapter to the existing canonical resident runtime, then prove the production path with authentic Interlock/InTr-governed execution and Master Records organization records and reconstruction without direct KnowledgeVault record access or a duplicate runtime lane.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "repository": "StegVerse-Labs/StegHealth",
@@ -52,7 +52,7 @@
       "canonical_resident_request_dispatch",
       "workercoordinator_claim_fence",
       "interlock_intr_transition",
-      "master_records_custody_reconstruction"
+      "master_records_organization_record_reconstruction"
     ],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
@@ -155,7 +155,7 @@
     "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "interlock_intr_is_transition_path_not_precondition": true,
-    "master_records_is_transition_custody_not_precondition": true,
+    "master_records_is_transition_organization_record_not_precondition": true,
     "separate_runtime_observer_is_completion_authority": false
   },
   "remaining_predicate": "INGRESS_ADMITTED",

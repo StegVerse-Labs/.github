@@ -74,7 +74,7 @@ No new scheduler, WorkerCoordinator, listener, transport owner, credential path,
 
 `TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED`
 
-Authentic task-bound execution, shared loopback admission, hop 1/hop 2/hop 3, exact terminal KV byte readback, provider-proof binding for that runtime chain, and Master Records custody/reconstruction have not been observed. No runtime completion is claimed.
+Authentic task-bound execution, shared loopback admission, hop 1/hop 2/hop 3, exact terminal KV byte readback, provider-proof binding for that runtime chain, and Master Records organization records and reconstruction have not been observed. No runtime completion is claimed.
 
 Those remaining predicates are genuinely separable from the completed source-binding correction and are now owned by `SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`.
 

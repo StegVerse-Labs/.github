@@ -40,7 +40,7 @@ class RuntimeProfileMapReconciliationTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(json.dumps(request), encoding="utf-8")
             result = mod.consume(ROOT, runtime, env={})
-            self.assertEqual(result["state"], "WAITING_FOR_MASTER_RECORDS_CUSTODY")
+            self.assertEqual(result["state"], "WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD")
             self.assertEqual(result["authority_effect"], "NONE_WAIT_ONLY")
 
 

@@ -238,7 +238,7 @@ It requires all seven tasks `COMPLETED` with their exact durable receipts, inclu
 
 ```text
 sdk_admission: SDK_ADMITTED
-master_records_custody_status: RECORDED
+master_records_organization_record_status: RECORDED
 replay_consequence_reexecuted: false
 reconstruction_consequence_reexecuted: false
 first_round_analysis: ANALYZED

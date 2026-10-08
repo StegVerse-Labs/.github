@@ -207,7 +207,7 @@
         "universal_governance_reference_execution",
         "bounded_target_mutation",
         "consequence_evidence_validation",
-        "master_records_custody_validation",
+        "master_records_organization_record_validation",
         "bypass_negative_control"
       ],
       "mutation_allowed": true,
@@ -217,7 +217,7 @@
       "notes": [
         "Mutation is confined to the current ProcessWorkerAdapter bound-state namespace and may not modify repositories or deployments.",
         "The profile proves only a reference ENFORCED boundary and must retain real_external_system_enforced_activation=false.",
-        "Governance, Interlock, InTr, HB and Master Records custody grant no execution or credential authority.",
+        "Governance, Interlock, InTr, HB and Master Records organization record grant no execution or credential authority.",
         "Target consequence authority remains separately validated and TV/TVC remains credential authority."
       ]
     },

@@ -5,7 +5,7 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
-    "objective": "Execute the already-manifested MIR-RUN2-EVENT-001 through the existing sovereign WorkerCoordinator and canonical TV/TVC non-exportable provider broker, then preserve the same transaction for Interlock/InTr admission and Master Records custody/reconstruction.",
+    "objective": "Execute the already-manifested MIR-RUN2-EVENT-001 through the existing sovereign WorkerCoordinator and canonical TV/TVC non-exportable provider broker, then preserve the same transaction for Interlock/InTr admission and Master Records organization records and reconstruction.",
     "success_predicates": [
       "fresh WorkerCoordinator claim and fence observed",
       "MIR-RUN2-EVENT-001 exact admitted request retained",
@@ -13,7 +13,7 @@
       "exact TV/TVC use_receipt retained",
       "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND derived from same transaction",
       "Interlock/InTr admits the same receipt",
-      "Master Records custody and reconstruction confirmed",
+      "Master Records organization records and reconstruction confirmed",
       "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED satisfied"
     ],
     "failure_predicates": [
@@ -23,7 +23,7 @@
       "MIR provider operation denied or malformed",
       "credential material exposed",
       "Interlock/InTr admission incomplete",
-      "Master Records custody/reconstruction incomplete"
+      "Master Records organization records and reconstruction incomplete"
     ],
     "authority_ceiling": [
       "one bounded MIR SUBMIT_EVENT through the existing TVC broker",
@@ -55,7 +55,7 @@
     "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
     "credential_authority": "TV/TVC",
     "transition_authority": "INTERLOCK_INTR",
-    "custody_authority": "MASTER_RECORDS",
+    "custody_authority": "ORGANIZATION",
     "heartbeat_grants_execution_authority": false,
     "heartbeat_dependency": false,
     "request_grants_execution_authority": false,

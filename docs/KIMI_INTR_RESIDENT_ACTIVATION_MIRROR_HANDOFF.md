@@ -57,7 +57,7 @@ The following task-specific resident surfaces are still not presently observed a
 2. bind canonical StegGate ingress and egress decisions;
 3. use only TV/TVC provider credential authority;
 4. require Kimi TVC non-exportable provider operation;
-5. retain Master Records provider-usage custody/reconstruction before egress admission;
+5. retain Master Records provider-usage organization records and reconstruction before egress admission;
 6. prohibit hosted runtime markers and provider credential environment material;
 7. require one same-execution terminal receipt;
 8. require no second physical machine.

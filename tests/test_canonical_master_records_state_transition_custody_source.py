@@ -7,7 +7,7 @@ def test_canonical_custody_client_and_reusable_task_are_primary() -> None:
     client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
     reusable = (ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text()
     assert "stegverse.canonical-state-transition-receipt/v1" in client
-    assert "CANONICAL_MASTER_RECORDS_CUSTODY_SURFACE_UNAVAILABLE" in client
+    assert "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE" in client
     assert "reconstruction_status" in client
     assert "RT-INTR-GOVERNED-TRANSITION-001" in reusable
     assert "RT-INTR-EVIDENCE-CUSTODY-001" in reusable

@@ -30,7 +30,7 @@ It MUST NOT:
 - claim global/production Universal Interlock runtime activation;
 - claim SDK admission;
 - perform StegCore/StegGate governance;
-- perform Master Records custody;
+- perform the Master Records organization record;
 - write repositories;
 - use provider/GitHub credentials.
 

@@ -20,7 +20,7 @@ Canonical Task Registry evidence already establishes:
 
 ## Objective
 
-Correct the routing so the immutable StegBrowser invocation follows its actual existing execution owner and WorkerCoordinator claim/fence path directly into Interlock/InTr, retained runtime evidence, and Master Records custody/reconstruction.
+Correct the routing so the immutable StegBrowser invocation follows its actual existing execution owner and WorkerCoordinator claim/fence path directly into Interlock/InTr, retained runtime evidence, and Master Records organization records and reconstruction.
 
 ## Required work
 
@@ -48,7 +48,7 @@ The artificial Healer edge was introduced later during the generation-70 retenti
 
 The corrected progression is:
 
-`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser evidence -> Master Records custody/reconstruction`.
+`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 / run_stegbrowser_manifest_bound_runtime -> WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser evidence -> Master Records organization records and reconstruction`.
 
 Healer remains available only as `TRIGGERED_REMEDIATION_ONLY`. Existing Healer source repairs/checkpoints remain historical evidence and may be used when independently triggered for remediation, but they are not prerequisites, carriers, authority sources, or completion gates for the immutable StegBrowser invocation.
 

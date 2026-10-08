@@ -97,7 +97,7 @@ Architecture/source propagation is complete. Runtime-status propagation remains 
 - WorkerCoordinator: sole resident task-control runtime; independent claim/fence/admission under existing contracts.
 - InTr/Interlock: governs admissible transition boundaries.
 - TV/TVC: sole credential authority.
-- Master Records: custody/reconstruction where required.
+- Master Records: organization records/reconstruction where required.
 - Consumer-specific workers: domain execution only inside their admitted task boundary.
 
 ## Runtime evidence posture

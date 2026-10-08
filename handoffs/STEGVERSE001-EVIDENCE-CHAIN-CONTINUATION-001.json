@@ -4,8 +4,8 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
-    "objective": "Continue the already-terminal canonical SV001 G23 evidence through existing governed Master Records custody/reconstruction and downstream SV002 disposition without rerunning SV001 or creating a new runtime plane.",
-    "success_predicates": ["canonical terminal G23 source observed","fresh contemporaneous Interlock/InTr decision precedes any new custody mutation","Master Records custody PASS","Master Records reconstruction PASS","retained same-execution downstream evidence chain","SV002 authentic disposition observed"],
+    "objective": "Continue the already-terminal canonical SV001 G23 evidence through existing governed Master Records organization records and reconstruction and downstream SV002 disposition without rerunning SV001 or creating a new runtime plane.",
+    "success_predicates": ["canonical terminal G23 source observed","fresh contemporaneous Interlock/InTr decision precedes any new custody mutation","Master Records organization record PASS","Master Records reconstruction PASS","retained same-execution downstream evidence chain","SV002 authentic disposition observed"],
     "failure_predicates": ["terminal SV001 rerun","G24 substituted for canonical G23","prior receipt or recovery result treated as next-transition authority","custody mutation without current Interlock/InTr governance","GitHub or heartbeat treated as runtime or transition authority"],
     "authority_ceiling": ["bounded_process_execution","runtime_observation","durable_state_reconstruction","no repository writeback","no credential creation","no authority widening"],
     "successor_policy": "INHERIT_OR_NARROW",
@@ -90,7 +90,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "Continue through existing current governance -> Master Records custody/reconstruction -> non-authorizing rendezvous proof observation -> SV002 disposition; never rerun terminal SV001.",
+    "next_authorized_action": "Continue through existing current governance -> Master Records organization records and reconstruction -> non-authorizing rendezvous proof observation -> SV002 disposition; never rerun terminal SV001.",
     "terminal_when": ["STEGVERSE001_EVIDENCE_CHAIN_CONTINUATION_COMPLETE"]
   },
   "source_state_vector_ref": "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json"

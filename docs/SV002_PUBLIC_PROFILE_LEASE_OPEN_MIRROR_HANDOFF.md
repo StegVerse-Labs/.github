@@ -50,7 +50,7 @@ persisted canonical lease snapshot state=PUBLIC_VERIFYING
 - No new lease may replace a failed/mismatched persisted lease.
 - `LEASE_OPEN` may be persisted only after verified independent public HTTPS evidence.
 - Materialization consumer must not dispatch WorkerCoordinator while snapshot remains `PUBLIC_VERIFYING`.
-- No receiver READY, READ_OBSERVATION round trip, Master Records custody, SV002 principal execution, or public experiment finding may be inferred from `LEASE_OPEN`.
+- No receiver READY, READ_OBSERVATION round trip, Master Records organization record, SV002 principal execution, or public experiment finding may be inferred from `LEASE_OPEN`.
 - Canonical StegVerse-002 principal execution ownership remains `StegVerse-002/.github`; this is only the StegVerse-Labs public-observation/reference lane.
 
 ## Source implementation targets
@@ -100,7 +100,7 @@ Implemented source now:
 - advances only the same lease request/history to `LEASE_OPEN`;
 - persists an observation sidecar binding pre/post lease hashes to URL/schema/profile hash;
 - requires the materialization consumer to validate exact `LEASE_OPEN` history before WorkerCoordinator dispatch;
-- preserves false claims for receiver READY, round trip, Master Records custody, and SV002 principal execution;
+- preserves false claims for receiver READY, round trip, Master Records organization record, and SV002 principal execution;
 - handles an already-open lease only when the persisted public-observation evidence binds to the exact open snapshot.
 
 Source validation and merge remain pending. Authentic external public observation/runtime execution remains unobserved.

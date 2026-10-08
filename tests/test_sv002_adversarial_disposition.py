@@ -13,7 +13,7 @@ class SV002AdversarialDispositionTests(unittest.TestCase):
             "output_correct": True,
             "authorized_execution": True,
             "observation_valid": True,
-            "master_records_custody_valid": True,
+            "master_records_organization_record_valid": True,
             "reconstruction_valid": True,
             "receipt_lineage_valid": True,
         }
@@ -27,7 +27,7 @@ class SV002AdversarialDispositionTests(unittest.TestCase):
 
     def test_execution_host_cannot_replace_custody(self):
         c = self.base()
-        c["master_records_custody_valid"] = False
+        c["master_records_organization_record_valid"] = False
         r = MOD.disposition(c)
         self.assertEqual(r["disposition"], "NOT_ESTABLISHED")
 

@@ -30,7 +30,7 @@ BOUNDARY_NO_RUNNER = "NO_EXECUTABLE_RUNNER_DECLARED"
 BOUNDARY_MISSING_RUNNER = "DECLARED_RUNNER_NOT_MATERIALIZED"
 BOUNDARY_RUNNER_FAILED = "DECLARED_RUNNER_STOPPED_BEFORE_COMPLETION"
 BOUNDARY_INTR_ADMISSION = "INTERLOCK_INTR_ADMISSION_REQUIRED"
-BOUNDARY_MASTER_RECORDS = "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_REQUIRED"
+BOUNDARY_MASTER_RECORDS = "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_REQUIRED"
 
 
 def load_json(path: Path) -> Any:
@@ -274,7 +274,7 @@ def main() -> None:
         admission_sha = result.get("interlock_intr_admission_receipt_sha256")
         if not isinstance(admission_ref, str) or not admission_ref or not isinstance(admission_sha, str) or len(admission_sha) != 64:
             receipt["state"] = "BOUNDARY_RECORDED"
-            receipt["boundary"] = {"kind": BOUNDARY_INTR_ADMISSION, "reason": "Explicit Interlock/InTr admission evidence is required before Master Records custody; canonical InTr transport receipts alone are not admission authority.", "manual_intermediate_coordination_required": False, "required_next_binding": "AUTHENTIC_EXPLICIT_INTERLOCK_INTR_ADMISSION_RECEIPT"}
+            receipt["boundary"] = {"kind": BOUNDARY_INTR_ADMISSION, "reason": "Explicit Interlock/InTr admission evidence is required before Master Records organization record; canonical InTr transport receipts alone are not admission authority.", "manual_intermediate_coordination_required": False, "required_next_binding": "AUTHENTIC_EXPLICIT_INTERLOCK_INTR_ADMISSION_RECEIPT"}
             receipt["runner_result_ref"] = str(result_path)
             receipt["runner_expiry_ref"] = str(expiry_path)
             receipt["residual_recording_ref"] = str(residual_path)
@@ -284,22 +284,22 @@ def main() -> None:
             return
 
     receipt["state"] = "RUNTIME_EVIDENCE_RECONCILED"
-    receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": "Independent Master Records custody and reconstruction are the next required machine-admissible step.", "manual_intermediate_coordination_required": False}
+    receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": "Independent Master Records organization records and reconstruction are the next required machine-admissible step.", "manual_intermediate_coordination_required": False}
     receipt["runner_result_ref"] = str(result_path)
     receipt["runner_expiry_ref"] = str(expiry_path)
     receipt["residual_recording_ref"] = str(residual_path)
-    receipt["continuation"] = "RUN_MASTER_RECORDS_CUSTODY_RECONSTRUCTION"
+    receipt["continuation"] = "RUN_MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION"
     write_json(receipt_path, receipt)
 
     custody_request = lifecycle.build_custody_request(manifest=manifest, trigger_receipt=receipt, runner_result=result, runner_expiry=expiry, residual_recording=residual)
     write_json(custody_request_path, custody_request)
-    receipt["master_records_custody_request_ref"] = str(custody_request_path)
+    receipt["master_records_organization_record_request_ref"] = str(custody_request_path)
 
     roundtrip = master_records_roundtrip.execute(custody_request_path)
-    receipt["automatic_steps_attempted"].append({"step":"MASTER_RECORDS_CUSTODY_RECONSTRUCTION","state":roundtrip.get("state"),"reason":roundtrip.get("reason"),"authority_effect":roundtrip.get("authority_effect")})
+    receipt["automatic_steps_attempted"].append({"step":"MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION","state":roundtrip.get("state"),"reason":roundtrip.get("reason"),"authority_effect":roundtrip.get("authority_effect")})
     if roundtrip.get("state") != "RETURNED" or not isinstance(roundtrip.get("record"), dict):
         receipt["state"] = "BOUNDARY_RECORDED"
-        receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": roundtrip.get("reason") or "Master Records custody/reconstruction did not return a destination record.", "manual_intermediate_coordination_required": False}
+        receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": roundtrip.get("reason") or "Master Records organization records and reconstruction did not return a destination record.", "manual_intermediate_coordination_required": False}
         receipt["continuation"] = "RETRY_AFTER_MASTER_RECORDS_RUNTIME_BINDING_OR_DESTINATION_SOURCE_IS_AVAILABLE"
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
@@ -310,7 +310,7 @@ def main() -> None:
     write_json(entropy_path, entropy)
     receipt["state"] = "ENTROPY_RECOVERY_RECORDED"
     receipt["boundary"] = None
-    receipt["master_records_custody_ref"] = roundtrip.get("custody_ref")
+    receipt["master_records_organization_record_ref"] = roundtrip.get("custody_ref")
     receipt["master_records_reconstructed_request_ref"] = roundtrip.get("reconstructed_ref")
     receipt["entropy_recovery_ref"] = str(entropy_path)
     receipt["continuation"] = "NONE_FOR_THIS_INVOCATION"

@@ -8,7 +8,7 @@ def test_stegbrowser_does_not_fall_through_to_purpose_worker_receipt(tmp_path):
     assert result["processing_capability"]=="stegbrowser" and result["profile"]=="llm.v1"
     assert result["transition_id"]=="INGRESS_ADMITTED"
     assert result["failed_predicate"]=="MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND"
-    assert result["organization_master_records_closure_observed"] is False
+    assert result["organization_master_records_organization_record_observed"] is False
 
 
 def test_stegbrowser_owner_failure_custody_moved_with_the_execution():

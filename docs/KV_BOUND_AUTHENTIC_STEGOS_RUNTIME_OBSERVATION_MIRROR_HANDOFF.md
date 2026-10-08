@@ -35,7 +35,7 @@ The existing operation surface is the only admissible future execution surface f
 
 Exactly one future independently authorized attempt may be observed through the existing owner surface. The attempt must retain the exact attempt correlation and an authentic `ALLOW`, `DENY`, or `FAIL_CLOSED` disposition from the existing authority chain. Source, CI, workflow success, or this successor registration cannot substitute for that disposition.
 
-If applicable, retain the existing WorkerCoordinator claim/fence, Interlock/InTr disposition, sovereign organization ledger readback, and Master Records custody/reconstruction. Do not manufacture unavailable evidence and do not reinterpret historical receipts as evidence for a new attempt.
+If applicable, retain the existing WorkerCoordinator claim/fence, Interlock/InTr disposition, sovereign organization ledger readback, and Master Records organization records and reconstruction. Do not manufacture unavailable evidence and do not reinterpret historical receipts as evidence for a new attempt.
 
 ## Authority and device invariants
 

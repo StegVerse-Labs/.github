@@ -113,7 +113,7 @@ def test_purpose_result_requires_ordered_retirement_and_records_only_closeout():
         "governance": {
             "chain_verified": True,
             "transaction_identity_continuous": True,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "external_side_effect": False,
         },
         "master_records_reconstruction": {
@@ -230,7 +230,7 @@ def test_manifest_bound_test1_retains_and_forwards_exact_claim_fence_predecessor
     assert '"graph_predecessor_master_records_transition": predecessor' in manifest_body
 
 
-def test_manifest_bound_test1_predecessor_is_exact_master_records_closure():
+def test_manifest_bound_test1_predecessor_is_exact_master_records_organization_record():
     m = load_worker()
     task = {
         "task_id": m.PURPOSE_TASK_ID,

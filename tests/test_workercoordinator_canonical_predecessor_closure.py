@@ -24,8 +24,8 @@ class WorkerCoordinatorCanonicalPredecessorTests(unittest.TestCase):
 
     def test_claim_fence_consumes_reconstructed_functional_memory_closure(self) -> None:
         predecessor = {
-            "evidence_id": "predecessor-master-records-closure:WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-            "evidence_type": "PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "evidence_id": "predecessor-master-records-organization-record:WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+            "evidence_type": "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
             "origin_transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
             "encoding": "canonical-json",
             "sha256": "1" * 64,
@@ -44,7 +44,7 @@ class WorkerCoordinatorCanonicalPredecessorTests(unittest.TestCase):
             }
         }
         with patch(
-            "heartbeat_runtime.worker_runtime_legacy.require_predecessor_master_records_closure",
+            "heartbeat_runtime.worker_runtime_legacy.require_predecessor_master_records_organization_record",
             return_value=("sha256:" + "a" * 64, [predecessor]),
         ) as require_predecessor, patch(
             "heartbeat_runtime.worker_runtime_legacy.submit_state_receipt",
@@ -68,14 +68,14 @@ class WorkerCoordinatorCanonicalPredecessorTests(unittest.TestCase):
         self.assertNotEqual(receipt["prior_state_ref_or_hash"], "noncanonical-checkpoint")
         self.assertEqual(
             [row["evidence_type"] for row in receipt["required_evidence_manifest"]],
-            ["PREDECESSOR_MASTER_RECORDS_CLOSURE", "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT"],
+            ["PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD", "WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT"],
         )
         self.assertEqual(result["state"], "RECORDED")
         self.assertEqual(result["receipt_sha256"], "b" * 64)
 
     def test_claim_fence_without_predecessor_does_not_invent_one(self) -> None:
         with patch(
-            "heartbeat_runtime.worker_runtime_legacy.require_predecessor_master_records_closure",
+            "heartbeat_runtime.worker_runtime_legacy.require_predecessor_master_records_organization_record",
             return_value=(None, []),
         ) as require_predecessor, patch(
             "heartbeat_runtime.worker_runtime_legacy.submit_state_receipt",

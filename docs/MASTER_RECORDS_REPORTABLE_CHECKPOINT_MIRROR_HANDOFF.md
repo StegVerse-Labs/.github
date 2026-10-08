@@ -12,7 +12,7 @@ Define a witness-neutral, privacy-minimal checkpoint primitive that commits to a
 
 ## Authority boundary
 
-- Master Records remains custody/reconstruction authority.
+- Master Records remains limited to organization records and reconstruction.
 - Interlock/InTr is the registered-node data-transfer protocol boundary. Node registration is required to communicate using Interlock/InTr; use of the protocol does not itself mean the external framework's input is a governed data set.
 - TV/TVC remains credential authority.
 - A witness observes/retains a bounded commitment only and obtains no StegVerse authority.
@@ -55,7 +55,7 @@ The successor protocol is now validated as a synthetic/non-authorizing documenta
 
 ## Required closure predicate
 
-Every admitted leaf MUST derive from an existing Master Records closure satisfying all of:
+Every admitted leaf MUST derive from an existing Master Records organization record satisfying all of:
 
 ```text
 state = RECORDED

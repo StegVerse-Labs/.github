@@ -87,7 +87,7 @@ This local custody path supplies reconstructable subject-identity evidence for l
 
 ## README completeness
 
-The original corrective change was material because it narrowed evidence-reuse semantics. The local Master Records custody addition is also material because it adds an evidence-retention integration boundary. `README.md` is updated in the same change set and continues to state that custody does not authorize shared reuse.
+The original corrective change was material because it narrowed evidence-reuse semantics. The local Master Records organization record addition is also material because it adds an evidence-retention integration boundary. `README.md` is updated in the same change set and continues to state that custody does not authorize shared reuse.
 
 ## Remaining machine work
 

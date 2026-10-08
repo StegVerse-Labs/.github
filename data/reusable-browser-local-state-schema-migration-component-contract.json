@@ -50,7 +50,7 @@
     "user_verification": "KV/SKAP Vault only",
     "governed_transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
-    "observed_reality_custody": "Master Records",
+    "observed_reality_authority": "Organization",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   }

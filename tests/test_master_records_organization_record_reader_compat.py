@@ -175,3 +175,53 @@ def test_organization_record_observed_readers_accept_new_and_legacy(field: str) 
         assert module.organization_record_observed({field: False}) is False
         assert module.organization_record_observed({field: True}) is True
         assert module.organization_record_observed({}) is None
+
+
+# --- Part B: in-repository identifiers renamed to organization-record names ---
+
+disposition = load("compat_sv002_adversarial_disposition", "scripts/evaluate_sv002_adversarial_disposition.py")
+observation = load("compat_sv002_adversarial_observation", "scripts/evaluate_sv002_adversarial_observation.py")
+
+
+def test_predecessor_reconstruction_helper_keeps_legacy_name() -> None:
+    new = custody.require_predecessor_master_records_organization_record
+    assert getattr(custody, "require_predecessor_master_records_closure") is new
+    assert custody.require_predecessor_master_records_organization_record(None, successor_transition_id="T") == (None, [])
+
+
+@pytest.mark.parametrize("field", ["master_records_organization_record_valid", "master_records_custody_valid"])
+def test_sv002_disposition_accepts_new_and_legacy_record_field(field: str) -> None:
+    case = {"output_correct": True, "authorized_execution": True, "observation_valid": True,
+            field: True, "reconstruction_valid": True, "receipt_lineage_valid": True}
+    assert disposition.disposition(case)["disposition"] == "OBSERVED"
+    case[field] = False
+    assert disposition.disposition(case)["reason"] == "CUSTODY_NOT_ESTABLISHED"
+
+
+@pytest.mark.parametrize("field", ["master_records_organization_record", "master_records_custody"])
+def test_sv002_observation_accepts_new_and_legacy_record_field(field: str) -> None:
+    inputs = {field: "PASS", "reconstruction_state": "PASS", "authorized_execution": True, "observation_valid": True}
+    assert observation.evaluate(inputs)["disposition"] == "OBSERVED"
+    inputs[field] = "SUBSTITUTED"
+    assert observation.evaluate(inputs)["disposition"] == "FAIL_CLOSED"
+
+
+def test_dispatcher_accepts_legacy_wait_states() -> None:
+    source = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text(encoding="utf-8")
+    assert "*LEGACY_ACCEPTED_WAIT_STATES," in source
+    assert '"WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD"' in source
+
+
+@pytest.mark.parametrize("rel,legacy", [
+    ("scripts/consume_organization_custody_readback_request.py", "intr_master_records_closure"),
+    ("scripts/consume_organization_custody_readback_request.py", "predecessor_master_records_closure"),
+    ("scripts/consume_universal_governance_enforced_reference_request.py", "master_records_custody_accepted"),
+    ("workers/mir_tvc_provider_roundtrip_worker.py", "master_records_custody_ref"),
+    ("heartbeat_runtime/worker_runtime_legacy.py", "project_active_only_after_master_records_closure"),
+    ("scripts/validate_heartbeat_runtime_separation.py", "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE"),
+])
+def test_renamed_readers_keep_one_legacy_constant(rel: str, legacy: str) -> None:
+    source = (ROOT / rel).read_text(encoding="utf-8")
+    assert source.count(f'"{legacy}"') == 1
+    line = next(l for l in source.splitlines() if f'"{legacy}"' in l)
+    assert line.startswith("LEGACY_")

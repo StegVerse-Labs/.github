@@ -69,7 +69,7 @@ from workers.sv002_intr_materialization_consumer import (  # noqa: E402
 )
 from workers.canonical_state_transition_custody import (  # noqa: E402
     build_state_receipt,
-    require_predecessor_master_records_closure,
+    require_predecessor_master_records_organization_record,
     submit_state_receipt,
 )
 from workers.manifest_state_transition_intr_ingress import (  # noqa: E402

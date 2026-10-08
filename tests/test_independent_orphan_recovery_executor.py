@@ -19,6 +19,10 @@ worker_mod = importlib.util.module_from_spec(worker_spec)
 worker_spec.loader.exec_module(worker_mod)
 
 
+# Master Records boundary migration: the retained HB28 receipt carries this legacy field.
+LEGACY_ORGANIZATION_RECORD_VALID_FIELD = "master_records_custody_valid"
+
+
 class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
     def test_completed_registry_fragment_prevents_reacquisition(self) -> None:
         fragment = json.loads((ROOT / mod.FRAGMENT_PATH).read_text(encoding="utf-8"))
@@ -37,7 +41,8 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
         self.assertEqual(receipt["recovery_fencing_token"], 22)
         self.assertGreater(receipt["recovery_fencing_token"], receipt["old_fencing_token"])
         self.assertTrue(receipt["checkpoint_valid"])
-        self.assertTrue(receipt["master_records_custody_valid"])
+        # Retained receipt predates the Master Records boundary rename.
+        self.assertTrue(receipt.get("master_records_organization_record_valid", receipt.get(LEGACY_ORGANIZATION_RECORD_VALID_FIELD)))
         self.assertTrue(receipt["old_authority_ended"])
         self.assertFalse(receipt["old_authority_reused"])
         self.assertFalse(receipt["successor_authority_granted"])

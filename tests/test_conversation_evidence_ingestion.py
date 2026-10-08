@@ -46,7 +46,7 @@ def test_write_once_rejects_second_materialization(tmp_path):
     except FileExistsError:
         pass
 
-def test_custody_requires_exact_master_records_closure(monkeypatch):
+def test_custody_requires_exact_master_records_organization_record(monkeypatch):
     package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
     captured={}
     def fake_submit(receipt):
@@ -93,7 +93,7 @@ def test_contract_is_consumed_unchanged_by_reference():
     ]
 
 
-def test_custody_binds_exact_predecessor_master_records_closure(monkeypatch):
+def test_custody_binds_exact_predecessor_master_records_organization_record(monkeypatch):
     package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
     predecessor="a"*64
     closure={
@@ -107,8 +107,8 @@ def test_custody_binds_exact_predecessor_master_records_closure(monkeypatch):
         "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
     }
     pred_evidence={
-        "evidence_id":"predecessor-master-records-closure:"+mod.TRANSITION_ID,
-        "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+        "evidence_id":"predecessor-master-records-organization-record:"+mod.TRANSITION_ID,
+        "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
         "origin_transition_id":mod.TRANSITION_ID,
         "encoding":"canonical-json",
         "sha256":mod.sha256_uri(closure).split(":",1)[1],
@@ -116,7 +116,7 @@ def test_custody_binds_exact_predecessor_master_records_closure(monkeypatch):
     }
     monkeypatch.setattr(
         mod,
-        "require_predecessor_master_records_closure",
+        "require_predecessor_master_records_organization_record",
         lambda receipt_sha256, successor_transition_id: (
             "sha256:"+predecessor,
             [pred_evidence],
@@ -138,5 +138,5 @@ def test_custody_binds_exact_predecessor_master_records_closure(monkeypatch):
     assert result["state"]=="RECORDED"
     receipt=captured["receipt"]
     assert receipt["prior_state_ref_or_hash"]=="sha256:"+predecessor
-    assert receipt["required_evidence_manifest"][0]["evidence_type"]=="PREDECESSOR_MASTER_RECORDS_CLOSURE"
+    assert receipt["required_evidence_manifest"][0]["evidence_type"]=="PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD"
     assert receipt["required_evidence_manifest"][0]["content"]["receipt_sha256"]==predecessor

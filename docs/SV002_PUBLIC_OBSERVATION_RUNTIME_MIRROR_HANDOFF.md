@@ -69,7 +69,7 @@ Only evidence-derived material may appear:
 - explicit AVAILABLE / DISCOVERABLE / ACCESSED / REFERENCED / USED / DERIVED knowledge evidence states;
 - externally observable experiment events;
 - manifest/receipt references;
-- Master Records custody/reconstruction state when independently evidenced.
+- Master Records organization records and reconstruction state when independently evidenced.
 
 Missing evidence remains explicit. The runtime must not synthesize events or claim private chain-of-thought.
 
@@ -106,7 +106,7 @@ ingress/egress receipt construction over live receiver socket: OBSERVED_BOUNDED_
 production public Internet route: NOT OBSERVED
 resident sovereign production-host receiver: NOT OBSERVED
 authentic principal experiment execution: NOT OBSERVED
-Master Records custody/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 ```
 
 CI execution remains validation-only and grants no runtime, experiment, custody, publication, or activation authority.
@@ -124,7 +124,7 @@ The following are the actual unresolved gates after PR #474:
 7. Authentic InTr ingress receipt is observed with transition `RECEIVED`.
 8. Authentic InTr egress receipt is observed with transition `FORWARDED`.
 9. Observer direct relation to StegVerse-002 remains false.
-10. Master Records custody/reconstruction is observed separately; it must not be inferred from receiver-local artifacts.
+10. Master Records organization records and reconstruction is observed separately; it must not be inferred from receiver-local artifacts.
 11. Authentic StegVerse-002 principal self-characterization execution remains a separate experiment gate.
 
 ## Current observed state
@@ -379,7 +379,7 @@ Canonical observation flow is now:
 
 ```text
 StegVerse-002 state changes / receipts
--> Master Records custody + reconstruction
+-> Master Records organization record + reconstruction
 -> StegVerse-Labs read-only projection
 ```
 
@@ -407,9 +407,9 @@ The public observation runtime no longer treats the local principal state root a
 It now requires an explicit:
 `STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT`
 
-That path must identify the reconstruction receipt produced from the Master Records custody surface. Missing custody input remains `NOT_AVAILABLE`; the runtime does not fall back to the execution-host state root.
+That path must identify the reconstruction receipt produced from the Master Records organization record surface. Missing custody input remains `NOT_AVAILABLE`; the runtime does not fall back to the execution-host state root.
 
-The projection source label is now `MASTER_RECORDS_CUSTODY_ONLY`. This closes the prior ambiguity where the receipt schema was Master Records-derived but its source path was still the principal execution root.
+The projection source label is now `MASTER_RECORDS_ORGANIZATION_RECORD_ONLY`. This closes the prior ambiguity where the receipt schema was Master Records-derived but its source path was still the principal execution root.
 
 
 ## Adversarial observation refinement — 2026-09-02

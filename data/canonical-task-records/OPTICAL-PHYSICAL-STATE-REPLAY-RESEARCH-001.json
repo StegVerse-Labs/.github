@@ -101,7 +101,7 @@
     "workercoordinator_claim_fence_only": true,
     "credential_authority": "TV/TVC",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_custody_required": true,
+    "master_records_organization_record_required": true,
     "no_second_device": true,
     "patent_family_numbering_authorized": false,
     "clinical_monitoring_assertion_authorized": false
@@ -472,7 +472,7 @@
     "adaptive_benefit_with_current_required_context_demonstrated": false,
     "authentic_component010_event_observed": false,
     "worker_claim_fence_observed": false,
-    "master_records_closure_observed": false,
+    "master_records_organization_record_observed": false,
     "authority_effect": "NONE_SOURCE_ONLY"
   },
   "source_state_vector_ref": "control/task-vectors/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json"

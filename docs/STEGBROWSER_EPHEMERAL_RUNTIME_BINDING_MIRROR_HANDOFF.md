@@ -238,7 +238,7 @@ current-iPhone signing/TestFlight:            NOT OBSERVED
 resident discovery:                           NOT OBSERVED
 Facebook publication/readback:                NOT OBSERVED
 LinkedIn publication/readback:                NOT OBSERVED
-Master Records custody/reconstruction:        NOT OBSERVED
+Master Records organization records and reconstruction:        NOT OBSERVED
 ```
 
 GitHub Actions remains validation/evidence transport only. TV/TVC remains credential/provider authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; Organization owns runtime/observed reality; Master Records is limited to organization records and reconstruction.
@@ -275,7 +275,7 @@ This discovery does not establish that an authentic resident check-in has alread
 8. When owner ingress is authentically ready, seal the real App Store Connect credential from the current iPhone into SKAP without export; do not use GitHub secrets or device-local user verification.
 9. Complete current-iPhone signing, TVC Build Upload, TestFlight installation, and same-device resident discovery with authentic receipts.
 10. Execute Facebook and LinkedIn publication/readback as independent reusable Publisher/round-trip branches only after working-instance proof.
-11. Submit required authentic evidence for Master Records custody/reconstruction, then perform terminal cleanup/entropy recovery only where the reusable construct contract permits it.
+11. Submit required authentic evidence for Master Records organization records and reconstruction, then perform terminal cleanup/entropy recovery only where the reusable construct contract permits it.
 
 ## README disposition
 

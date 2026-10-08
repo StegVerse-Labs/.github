@@ -36,7 +36,7 @@ class ReusableTaskLifecycleRuntimeBindingTests(unittest.TestCase):
         source = (ROOT / "scripts/trigger_reusable_task.py").read_text(encoding="utf-8")
         self.assertIn("if not result_path.is_file()", source)
         self.assertIn("COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION", source)
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_REQUIRED", source)
+        self.assertIn("MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_REQUIRED", source)
         self.assertIn("reusable_task_master_records_roundtrip", source)
         self.assertIn("ENTROPY_RECOVERY_RECORDED", source)
         self.assertIn("NONE_FOR_THIS_INVOCATION", source)

@@ -54,9 +54,9 @@ class ERLCanonicalMasterRecordsReconciliationTests(unittest.TestCase):
         self.assertEqual(authority["device_user_verification_authority"], "NONE")
         self.assertFalse(authority["provider_operation_reexecution_authorized"])
         self.assertTrue(authority["kv_skap_remains_sole_user_verification_authority"])
-        self.assertTrue(authority["master_records_remains_custody_reconstruction_authority"])
+        self.assertTrue(authority["master_records_limited_to_organization_records_and_reconstruction"])
         self.assertIn("SOURCE BINDING MERGED AND VALIDATED", self.handoff)
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED` remains false", self.handoff)
+        self.assertIn("MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED` remains false", self.handoff)
 
 
 if __name__ == "__main__":
