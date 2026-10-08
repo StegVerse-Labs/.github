@@ -235,3 +235,17 @@ def test_renamed_readers_keep_one_legacy_constant(rel: str, legacy: str) -> None
     assert source.count(f'"{legacy}"') == 1
     line = next(l for l in source.splitlines() if f'"{legacy}"' in l)
     assert line.startswith("LEGACY_")
+
+
+def test_org_transition_submission_emits_organization_record_names() -> None:
+    source = (ROOT / "resident-runtime/submit_org_transition_to_master_records.py").read_text(encoding="utf-8")
+    for new in ("ORGANIZATION_RECORD_ORGANIZATION_TRANSITION", "ecosystem.transition.organization-record.v1", "PUBLISHED_FOR_ORGANIZATION_RECORD"):
+        assert new in source
+    for old in ("CUSTODY_ORGANIZATION_TRANSITION", "ecosystem.transition.custody.v1", "PUBLISHED_FOR_CUSTODY"):
+        assert f'"{old}"' not in source
+
+
+def test_organization_batch_submission_emits_organization_record_authority_effect() -> None:
+    source = (ROOT / "workers/canonical_state_transition_custody.py").read_text(encoding="utf-8")
+    assert 'authority_effect="NONE_ORGANIZATION_RECORD_ONLY"' in source
+    assert '"NONE_CUSTODY_ONLY"' not in source

@@ -150,7 +150,7 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
     assert not (tmp_path / "BATCH_HEAD.json").exists()
 
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
-        "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id, "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY"
+        "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id, "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY"
     })
     third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
 
@@ -163,7 +163,7 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
         "batch_id": released["batch_id"],
         "execution_result": "COMPLETED",
         "reason": None,
-        "authority_effect": "NONE_CUSTODY_ONLY",
+        "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY",
     }
     after = batch.open_packet_state(parent_manifest, root=tmp_path)
     assert after == {
@@ -279,7 +279,7 @@ def test_expiry_releases_a_short_packet_from_its_own_t0(monkeypatch, tmp_path):
 
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id,
-        "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY",
+        "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY",
     })
     work = org.aggregate_transition(
         receipt("WORK"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + DELTA),
@@ -405,7 +405,7 @@ def test_released_batch_carriage_submits_the_record_not_the_contents(monkeypatch
             captured["envelope"] = envelope
             return {"state": "COMPLETED", "execution_result": "COMPLETED",
                     "batch_id": envelope["batch"]["batch_id"],
-                    "governance_disposition": None, "authority_effect": "NONE_CUSTODY_ONLY"}
+                    "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY"}
 
     def fake_spec(name, path):
         class Loader:
