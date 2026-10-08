@@ -120,7 +120,7 @@ The source request schema is `stegverse.reusable-task-master-records-custody-req
 
 `workers/reusable_task_master_records_roundtrip.py` does not validate on behalf of Master Records and does not mint destination state. It resolves the already-local `master-records/orchestration` root from `STEGVERSE_REPO_ROOTS_JSON`, invokes the destination-owned ingest and reconstruction scripts, and verifies that reconstructed request bytes exactly equal the source request bytes before returning the destination record to the lifecycle verifier.
 
-The destination scripts independently validate the exact manifest, trigger, runner-result, runner-expiry, residual-recording, hashes, completion predicates, recording coverage, and non-authority fields before retaining exact source bytes and emitting `master-records.reusable-task-lifecycle-custody/v1`.
+The destination scripts independently validate the exact manifest, trigger, runner-result, runner-expiry, residual-recording, hashes, completion predicates, recording coverage, and non-authority fields before retaining exact source bytes and emitting `master-records.reusable-task-lifecycle-organization-record/v1` (readers here also accept the legacy `master-records.reusable-task-lifecycle-custody/v1` per MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002).
 
 Source request != destination custody acceptance. Matching hashes != truth. The `.github` lifecycle cannot self-mint the Master Records record.
 

@@ -348,3 +348,87 @@ def test_master_records_owner_keys_use_record_owner_names() -> None:
     intake = json.loads((ROOT / "control/repository-hygiene-ref-retirement-admin-intake-20260924.json").read_text(encoding="utf-8"))
     assert "master_records_organization_record_owner" in intake
     assert "master_records_custody_owner" not in intake
+
+
+ORGANIZATION_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-organization-record/v1"
+LEGACY_LIFECYCLE_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-custody/v1"
+
+
+def _lifecycle_request_and_record(schema: str) -> tuple[dict, dict]:
+    request = {"invocation_id": "inv-1", "reusable_task_id": "RT-X", "evidence_bundle_sha256": "b" * 64}
+    record = {
+        "schema": schema,
+        "invocation_id": "inv-1",
+        "reusable_task_id": "RT-X",
+        "source_request_sha256": lifecycle.stable_hash(request),
+        "evidence_bundle_sha256": "b" * 64,
+        "destination_record_accepted": True,
+        "destination_acknowledgement_minted": True,
+        "independent_validation_complete": True,
+        "reconstruction_confirmed": True,
+        "runtime_activation": False,
+        "execution_authority_granted": False,
+        "publication_authority_granted": False,
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+    return request, record
+
+
+def test_lifecycle_record_schema_writer_constant_is_organization_record() -> None:
+    assert lifecycle.ORGANIZATION_RECORD_SCHEMA == ORGANIZATION_RECORD_SCHEMA
+    assert lifecycle.CUSTODY_RECORD_SCHEMA == ORGANIZATION_RECORD_SCHEMA
+    assert lifecycle.LEGACY_ORGANIZATION_RECORD_SCHEMA == LEGACY_LIFECYCLE_RECORD_SCHEMA
+
+
+@pytest.mark.parametrize("schema", [ORGANIZATION_RECORD_SCHEMA, LEGACY_LIFECYCLE_RECORD_SCHEMA])
+def test_lifecycle_record_schema_reader_accepts_new_and_legacy(schema: str) -> None:
+    request, record = _lifecycle_request_and_record(schema)
+    lifecycle.verify_custody_record(record, request)
+    record["schema"] = "master-records.other/v1"
+    with pytest.raises(ValueError, match="schema mismatch"):
+        lifecycle.verify_custody_record(record, request)
+
+
+rpm_consumer = load("compat_consume_runtime_profile_map_custody", "control/resident-execution-request.d/consume-runtime-profile-map-custody.py")
+rpm_finalize = load("compat_finalize_runtime_profile_map_cycle", "scripts/finalize_runtime_profile_map_cycle.py")
+
+
+@pytest.mark.parametrize("module", [rpm_consumer, rpm_finalize])
+def test_runtime_profile_map_accepted_state_readers_accept_new_and_legacy(module) -> None:
+    assert module.ORGANIZATION_RECORD_ACCEPTED_STATE == "ORGANIZATION_RECORD_ACCEPTED"
+    assert module.LEGACY_ORGANIZATION_RECORD_ACCEPTED_STATE == "CUSTODY_ACCEPTED"
+    assert set(module.ACCEPTED_ORGANIZATION_RECORD_STATES) == {"ORGANIZATION_RECORD_ACCEPTED", "CUSTODY_ACCEPTED"}
+
+
+def test_runtime_profile_map_finalize_writes_only_new_accepted_state() -> None:
+    source = (ROOT / "scripts/finalize_runtime_profile_map_cycle.py").read_text(encoding="utf-8")
+    assert '"state": ORGANIZATION_RECORD_ACCEPTED_STATE if accepted' in source
+    assert '"state": "CUSTODY_ACCEPTED"' not in source
+
+
+@pytest.mark.parametrize("state", ["ORGANIZATION_RECORD_ACCEPTED", "CUSTODY_ACCEPTED"])
+def test_runtime_profile_map_finalize_accepts_new_and_legacy_consumer_state(state: str, tmp_path: Path, monkeypatch) -> None:
+    mr_root = tmp_path / "mr"
+    (mr_root / "scripts").mkdir(parents=True)
+    (mr_root / "scripts/ingest_runtime_profile_map_custody.py").write_text(f"print('{{\"state\": \"{state}\"}}')\n", encoding="utf-8")
+    monkeypatch.setenv("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", str(mr_root))
+    result = rpm_finalize.maybe_custody(tmp_path, tmp_path / "package.json")
+    assert result["custody_performed"] is True
+    assert result["state"] == "ORGANIZATION_RECORD_ACCEPTED"
+
+
+def test_runtime_profile_map_predicates_name_new_accepted_state() -> None:
+    text = (ROOT / "control/cross-task-coordination.d/runtime-profile-map-lifecycle-predicates.json").read_text(encoding="utf-8")
+    assert '"result.state": "ORGANIZATION_RECORD_ACCEPTED"' in text
+    assert '"result.state": "CUSTODY_ACCEPTED"' not in text
+
+
+@pytest.mark.parametrize("state", ["ORGANIZATION_RECORD_ACCEPTED", "CUSTODY_ACCEPTED"])
+def test_runtime_profile_map_predicate_accepts_new_and_legacy_result_state(state: str) -> None:
+    predicate = _runtime_profile_map_predicate()
+    assert predicate["required_field_values"]["result.state"] == "ORGANIZATION_RECORD_ACCEPTED"
+    evidence = {"schema": RUNTIME_PROFILE_MAP_CONSUMPTION_SCHEMA, "fields": {"result": {"state": state}}}
+    now = coordination_graph._now(None)
+    assert "REQUIRED_FIELD_VALUE_MISMATCH:result.state" not in coordination_graph._evidence_rejection_reasons(predicate, evidence, now)
+    evidence["fields"]["result"]["state"] = "CUSTODY_ATTEMPT_RECORDED"
+    assert "REQUIRED_FIELD_VALUE_MISMATCH:result.state" in coordination_graph._evidence_rejection_reasons(predicate, evidence, now)

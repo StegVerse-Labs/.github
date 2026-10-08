@@ -76,7 +76,7 @@
         "state": "COMPLETED",
         "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
         "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
-        "result.state": "CUSTODY_ACCEPTED",
+        "result.state": "ORGANIZATION_RECORD_ACCEPTED",
         "network_source_fetch_performed": false,
         "claim_or_fence_minted": false,
         "task_coordination_state_changed": false
@@ -261,7 +261,7 @@
       "required_output_ref": "receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json",
       "required_schema": "stegverse.runtime-profile-map-organization-record-consumption/v1",
       "required_fields": ["state", "task_id", "request_id", "package_sha256", "result.state"],
-      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001", "result.state": "CUSTODY_ACCEPTED"},
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001", "result.state": "ORGANIZATION_RECORD_ACCEPTED"},
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Use the existing runtime_profile_map_custody selector and Master Records organization record consumer only; do not create a second custody authority or infer custody from package generation."

@@ -27,6 +27,11 @@ TARGET_MODE = "RUNTIME_PROFILE_MAP_MASTER_RECORDS_ORGANIZATION_RECORD"
 TARGET_ENTRYPOINT = "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"
 MR_CONSUMER_REL = Path("scripts/ingest_runtime_profile_map_custody.py")
 RECON_CONSUMER_REL = Path("control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py")
+ORGANIZATION_RECORD_ACCEPTED_STATE = "ORGANIZATION_RECORD_ACCEPTED"
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: Master Records consumers built before
+# the rename still return the legacy accepted state.
+LEGACY_ORGANIZATION_RECORD_ACCEPTED_STATE = "CUSTODY_ACCEPTED"
+ACCEPTED_ORGANIZATION_RECORD_STATES = (ORGANIZATION_RECORD_ACCEPTED_STATE, LEGACY_ORGANIZATION_RECORD_ACCEPTED_STATE)
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "OAUTH_TOKEN")
 NONSECRET = ("PATH", "HOME", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "STEGVERSE_SOVEREIGN_NODE")
@@ -152,7 +157,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
     ]
     completed = subprocess.run(command, cwd=mr_root, capture_output=True, text=True, check=False, timeout=1200, env=safe_env)
     result = parse_last_json(completed.stdout)
-    success = completed.returncode == 0 and isinstance(result, dict) and result.get("state") == "CUSTODY_ACCEPTED"
+    success = completed.returncode == 0 and isinstance(result, dict) and result.get("state") in ACCEPTED_ORGANIZATION_RECORD_STATES
 
     reconciliation: dict[str, Any] = {"state": "NOT_ATTEMPTED", "authority_effect": "NONE"}
     if success:
