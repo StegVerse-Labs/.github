@@ -40,3 +40,65 @@ Source inspection (not execution) identified `StegVerse-org/.github:resident-run
 Required repair at existing owners: reconcile federation membership under its registry rules; implement manifest-directed egress/ingress/return with `processing.capability` and `processing.route_id`, independently disposition each attempted boundary, preserve TV/TVC custody and organization-ledger append, use `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION` rather than host/spool liveness as a prerequisite, and invoke the existing Publisher route only if the admitted manifest requests presentation. No new machine, framework, scheduler, authority, or runtime gate. CI may validate source but cannot attest actual crossing. Non-ALLOW must name the failed predicate and retry edge at the actually invoked boundary; do not fabricate downstream results.
 
 Remaining: owner-specific source repairs, exact-head tests, CI evidence, Organization readback and applicable Master Records reconstruction; that reconstruction is non-gating. No ALLOW, live crossing, Publisher PDF, or runtime validation is claimed by this assessment.
+
+## 2026-10-08 source-conformance reconciliation
+
+This section records repository events and their evidence classes. Each item is classed separately. `SOURCE_IMPLEMENTED`, `CI_VALIDATED` and `MERGED` are source evidence, not runtime evidence. None of them is promoted to `SANDBOX_RUNTIME_OBSERVED`, `EXTERNAL_PROVIDER_OBSERVED`, `MASTER_RECORDS_RECONSTRUCTED` or `END_TO_END`. No ALLOW, live crossing, Organization ledger readback or Master Records reconstruction is claimed. The canonical task record's state and predicates are unchanged.
+
+### StegVerse-org/.github
+
+| Change | Evidence class | Ref |
+| --- | --- | --- |
+| Write-once `put_once` is atomic (`os.link`); a `PENDING` CLI result exits 3, not success | `MERGED` | PR #86, merge `2f1c907` |
+| Organization and repository ledger roots are supplied or `FAIL_CLOSED` `LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER`; never `XDG_STATE_HOME`/`Path.home()` | `MERGED` | PR #87, merge `60ddd13` |
+| Regression fix for #87: repository propagation without a ledger home records `FAIL_CLOSED` with a retry entrypoint instead of aborting the federation cycle | `MERGED` | PR #88, merge `9e112b4` |
+| Host-selected federation gateway removed; the declared carrier is the only path | `MERGED` | PR #89, merge `8c802ab` |
+| Governance return materialized on decision-frame consumption; canonical manifest retained at ingress | `MERGED` | PR #90, merge `37673ca` |
+| Resident executor runs one federation cycle per materialization (polling loop and `Restart=always` systemd unit removed); SV002 query is a manifest-bound submission on the supplied mesh; gateway transport, activator and activation request removed | `MERGED` | PR #91, merge `72f3a4c` |
+
+### SV-LLM
+
+| Change | Evidence class | Ref |
+| --- | --- | --- |
+| Anthropic terms notation (documentation only; no runtime surface) | `MERGED` | SV-LLM/Anthropic PR #10 |
+| Supplied mesh and ledger roots; carrier declaration | `MERGED` | SV-LLM/.github PR #17, merge `ed27bc4` |
+
+### StegVerse-org/StegVerse-SDK
+
+| Change | Evidence class | Ref |
+| --- | --- | --- |
+| Round trip supplies `STEGVERSE_REPO_LEDGER_HOME`; workflow pins moved to StegVerse-org `72f3a4c` and SV-LLM `ed27bc4` | `SOURCE_IMPLEMENTED` (open). The parent session reports a local round trip with all 7 legs `ALLOW` against both mains, 3/3 runs. That is a local source test, not a runtime observation, and is not promoted | PR #440 |
+
+### StegVerse-Labs/.github (this repository)
+
+| Change | Evidence class | Ref |
+| --- | --- | --- |
+| Shared kernel at semantic parity with StegVerse-org: `org-kernel/node_store.py` seam; mesh supplied or `FAIL_CLOSED` `mesh_location_required_from_materializer`; heartbeat reference validated on recovery; `hb_reference(epoch=)` with `derived_from_clock`; frame layout `frames.d/<sha256(packet_id\|frame_sha256)>.json` unchanged. Callers take a supplied mesh. Ledger roots supplied or `FAIL_CLOSED` `LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER` | `MERGED`, `CI_VALIDATED` | PR #3013, merge `f68a472` |
+| Hosted federation gateway branches removed; kernel `publish_packet` over the supplied mesh is the only carrier; `federation_gateway_transport.py` retired; activation manifest declares no gateway | `MERGED`, `CI_VALIDATED` | PR #3014, merge `1a7fb82` |
+| Resident cycle writes consumption markers and work intake under the supplied node-state root, never into the checkout; frame-name dedup identity unchanged | `SOURCE_IMPLEMENTED` (open) | PR #3016 |
+
+StegVerse-org #88's regression does not arise here. This repository's `federation_cycle.py` does not propagate repository receipts, and there is no `propagate_repository_receipts.py`.
+
+### Exemption register
+
+No entry was added to `data/organization-role-exemption-register.json`. Every surface changed above was made conformant in source, so none of them needs an exemption.
+
+The following nonconformance was observed on surfaces this work did not change. It is recorded here only and is not classified:
+
+- **`scripts/install_sovereign_heartbeat_service.py` and `scripts/install_sovereign_heartbeat_service_base.py`.** These render persistent `Restart=always` systemd user units. They derive their unit and state locations from `Path.home()`, `XDG_CONFIG_HOME` and `XDG_STATE_HOME`. This is the Labs counterpart of the persistent executor StegVerse-org #91 removed. `tests/test_native_runtime_materialization_boundary.py::test_worker_service_preserves_canonical_master_records_organization_record_bindings` calls `materialize_service` without a supplied location, so every test run writes `~/.config/systemd/user/stegverse-heartbeat.service` and `stegverse-worker-runtime.service` under the host HOME.
+  - Owning goal: none is named in `data/canonical-task-records`. `SV-KV-AI-PERSISTENCE-001` cites the installer only as a resolved dependency, which is not ownership.
+- **`resident-runtime/organization_egress_boundary.py`.** It cannot be loaded, because `org-boundary/runtime/origin_attestation.py` is absent from this repository.
+- **`scripts/dispatch_resident_execution_requests.py`.** It still forwards `STEGVERSE_ORG_FEDERATION_GATEWAY_URL` to the StegVerse-002 child.
+
+None of these is claimed conforming. Under `ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION`, each still needs either a repair or a registered exemption. No `owning_existing_goal` was chosen for any of them, because none was mapped from `data/canonical-task-records` in this work.
+
+### Remaining predicates (all six open)
+
+- `MANIFEST_BOUND_INTR_ADMISSION_ATTEMPT_TERMINAL_DISPOSITION_RETAINED`
+- `GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED`
+- `NON_GOVERNANCE_MANIFEST_ROUTE_ATTEMPT_TERMINAL_DISPOSITION_RETAINED`
+- `APPLICABLE_ORGANIZATION_STATE_TRANSITION_RECEIPT_RETAINED`
+- `APPLICABLE_POST_ORGANIZATION_RECORD_RECONSTRUCTION_EVIDENCE_RETAINED`
+- `ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION`
+
+The source repairs above remove host-derived state locations, checkout-resident node state and the hosted gateway path. They are prerequisites for these predicates; none of them satisfies one.
