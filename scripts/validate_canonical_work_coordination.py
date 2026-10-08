@@ -140,7 +140,7 @@ def main() -> int:
     print(f"INFO: canonical task records={len(task_ids)} correlations={len(correlation_ids)}")
     print(f"INFO: existing WorkerCoordinator task records={len(worker_registry.get('tasks', []))}")
     print(f"INFO: runtime profile map profiles={len(runtime_map.get('profiles', []))} generation={runtime_map.get('generation')}")
-    print("NONCLAIM: live Interlock/InTr, WorkerCoordinator, runtime-profile observation, Master Records reconciliation, and closure are not proven")
+    print("NONCLAIM: live Interlock/InTr, WorkerCoordinator, runtime-profile observation, Master Records organization-record reconciliation, and InTr closure are not proven")
     return 0
 
 

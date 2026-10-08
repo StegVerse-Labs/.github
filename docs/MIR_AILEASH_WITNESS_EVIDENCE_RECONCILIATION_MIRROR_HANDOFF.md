@@ -291,7 +291,7 @@ Two adjacent reusable identities were inspected and rejected as substitutes:
 
 Therefore no sebbi.pro request was issued through either identity, no new StegBrowser task/manifest/request was minted, and the immutable owned-mirror nonce was not altered or reused for external navigation.
 
-Most importantly, the current canonical task record for `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now marks all StegBrowser execution substrates `NOT_APPLICABLE` for this documentary/public-verification goal. Its strict state-dependent contract permits exactly one next transition: `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`, consuming the immediate `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` Master Records predecessor. The stale StegBrowser continuation is therefore `SUPERSEDED_BY_CURRENT_AUTHORITY` and cannot be used to bypass, parallelize, or leapfrog the ordered evidence chain.
+Most importantly, the current canonical task record for `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001` now marks all StegBrowser execution substrates `NOT_APPLICABLE` for this documentary/public-verification goal. Its strict state-dependent contract permits exactly one next transition: `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`, consuming the immediate `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` predecessor and its Master Records organization record. The stale StegBrowser continuation is therefore `SUPERSEDED_BY_CURRENT_AUTHORITY` and cannot be used to bypass, parallelize, or leapfrog the ordered evidence chain.
 
 No runtime execution, external GET, A1/A2/A3/A4 promotion, or new authority path is claimed from this reconciliation.
 

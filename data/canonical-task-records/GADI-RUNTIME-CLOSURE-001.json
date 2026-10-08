@@ -4,7 +4,7 @@
   "correlation_id": "GADI-RUNTIME-CLOSURE-001",
   "root_correlation_id": "GADI-001",
   "parent_task_id": "GADI-001",
-  "goal": "Close GADI with authentic same-device resident runtime evidence only: current retained-node discovery and current-iPhone receipt readback, exact same-node runtime presence/binding, current Governance/InTr admission, WorkerCoordinator claim/fence, controlled preauthorized defensive execution, effect observation, adaptive reassessment, termination after threat end, full receipt-chain custody, and exact Continuity/Master Records reconstruction.",
+  "goal": "Close GADI with authentic same-device resident runtime evidence only: current retained-node discovery and current-iPhone receipt readback, exact same-node runtime presence/binding, current Governance/InTr admission, WorkerCoordinator claim/fence, controlled preauthorized defensive execution, effect observation, adaptive reassessment, termination after threat end, full Organization receipt-chain custody, and exact Continuity/Master Records reconstruction.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "10100000100000",

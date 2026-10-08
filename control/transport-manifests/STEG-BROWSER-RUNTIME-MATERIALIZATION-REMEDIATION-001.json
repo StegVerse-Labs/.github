@@ -49,7 +49,7 @@
     "transition_and_packet_movement": "Interlock/InTr",
     "claim_fence": "WorkerCoordinator",
     "credential_provider": "TV/TVC",
-    "recording_custody_reconstruction": "Master Records",
+    "recording_custody_reconstruction": "Organization custody; Master Records organization records and reconstruction",
     "github_runtime_authority": "NONE"
   },
   "authority_effect": "NONE_ROUTE_DECLARATION_ONLY"

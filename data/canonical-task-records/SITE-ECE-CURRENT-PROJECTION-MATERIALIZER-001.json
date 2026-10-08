@@ -87,7 +87,7 @@
     "parent_goal_task": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
     "upstream_diagnostic_task": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
     "reusable_parent_cycle": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
-    "custody_owner": "Master Records",
+    "custody_owner": "Organization",
     "publication_owner_task": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
     "publication_owner_cosv": "50000000102000",
     "publication_worker_task": "SITE-PUBLICATION-INTR-CONSUMER-001",

@@ -35,7 +35,7 @@ shwp_bootstrap = load("compat_shwp_manifest_intr_event_bootstrap", "workers/shwp
 first_round_chain = load("compat_run_sv_dn1_first_round_chain", "scripts/run_sv_dn1_first_round_chain.py")
 
 
-@pytest.mark.parametrize("field", ["master_records_organization_record_status", "master_records_custody_status"])
+@pytest.mark.parametrize("field", ["master_records_organization_record_status", "record_status", "master_records_custody_status"])
 def test_stegagents_governance_record_status_accepts_new_and_legacy(field: str) -> None:
     assert stegagents.organization_record_status({field: "RECORDED"}) == "RECORDED"
     assert stegagents.organization_record_status({}) is None
@@ -78,10 +78,20 @@ def test_stegagents_purpose_result_validates_with_either_status_field(field: str
         stegagents._validate_result(profile, result)
 
 
-@pytest.mark.parametrize("field", ["record_status", "custody_status"])
+@pytest.mark.parametrize("field", ["record_status", "master_records_organization_record_status", "custody_status"])
 def test_endpoint_fanout_reads_continuity_vault_kit_record_status(field: str) -> None:
     assert fanout.master_records_record_status({field: "TEST_ONLY_RECORDED"}) == "TEST_ONLY_RECORDED"
     assert fanout.master_records_record_status(None) is None
+
+
+def test_endpoint_fanout_new_names_win_over_legacy() -> None:
+    result = {"master_records_organization_record_status": "RECORDED", "custody_status": "FAILED"}
+    assert fanout.master_records_record_status(result) == "RECORDED"
+
+
+def test_stegagents_short_new_name_wins_over_legacy() -> None:
+    governance = {"record_status": "RECORDED", "master_records_custody_status": "FAILED"}
+    assert stegagents.organization_record_status(governance) == "RECORDED"
 
 
 def test_endpoint_fanout_reader_has_no_bare_legacy_literal() -> None:

@@ -43,7 +43,7 @@
     "fulfilled_by": "MATCHING_MASTER_RECORDS_RECORDED_WORK_HISTORY_OR_EVIDENCE_RETURN"
   },
   "missing_return_detection": {
-    "source_of_truth": "MASTER_RECORDS_OBSERVED_REALITY_AND_RECONSTRUCTION",
+    "source_of_truth": "ORGANIZATION_OBSERVED_REALITY_MASTER_RECORDS_RECONSTRUCTION",
     "detectors": [
       "StegIndex",
       "StegDB",

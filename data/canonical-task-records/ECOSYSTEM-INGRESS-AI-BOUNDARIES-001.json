@@ -155,7 +155,7 @@
     "sdk_role": "CANONICAL_MANIFEST_PROCESSING_INGRESS_AND_EXTERNAL_EVALUATOR_INGRESS",
     "credential_authority": "TV/TVC",
     "governed_transition_authority": "Interlock/InTr",
-    "master_records_role": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "github_runtime_authority": "NONE",
     "heartbeat_execution_authority": false,
     "ungoverned_ai_internal_role": "SOVEREIGN_INTERNAL_REASONING_AND_WORK_WITHIN_BOUNDARY_NO_STEGVERSE_AUTHORITY",

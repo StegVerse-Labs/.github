@@ -163,7 +163,7 @@ def _persist_presence_projection(runtime_root: Path) -> dict[str, Any]:
 
 
 def _persist_presence_master_records_intake(runtime_root: Path) -> dict[str, Any]:
-    """Attempt local Master Records organization record without making custody a presence prerequisite."""
+    """Attempt a local Master Records organization record without making it a presence prerequisite."""
     presence_path = runtime_root / PRESENCE_RECEIPT
     output_path = runtime_root / PRESENCE_MR_INTAKE_RECEIPT
     mr_root_raw = os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "").strip()

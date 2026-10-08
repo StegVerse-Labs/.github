@@ -35,10 +35,10 @@
   },
   "expected_evidence_predicates": [
     "MASTER_RECORDS_REFERENCES_ARE_ORGANIZATION_RECORDS_OR_RECONSTRUCTION_ONLY",
-    "MASTER_RECORDS_IS_NOT_GENERAL_TRANSITION_CUSTODY",
-    "MASTER_RECORDS_IS_NOT_GENERAL_EVIDENCE_CUSTODY",
-    "MASTER_RECORDS_DOES_NOT_GATE_TRANSITIONS",
-    "MASTER_RECORDS_DOES_NOT_OWN_RUNTIME_OR_OBSERVED_REALITY",
+    "TRANSITION_CUSTODY_BELONGS_TO_ORGANIZATION",
+    "EVIDENCE_CUSTODY_BELONGS_TO_ORGANIZATION",
+    "TRANSITION_GATES_BELONG_TO_INTERLOCK_INTR",
+    "RUNTIME_AND_OBSERVED_REALITY_BELONG_TO_ORGANIZATION",
     "HISTORICAL_EVIDENCE_IS_PRESERVED",
     "AMBIGUOUS_REFERENCES_ARE_CONTEXT_REVIEWED_BEFORE_MUTATION"
   ],
@@ -430,7 +430,7 @@
       "README"
     ],
     "general_master_records_transition_submission_removed_from_canonical_client": true,
-    "predecessor_master_records_reconstruction_is_not_transition_gate": true,
+    "predecessor_master_records_reconstruction_is_evidence_only": true,
     "current_authority_rule": "MASTER_RECORDS_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
     "master_records_general_transition_organization_record": false,
     "master_records_general_evidence_organization_record": false,

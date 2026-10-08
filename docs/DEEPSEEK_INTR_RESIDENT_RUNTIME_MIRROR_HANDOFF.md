@@ -34,7 +34,7 @@ Completion requires one sovereign resident WorkerCoordinator execution that reta
 2. canonical StegGate ingress `ALLOW`;
 3. exact-bound TVC DeepSeek capability lease;
 4. successful TVC non-exportable provider operation;
-5. Master Records `custody_recorded=true` and reconstruction `PASS`;
+5. Master Records organization record retained (`custody_recorded=true`) and reconstruction `PASS`;
 6. canonical StegGate egress `ALLOW` for the exact response hash;
 7. LLM-adapter exact-response egress admission;
 8. terminal `COMPLETED` resident receipt.

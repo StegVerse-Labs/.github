@@ -107,7 +107,7 @@
     "user_verification": "KV/SKAP Vault",
     "email_observation_and_tracking": "KV",
     "provider_credential_and_GitHub_mutation": "TV/TVC",
-    "observed_reality_custody_reconstruction": "Master Records",
+    "observed_reality_custody": "Organization", "organization_records_reconstruction": "Master Records",
     "coordination": "Task Registry"
   },
   "authority_effect": "NONE_COMPONENT_COMPOSITION_ONLY",

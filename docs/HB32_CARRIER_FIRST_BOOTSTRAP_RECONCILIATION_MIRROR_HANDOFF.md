@@ -66,7 +66,7 @@ These runs validate the source/control-plane repair only. They are not sovereign
 
 The G18 coordination record remains untouched: claim `SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18`, fencing token `18`. This repair does not mint, renew, release, transfer, or reuse that claim.
 
-Master Records remains `CUSTODY_AND_RECONSTRUCTION_ONLY`. Authentic runtime-presence input is still pending; source repair, hosted validation, or merge cannot satisfy that evidence predicate.
+Master Records remains limited to organization records and reconstruction. Authentic runtime-presence input is still pending; source repair, hosted validation, or merge cannot satisfy that evidence predicate.
 
 ## README completeness
 

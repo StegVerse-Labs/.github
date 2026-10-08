@@ -134,7 +134,7 @@
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
     "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
-    "observed_reality_authority": "MASTER_RECORDS",
+    "observed_reality_authority": "ORGANIZATION",
     "heartbeat_role": "TIMING_FRESHNESS_CORRELATION_OBSERVABILITY_ONLY",
     "elyria_adapter_authority": "NONE_TRANSLATION_ONLY",
     "elyria_verdict_is_stegverse_authority": false,

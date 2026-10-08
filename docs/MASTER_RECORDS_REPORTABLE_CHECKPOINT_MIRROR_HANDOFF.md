@@ -139,7 +139,7 @@ Reject checkpoint construction or verification on: non-RECORDED state; reconstru
 
 ## Deterministic test vector
 
-The first vector is synthetic and non-authorizing. It MUST use fixed closure identities and fixed sequence numbers, calculate leaves/root/checkpoint digest reproducibly, prove one inclusion, and include negative mutations for digest mismatch, leaf mutation, predecessor mutation and root mutation. It MUST NOT be presented as authentic Master Records runtime evidence or submitted externally.
+The first vector is synthetic and non-authorizing. It MUST use fixed closure identities and fixed sequence numbers, calculate leaves/root/checkpoint digest reproducibly, prove one inclusion, and include negative mutations for digest mismatch, leaf mutation, predecessor mutation and root mutation. It MUST NOT be presented as an authentic Master Records organization record or submitted externally.
 
 ## Current state
 

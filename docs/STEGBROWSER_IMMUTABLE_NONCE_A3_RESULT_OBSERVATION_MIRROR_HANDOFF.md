@@ -72,7 +72,7 @@ Manual work: None.
 
 ## Goal Prompt 2/20 — canonical runtime loading repaired; target durable store still not evidenced
 
-The requested authenticated nonce query was **not** executed against a substitute GitHub/CI database. Current canonical evidence does not expose an authentic durable Master Records endpoint or runtime advertisement for the target custody store, and the existing Runtime Evidence Validation lane explicitly does not claim a production endpoint.
+The requested authenticated nonce query was **not** executed against a substitute GitHub/CI database. Current canonical evidence does not expose an authentic durable Master Records endpoint or runtime advertisement for the target organization-record store, and the existing Runtime Evidence Validation lane explicitly does not claim a production endpoint.
 
 Tracing the existing Master Records runtime-loading path found the first concrete defect before any authoritative query could be trusted: the workflow launched:
 

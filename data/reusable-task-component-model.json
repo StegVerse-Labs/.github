@@ -48,7 +48,7 @@
     "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
     "credential_provider_release": "TV/TVC",
     "governed_transition": "Interlock/InTr",
-    "observed_reality_custody_reconstruction": "Master Records",
+    "observed_reality_custody": "Organization", "organization_records_reconstruction": "Master Records",
     "heartbeat": "TIMING_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
     "github_runtime_authority": "NONE"
   },

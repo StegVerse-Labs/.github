@@ -9,7 +9,7 @@ Deployment scope: this organization. The Organization Role is deployed per organ
 ## The change
 
 ```text
-runtime_reality_authority:  Master Records  ->  Organization
+runtime_reality_authority:  Organization  (superseding the earlier records-service assignment)
 ```
 
 Reality locus: the **organization ledger root**, held under the **organization ledger lock**, written by **manifest-directed append**.
@@ -27,7 +27,7 @@ Unchanged by this declaration: Interlock/InTr remains transition authority, Work
 - It is **not** the runtime-reality authority of this organization and is **not** a gate on this organization's runtime reality. An organization transition is real when it is appended under the organization ledger lock, not when a batch carrying it is recorded downstream.
 - Nothing in this organization awaits it. A batch that has not been released or recorded is a value in the attempted transition's evidence state, not a blocker and not proof of non-occurrence.
 
-Master Records has no general custody role. Statements assigning it general custody, observed reality, runtime reality, transition gating, or evidence closure are superseded. The only current positive roles are organization-record retention and reconstruction.
+Master Records relates to organization records; its only other permitted reference is reconstruction. Custody, observed reality and runtime reality belong to the Organization; transition gating and evidence closure belong to Interlock/InTr. Earlier statements that placed these elsewhere are superseded.
 
 ## Conformance standard
 
@@ -55,7 +55,7 @@ The register refuses the justifications the standard already forbids — an exte
 
 ## Superseded prose
 
-28 statements across 23 files in this repository assign *observed-reality* or *runtime-reality* authority to Master Records. Each is superseded by this declaration at its owning surface; each is enumerated with exact path, line and text in `data/organization-role-runtime-reality-deployment.json` under `superseded_prose_statements`, so the residual is explicit and auditable rather than silent.
+28 statements across 23 files in this repository place *observed-reality* or *runtime-reality* authority outside the Organization, on the records service. Each is superseded by this declaration at its owning surface; each is enumerated with exact path, line and text in `data/organization-role-runtime-reality-deployment.json` under `superseded_prose_statements`, so the residual is explicit and auditable rather than silent.
 
 They are not edited here. Those paragraphs belong to other goals' handoff surfaces, and bounded validation at each owner's source without cross-owner edits is the standing rule. The machine-readable authority block — `data/task-registry-global-invariants.json`, `applies_to: ALL_CANONICAL_TASKS_EXISTING_AND_NEW` — is changed, enforced in `scripts/validate_task_registry_global_invariants.py`, and is what every task check-in receives.
 

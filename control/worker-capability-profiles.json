@@ -129,7 +129,7 @@
         "Third-party provider availability never grants authority or satisfies sovereign activation.",
         "Mutation is limited to the admitted sovereign-runtime receipt namespace unless a separate deployment authority is present.",
         "canonical_artifact_validation is validation-only execution against already-materialized local artifacts and grants no repository checkout, credential, provider, wallet, route, or deployment authority.",
-        "master_records_replay_reconstruction_validation is limited to exact local custody/replay/reconstruction proof under the task's bounded receipt namespace and may not create Master Records action authority.",
+        "master_records_replay_reconstruction_validation is limited to exact local custody/replay/reconstruction proof under the task's bounded receipt namespace and may not derive action authority from Master Records organization records.",
         "stegfin_live_entry_inventory_observation is read-only chain inventory plus bounded receipt persistence and grants no provider or wallet authority.",
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",

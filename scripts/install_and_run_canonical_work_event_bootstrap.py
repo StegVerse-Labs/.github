@@ -216,7 +216,7 @@ def main() -> int:
     print(f"PASS: route installation/check completed and bounded CanonicalWork bootstrap returned success for {args.task_id}")
     if args.task_id in GLOBAL_CONVERGENCE_TASK_IDS:
         print("PASS: global HB-synchronized runtime-node profile convergence completed through the existing resident dispatcher")
-    print("NONCLAIM: this wrapper does not itself prove WorkerCoordinator claim/fence, governed work, Master Records reconciliation, egress, or closure")
+    print("NONCLAIM: this wrapper does not itself prove WorkerCoordinator claim/fence, governed work, Master Records organization-record reconciliation, egress, or InTr closure")
     return 0
 
 

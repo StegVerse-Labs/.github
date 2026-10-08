@@ -62,7 +62,7 @@ class SV002HBResidentBindingTests(unittest.TestCase):
             env={
                 "STEGVERSE_SV002_ORG_ROOT":str(target),
                 "STEGVERSE_MASTER_RECORDS_ENDPOINT":"https://master-records.example.test",
-                "STEGVERSE_MASTER_RECORDS_TOKEN":"custody-token",
+                "STEGVERSE_MASTER_RECORDS_TOKEN":"organization-record-token",
                 "STEGVERSE_ORG_FEDERATION_GATEWAY_URL":"https://federation.example.test",
                 "GITHUB_TOKEN":"forbidden",
             }
@@ -119,7 +119,7 @@ class SV002HBResidentBindingTests(unittest.TestCase):
             "PATH":"/usr/bin",
             "HOME":"/tmp/home",
             "STEGVERSE_MASTER_RECORDS_ENDPOINT":"https://master-records.example.test",
-            "STEGVERSE_MASTER_RECORDS_TOKEN":"custody-token",
+            "STEGVERSE_MASTER_RECORDS_TOKEN":"organization-record-token",
             "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS":"11",
             "STEGVERSE_ORG_FEDERATION_GATEWAY_URL":"https://federation.example.test",
             "STEGVERSE_ORG_FEDERATION_ROOT":"/var/lib/stegverse/federation",

@@ -102,8 +102,8 @@ The active MIR source path is:
 - `StegVerse-Labs/Site:stegos-node/mir-roundtrip-intr-sync.js` — exact registered-Node outbox trigger transport to `/intr/materialization` and strict MIR ingress-receipt validation;
 - `StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js` — queues the Node-valid materialization request; requires authoritative Master Records organization record of the queued transition; then requires current InTr admission; then requires authoritative Master Records organization record of ingress; and only then invokes the event runtime;
 - `StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js` — refuses execution without the exact admitted MIR ingress receipt and submits RTC-007/008/009, destination evidence, and exact return retention through the shared custody object;
-- `StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js` — browser client for the existing canonical Master Records state-transition API; it no longer self-issues `RECORDED` custody from IndexedDB;
-- `StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json` — binds the authoritative Master Records endpoint and classifies browser storage as `SUBORDINATE_CONTINUITY_ONLY`;
+- `StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js` — browser client for the existing canonical Master Records state-transition API; it no longer self-issues a `RECORDED` organization record from IndexedDB;
+- `StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json` — binds the Master Records organization-record endpoint and classifies browser storage as `SUBORDINATE_CONTINUITY_ONLY`;
 - `StegVerse-Labs/Site:mir-roundtrip/index.html` — deterministic autostart browser-event surface;
 - `StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py` — conformance assertions for SV002 initiation plus authoritative Master Records write-through.
 
@@ -111,7 +111,7 @@ The browser custody client now performs:
 
 ```text
 build exact canonical state receipt
--> POST exact receipt to authoritative Master Records API
+-> POST exact receipt to the Master Records organization-record API
 -> require RECORDED
 -> require reconstruction_status=PASS
 -> require receipt_sha256 == reconstructed_receipt_sha256 == locally calculated canonical digest
@@ -232,7 +232,7 @@ This is coordination repair only. It does not create a second custody service, t
 
 ## First required-evidence carriage defect and repair — 2026-09-18
 
-Master Records repository evidence was searched for an authentic post-contract transition result containing all three required progression fields:
+Master Records repository evidence was searched for an authentic post-contract organization record containing all three required fields:
 
 ```text
 state=RECORDED

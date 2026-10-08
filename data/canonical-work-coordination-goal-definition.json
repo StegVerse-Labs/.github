@@ -33,7 +33,8 @@
     "transition_authority": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC",
     "runtime_reality": "ORGANIZATION_LEDGER_MANIFEST_DIRECTED_APPEND",
-    "custody_and_reconstruction": "MASTER_RECORDS",
+    "custody": "ORGANIZATION",
+    "organization_records_and_reconstruction": "MASTER_RECORDS",
     "authority_transfer_created_by_this_definition": false
   },
   "native_transition_path": [

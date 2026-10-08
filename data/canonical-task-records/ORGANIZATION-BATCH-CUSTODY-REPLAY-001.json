@@ -171,7 +171,7 @@
       "organization_custody_readback",
       "canonical_master_records_state_transition_organization_record"
     ],
-    "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS",
+    "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS_ORGANIZATION_RECORDS",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": false

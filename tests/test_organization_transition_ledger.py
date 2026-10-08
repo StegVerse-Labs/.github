@@ -164,7 +164,7 @@ def test_exact_source_retry_rejects_tampered_existing_receipt():
                 os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = old
 
 
-def test_master_records_unavailable_does_not_gate_organization_recording():
+def test_organization_recording_proceeds_without_master_records():
     from unittest.mock import patch
     from workers import canonical_state_transition_custody as client
     source = canonical_receipt()

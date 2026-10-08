@@ -171,6 +171,6 @@
     "second_workercoordinator_created": false,
     "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
     "separate_authentic_runtime_gate_required": false,
-    "transition_truth_source": "MASTER_RECORDS_GOVERNED_TRANSITION_CLOSURE"
+    "transition_truth_source": "INTERLOCK_INTR_GOVERNED_TRANSITION_CLOSURE"
   }
 }

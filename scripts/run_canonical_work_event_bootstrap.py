@@ -143,7 +143,7 @@ def invoke_immediate_successor(*, task_id: str, runtime: Path) -> dict[str, Any]
     This is the state-dependent continuation edge. It creates no scheduler,
     dispatcher, heartbeat authority, claim authority, or transition authority.
     The existing targeted WorkerCoordinator path performs all ordinary
-    admission/claim/fence/InTr/Master Records checks.
+    admission/claim/fence/InTr checks or Master Records organization records.
     """
     command = [
         sys.executable,

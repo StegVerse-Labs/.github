@@ -70,7 +70,7 @@
     "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
     "credential_provider_release": "TV/TVC",
     "governed_transition": "Interlock/InTr",
-    "observed_reality_custody_reconstruction": "Master Records",
+    "observed_reality_custody": "Organization", "organization_records_reconstruction": "Master Records",
     "heartbeat": "TIMING_FRESHNESS_CORRELATION_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },

@@ -162,7 +162,7 @@ def main() -> int:
         next_action = "Materialize canonical master-records/orchestration lifecycle custody for the ended G20 worker and re-run the recovery-only heartbeat worker."
         blocker = {
             "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "Canonical Master Records G20 worker-lifecycle custody/reconstruction PASS is not locally materialized." if not custody_valid else "Orphan lifecycle checkpoint or ended-authority predicates did not validate.",
+            "problem_statement": "Canonical Master Records G20 worker-lifecycle organization record/reconstruction PASS is not locally materialized." if not custody_valid else "Orphan lifecycle checkpoint or ended-authority predicates did not validate.",
             "solution_required": True,
             "may_remain_blocked": False,
             "workaround_candidates": [
