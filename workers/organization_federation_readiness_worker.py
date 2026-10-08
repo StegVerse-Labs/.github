@@ -86,12 +86,15 @@ def main() -> int:
         return fail("unsupported federation schema", 8)
     if org_tasks.get("schema") != "stegverse.organization-task-registry/v0.2":
         return fail("unsupported organization task registry schema", 9)
-    if len(organizations) != 15 or len(task_rows) != 15:
-        return fail("all-organization denominator must remain 15", 10)
+    denominator = federation.get("organization_count")
+    if not isinstance(denominator, int) or denominator < 1:
+        return fail("federation organization_count missing", 10)
+    if len(organizations) != denominator or len(task_rows) != denominator:
+        return fail(f"all-organization denominator must remain {denominator}", 10)
 
     org_names = {row.get("organization") for row in organizations}
     task_org_names = {row.get("organization") for row in task_rows}
-    if len(org_names) != 15 or org_names != task_org_names:
+    if len(org_names) != denominator or org_names != task_org_names:
         return fail("federation/task organization sets differ", 11)
 
     blocked = []
@@ -156,7 +159,7 @@ def main() -> int:
         "fencing_token": fence,
         "transition_id": transition,
         "transition_sequence": sequence,
-        "organization_count": 15,
+        "organization_count": denominator,
         "ready_count": len(ready),
         "blocked_count": len(blocked),
         "workaround_required_count": len(workaround_required),
