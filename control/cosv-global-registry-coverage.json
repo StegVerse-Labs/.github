@@ -17,8 +17,8 @@
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
-    "active_task_ids": 15,
-    "canonically_vectorized_task_ids": 15,
+    "active_task_ids": 16,
+    "canonically_vectorized_task_ids": 16,
     "active_unvectorized_task_ids": 0
   },
   "total_active_unvectorized_unique_task_ids": 0,
@@ -103,6 +103,7 @@
     {"task_id":"ORG-FED-STEGVERSE-002-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-STEGVERSE-LABS-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-STEGVERSE-ORG-001","vector":"50000000100000"},
+    {"task_id":"ORG-FED-SV-011-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-SV-LLM-001","vector":"50000000100000"},
     {"task_id":"ORG-FED-TRIAD-TEST-001","vector":"60000000101000"},
     {"task_id":"SV-DN1-PUBLICATION-OBSERVER-001","vector":"50000000101000"},
@@ -164,7 +165,7 @@
   "cohort_projection_20260830": {"task_count":4,"indexed_after_projection":54,"active_worker_unvectorized_after_projection":10,"total_active_unvectorized_after_projection":24,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "final_structured_worker_cosv_cohort": {"task_count":7,"indexed_after_projection":61,"active_worker_unvectorized_after_projection":3,"total_active_unvectorized_after_projection":17,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "worker_denominator_closure": {"active_worker_tasks_vectorized":77,"active_worker_tasks_unvectorized":0,"completed_historical_unvectorized":6,"superseded_historical_unvectorized":1,"total_unique_worker_task_ids":84,"authority_effect":"NONE","runtime_activation_claimed":false},
-  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":76,"active_organization_tasks_vectorized":15,"total_active_tasks_vectorized":91,"active_tasks_unvectorized":0,"source_projection_complete":true,"runtime_activation_claimed":false,"authority_effect":"NONE"},
+  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":76,"active_organization_tasks_vectorized":16,"total_active_tasks_vectorized":92,"active_tasks_unvectorized":0,"source_projection_complete":true,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "publication_observer_projection_20260831": {"task_id":"SV-DN1-PUBLICATION-OBSERVER-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-publication-observer-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-PUBLICATION-OBSERVER-001.json","product_observer_merge":"StegVerse-org/stegverse-demo-suite@653474a78c912eceebf97b5db51bec9a8737ddec","blocker":"SV_DN1_AUTHENTIC_RESULT_REPOSITORY_PERSISTENCE_AND_PUBLIC_DEPLOYMENT_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_persistence_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-persistence-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json","blocker":"TVC_SV_DN1_REPOSITORY_MUTATION_ADMISSION_NOT_YET_OBSERVED_TVC_264","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_merge_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-MERGE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json","blocker":"AUTHENTIC_SV_DN1_PRODUCT_PR_AND_TVC_MERGE_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},

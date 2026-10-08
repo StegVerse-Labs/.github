@@ -359,16 +359,50 @@
         }
       },
       "kernel_version": "1.0.0"
+    },
+    {
+      "task_id": "ORG-FED-SV-011-001",
+      "organization": "SV-011",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "SV-011/entity sv-011.boundary-diagnostic service + StegVerse-Labs/.github federation coordinator",
+      "release_condition": "Authentic addressed Interlock/InTr frame observed and consumed by sv-011.boundary-diagnostic, with ingress/consumption evidence retained.",
+      "next_action": "OBSERVE_AUTHENTIC_BOUNDARY_DIAGNOSTIC_FRAME",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-SV-011-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-10-08T00:00:00Z",
+          "authority_effect": "NONE"
+        }
+      },
+      "kernel_version": null,
+      "addressed_service": "sv-011.boundary-diagnostic",
+      "addressed_service_role": "BOUNDARY_LOCAL_DIAGNOSTIC",
+      "completion_evidence_contract_version": "v1",
+      "completion_evidence_classes": [
+        "SOURCE_IMPLEMENTED",
+        "MERGED"
+      ],
+      "completion_evidence_refs": [
+        "SV-011/entity@f166227fce3c756c00b0960880c9f3b1bb410749",
+        "StegVerse-org/.github@17145f6"
+      ]
     }
   ],
   "coverage": {
-    "total": 15,
-    "ready": 15,
+    "total": 16,
+    "ready": 16,
     "blocked": 0,
     "workaround_required": 0,
     "unassigned": 0,
     "live_federation_observed": 0,
-    "observation_pending": 15
+    "observation_pending": 16
   },
   "rule": "READY means kernel/source federation-ready only; terminal federation requires authentic resident Interlock/InTr observation and receipts.",
   "cosv_adoption_projection": {
@@ -386,7 +420,7 @@
     "state": "ORGANIZATION_TASK_VECTOR_COVERAGE_COMPLETE_SOURCE_ONLY",
     "release_condition": "All VECTOR_REQUIRED repositories are VECTOR_PRESENT and all unavailable/not-yet-audited repositories are durably reclassified from repository-local evidence.",
     "authority_effect": "NONE",
-    "organization_task_vectors_emitted": 15,
+    "organization_task_vectors_emitted": 16,
     "organization_task_vectors_missing": 0
   }
 }
