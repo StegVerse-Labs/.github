@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -245,8 +246,20 @@ class ParentManifestApplicabilityTest(LedgerRoots):
         self.assertEqual(worker.ORGANIZATION_BATCH_REQUEST_REF, batch_custody.ORGANIZATION_BATCH_REQUEST_REF)
 
 
+LIFECYCLE = ("INGRESS_ADMITTED", "GOVERNANCE_DISPOSITION",
+             "MANIFEST_DIRECTED_ORGANIZATION_APPEND_DISPATCHED")
+
+
 class PacketReleaseEquivalenceTest(unittest.TestCase):
-    """One batch-bound request releases its packet the same way on either path."""
+    """One batch-bound request releases its packet the same way on either path.
+
+    Q5-D (StegVerse-Labs/TVC#488): release behaviour is compared at the
+    batch-bound append, under an equivalent immediate pre-append state. The
+    two ledgers are not compared whole: per request the worker performs three
+    authorized governed lifecycle transitions the ingress does not, and batch
+    windowing counts every receipt, so receipt and batch counts legitimately
+    differ between the paths.
+    """
 
     def _observe(self, root: Path) -> dict:
         batches = [json.loads(path.read_text()) for path in sorted((root / "batches").glob("*.json"))]
@@ -257,11 +270,35 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             "receipt_count": len(list((root / "receipts").glob("*.json"))),
         }
 
-    def _worker_path(self, root: Path, requests: list[dict]) -> tuple[dict, list]:
-        calls = []
+    def _pre_append(self, root: Path, parent_manifest: dict) -> dict:
+        """Everything the batch-bound append's release decision reads, read before it runs.
+
+        `release_satisfied_packet_before_next_transition` decides from the
+        parent manifest's release condition, the open packet the ledger holds
+        (HEAD, BATCH_HEAD and the verified segment between them) and, once
+        released, the packet-release custody client. All three are captured.
+        """
+        def json_name(path: Path, key: str):
+            return json.loads(path.read_text())[key] if path.exists() else None
+
+        custody = importlib.import_module("organization_batch_custody").submit_released_batch
+        return {
+            "parent_manifest": copy.deepcopy(parent_manifest),
+            "packet": batch_custody.open_packet_state(parent_manifest, root=root),
+            "head": json_name(root / "HEAD.json", "receipt_sha256"),
+            "batch_head": json_name(root / "BATCH_HEAD.json", "batch_id"),
+            "receipts": sorted(path.name for path in (root / "receipts").glob("*.json")),
+            "batches": sorted(path.name for path in (root / "batches").glob("*.json")),
+            "release_custody": custody(root, "sha256:" + "0" * 64),
+        }
+
+    def _worker_path(self, root: Path, requests: list[dict], snapshots: Path) -> tuple[dict, list, list, list]:
+        calls, states = [], []
         owner = worker._load_organization_append_owner()
 
         def recording(*args, **kwargs):
+            states.append(self._pre_append(root, kwargs["parent_manifest"]))
+            shutil.copytree(root, snapshots / str(len(calls)))
             calls.append(kwargs["parent_manifest"])
             return owner.aggregate_transition(*args, **kwargs)
 
@@ -271,7 +308,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                       "chain_verified": True, "external_side_effect": False}
         transport = {"origin": "TVC_RELAY_EGRESS", "authorization_id": "TVC-AUTH-EXACT",
                      "payload_sha256": "c" * 64}
-        released = []
+        released, results = [], []
         with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(root)}), \
              _released_by_owner(), \
              mock.patch.object(worker, "_run_governance_owner", return_value=governance), \
@@ -284,13 +321,15 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 action = result["manifest_directed_action"]
                 self.assertEqual(action["execution_result"], "COMPLETED", action)
                 released.append(action["released_batch"])
-        return {**self._observe(root), "released": released}, calls
+                results.append(result)
+        return {**self._observe(root), "released": released}, calls, states, results
 
-    def _ingress_path(self, root: Path, repo: Path, requests: list[dict]) -> tuple[dict, list]:
-        calls = []
+    def _ingress_path(self, root: Path, repo: Path, requests: list[dict]) -> tuple[dict, list, list]:
+        calls, states = [], []
         real = organization_ledger.aggregate_transition
 
         def recording(*args, **kwargs):
+            states.append(self._pre_append(root, kwargs["parent_manifest"]))
             calls.append(kwargs["parent_manifest"])
             return real(*args, **kwargs)
 
@@ -311,24 +350,117 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
                 released.append(row["boundary_evidence"].get("parent_manifest_released_batch"))
-        return {**self._observe(root), "released": released}, calls
+        return {**self._observe(root), "released": released}, calls, states
+
+    def _chain(self, root: Path) -> list[dict]:
+        """The Organization ledger from genesis to HEAD, every receipt digest recomputed."""
+        rows = []
+        cursor = json.loads((root / "HEAD.json").read_text())["receipt_sha256"]
+        while cursor is not None:
+            row = json.loads((root / "receipts" / (cursor[7:] + ".json")).read_text())
+            body = {k: v for k, v in row.items() if k != "receipt_sha256"}
+            self.assertEqual(row["receipt_sha256"], cursor)
+            self.assertEqual(organization_ledger.sha(body), cursor, "organization receipt digest mismatch")
+            rows.append(row)
+            cursor = row["previous_receipt_sha256"]
+        rows.reverse()
+        # One ledger root, nothing orphaned: every receipt file is on the chain.
+        self.assertEqual(sorted(row["receipt_sha256"][7:] + ".json" for row in rows),
+                         sorted(path.name for path in (root / "receipts").glob("*.json")))
+        return rows
+
+    def _assert_worker_lifecycle_custody(self, root: Path, results: list[dict]) -> None:
+        """Per request: the three governed lifecycle receipts are on the ledger, in
+        order, digest-verified, contiguous, and inside a released batch's range."""
+        chain = self._chain(root)
+        position = {row["receipt_sha256"]: n for n, row in enumerate(chain, start=1)}
+        batches = [json.loads(path.read_text()) for path in (root / "batches").glob("*.json")]
+        for result in results:
+            action = result["manifest_directed_action"]
+            closures = {c["transition_id"]: c for c in result["transition_closures"]}
+            closures[LIFECYCLE[2]] = action["dispatch_closure"]
+            lifecycle = [closures[name]["organization_receipt_sha256"] for name in LIFECYCLE]
+            for digest in lifecycle:
+                self.assertIn(digest, position, "lifecycle receipt absent from the ledger chain")
+            places = [position[digest] for digest in lifecycle]
+            self.assertEqual(places, list(range(places[0], places[0] + len(LIFECYCLE))),
+                             "lifecycle receipts not contiguous")
+            self.assertEqual([chain[n - 1]["source_transition_id"] for n in places], list(LIFECYCLE))
+            # The batch-bound append directly follows its own lifecycle.
+            self.assertEqual(position[action["organization_receipt_sha256"]], places[-1] + 1)
+            for digest, n in zip(lifecycle, places):
+                covering = [b for b in batches
+                            if b["contiguous_receipt_range"][0] <= n <= b["contiguous_receipt_range"][1]]
+                self.assertEqual(len(covering), 1, (digest, n))
+                start = covering[0]["contiguous_receipt_range"][0]
+                self.assertEqual(covering[0]["ordered_receipt_hashes"][n - start], digest)
+                self.assertTrue(batch_custody.verify_batch(root, covering[0]["batch_id"]))
 
     def test_same_request_same_release_behaviour(self):
         base = organization_batch_governance_request()
         requests = [_with_nonce(base, n) for n in range(3)]
         with tempfile.TemporaryDirectory() as temp:
             temp = Path(temp)
-            via_worker, worker_calls = self._worker_path(temp / "worker-org", requests)
-            via_ingress, ingress_calls = self._ingress_path(temp / "ingress-org", temp / "repo", requests)
-        self.assertEqual(worker_calls, ingress_calls)
-        self.assertEqual(worker_calls[0], {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}})
+            snapshots = temp / "worker-pre-append"
+            snapshots.mkdir()
+            via_worker, worker_calls, worker_states, results = self._worker_path(
+                temp / "worker-org", requests, snapshots)
+            via_ingress, ingress_calls, _ = self._ingress_path(temp / "ingress-org", temp / "repo", requests)
 
-        def shape(observed):
-            return {**observed, "released": [
-                None if r is None else {k: r[k] for k in ("execution_result", "reason", "authority_effect")}
-                for r in observed["released"]]}
+            # Both paths make the identical manifest-bound batch append call.
+            self.assertEqual(worker_calls, ingress_calls)
+            self.assertEqual(worker_calls[0], {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}})
 
-        self.assertEqual(shape(via_worker), shape(via_ingress))
+            # Per request, the ingress replays its batch-bound append from an
+            # equivalent immediate pre-append state: a copy of the worker's own
+            # Organization ledger root taken inside the worker's batch-bound
+            # call, before it ran. Equivalence holds because
+            #   - the parent manifest (release condition) is the same object
+            #     content on both paths (worker_calls == ingress_calls);
+            #   - the ingress appends no Organization receipt before its
+            #     batch-bound append, so its ledger at that call is the copy:
+            #     same HEAD, BATCH_HEAD, receipt and batch inventory, and so
+            #     the same verified open packet;
+            #   - the packet-release custody client is the same fixture;
+            #   - the manifest declares no establishment, so expiry and the
+            #     host clock are not inputs to the decision.
+            # The captured states are asserted equal; if the ingress wrote
+            # anything first, or read a different packet, this fails rather
+            # than comparing decisions taken from different states.
+            self.assertEqual(len(worker_states), len(requests))
+            for index, request in enumerate(requests):
+                state = worker_states[index]
+                self.assertIsNone(state["packet"]["establishment_heartbeat_id"])
+                self.assertIs(state["packet"]["expired"], False)
+                replay_root = temp / "ingress-replay" / str(index)
+                shutil.copytree(snapshots / str(index), replay_root)
+                # HEAD.json names its tip receipt by absolute path; the copy's
+                # HEAD names the copy's own file. Same receipt_sha256, and
+                # close_batch re-verifies that the path resolves to it.
+                head = json.loads((replay_root / "HEAD.json").read_text())
+                head["receipt_path"] = str(replay_root / "receipts" / (head["receipt_sha256"][7:] + ".json"))
+                (replay_root / "HEAD.json").write_text(json.dumps(head))
+                self.assertFalse([path for path in replay_root.rglob("*") if path.is_file()
+                                  and str(temp / "worker-org") in path.read_text(errors="replace")],
+                                 "replay root still names the worker root")
+                replayed, replay_calls, replay_states = self._ingress_path(
+                    replay_root, temp / "ingress-replay-repo" / str(index), [request])
+                self.assertEqual(replay_calls, [worker_calls[index]])
+                self.assertEqual(len(replay_states), 1)
+                self.assertEqual(replay_states[0], state,
+                                 f"request {index}: pre-append state equivalence not established")
+
+                # The release decision for that append is identical.
+                self.assertTrue(state["packet"]["release_condition_satisfied"])
+                worker_released = via_worker["released"][index]
+                self.assertIsNotNone(worker_released)
+                self.assertEqual(replayed["released"], [worker_released], f"request {index}")
+                batch_file = worker_released["batch_id"][7:] + ".json"
+                self.assertEqual(json.loads((replay_root / "batches" / batch_file).read_text()),
+                                 json.loads((temp / "worker-org" / "batches" / batch_file).read_text()))
+
+            self._assert_worker_lifecycle_custody(temp / "worker-org", results)
+
         self.assertEqual(via_ingress["batch_count"], 2)
         self.assertEqual(via_ingress["ranges"], [[1, 1], [2, 2]])
         self.assertEqual(via_ingress["closure_reasons"], ["MANIFEST_RELEASE_CONDITION"] * 2)
