@@ -54,8 +54,10 @@ HOSTED_ENV = (
     "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
 NONSECRET_ENV = (
+    # Host-derived locations (XDG_STATE_HOME, XDG_CONFIG_HOME, LOCALAPPDATA) are
+    # not forwarded: every location a consumer uses is supplied, never derived.
     "PATH", "HOME", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR",
-    "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA", "STEGVERSE_SOVEREIGN_NODE",
+    "STEGVERSE_SOVEREIGN_NODE",
     "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     "STEGVERSE_MICRO_NODE_RUNTIME_ROOT", "STEGVERSE_TVC_ROOT", "STEGVERSE_TV_ROOT",
     "STEGVERSE_STEGOPS_ORCHESTRATOR_ROOT",
@@ -678,6 +680,13 @@ def dispatch(
             command.extend(["--request-id", request_id])
         if name == "canonical_work_coordination" and execution_attempt_id:
             command.extend(["--execution-attempt-id", execution_attempt_id])
+        if name == "org_claim_allocator":
+            # The ledger roots are supplied to this execution; without them the
+            # consumer refuses rather than deriving a location.
+            for flag, variable in (("--repo-ledger-root", "STEGVERSE_REPO_LEDGER_ROOT"),
+                                   ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
+                if str(source_env.get(variable) or "").strip():
+                    command.extend([flag, str(source_env[variable])])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)

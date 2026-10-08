@@ -139,6 +139,7 @@ STATIC_FILES = (
     Path("scripts/consume_org_claim_allocator_request.py"),
     Path("scripts/allocate_claims.py"),
     Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
+    Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/run_global_runtime_evidence_convergence.py"),
     Path("scripts/run_global_runtime_node_profile_convergence.py"),

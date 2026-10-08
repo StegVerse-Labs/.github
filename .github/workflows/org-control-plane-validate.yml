@@ -58,6 +58,8 @@ jobs:
         run: python -m unittest tests.test_independent_heartbeat_oscillator tests.test_heartbeat_carrier_envelope -v
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
+      - name: Prove organization claim custody, typed dispositions and supplied locations
+        run: python -m unittest tests.test_org_claim_custody tests.test_resident_org_claim_allocator -v
       - name: Test SV001 governed custody-proof continuation transport
         run: python -m unittest tests.test_stegverse001_evidence_chain_continuation_worker tests.test_stegverse001_rendezvous_evidence_transport -v
 

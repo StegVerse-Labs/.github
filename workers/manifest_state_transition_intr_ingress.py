@@ -628,39 +628,22 @@ def _load_organization_append_owner():
     return module
 
 
+def _load_organization_batch_custody():
+    resident = Path(__file__).resolve().parents[1] / "resident-runtime"
+    require((resident / "organization_batch_custody.py").is_file(),
+            "ORGANIZATION_BATCH_CUSTODY_OWNER_UNAVAILABLE")
+    if str(resident) not in sys.path:
+        sys.path.insert(0, str(resident))
+    return importlib.import_module("organization_batch_custody")
+
+
 def _organization_batch_parent_manifest(validated: Mapping[str, Any]) -> dict[str, Any]:
-    require(validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED")
-    manifest = validated.get("canonical_manifest")
-    require(isinstance(manifest, Mapping), "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED")
-    extensions = manifest.get("extensions")
-    require(isinstance(extensions, Mapping), "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED")
-    task_binding = extensions.get("stegverse_canonical_task")
-    require(isinstance(task_binding, Mapping), "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED")
-    require(task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
-    require(task_binding.get("cosv_task_vector") == "10000000100000",
-            "ORGANIZATION_BATCH_COSV_MISMATCH")
-    require(task_binding.get("canonical_request_ref") == ORGANIZATION_BATCH_REQUEST_REF,
-            "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH")
-    require(task_binding.get("authority_effect") == "NONE",
-            "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION")
-    policy = extensions.get(ORGANIZATION_BATCH_POLICY_EXTENSION)
-    require(isinstance(policy, Mapping), "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED")
-    condition = policy.get("release_condition")
-    require(isinstance(condition, Mapping) and condition.get("type") == "COUNT",
-            "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED")
-    count = condition.get("count")
-    require(type(count) is int and count >= 1, "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID")
-    graph = validated.get("state_graph")
-    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
-    canonical_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
-    require(isinstance(canonical_binding, Mapping), "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED")
-    require(canonical_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH")
-    require(canonical_binding.get("receipt_batch") == dict(policy),
-            "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH")
-    return {"receipt_batch": dict(policy)}
+    """The batch parent manifest, validated by its owner in resident-runtime.
+
+    The organization manifest ingress consumes the same SDK request schema, so
+    both receivers share one validator and one set of failure codes.
+    """
+    return _load_organization_batch_custody().organization_batch_parent_manifest(validated)
 
 
 def _evidence_entry(transition_id: str, evidence_id: str, evidence_type: str,

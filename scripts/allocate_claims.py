@@ -12,9 +12,11 @@ mutate the same external/runtime/deployment/dependency surface.
 
 from __future__ import annotations
 
+import argparse
 import copy
 import json
 import os
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -87,6 +89,14 @@ def conflicts(request: dict, active: dict) -> bool:
     return bool(surfaces(request) & surfaces(active))
 
 
+# Typed predicates for a targeted evaluation that does not grant. The selector
+# bypasses ranking only: custody and fence monotonicity are unchanged.
+TARGET_TASK_NOT_QUEUED = "TARGET_TASK_NOT_QUEUED"
+DEPENDENCIES_INCOMPLETE = "DEPENDENCIES_INCOMPLETE"
+NOT_ADMISSIBLE = "NOT_ADMISSIBLE"
+CONFLICTS_WITH_HELD_CLAIM = "CONFLICTS_WITH_HELD_CLAIM"
+
+
 def dependencies_complete(task: dict, tasks: dict[str, dict]) -> bool:
     return all(tasks.get(dep, {}).get("status") == "completed" for dep in task.get("dependencies", []))
 
@@ -95,6 +105,30 @@ def task_claims_admissible(task: dict) -> bool:
     mandatory = task.get("requirements", {}).get("mandatory", [])
     return bool(mandatory) and all(dependency_declaration_present(request) for request in mandatory)
 
+
+def evaluate_target(task_id: str, tasks: dict[str, dict], active_claims: list) -> tuple[dict | None, str | None]:
+    """Evaluate exactly one task: grant iff queued, dependencies complete,
+    admissible and conflict-free against held claims; otherwise name why not."""
+    task = tasks.get(task_id)
+    if task is None or task.get("status") != "queued":
+        return None, TARGET_TASK_NOT_QUEUED
+    if not dependencies_complete(task, tasks):
+        return None, DEPENDENCIES_INCOMPLETE
+    if not task_claims_admissible(task):
+        return None, NOT_ADMISSIBLE
+    mandatory = task.get("requirements", {}).get("mandatory", [])
+    if any(conflicts(req, held) for req in mandatory for held in active_claims):
+        return None, CONFLICTS_WITH_HELD_CLAIM
+    return task, None
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Deterministically allocate organization claims.")
+    parser.add_argument("--task", default=None, help="evaluate only this task; ranking is bypassed, custody is not")
+    parser.add_argument("--plan", action="store_true", help="report the decision and write nothing")
+    parser.add_argument("--fencing-token", type=int, default=None,
+                        help="fence issued by the organization claim custody; must exceed the registry generation")
+    return parser.parse_args(argv)
 
 
 def _process_alive(pid: int) -> bool:
@@ -168,7 +202,8 @@ def release_allocator_lock(path: Path = LOCK_PATH) -> None:
         except FileNotFoundError:
             pass
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     lock = acquire_allocator_lock()
     if not lock.get("acquired"):
         print(json.dumps({
@@ -181,12 +216,13 @@ def main() -> int:
         }))
         return 0
     try:
-        return _main_locked()
+        return _main_locked(args)
     finally:
         release_allocator_lock()
 
 
-def _main_locked() -> int:
+def _main_locked(args: argparse.Namespace | None = None) -> int:
+    args = args if args is not None else parse_args([])
     tasks = {p.stem: load(p) for p in sorted(TASKS.glob("TASK-*.json"))}
     claims_state = load(CLAIMS_PATH)
     queue_state = load(QUEUE_PATH)
@@ -197,19 +233,53 @@ def _main_locked() -> int:
     queue_state["ordered_task_ids"] = [t["task_id"] for t in queued]
 
     selected = None
+    refusal_predicate = None
     blocked_missing_dependency_declaration: list[str] = []
-    for task in queued:
-        if not task_claims_admissible(task):
-            blocked_missing_dependency_declaration.append(task["task_id"])
-            continue
-        mandatory = task.get("requirements", {}).get("mandatory", [])
-        if all(not any(conflicts(req, held) for held in active_claims) for req in mandatory):
-            selected = task
-            break
+    if args.task is None:
+        for task in queued:
+            if not task_claims_admissible(task):
+                blocked_missing_dependency_declaration.append(task["task_id"])
+                continue
+            mandatory = task.get("requirements", {}).get("mandatory", [])
+            if all(not any(conflicts(req, held) for held in active_claims) for req in mandatory):
+                selected = task
+                break
+    else:
+        selected, refusal_predicate = evaluate_target(args.task, tasks, active_claims)
+        if refusal_predicate == NOT_ADMISSIBLE:
+            blocked_missing_dependency_declaration.append(args.task)
+
+    current_generation = int(claims_state.get("generation", 0))
+    if args.plan:
+        # The decision only. Nothing is written, so the organization claim
+        # receipt can be appended before any projection of it exists.
+        print(json.dumps({
+            "selected": selected and selected["task_id"],
+            "target_task_id": args.task,
+            "refusal_predicate": refusal_predicate,
+            "requested_claims": selected["requirements"]["mandatory"] if selected else None,
+            "claim_registry_generation": current_generation,
+            "queued": queue_state["ordered_task_ids"],
+            "blocked_missing_dependency_declaration": blocked_missing_dependency_declaration,
+            "state": "ALLOCATION_PLANNED",
+            "authority_effect": "NONE_PLAN_ONLY",
+        }, sort_keys=True))
+        return 0
+    if selected is not None and args.fencing_token is not None and args.fencing_token <= current_generation:
+        print(json.dumps({
+            "selected": None,
+            "target_task_id": args.task,
+            "refusal_predicate": "FENCE_NOT_MONOTONIC",
+            "claim_registry_generation": current_generation,
+            "fencing_token": args.fencing_token,
+            "state": "FAIL_CLOSED",
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }, sort_keys=True))
+        return 1
 
     now = datetime.now(timezone.utc).replace(microsecond=0)
     if selected is not None:
-        generation = int(claims_state.get("generation", 0)) + 1
+        generation = args.fencing_token if args.fencing_token is not None else current_generation + 1
         granted = []
         for request in selected["requirements"]["mandatory"]:
             claim = copy.deepcopy(request)
@@ -237,6 +307,7 @@ def _main_locked() -> int:
             "resources": [c["repository"]["full_name"] for c in granted],
             "dependency_surfaces": sorted({surface for c in granted for surface in dependency_surfaces(c)})
         }
+        EVENTS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with EVENTS_PATH.open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(event, sort_keys=True) + "\n")
 
@@ -245,13 +316,17 @@ def _main_locked() -> int:
     queue_state["blocked_missing_dependency_declaration"] = blocked_missing_dependency_declaration
     dump(CLAIMS_PATH, claims_state)
     dump(QUEUE_PATH, queue_state)
-    print(json.dumps({
+    result = {
         "selected": selected and selected["task_id"],
         "queued": queue_state["ordered_task_ids"],
         "blocked_missing_dependency_declaration": blocked_missing_dependency_declaration,
         "state": "ALLOCATION_COMPLETE",
         "authority_effect": "CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR",
-    }))
+    }
+    if args.task is not None:
+        result["target_task_id"] = args.task
+        result["refusal_predicate"] = refusal_predicate
+    print(json.dumps(result))
     return 0
 
 
