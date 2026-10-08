@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import importlib.util, json, shutil, tempfile
+import atexit, importlib.util, json, shutil, tempfile
 from pathlib import Path
 spec=importlib.util.spec_from_file_location("kernel","org-kernel/kernel.py"); k=importlib.util.module_from_spec(spec); spec.loader.exec_module(k)
 
@@ -12,8 +12,25 @@ CONTRACT="docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
 def provision_standing(root:Path)->None:
     (root/"org-boundary/runtime").mkdir(parents=True,exist_ok=True)
     shutil.copy2(TREE/"org-boundary/runtime/node_standing.py",root/"org-boundary/runtime/node_standing.py")
+    # A boundary that cannot state how processing was selected fails closed.
+    shutil.copy2(TREE/"org-boundary/runtime/manifest_selection.py",root/"org-boundary/runtime/manifest_selection.py")
     (root/"docs").mkdir(parents=True,exist_ok=True)
     shutil.copy2(TREE/CONTRACT,root/CONTRACT)
+
+#: A root that consumes records each crossing on its own organization's
+#: ledgers through its own kernel and emitters, so it is materialized as that
+#: organization rather than handed to this one's kernel.
+_peer_spec=importlib.util.spec_from_file_location("peer_organization",TREE/"tests/peer_organization.py")
+peers=importlib.util.module_from_spec(_peer_spec); _peer_spec.loader.exec_module(peers)
+def materialize(org:str, service:str, role:str):
+    peer=peers.materialize(None,org,[{"service_id":service,"repository":org+"/.github","boundary_role":role}])
+    atexit.register(shutil.rmtree,peer.root,True)
+    atexit.register(shutil.rmtree,peer.repo_ledger.parent,True)
+    return peer
+def node_state_in(root:Path)->list[str]:
+    """Markers or intake written under a checkout; its emitters are code, not node state."""
+    return [str(p) for prefix in ("resident-runtime/federation","resident-runtime/control")
+            for p in (root/prefix).rglob("*") if p.is_file()]
 
 STANDING={"mode":"ESTABLISH_GENESIS","node_ref":"kernel-test-node","predecessor":None}
 with tempfile.TemporaryDirectory() as td:
@@ -35,20 +52,16 @@ with tempfile.TemporaryDirectory() as td:
 # federation mesh source-level proof
 with tempfile.TemporaryDirectory() as td:
     mesh=Path(td)/"mesh"
-    a=Path(td)/"a"; b=Path(td)/"b"
-    for root,org in ((a,"Org-A"),(b,"Org-B")):
-        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
-        slug=org.lower()
-        reg={"organization":org,"services":[{"service_id":slug+".boundary-diagnostic","repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_DIAGNOSTIC"}]}
-        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+    a,b=(materialize(org,org.lower()+".boundary-diagnostic","BOUNDARY_LOCAL_DIAGNOSTIC") for org in ("Org-A","Org-B"))
     packet=k.build_packet(origin_org="Org-A",origin_service="org-a.boundary-diagnostic",
                           destination_org="Org-B",destination_service="org-b.boundary-diagnostic",
                           payload={"probe":"mesh"},standing=STANDING,packet_id="mesh-a-to-b-001")
     pub=k.publish_packet(packet,root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+2_000_000_000)
     assert Path(pub["path"]).exists()
-    assert k.consume_addressed_frames(a,mesh_root=mesh)==[]
-    consumed=k.consume_addressed_frames(b,mesh_root=mesh)
+    assert a.consume_addressed(mesh_root=mesh)==[]
+    consumed=b.consume_addressed(mesh_root=mesh)
     assert len(consumed)==1
+    assert consumed[0]["organization_record"] is not None and len(b.receipts("org"))==1
     assert consumed[0]["result"]["status"]=="CONSUMED"
     assert consumed[0]["result"]["execution_result"]["reconstruction"]["status"]=="RECONSTRUCTED"
 print("FEDERATION_PASS")
@@ -60,14 +73,7 @@ with tempfile.TemporaryDirectory() as td:
     orgs=["AaCT-E","Admissible-Existence","AdmittedCode","Data-Continuation","ECAT-ICAT-Formal",
           "formalism-tests","GCAT-BCAT-Engine","Infrastructure-Continuity-Ventures","master-records",
           "StegGhost","StegVerse-002","StegVerse-Labs","StegVerse-org","Triad-Test"]
-    roots={}
-    for org in orgs:
-        root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
-        service=k.organization_slug(org)+".org-control"
-        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
-        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
-        roots[org]=root
+    roots={org:materialize(org,k.organization_slug(org)+".org-control","BOUNDARY_LOCAL_CONTROL") for org in orgs}
     pub=k.publish_ecosystem_message(
         origin_org="StegVerse-Labs",
         origin_service="stegverse-labs.org-control",
@@ -82,7 +88,7 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+3_000_000_000
     )
     assert pub["published_count"]==14
-    results={org:k.consume_addressed_frames(root,mesh_root=mesh) for org,root in roots.items()}
+    results={org:peer.consume_addressed(mesh_root=mesh) for org,peer in roots.items()}
     rollup=k.aggregate_ecosystem_results("ecosystem-broadcast-001",results)
     assert rollup["complete"] is True
     assert rollup["consumed_count"]==14
@@ -99,16 +105,11 @@ with tempfile.TemporaryDirectory() as td:
     roots={}
     directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
     for org in orgs:
-        root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
-        (root/"resident-runtime").mkdir(parents=True)
-        service=k.organization_slug(org)+".org-control"
-        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
-        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
-        (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
-        (root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST_ACTIVE","kernel":{"version":"1.3.0"}}))
-        roots[org]=root
-    origin=roots["StegVerse-Labs"]
+        peer=materialize(org,k.organization_slug(org)+".org-control","BOUNDARY_LOCAL_CONTROL")
+        (peer.root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
+        (peer.root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST_ACTIVE","kernel":{"version":"1.3.0"}}))
+        roots[org]=peer
+    origin=roots["StegVerse-Labs"].root
     pub=k.publish_ecosystem_from_directory(
         origin,
         standing=STANDING,
@@ -121,8 +122,8 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+4_000_000_000
     )
     assert pub["published_count"]==14
-    for org,root in roots.items():
-        k.consume_and_respond(root,mesh_root=mesh,node_state_root=Path(td)/"node-state"/org,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
+    for org,peer in roots.items():
+        peer.consume(mesh_root=mesh,node_state_root=Path(td)/"node-state"/org,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
     roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-monitor-response-001",mesh_root=mesh)
     assert roll["response_count"]==14
     assert {x["organization"] for x in roll["organizations"]}==set(orgs)
@@ -136,14 +137,10 @@ with tempfile.TemporaryDirectory() as td:
     roots={}
     directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
     for org in orgs:
-        root=Path(td)/k.organization_slug(org)
-        (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
-        service=k.organization_slug(org)+".org-control"
-        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
-        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
-        (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
-        roots[org]=root
-    origin=roots["StegVerse-Labs"]
+        peer=materialize(org,k.organization_slug(org)+".org-control","BOUNDARY_LOCAL_CONTROL")
+        (peer.root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
+        roots[org]=peer
+    origin=roots["StegVerse-Labs"].root
     pub=k.publish_ecosystem_from_directory(
         origin,
         standing=STANDING,
@@ -156,11 +153,11 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+5_000_000_000
     )
     assert pub["published_count"]==14
-    for org,root in roots.items():
+    for org,peer in roots.items():
         state=Path(td)/"node-state"/org
-        k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
+        peer.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
         # Intake is node state, recorded where the materializer said, never in the source root.
-        assert not (root/"resident-runtime").exists()
+        assert node_state_in(peer.root)==[]
         inbox=list((state/"control/inbox").glob("*.json"))
         assert len(inbox)==1
         record=json.loads(inbox[0].read_text())
@@ -174,13 +171,9 @@ print("ECOSYSTEM_CONTROL_RESPONSE_PASS")
 # durable federation replay/dedup proof
 with tempfile.TemporaryDirectory() as td:
     mesh=Path(td)/"mesh"
-    root=Path(td)/"node"
-    (root/"org-boundary/registry").mkdir(parents=True); provision_standing(root)
-    (root/"resident-runtime").mkdir(parents=True)
     org="Replay-Test"
-    reg={"organization":org,"services":[{"service_id":"replay-test.org-control","repository":"Replay-Test/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+    node=materialize(org,"replay-test.org-control","BOUNDARY_LOCAL_CONTROL"); root=node.root
     directory={"denominator":1,"organizations":[{"organization":org}]}
-    (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
     (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
     (root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST","kernel":{"version":"1.3.1"}}))
     pub=k.publish_ecosystem_from_directory(
@@ -194,8 +187,8 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+6_000_000_000
     )
     state=Path(td)/"node-state"
-    first=k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
-    second=k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
+    first=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
+    second=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
     assert not (root/"resident-runtime/federation").exists()
     assert len(first)==1
     assert len(second)==1 or len(second)==0

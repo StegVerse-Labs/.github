@@ -132,6 +132,20 @@ def node_standing(root:Path):
     module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     return module
 
+def manifest_selection(root:Path):
+    """Load the organization's manifest-selection module from its boundary runtime.
+
+    Processing is selected by the admitted manifest, not by the addressed row.
+    Resolved from the dispatch root for the same reason as `node_standing`, and
+    a root with no selection module fails closed: dispatching into a boundary
+    that cannot say how processing was selected must not happen silently.
+    """
+    path=root/"org-boundary/runtime/manifest_selection.py"
+    if not path.is_file(): raise ValueError("org_boundary_manifest_selection_missing")
+    spec=importlib.util.spec_from_file_location("manifest_selection",path)
+    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module
+
 def carried_standing(request_packet:dict[str,Any])->dict[str,Any]:
     """Carry a request's standing onto its response, unchanged and marked as carried.
 
@@ -158,18 +172,28 @@ def resolve_endpoint_adapter(root:Path, service:dict[str,Any])->Path:
     if not candidate.is_file(): raise ValueError("FAIL_CLOSED_ENDPOINT_ADAPTER_NOT_MATERIALIZED")
     return candidate
 
-def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any])->dict[str,Any]:
+#: The effect an endpoint adapter declares in `endpoint_adapter_effect`. A pure
+#: adapter writes nothing but its result; a node-state adapter writes only
+#: through the write-once store at the node-state root it is handed.
+NODE_STATE_WRITE_ONCE="NODE_STATE_WRITE_ONCE"
+
+def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
+                         service:dict[str,Any]|None=None, node_state:Any|None=None)->dict[str,Any]:
     """Run an admitted adapter on the packet that crossed, and return its result.
 
     The adapter runs under this interpreter, so what it can import is what this
     boundary was materialized with rather than whatever a bare `python3` on the
-    host path resolves to.
+    host path resolves to. Only an adapter declared NODE_STATE_WRITE_ONCE is
+    handed this node's supplied state location, never the checkout; a pure
+    adapter is given nothing it could write to.
     """
     with tempfile.TemporaryDirectory() as td:
         envelope=Path(td)/"packet.json"; out=Path(td)/"endpoint-response.json"
         envelope.write_text(json.dumps(packet,indent=2,sort_keys=True)+"\n")
-        completed=subprocess.run([sys.executable,str(adapter),"--packet",str(envelope),"--out",str(out)],
-                                 cwd=root,capture_output=True,text=True,check=False)
+        command=[sys.executable,str(adapter),"--packet",str(envelope),"--out",str(out)]
+        if (service or {}).get("endpoint_adapter_effect")==NODE_STATE_WRITE_ONCE and node_state is not None:
+            command+=["--node-state-root",str(node_state.root)]
+        completed=subprocess.run(command,cwd=root,capture_output=True,text=True,check=False)
         if completed.returncode!=0 or not out.is_file():
             detail=(completed.stderr or completed.stdout or "").strip().splitlines()
             raise ValueError("endpoint_adapter_execution_failed"+(":"+detail[-1] if detail else ""))
@@ -200,6 +224,15 @@ def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict
     endpoint=role=="INTERNAL_ENDPOINT" and bool(service.get("endpoint_adapter"))
     if not endpoint and role not in {"BOUNDARY_LOCAL_DIAGNOSTIC","BOUNDARY_LOCAL_CONTROL"}:
         raise ValueError("endpoint_adapter_not_installed")
+    # Resolved before any receipt is minted: a dispatch that cannot state how
+    # processing was selected must not leave a chain implying it was consumed.
+    # An internal endpoint whose packet declares no admitted capability and
+    # route is refused here rather than processed by whichever adapter the
+    # addressed row names.
+    try:
+        selected=manifest_selection(root).select_processing(service,packet["payload"])
+    except SystemExit as refused:
+        raise ValueError(str(refused)) from None
     # Resolved before any receipt is minted: an adapter the registry does not
     # admit must not leave a chain implying the crossing was consumed.
     adapter=resolve_endpoint_adapter(root,service) if endpoint else None
@@ -213,14 +246,14 @@ def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict
         r=receipt(kind,packet["packet_id"],service["service_id"],prev,{"payload_hash":sha(packet["payload"])})
         receipts.append(r); prev=r["receipt_id"]
     if endpoint:
-        application_result=run_endpoint_adapter(root,adapter,packet)
+        application_result=run_endpoint_adapter(root,adapter,packet,service=service,node_state=node_state)
     elif role=="BOUNDARY_LOCAL_CONTROL":
         application_result=handle_control_message(root,packet,registry,node_state=node_state)
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],
             "service_id":service["service_id"],"consumed":True,"application_result":application_result,
-            **standing,
+            **selected,**standing,
             "authority_effect":packet["transition"]["authority_effect"],"receipts":receipts,
             "reconstruction":{"same_execution_required":True,"status":"RECONSTRUCTED","terminal_receipt_id":prev}}
 
@@ -245,7 +278,8 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, node_state:Any|None=None)->d
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
          "persist_outbox","ingest_frame","mesh_store","node_state_store","node_state_provenance",
          "resolve_federation_root","resolve_node_state_root","addressed_node_state_store",
-         "record_federation_cycle","federation_cycles"]
+         "record_federation_cycle","federation_cycles","manifest_selection","crossing_custody",
+         "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS"]
 
 
 # --- Federation mesh v1.1 additions ---
@@ -348,14 +382,19 @@ def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None
     return {"packet":packet,"frame":frame,"path":str(path)}
 
 def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None,
-                             node_state_root:Path|None=None)->list[dict[str,Any]]:
+                             node_state_root:Path|None=None, repo_ledger_root:Path|None=None,
+                             org_ledger_root:Path|None=None)->list[dict[str,Any]]:
+    # The same custody as consume_and_respond: a crossing consumed here is a
+    # transition within the organization and is recorded before it is returned.
+    custody=crossing_custody(repo_root,repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
     node_state=addressed_node_state_store(node_state_root) if node_state_root is not None else None
     registry=load_registry(repo_root)
     organization=registry["organization"]
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
-        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
-        results.append({"path":item["path"],"result":result})
+        epoch=(item["frame"].get("heartbeat_reference") or {}).get("epoch")
+        result,recorded=ingest_recorded(repo_root,item,custody,registry,node_state=node_state,epoch=epoch)
+        results.append({"path":item["path"],"result":result,"organization_record":recorded})
     return results
 
 
@@ -557,7 +596,159 @@ def build_control_response(request_packet:dict[str,Any], execution_result:dict[s
       packet_id=str(req_payload.get("communication_id"))+":response:"+organization_slug(local_org)
     )
 
+# --- Organization receipts for every crossing this node consumes or refuses ---
+#: The transition class a consumed federation crossing is recorded under.
+CROSSING_CONSUMED_CLASS="ORGANIZATION_FEDERATION_CROSSING_CONSUMED"
+#: The transition class a crossing this boundary refused is recorded under. Its
+#: own class, so a crossing first refused and later admitted is two transitions
+#: rather than an admission reported as the earlier refusal.
+CROSSING_REFUSED_CLASS="ORGANIZATION_FEDERATION_CROSSING_REFUSED"
+#: Refusals that will not change on a retry: the crossing is refused, recorded
+#: and marked. Anything else is FAIL_CLOSED: recorded, left unmarked, retried.
+DETERMINISTIC_REFUSALS=("unknown_service","node_standing_refused:","standing-",
+                        "PROCESSING_SELECTED_ONLY_BY_ADMITTED_PROCESSING_CAPABILITY_AND_ROUTE_ID",
+                        "manifest-declares-","declared-capability-","endpoint_adapter_not_installed",
+                        "endpoint-adapter-not-installed","wrong_destination_org","wrong-destination-org")
+#: Refusals of custody itself. Nothing can be recorded without it, so the whole
+#: pass refuses before any mutation and the frames stay in the mesh.
+CUSTODY_REFUSALS=("node_state_location_required_from_materializer",
+                  "ledger_location_required_from_materializer",
+                  "dispatch_root_is_not_this_kernels_organization")
+_crossing_emitters:dict[str,Any]={}
+
+def _own_module(name:str, relative:str)->Any:
+    """Load a module from this kernel's own repository, never from a caller's root."""
+    own=Path(__file__).resolve().parents[1]
+    key=str(own/relative)
+    if key not in _crossing_emitters:
+        spec=importlib.util.spec_from_file_location(name,own/relative)
+        if spec is None or not (own/relative).is_file():
+            raise ValueError("organization_emitter_missing:"+relative)
+        module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+        _crossing_emitters[key]=module
+    return _crossing_emitters[key]
+
+def crossing_custody(repo_root:Path, *, repo_ledger_root:Path|None, org_ledger_root:Path|None)->dict[str,Any]:
+    """The organization's own emitters and the ledger locations its materializer supplied.
+
+    Resolved before anything is consumed. Every state transition occurring
+    within the organization emits an organization receipt, and a consumed
+    crossing is one. The emitters are this kernel's own repository's, so a
+    caller's root cannot bring its own; the dispatch root must be this
+    kernel's organization; and both ledger locations are supplied, never
+    derived. Any of those missing is a refusal before mutation.
+    """
+    if repo_ledger_root is None or org_ledger_root is None:
+        raise ValueError("ledger_location_required_from_materializer")
+    own=Path(__file__).resolve().parents[1]
+    emitter=_own_module("crossing_repository_ledger",".stegverse/transition-ledger/emit.py")
+    organization_ledger=_own_module("crossing_organization_ledger","resident-runtime/aggregate_repo_transition.py")
+    organization=load_registry(repo_root)["organization"]
+    if Path(repo_root).resolve()!=own or organization!=organization_ledger.C["organization"]:
+        raise ValueError("dispatch_root_is_not_this_kernels_organization")
+    return {"emitter":emitter,"organization_ledger":organization_ledger,
+            "repository_store":emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
+            "organization_root":Path(org_ledger_root).expanduser().resolve()}
+
+def _record_both(custody:dict[str,Any], name:str, transition_class:str, predecessor:str, successor:str,
+                 evidence:dict[str,Any], carried:tuple[str,...], epoch:int|None)->dict[str,Any]:
+    """Append the repository receipt, then the organization receipt consuming it.
+
+    Identified by the frame, which is content addressed, so the same frame seen
+    again returns the repository receipt already recorded. The organization
+    receipt is built from that returned receipt, not from this attempt, so a
+    retry whose detail differs (a FAIL_CLOSED reason, say) consumes the same
+    source with the same context and the organization ledger returns the
+    receipt it already holds instead of refusing a conflict.
+    """
+    repository_receipt=custody["emitter"].append(
+        "ORGANIZATION-FEDERATION-CROSSING-"+hashlib.sha256(name.encode()).hexdigest()[:16],
+        transition_class,predecessor,successor,evidence,"NONE",hb_epoch=epoch,
+        store=custody["repository_store"],idempotent_on=("frame_sha256","packet_id"))
+    recorded=repository_receipt.get("evidence") or {}
+    organization_receipt=custody["organization_ledger"].aggregate_transition(
+        repository_receipt,org_transition_class="REPO_STATE_PROPAGATION",
+        predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
+        successor_org_state_sha256=repository_receipt["successor_state_sha256"],
+        boundary_evidence={"operation":repository_receipt["transition_class"],
+                           **{key:recorded.get(key) for key in carried}},
+        authority_effect="NONE",ledger=custody["organization_root"])
+    return {"repository_receipt_sha256":repository_receipt["receipt_sha256"],
+            "organization_receipt_sha256":organization_receipt["receipt_sha256"]}
+
+def record_crossing(custody:dict[str,Any], item:dict[str,Any], result:dict[str,Any], *,
+                    service:dict[str,Any]|None, epoch:int|None)->dict[str,Any]|None:
+    """Append the repository and organization receipts for one consumed crossing."""
+    if result.get("status")!="CONSUMED":
+        return None
+    packet=result["packet"]; execution=result["execution_result"]; frame=item["frame"]
+    name=node_store_module.frame_name(str(item["path"]))
+    terminal=(execution.get("reconstruction") or {}).get("terminal_receipt_id")
+    predecessor="sha256:"+hashlib.sha256(canon(packet.get("payload"))).hexdigest()
+    successor="sha256:"+hashlib.sha256(canon({"packet_id":packet["packet_id"],"terminal_receipt_id":terminal})).hexdigest()
+    evidence={"frame_name":name,"frame_sha256":frame.get("frame_sha256"),"packet_id":packet["packet_id"],
+              "origin":packet["origin"],"destination":packet["destination"],
+              "service_id":execution.get("service_id"),
+              "boundary_role":(service or {}).get("boundary_role"),
+              "message_class":(packet.get("payload") or {}).get("message_class"),
+              "processing_selection":execution.get("processing_selection"),
+              "terminal_receipt_id":terminal,"disposition":"ALLOW"}
+    return _record_both(custody,name,CROSSING_CONSUMED_CLASS,predecessor,successor,evidence,
+                        ("packet_id","service_id","disposition"),epoch)
+
+def refusal_disposition(reason:str)->str:
+    return "DENY" if any(marker in reason for marker in DETERMINISTIC_REFUSALS) else "FAIL_CLOSED"
+
+def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, disposition:str, *,
+                   service:dict[str,Any]|None, epoch:int|None)->dict[str,Any]:
+    """Append the repository and organization receipts for a refused crossing.
+
+    The crossing arrived, so its disposition is a transition of this
+    organization, recorded like an admission. Identified by the frame, so a
+    FAIL_CLOSED retried on every pass is recorded once.
+    """
+    frame=item["frame"]
+    name=node_store_module.frame_name(str(item["path"]))
+    packet_id=frame.get("packet_id")
+    predecessor="sha256:"+hashlib.sha256(canon({"frame_sha256":frame.get("frame_sha256")})).hexdigest()
+    successor="sha256:"+hashlib.sha256(canon({"packet_id":packet_id,"disposition":disposition,
+                                                "failed_predicate":reason})).hexdigest()
+    evidence={"frame_name":name,"frame_sha256":frame.get("frame_sha256"),"packet_id":packet_id,
+              "destination_org":frame.get("destination_org"),
+              "service_id":(service or {}).get("service_id"),
+              "boundary_role":(service or {}).get("boundary_role"),
+              "disposition":disposition,"failed_predicate":reason,
+              "retry_entrypoint":None if disposition=="DENY" else "org-kernel/kernel.py::consume_and_respond"}
+    recorded=_record_both(custody,name,CROSSING_REFUSED_CLASS,predecessor,successor,evidence,
+                          ("packet_id","disposition","failed_predicate"),epoch)
+    return {**recorded,"disposition":disposition}
+
+def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
+                    node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
+    """Ingest one frame and record its disposition, admitted or refused.
+
+    A refusal used to leave the consuming pass by exception, recorded nowhere
+    and stopping every frame behind it. A refusal of custody itself still
+    raises: without it nothing can be recorded. This kernel dispatches no
+    capability address, so a crossing to one is refused here and recorded
+    like any other refusal.
+    """
+    destination=((recover_packet(item["frame"]).get("destination") or {}).get("service"))
+    service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
+    try:
+        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
+    except ValueError as exc:
+        reason=str(exc)
+        if any(marker in reason for marker in CUSTODY_REFUSALS):
+            raise
+        disposition=refusal_disposition(reason)
+        recorded=record_refusal(custody,item,reason,disposition,service=service,epoch=epoch)
+        return {"status":"REFUSED","disposition":disposition,"failed_predicate":reason,
+                "packet_id":item["frame"].get("packet_id")},recorded
+    return result,record_crossing(custody,item,result,service=service,epoch=epoch)
+
 def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_root:Path|None=None,
+                        repo_ledger_root:Path|None=None, org_ledger_root:Path|None=None,
                         seen:set[str]|None=None, now_ns:int|None=None)->list[dict[str,Any]]:
     """Consume frames addressed to this organization, answer them, and mark them seen.
 
@@ -568,8 +759,15 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
     name, so dedup identity is unchanged; a materializer that supplies
     `<checkout>/resident-runtime` as node state keeps markers written there
     before this.
+
+    Every crossing is recorded on the repository and organization ledgers at
+    the `repo_ledger_root` and `org_ledger_root` its materializer supplied,
+    before its answer is published or its frame marked; without both nothing
+    is consumed. A refused crossing is recorded too: DENY is marked, while
+    FAIL_CLOSED is left unmarked and offered again on the next pass.
     """
     node_state=addressed_node_state_store(node_state_root)
+    custody=crossing_custody(repo_root,repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
     registry=load_registry(repo_root)
     organization=registry["organization"]
     durable_seen=federation_seen_frame_names(repo_root,store=node_state)
@@ -577,15 +775,30 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
     out=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=effective_seen):
         packet=recover_packet(item["frame"])
+        # An answer is stamped with the epoch of the frame it answers, which
+        # recovery has already validated. Consuming the same frame again then
+        # builds the same answer frame, and publishing it is a write-once no-op
+        # rather than a second answer stamped by whatever clock this pass read.
+        epoch=None if now_ns is not None else (item["frame"].get("heartbeat_reference") or {}).get("epoch")
         payload=packet.get("payload") or {}
         message_class=payload.get("message_class")
-        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
+        # Recorded before anything leaves this node: no answer is published and
+        # no consumption marker written for a crossing the organization has not
+        # recorded. A failed append leaves the frame unmarked, so the next pass
+        # offers it again and the idempotent append completes it.
+        result,recorded=ingest_recorded(repo_root,item,custody,registry,node_state=node_state,epoch=epoch)
+        if result.get("status")=="REFUSED" and result["disposition"]!="DENY":
+            # FAIL_CLOSED: recorded, not marked, offered again on the next pass.
+            out.append({"path":item["path"],"result":result,"response_publication":None,
+                        "organization_record":recorded,"seen_marker":None})
+            continue
         response_publication=None
         if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
             response=build_control_response(packet,result["execution_result"])
-            response_publication=publish_packet(response,root=mesh_root,now_ns=now_ns)
+            response_publication=publish_packet(response,root=mesh_root,now_ns=now_ns,epoch=epoch)
         marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result,store=node_state)
-        out.append({"path":item["path"],"result":result,"response_publication":response_publication,"seen_marker":str(marker)})
+        out.append({"path":item["path"],"result":result,"response_publication":response_publication,
+                    "organization_record":recorded,"seen_marker":str(marker)})
     return out
 
 def collect_ecosystem_responses(origin_org:str, communication_id:str, *, mesh_root:Path|None=None)->dict[str,Any]:
