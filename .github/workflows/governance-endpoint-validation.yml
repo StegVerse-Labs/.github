@@ -15,6 +15,8 @@ on:
       - 'resident-runtime/submit_org_transition_to_master_records.py'
       - 'tests/test_kernel_supplied_mesh.py'
       - 'tests/test_ledger_location_supplied.py'
+      - 'tests/test_federation_declared_carrier_only.py'
+      - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
       - 'tests/test_governance_endpoint.py'
@@ -35,6 +37,8 @@ on:
       - 'resident-runtime/submit_org_transition_to_master_records.py'
       - 'tests/test_kernel_supplied_mesh.py'
       - 'tests/test_ledger_location_supplied.py'
+      - 'tests/test_federation_declared_carrier_only.py'
+      - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
       - 'tests/test_governance_endpoint.py'
@@ -63,3 +67,5 @@ jobs:
           python -m unittest tests.test_kernel_supplied_mesh -v
       - name: The ledgers are written only where supplied, never under the host home
         run: python -m unittest tests.test_ledger_location_supplied -v
+      - name: The declared carrier over the supplied mesh is the only federation path
+        run: python -m unittest tests.test_federation_declared_carrier_only -v

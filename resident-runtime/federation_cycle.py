@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, importlib.util, json, os
+import argparse, importlib.util, json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 SPEC=importlib.util.spec_from_file_location("org_kernel",ROOT/"org-kernel"/"kernel.py")
 K=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(K)
-GWSPEC=importlib.util.spec_from_file_location("federation_gateway_transport",ROOT/"resident-runtime"/"federation_gateway_transport.py")
-GW=importlib.util.module_from_spec(GWSPEC); GWSPEC.loader.exec_module(GW)
+# The carrier is the kernel's publish over the mesh this node was materialized
+# with (org-runtime/interlock-intr.json). There is no hosted gateway path: a
+# service that must be reachable for a frame to cross would make its liveness
+# a transition predicate.
+CARRIER="org-kernel/kernel.py::publish_packet"
 
 def location_refusal(failed_predicate:str, option:str)->dict:
     """The cycle's own disposition when its materializer supplied no location.
@@ -25,26 +28,22 @@ def location_refusal(failed_predicate:str, option:str)->dict:
 def cycle(*, mesh_root:Path|None, node_state_root:Path|None)->dict:
     if node_state_root is None:
         return location_refusal("NODE_STATE_LOCATION_REQUIRED_FROM_MATERIALIZER","--node-state-root")
-    if os.getenv("STEGVERSE_ORG_FEDERATION_GATEWAY_URL","").strip():
-        receipt=GW.resident_gateway_cycle(ROOT)
-        receipt["heartbeat_reference"]=K.hb_reference()
-        receipt["transport"]="SHARED_SERVICE_GATEWAY"
-    else:
-        if mesh_root is None:
-            return location_refusal("MESH_LOCATION_REQUIRED_FROM_MATERIALIZER","--mesh-root")
-        results=K.consume_and_respond(ROOT,mesh_root=mesh_root)
-        consumed=sum(1 for x in results if (x.get("result") or {}).get("status")=="CONSUMED")
-        responses=sum(1 for x in results if x.get("response_publication"))
-        receipt={
-          "schema_version":"stegverse.org-federation-cycle.v1",
-          "organization":K.load_registry(ROOT)["organization"],
-          "heartbeat_reference":K.hb_reference(),
-          "frames_seen":len(results),
-          "frames_consumed":consumed,
-          "responses_emitted":responses,
-          "authority_effect":"NONE_CARRIER_ONLY",
-          "transport":"LOCAL_SPOOL_FALLBACK"
-        }
+    if mesh_root is None:
+        return location_refusal("MESH_LOCATION_REQUIRED_FROM_MATERIALIZER","--mesh-root")
+    results=K.consume_and_respond(ROOT,mesh_root=mesh_root)
+    consumed=sum(1 for x in results if (x.get("result") or {}).get("status")=="CONSUMED")
+    responses=sum(1 for x in results if x.get("response_publication"))
+    receipt={
+      "schema_version":"stegverse.org-federation-cycle.v1",
+      "organization":K.load_registry(ROOT)["organization"],
+      "heartbeat_reference":K.hb_reference(),
+      "frames_seen":len(results),
+      "frames_consumed":consumed,
+      "responses_emitted":responses,
+      "authority_effect":"NONE_CARRIER_ONLY",
+      "transport":"FEDERATION_MESH",
+      "carrier":CARRIER
+    }
     # Recorded in this node's own supplied state rather than the checkout, so a
     # run does not mutate committed space and every pass is kept.
     recorded=K.record_federation_cycle(receipt,root=node_state_root)
