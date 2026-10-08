@@ -140,14 +140,31 @@ def test_forged_request_scope_fails_without_private_artifact(monkeypatch, tmp_pa
     assert not (runtime / consumer.OUTPUT_REL).exists()
 
 
-def test_missing_head_returns_precise_local_boundary_not_intr_deny(tmp_path):
+def test_missing_head_returns_precise_local_boundary_not_intr_deny(monkeypatch, tmp_path):
     runtime = tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "empty-ledger"))
     request(runtime)
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "ORGANIZATION_HEAD_NOT_MATERIALIZED"
     assert result["master_records_reconstruction"] == "NOT_QUERIED"
     assert result["runtime_execution_proven"] is False
+
+
+def test_unsupplied_ledger_root_is_its_own_boundary_and_nothing_is_derived(monkeypatch, tmp_path):
+    # The ledger root is supplied by the materializer, never derived from the
+    # host, so an unsupplied one is named as such rather than read from HOME.
+    runtime, home = tmp_path / "runtime", tmp_path / "home"
+    home.mkdir()
+    monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("XDG_STATE_HOME", str(home / "state"))
+    request(runtime)
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "BOUNDARY", result
+    assert result["reason"] == "ledger_location_required_from_materializer: STEGVERSE_ORG_LEDGER_ROOT"
+    assert result["runtime_execution_proven"] is False
+    assert list(home.iterdir()) == []
 
 
 def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path):

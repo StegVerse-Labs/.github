@@ -8,10 +8,40 @@ C=json.loads((ROOT/".stegverse/transition-ledger/org-contract.json").read_text()
 
 def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
+class LedgerLocationRequired(ValueError):
+    """No ledger root was supplied; nothing is appended and nothing is derived."""
+
+    failed_predicate="LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
+
+    def __init__(self, variable):
+        super().__init__("ledger_location_required_from_materializer: "+variable)
+        self.variable=variable
+
+def location_refusal(exc):
+    """The append attempt's own disposition when no ledger root was supplied."""
+    return {
+        "schema":"stegverse.organization-ledger-append-refusal/v1",
+        "organization":C["organization"],
+        "disposition":"FAIL_CLOSED",
+        "failed_predicate":exc.failed_predicate,
+        "required_evidence_or_repair":"supply the organization ledger root as "+exc.variable,
+        "retry_entrypoint":"resident-runtime/aggregate_repo_transition.py::aggregate_transition",
+        "consequence_committed":False,
+        "authority_effect":"NONE_REFUSAL_ONLY",
+    }
+
 def ledger_root():
+    """The organization ledger root, as supplied to this execution.
+
+    The ledger is the organization's runtime reality, so its location is
+    supplied by whatever materialized this execution, exactly as the mesh is.
+    It is never derived from the host: a home directory belongs to whichever
+    machine happens to run this, and a chain written there is discarded with
+    an ephemeral execution while appearing to have been appended.
+    """
     o=os.getenv("STEGVERSE_ORG_LEDGER_ROOT")
     if o: return Path(o).expanduser().resolve()
-    return (Path(os.getenv("XDG_STATE_HOME",str(Path.home()/".local/state")))/"stegverse/org-ledgers"/C["organization"]).resolve()
+    raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
 def load(p): return json.loads(Path(p).read_text())
 
 def verify_required_evidence(receipt):
@@ -331,6 +361,9 @@ def main():
             authority_effect=a.authority_effect,
             parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
         )
+    except LedgerLocationRequired as exc:
+        print(json.dumps(location_refusal(exc),sort_keys=True))
+        raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))
     print(json.dumps(record,sort_keys=True))
