@@ -20,7 +20,14 @@ on:
       - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
+      - 'org-boundary/runtime/manifest_selection.py'
+      - 'org-boundary/runtime/process_boundary.py'
       - 'tests/test_governance_endpoint.py'
+      - 'tests/peer_organization.py'
+      - 'tests/test_boundary_processing_selection.py'
+      - 'tests/test_stable_epoch_and_adapter_effects.py'
+      - 'tests/test_kernel_crossing_organization_receipts.py'
+      - 'tests/test_refused_crossings_recorded.py'
       - 'GOVERNANCE_ENDPOINT_MIRROR_HANDOFF.md'
       - '.github/workflows/governance-endpoint-validation.yml'
   push:
@@ -43,7 +50,14 @@ on:
       - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
+      - 'org-boundary/runtime/manifest_selection.py'
+      - 'org-boundary/runtime/process_boundary.py'
       - 'tests/test_governance_endpoint.py'
+      - 'tests/peer_organization.py'
+      - 'tests/test_boundary_processing_selection.py'
+      - 'tests/test_stable_epoch_and_adapter_effects.py'
+      - 'tests/test_kernel_crossing_organization_receipts.py'
+      - 'tests/test_refused_crossings_recorded.py'
       - 'GOVERNANCE_ENDPOINT_MIRROR_HANDOFF.md'
       - '.github/workflows/governance-endpoint-validation.yml'
   workflow_dispatch:
@@ -73,3 +87,11 @@ jobs:
         run: python -m unittest tests.test_federation_declared_carrier_only -v
       - name: A resident cycle writes its own state where supplied, never into the checkout
         run: python -m unittest tests.test_kernel_node_state_supplied -v
+      - name: Processing is selected only by an admitted capability and route, never by the address
+        run: python -m unittest tests.test_boundary_processing_selection -v
+      - name: Replayed effects reproduce rather than repeat; every adapter declares its effect
+        run: python -m unittest tests.test_stable_epoch_and_adapter_effects -v
+      - name: Every consumed crossing is recorded on both ledgers before it is answered
+        run: python -m unittest tests.test_kernel_crossing_organization_receipts -v
+      - name: A refused crossing is recorded as DENY or FAIL_CLOSED, not thrown
+        run: python -m unittest tests.test_refused_crossings_recorded -v

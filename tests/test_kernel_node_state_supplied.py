@@ -28,6 +28,13 @@ spec = importlib.util.spec_from_file_location("org_kernel_node_state", ROOT / "o
 K = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(K)
 
+# The kernel records every crossing it consumes on its own organization's
+# ledgers and refuses a dispatch root that is not its own repository, so the
+# source here is a peer materialized as its own organization.
+_peer_spec = importlib.util.spec_from_file_location("peer_organization", ROOT / "tests/peer_organization.py")
+peers = importlib.util.module_from_spec(_peer_spec)
+_peer_spec.loader.exec_module(peers)
+
 
 def snapshot(root):
     """Every file under `root`, with its bytes, so any write shows up."""
@@ -40,16 +47,10 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         self.scratch = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.scratch, True)
         self.mesh = self.scratch / "mesh"
-        self.source = self.scratch / "source"
-        (self.source / "org-boundary/registry").mkdir(parents=True)
-        (self.source / "org-boundary/runtime").mkdir(parents=True)
-        shutil.copy2(ROOT / "org-boundary/runtime/node_standing.py", self.source / "org-boundary/runtime/node_standing.py")
-        (self.source / "docs").mkdir()
-        shutil.copy2(ROOT / CONTRACT, self.source / CONTRACT)
-        (self.source / "org-boundary/registry/services.json").write_text(json.dumps({
-            "organization": "Node-State-Test",
-            "services": [{"service_id": "node-state-test.org-control", "repository": "Node-State-Test/.github",
-                          "boundary_role": "BOUNDARY_LOCAL_CONTROL"}]}))
+        self.node = peers.materialize(self, "Node-State-Test", [
+            {"service_id": "node-state-test.org-control", "repository": "Node-State-Test/.github",
+             "boundary_role": "BOUNDARY_LOCAL_CONTROL"}])
+        self.source = self.node.root
 
     def send(self, message_class, communication_id):
         packet = K.build_ecosystem_packets(
@@ -71,7 +72,7 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         self.send("ecosystem.work.request", "supplied-work")
         before = snapshot(self.source)
         state = self.scratch / "node-state"
-        consumed = K.consume_and_respond(self.source, mesh_root=self.mesh, node_state_root=state)
+        consumed = self.node.consume(mesh_root=self.mesh, node_state_root=state)
         self.assertEqual(len(consumed), 2)
         self.assertEqual(snapshot(self.source), before)
         self.assertEqual(len(list((state / "federation/seen.d").glob("*.json"))), 2)
@@ -80,7 +81,7 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         self.assertEqual(json.loads(intake[0].read_text())["state"], "QUEUED_FOR_LOCAL_ADMISSION_EVALUATION")
         for item in consumed:
             self.assertTrue(Path(item["seen_marker"]).is_relative_to(state.resolve()))
-        self.assertEqual(K.consume_and_respond(self.source, mesh_root=self.mesh, node_state_root=state), [])
+        self.assertEqual(self.node.consume(mesh_root=self.mesh, node_state_root=state), [])
 
     def test_markers_written_at_the_old_location_keep_their_dedup_identity(self):
         self.send("ecosystem.communication", "legacy-marker")
@@ -91,7 +92,7 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         K.PosixStateStore(legacy).put_once(K.node_store_module.seen_key(name), {
             "schema_version": "stegverse.federation-frame-consumption.v1", "frame_name": name,
             "status": "CONSUMED", "authority_effect": "NONE_CARRIER_ONLY"})
-        self.assertEqual(K.consume_and_respond(self.source, mesh_root=self.mesh, node_state_root=legacy), [])
+        self.assertEqual(self.node.consume(mesh_root=self.mesh, node_state_root=legacy), [])
 
     def test_a_work_request_without_node_state_is_refused_before_any_receipt(self):
         self.send("ecosystem.work.request", "dispatch-without-state")
@@ -115,13 +116,17 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         home.mkdir()
         env = {k: v for k, v in os.environ.items() if k != "XDG_STATE_HOME"}
         env.update({"HOME": str(home), "XDG_STATE_HOME": str(home / "state")})
+        ledgers = self.scratch / "ledgers"
         done = subprocess.run([sys.executable, "-B", str(ROOT / "resident-runtime/federation_cycle.py"),
-                               "--mesh-root", str(self.mesh), "--node-state-root", str(state)],
+                               "--mesh-root", str(self.mesh), "--node-state-root", str(state),
+                               "--repo-ledger-root", str(ledgers / "repo"),
+                               "--org-ledger-root", str(ledgers / "org")],
                               capture_output=True, text=True, env=env, cwd=self.scratch, timeout=120)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertEqual(json.loads(done.stdout)["frames_consumed"], 1)
         self.assertEqual(snapshot(ROOT / "resident-runtime"), before)
         self.assertEqual(len(list((state / "federation/seen.d").glob("*.json"))), 1)
+        self.assertEqual(len(list((ledgers / "org/receipts").glob("*.json"))), 1)
         self.assertEqual(list(home.iterdir()), [])
 
 

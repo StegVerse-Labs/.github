@@ -39,6 +39,9 @@ def _load(name, relative):
 
 
 K = _load("org_kernel_supplied_mesh", "org-kernel/kernel.py")
+# A peer consumes through its own kernel into its own ledgers: this
+# organization's kernel refuses a dispatch root that is not its repository.
+peers = _load("peer_organization", "tests/peer_organization.py")
 
 
 def provision(root, org):
@@ -135,13 +138,10 @@ class MeshIsSuppliedTests(HostIsolated):
 
     def test_a_round_trip_over_a_supplied_mesh_consumes_once_and_answers(self):
         mesh = self.scratch / "mesh"
-        a, b = self.scratch / "a", self.scratch / "b"
-        provision(a, "Org-A")
-        provision(b, "Org-B")
-        (b / "org-boundary/registry/services.json").write_text(json.dumps({
-            "organization": "Org-B",
-            "services": [{"service_id": "org-b.org-control", "repository": "Org-B/.github",
-                          "boundary_role": "BOUNDARY_LOCAL_CONTROL"}]}))
+        peer = peers.materialize(self, "Org-B", [
+            {"service_id": "org-b.org-control", "repository": "Org-B/.github",
+             "boundary_role": "BOUNDARY_LOCAL_CONTROL"}])
+        b = peer.root
         sent = K.publish_ecosystem_message(
             origin_org="Org-A", origin_service="org-a.org-control", organizations=["Org-B"],
             standing=STANDING, message_class="ecosystem.communication", subject="supplied",
@@ -149,14 +149,18 @@ class MeshIsSuppliedTests(HostIsolated):
             now_ns=K.HB_ANCHOR_UNIX_NS + 1_000_000_000)
         self.assertEqual(sent["published_count"], 1)
         state = self.scratch / "node-b"
-        first = K.consume_and_respond(b, mesh_root=mesh, node_state_root=state,
-                                      now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
-        second = K.consume_and_respond(b, mesh_root=mesh, node_state_root=state,
-                                       now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
+        first = peer.consume(mesh_root=mesh, node_state_root=state,
+                             now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
+        second = peer.consume(mesh_root=mesh, node_state_root=state,
+                              now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
         self.assertEqual(len(first), 1)
         self.assertEqual(second, [])
         self.assertTrue((state / "federation/seen.d").is_dir())
-        self.assertFalse((b / "resident-runtime").exists())
+        # The peer's checkout carries its emitters, which are code; no node
+        # state (markers, intake) is written beside them.
+        self.assertFalse((b / "resident-runtime/federation").exists())
+        self.assertFalse((b / "resident-runtime/control").exists())
+        self.assertEqual(len(peer.receipts("org")), 1)
         rollup = K.collect_ecosystem_responses("Org-A", "supplied-mesh-roundtrip", mesh_root=mesh)
         self.assertEqual([row["organization"] for row in rollup["organizations"]], ["Org-B"])
         self.assertHostUntouched()
@@ -256,11 +260,27 @@ class CallersTakeASuppliedMeshTests(HostIsolated):
                            "MESH_LOCATION_REQUIRED_FROM_MATERIALIZER")
         self.assertFalse((self.scratch / "node").exists())
 
+    def test_federation_cycle_refuses_without_supplied_ledger_locations(self):
+        cycle = ROOT / "resident-runtime/federation_cycle.py"
+        self.env = {k: v for k, v in self.env.items()
+                    if k not in ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT")}
+        self.assertRefused(self.run_cli(cycle, "--mesh-root", self.scratch / "mesh",
+                                        "--node-state-root", self.scratch / "node"),
+                           "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+        self.assertRefused(self.run_cli(cycle, "--mesh-root", self.scratch / "mesh",
+                                        "--node-state-root", self.scratch / "node",
+                                        "--repo-ledger-root", self.scratch / "ledgers/repo"),
+                           "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+        self.assertFalse((self.scratch / "node").exists())
+        self.assertFalse((self.scratch / "ledgers").exists())
+
     def test_federation_cycle_runs_on_a_supplied_mesh_and_records_in_node_state(self):
         node = self.scratch / "node"
         mesh = self.scratch / "mesh"
         completed = self.run_cli(ROOT / "resident-runtime/federation_cycle.py",
-                                 "--mesh-root", mesh, "--node-state-root", node)
+                                 "--mesh-root", mesh, "--node-state-root", node,
+                                 "--repo-ledger-root", self.scratch / "ledgers/repo",
+                                 "--org-ledger-root", self.scratch / "ledgers/org")
         self.assertEqual(completed.returncode, 0, completed.stderr)
         receipt = json.loads(completed.stdout)
         self.assertEqual(receipt["frames_seen"], 0)

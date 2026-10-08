@@ -228,7 +228,7 @@ def _packet_establishment_source(released_batch):
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
                          boundary_evidence=None, authority_effect="NONE", parent_manifest=None,
-                         establishes_packet=False, now_ns=None, hb_epoch=None):
+                         establishes_packet=False, now_ns=None, ledger=None, hb_epoch=None):
     """Serialize appends; the governing parent manifest owns packet release.
 
     A manifested receipt packet's first receipt records its own establishment.
@@ -236,12 +236,16 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     t(0) accounting opens the first packet; later packets are opened by the
     single transition that releases their predecessor.
 
+    `ledger` is the organization ledger root when the caller holds it as
+    supplied by its materializer (the kernel does); otherwise it is the one
+    supplied to this execution. Either way it is supplied, never derived.
+
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
     call writes carries that exact reference; absent, the reference is derived
     from the host clock and says so. An exact retry returns the original
     receipt whatever epoch it arrives at.
     """
-    root = ledger_root()
+    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     with (root / ".append.lock").open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
@@ -289,7 +293,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                         # opens, so the release has its own identity rather than
                         # riding as an attribute of an unrelated work transition.
                         _aggregate_transition_locked(
-                            _packet_establishment_source(released),
+                            _packet_establishment_source(released), root=root,
                             org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
                             boundary_evidence={
                                 batches.ESTABLISHMENT_KEY: batches.establishment_record(
@@ -303,7 +307,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                     else:
                         effective_boundary_evidence["parent_manifest_released_batch"] = carried
             record = _aggregate_transition_locked(
-                receipt, org_transition_class=org_transition_class,
+                receipt, root=root, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
@@ -318,9 +322,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
-def _aggregate_transition_locked(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
+def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
     source=verify_source(receipt)
-    root=ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
+    root=root if root is not None else ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
     existing=_existing_exact_source(
         d,source,org_transition_class=org_transition_class,
         predecessor_org_state_sha256=predecessor_org_state_sha256,

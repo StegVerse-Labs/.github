@@ -372,10 +372,10 @@ def organization_append_not_committed(transition_id: str, repository_receipt: Ma
         "next_attempt": {
             "entrypoint": RETRY_ENTRYPOINT,
             "resubmit": "THE_SAME_MANIFEST_WITH_THE_SAME_HB_EPOCH",
+            # The resubmission finds the retained repository receipt and
+            # completes the organization level from it, at its epoch.
+            "repository_level_exact_retry": "RECORDED_RECEIPT_REUSED_NOT_DUPLICATED",
             "organization_level_exact_retry": "EXACT_SOURCE_REUSED_NOT_DUPLICATED",
-            # The repository emitter has no exact-retry reuse yet (E1), so a
-            # resubmission writes a further repository receipt.
-            "repository_level_exact_retry": "NOT_IDEMPOTENT_PENDING_REPOSITORY_EMITTER_EXACT_RETRY_REPAIR",
             "awaits_an_external_machine": False,
         },
         "evidence_refs": evidence_refs,
@@ -394,17 +394,24 @@ def _append_both_levels(transition_id: str, transition_class: str, predecessor: 
                         successor: str, evidence: Mapping[str, Any],
                         organization_evidence: Mapping[str, Any], *, hb_epoch: int | None,
                         parent_manifest: Mapping[str, Any] | None,
-                        rule_ref: str) -> dict[str, Any]:
+                        rule_ref: str,
+                        idempotent_on: tuple[str, ...] | None = None) -> dict[str, Any]:
     """Repository receipt first, then the organization append that consumes it.
 
     The organization append is the ledger's own owner,
-    `aggregate_transition`, under its own lock; the same `hb_epoch` reaches
-    both levels so one ingress carries one heartbeat reference. If the
-    organization append raises, the result is the typed partial-commit record.
+    `aggregate_transition`, under its own lock. With `idempotent_on` a
+    transition the repository chain already records is returned rather than
+    minted again (a mismatch raises `ledger_receipt_collision` before anything
+    is written). The organization receipt takes its epoch from the repository
+    receipt it consumes, so one ingress carries one heartbeat epoch at both
+    levels, and a replay completing a partial commit carries the first
+    attempt's. If the organization append raises, the result is the typed
+    partial-commit record.
     """
     repository_receipt = repository_ledger.append(
         transition_id, transition_class, predecessor, successor, dict(evidence),
-        "NONE", hb_epoch=hb_epoch)
+        "NONE", hb_epoch=hb_epoch, idempotent_on=idempotent_on)
+    hb_epoch = repository_receipt["hb_reference"]["epoch"]
     try:
         organization_receipt = organization_ledger.aggregate_transition(
             receipt=repository_receipt,
@@ -455,6 +462,8 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
     predecessor = record["submitted_manifest_sha256"]
     successor = "sha256:" + sha(dict(record))
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-REFUSED-" + sha(dict(record))[:16]
+    # A refusal is identified by its own record, so the same refusal delivered
+    # again returns the receipts already recorded rather than a second pair.
     return _append_both_levels(
         transition_id, REFUSED_CLASS, predecessor, successor, record,
         {"receiving_operation": OPERATION_ID,
@@ -463,7 +472,8 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
          "failed_predicate": record["failed_predicate"],
          "recomputation_rule_ref": rule_ref,
          **dict(organization_evidence or {})},
-        hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref)
+        hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
+        idempotent_on=("failed_predicate", "detail"))
 
 
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
@@ -666,10 +676,17 @@ def governance_request_payload(request: Mapping[str, Any], decision_request: Map
     `ecosystem.work.request` is answered with an acknowledgement, and the
     communication id is what the closure correlates on, so the crossing is
     closable by construction.
+
+    It carries the admitted manifest's own `processing` declaration. The
+    deciding organization's governance endpoint is an internal endpoint, and
+    an internal endpoint refuses a packet that declares no admitted capability
+    bound to a route rather than letting the addressed row select processing.
     """
     return {
         "communication_id": "governance:" + request["request_sha256"],
         "message_class": "ecosystem.work.request",
+        "processing": {"capability": request["processing_capability"],
+                       "route_id": request["route_id"]},
         "subject": "governance.decision",
         "requested_action": "DECIDE_GOVERNANCE_ADMISSIBILITY",
         "audience": "TARGET",
@@ -692,7 +709,8 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
                                 repository_receipt: Mapping[str, Any],
                                 organization_receipt: Mapping[str, Any],
                                 standing: Mapping[str, Any], mesh_root: Path | None,
-                                hb_epoch: int | None, rule_ref: str) -> dict[str, Any]:
+                                hb_epoch: int | None, rule_ref: str,
+                                replayed: bool = False) -> dict[str, Any]:
     """Emit the governance request to the organization that decides it, and record the emission.
 
     Nothing waits. The emission is a transition here, recorded at both levels by
@@ -721,6 +739,7 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "transition_replayed": replayed,
         "recomputation_rule_ref": rule_ref,
         "repository_receipt_observed": True,
         "repository_receipt_sha256": repository_receipt["receipt_sha256"],
@@ -845,24 +864,49 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-" + request["request_sha256"][:16]
     predecessor_state = "sha256:" + request["canonical_manifest_sha256"]
     successor_state = "sha256:" + closures[-1]["receipt_sha256"]
-    appended = _append_both_levels(
-        transition_id, "ORGANIZATION_SDK_MANIFEST_INGRESS",
-        predecessor_state, successor_state,
-        transition_evidence(request, crossing, closures),
-        {"receiving_operation": OPERATION_ID,
-         "resolved_service_id": crossing["resolved_service_id"],
-         "ingress_packet_id": crossing["ingress_packet_id"],
-         "egress_packet_id": crossing["egress_packet_id"],
-         "recomputation_rule_ref": rule_ref,
-         **organization_evidence},
-        hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref)
+    #
+    # The transition id is derived from the request, so one manifest is one
+    # transition however many times it is delivered. A delivery the chain
+    # already records returns the recorded receipts instead of minting more:
+    # identity is the id, the canonical manifest it starts from and the full
+    # request digest; the same id over anything else is a collision. A run that
+    # recorded the repository receipt and stopped before the organization
+    # receipt is completed here, from the retained repository receipt, rather
+    # than recorded twice.
+    chain = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+    replayed = repository_ledger.recorded(
+        chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
+        transition_id, OPERATION_ID) is not None
+    try:
+        appended = _append_both_levels(
+            transition_id, OPERATION_ID,
+            predecessor_state, successor_state,
+            transition_evidence(request, crossing, closures),
+            {"receiving_operation": OPERATION_ID,
+             "resolved_service_id": crossing["resolved_service_id"],
+             "ingress_packet_id": crossing["ingress_packet_id"],
+             "egress_packet_id": crossing["egress_packet_id"],
+             "recomputation_rule_ref": rule_ref,
+             **organization_evidence},
+            hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
+            idempotent_on=("request_sha256",))
+    except ValueError as exc:
+        if str(exc) != "ledger_receipt_collision":
+            raise
+        return refused("ONE_TRANSITION_ID_BINDS_ONE_MANIFEST", str(exc),
+                       request_sha256=request["request_sha256"])
     if appended["not_committed"] is not None:
         return {**appended["not_committed"],
                 "request_sha256": request["request_sha256"],
                 "intr_admission_observed": True,
-                "far_side_transition_observed": True}
+                "far_side_transition_observed": True,
+                "transition_replayed": replayed}
     repository_receipt = appended["repository_receipt"]
     organization_receipt = appended["organization_receipt"]
+    # Everything after the repository receipt takes its epoch from that receipt,
+    # so a replay rebuilds the same organization receipt and the same outbound
+    # frame rather than ones stamped with whatever epoch this attempt carried.
+    hb_epoch = repository_receipt["hb_reference"]["epoch"]
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
@@ -873,7 +917,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             request, crossing, receiving, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
-            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref)
+            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed)
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -924,6 +968,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "transition_replayed": replayed,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.

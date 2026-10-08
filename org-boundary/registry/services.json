@@ -47,6 +47,7 @@
       "runtime_required_for_consumption": true,
       "endpoint_adapter": "resident-runtime/governance_endpoint.py",
       "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
+      "endpoint_adapter_effect": "PURE",
       "admits_processing": [
         {
           "capability": "governance",
