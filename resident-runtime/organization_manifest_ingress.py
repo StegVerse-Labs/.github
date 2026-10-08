@@ -71,6 +71,9 @@ import functools
 import hashlib
 import importlib.util
 import json
+import os
+import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Mapping
@@ -107,6 +110,74 @@ REFUSED_CLASS = "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
 # transition terminates on this chain. That is the contract's own replay_rule,
 # not a claim about any higher level.
 ORGANIZATION_REPLAY = "PASS"
+# The rule that recomputes these receipts is this file at the revision that
+# wrote them. Binding that revision into each organization receipt lets a
+# verifier fetch the exact rule, rather than whatever the file says today.
+RECOMPUTATION_RULE_PATH = "resident-runtime/organization_manifest_ingress.py"
+_REVISION = re.compile(r"^[0-9a-f]{40}([0-9a-f]{24})?$")
+#: The only fields projected to a CI step summary. Every one is a digest, an
+#: identifier or a revision: nothing a receipt carries as evidence, and nothing
+#: secret. The full result stays where the run already keeps it.
+STEP_SUMMARY_FIELDS = ("receipt_id", "receipt_sha256", "recomputation_rule_ref",
+                       "run_id", "commit")
+
+
+def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
+                           root: Path = ROOT) -> str:
+    """`OWNER_REPOSITORY@<sha>:<this file>`, or fail closed.
+
+    In Actions the revision is `GITHUB_SHA`; elsewhere it is the checkout's own
+    `HEAD`. A revision that resolves from neither is not guessed: a receipt
+    naming a rule nobody can fetch cannot be recomputed, so none is written.
+    """
+    environ = os.environ if environ is None else environ
+    revision = (environ.get("GITHUB_SHA") or "").strip().lower()
+    if not revision:
+        try:
+            revision = subprocess.run(
+                ["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True,
+                text=True, check=True, timeout=30).stdout.strip().lower()
+        except (OSError, subprocess.SubprocessError):
+            revision = ""
+    if not _REVISION.match(revision):
+        raise RuntimeError("RECOMPUTATION_RULE_REVISION_UNRESOLVABLE")
+    return f"{OWNER_REPOSITORY}@{revision}:{RECOMPUTATION_RULE_PATH}"
+
+
+def step_summary_projection(result: Mapping[str, Any],
+                            environ: Mapping[str, str] | None = None) -> dict[str, Any]:
+    """The non-secret fields of one receipt, for `$GITHUB_STEP_SUMMARY`.
+
+    Live receipts are never committed to branches; this projection is what a run
+    shows in its summary instead.
+    """
+    environ = os.environ if environ is None else environ
+    received = result.get("received")
+    return {
+        "receipt_id": (result.get("organization_transition_id") if received
+                       else result.get("refusal_transition_id")),
+        "receipt_sha256": (result.get("organization_receipt_sha256") if received
+                           else result.get("refusal_organization_receipt_sha256")),
+        "recomputation_rule_ref": result.get("recomputation_rule_ref"),
+        "run_id": environ.get("GITHUB_RUN_ID"),
+        "commit": environ.get("GITHUB_SHA"),
+    }
+
+
+def write_step_summary(result: Mapping[str, Any],
+                       environ: Mapping[str, str] | None = None) -> bool:
+    """Append the projection to `$GITHUB_STEP_SUMMARY` when a run provides one."""
+    environ = os.environ if environ is None else environ
+    target = environ.get("GITHUB_STEP_SUMMARY")
+    if not target:
+        return False
+    projection = step_summary_projection(result, environ)
+    lines = ["### Organization manifest-ingress receipt", "",
+             "| field | value |", "| --- | --- |"]
+    lines += [f"| {key} | `{projection[key]}` |" for key in STEP_SUMMARY_FIELDS]
+    with open(target, "a", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+    return True
 
 
 def _module(name: str, relative: str):
@@ -191,7 +262,8 @@ def refusal_record(failed_predicate: str, detail: str,
     }
 
 
-def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None) -> dict[str, Any]:
+def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
+                    rule_ref: str) -> dict[str, Any]:
     """Append a refusal at both levels, in the order the replay rule requires.
 
     The repository ledger records it first and the organization ledger consumes
@@ -201,24 +273,27 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None) -> dict[str
     """
     predecessor = record["submitted_manifest_sha256"]
     successor = "sha256:" + sha(dict(record))
+    transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-REFUSED-" + sha(dict(record))[:16]
     repository_receipt = repository_ledger.append(
-        "ORGANIZATION-SDK-MANIFEST-INGRESS-REFUSED-" + sha(dict(record))[:16],
+        transition_id,
         REFUSED_CLASS, predecessor, successor, dict(record), "NONE", hb_epoch=hb_epoch)
     organization_receipt = organization_ledger.append(
         repository_receipt, "REPO_STATE_PROPAGATION", predecessor, successor,
         {"receiving_operation": OPERATION_ID,
          "intended_action": INTENDED_ACTION,
          "disposition": "DENY",
-         "failed_predicate": record["failed_predicate"]},
+         "failed_predicate": record["failed_predicate"],
+         "recomputation_rule_ref": rule_ref},
         "NONE", hb_epoch=hb_epoch)
-    return {"repository_receipt": repository_receipt,
+    return {"transition_id": transition_id,
+            "repository_receipt": repository_receipt,
             "organization_receipt": organization_receipt}
 
 
-def _refused(failed_predicate: str, detail: str, *, manifest: Any,
+def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
              hb_epoch: int | None = None, **extra: Any) -> dict[str, Any]:
     record = refusal_record(failed_predicate, detail, manifest)
-    appended = _record_refusal(record, hb_epoch)
+    appended = _record_refusal(record, hb_epoch, rule_ref)
     return {
         "schema": RESULT_SCHEMA_ORG,
         "organization": "StegVerse-Labs",
@@ -235,6 +310,8 @@ def _refused(failed_predicate: str, detail: str, *, manifest: Any,
         "refusal_recorded": True,
         "refusal_transition_class": REFUSED_CLASS,
         "refusal_intended_action": INTENDED_ACTION,
+        "refusal_transition_id": appended["transition_id"],
+        "recomputation_rule_ref": rule_ref,
         "refusal_repository_receipt_sha256":
             appended["repository_receipt"]["receipt_sha256"],
         "refusal_organization_receipt_sha256":
@@ -426,7 +503,7 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
                                 repository_receipt: Mapping[str, Any],
                                 organization_receipt: Mapping[str, Any],
                                 standing: Mapping[str, Any], mesh_root: Path | None,
-                                hb_epoch: int | None) -> dict[str, Any]:
+                                hb_epoch: int | None, rule_ref: str) -> dict[str, Any]:
     """Emit the governance request to the organization that decides it, and record the emission.
 
     Nothing waits. The emission is a transition here, recorded at both levels by
@@ -455,6 +532,7 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "recomputation_rule_ref": rule_ref,
         "repository_receipt_observed": True,
         "repository_receipt_sha256": repository_receipt["receipt_sha256"],
         "records_authority": "ORGANIZATION_RECORDS_ONLY",
@@ -517,7 +595,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     `mesh_root` is the federation mesh the node was materialized with. Only a
     capability another organization decides needs it: the request leaves on it.
     """
-    refused = functools.partial(_refused, manifest=manifest, hb_epoch=hb_epoch)
+    # Resolved before anything is appended: an unresolvable revision fails
+    # closed here, with no receipt written that could not name its rule.
+    rule_ref = recomputation_rule_ref()
+    refused = functools.partial(_refused, manifest=manifest, hb_epoch=hb_epoch,
+                                rule_ref=rule_ref)
     try:
         request = derive_execution_request(manifest, boundary())
     except ValueError as exc:
@@ -574,7 +656,8 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         {"receiving_operation": OPERATION_ID,
          "resolved_service_id": crossing["resolved_service_id"],
          "ingress_packet_id": crossing["ingress_packet_id"],
-         "egress_packet_id": crossing["egress_packet_id"]},
+         "egress_packet_id": crossing["egress_packet_id"],
+         "recomputation_rule_ref": rule_ref},
         "NONE", hb_epoch=hb_epoch)
 
     # Governance is decided by the organization that owns StegCore. The ingress
@@ -586,7 +669,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             request, crossing, receiving, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
-            mesh_root=mesh_root, hb_epoch=hb_epoch)
+            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref)
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -608,6 +691,8 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             # does not unmake a transition that occurred here.
             "organization_receipt_observed": True,
             "organization_receipt_sha256": organization_receipt["receipt_sha256"],
+            "organization_transition_id": transition_id,
+            "recomputation_rule_ref": rule_ref,
             "repository_receipt_sha256": repository_receipt["receipt_sha256"],
             "request_sha256": request["request_sha256"],
             "authority_effect": "NONE_REFUSAL_ONLY",
@@ -635,6 +720,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.
         "repository_receipt_observed": True,
@@ -673,12 +759,21 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
-    result = receive(
-        json.loads(args.manifest.read_text(encoding="utf-8")),
-        registry=json.loads(args.registry.read_text(encoding="utf-8")),
-        standing=(json.loads(args.standing.read_text(encoding="utf-8"))
-                  if args.standing else None),
-        packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
+    try:
+        result = receive(
+            json.loads(args.manifest.read_text(encoding="utf-8")),
+            registry=json.loads(args.registry.read_text(encoding="utf-8")),
+            standing=(json.loads(args.standing.read_text(encoding="utf-8"))
+                      if args.standing else None),
+            packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
+    except RuntimeError as exc:
+        # Nothing was appended: the receipt could not name its own rule.
+        print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
+                          "receipt_written": False}, sort_keys=True))
+        return 1
+    # The full result stays in --out; the run summary carries only digests,
+    # identifiers and revisions.
+    write_step_summary(result)
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

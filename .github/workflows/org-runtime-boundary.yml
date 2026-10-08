@@ -5,12 +5,16 @@ on:
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'resident-runtime/organization_manifest_ingress.py'
+      - 'tests/test_organization_manifest_ingress_rule_ref.py'
       - '.github/workflows/org-runtime-boundary.yml'
   push:
     branches: [main]
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'resident-runtime/organization_manifest_ingress.py'
+      - 'tests/test_organization_manifest_ingress_rule_ref.py'
       - '.github/workflows/org-runtime-boundary.yml'
   workflow_dispatch:
 
@@ -43,3 +47,11 @@ jobs:
         run: |
           python org-runtime/runtime_boundary.py resolve-ingress --profile-id sdk-manifest-ingress --profile-name SDK:ManifestIngress --operation SUBMIT_MANIFEST | tee /tmp/sdk-ingress.json
           python -c 'import json; x=json.load(open("/tmp/sdk-ingress.json")); assert x["owner_repository"]=="StegVerse-Labs/.github"; assert x["receiving_operation"]["operation_id"]=="ORGANIZATION_SDK_MANIFEST_INGRESS"; assert x["receiving_operation"]["operation"]=="resident-runtime/organization_manifest_ingress.py"; assert x["receiving_operation"]["address_form"]=="REPOSITORY_OWNED_OPERATION_NOT_HOST_OR_URL"; assert x["receiving_operation"]["host_required"] is False; assert x["receiving_operation"]["environment_url_required"] is False; assert x["environment_inputs"]==[]; assert x["authority_effect"]=="NONE_BINDING_ONLY"; assert x["grants_routing_authority"] is False; assert x["grants_admission_authority"] is False; assert x["grants_execution_authority"] is False'
+
+      # The ingress binds this run's revision into every organization receipt it
+      # writes and, when it runs in Actions, appends only receipt_id,
+      # receipt_sha256, recomputation_rule_ref, run id and commit to the step
+      # summary. Live receipts are never committed; this validates the binding
+      # against temporary ledgers only.
+      - name: Validate organization receipt revision binding
+        run: python -m unittest -v tests/test_organization_manifest_ingress_rule_ref.py

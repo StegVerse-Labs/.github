@@ -50,7 +50,10 @@
       "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_THE_EXISTING_AUTHORIZED_RESIDENT_LEDGER_ROOT_AND_CUSTODY_ENDPOINT_TOKEN",
       "retry_entrypoint": "resident-runtime/organization_batch_custody.py::submit_released_batch",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ]
     },
     "live_worker_failure_expiry_chain": {
       "disposition": "FAIL_CLOSED",
@@ -61,7 +64,10 @@
       "required_evidence_or_repair": "REQUEST_EXPIRY_THROUGH_THE_EXISTING_WORKERCOORDINATOR_PATH_AND_RECORD_THE_TASK_REGISTRY_SUCCESSOR",
       "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_EXPIRY_AND_TASK_REGISTRY_SUCCESSOR_TRANSITION",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-      "next_attempt": "NEXT_WORKER_LIFECYCLE_TRANSITION_UNDER_THE_EXISTING_WORKERCOORDINATOR_OWNER"
+      "next_attempt": "NEXT_WORKER_LIFECYCLE_TRANSITION_UNDER_THE_EXISTING_WORKERCOORDINATOR_OWNER",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ]
     },
     "existing_org_receipt_emitter": "SOURCE_PRESENT",
     "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
@@ -85,7 +91,10 @@
       "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_STEGVERSE_ORG_LEDGER_ROOT_ATTACHED_TO_THE_AUTHORIZED_RESIDENT_SESSION",
       "retry_entrypoint": "resident-runtime/aggregate_repo_transition.py::aggregate_transition(parent_manifest=...)",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ]
     },
     "master_records_batch_ingress": "MERGED_SOURCE_CI_VALIDATED",
     "concurrent_org_append_serialization": {
@@ -97,7 +106,10 @@
       "required_evidence_or_repair": "EXERCISE_TWO_CONCURRENT_APPENDS_AGAINST_THE_EXISTING_APPEND_LOCK_AND_RETAIN_BOTH_ORGANIZATION_RECEIPTS",
       "retry_entrypoint": "resident-runtime/aggregate_repo_transition.py::aggregate_transition (fcntl.LOCK_EX on .append.lock)",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ]
     },
     "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED",
     "master_records_batch_ingress_pr": 111,
@@ -127,7 +139,10 @@
       "required_evidence_or_repair": "CARRY_A_RELEASED_BATCH_THROUGH_THE_EXISTING_AUTHORIZED_CUSTODY_PATH_ONCE_THE_RECORD_ONLY_INGRESS_IS_ACCEPTED",
       "retry_entrypoint": "workers/canonical_state_transition_custody.py::submit_organization_batch",
       "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ]
     },
     "required_evidence_bytes_master_records_ingress": "CI_VALIDATED",
     "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED"

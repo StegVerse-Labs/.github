@@ -50,6 +50,11 @@
       "guards_without_default_branch_trigger": [
         ".github/workflows/mir-sv-exp3-sdk-manifest.yml",
         ".github/workflows/svg-governance-cycle-manifest-route.yml"
+      ],
+      "evidence_refs": [
+        "StegVerse-org/StegVerse-SDK@b21abcdc608dc445f5e0a511ebd3069898399909",
+        "https://github.com/StegVerse-org/StegVerse-SDK/actions/runs/36721315436/job/109906863350",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/406#issuecomment-5912269018"
       ]
     }
   },
