@@ -88,7 +88,7 @@ GitHub / [Task Update] failure email
 -> Canonical Work / Interlock-InTr ingress
 -> WorkerCoordinator claim/fence
 -> admitted corrective execution
--> validation / durable evidence / Master Records
+-> validation / durable evidence held by the Organization / Master Records organization record
 ```
 
 `.github/scripts/reconcile_email_failure_incidents.py` is mapping/delegation only. It MUST NOT invent corrective task identity. StegHealth owns creation through:

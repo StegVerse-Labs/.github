@@ -142,7 +142,7 @@ The build proceeds only when the validator returns `SOURCE_CHAIN_VALID` with a r
 
 ## Master Records boundary
 
-The corresponding Master Records handoff is `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`. Master Records validates exact-hash organization records input and remains reality/custody authority only. Custody acceptance or reconstruction does not grant runtime selection, WorkerCoordinator ownership, InTr admission, execution, or task completion.
+The corresponding Master Records handoff is `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`. Master Records validates exact-hash organization records input and is limited to organization records and reconstruction. Custody acceptance or reconstruction does not grant runtime selection, WorkerCoordinator ownership, InTr admission, execution, or task completion.
 
 ## Completion predicates
 
@@ -150,7 +150,7 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 2. HB32/oscillator authority separation. **SOURCE COMPLETE**
 3. Explicit runtime requirements and deterministic candidate resolution. **SOURCE COMPLETE**
 4. Atomic runtime-resolution persistence and routing readiness. **SOURCE COMPLETE**
-5. Exact-hash Master Records organization record package and custody consumer. **SOURCE COMPLETE**
+5. Exact-hash Master Records organization record package and consumer. **SOURCE COMPLETE**
 6. Retained-event projection and Task Registry ↔ Master Records reconciliation. **SOURCE COMPLETE**
 7. Post-reconciliation transition-readiness classification. **SOURCE COMPLETE**
 8. Exact-evidence governance-review packaging and closed-allowlist authority routing. **SOURCE COMPLETE**
@@ -161,7 +161,7 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 13. Authentic Runtime Profile Map task ingress is observed and governed into canonical task state. **RUNTIME PENDING**
 14. One authentic resident cycle emits chain-preflight through authority-review-routing evidence. **RUNTIME PENDING**
 15. Current WorkerCoordinator/Interlock-InTr/Master Records/Canonical Coordination authority consumes the applicable review envelope and independently performs/rejects/waits/transfers under current governance. **RUNTIME PENDING**
-16. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
+16. Any resulting execution/closure outcome is reconciled back into canonical task state; Master Records retains the corresponding organization record. **RUNTIME PENDING**
 
 ## Expected authentic evidence
 
@@ -190,7 +190,7 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 
 No runtime-complete or ingress-complete claim is made. The task lifecycle now has explicit source staging through Canonical Work, the Canonical Work materializer preserves later resident Task Registry state, and the map build retains its fail-closed resident-chain preflight. The unresolved boundary is authentic resident task ingress plus authentic Runtime Profile Map lifecycle consumption through the existing HB32/oscillator + WorkerCoordinator architecture and resulting current-authority decisions.
 
-The checked-in canonical task registry is currently generation 15; `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remains `PROPOSED`. These source changes do not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, Master Records reconciliation completion, or governed closure.
+The checked-in canonical task registry is currently generation 15; `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remains `PROPOSED`. These source changes do not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, or governed closure. They also do not complete Master Records organization record reconciliation.
 
 ## Human action
 

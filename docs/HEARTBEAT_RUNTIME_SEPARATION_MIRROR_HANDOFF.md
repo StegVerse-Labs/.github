@@ -32,7 +32,7 @@ reference snapshot = chained non-authorizing completion-monitor observation at a
 GATE_PASSBAND_DERIVED = reference-snapshot reacquisition rule only
 WorkerCoordinator = downstream observer/coordinator; never heartbeat clock
 StegBrain = nervous-system contract observer/evaluator
-Master Records = passive custody/evidence
+Master Records = passive organization records/reconstruction
 TV/TVC = sole credential/secret/token authority
 ```
 

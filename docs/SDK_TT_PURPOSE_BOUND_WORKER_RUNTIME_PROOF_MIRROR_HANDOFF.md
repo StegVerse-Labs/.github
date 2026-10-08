@@ -165,7 +165,7 @@ payload.text: StegVerse tracks this arbitrary local worker task.
 
 Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
 
-No authentic runtime execution has been attempted. The next actual SDK runtime transition is a fresh WorkerCoordinator claim/fence for the HANDOFF_READY task; no Healer or resident-custody-root transition has been established by Master Records as an SDK prerequisite. Source or CI success must not promote any authentic lifecycle predicate.
+No authentic runtime execution has been attempted. The next actual SDK runtime transition is a fresh WorkerCoordinator claim/fence for the HANDOFF_READY task; no Healer or resident-custody-root transition has been established as an SDK prerequisite. No Master Records organization record establishes one either. Source or CI success must not promote any authentic lifecycle predicate.
 
 ## Post-merge source state — 2026-09-18
 
@@ -312,13 +312,13 @@ validate-deepseek-resident                       run 35417052003  SUCCESS
 This establishes merged source readiness for the corrected direct one-shot admission path only. It does not establish an authentic fresh WorkerCoordinator claim/fence or any downstream TV/TVC, InTr, purpose-bound lifecycle, or Master Records transition evidence. The Goal remains ACTIVE / UNCLAIMED and the next authentic state transition remains `FRESH_WORKERCOORDINATOR_CLAIM_FENCE`.
 
 
-## WorkerCoordinator claim/fence Master Records progression gate — Goal Prompt 9
+## WorkerCoordinator claim/fence progression requires a Master Records organization record — Goal Prompt 9
 
 Registry generation 75 and the canonical handoff were re-read after PR #2190 merged the post-#2188 evidence reconciliation.
 
 The existing one-shot path still had one authority-ordering defect relative to this Goal's explicit evidence rule: WorkerCoordinator emitted `worker_assignment_bound_from_independent_task_control` and appended `events/master-records-worker-assignment.jsonl`, but that assignment record was only marked with terminal destination `master-records/orchestration`; it was not synchronously submitted through the canonical state-transition custody client before task activation and worker invocation.
 
-The existing WorkerCoordinator path is repaired so the proposed fresh claim/fence is now fail-closed through canonical Master Records organization record before `ACTIVE` state or worker execution:
+The existing WorkerCoordinator path is repaired so the proposed fresh claim/fence now fails closed (no `ACTIVE` state or worker execution) unless the canonical Master Records organization record exists first:
 
 ```text
 HANDOFF_READY
@@ -339,7 +339,7 @@ If any Master Records predicate fails, WorkerCoordinator emits `worker_assignmen
 This is a source-level progression repair only. No authentic claim/fence, TV/TVC warrant, InTr admission, purpose-bound lifecycle, or Master Records runtime receipt is promoted until the existing one-shot executes in the resident runtime.
 
 
-## Purpose-bound lifecycle Master Records gate merged — Goal Prompt 9
+## Purpose-bound lifecycle Master Records organization record requirement merged — Goal Prompt 9
 
 StegAgents PR #23 merged as `0ba84d159a3a501cb0e13d600638cae63be6b14e` from exact head `a5d872ff62f94cf94bc42a3e6db4c2d8aa85cbbd`.
 

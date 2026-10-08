@@ -8,7 +8,7 @@ Status: `ACTIVE / CHECKED OUT / SPECIFICATION AND TEST VECTOR PREPARATION`
 
 ## Goal
 
-Define a witness-neutral, privacy-minimal checkpoint primitive that commits to an authentically closed historical section of Master Records and can later be presented to an independent witness without transferring StegVerse custody, transition, credential, or governance authority.
+Define a witness-neutral, privacy-minimal checkpoint primitive over a historical section of Master Records organization records. The section must be authentically closed; the checkpoint can later be presented to an independent witness without transferring StegVerse custody, transition, credential, or governance authority.
 
 ## Authority boundary
 
@@ -82,7 +82,7 @@ leaf_preimage =
 leaf_hash = SHA256(0x00 || leaf_preimage)
 ```
 
-The sequence is the canonical Master Records sequence within the selected closed range. The two digests MUST be equal before leaf construction; carrying both makes the equality predicate independently checkable from retained verification material.
+The sequence is the canonical Master Records organization-record sequence within the selected range. That range is closed. The two digests MUST be equal before leaf construction; carrying both makes the equality predicate independently checkable from retained verification material.
 
 ### Merkle tree
 

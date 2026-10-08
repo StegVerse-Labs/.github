@@ -26,7 +26,7 @@ After existing SDK owner admission, pass the exact source specimen through `steg
 
 ## Receipt-cost coordination
 
-`ORGANIZATION-BATCH-CUSTODY-REPLAY-001` remains the canonical owner of actual per-transition receipt bytes/count, local replay duration, required evidence bytes, expiry-triggered batch closure cost, Master Records submit/ack latency and retries. These measurements remain UNKNOWN until authentic observed source events. Where immediate Master Records organization record is required by a transition contract, local queueing does not waive it.
+`ORGANIZATION-BATCH-CUSTODY-REPLAY-001` remains the canonical owner of actual per-transition receipt bytes/count, local replay duration, required evidence bytes, expiry-triggered batch closure cost, and submit/ack latency and retries. The ack in question is the Master Records organization-record acknowledgement. These measurements remain UNKNOWN until authentic observed source events. Where immediate Master Records organization record is required by a transition contract, local queueing does not waive it.
 
 ## Current evidence / nonclaims
 

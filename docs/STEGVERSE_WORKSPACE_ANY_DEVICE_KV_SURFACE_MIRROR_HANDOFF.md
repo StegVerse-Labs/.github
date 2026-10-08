@@ -67,4 +67,4 @@ The following remain useful source findings, but are not themselves runtime proo
 
 ## Non-claims
 
-This handoff does not claim runtime execution, provider execution, WorkSpace deployment, InTr admission, Master Records organization record, a WorkerCoordinator claim, or completion of any WorkSpace evidence predicate.
+This handoff does not claim runtime execution, provider execution, WorkSpace deployment, InTr admission, a WorkerCoordinator claim, or completion of any WorkSpace evidence predicate. It does not claim a Master Records organization record either.

@@ -74,7 +74,7 @@ TV/TVC task-scoped SKAP materialization
 -> Site CAS
 -> DEVICE_KV expected-etag commit/readback
 -> second bounded use + refusal proof
--> Personal-KV custody + Master Records reconstruction
+-> Personal-KV custody; Master Records reconstruction
 ```
 
 ## Authority boundaries
