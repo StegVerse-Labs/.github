@@ -144,7 +144,7 @@ The originating Goal never becomes owner of the foreign remediation merely becau
 - Interlock/InTr: transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification authority.
-- Master Records: observed-reality/reconstruction authority.
+- Master Records: organization records/reconstruction authority.
 - GitHub/CI: source validation/evidence only; runtime authority `NONE`.
 - Healer is not a normal GC stage owner, scheduler, carrier, or prerequisite.
 

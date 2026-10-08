@@ -146,7 +146,7 @@ Required continuation:
 1. Read the canonical `master-records/orchestration` mirror handoff before mutation.
 2. Detect any existing repository-state/replay/COSV ingestion lane and do not duplicate it.
 3. Add repository-local consumption of `stegverse.repository-operational-state/v1` only if no canonical consumer already exists.
-4. Preserve Master Records custody/reconstruction authority and TV/TVC credential boundaries.
+4. Preserve Master Records organization records and reconstruction and TV/TVC credential boundaries.
 5. After Master Records integration, evaluate bounded Site/API and AI-worker-context projections.
 6. When a broader release boundary is genuinely reached, verify pertinent propagation to Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
 

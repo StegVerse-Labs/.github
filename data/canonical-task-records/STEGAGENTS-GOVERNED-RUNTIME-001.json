@@ -118,7 +118,7 @@
     "pinned_tv_policy_bundle_verified": false,
     "stegcore_intr_disposition_observed": false,
     "governed_proposal_return_observed": false,
-    "master_records_custody_recorded": false,
+    "master_records_organization_record_recorded": false,
     "same_roundtrip_reconstruction_observed": false,
     "workercoordinator_egress_reconciled": false,
     "provider_operation_observed": false,

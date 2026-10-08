@@ -177,7 +177,7 @@ def verified_boundary_receipt(
         "tvc_source_head": value["tvc_source_head"],
         "denial_probe_ids": sorted(REQUIRED_DENIAL_PROBES),
         "origin": "SAME_RESIDENT_FILESYSTEM_NOT_INDEPENDENT_AUTHORITY_READBACK",
-        "master_records_custody_proven": False,
+        "master_records_organization_record_proven": False,
         "organization_ledger_custody_proven": False,
     }
 
@@ -307,7 +307,7 @@ def consume(
         "boundary_fencing_token":boundary.get("fencing_token") if boundary else None,
         "boundary_evidence":boundary,
         "organization_ledger_custody_proven":False,
-        "master_records_custody_proven":False,
+        "master_records_organization_record_proven":False,
         "runtime_proof_promoted":False,
         "request_granted_authority":False,
         "heartbeat_grants_execution_authority":False,

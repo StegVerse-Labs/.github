@@ -23,7 +23,7 @@ Required composition:
 3. Existing StegOS Node Public Observation — required and already satisfied by run `34617268914` for merge `a3bd73f0ced551738f37a6222b3ca933c3433fdf`. It is observation only.
 4. Authentic runtime re-entry — required and pending. Any compatible interchangeable StegOS browser execution node may produce the remaining authentic runtime evidence. The legacy component ID `AUTHENTIC-CURRENT-DEVICE-RUNTIME-REENTRY` is retained only for continuity and does not define a device class, verifier role, or named-device requirement.
 5. Governed ERL admission — conditional after the repair is confirmed; owned by Interlock/InTr and belongs to the parent standard flow, not to the schema-repair completion predicate.
-6. Master Records custody/reconstruction — conditional only when an authentic custody path actually records the observation; it is never inferred from source, CI, or a screenshot.
+6. Master Records organization records and reconstruction — conditional only when an authentic custody path actually records the observation; it is never inferred from source, CI, or a screenshot.
 
 No provider credential/session operation is required for the browser-local re-observation. No new user-authentication event is required for schema-repair completion, and device/node identity cannot be treated as such an event.
 

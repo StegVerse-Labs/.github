@@ -62,7 +62,7 @@ first reachable eligible StegOS execution surface in canonical substrate order
 -> bounded TV/TVC provider custody only where the exact operation requires it
 -> authentic component execution
 -> retained StegOS/StegBrowser runtime observation
--> Master Records custody/reconstruction where required
+-> Master Records organization records and reconstruction where required
 -> materialize/visit canonical measurement request in that admitted runtime
 -> freeze one measurement run ID
 -> execute global runtime-node-profile convergence exactly once

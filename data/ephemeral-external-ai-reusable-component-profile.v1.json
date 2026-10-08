@@ -8,7 +8,7 @@
     "data/reusable-transport-component-contract.json",
     "control/organization-batch-custody-replay-contract.json"
   ],
-  "purpose": "Provider-neutral reusable ephemeral LLM invocation with a narrow provider-specific boundary, independent local organization replay and scoped cross-organization Master Records custody; reuse current canonical execution components, do not create a runtime.",
+  "purpose": "Provider-neutral reusable ephemeral LLM invocation with a narrow provider-specific boundary, independent local organization replay and scoped cross-organization Master Records organization record; reuse current canonical execution components, do not create a runtime.",
   "reusable_components": [
     {
       "id": "RTC-MANIFEST-001",
@@ -124,7 +124,7 @@
     "first_evidenced_failure": "REPAIR_AT_EXISTING_TRANSITION_OWNER_AND_RETEST",
     "irrecoverable_worker_failure": "PRESERVE_FAILURE_EXPIRE_ASSIGNMENT_UPDATE_REGISTRY_EMIT_ORG_WORKER_EXPIRY_RECEIPT"
   },
-  "master_records_custody": {
+  "master_records_organization_record": {
     "existing_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
     "normal_mode": "BOUNDED_CONTIGUOUS_ORGANIZATION_BATCH_AFTER_LOCAL_ORG_RECEIPT_SEQUENCE",
     "closure_triggers": [
@@ -162,7 +162,7 @@
     "live_anthropic": "UNVERIFIED",
     "native_mykv_parallel": true,
     "organization_replay": "UNVERIFIED",
-    "master_records_custody_when_required": "UNVERIFIED",
+    "master_records_organization_record_when_required": "UNVERIFIED",
     "governed_site_publication": "NOT_AUTHORIZED"
   },
   "authority_effect": "NONE_SOURCE_CONTRACT_ONLY",

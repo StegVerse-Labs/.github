@@ -36,7 +36,7 @@ No custody write, invocation, runtime transition, or authority receipt was produ
 
 Do not relabel a state-transition receipt as a lifecycle request. Do not fabricate missing lifecycle evidence. Do not weaken `ingest_reusable_task_lifecycle.py` validation. Do not create a second custody authority or substitute local store.
 
-The repair must preserve the canonical state-transition receipt contract and route the local adapter through a Master Records state-transition custody interface whose input contract is actually `stegverse.canonical-state-transition-receipt/v1`, or else remove the invalid local fallback while preserving a fail-closed canonical API path. Exact reconstruction and replay identity remain mandatory.
+The repair must preserve the canonical state-transition receipt contract and route the local adapter through a Master Records state-transition organization records interface whose input contract is actually `stegverse.canonical-state-transition-receipt/v1`, or else remove the invalid local fallback while preserving a fail-closed canonical API path. Exact reconstruction and replay identity remain mandatory.
 
 ## Completion predicates
 
@@ -71,7 +71,7 @@ The merged worker blob `e944b3b1b94710ef21ed5eb283bd18dc86b7b14e` and focused-te
 
 Superseded PR `#2125` is closed and must not be merged.
 
-This closes only the local-adapter source defect. No authentic resident transition or Master Records runtime custody event is claimed. Runtime custody remains owned by the existing parent canonical custody path.
+This closes only the local-adapter source defect. No authentic resident transition or Master Records runtime organization records event is claimed. Runtime custody remains owned by the existing parent canonical custody path.
 
 
 ## 2026-09-18 merge reconciliation

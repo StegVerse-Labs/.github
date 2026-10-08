@@ -175,7 +175,7 @@ class SV002EventEphemeralTests(unittest.TestCase):
                         "observation_origin": "INDEPENDENT_PUBLIC_HTTPS",
                         "receiver_ready_claimed": False,
                         "round_trip_claimed": False,
-                        "master_records_custody_claimed": False,
+                        "master_records_organization_record_claimed": False,
                         "sv002_principal_execution_claimed": False,
                         "public_profile_grants_execution_authority": False,
                         "public_profile_grants_transition_authority": False,

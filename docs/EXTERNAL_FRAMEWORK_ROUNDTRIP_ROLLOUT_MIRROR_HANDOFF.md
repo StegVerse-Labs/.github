@@ -102,7 +102,7 @@ The corresponding admissibility-wiki binding registry and evidence-qualified end
 
 ## Authority separation
 
-Task Registry is coordination only; WorkerCoordinator owns claim/fence; Interlock/InTr owns governed transition admission; TV/TVC owns credential/provider authority; KV/SKAP Vault owns user verification; Master Records owns observed-reality custody/reconstruction; GitHub/source/CI has runtime authority `NONE`.
+Task Registry is coordination only; WorkerCoordinator owns claim/fence; Interlock/InTr owns governed transition admission; TV/TVC owns credential/provider authority; KV/SKAP Vault owns user verification; Master Records is limited to organization records and reconstruction; GitHub/source/CI has runtime authority `NONE`.
 
 ## No-duplication rule
 

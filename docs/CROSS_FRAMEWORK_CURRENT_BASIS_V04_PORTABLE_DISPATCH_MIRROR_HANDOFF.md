@@ -85,7 +85,7 @@ This source change does not execute the experiment. Authentic completion remains
 resident request consumption: NOT OBSERVED
 S1 observation: NOT OBSERVED
 post-observation S0->S1 receipt: NOT OBSERVED
-Master Records custody: NOT OBSERVED
+Master Records organization record: NOT OBSERVED
 replay: NOT OBSERVED
 reconstruction: NOT OBSERVED
 RUN_COMPLETE.json: NOT OBSERVED

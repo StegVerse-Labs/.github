@@ -40,7 +40,7 @@
       "ref": "Existing StegOS / SDK / LLM-adapter native executor; Anthropic Messages reply alone insufficient"
     },
     {
-      "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+      "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_ORGANIZATION_RECORD",
       "kind": "EVIDENCE",
       "state": "UNKNOWN",
       "ref": "Two separately scoped organization receipt chains and matching Master Records reconstruction"
@@ -59,7 +59,7 @@
     },
     {
       "blocker_id": "SEPARATE_PARTICIPANT_CUSTODY_RECONSTRUCTION",
-      "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_CUSTODY",
+      "dependency_id": "DISTINCT_JOINT_MASTER_RECORDS_ORGANIZATION_RECORD",
       "reason": "Independent scoped ChatGPT and Claude Code receipts and joint Master Records reconstruction remain unverified."
     }
   ],

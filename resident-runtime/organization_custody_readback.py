@@ -156,7 +156,7 @@ def reconcile_master_records(
 
     get_json(path, parameters) must be supplied by the resident's existing
     credential/transport owner. A local source record alone never satisfies
-    Master Records custody. Missing matches remain explicit.
+    Master Records organization record. Missing matches remain explicit.
     """
     if snapshot.get("state") != "VERIFIED_LOCAL_READBACK" or snapshot.get("complete_organization_chain") != "PASS":
         raise ValueError("ORGANIZATION_SNAPSHOT_NOT_VERIFIED")

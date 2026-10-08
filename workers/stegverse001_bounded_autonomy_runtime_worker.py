@@ -235,7 +235,7 @@ def run_cycle(task:dict[str,Any], lease:dict[str,Any], lease_path:Path)->dict[st
       "denial_reachable_at_commit":True,
       "self_accreditation":False,
       "sovereign_authority_claimed":False,
-      "master_records_custody":"PENDING",
+      "master_records_organization_record":"PENDING",
       "sv002_adversarial_observation":"PENDING",
       "completed_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z"),
       "authority_effect":"BOUNDED_LOCAL_AUTONOMY_ONLY"

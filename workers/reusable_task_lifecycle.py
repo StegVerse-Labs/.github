@@ -89,7 +89,7 @@ def build_residual_recording(*, manifest: dict[str, Any], runner_result: dict[st
         "claim_or_fence_minting_authority": False,
         "provider_operation_authority": False,
         "self_extension_authority": False,
-        "master_records_custody_pending": True,
+        "master_records_organization_record_pending": True,
         "authority_effect": "NONE_RECORDING_ONLY",
     }
 
@@ -123,19 +123,19 @@ def build_custody_request(*, manifest: dict[str, Any], trigger_receipt: dict[str
 
 def verify_custody_record(record: dict[str, Any], request: dict[str, Any]) -> None:
     if record.get("schema") != CUSTODY_RECORD_SCHEMA:
-        raise ValueError("Master Records custody schema mismatch")
+        raise ValueError("Master Records organization record schema mismatch")
     if record.get("invocation_id") != request.get("invocation_id") or record.get("reusable_task_id") != request.get("reusable_task_id"):
-        raise ValueError("Master Records custody identity mismatch")
+        raise ValueError("Master Records organization record identity mismatch")
     if record.get("source_request_sha256") != stable_hash(request):
-        raise ValueError("Master Records custody request hash mismatch")
+        raise ValueError("Master Records organization record request hash mismatch")
     if record.get("evidence_bundle_sha256") != request.get("evidence_bundle_sha256"):
         raise ValueError("Master Records evidence bundle hash mismatch")
     required_true = ("destination_custody_accepted", "destination_acknowledgement_minted", "independent_validation_complete", "reconstruction_confirmed")
     if not all(record.get(key) is True for key in required_true):
-        raise ValueError("Master Records custody/reconstruction predicates not satisfied")
+        raise ValueError("Master Records organization records and reconstruction predicates not satisfied")
     required_false = ("runtime_activation", "execution_authority_granted", "publication_authority_granted")
     if not all(record.get(key) is False for key in required_false):
-        raise ValueError("Master Records custody record escalates authority")
+        raise ValueError("Master Records organization record escalates authority")
     if record.get("authority_effect") != "NONE_CUSTODY_RECONSTRUCTION_ONLY":
         raise ValueError("Master Records authority effect mismatch")
 
@@ -152,7 +152,7 @@ def build_entropy_recovery(*, manifest: dict[str, Any], runner_expiry: dict[str,
         "manifest_hash": manifest["manifest_hash"],
         "runner_expired": True,
         "required_recording_levels_complete": True,
-        "master_records_custody_accepted": True,
+        "master_records_organization_record_accepted": True,
         "master_records_reconstruction_confirmed": True,
         "unrecorded_successor_or_correction_dependency": False,
         "residual_construct_displaced": True,

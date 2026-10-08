@@ -9,7 +9,7 @@ from typing import Any, Mapping
 
 from canonical_state_transition_custody import (
     build_state_receipt,
-    require_predecessor_master_records_closure,
+    require_predecessor_master_records_organization_record,
     sha256_uri,
     submit_state_receipt,
 )
@@ -178,7 +178,7 @@ def custody_ingestion(
     predecessor_receipt_sha256: str | None = None,
 ) -> dict[str, Any]:
     record_id = _required_string(package, "record_id")
-    prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+    prior_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
         predecessor_receipt_sha256,
         successor_transition_id=TRANSITION_ID,
     )
@@ -216,7 +216,7 @@ def custody_ingestion(
         },
         required_evidence_manifest=evidence_items,
         proof_scope="CONVERSATION_EVIDENCE_INGESTION_ONLY",
-        proof_ceiling="MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY",
+        proof_ceiling="MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_ONLY",
     )
     result = submit_state_receipt(receipt)
     if not (
@@ -225,5 +225,5 @@ def custody_ingestion(
         and result.get("required_evidence_validation_status") == "PASS"
         and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
     ):
-        return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_CUSTODY_NOT_CLOSED","master_records":result,"authority_effect":"NONE"}
+        return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED","master_records":result,"authority_effect":"NONE"}
     return {"state":"RECORDED","receipt":receipt,"master_records":result,"authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}

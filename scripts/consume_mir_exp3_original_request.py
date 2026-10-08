@@ -48,7 +48,7 @@ def retain_source_attempt(runtime: Path, request_sha256: str, producer_result: d
     """Retain each observed source-level non-ALLOW without terminally caching it.
 
     This is a private dispatcher attempt receipt, NOT an InTr disposition,
-    organization transition or Master Records closure. The existing original
+    organization transition or Master Records organization record. The existing original
     request can be retried after owner repair. A changed predicate/result
     produces a distinct content-addressed attempt; exact replay is idempotent.
     """
@@ -67,7 +67,7 @@ def retain_source_attempt(runtime: Path, request_sha256: str, producer_result: d
         "producer_result": producer_result,
         "authentic_intr_disposition_observed": False,
         "runtime_execution_proven": False,
-        "organization_master_records_closure_observed": False,
+        "organization_master_records_organization_record_observed": False,
         "authority_effect": "NONE_SOURCE_PROFILE_ONLY",
     }
     raw = canon(record) + b"\n"

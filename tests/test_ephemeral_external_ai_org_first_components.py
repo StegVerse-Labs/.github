@@ -36,10 +36,10 @@ class ExternalAIOrgFirstTests(unittest.TestCase):
         self.assertTrue(p["org_receipt_first"]["local_replay_must_work_without_master_records_online"])
         self.assertIn("ORGANIZATION_SEQUENCE", org["org_replay_scope"])
         self.assertIn("CROSS_ORGANIZATION", org["master_records_replay_scope"])
-        self.assertEqual(p["master_records_custody"]["existing_owner"], org["task_id"])
-        self.assertEqual(p["master_records_custody"]["normal_mode"], "BOUNDED_CONTIGUOUS_ORGANIZATION_BATCH_AFTER_LOCAL_ORG_RECEIPT_SEQUENCE")
-        self.assertEqual(p["master_records_custody"]["direct_exception"], "EXPLICIT_TRANSITION_CONTRACT_REQUIRES_IMMEDIATE_MASTER_RECORDS_ACK")
-        self.assertIn("MASTER_RECORDS_NOT_TRANSITION_AUTHORITY", p["master_records_custody"]["nonclaims"])
+        self.assertEqual(p["master_records_organization_record"]["existing_owner"], org["task_id"])
+        self.assertEqual(p["master_records_organization_record"]["normal_mode"], "BOUNDED_CONTIGUOUS_ORGANIZATION_BATCH_AFTER_LOCAL_ORG_RECEIPT_SEQUENCE")
+        self.assertEqual(p["master_records_organization_record"]["direct_exception"], "EXPLICIT_TRANSITION_CONTRACT_REQUIRES_IMMEDIATE_MASTER_RECORDS_ACK")
+        self.assertIn("MASTER_RECORDS_NOT_TRANSITION_AUTHORITY", p["master_records_organization_record"]["nonclaims"])
 
     def test_a3_is_not_generic_external_provider_start_gate(self):
         p = read("data/ephemeral-external-ai-reusable-component-profile.v1.json")

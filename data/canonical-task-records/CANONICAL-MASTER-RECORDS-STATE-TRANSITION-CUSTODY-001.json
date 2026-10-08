@@ -272,7 +272,7 @@
       "evidence_class": "SOURCE_VALIDATION",
       "consequence_committed": false,
       "failure_code": "ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_NOT_RECONCILED",
-      "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_RECONCILED_WITH_CANONICAL_MASTER_RECORDS_CUSTODY",
+      "failed_predicate": "ORGANIZATION_RECEIPT_CHAIN_RECONCILED_WITH_CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD",
       "required_evidence_or_repair": "RECONCILE_THE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_AS_THE_RECORD_ALREADY_DECLARES",
       "retry_entrypoint": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
       "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
@@ -280,7 +280,7 @@
     },
     "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
     "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
-    "canonical_master_records_custody_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
+    "canonical_master_records_organization_record_consumes_schema": "stegverse.canonical-state-transition-receipt/v1",
     "organization_receipt_scope_rule": "EVERY_STATE_TRANSITION_WITHIN_ORGANIZATION",
     "organization_receipt_contract_generalized_to_canonical_state_transitions": true,
     "canonical_state_transition_records_org_receipt_before_master_records_source_repaired": true,
@@ -329,11 +329,11 @@
       35674317853,
       35674317860
     ],
-    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_CLOSURE_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
+    "functional_memory_emit_boundary_predecessor_contract": "RECONSTRUCT_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_AT_EXACT_RECEIPT_EMISSION_BOUNDARY",
     "organization_receipt_runtime_reobservation_performed": true,
     "organization_receipt_runtime_reobservation_source_head": "292c96d8cd61391f61689e94fb643c66bd53e568",
     "organization_receipt_runtime_reobservation_authentic_org_receipt_found": false,
-    "organization_receipt_runtime_reobservation_same_transition_master_records_closure_found": false,
+    "organization_receipt_runtime_reobservation_same_transition_master_records_organization_record_found": false,
     "organization_receipt_runtime_reobservation_repository_evidence_only": true,
     "organization_receipt_runtime_reobservation_defect_inferred": false,
     "rtc008_exact_boundary_predecessor_reconstruction_identified": true,
@@ -345,7 +345,7 @@
       35677960202,
       35677960211
     ],
-    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_CUSTODY_EMISSION_BOUNDARY",
+    "rtc008_predecessor_contract": "RECONSTRUCT_THROUGH_CANONICAL_MASTER_RECORDS_AT_EXACT_ORGANIZATION_RECORD_EMISSION_BOUNDARY",
     "rtc007_exact_boundary_predecessor_reconstruction_identified": true,
     "rtc007_exact_boundary_predecessor_reconstruction_repaired": true,
     "rtc007_exact_boundary_predecessor_reconstruction_pr": 2562,
@@ -432,8 +432,8 @@
     "general_master_records_transition_submission_removed_from_canonical_client": true,
     "predecessor_master_records_reconstruction_is_not_transition_gate": true,
     "current_authority_rule": "MASTER_RECORDS_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
-    "master_records_general_transition_custody": false,
-    "master_records_general_evidence_custody": false,
+    "master_records_general_transition_organization_record": false,
+    "master_records_general_evidence_organization_record": false,
     "master_records_transition_gate": false,
     "master_records_runtime_reality_authority": false,
     "organization_runtime_reality_authority": true,
@@ -467,7 +467,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "source_adoption_complete_for_master_records_custody": true,
+    "source_adoption_complete_for_master_records_organization_record": true,
     "mir_final_browser_event_activation_adoption_pending": false,
     "runtime_completion_pending": true,
     "local_adapter_source_defect_pending": false,
@@ -558,7 +558,7 @@
       "pull_request": 2230,
       "exact_validated_head": "7da7591625b493380ebca5ca0409af559f55d806",
       "merge_commit": "20f5ccc966d3d9e3165c9302e55bb335337f01e8",
-      "master_records_gate": [
+      "master_records_organization_record": [
         "state=RECORDED",
         "reconstruction_status=PASS",
         "required_evidence_validation_status=PASS",
@@ -578,7 +578,7 @@
       "merge_commit": "83e1ef20b28c2fd033f242c12cd2320cbe95871f",
       "predecessor": "RTC-SDK-RETURN-006",
       "downstream_prepared_boundary": "RTC-INTERLOCK-INTR-TRANSPORT-008_MATERIALIZATION_REQUEST_ONLY",
-      "master_records_gate": [
+      "master_records_organization_record": [
         "state=RECORDED",
         "reconstruction_status=PASS",
         "required_evidence_validation_status=PASS",
@@ -605,7 +605,7 @@
         35569145993
       ],
       "repaired_order": [
-        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
         "CANONICAL_TASK_REMAINS_HANDOFF_READY_UNBOUND",
         "EXISTING_TV_TVC_INTR_PURPOSE_BOUND_LIFECYCLE_EXECUTES_WITH_PROVISIONAL_CLAIM_BOUND_VIEW",
         "RECORDS_ONLY_TERMINAL_CLOSURE_RETAINED",
@@ -629,7 +629,7 @@
     },
     "generic_predecessor_closure": {
       "state": "SOURCE_REPAIR_MERGED_VALIDATED",
-      "defect": "CANONICALTRANSITIONCUSTODY_ADVANCED_SUCCESSOR_PRIOR_STATE_TO_DOMAIN_RESULT_HASH_INSTEAD_OF_IMMEDIATELY_PRECEDING_MASTER_RECORDS_CLOSURE",
+      "defect": "CANONICALTRANSITIONCUSTODY_ADVANCED_SUCCESSOR_PRIOR_STATE_TO_DOMAIN_RESULT_HASH_INSTEAD_OF_IMMEDIATELY_PRECEDING_MASTER_RECORDS_ORGANIZATION_RECORD",
       "effect": "SHARED_HELPER_DID_NOT_ITSELF_FORCE_STATE_DEPENDENT_SUCCESSOR_CONSUMPTION_OF_CANONICAL_CUSTODY_CLOSURE",
       "pull_request": 2421,
       "exact_head": "8749ffb55fa753d98a0d55b9fc478c1bd3275d75",
@@ -640,7 +640,7 @@
       ],
       "repaired_contract": [
         "SUCCESSOR_PRIOR_STATE_REF_IS_PREDECESSOR_MASTER_RECORDS_RECEIPT_SHA256",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_AUTO_CARRIED_AS_REQUIRED_EVIDENCE",
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_AUTO_CARRIED_AS_REQUIRED_EVIDENCE",
         "ADVANCE_ONLY_AFTER_RECORDED_RECONSTRUCTION_PASS_REQUIRED_EVIDENCE_PASS_EXACT_DIGEST_EQUALITY",
         "DOMAIN_RESULT_HASH_REMAINS_TRANSITION_EVIDENCE_NOT_PROGRESSION_AUTHORITY"
       ],
@@ -675,7 +675,7 @@
       ],
       "continuity_sidecar_schema": "stegverse.mir-southbound-continuity/v1",
       "caller_handoff_schema": "stegverse.mir-caller-consequence-handoff/v1",
-      "master_records_gate": [
+      "master_records_organization_record": [
         "state=RECORDED",
         "reconstruction_status=PASS",
         "required_evidence_validation_status=PASS",
@@ -707,7 +707,7 @@
         35601926185
       ],
       "repaired_sequence": [
-        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_CLOSED",
+        "WORKERCOORDINATOR_CLAIM_FENCE_BOUND_MASTER_RECORDS_RECORDED",
         "NONSECRET_TVC_EXECUTION_WARRANT_REQUEST_WRITTEN_FOR_CURRENT_CLAIM_AND_EXACT_STEGAGENTS_COMMIT",
         "EXISTING_STEGTVC_TV_EXECUTION_WARRANT_ONESHOT_INVOKED",
         "SECRET_FREE_SIGNED_WARRANT_PUBLIC_KEY_POLICY_TUPLE_VALIDATED",
@@ -788,7 +788,7 @@
         "SUPPLIED_PREDECESSOR_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RECEIPT_EMISSION",
         "PREDECESSOR_REQUIRED_EVIDENCE_VALIDATION_STATUS_PASS",
         "PREDECESSOR_RECEIPT_SHA256_EQUALS_RECONSTRUCTED_RECEIPT_SHA256",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
         "SUCCESSOR_NOT_SUBMITTED_WHEN_PREDECESSOR_RECONSTRUCTION_FAILS"
       ],
       "runtime_execution_claimed": false,
@@ -807,11 +807,11 @@
       ],
       "defect": "DIRECT_RTC008_CUSTODY_EMITTER_TRUSTED_REQUEST_CARRIED_PREDECESSOR_STATUS_AND_DIGEST_FIELDS_WITHOUT_RECONSTRUCTING_THE_EXACT_PREDECESSOR_RECEIPT_AT_EMISSION_BOUNDARY",
       "repaired_contract": [
-        "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_CUSTODY_BOUNDARY",
+        "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_CANONICAL_MASTER_RECORDS_AT_RTC008_ORGANIZATION_RECORD_BOUNDARY",
         "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-STEGVERSE-EGRESS-007",
         "RECONSTRUCTED_CLOSURE_MUST_MATCH_CARRIED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
         "SUCCESSOR_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE"
       ],
       "rtc009_or_far_side_execution_changed": false,
       "runtime_execution_claimed": false,
@@ -831,7 +831,7 @@
         "RECONSTRUCTED_PREDECESSOR_TRANSITION_ID_MUST_EQUAL_RTC-SDK-RETURN-006",
         "RECONSTRUCTED_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_MUST_MATCH_PASSED_RTC006_CLOSURE",
         "RTC007_PRIOR_STATE_REF_USES_SHARED_RECONSTRUCTED_PREDECESSOR_REFERENCE",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE"
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE"
       ],
       "rtc008_or_rtc009_execution_changed": false,
       "runtime_execution_claimed": false,
@@ -856,7 +856,7 @@
         "EXACT_PREDECESSOR_RECEIPT_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_CUSTODY_CLIENT_AT_WARRANT_RECEIPT_EMISSION",
         "RECONSTRUCTED_TRANSITION_ID_AND_CLOSURE_FIELDS_MUST_MATCH_CARRIED_GRAPH_PREDECESSOR",
         "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
         "WORKER_CLAIM_STRING_FALLBACK_REMOVED"
       ],
       "runtime_execution_claimed": false,
@@ -876,9 +876,9 @@
       ],
       "defect": "GRAPH_TRANSITION_COLLAPSED_PREDECESSOR_RECEIPT_REFS_INTO_A_SET_HASH_USED_AS_PRIOR_STATE_REF_INSTEAD_OF_RECONSTRUCTING_THE_EXACT_IMMEDIATE_PREDECESSOR_AT_EMISSION",
       "repaired_contract": [
-        "EVERY_SUPPLIED_GRAPH_PREDECESSOR_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_MASTER_RECORDS_CUSTODY_CLIENT",
+        "EVERY_SUPPLIED_GRAPH_PREDECESSOR_RECONSTRUCTED_THROUGH_SHARED_CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_CLIENT",
         "RECONSTRUCTED_PREDECESSOR_CLOSURE_MUST_MATCH_CARRIED_TRANSITION_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS",
-        "ALL_CAUSAL_BRANCH_PREDECESSORS_CARRIED_AS_PREDECESSOR_MASTER_RECORDS_CLOSURE_REQUIRED_EVIDENCE",
+        "ALL_CAUSAL_BRANCH_PREDECESSORS_CARRIED_AS_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_REQUIRED_EVIDENCE",
         "THREE_WAY_JOIN_USES_EXISTING_COMPLETED_NS_OBSERVED_COMPLETION_ORDER",
         "LAST_OBSERVED_COMPLETION_RECONSTRUCTED_RECEIPT_IS_PRIOR_STATE_REF_OR_HASH"
       ],
@@ -904,7 +904,7 @@
         "EXACT_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_PREDECESSOR_RECONSTRUCTED_AT_WARRANT_RECEIPT_EMISSION",
         "CARRIED_AND_RECONSTRUCTED_TRANSITION_ID_STATE_RECONSTRUCTION_REQUIRED_EVIDENCE_AND_DIGEST_FIELDS_EXACTLY_MATCH",
         "RECONSTRUCTED_PRIOR_REF_USED_AS_PRIOR_STATE_REF_OR_HASH",
-        "PREDECESSOR_MASTER_RECORDS_CLOSURE_CARRIED_AS_REQUIRED_EVIDENCE",
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD_CARRIED_AS_REQUIRED_EVIDENCE",
         "WORKER_CLAIM_STRING_PREDECESSOR_REMOVED",
         "EXISTING_CANONICAL_HASH_HELPER_REUSED_INSTEAD_OF_MISSING_CANONICAL_JSON_SYMBOL"
       ],
@@ -924,7 +924,7 @@
         36036227461
       ],
       "defect": "ATOMIC_ACTIVATION_SEQUENCE_3_COPIED_UNRECONSTRUCTED_SEQUENCE_2_WARRANT_RECEIPT_SHA",
-      "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_CLOSURE_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_CLOSURE",
+      "repaired_contract": "RECONSTRUCT_EXACT_TV_TVC_WARRANT_POLICY_VERIFIED_MASTER_RECORDS_ORGANIZATION_RECORD_AT_SEQUENCE_3_RECEIPT_EMISSION_AND_CARRY_PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
       "authentic_resident_runtime_observed": false,
       "authority_effect": "NONE_SOURCE_CUSTODY_ONLY"
     },

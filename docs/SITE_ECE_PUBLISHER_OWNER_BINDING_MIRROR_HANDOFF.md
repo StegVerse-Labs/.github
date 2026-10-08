@@ -32,6 +32,6 @@ The user-provided current-phone screenshots establish that the StegVerse homepag
 
 ## Authority
 
-Task Registry is coordination only. WorkerCoordinator retains claim/fence authority. Interlock/InTr retains governed transition authority where invoked by the publication runtime. TV/TVC retains credential/provider/release authority. KV/SKAP Vault remains the sole user-verification authority. StegOS nodes are interchangeable execution/transport nodes, not user verifiers. Master Records retains custody/reconstruction authority.
+Task Registry is coordination only. WorkerCoordinator retains claim/fence authority. Interlock/InTr retains governed transition authority where invoked by the publication runtime. TV/TVC retains credential/provider/release authority. KV/SKAP Vault remains the sole user-verification authority. StegOS nodes are interchangeable execution/transport nodes, not user verifiers. Master Records is limited to organization records and reconstruction authority.
 
 No device-verification policy or device-local user-verification step exists or is introduced.

@@ -75,7 +75,7 @@ chat-only VACC requirements remaining: 0
 
 ## Remaining canonical work — not owned by this provisional claim
 
-The canonical LLM-adapter worker lane owns executable longitudinal sufficiency/continuity/characterization/prescription-provenance/summary logic and fixtures; Master Records owns custody/reconstruction; Site owns verified projection. Propagation follows only after the canonical release gates admit it.
+The canonical LLM-adapter worker lane owns executable longitudinal sufficiency/continuity/characterization/prescription-provenance/summary logic and fixtures; Master Records is limited to organization records and reconstruction; Site owns verified projection. Propagation follows only after the canonical release gates admit it.
 
 ## Execution ownership and collision partition
 

@@ -37,7 +37,7 @@ Public protocol draft inspected: `draft-mcphillips-agentenvelope-derived-authori
 | current legitimacy vs valid signature | GTG + InTr commit-time admission | supports the same separation principle; InTr remains transition authority |
 | public record and verifier report | TT evidence_refs / receipt_refs | can be referenced as evidence; TT remains ordered transition representation |
 | event/record relation without intrinsic sequence proof | RTG causal continuity + TT temporal attribution | derivation may establish relation but not realized ordering |
-| retrieved record/event evidence | Master Records custody/reconstruction | existing custody role |
+| retrieved record/event evidence | Master Records organization records and reconstruction | existing custody role |
 | deterministic re-derivation | verification/reconstruction method | investigate whether existing schemas already encode this; do not add duplicate engine |
 
 ## Key distinctions

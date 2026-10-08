@@ -36,7 +36,7 @@
     "remote_device_connector_required": false
   },
   "metric_evidence": {
-    "lifecycle": "Source correction is merged and validated; this successor owns only authentic ERL three-hop execution, exact terminal KV readback, and Master Records evidence closure.",
+    "lifecycle": "Source correction is merged and validated; this successor owns only authentic ERL three-hop execution, exact terminal KV readback, and Master Records evidence organization record.",
     "archive_ready": "Authentic task-bound Universal InTr and terminal evidence are not yet observed.",
     "canonical_owner_installed": "The existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator-owned path is reused; no second owner is created.",
     "blocker_count": "No source blocker is asserted. Remaining conditions are runtime evidence predicates with explicit execution paths.",

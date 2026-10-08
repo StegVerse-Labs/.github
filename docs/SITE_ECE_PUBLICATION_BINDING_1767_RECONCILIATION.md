@@ -34,7 +34,7 @@ The ingress receipt remains non-authorizing. WorkerCoordinator still owns fresh 
 
 `SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001` continues to consume only:
 
-1. `RTC-EVIDENCE-CUSTODY-004` — Master Records exact custody/reconstruction.
+1. `RTC-EVIDENCE-CUSTODY-004` — Master Records exact organization records and reconstruction.
 2. `RTC-PUBLISHER-005` — canonical publication owned by `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`.
 3. Canonical runtime observation — independent served-byte/page observation.
 
@@ -44,7 +44,7 @@ The ECE-specific exact-byte materializer remains the adapter for `RTC-PUBLISHER-
 
 ```text
 RT-ECOSYSTEM-CONTINUITY-EVALUATION-001 authentic cycle
--> Master Records exact ECE custody/reconstruction
+-> Master Records exact ECE organization records and reconstruction
 -> Site-safe projection
 -> ECE exact-byte materializer binding
 -> RT-SOVEREIGN-SOURCE-REFRESH-001 authentic child receipt for publication owner
@@ -54,7 +54,7 @@ RT-ECOSYSTEM-CONTINUITY-EVALUATION-001 authentic cycle
 -> bounded EVENT_EPHEMERAL publication lease
 -> independent public HTTPS byte/path observation
 -> lease closure + final Interlock/InTr publication transition
--> Master Records publication evidence custody/reconstruction
+-> Master Records publication evidence organization records and reconstruction
 -> independently observe served data/ecosystem-continuity/current.json and continuity page
 ```
 

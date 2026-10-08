@@ -20,6 +20,10 @@ OSCILLATOR_PRODUCER = ROOT / "heartbeat_runtime" / "oscillator_producer.py"
 OSCILLATOR_PRODUCER_TEST = ROOT / "tests" / "test_oscillator_producer.py"
 
 
+#: Master Records boundary migration: contracts written before the rename name this legacy role.
+LEGACY_MASTER_RECORDS_ROLE = "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE"
+
+
 def require(condition: bool, message: str, errors: list[str]) -> None:
     if not condition:
         errors.append(message)
@@ -81,7 +85,7 @@ def main() -> int:
     required_domains = set(contract.get("required_domains") or [])
     require(required_domains == {"StegVerse-Labs", "DEMO", "TEST", "StegVerse-org", "StegGhost"}, "required transition-domain parity mismatch", errors)
     require(contract.get("nervous_system_owner") == "StegVerse-Labs/StegBrain#860", "StegBrain nervous-system owner mismatch", errors)
-    require(contract.get("master_records_role") == "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE", "Master Records passive role mismatch", errors)
+    require(contract.get("master_records_role") in ("ORGANIZATION_RECORDS_AND_RECONSTRUCTION", LEGACY_MASTER_RECORDS_ROLE), "Master Records role mismatch", errors)
     require((contract.get("authority") or {}).get("non_tv_tvc_secret_or_token_required") is False, "non-TV/TVC secret/token requirement must be false", errors)
 
     oscillator = contract.get("carrier_oscillator") or {}

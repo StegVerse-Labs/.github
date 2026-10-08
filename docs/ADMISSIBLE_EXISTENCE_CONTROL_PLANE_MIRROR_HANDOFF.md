@@ -157,7 +157,7 @@ AE verifier receipt-minting authority: NONE
 wallet signing/broadcast: USER_ONLY where applicable
 heartbeat: carrier/synchronization continuity only
 worker/control plane: separate from heartbeat carrier semantics
-Master Records custody/EOL: separate from execution/transport authority
+Master Records organization record/EOL: separate from execution/transport authority
 ```
 
 ## Execution ownership and collision partition

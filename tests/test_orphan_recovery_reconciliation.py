@@ -81,7 +81,7 @@ def recovery_handoff() -> dict:
         "continuity": {
             "checkpoint_ref": CHECKPOINT,
             "master_records_required": True,
-            "master_records_custody_ref": "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
+            "master_records_organization_record_ref": "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
         },
         "block": {
             "block_reason": "ORPHAN_RECOVERY_EXECUTOR_AUTHORIZATION_REQUIRED",

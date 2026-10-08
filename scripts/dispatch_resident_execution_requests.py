@@ -160,6 +160,10 @@ CONSUMERS = (
 )
 
 
+#: Master Records boundary migration: consumers deployed before the rename report these legacy wait states.
+LEGACY_ACCEPTED_WAIT_STATES = ("WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED")
+
+
 def truthy(value: str | None) -> bool:
     return str(value or "").strip().lower() not in {"", "0", "false", "no"}
 
@@ -252,7 +256,7 @@ def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str,
 
 
 def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Retain the existing SDK evaluator selector visit through canonical Master Records custody."""
+    """Retain the existing SDK evaluator selector visit through canonical Master Records organization record."""
     row = next((item for item in outcomes if item.get("consumer") == SDK_EVALUATOR_SELECTOR), None)
     if not isinstance(row, dict) or row.get("attempted") is not True:
         return None
@@ -334,7 +338,7 @@ def retain_component011_dispatch_in_organization(
 ) -> dict[str, Any] | None:
     """Record the exact component-011 selector outcome in the EXISTING org ledger.
 
-    This is observation-only. It never submits Master Records custody or mints
+    This is observation-only. It never submits Master Records organization record or mints
     a WorkerCoordinator claim/fence. The org predecessor is verified by readback.
     A missing runtime request is recorded as missing ONLY when its canonical
     already-local source request is available for exact identity validation.
@@ -494,7 +498,7 @@ def retain_component011_dispatch_in_organization(
             "immediate_predecessor_sha256": predecessor,
             "exact_receipt_readback": "PASS",
             "immediate_predecessor_readback": "PASS",
-            "master_records_custody_claimed": False,
+            "master_records_organization_record_claimed": False,
             "runtime_execution_proven": False,
             "authority_effect": "NONE_ORGANIZATION_OBSERVATION_ONLY",
         }
@@ -594,7 +598,7 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "required_evidence_validation_status": result.get("required_evidence_validation_status"),
         "receipt_sha256": result.get("receipt_sha256"),
         "reconstructed_receipt_sha256": result.get("reconstructed_receipt_sha256"),
-        "reason": result.get("reason") if closed else "RICHARD_DISPATCH_MASTER_RECORDS_CLOSURE_UNVERIFIED",
+        "reason": result.get("reason") if closed else "RICHARD_DISPATCH_MASTER_RECORDS_ORGANIZATION_RECORD_UNVERIFIED",
         "authority_effect": result.get("authority_effect", "NONE"),
     }
 
@@ -686,8 +690,9 @@ def dispatch(
     missing = [row["consumer"] for row in outcomes if row["state"] == "CONSUMER_NOT_MATERIALIZED"]
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
     accepted_wait_states = {
-        "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
-        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "CYCLE_COMPLETED", "MANIFOLD_VISIT_RECORDED",
+        "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_ORGANIZATION_RECORD", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
+        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_ORGANIZATION_RECORD_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "CYCLE_COMPLETED", "MANIFOLD_VISIT_RECORDED",
+        *LEGACY_ACCEPTED_WAIT_STATES,
         "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY", "INPUT_NOT_MATERIALIZED", "OBSERVATION_ATTEMPT_RECORDED",
         "WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR", "AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED",
         "WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY", "REUSE_ACCEPTED", "DELTA_REQUIRED", "BOUND_STATE_INPUT_NOT_READY",

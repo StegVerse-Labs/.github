@@ -32,7 +32,7 @@
       "task-runtime-resolution-persistence",
       "task-runtime-routing-readiness",
       "runtime-profile-custody-package",
-      "master-records-custody-consumption",
+      "master-records-organization-record-consumption",
       "master-records-reconciliation",
       "post-reconciliation-transition-readiness",
       "governance-review-packaging",
@@ -71,7 +71,7 @@
     "AUTHENTIC_RUNTIME_PROFILE_MAP_RECEIPT_OBSERVED",
     "AUTHENTIC_TASK_RUNTIME_RESOLUTION_PROJECTIONS_OBSERVED",
     "AUTHENTIC_TASK_ROUTING_READINESS_RECEIPTS_OBSERVED",
-    "AUTHENTIC_MASTER_RECORDS_CUSTODY_OBSERVED",
+    "AUTHENTIC_MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED",
     "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
     "AUTHENTIC_POST_RECONCILIATION_TRANSITION_READINESS_OBSERVED",
     "AUTHENTIC_GOVERNANCE_REVIEW_PACKAGE_OBSERVED"

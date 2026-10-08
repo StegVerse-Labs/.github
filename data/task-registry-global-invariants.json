@@ -101,8 +101,8 @@
     "zero_connected_devices_may_trigger_source_repair": false,
     "zero_connected_devices_may_create_manual_work": false,
     "connected_device_inventory_exception": "ONLY_WHEN_THE_TASK_EXPLICITLY_TARGETS_CONNECTOR_OR_DEVICE_INVENTORY_MANAGEMENT_ITSELF",
-    "master_records_general_transition_custody": false,
-    "master_records_general_evidence_custody": false,
+    "master_records_general_transition_organization_record": false,
+    "master_records_general_evidence_organization_record": false,
     "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
   },
   "semantics": {

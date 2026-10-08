@@ -143,16 +143,16 @@ def main() -> int:
         "checkpoint_sha256": checkpoint.get("checkpoint_sha256") if checkpoint else None,
         "checkpoint_valid": checkpoint_valid,
         "old_authority_ended": old_authority_ended,
-        "master_records_custody_ref": custody_ref,
-        "master_records_custody_record_hash": custody.get("record_hash") if custody else None,
-        "master_records_custody_valid": custody_valid,
+        "master_records_organization_record_ref": custody_ref,
+        "master_records_organization_record_record_hash": custody.get("record_hash") if custody else None,
+        "master_records_organization_record_valid": custody_valid,
         "old_authority_reused": False,
         "successor_authority_granted": False,
         "github_token_required": False,
         "third_party_execution_platform_required": False,
         "authority_effect": "NONE",
         "state": "PASS" if passed else "BLOCKED",
-        "next_transition": "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION" if passed else "MASTER_RECORDS_G20_LIFECYCLE_CUSTODY_REQUIRED",
+        "next_transition": "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION" if passed else "MASTER_RECORDS_G20_LIFECYCLE_ORGANIZATION_RECORD_REQUIRED",
     }
     receipt["receipt_hash"] = stable_hash(receipt)
     atomic_write(RECEIPT, receipt)
@@ -169,14 +169,14 @@ def main() -> int:
                 "Materialize master-records/orchestration with custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json on this sovereign carrier and retry the same recovery task."
             ],
             "next_solution_action": next_action,
-            "machine_observable_release_condition": "orphan-recovery-HB28.json reaches state PASS with master_records_custody_valid=true and old_authority_ended=true",
+            "machine_observable_release_condition": "orphan-recovery-HB28.json reaches state PASS with master_records_organization_record_valid=true and old_authority_ended=true",
             "github_token_required": False,
             "third_party_blocker": False,
         }
     response = {
         "schema": "stegverse.worker-response/v0.1",
         "state": "COMPLETED" if passed else "BLOCKED",
-        "transition_id": "ORPHAN_LIFECYCLE_RECONSTRUCTED" if passed else "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
+        "transition_id": "ORPHAN_LIFECYCLE_RECONSTRUCTED" if passed else "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN",
         "transition_sequence": 1,
         "expected_next_transition": None if passed else "ORPHAN_LIFECYCLE_RECONSTRUCTED",
         "expected_next_earliest_epoch": None if passed else epoch + 1,

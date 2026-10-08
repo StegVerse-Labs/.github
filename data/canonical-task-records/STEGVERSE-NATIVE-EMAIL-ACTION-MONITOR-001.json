@@ -193,7 +193,7 @@
     "TVC_ARCHIVE_EXECUTOR_UNREACHABLE_UNLESS_STEGGATE_ALLOW",
     "TVC_ARCHIVE_EXECUTOR_UNREACHABLE_UNLESS_COMMIT_COHERENCE_ALLOW",
     "GOVERNED_ARCHIVE_ROUTE_RECEIPT_CHAIN_VERIFIED",
-    "GOVERNED_ARCHIVE_MASTER_RECORDS_CUSTODY_RECORDED",
+    "GOVERNED_ARCHIVE_MASTER_RECORDS_ORGANIZATION_RECORD_RECORDED",
     "SDK_GOVERNANCE_SOURCES_ALREADY_LOCAL_OR_VERIFIED_BY_SV_DN1_SOURCE_PREP_V2",
     "AUTHENTIC_RESIDENT_HOURLY_INVOCATION_OBSERVED",
     "AUTHENTIC_KV_STORED_VERIFIED_RECEIPT_OBSERVED",
@@ -218,7 +218,7 @@
       "canonical_steggate_governance",
       "commit_coherence",
       "bounded_external_consequence_execution",
-      "master_records_exact_run_custody",
+      "master_records_exact_run_organization_record",
       "verified_sv_dn1_source_root_reuse",
       "tvc_mail_provider_operation",
       "failure_incident_normalization",
@@ -300,7 +300,7 @@
   },
   "runtime_resolution": {
     "current_executor": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001 has a standing recurring resident request. The existing Healer scheduler selects RT-NATIVE-EMAIL-ACTION-MONITOR-001 by deterministic UTC-hour slot, invokes the KV-enforcing monitor in the resident heartbeat runtime, and bounds failed retries. Exact reviewed Gmail IDs plus verified KV receipts enter the merged StegOps generic-manifest governance path. TVC ARCHIVE_IDS is installed only as the trusted bounded consequence outside caller authority payload and remains unreachable unless canonical StegGate and commit coherence allow. Healer may reuse already-local governance roots or augment them only from an admissible SV-DN1 production-source-preparation v2 receipt. That authentic source-preparation receipt has not yet been observed in the current canonical handoff, so governed archive runtime may remain source-blocked until those four roots are otherwise locally available or the existing source-prep lane completes.",
-    "authority_basis": "Merged source and deterministic validation prove construction, source propagation, KV ordering, retry semantics, exact archive-context binding, canonical governance wiring, denial-path non-execution, and verified source-root reuse semantics only. Authentic resident schedule, current governance-source materialization, KnowledgeVault write/readback, SDK/StegCore decision/coherence, TV/TVC provider mutation, Gmail mailbox progression, Master Records custody, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",
+    "authority_basis": "Merged source and deterministic validation prove construction, source propagation, KV ordering, retry semantics, exact archive-context binding, canonical governance wiring, denial-path non-execution, and verified source-root reuse semantics only. Authentic resident schedule, current governance-source materialization, KnowledgeVault write/readback, SDK/StegCore decision/coherence, TV/TVC provider mutation, Gmail mailbox progression, Master Records organization record, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",
     "unattended_runtime": true
   },
   "worker_claim": {

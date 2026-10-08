@@ -26,7 +26,7 @@ The unresolved work is transferred to `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-
 
 ## Governing invariant
 
-Every StegVerse action is canonically complete only when every required governed state transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody. Missing transition evidence means the action is not proven complete.
+Every StegVerse action is canonically complete only when every required governed state transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records organization record. Missing transition evidence means the action is not proven complete.
 
 ## What this parent established
 
@@ -59,7 +59,7 @@ Provisional sandbox results established:
 - the exported v0.3 artifacts pass the current imported `master-records/orchestration/scripts/verify_sv002_self_characterization_reconstruction.py` predicates;
 - `EGRESS_EMITTED` must occur only after the correlated response packet is actually published;
 - the organization ledger root must be finalized after authentic egress;
-- Master Records reconstruction/custody/readback must occur before origin delivery;
+- Master Records organization records/reconstruction/readback must occur before origin delivery;
 - forced response-publication failure produces no false `EGRESS_EMITTED`;
 - tampered egress evidence and custody rejection fail closed before origin delivery.
 
@@ -112,7 +112,7 @@ canonical successor: SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
-- Master Records: observed-reality custody/reconstruction authority.
+- Master Records: organization records/reconstruction authority.
 - HeartBeat: timing/freshness/liveness/observability only.
 - GitHub/CI/source: runtime authority `NONE`; source/evidence transport only.
 - second user-operated device required: `false`.

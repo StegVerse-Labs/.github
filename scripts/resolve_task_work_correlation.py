@@ -61,7 +61,7 @@ def resolve(task_id: str, registry: dict) -> dict:
             bool(row.get("registration", {}).get("source_work_approved_by_owner_request")),
         "worker_claim_issued": False,
         "intr_admission_issued": False,
-        "master_records_closure_claimed": False,
+        "master_records_organization_record_claimed": False,
         "authority_effect": "NONE_CORRELATION_ONLY",
     }
 

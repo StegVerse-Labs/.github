@@ -111,7 +111,7 @@ def test_fail_closed_execution_is_retained_on_the_manifested_receipt_ref(tmp_pat
     assert retained["claim_id"] == "CLAIM-MIR-G41"
     assert retained["fencing_token"] == 41
     assert retained["intr_admission_required"] is True
-    assert retained["master_records_custody_required"] is True
+    assert retained["master_records_organization_record_required"] is True
     assert retained["credential_material_retained"] is False
     assert retained["secret_values_exported"] is False
     assert retained["protected_values_exposed"] is False

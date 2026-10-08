@@ -82,7 +82,7 @@
       "inputs": ["authentic receipts", "source-native MIR result", "processor evidence"],
       "outputs": ["custody reference", "readback", "reconstruction when requested"],
       "preconditions": ["authentic evidence exists"],
-      "expected_evidence": ["Master Records custody", "readback", "reconstruction receipt when requested"],
+      "expected_evidence": ["Master Records organization record", "readback", "reconstruction receipt when requested"],
       "authority_owner": "Master Records",
       "cardinality": "AS_EVIDENCE_IS_OBSERVED",
       "requirement": "REQUIRED"
@@ -177,7 +177,7 @@
     "authentic MIR-native return through designated InTr",
     "authentic StegVerse return InTr ingress",
     "manifest-selected StegVerse processing receipt",
-    "Master Records custody/readback/reconstruction when requested",
+    "Master Records organization records and reconstruction when requested",
     "authentic Publisher execution when declared",
     "authentic SDK runtime return binding",
     "authentic final StegVerse-side egress transition",

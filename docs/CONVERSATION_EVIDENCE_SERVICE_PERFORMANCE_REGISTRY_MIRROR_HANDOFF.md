@@ -107,7 +107,7 @@ This task registration does not authenticate an existing conversation, identify 
 
 ## Successor implementation boundary
 
-Any implementation must use a new standalone canonical Goal Task that consumes this contract unchanged or explicitly versions it. The successor should implement evidence ingestion/capture first, then Master Records custody/reconstruction, then governed public projection, provider-response/corroboration paths, and finally authorized enforcement export. It must not infer legal guilt, fraud, predation, intent, or liability from publication, payment, recurrence, or nonresponse.
+Any implementation must use a new standalone canonical Goal Task that consumes this contract unchanged or explicitly versions it. The successor should implement evidence ingestion/capture first, then Master Records organization records and reconstruction, then governed public projection, provider-response/corroboration paths, and finally authorized enforcement export. It must not infer legal guilt, fraud, predation, intent, or liability from publication, payment, recurrence, or nonresponse.
 
 ## Initial completion boundary
 

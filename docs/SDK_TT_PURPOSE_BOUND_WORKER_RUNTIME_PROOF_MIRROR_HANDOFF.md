@@ -23,7 +23,7 @@ one TT transition cell
 -> worker retires or transforms when purpose ends
 -> no live worker authority remains
 -> durable output decomposes to records only
--> Master Records custody/reconstruction preserves the lifecycle
+-> Master Records organization records and reconstruction preserves the lifecycle
 ```
 
 The initial arbitrary purpose remains deterministic and externally inspectable:
@@ -44,7 +44,7 @@ STEGAGENTS-GOVERNED-RUNTIME-001
 -> existing StegAgents governed worker/process adapter
 -> existing StegCore/InTr admission
 -> TV/TVC warrant/policy or credential semantics where required
--> existing Master Records custody/reconstruction
+-> existing Master Records organization records and reconstruction
 ```
 
 This task must not create another runtime, scheduler, dispatcher, WorkerCoordinator, InTr implementation, credential authority, Master Records authority, resident reachability task, or second user-operated device dependency.
@@ -79,7 +79,7 @@ The authentic test must retain evidence for each distinct stage:
 11. retirement/transformation occurs after task completion or bounded failure;
 12. a post-retirement observation establishes no continued live worker authority for this purpose;
 13. lifecycle receipts preserve monotonic ordering;
-14. Master Records custody is RECORDED for the authentic lifecycle;
+14. Master Records organization record is RECORDED for the authentic lifecycle;
 15. reconstruction returns the same purpose/worker/result/retirement lineage;
 16. final returned projection is a records-only packet and does not contain a live callable/executor object.
 
@@ -183,7 +183,7 @@ The successor carries the exact `stegverse.sdk.tt-purpose-bound-worker.v1` reque
 
 GitHub reported PR #2150 mergeable/clean and merged the exact head. This repository exposed no PR workflow runs or commit statuses for that head, so the source record does not promote an automated `.github` CI result that was not observed. Focused regression source is merged; authentic runtime evidence remains entirely unclaimed.
 
-The first remaining runtime transition is the SDK task's own fresh WorkerCoordinator claim/fence. The StegBrowser/Healer resident-custody-root observation lineage is not an SDK prerequisite unless an authentic preceding Master Records state-transition receipt explicitly binds it as required evidence. Each resulting SDK transition must be submitted to Master Records and return `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact receipt/reconstruction digest equality before further machine-owned progression.
+The first remaining runtime transition is the SDK task's own fresh WorkerCoordinator claim/fence. The StegBrowser/Healer resident-custody-root observation lineage is not an SDK prerequisite unless an authentic preceding Master Records state-transition receipt explicitly binds it as required evidence. Each resulting SDK transition must be recorded as organization records in Master Records and return `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS` with exact receipt/reconstruction digest equality before further machine-owned progression.
 
 
 ## Derived lifetime semantics — Goal Prompt 4
@@ -224,17 +224,17 @@ run: 35402863119
 conclusion: success
 ```
 
-The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression is `fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle`, with authoritative Master Records evidence closure after every resulting state transition. The separate resident-root/Healer lineage is not part of this SDK dependency chain absent an authentic Master Records transition that explicitly requires it.
+The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression is `fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle`, with authoritative Master Records evidence organization record after every resulting state transition. The separate resident-root/Healer lineage is not part of this SDK dependency chain absent an authentic Master Records transition that explicitly requires it.
 
 
 ## Coordination hygiene reconciliation — registry generation 64
 
-`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current evidence still does not establish a fresh SDK WorkerCoordinator claim/fence or any subsequent SDK Master Records state-transition custody/reconstruction, so authentic purpose-bound execution remains unattempted. Absence of a separate Healer/resident-root observation is not an SDK blocker.
+`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` is restored as non-blocking adjacent evidence only. All surviving purpose-bound branch refs inspected are behind current `main` with zero unique commits and remain historical. Current evidence still does not establish a fresh SDK WorkerCoordinator claim/fence or any subsequent SDK Master Records state-transition organization records/reconstruction, so authentic purpose-bound execution remains unattempted. Absence of a separate Healer/resident-root observation is not an SDK blocker.
 
 
 ## Runtime dependency correction — registry generation 70
 
-Reconciliation against the canonical Master Records state-transition custody contract removes the inherited StegBrowser/Healer resident-custody-root prerequisite from this SDK goal. No authentic Master Records transition for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` or `STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED` was found in repository-retained Master Records evidence, and no SDK failure/remediation transition binds StegHealer to this goal.
+Reconciliation against the canonical Master Records state-transition organization records contract removes the inherited StegBrowser/Healer resident-custody-root prerequisite from this SDK goal. No authentic Master Records transition for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` or `STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED` was found in repository-retained Master Records evidence, and no SDK failure/remediation transition binds StegHealer to this goal.
 
 The direct execution path remains:
 
@@ -318,7 +318,7 @@ Registry generation 75 and the canonical handoff were re-read after PR #2190 mer
 
 The existing one-shot path still had one authority-ordering defect relative to this Goal's explicit evidence rule: WorkerCoordinator emitted `worker_assignment_bound_from_independent_task_control` and appended `events/master-records-worker-assignment.jsonl`, but that assignment record was only marked with terminal destination `master-records/orchestration`; it was not synchronously submitted through the canonical state-transition custody client before task activation and worker invocation.
 
-The existing WorkerCoordinator path is repaired so the proposed fresh claim/fence is now fail-closed through canonical Master Records custody before `ACTIVE` state or worker execution:
+The existing WorkerCoordinator path is repaired so the proposed fresh claim/fence is now fail-closed through canonical Master Records organization record before `ACTIVE` state or worker execution:
 
 ```text
 HANDOFF_READY
@@ -383,7 +383,7 @@ The canonical source progression is now:
 
 ```text
 WORKERCOORDINATOR_CLAIM_FENCE_BOUND
--> Master Records closure
+-> Master Records organization record
 TV_TVC_WARRANT_POLICY_VERIFIED
 -> required evidence TV_TVC_WARRANT_POLICY_VERIFICATION
 -> Master Records RECORDED + reconstruction PASS + required-evidence PASS + digest equality
@@ -398,7 +398,7 @@ PURPOSE_BOUND_WORKER_MATERIALIZED
 -> RETIRED
 ```
 
-The first lifecycle transition now uses the successful InTr Master Records receipt as its predecessor. TV/TVC remains credential authority, StegCore/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and Master Records remains custody/reconstruction authority.
+The first lifecycle transition now uses the successful InTr Master Records receipt as its predecessor. TV/TVC remains credential authority, StegCore/InTr remains transition authority, WorkerCoordinator remains claim/fence authority, and Master Records remains limited to organization records and reconstruction.
 
 No authentic resident execution is promoted by these merges. The resident execution connector was checked after the source repairs and reported no connected device. GitHub/CI therefore remains source validation only. The next authentic predicate is one same-run `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` producing claim/fence, TV/TVC, InTr, all four lifecycle transitions, post-retirement no-authority evidence, and records-only reconstruction from the same execution.
 
@@ -416,7 +416,7 @@ TV_TVC_WARRANT_POLICY_VERIFIED                         PRESENT
 STEGCORE_INTR_MATERIALIZATION_ADMITTED                 PRESENT
 PURPOSE_BOUND_WORKER_<phase> dynamic transition IDs    PRESENT
 MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED order PRESENT
-Master Records closure before each next phase          PRESENT
+Master Records organization record before each next phase          PRESENT
 InTr Master Records receipt as MATERIALIZED predecessor PRESENT
 continued_authority_after_retirement=false             PRESENT
 records_only=true final packet                         PRESENT
@@ -448,7 +448,7 @@ TV head c133e61e1bc4645760c110830077866198c99d0a
   tvc-artifact-exchange-integration-validation 35464038256 SUCCESS
 ```
 
-No authentic warrant is claimed. The TV/TVC resident credential remains required for the warrant-policy transition, but it is not a predecessor to WorkerCoordinator claim/fence creation. The first authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; after its Master Records closure, the same execution proceeds to TV/TVC warrant-policy verification.
+No authentic warrant is claimed. The TV/TVC resident credential remains required for the warrant-policy transition, but it is not a predecessor to WorkerCoordinator claim/fence creation. The first authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; after its Master Records organization record, the same execution proceeds to TV/TVC warrant-policy verification.
 
 
 ## TV/TVC Ed25519 execution-warrant bridge — Goal Prompt 18
@@ -465,7 +465,7 @@ validation: 35464198311 SUCCESS
 
 The merged bridge reuses TV/TVC resident `systemd LoadCredential` custody, issues only bounded Ed25519 `run_agent` warrants for `StegVerse-Labs/StegAgents`, binds the exact commit and runtime policy-bundle bytes, and exports only a secret-free warrant/public-key/policy receipt. It creates no GitHub signing authority, scheduler, dispatcher, runtime, device dependency, or replacement credential authority.
 
-No authentic TV/TVC warrant issuance receipt has yet been observed. That does not move warrant issuance ahead of the WorkerCoordinator claim/fence transition. The canonical order is fresh claim/fence -> Master Records closure -> TV/TVC warrant-policy verification -> Master Records closure -> StegCore/InTr -> lifecycle transitions.
+No authentic TV/TVC warrant issuance receipt has yet been observed. That does not move warrant issuance ahead of the WorkerCoordinator claim/fence transition. The canonical order is fresh claim/fence -> Master Records organization record -> TV/TVC warrant-policy verification -> Master Records organization record -> StegCore/InTr -> lifecycle transitions.
 
 
 ## Fully state-dependent four-case governed graph source — 2026-09-19
@@ -476,8 +476,8 @@ StegAgents PR #29 merged as `d518935020833b12045483c57d7877520d2a244c`. Each lif
 
 StegAgents PR #30 merged as `4880f10b9cbfa90df0c0614f10d775e5eef3e317`. It adds one explicit four-case state graph on the existing runtime:
 - Case 1 runs first.
-- Case 2 admission consumes Case 1's terminal RETIRED Master Records closure.
-- Case 3 admission consumes Case 2's terminal RETIRED Master Records closure.
+- Case 2 admission consumes Case 1's terminal RETIRED Master Records organization record.
+- Case 3 admission consumes Case 2's terminal RETIRED Master Records organization record.
 - Task 4 parent admission consumes Case 3's terminal closure through StegCore/InTr and Master Records.
 - Three distinct Task 4 worker requests branch simultaneously from that one parent closure.
 - Each Task 4 worker preserves the same per-phase Master Records predecessor rule.
@@ -500,9 +500,9 @@ Task 4 parent admission now uses the action `ADMIT_AND_ATOMICALLY_BIND_TASK4_THR
 - `active_without_all_three_bindings_possible=false`;
 - `child_binding_without_parent_admission_possible=false`;
 - all three child requests to match their parent-carried binding exactly;
-- all three children to consume the same Task 4 parent Master Records closure before their own governed lifecycle begins.
+- all three children to consume the same Task 4 parent Master Records organization record before their own governed lifecycle begins.
 
-The concurrency barrier remains after binding validation, so W4-A/W4-B/W4-C are siblings from one authenticated parent state rather than a serial chain. The terminal three-way join remains dependent on all three independently RETIRED Master Records closures.
+The concurrency barrier remains after binding validation, so W4-A/W4-B/W4-C are siblings from one authenticated parent state rather than a serial chain. The terminal three-way join remains dependent on all three independently RETIRED Master Records organization records.
 
 Exact-head validation for PR #31 passed:
 - CI run `35468161886`: SUCCESS.
@@ -521,9 +521,9 @@ HANDOFF_READY
 -> WORKERCOORDINATOR_CLAIM_FENCE_BOUND
 -> Master Records RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality
 -> TV_TVC_WARRANT_POLICY_VERIFIED
--> Master Records closure
+-> Master Records organization record
 -> STEGCORE_INTR_MATERIALIZATION_ADMITTED
--> Master Records closure
+-> Master Records organization record
 -> PURPOSE_BOUND_WORKER_MATERIALIZED
 -> PURPOSE_BOUND_WORKER_INVOCATION_STARTED
 -> PURPOSE_BOUND_WORKER_TASK_COMPLETED
@@ -573,7 +573,7 @@ Post-merge inspection confirms the exact resident request RESIDENT-EXEC-SDK-TT-P
 
 No repository-retained receipts were observed at receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json, receipts/sovereign-host/resident-targeted-execution.latest.json, or receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json. Repository search also found no retained PURPOSE_BOUND_WORKER_TASK4_THREE_WAY_JOIN receipt. The source worker registry does not establish a fresh Case 1 claim/fence for this task. Therefore the request has not been promoted as consumed and no downstream authentic runtime predicate is promoted.
 
-The execution frontier remains the existing resident path only: staged request -> resident consumer -> targeted WorkerCoordinator one-shot -> Case 1 claim/fence Master Records closure -> state-dependent graph. No substitute GitHub Actions run, Test3/Richard route, scheduler, dispatcher, authority plane, custody store, carrier, or device prerequisite is authorized.
+The execution frontier remains the existing resident path only: staged request -> resident consumer -> targeted WorkerCoordinator one-shot -> Case 1 claim/fence Master Records organization record -> state-dependent graph. No substitute GitHub Actions run, Test3/Richard route, scheduler, dispatcher, authority plane, custody store, carrier, or device prerequisite is authorized.
 
 
 ## SDK Test One manifest-only ingress reconciliation — 2026-09-19
@@ -582,7 +582,7 @@ StegVerse-org/StegVerse-SDK PR #276 merged as `a3a2039f907fe6499f32b79c7112c6be9
 
 Manifest Builder Source Validation `35480599985` and Evaluator Manifest Source Validation `35480599958` passed at the same exact head. The evaluator no longer supplies a separate worker request for Test One; after source-native input and processor-request construction, the canonical manifest is the sole variable execution input to the SDK processor route.
 
-Evidence ceiling remains unchanged: this is merged SDK/source execution evidence. It does not promote the authentic resident predicates for WorkerCoordinator claim/fence, TV/TVC warrant-policy verification, Interlock/InTr materialization admission, resident StegAgents execution, or per-transition canonical Master Records closure. The runtime frontier remains the existing authentic resident path.
+Evidence ceiling remains unchanged: this is merged SDK/source execution evidence. It does not promote the authentic resident predicates for WorkerCoordinator claim/fence, TV/TVC warrant-policy verification, Interlock/InTr materialization admission, resident StegAgents execution, or per-transition canonical Master Records organization record. The runtime frontier remains the existing authentic resident path.
 
 ## Goal Prompt 20 terminal source/integration reconciliation — 2026-09-20
 
@@ -595,7 +595,7 @@ Source/integration closure completed in this terminal prompt:
 - That GitHub result is not an authentic runtime failure because GitHub has no runtime authority and intentionally has no resident Universal InTr endpoint.
 - Tracing the resident carriage found one real source integration mismatch: the SDK had looked for `STEGVERSE_INTR_TRANSPORT_AUTHORIZATION_ID`, while the established resident path carries `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`. PR #288 repaired the SDK to reuse the established TVC relay authorization binding; no alias credential path or new authority was introduced.
 
-The source graph and shared ingress are therefore closed. Authentic completion remains false. The successor must execute the exact Test 1 manifest lineage through the existing resident `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` + `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` path and require, in order, `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, `TV_TVC_WARRANT_POLICY_VERIFIED`, `STEGCORE_INTR_MATERIALIZATION_ADMITTED`, and all four purpose-bound lifecycle transitions, with a Master Records closure after every transition satisfying RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality. Completion additionally requires replay PASS, reconstruction PASS, records-only terminal state, `continued_authority=false`, and a manifest receipt bound to the exact original manifest lineage.
+The source graph and shared ingress are therefore closed. Authentic completion remains false. The successor must execute the exact Test 1 manifest lineage through the existing resident `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` + `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID` path and require, in order, `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`, `TV_TVC_WARRANT_POLICY_VERIFIED`, `STEGCORE_INTR_MATERIALIZATION_ADMITTED`, and all four purpose-bound lifecycle transitions, with a Master Records organization record after every transition satisfying RECORDED + reconstruction PASS + required-evidence PASS + exact receipt/reconstruction digest equality. Completion additionally requires replay PASS, reconstruction PASS, records-only terminal state, `continued_authority=false`, and a manifest receipt bound to the exact original manifest lineage.
 
 Successor handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_TEST1_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md`.
 

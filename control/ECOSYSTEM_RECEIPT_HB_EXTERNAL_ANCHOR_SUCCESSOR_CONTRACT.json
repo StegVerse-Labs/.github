@@ -58,7 +58,7 @@
   },
   "invariants": [
     "HB remains synchronization/timing/freshness/liveness/correlation/observability only.",
-    "Master Records remains custody/reconstruction authority only.",
+    "Master Records remains limited to organization records and reconstruction only.",
     "External anchoring never grants execution, transition, admission, custody, credential, routing, publication, or governance authority.",
     "No historical HB-only receipt is retroactively promoted to externally anchored evidence.",
     "A confirmed external anchor must verify the exact checkpoint_commitment_sha256.",

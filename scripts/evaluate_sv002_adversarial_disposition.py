@@ -12,12 +12,20 @@ ALLOWED = {
 }
 
 
+ORGANIZATION_RECORD_VALID_FIELD = "master_records_organization_record_valid"
+#: Master Records boundary migration: fixtures written before the rename carry
+#: this legacy field. The evaluator accepts it as a fallback.
+LEGACY_ORGANIZATION_RECORD_VALID_FIELD = "master_records_custody_valid"
+
+
 def disposition(case):
+    if ORGANIZATION_RECORD_VALID_FIELD not in case and LEGACY_ORGANIZATION_RECORD_VALID_FIELD in case:
+        case = {**case, ORGANIZATION_RECORD_VALID_FIELD: case[LEGACY_ORGANIZATION_RECORD_VALID_FIELD]}
     required = {
         "output_correct",
         "authorized_execution",
         "observation_valid",
-        "master_records_custody_valid",
+        "master_records_organization_record_valid",
         "reconstruction_valid",
         "receipt_lineage_valid",
     }
@@ -27,7 +35,7 @@ def disposition(case):
 
     if not case["receipt_lineage_valid"]:
         return {"disposition":"FAIL_CLOSED","reason":"INVALID_RECEIPT_LINEAGE"}
-    if not case["master_records_custody_valid"]:
+    if not case["master_records_organization_record_valid"]:
         return {"disposition":"NOT_ESTABLISHED","reason":"CUSTODY_NOT_ESTABLISHED"}
     if not case["reconstruction_valid"]:
         return {"disposition":"NOT_ESTABLISHED","reason":"RECONSTRUCTION_NOT_ESTABLISHED"}

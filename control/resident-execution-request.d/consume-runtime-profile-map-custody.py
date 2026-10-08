@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Consume the bounded Master Records custody request for a runtime-profile map cycle.
+"""Consume the bounded Master Records organization record request for a runtime-profile map cycle.
 
 This requires an already-generated custody input package and an already-local
 master-records/orchestration checkout. It performs no network fetch, credential use,
 HB/oscillator progression, task-state transition, claim/fence minting, or runtime
-selection. It invokes only the Master Records custody consumer against exact local
+selection. It invokes only the Master Records organization record consumer against exact local
 artifacts, then invokes the non-authorizing reconciliation consumer when available.
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ REQUEST_REL = Path("control/resident-execution-request.d/runtime-profile-map-cus
 PACKAGE_REL = Path("receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json")
 TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
-TARGET_MODE = "RUNTIME_PROFILE_MAP_MASTER_RECORDS_CUSTODY"
+TARGET_MODE = "RUNTIME_PROFILE_MAP_MASTER_RECORDS_ORGANIZATION_RECORD"
 TARGET_ENTRYPOINT = "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"
 MR_CONSUMER_REL = Path("scripts/ingest_runtime_profile_map_custody.py")
 RECON_CONSUMER_REL = Path("control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py")
@@ -137,7 +137,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
     if not consumer.is_file():
         return {
             "schema": "stegverse.runtime-profile-map-custody-consumption/v1",
-            "state": "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED",
+            "state": "MASTER_RECORDS_ORGANIZATION_RECORD_CONSUMER_NOT_MATERIALIZED",
             "task_id": TARGET_TASK,
             "master_records_root": str(mr_root),
             "authority_effect": "NONE_OBSERVATION_ONLY"
@@ -195,7 +195,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
         "oscillator_grants_execution_authority": False,
         "claim_or_fence_minted": False,
         "task_coordination_state_changed": False,
-        "authority_effect": "NONE_MASTER_RECORDS_CUSTODY_AND_RECONCILIATION_CHAIN_ONLY"
+        "authority_effect": "NONE_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONCILIATION_CHAIN_ONLY"
     }
     atomic_json(runtime / CONSUMPTION_REL, receipt)
     return receipt
@@ -208,7 +208,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result.get("state") in {"NO_REQUEST", "WAITING_FOR_CUSTODY_PACKAGE", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+    return 0 if result.get("state") in {"NO_REQUEST", "WAITING_FOR_CUSTODY_PACKAGE", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_ORGANIZATION_RECORD_CONSUMER_NOT_MATERIALIZED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
 
 
 if __name__ == "__main__":

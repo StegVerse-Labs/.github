@@ -119,7 +119,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             }
         fake.build_state_receipt=build_state_receipt
         fake.submit_state_receipt=submit_state_receipt
-        def require_predecessor_master_records_closure(receipt_sha256, *, successor_transition_id):
+        def require_predecessor_master_records_organization_record(receipt_sha256, *, successor_transition_id):
             self.assertEqual(receipt_sha256,"9"*64)
             self.assertEqual(successor_transition_id,"RTC-SDK-RETURN-006")
             closure={
@@ -133,14 +133,14 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
               "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
             }
             return "sha256:"+"9"*64,[{
-              "evidence_id":"predecessor-master-records-closure:RTC-SDK-RETURN-006",
-              "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+              "evidence_id":"predecessor-master-records-organization-record:RTC-SDK-RETURN-006",
+              "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
               "origin_transition_id":"RTC-SDK-RETURN-006",
               "encoding":"canonical-json",
               "sha256":"8"*64,
               "content":closure,
             }]
-        fake.require_predecessor_master_records_closure=require_predecessor_master_records_closure
+        fake.require_predecessor_master_records_organization_record=require_predecessor_master_records_organization_record
         previous=sys.modules.get("canonical_state_transition_custody")
         sys.modules["canonical_state_transition_custody"]=fake
         try:
@@ -164,7 +164,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["resulting_state_ref_or_hash"],consumer.sha(binding))
             self.assertEqual(captured["prior_state_ref_or_hash"],"sha256:"+"9"*64)
             self.assertEqual(len(captured["required_evidence_manifest"]),3)
-            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_CLOSURE")
+            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD")
             self.assertEqual(captured["required_evidence_manifest"][0]["content"]["receipt_sha256"],"9"*64)
             self.assertEqual(captured["required_evidence_manifest"][1]["content"],binding)
             self.assertEqual(captured["required_evidence_manifest"][1]["evidence_type"],"SDK_PUBLISHER_RETURN_BINDING")
@@ -181,11 +181,11 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
         fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
-        fake.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (
+        fake.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (
             "sha256:"+"9"*64,
             [{
-              "evidence_id":"predecessor-master-records-closure:RTC-SDK-RETURN-006",
-              "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+              "evidence_id":"predecessor-master-records-organization-record:RTC-SDK-RETURN-006",
+              "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
               "origin_transition_id":"RTC-SDK-RETURN-006",
               "encoding":"canonical-json",
               "sha256":"8"*64,
@@ -217,7 +217,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 req["predecessor_master_records_receipt_sha256"]="9"*64
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records custody not closed"):
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records organization record not closed"):
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
                     )
@@ -295,11 +295,11 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
           "master_record_ref":"master-record:state-transition:sha256:"+"a"*64,
           "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
         }
-        custody.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (
+        custody.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (
           "sha256:"+receipt_sha256,
           [{
-            "evidence_id":"predecessor-master-records-closure:"+successor_transition_id,
-            "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "evidence_id":"predecessor-master-records-organization-record:"+successor_transition_id,
+            "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
             "origin_transition_id":successor_transition_id,
             "encoding":"canonical-json",
             "sha256":consumer.sha(predecessor_closure).split(":",1)[1],
@@ -355,7 +355,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["transition_sequence"],2)
             self.assertEqual(captured["prior_state_ref_or_hash"],"sha256:"+"a"*64)
             self.assertEqual(len(captured["required_evidence_manifest"]),3)
-            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_CLOSURE")
+            self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD")
             self.assertEqual(captured["required_evidence_manifest"][0]["content"]["transition_id"],"RTC-SDK-RETURN-006")
             self.assertEqual(captured["required_evidence_manifest"][1]["evidence_type"],"RTC_STEGVERSE_EGRESS_007_TRANSITION")
             self.assertEqual(captured["required_evidence_manifest"][2]["content"],binding)
@@ -375,7 +375,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
 
     def test_rtc007_reconstructs_rtc006_at_exact_emission_boundary(self):
         source=open(consumer.__file__,encoding="utf-8").read()
-        self.assertIn('require_predecessor_master_records_closure(',source)
+        self.assertIn('require_predecessor_master_records_organization_record(',source)
         self.assertIn('successor_transition_id="RTC-STEGVERSE-EGRESS-007"',source)
         self.assertIn('closure.get("transition_id")!="RTC-SDK-RETURN-006"',source)
         self.assertIn('required_evidence=[\n      *predecessor_evidence,',source)
@@ -419,11 +419,11 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
           "receipt_sha256":"a"*64,
           "reconstructed_receipt_sha256":"a"*64,
         }
-        custody.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (
+        custody.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (
           "sha256:"+receipt_sha256,
           [{
-            "evidence_id":"predecessor-master-records-closure:"+successor_transition_id,
-            "evidence_type":"PREDECESSOR_MASTER_RECORDS_CLOSURE",
+            "evidence_id":"predecessor-master-records-organization-record:"+successor_transition_id,
+            "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
             "origin_transition_id":successor_transition_id,
             "encoding":"canonical-json",
             "sha256":consumer.sha(wrong).split(":",1)[1],
@@ -476,7 +476,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: kwargs
         fake.submit_state_receipt=lambda receipt: (_ for _ in ()).throw(AssertionError("submit must not run without canonical predecessor"))
-        fake.require_predecessor_master_records_closure=lambda receipt_sha256, *, successor_transition_id: (None,[])
+        fake.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (None,[])
         previous=sys.modules.get("canonical_state_transition_custody")
         sys.modules["canonical_state_transition_custody"]=fake
         try:
@@ -492,7 +492,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                   "sdk_return_binding_observed":True,
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"canonical predecessor Master Records closure required"):
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"canonical predecessor Master Records organization record required"):
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization
                     )

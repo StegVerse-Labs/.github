@@ -57,7 +57,7 @@ Existing candidate surfaces were re-observed rather than replaced:
 
 Therefore there is no presently observed existing StegVerse sovereign public execution surface that can carry an authentic Elyria two-way external request/response without circularly promoting another lane's missing evidence.
 
-No governed Elyria round trip was executed, and no Elyria Master Records custody receipt is claimed.
+No governed Elyria round trip was executed, and no Elyria Master Records organization record receipt is claimed.
 
 ## Authority separation
 
@@ -91,7 +91,7 @@ It remains unresolved.
 2. Or reuse an existing StegVerse sovereign public execution surface only after that surface independently proves its own authentic public route/TLS/runtime predicates.
 3. Then execute exactly one governed Elyria round trip through the already-selected reusable components.
 4. Preserve exact task/run identity and foreign response semantics.
-5. Require canonical Master Records custody/readback before satisfying the final predicate.
+5. Require canonical Master Records organization record/readback before satisfying the final predicate.
 6. Do not promote source, CI, local/test, synthetic, or another task's unresolved runtime evidence into authentic Elyria transport evidence.
 
 ## Manual work
@@ -130,14 +130,14 @@ The remaining Elyria completion predicate is unchanged:
 AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for custody/readback if an authentic Elyria network response is produced.
+The next admissible work is to trace only the existing SDK/Interlock-InTr external-adapter transport path to its first concrete missing predicate, then use Master Records for organization records/readback if an authentic Elyria network response is produced.
 
 
 ## Generic transport trace — 2026-09-21
 
 The exact active path was traced after removing the Coinbase/KV detour.
 
-`stegverse/elyria_framework_adapter.py` is intentionally translation-only. It validates Elyria request/response semantics and explicitly requires a caller-injected transport that reaches an Elyria public surface. It does not create transport authority, Interlock/InTr protocol, credentials, receipts, or Master Records custody.
+`stegverse/elyria_framework_adapter.py` is intentionally translation-only. It validates Elyria request/response semantics and explicitly requires a caller-injected transport that reaches an Elyria public surface. It does not create transport authority, Interlock/InTr protocol, credentials, receipts, or Master Records organization record.
 
 No Elyria endpoint binding was found in the current SDK source or canonical coordination state. Fresh public discovery likewise did not identify an owner-operated callable assessment base URL.
 

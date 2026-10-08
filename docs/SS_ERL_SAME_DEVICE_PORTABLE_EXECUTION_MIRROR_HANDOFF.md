@@ -16,7 +16,7 @@ Updated: 2026-09-13
 
 This component owned only the missing same-device source exposure for the already-built ERL manifest -> Universal Interlock/InTr -> DEVICE_KV path. It is now source-complete.
 
-It does not own ERL semantics, Interlock/InTr authority, WorkerCoordinator authority, KV/SKAP authority, credential authority, provider execution, Master Records custody, or parent completion.
+It does not own ERL semantics, Interlock/InTr authority, WorkerCoordinator authority, KV/SKAP authority, credential authority, provider execution, Master Records organization record, or parent completion.
 
 ## Source completion evidence
 
@@ -135,7 +135,7 @@ Authentic invocation must still establish observed runtime state for:
 - terminal KV exact-byte readback;
 - complete chain validation;
 - provider-proof binding without provider replay;
-- Master Records custody acceptance and reconstruction confirmation.
+- Master Records organization record acceptance and reconstruction confirmation.
 
 No runtime completion, deployment completion, or Master Records completion is claimed by this component.
 

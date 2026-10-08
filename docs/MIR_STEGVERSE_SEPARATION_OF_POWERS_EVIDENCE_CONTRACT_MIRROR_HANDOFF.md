@@ -3,7 +3,7 @@
 Updated: 2026-09-17
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / GOAL PROMPT 20 DECOMPOSED / CANONICAL MASTER RECORDS STATE-TRANSITION CUSTODY SUCCESSOR REGISTERED / AILEASH WITNESS EVIDENCE CHILD REGISTERED`
+Status: `ACTIVE / GOAL PROMPT 20 DECOMPOSED / CANONICAL MASTER RECORDS state-transition organization records SUCCESSOR REGISTERED / AILEASH WITNESS EVIDENCE CHILD REGISTERED`
 
 ## Canonical state
 
@@ -20,7 +20,7 @@ EVENT
 -> execution-time identity
 -> governed transition consequence
 -> state receipts
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 ```
 
 The MIR lane must duplicate that event-triggered order before adding MIR-specific Goal/COSV, destination-profile, RTC-007/008/009, and governed-return requirements. WorkerCoordinator task control must not become a new event-creation prerequisite merely because MIR is registered as a canonical task.
@@ -51,7 +51,7 @@ observe current state
 -> continue to next governed transition
 ```
 
-Master Records remains custody/reconstruction only. It may not grant transition, execution, credential, route, or governance authority and may not infer missing authorization from downstream evidence.
+Master Records remains limited to organization records and reconstruction only. It may not grant transition, execution, credential, route, or governance authority and may not infer missing authorization from downstream evidence.
 
 ## MIR diagnostic reclassification
 
@@ -75,7 +75,7 @@ That successor owns:
 4. MIR adoption without task-specific probe fanout as the primary custody path;
 5. validation against the successful StegVerse-002 event-driven semantics;
 6. propagation to other governed StegVerse transition consumers;
-7. authentic runtime proof that each observed governed transition reaches Master Records custody/reconstruction.
+7. authentic runtime proof that each observed governed transition reaches Master Records organization records and reconstruction.
 
 The original separation-of-powers goal remains the parent architecture/evidence-contract lane; implementation adoption proceeds under the successor rather than extending this goal beyond Prompt 20.
 

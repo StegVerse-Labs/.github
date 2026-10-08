@@ -49,7 +49,7 @@ existing Task Registry + RTC-MANIFEST-001 (exact invocation/manifest/purpose)
  -> terminal StegBrowser disposable session destruction; retain node identity
  -> scoped organization batch when closure policy requires
  -> independent Master Records batch receipt / cross-organization reconstruction,
-    OR immediate Master Records custody ONLY for explicit direct-ack transition contract
+    OR immediate Master Records organization record ONLY for explicit direct-ack transition contract
 ```
 
 **Boundary of provider-specific adapters:** StegBrowser retains temporary browser/session identity, lease scope, optional browser credential-session mechanics, and terminal destruction. The provider-specific modules live at the already-existing LLM Adapter execution boundary, receiving an exact admitted provider request and only execution-scoped TV/TVC+SKAP secret. Each adapter terminates when it returns an actual validated provider result, native usage measurements and a normalized non-secret response commitment (or an exact provider-failure disposition). Control then returns to the StegBrowser/session and organization recording path, which destroys ephemeral session material after result/failure handling. The originating organization owns local task and worker continuity and receipt replay. The external model weights do not become local StegBrowser components. Optional browser-UI automation does not silently substitute for the governed API provider contract.
@@ -70,7 +70,7 @@ Current Registry generation 243 was re-read. The task and emitted COSV are uncha
 
 Existing Adapter PR #351 was reused. Local commit `b6b09b7c` repairs wire/envelope request-hash and alias drift that prevented provider results from composing with the existing distributed Chat executor. It retains original admitted wire-response commitments, InTr receipt hashes and usage-event references. 115 focused offline tests and the existing mutation-safety gate passed. Automatic approval review rejected publication to the existing branch as insufficiently authorized external publication; GitHub readback still has #351 at `ddcaa3e4ad72befef601f2c99df03687e6cc191f`. The repair and central report are local/unpublished, not merged or deployed.
 
-Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records closure or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
+Source and fixture validation do not prove a provider call, admitted runtime, actual browser destruction, organization replay, Master Records organization record or propagation. Site-to-distributed-executor integration and Grok/Gemini provider edges remain unfinished. Existing #325/#327 overlap under #324, and #283 owns sandbox coordination. Do not create replacement tasks/implementations. No device action or credentials are requested. The remaining user action is explicit permission to publish the exact reviewed source commits; no alternative write path is permitted after the review rejection.
 
 Session Prompt Count: 1. Goal Prompt Count: historical total UNVERIFIED; +1 qualifying prompt in this session. No reset or guessed cumulative total.
 
@@ -121,7 +121,7 @@ The execution under test is:
 
 The packet carries the endpoint receipts. The ephemeral StegBrowser must attest that it read the admitted manifest, acted/routed only as manifested, appended its INGRESS/EGRESS receipts, and directed the next manifested leg. The final origin INGRESS attests receipt of the returned endpoint evidence. Each worker's manifested response marker remains distinct so response substitution across sessions fails closed.
 
-StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-only transport, ledger, scheduler, runtime, or second device. The completed four-receipt packet is intended for the already-existing organization/Master Records custody path. Source tests establish the packet/profile contract only; authentic Test 5 execution still requires actual WorkerCoordinator/InTr/provider/session/custody transitions.
+StegBrowser PR #38 is the current Test 5 source lane. It does not create a test-only transport, ledger, scheduler, runtime, or second device. The completed four-receipt packet is intended for the already-existing organization/Master Records organization record path. Source tests establish the packet/profile contract only; authentic Test 5 execution still requires actual WorkerCoordinator/InTr/provider/session/custody transitions.
 
 
 ## Test 5 resident run-manifest carriage — 2026-09-28
@@ -147,7 +147,7 @@ Test 5 is now data in the generic request: two StegBrowser/llm.v1 manifests with
 
 Tracing the merged generic SDK request through Universal InTr identified a capability-dispatch fallthrough: the shared `SDK:ManifestStateTransition` consumer admitted arbitrary worker-bound graphs but then unconditionally searched for the purpose-worker Test-1 receipt and assembled `_assemble_purpose_result`. A valid `stegbrowser/llm.v1` graph therefore had no capability-correct return path.
 
-The repaired profile no longer sends non-purpose capabilities through the Test-1 receipt assembler. Until an existing manifest-selected StegBrowser/LLM operation owner is explicitly bound, the admitted profile retains an actionable `FAIL_CLOSED` at `UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH`, transition `INGRESS_ADMITTED`, failed predicate `MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND`. It does not claim provider execution or Organization/Master Records closure. The successor is to bind the existing operation owner, not create a Test-5 executor.
+The repaired profile no longer sends non-purpose capabilities through the Test-1 receipt assembler. Until an existing manifest-selected StegBrowser/LLM operation owner is explicitly bound, the admitted profile retains an actionable `FAIL_CLOSED` at `UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH`, transition `INGRESS_ADMITTED`, failed predicate `MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND`. It does not claim provider execution or Organization/Master Records organization record. The successor is to bind the existing operation owner, not create a Test-5 executor.
 
 
 ## Generic Test 5 exact-dispatch repair — 2026-09-28

@@ -108,7 +108,7 @@
     "workercoordinator_claim_fence_only": true,
     "credential_authority": "TV/TVC",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_custody_required_for_governed_transitions": true,
+    "master_records_organization_record_required_for_governed_transitions": true,
     "provider_retirement_authorized": false,
     "no_second_device": true
   },

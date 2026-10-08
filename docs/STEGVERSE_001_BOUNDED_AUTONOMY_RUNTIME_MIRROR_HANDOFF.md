@@ -47,7 +47,7 @@ Task Registry work intent / coordination: data/canonical-task-registry.json gene
 WorkerCoordinator claim / fence authority: control/worker-registry.json / WorkerCoordinator
 TV/TVC credential and bounded-lease authority: TV/TVC
 Interlock/InTr governed transition admission: root Universal InTr
-Master Records custody / reconstruction: master-records/orchestration
+Master Records organization record / reconstruction: master-records/orchestration
 HB execution authority: NONE
 HB transition authority: NONE
 Site execution/custody authority: NONE
@@ -88,7 +88,7 @@ canonical G23 retained / uniquely recovered
 -> current registered Node / Interlock binding
 -> fresh root Universal InTr decision for exact custody transition
 -> exact ALLOW required
--> existing Master Records custody/reconstruction
+-> existing Master Records organization records and reconstruction
 -> reconstruction PASS
 -> independently retryable SV002 continuation
 ```
@@ -128,8 +128,8 @@ The following predicates remain fail-closed until authentic current-device evide
 
 ```text
 v14 current-device consumption: NOT YET CLAIMED
-fresh root-InTr ALLOW for SV001 Master Records custody: NOT YET CLAIMED
-Master Records custody PASS: NOT YET CLAIMED
+fresh root-InTr ALLOW for SV001 Master Records organization record: NOT YET CLAIMED
+Master Records organization record PASS: NOT YET CLAIMED
 Master Records reconstruction PASS: NOT YET CLAIMED
 retained same-execution downstream continuation chain: NOT YET CLAIMED
 SV002 adversarial/public observation disposition: NOT YET CLAIMED
@@ -161,7 +161,7 @@ Retry may occur only through the already-existing current-device/page/resume/run
 
 ## Source history retained by Git
 
-Historical source/control work remains preserved in repository history, including the original runtime source merge, TV/TVC lease-carrier work, WorkerCoordinator checkout/fence controls, one-shot progression, runtime observability registration, Master Records custody source, and automatic evidence-chain continuation. This handoff intentionally presents the current canonical state rather than repeating stale pre-terminal status blocks.
+Historical source/control work remains preserved in repository history, including the original runtime source merge, TV/TVC lease-carrier work, WorkerCoordinator checkout/fence controls, one-shot progression, runtime observability registration, Master Records organization record source, and automatic evidence-chain continuation. This handoff intentionally presents the current canonical state rather than repeating stale pre-terminal status blocks.
 
 Key historical source references remain:
 
@@ -184,7 +184,7 @@ The material runtime behavior, HB32 non-authority semantics, v14 propagation beh
 ```text
 existing current-device v14 consumption
 -> fresh root-InTr ALLOW or DENY
--> on ALLOW: existing Master Records custody/reconstruction of canonical G23
+-> on ALLOW: existing Master Records organization records and reconstruction of canonical G23
 -> reconstruction PASS
 -> existing SV002 continuation
 ```

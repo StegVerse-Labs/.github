@@ -726,7 +726,7 @@ external local TV/TVC-governed autonomy lease
 -> bounded plan selection
 -> local carrier/worker state observation
 -> local receipt emission
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 -> SV002 adversarial observation
 ```
 
@@ -753,7 +753,7 @@ Master Records reconstruction: NOT OBSERVED
 SV002 disposition: NOT OBSERVED
 ```
 
-This is source completion only. It creates no autonomy lease, runtime authority, execution proof, Master Records custody, SV002 disposition, sovereignty, credential authority, or GitHub-token runtime authority.
+This is source completion only. It creates no autonomy lease, runtime authority, execution proof, Master Records organization record, SV002 disposition, sovereignty, credential authority, or GitHub-token runtime authority.
 
 
 ## 2026-09-02 SV001 TVC lease acquisition source closure

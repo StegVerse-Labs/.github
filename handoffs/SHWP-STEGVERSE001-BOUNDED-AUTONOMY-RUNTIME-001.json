@@ -132,7 +132,7 @@
     "same_device_stegos_task_projection_release": "StegVerse-Labs/Site#952@6a08d993af9814cc6d20723f8a1e16957d3fe8d4",
     "portable_workercoordinator_source": "StegVerse-Labs/.github#862@bb079758aaf3e36887c1db085aa82b96c9914a53",
     "portable_tvc_lease_source": "StegVerse-Labs/TVC#289",
-    "current_iphone_master_records_custody_source": "master-records/orchestration#73@9b617459ec0b9dfceb894ac19495ee72106d1e94",
+    "current_iphone_master_records_organization_record_source": "master-records/orchestration#73@9b617459ec0b9dfceb894ac19495ee72106d1e94",
     "current_iphone_master_records_site_projection": "StegVerse-Labs/Site#956@0b4cd7dc13cb43ffa9feec3c4badc21524efccd2",
     "current_iphone_master_records_site_claim_release": "StegVerse-Labs/Site#957@9e3582b2e59f953d653f582f39b22d55235845bd",
     "current_iphone_master_records_full_proof_import_release": "StegVerse-Labs/Site#959@11ffa8fc712569a07edb45397baf2e3427947294",
@@ -165,7 +165,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION, then machine-governed Master Records custody/reconstruction of canonical G23; after reconstruction PASS, continue SV002. No human custody commit and no SV001 reexecution.",
+    "next_authorized_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION, then machine-governed Master Records organization records and reconstruction of canonical G23; after reconstruction PASS, continue SV002. No human custody commit and no SV001 reexecution.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -208,26 +208,26 @@
   },
   "block": {
     "dependency_class": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE",
-    "problem_statement": "Canonical lineage is resolved: G23/81a078... is the custody-eligible terminal execution and G24/6bcc1976... is retained duplicate non-custodial evidence. Site propagation is not an admission gate for this machine-owned transition. The remaining predicate is contemporaneous Interlock/InTr governance followed by canonical Master Records custody/reconstruction of G23.",
+    "problem_statement": "Canonical lineage is resolved: G23/81a078... is the custody-eligible terminal execution and G24/6bcc1976... is retained duplicate non-custodial evidence. Site propagation is not an admission gate for this machine-owned transition. The remaining predicate is contemporaneous Interlock/InTr governance followed by canonical Master Records organization records and reconstruction of G23.",
     "solution_required": false,
     "may_remain_blocked": false,
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
-    "executable_entrypoint": "ENTITY_MACHINE_GOVERNANCE_LOOP -> Master Records custody/reconstruction",
+    "next_solution_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION",
+    "executable_entrypoint": "ENTITY_MACHINE_GOVERNANCE_LOOP -> Master Records organization records and reconstruction",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone_COMPLETED",
       "tvc_portable_sv001_single_cycle_lease_issue_COMPLETED",
       "sv001_external_resident_task_execution_current_iphone_COMPLETED",
-      "contemporaneous_interlock_intr_governance_for_sv001_master_records_custody_and_reconstruction",
-      "master_records_current_iphone_custody_and_reconstruction",
+      "contemporaneous_interlock_intr_governance_for_sv001_master_records_organization_record_and_reconstruction",
+      "master_records_current_iphone_organization_record_and_reconstruction",
       "sv002_adversarial_observation_and_disposition"
     ],
     "machine_observable_release_condition": "Canonical G23 retained -> current InTr governance ALLOW -> Master Records reconstruction PASS -> SV002 disposition.",
     "human_action_note": "No user custody mutation is authorized or required. The former IPHONE-MR-SV001-CUSTODY-001 admission is superseded by the machine-owned transition classification.",
     "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_PERFORM_CURRENT_IPHONE_MACHINE_GOVERNANCE_OR_DEVICE_LOCAL_MASTER_RECORDS_EXECUTION",
-    "executable_command": "ENTITY_MACHINE_GOVERNANCE_LOOP for SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+    "executable_command": "ENTITY_MACHINE_GOVERNANCE_LOOP for SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION",
     "not_work": [
       "watch for receipt",
       "wait for evidence",
@@ -238,7 +238,7 @@
     ],
     "expected_execution_results": [
       "current Interlock/InTr governance ALLOW or DENY is retained",
-      "ALLOW permits canonical Master Records custody/reconstruction of G23",
+      "ALLOW permits canonical Master Records organization records and reconstruction of G23",
       "reconstruction PASS permits independent SV002 continuation"
     ],
     "other_machine_required": false,
@@ -250,7 +250,7 @@
     "canonical_projector": "scripts/project_hb_runtime_presence.py",
     "active_resident_local_extension_owner": "StegVerse-Labs/.github#814",
     "consumer_lane": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-    "current_missing_runtime_predicate": "master_records_current_iphone_custody_reconstruction",
+    "current_missing_runtime_predicate": "master_records_current_iphone_organization_record_reconstruction",
     "predicates": {
       "resident_process_alive_supervised": {
         "source": "shared resident-presence / direct runtime activation evidence",
@@ -288,8 +288,8 @@
         "source": "CURRENT_USER_IPHONE TVC portable SV001 issuance receipt (StegVerse-Labs/TVC#289)",
         "observed": true
       },
-      "master_records_current_iphone_custody_reconstruction": {
-        "source": "CURRENT_USER_IPHONE machine-governed Master Records custody/reconstruction of canonical G23 under contemporaneous Interlock/InTr governance",
+      "master_records_current_iphone_organization_record_reconstruction": {
+        "source": "CURRENT_USER_IPHONE machine-governed Master Records organization records and reconstruction of canonical G23 under contemporaneous Interlock/InTr governance",
         "observed": false
       }
     },

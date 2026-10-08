@@ -6,12 +6,12 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-OBSERVATION",
-    "objective": "Observe an authentic sovereign-runtime reference ENFORCED boundary using the merged Universal Governance, Universal InTr, StegGate deterministic execution and Master Records custody paths without overclaiming a real external-system activation.",
+    "objective": "Observe an authentic sovereign-runtime reference ENFORCED boundary using the merged Universal Governance, Universal InTr, StegGate deterministic execution and Master Records organization record paths without overclaiming a real external-system activation.",
     "success_predicates": [
       "reference_enforced_boundary_observed=true",
       "bypass_negative_control_passed=true",
       "governed_target_mutation_count=1",
-      "master_records_custody_accepted=true",
+      "master_records_organization_record_accepted=true",
       "real_external_system_enforced_activation=false",
       "credential_authority=TV/TVC",
       "github_token_used=false",
@@ -22,7 +22,7 @@
       "non-TV/TVC credential/token required or forwarded",
       "target mutation escapes bound-state root",
       "bypass negative control changes target state",
-      "Master Records custody authority escalation",
+      "Master Records organization record authority escalation",
       "reference proof reported as real external activation"
     ],
     "successor_policy": "INHERIT_OR_NARROW",
@@ -80,7 +80,7 @@
       "universal_governance_reference_execution",
       "bounded_target_mutation",
       "consequence_evidence_validation",
-      "master_records_custody_validation",
+      "master_records_organization_record_validation",
       "bypass_negative_control"
     ],
     "worker": "workers/universal_governance_enforced_reference_worker.py",
@@ -121,10 +121,10 @@
       "UNIVERSAL_GOVERNANCE_REFERENCE_ENFORCED_BOUNDARY_OBSERVED",
       "reference_enforced_boundary_observed=true",
       "bypass_negative_control_passed=true",
-      "master_records_custody_accepted=true",
+      "master_records_organization_record_accepted=true",
       "real_external_system_enforced_activation=false"
     ],
-    "next_authorized_action": "On an eligible non-hosted sovereign runtime with exact locally materialized StegCore and master-records/core-lite source, WorkerCoordinator may bind a fresh collision-safe claim and execute the registered bounded process adapter. Complete only after reference-boundary, bypass-negative-control and Master Records custody predicates all pass."
+    "next_authorized_action": "On an eligible non-hosted sovereign runtime with exact locally materialized StegCore and master-records/core-lite source, WorkerCoordinator may bind a fresh collision-safe claim and execute the registered bounded process adapter. Complete only after reference-boundary, bypass-negative-control and Master Records organization record predicates all pass."
   },
   "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json",
   "admissible_existence": {

@@ -99,7 +99,12 @@ def _private_write(path: Path, value: dict[str, Any]) -> str:
     return digest
 
 
-def _closed_master_records(value: Any, label: str) -> dict[str, Any]:
+#: Master Records boundary migration: governed attempts written before the rename carry these legacy fields.
+LEGACY_INTR_ORGANIZATION_RECORD_FIELD = "intr_master_records_closure"
+LEGACY_PREDECESSOR_ORGANIZATION_RECORD_FIELD = "predecessor_master_records_closure"
+
+
+def _recorded_master_records(value: Any, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(label + "_MISSING")
     if value.get("state") != "RECORDED":
@@ -126,8 +131,12 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
         raise ValueError("GOVERNED_ATTEMPT_DISPOSITION_INVALID")
     if attempt.get("authentic_intr_disposition_observed") is not True:
         raise ValueError("GOVERNED_ATTEMPT_INTR_EVIDENCE_NOT_OBSERVED")
-    intr_closure = _closed_master_records(attempt.get("intr_master_records_closure"), "INTR_MASTER_RECORDS_CLOSURE")
-    predecessor = _closed_master_records(attempt.get("predecessor_master_records_closure"), "PREDECESSOR_MASTER_RECORDS_CLOSURE")
+    intr_closure = _recorded_master_records(
+        attempt.get("intr_master_records_organization_record", attempt.get(LEGACY_INTR_ORGANIZATION_RECORD_FIELD)),
+        "INTR_MASTER_RECORDS_ORGANIZATION_RECORD")
+    predecessor = _recorded_master_records(
+        attempt.get("predecessor_master_records_organization_record", attempt.get(LEGACY_PREDECESSOR_ORGANIZATION_RECORD_FIELD)),
+        "PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD")
     request = attempt.get("readback_request")
     if not isinstance(request, dict):
         raise ValueError("GOVERNED_ATTEMPT_READBACK_REQUEST_MISSING")

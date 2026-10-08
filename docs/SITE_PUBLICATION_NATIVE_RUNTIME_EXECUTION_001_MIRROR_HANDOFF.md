@@ -86,7 +86,7 @@ This supersedes the former manual environment-binding step as the candidate iden
 6. Execute one authentic bounded `EVENT_EPHEMERAL` publication lease through the canonical StegOS/InTr runtime owner.
 7. Independently observe `/intr/profile`, exact HTTP byte/path hashes, candidate evidence export, and lease closure.
 8. Separately admit the final publication transition through Interlock/InTr.
-9. Retain publication evidence through Master Records custody/reconstruction.
+9. Retain publication evidence through Master Records organization records and reconstruction.
 10. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public-content equivalence when applicable.
 
 No preceding receipt grants the authority required by a later step.

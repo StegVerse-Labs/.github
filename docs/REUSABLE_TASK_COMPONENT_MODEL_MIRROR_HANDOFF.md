@@ -50,7 +50,7 @@ Runtime subject, node, transport, Secure Enclave, or device identity never becom
 
 ## Consumer reconciliation
 
-`SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004` remains the active Goal Task and retains COSV `71000000100110`. Its runtime handoff remains runtime truth. The task must reuse the merged transport family and existing runtime-observation, execution-materialization, credential/session, evidence-validation, and Master Records custody/reconstruction owners before adding any task-specific machinery.
+`SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004` remains the active Goal Task and retains COSV `71000000100110`. Its runtime handoff remains runtime truth. The task must reuse the merged transport family and existing runtime-observation, execution-materialization, credential/session, evidence-validation, and Master Records organization records and reconstruction owners before adding any task-specific machinery.
 
 The long handoff-only execution chain is no longer the primary architecture representation. It is replaced conceptually by selected reusable components plus task-specific completion predicates. Historical evidence is preserved.
 

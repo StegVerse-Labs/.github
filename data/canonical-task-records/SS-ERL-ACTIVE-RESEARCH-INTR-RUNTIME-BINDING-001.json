@@ -155,7 +155,7 @@
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
     "AUTHENTIC_THREE_HOP_RECEIPT_CHAIN_OBSERVED",
     "TERMINAL_KV_RECEIPT_BOUND_TO_EXISTING_PROVIDER_READBACK_PROOF",
-    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED",
+    "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED",
     "NO_SYNTHETIC_RECEIPT_PROMOTED_TO_RUNTIME_EVIDENCE"
   ],
   "runtime_requirements": {
@@ -168,7 +168,7 @@
       "exact_terminal_full_intent_identity_continuity",
       "durable_terminal_kv_readback",
       "existing_provider_proof_binding",
-      "master_records_custody_reconstruction"
+      "master_records_organization_record_reconstruction"
     ],
     "environment": "CANONICAL_PORTABLE_STEGOS_PLUS_KV",
     "current_surface_label": "CURRENT_USER_IPHONE",
@@ -191,7 +191,7 @@
     "current_surface_confirmation_required": false,
     "unresolved_classification": "TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED",
     "remote_device_connector_classification": "NOT_APPLICABLE",
-    "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority on the canonical portable execution path; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records owns observed-reality custody/reconstruction; execution-surface identity itself grants no authority and is not a precondition",
+    "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority on the canonical portable execution path; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records is limited to organization records and reconstruction; execution-surface identity itself grants no authority and is not a precondition",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -245,7 +245,7 @@
     "runtime_subject_binding_is_user_verification": false,
     "current_user_iphone_identity_is_user_verification": false,
     "execution_surface_identity_is_runtime_admission": false,
-    "master_records_remains_custody_reconstruction_authority": true,
+    "master_records_limited_to_organization_records_and_reconstruction": true,
     "github_runtime_authority": "NONE",
     "provider_operation_reexecution_authorized": false
   },

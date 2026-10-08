@@ -61,7 +61,7 @@ class ERLReusableComponentModelTests(unittest.TestCase):
         self.assertEqual(auth["credential_provider_release"], "TV/TVC")
         self.assertEqual(auth["user_verification"], "KV/SKAP Vault")
         self.assertEqual(auth["device_user_verification_authority"], "NONE")
-        self.assertEqual(auth["master_records"], "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION")
+        self.assertEqual(auth["master_records"], "ORGANIZATION_RECORDS_AND_RECONSTRUCTION")
         self.assertEqual(auth["github_runtime_authority"], "NONE")
         self.assertFalse(profile["componentization_mints_authority"])
         self.assertFalse(profile["new_goal_task_required"])
@@ -80,7 +80,7 @@ class ERLReusableComponentModelTests(unittest.TestCase):
         self.assertFalse(record["completion"]["claimed"])
         self.assertFalse(record["completion"]["validated"])
         self.assertFalse(record["completion"]["activation_proof_complete"])
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", record["expected_evidence_predicates"])
+        self.assertIn("MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED", record["expected_evidence_predicates"])
         self.assertEqual(record["authority_model"]["device_user_verification_authority"], "NONE")
         self.assertTrue(record["authority_model"]["kv_skap_remains_sole_user_verification_authority"])
 

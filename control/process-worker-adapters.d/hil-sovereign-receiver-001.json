@@ -17,7 +17,7 @@
       "notes": [
         "Only non-secret local source/state locators and a bounded local port may be forwarded.",
         "The worker strips GitHub authentication variables before launching the receiver and rejects hosted GitHub/Render/Vercel/Cloudflare execution surfaces.",
-        "This adapter grants no heartbeat fence, TV/TVC route, HIL review/publication, Master Records custody, public transport, or execution authority.",
+        "This adapter grants no heartbeat fence, TV/TVC route, HIL review/publication, Master Records organization record, public transport, or execution authority.",
         "A READY local receiver observation does not constitute public HIL activation; HTTPS rendezvous, Site browser receipt, restart byte proof, and TVC lifecycle continuation remain required."
       ],
       "timeout_seconds": 120,

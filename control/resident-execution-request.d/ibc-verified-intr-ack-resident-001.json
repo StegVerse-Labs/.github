@@ -16,5 +16,5 @@
   "requires_local_stegos_source": true,
   "observation_class": "SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT",
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Consume only the already-merged and locally materialized verified Cosmos Hub -> Osmosis ACK evidence through the canonical StegOS heterogeneous-interop ACKNOWLEDGE materializer. No GitHub/network source fetch is allowed during resident dispatch. This request does not claim original IBC packet relay, transition admission, application execution, claim/fence minting, credentials, or Master Records custody."
+  "note": "Consume only the already-merged and locally materialized verified Cosmos Hub -> Osmosis ACK evidence through the canonical StegOS heterogeneous-interop ACKNOWLEDGE materializer. No GitHub/network source fetch is allowed during resident dispatch. This request does not claim original IBC packet relay, transition admission, application execution, claim/fence minting, credentials, or Master Records organization record."
 }

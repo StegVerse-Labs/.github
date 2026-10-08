@@ -5,7 +5,7 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
-    "objective": "Execute one synthetic conversation-evidence ingestion through the existing WorkerCoordinator and canonical Master Records custody/reconstruction path before any public Site projection.",
+    "objective": "Execute one synthetic conversation-evidence ingestion through the existing WorkerCoordinator and canonical Master Records organization records and reconstruction path before any public Site projection.",
     "success_predicates": [
       "fresh WorkerCoordinator claim/fence observed",
       "synthetic conversation package retained",
@@ -18,7 +18,7 @@
     "failure_predicates": [
       "claim/fence absent",
       "non-synthetic conversation input used",
-      "Master Records custody unavailable",
+      "Master Records organization record unavailable",
       "reconstruction fails",
       "required evidence validation fails",
       "receipt digests differ",
@@ -27,7 +27,7 @@
     "authority_ceiling": [
       "synthetic evidence generation",
       "bounded receipt persistence",
-      "existing canonical Master Records custody/reconstruction"
+      "existing canonical Master Records organization records and reconstruction"
     ],
     "successor_policy": "PUBLIC_SITE_PROJECTION_SUCCESSOR_ONLY_AFTER_AUTHENTIC_CUSTODY",
     "max_successor_depth": 1
@@ -109,7 +109,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Consume the Canonical Work ingress closure and immediately invoke the existing targeted WorkerCoordinator one-shot for this same task; require exact Master Records closure before deriving public Site projection.",
+    "next_authorized_action": "Consume the Canonical Work ingress closure and immediately invoke the existing targeted WorkerCoordinator one-shot for this same task; require exact Master Records organization record before deriving public Site projection.",
     "terminal_when": [
       "fresh_workercoordinator_claim_fence_observed=true",
       "master_records_state=RECORDED",

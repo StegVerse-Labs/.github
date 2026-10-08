@@ -64,7 +64,7 @@ Source/CI/merge proves only the source contract and deterministic validation tha
 - an authentic WorkerCoordinator claim/fence;
 - a task execution attempt;
 - a problem was solved at runtime;
-- Master Records custody/reconstruction;
+- Master Records organization records and reconstruction;
 - Interlock/InTr egress;
 - product/runtime activation.
 

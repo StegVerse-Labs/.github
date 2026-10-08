@@ -8,7 +8,7 @@ builds/validates the profile map, emits integrity evidence, resolves canonical-t
 runtime requirements, persists those projections, validates coordination consistency,
 and emits per-task routing-readiness plus custody-input evidence. No network fetch,
 credential use, HB/oscillator advance, claim/fence minting, task-state transition,
-Master Records custody, or second runtime is permitted.
+Master Records organization record, or second runtime is permitted.
 """
 from __future__ import annotations
 
@@ -284,7 +284,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "task_runtime_resolution_count": len(task_resolutions),
         "cycle_finalization": finalization,
         "custody_input_package_generated": bool(finalization.get("custody_package_sha256")),
-        "master_records_custody_performed": False,
+        "master_records_organization_record_performed": False,
         "task_runtime_resolution_selection_grants_authority": False,
         "task_coordination_state_changed_by_runtime_resolution": False,
         "network_source_fetch_performed": False,

@@ -22,7 +22,7 @@ def test_parent_has_no_duplicate_runtime_proof_dependencies():
     assert "INGRESS_ADMITTED" in row["allowed_next_transitions"]
 
 
-def test_parent_completion_is_terminal_state_plus_master_records_closure():
+def test_parent_completion_is_terminal_state_plus_master_records_organization_record():
     _, row = task()
     completion = row["completion"]
     assert completion["completion_semantics"] == "TERMINAL_CANONICAL_STATE_WITH_MASTER_RECORDS_TRANSITION_CLOSURE"
@@ -55,7 +55,7 @@ def test_interlock_and_master_records_are_path_and_consequence_not_preconditions
     _, row = task()
     model = row["authority_model"]
     assert model["interlock_intr_is_transition_path_not_precondition"] is True
-    assert model["master_records_is_transition_custody_not_precondition"] is True
+    assert model["master_records_is_transition_organization_record_not_precondition"] is True
     assert model["separate_runtime_observer_is_completion_authority"] is False
 
 

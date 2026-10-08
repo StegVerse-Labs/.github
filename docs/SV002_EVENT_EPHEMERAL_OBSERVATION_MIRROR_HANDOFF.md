@@ -74,7 +74,7 @@ Terminal public observation still requires independently observed:
 7. authentic egress `FORWARDED` receipt;
 8. observer direct relation to StegVerse-002 remains false.
 
-Master Records custody/reconstruction and authentic principal self-characterization remain separate evidence gates.
+Master Records organization records and reconstruction and authentic principal self-characterization remain separate evidence gates.
 
 
 ## Site #702 exact-contract alignment — issue #514

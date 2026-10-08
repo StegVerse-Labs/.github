@@ -87,7 +87,7 @@ def main() -> int:
             "PENDING_FRESH_CLAIM_FENCE",
             "TV_TVC_VERIFIED",
             "INTR_ACTIVATE_T_CREATE_AND_BIND_W_T",
-            "MASTER_RECORDS_CLOSED",
+            "MASTER_RECORDS_RECORDED",
             "ACTIVE_T_BOUND_W",
             "INVOCATION_STARTED",
             "TASK_COMPLETED_SAME_LINEAGE",

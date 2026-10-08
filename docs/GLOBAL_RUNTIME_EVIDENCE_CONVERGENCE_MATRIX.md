@@ -20,7 +20,7 @@ Status: `ACTIVE / SINGLE_SHARED_RUNTIME_EVIDENCE_OWNER_BOUND / ALL_18_LANES_EXPL
 7. `CREDENTIAL_OR_PROVIDER_CUSTODY` when applicable
 8. `COMPONENT_EXECUTION`
 9. `EXACT_RECEIPT_EXPORT_OR_RETENTION`
-10. `MASTER_RECORDS_CUSTODY_RECONSTRUCTION`
+10. `MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION`
 11. `DOWNSTREAM_PROPAGATION_VERIFICATION`
 
 `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` is the single shared runtime-evidence convergence owner for all 18 profiled lanes. Profile presence, source state, public publication, shared-root allocation, connector reachability, or physical-device identity does not prove a task-local stage.

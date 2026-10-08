@@ -170,7 +170,7 @@
     "task_control": "WorkerCoordinator where required",
     "credential_authority": "TV/TVC",
     "execution": "CURRENT_ADMITTED_RESIDENT_OR_DEVICE_RUNTIME",
-    "custody_reconstruction": "Master Records"
+    "organization_records_and_reconstruction": "Master Records"
   },
   "initial_consumers": [
     {

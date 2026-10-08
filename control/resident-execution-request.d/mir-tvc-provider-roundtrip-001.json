@@ -19,7 +19,7 @@
   "fresh_fence_minimum_exclusive": 0,
   "credential_authority": "TV/TVC",
   "transition_authority": "INTERLOCK_INTR",
-  "custody_authority": "MASTER_RECORDS",
+  "custody_authority": "ORGANIZATION",
   "github_token_required": false,
   "github_token_runtime_authority": "NONE",
   "heartbeat_grants_execution_authority": false,

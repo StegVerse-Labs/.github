@@ -90,6 +90,6 @@ This evidence map is now explicitly ordered rather than checkpoint-based. The ca
 → `HISTORICAL_WITNESS_VERSION_TERM_BOUND`
 → `R10_DISPOSITION_RECONCILED`.
 
-Each successor MUST consume the immediately preceding Master Records closure, and that predecessor closure must be `RECORDED` with reconstruction PASS, required-evidence-validation PASS, and exact receipt/reconstruction digest equality. No independent observation, later artifact, parallel checkpoint, or stronger side evidence may skip a predecessor, satisfy a later state directly, or alter R10 before the ordered chain reaches the terminal disposition state.
+Each successor MUST consume the immediately preceding Master Records organization record, and that predecessor closure must be `RECORDED` with reconstruction PASS, required-evidence-validation PASS, and exact receipt/reconstruction digest equality. No independent observation, later artifact, parallel checkpoint, or stronger side evidence may skip a predecessor, satisfy a later state directly, or alter R10 before the ordered chain reaches the terminal disposition state.
 
 Current canonical position is state 1: the independently retrieved and Bitcoin-anchored `4a99a3b5...` pre-reset subjects commitment. The only admissible successor is individual historical witness-record reconstruction. R10 remains operator-disclosed `NOT MET` until all intermediate states close in order.

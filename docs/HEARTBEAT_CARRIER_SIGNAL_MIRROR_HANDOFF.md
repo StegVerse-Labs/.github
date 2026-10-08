@@ -102,7 +102,7 @@ tests/test_governed_manifold.py
 
 The canonical carrier result now includes `governed_manifold_observation`, emits a
 `governed_manifold_projection_observed` event, and includes the projection plus
-its digest in the Master Records projection for custody and reconstruction.
+its digest in the Master Records projection for organization records and reconstruction.
 
 This integration does not give HB state-transition gating, admission authority, execution authority, claim/fence authority, or credential authority. HB remains the synchronization/reference carrier and observation surface; governance authority remains attached to the relevant admissibility/transition boundary.
 

@@ -152,7 +152,7 @@ both current artifacts
   -> native TVCRecipientAdmissionBoundOperationSigner
   -> signature response
   -> existing /run/stegverse/vault-agent.sock
-  -> RTC-EVIDENCE-CUSTODY-004 / Master Records custody and reconstruction
+  -> RTC-EVIDENCE-CUSTODY-004 / Master Records organization records and reconstruction
 ```
 
 The remaining native interop must not become a public signing oracle. The current InTr receipt is not itself a cryptographic bearer credential, so a public loopback/deep-link endpoint that trusts a supplied receipt object is not admissible. The binding must occur inside an eligible StegOS execution context or another already-authorized native process relationship without creating a second verifier or alternate credential path.
@@ -169,7 +169,7 @@ PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE
 PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED
 MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED
 FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED
-MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED
+MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_NOT_YET_OBSERVED
 ```
 
 ## Invariants
@@ -201,7 +201,7 @@ public trust anchor contains public material only
 2. Reuse the existing Universal InTr component and bind the current-InTr evidence source to authentic existing resident request/payload/receipt locations; do not synthesize admission or add another listener.
 3. Reuse the existing canonical ephemeral runtime/broker component and bind the generic `OpaqueP256AuthorityCapability` to `TVCRecipientAdmissionBoundOperationSigner` only inside an eligible StegOS native execution context; do not expose signing on the public recipient URL or loopback continuity HTTP carrier.
 4. Inject `PlatformOpaqueRecipientAdmissionSigner` into the existing vault-agent launcher only when the componentized providers and native capability binding fail closed.
-5. Materialize one production authority key on an eligible node, project only public JWK/key ID, bind the trust anchor, observe one fresh WorkerCoordinator-bound signed admission, and submit the authentic evidence to Master Records custody/reconstruction.
+5. Materialize one production authority key on an eligible node, project only public JWK/key ID, bind the trust anchor, observe one fresh WorkerCoordinator-bound signed admission, and submit the authentic evidence to Master Records organization records and reconstruction.
 
 ## README review
 

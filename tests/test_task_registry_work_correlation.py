@@ -26,7 +26,7 @@ def test_canonical_task_id_resolves_source_work_without_runtime_gate():
     assert result["cosv_is_exclusive_task_identity"] is False
     assert result["worker_claim_issued"] is False
     assert result["intr_admission_issued"] is False
-    assert result["master_records_closure_claimed"] is False
+    assert result["master_records_organization_record_claimed"] is False
     assert result["authority_effect"] == "NONE_CORRELATION_ONLY"
     assert result["work_identity_digest"].startswith("sha256:")
 

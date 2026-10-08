@@ -127,7 +127,7 @@ Source construction and resident-bridge locator propagation in this lane are mer
 - `KV_STORED_VERIFIED` for every observed failure incident;
 - canonical SDK/StegCore ALLOW + commit-coherence evidence for the exact archive transition;
 - corresponding TV/TVC Gmail mutation evidence;
-- route/transaction/Master Records custody evidence;
+- route/transaction/Master Records organization record evidence;
 - bounded mailbox progression;
 - durable StegHealth/Canonical Work reconciliation.
 

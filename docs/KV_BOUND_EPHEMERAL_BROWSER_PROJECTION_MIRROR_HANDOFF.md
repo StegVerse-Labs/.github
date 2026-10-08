@@ -65,7 +65,7 @@ Remaining Goal predicates are:
 - authentic TV/TVC signing/provider/native Build Upload state transition where that path is exercised;
 - any required TestFlight processing/release/install observation;
 - retained StegOS/StegBrowser runtime observation;
-- Master Records custody acceptance and reconstruction;
+- Master Records organization record acceptance and reconstruction;
 - return to the frozen global runtime measurement with authentic evidence only.
 
 `TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED` is superseded as a Goal-level predicate and must not be used to block execution.

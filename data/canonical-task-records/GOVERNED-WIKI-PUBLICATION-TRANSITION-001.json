@@ -4,7 +4,7 @@
   "correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
   "root_correlation_id": "GOVERNED-WIKI-PUBLICATION-TRANSITION-001",
   "parent_task_id": null,
-  "goal": "Bind an already-reviewed external_framework_wiki_publication_transition candidate through the existing StegVerse SDK external-manifest ingress and canonical governed runtime, require Interlock/InTr-governed Master Records closure with RECORDED + reconstruction PASS + required-evidence PASS + exact receipt digest equality, and permit repository mutation only after that closure is verified. Preserve direct-submitter non-authority and make the publication transition reusable by Admissibility, StegGuardian, StegTalk, and a future SDK public wiki.",
+  "goal": "Bind an already-reviewed external_framework_wiki_publication_transition candidate through the existing StegVerse SDK external-manifest ingress and canonical governed runtime, require Interlock/InTr-governed Master Records organization record with RECORDED + reconstruction PASS + required-evidence PASS + exact receipt digest equality, and permit repository mutation only after that closure is verified. Preserve direct-submitter non-authority and make the publication transition reusable by Admissibility, StegGuardian, StegTalk, and a future SDK public wiki.",
   "coordination_state": "PROPOSED",
   "source_refs": [
     "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/schemas/external-chat-publication-transition.schema.json",
@@ -33,7 +33,7 @@
       "reviewed-publication-candidate",
       "sdk-manifest-ingress",
       "interlock-intr-governed-decision",
-      "master-records-closure",
+      "master-records-organization-record",
       "publisher-mutation-gate"
     ]
   },
@@ -57,7 +57,7 @@
       "ref": "StegVerse-org/StegVerse-SDK:external_framework_runner.py"
     },
     {
-      "dependency_id": "CANONICAL_MASTER_RECORDS_CLOSURE",
+      "dependency_id": "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD",
       "kind": "SOURCE_CONTRACT",
       "state": "AVAILABLE",
       "ref": "master-records/orchestration:canonical_state_transition_custody.py"

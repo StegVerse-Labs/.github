@@ -6,19 +6,19 @@ Canonical issue: `#2258`
 Goal Task ID: `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`
 Parent design task: `CONVERSATION-EVIDENCE-SERVICE-PERFORMANCE-REGISTRY-001`
 COSV ID: `20011000100000`
-Status: `ACTIVE / CANONICAL WORK + WORKERCOORDINATOR RUNTIME PATH STAGED / AUTHENTIC MASTER RECORDS CUSTODY PENDING`
+Status: `ACTIVE / CANONICAL WORK + WORKERCOORDINATOR RUNTIME PATH STAGED / AUTHENTIC MASTER RECORDS organization record PENDING`
 
 ## Contract boundary
 
 Consumes `contracts/conversation-evidence-service-performance-publication-contract.v1.json` unchanged.
 
-This phase implements only immutable evidence ingestion, authenticity-envelope construction, service/transaction/performance binding, required-evidence carriage, and canonical Master Records custody/reconstruction. It does not implement public Site projection, provider-response UI, corroboration UI, enforcement export, or legal/reputational adjudication.
+This phase implements only immutable evidence ingestion, authenticity-envelope construction, service/transaction/performance binding, required-evidence carriage, and canonical Master Records organization records and reconstruction. It does not implement public Site projection, provider-response UI, corroboration UI, enforcement export, or legal/reputational adjudication.
 
 ## Implementation
 
 - `workers/conversation_evidence_ingestion.py` builds deterministic ingestion packages, preserves ordered message content/digests and exact attachment bytes/digests, refuses overwrite on persisted record roots, and creates explicit authenticity and transaction bindings.
 - `schemas/conversation-evidence-ingestion-package.schema.json` identifies the ingestion-package envelope.
-- `tests/test_conversation_evidence_ingestion.py` covers deterministic packaging, write-once behavior, attachment hashing, unchanged v1 contract consumption, exact required-evidence carriage, successful Master Records closure, and fail-closed digest mismatch.
+- `tests/test_conversation_evidence_ingestion.py` covers deterministic packaging, write-once behavior, attachment hashing, unchanged v1 contract consumption, exact required-evidence carriage, successful Master Records organization record, and fail-closed digest mismatch.
 - Existing `workers/canonical_state_transition_custody.py` remains the sole Python custody client. No second Master Records service/store is introduced.
 
 ## Master Records transition
@@ -32,13 +32,13 @@ Required evidence:
 
 Progression requires `RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality.
 
-Source tests may prove the consumer enforces this contract; only an authentic Master Records return can prove runtime custody/reconstruction.
+Source tests may prove the consumer enforces this contract; only an authentic Master Records return can prove runtime organization records and reconstruction.
 
 ## Privacy / authority
 
 No source conversation is committed by this task. Test fixtures are synthetic.
 The ingestion transition records evidence only. It performs no publication and no adjudication.
-Interlock/InTr transition authority and Master Records custody/reconstruction authority remain unchanged.
+Interlock/InTr transition authority and Master Records organization records and reconstruction remain unchanged.
 
 ## Source implementation evidence
 
@@ -56,7 +56,7 @@ These runs prove source/schema/test conformance only. They do not prove an authe
 
 ## Next boundary
 
-After exact-head source validation and merge, run an authentic synthetic ingestion through the existing Master Records custody surface. Only after that returns the full progression tuple may this phase claim authentic custody completion or derive a later public-projection implementation task.
+After exact-head source validation and merge, run an authentic synthetic ingestion through the existing Master Records organization record surface. Only after that returns the full progression tuple may this phase claim authentic custody completion or derive a later public-projection implementation task.
 
 
 ## Runtime path staging — 2026-09-19
@@ -79,7 +79,7 @@ The runtime worker requires the exact task identity, the admitted `conversation_
 
 A worker response may become `COMPLETED` only when the existing custody client returns `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality. Any other Master Records result is returned as `BLOCKED` with no publication/adjudication promotion.
 
-Source staging does not prove that the Canonical Work ingress, WorkerCoordinator claim/fence, worker invocation, or Master Records custody has occurred.
+Source staging does not prove that the Canonical Work ingress, WorkerCoordinator claim/fence, worker invocation, or Master Records organization record has occurred.
 
 
 ## Runtime-path merge and authentic evidence check — 2026-09-19
@@ -137,7 +137,7 @@ RT-REUSABLE-TASK-SCHEDULER-001
 
 No second scheduler, runtime, dispatcher, WorkerCoordinator, custody plane, credential path, request identity, or device prerequisite was added.
 
-Post-merge canonical evidence still contains no authentic fresh WorkerCoordinator claim/fence and no `CONVERSATION_EVIDENCE_INGESTED` Master Records closure. Therefore:
+Post-merge canonical evidence still contains no authentic fresh WorkerCoordinator claim/fence and no `CONVERSATION_EVIDENCE_INGESTED` Master Records organization record. Therefore:
 - `worker_claim.claim_ref=null`
 - `worker_claim.fence_ref=null`
 - Master Records `RECORDED` not observed
@@ -157,7 +157,7 @@ The next exact unresolved predicate is not another source defect in this Goal. T
 
 Accordingly:
 - fresh WorkerCoordinator claim/fence for `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001`: not observed;
-- `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records closure: not observed;
+- `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` Master Records organization record: not observed;
 - `CONVERSATION_EVIDENCE_INGESTED`: not observed;
 - public Site projection successor: not derived.
 
@@ -191,7 +191,7 @@ Accordingly no code-path substitute is admissible:
 - no connected-device inventory dependency;
 - no device prerequisite.
 
-Fresh claim/fence, Master Records claim/fence custody, synthetic ingestion, and Site-successor derivation remain false.
+Fresh claim/fence, Master Records claim/fence organization records, synthetic ingestion, and Site-successor derivation remain false.
 
 
 ## Native evidence re-observation — generation 162
@@ -204,4 +204,4 @@ Re-observation of canonical native evidence again found no authentic post-repair
 - Healer scheduler receipt absent;
 - Healer registry remains `HANDOFF_READY` with `claim_id=null`.
 
-The first missing authentic transition remains exactly `RESIDENT_REQUEST_DISPATCH_VISIT`. No downstream claim/fence, Master Records closure, synthetic ingestion, completion, or Site successor is promoted. No runtime/source path is modified.
+The first missing authentic transition remains exactly `RESIDENT_REQUEST_DISPATCH_VISIT`. No downstream claim/fence, Master Records organization record, synthetic ingestion, completion, or Site successor is promoted. No runtime/source path is modified.

@@ -36,7 +36,7 @@ Terminal completion still requires live exact-hash event binding, applicable cla
 
 ## Authority
 
-Task Registry is coordination only. WorkerCoordinator owns claim/fence. Interlock/InTr owns transition/admission. TV/TVC owns provider release. KV/SKAP Vault is sole user-verification authority. StegOS devices are interchangeable transport/execution nodes. Master Records owns custody/reconstruction. HeartBeat is observability only. GitHub runtime authority is `NONE`.
+Task Registry is coordination only. WorkerCoordinator owns claim/fence. Interlock/InTr owns transition/admission. TV/TVC owns provider release. KV/SKAP Vault is sole user-verification authority. StegOS devices are interchangeable transport/execution nodes. Master Records is limited to organization records and reconstruction. HeartBeat is observability only. GitHub runtime authority is `NONE`.
 
 ## Next
 

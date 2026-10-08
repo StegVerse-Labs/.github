@@ -25,7 +25,7 @@
     "control/process-worker-adapters.d/sv-dn1-sdk-first-round-001.json"
   ],
   "notes": [
-    "Runs only local canonical production-validation components and a local Master Records custody database.",
+    "Runs only local canonical production-validation components and a local Master Records organization record database.",
     "No third-party host or provider network is required.",
     "Bounded analysis/dashboard generation follows the canonical SDK result and reconstruction.",
     "External cost is zero."

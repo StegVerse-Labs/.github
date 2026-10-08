@@ -29,7 +29,7 @@ existing WorkerCoordinator / resident dispatcher
 -> SDK scripts/run_cross_framework_current_basis_v04.py
 -> canonical StegCore current_basis derivation
 -> canonical SDK sovereign validation runtime
--> Master Records custody
+-> Master Records organization record
 -> S1 observation
 -> post-observation S0->S1 receipt
 -> replay
@@ -91,7 +91,7 @@ source-refresh consumer materialization: FIX IMPLEMENTED / VALIDATION PENDING
 resident source refresh after correction: NOT OBSERVED
 resident request consumption: NOT OBSERVED
 authentic StegVerse execution: NOT OBSERVED
-Master Records custody/replay/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 user action required: false
 second machine required: false
 ```
@@ -194,7 +194,7 @@ resident request consumption: NOT OBSERVED
 authentic StegVerse execution: NOT OBSERVED
 S1 observation: NOT OBSERVED
 post-observation transition receipt: NOT OBSERVED
-Master Records custody/replay/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 RUN_COMPLETE.json: NOT OBSERVED
 user action required: false
 second machine required: false
@@ -301,7 +301,7 @@ package-arrival event retry: IMPLEMENTED / VALIDATION PENDING
 authentic resident consumption: NOT OBSERVED
 S1: NOT OBSERVED
 post-observation transition receipt: NOT OBSERVED
-Master Records custody/replay/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 RUN_COMPLETE.json: NOT OBSERVED
 user action required: false
 second machine required: false
@@ -358,7 +358,7 @@ local result packet preparation: IMPLEMENTED / VALIDATION PENDING
 authentic resident consumption: NOT OBSERVED
 S1: NOT OBSERVED
 post-observation transition receipt: NOT OBSERVED
-Master Records custody/replay/reconstruction: NOT OBSERVED
+Master Records organization records and reconstruction: NOT OBSERVED
 RUN_COMPLETE.json: NOT OBSERVED
 PUBLICATION_READY.json from authentic run: NOT OBSERVED
 successful external-result GitHub Action: NOT OBSERVED

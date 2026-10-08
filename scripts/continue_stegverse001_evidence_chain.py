@@ -122,7 +122,7 @@ def continue_chain(source_root:Path, source_receipt:Path=DEFAULT_SOURCE_RECEIPT,
     evaluator=_load_evaluator(source_root)
     observation_valid=(proof.get("reconstruction_state")=="PASS" and proof.get("source_receipt_sha256")==source_hash and proof.get("intr_governance_admission_observed") is True)
     baseline_inputs={
-      "master_records_custody":"PASS",
+      "master_records_organization_record":"PASS",
       "reconstruction_state":"PASS",
       "observation_valid":observation_valid,
       "output_correct":source.get("state")=="COMPLETED",
@@ -142,7 +142,7 @@ def continue_chain(source_root:Path, source_receipt:Path=DEFAULT_SOURCE_RECEIPT,
       "source_receipt_sha256":source_hash,
       "intr_governance_admission_observed":True,
       "intr_admission_receipt_sha256":proof.get("intr_admission_receipt_sha256"),
-      "master_records_custody_hash":proof.get("custody_hash"),
+      "master_records_organization_record_hash":proof.get("custody_hash"),
       "master_records_reconstruction_hash":proof.get("reconstruction_hash"),
       "master_records_reconstruction_state":"PASS",
       "retained_same_execution_chain_tail":proof.get("final_replay_tail_sha256"),

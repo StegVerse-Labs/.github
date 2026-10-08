@@ -124,7 +124,7 @@
       ]
     },
     "governed_round_trip_executed": false,
-    "master_records_elyria_custody_recorded": false,
+    "master_records_elyria_organization_record_recorded": false,
     "disposition": "NO_EXISTING_AUTHENTIC_PUBLIC_SURFACE_ELIGIBLE_DO_NOT_FABRICATE_OR_PROMOTE_LOCAL_TEST_EVIDENCE"
   },
   "authority_model": {

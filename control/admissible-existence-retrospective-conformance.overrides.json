@@ -5,7 +5,7 @@
       "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
       "temporal_class": "recently_completed",
       "continuation_owner": "NONE_TERMINAL_TASK",
-      "rationale": "Durable current-main recovery receipt proves PASS under fresh G22, old G20 authority ended and was not reused, Master Records custody reconstruction passed, and no successor authority was granted. Parent sovereign inference remains a separate fresh-authority task."
+      "rationale": "Durable current-main recovery receipt proves PASS under fresh G22, old G20 authority ended and was not reused, Master Records organization record reconstruction passed, and no successor authority was granted. Parent sovereign inference remains a separate fresh-authority task."
     },
     {
       "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",

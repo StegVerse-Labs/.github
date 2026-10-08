@@ -73,7 +73,7 @@ No authentic post-repair same-execution MIR Publisher return addressed to the SD
 Validate the exact branch head through the repository's existing checks and merge only if those checks pass. Then inspect the authorized resident carrier again for an authentic same-execution SDK-owned MIR Publisher return. Only authentic execution of the merged SDK materialization transition may enable `RTC-STEGVERSE-EGRESS-007`.
 
 
-## 2026-09-19 canonical Master Records custody repair
+## 2026-09-19 canonical Master Records organization record repair
 
 The next concrete custody defect was identified after the SDK return materialization source had already been merged: `consume_kv_publisher_return_materialization_request.py` retained the exact `stegverse.sdk.publisher-return-binding/v1` and emitted `SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS`, but that observed `RTC-SDK-RETURN-006` transition was not submitted through canonical Master Records before the result exposed `sdk_return_binding_observed=true`.
 

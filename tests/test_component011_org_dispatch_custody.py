@@ -50,7 +50,7 @@ def test_attempt_creates_exact_org_receipt_and_immediate_predecessor(tmp_path, m
     assert first["immediate_predecessor_sha256"] is None
     assert first["runtime_request_present"] is True
     assert first["attempted"] is True
-    assert first["master_records_custody_claimed"] is False
+    assert first["master_records_organization_record_claimed"] is False
     assert first["runtime_execution_proven"] is False
     source = json.loads((ledger / "source-receipts" / (first["source_transition_sha256"][7:] + ".json")).read_text())
     row = _stored(ledger, first["organization_receipt_sha256"])

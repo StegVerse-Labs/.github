@@ -63,7 +63,7 @@ old fence: 20
 old authority ended: true
 old authority reused: false
 checkpoint valid: true
-Master Records custody valid: true
+Master Records organization record valid: true
 successor authority granted: false
 next transition: SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION
 ```

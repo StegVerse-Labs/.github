@@ -33,7 +33,7 @@ This task inherits `docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md` and `data/t
 ```text
 SDK diagnostic result
 -> ECE evaluation
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 -> Site-safe projection
 -> bounded exact-byte materializer
 -> served current.json
@@ -99,7 +99,7 @@ No source merge, CI run, materializer unit test, connector device list, or empty
 ## Remaining predicates
 
 1. Observe one authentic resident `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` cycle from any eligible interchangeable StegOS execution node with all required already-local roots and a locally bound `STEGVERSE_SITE_SERVED_ROOT`.
-2. Require the exact SDK diagnostic result, ECE evaluation, Master Records custody/reconstruction, Healer intake, Site-safe projection, and `site-materialization.latest.json` from that same cycle.
+2. Require the exact SDK diagnostic result, ECE evaluation, Master Records organization records and reconstruction, Healer intake, Site-safe projection, and `site-materialization.latest.json` from that same cycle.
 3. Require cycle state `MATERIALIZED_PENDING_PUBLIC_OBSERVATION` and exact current-projection SHA equality.
 4. Independently observe the served `data/ecosystem-continuity/current.json` and the Site continuity page rendering those bytes before claiming live projection.
 5. Recovery remains unverified until a later independent ECE evaluation observes repaired predicates PASS with acceptable freshness/evidence.

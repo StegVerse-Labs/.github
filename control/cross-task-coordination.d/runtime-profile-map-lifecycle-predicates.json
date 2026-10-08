@@ -23,7 +23,7 @@
         "request_id",
         "resident_chain_preflight.state",
         "custody_input_package_generated",
-        "master_records_custody_performed",
+        "master_records_organization_record_performed",
         "existing_worker_registry_preserved",
         "existing_shared_intr_router_preserved",
         "existing_resident_dispatcher_preserved"
@@ -34,7 +34,7 @@
         "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001",
         "resident_chain_preflight.state": "SOURCE_CHAIN_VALID",
         "custody_input_package_generated": true,
-        "master_records_custody_performed": false,
+        "master_records_organization_record_performed": false,
         "existing_worker_registry_preserved": true,
         "existing_shared_intr_router_preserved": true,
         "existing_resident_dispatcher_preserved": true
@@ -50,16 +50,16 @@
     },
     {
       "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
-      "semantic_predicate_id": "master_records_custody_observed",
+      "semantic_predicate_id": "master_records_organization_record_observed",
       "subject_binding": {
         "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
         "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001"
       },
       "state": "UNKNOWN",
-      "description": "The existing Runtime Profile Map custody consumer completed exact-hash Master Records custody for the generated cycle package.",
+      "description": "The existing Runtime Profile Map custody consumer completed exact-hash Master Records organization record for the generated cycle package.",
       "authoritative_producer": "existing Runtime Profile Map custody consumer + master-records/orchestration custody consumer",
       "required_schema": "stegverse.runtime-profile-map-custody-consumption/v1",
-      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 exact-hash Master Records custody",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 exact-hash Master Records organization record",
       "required_execution_instance": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
       "max_age_seconds": null,
       "required_fields": [
@@ -256,7 +256,7 @@
       "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001"},
       "existing_evidence_refs": ["master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md"],
       "rejected_because": ["AUTHENTIC_CUSTODY_INPUT_AND_CUSTODY_ACCEPTANCE_NOT_OBSERVED"],
-      "missing_observation": "Exact Runtime Profile Map custody package accepted by the existing Master Records custody consumer.",
+      "missing_observation": "Exact Runtime Profile Map custody package accepted by the existing Master Records organization record consumer.",
       "required_producer": "existing Runtime Profile Map custody consumer + master-records/orchestration custody consumer",
       "required_output_ref": "receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json",
       "required_schema": "stegverse.runtime-profile-map-custody-consumption/v1",
@@ -264,7 +264,7 @@
       "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001", "result.state": "CUSTODY_ACCEPTED"},
       "required_freshness": null,
       "collision_refs": [],
-      "action_without_collision": "Use the existing runtime_profile_map_custody selector and Master Records custody consumer only; do not create a second custody authority or infer custody from package generation."
+      "action_without_collision": "Use the existing runtime_profile_map_custody selector and Master Records organization record consumer only; do not create a second custody authority or infer custody from package generation."
     },
     {
       "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-RECONCILED-001",

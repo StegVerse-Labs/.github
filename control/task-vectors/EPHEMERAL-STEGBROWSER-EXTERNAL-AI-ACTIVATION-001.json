@@ -31,7 +31,7 @@
     "lifecycle": "New canonical goal registration PROPOSED; no WorkerCoordinator claim or fence",
     "unassigned_work": "Execution not claimed; existing downstream source ownership unchanged",
     "blocker_count": "Three distinct unresolved authentic runtime/real-provider predicates",
-    "evidence_complete": "No authentic same-invocation provider output + Master Records closure",
+    "evidence_complete": "No authentic same-invocation provider output + Master Records organization record",
     "activated": "Source registration only; no new runtime execution authority",
     "propagated": "Site/Publisher remain unmerged draft review candidates"
   },

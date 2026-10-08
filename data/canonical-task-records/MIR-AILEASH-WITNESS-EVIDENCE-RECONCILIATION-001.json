@@ -50,7 +50,7 @@
     "JUSTIN_DOBSON_ATTRIBUTION_PRESERVED_WITHOUT_IDENTITY_OVERCLAIM",
     "NO_UNVERIFIED_CLAIM_PROMOTION",
     "STATE_DEPENDENT_LINEAR_PREDECESSOR_CONSUMPTION",
-    "EVERY_SUCCESSOR_CONSUMES_IMMEDIATE_MASTER_RECORDS_CLOSURE",
+    "EVERY_SUCCESSOR_CONSUMES_IMMEDIATE_MASTER_RECORDS_ORGANIZATION_RECORD",
     "NO_PARALLEL_CHECKPOINT_OR_LEAPFROG_SEMANTICS",
     "R10_UNCHANGED_UNTIL_FULL_ORDERED_CHAIN_CLOSES"
   ],
@@ -162,7 +162,7 @@
     "parallel_checkpoint_semantics": false,
     "leapfrog_semantics": false,
     "independent_evidence_satisfaction_semantics": false,
-    "master_records_closure_required_on_every_edge": true,
+    "master_records_organization_record_required_on_every_edge": true,
     "required_predecessor_closure": {
       "state": "RECORDED",
       "reconstruction_status": "PASS",

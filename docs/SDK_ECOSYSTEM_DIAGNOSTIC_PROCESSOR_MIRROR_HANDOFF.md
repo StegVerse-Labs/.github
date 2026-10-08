@@ -78,7 +78,7 @@ existing Healer hourly reusable slot
 -> exact diagnostic-result bytes retained in resident continuity receipts
 -> result SHA-256 + underlying evidence refs translated into ECE observation input
 -> canonical ECE continuity evaluation
--> Master Records exact-byte ECE custody/reconstruction
+-> Master Records exact-byte ECE organization records and reconstruction
 -> Healer finding intake
 -> Site-safe projection
 ```
@@ -107,7 +107,7 @@ No source, merge, package artifact, GitHub Actions run, or unit test is promoted
 1. Observe the existing authorized resident reusable scheduler consuming `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` with all required already-local roots including `StegVerse-org/StegVerse-SDK`.
 2. Require one authentic `sdkdiag_<sha>.result.json` plus `sdk-diagnostic-result.latest.json` under the resident continuity receipts.
 3. Require the same cycle receipt to report the exact SDK result SHA-256 and `sdk_diagnostic_result_bound_into_ece=true`.
-4. Require the resulting ECE evaluation, Master Records exact-byte custody/reconstruction, Healer intake, and Site-safe projection from that same resident cycle.
+4. Require the resulting ECE evaluation, Master Records exact-byte organization records and reconstruction, Healer intake, and Site-safe projection from that same resident cycle.
 5. If no authentic observation bundle exists, accept the SDK/ECE `NOT_OBSERVED`/`AT_RISK` baseline rather than synthesizing PASS.
 6. Only after runtime proof continue with Site current-projection materialization and independent repair -> later ECE recovery verification.
 

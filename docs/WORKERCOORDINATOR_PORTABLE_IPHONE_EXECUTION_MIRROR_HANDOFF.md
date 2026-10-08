@@ -95,7 +95,7 @@ authority_effect = CANONICAL_WORKERCOORDINATOR_PORTABLE_TERMINAL_PACKAGE
 
 Because `portable_checkout.js` rejects any task that is not clean `HANDOFF_READY` before local state initialization, a fresh node receiving this terminal package cannot recreate G23 from the G22 predecessor floor.
 
-The package retains canonical first-terminal G23 plus both known duplicate terminal receipts (G24 and reset-lineage G23), with only the first G23 custody-eligible. Master Records custody and SV002 disposition remain PENDING and must continue from the first canonical G23 without another SV001 execution.
+The package retains canonical first-terminal G23 plus both known duplicate terminal receipts (G24 and reset-lineage G23), with only the first G23 custody-eligible. Master Records organization record and SV002 disposition remain PENDING and must continue from the first canonical G23 without another SV001 execution.
 
 This is terminal-state propagation, not a second runtime authority. WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, HB grants no authority, GitHub runtime authority is NONE, and no other machine is required.
 

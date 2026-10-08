@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.entity-transition-ownership-evaluation/v1",
   "issue": "StegVerse-Labs/.github#1036",
-  "transition_id": "SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+  "transition_id": "SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION",
   "canonical_task": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
   "authority_class": "MACHINE_GOVERNED",
   "execution_surface": "CURRENT_USER_IPHONE",
@@ -19,7 +19,7 @@
   "canonical_source_evidence": {
     "master_records_package": "master-records/orchestration:portable/stegverse001-autonomy-custody-package.json",
     "master_records_package_task": "MR-STEGVERSE001-BOUNDED-AUTONOMY-001",
-    "master_records_custody_authority": true,
+    "master_records_organization_record_authority": true,
     "master_records_execution_authority": false,
     "site_projection_handoff": "StegVerse-Labs/Site:docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
     "site_role": "EXACT_SOURCE_MATERIALIZATION_AND_SAME_DEVICE_PERSISTENCE_CARRIER_ONLY",

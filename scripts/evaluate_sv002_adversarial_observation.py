@@ -9,8 +9,12 @@ VOCAB={"OBSERVED","NOT_OBSERVED","INFERRED","NOT_ESTABLISHED","OUTSIDE_EXPERIMEN
 def canonical(v:Any)->bytes: return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
 def sha(v:Any)->str: return "sha256:"+hashlib.sha256(canonical(v)).hexdigest()
 
+ORGANIZATION_RECORD_FIELD="master_records_organization_record"
+# Master Records boundary migration: fixtures written before the rename carry this legacy field.
+LEGACY_ORGANIZATION_RECORD_FIELD="master_records_custody"
+
 def evaluate(inputs:dict[str,Any])->dict[str,Any]:
-    custody=inputs.get("master_records_custody")
+    custody=inputs.get(ORGANIZATION_RECORD_FIELD, inputs.get(LEGACY_ORGANIZATION_RECORD_FIELD))
     recon=inputs.get("reconstruction_state")
     authorized=inputs.get("authorized_execution","NOT_ESTABLISHED")
     if inputs.get("receipt_forged") or inputs.get("receipt_replayed") or custody=="SUBSTITUTED" or recon=="MISMATCH":

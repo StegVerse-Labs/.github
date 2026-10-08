@@ -246,22 +246,22 @@ The ordered state graph is:
    - this state is the sole predecessor for state 2.
 
 2. `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED`
-   - may be admitted only by consuming state 1's exact Master Records closure.
+   - may be admitted only by consuming state 1's exact Master Records organization record.
    - requires one authentic individual pre-reset witness record with immutable identity/provenance and the original `event`, `result`, `timestamp`, and `prev_hash` material needed by the historical seal contract.
    - this state is the sole predecessor for state 3.
 
 3. `HISTORICAL_WITNESS_SEAL_RECOMPUTED`
-   - may be admitted only by consuming state 2's exact Master Records closure.
+   - may be admitted only by consuming state 2's exact Master Records organization record.
    - recomputes the historical audit seal from the retained preimage and requires exact equality with the historical retained seal.
    - this state is the sole predecessor for state 4.
 
 4. `HISTORICAL_WITNESS_VERSION_TERM_BOUND`
-   - may be admitted only by consuming state 3's exact Master Records closure.
+   - may be admitted only by consuming state 3's exact Master Records organization record.
    - requires the sealed historical witness version and liveness term and binds that exact record to revision `2d6715868bb2812b98d874ab17890ff89ece30d5` or the actually applicable immutable revision.
    - this state is the sole predecessor for state 5.
 
 5. `R10_DISPOSITION_RECONCILED`
-   - may be admitted only by consuming state 4's exact Master Records closure.
+   - may be admitted only by consuming state 4's exact Master Records organization record.
    - R10 disposition is derived here and nowhere earlier.
 
 Current chain position: `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED`.
@@ -295,7 +295,7 @@ Most importantly, the current canonical task record for `MIR-AILEASH-WITNESS-EVI
 
 No runtime execution, external GET, A1/A2/A3/A4 promotion, or new authority path is claimed from this reconciliation.
 
-## Goal prompt 18: predecessor Master Records closure verification — 2026-09-21
+## Goal prompt 18: predecessor Master Records organization record verification — 2026-09-21
 
 The strict state-dependent contract was re-read before attempting state 2. The canonical task remains ACTIVE and permits only `HISTORICAL_WITNESS_RECORD_RECONSTRUCTED` after the immediate predecessor `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` is consumed from canonical Master Records.
 
@@ -317,7 +317,7 @@ Findings:
    `GET /api/master-records/state-transitions/query?subject_or_correlation_id=<id>`, optionally filtered by `transition_id`.
 4. No TV/TVC-authorized live Master Records endpoint/token binding is exposed to this conversation. The previously observed public same-origin path `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404 and is not evidence that the durable store is empty.
 
-Therefore the required predecessor closure is currently `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` from this execution context. The task record's `current_chain_position` is coordination state and is not substituted for the required Master Records closure.
+Therefore the required predecessor closure is currently `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` from this execution context. The task record's `current_chain_position` is coordination state and is not substituted for the required Master Records organization record.
 
 Because the predecessor closure has not been authenticated with all four required predicates simultaneously—
 
@@ -334,7 +334,7 @@ Next execution boundary: query the existing TV/TVC-authorized canonical Master R
 
 ## Goal prompt 19: canonical-work Master Records binding carriage repair — 2026-09-21
 
-Canonical Task Registry generation 191 was re-read before mutation. The predecessor `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no state-2 acquisition or admission is permitted until the exact canonical Master Records closure is returned and reconstructed.
+Canonical Task Registry generation 191 was re-read before mutation. The predecessor `PRE_RESET_COMPLETENESS_COMMITMENT_CLOSED` remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`; no state-2 acquisition or admission is permitted until the exact canonical Master Records organization record is returned and reconstructed.
 
 The first concrete existing service-binding defect was isolated in the already-registered Canonical Work resident path:
 

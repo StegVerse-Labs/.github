@@ -29,7 +29,7 @@ The G23 hash is a verification predicate. It is not replacement source material 
 WorkerCoordinator: continuation claim/fence only
 TV/TVC: credential/bounded-lease authority
 Interlock/InTr: fresh governed transition admission
-Master Records: custody/reconstruction authority
+Master Records: organization records/reconstruction authority
 SV002: observation/disposition only
 HB32: timing/freshness/correlation only; authority NONE
 Site: same-device materialization/carrier only; authority NONE
@@ -46,7 +46,7 @@ No merge, CI run, Apple compilation, unsigned IPA, deployment, cache refresh, he
 exact retained/recovered canonical G23
 -> StegOSWebBootstrap.executeMasterRecordsSv001Custody()
 -> fresh root Universal InTr MasterRecords:SV001Custody ALLOW
--> canonical Master Records custody/reconstruction PASS
+-> canonical Master Records organization records and reconstruction PASS
 -> Site governed custody proof
 -> sovereign-local resident rendezvous first
 -> StegOSMobile/StegBrowser loopback resident on current iPhone
@@ -283,7 +283,7 @@ current-iPhone discovery response: NOT OBSERVED
 current-iPhone component observation receipt: NOT OBSERVED
 current-device consumption of current Site activation projection: NOT OBSERVED
 fresh root-InTr ALLOW for custody: NOT OBSERVED
-Master Records custody PASS: NOT OBSERVED
+Master Records organization record PASS: NOT OBSERVED
 Master Records reconstruction PASS: NOT OBSERVED
 Site governed custody proof local RETAINED: NOT OBSERVED
 Site proof materialized to continuation observed/**: NOT OBSERVED
@@ -320,7 +320,7 @@ resolve TV_TVC_APPLE_SIGNING_AND_PROVISIONING for the existing validated StegOSM
 -> obtain authentic local discovery AVAILABLE + component observation receipt
 -> consume exact canonical G23 through executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
--> Master Records custody/reconstruction PASS
+-> Master Records organization records and reconstruction PASS
 -> exact governed proof POST to local resident
 -> local mailbox RETAINED
 -> WorkerCoordinator continuation validates/materializes proof under observed/**

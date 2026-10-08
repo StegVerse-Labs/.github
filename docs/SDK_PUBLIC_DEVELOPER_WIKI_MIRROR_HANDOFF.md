@@ -16,7 +16,7 @@ source-native manifested data
 -> caller-selected processing capability
 -> declared installed runtime route
 -> processor-specific evaluation
--> canonical Master Records custody
+-> canonical Master Records organization record
 -> caller-selected return projection
 -> returned artifact + manifest_receipt_id
 -> replay / reconstruction where applicable

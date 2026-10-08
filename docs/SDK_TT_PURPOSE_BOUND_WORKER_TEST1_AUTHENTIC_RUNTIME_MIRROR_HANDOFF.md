@@ -19,7 +19,7 @@ Close Evaluator Test 1 through the already-existing universal Manifest Builder -
 - Test 1 CI first boundary: `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED`, exit 2. This is GitHub non-runtime boundary evidence, not a resident runtime failure.
 - Canonical resident endpoint binding: `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`.
 - Canonical existing TVC transport authorization binding: `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`.
-- Request grants no authority. WorkerCoordinator remains claim/fence authority; TV/TVC remains credential/warrant authority; Interlock/InTr remains transition authority; StegAgents remains domain execution; Master Records remains custody/replay/reconstruction authority.
+- Request grants no authority. WorkerCoordinator remains claim/fence authority; TV/TVC remains credential/warrant authority; Interlock/InTr remains transition authority; StegAgents remains domain execution; Master Records remains limited to organization records and reconstruction.
 
 ## Required exact execution lineage
 
@@ -29,25 +29,25 @@ The execution target remains `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` bec
 Manifest Builder -> run-manifest
 -> shared /intr/materialization SDK:ManifestStateTransition
 -> WORKERCOORDINATOR_CLAIM_FENCE_BOUND
--> Master Records closure
+-> Master Records organization record
 -> TV_TVC_WARRANT_POLICY_VERIFIED
--> Master Records closure
+-> Master Records organization record
 -> STEGCORE_INTR_MATERIALIZATION_ADMITTED
--> Master Records closure
+-> Master Records organization record
 -> PURPOSE_BOUND_WORKER_MATERIALIZED
--> Master Records closure
+-> Master Records organization record
 -> PURPOSE_BOUND_WORKER_INVOCATION_STARTED
--> Master Records closure
+-> Master Records organization record
 -> PURPOSE_BOUND_WORKER_TASK_COMPLETED
--> Master Records closure
+-> Master Records organization record
 -> PURPOSE_BOUND_WORKER_RETIRED
--> Master Records closure
+-> Master Records organization record
 -> replay PASS + reconstruction PASS
 -> records_only=true + continued_authority=false
 -> exact manifest_receipt_id bound to original manifest lineage
 ```
 
-Every successor transition requires the immediately preceding Master Records closure with `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256`.
+Every successor transition requires the immediately preceding Master Records organization record with `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256`.
 
 ## Execution rule
 

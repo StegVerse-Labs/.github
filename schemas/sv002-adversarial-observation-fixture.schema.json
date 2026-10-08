@@ -16,13 +16,13 @@
     "inputs": {
       "type": "object",
       "required": [
-        "master_records_custody",
+        "master_records_organization_record",
         "reconstruction_state",
         "observation_valid",
         "output_correct"
       ],
       "properties": {
-        "master_records_custody": {
+        "master_records_organization_record": {
           "enum": [
             "PASS",
             "MISSING",

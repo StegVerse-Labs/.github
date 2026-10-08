@@ -62,4 +62,4 @@ AUTHENTIC_CURRENT_IPHONE_EXECUTION_EVIDENCE_NOT_YET_OBSERVED
 
 ## Next admissible work
 
-Use the existing ERL resident-local input/materialization path directly. Observe the shared loopback InTr admission, the two upstream receipts, the terminal DEVICE_KV materialization event, the existing WorkerCoordinator-owned terminal execution, exact KV byte readback, and then Master Records custody/reconstruction. Do not add another scheduler, Task Registry gate, transport credential, remote-device dependency, runtime owner, or coordination layer.
+Use the existing ERL resident-local input/materialization path directly. Observe the shared loopback InTr admission, the two upstream receipts, the terminal DEVICE_KV materialization event, the existing WorkerCoordinator-owned terminal execution, exact KV byte readback, and then Master Records organization records and reconstruction. Do not add another scheduler, Task Registry gate, transport credential, remote-device dependency, runtime owner, or coordination layer.

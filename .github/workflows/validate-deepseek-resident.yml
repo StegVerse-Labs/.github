@@ -64,7 +64,9 @@ jobs:
           assert cap['activation_evidence'] is False
           assert cap['requires_interlock_ingress'] is True
           assert cap['requires_interlock_egress'] is True
-          assert cap['master_records_custody']=='required_for_provider_usage_evidence'
+          # The pinned StegIndex snapshot predates the Master Records boundary rename.
+          LEGACY_ORGANIZATION_RECORD_FIELD='master_records_custody'
+          assert cap.get('master_records_organization_record', cap.get(LEGACY_ORGANIZATION_RECORD_FIELD))=='required_for_provider_usage_evidence'
           assert cap['reuse_instructions'].startswith('Reuse the released LLM-adapter DeepSeek InTr transport.')
           print('StegIndex DeepSeek reuse input: PASS')
           PY
@@ -125,7 +127,7 @@ jobs:
           assert handoff['execution']['master_records_reconstruction_required']=='PASS'
           assert request['second_machine_required'] is False
           assert request['provider_credential_material_allowed'] is False
-          assert request['master_records_custody_required_for_egress'] is True
+          assert request['master_records_organization_record_required_for_egress'] is True
           assert request['same_execution_required'] is True
           assert registry['tasks'][0]['admission']['fresh_fence_required'] is True
           assert adapter['adapters'][0]['command']==['python','workers/deepseek_intr_runtime_worker.py']

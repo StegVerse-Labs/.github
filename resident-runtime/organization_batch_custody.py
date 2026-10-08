@@ -250,7 +250,7 @@ def export_batch(root: Path, batch_id: str) -> dict:
 
 
 def export_batch_record(root: Path, batch_id: str) -> dict:
-    """Prepare the batch COMMITMENT for Master Records custody. Contents stay local.
+    """Prepare the batch COMMITMENT for Master Records organization record. Contents stay local.
 
     The organization reports the batched record, not the individual receipts that
     compose it. It verifies the batch locally first - including exact source

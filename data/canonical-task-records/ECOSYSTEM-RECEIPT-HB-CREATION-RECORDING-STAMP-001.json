@@ -28,7 +28,7 @@
     ],
     "components": [
       "heartbeat-reference-correlation",
-      "canonical-master-records-custody",
+      "canonical-master-records-organization-record",
       "receipt-hb-creation-reference",
       "master-records-hb-recording-reference",
       "master-records-checkpoint-root",
@@ -96,7 +96,7 @@
     "interlock_intr_remains_transition_authority": true,
     "workercoordinator_remains_claim_fence_authority": true,
     "tv_tvc_remains_credential_authority": true,
-    "master_records_remains_custody_reconstruction_authority": true
+    "master_records_limited_to_organization_records_and_reconstruction": true
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",

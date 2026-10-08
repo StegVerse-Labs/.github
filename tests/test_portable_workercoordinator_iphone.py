@@ -43,7 +43,7 @@ def test_terminal_package_binds_first_canonical_g23_and_retains_duplicates():
     assert terminal["canonical_node_id"]=="stegnode-web-f24e3bfb7f5343cb37323187a88e51f3"
     assert terminal["canonical_cycle_receipt_sha256"]=="sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35"
     assert terminal["canonical_custody_eligible"] is True
-    assert terminal["master_records_custody"]=="PENDING"
+    assert terminal["master_records_organization_record"]=="PENDING"
     assert terminal["sv002_adversarial_observation"]=="PENDING"
     dup=terminal["duplicates_retained_non_custodial"]
     assert {x["cycle_receipt_sha256"] for x in dup}=={

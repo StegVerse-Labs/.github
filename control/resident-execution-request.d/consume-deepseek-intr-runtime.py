@@ -65,7 +65,7 @@ def validate_request(request: Mapping[str, Any]) -> None:
         "request_granted_authority": False,
         "provider_credential_material_allowed": False,
         "hosted_runtime_allowed": False,
-        "master_records_custody_required_for_egress": True,
+        "master_records_organization_record_required_for_egress": True,
         "same_execution_required": True,
         "authority_effect": "NONE_REQUEST_ONLY",
     }

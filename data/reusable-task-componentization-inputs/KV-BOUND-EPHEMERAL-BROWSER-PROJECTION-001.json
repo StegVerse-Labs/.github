@@ -16,7 +16,7 @@
   },
   "evidence_basis": [
     "Current goal spans .github, Site, StegOS, continuity-vault-kit, and TVC-owned provider operations",
-    "Execution crosses WorkerCoordinator claim/fence, KV/SKAP user-verification, Interlock/InTr governed transition, TV/TVC credential/provider/release, and Master Records custody/reconstruction owners",
+    "Execution crosses WorkerCoordinator claim/fence, KV/SKAP user-verification, Interlock/InTr governed transition, TV/TVC credential/provider/release, and Master Records organization records and reconstruction owners",
     "The TestFlight path contains repeated TVC provider-operation request/response cycles whose exact count depends on provider reconciliation state",
     "Same-device recovery, frozen bootstrap, provider translation, signing, Build Upload/TestFlight release, runtime observation, and final reconstruction have independently provable evidence predicates",
     "The Site same-device wrapper and current-iPhone provider client compose generic governed-ingress, transport, credential/session, and provider-operation behavior and must not grow into independent orchestration owners",

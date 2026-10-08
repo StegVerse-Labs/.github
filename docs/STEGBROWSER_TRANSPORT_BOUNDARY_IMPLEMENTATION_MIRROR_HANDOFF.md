@@ -102,7 +102,7 @@ README was rechecked for task-specific `RTC-ROUNDTRIP-003` / `required_round_tri
 - Interlock/InTr: governed transition and packet movement authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification authority.
-- Master Records: observed-reality/custody/reconstruction authority after transport; not transport-success authority.
+- Master Records: organization records/reconstruction authority after transport; not transport-success authority.
 - Healer: triggered bounded remediation only.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 

@@ -428,7 +428,7 @@ def consume(
     Production reconstruct/submit use existing organization-first Master Records.
     """
     from workers.canonical_state_transition_custody import (
-        build_state_receipt, reconstruct_state_receipt, require_predecessor_master_records_closure,
+        build_state_receipt, reconstruct_state_receipt, require_predecessor_master_records_organization_record,
         submit_state_receipt, sha256_uri,
     )
     source_test_doubles = any(x is not None for x in (reconstruct, runner, submit))
@@ -552,7 +552,7 @@ def consume(
     result_bytes = result_path.read_bytes()
     result_sha = hashlib.sha256(result_bytes).hexdigest()
     if submit is submit_state_receipt:
-        prior, predecessor_evidence = require_predecessor_master_records_closure(
+        prior, predecessor_evidence = require_predecessor_master_records_organization_record(
             binding_digest, successor_transition_id=EXECUTION_TRANSITION)
     else:
         prior = "sha256:" + binding_digest
@@ -582,13 +582,13 @@ def consume(
         transition_evidence=diagnostic_evidence,
         required_evidence_manifest=predecessor_evidence,
         proof_scope="ADMITTED_DIAGNOSTIC_PROCESSING_ONLY_NOT_PUBLISHER_OR_FAR_SIDE",
-        proof_ceiling="AUTHENTIC_PROCESSING_ONLY_IF_EXISTING_MASTER_RECORDS_CLOSURE_PASS",
+        proof_ceiling="AUTHENTIC_PROCESSING_ONLY_IF_EXISTING_MASTER_RECORDS_ORGANIZATION_RECORD_PASS",
     )
     try:
         closure = submit(transition)
     except Exception as exc:
         raise DiagnosticExecutionFailClosed(
-            "ORGANIZATION_AND_MASTER_RECORDS_CUSTODY_SUBMISSION_FAILED:" + type(exc).__name__) from exc
+            "ORGANIZATION_AND_MASTER_RECORDS_ORGANIZATION_RECORD_SUBMISSION_FAILED:" + type(exc).__name__) from exc
     if not (closure.get("state") == "RECORDED"
             and closure.get("reconstruction_status") == "PASS"
             and closure.get("required_evidence_validation_status") == "PASS"
@@ -601,7 +601,7 @@ def consume(
             "state": "SOURCE_SIMULATION_ONLY",
             "disposition": "SIMULATED",
             "authentic_intr_disposition_observed": False,
-            "organization_master_records_closure_observed": False,
+            "organization_master_records_organization_record_observed": False,
             "request_sha256": request_hash,
             "wire_manifest_sha256": request["wire_manifest_sha256"],
             "diagnostic_result_sha256": result_sha,

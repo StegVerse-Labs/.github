@@ -78,6 +78,6 @@ zero_connected_devices_as_stop_condition = PROHIBITED
 zero_connected_devices_as_manual_work = PROHIBITED
 ```
 
-A task must proceed through its actual canonical authorities and evidence path—Task Registry coordination, WorkerCoordinator claim/fence, Interlock/InTr transition authority, TV/TVC credential authority where applicable, and Master Records custody/reconstruction—without first checking whether a remote connector reports a device.
+A task must proceed through its actual canonical authorities and evidence path—Task Registry coordination, WorkerCoordinator claim/fence, Interlock/InTr transition authority, TV/TVC credential authority where applicable, and Master Records organization records and reconstruction—without first checking whether a remote connector reports a device.
 
 The only exception is a task whose explicit subject is connector/device-inventory management itself. Incidental knowledge that a connector has zero attached devices has no task-state meaning and must be ignored.

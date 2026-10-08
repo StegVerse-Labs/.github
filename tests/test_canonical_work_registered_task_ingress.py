@@ -54,7 +54,7 @@ class CanonicalWorkRegisteredTaskIngressTests(unittest.TestCase):
         self.assertIn('"carrier_trigger_required": False', bootstrap)
         self.assertIn('"workercoordinator_remains_claim_fence_authority": True', bootstrap)
         self.assertIn('"interlock_intr_remains_transition_authority": True', bootstrap)
-        self.assertIn('"master_records_remains_custody_reconstruction_authority": True', bootstrap)
+        self.assertIn('"master_records_limited_to_organization_records_and_reconstruction": True', bootstrap)
         self.assertNotIn("new scheduler", bootstrap.lower())
 
     def test_existing_resident_consumer_visits_quantum_spec_without_new_dispatch_plane(self):

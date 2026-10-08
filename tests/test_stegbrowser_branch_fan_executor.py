@@ -74,7 +74,7 @@ class StegBrowserFanExecutionRelocated(unittest.TestCase):
         """Fail-closed here is this profile's verdict, not a runtime claim."""
         with tempfile.TemporaryDirectory() as directory:
             result = mod._capability_dispatch_fail_closed(Path(directory), REQUEST)
-        self.assertIs(result["organization_master_records_closure_observed"], False)
+        self.assertIs(result["organization_master_records_organization_record_observed"], False)
         self.assertIs(result["automatic_retry_permitted"], False)
         self.assertEqual(result["transition_id"], "INGRESS_ADMITTED")
 

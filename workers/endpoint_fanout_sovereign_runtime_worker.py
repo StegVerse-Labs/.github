@@ -214,7 +214,7 @@ def main() -> int:
         "third_party_runtime_required": False,
         "canonical_kv_mutation": False,
         "provider_operation_authorized": False,
-        "live_master_records_external_custody_claimed": False,
+        "live_master_records_external_organization_record_claimed": False,
         "authority_effect": "NONE",
     }
 
@@ -345,7 +345,7 @@ def main() -> int:
         "kv_status_return_candidate_ref": kv_report["return_interlock"]["writeback_candidate_ref"],
         "master_records_travel_report_sha256": sha256_hex(travel_report),
         "master_records_travel_hop_count": len(travel_report.get("hops") or []),
-        "master_records_local_contract_custody_state": (
+        "master_records_local_contract_organization_record_state": (
             master_records_record_status(travel_report.get("master_records_result"))
         ),
         "same_result_reconstructed": True,

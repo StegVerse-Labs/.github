@@ -45,7 +45,7 @@ The existing provider operation is not replayed. The provider proof remains a re
 
 ## Preconditions
 
-Master Records custody is not admissible until all of these are authentic:
+Master Records organization record is not admissible until all of these are authentic:
 
 - hop 1 `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM`;
 - hop 2 `STEGOS_ECOSYSTEM -> DEVICE_SYSTEM`;
@@ -71,9 +71,9 @@ This binding changes no authority.
 
 ## Evidence discipline
 
-The Master Records merge and Goal-specific binding prove reusable source compatibility only. They do not prove this ERL Goal Task has executed, reached InTr ingress, produced any authentic hop, completed terminal readback, or entered Master Records custody.
+The Master Records merge and Goal-specific binding prove reusable source compatibility only. They do not prove this ERL Goal Task has executed, reached InTr ingress, produced any authentic hop, completed terminal readback, or entered the Master Records organization record.
 
-`MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED` remains false until a destination-owned custody receipt and reconstruction confirmation exist for this Goal Task's authentic chain.
+`MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_OBSERVED` remains false until a destination-owned custody receipt and reconstruction confirmation exist for this Goal Task's authentic chain.
 
 Latest authorized resident-device discovery in this continuation returned `[]`.
 
@@ -82,5 +82,5 @@ Latest authorized resident-device discovery in this continuation returned `[]`.
 1. Keep the runtime handoff as runtime truth and the binding artifact/handoff as source architecture truth.
 2. When authentic resident execution is available, use the already-selected execution-materialization, governed-ingress, and three `RTC-INTERLOCK-INTR-TRANSPORT-008` instances.
 3. Validate the complete chain and terminal provider-proof binding without replay.
-4. Submit that authentic evidence object to the merged Master Records reusable custody interface and require reconstruction confirmation.
+4. Submit that authentic evidence object to the merged Master Records reusable organization records interface and require reconstruction confirmation.
 5. Reconcile the parent handoff only after those authentic predicates are observed.

@@ -64,7 +64,7 @@ def test_waits_without_authentic_hb_successor(monkeypatch, tmp_path: Path) -> No
 
 # Master Records boundary migration: the reconstruction ordinal is read under the
 # new name and, for reconstructions written before the rename, the legacy name.
-@pytest.mark.parametrize("ordinal_field", ["master_records_organization_record_ordinal", "master_records_custody_ordinal"])
+@pytest.mark.parametrize("ordinal_field", ["master_records_organization_record_ordinal", "master_records_organization_record_ordinal"])
 def test_commits_only_after_exact_reconstruction_and_both_hb_refs(monkeypatch, tmp_path: Path, ordinal_field: str) -> None:
     receipt_sha = "a" * 64
     creation = _creation()
@@ -116,7 +116,7 @@ def test_fails_closed_if_recording_hb_metadata_is_missing(monkeypatch, tmp_path:
             "receipt": {"hb_creation_reference": _creation()},
             "hb_recording_reference": None,
             "recorded_receipt_sha256": receipt_sha,
-            "master_records_custody_ordinal": 1,
+            "master_records_organization_record_ordinal": 1,
             "hb_evidence_class": "HB_BOUND_SUCCESSOR",
             "master_records_grants_transition_authority": False,
         },

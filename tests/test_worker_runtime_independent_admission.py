@@ -206,7 +206,7 @@ if __name__ == "__main__":
         self.assertEqual(runtime._successor_reconstruction({"generation": 1}, handoff), (True, None, None))
 
 
-    def test_independent_assignment_requires_master_records_closure_before_activation(self):
+    def test_independent_assignment_requires_master_records_organization_record_before_activation(self):
         source = inspect.getsource(LegacyWorkerCoordinator._activate_from_trigger)
         custody = inspect.getsource(LegacyWorkerCoordinator._custody_assignment_transition)
         assert source.index("_custody_assignment_transition") < source.index('task.update({')

@@ -4,7 +4,7 @@
   "correlation_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
   "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
   "parent_task_id": null,
-  "goal": "Obtain one authentic rerun of the original StegVerse-002 v0.3 self-characterization experiment through the existing registered StegVerseNode -> Interlock -> Universal InTr -> bounded invocation lease -> EVENT_EPHEMERAL -> StegVerse-002 principal -> governed egress/return -> Master Records custody/reconstruction -> origin-return sequence, without making frozen-corpus bulk materialization a prerequisite.",
+  "goal": "Obtain one authentic rerun of the original StegVerse-002 v0.3 self-characterization experiment through the existing registered StegVerseNode -> Interlock -> Universal InTr -> bounded invocation lease -> EVENT_EPHEMERAL -> StegVerse-002 principal -> governed egress/return -> Master Records organization records and reconstruction -> origin-return sequence, without making frozen-corpus bulk materialization a prerequisite.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "50000000107000",
@@ -33,7 +33,7 @@
       "sv002-self-characterization-surface",
       "frozen-v0.3-principal",
       "governed-egress-origin-return",
-      "master-records-custody-reconstruction"
+      "master-records-organization-record-reconstruction"
     ]
   },
   "dependencies": [
@@ -79,7 +79,7 @@
     "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
     "EGRESS_EMITTED",
     "GOVERNED_RETURN_OBSERVED",
-    "MASTER_RECORDS_CUSTODY_OBSERVED",
+    "MASTER_RECORDS_ORGANIZATION_RECORD_OBSERVED",
     "MASTER_RECORDS_RECONSTRUCTION_PASS",
     "ORIGIN_RETURN_OBSERVED",
     "NO_SECOND_USER_OPERATED_DEVICE",

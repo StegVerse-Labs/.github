@@ -37,7 +37,7 @@
         "Consumes only an already-fenced WorkerCoordinator invocation for MIR-TVC-PROVIDER-ROUNDTRIP-001.",
         "Uses the already-local generic RTC-INTERLOCK-INTR-TRANSPORT-008 Universal InTr implementation with exact StegVerse-org/StegVerse-SDK -> TVC:ProviderOperationBroker request identity and exact reverse response identity; transport receipts do not grant Interlock admission or provider authority.",
         "Delegates the admitted MIR-RUN2-EVENT-001 request to the existing canonical TVC non-exportable provider broker through the existing TV/TVC Unix vault socket.",
-        "After a real completed provider receipt exists, invokes only the registered reusable trigger to reconcile that same transaction and Master Records custody; a later custody boundary must reuse the retained provider receipt rather than blindly repeat the external consequence.",
+        "After a real completed provider receipt exists, invokes only the registered reusable trigger to reconcile that same transaction and Master Records organization record; a later custody boundary must reuse the retained provider receipt rather than blindly repeat the external consequence.",
         "No credential material is accepted from or returned to the worker."
       ],
       "timeout_seconds": 300,

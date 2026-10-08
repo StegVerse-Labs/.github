@@ -52,7 +52,7 @@ def test_runtime_worker_requires_fresh_claim_and_fence(monkeypatch):
     assert worker.main() == 6
 
 
-def test_runtime_worker_completes_only_after_exact_master_records_closure(tmp_path, monkeypatch):
+def test_runtime_worker_completes_only_after_exact_master_records_organization_record(tmp_path, monkeypatch):
     monkeypatch.setattr(worker, "ROOT", tmp_path)
     monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
     monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: {
@@ -87,7 +87,7 @@ def test_runtime_worker_blocks_when_master_records_not_closed(tmp_path, monkeypa
     monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
     monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: {
         "state": "BOUNDARY",
-        "reason": "MASTER_RECORDS_INGESTION_CUSTODY_NOT_CLOSED",
+        "reason": "MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED",
         "master_records": {"state": "BOUNDARY"},
     })
     stdin = io.StringIO(json.dumps(invocation()))

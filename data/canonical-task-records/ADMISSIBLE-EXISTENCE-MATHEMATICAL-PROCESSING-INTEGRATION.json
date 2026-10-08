@@ -59,7 +59,7 @@
     "EXISTING_INSTALLED_SDK_BINDINGS_EVALUATED_BEFORE_NEW_WORK",
     "GENERIC_FROZEN_MANIFEST_INVOCATION_POSITIVE_AND_NEGATIVE_CONTROLS",
     "EXACT_SOURCE_COMMIT_RESULT_AND_PRE_ENRICHMENT_HASH_LINEAGE",
-    "AUTHENTIC_WORKERCOORDINATOR_TV_TVC_INTR_AND_MASTER_RECORDS_CLOSURE_WHEN_RUNTIME_CLAIMED"
+    "AUTHENTIC_WORKERCOORDINATOR_TV_TVC_INTR_AND_MASTER_RECORDS_ORGANIZATION_RECORD_WHEN_RUNTIME_CLAIMED"
   ],
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -87,7 +87,7 @@
     "workercoordinator_claim_fence_only": true,
     "credential_authority": "TV/TVC",
     "interlock_intr_required_for_governed_ingress_egress": true,
-    "master_records_custody_required": true,
+    "master_records_organization_record_required": true,
     "no_second_device": true,
     "source_math_owner_remains_each_native_repository": true
   },

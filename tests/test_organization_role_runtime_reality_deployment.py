@@ -49,8 +49,8 @@ def test_master_records_is_limited_to_organization_records_and_reconstruction_wi
     assert inv["master_records_transition_authority"] == "NONE"
     assert inv["master_records_may_gate_organization_runtime_reality"] is False
     assert inv["released_organization_batch_requires_verified_organization_receipt_chain"] is True
-    assert inv["master_records_general_transition_custody"] is False
-    assert inv["master_records_general_evidence_custody"] is False
+    assert inv["master_records_general_transition_organization_record"] is False
+    assert inv["master_records_general_evidence_organization_record"] is False
 
 
 def test_manifest_bound_state_transition_standard_is_declared_as_invariant():
@@ -244,7 +244,7 @@ def test_organization_lane_is_a_standalone_entrypoint_that_awaits_no_receiver():
     # The organization lane performs no outbound submission of its own.
     assert "_submit_http" not in body
     assert "urlopen" not in body
-    assert "master_records_closure_claimed" in body
+    assert "master_records_organization_record_claimed" in body
 
 
 def test_organization_lane_refuses_a_schema_mismatch_without_touching_the_ledger():
@@ -258,7 +258,7 @@ def test_organization_lane_refuses_a_schema_mismatch_without_touching_the_ledger
 def test_general_transition_submission_to_master_records_is_removed():
     source = CUSTODY.read_text(encoding="utf-8")
     submit = source.index("def submit_state_receipt")
-    end = source.index("def require_predecessor_master_records_closure", submit)
+    end = source.index("def require_predecessor_master_records_organization_record", submit)
     body = source[submit:end]
     assert '"organization_runtime_reality": "RECORDED"' in body
     assert '"master_records_submission_performed": False' in body

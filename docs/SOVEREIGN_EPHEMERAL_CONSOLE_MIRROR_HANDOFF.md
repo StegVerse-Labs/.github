@@ -4,7 +4,7 @@ Updated: 2026-09-06T13:20:00-05:00
 
 ## Source of truth
 
-This is the subordinate source/validation handoff for `SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002`. It does not replace the parent G18 activation handoff, fencing token, heartbeat authority, TV/TVC authority, Master Records custody, or wallet boundaries.
+This is the subordinate source/validation handoff for `SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002`. It does not replace the parent G18 activation handoff, fencing token, heartbeat authority, TV/TVC authority, Master Records organization record, or wallet boundaries.
 
 ```text
 goal_id: SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002
@@ -136,7 +136,7 @@ scripts/refresh_sovereign_worker_runtime_source.py::STATIC_FILES
   -> refreshes the fallback into an existing resident runtime
 ```
 
-Therefore bootstrap source eligibility, fresh native materialization, and local-only source refresh can no longer report a complete G18 recovery surface while omitting the already-canonical fallback dependency. The repair does not change G18 claim/fence ownership, create a scheduler/worker/runtime, require another physical machine, alter HB oscillator semantics, or expand Master Records beyond custody/reconstruction. README impact is material and is documented in the same change set.
+Therefore bootstrap source eligibility, fresh native materialization, and local-only source refresh can no longer report a complete G18 recovery surface while omitting the already-canonical fallback dependency. The repair does not change G18 claim/fence ownership, create a scheduler/worker/runtime, require another physical machine, alter HB oscillator semantics, or expand Master Records beyond organization records and reconstruction. README impact is material and is documented in the same change set.
 
 `tests/test_g18_ephemeral_dependency_parity.py` provides negative controls for omitted fallback source and asserts parity across all three propagation/completeness surfaces.
 
@@ -243,7 +243,7 @@ Machine completion requires `~/.stegverse/heartbeat/activation.latest.json` to r
 
 ## Cross-repository and release boundary
 
-The console produces local runtime evidence only. It does not itself authorize TVC route admission, LLM-adapter execution, Master Records custody, StegFin trade preparation, signing, broadcast, release tagging or downstream Site/Publisher/wiki propagation.
+The console produces local runtime evidence only. It does not itself authorize TVC route admission, LLM-adapter execution, Master Records organization record, StegFin trade preparation, signing, broadcast, release tagging or downstream Site/Publisher/wiki propagation.
 
 Canonical live continuation remains:
 

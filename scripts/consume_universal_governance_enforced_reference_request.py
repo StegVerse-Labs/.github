@@ -25,6 +25,10 @@ NONSECRET_ENV = {
     "STEGVERSE_REPO_ROOTS_JSON",
 }
 
+#: Master Records boundary migration: local receipts written before the rename carry this legacy field.
+LEGACY_ORGANIZATION_RECORD_ACCEPTED_FIELD = "master_records_custody_accepted"
+
+
 def load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -94,7 +98,7 @@ def terminally_consumed(runtime: Path, request_id: str, request_hash: str) -> bo
         and receipt.get("request_sha256") == request_hash
         and receipt.get("reference_enforced_boundary_observed") is True
         and receipt.get("bypass_negative_control_passed") is True
-        and receipt.get("master_records_custody_accepted") is True
+        and receipt.get("master_records_organization_record_accepted", receipt.get(LEGACY_ORGANIZATION_RECORD_ACCEPTED_FIELD)) is True
         and receipt.get("real_external_system_enforced_activation") is False
     )
 
@@ -129,7 +133,7 @@ def consume(
             "runtime_execution_attempted": False,
             "reference_enforced_boundary_observed": True,
             "bypass_negative_control_passed": True,
-            "master_records_custody_accepted": True,
+            "master_records_organization_record_accepted": True,
             "real_external_system_enforced_activation": False,
             "authority_effect": "NONE_REQUEST_ONLY",
         }
@@ -172,7 +176,7 @@ def consume(
 
     reference_observed = bool(local_receipt and local_receipt.get("reference_enforced_boundary_observed") is True)
     bypass_passed = bool(local_receipt and local_receipt.get("bypass_negative_control_passed") is True)
-    custody_accepted = bool(local_receipt and local_receipt.get("master_records_custody_accepted") is True)
+    custody_accepted = bool(local_receipt and local_receipt.get("master_records_organization_record_accepted", local_receipt.get(LEGACY_ORGANIZATION_RECORD_ACCEPTED_FIELD)) is True)
     external_false = bool(local_receipt and local_receipt.get("real_external_system_enforced_activation") is False)
     complete = terminal and reference_observed and bypass_passed and custody_accepted and external_false
 
@@ -190,7 +194,7 @@ def consume(
         "runtime_execution_attempted": True,
         "reference_enforced_boundary_observed": reference_observed,
         "bypass_negative_control_passed": bypass_passed,
-        "master_records_custody_accepted": custody_accepted,
+        "master_records_organization_record_accepted": custody_accepted,
         "real_external_system_enforced_activation": False if complete else None,
         "retry_allowed": not complete,
         "request_granted_authority": False,

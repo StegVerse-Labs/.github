@@ -99,7 +99,7 @@
       "archive_reason_codes": [
         "BLOCKED_UNCLAIMED",
         "EXECUTOR_NOT_BOUND",
-        "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
+        "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN",
         "OLD_AUTHORITY_RELEASED",
         "RECOVERY_RECONSTRUCTION_REQUIRED",
         "WORKER_ORPHANED"
@@ -165,7 +165,7 @@
         "BLOCKED_UNCLAIMED",
         "EXECUTOR_NOT_BOUND",
         "EXECUTOR_NOT_RESOLVED",
-        "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
+        "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN",
         "ORPHAN_RECOVERY_REQUIRED",
         "SUCCESSOR_RECONSTRUCTION_REQUIRED"
       ],
@@ -192,7 +192,7 @@
       "heartbeat_timing_established": false,
       "last_checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
       "legacy_wall_clock_lease_is_timing_authority": false,
-      "next_authorized_action": "The recovery-only executor validates the ended HB25/G20 lifecycle against locally materialized canonical Master Records custody and writes only the recovery receipt. PASS completes recovery; the parent may then independently re-enter HANDOFF_READY and acquire a new fence greater than 20.",
+      "next_authorized_action": "The recovery-only executor validates the ended HB25/G20 lifecycle against locally materialized canonical Master Records organization record and writes only the recovery receipt. PASS completes recovery; the parent may then independently re-enter HANDOFF_READY and acquire a new fence greater than 20.",
       "state": "BLOCKED",
       "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
       "validation_errors": [],
@@ -204,7 +204,7 @@
       "activation_required": false,
       "archive_eligible": false,
       "archive_reason_codes": [
-        "MASTER_RECORDS_CUSTODY_NOT_PROVEN"
+        "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN"
       ],
       "authority_resolved": true,
       "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
@@ -371,7 +371,7 @@
         "EXECUTOR_NOT_BOUND",
         "EXECUTOR_NOT_RESOLVED",
         "HEARTBEAT_ACTIVATION_REQUIRED",
-        "MASTER_RECORDS_CUSTODY_NOT_PROVEN"
+        "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN"
       ],
       "authority_resolved": true,
       "claim_id": null,
@@ -455,7 +455,7 @@
         "EXECUTOR_NOT_BOUND",
         "EXECUTOR_NOT_RESOLVED",
         "HB_RELATIVE_TIMING_NOT_ESTABLISHED",
-        "MASTER_RECORDS_CUSTODY_NOT_PROVEN"
+        "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN"
       ],
       "authority_resolved": false,
       "claim_id": null,

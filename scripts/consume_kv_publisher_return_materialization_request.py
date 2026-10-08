@@ -182,7 +182,7 @@ def _record_sdk_return_binding_custody(
     try:
         binding=load(output_path)
     except Exception as exc:
-        raise KVPublisherReturnError("SDK return binding unavailable for Master Records custody") from exc
+        raise KVPublisherReturnError("SDK return binding unavailable for Master Records organization record") from exc
     expected_binding_hash=str(materialization.get("output_sha256") or "")
     actual_binding_hash=sha(binding)
     if not expected_binding_hash or actual_binding_hash!=expected_binding_hash:
@@ -212,16 +212,16 @@ def _record_sdk_return_binding_custody(
         sys.path.insert(0,str(workers_root))
     from canonical_state_transition_custody import (
         build_state_receipt,
-        require_predecessor_master_records_closure,
+        require_predecessor_master_records_organization_record,
         submit_state_receipt,
     )
     predecessor_receipt_sha256=request.get("predecessor_master_records_receipt_sha256")
-    prior_ref,predecessor_evidence=require_predecessor_master_records_closure(
+    prior_ref,predecessor_evidence=require_predecessor_master_records_organization_record(
         predecessor_receipt_sha256,
         successor_transition_id=transition_id,
     )
     if prior_ref is None:
-        raise KVPublisherReturnError("RTC-SDK-RETURN-006 canonical predecessor Master Records closure required")
+        raise KVPublisherReturnError("RTC-SDK-RETURN-006 canonical predecessor Master Records organization record required")
     required_evidence=list(predecessor_evidence)+required_evidence
     state_receipt=build_state_receipt(
       transition_id=transition_id,
@@ -252,7 +252,7 @@ def _record_sdk_return_binding_custody(
         and mr.get("required_evidence_validation_status")=="PASS"
         and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
     ):
-        raise KVPublisherReturnError("SDK return binding Master Records custody not closed")
+        raise KVPublisherReturnError("SDK return binding Master Records organization record not closed")
     return {
       "state":mr.get("state"),
       "reconstruction_status":mr.get("reconstruction_status"),
@@ -357,18 +357,18 @@ def _prepare_rtc007_continuation(
     if str(workers_root) not in sys.path: sys.path.insert(0,str(workers_root))
     from canonical_state_transition_custody import (
         build_state_receipt,
-        require_predecessor_master_records_closure,
+        require_predecessor_master_records_organization_record,
         submit_state_receipt,
     )
-    prior_ref, predecessor_evidence = require_predecessor_master_records_closure(
+    prior_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
         rtc006_master_records.get("receipt_sha256"),
         successor_transition_id="RTC-STEGVERSE-EGRESS-007",
     )
     if prior_ref is None:
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 canonical predecessor Master Records closure required")
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 canonical predecessor Master Records organization record required")
     closure = predecessor_evidence[0].get("content") if predecessor_evidence else None
     if not isinstance(closure,dict):
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor Master Records closure missing")
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor Master Records organization record missing")
     if closure.get("transition_id")!="RTC-SDK-RETURN-006":
         raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor transition reconstruction mismatch")
     for field in ("state","reconstruction_status","required_evidence_validation_status","receipt_sha256","reconstructed_receipt_sha256"):
@@ -420,7 +420,7 @@ def _prepare_rtc007_continuation(
         and mr.get("required_evidence_validation_status")=="PASS"
         and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
     ):
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 Master Records custody not closed")
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 Master Records organization record not closed")
 
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/mir_southbound_intr_consumer.py")
     if stegos is None:
@@ -638,7 +638,7 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
         "rtc008_admission_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
         "rtc009_far_side_transition_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
         "caller_consequence_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
-        "master_records_closure_claimed":False,
+        "master_records_organization_record_claimed":False,
         "credential_material_present":False,
         "execution_authority":"NONE",
         "authority_effect":"NONE_DIAGNOSTIC_ONLY",

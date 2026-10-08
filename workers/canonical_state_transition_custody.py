@@ -209,7 +209,7 @@ def _submit_http(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
         with urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
     except Exception as exc:
-        return {"state":"BOUNDARY","reason":f"CANONICAL_MASTER_RECORDS_CUSTODY_SUBMISSION_FAILED:{type(exc).__name__}","authority_effect":"NONE"}
+        return {"state":"BOUNDARY","reason":f"CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SUBMISSION_FAILED:{type(exc).__name__}","authority_effect":"NONE"}
 
 
 
@@ -731,7 +731,7 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
     and returns an organization-level disposition that does not depend on the
     Master Records released-batch recording lane.
 
-    It is not a Master Records closure and may not be promoted to one. Explicit
+    It is not a Master Records organization record and may not be promoted to one. Explicit
     reconstruction is a separate diagnostic/readback operation and is never a
     progression prerequisite for an unrelated transition.
     """
@@ -748,7 +748,7 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
         "runtime_reality_write_mode": "MANIFEST_DIRECTED_APPEND",
         "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
         "master_records_gates_organization_runtime_reality": False,
-        "master_records_closure_claimed": False,
+        "master_records_organization_record_claimed": False,
         "master_records_reconstructed_evidence_class_claimed": False,
         "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY",
     }
@@ -782,7 +782,7 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def require_predecessor_master_records_closure(
+def require_predecessor_master_records_organization_record(
     receipt_sha256: str | None,
     *,
     successor_transition_id: str,
@@ -823,6 +823,12 @@ def require_predecessor_master_records_closure(
         "content": content,
     }
     return f"sha256:{raw}", [evidence]
+
+
+#: Master Records boundary migration: StegVerse-Labs/StegAgents and older callers
+#: look this helper up under its legacy name; it stays bound to the same function.
+LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER = "require_predecessor_master_records_closure"
+globals()[LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER] = require_predecessor_master_records_organization_record
 
 
 class CanonicalTransitionCustody:
@@ -878,4 +884,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_closure", "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]

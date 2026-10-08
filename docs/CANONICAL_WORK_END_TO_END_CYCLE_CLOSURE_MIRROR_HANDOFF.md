@@ -41,7 +41,7 @@ The successor must preserve the same required cycle and may close only when curr
 
 ## Exact continuation
 
-Use the already-existing parent task/request/COSV and native Canonical Work execution path. Do not manufacture a new parent request to reset lineage. The next exact attempt must retain the first current governed disposition and correlate it through the existing `execution_attempt_id` seam. If `ALLOW`, continue through organization-ledger append, applicable released-batch Master Records custody/reconstruction, canonical reconciliation, and next-state determination. If `DENY` or `FAIL_CLOSED`, retain its exact failed predicate/evidence and feed that actionable result into canonical reconciliation/continuation.
+Use the already-existing parent task/request/COSV and native Canonical Work execution path. Do not manufacture a new parent request to reset lineage. The next exact attempt must retain the first current governed disposition and correlate it through the existing `execution_attempt_id` seam. If `ALLOW`, continue through organization-ledger append, applicable released-batch Master Records organization records and reconstruction, canonical reconciliation, and next-state determination. If `DENY` or `FAIL_CLOSED`, retain its exact failed predicate/evidence and feed that actionable result into canonical reconciliation/continuation.
 
 ## Prohibitions
 

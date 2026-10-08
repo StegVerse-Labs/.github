@@ -4,7 +4,7 @@
   "carrier_role": "REGULATORY_CARRIER_REFERENCE_FRAME",
   "control_plane_role": "WORKER_AND_DOMAIN_COORDINATION",
   "nervous_system_owner": "StegVerse-Labs/StegBrain#860",
-  "master_records_role": "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE",
+  "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
   "required_domains": ["StegVerse-Labs", "DEMO", "TEST", "StegVerse-org", "StegGhost"],
   "carrier_oscillator": {
     "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",

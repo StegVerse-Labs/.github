@@ -144,7 +144,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Execute the exact state_dependent_graph through the existing targeted WorkerCoordinator one-shot. WorkerCoordinator must bind one six-claim graph bundle in the Case 1 assignment closure; Case 2 and Case 3 admissions consume the immediately preceding RETIRED Master Records closure; Task 4 admits and atomically binds its three sibling workers from the Case 3 closure; the terminal aggregate is permitted only after the three-way RETIRED closure join.",
+    "next_authorized_action": "Execute the exact state_dependent_graph through the existing targeted WorkerCoordinator one-shot. WorkerCoordinator must bind one six-claim graph bundle in the Case 1 assignment closure; Case 2 and Case 3 admissions consume the immediately preceding RETIRED Master Records organization record; Task 4 admits and atomically binds its three sibling workers from the Case 3 closure; the terminal aggregate is permitted only after the three-way RETIRED closure join.",
     "terminal_when": [
       "authentic_tt_cell_request_hash_observed=true",
       "authentic_workercoordinator_claim_fence_observed=true",
@@ -154,15 +154,15 @@
       "authentic_task_result_bound_to_worker_and_transition=true",
       "authentic_worker_retirement_observed=true",
       "post_retirement_continued_authority=false",
-      "authentic_master_records_custody_recorded=true",
+      "authentic_master_records_organization_record_recorded=true",
       "authentic_master_records_reconstruction_match=true",
       "authentic_records_only_final_packet=true"
     ]
   },
   "block": {
     "block_reason": "No authentic SDK purpose-bound runtime state transition is yet recorded in Master Records. This is not a Healer, resident-root, scheduler, dispatcher, or carrier prerequisite.",
-    "dependency": "fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle -> Master Records per-transition evidence closure",
-    "observer": "single canonical WorkerCoordinator plus authoritative Master Records custody/reconstruction",
+    "dependency": "fresh WorkerCoordinator claim/fence -> TV warrant/policy -> StegCore/InTr -> purpose-bound lifecycle -> Master Records per-transition evidence organization record",
+    "observer": "single canonical WorkerCoordinator plus authoritative Master Records organization records and reconstruction",
     "recheck_trigger": "next authentic SDK state transition",
     "next_check": "authoritative Master Records state-transition receipt for SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
     "escalation_condition": "duplicate runtime/worker/adapter authority, warrant substitution, InTr substitution, provider credential exposure, unsupported Healer/resident-root dependency, or second-machine requirement",
@@ -174,8 +174,8 @@
     "graph_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001:FOUR-CASE-GRAPH",
     "claim_authority": "WORKERCOORDINATOR",
     "transition_authority": "StegCore/InTr",
-    "custody_authority": "MASTER_RECORDS",
-    "case_progression_rule": "NEXT_CASE_ADMISSION_REQUIRES_IMMEDIATELY_PRECEDING_TERMINAL_MASTER_RECORDS_CLOSURE",
+    "custody_authority": "ORGANIZATION",
+    "case_progression_rule": "NEXT_CASE_ADMISSION_REQUIRES_IMMEDIATELY_PRECEDING_TERMINAL_MASTER_RECORDS_ORGANIZATION_RECORD",
     "single_worker_requests": [
       {
         "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",

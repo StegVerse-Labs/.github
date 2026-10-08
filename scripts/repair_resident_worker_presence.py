@@ -163,7 +163,7 @@ def _persist_presence_projection(runtime_root: Path) -> dict[str, Any]:
 
 
 def _persist_presence_master_records_intake(runtime_root: Path) -> dict[str, Any]:
-    """Attempt local Master Records custody without making custody a presence prerequisite."""
+    """Attempt local Master Records organization record without making custody a presence prerequisite."""
     presence_path = runtime_root / PRESENCE_RECEIPT
     output_path = runtime_root / PRESENCE_MR_INTAKE_RECEIPT
     mr_root_raw = os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "").strip()
@@ -227,7 +227,7 @@ def _persist_presence_master_records_intake(runtime_root: Path) -> dict[str, Any
             "stderr_tail": completed.stderr[-1000:],
         }
     except Exception as exc:
-        result = {**base, "state": "FAIL_CLOSED_MASTER_RECORDS_INTAKE_EXCEPTION", "master_records_root": str(mr_root), "error": type(exc).__name__}
+        result = {**base, "state": "FAIL_RECORDED_MASTER_RECORDS_INTAKE_EXCEPTION", "master_records_root": str(mr_root), "error": type(exc).__name__}
     _write_json(output_path, result)
     return result
 

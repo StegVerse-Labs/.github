@@ -94,7 +94,7 @@ The task state is `RESIDENT_SOURCE_CONSUMPTION_INSTALLED_HOSTED_REVERIFY_PENDING
 
 The stale overlapping Site PR #407 was closed unmerged because its dual-view goal was already completed by canonical PR #425 / release `d9ce13c8a95d178ad66a93b649b918a7911958c3`. This prevents stale-base overwrite of the current Math-enabled primary surface.
 
-## Master Records append-only custody
+## Master Records append-only organization records
 
 Verifier generalization: `2a670b22e5d86c6b09d7ef8520cf28ae04aa0853`; all-object tests `e4035c03a98246f33adc6271b2cab5eb34c9d2f8`; all-object workflow `811128726314fe8d3a1b10aaf5008b3537328a15`. Current custody handoff includes four objects and remains fail-closed for packet mutation, source-path substitution, authority expansion, non-PASS reconstruction, malformed source metadata, and wrong destination.
 
@@ -114,7 +114,7 @@ activation_effect: NONE
 
 ## Next integration goal
 
-1. Observe fresh Site Bootstrap/canonical application validation containing the Math boundary and fresh Master Records all-object custody validation containing transition 004.
+1. Observe fresh Site Bootstrap/canonical application validation containing the Math boundary and fresh Master Records all-object organization records validation containing transition 004.
 2. Repair only an exact failure without weakening the boundary or custody contract.
 3. After hosted source proof, advance Math attachment/image intake or separately governed solver/verifier execution with replayable receipts.
 4. Any further material endpoint/runtime state becomes transition 005+ and a new custody object.
@@ -139,7 +139,7 @@ Current distinction:
 - governed_math_solver/math_verifier execution: NOT OBSERVED;
 - attachment/image intake: NOT ADMITTED;
 - transition 005+: NOT YET EMITTED;
-- Master Records custody for 005+: NOT YET RECORDED;
+- Master Records organization record for 005+: NOT YET RECORDED;
 - product activation effect: NONE.
 
 
@@ -159,7 +159,7 @@ The next append-only Math evidence transition now exists:
 
 Transition 005 records only that the already-installed shared Math source boundary has later hosted Site validation evidence. It preserves the same semantic module state hash `b01c9197...`, reconstruction PASS, and authority effect NONE.
 
-Do not promote the Site Math task from its prior fail-closed projection until Master Records all-object custody validation including 005 is actually observed PASS. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
+Do not promote the Site Math task from its prior fail-closed projection until Master Records all-object organization records validation including 005 is actually observed PASS. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
 
 
 ## 2026-08-27 transition 005 hosted validation complete

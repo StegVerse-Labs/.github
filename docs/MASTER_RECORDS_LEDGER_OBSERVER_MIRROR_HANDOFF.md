@@ -4,7 +4,7 @@
 
 Consumer: `resident-runtime/consume_master_records_monitoring_projection.py`
 
-This observer does not read repository ledgers, organization ledgers, or Master Records custody directly and does not participate in the causal transition path.
+This observer does not read repository ledgers, organization ledgers, or Master Records organization record directly and does not participate in the causal transition path.
 
 Flow:
 

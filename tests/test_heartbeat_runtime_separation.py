@@ -53,7 +53,7 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
             {"StegVerse-Labs", "DEMO", "TEST", "StegVerse-org", "StegGhost"},
         )
         self.assertEqual(contract["nervous_system_owner"], "StegVerse-Labs/StegBrain#860")
-        self.assertEqual(contract["master_records_role"], "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE")
+        self.assertEqual(contract["master_records_role"], "ORGANIZATION_RECORDS_AND_RECONSTRUCTION")
         self.assertFalse(contract["authority"]["non_tv_tvc_secret_or_token_required"])
         oscillator = contract["carrier_oscillator"]
         self.assertEqual(oscillator["phase_travel_time_ms"], 10)

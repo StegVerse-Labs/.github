@@ -23,7 +23,7 @@ Disposition: `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_O
 3. Existing TV/TVC provider content-integrity capability — purpose-bound lease/session + read-only exact-byte SHA-256 observation.
 4. `RTC-ROUNDTRIP-003` — provider request/response round trip with evidence correlation.
 5. `RTC-SDK-RETURN-006` — normalize authentic provider evidence into the SDK Shared Docs freeze-binding seam.
-6. `RTC-EVIDENCE-CUSTODY-004` — Master Records custody/readback/reconstruction.
+6. `RTC-EVIDENCE-CUSTODY-004` — Master Records organization records and reconstruction.
 7. `RTC-INTERLOCK-INTR-TRANSPORT-008` — conditional only when a provider-observed edit requires a successor Shared Docs revision transition.
 
 Not selected: Publisher projection, StegVerse final egress, far-side final transition, or terminal cleanup/entropy recovery.
@@ -45,11 +45,11 @@ The already-merged task-specific consumer `control/resident-execution-request.d/
 
 ## Authority separation
 
-Task Registry is coordination only; WorkerCoordinator owns claim/fence; Interlock/InTr owns governed admission/transition; TV/TVC owns credential/session/provider/release authority; KV/SKAP Vault remains sole user-verification authority; StegOS devices are interchangeable transport/execution nodes; Master Records owns observed-reality custody/reconstruction; HeartBeat is observability/timing/freshness/correlation only; GitHub has no runtime authority.
+Task Registry is coordination only; WorkerCoordinator owns claim/fence; Interlock/InTr owns governed admission/transition; TV/TVC owns credential/session/provider/release authority; KV/SKAP Vault remains sole user-verification authority; StegOS devices are interchangeable transport/execution nodes; Master Records is limited to organization records and reconstruction; HeartBeat is observability/timing/freshness/correlation only; GitHub has no runtime authority.
 
 ## Runtime/evidence state
 
-Pending authentic evidence remains: resident execution visitation; WorkerCoordinator claim/fence when required; TV/TVC provider credential/session use; provider content-integrity execution; exact provider version plus downloaded-byte SHA-256; SDK binding of the authentic result to the immutable Shared Docs revision; Master Records custody/readback/reconstruction; and conditional Interlock/InTr successor-revision transition if an edit is observed.
+Pending authentic evidence remains: resident execution visitation; WorkerCoordinator claim/fence when required; TV/TVC provider credential/session use; provider content-integrity execution; exact provider version plus downloaded-byte SHA-256; SDK binding of the authentic result to the immutable Shared Docs revision; Master Records organization records and reconstruction; and conditional Interlock/InTr successor-revision transition if an edit is observed.
 
 ## Next admissible work
 

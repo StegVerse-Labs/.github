@@ -276,7 +276,7 @@ def _nonworker_diagnostic_deny(
         "evaluation_boundary": ("SDK_ADMITTED_DIAGNOSTIC_CONSUMER_LOCAL" if terminal
                                 else "SDK_MANIFEST_PROFILE_SOURCE_ONLY"),
         "authentic_intr_disposition_observed": False,
-        "organization_master_records_closure_observed": False,
+        "organization_master_records_organization_record_observed": False,
         "transition_id": "SDK_ECOSYSTEM_DIAGNOSTIC_DISPATCH",
         "failed_predicate": (reason_code if reason_code !=
                              "ECOSYSTEM_DIAGNOSTIC_NONWORKER_DISPATCH_UNWIRED"
@@ -298,7 +298,7 @@ def _nonworker_diagnostic_deny(
         "required_evidence_refs": [
             "AUTHENTIC_EVENT_EPHEMERAL_STEGOS_INVOCATION_BINDING",
             "EXACT_BOUND_SDK_DIAGNOSTIC_RESULT",
-            "ORGANIZATION_PREDECESSOR_LINK_AND_MASTER_RECORDS_CLOSURE",
+            "ORGANIZATION_PREDECESSOR_LINK_AND_MASTER_RECORDS_ORGANIZATION_RECORD",
         ],
         "repair_owner": "EXISTING_SDK_ECOSYSTEM_DIAGNOSTIC_AND_STEGBROWSER_INTR_OWNERS",
         "authority_effect": "NONE_SOURCE_PROFILE_DISPOSITION_ONLY",
@@ -341,7 +341,7 @@ def _capability_dispatch_fail_closed(runtime_root: Path, validated: Mapping[str,
         "retry_condition": "BIND_EXISTING_MANIFEST_SELECTED_CAPABILITY_OWNER_THEN_NEW_GOVERNED_ATTEMPT",
         "evaluation_boundary": "UNIVERSAL_INTR_MANIFEST_CAPABILITY_DISPATCH",
         "authentic_intr_disposition_observed": True,
-        "organization_master_records_closure_observed": False,
+        "organization_master_records_organization_record_observed": False,
         "transition_id": "INGRESS_ADMITTED",
         "failed_predicate": "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND",
         "reason_code": "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_NOT_BOUND",
@@ -487,7 +487,7 @@ def _run_governance_owner(runtime_root: Path, validated: Mapping[str, Any]) -> d
 def _closure_projection(row: Mapping[str, Any], *, predecessor_receipt_sha256: str | None = None) -> dict[str, Any]:
     custody = row.get("custody")
     receipt = row.get("receipt")
-    require(isinstance(custody, Mapping), "master_records_custody_result_required")
+    require(isinstance(custody, Mapping), "master_records_organization_record_result_required")
     require(isinstance(receipt, Mapping), "canonical_state_transition_receipt_required")
     organization = custody.get("organization_receipt")
     require(isinstance(organization, Mapping), "organization_receipt_required")
@@ -558,7 +558,7 @@ def _governance_disposition_record(
         "resolved_ordered_transitions": ["INGRESS_ADMITTED", transition_id],
         "transition_closures": [dict(ingress_closure), closure],
         "organization_records_before_master_records": True,
-        "organization_master_records_closure_observed": True,
+        "organization_master_records_organization_record_observed": True,
         "publisher_executed": False,
         "site_propagation_executed": False,
         "authority_effect": "NONE_GOVERNANCE_DISPOSITION_ONLY",
@@ -988,7 +988,7 @@ def execute(
             "canonical_manifest_sha256": validated["canonical_manifest_sha256"],
             "consequence_committed_by_this_profile": False,
             "authentic_intr_disposition_observed": False,
-            "organization_master_records_closure_observed": False,
+            "organization_master_records_organization_record_observed": False,
             "required_evidence_refs": [
                 "EXACT_REQUEST_BOUND_ORIGINAL_INTR_DISPOSITION",
                 "ORGANIZATION_LEDGER_RECEIPT_AND_PREDECESSOR",
@@ -1030,7 +1030,7 @@ def _manifest_binding_deny(
 
     Called only after existing transport validation succeeded. This receipt is
     the evaluating SDK manifest profile's verdict, not an organization receipt,
-    a Master Records closure, or permission to retry a consequential operation.
+    a Master Records organization record, or permission to retry a consequential operation.
     """
     actual = sha256(request)
     manifest = request.get("canonical_manifest")
@@ -1044,7 +1044,7 @@ def _manifest_binding_deny(
         "evaluation_boundary": "SDK_MANIFEST_PROFILE",
         "transport_validated": True,
         "authentic_intr_admission_observed": False,
-        "organization_master_records_closure_observed": False,
+        "organization_master_records_organization_record_observed": False,
         "transition_id": "SDK_MANIFEST_BINDING",
         "reason_code": reason_code,
         "failed_predicate": reason_code,

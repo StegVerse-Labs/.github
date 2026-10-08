@@ -161,7 +161,7 @@ current-iPhone local discovery AVAILABLE: NOT OBSERVED
 current-iPhone component observation receipt: NOT OBSERVED
 current-device Site activation consumption: NOT OBSERVED
 fresh root-InTr custody ALLOW: NOT OBSERVED
-Master Records custody PASS: NOT OBSERVED
+Master Records organization record PASS: NOT OBSERVED
 Master Records reconstruction PASS: NOT OBSERVED
 local governed custody proof RETAINED: NOT OBSERVED
 continuation proof materialized under observed/**: NOT OBSERVED
@@ -197,7 +197,7 @@ owner confirms/configures ASC_KEY_ID + ASC_ISSUER_ID + raw ASC_PRIVATE_KEY_P8 in
 -> obtain authentic loopback discovery AVAILABLE + component receipt
 -> executeMasterRecordsSv001Custody() with exact retained G23
 -> fresh root-InTr ALLOW or fail closed
--> Master Records custody/reconstruction PASS
+-> Master Records organization records and reconstruction PASS
 -> exact proof POST to sovereign-local resident
 -> durable local mailbox RETAINED
 -> WorkerCoordinator continuation validates/materializes under observed/**

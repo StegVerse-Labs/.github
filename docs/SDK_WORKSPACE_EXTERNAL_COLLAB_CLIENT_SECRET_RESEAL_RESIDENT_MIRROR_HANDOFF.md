@@ -165,7 +165,7 @@ resident request source merged
 4. If the authentic receipt is `COMPLETED`, retain exact target custody readback/use evidence and reconcile the Task Registry/runtime proof fields.
 5. After authentic target custody is proven, validate bounded `GoogleDriveExternalCollaborationClientSecretUse` resolution.
 6. Continue resident consent-listener installation, machine-owned Service Gateway #72 callback binding, CMC-029 `stegverse.org` HTTPS, owner-present consent, and the exact provider-file probe.
-7. Feed the provider result through the SDK bridge/active-probe path, then continue Shared Docs lifecycle transitions, MIR reporting, Master Records custody/reconstruction, and one-current-device proof.
+7. Feed the provider result through the SDK bridge/active-probe path, then continue Shared Docs lifecycle transitions, MIR reporting, Master Records organization records and reconstruction, and one-current-device proof.
 
 ## Human action
 

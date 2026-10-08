@@ -5,7 +5,7 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "KIMI-INTR-RESIDENT-END-TO-END-CONNECTION",
-    "objective": "Execute one bounded Kimi InTr cycle through the existing sovereign resident WorkerCoordinator using canonical StegGate ingress/egress decisions, exact-bound TVC non-exportable provider use, and Master Records custody/reconstruction.",
+    "objective": "Execute one bounded Kimi InTr cycle through the existing sovereign resident WorkerCoordinator using canonical StegGate ingress/egress decisions, exact-bound TVC non-exportable provider use, and Master Records organization records and reconstruction.",
     "success_predicates": [
       "fresh WorkerCoordinator claim and fence observed",
       "canonical StegGate ingress ALLOW retained",
@@ -22,12 +22,12 @@
       "fresh WorkerCoordinator claim/fence absent",
       "ingress or egress StegGate disposition not ALLOW",
       "TVC lease or provider operation refused",
-      "Master Records custody or reconstruction incomplete",
+      "Master Records organization record or reconstruction incomplete",
       "credential material exposed or another physical machine required"
     ],
     "authority_ceiling": [
       "bounded Kimi provider inference through existing TVC non-exportable operation",
-      "local Master Records provider-usage custody",
+      "local Master Records provider-usage organization records",
       "secret-free receipt persistence under receipts/kimi-intr-runtime/**",
       "no scheduler, heartbeat authority, credential export, publication, or product-activation authority"
     ],

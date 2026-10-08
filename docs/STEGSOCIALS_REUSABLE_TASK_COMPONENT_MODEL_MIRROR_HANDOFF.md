@@ -163,7 +163,7 @@ The task exhibits repeated subflows, multiple authority crossings, repeated gove
 - Inputs: complete receipt chain, publication result, KV commit/readback, refusal evidence
 - Outputs: accepted custody and successful reconstruction
 - Preconditions: authentic observed evidence exists
-- Authority owner: Master Records for observed-reality custody/reconstruction
+- Authority owner: Master Records for observed-reality organization records and reconstruction
 - Expected evidence: import/custody/reconstruction receipts
 - Repeatability: terminal task evidence assembly; may accept staged records but completion requires full required reconstruction
 - Failure/remediation: no manufactured Master Records state; missing evidence remains incomplete
@@ -194,7 +194,7 @@ The task exhibits repeated subflows, multiple authority crossings, repeated gove
 - Bounded execution evidence reconciler: current task-specific correlation binding; stop generic growth here and converge future equivalent callback/result correlation on the reusable `callback_correlation` family.
 - Execution-to-Site-CAS projection: task-specific binding to existing state-commit component; no second KV writer.
 - Site runtime observation surface: runtime observation only; not execution authority.
-- Master Records custody task: canonical custody/reconstruction binding, not duplicate evidence storage.
+- Master Records organization record task: canonical custody/reconstruction binding, not duplicate evidence storage.
 
 No existing implementation is deleted. Historical evidence/provenance remains valid. Duplicate orchestration is superseded conceptually by component references where functionally equivalent.
 
@@ -209,7 +209,7 @@ Componentization does not close any runtime predicate. The Goal Task still requi
 5. terminal browser/session destruction is observed;
 6. the correlated execution commits through the existing expected-etag DEVICE_KV/Personal-KV path and exact readback verifies;
 7. a second in-scope post executes without renewed participant approval while widening/replay/stale attempts fail closed;
-8. Master Records accepts custody and reconstruction passes;
+8. Master Records accepts organization records and reconstruction passes;
 9. no hosted fallback, second user-operated device, or device-local user verification is introduced.
 
 ## Next admissible work

@@ -112,7 +112,7 @@
     "credential_authority": "TV/TVC",
     "native_node_identity_is_not_webkit_node_identity_without_proof": true,
     "interlock_intr_required_for_state_changes": true,
-    "master_records_custody_required": true,
+    "master_records_organization_record_required": true,
     "github_apple_credential_custody": false,
     "no_second_device": true
   },

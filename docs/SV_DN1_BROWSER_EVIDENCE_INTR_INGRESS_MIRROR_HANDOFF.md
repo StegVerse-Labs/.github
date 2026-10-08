@@ -178,7 +178,7 @@ The ingress MUST NOT:
 - execute SDK evaluation in the HTTP handler;
 - grant claim/fence authority;
 - make StegCore/StegGate decisions;
-- perform Master Records custody/reconstruction itself;
+- perform Master Records organization records and reconstruction itself;
 - commit/push/merge repository content;
 - deploy the public dashboard;
 - certify or endorse the external model.

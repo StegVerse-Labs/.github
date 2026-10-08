@@ -19,7 +19,7 @@ Resolve only the custody binding actually used by the immutable StegBrowser invo
 ```text
 endpoint = /api/master-records/state-transitions
 subject = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
-transition = STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY
+transition = STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_ORGANIZATION_RECORD
 ```
 
 The generic Python local adapter in `workers/canonical_state_transition_custody.py` is not the immutable invocation's browser custody binding and must not be repaired as if it resolves this task.
@@ -43,8 +43,8 @@ Master Records execution authority = false
 
 ## Required solution path
 
-1. Re-read the current canonical Master Records custody owner and the current Site browser custody client before mutation.
-2. Bind the browser client to the existing authoritative Master Records custody surface through a provider-neutral, platform-neutral, OS-neutral, device-neutral configuration or routing contract already owned by StegVerse. Do not hard-code Render or any replacement hosting provider.
+1. Re-read the current canonical Master Records organization record owner and the current Site browser custody client before mutation.
+2. Bind the browser client to the existing authoritative Master Records organization record surface through a provider-neutral, platform-neutral, OS-neutral, device-neutral configuration or routing contract already owned by StegVerse. Do not hard-code Render or any replacement hosting provider.
 3. Preserve TV/TVC credential authority. A header naming TV/TVC is not authentication evidence; do not invent or expose credentials in browser source.
 4. Do not create a second API, custody store, transport plane, runtime, scheduler, dispatcher, service worker authority, credential path, request nonce, or user-operated device dependency.
 5. Preserve the immutable invocation nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` and requested invocation count `1`.
@@ -158,7 +158,7 @@ llm_adapter/stegbrowser_master_records_state_transition_relay.py
 
 The existing Service Gateway now advertises the bounded relay only when its existing server-side Master Records configuration is available. The browser supplies only the non-secret canonical state-transition submission. The gateway keeps Master Records bearer material server-side under the existing TV/TVC `service_gateway_master_records` credential role and relays the unchanged submission to the sole canonical Master Records API.
 
-The relay accepts only the immutable nonce, transition `STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY`, sequence `1`, COSV `40000100100000`, canonical predecessor task, `OBSERVED` outcome, exact InTr `ALLOW / INGRESS_ADMITTED` evidence, and complete Node/Interlock/Receipt-1/lease/runtime/exported-bundle tuple. It independently recomputes the canonical receipt digest and accepts success only when Master Records returns `RECORDED + reconstruction_status=PASS` with identical receipt/reconstruction digests and no authority escalation.
+The relay accepts only the immutable nonce, transition `STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_ORGANIZATION_RECORD`, sequence `1`, COSV `40000100100000`, canonical predecessor task, `OBSERVED` outcome, exact InTr `ALLOW / INGRESS_ADMITTED` evidence, and complete Node/Interlock/Receipt-1/lease/runtime/exported-bundle tuple. It independently recomputes the canonical receipt digest and accepts success only when Master Records returns `RECORDED + reconstruction_status=PASS` with identical receipt/reconstruction digests and no authority escalation.
 
 This gateway route is transport only. It is not a second custody API, store, transition authority, credential authority, scheduler, dispatcher, runtime, or governance plane.
 
@@ -227,7 +227,7 @@ The current Site execution page `stegos-bootstrap/canonical-work-runtime-consump
 unchanged immutable Canonical Work invocation
 -> retain authentic runtime-readiness tuple
 -> export retained SV002 evidence
--> existing StegBrowser Master Records InTr custody admission
+-> existing StegBrowser Master Records InTr organization records admission
 -> construct exact canonical state-transition receipt from that authentic admission
 -> verified provider-neutral StegVerse node discovery
 -> credential-nonexporting Service Gateway relay
@@ -654,7 +654,7 @@ Running it against source checkout, CI, a synthetic materialization target, or a
 
 ### Downstream custody remains unentered
 
-The immutable invocation's exact Node/Interlock/Receipt-1/lease/runtime/export tuple is still unavailable, so this prompt did not enter Gateway validation, relay submission, Master Records custody, `RECORDED`, reconstruction `PASS`, digest equality, A1-A4 handback, A3, A4, or Round Trip 1.
+The immutable invocation's exact Node/Interlock/Receipt-1/lease/runtime/export tuple is still unavailable, so this prompt did not enter Gateway validation, relay submission, Master Records organization record, `RECORDED`, reconstruction `PASS`, digest equality, A1-A4 handback, A3, A4, or Round Trip 1.
 
 No second invocation was emitted.
 

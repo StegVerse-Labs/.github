@@ -41,7 +41,7 @@ authentic DEVICE_KV_INTR_OBSERVED
 -> durable sovereign receipt
 ```
 
-This task proves execution of the merged fanout implementation on the admitted sovereign resident after authentic DEVICE_KV_INTR transport has already been observed. It does not claim that the fanout probe itself used a public network endpoint or that Master Records external custody has occurred.
+This task proves execution of the merged fanout implementation on the admitted sovereign resident after authentic DEVICE_KV_INTR transport has already been observed. It does not claim that the fanout probe itself used a public network endpoint or that Master Records external organization records has occurred.
 
 ## Authority boundary
 
@@ -53,7 +53,7 @@ This task proves execution of the merged fanout implementation on the admitted s
 - GitHub token runtime authority is NONE.
 - No canonical KV mutation.
 - No provider operation.
-- No external Master Records custody claim.
+- No external Master Records organization record claim.
 - No second user-operated machine.
 
 ## Completion evidence

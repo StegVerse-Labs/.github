@@ -26,7 +26,7 @@ Reusable mechanics:
 - transition-effect capture;
 - exactly-once principal execution;
 - retryable downstream reconstruction;
-- Master Records custody/reconstruction requirement.
+- Master Records organization records and reconstruction requirement.
 
 Organization-specific bindings:
 - organization ID;

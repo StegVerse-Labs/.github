@@ -74,7 +74,7 @@
     "tests/test_reusable_task_cosv_index_shard_resolution.py::test_child_pointer_resolves_from_canonical_index_shard",
     "tests/test_runtime_failure_boundaries.py::test_failure_classifier_is_in_worker_tree_that_resident_refresh_already_copies",
     "tests/test_runtime_presence_master_records_bundle_floor.py::RuntimePresenceMasterRecordsBundleFloorTests::test_master_records_floor_contains_runtime_presence_custody_merge",
-    "tests/test_sdk_evaluator_dispatch_master_records_custody.py::test_sdk_evaluator_dispatch_visit_enters_existing_master_records_custody",
+    "tests/test_sdk_evaluator_dispatch_master_records_custody.py::test_sdk_evaluator_dispatch_visit_enters_existing_master_records_organization_record",
     "tests/test_sdk_extcollab_rendezvous_component_selection.py::test_rendezvous_registration_gap_remains_exact_and_does_not_create_duplicate_transport",
     "tests/test_sdk_generic_manifest_task_registry_registration.py::test_sdk_generic_manifest_goal_is_canonically_registered",
     "tests/test_sharded_canonical_work_ingress.py::ShardedCanonicalWorkIngressTests::test_stegbrowser_superseded_parent_is_not_reingress_eligible",

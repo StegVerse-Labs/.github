@@ -73,7 +73,7 @@ authentic non-hosted resident
  -> alternate replay DENY
  -> canonical consequence evidence
  -> Universal InTr return
- -> independent Master Records custody validation
+ -> independent Master Records organization record validation
  -> authentic resident receipt
 ```
 
@@ -95,7 +95,7 @@ stale_binding_rejected=true
 fresh_binding_required=true
 fresh_binding_single_use=true
 final_target_mutation_count=1
-master_records_custody_accepted=true
+master_records_organization_record_accepted=true
 real_external_system_enforced_activation=false
 credential_authority=TV/TVC
 github_token_used=false
@@ -130,7 +130,7 @@ adapter != execution authority
 request dispatcher != execution authority
 heartbeat != execution authority
 Interlock/InTr != credential authority
-Master Records custody != execution authority
+Master Records organization record != execution authority
 GitHub Actions runtime authority = NONE
 credential authority = TV/TVC
 repository writeback = false
@@ -151,7 +151,7 @@ RESIDENT_ADMITTED=false
 RESIDENT_EXECUTION_OBSERVED=false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED=false
 BYPASS_NEGATIVE_CONTROL_OBSERVED=false
-AUTHENTIC_MASTER_RECORDS_CUSTODY=false
+AUTHENTIC_MASTER_RECORDS_ORGANIZATION_RECORD=false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION=false
 COMPLETE=false
 ```

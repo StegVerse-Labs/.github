@@ -83,14 +83,14 @@ Terminal or exactly-once transitions must never be rerun merely to restore an ex
 
 The prior queue history, including SV001 G23/G24 lineage reconciliation, remains provenance. G23 is canonical custody-eligible and G24 remains retained non-custodial duplicate evidence. Further SV001 terminal execution remains prohibited.
 
-## SV001 Master Records custody reclassification — 2026-09-05
+## SV001 Master Records organization record reclassification — 2026-09-05
 
 Issue `#1036` resolved the formerly admitted `IPHONE-MR-SV001-CUSTODY-001` action against the canonical ownership classifier and the already-existing Master Records/Site implementation.
 
 The exact transition is:
 
 ```text
-transition_id = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+transition_id = SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION
 authority_class = MACHINE_GOVERNED
 execution_surface = CURRENT_USER_IPHONE
 human_interaction_required = false
@@ -104,7 +104,7 @@ Evidence:
 - `master-records/orchestration:portable/stegverse001-autonomy-custody-package.json`
 - `StegVerse-Labs/Site:docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md`
 
-The portable Master Records module already owns custody authority and can be invoked through the existing current-iPhone service-worker carrier. The Site role remains exact source materialization/persistence carrier only; the existence of the visible `Commit Master Records Custody` control does not create a human authority class.
+The portable Master Records module already owns organization records authority and can be invoked through the existing current-iPhone service-worker carrier. The Site role remains exact source materialization/persistence carrier only; the existence of the visible `Commit Master Records organization record` control does not create a human authority class.
 
 Therefore the former SV001 custody action is removed from the human interaction queue. Its earlier `ADMITTED_FOR_USER_EXECUTION` record is historical provenance only and is explicitly superseded. No session may instruct the user to perform that custody transition as a human-authority action.
 

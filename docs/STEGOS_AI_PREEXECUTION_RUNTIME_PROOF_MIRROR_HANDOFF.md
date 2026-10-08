@@ -85,7 +85,7 @@ Only authentic runtime evidence may promote:
 7. alternate/unregistered BYPASS target-state unchanged;
 8. model-output authority `NONE` and TV/TVC credential authority;
 9. exact execution and target-state receipts; and
-10. Master Records custody/reconstruction.
+10. Master Records organization records and reconstruction.
 
 No StegOS runtime-proof predicate is promoted from Site/GitHub source, CI, merge, connector inventory, or physical-device identity.
 

@@ -98,7 +98,7 @@
     "workercoordinator_claim_fence_only": true,
     "interlock_intr_governed_transition_only": true,
     "tv_tvc_credentials_only": true,
-    "master_records_custody_reconstruction_only": true,
+    "master_records_organization_record_reconstruction_only": true,
     "organization_receipt_measurement_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
     "sdk_semantic_test_is_runtime_proof": false,
     "no_second_device": true

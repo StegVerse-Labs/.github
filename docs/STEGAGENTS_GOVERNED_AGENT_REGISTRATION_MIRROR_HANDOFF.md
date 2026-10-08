@@ -146,7 +146,7 @@ This completed Goal Task does not claim:
 - downstream consequence execution;
 - TV/TVC provider operation;
 - KV/SKAP verification;
-- Master Records custody/reconstruction;
+- Master Records organization records and reconstruction;
 - production deployment.
 
 Any future runtime activation is a distinct task and must be canonically registered with authentic runtime evidence requirements.

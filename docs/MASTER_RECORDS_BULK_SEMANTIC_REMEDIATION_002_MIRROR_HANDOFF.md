@@ -53,3 +53,20 @@ The runtime 95/63 and custody 689/289 baseline classes are **not yet claimed ful
 PR #2992 exact head `16495442752982ad706e353459eb1b3cd9b92c95` was 1 ahead / 0 behind current main, all three observed exact-head workflows completed SUCCESS, and the PR merged with expected-head protection as `65174f538888de298158f007718da00f48e6f7d5`. The canonical registry remains ACTIVE / CHECKED_OUT and does not claim completion.
 
 Continue on `repair/master-records-custody-semantic-continuation-20261007`. Do not invent the missing original 2,329 row identities. Use the persisted classifier contract, retained canonical evidence, and contextual current-source evidence to resolve the GENERIC_CUSTODY baseline. Preserve organization-record retention and reconstruction uses plus explicitly historical/test/supersession evidence; repair active generic transition/evidence-custody semantics. Persist evidence-backed current burn-down and update this handoff/README before exact-head validation and any merge.
+
+## Organization-record naming continuation — 2026-10-08
+
+The Master Records boundary remediation has merged in StegAgents, continuity-vault-kit, StegVerse-SDK, master-records/orchestration and stegverse-demo-suite. PR #3003 made this repository's readers accept the new organization-record wire names (legacy names stay accepted through one `LEGACY_` constant beside each reader) and re-pinned the SV-DN1 demo-suite source.
+
+This continuation applies the owner identifier mapping and deterministic phrase rewrites to this repository's live files, measured with `StegVerse-Labs/StegDB:tools/scan_role_boundary.py` (ruleset `master-records@2026-10-08.v4`):
+
+- prohibited-role references: **1,698 across 554 files → 827 across 336 files**
+- negated boundary statements naming a prohibited role: **455 → 191**
+
+Writers now emit the organization-record names (`master_records_organization_record*`, `MASTER_RECORDS_ORGANIZATION_RECORD*`, `master-records-organization-record*`, `ORGANIZATION_RECORDS_AND_RECONSTRUCTION`); custody authority values name the Organization. Readers of retained or deployed data keep one `LEGACY_` constant for each pre-migration name, covered by `tests/test_master_records_organization_record_reader_compat.py`. The predecessor reconstruction helper is `require_predecessor_master_records_organization_record`; its legacy name stays bound for StegAgents.
+
+Per-entry disposition is persisted in `data/master-records-role-boundary-burndown-2026-10-08.json` (path, line, kind, class, text SHA-256, disposition; no quoted text). Preserved without mutation: historical paths, closed change records, dated records, hash-carrying lines, hash-bound inputs of pinned reusable-task invocation manifests, `control/worker-registry.json` and its terminal mirror, and retained supersession evidence.
+
+Open, not claimed complete:
+- `OPEN_WIRE_CONTRACT_OWNED_BY_MASTER_RECORDS_ORCHESTRATION_OR_DEPLOYMENT`: route and configuration names that master-records/orchestration and resident deployments own (for example the organization-record service URL variable); they need a coordinated rename there first.
+- `OPEN_CONTEXTUAL_REWRITE_REQUIRED`: lines no deterministic rule covers; they need line-by-line rewording.

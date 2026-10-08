@@ -18,7 +18,7 @@ This repair is subordinate to and reuses:
 - `docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md`;
 - `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`;
 - the existing G18 fence-18 cross-task claim;
-- Master Records runtime-presence custody/reconstruction without cross-task reuse authority.
+- Master Records runtime-presence organization records and reconstruction without cross-task reuse authority.
 
 No new heartbeat, oscillator, scheduler, WorkerCoordinator, claim/fence plane, credential path, hosted runtime, or second physical machine is created.
 
@@ -60,7 +60,7 @@ PR #1105 head `ff39cef7be399cbd3dedc0c0c5ce985dd4b5cbff` completed the applicabl
 - run `34035271744` — `Heartbeat Worker Project - Validation Only / No GitHub Token Authority` — `SUCCESS`;
 - run `34035271730` — `Validate organization control plane - No GitHub Token Authority` — `SUCCESS`.
 
-These runs validate the source/control-plane repair only. They are not sovereign runtime execution, carrier activation, WorkerCoordinator presence, request consumption, Master Records custody, G18 completion, or product/runtime activation evidence.
+These runs validate the source/control-plane repair only. They are not sovereign runtime execution, carrier activation, WorkerCoordinator presence, request consumption, Master Records organization record, G18 completion, or product/runtime activation evidence.
 
 ## Cross-task and Master Records boundaries
 
@@ -84,7 +84,7 @@ Current source/control status:
 - current WorkerCoordinator presence: not inferred;
 - request consumption: not inferred;
 - G18 completion: not inferred;
-- Master Records custody: not inferred;
+- Master Records organization record: not inferred;
 - runtime activation: not inferred.
 
 The next required evidence remains deployment-local, authentic resident execution through the already-created HB32 carrier / WorkerCoordinator / G18 path. Do not create another heartbeat, oscillator, scheduler, WorkerCoordinator, runtime owner, or hosted substitute to manufacture that evidence.

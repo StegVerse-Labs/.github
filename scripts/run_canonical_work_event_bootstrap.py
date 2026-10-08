@@ -179,7 +179,7 @@ def invoke_immediate_successor(*, task_id: str, runtime: Path) -> dict[str, Any]
         "carrier_trigger_required": False,
         "workercoordinator_remains_claim_fence_authority": True,
         "interlock_intr_remains_transition_authority": True,
-        "master_records_remains_custody_reconstruction_authority": True,
+        "master_records_limited_to_organization_records_and_reconstruction": True,
         "authority_effect": "NONE_STATE_DEPENDENT_CONTINUATION_CALL_ONLY",
     }
 

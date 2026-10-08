@@ -41,7 +41,7 @@
     "interlock_intr": "TRANSITION_ADMISSION",
     "tv_tvc": "CREDENTIAL_AUTHORITY",
     "kv_skap": "SOLE_USER_VERIFICATION_AUTHORITY",
-    "master_records": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+    "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_actions": "VALIDATION_EVIDENCE_TRANSPORT_ONLY"
   },

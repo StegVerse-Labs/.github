@@ -183,14 +183,14 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             "payload_sha256": "c" * 64,
         }
 
-    def test_authenticated_governance_allow_is_org_then_master_records_closed(self):
+    def test_authenticated_governance_allow_is_org_then_master_records_recorded(self):
         request = governance_request()
         governance = {
             "governance_state": "ALLOW",
             "manifest_receipt_id": "MR-GOV-1",
             "transaction_id": "TX-GOV-1",
             "result_binding_hash": "sha256:" + "d" * 64,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "chain_verified": True,
             "external_side_effect": False,
         }
@@ -201,7 +201,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "ALLOW")
         self.assertEqual(result["subject_or_correlation_id"], GOAL)
         self.assertTrue(result["organization_records_before_master_records"])
-        self.assertTrue(result["organization_master_records_closure_observed"])
+        self.assertTrue(result["organization_master_records_organization_record_observed"])
         self.assertFalse(result["publisher_executed"])
         self.assertFalse(result["site_propagation_executed"])
         self.assertEqual(
@@ -221,7 +221,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             "manifest_receipt_id": "MR-GOV-2",
             "transaction_id": "TX-GOV-2",
             "result_binding_hash": "sha256:" + "e" * 64,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "chain_verified": True,
             "external_side_effect": False,
         }
@@ -231,7 +231,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             result = mod.execute(Path(td), request, transport=self.transport())
         self.assertEqual(result["disposition"], "DENY")
         self.assertTrue(result["terminal"])
-        self.assertTrue(result["organization_master_records_closure_observed"])
+        self.assertTrue(result["organization_master_records_organization_record_observed"])
 
     def test_existing_owner_execution_failure_returns_actionable_fail_closed(self):
         request = governance_request()
@@ -245,7 +245,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             result["failed_predicate"],
             "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND_AND_EXECUTABLE",
         )
-        self.assertTrue(result["organization_master_records_closure_observed"])
+        self.assertTrue(result["organization_master_records_organization_record_observed"])
 
 
     def test_organization_batch_allow_executes_manifest_directed_action_without_second_governance(self):
@@ -255,7 +255,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             "manifest_receipt_id": "MR-ORG-BATCH-ALLOW",
             "transaction_id": "TX-ORG-BATCH-ALLOW",
             "result_binding_hash": "sha256:" + "f" * 64,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "chain_verified": True,
             "external_side_effect": False,
         }
@@ -314,7 +314,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             "manifest_receipt_id": "MR-ORG-BATCH-DENY",
             "transaction_id": "TX-ORG-BATCH-DENY",
             "result_binding_hash": "sha256:" + "e" * 64,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "chain_verified": True,
             "external_side_effect": False,
         }
@@ -334,7 +334,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             "manifest_receipt_id": "MR-ORG-BATCH-ALLOW-FAIL",
             "transaction_id": "TX-ORG-BATCH-ALLOW-FAIL",
             "result_binding_hash": "sha256:" + "d" * 64,
-            "master_records_custody_status": "RECORDED",
+            "master_records_organization_record_status": "RECORDED",
             "chain_verified": True,
             "external_side_effect": False,
         }

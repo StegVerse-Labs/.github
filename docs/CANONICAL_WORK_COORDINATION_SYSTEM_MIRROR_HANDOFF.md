@@ -56,7 +56,7 @@ source stimulus / proposal / session / runtime event
   -> cross-task predicate/evidence/claim resolution
   -> WorkerCoordinator claim/fence when executable
   -> governed execution
-  -> retained evidence / Master Records custody
+  -> retained evidence / Master Records organization record
   -> Task Registry <-> Master Records reconciliation
   -> completion claim validation
   -> Interlock/InTr egress / transfer / closure
@@ -141,7 +141,7 @@ predecessor canonical closure
 -> WorkerCoordinator claim/fence when executable work is required
 -> Interlock/InTr governed transition admission
 -> execution on the existing substrate
--> Master Records custody/reconstruction of the successor
+-> Master Records organization records and reconstruction of the successor
 -> coordinated StegDB/Master Records/StegHealth consistency/remediation classification
 -> next successor evaluation
 -> terminal closure
@@ -169,7 +169,7 @@ State A
 
 There is no separate post-transition requirement to prove that an "authentic runtime" happened. If Master Records has the governed transition closure, the transition happened. If it does not, either the transition did not complete or custody/reconstruction failed; the system must follow that exact failure rather than wait for another observation class.
 
-The prior `DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME` and `DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME` entries are removed as prerequisites. Interlock/InTr is the transition path itself; Master Records is the custody/reconstruction consequence of that path. Neither is a pre-transition runtime gate for `PROPOSED -> INGRESS_ADMITTED`.
+The prior `DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME` and `DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME` entries are removed as prerequisites. Interlock/InTr is the transition path itself; Master Records is limited to organization records and reconstruction consequence of that path. Neither is a pre-transition runtime gate for `PROPOSED -> INGRESS_ADMITTED`.
 
 ## Completion predicates
 
@@ -183,7 +183,7 @@ The prior `DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME` and `DEP-MASTER-RECORDS-RECONCI
 8. Shared human-action and systemic-incident representations exist. **SOURCE COMPLETE; RUNTIME POPULATION IS EVENT-DEPENDENT**
 9. Canonical task ingress/egress source is connected to the existing Universal Work Interlock/InTr path. **SOURCE COMPLETE; NEXT STATE TRANSITION PENDING**
 10. WorkerCoordinator claim/fence projection source exists and remains non-authorizing outside WorkerCoordinator. **SOURCE COMPLETE / VALIDATED**
-11. Master Records custody/reconciliation source exists. **SOURCE COMPLETE; APPLIES WHEN A GOVERNED TRANSITION RESULT EXISTS**
+11. Master Records organization record/reconciliation source exists. **SOURCE COMPLETE; APPLIES WHEN A GOVERNED TRANSITION RESULT EXISTS**
 12. Runtime-presence custody source exists for non-state-triggered environment observation. **SOURCE COMPLETE; NOT A STATE-TRANSITION COMPLETION GATE**
 13. Runtime-profile discovery/routing-readiness/governance-review source stack exists. **SOURCE COMPLETE; NOT A SUBSTITUTE FOR STATE TRANSITION TRUTH**
 14. The canonical Goal reaches its terminal state through its declared governed state transitions; each transition is retained by Master Records with reconstruction PASS, required-evidence validation PASS, and exact receipt/reconstruction digest equality. No separate runtime-observation proof class exists above those transition closures. **PENDING**
@@ -245,14 +245,14 @@ Preserve the current canonical handoff and its newer component-010/native-owner 
 
 ## Immutable native dispatch observation retention — PR #2630
 
-The existing `scripts/dispatch_resident_execution_requests.py` now retains every exact observed selector outcome at `receipts/sovereign-host/resident-request-dispatch.by-receipt/<sha256>.json`, preserving mutable `latest` consumer compatibility. Content-addressed replay is idempotent; symlinks and collisions are rejected. The focused regression workflow validates source behavior only. For the canonical autonomous progression goal, acceptance remains original manifest-bound Healer consumption, fresh WorkerCoordinator claim/fence, InTr disposition, organization/Master Records closure and declared successor reevaluation. Do not infer those events from GitHub CI or introduce any device prerequisite.
+The existing `scripts/dispatch_resident_execution_requests.py` now retains every exact observed selector outcome at `receipts/sovereign-host/resident-request-dispatch.by-receipt/<sha256>.json`, preserving mutable `latest` consumer compatibility. Content-addressed replay is idempotent; symlinks and collisions are rejected. The focused regression workflow validates source behavior only. For the canonical autonomous progression goal, acceptance remains original manifest-bound Healer consumption, fresh WorkerCoordinator claim/fence, InTr disposition, organization/Master Records organization record and declared successor reevaluation. Do not infer those events from GitHub CI or introduce any device prerequisite.
 
 
 ## 2026-09-27 existing manifest-invariant owner projection
 
 Current-main source audit at `495832cd27f959925c65f8c69ec4a37ab5edb366`, Registry generation 260, found one ACTIVE/CHECKED_OUT exact owner omitted from the aggregate: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, COSV `71000000100110`, existing [issue #1615](https://github.com/StegVerse-Labs/.github/issues/1615). The generation-261 source candidate adds that existing exact shard unchanged, preserving its parent/root, checkout, handoffs, evidence and completion=false. This restores aggregate lookup without issuing admission, changing ownership, minting a COSV or claiming runtime enforcement. The exact-owner projection regression covers identity uniqueness and full shard equality. Other legacy/proposed shard omissions are not automatically promoted.
 
-The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records closure or autonomous successor selection.
+The existing owner continues the manifest-routing inventory and source repairs described in `docs/SDK_GENERIC_MANIFEST_ECOSYSTEM_INVARIANT_MIRROR_HANDOFF.md`; governance and non-governance original route evidence remain required for system-wide enforcement. Central coordination owner remains #1766. Source reconciliation does not establish InTr execution, Master Records organization record or autonomous successor selection.
 
 
 ## 2026-09-29 current canonical state and autonomous completion path
@@ -292,7 +292,7 @@ exact governed attempt
 -> WorkerCoordinator claim/fence where required
 -> Interlock/InTr governed transition
 -> organization receipt/readback when applicable
--> Master Records custody/reconstruction
+-> Master Records organization records and reconstruction
 -> required-evidence validation + receipt/reconstruction digest equality
 -> re-ingest returned state
 -> select next admissible nonduplicate Goal-scoped machine work
@@ -361,7 +361,7 @@ current canonical Goal predecessor
    -> workers/manifest_state_transition_intr_ingress.py::admit
 -> first governed ALLOW / DENY / FAIL_CLOSED
 -> organization-ledger manifest-directed append / organization transition receipt
--> applicable released-batch Master Records custody/reconstruction
+-> applicable released-batch Master Records organization records and reconstruction
 -> declared successor evaluation
 ```
 

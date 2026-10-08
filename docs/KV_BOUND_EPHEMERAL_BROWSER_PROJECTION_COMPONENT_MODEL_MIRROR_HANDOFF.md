@@ -87,7 +87,7 @@ Existing owners/surfaces are reused: authentic established-current-iPhone observ
 Existing component: `RTC-EVIDENCE-CUSTODY-004`.
 Canonical owner: Master Records.
 
-Inputs are the authentic claim/fence, KV admission/projection evidence, provider-operation chain, signing/release evidence, and same-device runtime observation. Completion requires Master Records custody acceptance and same-execution reconstruction confirmation.
+Inputs are the authentic claim/fence, KV admission/projection evidence, provider-operation chain, signing/release evidence, and same-device runtime observation. Completion requires Master Records organization record acceptance and same-execution reconstruction confirmation.
 
 ## Components intentionally not selected
 
@@ -110,7 +110,7 @@ Public Site product and same-device-wrapper propagation are already satisfied hi
 - existing current-iPhone TVC translation adapter;
 - existing Site/TVC evidence validators;
 - existing TVC runtime observer;
-- Master Records custody/reconstruction.
+- Master Records organization records and reconstruction.
 
 No genuinely new reusable component is required by this Goal Task.
 
@@ -147,7 +147,7 @@ Componentization does not complete them. Authentic evidence remains required for
 - the bounded TV/TVC provider/release sequence actually required by this execution;
 - final TestFlight release/install observation;
 - retained same-device StegOS/StegBrowser runtime observation;
-- Master Records custody acceptance and same-execution reconstruction;
+- Master Records organization record acceptance and same-execution reconstruction;
 - return to the frozen global runtime measurement using authentic evidence only.
 
 ## Next admissible work

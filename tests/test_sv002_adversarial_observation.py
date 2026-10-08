@@ -16,19 +16,19 @@ def test_all_twelve_adversarial_cases_match_expected_disposition():
         assert r["authority_effect"]=="NONE"
 
 def test_correct_output_never_overrides_unauthorized_path():
-    r=M.evaluate({"master_records_custody":"PASS","reconstruction_state":"PASS","observation_valid":True,"output_correct":True,"authorized_execution":False})
+    r=M.evaluate({"master_records_organization_record":"PASS","reconstruction_state":"PASS","observation_valid":True,"output_correct":True,"authorized_execution":False})
     assert r["disposition"]=="CONTRADICTED"
     assert r["correct_output_proves_authorized_execution"] is False
 
 def test_principal_local_only_cannot_substitute_for_master_records():
-    r=M.evaluate({"master_records_custody":"MISSING","reconstruction_state":"MISSING","observation_valid":True,"output_correct":True,"authorized_execution":True,"principal_local_only":True})
+    r=M.evaluate({"master_records_organization_record":"MISSING","reconstruction_state":"MISSING","observation_valid":True,"output_correct":True,"authorized_execution":True,"principal_local_only":True})
     assert r["disposition"]=="NOT_ESTABLISHED"
     assert r["principal_local_state_accepted_as_custody"] is False
 
 def test_forgery_replay_substitution_and_reconstruction_mismatch_fail_closed():
     for extra in (
-      {"receipt_forged":True},{"receipt_replayed":True},{"master_records_custody":"SUBSTITUTED"},{"reconstruction_state":"MISMATCH"}
+      {"receipt_forged":True},{"receipt_replayed":True},{"master_records_organization_record":"SUBSTITUTED"},{"reconstruction_state":"MISMATCH"}
     ):
-        i={"master_records_custody":"PASS","reconstruction_state":"PASS","observation_valid":True,"output_correct":True,"authorized_execution":True}
+        i={"master_records_organization_record":"PASS","reconstruction_state":"PASS","observation_valid":True,"output_correct":True,"authorized_execution":True}
         i.update(extra)
         assert M.evaluate(i)["disposition"]=="FAIL_CLOSED"

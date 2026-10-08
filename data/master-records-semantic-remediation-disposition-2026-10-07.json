@@ -93,5 +93,25 @@
     "repaired_active_files_this_pr": 7,
     "preserved_historical_evidence": true
   },
-  "authority_effect": "NONE_EVIDENCE_ONLY"
+  "authority_effect": "NONE_EVIDENCE_ONLY",
+  "continuation_2026_10_08": {
+    "scanner": "StegVerse-Labs/StegDB:tools/scan_role_boundary.py (ruleset master-records@2026-10-08.v4)",
+    "per_entry_disposition": "data/master-records-role-boundary-burndown-2026-10-08.json",
+    "prohibited_role": {
+      "before": {
+        "references": 1698,
+        "unique_files": 554
+      },
+      "after": {
+        "references": 827,
+        "unique_files": 336
+      }
+    },
+    "boundary_statement": {
+      "before": 455,
+      "after": 191
+    },
+    "method": "owner identifier mapping and deterministic phrase rewrites on live files; writers emit organization-record names; readers keep one LEGACY_ constant per pre-migration name",
+    "disposition_state": "IN_PROGRESS_NOT_CLAIMED_COMPLETE"
+  }
 }

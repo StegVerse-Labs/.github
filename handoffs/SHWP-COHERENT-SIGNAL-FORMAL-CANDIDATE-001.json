@@ -73,7 +73,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
-    "recheck_trigger": "carrier observes this authorized unassigned task; trigger packet transitions into Master Records assignment custody when worker runtime binds the assignment",
+    "recheck_trigger": "carrier observes this authorized unassigned task; trigger packet transitions into Master Records assignment organization records when worker runtime binds the assignment",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {

@@ -10,7 +10,7 @@ Status: `ACTIVE / CHECKED_OUT / ENTERPRISE SOURCE ERADICATION`
 
 Current canonical Task Registry generation observed before registration: `108`.
 
-This task is not exempt from Task Registry coordination because any individual repair is deterministic or obvious. All ecosystem mutation remains subject to the canonical Task Registry generation fence, collision/convergence disposition, WorkerCoordinator claim/fence where execution is claimed, Interlock/InTr for governed transitions, and Master Records custody/reconstruction where applicable.
+This task is not exempt from Task Registry coordination because any individual repair is deterministic or obvious. All ecosystem mutation remains subject to the canonical Task Registry generation fence, collision/convergence disposition, WorkerCoordinator claim/fence where execution is claimed, Interlock/InTr for governed transitions, and Master Records organization records and reconstruction where applicable.
 
 COSV `40000100100000` is the non-authorizing task.v1 current-state projection for this active checked-out integration work. It does not mint execution authority.
 

@@ -131,7 +131,7 @@ if __name__ == "__main__":
     unittest.main()
 
 
-def test_worker_service_preserves_canonical_master_records_custody_bindings() -> None:
+def test_worker_service_preserves_canonical_master_records_organization_record_bindings() -> None:
     required = {
         "STEGVERSE_MASTER_RECORDS_ENDPOINT",
         "STEGVERSE_MASTER_RECORDS_TOKEN",

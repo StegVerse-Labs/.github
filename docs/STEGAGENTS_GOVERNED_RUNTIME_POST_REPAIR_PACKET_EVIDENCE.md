@@ -31,7 +31,7 @@ AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED=false
 
 ## Boundary
 
-This is evidence routing only. It does not prove runtime execution, request consumption, resident-root observation, WorkerCoordinator claim/fence, TV warrant verification, pinned policy-bundle verification, Interlock/InTr admission, provider operation, owner ingress, Master Records custody, same-roundtrip reconstruction, deployment, release, or propagation.
+This is evidence routing only. It does not prove runtime execution, request consumption, resident-root observation, WorkerCoordinator claim/fence, TV warrant verification, pinned policy-bundle verification, Interlock/InTr admission, provider operation, owner ingress, Master Records organization record, same-roundtrip reconstruction, deployment, release, or propagation.
 
 ## Next machine-owned action
 

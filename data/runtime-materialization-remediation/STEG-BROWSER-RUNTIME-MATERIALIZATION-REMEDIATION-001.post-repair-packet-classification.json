@@ -47,7 +47,7 @@
   "interlock_intr_admission_claimed": false,
   "tvc_source_promotion_claimed": false,
   "owner_ingress_ready_claimed": false,
-  "master_records_custody_claimed": false,
+  "master_records_organization_record_claimed": false,
   "manual_work": "None",
   "prohibited_effects": [
     "SECOND_RUNTIME_EVIDENCE_OWNER",

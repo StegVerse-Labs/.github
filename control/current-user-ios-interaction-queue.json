@@ -56,7 +56,7 @@
   "machine_owned_exclusions": [
     {
       "former_action_id": "IPHONE-MR-SV001-CUSTODY-001",
-      "transition_id": "SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+      "transition_id": "SV001_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION",
       "canonical_task": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
       "authority_class": "MACHINE_GOVERNED",
       "execution_surface": "CURRENT_USER_IPHONE",
