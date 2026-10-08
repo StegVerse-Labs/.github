@@ -26,6 +26,7 @@ def baseline(disposition="DENY", evidence_class="ATTEMPTED_INGRESS"):
         "retry_entrypoint": "SDK_TO_INTR_ATTACHMENT",
         "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
         "next_attempt": "Retry exact manifest after endpoint is available",
+        "evidence_refs": ["StegVerse-Labs/.github#1766"],
     }
 
 
@@ -43,6 +44,38 @@ class TestDisposition(unittest.TestCase):
         value.pop("failed_predicate")
         self.assertIn("NON_ALLOW_REPAIR_REQUIRED:failed_predicate",
                       validate_transition_disposition(value))
+
+    def test_non_allow_evidence_refs_missing(self):
+        value = baseline()
+        value.pop("evidence_refs")
+        self.assertIn("NON_ALLOW_REPAIR_REQUIRED:evidence_refs",
+                      validate_transition_disposition(value))
+
+    def test_non_allow_evidence_refs_malformed(self):
+        for refs in ([], [""], ["ref", "  "], "StegVerse-Labs/.github#1766", None, [1]):
+            with self.subTest(evidence_refs=refs):
+                value = baseline("FAIL_CLOSED")
+                value["evidence_refs"] = refs
+                self.assertIn("NON_ALLOW_REPAIR_REQUIRED:evidence_refs",
+                              validate_transition_disposition(value))
+
+    def test_non_allow_evidence_refs_well_formed(self):
+        value = baseline("FAIL_CLOSED")
+        value["evidence_refs"] = [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/TASK-001.json",
+            "https://github.com/StegVerse-Labs/.github/pull/1766",
+        ]
+        self.assertEqual(validate_transition_disposition(value), [])
+
+    def test_allow_does_not_require_evidence_refs(self):
+        value = baseline("ALLOW", "ACTUAL_EXECUTION")
+        value.pop("evidence_refs")
+        value.update(consequence_committed=True,
+                     receipt_sha256=D, reconstructed_receipt_sha256=D,
+                     immediate_predecessor_receipt_sha256=D,
+                     master_records_reconstruction_status="PASS",
+                     master_records_receipt_ref="master-records:exact:1")
+        self.assertEqual(validate_transition_disposition(value), [])
 
     def test_deny_cannot_commit(self):
         value = baseline()

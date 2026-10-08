@@ -276,7 +276,10 @@
       "required_evidence_or_repair": "RECONCILE_THE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_AS_THE_RECORD_ALREADY_DECLARES",
       "retry_entrypoint": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
       "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
-      "next_attempt": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM"
+      "next_attempt": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json"
+      ]
     },
     "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
     "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",

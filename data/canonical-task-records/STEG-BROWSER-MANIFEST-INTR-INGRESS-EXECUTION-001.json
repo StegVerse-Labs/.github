@@ -136,7 +136,10 @@
         "required_evidence_or_repair": "ATTEMPT_THE_INTERLOCK_INTR_ENTRY_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
         "retry_entrypoint": "INTERLOCK_INTR",
         "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-        "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_ENTRY_ATTEMPT"
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_ENTRY_ATTEMPT",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+        ]
       }
     },
     "A2_1": {
@@ -152,7 +155,10 @@
         "required_evidence_or_repair": "ATTEMPT_THE_BOUNDED_LEASE_EXECUTION_BINDING_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
         "retry_entrypoint": "BOUNDED_INVOCATION_SCOPE_ONLY",
         "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-        "next_attempt": "NEXT_MANIFEST_DIRECTED_BOUNDED_LEASE_EXECUTION_BINDING_ATTEMPT"
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_BOUNDED_LEASE_EXECUTION_BINDING_ATTEMPT",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+        ]
       }
     },
     "A2_2": {
@@ -172,7 +178,10 @@
         "required_evidence_or_repair": "ATTEMPT_THE_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
         "retry_entrypoint": "EVENT_EPHEMERAL_STEGOS_RUNTIME",
         "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-        "next_attempt": "NEXT_MANIFEST_DIRECTED_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_ATTEMPT"
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_ATTEMPT",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+        ]
       }
     },
     "A3": {
@@ -188,7 +197,10 @@
         "required_evidence_or_repair": "ATTEMPT_THE_WORKERCOORDINATOR_CLAIM_FENCE_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
         "retry_entrypoint": "WORKERCOORDINATOR",
         "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-        "next_attempt": "NEXT_MANIFEST_DIRECTED_WORKERCOORDINATOR_CLAIM_FENCE_ATTEMPT"
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_WORKERCOORDINATOR_CLAIM_FENCE_ATTEMPT",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+        ]
       }
     },
     "A4": {
@@ -207,7 +219,10 @@
         "required_evidence_or_repair": "ATTEMPT_THE_AUTHENTIC_INTERLOCK_INTR_INGRESS_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
         "retry_entrypoint": "INTERLOCK_INTR",
         "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-        "next_attempt": "NEXT_MANIFEST_DIRECTED_AUTHENTIC_INTERLOCK_INTR_INGRESS_ATTEMPT"
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_AUTHENTIC_INTERLOCK_INTR_INGRESS_ATTEMPT",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+        ]
       }
     },
     "A5_A7": {

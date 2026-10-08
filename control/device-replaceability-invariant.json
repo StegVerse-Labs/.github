@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.device-replaceability-invariant/v1",
+  "status": "CANONICAL_ACTIVE",
+  "effective_date": "2026-10-08",
+  "authority_home": "StegVerse-Labs/.github",
+  "approval_ref": "TV-TVC-KV-SKAP-TRANSITION-DRIVEN-ADAPTATION-FINAL-REVIEW-009",
+  "invariant": "Any authorized client device or admitted execution surface is interchangeable. No device is a root of trust, a recovery prerequisite or a user verifier.",
+  "rules": {
+    "authorized_client_devices_interchangeable": true,
+    "admitted_execution_surfaces_interchangeable": true,
+    "device_may_be_mandatory_root_prerequisite": false,
+    "device_may_be_mandatory_recovery_prerequisite": false,
+    "device_identity_is_user_verification": false,
+    "second_device_required": false
+  },
+  "prohibited_mandatory_root_or_recovery_prerequisites": [
+    "device",
+    "operating_system",
+    "browser",
+    "secure_enclave",
+    "this_device_only_key"
+  ],
+  "recovery_sources": [
+    "portable_sealed_custody_kv_vault_skap",
+    "owner_held_recovery_material"
+  ],
+  "user_verification_authority": "KV/SKAP Vault",
+  "device_identity_permitted_uses": [
+    "routing",
+    "capability_continuity",
+    "freshness",
+    "replay_protection",
+    "evidence_correlation"
+  ],
+  "authority_effect": "NONE_INVARIANT_DECLARATION_ONLY",
+  "related_invariants": [
+    "data/task-registry-global-invariants.json",
+    "docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md"
+  ],
+  "repository_local_handoff_precedence": "Repository-local *_MIRROR_HANDOFF.md remains authoritative for repository-local live implementation state.",
+  "canonical_document": "docs/DEVICE_REPLACEABILITY_INVARIANT_MIRROR_HANDOFF.md"
+}

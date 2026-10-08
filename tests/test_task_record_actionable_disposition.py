@@ -23,6 +23,7 @@ def actionable(code: str = "CUSTODY_SURFACE_UNAVAILABLE") -> dict:
         "retry_entrypoint": "module.py::entrypoint",
         "owning_existing_goal": "TEST-GOAL-001",
         "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND",
+        "evidence_refs": ["SOURCE_RECORD_ONLY:data/canonical-task-records/TEST-001.json"],
     }
 
 
@@ -47,6 +48,25 @@ def test_non_allow_missing_repair_fields_is_rejected():
     assert len(errors) == 1
     assert "NON_ALLOW_REPAIR_REQUIRED" in errors[0]
     assert "retry_entrypoint" in errors[0]
+
+
+def test_non_allow_without_evidence_refs_is_rejected():
+    for refs in (None, [], [""], "SOURCE_RECORD_ONLY:x"):
+        incomplete = actionable()
+        if refs is None:
+            del incomplete["evidence_refs"]
+        else:
+            incomplete["evidence_refs"] = refs
+        errors = validate_record({"current_truth": {"runtime_custody": incomplete}}, "TEST-001")
+        assert len(errors) == 1
+        assert "NON_ALLOW_REPAIR_REQUIRED" in errors[0]
+        assert "evidence_refs" in errors[0]
+
+
+def test_every_canonical_record_non_allow_carries_evidence_refs():
+    for path in sorted(RECORDS.glob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        assert validate_record(record, record.get("task_id", path.stem)) == [], path
 
 
 def test_runtime_observation_block_is_judged_by_content_not_name():

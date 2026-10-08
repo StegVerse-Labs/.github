@@ -35,6 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from validate_transition_disposition import (  # noqa: E402
     NON_ALLOW,
     NON_ALLOW_REQUIRED,
+    non_allow_missing,
 )
 from registry_gate_findings import evaluation, finding  # noqa: E402
 
@@ -72,7 +73,7 @@ def validate_record(record: dict, task_id: str) -> list[str]:
     def walk(node: object, path: str) -> None:
         if isinstance(node, dict):
             if node.get("disposition") in NON_ALLOW:
-                missing = [f for f in NON_ALLOW_REQUIRED if not str(node.get(f, "")).strip()]
+                missing = non_allow_missing(node)
                 if missing:
                     errors.append(
                         f"{task_id}: NON_ALLOW_REPAIR_REQUIRED {path} "

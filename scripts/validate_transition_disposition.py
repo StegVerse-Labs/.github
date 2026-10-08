@@ -22,12 +22,32 @@ REQUIRED = (
 NON_ALLOW_REQUIRED = (
     "failure_code", "failed_predicate", "required_evidence_or_repair",
     "retry_entrypoint", "owning_existing_goal", "next_attempt",
+    "evidence_refs",
 )
+# Non-ALLOW fields that carry a list of references rather than one string.
+NON_ALLOW_LIST_FIELDS = frozenset({"evidence_refs"})
 HEX = set("0123456789abcdef")
 
 
 def _nonempty(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
+
+
+def _nonempty_refs(value: Any) -> bool:
+    return isinstance(value, list) and bool(value) and all(_nonempty(x) for x in value)
+
+
+def non_allow_missing(record: Mapping[str, Any]) -> list[str]:
+    """Return the NON_ALLOW_REQUIRED fields a non-ALLOW record fails to carry.
+
+    `evidence_refs` must be a non-empty list of non-empty strings: a refusal
+    names the evidence it rests on. A record whose only evidence is itself says
+    so as `SOURCE_RECORD_ONLY:<path>` rather than leaving the list empty.
+    """
+    return [
+        key for key in NON_ALLOW_REQUIRED
+        if not (_nonempty_refs if key in NON_ALLOW_LIST_FIELDS else _nonempty)(record.get(key))
+    ]
 
 
 def _digest(value: Any) -> bool:
@@ -61,9 +81,8 @@ def validate_transition_disposition(record: Mapping[str, Any]) -> list[str]:
     if disposition in NON_ALLOW:
         if committed is not False:
             errors.append("NON_ALLOW_MUST_NOT_COMMIT")
-        for key in NON_ALLOW_REQUIRED:
-            if not _nonempty(record.get(key)):
-                errors.append(f"NON_ALLOW_REPAIR_REQUIRED:{key}")
+        for key in non_allow_missing(record):
+            errors.append(f"NON_ALLOW_REPAIR_REQUIRED:{key}")
         if record.get("master_records_reconstruction_status") == "PASS" and not _nonempty(
             record.get("master_records_receipt_ref")
         ):

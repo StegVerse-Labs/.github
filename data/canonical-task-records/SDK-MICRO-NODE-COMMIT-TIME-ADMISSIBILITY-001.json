@@ -60,7 +60,10 @@
       "required_evidence_or_repair": "DISPATCH_THE_THREE_MICRO_NODE_EVALUATIONS_AND_RETAIN_EACH_ATTRIBUTABLE_RESULT_INCLUDING_DISAGREEMENT",
       "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_MICRO_NODE_DISPATCH",
       "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+      ]
     },
     "commit_time_intr_decision": {
       "disposition": "FAIL_CLOSED",
@@ -71,7 +74,10 @@
       "required_evidence_or_repair": "SUBMIT_THE_COMMIT_TIME_ADMISSIBILITY_TRANSITION_TO_THE_EXISTING_INTR_PATH",
       "retry_entrypoint": "INTERLOCK_INTR",
       "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+      ]
     },
     "records_only_reconstruction": {
       "disposition": "FAIL_CLOSED",
@@ -82,7 +88,10 @@
       "required_evidence_or_repair": "REQUEST_RECONSTRUCTION_THROUGH_THE_EXISTING_AUTHENTICATED_MASTER_RECORDS_PATH",
       "retry_entrypoint": "GET /api/master-records/state-transitions/query",
       "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+      ]
     }
   },
   "completion": {

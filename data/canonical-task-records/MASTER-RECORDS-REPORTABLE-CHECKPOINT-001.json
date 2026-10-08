@@ -177,6 +177,9 @@
     "owning_existing_goal": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
     "next_attempt": "INVOKE_ONLY_THE_EXISTING_RECEIVING_OWNER_WHEN_THE_AUTHENTIC_INTERFACE_IS_EXPOSED_AND_RETAIN_ITS_ORIGINAL_DISPOSITION",
     "required_for_documentary_checkpoint_profile_validation": false,
-    "authority_effect": "NONE_OBSERVATION_ONLY"
+    "authority_effect": "NONE_OBSERVATION_ONLY",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/MASTER-RECORDS-REPORTABLE-CHECKPOINT-001.json"
+    ]
   }
 }
