@@ -25,7 +25,7 @@ def test_parent_has_no_duplicate_runtime_proof_dependencies():
 def test_parent_completion_is_terminal_state_plus_master_records_organization_record():
     _, row = task()
     completion = row["completion"]
-    assert completion["completion_semantics"] == "TERMINAL_CANONICAL_STATE_WITH_MASTER_RECORDS_TRANSITION_CLOSURE"
+    assert completion["completion_semantics"] == "TERMINAL_CANONICAL_STATE_WITH_INTERLOCK_INTR_TRANSITION_CLOSURE_AND_MASTER_RECORDS_ORGANIZATION_RECORD"
     assert completion["duplicate_runtime_proof_required"] is False
     assert completion["separate_authentic_runtime_evidence_class_required"] is False
     assert completion["terminal_state_is_completion_truth"] is True

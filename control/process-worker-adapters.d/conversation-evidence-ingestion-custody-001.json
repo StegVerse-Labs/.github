@@ -31,7 +31,7 @@
         "Consumes only a fresh WorkerCoordinator claim/fence for the canonical conversation-evidence ingestion task.",
         "Uses a built-in synthetic fixture only; no user conversation is read.",
         "Reuses workers/canonical_state_transition_custody.py and creates no second custody service/store.",
-        "Fails closed unless Master Records returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality."
+        "Fails closed unless the Master Records organization record returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality."
       ],
       "timeout_seconds": 120,
       "type": "process_json_v0.1"

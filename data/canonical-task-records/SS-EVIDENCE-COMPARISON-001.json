@@ -47,7 +47,7 @@
       "erl-provider-readback-verifier",
       "provider-resource-readback-evidence",
       "provider-receipt-backed-readback-evidence",
-      "master-records-erl-kv-custody",
+      "master-records-erl-kv-organization-record",
       "erl-kv-live-observation-custody",
       "erl-kv-custody-reconstruction",
       "stegsocials-erl-artifact-custody-reference",

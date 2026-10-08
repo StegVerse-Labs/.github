@@ -207,7 +207,7 @@
         "claimed": false,
         "validated": false,
         "reconciliation_ref": null,
-        "completion_semantics": "TERMINAL_CANONICAL_STATE_WITH_MASTER_RECORDS_TRANSITION_CLOSURE",
+        "completion_semantics": "TERMINAL_CANONICAL_STATE_WITH_INTERLOCK_INTR_TRANSITION_CLOSURE_AND_MASTER_RECORDS_ORGANIZATION_RECORD",
         "duplicate_runtime_proof_required": false,
         "separate_authentic_runtime_evidence_class_required": false,
         "terminal_state_is_completion_truth": true
@@ -1216,7 +1216,7 @@
           "erl-provider-readback-verifier",
           "provider-resource-readback-evidence",
           "provider-receipt-backed-readback-evidence",
-          "master-records-erl-kv-custody",
+          "master-records-erl-kv-organization-record",
           "erl-kv-live-observation-custody",
           "erl-kv-custody-reconstruction",
           "stegsocials-erl-artifact-custody-reference",
@@ -5465,10 +5465,10 @@
       },
       "expected_evidence_predicates": [
         "MASTER_RECORDS_REFERENCES_ARE_ORGANIZATION_RECORDS_OR_RECONSTRUCTION_ONLY",
-        "MASTER_RECORDS_IS_NOT_GENERAL_TRANSITION_CUSTODY",
-        "MASTER_RECORDS_IS_NOT_GENERAL_EVIDENCE_CUSTODY",
-        "MASTER_RECORDS_DOES_NOT_GATE_TRANSITIONS",
-        "MASTER_RECORDS_DOES_NOT_OWN_RUNTIME_OR_OBSERVED_REALITY",
+        "TRANSITION_CUSTODY_BELONGS_TO_ORGANIZATION",
+        "EVIDENCE_CUSTODY_BELONGS_TO_ORGANIZATION",
+        "TRANSITION_GATES_BELONG_TO_INTERLOCK_INTR",
+        "RUNTIME_AND_OBSERVED_REALITY_BELONG_TO_ORGANIZATION",
         "HISTORICAL_EVIDENCE_IS_PRESERVED",
         "AMBIGUOUS_REFERENCES_ARE_CONTEXT_REVIEWED_BEFORE_MUTATION"
       ],
@@ -5865,7 +5865,7 @@
           "README"
         ],
         "general_master_records_transition_submission_removed_from_canonical_client": true,
-        "predecessor_master_records_reconstruction_is_not_transition_gate": true
+        "predecessor_master_records_reconstruction_is_evidence_only": true
       },
       "completion": {
         "claimed": false,
@@ -6824,7 +6824,7 @@
           "WORKER_INVOKED",
           "STEGAGENTS_LATER_PERFORMS_TV_TVC_AND_STEGCORE_INTR_ADMISSION"
         ],
-        "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_MASTER_RECORDS_CLOSES_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
+        "required_repair": "FOR_TEST3_ATOMIC_SEAM_PATH_CLAIM_FENCE_MAY_BE_PREPARED_AND_CUSTODIED_WITHOUT_PROMOTING_TASK_ACTIVE_OR_CREATING_TASK_BOUND_WORKER_UNTIL_INTR_ADMITS_AND_CLOSES_WITH_MASTER_RECORDS_ORGANIZATION_RECORD_ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
         "next_actual_transition": "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T",
         "stegagents_source_repair_merge": "a847dae9b72b3914b98c33cc94b8d2a87c1a685d",
         "stegagents_source_repair_pr": 26,
@@ -7404,7 +7404,7 @@
         "second_workercoordinator_created": false,
         "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
         "separate_authentic_runtime_gate_required": false,
-        "transition_truth_source": "MASTER_RECORDS_GOVERNED_TRANSITION_CLOSURE"
+        "transition_truth_source": "INTERLOCK_INTR_GOVERNED_TRANSITION_CLOSURE"
       }
     },
     {
@@ -9038,7 +9038,7 @@
       "expected_evidence_predicates": [
         "HISTORICAL_HB_ONLY_EVIDENCE_REMAINS_SYSTEM_RELATIVE_ONLY",
         "RECEIPT_CREATION_HB_REFERENCE_BOUND_BEFORE_RECEIPT_FREEZE",
-        "MASTER_RECORDS_RECORDING_HB_REFERENCE_RETAINED_AS_CUSTODY_METADATA",
+        "MASTER_RECORDS_RECORDING_HB_REFERENCE_RETAINED_AS_ORGANIZATION_RECORD_METADATA",
         "MASTER_RECORDS_CHECKPOINT_ROOT_DETERMINISTICALLY_RECONSTRUCTABLE",
         "HB_CHECKPOINT_COMMITS_EXACT_MASTER_RECORDS_BOUNDED_RECEIPT_SET",
         "NODE_KV_WITNESS_RECEIPTS_BIND_EXACT_CHECKPOINT_COMMITMENT",
@@ -10561,7 +10561,7 @@
           "organization_custody_readback",
           "canonical_master_records_state_transition_organization_record"
         ],
-        "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS",
+        "environment": "EXISTING_CANONICAL_WORK_PLUS_ORGANIZATION_CUSTODY_PLUS_MASTER_RECORDS_ORGANIZATION_RECORDS",
         "mutation_required": true,
         "deployment_required": false,
         "current_observation_required": false
@@ -13564,7 +13564,8 @@
         "credential_owner": "TV/TVC where required",
         "mir_mirror_endpoint_owner": "StegVerse-owned MIR mirror",
         "mir_semantics_owner": "MIR",
-        "observed_reality_custody_reconstruction_owner": "Master Records"
+        "observed_reality_custody_owner": "Organization",
+        "organization_records_reconstruction_owner": "Master Records"
       },
       "proven_route_reuse": {
         "instruction": "DUPLICATE_PROVEN_SV002_EVENT_ROUTE_FIRST_THEN_ADD_MIR_SPECIFIC_REQUIREMENTS",
@@ -14621,7 +14622,7 @@
         "workercoordinator": "CLAIM_FENCE_AUTHORITY",
         "interlock_intr": "TRANSITION_AND_GOVERNED_PACKET_MOVEMENT_AUTHORITY",
         "tvc": "CREDENTIAL_AUTHORITY",
-        "master_records": "CUSTODY_OBSERVED_REALITY_RECONSTRUCTION_AUTHORITY_NOT_TRANSPORT_AUTHORITY",
+        "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NOT_TRANSPORT_AUTHORITY",
         "github_ci": "SOURCE_VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY_RUNTIME_AUTHORITY_NONE",
         "second_user_operated_device_required": false
       }

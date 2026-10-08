@@ -11,5 +11,5 @@
   "completion_predicates": ["EXACT_RECEIPT_CHAIN_BOUND", "ARTIFACT_HASHES_BOUND", "APPLICATION_DISPOSITION_PRESERVED", "CUSTODY_HANDOFF_EMITTED", "RECONSTRUCTION_REQUIREMENTS_DECLARED", "NO_RECORDING_AUTHORITY_PROMOTION"],
   "failure_semantics": ["MISSING_REQUIRED_RECEIPT_FAIL_CLOSED", "HASH_MISMATCH_FAIL_CLOSED", "CUSTODY_HANDOFF_IS_NOT_RECONSTRUCTION_PASS", "RECONSTRUCTION_PASS_IS_NOT_TRANSITION_AUTHORITY"],
   "authority_effect": "NONE_EVIDENCE_CUSTODY_ONLY",
-  "reuse_instructions": "Use Master Records or the applicable canonical custody/reconstruction surface for durable observed reality. Preserve denied, failed, partial, and successful outcomes distinctly. Do not rewrite application or transition state merely because evidence was recorded or reconstructed."
+  "reuse_instructions": "Use the Organization custody surface for durable observed reality and Master Records for organization records and reconstruction. Preserve denied, failed, partial, and successful outcomes distinctly. Do not rewrite application or transition state merely because evidence was recorded or reconstructed."
 }

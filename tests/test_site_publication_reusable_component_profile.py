@@ -51,5 +51,6 @@ def test_authority_separation_is_explicit():
     assert authority["worker_claim_fence"] == "WorkerCoordinator"
     assert authority["user_verification"] == "KV/SKAP Vault"
     assert authority["governed_transition"] == "Interlock/InTr"
-    assert authority["observed_reality_custody_reconstruction"] == "Master Records"
+    assert authority["observed_reality_custody"] == "Organization"
+    assert authority["organization_records_reconstruction"] == "Master Records"
     assert authority["github_runtime_authority"] == "NONE"

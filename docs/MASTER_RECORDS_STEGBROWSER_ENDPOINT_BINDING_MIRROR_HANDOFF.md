@@ -26,7 +26,7 @@ The generic Python local adapter in `workers/canonical_state_transition_custody.
 
 ## Proven defect
 
-A read-only observation of `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404 from the static public Site route. Current Site source has no root Universal InTr fetch handler that converts that path into the authoritative Master Records API. This proves the current same-origin browser endpoint binding is not visibly served at the probed public origin; it does not prove the durable Master Records store is empty and does not prove the immutable invocation never executed.
+A read-only observation of `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404 from the static public Site route. Current Site source has no root Universal InTr fetch handler that converts that path into the Master Records organization-record API. This proves the current same-origin browser endpoint binding is not visibly served at the probed public origin; it does not prove the durable Master Records store is empty and does not prove the immutable invocation never executed.
 
 The canonical authority implementation remains `master-records/orchestration:services/canonical_state_transition_custody.py` installed by `services/canonical_master_records_api.py`. The authoritative contract remains:
 

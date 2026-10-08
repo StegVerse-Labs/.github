@@ -217,7 +217,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 req["predecessor_master_records_receipt_sha256"]="9"*64
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records organization record not closed"):
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records organization record not recorded"):
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
                     )
@@ -462,7 +462,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 if value is None: sys.modules.pop(name,None)
                 else: sys.modules[name]=value
 
-    def test_rtc007_continuation_fails_closed_when_master_records_does_not_close(self):
+    def test_rtc007_continuation_fails_closed_without_recorded_master_records_organization_record(self):
         source=open(consumer.__file__,encoding="utf-8").read()
         self.assertIn('"RTC-STEGVERSE-EGRESS-007"',source)
         self.assertIn('"RTC_STEGVERSE_EGRESS_007_TRANSITION"',source)

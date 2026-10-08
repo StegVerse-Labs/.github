@@ -74,7 +74,8 @@ def test_authority_separation_and_no_device_verification():
     assert invariants["worker_claim_fence"] == "WorkerCoordinator"
     assert invariants["user_verification"] == "KV/SKAP Vault"
     assert invariants["governed_transition"] == "Interlock/InTr"
-    assert invariants["observed_reality_custody_reconstruction"] == "Master Records"
+    assert invariants["observed_reality_custody"] == "Organization"
+    assert invariants["organization_records_reconstruction"] == "Master Records"
     assert "NOT_USER_VERIFIER" in invariants["stegos_device_role"]
 
 

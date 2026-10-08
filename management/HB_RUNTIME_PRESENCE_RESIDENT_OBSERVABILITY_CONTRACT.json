@@ -50,7 +50,7 @@
     "credential_authority": "TV/TVC",
     "authority_effect": "NONE_CUSTODY_HANDOFF_ONLY"
   },
-  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction. Master Records may retain exact runtime-presence observations for custody/reconstruction, but custody does not authorize cross-task evidence reuse or task execution.",
+  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction. Master Records may retain exact runtime-presence observations as organization records for reconstruction, but a record does not authorize cross-task evidence reuse or task execution.",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
   "canonical_validation": "tests/test_runtime_presence_projection.py + tests/test_runtime_presence_master_records_intake.py",
   "canonical_merge": "6358375c81fedb579cb6fcac59946268ea485ebb",

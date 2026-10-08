@@ -75,7 +75,7 @@ Validate the exact branch head through the repository's existing checks and merg
 
 ## 2026-09-19 canonical Master Records organization record repair
 
-The next concrete custody defect was identified after the SDK return materialization source had already been merged: `consume_kv_publisher_return_materialization_request.py` retained the exact `stegverse.sdk.publisher-return-binding/v1` and emitted `SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS`, but that observed `RTC-SDK-RETURN-006` transition was not submitted through canonical Master Records before the result exposed `sdk_return_binding_observed=true`.
+The next concrete custody defect was identified after the SDK return materialization source had already been merged: `consume_kv_publisher_return_materialization_request.py` retained the exact `stegverse.sdk.publisher-return-binding/v1` and emitted `SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS`, but that observed `RTC-SDK-RETURN-006` transition was not written as a canonical Master Records organization record before the result exposed `sdk_return_binding_observed=true`.
 
 The existing consumer now uses the already-established `workers/canonical_state_transition_custody.py` seam. It binds:
 

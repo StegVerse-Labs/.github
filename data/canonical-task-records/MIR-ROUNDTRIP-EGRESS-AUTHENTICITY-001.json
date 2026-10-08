@@ -25,7 +25,8 @@
     "credential_owner": "TV/TVC where required",
     "mir_mirror_endpoint_owner": "StegVerse-owned MIR mirror",
     "mir_semantics_owner": "MIR",
-    "observed_reality_custody_reconstruction_owner": "Master Records"
+    "observed_reality_custody_owner": "Organization",
+    "organization_records_reconstruction_owner": "Master Records"
   },
   "proven_route_reuse": {
     "instruction": "DUPLICATE_PROVEN_SV002_EVENT_ROUTE_FIRST_THEN_ADD_MIR_SPECIFIC_REQUIREMENTS",

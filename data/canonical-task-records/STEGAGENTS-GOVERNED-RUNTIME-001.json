@@ -4,7 +4,7 @@
   "correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
   "root_correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
   "parent_task_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
-  "goal": "Activate and prove the first governed StegAgents runtime path for the already-registered CodeRepair-001 governed manifest through the existing WorkerCoordinator, required TV warrant/policy verification, StegCore/InTr, optional TV/TVC provider route, and Master Records evidence chain without creating duplicate authority or runtime surfaces.",
+  "goal": "Activate and prove the first governed StegAgents runtime path for the already-registered CodeRepair-001 governed manifest through the existing WorkerCoordinator, required TV warrant/policy verification, StegCore/InTr, optional TV/TVC provider route, and Master Records organization-record and reconstruction chain without creating duplicate authority or runtime surfaces.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",

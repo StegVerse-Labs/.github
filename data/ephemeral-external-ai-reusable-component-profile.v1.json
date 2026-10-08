@@ -51,7 +51,7 @@
     {
       "id": "RTC-EVIDENCE-CUSTODY-004",
       "role": "configured org batch or explicit immediate independent/cross-org custody and reconstruction after completed transport",
-      "owner": "existing org batch custody path and Master Records"
+      "owner": "existing org batch custody path (Organization) and Master Records organization records"
     }
   ],
   "boundary": {

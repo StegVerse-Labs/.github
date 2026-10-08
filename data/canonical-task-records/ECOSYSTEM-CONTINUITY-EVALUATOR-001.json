@@ -22,7 +22,7 @@
   ],
   "targets": {
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records/orchestration", "StegVerse-org/StegVerse-SDK"],
-    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "site-continuity-panel", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule", "sdk-ecosystem-diagnostic-processor"]
+    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "site-continuity-panel", "healer-finding-intake", "master-records-evaluation-organization-record", "periodic-healer-reusable-schedule", "sdk-ecosystem-diagnostic-processor"]
   },
   "core_source_state": {
     "pull_request": 1525,

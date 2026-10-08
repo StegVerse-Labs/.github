@@ -79,7 +79,7 @@ Review of the registered reusable path exposed three source defects after the co
 Branch `fix-mir-reusable-trigger-execution-20260916` now implements the bounded repair:
 
 - `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` uses local runner `scripts/reconcile_tvc_runtime_boundary_reusable.py`;
-- runner completion requires qualifying real provider evidence, READY derivation, and canonical InTr request/response evidence; Master Records remains post-run lifecycle work;
+- runner completion requires qualifying real provider evidence, READY derivation, and canonical InTr request/response evidence; Master Records organization records and reconstruction remain post-run work;
 - the checked-in MIR reusable invocation binds `provider_operation_receipt_ref=receipts/mir-tvc-provider-roundtrip/MIR-RUN2-EVENT-001.latest.json` and is deterministically constructor-checked;
 - `workers/mir_tvc_provider_roundtrip_worker.py` uses the already-local generic `RTC-INTERLOCK-INTR-TRANSPORT-008` implementation in `StegOS/stegos/universal_intr_transport.py`, with exact request identity `StegVerse-org/StegVerse-SDK -> TVC:ProviderOperationBroker` and the exact reverse return identity;
 - TVC validates the exact MIR provider profile/lease/live-operation boundary before the provider call;

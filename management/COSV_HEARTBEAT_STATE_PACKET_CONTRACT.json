@@ -12,7 +12,7 @@
   "gradient_role": "INPUT_ONLY",
   "gradient_evaluator": "StegVerse-Labs/StegBrain#860/#861",
   "live_migration_owner": "StegVerse-Labs/.github#122",
-  "master_records_role": "PASSIVE_CUSTODY_ONLY",
+  "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",

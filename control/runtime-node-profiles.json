@@ -23,7 +23,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "transition_admission": "INTERLOCK_INTR",
-    "runtime_reality_custody": "MASTER_RECORDS",
+    "runtime_reality_custody": "ORGANIZATION",
     "exact_subject_binding_required": true,
     "source_presence_proves_runtime": false,
     "single_shared_runtime_evidence_owner_required": true,

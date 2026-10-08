@@ -11,7 +11,7 @@
       "canonical StegGate ingress ALLOW retained",
       "exact-bound TVC Kimi lease retained",
       "TVC non-exportable Kimi provider operation succeeds",
-      "Master Records custody_recorded=true and reconstructability=PASS",
+      "Master Records organization record retained (custody_recorded=true) and reconstructability=PASS",
       "canonical StegGate egress ALLOW retained for exact response hash",
       "LLM-adapter exact-response egress admission succeeds",
       "same-execution resident receipt retained"

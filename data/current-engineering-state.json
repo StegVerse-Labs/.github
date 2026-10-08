@@ -29,7 +29,8 @@
     "credential": "TV/TVC",
     "user_verification": "KV/SKAP Vault",
     "runtime_reality": "Organization ledger root under organization ledger lock",
-    "durable_cross_organization_custody_and_reconstruction": "Master Records"
+    "durable_cross_organization_custody": "Organization",
+    "organization_records_and_reconstruction": "Master Records"
   },
   "invariants": [
     {

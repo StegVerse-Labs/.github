@@ -236,7 +236,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         )
 
     @staticmethod
-    def _master_records_transition_closed(row: Any, transition_id: str) -> bool:
+    def _master_records_organization_record_recorded(row: Any, transition_id: str) -> bool:
         return (
             isinstance(row, dict)
             and row.get("transition_id") == transition_id
@@ -301,12 +301,12 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             or worker_claim.get("proposed_worker_instance_id") != proposed_worker_instance_id
         ):
             raise RuntimeError("atomic constitutive activation receipt pending claim mismatch")
-        if not self._master_records_transition_closed(
+        if not self._master_records_organization_record_recorded(
             receipt.get("warrant_policy_master_records_transition"),
             "TV_TVC_WARRANT_POLICY_VERIFIED",
         ):
             raise RuntimeError("atomic constitutive activation TV/TVC closure incomplete")
-        if not self._master_records_transition_closed(
+        if not self._master_records_organization_record_recorded(
             receipt.get("atomic_activation_master_records_transition"),
             "ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
         ):

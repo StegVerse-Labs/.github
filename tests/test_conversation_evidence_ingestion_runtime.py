@@ -82,7 +82,7 @@ def test_runtime_worker_completes_only_after_exact_master_records_organization_r
     assert response["master_records"]["receipt_sha256"] == response["master_records"]["reconstructed_receipt_sha256"]
 
 
-def test_runtime_worker_blocks_when_master_records_not_closed(tmp_path, monkeypatch):
+def test_runtime_worker_blocks_without_recorded_master_records_organization_record(tmp_path, monkeypatch):
     monkeypatch.setattr(worker, "ROOT", tmp_path)
     monkeypatch.setattr(worker, "RECEIPT_ROOT", tmp_path / "receipts" / "conversation-evidence-ingestion")
     monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: {
@@ -142,7 +142,7 @@ def test_canonical_registry_prohibits_connected_device_runtime_gate():
     assert values["zero_connected_devices_may_be_used_to_stop_task_progression"] is False
 
 
-def test_runtime_worker_requires_closed_claim_fence_master_records_predecessor(monkeypatch):
+def test_runtime_worker_requires_recorded_claim_fence_master_records_organization_record(monkeypatch):
     value = invocation()
     value["task"].pop("claim_fence_master_records_transition")
     monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(value)))

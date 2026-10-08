@@ -43,10 +43,10 @@ observe current state
 -> Interlock/InTr governance now
 -> TV/TVC now if required
 -> retain ALLOW/DENY receipt
--> submit decision receipt to Master Records
+-> submit decision receipt as a Master Records organization record
 -> if ALLOW execute/consume
 -> retain execution/failure state receipt
--> submit exact state receipt to Master Records
+-> submit exact state receipt as a Master Records organization record
 -> reconstruct current state
 -> continue to next governed transition
 ```

@@ -2,7 +2,7 @@
 """Project canonical coordination against HB32 reference + WorkerCoordinator state.
 
 This is a non-authorizing projection. It never advances heartbeat state, never mints
-claims/fences, and never infers Interlock/InTr admission or Master Records reality.
+claims/fences, and never infers Interlock/InTr admission or Master Records organization records.
 The independent oscillator supplies reference timing only.
 """
 

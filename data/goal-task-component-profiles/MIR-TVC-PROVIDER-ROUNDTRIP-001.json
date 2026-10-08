@@ -102,7 +102,7 @@
     "provider_session_receipt_master_records_reconstruction_required": true,
     "provenance": "MIR_NODE_MIRROR_BUILD_TEST_PLUS_AUTHENTIC_EXTERNAL_RESULT",
     "duplicate_reexecution_required": false,
-    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed for the MIR mirror round-trip. The remaining authentic TV/TVC provider-session receipt now has an explicit manifest-bound trajectory: current-source and vault-backed provider-operation verification, Interlock/InTr admission, then Master Records organization records and reconstruction before the final MIR predicate may be satisfied."
+    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and organization-record behaviors already executed for the MIR mirror round-trip. The remaining authentic TV/TVC provider-session receipt now has an explicit manifest-bound trajectory: current-source and vault-backed provider-operation verification, Interlock/InTr admission, then Master Records organization records and reconstruction before the final MIR predicate may be satisfied."
   },
   "satisfied_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",

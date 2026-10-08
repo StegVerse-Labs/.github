@@ -29,9 +29,9 @@
     "organization_receipt_precedes_master_records_organization_record": false,
     "only_organization_records_may_be_recorded_in_master_records": true,
     "reconstruction_is_the_only_other_permitted_master_records_reference": true,
-    "master_records_may_not_gate_transition_execution": true,
-    "master_records_may_not_be_general_state_transition_custody": true,
-    "master_records_may_not_be_general_evidence_custody": true
+    "transition_execution_gates_belong_to_interlock_intr": true,
+    "state_transition_custody_belongs_to_organization": true,
+    "evidence_custody_belongs_to_organization": true
   },
   "canonical_transition_loop": [
     "OBSERVE_CURRENT_CANONICAL_STATE",

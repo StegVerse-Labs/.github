@@ -359,7 +359,7 @@ The first concrete verification defect was in the durable-local reconstruction a
 This continuation repairs only that verification seam and adds no new runtime, scheduler, dispatcher, custody store, authority plane, credential path, or transition semantics:
 
 - durable-local reconstruction now returns and validates the existing `hb_recording_reference`, protocol, stable successor custody ordinal, recorded receipt identity, and HB evidence class;
-- the custody client exposes the already-implemented Master Records bounded receipt-set commitment through either the existing HTTP API or existing durable-local binding;
+- the organization-record client exposes the already-implemented Master Records bounded receipt-set commitment through either the existing HTTP API or existing durable-local binding;
 - `scripts/consume_ecosystem_receipt_hb_checkpoint.py` is registered as selector `ecosystem_receipt_hb_checkpoint` on the **existing** resident dispatcher and carried through the existing resident source-refresh path;
 - the observer examines only successor custody ordinal 1, requires reconstruction PASS, required-evidence PASS, exact receipt/reconstruction digest equality, a frozen creation HB reference, retained recording HB metadata, exact recorded receipt identity, and `HB_BOUND_SUCCESSOR`;
 - only after those predicates exist does it build `stegverse.hb-master-records-checkpoint-commitment/v1` over the exact bounded Master Records range `1..1`;

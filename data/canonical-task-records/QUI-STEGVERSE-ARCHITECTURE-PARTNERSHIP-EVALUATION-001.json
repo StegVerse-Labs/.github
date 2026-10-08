@@ -167,7 +167,7 @@
     "governance_authority_transferred": false,
     "external_ai_output_is_governance_evidence_by_default": false,
     "interlock_intr_remains_stegverse_transition_authority": true,
-    "master_records_remains_stegverse_observed_reality_and_reconstruction_authority": true,
+    "master_records_remains_organization_records_and_reconstruction_only": true,
     "tvc_remains_credential_authority_when_credentials_are_required": true
   },
   "readme_impact": {

@@ -17,6 +17,8 @@ PARENT_TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 PARENT_RECEIPT = ROOT / "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json"
 RECEIPT = ROOT / "receipts/endpoint-fanout/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
 RECORD_STATUS_FIELD = "record_status"
+#: Peers that emit the fully qualified Master Records wire name use this field.
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
 #: Master Records boundary migration: continuity-vault-kit sink results written
 #: before the rename carry this legacy field. Readers accept it as a fallback.
 LEGACY_RECORD_STATUS_FIELD = "custody_status"
@@ -54,8 +56,9 @@ def load_json(path: Path) -> dict[str, Any] | None:
 def master_records_record_status(result: Mapping[str, Any] | None) -> Any:
     """Read a Master Records sink result's record status under the current or legacy name."""
     result = result or {}
-    if RECORD_STATUS_FIELD in result:
-        return result[RECORD_STATUS_FIELD]
+    for field in (RECORD_STATUS_FIELD, ORGANIZATION_RECORD_STATUS_FIELD):
+        if field in result:
+            return result[field]
     return result.get(LEGACY_RECORD_STATUS_FIELD)
 
 

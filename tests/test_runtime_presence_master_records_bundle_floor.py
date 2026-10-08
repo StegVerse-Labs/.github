@@ -14,7 +14,7 @@ spec.loader.exec_module(module)
 
 
 class RuntimePresenceMasterRecordsBundleFloorTests(unittest.TestCase):
-    def test_master_records_floor_contains_runtime_presence_custody_merge(self) -> None:
+    def test_master_records_floor_contains_runtime_presence_organization_record_merge(self) -> None:
         self.assertEqual(
             module.MASTER_RECORDS_SV001_SOURCE_FLOOR,
             "8e33b3e95d3d9e34387fe393031f44bebcdb5d57",

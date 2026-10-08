@@ -125,7 +125,7 @@
     "repository_persistence_requires_separate_admission": true
   },
   "completion": {
-    "next_authorized_action": "Keep receiver READY. Terminalize this runtime-observation task only after one authentic valid-Node observation round trip. Experiment execution and Master Records reconstruction remain separate evidence gates.",
+    "next_authorized_action": "Keep receiver READY. Terminalize this runtime-observation task only after one authentic valid-Node observation round trip. Experiment execution and Master Records reconstruction remain separate, non-gating evidence.",
     "terminal_when": [
       "SV002_PUBLIC_OBSERVATION_ROUND_TRIP_OBSERVED",
       "authentic ingress receipt observed",

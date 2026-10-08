@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_healer_handoff_does_not_make_master_records_a_general_transition_gate() -> None:
+def test_healer_handoff_keeps_master_records_to_organization_records() -> None:
     handoff = json.loads((ROOT / "handoffs" / "SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json").read_text(encoding="utf-8"))
     continuity = handoff["continuity"]
     assert continuity["checkpoint_ref"] == "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json"
@@ -23,8 +23,8 @@ def test_canonical_contract_restricts_master_records_to_organization_records_and
     assert invariants["every_state_receipt_is_submitted_to_master_records"] is False
     assert invariants["only_organization_records_may_be_recorded_in_master_records"] is True
     assert invariants["reconstruction_is_the_only_other_permitted_master_records_reference"] is True
-    assert invariants["master_records_may_not_gate_transition_execution"] is True
-    assert invariants["master_records_may_not_be_general_state_transition_custody"] is True
-    assert invariants["master_records_may_not_be_general_evidence_custody"] is True
+    assert invariants["transition_execution_gates_belong_to_interlock_intr"] is True
+    assert invariants["state_transition_custody_belongs_to_organization"] is True
+    assert invariants["evidence_custody_belongs_to_organization"] is True
     assert contract["transition_authority"] == "INTERLOCK_INTR"
     assert contract["authority_effect"] == "NONE_ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"

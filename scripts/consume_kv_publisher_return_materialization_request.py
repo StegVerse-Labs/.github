@@ -252,7 +252,7 @@ def _record_sdk_return_binding_custody(
         and mr.get("required_evidence_validation_status")=="PASS"
         and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
     ):
-        raise KVPublisherReturnError("SDK return binding Master Records organization record not closed")
+        raise KVPublisherReturnError("SDK return binding Master Records organization record not recorded")
     return {
       "state":mr.get("state"),
       "reconstruction_status":mr.get("reconstruction_status"),
@@ -420,7 +420,7 @@ def _prepare_rtc007_continuation(
         and mr.get("required_evidence_validation_status")=="PASS"
         and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
     ):
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 Master Records organization record not closed")
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 Master Records organization record not recorded")
 
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/mir_southbound_intr_consumer.py")
     if stegos is None:

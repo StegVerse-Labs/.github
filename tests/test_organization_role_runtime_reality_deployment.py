@@ -269,7 +269,7 @@ def test_general_transition_submission_to_master_records_is_removed():
 
 def test_declaration_doc_states_the_change_and_the_exemption_path():
     text = DOC.read_text(encoding="utf-8")
-    assert "runtime_reality_authority:  Master Records  ->  Organization" in text
+    assert "runtime_reality_authority:  Organization  (superseding the earlier records-service assignment)" in text
     assert "organization records and reconstruction" in text
     assert "data/organization-role-exemption-register.json" in text
     assert "SOURCE_IMPLEMENTED" in text

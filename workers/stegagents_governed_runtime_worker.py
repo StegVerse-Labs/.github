@@ -45,6 +45,8 @@ PURPOSE_GRAPH_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph/v1
 PURPOSE_GRAPH_RESULT_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph-result/v1"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+#: Peers that adopted the short Master Records wire name emit this field.
+RECORD_STATUS_FIELD = "record_status"
 #: Master Records boundary migration: StegAgents results written before the
 #: rename carry this legacy governance field. Readers accept it as a fallback.
 LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
@@ -65,8 +67,9 @@ def sha256_uri(value: Any) -> str:
 
 def organization_record_status(governance: Mapping[str, Any]) -> Any:
     """Read the Master Records organization record status under the current or legacy name."""
-    if ORGANIZATION_RECORD_STATUS_FIELD in governance:
-        return governance[ORGANIZATION_RECORD_STATUS_FIELD]
+    for field in (ORGANIZATION_RECORD_STATUS_FIELD, RECORD_STATUS_FIELD):
+        if field in governance:
+            return governance[field]
     return governance.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
 
 
