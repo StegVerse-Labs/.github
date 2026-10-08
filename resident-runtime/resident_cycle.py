@@ -14,4 +14,4 @@ FC = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(FC)
 
 if __name__ == "__main__":
-    FC.main()
+    raise SystemExit(FC.main())
