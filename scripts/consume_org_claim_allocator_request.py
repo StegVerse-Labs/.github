@@ -1,18 +1,50 @@
 #!/usr/bin/env python3
+"""Resident consumption of organization claim-allocator requests.
+
+Every allocation attempt is a manifest-bound state transition with a retained
+terminal disposition: ORGANIZATION_WORKER_CLAIM_GRANTED (ALLOW),
+ORGANIZATION_WORKER_CLAIM_REFUSED (DENY) or ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED.
+Each is appended through the existing repository emitter and organization
+aggregation, at ledger roots supplied by the materializer and never derived.
+
+The fence is reconciled from the verified Organization claim-receipt chain, not
+from a checkout projection: next = max(chain_max, provenance_floor, runtime
+generation) + 1, and a runtime generation behind the issued fences fails closed.
+The Organization receipt is appended before the task's active projection and the
+runtime claim registry are written, so a projection never exists without it.
+"""
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
 import sys
+import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping
 
 REQUEST_REL = Path("control/resident-execution-request.d/org-claim-allocator-001.json")
+REQUEST_RELS = (
+    REQUEST_REL,
+    Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
+)
+# Projection only: the write-once records under CONSUMPTION_DIR are the evidence.
 RECEIPT_REL = Path("receipts/sovereign-host/org-claim-allocator-request-consumption.latest.json")
+CONSUMPTION_DIR = Path("receipts/sovereign-host/org-claim-allocator-consumptions")
+GRANT_DIR = Path("receipts/sovereign-host/org-claim-allocator-grants")
 ALLOCATOR_REL = Path("scripts/allocate_claims.py")
+PROVENANCE_FLOOR_REL = Path("tasks/TASK-2026-0012.json")
+PROVENANCE_FLOOR_POINTER = "predecessor_provenance.allocator_fence"
+GRANTED = "ORGANIZATION_WORKER_CLAIM_GRANTED"
+REFUSED = "ORGANIZATION_WORKER_CLAIM_REFUSED"
+FAIL_CLOSED = "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED"
+DISPOSITION = {GRANTED: "ALLOW", REFUSED: "DENY", FAIL_CLOSED: "FAIL_CLOSED"}
+RETRY_ENTRYPOINT = "scripts/consume_org_claim_allocator_request.py::consume"
 TASK_ID = "SHWP-ORG-CLAIM-ALLOCATOR-001"
 MODE = "CANONICAL_ORGANIZATION_CLAIM_ALLOCATION"
 HOSTED_ENV = (
@@ -67,6 +99,9 @@ def validate_request(request: dict[str, Any]) -> None:
         raise RuntimeError("resident request may not grant claim authority")
     if request.get("allocator_remains_claim_authority") is not True:
         raise RuntimeError("canonical allocator must remain claim authority")
+    target = request.get("target_task_id")
+    if target is not None and (not isinstance(target, str) or not target.startswith("TASK-")):
+        raise RuntimeError("organization allocator request target_task_id invalid")
 
 
 def parse_last_json(stdout: str) -> dict[str, Any] | None:
@@ -220,45 +255,257 @@ def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any
     }
 
 
-def retain_claim_grant_evidence(runtime: Path, selected_task_id: str) -> dict[str, Any]:
-    claims_path = runtime / "control/claims-active.json"
-    if not claims_path.is_file():
-        raise RuntimeError("post-allocation claim registry missing")
-    claims_state = load_json(claims_path)
-    generation = claims_state.get("generation")
-    granted = [
-        claim for claim in (claims_state.get("claims") or [])
-        if isinstance(claim, dict) and claim.get("task_id") == selected_task_id
-    ]
+class ClaimFailClosed(Exception):
+    """An allocation attempt that cannot reach ALLOW or DENY; no fence is issued."""
+
+    def __init__(self, predicate: str, detail: str, repair: str):
+        super().__init__(predicate + ": " + detail)
+        self.predicate = predicate
+        self.detail = detail
+        self.repair = repair
+
+
+def _load_module(name: str, path: Path):
+    if not path.is_file():
+        raise ClaimFailClosed("ORGANIZATION_EMITTER_MISSING", str(path), "materialize the canonical ledger emitters")
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path) -> dict[str, Any]:
+    """The existing emitters, at the ledger roots this execution was supplied."""
+    emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
+    organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
+    return {
+        "emitter": emitter,
+        "organization_ledger": organization,
+        "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
+        "organization_root": Path(org_ledger_root).expanduser().resolve(),
+    }
+
+
+def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
+    """Walk the organization chain from HEAD, recomputing every receipt digest.
+
+    A root that is absent, has receipts but no HEAD, or whose chain does not
+    recompute is unverified, and an unverified chain cannot issue a fence.
+    """
+    org = custody["organization_ledger"]
+    root = custody["organization_root"]
+
+    def unverified(detail: str) -> ClaimFailClosed:
+        return ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", detail,
+                               "supply an organization ledger root whose HEAD and chain verify")
+
+    if not root.is_dir():
+        raise unverified("organization ledger root absent")
+    receipts = root / "receipts"
+    head_path = root / "HEAD.json"
+    if not head_path.is_file():
+        if receipts.is_dir() and any(receipts.glob("*.json")):
+            raise unverified("organization receipts present without HEAD")
+        return {"head_sha256": None, "receipts": []}
+    try:
+        head = org.load(head_path)
+    except Exception as exc:
+        raise unverified("HEAD unreadable: " + type(exc).__name__) from exc
+    if head.get("organization") != org.C["organization"]:
+        raise unverified("HEAD organization mismatch")
+    chain: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    cursor = head.get("receipt_sha256")
+    if not isinstance(cursor, str) or not cursor.startswith("sha256:"):
+        raise unverified("HEAD receipt digest invalid")
+    while cursor:
+        if cursor in seen:
+            raise unverified("organization chain cycle")
+        seen.add(cursor)
+        path = receipts / (cursor.split(":", 1)[1] + ".json")
+        if not path.is_file():
+            raise unverified("organization chain receipt missing: " + cursor)
+        row = org.load(path)
+        body = dict(row)
+        claimed = body.pop("receipt_sha256", None)
+        if claimed != cursor or org.sha(body) != claimed or row.get("organization") != org.C["organization"]:
+            raise unverified("organization chain receipt does not recompute: " + cursor)
+        chain.append(row)
+        cursor = row.get("previous_receipt_sha256")
+    chain.reverse()
+    return {"head_sha256": head["receipt_sha256"], "receipts": chain}
+
+
+def chain_grants(chain: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Organization claim grants in chain order, as their receipts carry them."""
+    grants = []
+    for row in chain["receipts"]:
+        evidence = row.get("boundary_evidence") or {}
+        if evidence.get("operation") != GRANTED:
+            continue
+        fence = evidence.get("fencing_token")
+        if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+            raise ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", "granted receipt fence invalid",
+                                  "repair the organization claim receipt chain")
+        grants.append(row)
+    return grants
+
+
+def provenance_floor(source: Path) -> dict[str, Any]:
+    """The fence already issued outside the chain, read from its provenance record."""
+    path = source / PROVENANCE_FLOOR_REL
+    try:
+        task = load_json(path)
+        provenance = task["predecessor_provenance"]
+        fence = provenance["allocator_fence"]
+    except Exception as exc:
+        raise ClaimFailClosed("PROVENANCE_FLOOR_UNVERIFIED", str(PROVENANCE_FLOOR_REL),
+                              "materialize " + PROVENANCE_FLOOR_REL.as_posix()) from exc
+    if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+        raise ClaimFailClosed("PROVENANCE_FLOOR_UNVERIFIED", "allocator_fence invalid",
+                              "repair " + PROVENANCE_FLOOR_REL.as_posix())
+    return {
+        "fence": fence,
+        "provenance": PROVENANCE_FLOOR_REL.as_posix() + "#" + PROVENANCE_FLOOR_POINTER,
+        "allocator_task": provenance.get("allocator_task"),
+        "allocator_generation": provenance.get("allocator_generation"),
+        "provenance_record_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def task_cosv(source: Path, task: Mapping[str, Any]) -> str | None:
+    ref = task.get("canonical_task_record")
+    if ref is None:
+        return None
+    try:
+        return load_json(source / str(ref)).get("cosv_task_vector")
+    except Exception as exc:
+        raise ClaimFailClosed("CANONICAL_TASK_RECORD_UNRESOLVED", str(ref),
+                              "materialize the task's canonical task record") from exc
+
+
+def write_once(path: Path, value: Mapping[str, Any]) -> Path:
+    """Create `path` atomically if absent; the same bytes again is a no-op, different bytes refuse."""
+    rendered = (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix=".once-", dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        try:
+            os.link(name, path)
+        except FileExistsError:
+            if path.read_bytes() != rendered:
+                raise RuntimeError("write_once_collision: " + path.name)
+    finally:
+        os.unlink(name)
+    return path
+
+
+def write_projection(path: Path, value: Mapping[str, Any], evidence_ref: Path) -> None:
+    """Latest-pointer projection for observers. It is not evidence; `evidence_ref` is."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    projected = {**value, "projection_only": True, "evidence_role": "PROJECTION_ONLY_NOT_EVIDENCE",
+                 "evidence_ref": evidence_ref.as_posix()}
+    path.write_text(json.dumps(projected, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+@contextmanager
+def claim_allocation_lock(root: Path):
+    """Serialize verify, fence and append for one organization ledger.
+
+    The aggregation takes the ledger's own append lock inside this one, so the
+    fence decided here and the receipt that issues it cannot be interleaved by
+    another allocator sharing the ledger.
+    """
+    with (root / ".claim-allocation.lock").open("a+b") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+CARRIED = ("disposition", "task_id", "fencing_token", "failed_predicate", "request_sha256",
+           "claim_scope_sha256", "organization_head_sha256", "cosv_task_vector")
+
+
+def record_transition(custody: Mapping[str, Any], transition_class: str, transition_id: str,
+                      predecessor: str, evidence: dict[str, Any], *, organization: bool,
+                      identity: tuple[str, ...]) -> dict[str, Any]:
+    """Append the repository receipt, then the organization receipt consuming it.
+
+    The organization receipt is built from the returned repository receipt, so
+    a retry of a recorded transition consumes the same source with the same
+    context and the organization ledger returns the receipt it already holds.
+    """
+    successor = "sha256:" + stable_hash({"transition_id": transition_id, "evidence": evidence})
+    repository_receipt = custody["emitter"].append(
+        transition_id, transition_class, predecessor, successor, evidence, "NONE",
+        store=custody["repository_store"], idempotent_on=identity)
+    organization_receipt = None
+    if organization:
+        recorded = repository_receipt.get("evidence") or {}
+        organization_receipt = custody["organization_ledger"].aggregate_transition(
+            repository_receipt, org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
+            successor_org_state_sha256=repository_receipt["successor_state_sha256"],
+            boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED}},
+            authority_effect="NONE", ledger=custody["organization_root"])
+    return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
+
+
+def run_allocator(runner, runtime: Path, env: Mapping[str, str], *args: str) -> dict[str, Any]:
+    completed = runner(
+        [sys.executable, str(runtime / ALLOCATOR_REL), *args],
+        cwd=runtime, capture_output=True, text=True, check=False, timeout=120, env=dict(env),
+    )
+    result = parse_last_json(completed.stdout or "")
+    if not isinstance(result, dict):
+        raise ClaimFailClosed("ALLOCATOR_NO_MACHINE_RESULT", "returncode " + str(completed.returncode),
+                              "materialize the canonical allocator")
+    if result.get("state") == "ALLOCATOR_BUSY":
+        raise ClaimFailClosed("ALLOCATOR_BUSY", "allocator lock held by pid " + str(result.get("allocator_lock_owner_pid")),
+                              "retry after the holding allocator exits")
+    return result
+
+
+def runtime_claim_projection(runtime: Path, task_id: str) -> tuple[int, list[dict[str, Any]], str | None]:
+    claims_state = load_json(runtime / "control/claims-active.json")
+    generation = claims_state.get("generation", 0)
+    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 0:
+        raise ClaimFailClosed("RUNTIME_CLAIM_REGISTRY_INVALID", "generation invalid",
+                              "repair the runtime claim registry")
+    claims = [c for c in (claims_state.get("claims") or []) if isinstance(c, dict) and c.get("task_id") == task_id]
+    task_path = runtime / "tasks" / f"{task_id}.json"
+    status = load_json(task_path).get("status") if task_path.is_file() else None
+    return generation, claims, status
+
+
+def retain_claim_grant_evidence(runtime: Path, task_id: str, fence: int,
+                                organization_receipt_sha256: str) -> dict[str, Any]:
+    """Write-once observation of the projected claim, keyed by task and generation."""
+    _generation, granted, _status = runtime_claim_projection(runtime, task_id)
+    granted = [c for c in granted if (c.get("lease") or {}).get("fencing_token") == fence]
     if not granted:
         raise RuntimeError("selected task has no retained canonical claim")
-    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
-        raise RuntimeError("post-allocation claim registry generation invalid")
-    dependency_surfaces: set[str] = set()
-    fences: list[int] = []
-    for claim in granted:
-        lease = claim.get("lease") or {}
-        fence = lease.get("fencing_token")
-        if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
-            raise RuntimeError("selected task claim fence invalid")
-        fences.append(fence)
-        for value in ((claim.get("scope") or {}).get("dependency_surfaces") or []):
-            if str(value).strip():
-                dependency_surfaces.add(str(value).strip())
-    snapshot = {
-        "task_id": selected_task_id,
-        "claim_registry_generation": generation,
-        "claims": granted,
-    }
+    dependency_surfaces = sorted({
+        str(value).strip() for claim in granted
+        for value in ((claim.get("scope") or {}).get("dependency_surfaces") or []) if str(value).strip()
+    })
+    snapshot = {"task_id": task_id, "claim_registry_generation": fence, "claims": granted}
     receipt = {
         "schema": "stegverse.org-claim-grant-observation/v1",
         "state": "CLAIM_GRANT_OBSERVED",
-        "task_id": selected_task_id,
-        "claim_registry_generation": generation,
-        "fencing_tokens": sorted(fences),
-        "dependency_surfaces": sorted(dependency_surfaces),
+        "task_id": task_id,
+        "claim_registry_generation": fence,
+        "fencing_tokens": [fence],
+        "dependency_surfaces": dependency_surfaces,
         "claims": granted,
         "claim_snapshot_sha256": stable_hash(snapshot),
+        "organization_receipt_sha256": organization_receipt_sha256,
         "allocator_remains_claim_authority": True,
         "observation_grants_claim_authority": False,
         "heartbeat_grants_claim_authority": False,
@@ -268,84 +515,62 @@ def retain_claim_grant_evidence(runtime: Path, selected_task_id: str) -> dict[st
         "second_machine_required": False,
         "authority_effect": "NONE_OBSERVATION_ONLY",
     }
-    root = runtime / "receipts/sovereign-host/org-claim-allocator-grants"
-    root.mkdir(parents=True, exist_ok=True)
-    generation_path = root / f"{selected_task_id}-G{generation}.json"
-    latest_path = root / f"{selected_task_id}.latest.json"
-    rendered = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
-    generation_path.write_text(rendered, encoding="utf-8")
-    latest_path.write_text(rendered, encoding="utf-8")
+    generation_rel = GRANT_DIR / f"{task_id}-G{fence}.json"
+    latest_rel = GRANT_DIR / f"{task_id}.latest.json"
+    write_once(runtime / generation_rel, receipt)
+    write_projection(runtime / latest_rel, receipt, generation_rel)
     return {
         "state": "CLAIM_GRANT_EVIDENCE_RETAINED",
-        "task_id": selected_task_id,
-        "claim_registry_generation": generation,
-        "generation_receipt": str(generation_path.relative_to(runtime)),
-        "latest_receipt": str(latest_path.relative_to(runtime)),
+        "task_id": task_id,
+        "claim_registry_generation": fence,
+        "generation_receipt": generation_rel.as_posix(),
+        "latest_receipt": latest_rel.as_posix(),
+        "latest_receipt_is_projection_only": True,
         "claim_snapshot_sha256": receipt["claim_snapshot_sha256"],
         "authority_effect": "NONE_OBSERVATION_ONLY",
     }
 
-def consume(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    runner=subprocess.run,
-    env: Mapping[str, str] | None = None,
-) -> dict[str, Any]:
-    source = source_root.expanduser().resolve()
-    runtime = runtime_root.expanduser().resolve()
-    request_path = runtime / REQUEST_REL
-    if not request_path.is_file():
-        return {
-            "schema": "stegverse.resident-execution-request-consumption/v1",
-            "state": "NO_REQUEST",
-            "task_id": TASK_ID,
-            "runtime_execution_attempted": False,
-            "authority_effect": "NONE",
-        }
 
-    request = load_json(request_path)
+def _ledger_refusal(request: Mapping[str, Any] | None, detail: str) -> dict[str, Any]:
+    return {
+        "schema": "stegverse.resident-execution-request-consumption/v1",
+        "state": "FAIL_CLOSED",
+        "request_id": (request or {}).get("request_id"),
+        "task_id": TASK_ID,
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER",
+        "detail": detail,
+        "required_evidence_or_repair": "supply --repo-ledger-root and --org-ledger-root",
+        "retry_entrypoint": RETRY_ENTRYPOINT,
+        "runtime_execution_attempted": False,
+        "fence_issued": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
+def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: Mapping[str, Any],
+                    runner, safe_env: Mapping[str, str]) -> dict[str, Any]:
+    request = load_json(runtime / request_rel)
     validate_request(request)
     request_hash = stable_hash(request)
-    safe_env = clean_env(env)
+    target = request.get("target_task_id")
     source_catalog_floor = validate_source_catalog_floor(source, request)
     control_inputs = materialize_org_control_inputs(source, runtime)
-    allocator = runtime / ALLOCATOR_REL
-    if not allocator.is_file():
+    if not (runtime / ALLOCATOR_REL).is_file():
         raise RuntimeError("canonical organization allocator not materialized")
 
-    completed = runner(
-        [sys.executable, str(allocator)],
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=120,
-        env=safe_env,
-    )
-    result = parse_last_json(completed.stdout)
-    selected = result.get("selected") if isinstance(result, dict) else None
-    allocator_state = result.get("state") if isinstance(result, dict) else "NO_MACHINE_RESULT"
-    claim_grant_evidence = None
-    if isinstance(selected, str) and selected:
-        claim_grant_evidence = retain_claim_grant_evidence(runtime, selected)
-    accepted_state = allocator_state in {"ALLOCATION_COMPLETE", "ALLOCATOR_BUSY"}
-    receipt = {
+    base = {
         "schema": "stegverse.resident-execution-request-consumption/v1",
-        "state": "ATTEMPT_RECORDED" if accepted_state else "BLOCKED",
         "request_id": request.get("request_id"),
+        "request_ref": request_rel.as_posix(),
         "request_sha256": request_hash,
         "task_id": TASK_ID,
         "mode": MODE,
+        "target_task_id": target,
         "runtime_execution_attempted": True,
-        "execution_returncode": completed.returncode,
         "source_catalog_floor": source_catalog_floor,
         "control_inputs": control_inputs,
-        "allocator_result": result,
-        "allocator_state": allocator_state,
-        "selected_task_id": selected,
-        "claim_grant_occurred": isinstance(selected, str) and bool(selected),
-        "claim_grant_evidence": claim_grant_evidence,
         "request_granted_claim_authority": False,
         "allocator_remains_claim_authority": True,
         "heartbeat_grants_execution_authority": False,
@@ -355,21 +580,243 @@ def consume(
         "credential_authority": "TV/TVC",
         "second_machine_required": False,
         "repeat_on_resident_dispatch": True,
-        "authority_effect": "CANONICAL_ALLOCATOR_ONLY_IF_SELECTED" if selected else "NONE_REQUEST_ONLY",
     }
-    receipt_path = runtime / RECEIPT_REL
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+
+    def retained(transition_id: str, body: dict[str, Any]) -> dict[str, Any]:
+        """The write-once record of this transition: the prior one if it exists."""
+        rel = CONSUMPTION_DIR / f"{transition_id}.json"
+        path = runtime / rel
+        if path.is_file():
+            prior = load_json(path)
+        else:
+            write_once(path, body)
+            prior = body
+        write_projection(runtime / RECEIPT_REL, prior, rel)
+        return prior
+
+    def non_allow(transition_class: str, claim_task: str, predicate: str, detail: str, repair: str | None,
+                  *, organization: bool, head: str | None) -> dict[str, Any]:
+        transition_id = (transition_class.replace("_", "-") + "-"
+                         + stable_hash({"task_id": claim_task, "request_sha256": request_hash,
+                                        "failed_predicate": predicate})[:16])
+        evidence = {
+            "disposition": DISPOSITION[transition_class],
+            "task_id": claim_task,
+            "request_id": request.get("request_id"),
+            "request_sha256": request_hash,
+            "target_task_id": target,
+            "failed_predicate": predicate,
+            "detail": detail,
+            "organization_head_sha256": head,
+            "fencing_token": None,
+            "fence_issued": False,
+            "required_evidence_or_repair": repair,
+            "retry_entrypoint": RETRY_ENTRYPOINT if transition_class == FAIL_CLOSED else None,
+            "consequence_committed": False,
+        }
+        receipts = record_transition(
+            custody, transition_class, transition_id, "sha256:" + request_hash, evidence,
+            organization=organization, identity=("task_id", "request_sha256", "failed_predicate"))
+        organization_receipt = receipts["organization_receipt"]
+        body = {
+            **base,
+            "state": "FAIL_CLOSED" if transition_class == FAIL_CLOSED else "ATTEMPT_RECORDED",
+            "transition_class": transition_class,
+            "transition_id": transition_id,
+            "disposition": DISPOSITION[transition_class],
+            "claim_task_id": claim_task,
+            "failed_predicate": predicate,
+            "detail": detail,
+            "required_evidence_or_repair": repair,
+            "retry_entrypoint": evidence["retry_entrypoint"],
+            "fencing_token": None,
+            "fence_issued": False,
+            "selected_task_id": None,
+            "claim_grant_occurred": False,
+            "claim_grant_evidence": None,
+            "repository_receipt_sha256": receipts["repository_receipt"]["receipt_sha256"],
+            "organization_receipt_sha256": organization_receipt and organization_receipt["receipt_sha256"],
+            "organization_receipt_appended": organization_receipt is not None,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+        return retained(transition_id, body)
+
+    def allow(claim_task: str, grant_row: Mapping[str, Any], receipts: Mapping[str, Any] | None,
+              *, replayed: bool) -> dict[str, Any]:
+        """Project a recorded grant (committing it only if absent) and retain its record."""
+        evidence = grant_row["boundary_evidence"]
+        fence = evidence["fencing_token"]
+        transition_id = grant_row["source_transition_id"]
+        generation, claims, status = runtime_claim_projection(runtime, claim_task)
+        projected = any((c.get("lease") or {}).get("fencing_token") == fence for c in claims)
+        if not projected and status == "queued":
+            if generation >= fence:
+                raise ClaimFailClosed("PRIOR_GRANT_PROJECTION_UNRECONCILABLE",
+                                      f"runtime generation {generation} already at or beyond granted fence {fence}",
+                                      "rematerialize the runtime claim registry from the organization chain")
+            commit = run_allocator(runner, runtime, safe_env, "--task", claim_task, "--fencing-token", str(fence))
+            if commit.get("selected") != claim_task:
+                raise ClaimFailClosed("PROJECTION_COMMIT_REFUSED",
+                                      str(commit.get("refusal_predicate") or commit.get("state")),
+                                      "retry; the organization grant receipt is retained and is replayed")
+            projected = True
+        grant_evidence = (retain_claim_grant_evidence(runtime, claim_task, fence, grant_row["receipt_sha256"])
+                          if projected else None)
+        body = {
+            **base,
+            "state": "ATTEMPT_RECORDED",
+            "transition_class": GRANTED,
+            "transition_id": transition_id,
+            "disposition": "ALLOW",
+            "claim_task_id": claim_task,
+            "failed_predicate": None,
+            "fencing_token": fence,
+            "fence_issued": True,
+            "organization_head_sha256": evidence.get("organization_head_sha256"),
+            "claim_scope_sha256": evidence.get("claim_scope_sha256"),
+            "cosv_task_vector": evidence.get("cosv_task_vector"),
+            "selected_task_id": claim_task,
+            "claim_grant_occurred": True,
+            "claim_grant_evidence": grant_evidence,
+            "replayed_prior_grant": replayed,
+            "repository_receipt_sha256": receipts["repository_receipt"]["receipt_sha256"] if receipts else None,
+            "organization_receipt_sha256": grant_row["receipt_sha256"],
+            "organization_receipt_appended": True,
+            "organization_receipt_precedes_projection": True,
+            "authority_effect": "CANONICAL_ALLOCATOR_ONLY_IF_SELECTED",
+        }
+        return retained(transition_id, body)
+
+    def prior_grant(grants: list[dict[str, Any]], claim_task: str | None) -> dict[str, Any] | None:
+        rows = [row for row in grants if (row.get("boundary_evidence") or {}).get("task_id") == claim_task]
+        return rows[-1] if rows else None
+
+    org_root = custody["organization_root"]
+    head: str | None = None
+    claim_task = target or "NONE"
+    try:
+        if not org_root.is_dir():
+            raise ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", "organization ledger root absent",
+                                  "supply an organization ledger root whose HEAD and chain verify")
+        with claim_allocation_lock(org_root):
+            chain = verify_organization_chain(custody)
+            head = chain["head_sha256"]
+            grants = chain_grants(chain)
+            prior = prior_grant(grants, target) if target else None
+            if prior is not None:
+                return allow(target, prior, None, replayed=True)
+            plan = run_allocator(runner, runtime, safe_env, "--plan", *(("--task", target) if target else ()))
+            selected = plan.get("selected")
+            if not isinstance(selected, str) or not selected:
+                predicate = plan.get("refusal_predicate") or "NO_ELIGIBLE_TASK"
+                return non_allow(REFUSED, claim_task, predicate,
+                                 "allocator evaluated " + ("target " + target if target else "the ranked queue"),
+                                 None, organization=True, head=head)
+            claim_task = selected
+            prior = prior_grant(grants, selected)
+            if prior is not None:
+                return allow(selected, prior, None, replayed=True)
+            floor = provenance_floor(source)
+            chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
+            runtime_generation = plan.get("claim_registry_generation")
+            if not isinstance(runtime_generation, int) or isinstance(runtime_generation, bool):
+                raise ClaimFailClosed("RUNTIME_CLAIM_REGISTRY_INVALID", "generation invalid",
+                                      "repair the runtime claim registry")
+            issued = max(chain_max, floor["fence"])
+            if runtime_generation < issued:
+                # Never lowered and never reissued: a registry behind the fences
+                # already issued is a stale projection, not a new origin.
+                raise ClaimFailClosed(
+                    "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
+                    f"runtime generation {runtime_generation} < issued fence {issued}",
+                    "rematerialize the runtime claim registry at or beyond the issued fences")
+            fence = max(chain_max, floor["fence"], runtime_generation) + 1
+            task = load_json(runtime / "tasks" / f"{selected}.json")
+            requested = plan.get("requested_claims") or task["requirements"]["mandatory"]
+            evidence = {
+                "disposition": "ALLOW",
+                "task_id": selected,
+                "cosv_task_vector": task_cosv(source, task),
+                "claim_scope_sha256": stable_hash(requested),
+                "claimed_repositories": sorted({(r.get("repository") or {}).get("full_name") for r in requested}),
+                "fencing_token": fence,
+                "organization_head_sha256": head,
+                "chain_max_fence": chain_max,
+                "provenance_floor": floor,
+                "runtime_claims_generation_observed": runtime_generation,
+                "request_id": request.get("request_id"),
+                "request_sha256": request_hash,
+                "target_task_id": target,
+                "failed_predicate": None,
+                "consequence_committed": True,
+            }
+            transition_id = f"ORGANIZATION-WORKER-CLAIM-GRANTED-{selected}-G{fence}"
+            predecessor = "sha256:" + stable_hash({"organization_head_sha256": head, "task_id": selected})
+            receipts = record_transition(
+                custody, GRANTED, transition_id, predecessor, evidence, organization=True,
+                identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"))
+            return allow(selected, receipts["organization_receipt"], receipts, replayed=False)
+    except ClaimFailClosed as exc:
+        verified = head is not None or (org_root.is_dir() and exc.predicate != "LEDGER_HEAD_UNVERIFIED")
+        return non_allow(FAIL_CLOSED, claim_task, exc.predicate, exc.detail, exc.repair,
+                         organization=verified, head=head)
+
+
+def consume(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    repo_ledger_root: Path | None = None,
+    org_ledger_root: Path | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    present = [rel for rel in REQUEST_RELS if (runtime / rel).is_file()]
+    if not present:
+        return {
+            "schema": "stegverse.resident-execution-request-consumption/v1",
+            "state": "NO_REQUEST",
+            "task_id": TASK_ID,
+            "runtime_execution_attempted": False,
+            "authority_effect": "NONE",
+        }
+    if repo_ledger_root is None or org_ledger_root is None:
+        # Supplied, never derived: nothing is materialized or allocated without both.
+        return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
+    safe_env = clean_env(env)
+    try:
+        custody = ledger_custody(source, repo_ledger_root, org_ledger_root)
+    except ClaimFailClosed as exc:
+        return _ledger_refusal(load_json(runtime / present[0]), exc.predicate + ": " + exc.detail)
+    attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env)
+                for rel in present]
+    if len(attempts) == 1:
+        return attempts[0]
+    state = "FAIL_CLOSED" if any(a["state"] == "FAIL_CLOSED" for a in attempts) else "ATTEMPT_RECORDED"
+    return {
+        "schema": "stegverse.resident-execution-request-consumption/v1",
+        "state": state,
+        "task_id": TASK_ID,
+        "attempts": attempts,
+        "runtime_execution_attempted": True,
+        "request_granted_claim_authority": False,
+        "allocator_remains_claim_authority": True,
+        "authority_effect": "CANONICAL_ALLOCATOR_ONLY_IF_SELECTED",
+    }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Invoke the canonical organization claim allocator from resident dispatch.")
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--repo-ledger-root", type=Path, default=None)
+    parser.add_argument("--org-ledger-root", type=Path, default=None)
     args = parser.parse_args()
     try:
-        receipt = consume(args.source_root, args.runtime_root)
+        receipt = consume(args.source_root, args.runtime_root,
+                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root)
     except Exception as exc:
         receipt = {
             "schema": "stegverse.resident-execution-request-consumption/v1",
