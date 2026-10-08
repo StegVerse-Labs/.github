@@ -30,7 +30,7 @@ Required evidence:
 2. `CONVERSATION_AUTHENTICITY_ENVELOPE`
 3. `SERVICE_TRANSACTION_BINDING`
 
-Progression requires `RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact receipt/reconstruction digest equality.
+Progression requires `RECORDED` and the verified Organization receipt of the exact state receipt (`resident-runtime/organization_batch_custody.py::verified_organization_receipt`, read back from the ledger root the append used; Master Records reconstruction is evidence only and never gates progression).
 
 Source tests may prove the consumer enforces this contract; only an authentic Master Records return can prove runtime organization records and reconstruction.
 

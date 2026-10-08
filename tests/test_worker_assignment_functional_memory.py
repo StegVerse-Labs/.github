@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -11,9 +12,18 @@ from heartbeat_runtime.worker_assignment_functional_memory import (
     record_non_allow_functional_memory,
     reconstruct_prior_functional_memory,
 )
+from workers.canonical_state_transition_custody import sha256_uri, submit_state_receipt
 
 
 class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
+    def setUp(self):
+        # Ledger roots are supplied, never derived from the host.
+        ledger = tempfile.TemporaryDirectory()
+        self.addCleanup(ledger.cleanup)
+        env = patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ledger.name})
+        env.start()
+        self.addCleanup(env.stop)
+
     def packet(self, verdict: str = "BLOCK") -> dict:
         return {
             "schema": "stegverse.worker-task-admission-packet/v1",
@@ -98,17 +108,10 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
                 prior_memory_valid=True,
                 prior_memory_reason=None,
             )
-        returned = {
-            "state": "RECORDED",
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": "a" * 64,
-            "reconstructed_receipt_sha256": "a" * 64,
-            "master_record_ref": "master-record:test",
-        }
+        # Real producer: appends to the tmp Organization ledger root.
         with patch(
             "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",
-            return_value=returned,
+            side_effect=submit_state_receipt,
         ) as submit:
             memory = record_non_allow_functional_memory(
                 task={"task_id": "TASK-1"},
@@ -118,8 +121,8 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertEqual(memory["schema"], SCHEMA)
         self.assertEqual(memory["state"], "RECORDED")
         self.assertEqual(memory["admissibility_resolution"], "DENY")
-        self.assertEqual(memory["receipt_sha256"], "a" * 64)
         receipt = submit.call_args.args[0]
+        self.assertEqual(memory["receipt_sha256"], sha256_uri(receipt).split(":", 1)[1])
         self.assertEqual(receipt["transition_outcome"], "DENY")
         self.assertFalse(receipt["transition_evidence"]["worker_materialized"])
         self.assertEqual(receipt["transition_evidence"]["functional_memory"]["task_registry_generation"], 84)
@@ -332,20 +335,13 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
                 "reconstructed_receipt_sha256": previous_hash,
             },
         }
-        returned = {
-            "state": "RECORDED",
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": "7" * 64,
-            "reconstructed_receipt_sha256": "7" * 64,
-            "master_record_ref": "master-record:successor",
-        }
+        predecessor_evidence["sha256"] = sha256_uri(predecessor_evidence["content"]).split(":", 1)[1]
         with patch(
             "heartbeat_runtime.worker_assignment_functional_memory.require_predecessor_master_records_organization_record",
             return_value=(f"sha256:{previous_hash}", [predecessor_evidence]),
         ) as require_predecessor, patch(
             "heartbeat_runtime.worker_assignment_functional_memory.submit_state_receipt",
-            return_value=returned,
+            side_effect=submit_state_receipt,
         ) as submit:
             memory = record_non_allow_functional_memory(
                 task={"task_id": "TASK-1", "functional_memory": previous},

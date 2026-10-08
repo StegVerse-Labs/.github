@@ -282,7 +282,6 @@ def test_first_failed_richard_consumption_is_immutable_after_later_attempt(tmp_p
 
 
 def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(tmp_path, monkeypatch):
-    import hashlib
     import sys
     import types
 
@@ -297,27 +296,34 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
     }}
     receipt_calls = []
 
-    def sha(value):
-        raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-        return "sha256:" + hashlib.sha256(raw.encode()).hexdigest()
+    # Real producer: the existing canonical custody client appending to a tmp
+    # Organization ledger root; the dispatch visit closes on its verified
+    # Organization receipt, never on Master Records reconstruction.
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org-ledger"))
+    monkeypatch.syspath_prepend(str(ROOT))
+    monkeypatch.syspath_prepend(str(ROOT / "workers"))
+    monkeypatch.delitem(sys.modules, "canonical_state_transition_custody", raising=False)
+    import canonical_state_transition_custody as real
 
     def build(**kwargs):
         assert kwargs["proof_scope"] == "RICHARD_TEST3_DISPATCH_VISIT_ONLY"
         assert kwargs["required_evidence_manifest"][0]["content"]["first_failed_cycle"] == result["first_failed_cycle"]
-        return kwargs
+        return real.build_state_receipt(**kwargs)
 
-    reconstructed_digest = ["sha256:" + "a" * 64]
+    forged_organization_receipt = [False]
     def submit(receipt):
         receipt_calls.append(receipt)
-        return {
-            "state": "RECORDED", "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": "sha256:" + "a" * 64,
-            "reconstructed_receipt_sha256": reconstructed_digest[0],
-        }
+        recorded = real.submit_state_receipt(receipt)
+        assert recorded["reconstruction_status"] == "NOT_REQUESTED"
+        if forged_organization_receipt[0]:
+            recorded = dict(recorded, organization_receipt=dict(
+                recorded["organization_receipt"], receipt_sha256="sha256:" + "b" * 64))
+        return recorded
 
     monkeypatch.setitem(sys.modules, "canonical_state_transition_custody",
-                        types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit))
+                        types.SimpleNamespace(build_state_receipt=build, sha256_uri=real.sha256_uri,
+                                              submit_state_receipt=submit,
+                                              organization_receipt_gate=real.organization_receipt_gate))
 
     def runner(command, **kwargs):
         return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result) + "\n", stderr="")
@@ -329,11 +335,15 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
     assert closed["richard_dispatch_master_records"]["first_failed_cycle"] == result["first_failed_cycle"]
     assert len(receipt_calls) == 1
 
-    reconstructed_digest[0] = "sha256:" + "b" * 64
+    assert closed["richard_dispatch_master_records"]["refusal"] is None
+
+    forged_organization_receipt[0] = True
     rejected = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
                                    only_consumers=(dispatcher.RICHARD_SELECTOR,))
     assert rejected["state"] == "DISPATCH_INCOMPLETE"
     assert rejected["richard_dispatch_master_records"]["state"] == "BOUNDARY"
+    assert rejected["richard_dispatch_master_records"]["refusal"]["disposition"] == "FAIL_CLOSED"
+    assert rejected["richard_dispatch_master_records"]["refusal"]["consequence_committed"] is False
     assert rejected["exact_selector_failure"] is True
 
     request = json.loads((runtime / load_consumer().REQUEST_REL).read_text())
@@ -395,7 +405,9 @@ def test_custody_exception_preserves_actual_selector_result_in_dispatch_receipt(
     def submit(receipt):
         raise ConnectionError("fixture only: canonical custody unreachable")
     monkeypatch.setitem(sys.modules, "canonical_state_transition_custody",
-        types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit))
+        types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit,
+                              organization_receipt_gate=lambda *args, **kwargs: (_ for _ in ()).throw(
+                                  AssertionError("unreached: custody raised before any receipt"))))
     def runner(command, **kwargs):
         return subprocess.CompletedProcess(command, 1, stdout=json.dumps(machine) + "\n", stderr="")
     receipt = dispatcher.dispatch(

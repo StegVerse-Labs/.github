@@ -10,6 +10,7 @@ from typing import Any, Mapping
 from canonical_state_transition_custody import (
     build_state_receipt,
     require_predecessor_master_records_organization_record,
+    organization_receipt_gate,
     sha256_uri,
     submit_state_receipt,
 )
@@ -219,11 +220,9 @@ def custody_ingestion(
         proof_ceiling="MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_ONLY",
     )
     result = submit_state_receipt(receipt)
-    if not (
-        result.get("state") == "RECORDED"
-        and result.get("reconstruction_status") == "PASS"
-        and result.get("required_evidence_validation_status") == "PASS"
-        and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
-    ):
-        return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED","master_records":result,"authority_effect":"NONE"}
+    # Organization ledger record closes the transition; Master Records
+    # reconstruction fields are evidence only and never gate it.
+    gate = organization_receipt_gate(result, expected_transition_id=receipt["transition_id"])
+    if not gate["verified"]:
+        return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED","refusal":gate["refusal"],"master_records":result,"authority_effect":"NONE"}
     return {"state":"RECORDED","receipt":receipt,"master_records":result,"authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}

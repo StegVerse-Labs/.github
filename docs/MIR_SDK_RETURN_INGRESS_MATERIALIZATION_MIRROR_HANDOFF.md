@@ -96,7 +96,7 @@ This repair adds no runtime, transport, scheduler, dispatcher, custody store, tr
 
 After `RTC-SDK-RETURN-006` canonical custody closes, the existing Publisher-return consumer now continues the exact retained SDK return binding through the already-merged LLM Adapter `prepare_sdk_return_for_intr()` implementation for `RTC-STEGVERSE-EGRESS-007`.
 
-The exact LLM Adapter transition object and exact predecessor SDK binding are required evidence for `RTC-STEGVERSE-EGRESS-007`. Master Records must return `RECORDED`, reconstruction `PASS`, required-evidence validation `PASS`, and exact receipt/reconstruction digest equality before the path may proceed.
+The exact LLM Adapter transition object and exact predecessor SDK binding are required evidence for `RTC-STEGVERSE-EGRESS-007`. The path proceeds only on `RECORDED` and the verified Organization receipt of the exact state receipt (`resident-runtime/organization_batch_custody.py::verified_organization_receipt`, read back from the ledger root the append used; Master Records reconstruction is evidence only and never gates progression). RTC008 then establishes only INGRESS_ADMITTED into the existing write-once queue (request hash and queue receipt); RTC008 downstream execution and RTC009 are not claimed.
 
 Only after RTC007 closure does the consumer invoke the already-existing StegOS `prepare_mir_southbound_materialization()` seam. That produces the existing Universal InTr materialization request for RTC008; it does not claim Interlock/InTr admission, RTC009 far-side transition, caller consequence, or communication completion.
 

@@ -10,6 +10,17 @@ mod = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
 SPEC.loader.exec_module(mod)
 
+REAL_SUBMIT=mod.submit_state_receipt
+
+
+def _real_producer(monkeypatch,tmp_path,captured):
+    """The real producer, appending to a tmp Organization ledger root."""
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT",str(tmp_path/"org"))
+    def submit(receipt):
+        captured["receipt"]=receipt
+        return REAL_SUBMIT(receipt)
+    return submit
+
 def fixture():
     return {
         "record_id":"CASE-001",
@@ -46,21 +57,10 @@ def test_write_once_rejects_second_materialization(tmp_path):
     except FileExistsError:
         pass
 
-def test_custody_requires_exact_master_records_organization_record(monkeypatch):
+def test_custody_requires_exact_master_records_organization_record(monkeypatch, tmp_path):
     package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
     captured={}
-    def fake_submit(receipt):
-        captured["receipt"]=receipt
-        digest=mod.sha256_uri(receipt).split(":",1)[1]
-        return {
-            "state":"RECORDED",
-            "reconstruction_status":"PASS",
-            "required_evidence_validation_status":"PASS",
-            "receipt_sha256":digest,
-            "reconstructed_receipt_sha256":digest,
-            "master_records_grants_transition_authority":False,
-        }
-    monkeypatch.setattr(mod,"submit_state_receipt",fake_submit)
+    monkeypatch.setattr(mod,"submit_state_receipt",_real_producer(monkeypatch,tmp_path,captured))
     result=mod.custody_ingestion(package)
     assert result["state"]=="RECORDED"
     manifest=captured["receipt"]["required_evidence_manifest"]
@@ -73,12 +73,15 @@ def test_custody_requires_exact_master_records_organization_record(monkeypatch):
     assert captured["receipt"]["transition_evidence"]["publication_performed"] is False
     assert captured["receipt"]["transition_evidence"]["adjudication_performed"] is False
 
-def test_custody_fails_closed_on_digest_mismatch(monkeypatch):
+def test_custody_fails_closed_on_unbound_organization_receipt(monkeypatch):
     package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
+    # A Master Records PASS does not close the transition; the Organization
+    # receipt must name this exact state receipt as its source.
     monkeypatch.setattr(mod,"submit_state_receipt",lambda receipt:{
         "state":"RECORDED","reconstruction_status":"PASS",
         "required_evidence_validation_status":"PASS",
-        "receipt_sha256":"a"*64,"reconstructed_receipt_sha256":"b"*64,
+        "receipt_sha256":"a"*64,"reconstructed_receipt_sha256":"a"*64,
+        "organization_receipt":{"schema":"stegverse.organization-transition-receipt/v1","receipt_sha256":"sha256:"+"f"*64,"source_transition_sha256":"sha256:"+"b"*64},
     })
     result=mod.custody_ingestion(package)
     assert result["state"]=="BOUNDARY"
@@ -93,7 +96,7 @@ def test_contract_is_consumed_unchanged_by_reference():
     ]
 
 
-def test_custody_binds_exact_predecessor_master_records_organization_record(monkeypatch):
+def test_custody_binds_exact_predecessor_master_records_organization_record(monkeypatch, tmp_path):
     package=mod.build_ingestion_package(fixture(),{"receipt.bin":b"paid"})
     predecessor="a"*64
     closure={
@@ -123,17 +126,7 @@ def test_custody_binds_exact_predecessor_master_records_organization_record(monk
         ) if receipt_sha256==predecessor and successor_transition_id==mod.TRANSITION_ID else (_ for _ in ()).throw(AssertionError("wrong predecessor")),
     )
     captured={}
-    def fake_submit(receipt):
-        captured["receipt"]=receipt
-        digest=mod.sha256_uri(receipt).split(":",1)[1]
-        return {
-            "state":"RECORDED",
-            "reconstruction_status":"PASS",
-            "required_evidence_validation_status":"PASS",
-            "receipt_sha256":digest,
-            "reconstructed_receipt_sha256":digest,
-        }
-    monkeypatch.setattr(mod,"submit_state_receipt",fake_submit)
+    monkeypatch.setattr(mod,"submit_state_receipt",_real_producer(monkeypatch,tmp_path,captured))
     result=mod.custody_ingestion(package,predecessor_receipt_sha256=predecessor)
     assert result["state"]=="RECORDED"
     receipt=captured["receipt"]

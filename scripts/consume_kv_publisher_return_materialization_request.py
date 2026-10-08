@@ -10,8 +10,6 @@ from __future__ import annotations
 import argparse, hashlib, json, os, sys
 from pathlib import Path
 from typing import Any, Mapping
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
 
 ROOT=Path(__file__).resolve().parents[1]
 REQUEST_DIR=Path("intr-materialization")
@@ -79,6 +77,46 @@ def source_root(env_name:str,repo_name:str,required:str)->Path|None:
         resolved=item.resolve()
         if (resolved/required).is_file(): return resolved
     return None
+
+
+class KVOrganizationReceiptRefused(KVPublisherReturnError):
+    """A successor gate refused: the Organization receipt did not verify.
+
+    Carries the typed DENY or FAIL_CLOSED refusal from the existing
+    Organization ledger verifier; nothing is committed.
+    """
+    def __init__(self, message:str, refusal:Mapping[str,Any]):
+        super().__init__(message+":"+str(refusal.get("disposition"))+":"+str(refusal.get("failed_predicate")))
+        self.refusal=dict(refusal)
+
+
+def _organization_receipt_gate(result:Any, *, transition_id:str, message:str)->str:
+    """Verified Organization receipt digest for this exact state receipt, else a typed refusal.
+
+    The Organization ledger append is the transition's runtime reality.
+    Master Records reconstruction fields are evidence only and never consulted.
+    """
+    from importlib import import_module
+    resident=str(ROOT/"resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0,resident)
+    custody=import_module("organization_batch_custody")
+    try:
+        row=custody.verified_organization_record(
+            None,dict(result) if isinstance(result,Mapping) else result,expected_transition_id=transition_id)
+    except custody.OrganizationReceiptRefused as exc:
+        raise KVOrganizationReceiptRefused(message,exc.refusal()) from exc
+    return row["receipt_sha256"]
+
+
+def require_organization_recorded_predecessor(predecessor:Any, *, predecessor_transition_id:str, successor_transition_id:str)->str:
+    """The predecessor transition is real when its verified Organization receipt exists.
+
+    Master Records reconstruction of the predecessor is optional evidence and
+    never a precondition for the successor.
+    """
+    return _organization_receipt_gate(predecessor,transition_id=predecessor_transition_id,
+                                      message=successor_transition_id+" predecessor Organization record refused")
 
 def validate_request(request:dict[str,Any])->None:
     expected={
@@ -243,18 +281,16 @@ def _record_sdk_return_binding_custody(
       },
       required_evidence_manifest=required_evidence,
       proof_scope="RTC_SDK_RETURN_006_ONLY",
-      proof_ceiling="MASTER_RECORDS_VALIDATED_SDK_RETURN_BINDING_ONLY",
+      proof_ceiling="ORGANIZATION_RECORDED_SDK_RETURN_BINDING_ONLY",
     )
     mr=submit_state_receipt(state_receipt)
-    if not (
-        mr.get("state")=="RECORDED"
-        and mr.get("reconstruction_status")=="PASS"
-        and mr.get("required_evidence_validation_status")=="PASS"
-        and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
-    ):
-        raise KVPublisherReturnError("SDK return binding Master Records organization record not recorded")
+    # Organization ledger record is the transition's reality; Master Records
+    # reconstruction fields are evidence only and never gate it.
+    organization_receipt_sha256=_organization_receipt_gate(
+        mr,transition_id=transition_id,message="SDK return binding Organization record not recorded")
     return {
       "state":mr.get("state"),
+      "organization_receipt_sha256":organization_receipt_sha256,
       "reconstruction_status":mr.get("reconstruction_status"),
       "required_evidence_validation_status":mr.get("required_evidence_validation_status"),
       "receipt_sha256":mr.get("receipt_sha256"),
@@ -263,41 +299,39 @@ def _record_sdk_return_binding_custody(
       "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
     }
 
-def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str]|None=None, opener=urlopen)->dict[str,Any]:
-    """Submit the exact prepared RTC008 request to the existing shared InTr listener.
+def _submit_rtc008_materialization(request:dict[str,Any], *, runtime_root:Path, env:Mapping[str,str]|None=None, admit=None)->dict[str,Any]:
+    """Admit the exact prepared RTC008 request through the existing InTr ingress.
 
-    This consumes an already-issued TVC relay authorization identifier. It does
-    not create a credential, listener, runtime, scheduler, dispatcher, custody
-    store, or transition authority.
+    The existing write-once ingress admission (admit_mir_southbound) persists
+    the exact request into the durable queue and returns its admission receipt.
+    It is invoked in-process on this node's runtime root: no listener, socket,
+    timeout or receiver liveness is a predicate of the transition
+    (DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION). Downstream far-side
+    materialization is a later, separately manifested transition. This consumes
+    an already-issued TVC relay authorization identifier. It does not create a
+    credential, listener, runtime, scheduler, dispatcher, custody store, or
+    transition authority.
     """
     values=dict(os.environ if env is None else env)
-    ingress_url=str(values.get(MIR_RTC008_INGRESS_ENV) or "").strip()
     authorization_id=str(values.get(MIR_RTC008_AUTH_ENV) or "").strip()
-    if not ingress_url:
-        raise KVPublisherReturnError("RTC008 shared Universal InTr ingress URL missing")
     if not authorization_id:
         raise KVPublisherReturnError("RTC008 existing TVC relay authorization missing")
-    parsed=urlparse(ingress_url)
-    if parsed.scheme!="http" or (parsed.hostname or "").lower() not in {"127.0.0.1","localhost","::1"} or parsed.path!="/intr/materialization":
-        raise KVPublisherReturnError("RTC008 ingress URL must be existing loopback /intr/materialization")
-    if parsed.username is not None or parsed.password is not None:
-        raise KVPublisherReturnError("RTC008 ingress URL credentials forbidden")
+    if admit is None:
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0,str(ROOT))
+        from workers.universal_intr_profiled_ingress import admit_mir_southbound as admit
     raw=canonical(request)
-    req=Request(
-        ingress_url,
-        data=raw,
-        method="POST",
-        headers={
-          "Content-Type":"application/json",
-          "X-StegVerse-Transport":"InTr",
-          "X-StegVerse-Transport-Origin":"TVC_RELAY_EGRESS",
-          "X-StegVerse-Authorization-Id":authorization_id,
-          "X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest(),
-        },
-    )
-    with opener(req,timeout=10.0) as response:
-        payload=response.read()
-    admitted=json.loads(payload.decode("utf-8"))
+    headers={
+      "Content-Type":"application/json",
+      "X-StegVerse-Transport":"InTr",
+      "X-StegVerse-Transport-Origin":"TVC_RELAY_EGRESS",
+      "X-StegVerse-Authorization-Id":authorization_id,
+      "X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest(),
+    }
+    try:
+        admitted=admit(runtime_root=Path(runtime_root),body=raw,headers=headers)
+    except ValueError as exc:
+        raise KVPublisherReturnError("RTC008 InTr admission refused:"+str(exc)) from exc
     if not isinstance(admitted,dict):
         raise KVPublisherReturnError("RTC008 ingress response object required")
     expected={
@@ -311,10 +345,9 @@ def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str
       "packet_id":request.get("packet_id"),
       "transport_origin":"TVC_RELAY_EGRESS",
       "transport_authorization_id":authorization_id,
-      "master_records_state":"RECORDED",
-      "master_records_reconstruction_status":"PASS",
-      "master_records_required_evidence_validation_status":"PASS",
       "rtc008_evidence_complete":True,
+      "write_once_persisted":True,
+      "runtime_execution_attempted":False,
       "far_side_transition_observed":False,
       "caller_consequence_observed":False,
     }
@@ -324,11 +357,27 @@ def _submit_rtc008_materialization(request:dict[str,Any], *, env:Mapping[str,str
     digest=admitted.get("intr_admission_receipt_sha256")
     if not isinstance(digest,str) or len(digest)!=64 or any(ch not in "0123456789abcdef" for ch in digest):
         raise KVPublisherReturnError("RTC008 exact ingress admission digest missing")
-    mr_receipt=admitted.get("master_records_receipt_sha256")
-    if not isinstance(mr_receipt,str) or not mr_receipt or mr_receipt!=admitted.get("master_records_reconstructed_receipt_sha256"):
-        raise KVPublisherReturnError("RTC008 Master Records digest mismatch")
+    # Any master_records_* fields in the admission are reconstruction evidence
+    # only; InTr admission is the transition authority and is not gated on them.
     return admitted
 
+
+def rtc008_ingress_projection(admitted:Mapping[str,Any])->dict[str,Any]:
+    """What RTC008 establishes: INGRESS_ADMITTED into the existing write-once queue.
+
+    The queued request is materialized later by a separately manifested
+    transition; RTC008 downstream execution and RTC009 far-side consequence are
+    never claimed here.
+    """
+    return {
+      "rtc008_ingress_state":admitted["state"],
+      "rtc008_request_hash":admitted["request_hash"],
+      "rtc008_queue_ref":admitted["queue_ref"],
+      "rtc008_write_once_persisted":admitted["write_once_persisted"],
+      "rtc008_intr_admission_receipt_sha256":admitted["intr_admission_receipt_sha256"],
+      "rtc008_downstream_execution_observed":False,
+      "rtc009_far_side_transition_observed":False,
+    }
 
 def _prepare_rtc007_continuation(
     runtime:Path,
@@ -365,15 +414,11 @@ def _prepare_rtc007_continuation(
         successor_transition_id="RTC-STEGVERSE-EGRESS-007",
     )
     if prior_ref is None:
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 canonical predecessor Master Records organization record required")
-    closure = predecessor_evidence[0].get("content") if predecessor_evidence else None
-    if not isinstance(closure,dict):
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor Master Records organization record missing")
-    if closure.get("transition_id")!="RTC-SDK-RETURN-006":
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor transition reconstruction mismatch")
-    for field in ("state","reconstruction_status","required_evidence_validation_status","receipt_sha256","reconstructed_receipt_sha256"):
-        if closure.get(field)!=rtc006_master_records.get(field):
-            raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 predecessor closure mismatch:"+field)
+        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 canonical predecessor receipt required")
+    # The predecessor is real once the Organization ledger recorded it; any
+    # Master Records reconstruction in predecessor_evidence is evidence only.
+    require_organization_recorded_predecessor(rtc006_master_records,predecessor_transition_id="RTC-SDK-RETURN-006",
+                                              successor_transition_id="RTC-STEGVERSE-EGRESS-007")
     transition_hash=sha(transition)
     required_evidence=[
       *predecessor_evidence,
@@ -411,16 +456,13 @@ def _prepare_rtc007_continuation(
       },
       required_evidence_manifest=required_evidence,
       proof_scope="RTC_STEGVERSE_EGRESS_007_ONLY",
-      proof_ceiling="MASTER_RECORDS_VALIDATED_FINAL_STEGVERSE_EGRESS_PREPARATION_ONLY",
+      proof_ceiling="ORGANIZATION_RECORDED_FINAL_STEGVERSE_EGRESS_PREPARATION_ONLY",
     )
     mr=submit_state_receipt(state_receipt)
-    if not (
-        mr.get("state")=="RECORDED"
-        and mr.get("reconstruction_status")=="PASS"
-        and mr.get("required_evidence_validation_status")=="PASS"
-        and mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")
-    ):
-        raise KVPublisherReturnError("RTC-STEGVERSE-EGRESS-007 Master Records organization record not recorded")
+    # Organization ledger record is the transition's reality; Master Records
+    # reconstruction fields are evidence only and never gate it.
+    organization_receipt_sha256=_organization_receipt_gate(
+        mr,transition_id="RTC-STEGVERSE-EGRESS-007",message="RTC-STEGVERSE-EGRESS-007 Organization record not recorded")
 
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/mir_southbound_intr_consumer.py")
     if stegos is None:
@@ -439,15 +481,18 @@ def _prepare_rtc007_continuation(
       "predecessor_master_records_required_evidence_validation_status":mr.get("required_evidence_validation_status"),
       "predecessor_master_records_receipt_sha256":mr.get("receipt_sha256"),
       "predecessor_master_records_reconstructed_receipt_sha256":mr.get("reconstructed_receipt_sha256"),
+      "predecessor_organization_receipt_sha256":organization_receipt_sha256,
     })
-    rtc008_request["predecessor_master_records_digest_equal"]=(
-      rtc008_request["predecessor_master_records_receipt_sha256"]
+    # Claim reconstructed-digest equality only when a reconstruction exists.
+    rtc008_request["predecessor_master_records_digest_equal"]=bool(
+      rtc008_request["predecessor_master_records_reconstructed_receipt_sha256"]
+      and rtc008_request["predecessor_master_records_receipt_sha256"]
       == rtc008_request["predecessor_master_records_reconstructed_receipt_sha256"]
     )
     rtc008_request.pop("request_hash",None)
     rtc008_request["request_hash"]=sha(rtc008_request)
     prepared={**prepared,"materialization_request":rtc008_request}
-    rtc008=_submit_rtc008_materialization(rtc008_request)
+    rtc008=_submit_rtc008_materialization(rtc008_request,runtime_root=runtime)
     llm_admission=admit_intr_egress(
         transition,
         disposition="ALLOW",
@@ -460,6 +505,7 @@ def _prepare_rtc007_continuation(
       "rtc007_transition":transition,
       "rtc007_master_records":{
         "state":mr.get("state"),
+        "organization_receipt_sha256":organization_receipt_sha256,
         "reconstruction_status":mr.get("reconstruction_status"),
         "required_evidence_validation_status":mr.get("required_evidence_validation_status"),
         "receipt_sha256":mr.get("receipt_sha256"),
@@ -534,11 +580,7 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
       "rtc008_ingress_receipt":continuation["rtc008_admission"],
       "rtc008_llm_adapter_admission":continuation["rtc008_llm_adapter_admission"],
       "rtc008_llm_adapter_admission_sha256":sha(continuation["rtc008_llm_adapter_admission"]),
-      "rtc008_master_records_state":continuation["rtc008_admission"]["master_records_state"],
-      "rtc008_master_records_reconstruction_status":continuation["rtc008_admission"]["master_records_reconstruction_status"],
-      "rtc008_master_records_required_evidence_validation_status":continuation["rtc008_admission"]["master_records_required_evidence_validation_status"],
-      "rtc008_master_records_receipt_sha256":continuation["rtc008_admission"]["master_records_receipt_sha256"],
-      "rtc008_master_records_reconstructed_receipt_sha256":continuation["rtc008_admission"]["master_records_reconstructed_receipt_sha256"],
+      **rtc008_ingress_projection(continuation["rtc008_admission"]),
       "final_stegverse_side_egress_transition_observed":True,
       "interlock_intr_egress_observed":True,
       "far_side_transition_observed":False,
@@ -643,6 +685,8 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
         "execution_authority":"NONE",
         "authority_effect":"NONE_DIAGNOSTIC_ONLY",
     }
+    if isinstance(getattr(exc,"refusal",None),dict):
+        record["organization_receipt_refusal"]=exc.refusal
     record["diagnostic_sha256"]=sha(record)
     raw=json.dumps(record,sort_keys=True,indent=2).encode("utf-8")+bytes([10])
     receipt_path=out/f"{materialization_id}.{record['diagnostic_sha256'].split(':',1)[1]}.blocked.json"

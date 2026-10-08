@@ -7,6 +7,7 @@ import re
 import sys
 from pathlib import Path
 
+from canonical_state_transition_custody import organization_receipt_gate
 from conversation_evidence_ingestion import (
     build_ingestion_package,
     canonical_json,
@@ -116,17 +117,17 @@ def main() -> int:
         print("fresh WorkerCoordinator claim/fence required", file=sys.stderr)
         return 6
     predecessor = task.get("claim_fence_master_records_transition")
+    # The predecessor is real once its verified Organization receipt exists;
+    # Master Records reconstruction fields are evidence only and never gate it.
+    gate = organization_receipt_gate(predecessor, expected_transition_id="WORKERCOORDINATOR_CLAIM_FENCE_BOUND")
     predecessor_complete = (
         isinstance(predecessor, dict)
         and predecessor.get("transition_id") == "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
-        and predecessor.get("state") == "RECORDED"
-        and predecessor.get("reconstruction_status") == "PASS"
-        and predecessor.get("required_evidence_validation_status") == "PASS"
-        and isinstance(predecessor.get("receipt_sha256"), str)
-        and predecessor.get("receipt_sha256") == predecessor.get("reconstructed_receipt_sha256")
+        and gate["verified"]
     )
     if not predecessor_complete:
-        print("closed WorkerCoordinator claim/fence Master Records predecessor required", file=sys.stderr)
+        print("closed WorkerCoordinator claim/fence Organization predecessor required: "
+              + json.dumps(gate["refusal"], sort_keys=True), file=sys.stderr)
         return 7
 
     record_id = f"SYNTH-CONVERSATION-EVIDENCE-{_safe(claim_id)}-F{fence}"
