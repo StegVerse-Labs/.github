@@ -69,18 +69,18 @@ Pinned manifest:
 ```text
 repository: StegVerse-org/stegverse-demo-suite
 path: config/sv_dn1_runtime_source_manifest.json
-expected_manifest_git_blob_sha1: 12c8c3f6f633e9f2f9d2b49db4ec28dee47e145f
-manifest source_basis_commit: 9483e539925cbc1b79df991d77aeb51ca46875a4
+expected_manifest_git_blob_sha1: 42f464d2c2146c88076201fe8d69445a2c8b4200
+manifest source_basis_commit: 970e9e7d2203b30d74e45b9344884727836973fa
 ```
 
 Non-executable resident-required support files are separately pinned from current canonical main:
 
 ```text
 docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
-git_blob_sha1: 329607cb87455d47c2be6849262196fefa6659f3
+git_blob_sha1: f6c7197ef31ee18e8cdf44ff447e07cf3f9b666c
 
 tasks/SV-DN1-RESIDENT-OBSERVER-001.json
-git_blob_sha1: 0dbe655a86bea3d2a0f77aa2ada57a62882f00db
+git_blob_sha1: fe8b22424c4ed8e11628be77e0f78d285846f706
 ```
 
 The manifest's `files` map remains authoritative for all production-critical executable/config/schema bytes.
@@ -234,3 +234,21 @@ SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md Git blob: 329607cb87455d47c2be68492621
 The materializer still performs no Hugging Face observation, InTr execution,
 SDK admission, governance, publication, or authority transfer. Its only role is
 to place the exact newly-admitted bytes on the sovereign carrier.
+
+## Organization-record remediation source repin — 2026-10-08
+
+`StegVerse-org/stegverse-demo-suite` main moved its Master Records identifiers
+and wording to organization records (`970e9e7`, `dfd0b95`). The runtime source
+manifest and both support files are repinned to the exact blobs observed on
+demo-suite main at `6a2e37da2257b76379184b0a21a6c6321194a1e5`. The support-file
+pins had already drifted from main before this change (`a71b126`, `8765cda`).
+
+```text
+runtime manifest Git blob: 42f464d2c2146c88076201fe8d69445a2c8b4200
+manifest source_basis_commit: 970e9e7d2203b30d74e45b9344884727836973fa
+SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md Git blob: f6c7197ef31ee18e8cdf44ff447e07cf3f9b666c
+SV-DN1-RESIDENT-OBSERVER-001.json Git blob: fe8b22424c4ed8e11628be77e0f78d285846f706
+```
+
+The materializer's role is unchanged: it places the exact admitted bytes on the
+sovereign carrier and grants no authority.

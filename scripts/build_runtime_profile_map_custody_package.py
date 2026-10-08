@@ -69,7 +69,7 @@ def build(root: Path) -> dict[str, Any]:
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "ingress_egress_authority": "INTERLOCK_INTR",
-        "observed_reality_authority": "MASTER_RECORDS",
+        "observed_reality_authority": "ORGANIZATION",
         "authority_effect": "NONE_CUSTODY_INPUT_ONLY",
         "nonclaims": [
             "PACKAGE_DOES_NOT_PERFORM_MASTER_RECORDS_CUSTODY",

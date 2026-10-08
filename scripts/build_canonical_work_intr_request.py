@@ -97,7 +97,7 @@ def main() -> int:
         "authority": {
             "task_registry_mints_execution_authority": False,
             "claim_fence_authority": "WORKERCOORDINATOR",
-            "observed_reality_authority": "MASTER_RECORDS",
+            "observed_reality_authority": "ORGANIZATION",
             "ingress_egress_authority": "INTERLOCK_INTR"
         }
     }

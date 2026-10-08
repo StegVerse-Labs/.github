@@ -32,6 +32,14 @@ RECEIPT_SCHEMA = "stegverse.canonical-state-transition-receipt/v1"
 SUBMISSION_SCHEMA = "stegverse.master-records.state-transition-submission/v1"
 HB_CREATION_PROTOCOL = "STEGVERSE_HEARTBEAT_100HZ_OSCILLATOR_V1"
 HB_REFERENCE_SCHEMA = "stegverse.heartbeat-reference/v1"
+ORGANIZATION_RECORD_API_MODULE = "master_records_organization_record_api"
+ORGANIZATION_RECORD_ORDINAL_FIELD = "master_records_organization_record_ordinal"
+RECORD_REQUESTED_FIELD = "record_requested"
+#: Master Records boundary migration: master-records/orchestration checkouts
+#: from before the rename expose only the legacy API module, and reconstruction
+#: results written before it carry the legacy ordinal field. Readers accept both.
+LEGACY_ORGANIZATION_RECORD_API_MODULE = "master_records_custody_api"
+LEGACY_ORGANIZATION_RECORD_ORDINAL_FIELD = "master_records_custody_ordinal"
 
 
 def canonical_json(value: Any) -> str:
@@ -188,7 +196,7 @@ def _submit_http(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
         "schema": SUBMISSION_SCHEMA,
         "receipt": dict(receipt),
         "authority_requested": False,
-        "custody_requested": True,
+        RECORD_REQUESTED_FIELD: True,
         "reconstruction_requested": True,
     }
     request = Request(
@@ -313,11 +321,26 @@ def _local_binding() -> Path | None:
         return None
     except ValueError:
         pass
-    if not (mr_root / "services" / "master_records_custody_api.py").is_file():
+    if _organization_record_api_module(mr_root) is None:
         return None
     if not (mr_root / "services" / "canonical_state_transition_custody.py").is_file():
         return None
     return mr_root
+
+
+def _organization_record_api_module(mr_root: Path) -> str | None:
+    """Name of the Master Records organization-record API module in this checkout."""
+    for name in (ORGANIZATION_RECORD_API_MODULE, LEGACY_ORGANIZATION_RECORD_API_MODULE):
+        if (mr_root / "services" / f"{name}.py").is_file():
+            return name
+    return None
+
+
+def organization_record_ordinal(result: Mapping[str, Any]) -> Any:
+    """Read a reconstruction's organization record ordinal under the current or legacy name."""
+    if ORGANIZATION_RECORD_ORDINAL_FIELD in result:
+        return result[ORGANIZATION_RECORD_ORDINAL_FIELD]
+    return result.get(LEGACY_ORGANIZATION_RECORD_ORDINAL_FIELD)
 
 
 def _submit_local(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
@@ -340,7 +363,7 @@ def _submit_local(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
     env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
     authority_call = (
         "import json,sys\n"
-        "from services import master_records_custody_api as base\n"
+        f"from services import {_organization_record_api_module(mr_root)} as base\n"
         "from services.canonical_state_transition_custody import record_receipt\n"
         "receipt=json.loads(sys.stdin.read())\n"
         "result=record_receipt(base, receipt)\n"
@@ -417,7 +440,7 @@ def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
     env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
     authority_call = (
         "import hashlib,json,sys\n"
-        "from services import master_records_custody_api as base\n"
+        f"from services import {_organization_record_api_module(mr_root)} as base\n"
         "from services import canonical_state_transition_custody as canonical\n"
         "receipt_sha256=sys.argv[1]\n"
         "canonical._initialize(base)\n"
@@ -438,7 +461,7 @@ def _reconstruct_local(receipt_sha256: str) -> dict[str, Any] | None:
         "hb_recording=json.loads(metadata['hb_recording_reference_json']) if metadata is not None else None\n"
         "if hb_recording is not None: canonical.validate_hb_reference(hb_recording)\n"
         "state='PASS' if rebuilt==receipt_sha256 and evidence_pass else 'FAIL_CLOSED'\n"
-        "result={'state':state,'receipt_sha256':receipt_sha256,'reconstructed_receipt_sha256':rebuilt,'receipt':receipt,'required_evidence_validation_status':'PASS' if evidence_pass else 'FAIL_CLOSED','master_record_ref':row['master_record_ref'],'custody_receipt_id':row['custody_receipt_id'],'hb_recording_reference':hb_recording,'hb_recording_protocol':metadata['hb_recording_protocol'] if metadata is not None else None,'master_records_custody_ordinal':int(metadata['custody_ordinal']) if metadata is not None else None,'recorded_receipt_sha256':metadata['recorded_receipt_sha256'] if metadata is not None else None,'hb_evidence_class':'HB_BOUND_SUCCESSOR' if metadata is not None else 'SYSTEM_RELATIVE_CONTINUITY_ONLY','master_records_grants_transition_authority':False,'authority_effect':'NONE_RECONSTRUCTION_ONLY'}\n"
+        "result={'state':state,'receipt_sha256':receipt_sha256,'reconstructed_receipt_sha256':rebuilt,'receipt':receipt,'required_evidence_validation_status':'PASS' if evidence_pass else 'FAIL_CLOSED','master_record_ref':row['master_record_ref'],'custody_receipt_id':row['custody_receipt_id'],'hb_recording_reference':hb_recording,'hb_recording_protocol':metadata['hb_recording_protocol'] if metadata is not None else None,'master_records_organization_record_ordinal':int(metadata['custody_ordinal']) if metadata is not None else None,'recorded_receipt_sha256':metadata['recorded_receipt_sha256'] if metadata is not None else None,'hb_evidence_class':'HB_BOUND_SUCCESSOR' if metadata is not None else 'SYSTEM_RELATIVE_CONTINUITY_ONLY','master_records_grants_transition_authority':False,'authority_effect':'NONE_RECONSTRUCTION_ONLY'}\n"
         "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
     )
     completed = subprocess.run(
@@ -505,7 +528,7 @@ def _checkpoint_set_local(floor: int, ceiling: int) -> dict[str, Any] | None:
     env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
     authority_call = (
         "import json,sys\n"
-        "from services import master_records_custody_api as base\n"
+        f"from services import {_organization_record_api_module(mr_root)} as base\n"
         "from services.canonical_state_transition_custody import build_receipt_set_commitment\n"
         "result=build_receipt_set_commitment(base, int(sys.argv[1]), int(sys.argv[2]))\n"
         "sys.stdout.write(json.dumps(result, sort_keys=True)+'\\n')\n"
@@ -597,7 +620,7 @@ def _query_local(subject_or_correlation_id: str, transition_id: str | None) -> d
     env["PYTHONPATH"] = str(mr_root) + (os.pathsep + existing_pythonpath if existing_pythonpath else "")
     authority_call = (
         "import json,sys\n"
-        "from services import master_records_custody_api as base\n"
+        f"from services import {_organization_record_api_module(mr_root)} as base\n"
         "from services import canonical_state_transition_custody as canonical\n"
         "subject=sys.argv[1]; transition=sys.argv[2] or None\n"
         "canonical._initialize(base)\n"

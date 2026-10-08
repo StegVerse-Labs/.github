@@ -29,6 +29,10 @@ RESULT_SCHEMA = "stegverse.sdk.manifest-state-transition-result/v1"
 PROFILE = "SDK:ManifestStateTransition"
 REQUEST_DIR = Path("runtime-state/sdk-manifest-state-transition")
 LATEST_SUFFIX = ".latest.json"
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+#: Master Records boundary migration: SDK governance results written before the
+#: rename carry this legacy field. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
 IMMUTABLE_DIR = "requests"
 
 GOVERNANCE_SOURCE_ROOTS = {
@@ -61,6 +65,13 @@ def canonical(value: Any) -> bytes:
 def sha256(value: Any) -> str:
     raw = value if isinstance(value, bytes) else canonical(value)
     return hashlib.sha256(raw).hexdigest()
+
+def organization_record_status(governance: Mapping[str, Any]) -> Any:
+    """Read the SDK governance organization record status under the current or legacy name."""
+    if ORGANIZATION_RECORD_STATUS_FIELD in governance:
+        return governance[ORGANIZATION_RECORD_STATUS_FIELD]
+    return governance.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
+
 
 def require(ok: bool, reason: str) -> None:
     if not ok:
@@ -890,7 +901,7 @@ def _execute_governance(
             "manifest_receipt_id": governance.get("manifest_receipt_id"),
             "transaction_id": governance.get("transaction_id"),
             "result_binding_hash": governance.get("result_binding_hash"),
-            "sdk_master_records_custody_status": governance.get("master_records_custody_status"),
+            "sdk_master_records_organization_record_status": organization_record_status(governance),
             "sdk_chain_verified": governance.get("chain_verified"),
             "external_side_effect": governance.get("external_side_effect"),
             "publisher_executed": False,

@@ -22,6 +22,10 @@ TASK_ID = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 COSV = "50000000100000"
 ROUTE = "stegverse.route.shwp-sovereign-inference.v1"
 RESULT_SCHEMA = "stegverse.shwp-manifest-invocation/v1"
+ORGANIZATION_RECORD_OBSERVED_FIELD = "organization_master_records_organization_record_observed"
+#: Master Records boundary migration: results written before the rename carry
+#: this legacy flag. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_OBSERVED_FIELD = "organization_master_records_closure_observed"
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -29,6 +33,13 @@ def _read(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError("SHWP_MANIFEST_SOURCE_OBJECT_REQUIRED")
     return value
+
+
+def organization_record_observed(result: Mapping[str, Any]) -> Any:
+    """Read the organization-record-observed flag under the current or legacy name."""
+    if ORGANIZATION_RECORD_OBSERVED_FIELD in result:
+        return result[ORGANIZATION_RECORD_OBSERVED_FIELD]
+    return result.get(LEGACY_ORGANIZATION_RECORD_OBSERVED_FIELD)
 
 
 def _nonallow(reason: str, *, request_id: str | None = None,
@@ -159,7 +170,7 @@ def invoke(source_root: Path, runtime_root: Path,
         if response.get("original_request_sha256") != digest(manifest["payload"]):
             return _nonallow("SHWP_SDK_RETURN_ORIGINAL_REQUEST_MISMATCH",
                              request_id=request_id, manifest_sha256=manifest_hash)
-        if (response.get("organization_master_records_closure_observed") is not False
+        if (organization_record_observed(response) is not False
                 or response.get("terminal") is not False):
             return _nonallow("SHWP_SDK_RETURN_CUSTODY_ESCALATION",
                              request_id=request_id, manifest_sha256=manifest_hash)

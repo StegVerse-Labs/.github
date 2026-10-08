@@ -45,6 +45,17 @@ from pathlib import Path
 from stegverse.mcp_governance import run_mcp_governed_test
 from stegverse.sovereign_validation_runtime import replay_sovereign, reconstruct_sovereign
 
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+# Master Records boundary migration: SDK checkouts from before the rename report this legacy field.
+LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
+
+
+def organization_record_status(result):
+    if ORGANIZATION_RECORD_STATUS_FIELD in result:
+        return result[ORGANIZATION_RECORD_STATUS_FIELD]
+    return result.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
+
+
 root = Path.home() / ".stegverse" / "sdk-mcp-canonical-validation-009"
 root.mkdir(parents=True, exist_ok=True)
 db = str(root / "master-records.db")
@@ -68,7 +79,7 @@ write = run_mcp_governed_test(
 write_g = write["governed_result"]
 
 assert inspect_g["governance_state"] == "ALLOW"
-assert inspect_g["master_records_custody_status"] == "RECORDED"
+assert organization_record_status(inspect_g) == "RECORDED"
 assert inspect_g["chain_verified"] is True
 assert inspect_g["transaction_identity_continuous"] is True
 assert inspect_g["route_receipt_ids"]
@@ -82,7 +93,7 @@ assert reconstruct["consequence_reexecuted"] is False
 assert reconstruct["operation_transition_custody_status"] == "RECORDED"
 assert reconstruct["operation_receipt_ids"]
 assert write_g["governance_state"] == "ALLOW"
-assert write_g["master_records_custody_status"] == "RECORDED"
+assert organization_record_status(write_g) == "RECORDED"
 assert write_g["chain_verified"] is True
 assert write_g["transaction_identity_continuous"] is True
 assert write_g["execution_result"]["status"] == "MCP_TOOL_RESULT_OBSERVED"
@@ -100,7 +111,7 @@ print(json.dumps({
         "contract_hash": inspect["portable_packet"]["mcp_contract_hash"],
         "call_hash": inspect["portable_packet"]["proposed_call_hash"],
         "governance_state": inspect_g["governance_state"],
-        "master_records_custody_status": inspect_g["master_records_custody_status"],
+        "master_records_organization_record_status": organization_record_status(inspect_g),
         "chain_verified": inspect_g["chain_verified"],
         "transaction_identity_continuous": inspect_g["transaction_identity_continuous"],
     },

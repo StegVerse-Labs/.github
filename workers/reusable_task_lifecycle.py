@@ -8,7 +8,11 @@ from typing import Any
 RUNNER_RESULT_SCHEMA = "stegverse.reusable-task-runner-result/v1"
 RUNNER_EXPIRY_SCHEMA = "stegverse.reusable-task-runner-expiry/v1"
 RESIDUAL_SCHEMA = "stegverse.reusable-task-residual-recording/v1"
-CUSTODY_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-custody-request/v1"
+ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-organization-record-request/v1"
+#: Master Records boundary migration: requests written before the rename carry
+#: this legacy schema id; master-records/orchestration accepts both.
+LEGACY_ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-custody-request/v1"
+CUSTODY_REQUEST_SCHEMA = ORGANIZATION_RECORD_REQUEST_SCHEMA  # backwards-compatible alias for existing callers
 CUSTODY_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-custody/v1"
 ENTROPY_SCHEMA = "stegverse.reusable-task-entropy-recovery/v1"
 
@@ -104,7 +108,7 @@ def build_custody_request(*, manifest: dict[str, Any], trigger_receipt: dict[str
         "reusable_task_id": manifest["reusable_task_id"],
         "manifest_hash": manifest["manifest_hash"],
         "destination": "master-records/orchestration",
-        "custody_requested": True,
+        "record_requested": True,
         "reconstruction_requested": True,
         "destination_custody_accepted": False,
         "destination_acknowledgement_minted": False,

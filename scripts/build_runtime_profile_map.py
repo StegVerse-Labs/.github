@@ -370,7 +370,7 @@ def build(root: Path, *, now: datetime | None = None, freshness_seconds: int = D
             "worker_claim_authority": "WORKERCOORDINATOR",
             "credential_authority": "TV/TVC",
             "ingress_egress_authority": "INTERLOCK_INTR",
-            "observed_reality_authority": "MASTER_RECORDS",
+            "observed_reality_authority": "ORGANIZATION",
         },
         "profiles": profiles,
         "nonclaims": [

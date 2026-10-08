@@ -193,7 +193,7 @@ def test_kv_runtime_profile_map_declares_non_authorizing_routing_profile():
     assert profile["authority"]["match_grants_authority"] is False
     assert profile["authority"]["claim_fence_authority"] == "WORKERCOORDINATOR"
     assert profile["authority"]["ingress_egress_authority"] == "INTERLOCK_INTR"
-    assert profile["authority"]["observed_reality_authority"] == "MASTER_RECORDS"
+    assert profile["authority"]["observed_reality_authority"] == "ORGANIZATION"
     assert profile["declared"]["environment_classes"] == [parent["runtime_requirements"]["environment"]]
     assert profile["declared"]["directions"] == [parent["runtime_requirements"]["direction"]]
     assert set(parent["runtime_requirements"]["capabilities"]).issubset(set(profile["declared"]["capabilities"]))

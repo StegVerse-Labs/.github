@@ -216,7 +216,7 @@ def resume_public_lease(
         "github_token_runtime_authority": "NONE",
         "receiver_ready_claimed": False,
         "round_trip_claimed": False,
-        "master_records_custody_claimed": False,
+        "master_records_organization_record_claimed": False,
         "sv002_principal_execution_claimed": False,
         "public_profile_grants_execution_authority": False,
         "public_profile_grants_transition_authority": False,

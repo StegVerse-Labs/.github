@@ -35,7 +35,7 @@
     "worker_claim_authority": {"const": "WORKERCOORDINATOR"},
     "credential_authority": {"const": "TV/TVC"},
     "ingress_egress_authority": {"const": "INTERLOCK_INTR"},
-    "observed_reality_authority": {"const": "MASTER_RECORDS"},
+    "observed_reality_authority": {"enum": ["ORGANIZATION", "MASTER_RECORDS"], "$comment": "MASTER_RECORDS is the legacy value, accepted for maps written before the Master Records boundary migration"},
     "authority_effect": {"const": "NONE_CUSTODY_INPUT_ONLY"},
     "nonclaims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
   },

@@ -112,17 +112,29 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
         "SV-DN1-RESIDENT-OBSERVER-001": (resident_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE","raw_response_sha256_present":True,"semantic_exchange_valid":True,"github_token_used":False,"repository_writeback_performed":False,"sdk_admitted":False}),
         "SV-DN1-INTR-RUNTIME-001": (intr_root/"receipts"/"latest.json", {"state":"COMPLETE","route_id":"SV-DN-1-HF-PUBLIC","destination_validation":"PASS","lineage_verified":True,"authority_effect":"NONE"}),
         "SV-DN1-PRODUCTION-SOURCE-PREP-001": (source_prep_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.production-source-prep-receipt/v2","state":"COMPLETE","transition_id":"SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE","source_identity_scheme":"sha256-content-manifest","migration_anchors_verified":True,"network_source_fetch_performed":False,"github_platform_required":False,"credential_used":False,"github_token_used":False,"repository_writeback_performed":False,"sdk_admitted":False}),
-        "SV-DN1-SDK-FIRST-ROUND-001": (sdk_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED","sdk_admission":"SDK_ADMITTED","master_records_custody_status":"RECORDED","replay_consequence_reexecuted":False,"reconstruction_consequence_reexecuted":False,"dashboard_generated":True,"dashboard_publicly_hosted":False,"github_token_used":False,"repository_writeback_performed":False}),
+        "SV-DN1-SDK-FIRST-ROUND-001": (sdk_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED","sdk_admission":"SDK_ADMITTED","master_records_organization_record_status":"RECORDED","replay_consequence_reexecuted":False,"reconstruction_consequence_reexecuted":False,"dashboard_generated":True,"dashboard_publicly_hosted":False,"github_token_used":False,"repository_writeback_performed":False}),
         "SV-DN1-PUBLIC-PROMOTION-001": (promotion_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.public-promotion-worker-receipt/v1","state":"COMPLETE","transition_id":"SV_DN1_PUBLIC_PROMOTION_READY","observation_class":"LIVE","exact_bytes_preserved":True,"semantic_rewrite_performed":False,"network_fetch_performed":False,"credential_used":False,"repository_writeback_performed":False,"deployment_performed":False,"release_performed":False,"certification_claimed":False,"authority_effect":"NONE_STATIC_PROJECTION_ONLY"}),
         "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001": (persistence_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.repository-persistence-package-worker-receipt/v1","state":"COMPLETE","transition_id":"SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY","target_repository":"StegVerse-org/stegverse-demo-suite","target_ref":"main","exact_bytes_preserved":True,"network_fetch_performed":False,"credential_used":False,"repository_writeback_performed":False,"deployment_performed":False,"authority_effect":"NONE_PERSISTENCE_PACKAGE_ONLY"}),
     }
+
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+#: Master Records boundary migration: SV-DN1 SDK receipts written before the
+#: rename carry this legacy field. The chain reader accepts it as a fallback.
+LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
+
+
+def _receipt_field(receipt: Mapping[str, Any], field: str) -> Any:
+    if field == ORGANIZATION_RECORD_STATUS_FIELD and field not in receipt:
+        return receipt.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
+    return receipt.get(field)
+
 
 def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[str, Any]:
     path, expected = _receipt_specs(values)[task_id]
     if not path.is_file():
         raise RuntimeError(f"{task_id}: durable receipt missing: {path}")
     receipt = _load(path)
-    failures = [f"{field}={receipt.get(field)!r}, expected {wanted!r}" for field,wanted in expected.items() if receipt.get(field)!=wanted]
+    failures = [f"{field}={_receipt_field(receipt, field)!r}, expected {wanted!r}" for field,wanted in expected.items() if _receipt_field(receipt, field)!=wanted]
     if task_id == "SV-DN1-INTR-RUNTIME-001":
         carrier_path = path.parent / "carrier-binding.latest.json"
         if not carrier_path.is_file():

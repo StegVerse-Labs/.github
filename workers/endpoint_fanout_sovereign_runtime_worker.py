@@ -16,6 +16,10 @@ TASK_ID = "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
 PARENT_TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 PARENT_RECEIPT = ROOT / "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json"
 RECEIPT = ROOT / "receipts/endpoint-fanout/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
+RECORD_STATUS_FIELD = "record_status"
+#: Master Records boundary migration: continuity-vault-kit sink results written
+#: before the rename carry this legacy field. Readers accept it as a fallback.
+LEGACY_RECORD_STATUS_FIELD = "custody_status"
 
 
 def canonical_json(value: Any) -> str:
@@ -45,6 +49,14 @@ def load_json(path: Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError):
         return None
     return value if isinstance(value, dict) else None
+
+
+def master_records_record_status(result: Mapping[str, Any] | None) -> Any:
+    """Read a Master Records sink result's record status under the current or legacy name."""
+    result = result or {}
+    if RECORD_STATUS_FIELD in result:
+        return result[RECORD_STATUS_FIELD]
+    return result.get(LEGACY_RECORD_STATUS_FIELD)
 
 
 def find_kv_root() -> Path | None:
@@ -334,7 +346,7 @@ def main() -> int:
         "master_records_travel_report_sha256": sha256_hex(travel_report),
         "master_records_travel_hop_count": len(travel_report.get("hops") or []),
         "master_records_local_contract_custody_state": (
-            (travel_report.get("master_records_result") or {}).get("custody_status")
+            master_records_record_status(travel_report.get("master_records_result"))
         ),
         "same_result_reconstructed": True,
     }

@@ -9,6 +9,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MAP = ROOT / "control/runtime-profile-map.json"
+OBSERVED_REALITY_AUTHORITY = "ORGANIZATION"
+#: Master Records boundary migration: maps generated before the rename name
+#: Master Records here. Readers accept it; the builder emits ORGANIZATION.
+LEGACY_OBSERVED_REALITY_AUTHORITY = "MASTER_RECORDS"
+OBSERVED_REALITY_AUTHORITIES = (OBSERVED_REALITY_AUTHORITY, LEGACY_OBSERVED_REALITY_AUTHORITY)
 FORBIDDEN_KEY_FRAGMENTS = ("token", "secret", "password", "private_key", "api_key", "credential_value")
 
 
@@ -50,7 +55,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
     require(authority.get("worker_claim_authority") == "WORKERCOORDINATOR", "claim/fence authority drift")
     require(authority.get("credential_authority") == "TV/TVC", "credential authority drift")
     require(authority.get("ingress_egress_authority") == "INTERLOCK_INTR", "ingress/egress authority drift")
-    require(authority.get("observed_reality_authority") == "MASTER_RECORDS", "observed reality authority drift")
+    require(authority.get("observed_reality_authority") in OBSERVED_REALITY_AUTHORITIES, "observed reality authority drift")
 
     profiles = data.get("profiles")
     require(isinstance(profiles, list), "profiles array required")
