@@ -1,3 +1,7 @@
+## SDK/SV-LLM host-free roundtrip source assessment — 2026-10-07
+
+Under `SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001`, source inspection identified legacy SV002 host/subprocess orchestration as non-normative for SV-LLM. The existing SV-LLM manifest-bound crossing/Organization ledger and Publisher InTr transfer are the reuse path; the StegVerse-org federation directory requires SV-LLM reconciliation. No machine/listener/hosted-runner prerequisite or new framework may be introduced. This is a source assessment, not an executed roundtrip, and implementation/validation remain outstanding. See `docs/SDK_MANIFEST_ECOSYSTEM_TRANSITION_DISPOSITION_MIRROR_HANDOFF.md`.
+
 ## SDK manifest invariant prompt-ceiling decomposition — 2026-10-07
 
 Canonical parent `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005` reached 20/20 and is retired without a completion claim. Satisfied source predicates remain closed; Master Records boundary conformance is reconciled to organization records/reconstruction only and non-gating. Remaining genuinely separable TVC, StegCore, collaboration-ingress, regression-gate, and post-source transition-disposition work is registered as five canonical successors with dedicated handoffs. ACTIONS BY MANIFEST, terminal `ALLOW | DENY | FAIL_CLOSED`, Organization-ledger runtime reality, non-gating Master Records reconstruction, and zero external-machine waiting are inherited unchanged.
