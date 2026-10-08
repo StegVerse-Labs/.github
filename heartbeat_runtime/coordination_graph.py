@@ -13,6 +13,11 @@ ACTIVE_CLAIM_STATES = {"ACTIVE"}
 LEGACY_REQUIRED_SCHEMA_ALIASES = {
     "stegverse.runtime-profile-map-organization-record-consumption/v1": "stegverse.runtime-profile-map-custody-consumption/v1",
 }
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: evidence produced before the rename
+# carries the legacy value; it still satisfies the renamed required_field_values entry.
+LEGACY_REQUIRED_FIELD_VALUE_ALIASES = {
+    "ORGANIZATION_RECORD_ACCEPTED": "CUSTODY_ACCEPTED",
+}
 
 
 def _parse_time(value: str | None) -> datetime | None:
@@ -93,7 +98,7 @@ def _evidence_rejection_reasons(predicate: dict[str, Any], evidence: dict[str, A
     elif isinstance(required_values, dict):
         for field, expected in required_values.items():
             present, actual = _field_value(fields, str(field))
-            if not present or actual != expected:
+            if not present or (actual != expected and not (isinstance(expected, str) and actual == LEGACY_REQUIRED_FIELD_VALUE_ALIASES.get(expected))):
                 reasons.append(f"REQUIRED_FIELD_VALUE_MISMATCH:{field}")
     max_age = predicate.get("max_age_seconds")
     if max_age is not None:

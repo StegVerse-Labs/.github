@@ -68,7 +68,7 @@ Required terminal facts include:
 - `state=COMPLETED`
 - exact task/request identity
 - exact package hash present
-- nested `result.state=CUSTODY_ACCEPTED`
+- nested `result.state=ORGANIZATION_RECORD_ACCEPTED` (legacy `CUSTODY_ACCEPTED` still accepted per MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002)
 - no network source fetch
 - no claim/fence mint
 - no task coordination-state change

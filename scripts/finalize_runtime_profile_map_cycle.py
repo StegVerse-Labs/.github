@@ -18,6 +18,11 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+ORGANIZATION_RECORD_ACCEPTED_STATE = "ORGANIZATION_RECORD_ACCEPTED"
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: Master Records consumers built before
+# the rename still return the legacy accepted state; it is read, never written.
+LEGACY_ORGANIZATION_RECORD_ACCEPTED_STATE = "CUSTODY_ACCEPTED"
+ACCEPTED_ORGANIZATION_RECORD_STATES = (ORGANIZATION_RECORD_ACCEPTED_STATE, LEGACY_ORGANIZATION_RECORD_ACCEPTED_STATE)
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -79,9 +84,9 @@ def maybe_custody(root: Path, custody_package: Path) -> dict[str, Any]:
         "--custody-root", str(mr_root / "custody/runtime-profile-map"),
     ], mr_root)
     parsed = parse_last_json(completed.stdout)
-    accepted = completed.returncode == 0 and isinstance(parsed, dict) and parsed.get("state") == "CUSTODY_ACCEPTED"
+    accepted = completed.returncode == 0 and isinstance(parsed, dict) and parsed.get("state") in ACCEPTED_ORGANIZATION_RECORD_STATES
     return {
-        "state": "CUSTODY_ACCEPTED" if accepted else "CUSTODY_ATTEMPT_RECORDED",
+        "state": ORGANIZATION_RECORD_ACCEPTED_STATE if accepted else "CUSTODY_ATTEMPT_RECORDED",
         "attempted": True,
         "custody_performed": accepted,
         "returncode": completed.returncode,

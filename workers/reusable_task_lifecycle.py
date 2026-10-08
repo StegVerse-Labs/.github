@@ -13,7 +13,11 @@ ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-org
 #: this legacy schema id; master-records/orchestration accepts both.
 LEGACY_ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-custody-request/v1"
 CUSTODY_REQUEST_SCHEMA = ORGANIZATION_RECORD_REQUEST_SCHEMA  # backwards-compatible alias for existing callers
-CUSTODY_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-custody/v1"
+ORGANIZATION_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-organization-record/v1"
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: legacy record schema id still read from older records.
+LEGACY_ORGANIZATION_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-custody/v1"
+ACCEPTED_ORGANIZATION_RECORD_SCHEMAS = (ORGANIZATION_RECORD_SCHEMA, LEGACY_ORGANIZATION_RECORD_SCHEMA)
+CUSTODY_RECORD_SCHEMA = ORGANIZATION_RECORD_SCHEMA  # backwards-compatible alias for existing callers
 DESTINATION_RECORD_ACCEPTED_FIELD = "destination_record_accepted"
 # MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: legacy acceptance field still read from older records.
 LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD = "destination_custody_accepted"
@@ -131,7 +135,7 @@ def destination_record_accepted(record: dict[str, Any]) -> Any:
 
 
 def verify_custody_record(record: dict[str, Any], request: dict[str, Any]) -> None:
-    if record.get("schema") != CUSTODY_RECORD_SCHEMA:
+    if record.get("schema") not in ACCEPTED_ORGANIZATION_RECORD_SCHEMAS:
         raise ValueError("Master Records organization record schema mismatch")
     if record.get("invocation_id") != request.get("invocation_id") or record.get("reusable_task_id") != request.get("reusable_task_id"):
         raise ValueError("Master Records organization record identity mismatch")
