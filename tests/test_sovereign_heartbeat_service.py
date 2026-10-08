@@ -69,7 +69,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             receipt = mod.materialize_service(
                 root,
                 system="linux",
-                env={"XDG_CONFIG_HOME": str(base / "config")},
+                env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user")},
             )
             carrier = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
             worker = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
@@ -110,7 +110,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 root,
                 system="linux",
                 env={
-                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user"),
                     "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source),
                 },
             )
@@ -138,7 +138,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 root,
                 system="linux",
                 env={
-                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user"),
                     "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source),
                     "STEGVERSE_HEALER_ROOT": str(healer),
                     "STEGVERSE_REPO_ROOTS_JSON": repo_map,
@@ -173,7 +173,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 root,
                 system="linux",
                 env={
-                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user"),
                     "STEGVERSE_STEGCORE_SOURCE_ROOT": str(stegcore),
                     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": str(master),
                 },
@@ -198,7 +198,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 root,
                 system="linux",
                 env={
-                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user"),
                     "STEGVERSE_STEGINDEX_SOURCE_ROOT": str(stegindex),
                 },
             )
@@ -221,7 +221,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                     root,
                     system="linux",
                     env={
-                        "XDG_CONFIG_HOME": str(base / "config"),
+                        "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user"),
                         "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(root),
                     },
                 )
@@ -250,7 +250,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 target,
                 runner=runner,
                 system="linux",
-                env={"XDG_CONFIG_HOME": str(base / "config")},
+                env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(base / "config" / "systemd" / "user")},
             )
             self.assertTrue(receipt["active"])
             self.assertTrue(receipt["carrier_active"])
@@ -277,7 +277,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 target,
                 interval_ms=5.0,
                 system="linux",
-                env={"XDG_CONFIG_HOME": str(Path(tmp) / "config")},
+                env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(Path(tmp) / "config" / "systemd" / "user")},
             )
             self.assertEqual(receipt["nominal_carrier_references_per_second"], 100.0)
             self.assertEqual(receipt["nominal_worker_ticks_per_second"], 200.0)

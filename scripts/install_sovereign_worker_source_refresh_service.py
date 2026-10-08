@@ -184,21 +184,35 @@ def materialize_master_records_source_package_and_retain(source_package_root: Pa
     return receipt
 
 
+class LocationRequired(RuntimeError):
+    """A location the materializer must supply was not supplied; nothing is derived."""
+
+    failed_predicate = "LOCATION_REQUIRED_FROM_MATERIALIZER"
+
+    def __init__(self, variable: str):
+        super().__init__("location_required_from_materializer: " + variable)
+        self.variable = variable
+
+
+SOURCE_PACKAGE_ROOT_ENV = "STEGVERSE_SOURCE_PACKAGE_ROOT"
+RUNTIME_ROOT_ENV = "STEGVERSE_HEARTBEAT_ROOT"
+REGISTRATION_ROOT_ENV = "STEGVERSE_SERVICE_REGISTRATION_ROOT"
+
+
+def _supplied(values: Mapping[str, str], variable: str) -> Path:
+    """A location named by `variable`, never derived from the host's home or XDG."""
+    raw = str(values.get(variable) or "").strip()
+    if not raw:
+        raise LocationRequired(variable)
+    return Path(raw).expanduser().resolve()
+
+
 def default_source_package_root(env: dict[str, str] | None = None) -> Path:
-    values = dict(os.environ if env is None else env)
-    override = values.get("STEGVERSE_SOURCE_PACKAGE_ROOT")
-    if override:
-        return Path(override).expanduser().resolve()
-    return (Path.home() / ".stegverse" / "packages" / "source" / "v1").resolve()
+    return _supplied(dict(os.environ if env is None else env), SOURCE_PACKAGE_ROOT_ENV)
 
 
 def default_runtime_root(env: dict[str, str] | None = None) -> Path:
-    values = dict(os.environ if env is None else env)
-    override = values.get("STEGVERSE_HEARTBEAT_ROOT")
-    if override:
-        return Path(override).expanduser().resolve()
-    base = Path(values.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state")))
-    return (base / "stegverse" / "heartbeat-runtime").resolve()
+    return _supplied(dict(os.environ if env is None else env), RUNTIME_ROOT_ENV)
 
 
 def _quote(value: str | Path) -> str:
@@ -209,9 +223,9 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     python = python.expanduser().resolve()
-    packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     if source == runtime:
         raise ValueError("source and runtime roots must be distinct")
+    packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     # The watcher is triggered by canonical-source changes. Invoke the refresh
     # implementation from that already-local canonical source rather than asking
     # a potentially stale resident runtime to refresh itself with its stale copy.
@@ -323,7 +337,10 @@ def install(
         raise RuntimeError("rootless source refresh watcher currently requires Linux systemd-user")
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    # Both resolved before anything is refreshed or written, so a refusal
+    # commits nothing.
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
+    config_root = (unit_root or _supplied(os.environ, REGISTRATION_ROOT_ENV)).expanduser().resolve()
     refresh_receipt = refresh(source, runtime)
     master_records_source_refresh = materialize_master_records_source_package_and_retain(packages, runtime)
 
@@ -368,8 +385,6 @@ def install(
     packages.mkdir(parents=True, exist_ok=True)
     for slug in SOURCE_PACKAGE_COMPONENT_SLUGS:
         (packages / slug).mkdir(parents=True, exist_ok=True)
-    config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
-    config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
     service_text, path_text = render_units(
         source_root=source,
@@ -442,12 +457,28 @@ def install(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Install the rootless local-source refresh watcher for WorkerCoordinator.")
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
-    parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
-    parser.add_argument("--unit-root", type=Path)
-    parser.add_argument("--source-package-root", type=Path, default=default_source_package_root())
+    parser.add_argument("--runtime-root", type=Path, help="else " + RUNTIME_ROOT_ENV)
+    parser.add_argument("--unit-root", type=Path, help="else " + REGISTRATION_ROOT_ENV)
+    parser.add_argument("--source-package-root", type=Path, help="else " + SOURCE_PACKAGE_ROOT_ENV)
     parser.add_argument("--no-activate", action="store_true")
     parser.add_argument("--materialize-master-records-only", action="store_true")
     args = parser.parse_args()
+    try:
+        args.runtime_root = args.runtime_root or default_runtime_root()
+        args.source_package_root = args.source_package_root or default_source_package_root()
+        if not args.materialize_master_records_only:
+            args.unit_root = args.unit_root or _supplied(os.environ, REGISTRATION_ROOT_ENV)
+    except LocationRequired as exc:
+        print(json.dumps({
+            "schema": "stegverse.installer-location-refusal/v1",
+            "disposition": "FAIL_CLOSED",
+            "failed_predicate": exc.failed_predicate,
+            "required_evidence_or_repair": "supply " + exc.variable,
+            "retry_entrypoint": "scripts/install_sovereign_worker_source_refresh_service.py::main",
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }, sort_keys=True))
+        return 1
     if args.materialize_master_records_only:
         result = materialize_master_records_source_package_and_retain(args.source_package_root, args.runtime_root)
         print(json.dumps(result, sort_keys=True))

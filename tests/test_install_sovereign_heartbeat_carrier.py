@@ -56,7 +56,7 @@ class CarrierOnlyInstallerTests(unittest.TestCase):
                 "github_runtime_dependency": False,
             }), mock.patch.object(mod.base, "materialize_service", return_value=service):
                 receipt = mod.install_carrier(
-                    root, root, runner=runner, carrier_observer=self.observed_progress
+                    root, root, runner=runner, env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(root / "registration")}, carrier_observer=self.observed_progress
                 )
 
             self.assertEqual(calls, [["reload"], ["start-carrier"]])
@@ -100,7 +100,7 @@ class CarrierOnlyInstallerTests(unittest.TestCase):
                 "github_runtime_dependency": False,
             }), mock.patch.object(mod.base, "materialize_service", return_value=service):
                 receipt = mod.install_carrier(
-                    root, root, runner=runner, carrier_observer=self.observed_progress
+                    root, root, runner=runner, env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(root / "registration")}, carrier_observer=self.observed_progress
                 )
 
             self.assertEqual(calls, [
@@ -134,7 +134,7 @@ class CarrierOnlyInstallerTests(unittest.TestCase):
                 "github_runtime_dependency": False,
             }), mock.patch.object(mod.base, "materialize_service", return_value=service):
                 receipt = mod.install_carrier(
-                    root, root, runner=runner, carrier_observer=self.observed_progress
+                    root, root, runner=runner, env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(root / "registration")}, carrier_observer=self.observed_progress
                 )
 
             self.assertFalse(receipt["carrier_active"])
@@ -161,7 +161,7 @@ class CarrierOnlyInstallerTests(unittest.TestCase):
                 "github_runtime_dependency": False,
             }), mock.patch.object(mod.base, "materialize_service", return_value=service):
                 receipt = mod.install_carrier(
-                    root, root, runner=runner, carrier_observer=no_progress
+                    root, root, runner=runner, env={"STEGVERSE_SERVICE_REGISTRATION_ROOT": str(root / "registration")}, carrier_observer=no_progress
                 )
 
             self.assertTrue(receipt["carrier_start_reported"])

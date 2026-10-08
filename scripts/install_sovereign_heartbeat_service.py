@@ -151,6 +151,47 @@ WORKER_SAFE_LOCAL_BINDINGS = (
 )
 
 
+REGISTRATION_ROOT_ENV = "STEGVERSE_SERVICE_REGISTRATION_ROOT"
+RUNTIME_ROOT_ENV = "STEGVERSE_HEARTBEAT_ROOT"
+
+
+class LocationRequired(RuntimeError):
+    """A location the materializer must supply was not supplied; nothing is derived."""
+
+    failed_predicate = "LOCATION_REQUIRED_FROM_MATERIALIZER"
+
+    def __init__(self, variable: str):
+        super().__init__("location_required_from_materializer: " + variable)
+        self.variable = variable
+
+
+def supplied_location(values, variable: str, explicit=None) -> Path:
+    """Return a location the materializer supplied, explicitly or by `variable`.
+
+    Never derived from the host: a home directory, XDG or APPDATA belongs to
+    whichever machine runs this, not to the node being materialized.
+    """
+    if explicit is not None:
+        return Path(explicit).expanduser().resolve()
+    raw = str((values or {}).get(variable) or "").strip()
+    if not raw:
+        raise LocationRequired(variable)
+    return Path(raw).expanduser().resolve()
+
+
+def location_refusal(exc: LocationRequired, entrypoint: str) -> dict:
+    """The installer's own disposition when a location was not supplied."""
+    return {
+        "schema": "stegverse.installer-location-refusal/v1",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": exc.failed_predicate,
+        "required_evidence_or_repair": "supply " + exc.variable,
+        "retry_entrypoint": entrypoint,
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
 def default_runtime_root(env=None):
     values = dict(os.environ if env is None else env)
     override = values.get("STEGVERSE_HEARTBEAT_ROOT")
@@ -321,14 +362,13 @@ _CANONICAL_NODE_REF = re.compile(r"^SV-NODE-[0-9a-f]{24}$")
 
 
 def _load_declared_node_ref(values: dict[str, str]) -> str | None:
+    # Only the marker the materializer names is read. A declaration found
+    # under the host's home directory or /etc belongs to that host, not to the
+    # node being materialized.
     candidates = []
     explicit_marker = str(values.get("STEGVERSE_SOVEREIGN_NODE_MARKER") or "").strip()
     if explicit_marker:
         candidates.append(Path(explicit_marker).expanduser())
-    candidates.extend([
-        Path.home() / ".stegverse" / "node.json",
-        Path("/etc/stegverse/node.json"),
-    ])
     for path in candidates:
         try:
             value = json.loads(path.read_text(encoding="utf-8"))
@@ -387,7 +427,15 @@ def _systemd_unit(description: str, command: list[str], root: Path, extra_env: d
     ])
 
 
-def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, system=None, env=None):
+def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, system=None, env=None,
+                        registration_root=None):
+    """Render the carrier and worker registrations into the supplied registration root.
+
+    The registration root is `registration_root` or STEGVERSE_SERVICE_REGISTRATION_ROOT;
+    with neither it fails closed by name rather than writing under the host's
+    home directory. Resolved after the configuration is validated and before
+    anything is written.
+    """
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
     carrier_command = _carrier_command(root)
@@ -405,8 +453,9 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         if value:
             worker_env[key] = value
 
+    registration = supplied_location(values, REGISTRATION_ROOT_ENV, registration_root)
     if name == "linux":
-        base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
+        base = registration
         carrier_path = base / "stegverse-heartbeat.service"
         worker_path = base / "stegverse-worker-runtime.service"
         carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root, worker_env)
@@ -419,7 +468,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         carrier_success_index, worker_success_index = 1, 2
         kind = "systemd-user-separated"
     elif name == "darwin":
-        base = Path.home() / "Library" / "LaunchAgents"
+        base = registration
         carrier_path = base / "org.stegverse.heartbeat.plist"
         worker_path = base / "org.stegverse.worker-runtime.plist"
         uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))()
@@ -451,7 +500,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         carrier_success_index, worker_success_index = 1, 3
         kind = "launch-agent-separated"
     elif name == "windows":
-        base = Path(values.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "StegVerse"
+        base = registration
         carrier_path = base / "heartbeat-start.cmd"
         worker_path = base / "worker-runtime-start.cmd"
         carrier_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
@@ -517,6 +566,8 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
 
 
 def install(source_root, target_root, runner=subprocess.run, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, system=None, env=None):
+    # Resolved before anything is materialized, so a refusal commits nothing.
+    supplied_location(dict(os.environ if env is None else env), REGISTRATION_ROOT_ENV)
     materialization = materialize(source_root, target_root, interval_ms=interval_ms)
     service = materialize_service(target_root, interval_ms=interval_ms, system=system, env=env)
     results = []
@@ -547,15 +598,25 @@ def main():
     parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--interval-ms", type=float, default=DEFAULT_WORKER_INTERVAL_MS, help="WorkerCoordinator interval only; heartbeat remains fixed at 10 ms oscillator phase.")
     parser.add_argument("--materialize-only", action="store_true")
+    parser.add_argument("--registration-root", type=Path, help="where the service registrations are written; else " + REGISTRATION_ROOT_ENV)
     args = parser.parse_args()
-    root = (args.runtime_root or default_runtime_root()).resolve()
     if args.interval_ms < 0:
         raise SystemExit("interval-ms must be >= 0")
+    try:
+        root = supplied_location(os.environ, RUNTIME_ROOT_ENV, args.runtime_root)
+        # Checked before anything is materialized, so a refusal commits nothing.
+        supplied_location(os.environ, REGISTRATION_ROOT_ENV, args.registration_root)
+    except LocationRequired as exc:
+        print(json.dumps(location_refusal(exc, "scripts/install_sovereign_heartbeat_service.py::main"), indent=2, sort_keys=True))
+        return 1
+    env = dict(os.environ)
+    if args.registration_root is not None:
+        env[REGISTRATION_ROOT_ENV] = str(args.registration_root)
     if args.materialize_only:
         result = materialize(args.source_root, root, interval_ms=args.interval_ms)
-        result["service"] = materialize_service(root, interval_ms=args.interval_ms)
+        result["service"] = materialize_service(root, interval_ms=args.interval_ms, env=env)
     else:
-        result = install(args.source_root, root, interval_ms=args.interval_ms)
+        result = install(args.source_root, root, interval_ms=args.interval_ms, env=env)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("active", True) else 1
 

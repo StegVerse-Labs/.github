@@ -141,10 +141,14 @@ def test_worker_service_preserves_canonical_master_records_organization_record_b
         "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     }
     assert required.issubset(set(mod.WORKER_SAFE_LOCAL_BINDINGS))
+    # A scratch registration root: rendering the units must not write under the
+    # host HOME, and the installer no longer derives a location from it.
+    registration = Path(tempfile.mkdtemp()) / "systemd-user"
     rendered = mod.materialize_service(
         ROOT,
         system="linux",
         env={
+            "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(registration),
             "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
             "STEGVERSE_MASTER_RECORDS_TOKEN": "canonical-mr-token",
             "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS": "10",
