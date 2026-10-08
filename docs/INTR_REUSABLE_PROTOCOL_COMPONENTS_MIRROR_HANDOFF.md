@@ -48,7 +48,7 @@ Evaluate one admitted proposed transition through the applicable Transition Elem
 Preserve exact request/response correlation, destination profile, exactly-once semantics, response-loop prevention, and transport-versus-application disposition across governed return traffic.
 
 ### `RT-INTR-EVIDENCE-CUSTODY-001`
-Bind exact receipt/artifact hashes and hand them to Master Records or the applicable canonical custody/reconstruction owner. Recording and reconstruction never inherit transition authority.
+Bind exact receipt/artifact hashes and hand them to the applicable canonical custody/reconstruction owner, or to Master Records for organization records. Recording and reconstruction never inherit transition authority.
 
 ## Composition rule
 

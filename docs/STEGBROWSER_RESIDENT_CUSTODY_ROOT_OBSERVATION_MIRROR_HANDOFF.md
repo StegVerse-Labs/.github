@@ -171,7 +171,7 @@ Current exact evidence state:
 - The non-authorizing StegBrowser receipt classifier remains correctly not run. WorkerCoordinator, Interlock/InTr, TVC, owner-ingress, and Master Records downstream progression remain prohibited until the root predicate is satisfied.
 - No duplicate task, invocation, scheduler, dispatcher, runtime plane, device dependency, or source-side repair was created.
 
-Master Records promotion remains gated on authentic runtime evidence and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.
+Master Records promotion awaits authentic runtime evidence; it stays gated until then and, for every promoted transition, requires `RECORDED`, `required_evidence_validation_status=PASS`, `reconstruction_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256` equality.
 
 
 ## Prompt 11/20 — existing Healer carrier seam repaired

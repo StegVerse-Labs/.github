@@ -234,7 +234,7 @@ No authentic deterministic pre-A3 failure was retained. Therefore no additional 
 AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF
 ```
 
-The durable Master Records nonce query remains gated until that exact authentic receipt is observed and validates all required source-proof predicates.
+The durable Master Records nonce query remains pending; that query stays gated until that exact authentic receipt is observed and validates all required source-proof predicates.
 
 Manual work: None.
 
@@ -255,7 +255,7 @@ under that exact resident runtime root. Focused repository tests still require t
 
 No newly evidenced source-level carriage, path, provenance, or retention defect was found. Therefore no source change, new observer, runtime, scheduler, dispatcher, endpoint, host, device prerequisite, invocation, or custody plane is justified in this prompt.
 
-The authentic receipt itself remains unobserved. Consequently the durable canonical Master Records nonce query remains gated and A3 remains `NOT_OBSERVED`, not `FAILED`. The first unsatisfied predicate remains:
+The authentic receipt itself remains unobserved. Consequently the durable canonical Master Records nonce query remains pending; it stays gated, and A3 remains `NOT_OBSERVED`, not `FAILED`. The first unsatisfied predicate remains:
 
 ```text
 AUTHENTIC_RETAINED_MASTER_RECORDS_SOURCE_REFRESH_WITH_VERIFIED_SOURCE_PROOF
@@ -274,6 +274,6 @@ The resident evidence boundary was re-observed again. Repository searches produc
 
 The existing writer path remains internally aligned: the recurring service calls the materializer with the same resident runtime root, and the retention helper writes the expected receipt beneath that root. No new carriage, provenance, path, or retention defect was evidenced, so no source repair is justified.
 
-The durable Master Records query remains gated. A3 remains `NOT_OBSERVED`, not `FAILED`; A4 and all round-trip predicates remain unentered.
+The durable Master Records query remains pending; it stays gated. A3 remains `NOT_OBSERVED`, not `FAILED`; A4 and all round-trip predicates remain unentered.
 
 Manual work: None.

@@ -10,7 +10,7 @@ Clarify what developers may reuse while preserving distinctions between code rig
 - **Open-source code**: only when an exact scope and version carry valid OSI-compliant grant(s), full modifiable source and required notices. Commercial reuse and forks must remain permitted under those terms.
 - **Public specification or documentation**: publication alone is not an open-source software license. Identify document copyright and any explicitly granted document reuse rights independently.
 - **Official StegVerse identity**: names, logos, certification marks and service designations remain separately governed by a trademark-use policy. Avoid falsely implying endorsement of forks while honoring required license notices.
-- **Official production authority**: publishing code does not provide credentials, resident claims/fences, canonical Master Records authority, InTr admission or organization governance membership.
+- **Official production authority**: publishing code does not provide credentials, resident claims/fences, InTr admission or organization governance membership; nor does it create canonical Master Records organization records.
 - **Sovereign private information**: user KV contents, keys, private receipts, credentials, personal data and contractual access never become public merely because client implementations are open source.
 - **Commercial services and economic assets**: hosting, support, service levels, infrastructure, token ownership and compensated participation are separate rights, subject to applicable law and contractual arrangements.
 

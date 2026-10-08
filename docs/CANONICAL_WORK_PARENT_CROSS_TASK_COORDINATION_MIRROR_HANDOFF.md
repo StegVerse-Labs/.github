@@ -75,7 +75,7 @@ receipts/preflight/STEGVERSE-CANONICAL-WORK-COORDINATION-COSV-POINTER-001.json
 
 ## Continuation
 
-The next admissible machine work is to propagate the task-vector source through the already-existing task-vector-index/source-refresh path and then continue authentic resident execution only through the established Canonical Work lifecycle: governed task-state projection, WorkerCoordinator admission/claim-fence handling where applicable, retained runtime evidence, Master Records reconciliation, current authority review, and retained closure evidence.
+The next admissible machine work is to propagate the task-vector source through the already-existing task-vector-index/source-refresh path and then continue authentic resident execution only through the established Canonical Work lifecycle: governed task-state projection, WorkerCoordinator admission/claim-fence handling where applicable, retained runtime evidence, Master Records reconciliation; then current authority review and retained closure evidence.
 
 Do not recreate completed source paths merely because authentic runtime evidence is absent.
 

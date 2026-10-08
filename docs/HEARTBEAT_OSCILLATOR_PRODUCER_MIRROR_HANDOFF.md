@@ -72,7 +72,7 @@ required claim_state: AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM
 fresh fence required: true
 heartbeat grants execution authority: false
 carrier event prerequisite: false
-assignment custody: existing Master Records worker-assignment path
+assignment organization record: existing Master Records worker-assignment path
 minimum fence: enforced from minimum_fencing_token_exclusive
 ```
 
@@ -144,7 +144,7 @@ path, or runtime owner is introduced.
 3. Observe a resident oscillator-produced carrier state with frequency_rule=INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL and oscillator proof.
 4. Independently observe WorkerCoordinator against that carrier without making it timing authority.
 5. Execute eligible independently admitted HANDOFF_READY work through the new no-carrier-event task-control path and retain Master Records assignment evidence.
-6. Continue Ecosystem Chat parent inference -> TVC -> LLM-adapter -> Master Records same-execution activation chain after lawful task-control admission.
+6. After lawful task-control admission, continue the Ecosystem Chat parent inference -> TVC -> LLM-adapter -> Master Records same-execution activation chain.
 ```
 
 ## Completion accounting

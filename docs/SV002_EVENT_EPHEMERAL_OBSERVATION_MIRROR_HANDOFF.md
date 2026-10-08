@@ -44,7 +44,7 @@ second user machine required: false
 observer direct relation to StegVerse-002: false
 ```
 
-The ingress event may launch a detached credential-scrubbed consumer process. That process is a dispatch mechanism only. It may request the already-admitted task; it cannot manufacture task authority, standing, experiment interaction, custody, publication, or Master Records evidence.
+The ingress event may launch a detached credential-scrubbed consumer process. That process is a dispatch mechanism only. It may request the already-admitted task; it cannot manufacture task authority, standing, experiment interaction, custody, or publication; nor can it manufacture Master Records organization records.
 
 ## Compatibility
 

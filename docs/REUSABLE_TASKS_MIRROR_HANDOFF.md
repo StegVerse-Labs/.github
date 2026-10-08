@@ -9,7 +9,7 @@ Canonical task registry: `data/canonical-task-registry.json`
 
 `Reusable Tasks` are stable, reusable work definitions that may be referenced by many sessions or canonical work items without recreating the task specification each time.
 
-They are coordination/discovery primitives only. A reusable task definition does **not** mint execution authority, a WorkerCoordinator claim/fence, Master Records truth, InTr admission, TV/TVC credential authority, or runtime activation.
+They are coordination/discovery primitives only. A reusable task definition does **not** mint execution authority, a WorkerCoordinator claim/fence, InTr admission, TV/TVC credential authority, or runtime activation; nor does it create a Master Records organization record.
 
 ## Canonical reusable tasks
 

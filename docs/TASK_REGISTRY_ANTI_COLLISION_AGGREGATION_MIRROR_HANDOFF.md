@@ -162,7 +162,7 @@ The existing evaluator is repaired in place; no second collision engine or autho
 
 Every stronger signal remains collision/convergence evidence. Repository-only overlap also remains conservative when either task lacks component scope. Recent returned/stopped session history is unchanged and remains repository-or-component conservative because historical event context is a different evidence class and must not be weakened by this repair.
 
-The disposition now preserves nonblocking current-record distinctions separately as `repository_only_scope_distinctions`; they are not silently discarded and do not enter `collision_candidates`. WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credential authority, Master Records reality authority, and the existing fail-closed requirement that Canonical Work proceed only on exact `CONTINUE` remain unchanged.
+The disposition now preserves nonblocking current-record distinctions separately as `repository_only_scope_distinctions`; they are not silently discarded and do not enter `collision_candidates`. WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credential authority, and the existing fail-closed requirement that Canonical Work proceed only on exact `CONTINUE` remain unchanged; Master Records organization records also remain unchanged.
 
 Focused regression coverage extends `tests/test_task_registry_collision_checkin.py` and requires the four current hygiene repository-only overlaps to remain visible as scope distinctions while the isolated hygiene preflight reaches `CONTINUE`. It also preserves the fail-closed requirement when component scope is missing.
 
