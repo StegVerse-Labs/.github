@@ -16,6 +16,7 @@ import re
 import time
 from pathlib import Path
 import tempfile
+from typing import Mapping
 
 import aggregate_repo_transition as org
 
@@ -335,6 +336,93 @@ def _atomic_json(path: Path, row: dict) -> None:
     finally:
         if os.path.exists(name):
             os.unlink(name)
+
+
+ORGANIZATION_BATCH_TASK_ID = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+ORGANIZATION_BATCH_COSV_TASK_VECTOR = "10000000100000"
+ORGANIZATION_BATCH_POLICY_EXTENSION = "stegverse_organization_receipt_batch"
+ORGANIZATION_BATCH_TASK_EXTENSION = "stegverse_canonical_task"
+ORGANIZATION_BATCH_REQUEST_REF = (
+    "control/resident-execution-request.d/"
+    "canonical-work-organization-batch-custody-replay-001.json"
+)
+
+
+def _require(ok: bool, reason: str) -> None:
+    if not ok:
+        raise ValueError(reason)
+
+
+def organization_batch_parent_manifest(validated) -> dict:
+    """The governing parent manifest a batch-bound SDK request declares.
+
+    Both receivers of the SDK `derive_execution_request` schema -- the worker
+    InTr ingress and the organization manifest ingress -- read the same
+    canonical task binding and COUNT release policy, so this is the one place
+    that validates them. Every failure is a typed ValueError naming the part
+    that is missing or does not match.
+    """
+    _require(validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED")
+    manifest = validated.get("canonical_manifest")
+    _require(isinstance(manifest, Mapping), "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED")
+    extensions = manifest.get("extensions")
+    _require(isinstance(extensions, Mapping), "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED")
+    task_binding = extensions.get(ORGANIZATION_BATCH_TASK_EXTENSION)
+    _require(isinstance(task_binding, Mapping), "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED")
+    _require(task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
+    _require(task_binding.get("cosv_task_vector") == ORGANIZATION_BATCH_COSV_TASK_VECTOR,
+             "ORGANIZATION_BATCH_COSV_MISMATCH")
+    _require(task_binding.get("canonical_request_ref") == ORGANIZATION_BATCH_REQUEST_REF,
+             "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH")
+    _require(task_binding.get("authority_effect") == "NONE",
+             "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION")
+    policy = extensions.get(ORGANIZATION_BATCH_POLICY_EXTENSION)
+    _require(isinstance(policy, Mapping), "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED")
+    condition = policy.get("release_condition")
+    _require(isinstance(condition, Mapping) and condition.get("type") == "COUNT",
+             "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED")
+    count = condition.get("count")
+    _require(type(count) is int and count >= 1, "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID")
+    graph = validated.get("state_graph")
+    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
+    canonical_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
+    _require(isinstance(canonical_binding, Mapping), "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED")
+    _require(canonical_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH")
+    _require(canonical_binding.get("receipt_batch") == dict(policy),
+             "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH")
+    return {"receipt_batch": dict(policy)}
+
+
+def organization_batch_parent_manifest_absent_predicate(validated) -> str | None:
+    """Name what is absent when a request declares no organization batch at all.
+
+    `None` means the request declares some part of a batch -- the receipt-batch
+    policy extension, or a canonical task binding to the batch task at the
+    request, manifest-extension or SDK-graph level -- so the parent manifest is
+    applicable and must validate in full. A request declaring none of it is one
+    the parent manifest does not govern, and this names what was looked for.
+    """
+    manifest = validated.get("canonical_manifest")
+    extensions = manifest.get("extensions") if isinstance(manifest, Mapping) else None
+    extensions = extensions if isinstance(extensions, Mapping) else {}
+    graph = validated.get("state_graph")
+    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
+    graph_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
+    task_binding = extensions.get(ORGANIZATION_BATCH_TASK_EXTENSION)
+    declares_policy = ORGANIZATION_BATCH_POLICY_EXTENSION in extensions or (
+        isinstance(graph_binding, Mapping) and "receipt_batch" in graph_binding)
+    declares_task = (
+        validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID
+        or (isinstance(task_binding, Mapping) and task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID)
+        or (isinstance(graph_binding, Mapping) and graph_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID)
+    )
+    if declares_policy or declares_task:
+        return None
+    return ("ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_EXTENSION_ABSENT"
+            "+ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_ABSENT")
 
 
 def _manifest_release_count(parent_manifest: dict) -> int:

@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-import argparse,base64,fcntl,hashlib,json,os,tempfile
+import argparse,base64,fcntl,hashlib,importlib.util,json,os,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 C=json.loads((ROOT/".stegverse/transition-ledger/org-contract.json").read_text())
+# The heartbeat is the ecosystem's time base and the kernel owns its derivation,
+# loaded exactly as the repository ledger (.stegverse/transition-ledger/emit.py)
+# loads it, so a repository receipt and the organization receipt consuming it
+# cannot disagree about what an epoch is. `observed_at` stays as non-ordering
+# provenance; ordering is the chain plus the heartbeat reference.
+_kspec=importlib.util.spec_from_file_location("kernel",ROOT/"org-kernel/kernel.py")
+kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
 
 def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
@@ -139,6 +146,8 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
     The existing receipt directory is the only index; no new store or authority
     is introduced. A retry after an incomplete Master Records submission must
     not append a second organization transition for the same exact source.
+    `hb_reference` and `observed_at` are deliberately not compared: a retry
+    arrives at a later heartbeat, and that is not a different transition.
     """
     for path in sorted(d.glob("*.json")):
         row=load(path)
@@ -219,7 +228,7 @@ def _packet_establishment_source(released_batch):
 def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TRANSITION",
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
                          boundary_evidence=None, authority_effect="NONE", parent_manifest=None,
-                         establishes_packet=False, now_ns=None, ledger=None):
+                         establishes_packet=False, now_ns=None, ledger=None, hb_epoch=None):
     """Serialize appends; the governing parent manifest owns packet release.
 
     A manifested receipt packet's first receipt records its own establishment.
@@ -230,6 +239,11 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     `ledger` is the organization ledger root when the caller holds it as
     supplied by its materializer (the kernel does); otherwise it is the one
     supplied to this execution. Either way it is supplied, never derived.
+
+    `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
+    call writes carries that exact reference; absent, the reference is derived
+    from the host clock and says so. An exact retry returns the original
+    receipt whatever epoch it arrives at.
     """
     root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -288,6 +302,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                                 "parent_manifest_released_batch": carried,
                             },
                             authority_effect="NONE",
+                            hb_epoch=hb_epoch,
                         )
                     else:
                         effective_boundary_evidence["parent_manifest_released_batch"] = carried
@@ -296,6 +311,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+                hb_epoch=hb_epoch,
             )
             if released is not None:
                 state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
@@ -306,7 +322,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
-def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE"):
+def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
     source=verify_source(receipt)
     root=root if root is not None else ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
     existing=_existing_exact_source(
@@ -331,6 +347,7 @@ def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="OR
         "successor_org_state_sha256":successor,
         "boundary_evidence":dict(boundary_evidence or {}),
         "authority_effect":authority_effect,
+        "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
         "observed_at":datetime.now(timezone.utc).isoformat(),
         "previous_receipt_sha256":prev,
     }
