@@ -5711,7 +5711,10 @@
           "required_evidence_or_repair": "RECONCILE_THE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM_AS_THE_RECORD_ALREADY_DECLARES",
           "retry_entrypoint": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
           "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
-          "next_attempt": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM"
+          "next_attempt": "RECONCILE_ORGANIZATION_RECEIPT_PRE_CUSTODY_SEAM",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json"
+          ]
         },
         "organization_ledger_contract_consumes_schema": "stegverse.repo-transition-receipt/v1",
         "organization_ledger_contract_emits_schema": "stegverse.organization-transition-receipt/v1",
@@ -10440,7 +10443,10 @@
           "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_THE_EXISTING_AUTHORIZED_RESIDENT_LEDGER_ROOT_AND_CUSTODY_ENDPOINT_TOKEN",
           "retry_entrypoint": "resident-runtime/organization_batch_custody.py::submit_released_batch",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
         },
         "live_worker_failure_expiry_chain": {
           "disposition": "FAIL_CLOSED",
@@ -10451,7 +10457,10 @@
           "required_evidence_or_repair": "REQUEST_EXPIRY_THROUGH_THE_EXISTING_WORKERCOORDINATOR_PATH_AND_RECORD_THE_TASK_REGISTRY_SUCCESSOR",
           "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_EXPIRY_AND_TASK_REGISTRY_SUCCESSOR_TRANSITION",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-          "next_attempt": "NEXT_WORKER_LIFECYCLE_TRANSITION_UNDER_THE_EXISTING_WORKERCOORDINATOR_OWNER"
+          "next_attempt": "NEXT_WORKER_LIFECYCLE_TRANSITION_UNDER_THE_EXISTING_WORKERCOORDINATOR_OWNER",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
         },
         "existing_org_receipt_emitter": "SOURCE_PRESENT",
         "existing_ecosystem_receipt_emitter": "SOURCE_PRESENT",
@@ -10475,7 +10484,10 @@
           "required_evidence_or_repair": "INVOKE_THE_MANIFEST_GOVERNED_APPEND_WITH_STEGVERSE_ORG_LEDGER_ROOT_ATTACHED_TO_THE_AUTHORIZED_RESIDENT_SESSION",
           "retry_entrypoint": "resident-runtime/aggregate_repo_transition.py::aggregate_transition(parent_manifest=...)",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
         },
         "master_records_batch_ingress": "MERGED_SOURCE_CI_VALIDATED",
         "concurrent_org_append_serialization": {
@@ -10487,7 +10499,10 @@
           "required_evidence_or_repair": "EXERCISE_TWO_CONCURRENT_APPENDS_AGAINST_THE_EXISTING_APPEND_LOCK_AND_RETAIN_BOTH_ORGANIZATION_RECEIPTS",
           "retry_entrypoint": "resident-runtime/aggregate_repo_transition.py::aggregate_transition (fcntl.LOCK_EX on .append.lock)",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
         },
         "required_evidence_bytes_reconstruction": "NOT_IMPLEMENTED",
         "master_records_batch_ingress_pr": 111,
@@ -10517,7 +10532,10 @@
           "required_evidence_or_repair": "CARRY_A_RELEASED_BATCH_THROUGH_THE_EXISTING_AUTHORIZED_CUSTODY_PATH_ONCE_THE_RECORD_ONLY_INGRESS_IS_ACCEPTED",
           "retry_entrypoint": "workers/canonical_state_transition_custody.py::submit_organization_batch",
           "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_APPEND_UNDER_EXISTING_ORGANIZATION_LEDGER_LOCK",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
         },
         "required_evidence_bytes_master_records_ingress": "CI_VALIDATED",
         "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED"
@@ -10710,7 +10728,10 @@
           "required_evidence_or_repair": "DISPATCH_THE_THREE_MICRO_NODE_EVALUATIONS_AND_RETAIN_EACH_ATTRIBUTABLE_RESULT_INCLUDING_DISAGREEMENT",
           "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_MICRO_NODE_DISPATCH",
           "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+          ]
         },
         "commit_time_intr_decision": {
           "disposition": "FAIL_CLOSED",
@@ -10721,7 +10742,10 @@
           "required_evidence_or_repair": "SUBMIT_THE_COMMIT_TIME_ADMISSIBILITY_TRANSITION_TO_THE_EXISTING_INTR_PATH",
           "retry_entrypoint": "INTERLOCK_INTR",
           "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+          ]
         },
         "records_only_reconstruction": {
           "disposition": "FAIL_CLOSED",
@@ -10732,7 +10756,10 @@
           "required_evidence_or_repair": "REQUEST_RECONSTRUCTION_THROUGH_THE_EXISTING_AUTHENTICATED_MASTER_RECORDS_PATH",
           "retry_entrypoint": "GET /api/master-records/state-transitions/query",
           "owning_existing_goal": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_MICRO_NODE_EVALUATION",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001.json"
+          ]
         }
       },
       "completion": {
@@ -10807,7 +10834,10 @@
           "required_evidence_or_repair": "INVOKE_THE_EXISTING_RESIDENT_SELECTOR_AND_RETAIN_ITS_REQUEST_CONSUMPTION_RECEIPT",
           "retry_entrypoint": "existing resident dispatch selector 'ungoverned_ai_defensive_envelope'",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "sandbox_containment": {
           "disposition": "FAIL_CLOSED",
@@ -10818,7 +10848,10 @@
           "required_evidence_or_repair": "EXERCISE_THE_ENVELOPE_AND_RETAIN_THE_BOUNDARY_RECEIPT_IT_PRODUCES",
           "retry_entrypoint": "existing resident dispatch selector 'ungoverned_ai_defensive_envelope'",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "master_records_reconstruction": {
           "disposition": "FAIL_CLOSED",
@@ -10829,7 +10862,10 @@
           "required_evidence_or_repair": "REQUEST_RECONSTRUCTION_THROUGH_THE_EXISTING_AUTHENTICATED_MASTER_RECORDS_PATH",
           "retry_entrypoint": "GET /api/master-records/state-transitions/query",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "component011_terminal_binding": "MERGED_SOURCE_VALIDATED_PR_2611"
       },
@@ -10914,7 +10950,10 @@
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
           "retry_entrypoint": "EXISTING_WORKERCOORDINATOR_CLAIM_FENCE_PATH",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "tvc_source_and_warrant": {
           "disposition": "FAIL_CLOSED",
@@ -10925,7 +10964,10 @@
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
           "retry_entrypoint": "EXISTING_TV_TVC_CREDENTIAL_PATH",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "intr_when_governed_transition_required": {
           "disposition": "FAIL_CLOSED",
@@ -10936,7 +10978,10 @@
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
           "retry_entrypoint": "INTERLOCK_INTR",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "organization_receipt_chain": {
           "disposition": "FAIL_CLOSED",
@@ -10947,7 +10992,10 @@
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
           "retry_entrypoint": "EXISTING_ORGANIZATION_LEDGER_APPEND_OWNER",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "master_records_reconstruction": {
           "disposition": "FAIL_CLOSED",
@@ -10958,7 +11006,10 @@
           "required_evidence_or_repair": "ATTEMPT_THE_STAGE_THROUGH_ITS_DECLARED_AUTHORITY_AND_RETAIN_ITS_RECEIPT",
           "retry_entrypoint": "EXISTING_AUTHENTICATED_MASTER_RECORDS_ORGANIZATION_RECORD_PATH",
           "owning_existing_goal": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
-          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH"
+          "next_attempt": "NEXT_MANIFEST_DIRECTED_RESIDENT_DISPATCH",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001.json"
+          ]
         },
         "runtime_failure": "NOT_EVIDENCED",
         "authority_effect": "NONE_OBSERVATION_COORDINATION_ONLY"
@@ -14445,7 +14496,10 @@
             "required_evidence_or_repair": "ATTEMPT_THE_INTERLOCK_INTR_ENTRY_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
             "retry_entrypoint": "INTERLOCK_INTR",
             "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-            "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_ENTRY_ATTEMPT"
+            "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_ENTRY_ATTEMPT",
+            "evidence_refs": [
+              "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+            ]
           }
         },
         "A2_1": {
@@ -14461,7 +14515,10 @@
             "required_evidence_or_repair": "ATTEMPT_THE_BOUNDED_LEASE_EXECUTION_BINDING_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
             "retry_entrypoint": "BOUNDED_INVOCATION_SCOPE_ONLY",
             "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-            "next_attempt": "NEXT_MANIFEST_DIRECTED_BOUNDED_LEASE_EXECUTION_BINDING_ATTEMPT"
+            "next_attempt": "NEXT_MANIFEST_DIRECTED_BOUNDED_LEASE_EXECUTION_BINDING_ATTEMPT",
+            "evidence_refs": [
+              "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+            ]
           }
         },
         "A2_2": {
@@ -14481,7 +14538,10 @@
             "required_evidence_or_repair": "ATTEMPT_THE_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
             "retry_entrypoint": "EVENT_EPHEMERAL_STEGOS_RUNTIME",
             "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-            "next_attempt": "NEXT_MANIFEST_DIRECTED_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_ATTEMPT"
+            "next_attempt": "NEXT_MANIFEST_DIRECTED_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION_ATTEMPT",
+            "evidence_refs": [
+              "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+            ]
           }
         },
         "A3": {
@@ -14497,7 +14557,10 @@
             "required_evidence_or_repair": "ATTEMPT_THE_WORKERCOORDINATOR_CLAIM_FENCE_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
             "retry_entrypoint": "WORKERCOORDINATOR",
             "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-            "next_attempt": "NEXT_MANIFEST_DIRECTED_WORKERCOORDINATOR_CLAIM_FENCE_ATTEMPT"
+            "next_attempt": "NEXT_MANIFEST_DIRECTED_WORKERCOORDINATOR_CLAIM_FENCE_ATTEMPT",
+            "evidence_refs": [
+              "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+            ]
           }
         },
         "A4": {
@@ -14516,7 +14579,10 @@
             "required_evidence_or_repair": "ATTEMPT_THE_AUTHENTIC_INTERLOCK_INTR_INGRESS_TRANSITION_THROUGH_ITS_DECLARED_AUTHORITY",
             "retry_entrypoint": "INTERLOCK_INTR",
             "owning_existing_goal": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-            "next_attempt": "NEXT_MANIFEST_DIRECTED_AUTHENTIC_INTERLOCK_INTR_INGRESS_ATTEMPT"
+            "next_attempt": "NEXT_MANIFEST_DIRECTED_AUTHENTIC_INTERLOCK_INTR_INGRESS_ATTEMPT",
+            "evidence_refs": [
+              "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json"
+            ]
           }
         },
         "A5_A7": {
