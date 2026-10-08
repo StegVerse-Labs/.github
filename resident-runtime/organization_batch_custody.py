@@ -70,6 +70,130 @@ def _verified_receipt(root: Path, digest: str) -> dict:
     return row
 
 
+RECEIPT_REFUSAL_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::verified_organization_receipt"
+_DIGEST = re.compile(r"(?:sha256:)?([0-9a-f]{64})")
+
+
+class OrganizationReceiptRefused(ValueError):
+    """A successor gate refused because the Organization receipt did not verify.
+
+    Same disposition rule as org-kernel/kernel.py refusal_disposition and
+    record_refusal: a deterministic refusal is DENY and is not retried; anything
+    else is FAIL_CLOSED and names its retry entrypoint. Nothing is committed.
+    """
+
+    def __init__(self, failed_predicate: str, *, deterministic: bool, detail: str = ""):
+        super().__init__(failed_predicate + (": " + detail if detail else ""))
+        self.failed_predicate = failed_predicate
+        self.disposition = "DENY" if deterministic else "FAIL_CLOSED"
+        self.retry_entrypoint = None if deterministic else RECEIPT_REFUSAL_RETRY_ENTRYPOINT
+
+    def refusal(self) -> dict:
+        return {
+            "disposition": self.disposition,
+            "failed_predicate": self.failed_predicate,
+            "retry_entrypoint": self.retry_entrypoint,
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+
+
+def _state_digest(value, predicate: str) -> str:
+    if value is None or value == "":
+        raise OrganizationReceiptRefused(predicate + "_ABSENT", deterministic=False)
+    match = _DIGEST.fullmatch(value) if isinstance(value, str) else None
+    if match is None:
+        raise OrganizationReceiptRefused(predicate + "_INVALID", deterministic=True)
+    return "sha256:" + match.group(1)
+
+
+def verified_organization_receipt(root, digest, *, state_receipt_sha256,
+                                  expected_transition_id=None, expected_predecessor=None) -> dict:
+    """Read back one Organization receipt and bind it to the exact state receipt.
+
+    `root` is the Organization ledger root the append used, supplied by the
+    caller (aggregate_transition(..., ledger=root)); ledger_root() is only the
+    existing fallback when the caller holds none. The receipt must verify under
+    _verified_receipt and name `state_receipt_sha256` as its source transition.
+    When supplied, the source transition id must equal `expected_transition_id`
+    and the retained source receipt's prior_state_ref_or_hash must equal
+    `expected_predecessor`. Master Records plays no part. Any failure raises
+    OrganizationReceiptRefused; the verified receipt row is returned otherwise.
+    """
+    source = _state_digest(state_receipt_sha256, "STATE_RECEIPT_SHA256")
+    if digest is None or digest == "":
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_ABSENT", deterministic=False)
+    if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_INVALID", deterministic=True)
+    try:
+        ledger = Path(root).expanduser().resolve() if root is not None else org.ledger_root()
+    except org.LedgerLocationRequired as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
+    if not (ledger / "receipts" / (digest[7:] + ".json")).is_file():
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_MISSING", deterministic=False, detail=digest)
+    try:
+        row = _verified_receipt(ledger, digest)
+    except ValueError as exc:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_VERIFICATION_FAILED", deterministic=True, detail=str(exc)) from exc
+    if not row.get("source_transition_sha256"):
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SOURCE_ABSENT", deterministic=True, detail=digest)
+    if row["source_transition_sha256"] != source:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT", deterministic=True, detail=digest)
+    if expected_transition_id is not None and row.get("source_transition_id") != expected_transition_id:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TRANSITION_MISMATCH", deterministic=True,
+                                         detail=str(expected_transition_id))
+    if expected_predecessor is not None:
+        expected = _state_digest(expected_predecessor, "EXPECTED_PREDECESSOR")
+        path = ledger / "source-receipts" / (source[7:] + ".json")
+        if not path.is_file():
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
+        retained = _read(path)
+        try:
+            retained_digest = org.verify_source(retained)["source_transition_sha256"]
+        except (KeyError, ValueError) as exc:
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=str(exc)) from exc
+        if retained_digest != source:
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=source)
+        prior = retained.get("prior_state_ref_or_hash")
+        match = _DIGEST.fullmatch(prior) if isinstance(prior, str) else None
+        if match is None or "sha256:" + match.group(1) != expected:
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_PREDECESSOR_STALE", deterministic=True, detail=expected)
+    return row
+
+
+def verified_organization_record(root, result, *, expected_transition_id=None, expected_predecessor=None) -> dict:
+    """verified_organization_receipt() for a submit_state_receipt() result or a projection of one.
+
+    The Organization receipt digest is read from the nested receipt and the
+    top-level projection; when both are present they must agree.
+    """
+    if not isinstance(result, dict) or result.get("state") != "RECORDED":
+        raise OrganizationReceiptRefused("ORGANIZATION_RECORD_NOT_RECORDED", deterministic=False)
+    nested = result.get("organization_receipt")
+    nested = nested if isinstance(nested, dict) else {}
+    top, inner = result.get("organization_receipt_sha256"), nested.get("receipt_sha256")
+    if top is not None and inner is not None and top != inner:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TOP_LEVEL_NESTED_CONFLICT", deterministic=True)
+    for key in ("source_transition_sha256", "previous_receipt_sha256"):
+        projected = result.get("organization_" + key)
+        if projected is not None and key in nested and nested[key] != projected:
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TOP_LEVEL_NESTED_CONFLICT", deterministic=True, detail=key)
+    row = verified_organization_receipt(
+        root, top if top is not None else inner,
+        state_receipt_sha256=result.get("receipt_sha256"),
+        expected_transition_id=expected_transition_id,
+        expected_predecessor=expected_predecessor,
+    )
+    # What the caller carries must be what the ledger holds.
+    if nested and nested != row:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_CONFLICT", deterministic=True)
+    for key in ("source_transition_sha256", "previous_receipt_sha256"):
+        projected = result.get("organization_" + key)
+        if projected is not None and projected != row.get(key):
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_CONFLICT", deterministic=True, detail=key)
+    return row
+
+
 def _ordered_commitment(hashes: list[str]) -> str:
     return "sha256:" + hashlib.sha256(
         b"STEGVERSE_ORGANIZATION_BATCH_ORDERED_V1\n" + org.canon(hashes)

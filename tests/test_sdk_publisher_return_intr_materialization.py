@@ -6,6 +6,29 @@ from scripts import consume_kv_publisher_return_materialization_request as consu
 from workers import universal_intr_profiled_ingress as ingress
 
 
+def _real_custody():
+    """The real producer; appends go to the tmp Organization ledger root set in setUp."""
+    import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
+    from workers import canonical_state_transition_custody as real
+    return real
+
+
+def _recorded_rtc006(real) -> dict:
+    """RTC-SDK-RETURN-006 as the real producer records it, projected the way the consumer returns it."""
+    result=real.submit_state_receipt(real.build_state_receipt(
+        transition_id="RTC-SDK-RETURN-006",transition_sequence=1,subject_or_correlation_id="RTC-FIXTURE",
+        transition_outcome="EXECUTED",prior_state_ref_or_hash=None,resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None,transition_evidence={"fixture":"rtc006"}))
+    return {
+      "state":result["state"],
+      "organization_receipt_sha256":result["organization_receipt"]["receipt_sha256"],
+      "reconstruction_status":result["reconstruction_status"],
+      "required_evidence_validation_status":result["required_evidence_validation_status"],
+      "receipt_sha256":result["receipt_sha256"],
+      "reconstructed_receipt_sha256":None,
+    }
+
+
 def request(owner: str) -> dict:
     value={
       "schema":"stegverse.universal-intr-materialization-request/v1",
@@ -65,6 +88,16 @@ def mir_return() -> dict:
 
 
 class SDKPublisherReturnIngressTests(unittest.TestCase):
+    def setUp(self):
+        # Ledger roots are supplied, never derived from the host.
+        from unittest.mock import patch
+        import os
+        ledger=tempfile.TemporaryDirectory()
+        self.addCleanup(ledger.cleanup)
+        env=patch.dict(os.environ,{"STEGVERSE_ORG_LEDGER_ROOT":ledger.name})
+        env.start()
+        self.addCleanup(env.stop)
+
     def test_existing_discriminator_accepts_sdk_owner_without_new_ingress_plane(self):
         self.assertTrue(ingress._is_kv_publisher_return(request(consumer.SDK_DOWNSTREAM_OWNER)))
         self.assertTrue(ingress._is_kv_publisher_return(request(consumer.KV_DOWNSTREAM_OWNER)))
@@ -101,22 +134,18 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         self.assertIn("successful_data_transport_round_trip_identified\":False",source)
         self.assertNotIn("communication_complete\":True",source)
 
-    def test_sdk_return_binding_requires_canonical_master_records_before_egress(self):
+    def test_sdk_return_binding_requires_organization_record_before_egress(self):
         captured={}
+        real=_real_custody()
         fake=types.ModuleType("canonical_state_transition_custody")
         def build_state_receipt(**kwargs):
             captured.update(kwargs)
-            return {"schema":"stegverse.canonical-state-transition-receipt/v1","transition_id":kwargs["transition_id"]}
+            return real.build_state_receipt(**kwargs)
         def submit_state_receipt(receipt):
             captured["submitted"]=receipt
-            return {
-              "state":"RECORDED",
-              "reconstruction_status":"PASS",
-              "required_evidence_validation_status":"PASS",
-              "receipt_sha256":"a"*64,
-              "reconstructed_receipt_sha256":"a"*64,
-              "required_evidence_count":2,
-            }
+            # Real producer: Organization ledger record, no Master Records reconstruction.
+            captured["recorded"]=real.submit_state_receipt(receipt)
+            return captured["recorded"]
         fake.build_state_receipt=build_state_receipt
         fake.submit_state_receipt=submit_state_receipt
         def require_predecessor_master_records_organization_record(receipt_sha256, *, successor_transition_id):
@@ -137,7 +166,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
               "evidence_type":"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD",
               "origin_transition_id":"RTC-SDK-RETURN-006",
               "encoding":"canonical-json",
-              "sha256":"8"*64,
+              "sha256":consumer.sha(closure).split(":",1)[1],
               "content":closure,
             }]
         fake.require_predecessor_master_records_organization_record=require_predecessor_master_records_organization_record
@@ -170,14 +199,15 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             self.assertEqual(captured["required_evidence_manifest"][1]["evidence_type"],"SDK_PUBLISHER_RETURN_BINDING")
             self.assertEqual(captured["transition_evidence"]["return_transport_terminal_receipt_hash"],"sha256:"+"7"*64)
             self.assertEqual(result["state"],"RECORDED")
-            self.assertEqual(result["required_evidence_validation_status"],"PASS")
+            self.assertEqual(result["organization_receipt_sha256"],captured["recorded"]["organization_receipt"]["receipt_sha256"])
+            self.assertEqual(result["reconstruction_status"],"NOT_REQUESTED")
         finally:
             if previous is None:
                 sys.modules.pop("canonical_state_transition_custody",None)
             else:
                 sys.modules["canonical_state_transition_custody"]=previous
 
-    def test_sdk_return_binding_blocks_when_master_records_does_not_close(self):
+    def test_sdk_return_binding_blocks_when_organization_record_not_recorded(self):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
         fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
@@ -217,7 +247,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 req["predecessor_master_records_receipt_sha256"]="9"*64
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"Master Records organization record not recorded"):
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"SDK return binding Organization record not recorded"):
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
                     )
@@ -280,19 +310,21 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
           "mir_destination_transition_observed":False,
           "authority_effect":"NONE_REQUEST_ONLY",
         }
+        real=_real_custody()
+        rtc006=_recorded_rtc006(real)
         custody=types.ModuleType("canonical_state_transition_custody")
         def build_state_receipt(**kwargs):
             captured.update(kwargs)
-            return kwargs
+            return real.build_state_receipt(**kwargs)
         custody.build_state_receipt=build_state_receipt
         predecessor_closure={
           "transition_id":"RTC-SDK-RETURN-006",
           "state":"RECORDED",
           "reconstruction_status":"PASS",
           "required_evidence_validation_status":"PASS",
-          "receipt_sha256":"a"*64,
-          "reconstructed_receipt_sha256":"a"*64,
-          "master_record_ref":"master-record:state-transition:sha256:"+"a"*64,
+          "receipt_sha256":rtc006["receipt_sha256"],
+          "reconstructed_receipt_sha256":rtc006["receipt_sha256"],
+          "master_record_ref":"master-record:state-transition:sha256:"+rtc006["receipt_sha256"],
           "authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY",
         }
         custody.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (
@@ -306,10 +338,10 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             "content":predecessor_closure,
           }],
         )
-        custody.submit_state_receipt=lambda receipt: {
-          "state":"RECORDED","reconstruction_status":"PASS","required_evidence_validation_status":"PASS",
-          "receipt_sha256":"c"*64,"reconstructed_receipt_sha256":"c"*64,
-        }
+        def submit_state_receipt(receipt):
+            captured["recorded"]=real.submit_state_receipt(receipt)
+            return captured["recorded"]
+        custody.submit_state_receipt=submit_state_receipt
         previous={name:sys.modules.get(name) for name in (
           "llm_adapter","llm_adapter.southbound_sdk_return","stegos","stegos.mir_southbound_intr_consumer","canonical_state_transition_custody"
         )}
@@ -321,7 +353,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         original_source_root=consumer.source_root
         original_submit_rtc008=consumer._submit_rtc008_materialization
         consumer.source_root=lambda env_name,repo_name,required: Path("/tmp")
-        consumer._submit_rtc008_materialization=lambda request: {
+        consumer._submit_rtc008_materialization=lambda request, **kwargs: {
           "schema":consumer.MIR_RTC008_RECEIPT_SCHEMA,
           "state":"INGRESS_ADMITTED",
           "master_records_state":"RECORDED",
@@ -343,23 +375,18 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 result=consumer._prepare_rtc007_continuation(
                   runtime,req["materialization_id"],req,output,consumer.sha(binding),
-                  {
-                    "state":"RECORDED",
-                    "reconstruction_status":"PASS",
-                    "required_evidence_validation_status":"PASS",
-                    "receipt_sha256":"a"*64,
-                    "reconstructed_receipt_sha256":"a"*64,
-                  },
+                  rtc006,
                 )
             self.assertEqual(captured["transition_id"],"RTC-STEGVERSE-EGRESS-007")
             self.assertEqual(captured["transition_sequence"],2)
-            self.assertEqual(captured["prior_state_ref_or_hash"],"sha256:"+"a"*64)
+            self.assertEqual(captured["prior_state_ref_or_hash"],"sha256:"+rtc006["receipt_sha256"])
             self.assertEqual(len(captured["required_evidence_manifest"]),3)
             self.assertEqual(captured["required_evidence_manifest"][0]["evidence_type"],"PREDECESSOR_MASTER_RECORDS_ORGANIZATION_RECORD")
             self.assertEqual(captured["required_evidence_manifest"][0]["content"]["transition_id"],"RTC-SDK-RETURN-006")
             self.assertEqual(captured["required_evidence_manifest"][1]["evidence_type"],"RTC_STEGVERSE_EGRESS_007_TRANSITION")
             self.assertEqual(captured["required_evidence_manifest"][2]["content"],binding)
             self.assertEqual(result["rtc007_master_records"]["state"],"RECORDED")
+            self.assertEqual(result["rtc007_master_records"]["organization_receipt_sha256"],captured["recorded"]["organization_receipt"]["receipt_sha256"])
             self.assertTrue(result["rtc008_admission_observed"])
             self.assertEqual(result["rtc008_llm_adapter_admission"]["state"],"EGRESS_ADMITTED")
             self.assertEqual(result["rtc008_llm_adapter_admission"]["egress_receipt_hash"],"e"*64)
@@ -377,11 +404,12 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         source=open(consumer.__file__,encoding="utf-8").read()
         self.assertIn('require_predecessor_master_records_organization_record(',source)
         self.assertIn('successor_transition_id="RTC-STEGVERSE-EGRESS-007"',source)
-        self.assertIn('closure.get("transition_id")!="RTC-SDK-RETURN-006"',source)
+        self.assertIn('require_organization_recorded_predecessor(rtc006_master_records,predecessor_transition_id="RTC-SDK-RETURN-006",',source)
+        self.assertIn('successor_transition_id="RTC-STEGVERSE-EGRESS-007")',source)
         self.assertIn('required_evidence=[\n      *predecessor_evidence,',source)
         self.assertIn('prior_state_ref_or_hash=prior_ref',source)
 
-    def test_rtc007_rejects_mismatched_reconstructed_predecessor(self):
+    def test_rtc007_rejects_predecessor_without_organization_receipt(self):
         binding={
           "schema":"stegverse.sdk.publisher-return-binding/v1",
           "communication_state":"READY_FOR_FINAL_STEGVERSE_EGRESS_TRANSITION",
@@ -445,7 +473,10 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 output.parent.mkdir(parents=True)
                 output.write_text(json.dumps(binding,sort_keys=True,separators=(",",":")),encoding="utf-8")
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"predecessor transition reconstruction mismatch"):
+                # A reconstruction PASS without an Organization receipt does not
+                # make the predecessor real; the successor is refused before submit.
+                with self.assertRaisesRegex(consumer.KVOrganizationReceiptRefused,
+                                            "predecessor Organization record refused:FAIL_CLOSED:ORGANIZATION_RECEIPT_SHA256_ABSENT"):
                     consumer._prepare_rtc007_continuation(
                       runtime,req["materialization_id"],req,output,consumer.sha(binding),
                       {
@@ -462,12 +493,14 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 if value is None: sys.modules.pop(name,None)
                 else: sys.modules[name]=value
 
-    def test_rtc007_continuation_fails_closed_without_recorded_master_records_organization_record(self):
+    def test_rtc007_continuation_fails_closed_without_recorded_organization_record(self):
         source=open(consumer.__file__,encoding="utf-8").read()
         self.assertIn('"RTC-STEGVERSE-EGRESS-007"',source)
         self.assertIn('"RTC_STEGVERSE_EGRESS_007_TRANSITION"',source)
-        self.assertIn('mr.get("receipt_sha256")==mr.get("reconstructed_receipt_sha256")',source)
-        self.assertIn('rtc008=_submit_rtc008_materialization(rtc008_request)',source)
+        self.assertIn('organization_receipt_sha256=_organization_receipt_gate(\n        mr,transition_id="RTC-STEGVERSE-EGRESS-007"',source)
+        self.assertIn("custody.verified_organization_record(",source)
+        self.assertNotIn('mr.get("reconstruction_status")=="PASS"',source)
+        self.assertIn('rtc008=_submit_rtc008_materialization(rtc008_request,runtime_root=runtime)',source)
         self.assertIn('"rtc008_admission_observed":True',source)
         self.assertIn('"rtc009_far_side_transition_observed":False',source)
 

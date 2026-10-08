@@ -862,7 +862,7 @@ Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the S
 The canonical Master Records local-adapter child repair is merged on main via PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and reconciled back into parent `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`. This closes the source-contract defect only; authentic runtime Master Records custody remains unclaimed and pending under the parent path.
 
 
-Canonical Master Records local-adapter source repair is merged by PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and retired under `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001`. The parent custody Goal remains ACTIVE for authentic runtime `RECORDED + reconstruction_status=PASS` evidence; source merge and CI do not satisfy that runtime predicate.
+Canonical Master Records local-adapter source repair is merged by PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and retired under `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001`. The parent custody Goal remains ACTIVE for authentic runtime `RECORDED` evidence with a verified Organization receipt bound to the exact state receipt (Master Records reconstruction is evidence only); source merge and CI do not satisfy that runtime predicate.
 
 ### User-action surface anti-collision identity
 
@@ -933,7 +933,7 @@ The purpose-bound runtime goal now follows its generation-71 direct path without
 PR #2188 merged the SDK TT direct WorkerCoordinator admission repair at `76cff35a03ba1950c13d8e438b6f37081a4186d6`; all four exact-head validation workflows passed. This is merged source readiness only. The first authentic runtime transition remains a fresh independent WorkerCoordinator claim/fence, followed by TV/TVC, InTr, and per-transition Master Records closure.
 
 
-The SDK TT one-shot WorkerCoordinator path now fails closed when the fresh claim/fence assignment itself has no canonical Master Records organization record, before committing ACTIVE state or invoking the shared StegAgents worker. The exact assignment is required evidence for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; progression requires RECORDED, reconstruction PASS, required-evidence PASS, and exact receipt/reconstruction digest equality. This remains source readiness until an authentic resident one-shot runs.
+The SDK TT one-shot WorkerCoordinator path now fails closed when the fresh claim/fence assignment itself has no canonical Master Records organization record, before committing ACTIVE state or invoking the shared StegAgents worker. The exact assignment is required evidence for `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`; progression requires RECORDED and the verified Organization receipt of that exact state receipt; Master Records reconstruction is evidence only. This remains source readiness until an authentic resident one-shot runs.
 
 
 StegAgents PR #23 merged at `0ba84d159a3a501cb0e13d600638cae63be6b14e`, adding fail-closed canonical Master Records closure before each purpose-bound lifecycle phase advances. CI, Test Readiness, and Cross-Agent Authority Validation passed on the exact PR head. Authentic resident execution remains unclaimed; GitHub validation is not runtime authority.

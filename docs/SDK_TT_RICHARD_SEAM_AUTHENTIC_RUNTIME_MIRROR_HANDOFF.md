@@ -54,16 +54,16 @@ WorkerCoordinator coordination, TV/TVC credential/warrant facts, and Master Reco
 
 ## Master Records organization records and progression
 
-Every governed Test 3 transition must return:
+Every governed Test 3 transition must return, before the next machine-owned progression:
 
 ```text
 state=RECORDED
-reconstruction_status=PASS
-required_evidence_validation_status=PASS
-receipt_sha256 == reconstructed_receipt_sha256
+verified Organization receipt: organization_batch_custody.verified_organization_receipt reads it back from the ledger root the append used
+source_transition_sha256 == "sha256:" + receipt_sha256 (the exact state receipt)
+source_transition_id == the expected transition id
 ```
 
-before the next machine-owned progression.
+Master Records reconstruction (reconstruction_status, required_evidence_validation_status, reconstructed_receipt_sha256) is evidence only and never gates progression. A receipt that does not verify is refused with a typed DENY (deterministic) or FAIL_CLOSED (with retry entrypoint) and no effect.
 
 ## Falsification requirements
 
@@ -131,7 +131,7 @@ HANDOFF_READY T + no authoritative claim_id/worker_id/worker_instance_id
 -> existing ProcessWorkerAdapter invokes shared StegAgents bridge in ATOMIC_ACTIVATION mode
 -> TV/TVC verification
 -> StegCore/InTr evaluates ACTIVATE(T)+CREATE_AND_BIND(W,T)
--> Master Records must return RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality
+-> the verified Organization receipt of that exact state receipt must exist (Master Records reconstruction is evidence only)
 -> only then WorkerCoordinator projects ACTIVE T <-> W
 -> separate TASK_EXECUTION mode may invoke W
 ```

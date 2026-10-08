@@ -95,10 +95,12 @@ def test_worker_bridge_accepts_only_pending_test3_preactivation_shape():
 def test_workercoordinator_projects_active_only_after_closed_constitutive_receipt():
     source = RUNTIME_PATH.read_text(encoding="utf-8")
     branch = source.index('if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":')
-    require_closure = source.index('transition.get("state") == "RECORDED"', branch)
-    require_reconstruction = source.index('transition.get("reconstruction_status") == "PASS"', branch)
-    require_evidence = source.index('transition.get("required_evidence_validation_status") == "PASS"', branch)
-    require_digest = source.index('transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")', branch)
+    # The verified Organization receipt closes the activation (its gate also
+    # requires state RECORDED); Master Records reconstruction is evidence only
+    # and must not gate the projection.
+    require_closure = source.index(
+        'activation_refusal = self._organization_record_refusal(transition, "ACTIVATE_TASK_AND_CREATE_BIND_WORKER")', branch)
+    require_organization_receipt = source.index("and activation_refusal is None", branch)
     first_authoritative_projection = source.index('registry["generation"] = generation', branch)
     projection = source.index('"state": "ACTIVE"', first_authoritative_projection)
     invocation = source.index("self._invoke(registry, task, carrier_epoch, cost_log, events)", projection)
@@ -106,9 +108,7 @@ def test_workercoordinator_projects_active_only_after_closed_constitutive_receip
     assert (
         branch
         < require_closure
-        < require_reconstruction
-        < require_evidence
-        < require_digest
+        < require_organization_receipt
         < first_authoritative_projection
         < projection
         < invocation
@@ -199,3 +199,12 @@ def test_worker_bridge_retains_stale_fence_refusal_in_close_receipt():
     retain_flag = source.index('receipt["post_retirement_stale_fence_invocation_refused"]', retain)
     target = source.index("target = root / result_rel", retain_flag)
     assert close_branch < retain < retain_flag < target
+
+
+def test_activation_closure_does_not_require_master_records_reconstruction():
+    source = RUNTIME_PATH.read_text(encoding="utf-8")
+    branch = source.index('if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":')
+    projection = source.index('registry["generation"] = generation', branch)
+    gate = source[branch:projection]
+    assert 'reconstruction_status") == "PASS"' not in gate
+    assert 'reconstructed_receipt_sha256' not in gate

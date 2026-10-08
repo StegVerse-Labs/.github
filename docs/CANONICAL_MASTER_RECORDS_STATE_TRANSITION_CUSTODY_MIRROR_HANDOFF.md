@@ -62,7 +62,7 @@ Reusable task: `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
 Primary receipt schema: `stegverse.canonical-state-transition-receipt/v1`.
 Canonical submission schema: `stegverse.master-records.state-transition-submission/v1`.
 Authoritative endpoint contract: `/api/master-records/state-transitions`, owned by `master-records/orchestration`.
-Required result for progression is `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, exact validation/reconstruction of every required evidence item, and no Master Records transition authority.
+Required result for progression is `state=RECORDED` and the verified Organization receipt of the exact state receipt (`resident-runtime/organization_batch_custody.py::verified_organization_receipt`, read back from the ledger root the append used; Master Records reconstruction is evidence only and never gates progression), with every required evidence item validated before the Organization append (`aggregate_repo_transition.verify_required_evidence`) and no Master Records transition authority. A receipt that does not verify is refused with a typed DENY (deterministic) or FAIL_CLOSED (with retry entrypoint) and no effect. Registry generation 297 (StegVerse-Labs/.github#3012 R1) records this; dated sections below that name Master Records `reconstruction_status=PASS` as a progression requirement are kept as history and no longer state the active gate.
 
 ## SV002 initiation invariant
 

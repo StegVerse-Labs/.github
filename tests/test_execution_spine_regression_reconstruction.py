@@ -113,15 +113,19 @@ def test_existing_minimal_chain_source_semantics_remain_strictly_ordered():
     assert "fresh WorkerCoordinator claim/fence" in handoff
     assert "StegCore/InTr admits ONE constitutive ACTIVATE(T)+CREATE_AND_BIND(W,T) transition" in handoff
     assert "state=RECORDED" in handoff
-    assert "reconstruction_status=PASS" in handoff
-    assert "required_evidence_validation_status=PASS" in handoff
-    assert "receipt_sha256 == reconstructed_receipt_sha256" in handoff
+    assert "verified Organization receipt" in handoff
+    assert 'source_transition_sha256 == "sha256:" + receipt_sha256' in handoff
+    assert "Master Records reconstruction" in handoff and "is evidence only and never gates progression" in handoff
 
+    # Real producer shape: the Organization receipt of the exact constitutive
+    # state receipt is verified before ACTIVE is projected or W is invoked.
     branch = source.index('if task_id == "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001":')
-    closed = source.index('transition.get("state") == "RECORDED"', branch)
-    reconstructed = source.index('transition.get("reconstruction_status") == "PASS"', branch)
-    evidence = source.index('transition.get("required_evidence_validation_status") == "PASS"', branch)
-    digest = source.index('transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")', branch)
-    active = source.index('"state": "ACTIVE"', digest)
+    verified = source.index(
+        'activation_refusal = self._organization_record_refusal(transition, "ACTIVATE_TASK_AND_CREATE_BIND_WORKER")', branch)
+    closed = source.index("and activation_refusal is None", verified)
+    active = source.index('"state": "ACTIVE"', closed)
     invoke = source.index("self._invoke(registry, task, carrier_epoch, cost_log, events)", active)
-    assert branch < closed < reconstructed < evidence < digest < active < invoke
+    assert branch < verified < closed < active < invoke
+    gate = source.index("def _organization_record_refusal(")
+    assert "organization_receipt_gate(row, expected_transition_id=transition_id)" in source[gate:branch]
+    assert 'transition.get("reconstruction_status") == "PASS"' not in source[branch:invoke]

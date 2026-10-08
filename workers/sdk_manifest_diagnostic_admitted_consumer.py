@@ -88,6 +88,30 @@ def _prove_ancestry(reconstruct, leaf: str, ancestor: str) -> tuple[dict[str, An
     raise DiagnosticAdmissionError("CANONICAL_PREDECESSOR_DEPTH_EXCEEDED")
 
 
+def _verified_organization_closure(closure: Any) -> dict[str, Any]:
+    """Read back the Organization receipt that closes the diagnostic execution.
+
+    Uses the existing Organization ledger verifier; a refusal is terminal for
+    this already-begun execution and carries its typed disposition.
+    """
+    from importlib import import_module
+    resident = str(Path(__file__).resolve().parents[1] / "resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0, resident)
+    custody = import_module("organization_batch_custody")
+    try:
+        row = custody.verified_organization_record(
+            None, dict(closure) if isinstance(closure, Mapping) else closure,
+            expected_transition_id=EXECUTION_TRANSITION)
+    except custody.OrganizationReceiptRefused as exc:
+        refusal = exc.refusal()
+        raise DiagnosticExecutionFailClosed(
+            "ORGANIZATION_EXACT_CLOSURE_REQUIRED:" + refusal["disposition"] + ":" + refusal["failed_predicate"]) from exc
+    if row.get("previous_receipt_sha256") is None:
+        raise DiagnosticExecutionFailClosed("ORGANIZATION_EXACT_CLOSURE_REQUIRED:DENY:ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED")
+    return row
+
+
 def _installed_sdk_root(control_root: Path) -> Path:
     try:
         roots = json.loads(os.environ.get("STEGVERSE_REPO_ROOTS_JSON", "{}"))
@@ -595,12 +619,9 @@ def consume(
     except Exception as exc:
         raise DiagnosticExecutionFailClosed(
             "ORGANIZATION_AND_MASTER_RECORDS_ORGANIZATION_RECORD_SUBMISSION_FAILED:" + type(exc).__name__) from exc
-    if not (closure.get("state") == "RECORDED"
-            and closure.get("reconstruction_status") == "PASS"
-            and closure.get("required_evidence_validation_status") == "PASS"
-            and closure.get("receipt_sha256") == closure.get("reconstructed_receipt_sha256")
-            and closure.get("organization_previous_receipt_sha256") is not None):
-        raise DiagnosticExecutionFailClosed("ORGANIZATION_AND_MASTER_RECORDS_EXACT_CLOSURE_REQUIRED")
+    # The verified Organization receipt of this exact state receipt closes the
+    # transition; Master Records reconstruction fields are evidence only.
+    organization_receipt = _verified_organization_closure(closure)
     if source_test_doubles:
         return {
             "schema": "stegverse.sdk.manifest-state-transition-source-simulation/v1",
@@ -638,8 +659,8 @@ def consume(
         "intr_admission_master_records_receipt_sha256": ingress_digest,
         "runtime_binding_master_records_receipt_sha256": binding_digest,
         "diagnostic_master_records_receipt_sha256": closure["receipt_sha256"],
-        "organization_receipt_sha256": closure.get("organization_receipt_sha256"),
-        "organization_previous_receipt_sha256": closure["organization_previous_receipt_sha256"],
+        "organization_receipt_sha256": organization_receipt["receipt_sha256"],
+        "organization_previous_receipt_sha256": organization_receipt["previous_receipt_sha256"],
         "publisher_required": True,
         "publisher_executed": False,
         "far_side_transition_observed": False,

@@ -140,19 +140,24 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     "diagnostic_request_id": "exp3-source-only-test",
                 }))
                 return type("SourceTestProcess", (), {"returncode": 0})()
+            import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
+            from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
             def fake_submit(record):
                 self.assertEqual(record["transition_outcome"], "EXECUTED")
                 self.assertEqual(record["transition_evidence"]["publisher_executed"], False)
-                return {
-                    "state": "RECORDED", "reconstruction_status": "PASS",
-                    "required_evidence_validation_status": "PASS",
-                    "receipt_sha256": "c" * 64,
-                    "reconstructed_receipt_sha256": "c" * 64,
-                    "organization_previous_receipt_sha256": "d" * 64,
-                }
+                # Real producer: appends to the tmp Organization ledger root.
+                return submit_state_receipt(record)
             with patch.dict(os.environ, {"STEGVERSE_REPO_ROOTS_JSON": "{}",
-                                          "STEGVERSE_SDK_ROOT": str(sdk)}), \
+                                          "STEGVERSE_SDK_ROOT": str(sdk),
+                                          "STEGVERSE_ORG_LEDGER_ROOT": str(root / "org-ledger")}), \
                  patch.object(mod, "FROZEN_FILE_SHA256", fixture_sha):
+                # The diagnostic closure must chain from an existing Organization receipt.
+                submit_state_receipt(build_state_receipt(
+                    transition_id=mod.BINDING_TRANSITION, transition_sequence=1,
+                    subject_or_correlation_id=mod.GOAL, transition_outcome="OBSERVED",
+                    prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
+                    governance_decision_ref_where_applicable=None,
+                    transition_evidence={"fixture": "prior Organization receipt"}))
                 result = mod.consume(root, root, source, reconstruct=reconstruct,
                                      runner=fake_run, submit=fake_submit)
             self.assertEqual(result["state"], "SOURCE_SIMULATION_ONLY")
