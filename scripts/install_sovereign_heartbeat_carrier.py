@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -78,6 +79,8 @@ def install_carrier(
     env=None,
     carrier_observer: Callable[[Path], dict] = _observe_carrier_progress,
 ):
+    # Resolved before anything is materialized, so a refusal commits nothing.
+    base.supplied_location(dict(os.environ if env is None else env), base.REGISTRATION_ROOT_ENV)
     materialization = base.materialize(source_root, target_root)
     service = base.materialize_service(target_root, system=system, env=env)
 
@@ -147,10 +150,19 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--runtime-root", type=Path)
+    parser.add_argument("--registration-root", type=Path, help="where the carrier registration is written; else " + base.REGISTRATION_ROOT_ENV)
     args = parser.parse_args()
 
-    target = (args.runtime_root or base.default_runtime_root()).resolve()
-    result = install_carrier(args.source_root.resolve(), target)
+    try:
+        target = base.supplied_location(os.environ, base.RUNTIME_ROOT_ENV, args.runtime_root)
+        base.supplied_location(os.environ, base.REGISTRATION_ROOT_ENV, args.registration_root)
+    except base.LocationRequired as exc:
+        print(json.dumps(base.location_refusal(exc, "scripts/install_sovereign_heartbeat_carrier.py::main"), indent=2, sort_keys=True))
+        return 1
+    env = dict(os.environ)
+    if args.registration_root is not None:
+        env[base.REGISTRATION_ROOT_ENV] = str(args.registration_root)
+    result = install_carrier(args.source_root.resolve(), target, env=env)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("carrier_active") is True else 1
 

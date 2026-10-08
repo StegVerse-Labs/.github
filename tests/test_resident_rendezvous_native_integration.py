@@ -11,7 +11,7 @@ from scripts.run_worker_runtime import poll_resident_rendezvous
 def test_native_worker_service_receives_non_secret_rendezvous_config(tmp_path, monkeypatch):
     config_home = tmp_path / "config"
     env = {
-        "XDG_CONFIG_HOME": str(config_home),
+        "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(config_home / "systemd" / "user"),
         "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "https://stegverse.org",
         "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF": "node:primary",
     }
@@ -45,7 +45,7 @@ def test_native_worker_service_derives_node_ref_from_canonical_declaration(tmp_p
         tmp_path / "runtime",
         system="linux",
         env={
-            "XDG_CONFIG_HOME": str(tmp_path / "config"),
+            "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(tmp_path / "config" / "systemd" / "user"),
             "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "https://stegverse.org",
             "STEGVERSE_SOVEREIGN_NODE_MARKER": str(marker),
         },
@@ -73,7 +73,7 @@ def test_native_worker_service_rejects_noncanonical_derived_node_ref(tmp_path):
             tmp_path / "runtime",
             system="linux",
             env={
-                "XDG_CONFIG_HOME": str(tmp_path / "config"),
+                "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(tmp_path / "config" / "systemd" / "user"),
                 "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "https://stegverse.org",
                 "STEGVERSE_SOVEREIGN_NODE_MARKER": str(marker),
             },
@@ -90,7 +90,7 @@ def test_rendezvous_config_requires_https(tmp_path):
             tmp_path / "runtime",
             system="linux",
             env={
-                "XDG_CONFIG_HOME": str(tmp_path / "config"),
+                "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(tmp_path / "config" / "systemd" / "user"),
                 "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "http://example.test",
                 "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF": "node:primary",
             },

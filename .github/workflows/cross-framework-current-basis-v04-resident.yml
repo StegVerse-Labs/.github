@@ -12,6 +12,9 @@ on:
       - tests/test_sdk_evaluator_governance_posture_resident.py
       - scripts/install_sovereign_worker_source_refresh_service.py
       - scripts/install_sovereign_heartbeat_service.py
+      - scripts/install_sovereign_heartbeat_service_base.py
+      - scripts/install_sovereign_heartbeat_carrier.py
+      - tests/test_installer_locations_supplied.py
       - scripts/bootstrap_sovereign_runtime.py
       - scripts/refresh_and_dispatch_resident_requests.py
       - scripts/consume_sv002_org_runtime_activation_request.py
@@ -34,6 +37,9 @@ on:
       - tests/test_sdk_evaluator_governance_posture_resident.py
       - scripts/install_sovereign_worker_source_refresh_service.py
       - scripts/install_sovereign_heartbeat_service.py
+      - scripts/install_sovereign_heartbeat_service_base.py
+      - scripts/install_sovereign_heartbeat_carrier.py
+      - tests/test_installer_locations_supplied.py
       - scripts/bootstrap_sovereign_runtime.py
       - scripts/refresh_and_dispatch_resident_requests.py
       - scripts/consume_sv002_org_runtime_activation_request.py
@@ -69,6 +75,7 @@ jobs:
           python -m unittest tests.test_resident_request_dispatcher
           python -m unittest tests.test_sdk_evaluator_governance_posture_resident
           python -m unittest tests.test_sovereign_worker_source_refresh
+          python -m unittest tests.test_installer_locations_supplied
           python -m unittest tests.test_bootstrap_resident_request_dispatch
           python -m unittest tests.test_portable_resident_request_dispatch
           python -m unittest tests.test_sv002_org_runtime_activation_hb_binding

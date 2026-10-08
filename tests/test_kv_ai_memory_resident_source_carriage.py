@@ -94,7 +94,7 @@ def test_native_worker_service_carries_nonsecret_universal_intr_endpoint():
         system="linux",
         env={
             "HOME": "/home/stegverse",
-            "XDG_CONFIG_HOME": "/tmp/stegverse-kv-ai-memory-test-config",
+            "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(Path("/tmp/stegverse-kv-ai-memory-test-config") / "systemd" / "user"),
             "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": endpoint,
         },
     )

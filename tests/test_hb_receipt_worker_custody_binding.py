@@ -44,7 +44,7 @@ def test_carrier_registration_preserves_bindings_for_self_healed_worker(tmp_path
     config = tmp_path / "config"
     runtime = tmp_path / "runtime"
     values = {
-        "XDG_CONFIG_HOME": str(config),
+        "STEGVERSE_SERVICE_REGISTRATION_ROOT": str(config / "systemd" / "user"),
         "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(ROOT),
         "STEGVERSE_MASTER_RECORDS_ENDPOINT": "http://127.0.0.1:8765",
         "STEGVERSE_MASTER_RECORDS_TOKEN": "canonical-local-token",
