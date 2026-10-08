@@ -30,7 +30,7 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None)->dict:
         return location_refusal("NODE_STATE_LOCATION_REQUIRED_FROM_MATERIALIZER","--node-state-root")
     if mesh_root is None:
         return location_refusal("MESH_LOCATION_REQUIRED_FROM_MATERIALIZER","--mesh-root")
-    results=K.consume_and_respond(ROOT,mesh_root=mesh_root)
+    results=K.consume_and_respond(ROOT,mesh_root=mesh_root,node_state_root=node_state_root)
     consumed=sum(1 for x in results if (x.get("result") or {}).get("status")=="CONSUMED")
     responses=sum(1 for x in results if x.get("response_publication"))
     receipt={

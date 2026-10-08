@@ -181,7 +181,8 @@ class GovernanceEndpointTests(unittest.TestCase):
         mesh = self.work / "mesh"
         sent = packet(work_request({"signal": {}}))
         K.publish_packet(sent, root=mesh)
-        consumed = K.consume_and_respond(self.copied_root(), mesh_root=mesh, seen=set())
+        consumed = K.consume_and_respond(self.copied_root(), mesh_root=mesh,
+                                         node_state_root=self.work / "node-state", seen=set())
         self.assertEqual([item["result"]["status"] for item in consumed], ["CONSUMED"])
         response = K.recover_packet(consumed[0]["response_publication"]["frame"])
         self.assertEqual(response["destination"]["org"], "StegVerse-org")

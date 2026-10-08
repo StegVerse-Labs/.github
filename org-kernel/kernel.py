@@ -177,7 +177,12 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any])->dict[st
     if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
     return result
 
-def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
+def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict[str,Any]:
+    """Dispatch a recovered packet. `node_state` is this node's supplied state store.
+
+    `root` is the organization's materialized source: it is read, never written.
+    Anything the crossing records (work intake) goes to `node_state`.
+    """
     registry=load_registry(root)
     if packet["destination"]["org"]!=registry["organization"]: raise ValueError("wrong_destination_org")
     service=next((s for s in registry["services"] if s["service_id"]==packet["destination"]["service"]),None)
@@ -198,6 +203,11 @@ def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
     # Resolved before any receipt is minted: an adapter the registry does not
     # admit must not leave a chain implying the crossing was consumed.
     adapter=resolve_endpoint_adapter(root,service) if endpoint else None
+    # Also before any receipt: a work request is recorded in node state, so a
+    # node materialized without one cannot consume it.
+    if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
+            and (packet.get("payload") or {}).get("message_class")=="ecosystem.work.request"):
+        raise ValueError("node_state_location_required_from_materializer")
     prev=None; receipts=[]
     for kind in ("INGRESS_ACCEPTED","DISPATCHED","CONSUMED","RESULT_BOUND","EGRESS_EMITTED"):
         r=receipt(kind,packet["packet_id"],service["service_id"],prev,{"payload_hash":sha(packet["payload"])})
@@ -205,7 +215,7 @@ def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
     if endpoint:
         application_result=run_endpoint_adapter(root,adapter,packet)
     elif role=="BOUNDARY_LOCAL_CONTROL":
-        application_result=handle_control_message(root,packet,registry)
+        application_result=handle_control_message(root,packet,registry,node_state=node_state)
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],
@@ -224,12 +234,12 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
         raise ValueError("write_once_collision")
     return Path(target.locator(key))
 
-def ingest_frame(root:Path, frame:dict[str,Any])->dict[str,Any]:
+def ingest_frame(root:Path, frame:dict[str,Any], *, node_state:Any|None=None)->dict[str,Any]:
     packet=recover_packet(frame)
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
-    result=dispatch(root,packet)
+    result=dispatch(root,packet,node_state=node_state)
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
@@ -337,12 +347,14 @@ def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None
     path=publish_frame(frame,root=root)
     return {"packet":packet,"frame":frame,"path":str(path)}
 
-def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None)->list[dict[str,Any]]:
+def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None,
+                             node_state_root:Path|None=None)->list[dict[str,Any]]:
+    node_state=addressed_node_state_store(node_state_root) if node_state_root is not None else None
     registry=load_registry(repo_root)
     organization=registry["organization"]
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
-        result=ingest_frame(repo_root,item["frame"])
+        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
         results.append({"path":item["path"],"result":result})
     return results
 
@@ -467,7 +479,9 @@ def persist_work_request(root:Path, packet:dict[str,Any], *, store:Any|None=None
       "execution_authority_inferred":False,
       "carrier_grants_execution_authority":False
     }
-    target=store or node_state_store(root)
+    # Recorded in the node's supplied state, never in the source checkout.
+    if store is None: raise ValueError("node_state_location_required_from_materializer")
+    target=store
     key=node_store_module.intake_key(packet["packet_id"],communication_id)
     try:
         target.put_once(key,record)
@@ -476,7 +490,8 @@ def persist_work_request(root:Path, packet:dict[str,Any], *, store:Any|None=None
     return {"state":record["state"],"intake_ref":target.locator(key),
             "execution_authority_inferred":False}
 
-def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,Any])->dict[str,Any]:
+def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,Any], *,
+                           node_state:Any|None=None)->dict[str,Any]:
     payload=packet.get("payload") or {}
     message_class=payload.get("message_class")
     result={
@@ -490,7 +505,7 @@ def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,An
     if message_class=="ecosystem.monitor.request":
         result["monitor_status"]=resident_status(root,registry)
     elif message_class=="ecosystem.work.request":
-        result["work_intake"]=persist_work_request(root,packet)
+        result["work_intake"]=persist_work_request(root,packet,store=node_state)
     elif message_class=="ecosystem.communication":
         result["communication_acknowledged"]=True
     elif message_class in {"ecosystem.monitor.response","ecosystem.work.ack","ecosystem.communication.ack"}:
@@ -542,23 +557,34 @@ def build_control_response(request_packet:dict[str,Any], execution_result:dict[s
       packet_id=str(req_payload.get("communication_id"))+":response:"+organization_slug(local_org)
     )
 
-def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None,
-                        now_ns:int|None=None)->list[dict[str,Any]]:
+def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_root:Path|None=None,
+                        seen:set[str]|None=None, now_ns:int|None=None)->list[dict[str,Any]]:
+    """Consume frames addressed to this organization, answer them, and mark them seen.
+
+    Consumption markers and work intake are this node's own state, written to
+    the `node_state_root` its materializer supplied -- never into `repo_root`,
+    which is the organization's source and is only read. Markers keep their
+    key (`federation/seen.d/<sha256(frame_name)>.json`) and record the frame's
+    name, so dedup identity is unchanged; a materializer that supplies
+    `<checkout>/resident-runtime` as node state keeps markers written there
+    before this.
+    """
+    node_state=addressed_node_state_store(node_state_root)
     registry=load_registry(repo_root)
     organization=registry["organization"]
-    durable_seen=federation_seen_frame_names(repo_root)
+    durable_seen=federation_seen_frame_names(repo_root,store=node_state)
     effective_seen=set(seen or set())|durable_seen
     out=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=effective_seen):
         packet=recover_packet(item["frame"])
         payload=packet.get("payload") or {}
         message_class=payload.get("message_class")
-        result=ingest_frame(repo_root,item["frame"])
+        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
         response_publication=None
         if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
             response=build_control_response(packet,result["execution_result"])
             response_publication=publish_packet(response,root=mesh_root,now_ns=now_ns)
-        marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result)
+        marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result,store=node_state)
         out.append({"path":item["path"],"result":result,"response_publication":response_publication,"seen_marker":str(marker)})
     return out
 
