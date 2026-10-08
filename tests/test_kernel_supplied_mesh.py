@@ -148,11 +148,15 @@ class MeshIsSuppliedTests(HostIsolated):
             body={"x": 1}, communication_id="supplied-mesh-roundtrip", root=mesh,
             now_ns=K.HB_ANCHOR_UNIX_NS + 1_000_000_000)
         self.assertEqual(sent["published_count"], 1)
-        first = K.consume_and_respond(b, mesh_root=mesh, now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
-        second = K.consume_and_respond(b, mesh_root=mesh, now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
+        state = self.scratch / "node-b"
+        first = K.consume_and_respond(b, mesh_root=mesh, node_state_root=state,
+                                      now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
+        second = K.consume_and_respond(b, mesh_root=mesh, node_state_root=state,
+                                       now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
         self.assertEqual(len(first), 1)
         self.assertEqual(second, [])
-        self.assertTrue((b / "resident-runtime/federation/seen.d").is_dir())
+        self.assertTrue((state / "federation/seen.d").is_dir())
+        self.assertFalse((b / "resident-runtime").exists())
         rollup = K.collect_ecosystem_responses("Org-A", "supplied-mesh-roundtrip", mesh_root=mesh)
         self.assertEqual([row["organization"] for row in rollup["organizations"]], ["Org-B"])
         self.assertHostUntouched()

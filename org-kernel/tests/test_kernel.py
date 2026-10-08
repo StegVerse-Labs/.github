@@ -122,7 +122,7 @@ with tempfile.TemporaryDirectory() as td:
     )
     assert pub["published_count"]==14
     for org,root in roots.items():
-        k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
+        k.consume_and_respond(root,mesh_root=mesh,node_state_root=Path(td)/"node-state"/org,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
     roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-monitor-response-001",mesh_root=mesh)
     assert roll["response_count"]==14
     assert {x["organization"] for x in roll["organizations"]}==set(orgs)
@@ -157,8 +157,11 @@ with tempfile.TemporaryDirectory() as td:
     )
     assert pub["published_count"]==14
     for org,root in roots.items():
-        k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
-        inbox=list((root/"resident-runtime/control/inbox").glob("*.json"))
+        state=Path(td)/"node-state"/org
+        k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
+        # Intake is node state, recorded where the materializer said, never in the source root.
+        assert not (root/"resident-runtime").exists()
+        inbox=list((state/"control/inbox").glob("*.json"))
         assert len(inbox)==1
         record=json.loads(inbox[0].read_text())
         assert record["state"]=="QUEUED_FOR_LOCAL_ADMISSION_EVALUATION"
@@ -190,8 +193,10 @@ with tempfile.TemporaryDirectory() as td:
         mesh_root=mesh,
         now_ns=k.HB_ANCHOR_UNIX_NS+6_000_000_000
     )
-    first=k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
-    second=k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
+    state=Path(td)/"node-state"
+    first=k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
+    second=k.consume_and_respond(root,mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
+    assert not (root/"resident-runtime/federation").exists()
     assert len(first)==1
     assert len(second)==1 or len(second)==0
     # second cycle may see only the response addressed to self; it must not reconsume the original request.
