@@ -74,3 +74,12 @@ Open, not claimed complete:
 ### Contextual prose continuation — 2026-10-08
 
 After #3004, live prose lines no deterministic rule covered were reworded in place (no lines added or removed): prohibited-role references **827 → 691 across 278 files**; negated boundary statements **191 → 161**. Lines carrying hashes, terms only inside backticked identifiers, and the canonical runtime-reality deployment declaration are unchanged. Per-entry disposition in `data/master-records-role-boundary-burndown-2026-10-08.json` is regenerated for this head. Still open: data and code lines whose wording is bound to keys or identifiers, and route/configuration names owned by master-records/orchestration.
+
+### Owner-approved identifier renames — 2026-10-08
+
+Writers emit only the new names; readers in this repository accept new and legacy through one `LEGACY_` constant, covered by `tests/test_master_records_organization_record_reader_compat.py`:
+
+- `destination_custody_accepted` → `destination_record_accepted` (`workers/reusable_task_lifecycle.py`, `workers/universal_governance_enforced_reference_worker.py`)
+- `stegverse.runtime-profile-map-custody-package/v1` → `stegverse.runtime-profile-map-organization-record-package/v1` (the package schema accepts both); `stegverse.runtime-profile-map-custody-consumption/v1` → `stegverse.runtime-profile-map-organization-record-consumption/v1` (the coordination predicate reader accepts the legacy id). File paths keep their names because master-records/orchestration and retained receipts reference them.
+- `master-records.ecosystem-transition-ledger` → `organization.ecosystem-transition-ledger` (`resident-runtime/submit_org_transition_to_master_records.py`)
+- `custody_owner` → `record_owner` where the value names Master Records; `master_records_custody_owner` → `master_records_organization_record_owner`. No reader in this repository consumes either key.

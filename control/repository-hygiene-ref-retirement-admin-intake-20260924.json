@@ -4,7 +4,7 @@
   "cosv_task_vector": "10100000100000",
   "authority_owner": "HYGIENE-BRANCH-REF-RETIREMENT",
   "organization_custody_owner": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-  "master_records_custody_owner": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "master_records_organization_record_owner": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
   "control_repository": "StegVerse-Labs/.github",
   "observed_repository_setting": {
     "delete_branch_on_merge": false,

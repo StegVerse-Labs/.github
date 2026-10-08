@@ -46,7 +46,7 @@ class ReusableTaskLifecycleRuntimeBindingTests(unittest.TestCase):
         manifest = {"invocation_id":"i","reusable_task_id":"r","manifest_hash":"a"*64}
         request = lifecycle.build_custody_request(manifest=manifest, trigger_receipt={}, runner_result={}, runner_expiry={}, residual_recording={})
         self.assertEqual(request["destination"], "master-records/orchestration")
-        self.assertFalse(request["destination_custody_accepted"])
+        self.assertFalse(request["destination_record_accepted"])
 
     def test_lifecycle_workers_are_on_existing_resident_propagation_surface(self):
         refresh = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")

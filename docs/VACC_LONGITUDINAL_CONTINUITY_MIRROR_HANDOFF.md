@@ -19,7 +19,7 @@ canonical_implementation_handoff: StegVerse-org/LLM-adapter/docs/VA_CLAIM_ASSIST
 canonical_execution_task: StegVerse-org/LLM-adapter/tasks/VACP-ADAPTER-AUTHORIZED-EXECUTION-005.json
 canonical_public_projection: StegVerse-Labs/Site#113/#241
 canonical_four_app_worker_state: StegVerse-Labs/Site/data/four-app-active-worker-assignments.json
-custody_owner: master-records/orchestration#15
+record_owner: master-records/orchestration#15
 ```
 
 ## Requirements transferred

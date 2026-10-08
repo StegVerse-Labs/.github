@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stegverse.org/schemas/runtime-profile-map-custody-package.schema.json",
-  "title": "StegVerse Runtime Profile Map Custody Package",
+  "title": "StegVerse Runtime Profile Map Organization Record Package",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,7 +11,7 @@
     "authority_effect", "nonclaims"
   ],
   "properties": {
-    "schema": {"const": "stegverse.runtime-profile-map-custody-package/v1"},
+    "schema": {"enum": ["stegverse.runtime-profile-map-organization-record-package/v1", "stegverse.runtime-profile-map-custody-package/v1"]},
     "task_id": {"const": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"},
     "map_ref": {"type": "string"},
     "map_generation": {"type": "integer", "minimum": 1},

@@ -21,6 +21,7 @@ from typing import Any, Mapping
 REQUEST_REL = Path("control/resident-execution-request.d/runtime-profile-map-custody-001.json")
 PACKAGE_REL = Path("receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json")
+CONSUMPTION_SCHEMA = "stegverse.runtime-profile-map-organization-record-consumption/v1"
 TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 TARGET_MODE = "RUNTIME_PROFILE_MAP_MASTER_RECORDS_ORGANIZATION_RECORD"
 TARGET_ENTRYPOINT = "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"
@@ -111,13 +112,13 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
     source = source_root.expanduser().resolve() if source_root is not None else None
     request_path = runtime / REQUEST_REL
     if not request_path.is_file():
-        return {"schema": "stegverse.runtime-profile-map-custody-consumption/v1", "state": "NO_REQUEST", "authority_effect": "NONE"}
+        return {"schema": CONSUMPTION_SCHEMA, "state": "NO_REQUEST", "authority_effect": "NONE"}
     request = load_json(request_path)
     validate_request(request)
     package = runtime / PACKAGE_REL
     if not package.is_file():
         return {
-            "schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+            "schema": CONSUMPTION_SCHEMA,
             "state": "WAITING_FOR_CUSTODY_PACKAGE",
             "task_id": TARGET_TASK,
             "authority_effect": "NONE_WAIT_ONLY"
@@ -127,7 +128,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
     mr_root_value = safe_env.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT")
     if not mr_root_value:
         return {
-            "schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+            "schema": CONSUMPTION_SCHEMA,
             "state": "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED",
             "task_id": TARGET_TASK,
             "authority_effect": "NONE_OBSERVATION_ONLY"
@@ -136,7 +137,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
     consumer = mr_root / MR_CONSUMER_REL
     if not consumer.is_file():
         return {
-            "schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+            "schema": CONSUMPTION_SCHEMA,
             "state": "MASTER_RECORDS_ORGANIZATION_RECORD_CONSUMER_NOT_MATERIALIZED",
             "task_id": TARGET_TASK,
             "master_records_root": str(mr_root),
@@ -175,7 +176,7 @@ def consume(source_root: Path | None, runtime_root: Path, env: Mapping[str, str]
             }
 
     receipt = {
-        "schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+        "schema": CONSUMPTION_SCHEMA,
         "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
         "task_id": TARGET_TASK,
         "request_id": request.get("request_id"),

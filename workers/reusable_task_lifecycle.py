@@ -14,6 +14,9 @@ ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-org
 LEGACY_ORGANIZATION_RECORD_REQUEST_SCHEMA = "stegverse.reusable-task-master-records-custody-request/v1"
 CUSTODY_REQUEST_SCHEMA = ORGANIZATION_RECORD_REQUEST_SCHEMA  # backwards-compatible alias for existing callers
 CUSTODY_RECORD_SCHEMA = "master-records.reusable-task-lifecycle-custody/v1"
+DESTINATION_RECORD_ACCEPTED_FIELD = "destination_record_accepted"
+# MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002: legacy acceptance field still read from older records.
+LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD = "destination_custody_accepted"
 ENTROPY_SCHEMA = "stegverse.reusable-task-entropy-recovery/v1"
 
 
@@ -110,7 +113,7 @@ def build_custody_request(*, manifest: dict[str, Any], trigger_receipt: dict[str
         "destination": "master-records/orchestration",
         "record_requested": True,
         "reconstruction_requested": True,
-        "destination_custody_accepted": False,
+        DESTINATION_RECORD_ACCEPTED_FIELD: False,
         "destination_acknowledgement_minted": False,
         "execution_authority_granted": False,
         "runtime_activation": False,
@@ -119,6 +122,12 @@ def build_custody_request(*, manifest: dict[str, Any], trigger_receipt: dict[str
         "evidence_bundle_sha256": stable_hash(bundle),
         "authority_effect": "NONE_SOURCE_REQUEST_ONLY",
     }
+
+
+def destination_record_accepted(record: dict[str, Any]) -> Any:
+    if DESTINATION_RECORD_ACCEPTED_FIELD in record:
+        return record[DESTINATION_RECORD_ACCEPTED_FIELD]
+    return record.get(LEGACY_DESTINATION_RECORD_ACCEPTED_FIELD)
 
 
 def verify_custody_record(record: dict[str, Any], request: dict[str, Any]) -> None:
@@ -130,8 +139,8 @@ def verify_custody_record(record: dict[str, Any], request: dict[str, Any]) -> No
         raise ValueError("Master Records organization record request hash mismatch")
     if record.get("evidence_bundle_sha256") != request.get("evidence_bundle_sha256"):
         raise ValueError("Master Records evidence bundle hash mismatch")
-    required_true = ("destination_custody_accepted", "destination_acknowledgement_minted", "independent_validation_complete", "reconstruction_confirmed")
-    if not all(record.get(key) is True for key in required_true):
+    required_true = ("destination_acknowledgement_minted", "independent_validation_complete", "reconstruction_confirmed")
+    if destination_record_accepted(record) is not True or not all(record.get(key) is True for key in required_true):
         raise ValueError("Master Records organization records and reconstruction predicates not satisfied")
     required_false = ("runtime_activation", "execution_authority_granted", "publication_authority_granted")
     if not all(record.get(key) is False for key in required_false):

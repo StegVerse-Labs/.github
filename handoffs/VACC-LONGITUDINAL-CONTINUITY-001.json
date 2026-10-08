@@ -17,7 +17,7 @@
     "StegVerse-Labs/Site#241"
   ],
   "canonical_worker_manifest": "StegVerse-Labs/Site/data/four-app-active-worker-assignments.json",
-  "custody_owner": "master-records/orchestration#15",
+  "record_owner": "master-records/orchestration#15",
   "requirements_transfer_evidence": "StegVerse-org/LLM-adapter#90 comment 5269862113",
   "required_capabilities_transferred": [
     "longitudinal_record_sufficiency_gate",
