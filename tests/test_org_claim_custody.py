@@ -83,7 +83,8 @@ class Env:
             (self.runtime / "control/claims-active.json").write_text(json.dumps(
                 {"schema": "stegverse.org-claims/v1", "generation": generation, "claims": []}), encoding="utf-8")
         self.org = org_ledger or base / "org-ledger"
-        self.org.mkdir(parents=True, exist_ok=True)
+        # A ledger the existing store initialized: an empty, verified chain.
+        (self.org / "receipts").mkdir(parents=True, exist_ok=True)
         self.repo = repo_ledger or base / f"{runtime_name}-repo-ledger"
 
     def consume(self, runner=subprocess.run, env=None, **kwargs):
@@ -240,7 +241,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         shutil.rmtree(absent.org)
         cases["absent"] = absent
         orphan = Env(self.base / "orphan")
-        (orphan.org / "receipts").mkdir()
+        (orphan.org / "receipts").mkdir(exist_ok=True)
         (orphan.org / "receipts/deadbeef.json").write_text("{}", encoding="utf-8")
         cases["orphan"] = orphan
         tampered = Env(self.base / "tampered")
@@ -253,7 +254,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         for name, env in cases.items():
             result = env.consume()
             self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
-            self.assertEqual(result["failed_predicate"], "LEDGER_HEAD_UNVERIFIED", name)
+            self.assertEqual(result["failed_predicate"], "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED", name)
             self.assertFalse(result["fence_issued"], name)
             self.assertFalse(result["organization_receipt_appended"], name)
             self.assertEqual(env.claims()["generation"], 7, name)
@@ -409,6 +410,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         floor_path = moved.source / "tasks/TASK-2026-0012.json"
         value = json.loads(floor_path.read_text(encoding="utf-8"))
         value["predecessor_provenance"]["allocator_fence"] = 11
+        value["predecessor_provenance"]["allocator_generation"] = 11
         floor_path.write_text(json.dumps(value), encoding="utf-8")
         self.assertEqual(moved.consume()["fencing_token"], 12)
 
@@ -509,6 +511,193 @@ class OrgClaimCustodyTests(unittest.TestCase):
         body = text[text.index("def default_runtime_root("):text.index("def default_node_marker(")]
         for forbidden in ("XDG_STATE_HOME", "LOCALAPPDATA", "Library", ".local", "Path.home"):
             self.assertNotIn(forbidden, body)
+
+    # RESPONSE-026 acceptance guards ------------------------------------------
+    def test_verified_empty_chain_with_valid_predecessor_floor_selects_unique_next_fence(self):
+        env = Env(self.base, generation=7)
+        result = env.consume()
+        self.assertEqual(result["fencing_token"], 8)
+        grants = env.grants()
+        self.assertEqual([row["boundary_evidence"]["fencing_token"] for row in grants], [8])
+        self.assertEqual(grants[0]["boundary_evidence"]["provenance_floor_sha256"],
+                         sha_file(ROOT / "tasks/TASK-2026-0012.json"))
+
+    def test_empty_directory_or_unvalidated_head_cannot_issue_fence(self):
+        empty = Env(self.base / "empty")
+        shutil.rmtree(empty.org / "receipts")
+        dangling = Env(self.base / "dangling")
+        (dangling.org / "HEAD.json").write_text(json.dumps(
+            {"organization": "StegVerse-Labs", "receipt_sha256": "sha256:" + "a" * 64}), encoding="utf-8")
+        foreign = Env(self.base / "foreign")
+        foreign.seed_grant("TASK-2026-9999", 9)
+        head = json.loads((foreign.org / "HEAD.json").read_text())
+        (foreign.org / "HEAD.json").write_text(json.dumps({**head, "organization": "StegVerse-org"}), encoding="utf-8")
+        for name, env in (("empty", empty), ("dangling", dangling), ("foreign", foreign)):
+            result = env.consume()
+            self.assertEqual(result["failed_predicate"], "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED", name)
+            self.assertFalse(result["fence_issued"], name)
+            self.assertFalse(result["organization_receipt_appended"], name)
+            self.assertEqual(env.claims()["generation"], 7, name)
+
+    def test_missing_or_conflicting_predecessor_claim_evidence_fails_closed(self):
+        missing = Env(self.base / "missing")
+        (missing.source / "tasks/TASK-2026-0012.json").unlink()
+        inconsistent = Env(self.base / "inconsistent")
+        path = inconsistent.source / "tasks/TASK-2026-0012.json"
+        value = json.loads(path.read_text())
+        value["predecessor_provenance"]["allocator_generation"] = 6
+        path.write_text(json.dumps(value), encoding="utf-8")
+        unrecorded = Env(self.base / "unrecorded")
+        (unrecorded.runtime / consumer.GRANT_DIR).mkdir(parents=True)
+        (unrecorded.runtime / consumer.GRANT_DIR / "TASK-2026-0009-G9.json").write_text(json.dumps(
+            {"task_id": "TASK-2026-0009", "fencing_tokens": [9]}), encoding="utf-8")
+        stolen = Env(self.base / "stolen")
+        (stolen.runtime / consumer.GRANT_DIR).mkdir(parents=True)
+        (stolen.runtime / consumer.GRANT_DIR / "TASK-2026-0008-G7.json").write_text(json.dumps(
+            {"task_id": "TASK-2026-0008", "fencing_tokens": [7]}), encoding="utf-8")
+        cited = Env(self.base / "cited")
+        cited.seed_grant("TASK-2026-9999", 9)
+        (cited.runtime / consumer.GRANT_DIR).mkdir(parents=True)
+        (cited.runtime / consumer.GRANT_DIR / "TASK-2026-9999-G9.json").write_text(json.dumps(
+            {"task_id": "TASK-2026-9999", "fencing_tokens": [9],
+             "organization_receipt_sha256": "sha256:" + "b" * 64}), encoding="utf-8")
+        for name, env in (("missing", missing), ("inconsistent", inconsistent), ("unrecorded", unrecorded),
+                          ("stolen", stolen), ("cited", cited)):
+            result = env.consume()
+            self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
+            self.assertEqual(result["failed_predicate"], "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED", name)
+            self.assertFalse(result["fence_issued"], name)
+            self.assertEqual(env.task("TASK-2026-0013")["status"], "queued", name)
+        # The predecessor's own fence in its own evidence is consistent history.
+        own = Env(self.base / "own")
+        (own.runtime / consumer.GRANT_DIR).mkdir(parents=True)
+        (own.runtime / consumer.GRANT_DIR / "TASK-2026-0011-G7.json").write_text(json.dumps(
+            {"task_id": "TASK-2026-0011", "fencing_tokens": [7]}), encoding="utf-8")
+        self.assertEqual(own.consume()["fencing_token"], 8)
+        # A runtime registry ahead of the verified history is not a new origin.
+        ahead = Env(self.base / "ahead", generation=9)
+        self.assertEqual(ahead.consume()["failed_predicate"], "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED")
+
+    def test_replay_returns_exact_receipt_without_second_fence(self):
+        env = Env(self.base)
+        first = env.consume()
+        head = env.chain()["head_sha256"]
+        for _ in range(3):
+            self.assertEqual(env.consume(), first)
+        self.assertEqual(env.chain()["head_sha256"], head)
+        self.assertEqual([r["boundary_evidence"]["fencing_token"] for r in env.grants()], [8])
+
+    def test_concurrent_materialization_cannot_duplicate_fence(self):
+        import threading
+        first = Env(self.base, runtime_name="runtime-a")
+        second = Env(self.base, source=first.source, org_ledger=first.org, runtime_name="runtime-b")
+        request_path = second.runtime / TARGETED_REL
+        request = json.loads(request_path.read_text())
+        request["target_task_id"] = "TASK-2026-0007"
+        request_path.write_text(json.dumps(request), encoding="utf-8")
+        barrier = threading.Barrier(2)
+        results = {}
+
+        def run(name, env):
+            barrier.wait()
+            results[name] = env.consume()
+
+        threads = [threading.Thread(target=run, args=(n, e)) for n, e in (("a", first), ("b", second))]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(120)
+        fences = [row["boundary_evidence"]["fencing_token"] for row in first.grants()]
+        self.assertEqual(fences, [8])
+        self.assertEqual(sorted(r["disposition"] for r in results.values()), ["ALLOW", "FAIL_CLOSED"])
+        loser = next(r for r in results.values() if r["disposition"] == "FAIL_CLOSED")
+        self.assertEqual(loser["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES")
+
+    def test_organization_receipt_precedes_active_projection(self):
+        self.test_claim_organization_receipt_precedes_task_active_projection()
+
+    def test_target_selector_does_not_bypass_admissibility(self):
+        env = Env(self.base)
+        path = env.source / "tasks/TASK-2026-0013.json"
+        value = json.loads(path.read_text())
+        for request in value["requirements"]["mandatory"]:
+            request["scope"]["dependency_surfaces"] = []
+        path.write_text(json.dumps(value), encoding="utf-8")
+        request_path = env.runtime / TARGETED_REL
+        request = json.loads(request_path.read_text())
+        request["source_catalog_floor"]["task_id"] = "TASK-2026-0012"
+        request["source_catalog_floor"]["requested_at"] = "2026-09-13T23:40:00Z"
+        request["source_catalog_floor"]["repository_full_name"] = "StegVerse-Labs/Site"
+        request["source_catalog_floor"]["required_dependency_surface"] = "site:current-iphone-kv-testflight-static-bootstrap"
+        task12 = json.loads((ROOT / "tasks/TASK-2026-0012.json").read_text())
+        request["source_catalog_floor"]["scope_sha256"] = consumer.stable_hash(
+            task12["requirements"]["mandatory"][0]["scope"])
+        request_path.write_text(json.dumps(request), encoding="utf-8")
+        result = env.consume()
+        self.assertEqual(result["disposition"], "DENY")
+        self.assertEqual(result["failed_predicate"], "NOT_ADMISSIBLE")
+        self.assertEqual(env.grants(), [])
+        self.assertEqual(env.task("TASK-2026-0013")["status"], "queued")
+
+    def test_no_host_derived_runtime_root_or_external_machine_gate(self):
+        with self.assertRaisesRegex(RuntimeError, "runtime_location_required_from_materializer"):
+            bootstrap.default_runtime_root({"HOME": "/h", "XDG_STATE_HOME": "/s"})
+        text = (ROOT / "scripts/consume_org_claim_allocator_request.py").read_text(encoding="utf-8")
+        for forbidden in ("urllib", "import socket", "import requests", "http://", "https://", "time.sleep", "Path.home"):
+            self.assertNotIn(forbidden, text)
+        for rel in (UNTARGETED_REL, TARGETED_REL):
+            value = json.loads((ROOT / rel).read_text())
+            self.assertFalse(value["second_machine_required"])
+            self.assertFalse(value["heartbeat_grants_execution_authority"])
+            self.assertFalse(value["network_source_fetch_allowed"])
+        result = Env(self.base).consume()
+        self.assertFalse(result["second_machine_required"])
+        self.assertFalse(result["network_source_fetch_performed"])
+
+    def test_all_attempted_actions_are_manifest_bound_and_terminally_dispositioned(self):
+        allow = Env(self.base / "allow")
+        deny = Env(self.base / "deny")
+        held = dict(json.loads((ROOT / "tasks/TASK-2026-0013.json").read_text())["requirements"]["mandatory"][0],
+                    task_id="TASK-2026-0099")
+        (deny.runtime / "control/claims-active.json").write_text(json.dumps(
+            {"schema": "stegverse.org-claims/v1", "generation": 7, "claims": [held]}), encoding="utf-8")
+        failed = Env(self.base / "failed", generation=3)
+        for env, disposition in ((allow, "ALLOW"), (deny, "DENY"), (failed, "FAIL_CLOSED")):
+            result = env.consume()
+            request_sha = consumer.stable_hash(json.loads((env.runtime / TARGETED_REL).read_text()))
+            self.assertEqual(result["disposition"], disposition)
+            self.assertEqual(result["request_sha256"], request_sha)
+            store = env.custody()["repository_store"]
+            receipts = [store.get(key) for key in store.list_prefix("receipts/")]
+            self.assertEqual(len(receipts), 1)
+            self.assertEqual(receipts[0]["evidence"]["disposition"], disposition)
+            self.assertEqual(receipts[0]["evidence"]["request_sha256"], request_sha)
+            self.assertEqual(receipts[0]["transition_class"],
+                             {"ALLOW": consumer.GRANTED, "DENY": consumer.REFUSED,
+                              "FAIL_CLOSED": consumer.FAIL_CLOSED}[disposition])
+            org_rows = env.chain()["receipts"]
+            self.assertEqual([r["boundary_evidence"]["disposition"] for r in org_rows], [disposition])
+            records = list((env.runtime / consumer.CONSUMPTION_DIR).glob("*.json"))
+            self.assertEqual(len(records), 1)
+            self.assertIn(json.loads(records[0].read_text())["state"], {"ATTEMPT_RECORDED", "FAIL_CLOSED"})
+
+    def test_source_CI_never_promoted_to_runtime(self):
+        env = Env(self.base)
+        outputs = [json.dumps(env.consume(), sort_keys=True)]
+        outputs += [p.read_text() for p in env.runtime.rglob("*.json") if "receipts" in p.parts]
+        outputs += [p.read_text() for p in env.org.rglob("*.json")]
+        for rel in ("scripts/consume_org_claim_allocator_request.py", "scripts/allocate_claims.py",
+                    "tasks/TASK-2026-0013.json", str(TARGETED_REL)):
+            outputs.append((ROOT / rel).read_text(encoding="utf-8"))
+        for text in outputs:
+            self.assertNotIn("SANDBOX_RUNTIME_OBSERVED", text)
+            self.assertNotIn('"runtime_observed": true', text)
+            self.assertNotIn('"runtime_execution_inferred": true', text)
+        record = json.loads((ROOT / "data/canonical-task-records/"
+                             "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001.json").read_text())
+        self.assertEqual(record["completion"], {"claimed": False, "validated": False, "runtime_observed": False})
+        self.assertFalse(json.loads((ROOT / "tasks/TASK-2026-0013.json").read_text())
+                         ["authority"]["runtime_execution_inferred"])
 
 
 if __name__ == "__main__":

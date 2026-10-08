@@ -81,7 +81,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
     def _consume(self, source: Path, runtime: Path, **kwargs):
         ledgers = runtime.parent / "ledgers"
-        (ledgers / "org").mkdir(parents=True, exist_ok=True)
+        (ledgers / "org" / "receipts").mkdir(parents=True, exist_ok=True)
         return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
                                 org_ledger_root=ledgers / "org", **kwargs)
 

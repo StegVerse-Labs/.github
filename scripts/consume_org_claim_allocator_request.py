@@ -8,8 +8,11 @@ Each is appended through the existing repository emitter and organization
 aggregation, at ledger roots supplied by the materializer and never derived.
 
 The fence is reconciled from the verified Organization claim-receipt chain, not
-from a checkout projection: next = max(chain_max, provenance_floor, runtime
-generation) + 1, and a runtime generation behind the issued fences fails closed.
+from a checkout projection: candidate = max(verified chain_max, verified
+provenance floor) + 1, computed and appended inside the organization ledger's
+existing append lock. A runtime generation behind the issued fences fails
+closed; one ahead of them carries fences the chain does not record and fails
+closed as unverified fence history.
 The Organization receipt is appended before the task's active projection and the
 runtime claim registry are written, so a projection never exists without it.
 """
@@ -40,6 +43,7 @@ GRANT_DIR = Path("receipts/sovereign-host/org-claim-allocator-grants")
 ALLOCATOR_REL = Path("scripts/allocate_claims.py")
 PROVENANCE_FLOOR_REL = Path("tasks/TASK-2026-0012.json")
 PROVENANCE_FLOOR_POINTER = "predecessor_provenance.allocator_fence"
+FENCE_HISTORY_UNVERIFIED = "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED"
 GRANTED = "ORGANIZATION_WORKER_CLAIM_GRANTED"
 REFUSED = "ORGANIZATION_WORKER_CLAIM_REFUSED"
 FAIL_CLOSED = "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED"
@@ -296,7 +300,7 @@ def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
     root = custody["organization_root"]
 
     def unverified(detail: str) -> ClaimFailClosed:
-        return ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", detail,
+        return ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, detail,
                                "supply an organization ledger root whose HEAD and chain verify")
 
     if not root.is_dir():
@@ -304,7 +308,13 @@ def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
     receipts = root / "receipts"
     head_path = root / "HEAD.json"
     if not head_path.is_file():
-        if receipts.is_dir() and any(receipts.glob("*.json")):
+        # An empty chain is verified only as a ledger the existing store
+        # initialized (its receipts/ directory exists and holds nothing). A bare
+        # empty directory is indistinguishable from a lost or unmaterialized
+        # ledger location and cannot vouch that no fence was ever issued.
+        if not receipts.is_dir():
+            raise unverified("organization ledger root is an uninitialized empty directory")
+        if any(receipts.glob("*.json")):
             raise unverified("organization receipts present without HEAD")
         return {"head_sha256": None, "receipts": []}
     try:
@@ -345,7 +355,7 @@ def chain_grants(chain: Mapping[str, Any]) -> list[dict[str, Any]]:
             continue
         fence = evidence.get("fencing_token")
         if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
-            raise ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", "granted receipt fence invalid",
+            raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "granted receipt fence invalid",
                                   "repair the organization claim receipt chain")
         grants.append(row)
     return grants
@@ -359,11 +369,14 @@ def provenance_floor(source: Path) -> dict[str, Any]:
         provenance = task["predecessor_provenance"]
         fence = provenance["allocator_fence"]
     except Exception as exc:
-        raise ClaimFailClosed("PROVENANCE_FLOOR_UNVERIFIED", str(PROVENANCE_FLOOR_REL),
+        raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "predecessor provenance unreadable: " + str(PROVENANCE_FLOOR_REL),
                               "materialize " + PROVENANCE_FLOOR_REL.as_posix()) from exc
-    if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
-        raise ClaimFailClosed("PROVENANCE_FLOOR_UNVERIFIED", "allocator_fence invalid",
-                              "repair " + PROVENANCE_FLOOR_REL.as_posix())
+    if (not isinstance(fence, int) or isinstance(fence, bool) or fence < 1
+            or provenance.get("allocator_generation") != fence
+            or not isinstance(provenance.get("allocator_task"), str)
+            or provenance.get("reactivation_or_scope_widening_allowed") is not False):
+        raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "predecessor provenance incomplete or inconsistent",
+                              "restore the immutable " + PROVENANCE_FLOOR_REL.as_posix() + " predecessor_provenance")
     return {
         "fence": fence,
         "provenance": PROVENANCE_FLOOR_REL.as_posix() + "#" + PROVENANCE_FLOOR_POINTER,
@@ -413,14 +426,16 @@ def write_projection(path: Path, value: Mapping[str, Any], evidence_ref: Path) -
 
 
 @contextmanager
-def claim_allocation_lock(root: Path):
-    """Serialize verify, fence and append for one organization ledger.
+def organization_append_lock(org: Any, root: Path):
+    """Hold the organization ledger's EXISTING append lock.
 
-    The aggregation takes the ledger's own append lock inside this one, so the
-    fence decided here and the receipt that issues it cannot be interleaved by
-    another allocator sharing the ledger.
+    `aggregate_transition` serializes on this same `.append.lock`. Holding it
+    here, and appending through `_aggregate_transition_locked` beneath it, puts
+    the chain read, the fence computation and the receipt that issues the fence
+    in one critical section, so a concurrent materialization cannot mint the
+    same fence. No second lock or CAS is introduced.
     """
-    with (root / ".claim-allocation.lock").open("a+b") as lock:
+    with (root / ".append.lock").open("a+b") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
             yield
@@ -428,13 +443,60 @@ def claim_allocation_lock(root: Path):
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
+def verify_fence_history(runtime: Path, grants: list[dict[str, Any]], floor: Mapping[str, Any]) -> None:
+    """Refuse unless chain grants, the floor and retained grant evidence agree."""
+    def conflict(detail: str) -> ClaimFailClosed:
+        return ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, detail,
+                               "reconcile retained claim evidence with the organization chain and predecessor floor")
+
+    by_fence: dict[int, str] = {}
+    for row in grants:
+        evidence = row["boundary_evidence"]
+        fence, task = evidence["fencing_token"], evidence.get("task_id")
+        if fence in by_fence and by_fence[fence] != task:
+            raise conflict(f"fence {fence} granted to both {by_fence[fence]} and {task}")
+        if fence <= floor["fence"]:
+            raise conflict(f"chain grant fence {fence} does not exceed predecessor floor {floor['fence']}")
+        cited = evidence.get("provenance_floor_sha256")
+        if cited is not None and cited != floor["provenance_record_sha256"]:
+            raise conflict("predecessor provenance changed since a recorded grant cited it")
+        by_fence[fence] = task
+    chain_receipts = {row["receipt_sha256"] for row in grants}
+    directory = runtime / GRANT_DIR
+    for path in sorted(directory.glob("*.json")) if directory.is_dir() else ():
+        try:
+            value = load_json(path)
+        except Exception as exc:
+            raise conflict("retained claim-grant evidence unreadable: " + path.name) from exc
+        if value.get("projection_only") is True:
+            continue
+        task = value.get("task_id")
+        fences = value.get("fencing_tokens")
+        if not isinstance(task, str) or not isinstance(fences, list) or not fences:
+            raise conflict("retained claim-grant evidence incomplete: " + path.name)
+        cited = value.get("organization_receipt_sha256")
+        if cited is not None and cited not in chain_receipts:
+            raise conflict("retained claim-grant evidence cites a receipt absent from the chain: " + path.name)
+        for fence in fences:
+            if not isinstance(fence, int) or isinstance(fence, bool):
+                raise conflict("retained claim-grant evidence fence invalid: " + path.name)
+            if by_fence.get(fence) == task:
+                continue
+            if fence in by_fence:
+                raise conflict(f"retained evidence {path.name} holds fence {fence} the chain granted to {by_fence[fence]}")
+            if fence > floor["fence"]:
+                raise conflict(f"retained evidence {path.name} holds fence {fence} the chain does not record")
+            if fence == floor["fence"] and task != floor["allocator_task"]:
+                raise conflict(f"retained evidence {path.name} holds the predecessor fence for {task}")
+
+
 CARRIED = ("disposition", "task_id", "fencing_token", "failed_predicate", "request_sha256",
-           "claim_scope_sha256", "organization_head_sha256", "cosv_task_vector")
+           "claim_scope_sha256", "organization_head_sha256", "cosv_task_vector", "provenance_floor_sha256")
 
 
 def record_transition(custody: Mapping[str, Any], transition_class: str, transition_id: str,
                       predecessor: str, evidence: dict[str, Any], *, organization: bool,
-                      identity: tuple[str, ...]) -> dict[str, Any]:
+                      identity: tuple[str, ...], lock_held: bool = False) -> dict[str, Any]:
     """Append the repository receipt, then the organization receipt consuming it.
 
     The organization receipt is built from the returned repository receipt, so
@@ -448,12 +510,21 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     organization_receipt = None
     if organization:
         recorded = repository_receipt.get("evidence") or {}
-        organization_receipt = custody["organization_ledger"].aggregate_transition(
-            repository_receipt, org_transition_class="REPO_STATE_PROPAGATION",
+        context = dict(
+            org_transition_class="REPO_STATE_PROPAGATION",
             predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
             successor_org_state_sha256=repository_receipt["successor_state_sha256"],
             boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED}},
-            authority_effect="NONE", ledger=custody["organization_root"])
+            authority_effect="NONE")
+        organization = custody["organization_ledger"]
+        if lock_held:
+            # Already inside the existing append lock: the same locked append
+            # aggregate_transition performs, without re-taking the lock.
+            organization_receipt = organization._aggregate_transition_locked(
+                repository_receipt, root=custody["organization_root"], **context)
+        else:
+            organization_receipt = organization.aggregate_transition(
+                repository_receipt, ledger=custody["organization_root"], **context)
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
 
 
@@ -595,7 +666,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         return prior
 
     def non_allow(transition_class: str, claim_task: str, predicate: str, detail: str, repair: str | None,
-                  *, organization: bool, head: str | None) -> dict[str, Any]:
+                  *, organization: bool, head: str | None, lock_held: bool = False) -> dict[str, Any]:
         transition_id = (transition_class.replace("_", "-") + "-"
                          + stable_hash({"task_id": claim_task, "request_sha256": request_hash,
                                         "failed_predicate": predicate})[:16])
@@ -616,7 +687,8 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         }
         receipts = record_transition(
             custody, transition_class, transition_id, "sha256:" + request_hash, evidence,
-            organization=organization, identity=("task_id", "request_sha256", "failed_predicate"))
+            organization=organization, identity=("task_id", "request_sha256", "failed_predicate"),
+            lock_held=lock_held)
         organization_receipt = receipts["organization_receipt"]
         body = {
             **base,
@@ -693,15 +765,20 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
 
     org_root = custody["organization_root"]
     head: str | None = None
+    chain_verified = False
     claim_task = target or "NONE"
     try:
         if not org_root.is_dir():
-            raise ClaimFailClosed("LEDGER_HEAD_UNVERIFIED", "organization ledger root absent",
+            raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "organization ledger root absent",
                                   "supply an organization ledger root whose HEAD and chain verify")
-        with claim_allocation_lock(org_root):
+        with organization_append_lock(custody["organization_ledger"], org_root):
             chain = verify_organization_chain(custody)
             head = chain["head_sha256"]
+            chain_verified = True
             grants = chain_grants(chain)
+            # Every check completes before any fence is computed.
+            floor = provenance_floor(source)
+            verify_fence_history(runtime, grants, floor)
             prior = prior_grant(grants, target) if target else None
             if prior is not None:
                 return allow(target, prior, None, replayed=True)
@@ -711,12 +788,11 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 predicate = plan.get("refusal_predicate") or "NO_ELIGIBLE_TASK"
                 return non_allow(REFUSED, claim_task, predicate,
                                  "allocator evaluated " + ("target " + target if target else "the ranked queue"),
-                                 None, organization=True, head=head)
+                                 None, organization=True, head=head, lock_held=True)
             claim_task = selected
             prior = prior_grant(grants, selected)
             if prior is not None:
                 return allow(selected, prior, None, replayed=True)
-            floor = provenance_floor(source)
             chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
             runtime_generation = plan.get("claim_registry_generation")
             if not isinstance(runtime_generation, int) or isinstance(runtime_generation, bool):
@@ -730,7 +806,12 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
                     f"runtime generation {runtime_generation} < issued fence {issued}",
                     "rematerialize the runtime claim registry at or beyond the issued fences")
-            fence = max(chain_max, floor["fence"], runtime_generation) + 1
+            if runtime_generation > issued:
+                raise ClaimFailClosed(
+                    FENCE_HISTORY_UNVERIFIED,
+                    f"runtime generation {runtime_generation} carries fences beyond the verified history {issued}",
+                    "record or retire the runtime fences the organization chain does not hold")
+            fence = issued + 1
             task = load_json(runtime / "tasks" / f"{selected}.json")
             requested = plan.get("requested_claims") or task["requirements"]["mandatory"]
             evidence = {
@@ -743,6 +824,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 "organization_head_sha256": head,
                 "chain_max_fence": chain_max,
                 "provenance_floor": floor,
+                "provenance_floor_sha256": floor["provenance_record_sha256"],
                 "runtime_claims_generation_observed": runtime_generation,
                 "request_id": request.get("request_id"),
                 "request_sha256": request_hash,
@@ -754,12 +836,14 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             predecessor = "sha256:" + stable_hash({"organization_head_sha256": head, "task_id": selected})
             receipts = record_transition(
                 custody, GRANTED, transition_id, predecessor, evidence, organization=True,
-                identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"))
+                identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"),
+                lock_held=True)
             return allow(selected, receipts["organization_receipt"], receipts, replayed=False)
     except ClaimFailClosed as exc:
-        verified = head is not None or (org_root.is_dir() and exc.predicate != "LEDGER_HEAD_UNVERIFIED")
+        # Recorded at the organization only on a chain that verified; an
+        # unverified chain is never extended.
         return non_allow(FAIL_CLOSED, claim_task, exc.predicate, exc.detail, exc.repair,
-                         organization=verified, head=head)
+                         organization=chain_verified, head=head)
 
 
 def consume(
