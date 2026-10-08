@@ -782,6 +782,44 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def organization_receipt_custody() -> Any:
+    """The existing Organization ledger verifier, imported the way its callers import it."""
+    from importlib import import_module
+    resident = str(Path(__file__).resolve().parents[1] / "resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0, resident)
+    return import_module("organization_batch_custody")
+
+
+def organization_receipt_gate(
+    result: Any,
+    *,
+    root: Any = None,
+    expected_transition_id: str | None = None,
+    expected_predecessor: str | None = None,
+) -> dict[str, Any]:
+    """Gate a successor on the verified Organization receipt of this exact state receipt.
+
+    The Organization ledger append is the transition's runtime reality.
+    organization_batch_custody.verified_organization_receipt reads the receipt
+    back from `root` (the ledger root the append used; ledger_root() when the
+    caller holds none) and binds it to the result's own state receipt digest.
+    Master Records reconstruction fields are evidence only and never gate it.
+    A refusal carries the typed DENY or FAIL_CLOSED disposition and commits
+    nothing.
+    """
+    custody = organization_receipt_custody()
+    try:
+        row = custody.verified_organization_record(
+            root, dict(result) if isinstance(result, Mapping) else result,
+            expected_transition_id=expected_transition_id,
+            expected_predecessor=expected_predecessor,
+        )
+    except custody.OrganizationReceiptRefused as exc:
+        return {"verified": False, "organization_receipt_sha256": None, "refusal": exc.refusal()}
+    return {"verified": True, "organization_receipt_sha256": row["receipt_sha256"], "refusal": None}
+
+
 def require_predecessor_master_records_organization_record(
     receipt_sha256: str | None,
     *,
@@ -884,4 +922,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "organization_receipt_gate", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]

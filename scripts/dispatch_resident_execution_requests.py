@@ -312,7 +312,7 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
         },
         required_evidence_manifest=required_evidence,
         proof_scope="SDK_EVALUATOR_GOVERNANCE_POSTURE_DISPATCH_VISIT_ONLY",
-        proof_ceiling="MASTER_RECORDS_VALIDATED_DISPATCH_VISIT_EVIDENCE_ONLY",
+        proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
     result = submit_state_receipt(state_receipt)
     return {
@@ -529,7 +529,7 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
     workers_root = source / "workers"
     if str(workers_root) not in sys.path:
         sys.path.insert(0, str(workers_root))
-    from canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+    from canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, sha256_uri, submit_state_receipt
     machine_result = row.get("result")
     first_failed_cycle = machine_result.get("first_failed_cycle") if isinstance(machine_result, dict) else None
     evidence_content = {
@@ -574,16 +574,13 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         },
         required_evidence_manifest=required_evidence,
         proof_scope="RICHARD_TEST3_DISPATCH_VISIT_ONLY",
-        proof_ceiling="MASTER_RECORDS_VALIDATED_DISPATCH_VISIT_EVIDENCE_ONLY",
+        proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
     result = submit_state_receipt(state_receipt)
-    closed = (
-        result.get("state") == "RECORDED"
-        and result.get("reconstruction_status") == "PASS"
-        and result.get("required_evidence_validation_status") == "PASS"
-        and bool(result.get("receipt_sha256"))
-        and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
-    )
+    # Organization ledger record closes the transition; Master Records
+    # reconstruction fields are evidence only and never gate it.
+    gate = organization_receipt_gate(result, expected_transition_id=transition_id)
+    closed = gate["verified"]
     return {
         "transition_id": transition_id,
         "selector": RICHARD_SELECTOR,
@@ -599,6 +596,7 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "receipt_sha256": result.get("receipt_sha256"),
         "reconstructed_receipt_sha256": result.get("reconstructed_receipt_sha256"),
         "reason": result.get("reason") if closed else "RICHARD_DISPATCH_MASTER_RECORDS_ORGANIZATION_RECORD_UNVERIFIED",
+        "refusal": gate["refusal"],
         "authority_effect": result.get("authority_effect", "NONE"),
     }
 

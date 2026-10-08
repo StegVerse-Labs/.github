@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import tempfile
 import unittest
 from types import SimpleNamespace
@@ -146,36 +147,26 @@ def organization_batch_governance_request() -> dict:
     request["request_sha256"] = mod.sha256({k: v for k, v in request.items() if k != "request_sha256"})
     return request
 
+REAL_CUSTODY_TRANSITION = mod._custody_transition
+
+
 def custody_rows():
-    counter = {"n": 0}
+    """The real producer: each transition appends to the tmp Organization ledger root."""
+    def real(**kwargs):
+        return REAL_CUSTODY_TRANSITION(**kwargs)
 
-    def fake(**kwargs):
-        counter["n"] += 1
-        digit = str(counter["n"])
-        receipt_sha = digit * 64
-        org_sha = ("a" if counter["n"] == 1 else "b") * 64
-        return {
-            "receipt": {
-                "transition_id": kwargs["transition_id"],
-                "transition_outcome": kwargs["outcome"],
-            },
-            "custody": {
-                "state": "RECORDED",
-                "reconstruction_status": "PASS",
-                "required_evidence_validation_status": "PASS",
-                "receipt_sha256": receipt_sha,
-                "reconstructed_receipt_sha256": receipt_sha,
-                "organization_receipt": {
-                    "receipt_sha256": org_sha,
-                    "previous_receipt_sha256": kwargs["prior"],
-                },
-            },
-        }
-
-    return fake
+    return real
 
 
 class GovernanceUniversalInTrBindingTests(unittest.TestCase):
+    def setUp(self):
+        # Ledger roots are supplied, never derived from the host.
+        ledger = tempfile.TemporaryDirectory()
+        self.addCleanup(ledger.cleanup)
+        env = patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ledger.name})
+        env.start()
+        self.addCleanup(env.stop)
+
     def transport(self):
         return {
             "origin": "TVC_RELAY_EGRESS",
@@ -208,11 +199,9 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
             result["resolved_ordered_transitions"],
             ["INGRESS_ADMITTED", "GOVERNANCE_DISPOSITION"],
         )
-        self.assertEqual(result["transition_closures"][1]["predecessor_receipt_sha256"], "1" * 64)
-        self.assertEqual(
-            result["transition_closures"][1]["organization_predecessor_receipt_sha256"],
-            "a" * 64,
-        )
+        first, second = result["transition_closures"][0], result["transition_closures"][1]
+        self.assertEqual(second["predecessor_receipt_sha256"], first["receipt_sha256"])
+        self.assertEqual(second["organization_predecessor_receipt_sha256"], first["organization_receipt_sha256"])
 
     def test_canonical_governance_deny_is_preserved_not_laundered(self):
         request = governance_request()
@@ -299,7 +288,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         self.assertEqual(receipt["transition_id"], "MANIFEST_DIRECTED_ORGANIZATION_APPEND_COMPLETED")
         self.assertEqual(
             receipt["governance_decision_ref_where_applicable"],
-            "sha256:" + "2" * 64,
+            "sha256:" + result["transition_closures"][1]["receipt_sha256"],
         )
         self.assertEqual(
             kwargs["parent_manifest"]["receipt_batch"]["release_condition"],

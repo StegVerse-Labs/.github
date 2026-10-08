@@ -230,23 +230,40 @@ def test_manifest_bound_test1_retains_and_forwards_exact_claim_fence_predecessor
     assert '"graph_predecessor_master_records_transition": predecessor' in manifest_body
 
 
-def test_manifest_bound_test1_predecessor_is_exact_master_records_organization_record():
+def claim_fence_row(monkeypatch, tmp_path):
+    """Claim/fence transition recorded by the real producer in a tmp Organization ledger root."""
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
+    import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
+    from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+
+    result = submit_state_receipt(build_state_receipt(
+        transition_id="WORKERCOORDINATOR_CLAIM_FENCE_BOUND", transition_sequence=1,
+        subject_or_correlation_id="SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+        transition_outcome="OBSERVED", prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None, transition_evidence={"fencing_token": 42}))
+    organization = result["organization_receipt"]
+    # Shape WorkerCoordinator._custody_assignment_transition projects.
+    return {
+        "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "state": result["state"],
+        "reconstruction_status": result["reconstruction_status"],
+        "required_evidence_validation_status": result["required_evidence_validation_status"],
+        "receipt_sha256": result["receipt_sha256"],
+        "organization_receipt_sha256": organization["receipt_sha256"],
+        "organization_source_transition_sha256": organization["source_transition_sha256"],
+    }
+
+
+def test_manifest_bound_test1_predecessor_is_exact_master_records_organization_record(monkeypatch, tmp_path):
     m = load_worker()
+    claim_fence = claim_fence_row(monkeypatch, tmp_path)
     task = {
         "task_id": m.PURPOSE_TASK_ID,
         "claim_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-G42",
         "worker_id": m.WORKER_ID,
         "worker_instance_id": "worker-instance:test1",
         "heartbeat_timing": {"fencing_token": 42},
-        "claim_fence_master_records_transition": {
-            "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-            "state": "RECORDED",
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": "a" * 64,
-            "reconstructed_receipt_sha256": "a" * 64,
-            "master_record_ref": "master-record:state-transition:sha256:" + "a" * 64,
-        },
+        "claim_fence_master_records_transition": claim_fence,
     }
     handoff = json.loads(PURPOSE_HANDOFF.read_text(encoding="utf-8"))
     contract = handoff["purpose_bound_worker_request"]
@@ -262,9 +279,8 @@ def test_manifest_bound_test1_predecessor_is_exact_master_records_organization_r
     predecessor = request["graph_predecessor_master_records_transition"]
     assert predecessor["transition_id"] == "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
     assert predecessor["state"] == "RECORDED"
-    assert predecessor["reconstruction_status"] == "PASS"
-    assert predecessor["required_evidence_validation_status"] == "PASS"
-    assert predecessor["receipt_sha256"] == predecessor["reconstructed_receipt_sha256"] == "a" * 64
+    assert predecessor["receipt_sha256"] == claim_fence["receipt_sha256"]
+    assert predecessor["organization_receipt_sha256"] == claim_fence["organization_receipt_sha256"]
 
 def test_workercoordinator_does_not_project_purpose_task_active_before_governed_activation():
     runtime = (ROOT / "heartbeat_runtime/worker_runtime_legacy.py").read_text(encoding="utf-8")
@@ -311,20 +327,14 @@ def test_purpose_bound_worker_cost_basis_resolves_existing_expiry_gate():
     assert budget == 4096
     assert basis == "TASK_CLASS_COST_BASIS"
 
-def test_purpose_post_claim_issues_fresh_tvc_warrant_through_existing_service():
+def test_purpose_post_claim_issues_fresh_tvc_warrant_through_existing_service(monkeypatch, tmp_path):
     m = load_worker()
+    claim_fence = claim_fence_row(monkeypatch, tmp_path)
     claim_id = "SHWP-SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001-G42"
     task = {
         "task_id": m.PURPOSE_TASK_ID,
         "claim_id": claim_id,
-        "claim_fence_master_records_transition": {
-            "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-            "state": "RECORDED",
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": "a" * 64,
-            "reconstructed_receipt_sha256": "a" * 64,
-        },
+        "claim_fence_master_records_transition": claim_fence,
     }
     commit_sha = "b" * 40
     calls = []

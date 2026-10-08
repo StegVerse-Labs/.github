@@ -16,7 +16,7 @@ import time
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .independent_oscillator import current_reference
-from workers.canonical_state_transition_custody import build_state_receipt, require_predecessor_master_records_organization_record, sha256_uri, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, require_predecessor_master_records_organization_record, sha256_uri, submit_state_receipt
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -209,6 +209,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_ORGANIZATION_RECORD_ONLY",
         )
         result = submit_state_receipt(receipt)
+        gate = organization_receipt_gate(result, expected_transition_id=transition_id)
         return {
             "state": result.get("state"),
             "reason": result.get("reason"),
@@ -219,9 +220,12 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             "required_evidence_validation_status": result.get("required_evidence_validation_status"),
             "required_evidence_count": result.get("required_evidence_count"),
             "master_record_ref": result.get("master_record_ref"),
-            "organization_receipt_sha256": result.get("organization_receipt_sha256"),
-            "organization_previous_receipt_sha256": result.get("organization_previous_receipt_sha256"),
-            "organization_source_transition_sha256": result.get("organization_source_transition_sha256"),
+            "organization_receipt_sha256": gate["organization_receipt_sha256"],
+            "organization_receipt_refusal": gate["refusal"],
+            "organization_previous_receipt_sha256": result.get("organization_previous_receipt_sha256")
+            or (result.get("organization_receipt") or {}).get("previous_receipt_sha256"),
+            "organization_source_transition_sha256": result.get("organization_source_transition_sha256")
+            or (result.get("organization_receipt") or {}).get("source_transition_sha256"),
             "organization_source_transition_id": result.get("organization_source_transition_id"),
             "organization_custody_state": result.get("organization_custody_state"),
             "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
@@ -236,16 +240,25 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         )
 
     @staticmethod
+    def _organization_record_refusal(row: Any, transition_id: str) -> dict[str, Any] | None:
+        """None when the Organization ledger verifiably recorded this transition, else its typed refusal.
+
+        The transition is real once the Organization ledger records it.
+        Master Records reconstruction fields are evidence only and never gate it.
+        """
+        if not isinstance(row, dict) or row.get("transition_id") != transition_id:
+            return {
+                "disposition": "DENY",
+                "failed_predicate": "ORGANIZATION_RECORD_TRANSITION_MISMATCH",
+                "retry_entrypoint": None,
+                "consequence_committed": False,
+                "authority_effect": "NONE_REFUSAL_ONLY",
+            }
+        return organization_receipt_gate(row, expected_transition_id=transition_id)["refusal"]
+
+    @staticmethod
     def _master_records_organization_record_recorded(row: Any, transition_id: str) -> bool:
-        return (
-            isinstance(row, dict)
-            and row.get("transition_id") == transition_id
-            and row.get("state") == "RECORDED"
-            and row.get("reconstruction_status") == "PASS"
-            and row.get("required_evidence_validation_status") == "PASS"
-            and isinstance(row.get("receipt_sha256"), str)
-            and row.get("receipt_sha256") == row.get("reconstructed_receipt_sha256")
-        )
+        return WorkerCoordinator._organization_record_refusal(row, transition_id) is None
 
     def _admit_atomic_constitutive_activation(
         self,
@@ -301,16 +314,20 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             or worker_claim.get("proposed_worker_instance_id") != proposed_worker_instance_id
         ):
             raise RuntimeError("atomic constitutive activation receipt pending claim mismatch")
-        if not self._master_records_organization_record_recorded(
+        refusal = self._organization_record_refusal(
             receipt.get("warrant_policy_master_records_transition"),
             "TV_TVC_WARRANT_POLICY_VERIFIED",
-        ):
-            raise RuntimeError("atomic constitutive activation TV/TVC closure incomplete")
-        if not self._master_records_organization_record_recorded(
+        )
+        if refusal is not None:
+            raise RuntimeError("atomic constitutive activation TV/TVC closure incomplete: "
+                               + refusal["disposition"] + " " + refusal["failed_predicate"])
+        refusal = self._organization_record_refusal(
             receipt.get("atomic_activation_master_records_transition"),
             "ACTIVATE_TASK_AND_CREATE_BIND_WORKER",
-        ):
-            raise RuntimeError("atomic constitutive activation Master Records organization record incomplete")
+        )
+        if refusal is not None:
+            raise RuntimeError("atomic constitutive activation Master Records organization record incomplete: "
+                               + refusal["disposition"] + " " + refusal["failed_predicate"])
         projection = receipt.get("activation_projection") if isinstance(receipt.get("activation_projection"), dict) else {}
         if (
             projection.get("task_pre_state") != "HANDOFF_READY"
@@ -548,13 +565,10 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             fencing_token=generation,
             worker_instance_id=worker_instance_id,
         )
-        assignment_custody_complete = (
-            assignment_custody.get("state") == "RECORDED"
-            and assignment_custody.get("reconstruction_status") == "PASS"
-            and assignment_custody.get("required_evidence_validation_status") == "PASS"
-            and isinstance(assignment_custody.get("receipt_sha256"), str)
-            and assignment_custody.get("receipt_sha256") == assignment_custody.get("reconstructed_receipt_sha256")
+        assignment_refusal = self._organization_record_refusal(
+            assignment_custody, str(assignment_custody.get("transition_id") or "")
         )
+        assignment_custody_complete = assignment_refusal is None
         if not assignment_custody_complete:
             self._event(
                 events,
@@ -575,9 +589,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 organization_source_transition_sha256=assignment_custody.get("organization_source_transition_sha256"),
                 organization_source_transition_id=assignment_custody.get("organization_source_transition_id"),
                 organization_custody_state=assignment_custody.get("organization_custody_state"),
+                organization_receipt_refusal=assignment_refusal,
                 authority_effect=False,
             )
             task["reconciliation_disposition"] = "MASTER_RECORDS_BOUNDARY"
+            task["reconciliation_refusal"] = assignment_refusal
             task["reconciliation_reason"] = str(assignment_custody.get("reason") or "WORKER_ASSIGNMENT_MASTER_RECORDS_ORGANIZATION_RECORD_INCOMPLETE")
             return False
 
@@ -633,15 +649,10 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             activation_result = activation_receipt.get("result") if isinstance(activation_receipt, dict) else None
             transition = activation_result.get("atomic_activation_master_records_transition") if isinstance(activation_result, dict) else None
             projection = activation_result.get("activation_projection") if isinstance(activation_result, dict) else None
+            activation_refusal = self._organization_record_refusal(transition, "ACTIVATE_TASK_AND_CREATE_BIND_WORKER")
             closure_complete = (
                 activation_receipt.get("state") == "AUTHENTIC_ATOMIC_TASK_WORKER_ACTIVATION_ADMITTED"
-                and isinstance(transition, dict)
-                and transition.get("transition_id") == "ACTIVATE_TASK_AND_CREATE_BIND_WORKER"
-                and transition.get("state") == "RECORDED"
-                and transition.get("reconstruction_status") == "PASS"
-                and transition.get("required_evidence_validation_status") == "PASS"
-                and isinstance(transition.get("receipt_sha256"), str)
-                and transition.get("receipt_sha256") == transition.get("reconstructed_receipt_sha256")
+                and activation_refusal is None
                 and isinstance(projection, dict)
                 and projection.get("task_pre_state") == "HANDOFF_READY"
                 and projection.get("task_post_state") == "ACTIVE"
@@ -660,6 +671,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                     task_id=task_id,
                     claim_id=claim_id,
                     fencing_token=generation,
+                    organization_receipt_refusal=activation_refusal,
                     authority_effect=False,
                 )
                 return False

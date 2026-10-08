@@ -7,9 +7,13 @@ on:
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
+      - 'tests/test_organization_manifest_ingress_append_owner.py'
+      - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
       - 'resident-runtime/aggregate_repo_transition.py'
+      - 'resident-runtime/organization_batch_custody.py'
+      - 'workers/manifest_state_transition_intr_ingress.py'
       - '.github/workflows/org-runtime-boundary.yml'
   push:
     branches: [main]
@@ -18,9 +22,13 @@ on:
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
+      - 'tests/test_organization_manifest_ingress_append_owner.py'
+      - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
       - 'resident-runtime/aggregate_repo_transition.py'
+      - 'resident-runtime/organization_batch_custody.py'
+      - 'workers/manifest_state_transition_intr_ingress.py'
       - '.github/workflows/org-runtime-boundary.yml'
   workflow_dispatch:
 
@@ -61,6 +69,13 @@ jobs:
       # against temporary ledgers only.
       - name: Validate organization receipt revision binding
         run: python -m unittest -v tests/test_organization_manifest_ingress_rule_ref.py
+
+      # Both ingress appends go through the organization ledger's own owner,
+      # `aggregate_transition`: batch parent manifest applicability, the shared
+      # heartbeat reference, the typed partial commit and packet-release
+      # equivalence with the worker path. Temporary ledgers only.
+      - name: Validate organization append owner from manifest ingress
+        run: python -m unittest -v tests/test_organization_manifest_ingress_append_owner.py
 
       # One manifest is one transition however many times it is delivered: a
       # replay returns the recorded receipts, against temporary ledgers only.

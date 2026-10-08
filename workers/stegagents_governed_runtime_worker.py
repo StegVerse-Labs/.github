@@ -301,14 +301,40 @@ def build_test3_request(task: Mapping[str, Any], handoff: Mapping[str, Any], mod
     }
 
 
+class OrganizationReceiptRefused(RuntimeError):
+    """A successor gate refused: the Organization receipt did not verify.
+
+    Carries the typed DENY or FAIL_CLOSED refusal of the existing Organization
+    ledger verifier; nothing is committed.
+    """
+
+    def __init__(self, transition_id: str, refusal: Mapping[str, Any]):
+        super().__init__(f"{transition_id} Organization receipt refused: "
+                         f"{refusal.get('disposition')} {refusal.get('failed_predicate')}")
+        self.refusal = dict(refusal)
+
+
+def _require_organization_receipt(row: Mapping[str, Any], transition_id: str) -> None:
+    """The verified Organization receipt of this exact state receipt closes the transition.
+
+    Master Records reconstruction fields are evidence only and never gate it.
+    """
+    from importlib import import_module
+    resident = str(Path(__file__).resolve().parents[1] / "resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0, resident)
+    custody = import_module("organization_batch_custody")
+    try:
+        custody.verified_organization_record(None, dict(row), expected_transition_id=transition_id)
+    except custody.OrganizationReceiptRefused as exc:
+        raise OrganizationReceiptRefused(transition_id, exc.refusal()) from exc
+
+
 def _require_closed_transition(row: Any, transition_id: str) -> None:
     require(isinstance(row, Mapping), f"{transition_id} transition missing")
     require(row.get("transition_id") == transition_id, f"{transition_id} transition id mismatch")
     require(row.get("state") == "RECORDED", f"{transition_id} state not RECORDED")
-    require(row.get("reconstruction_status") == "PASS", f"{transition_id} reconstruction not PASS")
-    require(row.get("required_evidence_validation_status") == "PASS", f"{transition_id} required evidence not PASS")
-    digest = row.get("receipt_sha256")
-    require(isinstance(digest, str) and digest == row.get("reconstructed_receipt_sha256"), f"{transition_id} digest mismatch")
+    _require_organization_receipt(row, transition_id)
 
 
 def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
@@ -705,10 +731,7 @@ def _closed_transition(row: Any, transition_id: str) -> dict[str, Any]:
     require(isinstance(row, Mapping), f"{transition_id} transition missing")
     require(row.get("transition_id") == transition_id, f"{transition_id} transition mismatch")
     require(row.get("state") == "RECORDED", f"{transition_id} state not RECORDED")
-    require(row.get("reconstruction_status") == "PASS", f"{transition_id} reconstruction not PASS")
-    require(row.get("required_evidence_validation_status") == "PASS", f"{transition_id} required evidence not PASS")
-    digest = row.get("receipt_sha256")
-    require(isinstance(digest, str) and digest == row.get("reconstructed_receipt_sha256"), f"{transition_id} digest mismatch")
+    _require_organization_receipt(row, transition_id)
     return dict(row)
 
 
@@ -1054,6 +1077,7 @@ def fail_closed(exc: Exception) -> dict[str, Any]:
         },
         "error_type": type(exc).__name__,
         "error": str(exc),
+        **({"organization_receipt_refusal": exc.refusal} if isinstance(exc, OrganizationReceiptRefused) else {}),
         "authority_effect": "NONE_FAIL_CLOSED",
     }
 

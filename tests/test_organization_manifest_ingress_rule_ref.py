@@ -61,20 +61,6 @@ def _load():
 ingress = _load()
 
 
-def _organization_append(repository_receipt, org_transition_class, predecessor, successor,
-                         boundary_evidence, authority_effect, hb_epoch=None):
-    """Test-only adapter onto the organization ledger's real append.
-
-    The ingress calls `aggregate_repo_transition.append`, which that module does
-    not define (see the PR body). This forwards to `aggregate_transition`, so the
-    receipt body and its digest rule are the ledger's own.
-    """
-    return ingress.organization_ledger.aggregate_transition(
-        repository_receipt, org_transition_class=org_transition_class,
-        predecessor_org_state_sha256=predecessor, successor_org_state_sha256=successor,
-        boundary_evidence=boundary_evidence, authority_effect=authority_effect)
-
-
 class RecomputationRuleRefTest(unittest.TestCase):
     def test_github_sha_is_used_in_actions(self):
         self.assertEqual(
@@ -107,12 +93,8 @@ class ReceiptBindingTest(unittest.TestCase):
             "STEGVERSE_REPO_LEDGER_ROOT": str(base / "repo"),
         })
         self._env.start()
-        self._append = mock.patch.object(ingress.organization_ledger, "append",
-                                         _organization_append, create=True)
-        self._append.start()
 
     def tearDown(self):
-        self._append.stop()
         self._env.stop()
         self._temp.cleanup()
 

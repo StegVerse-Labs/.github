@@ -118,9 +118,11 @@
   ],
   "master_records_progression_rule": [
     "state=RECORDED",
-    "reconstruction_status=PASS",
-    "required_evidence_validation_status=PASS",
-    "receipt_sha256==reconstructed_receipt_sha256"
+    "organization_receipt=resident-runtime/organization_batch_custody.py::verified_organization_receipt(root=THE_LEDGER_ROOT_THE_APPEND_USED)",
+    "organization_receipt.source_transition_sha256==sha256:receipt_sha256",
+    "organization_receipt.source_transition_id==transition_id",
+    "refusal=DENY_IF_DETERMINISTIC_ELSE_FAIL_CLOSED_WITH_RETRY_ENTRYPOINT;consequence_committed=false",
+    "master_records_reconstruction=EVIDENCE_ONLY_NEVER_A_PROGRESSION_GATE"
   ],
   "completion": {
     "claimed": false,
@@ -401,5 +403,17 @@
     "source_repair_pr": 2696,
     "source_repair_exact_head": "3a188d0608337bdf23d1f02b9f6c965792ec1df4",
     "source_repair_merge": "98cef18d7107f1bf234567e2ee7f9a6ff0a2f30e"
+  },
+  "superseded_master_records_progression_rule": {
+    "value": [
+      "state=RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "superseded_at_generation": 297,
+    "superseded_by": "master_records_progression_rule",
+    "reason": "StegVerse-Labs/.github#3012 R1: the verified Organization receipt, not Master Records reconstruction PASS, gates successor transitions (organization_ledger_is_runtime_reality=true; master_records_is_transition_gate=false).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

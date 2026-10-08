@@ -15,8 +15,38 @@ assert SPEC and SPEC.loader
 SPEC.loader.exec_module(worker)
 
 
-def invocation():
+def claim_fence(monkeypatch, tmp_path):
+    """A claim/fence transition recorded by the real producer in a tmp Organization ledger root."""
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
+    from canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+
+    result = submit_state_receipt(build_state_receipt(
+        transition_id="WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        transition_sequence=1,
+        subject_or_correlation_id=worker.TASK_ID,
+        transition_outcome="OBSERVED",
+        prior_state_ref_or_hash=None,
+        resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={"claim_id": "CLAIM-SYNTH-001", "fencing_token": 122},
+    ))
+    organization = result["organization_receipt"]
+    # Shape WorkerCoordinator._custody_assignment_transition projects.
     return {
+        "transition_id": "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+        "state": result["state"],
+        "receipt_sha256": result["receipt_sha256"],
+        "reconstruction_status": result["reconstruction_status"],
+        "required_evidence_validation_status": result["required_evidence_validation_status"],
+        "organization_receipt_sha256": organization["receipt_sha256"],
+        "organization_previous_receipt_sha256": organization["previous_receipt_sha256"],
+        "organization_source_transition_sha256": organization["source_transition_sha256"],
+        "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+    }
+
+
+def invocation(predecessor=None):
+    value = {
         "schema": "stegverse.worker-invocation/v0.1",
         "heartbeat_epoch": 121,
         "task": {
@@ -43,6 +73,9 @@ def invocation():
             }
         },
     }
+    if predecessor is not None:
+        value["task"]["claim_fence_master_records_transition"] = predecessor
+    return value
 
 
 def test_runtime_worker_requires_fresh_claim_and_fence(monkeypatch):
@@ -65,7 +98,7 @@ def test_runtime_worker_completes_only_after_exact_master_records_organization_r
             "reconstructed_receipt_sha256": "a" * 64,
         },
     })
-    stdin = io.StringIO(json.dumps(invocation()))
+    stdin = io.StringIO(json.dumps(invocation(claim_fence(monkeypatch, tmp_path))))
     stdout = io.StringIO()
     monkeypatch.setattr(sys, "stdin", stdin)
     monkeypatch.setattr(sys, "stdout", stdout)
@@ -90,7 +123,7 @@ def test_runtime_worker_blocks_without_recorded_master_records_organization_reco
         "reason": "MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED",
         "master_records": {"state": "BOUNDARY"},
     })
-    stdin = io.StringIO(json.dumps(invocation()))
+    stdin = io.StringIO(json.dumps(invocation(claim_fence(monkeypatch, tmp_path))))
     stdout = io.StringIO()
     monkeypatch.setattr(sys, "stdin", stdin)
     monkeypatch.setattr(sys, "stdout", stdout)
@@ -166,10 +199,20 @@ def test_runtime_worker_passes_exact_claim_fence_receipt_to_ingestion(tmp_path, 
             },
         }
     monkeypatch.setattr(worker, "custody_ingestion", fake_custody)
-    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(invocation())))
+    predecessor = claim_fence(monkeypatch, tmp_path)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(invocation(predecessor))))
     monkeypatch.setattr(sys, "stdout", io.StringIO())
     assert worker.main() == 0
-    assert captured["predecessor_receipt_sha256"] == "b" * 64
+    assert captured["predecessor_receipt_sha256"] == predecessor["receipt_sha256"]
+
+
+def test_runtime_worker_refuses_master_records_pass_without_organization_receipt(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
+    monkeypatch.setattr(worker, "custody_ingestion", lambda package, **kwargs: (_ for _ in ()).throw(
+        AssertionError("no effect on a refused predecessor")))
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(invocation())))
+    assert worker.main() == 7
+    assert '"disposition": "FAIL_CLOSED"' in capsys.readouterr().err
 
 
 def test_generic_workercoordinator_carries_closed_claim_fence_into_worker_task():

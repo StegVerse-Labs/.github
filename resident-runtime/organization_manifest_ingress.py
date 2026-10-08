@@ -20,7 +20,8 @@ The sequence is the one the binding declares, in that order:
     resident-runtime/sdk_manifest_crossing.py::cross       admission
     org-boundary/runtime/process_boundary.py               processing
     .stegverse/transition-ledger/emit.py::append           repository receipt
-    resident-runtime/aggregate_repo_transition.py::append  organization receipt
+    resident-runtime/aggregate_repo_transition.py::aggregate_transition
+                                                           organization receipt
     stegverse.manifest_state_transition_runtime.admit_runtime_result
 
 The two ledger levels are both written, in that order, because the transition
@@ -120,6 +121,16 @@ _REVISION = re.compile(r"^[0-9a-f]{40}([0-9a-f]{24})?$")
 #: secret. The full result stays where the run already keeps it.
 STEP_SUMMARY_FIELDS = ("receipt_id", "receipt_sha256", "recomputation_rule_ref",
                        "run_id", "commit")
+RETRY_ENTRYPOINT = "resident-runtime/organization_manifest_ingress.py::receive"
+#: A repository receipt written and an organization append that raised is a
+#: partial commit. It is returned as this typed disposition, never as an
+#: exception: the repository level did commit, and an escaping exception would
+#: let a caller read the submission as one nothing recorded.
+APPEND_NOT_COMMITTED = "ORGANIZATION_APPEND_NOT_COMMITTED"
+APPEND_NOT_COMMITTED_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
+APPEND_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+UNOBSERVED = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT_MANIFEST_IS_VALID"
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -191,6 +202,11 @@ crossing_module = _module("sdk_manifest_crossing", "resident-runtime/sdk_manifes
 repository_ledger = _module("repo_transition_emit", ".stegverse/transition-ledger/emit.py")
 organization_ledger = _module("aggregate_repo_transition",
                               "resident-runtime/aggregate_repo_transition.py")
+# The batch parent manifest is validated by its owner, the same module the
+# organization append imports by name when it releases a packet.
+if str(ROOT / "resident-runtime") not in sys.path:
+    sys.path.insert(0, str(ROOT / "resident-runtime"))
+import organization_batch_custody as batch_custody  # noqa: E402
 
 
 def canon(value: Any) -> bytes:
@@ -262,8 +278,180 @@ def refusal_record(failed_predicate: str, detail: str,
     }
 
 
+def _repository_receipt_read_back(receipt: Mapping[str, Any]) -> str | None:
+    """The repository receipt's digest, only if the store returns those exact bytes.
+
+    The receipt returned by the append is what the call *meant* to write; the
+    one read back from the repository ledger store by its own digest is what
+    was written. Anything short of an identical, self-verifying row is `None`.
+    """
+    try:
+        digest = receipt["receipt_sha256"]
+        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        stored = store.get(repository_ledger.ledger_store.receipt_key(digest))
+        body = {key: value for key, value in stored.items() if key != "receipt_sha256"}
+        if stored != dict(receipt) or repository_ledger.sha(body) != digest:
+            return None
+        return digest
+    except Exception:  # noqa: BLE001 -- any failure to read is "not observed"
+        return None
+
+
+def _organization_receipt_read_back(source_sha256: Any) -> tuple[Any, str | None]:
+    """Whether the organization ledger holds a receipt consuming `source_sha256`.
+
+    Read from the ledger's own HEAD and receipts directory. Every receipt read
+    must verify against its own digest; a ledger that cannot be read or does
+    not verify is unobserved, not uncommitted.
+    """
+    try:
+        root = organization_ledger.ledger_root()
+        head_path = root / "HEAD.json"
+        head = organization_ledger.load(head_path) if head_path.exists() else None
+        if head is not None and not isinstance(head.get("receipt_sha256"), str):
+            return UNOBSERVED, None
+        found = None
+        receipts = root / "receipts"
+        for path in sorted(receipts.glob("*.json")) if receipts.is_dir() else []:
+            row = organization_ledger.load(path)
+            body = dict(row)
+            claimed = body.pop("receipt_sha256", None)
+            if not isinstance(claimed, str) or claimed != organization_ledger.sha(body) \
+                    or path.stem != claimed.split(":", 1)[-1]:
+                return UNOBSERVED, None
+            if row.get("source_transition_sha256") == source_sha256:
+                found = claimed
+        if head is not None and not (receipts / (head["receipt_sha256"].split(":", 1)[-1] + ".json")).is_file():
+            return UNOBSERVED, None
+        return (True, found) if found else (False, None)
+    except Exception:  # noqa: BLE001 -- any failure to read is "not observed"
+        return UNOBSERVED, None
+
+
+def organization_append_not_committed(transition_id: str, repository_receipt: Mapping[str, Any],
+                                      exc: BaseException, *, hb_epoch: int | None,
+                                      rule_ref: str) -> dict[str, Any]:
+    """The typed disposition of a repository receipt whose organization append raised.
+
+    Each level reports only what was read back from its own store. The
+    repository level is never reported uncommitted -- its append returned --
+    so at worst it is unobserved; both levels are never claimed uncommitted.
+    The organization *runtime* transition did not complete either way: the
+    append raised before returning its record.
+    """
+    repository_sha256 = _repository_receipt_read_back(repository_receipt)
+    organization_committed, organization_sha256 = _organization_receipt_read_back(
+        repository_receipt.get("receipt_sha256") if isinstance(repository_receipt, Mapping) else None)
+    variable = getattr(exc, "variable", None)
+    evidence_refs = [f"transition_id:{transition_id}", f"recomputation_rule_ref:{rule_ref}",
+                     f"organization_append_error_class:{type(exc).__name__}"]
+    if repository_sha256:
+        evidence_refs.append("repository_ledger:" + repository_ledger.ledger_store.receipt_key(repository_sha256))
+    if organization_sha256:
+        evidence_refs.append("organization_ledger:receipts/" + organization_sha256.split(":", 1)[-1] + ".json")
+    record = {
+        "schema": RESULT_SCHEMA_ORG,
+        "organization": "StegVerse-Labs",
+        "receiving_operation": OPERATION_ID,
+        "disposition": "FAIL_CLOSED",
+        "received": False,
+        "failure_code": APPEND_NOT_COMMITTED,
+        "failed_predicate": APPEND_NOT_COMMITTED_PREDICATE,
+        "detail": f"{type(exc).__name__}: {exc}",
+        "transition_id": transition_id,
+        "repository_receipt_committed": True if repository_sha256 else UNOBSERVED,
+        "organization_receipt_committed": organization_committed,
+        "organization_runtime_transition_committed": False,
+        "organization_receipt_observed": False,
+        "required_evidence_or_repair": (
+            "supply the organization ledger root as " + variable if variable else
+            "repair the organization append's failure (" + type(exc).__name__
+            + ") and resubmit the same manifest"),
+        "retry_entrypoint": RETRY_ENTRYPOINT,
+        "owning_existing_goal": APPEND_OWNING_GOAL,
+        "next_attempt": {
+            "entrypoint": RETRY_ENTRYPOINT,
+            "resubmit": "THE_SAME_MANIFEST_WITH_THE_SAME_HB_EPOCH",
+            # The resubmission finds the retained repository receipt and
+            # completes the organization level from it, at its epoch.
+            "repository_level_exact_retry": "RECORDED_RECEIPT_REUSED_NOT_DUPLICATED",
+            "organization_level_exact_retry": "EXACT_SOURCE_REUSED_NOT_DUPLICATED",
+            "awaits_an_external_machine": False,
+        },
+        "evidence_refs": evidence_refs,
+        "recomputation_rule_ref": rule_ref,
+        "hb_epoch": hb_epoch,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+    if repository_sha256:
+        record["repository_receipt_sha256"] = repository_sha256
+    if organization_sha256:
+        record["organization_receipt_sha256"] = organization_sha256
+    return record
+
+
+def _append_both_levels(transition_id: str, transition_class: str, predecessor: str,
+                        successor: str, evidence: Mapping[str, Any],
+                        organization_evidence: Mapping[str, Any], *, hb_epoch: int | None,
+                        parent_manifest: Mapping[str, Any] | None,
+                        rule_ref: str,
+                        idempotent_on: tuple[str, ...] | None = None) -> dict[str, Any]:
+    """Repository receipt first, then the organization append that consumes it.
+
+    The organization append is the ledger's own owner,
+    `aggregate_transition`, under its own lock. With `idempotent_on` a
+    transition the repository chain already records is returned rather than
+    minted again (a mismatch raises `ledger_receipt_collision` before anything
+    is written). The organization receipt takes its epoch from the repository
+    receipt it consumes, so one ingress carries one heartbeat epoch at both
+    levels, and a replay completing a partial commit carries the first
+    attempt's. If the organization append raises, the result is the typed
+    partial-commit record.
+    """
+    repository_receipt = repository_ledger.append(
+        transition_id, transition_class, predecessor, successor, dict(evidence),
+        "NONE", hb_epoch=hb_epoch, idempotent_on=idempotent_on)
+    hb_epoch = repository_receipt["hb_reference"]["epoch"]
+    try:
+        organization_receipt = organization_ledger.aggregate_transition(
+            receipt=repository_receipt,
+            org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=predecessor,
+            successor_org_state_sha256=successor,
+            boundary_evidence=dict(organization_evidence),
+            authority_effect="NONE",
+            hb_epoch=hb_epoch,
+            parent_manifest=dict(parent_manifest) if parent_manifest is not None else None)
+    except Exception as exc:  # noqa: BLE001 -- the partial commit is the disposition
+        return {"transition_id": transition_id, "repository_receipt": repository_receipt,
+                "organization_receipt": None,
+                "not_committed": organization_append_not_committed(
+                    transition_id, repository_receipt, exc, hb_epoch=hb_epoch,
+                    rule_ref=rule_ref)}
+    return {"transition_id": transition_id, "repository_receipt": repository_receipt,
+            "organization_receipt": organization_receipt, "not_committed": None}
+
+
+def parent_manifest_applicability(request: Mapping[str, Any]) -> tuple[dict[str, Any] | None,
+                                                                        dict[str, Any]]:
+    """The governing batch parent manifest this admitted request declares, if any.
+
+    Returns `(parent_manifest, organization_evidence)`. A request declaring no
+    part of an organization batch is not governed by one, and its organization
+    receipt says so and names what was absent. A request declaring any part
+    must validate in full: a malformed or mismatched declaration raises the
+    owner's own typed failure code, before anything is appended.
+    """
+    absent = batch_custody.organization_batch_parent_manifest_absent_predicate(request)
+    if absent is not None:
+        return None, {"parent_manifest_applicable": False,
+                      "parent_manifest_absent_predicate": absent}
+    return batch_custody.organization_batch_parent_manifest(request), {}
+
+
 def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
-                    rule_ref: str) -> dict[str, Any]:
+                    rule_ref: str, parent_manifest: Mapping[str, Any] | None = None,
+                    organization_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Append a refusal at both levels, in the order the replay rule requires.
 
     The repository ledger records it first and the organization ledger consumes
@@ -276,27 +464,35 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-REFUSED-" + sha(dict(record))[:16]
     # A refusal is identified by its own record, so the same refusal delivered
     # again returns the receipts already recorded rather than a second pair.
-    repository_receipt = repository_ledger.append(
-        transition_id,
-        REFUSED_CLASS, predecessor, successor, dict(record), "NONE", hb_epoch=hb_epoch,
-        idempotent_on=("failed_predicate", "detail"))
-    organization_receipt = organization_ledger.append(
-        repository_receipt, "REPO_STATE_PROPAGATION", predecessor, successor,
+    return _append_both_levels(
+        transition_id, REFUSED_CLASS, predecessor, successor, record,
         {"receiving_operation": OPERATION_ID,
          "intended_action": INTENDED_ACTION,
          "disposition": "DENY",
          "failed_predicate": record["failed_predicate"],
-         "recomputation_rule_ref": rule_ref},
-        "NONE", hb_epoch=repository_receipt["hb_reference"]["epoch"])
-    return {"transition_id": transition_id,
-            "repository_receipt": repository_receipt,
-            "organization_receipt": organization_receipt}
+         "recomputation_rule_ref": rule_ref,
+         **dict(organization_evidence or {})},
+        hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
+        idempotent_on=("failed_predicate", "detail"))
 
 
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
-             hb_epoch: int | None = None, **extra: Any) -> dict[str, Any]:
+             hb_epoch: int | None = None, parent_manifest: Mapping[str, Any] | None = None,
+             organization_evidence: Mapping[str, Any] | None = None,
+             **extra: Any) -> dict[str, Any]:
     record = refusal_record(failed_predicate, detail, manifest)
-    appended = _record_refusal(record, hb_epoch, rule_ref)
+    appended = _record_refusal(record, hb_epoch, rule_ref, parent_manifest,
+                               organization_evidence)
+    if appended["not_committed"] is not None:
+        # The refusal reached the repository ledger and not the organization
+        # ledger. Its own predicate is kept under its own name.
+        return {**appended["not_committed"],
+                "refusal_failed_predicate": failed_predicate,
+                "refusal_detail": detail,
+                "refusal_transition_class": REFUSED_CLASS,
+                "refusal_transition_id": appended["transition_id"],
+                "refusal_recorded": False,
+                **extra}
     return {
         "schema": RESULT_SCHEMA_ORG,
         "organization": "StegVerse-Labs",
@@ -622,6 +818,17 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         return refused("CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION", str(exc),
                        request_sha256=request.get("request_sha256"))
 
+    # Whether a governing batch parent manifest applies is decided from the
+    # admitted request, before anything is appended. A declaration that does
+    # not validate is refused with its owner's own failure code.
+    try:
+        parent_manifest, organization_evidence = parent_manifest_applicability(request)
+    except ValueError as exc:
+        return refused(PARENT_MANIFEST_INVALID_PREDICATE, str(exc), failure_code=str(exc),
+                       request_sha256=request.get("request_sha256"))
+    refused = functools.partial(refused, parent_manifest=parent_manifest,
+                                organization_evidence=organization_evidence)
+
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)
     except SystemExit as exc:
@@ -671,29 +878,35 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
         transition_id, OPERATION_ID) is not None
     try:
-        repository_receipt = repository_ledger.append(
+        appended = _append_both_levels(
             transition_id, OPERATION_ID,
             predecessor_state, successor_state,
             transition_evidence(request, crossing, closures),
-            "NONE", hb_epoch=hb_epoch, idempotent_on=("request_sha256",))
+            {"receiving_operation": OPERATION_ID,
+             "resolved_service_id": crossing["resolved_service_id"],
+             "ingress_packet_id": crossing["ingress_packet_id"],
+             "egress_packet_id": crossing["egress_packet_id"],
+             "recomputation_rule_ref": rule_ref,
+             **organization_evidence},
+            hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
+            idempotent_on=("request_sha256",))
     except ValueError as exc:
         if str(exc) != "ledger_receipt_collision":
             raise
         return refused("ONE_TRANSITION_ID_BINDS_ONE_MANIFEST", str(exc),
                        request_sha256=request["request_sha256"])
+    if appended["not_committed"] is not None:
+        return {**appended["not_committed"],
+                "request_sha256": request["request_sha256"],
+                "intr_admission_observed": True,
+                "far_side_transition_observed": True,
+                "transition_replayed": replayed}
+    repository_receipt = appended["repository_receipt"]
+    organization_receipt = appended["organization_receipt"]
     # Everything after the repository receipt takes its epoch from that receipt,
     # so a replay rebuilds the same organization receipt and the same outbound
     # frame rather than ones stamped with whatever epoch this attempt carried.
     hb_epoch = repository_receipt["hb_reference"]["epoch"]
-    organization_receipt = organization_ledger.append(
-        repository_receipt, "REPO_STATE_PROPAGATION",
-        predecessor_state, successor_state,
-        {"receiving_operation": OPERATION_ID,
-         "resolved_service_id": crossing["resolved_service_id"],
-         "ingress_packet_id": crossing["ingress_packet_id"],
-         "egress_packet_id": crossing["egress_packet_id"],
-         "recomputation_rule_ref": rule_ref},
-        "NONE", hb_epoch=hb_epoch)
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
