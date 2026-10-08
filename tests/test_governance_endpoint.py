@@ -168,7 +168,7 @@ class GovernanceEndpointTests(unittest.TestCase):
                          "resident-runtime/governance_endpoint.py",
                          "resident-runtime/aggregate_repo_transition.py",
                          "resident-runtime/ledger_store.py",
-                         "org-kernel/kernel.py",
+                         "org-kernel/kernel.py", "org-kernel/node_store.py",
                          ".stegverse/transition-ledger/emit.py",
                          ".stegverse/transition-ledger/contract.json",
                          ".stegverse/transition-ledger/org-contract.json"):

@@ -13,7 +13,12 @@ def main():
  # predecessor binding. There is no default: a silent one would be the
  # defaulting the contract forbids.
  p.add_argument("--standing",required=True,help="JSON file declaring mode, node_ref and the predecessor key")
+ # The mesh is supplied by whatever materialized this node, never derived from
+ # the host: a frame published under one host's home is lost with it.
+ p.add_argument("--mesh-root",type=Path,default=None,help="federation mesh this node was materialized with")
  a=p.parse_args()
+ if a.mesh_root is None:
+  print(json.dumps({"status":"NOT_PUBLISHED","disposition":"FAIL_CLOSED","failed_predicate":"MESH_LOCATION_REQUIRED_FROM_MATERIALIZER","required_evidence_or_repair":"materialize this node with --mesh-root","retry_entrypoint":"resident-runtime/submit_org_transition_to_master_records.py::main","consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"},sort_keys=True));raise SystemExit(1)
  receipt=load(a.org_receipt)
  if receipt.get("schema")!="stegverse.organization-transition-receipt/v1":raise SystemExit("organization receipt schema mismatch")
  if receipt.get("organization")!="StegVerse-Labs":raise SystemExit("organization receipt owner mismatch")
@@ -21,6 +26,6 @@ def main():
  standing=load(a.standing)
  if not isinstance(standing,dict) or "predecessor" not in standing:raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
  packet=K.build_packet(origin_org="StegVerse-Labs",origin_service="stegverse-labs.org-control",destination_org="master-records",destination_service="organization.ecosystem-transition-ledger",payload=payload,standing=standing,transition_reference="ecosystem.transition.organization-record.v1",authority_effect="NONE")
- published=K.publish_packet(packet)
+ published=K.publish_packet(packet,root=a.mesh_root)
  print(json.dumps({"status":"PUBLISHED_FOR_ORGANIZATION_RECORD","packet_id":packet["packet_id"],"frame_sha256":published["frame"]["frame_sha256"],"authority_effect":"NONE"},sort_keys=True))
 if __name__=="__main__":main()

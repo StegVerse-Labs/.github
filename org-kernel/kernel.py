@@ -5,10 +5,19 @@ Organization-neutral runtime behavior extracted from StegVerse-Labs/.github.
 No GitHub, hosted scheduler, provider, or carrier grants authority.
 """
 from __future__ import annotations
-import base64, hashlib, importlib.util, json, os, subprocess, sys, tempfile
+import base64, hashlib, importlib.util, json, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# StegOS node state is addressed by key, not located by path. The seam lives
+# beside this module so the kernel loads it without depending on a package
+# layout a node may not have.
+_store_spec=importlib.util.spec_from_file_location(
+    "stegos_node_store", Path(__file__).resolve().parent/"node_store.py")
+node_store_module=importlib.util.module_from_spec(_store_spec)
+_store_spec.loader.exec_module(node_store_module)
+PosixStateStore=node_store_module.PosixStateStore
 
 HB_ANCHOR_EPOCH=32
 HB_ANCHOR_UNIX_NS=1_787_511_600_000_000_000
@@ -26,16 +35,53 @@ def sha(v:Any)->str:
     raw=v if isinstance(v,(bytes,bytearray)) else canon(v)
     return "sha256:"+hashlib.sha256(bytes(raw)).hexdigest()
 
-def hb_reference(now_ns:int|None=None)->dict[str,Any]:
+def validate_hb_reference(ref:dict[str,Any])->dict[str,Any]:
+    """A carrier frame's heartbeat reference is part of what the frame asserts.
+
+    recover_packet verified the frame and packet digests but never the
+    reference, so an incoherent or fabricated epoch rode through a validly
+    hashed frame unchallenged.
+    """
+    if not isinstance(ref,dict): raise ValueError("heartbeat_reference_invalid")
+    epoch=ref.get("epoch")
+    if not isinstance(epoch,int) or isinstance(epoch,bool) or epoch<HB_ANCHOR_EPOCH:
+        raise ValueError("heartbeat_epoch_invalid")
+    if ref.get("generation")!=epoch: raise ValueError("heartbeat_generation_mismatch")
+    if ref.get("heartbeat_id")!=f"HB:{epoch}": raise ValueError("heartbeat_id_mismatch")
+    if ref.get("frequency_hz")!=HB_HZ: raise ValueError("heartbeat_frequency_mismatch")
+    if ref.get("progression_dependency")!="OSCILLATOR_ONLY":
+        raise ValueError("heartbeat_progression_not_oscillator")
+    return ref
+
+def hb_reference(now_ns:int|None=None, *, epoch:int|None=None)->dict[str,Any]:
+    """Build the heartbeat reference for a crossing.
+
+    Progression is OSCILLATOR_ONLY: the epoch is a count of heartbeat periods,
+    not a reading of a wall clock. Supply `epoch` from the carrier wherever the
+    tick is available; the reference is then reproducible, so the same packet
+    at the same epoch yields the same frame digest.
+
+    Deriving the epoch from a host clock instead makes the reference depend on
+    that host's clock discipline, so a derived reference says so and carries
+    the sample it was derived from.
+    """
+    if epoch is not None:
+        if now_ns is not None: raise ValueError("supply_epoch_or_sample_not_both")
+        if not isinstance(epoch,int) or isinstance(epoch,bool) or epoch<HB_ANCHOR_EPOCH:
+            raise ValueError("epoch_precedes_hb32_anchor")
+        return validate_hb_reference({"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
+                "phase_offset_ns":0,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
+                "derived_from_clock":False,"authority_effect":"NONE"})
     if now_ns is None:
         now_ns=int(datetime.now(timezone.utc).timestamp()*1_000_000_000)
     if now_ns<HB_ANCHOR_UNIX_NS:
         raise ValueError("sample_precedes_hb32_anchor")
     q,phase=divmod(now_ns-HB_ANCHOR_UNIX_NS,HB_PERIOD_NS)
     epoch=HB_ANCHOR_EPOCH+q
-    return {"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}","sampled_unix_ns":now_ns,
-            "phase_offset_ns":phase,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
-            "authority_effect":"NONE"}
+    return validate_hb_reference({"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
+            "sampled_unix_ns":now_ns,"phase_offset_ns":phase,"frequency_hz":HB_HZ,
+            "progression_dependency":"OSCILLATOR_ONLY","derived_from_clock":True,
+            "authority_effect":"NONE"})
 
 def derive_channel(payload_hash:str)->dict[str,Any]:
     if not isinstance(payload_hash,str) or not payload_hash.startswith("sha256:") or len(payload_hash)!=71:
@@ -44,8 +90,8 @@ def derive_channel(payload_hash:str)->dict[str,Any]:
     return {"channel_id":f"HB:H1:P{slot}","phase_slot":slot,"phase_slot_count":CHANNEL_COUNT,
             "derivation":"PAYLOAD_SHA256_FIRST64_MOD_16","authority_effect":"NONE_CARRIER_ONLY"}
 
-def carrier_frame(packet:dict[str,Any], *, now_ns:int|None=None)->dict[str,Any]:
-    raw=canon(packet); payload_hash=sha(packet.get("payload",{})); ref=hb_reference(now_ns); channel=derive_channel(payload_hash)
+def carrier_frame(packet:dict[str,Any], *, now_ns:int|None=None, epoch:int|None=None)->dict[str,Any]:
+    raw=canon(packet); payload_hash=sha(packet.get("payload",{})); ref=hb_reference(now_ns,epoch=epoch); channel=derive_channel(payload_hash)
     body={"schema":CARRIER_SCHEMA,"packet_id":packet["packet_id"],"packet_sha256":sha(raw),
           "packet_base64":base64.b64encode(raw).decode("ascii"),"heartbeat_reference":ref,
           "channel":channel,"origin_org":packet["origin"]["org"],"destination_org":packet["destination"]["org"],
@@ -57,6 +103,7 @@ def recover_packet(frame:dict[str,Any])->dict[str,Any]:
     if claimed!=sha(body): raise ValueError("carrier_frame_hash_mismatch")
     raw=base64.b64decode(frame["packet_base64"].encode("ascii"),validate=True)
     if sha(raw)!=frame["packet_sha256"]: raise ValueError("packet_hash_mismatch")
+    validate_hb_reference(frame.get("heartbeat_reference"))
     packet=json.loads(raw)
     if packet["packet_id"]!=frame["packet_id"]: raise ValueError("packet_id_mismatch")
     if packet["destination"]["org"]!=frame["destination_org"]: raise ValueError("destination_org_mismatch")
@@ -167,14 +214,15 @@ def dispatch(root:Path, packet:dict[str,Any])->dict[str,Any]:
             "authority_effect":packet["transition"]["authority_effect"],"receipts":receipts,
             "reconstruction":{"same_execution_required":True,"status":"RECONSTRUCTED","terminal_receipt_id":prev}}
 
-def persist_outbox(root:Path, frame:dict[str,Any])->Path:
-    out=root/"resident-runtime/federation/outbox"; out.mkdir(parents=True,exist_ok=True)
-    path=out/(hashlib.sha256(frame["packet_id"].encode()).hexdigest()+".json")
-    if path.exists():
-        if json.loads(path.read_text())!=frame: raise ValueError("write_once_collision")
-        return path
-    path.write_text(json.dumps(frame,indent=2,sort_keys=True)+"\n")
-    return path
+def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path:
+    """Record a published frame in this node's outbox, atomically and write-once by key."""
+    target=store or node_state_store(root)
+    key=node_store_module.outbox_key(frame["packet_id"])
+    try:
+        target.put_once(key,frame)
+    except node_store_module.WriteOnceCollision:
+        raise ValueError("write_once_collision")
+    return Path(target.locator(key))
 
 def ingest_frame(root:Path, frame:dict[str,Any])->dict[str,Any]:
     packet=recover_packet(frame)
@@ -184,47 +232,75 @@ def ingest_frame(root:Path, frame:dict[str,Any])->dict[str,Any]:
     result=dispatch(root,packet)
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
-__all__=["hb_reference","derive_channel","carrier_frame","recover_packet","dispatch","persist_outbox","ingest_frame"]
+__all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
+         "persist_outbox","ingest_frame","mesh_store","node_state_store","node_state_provenance",
+         "resolve_federation_root","resolve_node_state_root","addressed_node_state_store",
+         "record_federation_cycle","federation_cycles"]
 
 
 # --- Federation mesh v1.1 additions ---
-FEDERATION_ROOT_ENV="STEGVERSE_ORG_FEDERATION_ROOT"
+def federation_root(root:Path|str|None)->Path:
+    return resolve_federation_root(root)[0]
 
-def federation_root(env:dict[str,str]|None=None)->Path:
-    values=os.environ if env is None else env
-    override=values.get(FEDERATION_ROOT_ENV)
-    if override:
-        return Path(override).expanduser().resolve()
-    base=Path(values.get("XDG_STATE_HOME",str(Path.home()/".local"/"state")))
-    return (base/"stegverse"/"org-federation").resolve()
+def resolve_federation_root(root:Path|str|None)->tuple[Path,str]:
+    """Return the mesh location supplied by the node materializer.
 
-def publish_frame(frame:dict[str,Any], *, root:Path|None=None)->Path:
-    mesh=(root or federation_root()).resolve()
-    frames=mesh/"frames.d"
-    frames.mkdir(parents=True,exist_ok=True)
-    frame_id=hashlib.sha256((frame["packet_id"]+"|"+frame["frame_sha256"]).encode()).hexdigest()
-    path=frames/(frame_id+".json")
-    if path.exists():
-        existing=json.loads(path.read_text())
-        if existing!=frame:
-            raise ValueError("federation_frame_write_once_collision")
-        return path
-    path.write_text(json.dumps(frame,indent=2,sort_keys=True)+"\n")
-    return path
+    The mesh is never derived from an environment variable, a home directory,
+    a checkout or any other host property: a mesh under one host's home belongs
+    to that host and is lost with an ephemeral one. A materializer either
+    supplies the mesh location or the node fails closed.
+    """
+    if root is None:
+        raise ValueError("mesh_location_required_from_materializer")
+    return Path(root).expanduser().resolve(), node_store_module.SUPPLIED
 
-def scan_addressed_frames(organization:str, *, root:Path|None=None, seen:set[str]|None=None)->list[dict[str,Any]]:
-    mesh=(root or federation_root()).resolve()
-    frames=mesh/"frames.d"
-    if not frames.exists():
-        return []
+def mesh_store(root:Path|str|None=None, env:dict[str,str]|None=None)->Any:
+    """The shared frame medium between nodes, explicitly supplied."""
+    if env is not None:
+        raise ValueError("host_environment_mesh_binding_forbidden")
+    resolved,provenance=resolve_federation_root(root)
+    return PosixStateStore(resolved, provenance=provenance)
+
+def node_state_store(root:Path)->Any:
+    """One node's own markers, outbox and work intake, under the root it was handed."""
+    return PosixStateStore(Path(root)/"resident-runtime",
+                           provenance=node_store_module.SUPPLIED)
+
+def node_state_provenance(root:Path|str|None=None, env:dict[str,str]|None=None)->dict[str,Any]:
+    """What this node's supplied mesh state depends on."""
+    store=mesh_store(root,env)
+    return {"schema_version":"stegverse.stegos-node-state-provenance/v1",
+            "mesh_locator":str(store.root),"mesh_provenance":store.provenance,
+            "mesh_portable":store.portable,"store_kind":store.kind,
+            "authority_effect":"NONE_REPORT_ONLY"}
+
+def publish_frame(frame:dict[str,Any], *, root:Path|None=None, store:Any|None=None)->Path:
+    """Publish a frame to the mesh, addressed by what it carries.
+
+    The key is `frames.d/<sha256(packet_id|frame_sha256)>.json`, the layout the
+    mesh already had, so existing meshes and peers read it unchanged.
+    """
+    target=store or mesh_store(root)
+    key=node_store_module.frame_key(frame)
+    try:
+        target.put_once(key,frame)
+    except node_store_module.WriteOnceCollision:
+        raise ValueError("federation_frame_write_once_collision")
+    return Path(target.locator(key))
+
+def scan_addressed_frames(organization:str, *, root:Path|None=None, store:Any|None=None,
+                          seen:set[str]|None=None)->list[dict[str,Any]]:
+    """Frames in the mesh addressed to `organization` and not already consumed."""
+    target=store or mesh_store(root)
     consumed=seen or set()
     out=[]
-    for path in sorted(frames.glob("*.json")):
-        if path.name in consumed:
+    for key in target.list_prefix(node_store_module.MESH_FRAME_PREFIX):
+        if node_store_module.frame_name(key) in consumed:
             continue
-        frame=json.loads(path.read_text())
-        if frame.get("destination_org")==organization:
-            out.append({"path":str(path),"frame":frame})
+        frame=target.get(key)
+        if frame is not None and frame.get("destination_org")==organization:
+            out.append({"key":key,"name":node_store_module.frame_name(key),
+                        "path":target.locator(key),"frame":frame})
     return out
 
 def build_packet(*, origin_org:str, origin_service:str, destination_org:str, destination_service:str,
@@ -255,8 +331,9 @@ def build_packet(*, origin_org:str, origin_service:str, destination_org:str, des
       "evidence":{"ingress_receipt":None,"dispatch_receipt":None,"consumption_receipt":None,"egress_receipt":None,"reconstruction_reference":None}
     }
 
-def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None=None)->dict[str,Any]:
-    frame=carrier_frame(packet,now_ns=now_ns)
+def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None=None,
+                   epoch:int|None=None)->dict[str,Any]:
+    frame=carrier_frame(packet,now_ns=now_ns,epoch=epoch)
     path=publish_frame(frame,root=root)
     return {"packet":packet,"frame":frame,"path":str(path)}
 
@@ -374,13 +451,9 @@ def resident_status(root:Path, registry:dict[str,Any]|None=None)->dict[str,Any]:
       "runtime_observation_claimed":False
     }
 
-def persist_work_request(root:Path, packet:dict[str,Any])->dict[str,Any]:
+def persist_work_request(root:Path, packet:dict[str,Any], *, store:Any|None=None)->dict[str,Any]:
     payload=packet.get("payload") or {}
     communication_id=payload.get("communication_id")
-    inbox=root/"resident-runtime/control/inbox"
-    inbox.mkdir(parents=True,exist_ok=True)
-    name=hashlib.sha256((packet["packet_id"]+"|"+str(communication_id)).encode()).hexdigest()+".json"
-    path=inbox/name
     record={
       "schema_version":"stegverse.ecosystem-work-intake.v1",
       "communication_id":communication_id,
@@ -394,12 +467,14 @@ def persist_work_request(root:Path, packet:dict[str,Any])->dict[str,Any]:
       "execution_authority_inferred":False,
       "carrier_grants_execution_authority":False
     }
-    if path.exists():
-        if json.loads(path.read_text())!=record:
-            raise ValueError("work_intake_write_once_collision")
-    else:
-        path.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n")
-    return {"state":record["state"],"intake_ref":str(path),"execution_authority_inferred":False}
+    target=store or node_state_store(root)
+    key=node_store_module.intake_key(packet["packet_id"],communication_id)
+    try:
+        target.put_once(key,record)
+    except node_store_module.WriteOnceCollision:
+        raise ValueError("work_intake_write_once_collision")
+    return {"state":record["state"],"intake_ref":target.locator(key),
+            "execution_authority_inferred":False}
 
 def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,Any])->dict[str,Any]:
     payload=packet.get("payload") or {}
@@ -422,12 +497,18 @@ def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,An
         result["response_acknowledged"]=True
     return result
 
+#: The request classes this boundary answers, and the acknowledgement each is
+#: answered with. Named because the responder, the response builder and the
+#: egress boundary all read it; a crossing declaring anything else is consumed
+#: and never answered.
+RESPONDED_REQUEST_CLASSES={
+    "ecosystem.monitor.request":"ecosystem.monitor.response",
+    "ecosystem.work.request":"ecosystem.work.ack",
+    "ecosystem.communication":"ecosystem.communication.ack",
+}
+
 def response_message_class(request_class:str|None)->str:
-    return {
-      "ecosystem.monitor.request":"ecosystem.monitor.response",
-      "ecosystem.work.request":"ecosystem.work.ack",
-      "ecosystem.communication":"ecosystem.communication.ack"
-    }.get(request_class or "","ecosystem.communication.ack")
+    return RESPONDED_REQUEST_CLASSES.get(request_class or "","ecosystem.communication.ack")
 
 def build_control_response(request_packet:dict[str,Any], execution_result:dict[str,Any])->dict[str,Any]:
     req_payload=request_packet.get("payload") or {}
@@ -474,8 +555,7 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, seen:set[st
         message_class=payload.get("message_class")
         result=ingest_frame(repo_root,item["frame"])
         response_publication=None
-        if result.get("status")=="CONSUMED" and message_class in {
-            "ecosystem.monitor.request","ecosystem.work.request","ecosystem.communication"}:
+        if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
             response=build_control_response(packet,result["execution_result"])
             response_publication=publish_packet(response,root=mesh_root,now_ns=now_ns)
         marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result)
@@ -537,24 +617,28 @@ def publish_ecosystem_from_directory(repo_root:Path, *, standing:dict[str,Any], 
 
 
 # --- Federation replay/dedup v1.3.1 additions ---
-def federation_seen_frame_names(repo_root:Path)->set[str]:
-    seen_dir=repo_root/"resident-runtime/federation/seen.d"
-    if not seen_dir.exists():
-        return set()
+def federation_seen_frame_names(repo_root:Path, *, store:Any|None=None)->set[str]:
+    """Which frames this node has already consumed.
+
+    The marker records the frame's name rather than its key, so markers written
+    before state was addressed keep deduplicating the same frames.
+    """
+    target=store or node_state_store(repo_root)
     names=set()
-    for path in seen_dir.glob("*.json"):
+    for key in target.list_prefix(node_store_module.NODE_SEEN_PREFIX):
         try:
-            value=json.loads(path.read_text())
-            if isinstance(value.get("frame_name"),str):
-                names.add(value["frame_name"])
-        except Exception:
+            value=target.get(key)
+        except ValueError:
             continue
+        if isinstance(value,dict) and isinstance(value.get("frame_name"),str):
+            names.add(value["frame_name"])
     return names
 
-def mark_federation_frame_seen(repo_root:Path, frame_path:str, frame:dict[str,Any], result:dict[str,Any])->Path:
-    seen_dir=repo_root/"resident-runtime/federation/seen.d"
-    seen_dir.mkdir(parents=True,exist_ok=True)
-    frame_name=Path(frame_path).name
+def mark_federation_frame_seen(repo_root:Path, frame_path:str, frame:dict[str,Any], result:dict[str,Any],
+                               *, store:Any|None=None)->Path:
+    """Record that this node consumed a frame, once and atomically."""
+    target=store or node_state_store(repo_root)
+    frame_name=node_store_module.frame_name(str(frame_path))
     marker={
       "schema_version":"stegverse.federation-frame-consumption.v1",
       "frame_name":frame_name,
@@ -564,10 +648,42 @@ def mark_federation_frame_seen(repo_root:Path, frame_path:str, frame:dict[str,An
       "status":result.get("status"),
       "authority_effect":"NONE_CARRIER_ONLY"
     }
-    marker_path=seen_dir/(hashlib.sha256(frame_name.encode()).hexdigest()+".json")
-    if marker_path.exists():
-        if json.loads(marker_path.read_text())!=marker:
-            raise ValueError("federation_seen_marker_collision")
-    else:
-        marker_path.write_text(json.dumps(marker,indent=2,sort_keys=True)+"\n")
-    return marker_path
+    key=node_store_module.seen_key(frame_name)
+    try:
+        target.put_once(key,marker)
+    except node_store_module.WriteOnceCollision:
+        raise ValueError("federation_seen_marker_collision")
+    return Path(target.locator(key))
+
+# --- Resident cycle records, addressed rather than located ---
+def resolve_node_state_root(root:Path|str|None)->tuple[Path,str]:
+    """Return the node-state location supplied by the materializer."""
+    if root is None:
+        raise ValueError("node_state_location_required_from_materializer")
+    return Path(root).expanduser().resolve(), node_store_module.SUPPLIED
+
+def addressed_node_state_store(root:Path|str|None=None, env:dict[str,str]|None=None)->Any:
+    """This node's state at the location supplied by its materializer."""
+    if env is not None:
+        raise ValueError("host_environment_node_state_binding_forbidden")
+    resolved,provenance=resolve_node_state_root(root)
+    return PosixStateStore(resolved, provenance=provenance)
+
+def record_federation_cycle(receipt:dict[str,Any], *, root:Path|None=None,
+                            store:Any|None=None, env:dict[str,str]|None=None)->Path:
+    """Record one resident cycle in this node's own supplied state, addressed by what it reported."""
+    target=store or addressed_node_state_store(root,env)
+    key=node_store_module.cycle_key(receipt)
+    target.put_once(key,receipt)
+    return Path(target.locator(key))
+
+def federation_cycles(*, root:Path|None=None, store:Any|None=None,
+                      env:dict[str,str]|None=None)->list[dict[str,Any]]:
+    """Every cycle this node recorded, in reproducible key order."""
+    target=store or addressed_node_state_store(root,env)
+    out=[]
+    for key in target.list_prefix(node_store_module.NODE_CYCLE_PREFIX):
+        value=target.get(key)
+        if isinstance(value,dict):
+            out.append(value)
+    return out

@@ -7,6 +7,16 @@ on:
       - 'resident-runtime/aggregate_repo_transition.py'
       - '.stegverse/transition-ledger/**'
       - 'org-kernel/kernel.py'
+      - 'org-kernel/node_store.py'
+      - 'org-kernel/tests/test_kernel.py'
+      - 'resident-runtime/federation_cycle.py'
+      - 'resident-runtime/resident_cycle.py'
+      - 'resident-runtime/ecosystem_control.py'
+      - 'resident-runtime/submit_org_transition_to_master_records.py'
+      - 'tests/test_kernel_supplied_mesh.py'
+      - 'tests/test_ledger_location_supplied.py'
+      - 'tests/test_federation_declared_carrier_only.py'
+      - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
       - 'tests/test_governance_endpoint.py'
@@ -19,6 +29,16 @@ on:
       - 'resident-runtime/aggregate_repo_transition.py'
       - '.stegverse/transition-ledger/**'
       - 'org-kernel/kernel.py'
+      - 'org-kernel/node_store.py'
+      - 'org-kernel/tests/test_kernel.py'
+      - 'resident-runtime/federation_cycle.py'
+      - 'resident-runtime/resident_cycle.py'
+      - 'resident-runtime/ecosystem_control.py'
+      - 'resident-runtime/submit_org_transition_to_master_records.py'
+      - 'tests/test_kernel_supplied_mesh.py'
+      - 'tests/test_ledger_location_supplied.py'
+      - 'tests/test_federation_declared_carrier_only.py'
+      - 'resident-runtime/activation-manifest.json'
       - 'org-boundary/registry/services.json'
       - 'org-boundary/runtime/node_standing.py'
       - 'tests/test_governance_endpoint.py'
@@ -41,3 +61,11 @@ jobs:
       # installed or appends into an operator's runtime reality.
       - name: StegVerse-Labs decides a governance request that crossed InTr
         run: python -m unittest tests.test_governance_endpoint -v
+      - name: The kernel's mesh and node state are supplied, never derived from the host
+        run: |
+          python org-kernel/tests/test_kernel.py
+          python -m unittest tests.test_kernel_supplied_mesh -v
+      - name: The ledgers are written only where supplied, never under the host home
+        run: python -m unittest tests.test_ledger_location_supplied -v
+      - name: The declared carrier over the supplied mesh is the only federation path
+        run: python -m unittest tests.test_federation_declared_carrier_only -v
