@@ -44,6 +44,10 @@ PURPOSE_GRAPH_CAPABILITY = "stegagents_purpose_bound_worker_state_graph"
 PURPOSE_GRAPH_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph/v1"
 PURPOSE_GRAPH_RESULT_SCHEMA = "stegverse.stegagents-purpose-bound-worker-state-graph-result/v1"
 OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+#: Master Records boundary migration: StegAgents results written before the
+#: rename carry this legacy governance field. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -57,6 +61,13 @@ def canonical_json(value: Any) -> str:
 
 def sha256_uri(value: Any) -> str:
     return "sha256:" + hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+
+
+def organization_record_status(governance: Mapping[str, Any]) -> Any:
+    """Read the Master Records organization record status under the current or legacy name."""
+    if ORGANIZATION_RECORD_STATUS_FIELD in governance:
+        return governance[ORGANIZATION_RECORD_STATUS_FIELD]
+    return governance.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
 
 
 def git_blob_sha(path: Path) -> str:
@@ -317,7 +328,7 @@ def validate_test3_result(mode: str, result: Mapping[str, Any]) -> None:
         require(projection.get("invocation_started") is False, "activation projection invoked task")
         governance = result.get("governance")
         require(isinstance(governance, Mapping) and governance.get("state") == "ALLOW", "atomic activation governance not ALLOW")
-        require(governance.get("chain_verified") is True and governance.get("master_records_custody_status") == "RECORDED", "atomic activation governance evidence incomplete")
+        require(governance.get("chain_verified") is True and organization_record_status(governance) == "RECORDED", "atomic activation governance evidence incomplete")
         reconstruction = result.get("master_records_reconstruction")
         require(isinstance(reconstruction, Mapping) and reconstruction.get("operation_transition_custody_status") == "RECORDED", "atomic activation reconstruction missing")
         return
@@ -837,7 +848,7 @@ def _validate_result(profile: Mapping[str, str], result: Mapping[str, Any]) -> N
     require(isinstance(governance, Mapping), "governance result missing")
     require(governance.get("chain_verified") is True, "governance chain not verified")
     require(governance.get("transaction_identity_continuous") is True, "governance transaction continuity missing")
-    require(governance.get("master_records_custody_status") == "RECORDED", "Master Records custody missing")
+    require(organization_record_status(governance) == "RECORDED", "Master Records organization record missing")
     require(governance.get("external_side_effect") is False, "unexpected external side effect")
     reconstruction = result.get("master_records_reconstruction")
     require(isinstance(reconstruction, Mapping), "Master Records reconstruction missing")

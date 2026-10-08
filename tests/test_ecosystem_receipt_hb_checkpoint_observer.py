@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "scripts" / "consume_ecosystem_receipt_hb_checkpoint.py"
 SPEC = importlib.util.spec_from_file_location("hb_checkpoint_observer_test", MODULE_PATH)
@@ -60,7 +62,10 @@ def test_waits_without_authentic_hb_successor(monkeypatch, tmp_path: Path) -> No
     assert result["external_anchor_advanced"] is False
 
 
-def test_commits_only_after_exact_reconstruction_and_both_hb_refs(monkeypatch, tmp_path: Path) -> None:
+# Master Records boundary migration: the reconstruction ordinal is read under the
+# new name and, for reconstructions written before the rename, the legacy name.
+@pytest.mark.parametrize("ordinal_field", ["master_records_organization_record_ordinal", "master_records_custody_ordinal"])
+def test_commits_only_after_exact_reconstruction_and_both_hb_refs(monkeypatch, tmp_path: Path, ordinal_field: str) -> None:
     receipt_sha = "a" * 64
     creation = _creation()
     recording = {**_creation(), "heartbeat_id": "HB-0000002T", "heartbeat_epoch": 101, "heartbeat_generation": 101, "reference_frame": "heartbeat_epoch:101"}
@@ -77,7 +82,7 @@ def test_commits_only_after_exact_reconstruction_and_both_hb_refs(monkeypatch, t
             "receipt": {"hb_creation_reference": creation},
             "hb_recording_reference": recording,
             "recorded_receipt_sha256": receipt_sha,
-            "master_records_custody_ordinal": 1,
+            ordinal_field: 1,
             "hb_evidence_class": "HB_BOUND_SUCCESSOR",
             "master_records_grants_transition_authority": False,
         },

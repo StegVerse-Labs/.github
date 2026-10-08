@@ -106,7 +106,7 @@ class SV002PublicProfileLeaseResumerTests(unittest.TestCase):
         observation = json.loads((path.parent / "canonical-runtime-public-profile.observation.json").read_text())
         self.assertFalse(observation["receiver_ready_claimed"])
         self.assertFalse(observation["round_trip_claimed"])
-        self.assertFalse(observation["master_records_custody_claimed"])
+        self.assertFalse(observation["master_records_organization_record_claimed"])
         self.assertFalse(observation["sv002_principal_execution_claimed"])
 
     def test_wrong_observed_url_fails_closed(self):

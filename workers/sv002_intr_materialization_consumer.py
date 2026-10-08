@@ -29,6 +29,10 @@ REQUEST_SCHEMA = "stegverse.universal-intr-materialization-request/v1"
 REQUEST_STATE = "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION"
 DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "SV002:PublicObservation"}
 DOWNSTREAM_OWNER = "StegVerse-Labs/.github#493"
+ORGANIZATION_RECORD_CLAIMED_FIELD = "master_records_organization_record_claimed"
+#: Master Records boundary migration: public observations written before the
+#: rename carry this legacy flag. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_CLAIMED_FIELD = "master_records_custody_claimed"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 RuntimeMaterializer = Callable[..., dict[str, Any]]
 LeaseResumer = Callable[..., dict[str, Any]]
@@ -221,10 +225,12 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     if public_observation.get("required_profile") != "SV002:PublicObservation":
         raise SV002InTrMaterializationError("sv002_public_profile_capability_invalid")
     if any(public_observation.get(field) is not False for field in (
-        "receiver_ready_claimed", "round_trip_claimed", "master_records_custody_claimed",
+        "receiver_ready_claimed", "round_trip_claimed",
         "sv002_principal_execution_claimed", "public_profile_grants_execution_authority",
         "public_profile_grants_transition_authority",
-    )):
+    )) or public_observation.get(
+        ORGANIZATION_RECORD_CLAIMED_FIELD, public_observation.get(LEGACY_ORGANIZATION_RECORD_CLAIMED_FIELD)
+    ) is not False:
         raise SV002InTrMaterializationError("sv002_public_profile_evidence_overclaim")
 
     entrypoint = execution_runtime / TARGET_ENTRYPOINT

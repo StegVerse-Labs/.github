@@ -9,7 +9,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "ingress_egress_authority": "INTERLOCK_INTR",
-    "observed_reality_authority": "MASTER_RECORDS"
+    "observed_reality_authority": "ORGANIZATION"
   },
   "profiles": [
     {
@@ -115,7 +115,7 @@
       "required_predicates": ["real_personal_kv_inputs_available", "shared_intr_listener_available", "fresh_workercoordinator_claim_fence", "master_records_reconstruction_binding"],
       "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
       "task_selectors": ["kv_ai_memory"],
-      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "ingress_egress_authority": "INTERLOCK_INTR", "observed_reality_authority": "MASTER_RECORDS", "hb_grants_authority": false},
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "ingress_egress_authority": "INTERLOCK_INTR", "observed_reality_authority": "ORGANIZATION", "hb_grants_authority": false},
       "provenance": {"source_refs": ["data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json", "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md", "handoffs/SV-KV-AI-PERSISTENCE-001.json", "workers/kv_ai_memory_intr_event_bootstrap.py", "scripts/run_kv_ai_memory_intr_event_bootstrap.py", "scripts/refresh_and_dispatch_resident_requests.py", "workers/kv_ai_memory_resident_worker.py"], "projection_method": "DECLARED_SOURCE_ROUTING_PROFILE_NO_RUNTIME_OBSERVATION"}
     }
   ],

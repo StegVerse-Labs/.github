@@ -68,6 +68,17 @@ FORBIDDEN_CREDENTIAL_ENV = (
     "GOOGLE_APPLICATION_CREDENTIALS", "OAUTH_TOKEN",
 )
 NODE_MARKERS = (Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json")
+ORGANIZATION_RECORD_STATUS_FIELD = "master_records_organization_record_status"
+#: Master Records boundary migration: SDK results written before the rename
+#: carry this legacy field. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_STATUS_FIELD = "master_records_custody_status"
+
+
+def organization_record_status(result: Mapping[str, Any]) -> Any:
+    """Read the SDK run's Master Records organization record status under the current or legacy name."""
+    if ORGANIZATION_RECORD_STATUS_FIELD in result:
+        return result[ORGANIZATION_RECORD_STATUS_FIELD]
+    return result.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
 
 
 class UpstreamPending(RuntimeError):
@@ -390,7 +401,7 @@ def execute(invocation: Mapping[str, Any], *, runner=subprocess.run) -> dict[str
         raise RuntimeError("SV-DN-1 canonical SDK run produced external side effect")
     if sdk_result.get("third_party_host_required") is not False:
         raise RuntimeError("SV-DN-1 canonical SDK run required third-party host")
-    if sdk_result.get("master_records_custody_status") != "RECORDED":
+    if organization_record_status(sdk_result) != "RECORDED":
         raise RuntimeError("Master Records did not record exact SDK run")
 
     admission = binder.bind(candidate, sdk_result)
@@ -437,7 +448,7 @@ def execute(invocation: Mapping[str, Any], *, runner=subprocess.run) -> dict[str
         "sdk_result_binding_hash": sdk_result["result_binding_hash"],
         "sdk_admission": "SDK_ADMITTED",
         "governance_state": sdk_result["governance_state"],
-        "master_records_custody_status": sdk_result["master_records_custody_status"],
+        "master_records_organization_record_status": organization_record_status(sdk_result),
         "replay_consequence_reexecuted": replay.get("consequence_reexecuted"),
         "reconstruction_consequence_reexecuted": reconstruction.get("consequence_reexecuted"),
         "reconstruction_original_record_mutated": reconstruction.get("original_record_mutated"),

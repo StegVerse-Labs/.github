@@ -17,6 +17,7 @@ from heartbeat_runtime.master_records_checkpoint_commitment import build_checkpo
 from workers.canonical_state_transition_custody import (
     build_master_records_receipt_set_commitment,
     current_hb_creation_reference,
+    organization_record_ordinal,
     reconstruct_state_receipt,
 )
 
@@ -71,8 +72,8 @@ def observe(runtime_root: Path) -> dict[str, Any]:
         raise RuntimeError("first successor recording HB reference missing")
     if reconstructed.get("recorded_receipt_sha256") != receipt_sha256:
         raise RuntimeError("first successor recording identity mismatch")
-    if reconstructed.get("master_records_custody_ordinal") != FIRST_SUCCESSOR_ORDINAL:
-        raise RuntimeError("first successor custody ordinal mismatch")
+    if organization_record_ordinal(reconstructed) != FIRST_SUCCESSOR_ORDINAL:
+        raise RuntimeError("first successor organization record ordinal mismatch")
     if reconstructed.get("hb_evidence_class") != "HB_BOUND_SUCCESSOR":
         raise RuntimeError("first successor evidence class mismatch")
 

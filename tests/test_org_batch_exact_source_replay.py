@@ -48,7 +48,7 @@ def test_org_exact_source_and_evidence_can_be_replayed_and_exported_offline(monk
     assert prepared["organization_receipts"]==[first,second]
     assert prepared["source_receipts"]==[claim,work]
     assert prepared["authority_requested"] is False
-    assert prepared["custody_requested"] is True
+    assert prepared["record_requested"] is True
     assert prepared["reconstruction_requested"] is True
     assert batch["acknowledgement_state"]=="PENDING_MASTER_RECORDS"
     assert not (tmp_path/"MASTER_RECORDS_ACK.json").exists()

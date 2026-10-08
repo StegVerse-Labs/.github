@@ -23,8 +23,19 @@ TASK_ID = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 AUTH_ENV = "STEGVERSE_TVC_RELAY_AUTHORIZATION_ID"
 INGRESS_ENV = "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"
 SDK_ROOT_ENV = "STEGVERSE_SDK_SOURCE_ROOT"
+ORGANIZATION_RECORD_OBSERVED_FIELD = "organization_master_records_organization_record_observed"
+#: Master Records boundary migration: results written before the rename carry
+#: this legacy flag. Readers accept it as a fallback.
+LEGACY_ORGANIZATION_RECORD_OBSERVED_FIELD = "organization_master_records_closure_observed"
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN_ENV = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+
+
+def organization_record_observed(result: Mapping[str, Any]) -> Any:
+    """Read the organization-record-observed flag under the current or legacy name."""
+    if ORGANIZATION_RECORD_OBSERVED_FIELD in result:
+        return result[ORGANIZATION_RECORD_OBSERVED_FIELD]
+    return result.get(LEGACY_ORGANIZATION_RECORD_OBSERVED_FIELD)
 
 
 def truthy(value: str | None) -> bool:
@@ -157,7 +168,7 @@ def run_cycle(
         "tvc_relay_authorization_present": True,
         "tvc_relay_authorization_value_retained": False,
         "runtime_execution_attempted": result.get("runtime_execution_attempted") is True,
-        "organization_master_records_closure_observed": result.get("organization_master_records_closure_observed") is True,
+        "organization_master_records_closure_observed": organization_record_observed(result) is True,
         "next_transition": result.get("next_transition"),
         "second_machine_required": False,
         "device_inventory_queried": False,

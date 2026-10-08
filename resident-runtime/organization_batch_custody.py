@@ -243,7 +243,7 @@ def export_batch(root: Path, batch_id: str) -> dict:
         "organization_receipts":receipts,
         "source_receipts":sources,
         "authority_requested":False,
-        "custody_requested":True,
+        "record_requested":True,
         "reconstruction_requested":True,
     }
 
@@ -281,7 +281,7 @@ def export_batch_record(root: Path, batch_id: str) -> dict:
         },
         "receipt_contents_scope": "ORGANIZATION_LOCAL_ONLY_NOT_TRANSMITTED",
         "authority_requested": False,
-        "custody_requested": True,
+        "record_requested": True,
         "reconstruction_requested": True,
     }
 
