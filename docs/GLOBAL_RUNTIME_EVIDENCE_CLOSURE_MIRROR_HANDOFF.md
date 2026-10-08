@@ -66,7 +66,7 @@ The authentic G7/fence7 allocation root is established. The next evidence may co
 
 The global measurement loop has not yet been entered: no frozen measurement run ID and no authentic `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` are currently observed.
 
-Until authentic retained StegOS/StegBrowser runtime evidence and applicable organization-record predicates and any explicit Master Records reconstruction predicates are satisfied, the 18 profiled child lanes must not be advanced by inference from source state alone.
+Until authentic retained StegOS/StegBrowser runtime evidence and the verified Organization receipt of each transition (resident-runtime/organization_batch_custody.py `verified_organization_receipt`, read back from the ledger root the append used and bound to the exact state receipt) are present, the 18 profiled child lanes must not be advanced by inference from source state alone. Master Records reconstruction is evidence only and never gates advancement; missing authenticated evidence is an actionable FAIL_CLOSED with a retry entrypoint, never a wait.
 
 ## Runtime substrate order
 

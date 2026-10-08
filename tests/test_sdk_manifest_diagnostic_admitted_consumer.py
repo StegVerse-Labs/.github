@@ -140,19 +140,24 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     "diagnostic_request_id": "exp3-source-only-test",
                 }))
                 return type("SourceTestProcess", (), {"returncode": 0})()
+            import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
+            from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
             def fake_submit(record):
                 self.assertEqual(record["transition_outcome"], "EXECUTED")
                 self.assertEqual(record["transition_evidence"]["publisher_executed"], False)
-                return {
-                    "state": "RECORDED", "reconstruction_status": "PASS",
-                    "required_evidence_validation_status": "PASS",
-                    "receipt_sha256": "c" * 64,
-                    "reconstructed_receipt_sha256": "c" * 64,
-                    "organization_previous_receipt_sha256": "d" * 64,
-                }
+                # Real producer: appends to the tmp Organization ledger root.
+                return submit_state_receipt(record)
             with patch.dict(os.environ, {"STEGVERSE_REPO_ROOTS_JSON": "{}",
-                                          "STEGVERSE_SDK_ROOT": str(sdk)}), \
+                                          "STEGVERSE_SDK_ROOT": str(sdk),
+                                          "STEGVERSE_ORG_LEDGER_ROOT": str(root / "org-ledger")}), \
                  patch.object(mod, "FROZEN_FILE_SHA256", fixture_sha):
+                # The diagnostic closure must chain from an existing Organization receipt.
+                submit_state_receipt(build_state_receipt(
+                    transition_id=mod.BINDING_TRANSITION, transition_sequence=1,
+                    subject_or_correlation_id=mod.GOAL, transition_outcome="OBSERVED",
+                    prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
+                    governance_decision_ref_where_applicable=None,
+                    transition_evidence={"fixture": "prior Organization receipt"}))
                 result = mod.consume(root, root, source, reconstruct=reconstruct,
                                      runner=fake_run, submit=fake_submit)
             self.assertEqual(result["state"], "SOURCE_SIMULATION_ONLY")
@@ -230,6 +235,82 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 self.assertIsNone(mod._read_existing_authenticated_locator(
                     mod.Path(__file__).resolve().parents[1], Path(td), source))
             self.assertFalse((Path(td) / mod.ADMITTED_REL / (source["request_sha256"] + ".json")).exists())
+
+    def test_no_materializer_supplied_ledger_location_is_unreadable_never_derived(self):
+        control = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as td:
+            source = request()
+            env = {k: v for k, v in os.environ.items() if k != "STEGVERSE_ORG_LEDGER_ROOT"}
+            with patch.dict(os.environ, env, clear=True):
+                self.assertIsNone(mod._read_existing_authenticated_locator(
+                    control, Path(td), source))
+                with self.assertRaises(mod.DiagnosticAdmissionError) as ctx:
+                    mod._require_current_organization_lease_status(
+                        control, "b" * 64,
+                        {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+                self.assertEqual(ctx.exception.predicate,
+                                 "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+            self.assertFalse((Path(td) / mod.ADMITTED_REL / (source["request_sha256"] + ".json")).exists())
+
+    def test_supplied_ledger_location_without_head_keeps_existing_refusals(self):
+        control = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as td:
+            source = request()
+            ledger = Path(td) / "supplied-ledger"
+            ledger.mkdir()
+            with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(ledger)}):
+                self.assertIsNone(mod._read_existing_authenticated_locator(
+                    control, Path(td), source))
+                with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
+                                            "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED"):
+                    mod._require_current_organization_lease_status(
+                        control, "b" * 64,
+                        {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+
+    def test_head_naming_another_organization_is_refused(self):
+        control = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as td:
+            source = request()
+            ledger = Path(td) / "supplied-ledger"
+            ledger.mkdir()
+            (ledger / "HEAD.json").write_text(json.dumps({
+                "organization": "StegVerse-org",
+                "receipt_sha256": "sha256:" + "f" * 64,
+            }))
+            with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(ledger)}):
+                with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
+                                            "ORGANIZATION_HEAD_OWNER_MISMATCH"):
+                    mod._read_existing_authenticated_locator(control, Path(td), source)
+                with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
+                                            "CURRENT_ORGANIZATION_LEDGER_OWNER_MISMATCH"):
+                    mod._require_current_organization_lease_status(
+                        control, "b" * 64,
+                        {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+
+    def test_host_home_or_state_ledger_has_no_effect_without_supplied_location(self):
+        control = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as td:
+            source = request()
+            host = Path(td) / "host"
+            # A ledger at each formerly host-derived location.
+            for ledger in (host / ".local/state/stegverse/org-ledgers/StegVerse-Labs",
+                           host / "state/stegverse/org-ledgers/StegVerse-Labs"):
+                ledger.mkdir(parents=True)
+                (ledger / "HEAD.json").write_text(json.dumps({
+                    "organization": "StegVerse-Labs",
+                    "receipt_sha256": "sha256:" + "f" * 64,
+                }))
+            env = {k: v for k, v in os.environ.items() if k != "STEGVERSE_ORG_LEDGER_ROOT"}
+            env.update({"HOME": str(host), "XDG_STATE_HOME": str(host / "state")})
+            with patch.dict(os.environ, env, clear=True):
+                self.assertIsNone(mod._read_existing_authenticated_locator(
+                    control, Path(td), source))
+                with self.assertRaises(mod.DiagnosticAdmissionError) as ctx:
+                    mod._require_current_organization_lease_status(
+                        control, "b" * 64,
+                        {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+                self.assertEqual(ctx.exception.predicate,
+                                 "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
 
     def test_original_ledger_and_exact_master_records_readback_only_with_source_test_double(self):
         import importlib

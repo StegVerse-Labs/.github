@@ -16,6 +16,7 @@ import re
 import time
 from pathlib import Path
 import tempfile
+from typing import Mapping
 
 import aggregate_repo_transition as org
 
@@ -66,6 +67,130 @@ def _verified_receipt(root: Path, digest: str) -> dict:
     else:
         if row.get("repo_receipt_sha256") != row.get("source_transition_sha256"):
             raise ValueError("repository source digest binding mismatch")
+    return row
+
+
+RECEIPT_REFUSAL_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::verified_organization_receipt"
+_DIGEST = re.compile(r"(?:sha256:)?([0-9a-f]{64})")
+
+
+class OrganizationReceiptRefused(ValueError):
+    """A successor gate refused because the Organization receipt did not verify.
+
+    Same disposition rule as org-kernel/kernel.py refusal_disposition and
+    record_refusal: a deterministic refusal is DENY and is not retried; anything
+    else is FAIL_CLOSED and names its retry entrypoint. Nothing is committed.
+    """
+
+    def __init__(self, failed_predicate: str, *, deterministic: bool, detail: str = ""):
+        super().__init__(failed_predicate + (": " + detail if detail else ""))
+        self.failed_predicate = failed_predicate
+        self.disposition = "DENY" if deterministic else "FAIL_CLOSED"
+        self.retry_entrypoint = None if deterministic else RECEIPT_REFUSAL_RETRY_ENTRYPOINT
+
+    def refusal(self) -> dict:
+        return {
+            "disposition": self.disposition,
+            "failed_predicate": self.failed_predicate,
+            "retry_entrypoint": self.retry_entrypoint,
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+
+
+def _state_digest(value, predicate: str) -> str:
+    if value is None or value == "":
+        raise OrganizationReceiptRefused(predicate + "_ABSENT", deterministic=False)
+    match = _DIGEST.fullmatch(value) if isinstance(value, str) else None
+    if match is None:
+        raise OrganizationReceiptRefused(predicate + "_INVALID", deterministic=True)
+    return "sha256:" + match.group(1)
+
+
+def verified_organization_receipt(root, digest, *, state_receipt_sha256,
+                                  expected_transition_id=None, expected_predecessor=None) -> dict:
+    """Read back one Organization receipt and bind it to the exact state receipt.
+
+    `root` is the Organization ledger root the append used, supplied by the
+    caller (aggregate_transition(..., ledger=root)); ledger_root() is only the
+    existing fallback when the caller holds none. The receipt must verify under
+    _verified_receipt and name `state_receipt_sha256` as its source transition.
+    When supplied, the source transition id must equal `expected_transition_id`
+    and the retained source receipt's prior_state_ref_or_hash must equal
+    `expected_predecessor`. Master Records plays no part. Any failure raises
+    OrganizationReceiptRefused; the verified receipt row is returned otherwise.
+    """
+    source = _state_digest(state_receipt_sha256, "STATE_RECEIPT_SHA256")
+    if digest is None or digest == "":
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_ABSENT", deterministic=False)
+    if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_INVALID", deterministic=True)
+    try:
+        ledger = Path(root).expanduser().resolve() if root is not None else org.ledger_root()
+    except org.LedgerLocationRequired as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
+    if not (ledger / "receipts" / (digest[7:] + ".json")).is_file():
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_MISSING", deterministic=False, detail=digest)
+    try:
+        row = _verified_receipt(ledger, digest)
+    except ValueError as exc:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_VERIFICATION_FAILED", deterministic=True, detail=str(exc)) from exc
+    if not row.get("source_transition_sha256"):
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SOURCE_ABSENT", deterministic=True, detail=digest)
+    if row["source_transition_sha256"] != source:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT", deterministic=True, detail=digest)
+    if expected_transition_id is not None and row.get("source_transition_id") != expected_transition_id:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TRANSITION_MISMATCH", deterministic=True,
+                                         detail=str(expected_transition_id))
+    if expected_predecessor is not None:
+        expected = _state_digest(expected_predecessor, "EXPECTED_PREDECESSOR")
+        path = ledger / "source-receipts" / (source[7:] + ".json")
+        if not path.is_file():
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
+        retained = _read(path)
+        try:
+            retained_digest = org.verify_source(retained)["source_transition_sha256"]
+        except (KeyError, ValueError) as exc:
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=str(exc)) from exc
+        if retained_digest != source:
+            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=source)
+        prior = retained.get("prior_state_ref_or_hash")
+        match = _DIGEST.fullmatch(prior) if isinstance(prior, str) else None
+        if match is None or "sha256:" + match.group(1) != expected:
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_PREDECESSOR_STALE", deterministic=True, detail=expected)
+    return row
+
+
+def verified_organization_record(root, result, *, expected_transition_id=None, expected_predecessor=None) -> dict:
+    """verified_organization_receipt() for a submit_state_receipt() result or a projection of one.
+
+    The Organization receipt digest is read from the nested receipt and the
+    top-level projection; when both are present they must agree.
+    """
+    if not isinstance(result, dict) or result.get("state") != "RECORDED":
+        raise OrganizationReceiptRefused("ORGANIZATION_RECORD_NOT_RECORDED", deterministic=False)
+    nested = result.get("organization_receipt")
+    nested = nested if isinstance(nested, dict) else {}
+    top, inner = result.get("organization_receipt_sha256"), nested.get("receipt_sha256")
+    if top is not None and inner is not None and top != inner:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TOP_LEVEL_NESTED_CONFLICT", deterministic=True)
+    for key in ("source_transition_sha256", "previous_receipt_sha256"):
+        projected = result.get("organization_" + key)
+        if projected is not None and key in nested and nested[key] != projected:
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_TOP_LEVEL_NESTED_CONFLICT", deterministic=True, detail=key)
+    row = verified_organization_receipt(
+        root, top if top is not None else inner,
+        state_receipt_sha256=result.get("receipt_sha256"),
+        expected_transition_id=expected_transition_id,
+        expected_predecessor=expected_predecessor,
+    )
+    # What the caller carries must be what the ledger holds.
+    if nested and nested != row:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_CONFLICT", deterministic=True)
+    for key in ("source_transition_sha256", "previous_receipt_sha256"):
+        projected = result.get("organization_" + key)
+        if projected is not None and projected != row.get(key):
+            raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_CONFLICT", deterministic=True, detail=key)
     return row
 
 
@@ -335,6 +460,93 @@ def _atomic_json(path: Path, row: dict) -> None:
     finally:
         if os.path.exists(name):
             os.unlink(name)
+
+
+ORGANIZATION_BATCH_TASK_ID = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+ORGANIZATION_BATCH_COSV_TASK_VECTOR = "10000000100000"
+ORGANIZATION_BATCH_POLICY_EXTENSION = "stegverse_organization_receipt_batch"
+ORGANIZATION_BATCH_TASK_EXTENSION = "stegverse_canonical_task"
+ORGANIZATION_BATCH_REQUEST_REF = (
+    "control/resident-execution-request.d/"
+    "canonical-work-organization-batch-custody-replay-001.json"
+)
+
+
+def _require(ok: bool, reason: str) -> None:
+    if not ok:
+        raise ValueError(reason)
+
+
+def organization_batch_parent_manifest(validated) -> dict:
+    """The governing parent manifest a batch-bound SDK request declares.
+
+    Both receivers of the SDK `derive_execution_request` schema -- the worker
+    InTr ingress and the organization manifest ingress -- read the same
+    canonical task binding and COUNT release policy, so this is the one place
+    that validates them. Every failure is a typed ValueError naming the part
+    that is missing or does not match.
+    """
+    _require(validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED")
+    manifest = validated.get("canonical_manifest")
+    _require(isinstance(manifest, Mapping), "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED")
+    extensions = manifest.get("extensions")
+    _require(isinstance(extensions, Mapping), "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED")
+    task_binding = extensions.get(ORGANIZATION_BATCH_TASK_EXTENSION)
+    _require(isinstance(task_binding, Mapping), "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED")
+    _require(task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
+    _require(task_binding.get("cosv_task_vector") == ORGANIZATION_BATCH_COSV_TASK_VECTOR,
+             "ORGANIZATION_BATCH_COSV_MISMATCH")
+    _require(task_binding.get("canonical_request_ref") == ORGANIZATION_BATCH_REQUEST_REF,
+             "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH")
+    _require(task_binding.get("authority_effect") == "NONE",
+             "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION")
+    policy = extensions.get(ORGANIZATION_BATCH_POLICY_EXTENSION)
+    _require(isinstance(policy, Mapping), "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED")
+    condition = policy.get("release_condition")
+    _require(isinstance(condition, Mapping) and condition.get("type") == "COUNT",
+             "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED")
+    count = condition.get("count")
+    _require(type(count) is int and count >= 1, "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID")
+    graph = validated.get("state_graph")
+    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
+    canonical_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
+    _require(isinstance(canonical_binding, Mapping), "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED")
+    _require(canonical_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
+             "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH")
+    _require(canonical_binding.get("receipt_batch") == dict(policy),
+             "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH")
+    return {"receipt_batch": dict(policy)}
+
+
+def organization_batch_parent_manifest_absent_predicate(validated) -> str | None:
+    """Name what is absent when a request declares no organization batch at all.
+
+    `None` means the request declares some part of a batch -- the receipt-batch
+    policy extension, or a canonical task binding to the batch task at the
+    request, manifest-extension or SDK-graph level -- so the parent manifest is
+    applicable and must validate in full. A request declaring none of it is one
+    the parent manifest does not govern, and this names what was looked for.
+    """
+    manifest = validated.get("canonical_manifest")
+    extensions = manifest.get("extensions") if isinstance(manifest, Mapping) else None
+    extensions = extensions if isinstance(extensions, Mapping) else {}
+    graph = validated.get("state_graph")
+    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
+    graph_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
+    task_binding = extensions.get(ORGANIZATION_BATCH_TASK_EXTENSION)
+    declares_policy = ORGANIZATION_BATCH_POLICY_EXTENSION in extensions or (
+        isinstance(graph_binding, Mapping) and "receipt_batch" in graph_binding)
+    declares_task = (
+        validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID
+        or (isinstance(task_binding, Mapping) and task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID)
+        or (isinstance(graph_binding, Mapping) and graph_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID)
+    )
+    if declares_policy or declares_task:
+        return None
+    return ("ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_EXTENSION_ABSENT"
+            "+ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_ABSENT")
 
 
 def _manifest_release_count(parent_manifest: dict) -> int:

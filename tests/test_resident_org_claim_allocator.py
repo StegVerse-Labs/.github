@@ -68,7 +68,27 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                 allocator.release_allocator_lock(path)
             self.assertFalse(path.exists())
 
+    LEDGER_FILES = (
+        ".stegverse/transition-ledger/emit.py",
+        ".stegverse/transition-ledger/contract.json",
+        ".stegverse/transition-ledger/org-contract.json",
+        "org-kernel/kernel.py",
+        "org-kernel/node_store.py",
+        "resident-runtime/ledger_store.py",
+        "resident-runtime/aggregate_repo_transition.py",
+        "tasks/TASK-2026-0012.json",
+    )
+
+    def _consume(self, source: Path, runtime: Path, **kwargs):
+        ledgers = runtime.parent / "ledgers"
+        (ledgers / "org" / "receipts").mkdir(parents=True, exist_ok=True)
+        return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
+                                org_ledger_root=ledgers / "org", **kwargs)
+
     def _write_minimal_source(self, source: Path) -> None:
+        for rel in self.LEDGER_FILES:
+            (source / rel).parent.mkdir(parents=True, exist_ok=True)
+            (source / rel).write_bytes((ROOT / rel).read_bytes())
         (source / "tasks").mkdir(parents=True, exist_ok=True)
         canonical = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
         (source / "tasks/TASK-2026-0008.json").write_text(
@@ -94,52 +114,21 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             request_path.parent.mkdir(parents=True, exist_ok=True)
             request_path.write_text(json.dumps(self.request()), encoding="utf-8")
             self._write_minimal_source(source)
+            (runtime / "control").mkdir(parents=True, exist_ok=True)
+            (runtime / "control/claims-active.json").write_text(
+                json.dumps({"schema": "stegverse.org-claims/v1", "generation": 7, "claims": []}), encoding="utf-8")
             allocator_path = runtime / consumer.ALLOCATOR_REL
             allocator_path.parent.mkdir(parents=True, exist_ok=True)
-            allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
+            allocator_path.write_bytes((ROOT / consumer.ALLOCATOR_REL).read_bytes())
             calls = []
 
             def runner(command, **kwargs):
                 calls.append((command, kwargs))
-                claim = {
-                    "repository": {"full_name": "StegVerse-Labs/Site"},
-                    "mode": "scoped_exclusive",
-                    "scope": {
-                        "dependency_surfaces": ["site:stegos-de006-bound-inference-publication"],
-                        "contracts": [],
-                        "release_surfaces": [],
-                    },
-                    "task_id": "TASK-2026-0008",
-                    "lease": {
-                        "expires_at": "2026-09-04T00:00:00Z",
-                        "heartbeat_due_at": "2026-09-03T08:00:00Z",
-                        "fencing_token": 7,
-                        "service_class": "low_contention",
-                    },
-                }
-                (runtime / "control/claims-active.json").write_text(
-                    json.dumps({
-                        "schema": "stegverse.org-claims/v1",
-                        "generation": 7,
-                        "claims": [claim],
-                    }),
-                    encoding="utf-8",
-                )
-                return subprocess.CompletedProcess(
-                    command,
-                    0,
-                    stdout=json.dumps({
-                        "selected": "TASK-2026-0008",
-                        "queued": ["TASK-2026-0008"],
-                        "blocked_missing_dependency_declaration": [],
-                        "state": "ALLOCATION_COMPLETE",
-                        "authority_effect": "CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR",
-                    }) + "\n",
-                    stderr="",
-                )
+                return subprocess.run(command, **kwargs)
 
-            result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
+            result = self._consume(source, runtime, runner=runner, env={"PATH": os.environ.get("PATH", "/bin"), "HOME": td})
             self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(result["disposition"], "ALLOW")
             self.assertEqual(result["source_catalog_floor"]["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
             self.assertEqual(result["source_catalog_floor"]["task_id"], "TASK-2026-0008")
             self.assertEqual(result["source_catalog_floor"]["task_eligibility_effect"], "NONE")
@@ -152,26 +141,29 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertIn("TASK-2026-0008.json", result["control_inputs"]["imported_task_files"])
             self.assertEqual(result["selected_task_id"], "TASK-2026-0008")
             self.assertTrue(result["claim_grant_occurred"])
+            self.assertEqual(result["fencing_token"], 8)
             evidence = result["claim_grant_evidence"]
             self.assertEqual(evidence["state"], "CLAIM_GRANT_EVIDENCE_RETAINED")
             self.assertEqual(evidence["task_id"], "TASK-2026-0008")
-            self.assertEqual(evidence["claim_registry_generation"], 7)
+            self.assertEqual(evidence["claim_registry_generation"], 8)
             self.assertTrue((runtime / evidence["generation_receipt"]).is_file())
-            self.assertTrue((runtime / evidence["latest_receipt"]).is_file())
-            grant = json.loads((runtime / evidence["latest_receipt"]).read_text(encoding="utf-8"))
+            grant = json.loads((runtime / evidence["generation_receipt"]).read_text(encoding="utf-8"))
             self.assertEqual(grant["state"], "CLAIM_GRANT_OBSERVED")
-            self.assertEqual(grant["fencing_tokens"], [7])
+            self.assertEqual(grant["fencing_tokens"], [8])
             self.assertEqual(grant["dependency_surfaces"], ["site:stegos-de006-bound-inference-publication"])
             self.assertFalse(grant["observation_grants_claim_authority"])
             self.assertTrue(grant["allocator_remains_claim_authority"])
             self.assertEqual(grant["authority_effect"], "NONE_OBSERVATION_ONLY")
+            latest = json.loads((runtime / evidence["latest_receipt"]).read_text(encoding="utf-8"))
+            self.assertTrue(latest["projection_only"])
+            self.assertEqual(latest["evidence_ref"], evidence["generation_receipt"])
             self.assertFalse(result["request_granted_claim_authority"])
             self.assertTrue(result["allocator_remains_claim_authority"])
             self.assertFalse(result["heartbeat_grants_execution_authority"])
             self.assertFalse(result["github_token_required"])
             self.assertFalse(result["network_source_fetch_performed"])
             self.assertFalse(result["second_machine_required"])
-            self.assertEqual(len(calls), 1)
+            self.assertEqual([c[0][2:] for c in calls], [["--plan"], ["--task", "TASK-2026-0008", "--fencing-token", "8"]])
 
 
     def test_selected_task_without_post_allocation_claim_fails_closed(self):
@@ -187,7 +179,12 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             allocator_path.parent.mkdir(parents=True, exist_ok=True)
             allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
 
+            (runtime / "control").mkdir(parents=True, exist_ok=True)
+            (runtime / "control/claims-active.json").write_text(
+                json.dumps({"schema": "stegverse.org-claims/v1", "generation": 7, "claims": []}), encoding="utf-8")
+
             def runner(command, **kwargs):
+                planned = "--plan" in command
                 return subprocess.CompletedProcess(
                     command,
                     0,
@@ -195,14 +192,16 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                         "selected": "TASK-2026-0008",
                         "queued": ["TASK-2026-0008"],
                         "blocked_missing_dependency_declaration": [],
-                        "state": "ALLOCATION_COMPLETE",
+                        "claim_registry_generation": 7,
+                        "requested_claims": [],
+                        "state": "ALLOCATION_PLANNED" if planned else "ALLOCATION_COMPLETE",
                         "authority_effect": "CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR",
                     }) + "\n",
                     stderr="",
                 )
 
             with self.assertRaisesRegex(RuntimeError, "no retained canonical claim"):
-                consumer.consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
+                self._consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
 
     def test_resident_consumer_rejects_hosted_environment_before_allocator_invocation(self):
         with tempfile.TemporaryDirectory() as td:
@@ -218,7 +217,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
             calls = []
             with self.assertRaisesRegex(RuntimeError, "hosted environment"):
-                consumer.consume(
+                self._consume(
                     source,
                     runtime,
                     runner=lambda *a, **k: calls.append((a, k)),
@@ -235,6 +234,10 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             request_path = runtime / consumer.REQUEST_REL
             request_path.parent.mkdir(parents=True, exist_ok=True)
             request_path.write_text(json.dumps(self.request()), encoding="utf-8")
+            for rel in self.LEDGER_FILES:
+                if not rel.startswith("tasks/"):
+                    (source / rel).parent.mkdir(parents=True, exist_ok=True)
+                    (source / rel).write_bytes((ROOT / rel).read_bytes())
             (source / "tasks").mkdir(parents=True, exist_ok=True)
             (source / "control").mkdir(parents=True, exist_ok=True)
             (source / "control/claims-active.json").write_text(
@@ -251,7 +254,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             calls = []
 
             with self.assertRaisesRegex(RuntimeError, "STALE_SOURCE_CATALOG"):
-                consumer.consume(
+                self._consume(
                     source,
                     runtime,
                     runner=lambda *a, **k: calls.append((a, k)),
@@ -302,7 +305,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
             calls = []
             with self.assertRaisesRegex(RuntimeError, "claim scope digest mismatch"):
-                consumer.consume(
+                self._consume(
                     source,
                     runtime,
                     runner=lambda *a, **k: calls.append((a, k)),
@@ -391,6 +394,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertIn("consume_org_claim_allocator_request.py", source)
             self.assertIn("allocate_claims.py", source)
             self.assertIn("org-claim-allocator-001.json", source)
+            self.assertIn("org-claim-allocator-sdk-manifest-001.json", source)
 
     def test_task7_and_task8_site_claims_are_nonoverlapping(self):
         task7 = json.loads((ROOT / "tasks/TASK-2026-0007.json").read_text(encoding="utf-8"))

@@ -18,6 +18,7 @@ from workers.canonical_state_transition_custody import (
     query_state_receipts,
     reconstruct_state_receipt,
     require_predecessor_master_records_organization_record,
+    organization_receipt_gate,
     sha256_uri,
     submit_state_receipt,
 )
@@ -295,17 +296,14 @@ def record_non_allow_functional_memory(
         proof_ceiling="NON_ALLOW_ASSIGNMENT_AND_FUNCTIONAL_MEMORY_CUSTODY_ONLY",
     )
     result = submit_state_receipt(receipt)
-    complete = (
-        result.get("state") == "RECORDED"
-        and result.get("reconstruction_status") == "PASS"
-        and result.get("required_evidence_validation_status") == "PASS"
-        and isinstance(result.get("receipt_sha256"), str)
-        and result.get("receipt_sha256") == result.get("reconstructed_receipt_sha256")
-    )
-    if not complete:
+    # Organization ledger record closes the transition; Master Records
+    # reconstruction fields are evidence only and never gate it.
+    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID)
+    if not gate["verified"]:
         return {
             "state": "BOUNDARY",
             "reason": str(result.get("reason") or "FUNCTIONAL_MEMORY_MASTER_RECORDS_ORGANIZATION_RECORD_INCOMPLETE"),
+            "refusal": gate["refusal"],
             "sequence": sequence,
             "authority_effect": "NONE",
         }

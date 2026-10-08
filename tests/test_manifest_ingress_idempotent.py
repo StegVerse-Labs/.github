@@ -14,10 +14,9 @@ completed rather than repeated, at the retained receipt's epoch; the same
 transition id over a different manifest refuses; a replayed refusal is recorded
 once; and concurrent appenders of one transition commit it once.
 
-The organization ledger is reached through a test adapter onto
-`aggregate_transition`, as in `test_organization_manifest_ingress_rule_ref.py`:
-`receive` calls `aggregate_repo_transition.append`, which that module does not
-define in this repository.
+The organization ledger is its own append owner, `aggregate_transition`;
+a failure of it is injected by wrapping that owner, and `receive` returns its
+typed partial-commit record rather than raising.
 
 Source validation only. No authority effect is claimed.
 """
@@ -71,22 +70,20 @@ class IdempotentReceiveTests(unittest.TestCase):
         self.fail_next_org_append = False
         self.request = request()
 
-        def organization_append(repository_receipt, org_transition_class, predecessor, successor,
-                                boundary_evidence, authority_effect, hb_epoch=None):
-            self.org_epochs.append(hb_epoch)
+        aggregate_transition = organization_ledger.aggregate_transition
+
+        def organization_append(*args, **kwargs):
+            self.org_epochs.append(kwargs.get("hb_epoch"))
             if self.fail_next_org_append:
                 self.fail_next_org_append = False
                 raise SimulatedAppendFailure("FAIL_CLOSED")
-            return organization_ledger.aggregate_transition(
-                repository_receipt, org_transition_class=org_transition_class,
-                predecessor_org_state_sha256=predecessor, successor_org_state_sha256=successor,
-                boundary_evidence=boundary_evidence, authority_effect=authority_effect)
+            return aggregate_transition(*args, **kwargs)
 
         patches = [
             mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
                                          "STEGVERSE_ORG_LEDGER_ROOT": str(self.org_root),
                                          "STEGVERSE_REPO_LEDGER_ROOT": str(self.repo_root)}),
-            mock.patch.object(organization_ledger, "append", organization_append, create=True),
+            mock.patch.object(organization_ledger, "aggregate_transition", organization_append),
             mock.patch.object(ingress, "derive_execution_request", lambda m, b: dict(self.request)),
             mock.patch.object(ingress, "bound_here", lambda r: {"operation": "receive"}),
             mock.patch.object(ingress.crossing_module, "cross", lambda *a, **k: dict(CROSSING)),
@@ -154,8 +151,10 @@ class IdempotentReceiveTests(unittest.TestCase):
 
     def test_replay_after_the_organization_append_failed_completes_the_chain_once(self):
         self.fail_next_org_append = True
-        with self.assertRaises(SimulatedAppendFailure):
-            self.receive()
+        partial = self.receive()
+        self.assertEqual(partial["failure_code"], "ORGANIZATION_APPEND_NOT_COMMITTED")
+        self.assertIs(partial["repository_receipt_committed"], True)
+        self.assertIs(partial["organization_receipt_committed"], False)
         self.assertEqual(len(self.receipts(self.repo_root)), 1)
         self.assertEqual(self.receipts(self.org_root), [])
         completed = self.receive()
@@ -169,8 +168,8 @@ class IdempotentReceiveTests(unittest.TestCase):
     def test_replay_completion_takes_its_epoch_from_the_retained_receipt(self):
         """A retry carrying a different epoch still rebuilds the first attempt's records."""
         self.fail_next_org_append = True
-        with self.assertRaises(SimulatedAppendFailure):
-            self.receive(hb_epoch=32)
+        partial = self.receive(hb_epoch=32)
+        self.assertEqual(partial["failure_code"], "ORGANIZATION_APPEND_NOT_COMMITTED")
         self.receive(hb_epoch=99)
         self.assertEqual(self.org_epochs, [32, 32])
         repository, = self.receipts(self.repo_root)

@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from workers import manifest_state_transition_intr_ingress as mod
 from workers import universal_intr_profiled_ingress as shared
@@ -70,14 +72,29 @@ def request(seed: str = "one") -> dict:
 
 
 def closure(transition: str, digit: str, predecessor: str | None = None) -> dict:
-    digest = digit * 64
+    """Real producer: the transition appends to the tmp Organization ledger root."""
+    from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+
+    result = submit_state_receipt(build_state_receipt(
+        transition_id=transition,
+        transition_sequence=int(digit),
+        subject_or_correlation_id=TASK_ID,
+        transition_outcome="OBSERVED",
+        prior_state_ref_or_hash=None if predecessor is None else "sha256:" + predecessor,
+        resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={"transition": transition},
+    ))
+    organization = result["organization_receipt"]
+    # Master Records reconstruction is not requested and never gates the closure.
     row = {
         "transition_id": transition,
-        "state": "RECORDED",
-        "reconstruction_status": "PASS",
-        "required_evidence_validation_status": "PASS",
-        "receipt_sha256": digest,
-        "reconstructed_receipt_sha256": digest,
+        "state": result["state"],
+        "reconstruction_status": result["reconstruction_status"],
+        "required_evidence_validation_status": result["required_evidence_validation_status"],
+        "receipt_sha256": result["receipt_sha256"],
+        "organization_receipt_sha256": organization["receipt_sha256"],
+        "organization_source_transition_sha256": organization["source_transition_sha256"],
     }
     if predecessor is not None:
         row["predecessor_receipt_sha256"] = predecessor
@@ -124,6 +141,14 @@ def purpose_receipt(*, replay: bool) -> dict:
 
 
 class ManifestStateTransitionIngressTests(unittest.TestCase):
+    def setUp(self):
+        # Ledger roots are supplied, never derived from the host.
+        ledger = tempfile.TemporaryDirectory()
+        self.addCleanup(ledger.cleanup)
+        env = patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ledger.name})
+        env.start()
+        self.addCleanup(env.stop)
+
     def test_shared_listener_advertises_one_generic_sdk_profile(self):
         profile = shared.profile(False)
         self.assertIn(mod.PROFILE, profile["profiles"])
@@ -317,6 +342,16 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
     def test_return_assembly_refuses_to_invent_missing_replay(self):
         with self.assertRaisesRegex(ValueError, "MASTER_RECORDS_REPLAY_NOT_OBSERVED"):
             mod._assemble_purpose_result(request(), purpose_receipt(replay=False))
+
+    def test_return_assembly_refuses_master_records_pass_without_organization_receipt(self):
+        receipt = purpose_receipt(replay=True)
+        forged = dict(receipt["claim_fence_master_records_transition"], reconstruction_status="PASS",
+                      required_evidence_validation_status="PASS")
+        forged.pop("organization_receipt_sha256")
+        forged.pop("organization_source_transition_sha256")
+        receipt["claim_fence_master_records_transition"] = forged
+        with self.assertRaisesRegex(ValueError, "organization_receipt_refused:FAIL_CLOSED:ORGANIZATION_RECEIPT_SHA256_ABSENT"):
+            mod._assemble_purpose_result(request(), receipt)
 
     def test_complete_return_preserves_no_continued_authority(self):
         result = mod._assemble_purpose_result(request(), purpose_receipt(replay=True))

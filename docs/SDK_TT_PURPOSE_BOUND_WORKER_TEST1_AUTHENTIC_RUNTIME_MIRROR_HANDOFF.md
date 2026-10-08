@@ -47,7 +47,7 @@ Manifest Builder -> run-manifest
 -> exact manifest_receipt_id bound to original manifest lineage
 ```
 
-Every successor transition requires the immediately preceding Master Records organization record with `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, and exact `receipt_sha256 == reconstructed_receipt_sha256`.
+Every successor transition requires the immediately preceding transition's `state=RECORDED` and the verified Organization receipt of the exact state receipt (`resident-runtime/organization_batch_custody.py::verified_organization_receipt`, read back from the ledger root the append used; Master Records reconstruction is evidence only and never gates progression).
 
 ## Execution rule
 

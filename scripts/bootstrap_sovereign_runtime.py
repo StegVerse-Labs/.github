@@ -52,6 +52,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/consume_org_claim_allocator_request.py"),
     Path("scripts/allocate_claims.py"),
     Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
+    Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
     Path("scripts/consume_resident_execution_request.py"),
     Path("scripts/consume_g18_resident_execution_request.py"),
     Path("scripts/consume_hil_resident_execution_request.py"),
@@ -111,19 +112,22 @@ def third_party_hosted_environment(env: dict[str, str] | None = None) -> bool:
     return any(truthy(values.get(name)) for name in THIRD_PARTY_ENV_VARS)
 
 
+class RuntimeLocationRequired(RuntimeError):
+    """No runtime root was supplied; nothing is derived from the host."""
+
+
 def default_runtime_root(env: dict[str, str] | None = None) -> Path:
+    """The runtime root supplied by the materializer, never one derived from the host.
+
+    A home, XDG or application-support directory belongs to whichever machine
+    happens to run this, so a root derived from one is discarded with an
+    ephemeral execution while appearing to persist.
+    """
     values = dict(os.environ if env is None else env)
     override = values.get("STEGVERSE_HEARTBEAT_ROOT")
     if override:
         return Path(override).expanduser().resolve()
-    system = platform.system().lower()
-    if system == "windows":
-        base = Path(values.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local")))
-    elif system == "darwin":
-        base = Path.home() / "Library" / "Application Support"
-    else:
-        base = Path(values.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state")))
-    return (base / "stegverse" / "heartbeat-runtime").resolve()
+    raise RuntimeLocationRequired("runtime_location_required_from_materializer: --runtime-root or STEGVERSE_HEARTBEAT_ROOT")
 
 
 def default_node_marker() -> Path:
@@ -784,9 +788,15 @@ def main() -> int:
     parser.add_argument("--receipt-path", type=Path, default=None)
     parser.add_argument("--skip-post-bootstrap-stegfin", action="store_true")
     args = parser.parse_args()
+    try:
+        runtime_root = (args.runtime_root or default_runtime_root()).resolve()
+    except RuntimeLocationRequired as exc:
+        print(json.dumps({"state": "FAIL_CLOSED", "failed_predicate": "RUNTIME_LOCATION_REQUIRED_FROM_MATERIALIZER",
+                          "reason": str(exc), "authority_effect": "NONE_REFUSAL_ONLY"}, indent=2, sort_keys=True))
+        return 2
     result = bootstrap(
         args.source_root,
-        (args.runtime_root or default_runtime_root()).resolve(),
+        runtime_root,
         node_marker=(args.node_marker or default_node_marker()).resolve(),
         proof_path=(args.proof_path or default_proof_path()).resolve(),
         receipt_path=(args.receipt_path or default_receipt_path()).resolve(),

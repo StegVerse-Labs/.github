@@ -22,7 +22,7 @@ from typing import Any, Mapping
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
 from scripts.run_worker_runtime import load_adapters
-from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, submit_state_receipt
 
 REQUEST_SCHEMA = "stegverse.sdk.manifest-state-transition-request/v1"
 RESULT_SCHEMA = "stegverse.sdk.manifest-state-transition-result/v1"
@@ -71,6 +71,19 @@ def organization_record_status(governance: Mapping[str, Any]) -> Any:
     if ORGANIZATION_RECORD_STATUS_FIELD in governance:
         return governance[ORGANIZATION_RECORD_STATUS_FIELD]
     return governance.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
+
+
+def _require_organization_receipt(row: Mapping[str, Any], label: str, transition_id: str | None = None) -> None:
+    """The verified Organization receipt of this exact state receipt closes a transition.
+
+    Master Records reconstruction fields are evidence only and never gate it.
+    A refusal raises with its typed DENY or FAIL_CLOSED disposition and
+    failed predicate; nothing is committed.
+    """
+    gate = organization_receipt_gate(row, expected_transition_id=transition_id)
+    refusal = gate["refusal"]
+    require(gate["verified"], f"{label}_organization_receipt_refused:"
+            f"{(refusal or {}).get('disposition')}:{(refusal or {}).get('failed_predicate')}")
 
 
 def require(ok: bool, reason: str) -> None:
@@ -194,10 +207,8 @@ def _closed(row: Any, transition_id: str | None = None) -> dict[str, Any]:
     if transition_id is not None:
         require(value.get("transition_id") == transition_id, f"transition_id_mismatch:{transition_id}")
     require(value.get("state") == "RECORDED", f"master_records_state_not_recorded:{value.get('transition_id')}")
-    require(value.get("reconstruction_status") == "PASS", f"reconstruction_not_pass:{value.get('transition_id')}")
-    require(value.get("required_evidence_validation_status") == "PASS", f"required_evidence_not_pass:{value.get('transition_id')}")
-    receipt = value.get("receipt_sha256")
-    require(isinstance(receipt, str) and receipt == value.get("reconstructed_receipt_sha256"), f"receipt_reconstruction_digest_mismatch:{value.get('transition_id')}")
+    require(isinstance(value.get("receipt_sha256"), str) and value.get("receipt_sha256"), f"receipt_sha256_required:{value.get('transition_id')}")
+    _require_organization_receipt(value, f"closure:{value.get('transition_id')}", value.get("transition_id"))
     return value
 
 def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, Any]) -> dict[str, Any]:
@@ -414,11 +425,10 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
         proof_ceiling="ORGANIZATION_FIRST_THEN_MASTER_RECORDS_RECONSTRUCTION",
     )
     custody = submit_state_receipt(receipt)
-    require(custody.get("state") == "RECORDED", f"{transition_id}_master_records_not_recorded")
-    require(custody.get("reconstruction_status") == "PASS", f"{transition_id}_reconstruction_not_pass")
-    require(custody.get("required_evidence_validation_status") == "PASS", f"{transition_id}_evidence_not_pass")
+    require(custody.get("state") == "RECORDED", f"{transition_id}_organization_not_recorded")
     org = custody.get("organization_receipt")
     require(isinstance(org, Mapping) and org.get("receipt_sha256"), f"{transition_id}_organization_receipt_missing")
+    _require_organization_receipt(custody, transition_id, transition_id)
     return {"receipt": receipt, "custody": custody}
 
 
@@ -503,14 +513,10 @@ def _closure_projection(row: Mapping[str, Any], *, predecessor_receipt_sha256: s
     }
     if predecessor_receipt_sha256 is not None:
         projected["predecessor_receipt_sha256"] = predecessor_receipt_sha256
-    for key in ("transition_id", "receipt_sha256", "reconstructed_receipt_sha256",
-                "organization_receipt_sha256"):
+    for key in ("transition_id", "receipt_sha256", "organization_receipt_sha256"):
         require(isinstance(projected.get(key), str) and projected[key], f"governance_closure_{key}_required")
-    require(projected["state"] == "RECORDED", "governance_closure_master_records_not_recorded")
-    require(projected["reconstruction_status"] == "PASS", "governance_closure_reconstruction_not_pass")
-    require(projected["required_evidence_validation_status"] == "PASS", "governance_closure_evidence_not_pass")
-    require(projected["receipt_sha256"] == projected["reconstructed_receipt_sha256"],
-            "governance_closure_receipt_reconstruction_mismatch")
+    require(projected["state"] == "RECORDED", "governance_closure_organization_not_recorded")
+    _require_organization_receipt(custody, "governance_closure", receipt.get("transition_id"))
     return projected
 
 
@@ -610,39 +616,22 @@ def _load_organization_append_owner():
     return module
 
 
+def _load_organization_batch_custody():
+    resident = Path(__file__).resolve().parents[1] / "resident-runtime"
+    require((resident / "organization_batch_custody.py").is_file(),
+            "ORGANIZATION_BATCH_CUSTODY_OWNER_UNAVAILABLE")
+    if str(resident) not in sys.path:
+        sys.path.insert(0, str(resident))
+    return importlib.import_module("organization_batch_custody")
+
+
 def _organization_batch_parent_manifest(validated: Mapping[str, Any]) -> dict[str, Any]:
-    require(validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED")
-    manifest = validated.get("canonical_manifest")
-    require(isinstance(manifest, Mapping), "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED")
-    extensions = manifest.get("extensions")
-    require(isinstance(extensions, Mapping), "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED")
-    task_binding = extensions.get("stegverse_canonical_task")
-    require(isinstance(task_binding, Mapping), "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED")
-    require(task_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
-    require(task_binding.get("cosv_task_vector") == "10000000100000",
-            "ORGANIZATION_BATCH_COSV_MISMATCH")
-    require(task_binding.get("canonical_request_ref") == ORGANIZATION_BATCH_REQUEST_REF,
-            "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH")
-    require(task_binding.get("authority_effect") == "NONE",
-            "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION")
-    policy = extensions.get(ORGANIZATION_BATCH_POLICY_EXTENSION)
-    require(isinstance(policy, Mapping), "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED")
-    condition = policy.get("release_condition")
-    require(isinstance(condition, Mapping) and condition.get("type") == "COUNT",
-            "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED")
-    count = condition.get("count")
-    require(type(count) is int and count >= 1, "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID")
-    graph = validated.get("state_graph")
-    graph_request = graph.get("request") if isinstance(graph, Mapping) else None
-    canonical_binding = graph_request.get("canonical_task_binding") if isinstance(graph_request, Mapping) else None
-    require(isinstance(canonical_binding, Mapping), "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED")
-    require(canonical_binding.get("task_id") == ORGANIZATION_BATCH_TASK_ID,
-            "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH")
-    require(canonical_binding.get("receipt_batch") == dict(policy),
-            "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH")
-    return {"receipt_batch": dict(policy)}
+    """The batch parent manifest, validated by its owner in resident-runtime.
+
+    The organization manifest ingress consumes the same SDK request schema, so
+    both receivers share one validator and one set of failure codes.
+    """
+    return _load_organization_batch_custody().organization_batch_parent_manifest(validated)
 
 
 def _evidence_entry(transition_id: str, evidence_id: str, evidence_type: str,
