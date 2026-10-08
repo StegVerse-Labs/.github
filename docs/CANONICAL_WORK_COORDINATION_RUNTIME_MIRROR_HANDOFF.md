@@ -123,9 +123,9 @@ No such governed request-consumption transition result is present in repository-
 1. Existing resident dispatcher visits `canonical_work_coordination`; consumer visits all explicit Canonical Work request specs independently while preserving live resident task state.
 2. Observe authentic task-specific request-consumption plus Canonical Work ingress/consumption/bootstrap receipts without inferring them from source/merge/CI/deployment/HB progression.
 3. Govern resulting governed ingress projections into canonical task state.
-4. Run Master Records pre-execution reconciliation and WorkerCoordinator admission review; project only retained WorkerCoordinator claim/fence transition closure.
+4. Run pre-execution reconciliation against Master Records organization records. Run WorkerCoordinator admission review; project only retained WorkerCoordinator claim/fence transition closure.
 5. Continue already-owned governed work paths without duplicate execution substrates.
-6. Run post-execution Master Records reconciliation and governed egress/closure, then dependency fanout from retained admitted dependency transition events.
+6. Run post-execution reconciliation against Master Records organization records. Then run governed egress/closure, followed by dependency fanout from retained admitted dependency transition events.
 7. Prove a complete terminal canonical state-transition lineage.
 
 ## Human action
@@ -160,7 +160,7 @@ Until those predicates hold, the bridge returns `REFRESH_COMPLETE_DISPATCH_INCOM
 
 Current-main reconciliation identified a split in the already-existing portable Canonical Work path. `scripts/refresh_and_dispatch_resident_requests.py` already treats hosted/provider markers as compute-substrate evidence only, but the downstream `scripts/dispatch_resident_execution_requests.py` still rejected any invocation carrying `GITHUB_ACTIONS`, `CI`, Render, Vercel, Cloudflare Pages, or Cloudflare Workers markers before the selected `canonical_work_coordination` consumer could run.
 
-The bounded repair removes that compute-identity gate from the canonical dispatcher. Hosted/provider markers are observed into the dispatcher receipt as non-authorizing compute metadata and are stripped before child execution. They do not become GitHub authority, provider authority, WorkerCoordinator authority, Interlock/InTr authority, TV/TVC credential authority, organization custody authority, or Master Records authority. No new runtime, scheduler, device dependency, listener, request identity, or `AI_SESSION_GATE` is introduced.
+The bounded repair removes that compute-identity gate from the canonical dispatcher. Hosted/provider markers are observed into the dispatcher receipt as non-authorizing compute metadata and are stripped before child execution. They do not become GitHub authority, provider authority, WorkerCoordinator authority, Interlock/InTr authority, TV/TVC credential authority, or organization custody authority. They also create no Master Records organization record. No new runtime, scheduler, device dependency, listener, request identity, or `AI_SESSION_GATE` is introduced.
 
 `control/canonical-work-runtime-profile.json` now names the execution class `MANIFEST_SELECTED_EPHEMERAL`, allows ephemeral execution, and explicitly forbids persistent host identity, external-machine discovery, systemd presence, GitHub Actions identity, or hosted-provider identity from granting or gating authority.
 
@@ -171,7 +171,7 @@ This is an exposure/source repair only. It does not claim that an authentic mani
 
 The merged compute-identity repair is followed by one narrow execution-surface binding at `.github/workflows/canonical-work-exact-ephemeral-invocation.yml`. A push only to `invoke/canonical-work-coordination-*` supplies interchangeable ephemeral compute with repository `contents: read` permission and no GitHub token, provider secret, scheduler, device, resident-host identity, or new authority plane.
 
-The workflow invokes the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` reusable task with the exact Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`, and `only_consumer=canonical_work_coordination`. It retains the reusable-task trigger receipt plus runtime receipt tree as an Actions artifact. GitHub Actions remains compute only. The workflow itself cannot upgrade source/trigger success into an authoritative transition; the existing WorkerCoordinator, Interlock/InTr, organization custody, and Master Records paths determine the actual result.
+The workflow invokes the existing `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` reusable task with the exact Goal `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`, and `only_consumer=canonical_work_coordination`. It retains the reusable-task trigger receipt plus runtime receipt tree as an Actions artifact. GitHub Actions remains compute only. The workflow itself cannot upgrade source/trigger success into an authoritative transition; the existing WorkerCoordinator, Interlock/InTr, and organization custody paths determine the actual result. Master Records only keeps the organization records of that result.
 
 The first invocation branch after merge must be treated as an attempted governed transition. Preserve the first authority-path ALLOW, DENY, or FAIL_CLOSED actually emitted. An Actions job result or artifact upload is not itself that disposition.
 

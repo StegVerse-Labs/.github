@@ -294,7 +294,7 @@ receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNT
 receipts/reusable-task/KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001.runner-result.json
 ```
 
-Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, Master Records organization record, or deployed query-secret-safe ingress observation is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
+Therefore no authentic resident execution, TVC runtime binding, Interlock/InTr admission, deployed query-secret-safe ingress observation, or Master Records organization record is promoted from the schedule merge. The immediate next evidence is the first authentic neutral-scheduler/carrier result for this exact task-scoped portable-dispatch row and, if that reaches Canonical Work, the task-specific consumption receipt above.
 
 
 ## Post-schedule resident cadence trace — 2026-09-21

@@ -145,7 +145,7 @@ Entropy recovery displaces only the residual non-executing construct. It does no
 
 ## Resident propagation
 
-The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure, Master Records roundtrip adapter, and entropy finalizer live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
+The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure, the entropy finalizer, and the organization record roundtrip adapter for Master Records live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
 
 The ECE resident runtime requires `master-records/orchestration` in its local repository-root map. Missing local source continues to fail closed; the lifecycle performs no GitHub/network fetch during resident execution.
 
@@ -200,7 +200,7 @@ ENTROPY_RECOVERY_RECORDED
 
 1. Observe the resident heartbeat with local source roots materializing the merged lifecycle-compatible `.github`, StegVerse-Healer, SDK/Site dependencies, and `master-records/orchestration` source required by the existing ECE lane.
 2. Observe one authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox UTC-hour invocation executed by the existing ecosystem scheduler.
-3. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, entropy-recovery receipt, and scheduler slot state.
+3. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, destination custody record, exact reconstructed request bytes, entropy-recovery receipt, scheduler slot state, and the Master Records organization record source request.
 4. Verify that the retained chain has no inferred, substituted, or cross-invocation links and that the scheduler recognizes `ENTROPY_RECOVERY_RECORDED` as slot-satisfying without a duplicate same-slot execution.
 
 No additional source implementation is presently identified for this lifecycle. Quantitative performance/load assessment should be repeated only after the remaining authentic runtime artifacts exist.

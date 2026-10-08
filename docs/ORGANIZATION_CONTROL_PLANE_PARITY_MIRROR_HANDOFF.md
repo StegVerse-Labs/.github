@@ -39,7 +39,7 @@ Machine-readable audit: `data/organization-control-plane-parity-v1.json`.
 
 ## Evidence state
 
-Source repair is not runtime proof. Required closure is exact-head CI for parity and bypass-negative controls, followed by an authentic cross-org attempt when the existing authorized InTr surface is available. Every attempted transition retains ALLOW, DENY, or FAIL_CLOSED. Master Records remains organization-record/reconstruction only and is not a runtime gate.
+Source repair is not runtime proof. Required closure is exact-head CI for parity and bypass-negative controls, followed by an authentic cross-org attempt when the existing authorized InTr surface is available. Every attempted transition retains ALLOW, DENY, or FAIL_CLOSED. Master Records remains organization-record/reconstruction only; runtime transitions do not depend on it.
 
 ## Exact-head validation progression
 

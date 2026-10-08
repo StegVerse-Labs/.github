@@ -94,7 +94,7 @@ Still unresolved authentic predicates:
 - exact runtime binding and controlled pre-authorized execution surface;
 - subject-bound command consumption/effect observation;
 - live reassessment/adaptation/termination evidence;
-- authentic receipt-chain custody and Master Records reconciliation;
+- authentic receipt-chain custody plus a reconciliation step against Master Records organization records;
 - exact confrontation verification over that authentic chain;
 - canonical cross-repository reconciliation and final GADI activation proof.
 
@@ -111,7 +111,7 @@ Unauthorized compromise of third-party systems is not permitted. External effect
 ## Remaining destinations
 
 - targeted `GADI-RESIDENT-EXECUTION-001` claim/fence and authentic execution/effect/reassessment evidence -> current canonical WorkerCoordinator/runtime owner;
-- authentic receipt-chain custody and Master Records reconciliation -> `StegVerse-Labs/Continuity` / Master Records;
+- authentic receipt-chain custody and reconciliation -> `StegVerse-Labs/Continuity`, with Master Records keeping the organization records;
 - canonical dependency/activation reconciliation -> `StegVerse-Labs/.github`;
 - proof/readiness projection after underlying evidence qualifies -> `StegVerse-Labs/Site`.
 

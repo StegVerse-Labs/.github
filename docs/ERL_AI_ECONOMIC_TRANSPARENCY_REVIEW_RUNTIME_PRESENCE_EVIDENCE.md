@@ -51,7 +51,7 @@ The bounded repair reuses both existing authorities rather than creating another
 - Master Records preserves exact source bytes, complete structured content, `runtime_root`, and `resident.node_id` when present;
 - Master Records intake sets `cross_task_reuse_authorized=false` and carries no task/correlation identity, so custody cannot satisfy ERL or another task merely by existing.
 
-This closes the local custody/reconstruction intake gap only. It does not prove that a presence receipt has actually been emitted, that the local Master Records importer has executed, or that the resulting custody record has been persisted to a remote repository. Those remain separate authentic evidence observations.
+This closes the local custody/reconstruction intake gap only. It does not prove that a presence receipt has actually been emitted or that the local Master Records importer has executed. Nor does it prove that the resulting custody record has been persisted to a remote repository. Those remain separate authentic evidence observations.
 
 The newer cross-task subject-binding rule remains controlling: exact `runtime_root`, node identity when available, and canonical WorkerCoordinator identity must be established before a retained presence observation can be promoted for shared task reuse.
 

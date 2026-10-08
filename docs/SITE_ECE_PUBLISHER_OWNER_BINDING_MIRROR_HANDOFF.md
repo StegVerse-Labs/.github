@@ -15,7 +15,7 @@ Bind the Goal Task's selected reusable `RTC-PUBLISHER-005` component to the alre
 - Canonical publication execution owner task: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`.
 - Publication owner COSV: `50000000102000`.
 - ECE-specific adapter: `StegVerse-Labs/Site:scripts/materialize_ecosystem_continuity_current.py`.
-- Upstream custody owner: Master Records through `RTC-EVIDENCE-CUSTODY-004`.
+- Upstream organization-record owner: Master Records through `RTC-EVIDENCE-CUSTODY-004`.
 - Source-repository writeback: prohibited.
 - GitHub runtime authority: none.
 

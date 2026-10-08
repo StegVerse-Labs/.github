@@ -102,7 +102,7 @@ Relevant invariants:
 - reconciliation result != automatic task transition;
 - absence of evidence != proof of non-occurrence.
 
-The remaining Master Records denominator for this workstream is authentic local evidence ingestion/custody/reconciliation, not a missing projection/feed implementation.
+The remaining Master Records denominator for this workstream is authentic local evidence ingestion/organization-record reconciliation, not a missing projection/feed implementation.
 
 ## Cross-task coordination state
 
@@ -167,7 +167,7 @@ State A
 -> declared next state evaluated
 ```
 
-There is no separate post-transition requirement to prove that an "authentic runtime" happened. If Master Records has the governed transition closure, the transition happened. If it does not, either the transition did not complete or custody/reconstruction failed; the system must follow that exact failure rather than wait for another observation class.
+There is no separate post-transition requirement to prove that an "authentic runtime" happened. If Master Records holds the organization record of the governed transition, the transition happened. If it does not, either the transition did not complete or custody/reconstruction failed; the system must follow that exact failure rather than wait for another observation class.
 
 The prior `DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME` and `DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME` entries are removed as prerequisites. Interlock/InTr is the transition path itself; Master Records is limited to organization records and reconstruction consequence of that path. Neither is a pre-transition runtime gate for `PROPOSED -> INGRESS_ADMITTED`.
 

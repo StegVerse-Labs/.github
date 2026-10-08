@@ -12,7 +12,7 @@ GitHub repository names and historical commit SHAs are retained only as migratio
 
 Source preparation is also not semantically dependent on route-specific InTr completion. It is pure local source verification/materialization under independent task control. The former `SV-DN1-INTR-RUNTIME-001 -> SV-DN1-PRODUCTION-SOURCE-PREP-001` execution gate was sequencing for the original first-round chain, not a source-safety predicate, and is removed from source-prep admission. `SV-DN1-SDK-FIRST-ROUND-001` retains its own separate InTr and source-prep prerequisites before that production round may execute.
 
-This allows the same verified SDK / StegCore / Core-Lite / Master Records roots to be reused by other separately admitted sovereign consumers without granting those consumers SDK, governance, provider, or execution authority.
+This allows other separately admitted sovereign consumers to reuse the same verified SDK / StegCore / Core-Lite / Master Records roots without granting those consumers SDK, governance, provider, or execution authority.
 
 ## Canonical runtime contract
 

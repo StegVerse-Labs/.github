@@ -25,4 +25,4 @@ The first permitted transition is `INGRESS_ADMITTED`. Invoke only through an exi
 
 ## 2026-10-01 PR #2865 current-main replacement
 
-The still-required exact-child generic SDK portable-dispatch repair is reconstructed on current canonical main. Goal context and exact `request_id` are forwarded through the existing bridge/dispatcher/consumer, which must resolve exactly one matching child. No runtime execution, organization custody, or Master Records completion is inferred from this source repair.
+The still-required exact-child generic SDK portable-dispatch repair is reconstructed on current canonical main. Goal context and exact `request_id` are forwarded through the existing bridge/dispatcher/consumer, which must resolve exactly one matching child. No runtime execution or organization custody is inferred from this source repair, and no Master Records organization record is inferred from it either.

@@ -262,7 +262,7 @@ Repository-visible evidence surfaces checked:
 ```text
 receipts/sovereign-network/kv-ai-memory-intr.latest.json: NOT FOUND
 receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json: NOT FOUND
-repository search for SV-KV-AI-PERSISTENCE-001 + Master Records + KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED + memory-packet-admission + LIVE_KV_WRITEBACK_READBACK: only this handoff lineage / no live receipt chain observed
+repository search for SV-KV-AI-PERSISTENCE-001 + memory-packet-admission + KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED + LIVE_KV_WRITEBACK_READBACK + Master Records: only this handoff lineage / no live receipt chain observed
 ```
 
 Completion attempt result:

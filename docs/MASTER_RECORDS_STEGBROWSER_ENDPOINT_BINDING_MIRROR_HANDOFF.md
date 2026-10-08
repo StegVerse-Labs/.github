@@ -43,7 +43,7 @@ Master Records execution authority = false
 
 ## Required solution path
 
-1. Re-read the current canonical Master Records organization record owner and the current Site browser custody client before mutation.
+1. Before mutation, re-read the current canonical Master Records organization record owner. Also re-read the current Site browser custody client.
 2. Bind the browser client to the existing authoritative Master Records organization record surface through a provider-neutral, platform-neutral, OS-neutral, device-neutral configuration or routing contract already owned by StegVerse. Do not hard-code Render or any replacement hosting provider.
 3. Preserve TV/TVC credential authority. A header naming TV/TVC is not authentication evidence; do not invent or expose credentials in browser source.
 4. Do not create a second API, custody store, transport plane, runtime, scheduler, dispatcher, service worker authority, credential path, request nonce, or user-operated device dependency.
@@ -227,7 +227,7 @@ The current Site execution page `stegos-bootstrap/canonical-work-runtime-consump
 unchanged immutable Canonical Work invocation
 -> retain authentic runtime-readiness tuple
 -> export retained SV002 evidence
--> existing StegBrowser Master Records InTr organization records admission
+-> existing StegBrowser InTr admission; carries Master Records organization records
 -> construct exact canonical state-transition receipt from that authentic admission
 -> verified provider-neutral StegVerse node discovery
 -> credential-nonexporting Service Gateway relay
@@ -767,7 +767,7 @@ exported_bundle_sha256
 stegbrowser_custody_transition_admission_identity
 ```
 
-Therefore Gateway validation, custody relay submission, Master Records `RECORDED`, reconstruction `PASS`, exact digest equality, and A1-A4 handback all remained unentered.
+Therefore Gateway validation, custody relay submission, exact digest equality, A1-A4 handback, the Master Records `RECORDED` organization record, and reconstruction `PASS` all remained unentered.
 
 No second invocation, request, exporter, observer, runtime, scheduler, recovery path, measurement run, Gateway, fixed-host dependency, or second user-operated device was introduced.
 

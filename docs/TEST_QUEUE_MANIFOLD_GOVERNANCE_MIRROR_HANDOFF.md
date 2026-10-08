@@ -64,7 +64,7 @@ The SDK remains generalized ingress for users/evaluators; queue/manifold schedul
 - `StegVerse-org/StegVerse-SDK/SDK_MIRROR_HANDOFF.md` and `docs/EVALUATION_RELATIONSHIP_MIRROR_HANDOFF.md` — generalized user/evaluator ingress; no person-specific evaluator route.
 - `GCAT-BCAT-Engine/workflows/experiments/stegverse-test-lanes` — portable Test Lanes experiment/evidence owner.
 - `StegVerse-Labs/TVC` — credential/provider execution authority where required.
-- Master Records / applicable receipt custody surfaces — durable reconstruction of queue decisions and test outcomes.
+- Master Records organization records — durable reconstruction of queue decisions and test outcomes; applicable Organization receipt custody surfaces likewise.
 
 ## Implementation discipline
 

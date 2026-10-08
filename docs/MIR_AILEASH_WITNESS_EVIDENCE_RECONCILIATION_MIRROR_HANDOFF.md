@@ -278,7 +278,7 @@ The copied continuation that requested repair of the StegBrowser A1 observer/com
 
 Current source has advanced beyond that continuation:
 
-- `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` is retired/decomposed at its prompt limit; its later source history records the SV002-derived browser execution path, Node-journal retention, evidence export, Master Records ingress/custody bindings, and successor decomposition.
+- `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` is retired/decomposed at its prompt limit; its later source history records the SV002-derived browser execution path, Node-journal retention, evidence export, ingress/custody bindings, and successor decomposition. Those bindings target Master Records organization records.
 - Site PR `#1436` is merged as `c9af43f7fd70a2fbd6ce45351e5538acdc14fa01`; it repairs the existing browser-to-sovereign Universal InTr compatibility seam by carrying the unchanged canonical materialization request and browser binding through the same deterministic Node outbox entry without a second invocation, listener, scheduler, dispatcher, materializer, WorkerCoordinator, authority plane, credential path, or device requirement.
 - The older `.github` A1 observer still contains a host-side `STEGVERSE_NODE_GENESIS_RECEIPT` filesystem projection, but current authority no longer permits treating that projection as the canonical execution gate or as evidence that the registered Node is absent. The validated browser lane reads the existing registered Node continuity directly and the later merged compatibility path carries that binding into sovereign InTr. No new repair was applied to the retired observer.
 

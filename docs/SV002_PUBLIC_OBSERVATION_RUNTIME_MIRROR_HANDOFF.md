@@ -385,7 +385,7 @@ StegVerse-002 state changes / receipts
 
 The projection may expose Master Records reconstruction status, reconstructed artifact hashes, subject identity hash, and reconstructed capability realizations. It must not maintain a competing privileged state history of StegVerse-002.
 
-Origin-side receipt bytes may still be compared against their Master Records-custodied/reconstructed hashes by a dedicated verifier, but that comparison is an integrity check, not an independent observation history.
+Origin-side receipt bytes may still be compared against their Master Records organization-record/reconstructed hashes by a dedicated verifier, but that comparison is an integrity check, not an independent observation history.
 
 
 ## v0.7 Master Records projection materialization — 2026-09-01

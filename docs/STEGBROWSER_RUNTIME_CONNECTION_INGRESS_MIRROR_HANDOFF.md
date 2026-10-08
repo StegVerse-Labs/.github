@@ -36,7 +36,7 @@ A1 authentic invocation-bound connection-state observation
 -> retain exact runtime-readiness evidence in existing Node continuity journal
 -> export that retained entry through existing SV002 evidence export
 -> bind the exact exported tuple into the existing registered Node intr_outbox
--> existing root Universal InTr -> MASTER_RECORDS StegBrowser custody ingress
+-> existing root Universal InTr -> MASTER_RECORDS StegBrowser ingress (organization records)
 -> authentic Master Records organization records and reconstruction evidence required
 -> A3 existing organization-local WorkerCoordinator claim/fence
 -> A4 existing exact manifest Interlock/InTr ingress
@@ -222,7 +222,7 @@ workercoordinator_fence_observed = false
 authority_effect = NONE_INGRESS_ONLY
 ```
 
-Therefore Master Records ingress admission must never be promoted into Master Records organization records and reconstruction completion.
+Therefore ingress admission must never be promoted into Master Records organization records and reconstruction completion.
 
 Exact-head validation on `6e81eedeaeb59e8b71f8a0b83a764c2410b84c32`:
 

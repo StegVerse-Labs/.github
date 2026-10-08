@@ -152,7 +152,7 @@ AgentEnvelope binds a deterministic action identity to a derived signing capabil
 
 Disposition: AgentEnvelope demonstrates a useful derived action-identity technique, but no StegVerse credential/verification authority transfer is justified.
 
-### Evidence custody / Master Records
+### Master Records organization records; Organization evidence custody
 
 Deterministic re-derivation can be represented as a verification method for a proposition. Organization owns runtime/observed reality; Master Records is limited to organization records/reconstruction and does not become an authority issuer or governance evaluator.
 

@@ -16,7 +16,7 @@ Close the StegCore source-conformance predicate by proving or repairing canonica
 - Processing semantics are selected only by admitted `processing.capability` + `processing.route_id` and installed route resolution.
 - Terminal attempted-boundary disposition is `ALLOW | DENY | FAIL_CLOSED`.
 - Organization ledger append is runtime reality when Organization state changes.
-- Master Records is limited to organization records and reconstruction evidence and never gates Organization runtime reality.
+- Master Records is limited to organization records and reconstruction evidence; Organization runtime reality does not depend on it.
 - No external machine, listener, session, receiver liveness, hosted service, scheduler, or later observer may be awaited as a transition/completion predicate.
 - Receiver unavailability follows `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`.
 

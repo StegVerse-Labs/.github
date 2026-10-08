@@ -48,7 +48,7 @@ entrypoint: scripts/refresh_and_execute_resident_task.py --task-id SHWP-UNIVERSA
 resident dispatcher: scripts/dispatch_resident_execution_requests.py
 WorkerCoordinator: existing canonical claim/fence authority
 Interlock/InTr: current governed transition authority
-Master Records: independent custody/reconstruction authority
+Master Records: independent organization records/reconstruction authority
 ```
 
 The bound worker is only a stricter wrapper around the existing worker. It does not create a new worker identity, adapter_ref, scheduler, dispatcher, listener, runtime, claim authority, governance authority, or credential authority.

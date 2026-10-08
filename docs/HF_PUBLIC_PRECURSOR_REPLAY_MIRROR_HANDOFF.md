@@ -15,7 +15,7 @@ Accepted replay evidence may be shown only as a separate cross-cutting historica
 ## Publication/runtime reconciliation — 2026-09-21
 Canonical Task Registry generation re-read before mutation: `166`.
 
-This goal remains strictly `CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB` research/publication work. Its canonical task record marks every execution substrate `NOT_APPLICABLE`, selects no substrate, sets `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`. Missing public propagation therefore does not create any Node/device, WorkerCoordinator runtime claim/fence, Interlock/InTr execution admission, or Master Records runtime receipt requirement.
+This goal remains strictly `CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB` research/publication work. Its canonical task record marks every execution substrate `NOT_APPLICABLE`, selects no substrate, sets `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`. Missing public propagation therefore does not create any Node/device, WorkerCoordinator runtime claim/fence, or Interlock/InTr execution admission requirement. Nor does it create a Master Records organization record requirement.
 
 Independent observation of `/hugging-face-analysis.html` and `/data/hugging-face-historical-security-observations.json` was retried on 2026-09-21. The public web observer could not access either exact route and exact-domain searches returned no indexed copy. This remains `NOT_OBSERVED`; it is not proof that the routes are absent.
 

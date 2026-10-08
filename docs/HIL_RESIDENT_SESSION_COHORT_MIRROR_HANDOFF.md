@@ -91,7 +91,7 @@ The resident dispatcher may visit independent consumers in one session. A failur
 
 ## Current highest-priority HIL transition
 
-The first missing HIL predicate remains authentic consumption of `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` on the existing same-device resident path, followed by authentic ESRL `LEASE_OPEN`, a real WorkerCoordinator claim/fresh fence, HIL receiver READY, receiver/custody evidence, controlled browser receipt, restart exact-byte reconstruction, TVC lifecycle receiving/admission, and eventually Master Records release eligibility.
+The first missing HIL predicate remains authentic consumption of `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` on the existing same-device resident path, followed by authentic ESRL `LEASE_OPEN`, a real WorkerCoordinator claim/fresh fence, HIL receiver READY, receiver/custody evidence, controlled browser receipt, restart exact-byte reconstruction, TVC lifecycle receiving/admission; eventually, Master Records organization-record release eligibility.
 
 No additional source implementation is required to manufacture that evidence. The existing HB32/WorkerCoordinator/dispatcher/HIL-consumer/targeted-execution path must produce it authentically.
 

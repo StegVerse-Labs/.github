@@ -94,7 +94,7 @@ No CI, merge, package artifact, scheduler configuration, connector device list, 
 - StegOS devices/nodes: interchangeable transport/execution nodes; no user-verifier authority and no device-verification gate.
 - SDK `ecosystem_diagnostic`: manifested diagnostic transport/result standardization only.
 - ECE: continuity interpretation/evidence binding only.
-- Master Records: retained reality/custody and reconstruction authority.
+- Master Records: organization records and reconstruction authority.
 - Site: read-only safe projection/display only.
 - StegVerse-Healer: scheduler/finding-intake/repair-dispatch owner; dispatch does not prove recovery.
 - Interlock/InTr: governed transition authority.

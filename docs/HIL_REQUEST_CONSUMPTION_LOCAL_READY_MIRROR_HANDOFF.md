@@ -46,7 +46,7 @@ Interlock/InTr transition authority = unchanged
 TV/TVC credential authority = unchanged
 GitHub token runtime authority = NONE
 request consumption = not HIL lifecycle completion
-request consumption = not publication/custody/Master Records authority
+request consumption = not publication/custody authority; not a Master Records organization record
 second user-operated machine required = false
 ```
 

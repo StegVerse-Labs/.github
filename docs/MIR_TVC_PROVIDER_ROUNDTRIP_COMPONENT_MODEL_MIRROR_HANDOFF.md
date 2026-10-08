@@ -71,7 +71,7 @@ Only this already-standing request may be consumed. A fresh WorkerCoordinator cl
 Review of the registered reusable path exposed three source defects after the connected-device correction:
 
 1. `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` declared a cross-repository runner reference (`StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py`) while `scripts/trigger_reusable_task.py` admits only local `scripts/*.py` runners. The reusable invocation therefore could not materialize its declared runner.
-2. The reusable observation identity declared Interlock/InTr admission and Master Records organization records and reconstruction as runner completion predicates even though the generic trigger validates runner completion before performing Master Records. That made the lifecycle circular.
+2. The reusable observation identity declared Master Records organization records and reconstruction as a runner completion predicate even though the generic trigger validates runner completion before performing the Master Records organization record step. It likewise declared Interlock/InTr admission as a runner completion predicate. That made the lifecycle circular.
 3. The generic reusable trigger carries a validated runner result to Master Records but does not itself implement `RT-INTR-BOUNDARY-ADMISSION-001`. Therefore the MIR provider transaction must retain authentic canonical InTr request/response receipts before the reusable observation runner may report `INTERLOCK_INTR_RECEIPT_ADMITTED`.
 
 ## Current source repair
@@ -138,11 +138,11 @@ StegVerse-org/StegVerse-SDK
 
 This is transport only. An InTr hop receipt is not an Interlock admission decision. `RT-INTR-BOUNDARY-ADMISSION-001` separately requires exact boundary identity, payload/envelope integrity, applicable standing evaluation, explicit ALLOW/DENY disposition, and a retained admission receipt.
 
-Accordingly, the reusable trigger must stop at `INTERLOCK_INTR_ADMISSION_REQUIRED` before constructing or submitting any Master Records organization record request whenever authentic explicit admission evidence is absent. Retrying that continuation must reuse any already-retained provider result and must not repeat the provider consequence.
+Accordingly, whenever authentic explicit Interlock/InTr admission evidence is absent, the reusable trigger must stop at `INTERLOCK_INTR_ADMISSION_REQUIRED` and must not construct or submit the downstream request. No Master Records organization record request is built in that case. Retrying that continuation must reuse any already-retained provider result and must not repeat the provider consequence.
 
 ## Next admissible work
 
-Validate PR #2018 on its exact final head. If all required exact-head lanes are green, merge with expected-head protection. Then allow the already-standing `MIR-RUN2-EVENT-001` WorkerCoordinator request to advance on demand through the repaired path. It may reach authentic provider execution plus canonical transport and then stop at the explicit Interlock admission boundary; it may continue to Master Records only when authentic admission evidence is present. Do not create or wait for a persistent device, runtime, scheduler, broker, credential path, listener, host, or second-device dependency. Retire only after `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` and every canonical completion condition are authentically satisfied.
+Validate PR #2018 on its exact final head. If all required exact-head lanes are green, merge with expected-head protection. Then allow the already-standing `MIR-RUN2-EVENT-001` WorkerCoordinator request to advance on demand through the repaired path. It may reach authentic provider execution plus canonical transport and then stop at the explicit Interlock admission boundary. Only after authentic Interlock/InTr admission evidence is present may it continue to the Master Records organization record step. Do not create or wait for a persistent device, runtime, scheduler, broker, credential path, listener, host, or second-device dependency. Retire only after `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` and every canonical completion condition are authentically satisfied.
 
 
 ## 2026-09-21 neutral Healer reusable carrier closure
@@ -165,8 +165,8 @@ second_scheduler_required: false
 second_user_operated_device_required: false
 ```
 
-This closes reusable schedule addressability without creating another scheduler, runtime, provider broker, credential path, device dependency, or authority plane. The existing neutral Healer scheduler is carrier-only; WorkerCoordinator still owns claim/fence, TV/TVC owns provider/session credentials, Interlock/InTr owns transition/admission, and Master Records is limited to organization records and reconstruction.
+This closes reusable schedule addressability without creating another scheduler, runtime, provider broker, credential path, device dependency, or authority plane. The existing neutral Healer scheduler is carrier-only; WorkerCoordinator still owns claim/fence, TV/TVC owns provider/session credentials, and Interlock/InTr owns transition/admission. Master Records is limited to organization records and reconstruction.
 
 Immediately after the merge, no authentic retained Healer scheduler receipt, one-shot resident-stack activation receipt, MIR resident-request consumption receipt, MIR provider-operation receipt, or MIR reusable-trigger receipt was present on the canonical GitHub evidence surface. This is recorded as `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`, not as runtime failure or non-occurrence. No device presence is required or awaited.
 
-The next authentic runtime boundary is therefore machine-owned execution of the already-standing reusable carrier/request chain. When a real attempt occurs it must consume only `MIR-RUN2-EVENT-001`, retain the provider result and generic `RTC-INTERLOCK-INTR-TRANSPORT-008` request/response chain, stop at `INTERLOCK_INTR_ADMISSION_REQUIRED` if explicit admission evidence is absent, and continue to Master Records only after that admission receipt exists.
+The next authentic runtime boundary is therefore machine-owned execution of the already-standing reusable carrier/request chain. When a real attempt occurs it must consume only `MIR-RUN2-EVENT-001`, retain the provider result and generic `RTC-INTERLOCK-INTR-TRANSPORT-008` request/response chain, stop at `INTERLOCK_INTR_ADMISSION_REQUIRED` if explicit admission evidence is absent. Only once that Interlock/InTr admission receipt exists may it continue to the Master Records organization record step.

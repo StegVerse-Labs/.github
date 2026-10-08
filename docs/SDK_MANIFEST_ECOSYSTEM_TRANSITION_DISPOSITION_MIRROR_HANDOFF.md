@@ -8,7 +8,7 @@ Status: `ACTIVE / CHECKED_OUT`
 
 ## Goal
 
-After source-conformance repairs, exercise representative governance and non-governance ACTIONS as manifest-bound state transitions and retain terminal ALLOW/DENY/FAIL_CLOSED dispositions, applicable Organization ledger receipts, and non-gating post-Organization Master Records reconstruction evidence.
+After source-conformance repairs, exercise representative governance and non-governance ACTIONS as manifest-bound state transitions and retain terminal ALLOW/DENY/FAIL_CLOSED dispositions, and applicable Organization ledger receipts; also retain Master Records reconstruction evidence taken after the Organization record. That reconstruction is non-gating.
 
 ## Inherited invariants
 
@@ -16,7 +16,7 @@ After source-conformance repairs, exercise representative governance and non-gov
 - Processing semantics are selected only by admitted `processing.capability` + `processing.route_id` and installed route resolution.
 - Terminal attempted-boundary disposition is `ALLOW | DENY | FAIL_CLOSED`.
 - Organization ledger append is runtime reality when Organization state changes.
-- Master Records is limited to organization records and reconstruction evidence and never gates Organization runtime reality.
+- Master Records is limited to organization records and reconstruction evidence; Organization runtime reality does not depend on it.
 - No external machine, listener, session, receiver liveness, hosted service, scheduler, or later observer may be awaited as a transition/completion predicate.
 - Receiver unavailability follows `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`.
 
@@ -39,4 +39,4 @@ Source inspection (not execution) identified `StegVerse-org/.github:resident-run
 
 Required repair at existing owners: reconcile federation membership under its registry rules; implement manifest-directed egress/ingress/return with `processing.capability` and `processing.route_id`, independently disposition each attempted boundary, preserve TV/TVC custody and organization-ledger append, use `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION` rather than host/spool liveness as a prerequisite, and invoke the existing Publisher route only if the admitted manifest requests presentation. No new machine, framework, scheduler, authority, or runtime gate. CI may validate source but cannot attest actual crossing. Non-ALLOW must name the failed predicate and retry edge at the actually invoked boundary; do not fabricate downstream results.
 
-Remaining: owner-specific source repairs, exact-head tests, CI evidence, Organization readback and applicable non-gating Master Records reconstruction. No ALLOW, live crossing, Publisher PDF, or runtime validation is claimed by this assessment.
+Remaining: owner-specific source repairs, exact-head tests, CI evidence, Organization readback and applicable Master Records reconstruction; that reconstruction is non-gating. No ALLOW, live crossing, Publisher PDF, or runtime validation is claimed by this assessment.

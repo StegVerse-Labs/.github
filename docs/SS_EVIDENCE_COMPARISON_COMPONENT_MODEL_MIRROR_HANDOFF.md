@@ -60,7 +60,7 @@ Only the components required by the current standard/manual lane are selected.
 - Merged StegSocials PR #48 is **reusable evidence-validation implementation**, not a device verifier and not a new Goal Task.
 - Site standard-flow evidence export is **Goal Task-specific configuration/output construction** consumed by the existing evidence validator.
 - Existing ERL provider-resource and provider-operation readback logic is **reusable evidence/readback implementation already owned by ERL/StegSocials**, not a reason to create another adapter.
-- Existing Master Records ERL receipt organization records and reconstruction is **reusable custody/reconstruction implementation**; historical evidence remains preserved and is not replayed.
+- Existing Master Records ERL receipt organization records and reconstruction is **reusable organization-record/reconstruction implementation**; historical evidence remains preserved and is not replayed.
 - The old `SS-EVIDENCE-STANDARD-IPHONE-FLOW-001` formulation is **obsolete/superseded architecture** because device verification/identity is prohibited; its provenance remains historical.
 - `SS-EVIDENCE-STANDARD-KV-FLOW-001` remains an adjacent implementation/continuation projection for the same standard-KV objective, not a replacement for the root Goal Task.
 - `SS-KV-SKAP-SOCIAL-RELEASE-001` remains a genuinely separate Goal Task because provider publication has independent entitlement, credential/session, provider-execution, publication-receipt, destruction, KV publication-record, and Master Records completion semantics.

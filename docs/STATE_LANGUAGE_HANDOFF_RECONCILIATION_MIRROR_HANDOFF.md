@@ -132,7 +132,7 @@ Verified chain:
 - Site Task Runner `33044661032`: SUCCESS / no failed steps;
 - later full runner `33045293923`: SUCCESS.
 
-State-language rule remains append-only. Transition 004 is unchanged. The next machine transition for the Math task-state advance must be 005+ and must be custodied in Master Records before the Math task is promoted from its prior hosted-reverify-pending projection.
+State-language rule remains append-only. Transition 004 is unchanged. The next machine transition for the Math task-state advance must be 005+ and must be retained as a Master Records organization record before the Math task is promoted from its prior hosted-reverify-pending projection.
 
 Current distinction:
 - Math shared-runtime source: IMPLEMENTED + MERGED + HOSTED VALIDATED;
@@ -159,12 +159,12 @@ The next append-only Math evidence transition now exists:
 
 Transition 005 records only that the already-installed shared Math source boundary has later hosted Site validation evidence. It preserves the same semantic module state hash `b01c9197...`, reconstruction PASS, and authority effect NONE.
 
-Do not promote the Site Math task from its prior fail-closed projection until Master Records all-object organization records validation including 005 is actually observed PASS. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
+Until Master Records all-object organization records validation including 005 is actually observed PASS, do not promote the Site Math task from its prior fail-closed projection. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
 
 
 ## 2026-08-27 transition 005 hosted validation complete
 
-Master Records hosted run `33120909226` / job `98687235580` completed SUCCESS after custody transition 005 was present. The run executed `python tools/run_tests_with_status.py`, which runs `pytest tests`. The canonical `tests/test_state_alignment_custody.py::test_all_custody_records_allow` iterates every `custody/state-alignment/*.custody.json` through `verify_record`; run status recorded 325 tests, 0 failures, 0 errors.
+Master Records hosted run `33120909226` / job `98687235580` completed SUCCESS. Custody transition 005 was present before that run. The run executed `python tools/run_tests_with_status.py`, which runs `pytest tests`. The canonical `tests/test_state_alignment_custody.py::test_all_custody_records_allow` iterates every `custody/state-alignment/*.custody.json` through `verify_record`; run status recorded 325 tests, 0 failures, 0 errors.
 
 Therefore:
 - transition 005: CUSTODIED + HOSTED VALIDATED;

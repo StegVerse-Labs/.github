@@ -110,7 +110,7 @@ Source/request staging does **not** establish `INGRESS_ADMITTED`. Authentic task
 - the nested Canonical Work consumption receipt;
 - the bounded bootstrap receipt and proposed registry projection.
 
-Only after those authentic receipts exist may governed registry persistence advance the task, followed by Master Records reconciliation and WorkerCoordinator admission review. Source, merge, CI, request presence, or dispatcher visitation are not substitutes.
+Only after those authentic receipts exist may governed registry persistence advance the task, followed by Master Records organization-record reconciliation. WorkerCoordinator admission review comes after that. Source, merge, CI, request presence, or dispatcher visitation are not substitutes.
 
 ## Durable migration/census/runtime tasks
 
@@ -184,7 +184,7 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 
 ## Remaining machine tasks
 
-1. obtain authentic Canonical Work `INGRESS_ADMITTED` evidence for `QUANTUM-RESILIENCE-001` through the staged resident request, then perform Master Records reconciliation and WorkerCoordinator admission review;
+1. obtain authentic Canonical Work `INGRESS_ADMITTED` evidence for `QUANTUM-RESILIENCE-001` through the staged resident request, then perform Master Records organization-record reconciliation. After that, perform WorkerCoordinator admission review;
 2. materialize the merged quantum-awareness source into the sovereign resident source tree and obtain the seven authentic artifacts defined by `docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md`;
 3. execute `.github#1022` to inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
 4. continue `.github#1014` for `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;

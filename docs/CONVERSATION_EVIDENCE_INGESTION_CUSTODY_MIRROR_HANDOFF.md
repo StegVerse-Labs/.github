@@ -18,7 +18,7 @@ This phase implements only immutable evidence ingestion, authenticity-envelope c
 
 - `workers/conversation_evidence_ingestion.py` builds deterministic ingestion packages, preserves ordered message content/digests and exact attachment bytes/digests, refuses overwrite on persisted record roots, and creates explicit authenticity and transaction bindings.
 - `schemas/conversation-evidence-ingestion-package.schema.json` identifies the ingestion-package envelope.
-- `tests/test_conversation_evidence_ingestion.py` covers deterministic packaging, write-once behavior, attachment hashing, unchanged v1 contract consumption, exact required-evidence carriage, successful Master Records organization record, and fail-closed digest mismatch.
+- `tests/test_conversation_evidence_ingestion.py` covers deterministic packaging, write-once behavior, attachment hashing, unchanged v1 contract consumption, exact required-evidence carriage, fail-closed digest mismatch, and successful Master Records organization record.
 - Existing `workers/canonical_state_transition_custody.py` remains the sole Python custody client. No second Master Records service/store is introduced.
 
 ## Master Records transition

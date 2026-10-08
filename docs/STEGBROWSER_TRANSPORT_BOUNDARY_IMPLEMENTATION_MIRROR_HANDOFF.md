@@ -23,7 +23,7 @@ Transport succeeds only when the governed return packet has been received, the r
 SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Master Records ingress/custody/reconstruction, mirroring, reconciliation, persistence, projection, measurement, publication, or any later action is post-transport and cannot retroactively negate the transport predicate.
+Master Records reconstruction happens after transport and cannot retroactively negate the transport predicate. The same holds for ingress, custody, mirroring, reconciliation, persistence, projection, measurement, publication, or any later action: each is post-transport.
 
 `callable` and `refreshable` remain invocation-bound Interlock/InTr state-transition variables. Healer remains triggered remediation only.
 

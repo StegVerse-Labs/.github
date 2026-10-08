@@ -13,7 +13,7 @@ This is the canonical runtime-evidence handoff for the active Goal Task. Goal id
 
 ## Device / Node / KV invariant
 
-StegOS-capable physical devices are interchangeable execution/transport surfaces. The Goal is not bound to an iPhone, another device, connector inventory, or persistent device identity. The runtime subject is an established or recovered StegVerse Node; Node identity is routing/runtime-evidence correlation only. KV/SKAP Vault remains the sole user-verification authority and supplies applicable persistent user/secret continuity. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns credential/provider/release authority. Master Records is limited to organization records and reconstruction/custody/reconstruction. GitHub and the Service Gateway mint no runtime authority.
+StegOS-capable physical devices are interchangeable execution/transport surfaces. The Goal is not bound to an iPhone, another device, connector inventory, or persistent device identity. The runtime subject is an established or recovered StegVerse Node; Node identity is routing/runtime-evidence correlation only. KV/SKAP Vault remains the sole user-verification authority and supplies applicable persistent user/secret continuity. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns credential/provider/release authority. Master Records is limited to organization records and reconstruction. GitHub and the Service Gateway mint no runtime authority.
 
 The applicable sequence is:
 

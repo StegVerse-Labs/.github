@@ -32,7 +32,7 @@ A transport success alone MUST NOT be represented as an allowed state transition
 
 `MasterRecordsCheckpoint/v1` is the first bounded profile of this protocol.
 
-Master Records remains sole checkpoint-construction/custody authority. For external checkpoint communication:
+Master Records remains sole checkpoint-construction authority for organization records; custody remains with the Organization. For external checkpoint communication:
 1. Master Records establishes canonical checkpoint C.
 2. An egress manifest declares intent, checkpoint reference/commitment, registered destination node and requested checkpoint capability.
 3. The receiving StegVerse boundary resolves applicable state and governs the permitted output projection.

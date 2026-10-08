@@ -229,7 +229,7 @@ The worker has a heartbeat-relative expiry at cycle 267. Any later renewal/reacq
 
 ## Parent work not owned by this session
 
-The broader `docs/ORG_MIRROR_HANDOFF.md` owns separate work for persistent high-frequency runtime observation, Master Records projection intake/custody, and downstream migration away from low-frequency TTL semantics. Those are not untransferred requirements from this session and are not prerequisites to preserve this session because this session's federation worker is already activated and machine-owned under the corrected heartbeat/task-registry model.
+The broader `docs/ORG_MIRROR_HANDOFF.md` owns separate work for persistent high-frequency runtime observation, Master Records projection intake as organization records, and downstream migration away from low-frequency TTL semantics. Those are not untransferred requirements from this session and are not prerequisites to preserve this session because this session's federation worker is already activated and machine-owned under the corrected heartbeat/task-registry model.
 
 ## Execution ownership and collision partition
 

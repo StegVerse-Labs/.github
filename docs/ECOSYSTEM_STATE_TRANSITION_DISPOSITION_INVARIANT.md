@@ -9,7 +9,7 @@ Every requested operation is represented as a specific attempted state transitio
 
 `ALLOW` is the only disposition that permits the requested consequence to commit. Every other disposition, including `DENY`, `FAIL_CLOSED` and named STOP/DEFER classes, must preserve non-commit, identify the precise unsatisfied transition condition and provide the next lawful correction/retry edge. A missing datum is a value in the attempted transition's evidence/input state, not an independent completion state or proof of non-occurrence. If the established execution interface cannot be invoked, the *interface-attachment or admission attempt itself* must be evaluated at its actual boundary; do not fabricate a downstream runtime disposition.
 
-A receipt is not self-authorizing: its producer, exact predecessor linkage, constraint result, custody and Master Records reconstruction must be verified before it justifies a successor transition. Receipt existence, source merge, CI success, report publication, or runtime-profile compatibility alone never imply ALLOW.
+A receipt is not self-authorizing: its producer, exact predecessor linkage, constraint result and custody must be verified, as must its Master Records reconstruction, before it justifies a successor transition. Receipt existence, source merge, CI success, report publication, or runtime-profile compatibility alone never imply ALLOW.
 
 ## Minimal proposed transition-disposition receipt
 

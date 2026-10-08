@@ -52,7 +52,7 @@ registered HANDOFF_READY task T + no task-bound W
 
 WorkerCoordinator coordination, TV/TVC credential/warrant facts, and Master Records organization record are not substitutes for the constitutive task transition. No valid state may expose ACTIVE T without its newly created W, nor a task-bound W without ACTIVE T.
 
-## Master Records progression gate
+## Master Records organization records and progression
 
 Every governed Test 3 transition must return:
 
@@ -95,7 +95,7 @@ prepare fresh claim/fence + worker_instance_id
 -> only inside StegAgents does TV/TVC verification and StegCore/InTr admission occur
 ```
 
-That ordering does not satisfy Test 2's constitutive invariant for Test 3. It permits `ACTIVE T <-> W` to be exposed before StegCore/InTr has admitted and Master Records has closed the required combined `ACTIVATE(T)+CREATE_AND_BIND(W,T)` transition.
+That ordering does not satisfy Test 2's constitutive invariant for Test 3. It permits `ACTIVE T <-> W` to be exposed before StegCore/InTr has admitted and closed the required combined `ACTIVATE(T)+CREATE_AND_BIND(W,T)` transition and before Master Records has recorded it as an organization record.
 
 The claim/fence custody itself remains valid coordination evidence. The defect is the promotion of the task to ACTIVE and binding of W before transition authority acts.
 
@@ -368,7 +368,7 @@ The next authentic state remains a fresh WorkerCoordinator claim/fence followed 
 
 The Test 3 worker uses the shared `process:stegagents-governed-runtime-v1` adapter. After generation 105 preserved the canonical Master Records binding into `run_worker_runtime.py`, the adapter's own `env_allowlist` still dropped that binding before launching `workers/stegagents_governed_runtime_worker.py`. Test 3 atomic activation requires the StegAgents runtime to return closed `TV_TVC_WARRANT_POLICY_VERIFIED` and `ACTIVATE_TASK_AND_CREATE_BIND_WORKER` Master Records transitions, so stripping the binding made those required transitions unreachable.
 
-The existing adapter now carries the same canonical Master Records HTTP or durable-local binding already admitted upstream. TV warrant/policy variables remain unchanged, GitHub runtime authority remains NONE, and no new credential, custody, or transition authority is created.
+The existing adapter now carries the same binding already admitted upstream. That binding is the canonical Master Records HTTP or durable-local organization records binding. TV warrant/policy variables remain unchanged, GitHub runtime authority remains NONE, and no new credential, custody, or transition authority is created.
 
 
 ## Governed close/retire phase implemented — generation 108

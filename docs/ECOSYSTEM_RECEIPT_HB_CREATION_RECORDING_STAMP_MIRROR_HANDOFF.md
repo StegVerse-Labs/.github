@@ -13,7 +13,7 @@ Status: `ACTIVE / CHECKED_OUT / CANONICAL TASK REGISTRY GENERATION 150 MERGED / 
 Inspect the existing HeartBeat and Master Records contracts to determine whether HB checkpoints cryptographically commit a canonical Master Records state/root or only correlate by reference. If the relationship is only correlation, define the minimal non-authorizing extension that:
 
 1. binds receipt creation to an HB reference;
-2. binds Master Records recording/custody to an HB reference;
+2. binds the Master Records organization record to an HB reference;
 3. lets a later HB checkpoint commit the exact retained Master Records state/receipt set;
 4. permits an independently verifiable external checkpoint anchor without making HeartBeat, the anchor provider, or Master Records an execution/transition/credential authority.
 
@@ -32,7 +32,7 @@ Inspect the existing HeartBeat and Master Records contracts to determine whether
 
 `control/heartbeat-protocol-anchor.json` defines a deterministic 100 Hz reference sequence derived from an oscillator-only protocol anchor. It explicitly declares `authority_scope=REFERENCE_DERIVATION_ONLY`, `observation_is_causal=false`, and `authority_effect=NONE_REFERENCE_ONLY`.
 
-`heartbeat_runtime/engine_v13.py` inherits the v12 carrier and preserves non-authorizing observation/trigger behavior. The inspected current heartbeat contract contains no canonical field requiring a Master Records receipt-set root, canonical Master Records state digest, or custody-journal commitment in each HB checkpoint.
+`heartbeat_runtime/engine_v13.py` inherits the v12 carrier and preserves non-authorizing observation/trigger behavior. The inspected current heartbeat contract contains no canonical field requiring a Master Records receipt-set root or canonical Master Records state digest in each HB checkpoint. It likewise contains no field requiring an organization custody-journal commitment in each HB checkpoint.
 
 Therefore, current HeartBeat provides deterministic reference/correlation semantics, not a cryptographic commitment to Master Records state.
 
@@ -59,7 +59,7 @@ Every canonical state-transition receipt capable of participating in this eviden
 - `hb_creation_reference`: deterministic HB reference observed when the receipt body is first frozen;
 - `hb_creation_protocol`: protocol/profile identifier used to derive/verify that reference.
 
-Master Records organization record must additionally retain, as custody metadata rather than mutating the already-frozen receipt body:
+Master Records organization record must additionally retain, as organization-record metadata rather than mutating the already-frozen receipt body:
 
 - `hb_recording_reference`: deterministic HB reference observed when Master Records durably records the receipt;
 - `recorded_receipt_sha256`: exact canonical receipt digest;
@@ -271,7 +271,7 @@ The confirmed temporal bound inherits only to receipts inside the explicit post-
 
 ### Authority invariants
 
-This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, Master Records, GitHub, or external provider execution, transition, admission, custody, credential, routing, publication, or governance authority. Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; TV/TVC remains credential authority; Master Records remains limited to organization records and reconstruction.
+This extension grants no HeartBeat, blockchain, OpenTimestamps, Node, KV, GitHub, or external provider execution, transition, admission, custody, credential, routing, publication, or governance authority, and gives Master Records no role beyond organization records. Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; TV/TVC remains credential authority; Master Records remains limited to organization records and reconstruction.
 
 ### Validation ceiling
 
@@ -316,8 +316,8 @@ The corresponding Master Records source slice merged from `master-records/orches
 
 Together these merged source surfaces now establish the source-level construction for:
 - receipt creation HB reference frozen before canonical receipt hashing;
-- Master Records recording HB reference retained as custody metadata without rewriting the receipt;
-- deterministic bounded Master Records receipt-set roots over stable successor custody ordinals;
+- Master Records organization record HB reference retained as record metadata without rewriting the receipt;
+- deterministic bounded Master Records receipt-set roots over stable successor organization-record ordinals;
 - HB checkpoint commitments binding the exact bounded Master Records root/count/floor/ceiling;
 - preservation of historical receipts without retroactive HB stamping.
 
@@ -387,7 +387,7 @@ Canonical main subsequently advanced independently through adjacent Master Recor
 
 The merged source now guarantees that the next native resident dispatch can do exactly one of two things:
 
-1. return `WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR` when canonical Master Records has no authentic HB-bound successor custody ordinal 1; or
+1. return `WAITING_FOR_MASTER_RECORDS_HB_SUCCESSOR` when canonical Master Records has no authentic HB-bound successor organization-record ordinal 1; or
 2. return `AUTHENTIC_FIRST_SUCCESSOR_CHECKPOINT_COMMITTED` only after the exact retained receipt reconstructs with both creation/recording HB references, required-evidence PASS, exact receipt/reconstruction digest equality, exact recording identity, stable successor ordinal 1, deterministic Master Records range root, and the derived HB checkpoint commitment.
 
 No authentic runtime checkpoint receipt was observed from this session. No Node/KV witness edge, external anchor state, or external temporal-bound inheritance was advanced.
@@ -416,7 +416,7 @@ live carrier
 -> submit_state_receipt(...)
 ```
 
-`_clean_env(...)` omitted the canonical Master Records HTTP and durable-local custody bindings and then generically stripped names containing `TOKEN` / `KEY`. The direct resident worker service installer had the same omission in `WORKER_SAFE_LOCAL_BINDINGS`. A restored worker could therefore become task-capable and create the new HB-stamped receipt, but `submit_state_receipt(...)` would have neither supported canonical custody transport.
+`_clean_env(...)` omitted the canonical Master Records HTTP and durable-local organization-record bindings and then generically stripped names containing `TOKEN` / `KEY`. The direct resident worker service installer had the same omission in `WORKER_SAFE_LOCAL_BINDINGS`. A restored worker could therefore become task-capable and create the new HB-stamped receipt, but `submit_state_receipt(...)` would have neither supported canonical custody transport.
 
 The repair preserves only the already-existing canonical custody variables through both existing worker launch surfaces:
 
@@ -562,7 +562,7 @@ existing canonical task/runtime execution
 
 `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` may still run independently when persistent sampler/observer evidence is desired, but its absence cannot stop this Goal. No alternate runtime, scheduler, dispatcher, WorkerCoordinator, observer, or hosted substitute is introduced by this correction.
 
-Current proof ceiling remains unchanged: no fresh authentic HB-stamped governed transition, Master Records row with `hb_recording_reference`, exact reconstruction closure, or bounded successor checkpoint is claimed until native evidence from the existing runtime path is retained.
+Current proof ceiling remains unchanged: no fresh authentic HB-stamped governed transition, exact reconstruction closure, bounded successor checkpoint, or Master Records organization record row with `hb_recording_reference` is claimed until native evidence from the existing runtime path is retained.
 
 
 ## Shared runtime-evidence owner re-observation — generation 187

@@ -92,7 +92,7 @@ The original corrective change was material because it narrowed evidence-reuse s
 ## Remaining machine work
 
 1. reuse the existing runtime-presence producer; do not create another probe;
-2. observe an authentic `runtime-presence.latest.json` and, when the already-local Master Records root is available, retain it through the bounded custody importer;
+2. observe an authentic `runtime-presence.latest.json` and retain it through the bounded custody importer when the already-local Master Records root is available;
 3. extract stable `runtime_root` and `resident.node_id` identity from authentic retained evidence;
 4. prove which consumers target that exact same subject;
 5. only then promote a subject-bound predicate into the canonical composed coordination ledger;

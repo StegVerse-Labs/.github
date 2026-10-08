@@ -141,7 +141,7 @@ Do not:
 ```text
 implementation claim: control/session-implementation-claim-2026-08-14-stale-heartbeat-reclamation.json
 source correction: COMPLETE_VALIDATED
-Master Records notification/custody: COMPLETE
+Master Records notification (organization records): COMPLETE; custody: COMPLETE
 StegFin stale-HB collision dependency: REMOVED
 remaining trade execution: MACHINE_OWNED / LIVE TRANSPORT + EXECUTOR OBSERVATION REQUIRED
 release condition for this scoped implementation claim: SATISFIED; claim is released and continuation transferred

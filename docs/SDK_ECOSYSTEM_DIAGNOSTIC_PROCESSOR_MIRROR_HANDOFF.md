@@ -23,7 +23,7 @@ Install `ecosystem_diagnostic` as a first-class StegVerse SDK processing capabil
 ```text
 SDK diagnostic processor = manifested diagnostic request + bounded diagnostic observations/results
 ECE = dependency-aware continuity interpretation across retained observations over time
-Master Records = retained observation/evaluation custody and reconstruction
+Master Records = organization records of retained observation/evaluation, and reconstruction
 StegVerse-Healer = scheduler, finding intake, repair dispatch
 Interlock/InTr = governed transition authority where applicable
 TV/TVC = credential/provider/release authority where applicable
