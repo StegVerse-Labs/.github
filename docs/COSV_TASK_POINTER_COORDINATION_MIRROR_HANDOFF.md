@@ -29,7 +29,7 @@ On receipt of `task_id + cosv_task_vector`, the receiving session/runtime must:
 1. verify the vector is a valid `task.v1` vector and is bound to the supplied task ID;
 2. resolve the canonical task record and its source vector/evidence references;
 3. resolve applicable `*_MIRROR_HANDOFF.md` continuation records;
-4. reconcile Organization runtime/observed reality and Master Records organization records/reconstruction;
+4. reconcile Organization runtime/observed reality; reconcile Master Records organization records/reconstruction;
 5. resolve active WorkerCoordinator claim/fence state;
 6. resolve dependencies, adjacent tasks, shared predicates, systemic incidents, and non-collision boundaries;
 7. resolve applicable reusable-task identities and invocation parameters;
@@ -58,7 +58,7 @@ Recording = at necessary levels
 
 A runner expires before recording continuity expires. If required recording remains, a residual non-executing TT/RTG/GTG construct may remain solely to preserve identity/manifest binding, carry chained receipts, project required task/COSV state, complete required scoped recording, carry evidence to Master Records, and support reconstruction verification.
 
-After required recording and Master Records organization records and reconstruction are complete, the residual construct is displaced through **entropy recovery**. Entropy recovery does not delete durable evidence or Master Records history and does not reactivate the original runner.
+After required recording and Master Records organization records and reconstruction are complete, the residual construct is displaced through **entropy recovery**. Entropy recovery does not delete durable evidence, does not reactivate the original runner, and does not delete Master Records organization records.
 
 Canonical source: `docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md`.
 
@@ -393,7 +393,7 @@ Canonical-work successor [PR #2699](https://github.com/StegVerse-Labs/.github/pu
 
 ### Generation-236 exact checked-out projection candidate and validated native AI completion
 
-Original canonical root `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`; no new Goal. At the unchanged generation-236 baseline, all 19 omitted checked-out owner shards exist under `data/canonical-task-records/`, each `ACTIVE / CHECKED_OUT`, with exact existing COSVs (including originally null), parent/root and native handoffs. The proposed aggregate projection adds those exact records unchanged. Existing `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001` exact shard is `RETIRED / COMPLETED` with `completion.claimed=true`, `validated=true`, original 50-company source lineage and merged native StegBusiness-Ops PR #51; its stale aggregate ACTIVE/CLAIMED_INTEGRATION row is replaced by the **identical exact pre-existing shard**, without independently inventing a terminal state. Its legacy handoff is updated to cite native closeout. No WorkerCoordinator claim/fence, InTr/Master Records runtime event, AI_SESSION_GATE disposition, customer outreach or provider execution is inferred. The projection's source regression checks exact task-object parity against every shard, all 19 checkout statuses, full same-task COSV bindings where indexed, native AI merge evidence and outreach=false. The whole-shard audit must report zero omitted checked-out identities and zero overlapping state drift on the exact PR merge candidate; remaining inactive/legacy aggregate/index gaps are separately classified, not automatically bulk-admitted.
+Original canonical root `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, COSV `10100000100000`; no new Goal. At the unchanged generation-236 baseline, all 19 omitted checked-out owner shards exist under `data/canonical-task-records/`, each `ACTIVE / CHECKED_OUT`, with exact existing COSVs (including originally null), parent/root and native handoffs. The proposed aggregate projection adds those exact records unchanged. Existing `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001` exact shard is `RETIRED / COMPLETED` with `completion.claimed=true`, `validated=true`, original 50-company source lineage and merged native StegBusiness-Ops PR #51; its stale aggregate ACTIVE/CLAIMED_INTEGRATION row is replaced by the **identical exact pre-existing shard**, without independently inventing a terminal state. Its legacy handoff is updated to cite native closeout. No WorkerCoordinator claim/fence, InTr runtime event, AI_SESSION_GATE disposition, customer outreach or provider execution is inferred, and no Master Records organization record is inferred. The projection's source regression checks exact task-object parity against every shard, all 19 checkout statuses, full same-task COSV bindings where indexed, native AI merge evidence and outreach=false. The whole-shard audit must report zero omitted checked-out identities and zero overlapping state drift on the exact PR merge candidate; remaining inactive/legacy aggregate/index gaps are separately classified, not automatically bulk-admitted.
 
 
 

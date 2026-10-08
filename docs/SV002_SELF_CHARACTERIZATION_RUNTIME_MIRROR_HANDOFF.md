@@ -122,7 +122,7 @@ After merged source repair:
 5. subject identity preflight passes;
 6. principal execution emits `EXPERIMENT_EXECUTION_RECEIPT.json` with `state=COMPLETED`;
 7. human-readable, formal, and interaction-receipt artifacts are retained;
-8. Master Records reconstruction remains an independently evaluated evidence gate and the resident task remains nonterminal until same-execution reconstruction PASS is retained.
+8. Master Records reconstruction remains independently evaluated evidence. The resident task remains nonterminal until same-execution reconstruction PASS is retained.
 
 ## Integration destinations
 
@@ -155,7 +155,7 @@ The next lawful transition is machine-owned resident execution. Repository sourc
 
 ## Master Records automatic reconstruction bridge — issue #573
 
-After a genuine principal run reaches `COMPLETED`, the resident worker now attempts the separate Master Records reconstruction gate using only a locally materialized `master-records/orchestration` checkout and its canonical `scripts/verify_sv002_self_characterization_reconstruction.py`.
+After a genuine principal run reaches `COMPLETED`, the resident worker now attempts the separate Master Records reconstruction check using only a locally materialized `master-records/orchestration` checkout and its canonical `scripts/verify_sv002_self_characterization_reconstruction.py`.
 
 The bridge:
 

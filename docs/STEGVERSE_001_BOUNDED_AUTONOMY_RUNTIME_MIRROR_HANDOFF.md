@@ -161,7 +161,7 @@ Retry may occur only through the already-existing current-device/page/resume/run
 
 ## Source history retained by Git
 
-Historical source/control work remains preserved in repository history, including the original runtime source merge, TV/TVC lease-carrier work, WorkerCoordinator checkout/fence controls, one-shot progression, runtime observability registration, Master Records organization record source, and automatic evidence-chain continuation. This handoff intentionally presents the current canonical state rather than repeating stale pre-terminal status blocks.
+Historical source/control work remains preserved in repository history, including the original runtime source merge, TV/TVC lease-carrier work, WorkerCoordinator checkout/fence controls, one-shot progression, runtime observability registration, automatic evidence-chain continuation, and the source for Master Records organization records. This handoff intentionally presents the current canonical state rather than repeating stale pre-terminal status blocks.
 
 Key historical source references remain:
 

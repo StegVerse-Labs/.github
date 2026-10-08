@@ -229,7 +229,7 @@ HEALER_TRIGGERED_BY_REQUEST_EMISSION = false
 - Interlock/InTr: transition and governed packet-movement authority on the manifest-declared path.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification authority.
-- Master Records: recording/custody/reconstruction authority between governed returns; not transport authority.
+- Master Records: organization records and reconstruction between governed returns; custody stays with the Organization; not transport authority.
 - HeartBeat: observability only.
 - Healer: independent trigger evaluation and triggered bounded remediation only; remediation-request receipt alone grants no authority and is not a trigger.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.

@@ -47,7 +47,7 @@ The staged request, this handoff, source merge, CI, dispatcher wiring, Canonical
 
 The existing resident Canonical Work consumer and Universal Interlock/InTr path remain the authoritative producer for the missing observation. Do not create a second runtime, scheduler, WorkerCoordinator, ingress path, credential path, or fabricated receipt to satisfy it.
 
-After authentic task ingress, continuation remains the existing Runtime Profile Map lifecycle defined by `docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md`: resident chain validation, map build, custody, Master Records reconciliation, transition-readiness, governance-review packaging, and current-authority handling.
+After authentic task ingress, continuation remains the existing Runtime Profile Map lifecycle defined by `docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md`: resident chain validation, map build, custody, then reconciliation against Master Records organization records, transition-readiness, governance-review packaging, and current-authority handling.
 
 ## README impact
 

@@ -87,7 +87,7 @@ The existing consumer now uses the already-established `workers/canonical_state_
 - the existing operation/materialization correlation;
 - authority effect `NONE`.
 
-The consumer fails closed unless the canonical Master Records response is `RECORDED`, reconstruction is `PASS`, required-evidence validation is `PASS`, and the receipt/reconstruction digests are equal. Only after that closure may the local consumption result expose `sdk_return_binding_observed=true`. All later predicates remain false: final StegVerse-side egress, Interlock/InTr egress, far-side transition, authentic external MIR substitution, and communication completion.
+Unless the canonical Master Records response is `RECORDED`, reconstruction is `PASS`, required-evidence validation is `PASS`, and the receipt/reconstruction digests are equal, the consumer fails closed. Only after that closure may the local consumption result expose `sdk_return_binding_observed=true`. All later predicates remain false: final StegVerse-side egress, Interlock/InTr egress, far-side transition, authentic external MIR substitution, and communication completion.
 
 This repair adds no runtime, transport, scheduler, dispatcher, custody store, transition authority, or credential authority. It closes only the custody gap on the existing SDK-return materialization transition.
 

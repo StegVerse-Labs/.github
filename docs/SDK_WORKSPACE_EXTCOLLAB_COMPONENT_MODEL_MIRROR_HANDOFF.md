@@ -49,7 +49,7 @@ Applicability reconciliation: `docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_APPLICABIL
 
 ## Reuse outcome
 
-No new reusable component is required. Do not create another runtime-presence probe, generic Interlock/InTr adapter, generic request/response transport, Master Records reconstruction path, scheduler, or device-local verification gate.
+No new reusable component is required. Do not create another runtime-presence probe, device-local verification gate, generic Interlock/InTr adapter, generic request/response transport, scheduler, or Master Records reconstruction path.
 
 The prior `CURRENT_USER_IPHONE` task binding is superseded as a Goal-level execution requirement. The existing current-iPhone portable WorkerCoordinator work remains valid historical/reusable implementation evidence for one eligible execution surface, not the identity of this Goal's runtime subject.
 
