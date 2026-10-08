@@ -51,8 +51,12 @@ def sha256_uri(value: Any) -> str:
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
-def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    """Record the exact governed transition in the existing organization ledger."""
+def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any = None) -> dict[str, Any]:
+    """Record the exact governed transition in the existing organization ledger.
+
+    `ledger` is the root the caller holds; otherwise aggregate_transition uses
+    the one supplied to this execution (ledger_root()).
+    """
     module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "aggregate_repo_transition.py"
     if not module_path.is_file():
         return {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE", "authority_effect": "NONE"}
@@ -70,6 +74,7 @@ def _record_organization_transition(receipt: Mapping[str, Any]) -> dict[str, Any
                 "ordering": "ORGANIZATION_RECORD_IS_CANONICAL_BEFORE_ANY_OPTIONAL_RECONSTRUCTION",
             },
             authority_effect="NONE",
+            ledger=ledger,
         )
     except Exception as exc:
         return {
@@ -791,12 +796,98 @@ def organization_receipt_custody() -> Any:
     return import_module("organization_batch_custody")
 
 
+#: Transition id of the non-ALLOW record appended when a receipt gate refuses
+#: inside an attempted transition. It is an ordinary canonical state receipt.
+ORGANIZATION_RECEIPT_REFUSAL_TRANSITION = "ORGANIZATION_RECEIPT_GATE_REFUSED"
+
+
+def _existing_refusal_receipt(custody: Any, ledger: Path, evidence: Mapping[str, Any]) -> str | None:
+    """The Organization receipt already holding this exact refusal, if any.
+
+    A retried attempt that is refused the same way is recorded once, as
+    org-kernel/kernel.py record_refusal does. The ledger is replayed with the
+    existing verifier first; a ledger that does not verify is not extended.
+    """
+    head_path = ledger / "HEAD.json"
+    if not head_path.is_file():
+        return None
+    head = custody.org.load(head_path)
+    for row in custody._segment(ledger, head["receipt_sha256"], None):
+        if row.get("source_transition_id") != ORGANIZATION_RECEIPT_REFUSAL_TRANSITION:
+            continue
+        source = custody.org.load(ledger / "source-receipts" / (row["source_transition_sha256"][7:] + ".json"))
+        if source.get("transition_evidence") == dict(evidence):
+            return row["receipt_sha256"]
+    return None
+
+
+def record_organization_receipt_refusal(
+    refusal: Mapping[str, Any],
+    *,
+    gated_transition_id: str | None,
+    state_receipt_sha256: Any = None,
+    root: Any = None,
+) -> dict[str, Any]:
+    """Append a receipt gate's typed refusal to the Organization ledger.
+
+    For a refusal inside an attempted transition: the attempt's non-ALLOW
+    disposition is itself a transition of this organization, appended through
+    the existing aggregate_transition path to `root` (the gate's ledger root;
+    ledger_root() when none is held). The record is an ordinary canonical state
+    receipt whose outcome is the refusal's DENY or FAIL_CLOSED; it commits no
+    consequence. Recorded once per (transition, state receipt, refusal). When
+    it cannot be appended, the refusal is returned unrecorded with the reason;
+    this never raises.
+    """
+    custody = organization_receipt_custody()
+    digest = state_receipt_sha256 if isinstance(state_receipt_sha256, str) else ""
+    digest = digest[7:] if digest.startswith("sha256:") else digest
+    refused = ("sha256:" + digest) if len(digest) == 64 and all(c in "0123456789abcdef" for c in digest) else None
+    evidence = {
+        "gated_transition_id": gated_transition_id,
+        "refused_state_receipt_sha256": refused,
+        "disposition": refusal.get("disposition"),
+        "failed_predicate": refusal.get("failed_predicate"),
+        "retry_entrypoint": refusal.get("retry_entrypoint"),
+        "consequence_committed": False,
+    }
+    unrecorded = {**refusal, "refusal_recorded": False, "refusal_organization_receipt_sha256": None}
+    try:
+        ledger = Path(root).expanduser().resolve() if root is not None else custody.org.ledger_root()
+    except custody.org.LedgerLocationRequired as exc:
+        return {**unrecorded, "refusal_recording_reason": exc.failed_predicate}
+    try:
+        existing = _existing_refusal_receipt(custody, ledger, evidence)
+        if existing is not None:
+            return {**refusal, "refusal_recorded": True, "refusal_organization_receipt_sha256": existing}
+        receipt = build_state_receipt(
+            transition_id=ORGANIZATION_RECEIPT_REFUSAL_TRANSITION,
+            transition_sequence=0,
+            subject_or_correlation_id=gated_transition_id or ORGANIZATION_RECEIPT_REFUSAL_TRANSITION,
+            transition_outcome=str(refusal.get("disposition")),
+            prior_state_ref_or_hash=refused,
+            resulting_state_ref_or_hash=None,
+            governance_decision_ref_where_applicable=None,
+            transition_evidence=evidence,
+            proof_scope="ORGANIZATION_RECEIPT_GATE_REFUSAL_ONLY",
+            proof_ceiling="NON_ALLOW_DISPOSITION_RECORDED_NO_CONSEQUENCE_COMMITTED",
+        )
+    except Exception as exc:
+        return {**unrecorded, "refusal_recording_reason": "ORGANIZATION_REFUSAL_RECORDING_FAILED:" + type(exc).__name__}
+    recorded = _record_organization_transition(receipt, ledger=ledger)
+    if recorded.get("state") != "RECORDED":
+        return {**unrecorded, "refusal_recording_reason": recorded.get("reason")}
+    return {**refusal, "refusal_recorded": True,
+            "refusal_organization_receipt_sha256": recorded["organization_receipt"]["receipt_sha256"]}
+
+
 def organization_receipt_gate(
     result: Any,
     *,
     root: Any = None,
     expected_transition_id: str | None = None,
     expected_predecessor: str | None = None,
+    record_refusal: bool = False,
 ) -> dict[str, Any]:
     """Gate a successor on the verified Organization receipt of this exact state receipt.
 
@@ -806,7 +897,8 @@ def organization_receipt_gate(
     caller holds none) and binds it to the result's own state receipt digest.
     Master Records reconstruction fields are evidence only and never gate it.
     A refusal carries the typed DENY or FAIL_CLOSED disposition and commits
-    nothing.
+    nothing. `record_refusal` is for a gate inside an attempted transition:
+    the refusal is also appended via record_organization_receipt_refusal.
     """
     custody = organization_receipt_custody()
     try:
@@ -816,7 +908,13 @@ def organization_receipt_gate(
             expected_predecessor=expected_predecessor,
         )
     except custody.OrganizationReceiptRefused as exc:
-        return {"verified": False, "organization_receipt_sha256": None, "refusal": exc.refusal()}
+        refusal = exc.refusal()
+        if record_refusal:
+            refusal = record_organization_receipt_refusal(
+                refusal, gated_transition_id=expected_transition_id,
+                state_receipt_sha256=result.get("receipt_sha256") if isinstance(result, Mapping) else None,
+                root=root)
+        return {"verified": False, "organization_receipt_sha256": None, "refusal": refusal}
     return {"verified": True, "organization_receipt_sha256": row["receipt_sha256"], "refusal": None}
 
 
@@ -922,4 +1020,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "organization_receipt_gate", "query_state_receipts", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "organization_receipt_gate", "query_state_receipts", "record_organization_receipt_refusal", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]

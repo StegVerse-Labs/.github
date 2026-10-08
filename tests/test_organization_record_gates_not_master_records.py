@@ -314,3 +314,176 @@ def test_manifest_ingress_closure_gate(monkeypatch, tmp_path):
     with pytest.raises(ValueError, match="organization_receipt_refused:FAIL_CLOSED:ORGANIZATION_RECEIPT_SHA256_ABSENT"):
         ingress._closed({"transition_id": TRANSITION_ID, "state": "RECORDED", "receipt_sha256": "e" * 64,
                          "reconstruction_status": "PASS", "reconstructed_receipt_sha256": "e" * 64}, TRANSITION_ID)
+
+
+# --- RESPONSE-015 (StegVerse-Labs/.github#3012) -------------------------------
+
+
+def _refusal_rows(tmp_path):
+    custody = _custody()
+    ledger = tmp_path / "org"
+    head = json.loads(_head(tmp_path))["receipt_sha256"]
+    rows = custody._segment(ledger, head, None)
+    out = []
+    for row in rows:
+        if row.get("source_transition_id") == "ORGANIZATION_RECEIPT_GATE_REFUSED":
+            source = custody.org.load(ledger / "source-receipts" / (row["source_transition_sha256"][7:] + ".json"))
+            out.append((row, source))
+    return out
+
+
+def test_not_recorded_refusal_carries_the_producer_reason():
+    custody = _custody()
+    refusal = _refused(lambda: custody.verified_organization_record(
+        None, {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_RECEIPT_RECORDING_FAILED:LedgerLocationRequired"}),
+        disposition="FAIL_CLOSED", predicate="ORGANIZATION_RECORD_NOT_RECORDED")
+    assert refusal["detail"] == "ORGANIZATION_TRANSITION_RECEIPT_RECORDING_FAILED:LedgerLocationRequired"
+    # Nothing else changes: a result without a reason carries no detail.
+    assert "detail" not in _refused(lambda: custody.verified_organization_record(None, {"state": "BOUNDARY"}),
+                                    disposition="FAIL_CLOSED", predicate="ORGANIZATION_RECORD_NOT_RECORDED")
+    from workers.canonical_state_transition_custody import organization_receipt_gate
+    gate = organization_receipt_gate({"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH"})
+    assert gate["refusal"]["detail"] == "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH"
+
+
+def test_refusal_inside_attempted_transition_is_appended_once(monkeypatch, tmp_path):
+    from workers.canonical_state_transition_custody import organization_receipt_gate
+
+    _, uri, result = _recorded(monkeypatch, tmp_path)
+    forged = dict(result, organization_receipt=None, organization_receipt_sha256="sha256:" + "d" * 64)
+    first = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    assert first["verified"] is False
+    refusal = first["refusal"]
+    assert refusal["disposition"] == "FAIL_CLOSED"
+    assert refusal["failed_predicate"] == "ORGANIZATION_RECEIPT_READBACK_MISSING"
+    assert refusal["consequence_committed"] is False
+    assert refusal["refusal_recorded"] is True
+    rows = _refusal_rows(tmp_path)
+    assert len(rows) == 1
+    row, source = rows[0]
+    assert row["receipt_sha256"] == refusal["refusal_organization_receipt_sha256"]
+    assert source["transition_outcome"] == "FAIL_CLOSED"
+    assert source["prior_state_ref_or_hash"] == uri
+    assert source["transition_evidence"]["gated_transition_id"] == TRANSITION_ID
+    assert source["transition_evidence"]["consequence_committed"] is False
+    # The refusal record never closes the attempted transition.
+    assert organization_receipt_gate(dict(result, organization_receipt_sha256=row["receipt_sha256"],
+                                          organization_receipt=None),
+                                     expected_transition_id=TRANSITION_ID)["verified"] is False
+    # A retry refused the same way returns the receipt already recorded.
+    head = _head(tmp_path)
+    again = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    assert again["refusal"]["refusal_organization_receipt_sha256"] == refusal["refusal_organization_receipt_sha256"]
+    assert _head(tmp_path) == head and len(_refusal_rows(tmp_path)) == 1
+    # Without record_refusal a gate only reads.
+    assert "refusal_recorded" not in organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID)["refusal"]
+    assert _head(tmp_path) == head
+
+
+def test_refusal_without_supplied_ledger_is_unrecorded_not_host_derived(monkeypatch, tmp_path):
+    from workers.canonical_state_transition_custody import record_organization_receipt_refusal
+
+    monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    recorded = record_organization_receipt_refusal(
+        {"disposition": "FAIL_CLOSED", "failed_predicate": "X", "retry_entrypoint": "r", "consequence_committed": False},
+        gated_transition_id=TRANSITION_ID, state_receipt_sha256="e" * 64)
+    assert recorded["refusal_recorded"] is False
+    assert recorded["refusal_recording_reason"] == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
+    assert not (tmp_path / "home").exists()
+
+
+def _diagnostic_chain(monkeypatch, tmp_path):
+    """Real producer appends: ingress ALLOW, then the runtime binding that names it."""
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
+    import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
+    from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+    import sdk_manifest_diagnostic_admitted_consumer as consumer
+
+    ingress = build_state_receipt(
+        transition_id="SDK_MANIFEST_INTR_ADMITTED", transition_sequence=1, subject_or_correlation_id=consumer.GOAL,
+        transition_outcome="ALLOW", prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={"request_sha256": "8" * 64, "wire_manifest_sha256": "7" * 64})
+    ingress_uri = sha256_uri(dict(ingress))
+    binding = build_state_receipt(
+        transition_id=consumer.BINDING_TRANSITION, transition_sequence=2, subject_or_correlation_id=consumer.GOAL,
+        transition_outcome="OBSERVED", prior_state_ref_or_hash=ingress_uri, resulting_state_ref_or_hash=None,
+        governance_decision_ref_where_applicable=None,
+        transition_evidence={"runtime_binding": {"request_sha256": "8" * 64, "lease_state": "LEASE_OPEN"}})
+    binding_uri = sha256_uri(dict(binding))
+    assert submit_state_receipt(ingress)["state"] == "RECORDED"
+    assert submit_state_receipt(binding)["state"] == "RECORDED"
+    return consumer, ingress, ingress_uri[7:], binding, binding_uri[7:]
+
+
+def test_diagnostic_ancestry_reads_organization_retained_sources_not_master_records(monkeypatch, tmp_path):
+    from workers import canonical_state_transition_custody as cstc
+
+    consumer, ingress, ingress_hash, binding, binding_hash = _diagnostic_chain(monkeypatch, tmp_path)
+
+    def no_master_records(*_args, **_kwargs):
+        raise AssertionError("Master Records reconstruction must not gate predecessor ancestry")
+
+    monkeypatch.setattr(cstc, "reconstruct_state_receipt", no_master_records)
+    read = consumer._organization_source_receipts(ROOT)
+    actual_binding, actual_ingress = consumer._prove_ancestry(read, binding_hash, ingress_hash)
+    assert actual_binding == binding and actual_ingress == ingress
+    assert actual_ingress["transition_outcome"] == "ALLOW"
+
+    # A state receipt the Organization ledger never recorded is refused.
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED"):
+        consumer._prove_ancestry(read, "f" * 64, ingress_hash)
+    # A tampered retained source no longer binds to its Organization receipt.
+    retained = tmp_path / "org" / "source-receipts" / (binding_hash + ".json")
+    tampered = json.loads(retained.read_text(encoding="utf-8"))
+    tampered["prior_state_ref_or_hash"] = "sha256:" + "a" * 64
+    retained.write_text(json.dumps(tampered), encoding="utf-8")
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="ORGANIZATION_SOURCE_TRANSITION_BINDING_MISMATCH"):
+        consumer._prove_ancestry(read, binding_hash, ingress_hash)
+    # No supplied ledger root: typed refusal, never a host path.
+    monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT")
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"):
+        consumer._organization_source_receipts(ROOT)
+
+
+def test_diagnostic_closure_refusal_emits_outer_fail_closed_record(monkeypatch, tmp_path):
+    from workers import manifest_state_transition_intr_ingress as ingress_worker
+
+    # The module the ingress boundary imports, so it catches this exception class.
+    from workers import sdk_manifest_diagnostic_admitted_consumer as consumer
+
+    _, first_uri, _ = _recorded(monkeypatch, tmp_path, transition_id="SDK_ECOSYSTEM_DIAGNOSTIC_EVENT_EPHEMERAL_BOUND")
+    _, _, closure = _recorded(monkeypatch, tmp_path, transition_id=consumer.EXECUTION_TRANSITION,
+                              prior=first_uri, sequence=2)
+    forged = dict(closure, organization_receipt=None, organization_receipt_sha256="sha256:" + "d" * 64)
+
+    def refused_consume(*_args, **_kwargs):
+        consumer._verified_organization_closure(forged)
+        raise AssertionError("forged closure must be refused")
+
+    monkeypatch.setattr(consumer, "consume", refused_consume)
+    monkeypatch.setattr(ingress_worker, "validate_request", lambda request: dict(request))
+    monkeypatch.setattr(ingress_worker, "persist_request", lambda *_args: None)
+    request = {"processing_capability": "ecosystem_diagnostic", "canonical_task_id": None,
+               "request_sha256": "8" * 64, "graph_id": "RTC-GOVERNED-PROCESSING-002:ECOSYSTEM_DIAGNOSTIC",
+               "canonical_manifest_sha256": "9" * 64, "wire_manifest_sha256": "7" * 64,
+               "canonical_manifest": {"payload": {"goal_task_id": consumer.GOAL, "cosv": consumer.COSV}}}
+    runtime = tmp_path / "runtime"
+    record = ingress_worker.execute(runtime, request)
+    assert record["disposition"] == "FAIL_CLOSED" and record["terminal"] is True
+    assert record["failed_predicate"] == "ORGANIZATION_EXACT_CLOSURE_REQUIRED:FAIL_CLOSED:ORGANIZATION_RECEIPT_READBACK_MISSING"
+    assert record["consequence_committed"] is False
+    assert record["retry_entrypoint"] == _custody().RECEIPT_REFUSAL_RETRY_ENTRYPOINT
+    refusal = record["organization_receipt_refusal"]
+    assert refusal["failed_predicate"] == "ORGANIZATION_RECEIPT_READBACK_MISSING"
+    assert refusal["refusal_recorded"] is True
+    assert record["authority_effect"] == "NONE_SOURCE_PROFILE_DISPOSITION_ONLY"
+    assert "disposition" in record and record["disposition"] != "ALLOW"
+    rows = _refusal_rows(tmp_path)
+    assert [row["receipt_sha256"] for row, _ in rows] == [refusal["refusal_organization_receipt_sha256"]]
+    assert rows[0][1]["transition_evidence"]["gated_transition_id"] == consumer.EXECUTION_TRANSITION
+    # Retry: same record, same refusal receipt, nothing new appended.
+    head = _head(tmp_path)
+    assert ingress_worker.execute(runtime, request)["source_disposition_ref"] == record["source_disposition_ref"]
+    assert _head(tmp_path) == head

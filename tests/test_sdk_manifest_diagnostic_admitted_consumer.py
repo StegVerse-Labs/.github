@@ -1,7 +1,7 @@
 """Source-only checks for the existing admitted ephemeral diagnostic consumer.
 
 ALL positive test callbacks are doubles: test success MUST NOT be interpreted
-as actual Interlock/InTr, TV/TVC, sovereign organization or Master Records proof.
+as actual Interlock/InTr, TV/TVC, sovereign organization or Organization ledger proof.
 """
 from __future__ import annotations
 
@@ -78,15 +78,8 @@ def setup(root: Path, source: dict, *, tamper: bool = False):
         },
     }
     mock_receipts = {binding_digest: binding, ingress_digest: ingress}
-    def reconstruct(digest: str):
-        record = mock_receipts[digest]
-        return {
-            "state": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": digest,
-            "reconstructed_receipt_sha256": digest,
-            "receipt": record,
-        }
+    def read_source(digest: str):
+        return mock_receipts[digest]
     locator = root / mod.ADMITTED_REL / (source["request_sha256"] + ".json")
     locator.parent.mkdir(parents=True)
     locator.write_text(json.dumps({
@@ -96,7 +89,7 @@ def setup(root: Path, source: dict, *, tamper: bool = False):
         "intr_admission_receipt_sha256": ingress_digest,
         "runtime_binding_receipt_sha256": binding_digest,
     }))
-    return sdk, reconstruct
+    return sdk, read_source
 
 
 class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
@@ -111,18 +104,18 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             source = request()
-            sdk, reconstruct = setup(root, source, tamper=True)
+            sdk, read_source = setup(root, source, tamper=True)
             with patch.dict(os.environ, {"STEGVERSE_REPO_ROOTS_JSON": "{}",
                                           "STEGVERSE_SDK_ROOT": str(sdk)}):
                 with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
                                            "ADMITTED_NODE_INTERLOCK_LEASE_RUNTIME_CORRELATION_REQUIRED"):
-                    mod.consume(root, root, source, reconstruct=reconstruct)
+                    mod.consume(root, root, source, read_source=read_source)
 
     def test_mocked_positive_composition_remains_simulation_not_authentic_allow(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             source = request()
-            sdk, reconstruct = setup(root, source)
+            sdk, read_source = setup(root, source)
             exact_bytes = (json.dumps(source["canonical_manifest"], indent=2,
                                       sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
             fixture_sha = hashlib.sha256(exact_bytes).hexdigest()
@@ -158,7 +151,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
                     governance_decision_ref_where_applicable=None,
                     transition_evidence={"fixture": "prior Organization receipt"}))
-                result = mod.consume(root, root, source, reconstruct=reconstruct,
+                result = mod.consume(root, root, source, read_source=read_source,
                                      runner=fake_run, submit=fake_submit)
             self.assertEqual(result["state"], "SOURCE_SIMULATION_ONLY")
             self.assertEqual(result["disposition"], "SIMULATED")
@@ -236,7 +229,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     mod.Path(__file__).resolve().parents[1], Path(td), source))
             self.assertFalse((Path(td) / mod.ADMITTED_REL / (source["request_sha256"] + ".json")).exists())
 
-    def test_original_ledger_and_exact_master_records_readback_only_with_source_test_double(self):
+    def test_original_ledger_and_retained_source_readback_only_with_source_test_double(self):
         import importlib
         import sys
         runtime_source = Path(__file__).resolve().parents[1] / "resident-runtime"
@@ -274,22 +267,15 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 "required_evidence_manifest": [],
             }
             binding_hash = org.sha(runtime_binding)[7:]
-            records = {ingress_hash: ingress, binding_hash: runtime_binding}
-            def fake_master_records_reconstruction(digest):
-                value = records[digest]
-                return {
-                    "state": "PASS",
-                    "required_evidence_validation_status": "PASS",
-                    "receipt_sha256": digest,
-                    "reconstructed_receipt_sha256": digest,
-                    "receipt": value,
-                }
+            control = Path(__file__).resolve().parents[1]
             with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(ledger)}):
                 org.aggregate_transition(ingress)
                 org.aggregate_transition(runtime_binding)
+                # The production reader over the real Organization ledger; being
+                # injected, it still never writes a consumer-accepted locator.
                 result = mod._read_existing_authenticated_locator(
-                    Path(__file__).resolve().parents[1], root, source,
-                    reconstruct=fake_master_records_reconstruction)
+                    control, root, source,
+                    read_source=mod._organization_source_receipts(control))
                 self.assertEqual(result["intr_admission_receipt_sha256"], ingress_hash)
                 self.assertEqual(result["runtime_binding_receipt_sha256"], binding_hash)
                 self.assertTrue(result["source_simulation_only"])
@@ -330,7 +316,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 with self.assertRaisesRegex(mod.DiagnosticAdmissionError, "ORGANIZATION_HEAD_EXACT_PREDECESSOR_READBACK_FAILED"):
                     mod._read_existing_authenticated_locator(
                         Path(__file__).resolve().parents[1], root, source,
-                        reconstruct=fake_master_records_reconstruction)
+                        read_source=lambda digest: {})
 
 
 

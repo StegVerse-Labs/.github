@@ -84,17 +84,21 @@ class OrganizationReceiptRefused(ValueError):
     def __init__(self, failed_predicate: str, *, deterministic: bool, detail: str = ""):
         super().__init__(failed_predicate + (": " + detail if detail else ""))
         self.failed_predicate = failed_predicate
+        self.detail = detail
         self.disposition = "DENY" if deterministic else "FAIL_CLOSED"
         self.retry_entrypoint = None if deterministic else RECEIPT_REFUSAL_RETRY_ENTRYPOINT
 
     def refusal(self) -> dict:
-        return {
+        refusal = {
             "disposition": self.disposition,
             "failed_predicate": self.failed_predicate,
             "retry_entrypoint": self.retry_entrypoint,
             "consequence_committed": False,
             "authority_effect": "NONE_REFUSAL_ONLY",
         }
+        if self.detail:
+            refusal["detail"] = self.detail
+        return refusal
 
 
 def _state_digest(value, predicate: str) -> str:
@@ -167,7 +171,10 @@ def verified_organization_record(root, result, *, expected_transition_id=None, e
     top-level projection; when both are present they must agree.
     """
     if not isinstance(result, dict) or result.get("state") != "RECORDED":
-        raise OrganizationReceiptRefused("ORGANIZATION_RECORD_NOT_RECORDED", deterministic=False)
+        # The producer's own BOUNDARY reason is the evidence of why it did not record.
+        reason = result.get("reason") if isinstance(result, dict) else None
+        raise OrganizationReceiptRefused("ORGANIZATION_RECORD_NOT_RECORDED", deterministic=False,
+                                         detail=str(reason) if reason else "")
     nested = result.get("organization_receipt")
     nested = nested if isinstance(nested, dict) else {}
     top, inner = result.get("organization_receipt_sha256"), nested.get("receipt_sha256")

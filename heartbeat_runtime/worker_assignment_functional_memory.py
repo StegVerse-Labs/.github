@@ -298,7 +298,7 @@ def record_non_allow_functional_memory(
     result = submit_state_receipt(receipt)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID)
+    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID, record_refusal=True)
     if not gate["verified"]:
         return {
             "state": "BOUNDARY",
