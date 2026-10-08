@@ -283,7 +283,7 @@ def submit_organization_batch(envelope: Mapping[str, Any]) -> dict[str, Any]:
         return evidence_result("FAILED", reason="ORGANIZATION_BATCH_CUSTODY_RECONSTRUCTION_NOT_PASS",
                                batch_id=batch_id, destination_response=payload)
     result = evidence_result("COMPLETED", batch_id=batch_id, destination_response=payload,
-                             authority_effect="NONE_CUSTODY_ONLY")
+                             authority_effect="NONE_ORGANIZATION_RECORD_ONLY")
     result["destination_state"] = payload.get("state")
     return result
 
