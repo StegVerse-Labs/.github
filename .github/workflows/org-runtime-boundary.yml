@@ -7,6 +7,9 @@ on:
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
+      - 'tests/test_manifest_ingress_idempotent.py'
+      - '.stegverse/transition-ledger/emit.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
       - '.github/workflows/org-runtime-boundary.yml'
   push:
     branches: [main]
@@ -15,6 +18,9 @@ on:
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
+      - 'tests/test_manifest_ingress_idempotent.py'
+      - '.stegverse/transition-ledger/emit.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
       - '.github/workflows/org-runtime-boundary.yml'
   workflow_dispatch:
 
@@ -55,3 +61,8 @@ jobs:
       # against temporary ledgers only.
       - name: Validate organization receipt revision binding
         run: python -m unittest -v tests/test_organization_manifest_ingress_rule_ref.py
+
+      # One manifest is one transition however many times it is delivered: a
+      # replay returns the recorded receipts, against temporary ledgers only.
+      - name: Validate manifest ingress is idempotent per transition
+        run: python -m unittest -v tests/test_manifest_ingress_idempotent.py

@@ -26,6 +26,9 @@ def main():
  standing=load(a.standing)
  if not isinstance(standing,dict) or "predecessor" not in standing:raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
  packet=K.build_packet(origin_org="StegVerse-Labs",origin_service="stegverse-labs.org-control",destination_org="master-records",destination_service="organization.ecosystem-transition-ledger",payload=payload,standing=standing,transition_reference="ecosystem.transition.organization-record.v1",authority_effect="NONE")
- published=K.publish_packet(packet,root=a.mesh_root)
+ # Stamped with the epoch of the receipt it carries when it carries one, so
+ # submitting the same receipt again publishes the same frame -- a write-once
+ # no-op -- instead of a second record request stamped by the host clock.
+ published=K.publish_packet(packet,root=a.mesh_root,epoch=(receipt.get("hb_reference") or {}).get("epoch"))
  print(json.dumps({"status":"PUBLISHED_FOR_ORGANIZATION_RECORD","packet_id":packet["packet_id"],"frame_sha256":published["frame"]["frame_sha256"],"authority_effect":"NONE"},sort_keys=True))
 if __name__=="__main__":main()

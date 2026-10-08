@@ -274,9 +274,12 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
     predecessor = record["submitted_manifest_sha256"]
     successor = "sha256:" + sha(dict(record))
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-REFUSED-" + sha(dict(record))[:16]
+    # A refusal is identified by its own record, so the same refusal delivered
+    # again returns the receipts already recorded rather than a second pair.
     repository_receipt = repository_ledger.append(
         transition_id,
-        REFUSED_CLASS, predecessor, successor, dict(record), "NONE", hb_epoch=hb_epoch)
+        REFUSED_CLASS, predecessor, successor, dict(record), "NONE", hb_epoch=hb_epoch,
+        idempotent_on=("failed_predicate", "detail"))
     organization_receipt = organization_ledger.append(
         repository_receipt, "REPO_STATE_PROPAGATION", predecessor, successor,
         {"receiving_operation": OPERATION_ID,
@@ -284,7 +287,7 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
          "disposition": "DENY",
          "failed_predicate": record["failed_predicate"],
          "recomputation_rule_ref": rule_ref},
-        "NONE", hb_epoch=hb_epoch)
+        "NONE", hb_epoch=repository_receipt["hb_reference"]["epoch"])
     return {"transition_id": transition_id,
             "repository_receipt": repository_receipt,
             "organization_receipt": organization_receipt}
@@ -477,10 +480,17 @@ def governance_request_payload(request: Mapping[str, Any], decision_request: Map
     `ecosystem.work.request` is answered with an acknowledgement, and the
     communication id is what the closure correlates on, so the crossing is
     closable by construction.
+
+    It carries the admitted manifest's own `processing` declaration. The
+    deciding organization's governance endpoint is an internal endpoint, and
+    an internal endpoint refuses a packet that declares no admitted capability
+    bound to a route rather than letting the addressed row select processing.
     """
     return {
         "communication_id": "governance:" + request["request_sha256"],
         "message_class": "ecosystem.work.request",
+        "processing": {"capability": request["processing_capability"],
+                       "route_id": request["route_id"]},
         "subject": "governance.decision",
         "requested_action": "DECIDE_GOVERNANCE_ADMISSIBILITY",
         "audience": "TARGET",
@@ -503,7 +513,8 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
                                 repository_receipt: Mapping[str, Any],
                                 organization_receipt: Mapping[str, Any],
                                 standing: Mapping[str, Any], mesh_root: Path | None,
-                                hb_epoch: int | None, rule_ref: str) -> dict[str, Any]:
+                                hb_epoch: int | None, rule_ref: str,
+                                replayed: bool = False) -> dict[str, Any]:
     """Emit the governance request to the organization that decides it, and record the emission.
 
     Nothing waits. The emission is a transition here, recorded at both levels by
@@ -532,6 +543,7 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "transition_replayed": replayed,
         "recomputation_rule_ref": rule_ref,
         "repository_receipt_observed": True,
         "repository_receipt_sha256": repository_receipt["receipt_sha256"],
@@ -645,11 +657,34 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-" + request["request_sha256"][:16]
     predecessor_state = "sha256:" + request["canonical_manifest_sha256"]
     successor_state = "sha256:" + closures[-1]["receipt_sha256"]
-    repository_receipt = repository_ledger.append(
-        transition_id, "ORGANIZATION_SDK_MANIFEST_INGRESS",
-        predecessor_state, successor_state,
-        transition_evidence(request, crossing, closures),
-        "NONE", hb_epoch=hb_epoch)
+    #
+    # The transition id is derived from the request, so one manifest is one
+    # transition however many times it is delivered. A delivery the chain
+    # already records returns the recorded receipts instead of minting more:
+    # identity is the id, the canonical manifest it starts from and the full
+    # request digest; the same id over anything else is a collision. A run that
+    # recorded the repository receipt and stopped before the organization
+    # receipt is completed here, from the retained repository receipt, rather
+    # than recorded twice.
+    chain = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+    replayed = repository_ledger.recorded(
+        chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
+        transition_id, OPERATION_ID) is not None
+    try:
+        repository_receipt = repository_ledger.append(
+            transition_id, OPERATION_ID,
+            predecessor_state, successor_state,
+            transition_evidence(request, crossing, closures),
+            "NONE", hb_epoch=hb_epoch, idempotent_on=("request_sha256",))
+    except ValueError as exc:
+        if str(exc) != "ledger_receipt_collision":
+            raise
+        return refused("ONE_TRANSITION_ID_BINDS_ONE_MANIFEST", str(exc),
+                       request_sha256=request["request_sha256"])
+    # Everything after the repository receipt takes its epoch from that receipt,
+    # so a replay rebuilds the same organization receipt and the same outbound
+    # frame rather than ones stamped with whatever epoch this attempt carried.
+    hb_epoch = repository_receipt["hb_reference"]["epoch"]
     organization_receipt = organization_ledger.append(
         repository_receipt, "REPO_STATE_PROPAGATION",
         predecessor_state, successor_state,
@@ -669,7 +704,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             request, crossing, receiving, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
-            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref)
+            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed)
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -720,6 +755,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
+        "transition_replayed": replayed,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.

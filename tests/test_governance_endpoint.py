@@ -57,8 +57,13 @@ def canon(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
 
-def work_request(request, *, digest=None):
-    return {
+#: What an admitted governance manifest declares. An internal endpoint selects
+#: processing only from this pair, never from the address it was sent to.
+PROCESSING = {"capability": "governance", "route_id": "stegverse.route.canonical-governed.v1"}
+
+
+def work_request(request, *, digest=None, processing=PROCESSING):
+    payload = {
         "communication_id": "governance:" + "a" * 64,
         "message_class": "ecosystem.work.request",
         "subject": "governance.decision",
@@ -70,6 +75,9 @@ def work_request(request, *, digest=None):
                  "governance_request": request,
                  "governance_request_sha256": digest or hashlib.sha256(canon(request)).hexdigest()},
     }
+    if processing is not None:
+        payload["processing"] = dict(processing)
+    return payload
 
 
 def packet(payload):
@@ -164,6 +172,7 @@ class GovernanceEndpointTests(unittest.TestCase):
         """A dispatch root of its own, so the resident cycle's seen-markers land outside the checkout."""
         root = self.work / "root"
         for relative in ("org-boundary/registry/services.json", "org-boundary/runtime/node_standing.py",
+                         "org-boundary/runtime/manifest_selection.py",
                          "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json",
                          "resident-runtime/governance_endpoint.py",
                          "resident-runtime/aggregate_repo_transition.py",
@@ -181,9 +190,19 @@ class GovernanceEndpointTests(unittest.TestCase):
         mesh = self.work / "mesh"
         sent = packet(work_request({"signal": {}}))
         K.publish_packet(sent, root=mesh)
-        consumed = K.consume_and_respond(self.copied_root(), mesh_root=mesh,
-                                         node_state_root=self.work / "node-state", seen=set())
+        # Node state and both ledgers are supplied, so the checkout is only read.
+        consumed = K.consume_and_respond(ROOT, mesh_root=mesh,
+                                         node_state_root=self.work / "node-state", seen=set(),
+                                         repo_ledger_root=self.work / "repo-ledger",
+                                         org_ledger_root=self.work / "org-ledger")
         self.assertEqual([item["result"]["status"] for item in consumed], ["CONSUMED"])
+        self.assertEqual(consumed[0]["result"]["execution_result"]["processing_selection"],
+                         "MANIFEST_DECLARED")
+        # The decision and the crossing are each recorded at both levels.
+        classes = sorted(r["transition_class"] for r in self.ledger("STEGVERSE_REPO_LEDGER_ROOT"))
+        self.assertEqual(classes, ["ORGANIZATION_FEDERATION_CROSSING_CONSUMED",
+                                   "ORGANIZATION_GOVERNANCE_DECISION"])
+        self.assertEqual(len(self.ledger("STEGVERSE_ORG_LEDGER_ROOT")), 2)
         response = K.recover_packet(consumed[0]["response_publication"]["frame"])
         self.assertEqual(response["destination"]["org"], "StegVerse-org")
         self.assertEqual(response["payload"]["message_class"], "ecosystem.work.ack")
@@ -208,6 +227,31 @@ class GovernanceEndpointTests(unittest.TestCase):
         with self.assertRaises(ValueError) as raised:
             K.dispatch(root, packet(work_request({"signal": {}})))
         self.assertIn("FAIL_CLOSED_ENDPOINT_ADAPTER_UNDECLARED", str(raised.exception))
+
+    def test_a_request_declaring_no_processing_is_refused_before_any_decision(self):
+        """The address does not select processing; the admitted declaration does."""
+        self.with_stegcore()
+        with self.assertRaises(ValueError) as raised:
+            K.dispatch(ROOT, packet(work_request({"signal": {}}, processing=None)))
+        self.assertIn("PROCESSING_SELECTED_ONLY_BY_ADMITTED_PROCESSING_CAPABILITY_AND_ROUTE_ID",
+                      str(raised.exception))
+        self.assertEqual(self.ledger("STEGVERSE_REPO_LEDGER_ROOT")
+                         if (self.work / "repo-ledger" / "receipts").is_dir() else [], [])
+
+    def test_an_undeclared_request_crossing_is_recorded_as_deny_and_not_decided(self):
+        self.with_stegcore()
+        mesh = self.work / "mesh"
+        K.publish_packet(packet(work_request({"signal": {}}, processing=None)), root=mesh)
+        refused, = K.consume_and_respond(ROOT, mesh_root=mesh, node_state_root=self.work / "node-state",
+                                         repo_ledger_root=self.work / "repo-ledger",
+                                         org_ledger_root=self.work / "org-ledger")
+        self.assertEqual(refused["result"]["status"], "REFUSED")
+        self.assertEqual(refused["result"]["disposition"], "DENY")
+        self.assertIsNone(refused["response_publication"])
+        repository, = self.ledger("STEGVERSE_REPO_LEDGER_ROOT")
+        self.assertEqual(repository["transition_class"], "ORGANIZATION_FEDERATION_CROSSING_REFUSED")
+        organization, = self.ledger("STEGVERSE_ORG_LEDGER_ROOT")
+        self.assertEqual(organization["repo_receipt_sha256"], repository["receipt_sha256"])
 
     def test_boundary_local_roles_are_unchanged(self):
         result = K.dispatch(ROOT, K.build_packet(
