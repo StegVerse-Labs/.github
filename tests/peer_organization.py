@@ -77,6 +77,10 @@ def materialize(case, organization: str, services: list, *, extra=()) -> Peer:
     (root / ".stegverse/transition-ledger/contract.json").write_text(json.dumps(repository))
     org_contract = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())
     org_contract["organization"] = organization
+    # The peer is materialized with the POSIX ledger roots below, so its own
+    # manifest declares that locus (OL-3: an explicit POSIX root is admitted
+    # only under a declared {store: posix}).
+    org_contract["organization_ledger"] = {"store": "posix"}
     (root / ".stegverse/transition-ledger/org-contract.json").write_text(json.dumps(org_contract))
     (root / "org-boundary/registry").mkdir(parents=True, exist_ok=True)
     (root / "org-boundary/registry/services.json").write_text(json.dumps({

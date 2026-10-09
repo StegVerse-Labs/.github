@@ -67,11 +67,26 @@ class LedgerStoreKindMismatch(LedgerLocationRequired):
 
     failed_predicate="ORGANIZATION_LEDGER_STORE_KIND_MISMATCH"
 
-    def __init__(self, declared):
+    def __init__(self, declared, repair=None):
         ValueError.__init__(self,"organization_ledger_store_kind_mismatch: declared "+str(declared))
         self.variable=LEDGER_LOCUS_KEY+".store"
         self.declared=declared
-        self.repair="read the Organization ledger through organization_store() and the store read API"
+        self.repair=repair or "read the Organization ledger through organization_store() and the store read API"
+
+EXPLICIT_ROOT_REPAIR=("omit the explicit POSIX Organization ledger root; the declared store is "
+                      "organization_store(), selected by the Organization manifest")
+
+def refuse_explicit_posix_root():
+    """An explicitly supplied POSIX root is admitted only under a declared {store: posix} (OL-3).
+
+    Under any other declaration it would append to or read a second chain
+    beside the declared store, so it is FAIL_CLOSED
+    ORGANIZATION_LEDGER_STORE_KIND_MISMATCH before anything is read or
+    appended. Without a declaration the explicit root behaves as before.
+    """
+    locus=C.get(LEDGER_LOCUS_KEY)
+    store=locus.get("store") if isinstance(locus,dict) else None
+    if store is not None and store!="posix": raise LedgerStoreKindMismatch(store,EXPLICIT_ROOT_REPAIR)
 
 def location_refusal(exc):
     """The append attempt's own disposition when no ledger root was supplied."""
@@ -142,7 +157,8 @@ def _require_equal(variable, declared):
 def organization_store(ledger=None):
     """The Organization ledger store, as the Organization manifest declares it.
 
-    A store or a root the caller holds is used as is. Otherwise the locus is
+    A store or a root the caller holds is used as is; a root only under a
+    declared {store: posix} (OL-3, refuse_explicit_posix_root). Otherwise the locus is
     org-contract.json's organization_ledger (OL-1b): store "git" with its ref,
     custody and propagate_target, or store "posix" at the materialized
     ledger_root(). STEGVERSE_ORG_LEDGER_STORE / _GIT_REF / _GIT_REMOTE /
@@ -156,7 +172,9 @@ def organization_store(ledger=None):
     transition (F75-01).
     """
     if _is_store(ledger): return ledger
-    if ledger is not None: return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
+    if ledger is not None:
+        refuse_explicit_posix_root()
+        return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
     locus=declared_ledger_locus()
     _require_equal("STEGVERSE_ORG_LEDGER_STORE",locus["store"])
     git=locus["store"]=="git"

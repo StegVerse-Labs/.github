@@ -20,6 +20,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# OL-3: the child supplies a POSIX Organization ledger root, so it declares the
+# POSIX locus exactly as tests/posix_ledger_locus documents.
+POSIX_LEDGER_LOCUS = str(ROOT / "tests" / "posix_ledger_locus")
 STANDING = {"mode": "ESTABLISH_GENESIS", "node_ref": "declared-carrier-test-node", "predecessor": None}
 # Reserved for documentation (RFC 5737); a request to it never completes.
 UNANSWERABLE = "https://192.0.2.1/federation"
@@ -40,7 +43,7 @@ class DeclaredCarrierOnlyTests(unittest.TestCase):
 
     def run_cli(self, *argv):
         return subprocess.run([sys.executable, "-B", *map(str, argv)], capture_output=True, text=True,
-                              env=self.env, cwd=self.scratch, timeout=120)
+                              env={**self.env, "PYTHONPATH": os.pathsep.join(filter(None, (POSIX_LEDGER_LOCUS, self.env.get("PYTHONPATH"))))}, cwd=self.scratch, timeout=120)
 
     def test_the_resident_cycle_uses_the_supplied_mesh_whatever_the_gateway_variable_says(self):
         done = self.run_cli(ROOT / "resident-runtime/federation_cycle.py", "--mesh-root", self.mesh,

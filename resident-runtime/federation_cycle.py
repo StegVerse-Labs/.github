@@ -34,6 +34,44 @@ def supplied_ledger(variable:str)->Path|None:
     value=os.environ.get(variable)
     return Path(value).expanduser().resolve() if value else None
 
+def organization_ledger()->object:
+    """The kernel's own Organization ledger module: the one crossing custody appends through."""
+    return K._own_module("crossing_organization_ledger","resident-runtime/aggregate_repo_transition.py")
+
+def store_refusal(exc)->dict:
+    """The declared Organization ledger was not admitted: FAIL_CLOSED before anything is read (OL-3).
+
+    An explicit POSIX root under a declared non-posix store is
+    ORGANIZATION_LEDGER_STORE_KIND_MISMATCH; a declared store this node was
+    not materialized with keeps the store's own predicate.
+    """
+    return {"schema_version":"stegverse.org-federation-cycle-refusal.v1",
+            "organization":K.load_registry(ROOT)["organization"],
+            "disposition":"FAIL_CLOSED","failed_predicate":exc.failed_predicate,
+            "required_evidence_or_repair":getattr(exc,"repair",None) or "materialize this node with "+exc.variable,
+            "retry_entrypoint":"resident-runtime/federation_cycle.py::main",
+            "consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+
+def declared_organization_ledger(org_ledger_root:Path|None)->Path|object|None:
+    """The Organization ledger this cycle appends to, as the manifest declares it.
+
+    An explicit root is a POSIX root, admitted only under a declared
+    {store: posix}; under any other declaration it raises
+    LedgerStoreKindMismatch before anything is read or appended (OL-3).
+    Without one, a declared {store: posix} keeps the materializer's
+    STEGVERSE_ORG_LEDGER_ROOT; any other declaration is the store
+    organization_store() selects; one it cannot select raises its own
+    LedgerLocationRequired.
+    """
+    org=organization_ledger()
+    if org_ledger_root is not None:
+        org.refuse_explicit_posix_root()
+        return org_ledger_root
+    locus=org.C.get(org.LEDGER_LOCUS_KEY)
+    if not isinstance(locus,dict) or locus.get("store") in (None,"posix"):
+        return supplied_ledger("STEGVERSE_ORG_LEDGER_ROOT")
+    return org.organization_store()
+
 def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
           repo_ledger_root:Path|None=None, org_ledger_root:Path|None=None)->dict:
     if node_state_root is None:
@@ -41,7 +79,10 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
     if mesh_root is None:
         return location_refusal("MESH_LOCATION_REQUIRED_FROM_MATERIALIZER","--mesh-root")
     repo_ledger_root=repo_ledger_root or supplied_ledger("STEGVERSE_REPO_LEDGER_ROOT")
-    org_ledger_root=org_ledger_root or supplied_ledger("STEGVERSE_ORG_LEDGER_ROOT")
+    try:
+        org_ledger_root=declared_organization_ledger(org_ledger_root)
+    except organization_ledger().LedgerLocationRequired as exc:
+        return store_refusal(exc)
     # Consuming a crossing is a transition within the organization, so it is
     # recorded on both ledgers before it is answered or marked. Without both
     # locations nothing is consumed: the frames stay in the mesh, which is the
@@ -78,7 +119,8 @@ def main(argv:list[str]|None=None)->int:
     ap.add_argument("--repo-ledger-root",type=Path,default=None,
                     help="repository ledger root (else STEGVERSE_REPO_LEDGER_ROOT)")
     ap.add_argument("--org-ledger-root",type=Path,default=None,
-                    help="organization ledger root (else STEGVERSE_ORG_LEDGER_ROOT)")
+                    help="organization ledger root, only under a declared {store: posix} "
+                         "(else STEGVERSE_ORG_LEDGER_ROOT there, or the declared store)")
     args=ap.parse_args(argv)
     out=cycle(mesh_root=args.mesh_root,node_state_root=args.node_state_root,
               repo_ledger_root=args.repo_ledger_root,org_ledger_root=args.org_ledger_root)

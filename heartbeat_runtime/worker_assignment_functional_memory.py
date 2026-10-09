@@ -96,9 +96,17 @@ def _refusal_reason(refusal: dict[str, Any]) -> str:
 
 
 def _ledger(custody: Any, root: Path | None) -> Path:
-    """The Organization ledger root: caller-supplied, else STEGVERSE_ORG_LEDGER_ROOT; never a host path."""
+    """The Organization ledger root: caller-supplied, else STEGVERSE_ORG_LEDGER_ROOT; never a host path.
+
+    Either is a POSIX root, admitted only under a declared {store: posix}:
+    otherwise FAIL_CLOSED ORGANIZATION_LEDGER_STORE_KIND_MISMATCH before
+    anything is read (OL-2 ledger_root, OL-3 explicit root).
+    """
     try:
-        return Path(root).expanduser().resolve() if root is not None else custody.org.ledger_root()
+        if root is not None:
+            custody.org.refuse_explicit_posix_root()
+            return Path(root).expanduser().resolve()
+        return custody.org.ledger_root()
     except custody.org.LedgerLocationRequired as exc:
         raise custody.OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
 
