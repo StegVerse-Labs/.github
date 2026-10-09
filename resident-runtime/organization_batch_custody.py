@@ -236,6 +236,12 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_VERIFICATION_FAILED", deterministic=True, detail=str(exc)) from exc
     if row is None:
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_MISSING", deterministic=False, detail=digest)
+    try:
+        # A receipt is Organization reality only on a root that is one reality:
+        # no superseded custody generation and no fork.
+        org.verify_custody_lineage(ledger)
+    except org.CustodyRefused as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=exc.detail) from exc
     if not row.get("source_transition_sha256"):
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SOURCE_ABSENT", deterministic=True, detail=digest)
     if row["source_transition_sha256"] != source:
@@ -257,6 +263,37 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
         if match is None or "sha256:" + match.group(1) != expected:
             raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_PREDECESSOR_STALE", deterministic=True, detail=expected)
     return row
+
+
+# Q74-01 (CORRECT_BOUNDED_A). A verified readback proves the receipt is on the
+# chain and bound to its state receipt; it never proves authentic custody, user
+# verification, InTr admission or an authorized ALLOW. Every report of a
+# verified readback carries readback_custody_basis(row) beside it.
+READBACK_CUSTODY_BASIS_KEY = "organization_readback_custody_basis"
+READBACK_CUSTODY_BASIS_ABSENT = ("FAIL_CLOSED_GENERATION_0_CUSTODY_AUTHORITY_BASIS_ABSENT; "
+                                 "NO_CUSTODY_AUTHORITY_CLAIMED")
+READBACK_CUSTODY_BASIS_HANDOVER = org.CUSTODY_EXCLUSIVITY + "; NO_CUSTODY_AUTHORITY_CLAIMED"
+
+
+def readback_custody_basis(row) -> str:
+    """The custody basis a verified readback of `row` may report, never custody authority.
+
+    Generation 0 reports the receipt's own custody_authority_basis
+    (PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED); a generation-0 row without
+    it, or with any other value, reports the fail-closed value. A handover
+    generation reports DETECTED_NOT_PREVENTED_ACROSS_KERNELS with no custody
+    authority claimed. Receipt bodies and hashes are not touched.
+    """
+    if not isinstance(row, Mapping):
+        return READBACK_CUSTODY_BASIS_ABSENT
+    try:
+        generation = org.custody_generation(row)
+    except org.CustodyRefused:
+        return READBACK_CUSTODY_BASIS_ABSENT
+    if generation == 0:
+        basis = row.get("custody_authority_basis")
+        return basis if basis == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0 else READBACK_CUSTODY_BASIS_ABSENT
+    return READBACK_CUSTODY_BASIS_HANDOVER
 
 
 def verified_organization_source_receipt(root, digest, *, state_receipt_sha256,
@@ -365,6 +402,7 @@ def _batch_head(root) -> tuple[str | None, dict | None]:
 
 def _segment(root, tip: str, predecessor: str | None) -> list[dict]:
     root = _ledger(root)
+    org.verify_custody_lineage(root)
     rows: list[dict] = []
     seen: set[str] = set()
     cursor: str | None = tip
@@ -408,6 +446,7 @@ def verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | None
 
 
 def _verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | None = None) -> dict:
+    org.verify_custody_lineage(root)
     batch = _verified_batch(root, batch_id)
     predecessor_id = batch.get("previous_batch_commitment")
     prior = _verified_batch(root, predecessor_id) if predecessor_id else None
@@ -799,7 +838,8 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
     }
 
 
-def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root=None, now_ns: int | None = None) -> dict | None:
+def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root=None, now_ns: int | None = None,
+                                                   custody_exclusivity_verifier=None) -> dict | None:
     """Release the satisfied packet immediately before the next receipt append.
 
     Release is authorized once, at establishment, by the governing manifest.
@@ -812,17 +852,12 @@ def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, ro
     reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (
         state["expired"] and state["receipt_count"] < state["release_count"]
     ) else "MANIFEST_RELEASE_CONDITION"
-    return close_batch(reason, root=root)
+    return close_batch(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
 
-def close_batch(reason: str, *, root=None) -> dict:
-    if reason not in CLOSURE_REASONS:
-        raise ValueError("unsupported organization batch closure reason")
-    with _custody_writes(root) as store:
-        return _close_batch(reason, store)
-
-
-def _close_batch(reason: str, root) -> dict:
+def _verified_head(root) -> tuple[dict, str]:
+    """HEAD of this ledger, naming a verified receipt under this ledger's receipts/."""
+    root = _ledger(root)
     head = _get(root, org.ledger_store.HEAD_KEY)
     if head is None:
         raise ValueError("organization ledger HEAD missing")
@@ -839,6 +874,26 @@ def _close_batch(reason: str, root) -> dict:
     elif head.get("receipt_path") != root.locator(org.ledger_store.receipt_key(tip)):
         # Any other store names the key on its own ledger exactly.
         raise ValueError("organization ledger HEAD receipt path mismatch")
+    return head, tip
+
+
+def close_batch(reason: str, *, root=None, custody_exclusivity_verifier=None) -> dict:
+    if reason not in CLOSURE_REASONS:
+        raise ValueError("unsupported organization batch closure reason")
+    with _custody_writes(root) as store:
+        return _close_batch(reason, store, custody_exclusivity_verifier)
+
+
+def _close_batch(reason: str, root, custody_exclusivity_verifier) -> dict:
+    head, tip = _verified_head(root)
+    rows = org.verify_custody_lineage(root)
+    if _verified_receipt(root, tip).get("org_transition_class") == org.CUSTODY_RELEASED_CLASS:
+        # Batch closure writes the root; a released root takes no writer.
+        raise org.CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", retry_entrypoint=org.CUSTODY_ASSUME_RETRY,
+                                 detail=tip, repair="close the packet at the successor after it assumes custody")
+    # Batch closure is a consequential write: no relocation anomaly, and at a successor an attestation.
+    org.require_consequential_custody(root, rows, tip, "ORGANIZATION_BATCH_CLOSURE", custody_exclusivity_verifier,
+                                      org.custody_action_sha256("ORGANIZATION_BATCH_CLOSURE", reason))
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:
         if prior["closure_reason"] != reason:

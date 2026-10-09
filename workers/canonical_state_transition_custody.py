@@ -915,7 +915,9 @@ def organization_receipt_gate(
                 state_receipt_sha256=result.get("receipt_sha256") if isinstance(result, Mapping) else None,
                 root=root)
         return {"verified": False, "organization_receipt_sha256": None, "refusal": refusal}
-    return {"verified": True, "organization_receipt_sha256": row["receipt_sha256"], "refusal": None}
+    # The readback is never custody authority; its basis travels with it.
+    return {"verified": True, "organization_receipt_sha256": row["receipt_sha256"],
+            custody.READBACK_CUSTODY_BASIS_KEY: custody.readback_custody_basis(row), "refusal": None}
 
 
 def require_predecessor_master_records_organization_record(

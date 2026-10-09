@@ -373,6 +373,10 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         self.assertEqual(len(result["verified_organization_receipt_sha256s"]), 7)
         for row, digest in zip(result["transition_closures"], result["verified_organization_receipt_sha256s"]):
             self.assertEqual(digest, row["organization_receipt_sha256"])
+        # Q74-01: no closure is reported verified without its custody basis.
+        self.assertEqual(len(result["organization_readback_custody_bases"]), 7)
+        for basis in result["organization_readback_custody_bases"]:
+            self.assertTrue(basis.startswith("PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED"), basis)
 
     def test_return_assembly_refuses_master_records_pass_without_organization_receipt(self):
         receipt = purpose_receipt(replay=True)

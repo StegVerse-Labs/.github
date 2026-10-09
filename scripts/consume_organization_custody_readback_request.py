@@ -122,7 +122,8 @@ def _recorded_master_records(value: Any, label: str) -> dict[str, Any]:
     from importlib import import_module
     custody = import_module("organization_batch_custody")
     row = custody.verified_organization_record(None, value)
-    return {**value, "verified_organization_receipt_sha256": row["receipt_sha256"]}
+    return {**value, "verified_organization_receipt_sha256": row["receipt_sha256"],
+            custody.READBACK_CUSTODY_BASIS_KEY: custody.readback_custody_basis(row)}
 
 
 def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> dict[str, Any]:
@@ -159,6 +160,8 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
             "predecessor_master_records_receipt_sha256": predecessor["receipt_sha256"],
             "intr_organization_receipt_sha256": intr_closure["verified_organization_receipt_sha256"],
             "predecessor_organization_receipt_sha256": predecessor["verified_organization_receipt_sha256"],
+            "intr_organization_readback_custody_basis": intr_closure["organization_readback_custody_basis"],
+            "predecessor_organization_readback_custody_basis": predecessor["organization_readback_custody_basis"],
             "readback_executed": False,
             "authority_effect": "NONE_GOVERNED_DISPOSITION_PRESERVED",
         }
@@ -174,6 +177,8 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
     result["predecessor_master_records_receipt_sha256"] = predecessor["receipt_sha256"]
     result["intr_organization_receipt_sha256"] = intr_closure["verified_organization_receipt_sha256"]
     result["predecessor_organization_receipt_sha256"] = predecessor["verified_organization_receipt_sha256"]
+    result["intr_organization_readback_custody_basis"] = intr_closure["organization_readback_custody_basis"]
+    result["predecessor_organization_readback_custody_basis"] = predecessor["organization_readback_custody_basis"]
     return result
 
 
