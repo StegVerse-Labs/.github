@@ -73,6 +73,26 @@
       "repair_verified": false,
       "repair_verified_note": "verified only after merge at a validated head; set by a later evidence transition, not by this PR",
       "authentic_claim_attempts_through_defective_source": 0
+    },
+    {
+      "ref": "step-7 claim attempt",
+      "attempted_at": "2026-10-09T00:40Z",
+      "source": "StegVerse-Labs/.github@0c0a1dd",
+      "request_id": "RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-SDK-MANIFEST-001",
+      "request_sha256": "sha256:8621f7a4f61ccafdaccc5e2c3dc6464245078fa158502b7cc524f8ce62f7809b",
+      "target_task_id": "TASK-2026-0013",
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED",
+      "detail": "organization chain empty: no authenticated genesis",
+      "repository_receipt_sha256": "sha256:790aea22e4766d0e6e0ecf7386c3314d46de0ccd01fa31c50be27b294372a2a6",
+      "transition_id": "ORGANIZATION-WORKER-CLAIM-FAIL-CLOSED-41fd0242232bec20",
+      "retry_entrypoint": "scripts/consume_org_claim_allocator_request.py::consume",
+      "fence_issued": false,
+      "organization_disposition_retained": false,
+      "organization_readback": "NOT_PERFORMED",
+      "evidence_class": "SANDBOX_RUNTIME_OBSERVED_ATTEMPT_ONLY",
+      "classification": "EPHEMERAL_ATTEMPT_EVIDENCE_NOT_AUTHENTIC_SOVEREIGN_ORGANIZATION_RUNTIME",
+      "ledger_roots": "supplied empty ephemeral roots, not the existing private Organization ledger root"
     }
   ],
   "bounded_extensions": [
@@ -119,6 +139,36 @@
       "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
       "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
       "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ],
+  "evidence_gaps": [
+    {
+      "alias": "ORGANIZATION_LEDGER_ROOT_CUSTODY_UNESTABLISHED",
+      "bound_owner_task": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "bound_failed_predicate": "EXISTING_PRIVATE_ORGANIZATION_LEDGER_ROOT_REACHABLE_AT_MANIFEST_DIRECTED_INVOCATION",
+      "related_open_items": [
+        "A4 TV/TVC custody authentication",
+        "A5 single-kernel custody scope"
+      ],
+      "disposition_when_attempted_without_root": "FAIL_CLOSED with retry_entrypoint, never a wait",
+      "new_store_or_genesis": false
+    }
+  ],
+  "external_findings": [
+    {
+      "failed_predicate": "WORKFLOW_SURFACE_UNREGISTERED",
+      "count": 28,
+      "owner": "StegVerse-Labs/repo-standards",
+      "evidence_ref": "org-control-plane-validate run 37865736140 (main 4482726)",
+      "repaired_here": false,
+      "waived": false
+    },
+    {
+      "failed_predicate": "AE_CONTROL_PLANE_INVALID",
+      "owner": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+      "evidence_ref": "same run",
+      "repaired_here": false,
+      "waived": false
     }
   ]
 }

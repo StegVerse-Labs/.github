@@ -1281,5 +1281,46 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertNotIn("DENY", json.dumps(record["evidence_history"]))
         self.assertNotIn("runtime_disposition", record)
 
+    def _repository_receipts(self, root: Path) -> list[dict]:
+        return [json.loads(path.read_text(encoding="utf-8")) for path in sorted((root / "receipts").glob("*.json"))]
+
+    # W44-2 -----------------------------------------------------------------
+    def test_claim_refusal_replay_returns_exact_prior_receipt(self):
+        env = Env(self.base)
+        held = dict(json.loads((ROOT / "tasks/TASK-2026-0013.json").read_text(encoding="utf-8"))
+                    ["requirements"]["mandatory"][0], task_id="TASK-2026-0099")
+        (env.runtime / "control/claims-active.json").write_text(json.dumps(
+            {"schema": "stegverse.org-claims/v1", "generation": 7, "claims": [held]}), encoding="utf-8")
+        first = env.consume()
+        self.assertEqual(first["disposition"], "DENY")
+        self.assertEqual(first["failed_predicate"], "CONFLICTS_WITH_HELD_CLAIM")
+        receipts = self._repository_receipts(env.repo)
+        head = env.chain()["head_sha256"]
+        for _ in range(2):
+            replay = env.consume()
+            self.assertEqual(replay["transition_id"], first["transition_id"])
+            self.assertEqual(replay["repository_receipt_sha256"], first["repository_receipt_sha256"])
+            self.assertEqual(replay["organization_receipt_sha256"], first["organization_receipt_sha256"])
+        # No second append at either level.
+        self.assertEqual(self._repository_receipts(env.repo), receipts)
+        self.assertEqual(env.chain()["head_sha256"], head)
+        self.assertEqual(env.grants(), [])
+
+    def test_claim_receipt_hb_reference_declares_clock_source(self):
+        # The consumer supplies no frame epoch, so every repository receipt it
+        # appends derives its heartbeat from the host clock and must say so.
+        granted = Env(self.base / "granted")
+        self.assertEqual(granted.consume()["disposition"], "ALLOW")
+        empty = Env(self.base / "empty", seed=False)
+        self.assertEqual(empty.consume()["disposition"], "FAIL_CLOSED")
+        receipts = [receipt for root in sorted(self.base.glob("*/*repo-ledger"))
+                    for receipt in self._repository_receipts(root)]
+        self.assertGreaterEqual(len(receipts), 3)
+        for receipt in receipts:
+            reference = receipt["hb_reference"]
+            self.assertIn("derived_from_clock", reference, receipt["transition_id"])
+            self.assertIs(reference["derived_from_clock"], True, receipt["transition_id"])
+            self.assertIn("sampled_unix_ns", reference, receipt["transition_id"])
+
 if __name__ == "__main__":
     unittest.main()
