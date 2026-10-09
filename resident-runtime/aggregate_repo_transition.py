@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,base64,fcntl,hashlib,importlib.util,json,os,tempfile
+import argparse,base64,hashlib,importlib.util,json,os,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -12,6 +12,10 @@ C=json.loads((ROOT/".stegverse/transition-ledger/org-contract.json").read_text()
 # provenance; ordering is the chain plus the heartbeat reference.
 _kspec=importlib.util.spec_from_file_location("kernel",ROOT/"org-kernel/kernel.py")
 kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
+# The ledger is addressed through the store seam, loaded exactly as the
+# repository ledger (.stegverse/transition-ledger/emit.py) loads it.
+_sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
+ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
 
 def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
@@ -23,6 +27,11 @@ class LedgerLocationRequired(ValueError):
     def __init__(self, variable):
         super().__init__("ledger_location_required_from_materializer: "+variable)
         self.variable=variable
+
+class LedgerStoreSelectionInvalid(LedgerLocationRequired):
+    """The materializer named a ledger store this execution does not have."""
+
+    failed_predicate="ORGANIZATION_LEDGER_STORE_SELECTION_INVALID"
 
 def location_refusal(exc):
     """The append attempt's own disposition when no ledger root was supplied."""
@@ -50,6 +59,36 @@ def ledger_root():
     if o: return Path(o).expanduser().resolve()
     raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
 def load(p): return json.loads(Path(p).read_text())
+
+def _is_store(value): return value is not None and hasattr(value,"append_transaction")
+def _is_posix(store): return getattr(store,"kind",None)=="POSIX_FILESYSTEM"
+
+def organization_store(ledger=None):
+    """The Organization ledger store, as supplied to this execution.
+
+    A store or a root the caller holds is used as is. Otherwise the
+    materializer selects the store: STEGVERSE_ORG_LEDGER_STORE=git with
+    STEGVERSE_ORG_LEDGER_GIT_DIR, STEGVERSE_ORG_LEDGER_GIT_REF and optional
+    STEGVERSE_ORG_LEDGER_GIT_REMOTE and STEGVERSE_ORG_LEDGER_GIT_CUSTODY names
+    the durable Git ledger; absent, the POSIX root from ledger_root(), exactly
+    as before. Nothing is derived from the host.
+    """
+    if _is_store(ledger): return ledger
+    if ledger is not None: return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
+    selected=os.getenv("STEGVERSE_ORG_LEDGER_STORE") or "posix"
+    if selected=="posix": return ledger_store.PosixLedgerStore(ledger_root())
+    if selected!="git": raise LedgerStoreSelectionInvalid("STEGVERSE_ORG_LEDGER_STORE")
+    for variable in ("STEGVERSE_ORG_LEDGER_GIT_DIR","STEGVERSE_ORG_LEDGER_GIT_REF"):
+        if not os.getenv(variable): raise LedgerLocationRequired(variable)
+    return ledger_store.GitLedgerStore(
+        os.environ["STEGVERSE_ORG_LEDGER_GIT_DIR"],os.environ["STEGVERSE_ORG_LEDGER_GIT_REF"],
+        remote=os.getenv("STEGVERSE_ORG_LEDGER_GIT_REMOTE") or None,
+        custody=os.getenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY") or None,
+    )
+
+def store_refusal(exc):
+    """The append attempt's own disposition when the store did not carry it."""
+    return {**exc.refusal(),"organization":C["organization"]}
 
 def verify_required_evidence(receipt):
     """Require exact inline canonical evidence bytes for organization-local replay."""
@@ -140,7 +179,7 @@ def verify_source(receipt):
         "subject_or_correlation_id":receipt.get("subject_or_correlation_id"),
     }
 
-def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
+def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
     """Reuse an immutable organization receipt for an exact already-recorded transition.
 
     The existing receipt directory is the only index; no new store or authority
@@ -149,15 +188,15 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
     `hb_reference` and `observed_at` are deliberately not compared: a retry
     arrives at a later heartbeat, and that is not a different transition.
     """
-    for path in sorted(d.glob("*.json")):
-        row=load(path)
+    for key in sorted(store.list_prefix(ledger_store.RECEIPT_PREFIX)):
+        row=store.get(key)
         if row.get("source_transition_sha256") != source["source_transition_sha256"]:
             continue
         if row.get("source_receipt_schema") != source["source_receipt_schema"]:
             raise ValueError("organization source digest/schema collision")
         body=dict(row)
         claimed=body.pop("receipt_sha256",None)
-        if claimed != sha(body) or path.stem != claimed.split(":",1)[-1]:
+        if claimed != sha(body) or key[len(ledger_store.RECEIPT_PREFIX):-len(".json")] != claimed.split(":",1)[-1]:
             raise ValueError("existing organization receipt integrity invalid")
         if (
             row.get("source_transition_id") != source["source_transition_id"]
@@ -170,26 +209,6 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
             raise ValueError("existing organization source transition context conflict")
         return row
     return None
-
-def _atomic_json(path, value):
-    """Durably replace a JSON record while holding the organization append lock."""
-    path = Path(path)
-    fd, name = tempfile.mkstemp(prefix=".append-", dir=str(path.parent))
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as stream:
-            stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(name, path)
-        directory_fd = os.open(str(path.parent), os.O_RDONLY)
-        try:
-            os.fsync(directory_fd)
-        finally:
-            os.close(directory_fd)
-    finally:
-        if os.path.exists(name):
-            os.unlink(name)
-
 
 def _packet_establishment_source(released_batch):
     """Deterministic source transition for a release-born packet establishment.
@@ -237,105 +256,147 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     single transition that releases their predecessor.
 
     `ledger` is the organization ledger root when the caller holds it as
-    supplied by its materializer (the kernel does); otherwise it is the one
-    supplied to this execution. Either way it is supplied, never derived.
+    supplied by its materializer (the kernel does), or a ledger store it
+    holds; otherwise it is the store organization_store() selects for this
+    execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
     call writes carries that exact reference; absent, the reference is derived
     from the host clock and says so. An exact retry returns the original
     receipt whatever epoch it arrives at.
     """
-    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
-    root.mkdir(mode=0o700, parents=True, exist_ok=True)
-    with (root / ".append.lock").open("a+b") as lock:
-        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-        try:
-            released = None
-            effective_boundary_evidence = dict(boundary_evidence or {})
-            if parent_manifest is not None:
-                # The governing parent manifest owns packet release, authorized
-                # once at establishment. A satisfied or expired prior packet is
-                # released and carried through the existing canonical custody
-                # client as a manifest-directed consequence. That custody result
-                # is execution evidence only; it must never mint or replace the
-                # parent manifest's governance disposition.
-                import organization_batch_custody as batches
-                # Establishment is declared by the manifest. A manifest without
-                # one stays count-governed and unchanged, so manifests written
-                # before packets had a t(0) remain valid.
-                manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
-                if establishes_packet and not manifest_establishes:
-                    raise ValueError("t(0) establishment requires a manifest establishment declaration")
-                if establishes_packet:
-                    effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
-                        parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
-                    )
-                released = batches.release_satisfied_packet_before_next_transition(
-                    parent_manifest, root=root, now_ns=now_ns
+    store = organization_store(ledger)
+    root = store.root if _is_posix(store) else None
+    if root is not None:
+        root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    elif parent_manifest is not None:
+        # Packet release and batch custody still read and write a POSIX root.
+        # Until they are carried by the store seam, a manifested packet on any
+        # other store is refused rather than half-committed.
+        raise ledger_store.LedgerStoreRefused(
+            "ORGANIZATION_BATCH_CUSTODY_NOT_CARRIED_BY_LEDGER_STORE",
+            "route organization_batch_custody packet release through the ledger store seam, "
+            "or supply a POSIX Organization ledger root for a manifested packet",
+            detail=getattr(store, "kind", ""),
+        )
+    with store.exclusive():
+        released = None
+        effective_boundary_evidence = dict(boundary_evidence or {})
+        if parent_manifest is not None:
+            # The governing parent manifest owns packet release, authorized
+            # once at establishment. A satisfied or expired prior packet is
+            # released and carried through the existing canonical custody
+            # client as a manifest-directed consequence. That custody result
+            # is execution evidence only; it must never mint or replace the
+            # parent manifest's governance disposition.
+            import organization_batch_custody as batches
+            # Establishment is declared by the manifest. A manifest without
+            # one stays count-governed and unchanged, so manifests written
+            # before packets had a t(0) remain valid.
+            manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
+            if establishes_packet and not manifest_establishes:
+                raise ValueError("t(0) establishment requires a manifest establishment declaration")
+            if establishes_packet:
+                effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
+                    parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
                 )
-                if released is not None:
-                    if establishes_packet:
-                        raise ValueError("t(0) establishment cannot also release a prior packet")
-                    release_execution_result = batches.submit_released_batch(root, released["batch_id"])
-                    if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
-                        raise ValueError("released organization batch execution result invalid")
-                    if release_execution_result.get("governance_disposition") is not None:
-                        raise ValueError("released organization batch attempted governance escalation")
-                    carried = {
-                        "batch_id": released["batch_id"],
-                        "execution_result": release_execution_result["state"],
-                        "reason": release_execution_result.get("reason"),
-                        "authority_effect": release_execution_result.get("authority_effect"),
-                    }
-                    if manifest_establishes:
-                        # Release and successor establishment are one transition
-                        # and one receipt. It is member #1 of the packet it
-                        # opens, so the release has its own identity rather than
-                        # riding as an attribute of an unrelated work transition.
-                        _aggregate_transition_locked(
-                            _packet_establishment_source(released), root=root,
-                            org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
-                            boundary_evidence={
-                                batches.ESTABLISHMENT_KEY: batches.establishment_record(
-                                    parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
-                                ),
-                                "parent_manifest_released_batch": carried,
-                            },
-                            authority_effect="NONE",
-                            hb_epoch=hb_epoch,
-                        )
-                    else:
-                        effective_boundary_evidence["parent_manifest_released_batch"] = carried
-            record = _aggregate_transition_locked(
-                receipt, root=root, org_transition_class=org_transition_class,
-                predecessor_org_state_sha256=predecessor_org_state_sha256,
-                successor_org_state_sha256=successor_org_state_sha256,
-                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
-                hb_epoch=hb_epoch,
+            released = batches.release_satisfied_packet_before_next_transition(
+                parent_manifest, root=root, now_ns=now_ns
             )
             if released is not None:
-                state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
-                if state["receipt_count"] != (2 if manifest_establishes else 1):
-                    raise ValueError("successor organization receipt packet did not initialize correctly")
-            return record
-        finally:
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+                if establishes_packet:
+                    raise ValueError("t(0) establishment cannot also release a prior packet")
+                release_execution_result = batches.submit_released_batch(root, released["batch_id"])
+                if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
+                    raise ValueError("released organization batch execution result invalid")
+                if release_execution_result.get("governance_disposition") is not None:
+                    raise ValueError("released organization batch attempted governance escalation")
+                carried = {
+                    "batch_id": released["batch_id"],
+                    "execution_result": release_execution_result["state"],
+                    "reason": release_execution_result.get("reason"),
+                    "authority_effect": release_execution_result.get("authority_effect"),
+                }
+                if manifest_establishes:
+                    # Release and successor establishment are one transition
+                    # and one receipt. It is member #1 of the packet it
+                    # opens, so the release has its own identity rather than
+                    # riding as an attribute of an unrelated work transition.
+                    _aggregate_transition_locked(
+                        _packet_establishment_source(released), root=root, store=store,
+                        org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
+                        boundary_evidence={
+                            batches.ESTABLISHMENT_KEY: batches.establishment_record(
+                                parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
+                            ),
+                            "parent_manifest_released_batch": carried,
+                        },
+                        authority_effect="NONE",
+                        hb_epoch=hb_epoch,
+                    )
+                else:
+                    effective_boundary_evidence["parent_manifest_released_batch"] = carried
+        record = _aggregate_transition_locked(
+            receipt, root=root, store=store, org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+            hb_epoch=hb_epoch,
+        )
+        if released is not None:
+            state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
+            if state["receipt_count"] != (2 if manifest_establishes else 1):
+                raise ValueError("successor organization receipt packet did not initialize correctly")
+        return record
 
 
-def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
+def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
+    """The append itself, for a caller already holding the organization append lock.
+
+    The receipt and HEAD are published by the store's append_transaction on
+    the HEAD read here. On POSIX that is the advisory lock the caller holds; on
+    a networked store it is the store's own compare-and-swap, and a lost race
+    is a typed FAIL_CLOSED with nothing published.
+    """
     source=verify_source(receipt)
-    root=root if root is not None else ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
+    if store is None:
+        store=organization_store(root)
+        held=store.assume_exclusive()
+    else:
+        held=store.exclusive()
+    with held:
+        return _append_locked(receipt,source,store,org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch)
+
+def _retained_in_store(store, receipt, source):
+    """The exact source receipt an earlier append committed beside its receipt."""
+    stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
+    if stored is None: raise ValueError("retained organization source receipt missing")
+    if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
+        raise ValueError("retained organization source receipt conflict")
+
+def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch):
+    posix=_is_posix(store)
+    store.initialize()
     existing=_existing_exact_source(
-        d,source,org_transition_class=org_transition_class,
+        store,source,org_transition_class=org_transition_class,
         predecessor_org_state_sha256=predecessor_org_state_sha256,
         successor_org_state_sha256=successor_org_state_sha256,
         boundary_evidence=boundary_evidence,authority_effect=authority_effect,
     )
     if existing is not None:
-        retain_source(root,receipt,source)
+        if posix: retain_source(store.root,receipt,source)
+        else: _retained_in_store(store,receipt,source)
         return existing
-    retain_source(root,receipt,source)
-    prev=load(h).get("receipt_sha256") if h.exists() else None
+    # POSIX keeps the source receipt beside the ledger before the append, as
+    # it always has; any other store commits it in the append's own boundary.
+    immutable={}
+    if posix: retain_source(store.root,receipt,source)
+    else: immutable[ledger_store.source_key(source["source_transition_sha256"])]=receipt
+    head=store.get(ledger_store.HEAD_KEY)
+    prev=head.get("receipt_sha256") if head is not None else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]
     body={
@@ -351,10 +412,12 @@ def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="OR
         "observed_at":datetime.now(timezone.utc).isoformat(),
         "previous_receipt_sha256":prev,
     }
-    digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
-    if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
-    if not fp.exists(): _atomic_json(fp,record)
-    _atomic_json(h,{"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)})
+    digest=sha(body); record={**body,"receipt_sha256":digest}; key=ledger_store.receipt_key(digest)
+    stored=store.get(key)
+    if stored is not None and stored!=record: raise ValueError("org receipt collision")
+    new_head={"organization":C["organization"],"receipt_sha256":digest,"receipt_path":store.locator(key)}
+    if not store.append_transaction(key,record,head,new_head,immutable=immutable):
+        raise ledger_store.lost_race("HEAD no longer equals the expected head")
     return record
 
 def main():
@@ -384,6 +447,9 @@ def main():
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
+        raise SystemExit(1)
+    except ledger_store.LedgerStoreRefused as exc:
+        print(json.dumps(store_refusal(exc),sort_keys=True))
         raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))
