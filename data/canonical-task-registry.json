@@ -10696,7 +10696,26 @@
           ]
         },
         "required_evidence_bytes_master_records_ingress": "CI_VALIDATED",
-        "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED"
+        "local_worker_task_replay_evidence_bytes": "NOT_FULLY_RECONSTRUCTED",
+        "f63_02_ledger_custody_host_binding": {
+          "finding_id": "F63-02",
+          "approval_ref": "StegVerse-org/.github#98 RESPONSE-064 (6074863295)",
+          "question": "Is Organization ledger custody bound to a fixed host in source?",
+          "verdict": "REPAIRED",
+          "evidence_class": "SOURCE_VALIDATION",
+          "conformance": "F63-02 conformance: root supplied by materializer at resident-runtime/aggregate_repo_transition.py:49-51 (STEGVERSE_ORG_LEDGER_ROOT, else LedgerLocationRequired FAIL_CLOSED ledger_location_required_from_materializer), resident-runtime/aggregate_repo_transition.py:248 (explicit ledger= argument), resident-runtime/federation_cycle.py:28-44, resident-runtime/organization_manifest_ingress.py:1260-1281, resident-runtime/organization_batch_custody.py:133,180,690,728,741,806, resident-runtime/organization_custody_readback.py:80, scripts/dispatch_resident_execution_requests.py:67,400,471,687, scripts/consume_organization_custody_readback_request.py:238, scripts/consume_org_claim_allocator_request.py:335, heartbeat_runtime/worker_assignment_functional_memory.py:101; no host-derived binding (no hostname, node identity, Path.home, XDG, systemd, /var, /etc, machine-id or fixed absolute path supplies the Organization root; no source script sets STEGVERSE_ORG_LEDGER_ROOT, only allowlists pass it through); one-materialization-per-root enforced by the fcntl LOCK_EX advisory lock on <root>/.append.lock at resident-runtime/aggregate_repo_transition.py:250-251 (repository ledger: resident-runtime/ledger_store.py:63,125), which serializes writers within one kernel only.",
+          "host_binding_found": "resident-runtime/organization_batch_custody.py:747 (base d0dbc16) compared HEAD.json receipt_path, the absolute path written at resident-runtime/aggregate_repo_transition.py:357, with the currently supplied root. The same root supplied at another node's path could not close a batch, and because a manifest-directed append releases the prior packet before appending (resident-runtime/aggregate_repo_transition.py:273), that root could not advance on the new node.",
+          "repair": "resident-runtime/organization_batch_custody.py:750 compares only the root-relative locator receipts/<tip>.json; HEAD naming any other receipt is still refused. The root and lock still come only from the materializer; the existing .append.lock remains the single writer guard; no CAS, fallback, store or dependency added.",
+          "tests": "tests/test_organization_ledger_custody_portability.py",
+          "transfer_or_recovery_mechanics": "NONE_IN_SOURCE: no transition records, governs or proves a transfer of an existing root's custody to another node; the lock does not span nodes, so source cannot distinguish a moved root from a copied one. Reported only, not built.",
+          "kept_open": "EXISTING_PRIVATE_ORGANIZATION_LEDGER_ROOT_REACHABLE_AT_MANIFEST_DIRECTED_INVOCATION (current_truth.local_batch_runtime_proof): source conformance does not prove the root is reachable at runtime.",
+          "runtime_evidence": "NONE",
+          "consequence_committed": false,
+          "authority_effect": "NONE_SOURCE_RECORD_ONLY",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+          ]
+        }
       },
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
