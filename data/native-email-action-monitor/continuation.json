@@ -1,0 +1,42 @@
+{
+  "archive_proposed": [],
+  "archived_message_ids": [],
+  "authority_effect": "NONE",
+  "cosv_task_vector": "10100000100000",
+  "counters": {
+    "archived_confirmed": 0,
+    "duplicates_suppressed": 0,
+    "messages_seen": 0,
+    "pages_scanned": 0,
+    "resolved_verified": 0
+  },
+  "credential_authority": "TV/TVC",
+  "custody_authority": "NONE_PROJECTION_PENDING_ORGANIZATION_CUSTODY",
+  "cycle_seq": 0,
+  "external_host_prerequisite": false,
+  "github_actions_runtime_authority": "NONE",
+  "heartbeat": "OBSERVABILITY_ONLY",
+  "high_water_epoch": 0,
+  "incidents": {},
+  "last_completed_page_index": -1,
+  "page_limit": 100,
+  "phase": "IDLE",
+  "prior_state_sha256": null,
+  "processed_message_ids": [],
+  "processed_message_ids_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "projection_only": true,
+  "query": "-in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com OR subject:\"[Task Update]\")",
+  "scheduler_prerequisite": false,
+  "schema": "stegverse.native-email-continuation-state/v1",
+  "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "transition": "GENESIS",
+  "transition_seq": 0,
+  "window_after_epoch": null,
+  "window_before_epoch": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  }
+}

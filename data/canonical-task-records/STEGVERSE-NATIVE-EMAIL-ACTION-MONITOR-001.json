@@ -11,6 +11,9 @@
   "source_refs": [
     "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
     "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
+    "scripts/native_email_continuation_transition.py",
+    "data/native-email-action-monitor/continuation.json",
+    "tests/test_native_email_continuation_transition.py",
     "control/resident-execution-request.d/native-email-action-monitor-001.json",
     "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
     "control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json",

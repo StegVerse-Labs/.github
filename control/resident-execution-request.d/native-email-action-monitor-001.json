@@ -19,5 +19,9 @@
   "standing_request": true,
   "authority_effect": "NONE_REQUEST_ONLY",
   "note": "Standing non-authorizing request for the existing HB/oscillator-driven resident request dispatcher to revisit the native bounded GitHub/task-update email monitor through the KV-enforcing wrapper. Exact COSV task.v1 pointer is required before WorkerCoordinator claim/fence or resident execution. Normalized failure incidents must be exact-byte persisted/read back in the already-materialized KnowledgeVault before live archive; provider authorization remains TV/TVC and mailbox/KV observations do not admit technical work.",
-  "requested_at": "2026-09-06T13:30:00-05:00"
+  "requested_at": "2026-09-06T13:30:00-05:00",
+  "invocation_prerequisite": false,
+  "superseded_as_invocation_prerequisite_by": "scripts/native_email_continuation_transition.py",
+  "supersession_ref": "StegVerse-Labs/.github#3039",
+  "supersession_note": "Issue #3039: no external resident host, dispatcher or scheduler is or will be awaited. Monitor cycles are the manifest-bound continuation transitions in scripts/native_email_continuation_transition.py over data/native-email-action-monitor/continuation.json; this standing request remains a non-authorizing record only."
 }

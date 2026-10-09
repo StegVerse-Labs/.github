@@ -1,6 +1,6 @@
 # Native Email Action Monitor Mirror Handoff
 
-Updated: 2026-09-07
+Updated: 2026-10-09
 Repository: `StegVerse-Labs/.github`
 Task: `STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001`
 COSV task vector: `10100000100000`
@@ -380,3 +380,28 @@ Static bounded-path verification found no new deterministic failure: the exact C
 ## 2026-09-22 original 20/20 bounded-phase successor
 
 The original 20-prompt session reached its bound without authentic resident source-preparation completion proof. The same canonical Goal/COSV and the existing standing Healer -> targeted WorkerCoordinator ownership continue, with no new task or runtime. New durable successor phase: `docs/NATIVE_EMAIL_RESIDENT_SOURCE_PREP_EVIDENCE_SUCCESSOR_HANDOFF.md`. The current canonical Task Registry generation observed during successor creation was 204, and parent task coordination state remained `PROPOSED/UNCLAIMED`. The phase inherits this handoff's exact completion contract and first unmet predicate, consuming only authentic current resident claim/fence and same-invocation completed four-root v2 receipt. Re-read Task Registry generation before any mutation; do not make an artificial terminal transition, infer a runtime failure from GitHub receipt absence, or progress to TV/TVC Gmail observation without predicate 1.
+
+## Manifest-bound continuation transitions (issue #3039, 2026-10-09)
+
+No external machine, resident host, dispatcher or scheduler is, or will be, awaited. The resident WorkerCoordinator cycle, SV-DN1 four-root source preparation, the Healer hourly slot and the HB/oscillator request dispatcher are **no longer invocation prerequisites** for a monitor cycle; `control/resident-execution-request.d/native-email-action-monitor-001.json` now records `invocation_prerequisite: false` and remains a non-authorizing record only. The proposed hourly watchdog is not built: a watchdog that keeps a scheduler alive is itself an awaited dependency.
+
+A monitor cycle is a chain of explicit state transitions in `scripts/native_email_continuation_transition.py` (standard library only) over the committed state `data/native-email-action-monitor/continuation.json`:
+
+```text
+BEGIN_CYCLE(now)                -> window [high_water, now), cycle_seq+1
+APPLY_PAGE(i, <=100 messages)   -> only i == last_completed_page_index+1; dedup by Gmail message ID
+COMPLETE_PAGINATION(has_more)   -> DENY while has_more (no zero-remaining claim)
+RECORD_RESOLUTION(incident, ev) -> RESOLVED_VERIFIED only on green CI at the exact new head
+                                   (or SUPERSEDED_VERIFIED by an independent newer green head)
+RECORD_ARCHIVE_RECEIPT(ids)     -> counts only confirmed mutations of proposed IDs
+CLOSE_CYCLE                     -> high_water = window end
+```
+
+- Each transition returns `ALLOW`, `DENY` or `FAIL_CLOSED` with a `failed_predicate`, and each next state carries `prior_state_sha256`, so the chain is replayable (`verify_chain`).
+- Continuation is a time window plus the processed-ID ledger and the last completed page index, never a short-lived Gmail pageToken. An interrupted cycle resumes at the next page; a re-read or shifted page is deduplicated.
+- Incidents are grouped by repository, workflow, exact head SHA and notification class, correlated from message fields or `List-ID` / `X-GitHub-*` headers.
+- Archive is never applied mid-pagination. Unresolved failure, security, billing, quota, capacity and policy notices are never proposed. Classification, assignment, comments or a PR closed unmerged are not resolution.
+- Any executor (a session or a person) may invoke the next transition. A session may invoke or propose; it cannot self-assign transition admission, WorkerCoordinator claim/fence, credential or custody authority. This supersedes the earlier "no ChatGPT mailbox loop" wording only to that extent: a session-run cycle is a non-authorizing transition actor bound by this manifest, not a second monitor or scheduler.
+- The committed state is a projection (`authority_effect: NONE`, `projection_only: true`, `custody_authority: NONE_PROJECTION_PENDING_ORGANIZATION_CUSTODY`). It does not replace Organization custody or the KV-before-archive and governed archive-consequence path; `archive_proposed` is a proposal to that path.
+
+Fixtures (`tests/test_native_email_continuation_transition.py`) cover a gap of hours with no lost or duplicated IDs (AC1), two chained consecutive cycles (AC2), pagination beyond 100, interruption resume, shifted-page dedup, grouping, exact-head resolution and non-archival of unresolved failures (AC3). Evidence class: `SOURCE_IMPLEMENTED`. No runtime cycle, repair, archive or inbox-zero observation is claimed.
