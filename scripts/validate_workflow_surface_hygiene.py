@@ -69,7 +69,15 @@ def main() -> int:
     if unregistered:
         fail("unregistered workflow files: " + ", ".join(unregistered))
 
-    removed = payload.get("removed_in_batch_1", [])
+    removed = list(payload.get("removed_in_batch_1", []))
+    for entry in payload.get("retired_in_h6b_3039", []):
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            fail("retired_in_h6b_3039 entries must be objects with a path")
+        if entry.get("classification") not in {"ELIMINATE", "CONSOLIDATE_INTO_STABLE_DISPATCHER"}:
+            fail(f"invalid retirement classification for {entry['path']}: {entry.get('classification')!r}")
+        if not isinstance(entry.get("coverage"), str) or not entry["coverage"].strip():
+            fail(f"missing coverage for retired {entry['path']}")
+        removed.append(entry["path"])
     still_present = sorted(path for path in removed if (ROOT / path).exists())
     if still_present:
         fail("removed workflow reappeared without reconciliation: " + ", ".join(still_present))

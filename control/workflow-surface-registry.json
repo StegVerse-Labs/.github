@@ -93,172 +93,16 @@
       "reason": "organization-reusable, non-authorizing branch inventory/classification surface; caller source checkout is read-only with persist-credentials=false so private repositories are supported; no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
     },
     {
-      "path": ".github/workflows/aex-stcm-chf-native-capability-audit.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/canonical-work-exact-ephemeral-invocation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/component010-checkout-audit.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/generic-sdk-manifest-resident.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/governance-endpoint-validation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/organization-control-plane-parity.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
       "path": ".github/workflows/repository-hygiene-ecosystem-bulk-census.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/stcm-chf-witness-registration-validation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/task-work-correlation-validation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
+      "reason": "Read-only census that anonymously clones other repositories (StegVerse-Labs/.github, StegVerse-Labs/Site) and classifies their branch inventory fail-closed; that live cross-repository classification exists nowhere else, and an external fetch must not be folded into a dispatcher (#3039 H6b). Its former pull-request verify job is retired: the unittest runs in test-suite-ratchet.yml and its py_compile in the consolidated-source-validators job. Runs on workflow_dispatch and push to main only; evidence collection, no runtime authority."
     },
     {
       "path": ".github/workflows/test-suite-ratchet.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/test3-richard-seam-acceptance.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/transition-disposition-source-validation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-conversation-evidence-ingestion.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-ecosystem-receipt-hb-successor.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-healer-first-consumption.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-immutable-resident-dispatch-receipt.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-interlock-intr-protocol-vectors.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-master-records-checkpoint.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-master-records-source-proof.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-organization-role-deployment-packet.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-organization-role-runtime-reality.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-organization-transition-ledger.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-rtc008-carriage.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-rtc008-custody.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-sdk-review-publisher-intr-forward.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-stegbrowser-intr-retention.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
-    },
-    {
-      "path": ".github/workflows/validate-task-registry-kv-event-projection.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github",
-      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+      "classification": "KEEP_STABLE_DISPATCHER",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
+      "reason": "Coverage backstop and pull-request dispatcher (#3039 H6b). The ratchet job runs the whole tests/ suite on every pull request and push to main with no path filter; the consolidated-source-validators job runs the non-tests/ validators retired from 16 per-feature workflows. The other stable dispatchers are workflow_dispatch only, so moving pull-request gates into them would have removed the gate. Validation only; no runtime authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -302,14 +146,147 @@
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership.",
   "completion_evidence": {
-    "live_workflow_count": 14,
+    "live_workflow_count": 16,
     "stable_dispatchers": [
       ".github/workflows/org-control-plane-validate.yml",
-      ".github/workflows/heartbeat-worker-project.yml"
+      ".github/workflows/heartbeat-worker-project.yml",
+      ".github/workflows/test-suite-ratchet.yml"
     ],
-    "non_dispatcher_count": 12,
+    "non_dispatcher_count": 13,
     "preferred_target_satisfied": false,
     "runtime_authority_effect": "NONE",
     "credential_authority": "TV/TVC"
-  }
+  },
+  "retired_in_h6b_3039": [
+    {
+      "path": ".github/workflows/canonical-work-exact-ephemeral-invocation.yml",
+      "classification": "ELIMINATE",
+      "coverage": "Executed RT-CANONICAL-WORK-PORTABLE-DISPATCH-001 via scripts/trigger_reusable_task.py on push to invoke/canonical-work-coordination-*: CI used as an executor, which GitHub Actions has no runtime authority to be. Its only assertions checked the receipt of that execution, so none survive without executing work. tests/test_canonical_work_ephemeral_invocation_surface.py now asserts that no workflow names the branch, the reusable task or trigger_reusable_task.py."
+    },
+    {
+      "path": ".github/workflows/stcm-chf-witness-registration-validation.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests.test_stcm_chf_witness_registration -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded). Its grep for 'permissions: {}' checked its own file and ends with it."
+    },
+    {
+      "path": ".github/workflows/transition-disposition-source-validation.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_transition_disposition_invariant.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-immutable-resident-dispatch-receipt.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_immutable_resident_dispatch_receipt.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/organization-control-plane-parity.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_organization_control_plane_parity.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-ecosystem-receipt-hb-successor.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_receipt_hb_creation_reference.py, test_master_records_checkpoint_commitment.py, test_ecosystem_receipt_hb_checkpoint_observer.py, test_hb_receipt_worker_custody_binding.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-healer-first-consumption.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_healer_resident_request.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-rtc008-carriage.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_rtc008_mir_southbound_intr_admission.py, test_sdk_publisher_return_intr_materialization.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-rtc008-custody.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_rtc008_mir_southbound_intr_admission.py (push to a stale branch only) -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-organization-transition-ledger.yml",
+      "classification": "ELIMINATE",
+      "coverage": "tests/test_organization_transition_ledger.py, test_organization_batch_custody.py, test_organization_ledger_custody_portability.py, test_organization_git_ledger_store.py, test_organization_ledger_custody_transfer.py, test_org_batch_exact_source_replay.py, test_component011_org_dispatch_custody.py, test_organization_custody_readback.py, test_transition_receipt_journey.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/aex-stcm-chf-native-capability-audit.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests.test_aex_stcm_chf_native_capability_review -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); json.tool of data/aex-stcm-chf-native-math-capability-review.json and data/aex-native-math-processing-census.json -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-master-records-source-proof.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests.test_bootstrap_v1_source_package_production_worker, tests.test_sovereign_worker_source_refresh -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); py_compile -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-sdk-review-publisher-intr-forward.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests.test_publisher_intr_materialization -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); py_compile -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/generic-sdk-manifest-resident.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_sdk_generic_manifest_execution_resident.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); py_compile of 3 scripts -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/governance-endpoint-validation.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "12 tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); python org-kernel/tests/test_kernel.py (outside tests/) -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/component010-checkout-audit.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_component010_checkout_audit.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); scripts/audit_component010_checkout.py exit 2 + FAIL_CLOSED_STALE_CHECKOUT_EVIDENCE assertion -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/task-work-correlation-validation.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_task_registry_work_correlation.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); scripts/resolve_task_work_correlation.py --task-id MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001 -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/test3-richard-seam-acceptance.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_sdk_tt_richard_seam_test3_runner.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); scripts/run_sdk_tt_richard_seam_test3.py + PASS/ACTIVATE_TASK_AND_CREATE_BIND_WORKER assertion -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-interlock-intr-protocol-vectors.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "scripts/verify_interlock_intr_runtime_independent_protocol.py + SYNTHETIC_NON_AUTHORIZING assertions -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-master-records-checkpoint.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "scripts/verify_master_records_checkpoint.py + SYNTHETIC_NON_AUTHORIZING and claims assertions -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-organization-role-deployment-packet.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_organization_role_deployment_packet.py -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); scripts/verify_organization_role_deployment.py --org-root . -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-organization-role-runtime-reality.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "tests/test_organization_role_runtime_reality_deployment.py and the ledger regressions -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); scripts/validate_task_registry_global_invariants.py -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-conversation-evidence-ingestion.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "3 tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); py_compile of 2 workers and JSON parse of 3 artifacts -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-stegbrowser-intr-retention.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "The 7 named test functions of tests/test_stegbrowser_universal_intr_materialization.py run in test-suite-ratchet.yml (consolidated-source-validators job) over the checkout (no second anonymous fetch), and the whole module runs in test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded)"
+    },
+    {
+      "path": ".github/workflows/validate-task-registry-kv-event-projection.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "2 tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded) (actions/checkout on pull_request checks out the same merge ref the workflow fetched); py_compile of 2 scripts -> test-suite-ratchet.yml (consolidated-source-validators job)"
+    },
+    {
+      "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK c30dc3421f10f8855d85e8347c59884d8af792eb, with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
+    }
+  ]
 }
