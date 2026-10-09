@@ -271,5 +271,94 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
-  }
+  },
+  "bounded_extensions": [
+    {
+      "extension_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001/A5",
+      "item_ids": [
+        "A5"
+      ],
+      "design_selection": "A5-i",
+      "goal": "workers/sdk_manifest_diagnostic_admitted_consumer.py handles the materializer-supplied ledger-location contract (LedgerLocationRequired) at its two org.ledger_root() call sites: an unsupplied location is unreadable at the existing-locator read and never fabricates a failed InTr transition; the current Organization lease check returns the typed fail-closed predicate LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER. No root is derived from the host, HOME, XDG_STATE_HOME or a caller-selected path.",
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "source_paths": [
+        "workers/sdk_manifest_diagnostic_admitted_consumer.py",
+        "tests/test_sdk_manifest_diagnostic_admitted_consumer.py"
+      ],
+      "lane": "StegVerse-Labs/.github#3019",
+      "second_lane_allowed": false,
+      "preserved_contract": "tests/test_mir_sv_exp3_cross_owner_wire_binding.py: DENY AUTHENTIC_EVENT_EPHEMERAL_BINDING_LOCATOR_REQUIRED with no sovereign-host receipt written",
+      "remaining_predicates": [
+        "A5_LEDGER_LOCATION_REQUIRED_HANDLED_AT_EXISTING_LOCATOR_READ",
+        "A5_CURRENT_ORGANIZATION_LEASE_FAILS_CLOSED_LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER",
+        "A5_FROZEN_EXPERIMENT_3_DENY_PRESERVED",
+        "A5_MISSING_ROOT_MISSING_HEAD_WRONG_OWNER_AND_HOME_XDG_INDEPENDENCE_TESTS_PRESENT",
+        "A5_EXACT_HEAD_REQUIRED_CI_GREEN_ON_EXISTING_LANE"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    },
+    {
+      "extension_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001/E1",
+      "item_ids": [
+        "E1-r1",
+        "E1-r2",
+        "E1-r4",
+        "E1-r5"
+      ],
+      "goal": "Harden exact retry in the existing repository transition-ledger emitter (.stegverse/transition-ledger/emit.py) over the existing ledger store, with no new store, index or dependency.",
+      "repositories": [
+        "StegVerse-org/.github",
+        "StegVerse-Labs/.github"
+      ],
+      "repository_order": "REFERENCE_STEGVERSE_ORG_FIRST_THEN_STEGVERSE_LABS_PARITY",
+      "source_paths": [
+        ".stegverse/transition-ledger/emit.py",
+        "resident-runtime/ledger_store.py"
+      ],
+      "items": {
+        "E1-r1": "A broken HEAD-reachable chain returns typed FAIL_CLOSED REPO_LEDGER_CHAIN_BREAK; no receipt is minted after a missing mid-chain node.",
+        "E1-r2": "Inventory every state-transition caller of the emitter and require the exact-retry idempotence policy appropriate to each state-effect action.",
+        "E1-r4": "Exact retry compares predecessor_state_sha256, successor_state_sha256, authority_effect and all identity-defining evidence; divergent identity is a collision, never a returned prior receipt.",
+        "E1-r5": "Every node visited by recorded() has its receipt digest recomputed with the existing digest helper and compared with its key and stored receipt_sha256; a malformed or corrupted node fails closed as REPO_LEDGER_CHAIN_BREAK."
+      },
+      "remaining_predicates": [
+        "E1_R1_BROKEN_REACHABLE_CHAIN_FAILS_CLOSED_REPO_LEDGER_CHAIN_BREAK",
+        "E1_R2_STATE_TRANSITION_CALLER_INVENTORY_AND_EXACT_RETRY_POLICY_RECORDED",
+        "E1_R4_FULL_IDENTITY_COLLISION_ENFORCED",
+        "E1_R5_DIGEST_VERIFIED_DURING_CHAIN_WALK",
+        "E1_MISSING_CORRUPTED_AND_CAS_RACE_NODE_TESTS_PRESENT",
+        "E1_STEGVERSE_ORG_REFERENCE_EXACT_HEAD_REQUIRED_CI_GREEN",
+        "E1_STEGVERSE_LABS_PARITY_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ]
 }

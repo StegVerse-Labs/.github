@@ -11,6 +11,7 @@ on:
       - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
+      - 'tests/test_repo_ledger_exact_retry.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
       - 'workers/manifest_state_transition_intr_ingress.py'
@@ -26,6 +27,7 @@ on:
       - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
+      - 'tests/test_repo_ledger_exact_retry.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
       - 'workers/manifest_state_transition_intr_ingress.py'
@@ -81,3 +83,5 @@ jobs:
       # replay returns the recorded receipts, against temporary ledgers only.
       - name: Validate manifest ingress is idempotent per transition
         run: python -m unittest -v tests/test_manifest_ingress_idempotent.py
+      - name: Validate the repository chain fails closed on a break and an exact retry matches in full
+        run: python -m unittest -v tests/test_repo_ledger_exact_retry.py
