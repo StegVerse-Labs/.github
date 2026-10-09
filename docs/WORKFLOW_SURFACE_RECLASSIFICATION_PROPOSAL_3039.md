@@ -4,7 +4,7 @@ Updated: 2026-10-09
 Repository: `StegVerse-Labs/.github`
 Registry: `control/workflow-surface-registry.json`
 Validator: `scripts/validate_workflow_surface_hygiene.py`
-Status: `PROPOSAL_ONLY` (no workflow, registry entry or required check is changed here)
+Status: `APPLIED` in #3039 H6b (see "Applied" below); the tables are the original proposal
 
 PR #3042 registered 28 workflow files as `REVIEW_REQUIRED`. This document proposes a target classification for each one. The goal is fewer surfaces and fewer dependencies on external machines and frameworks, without weakening any check. Applying it is a separate change. That change edits the registry and removes or merges workflow files, and it must first confirm that none of the removed files is a branch-protection required check. This session cannot read branch protection.
 
@@ -72,3 +72,14 @@ Each of these also runs `pip install pytest` on its own. Eliminating them leaves
 ## Separate observation (report only)
 
 `validate-deepseek-resident.yml` (`KEEP_STANDALONE_EXCEPTION`) runs on a GitHub-hosted `ubuntu-24.04` runner. It does an anonymous `git fetch` of this repository and a `pip install --user pytest`. It does **not** require an external machine or resident host to pass. It validates source records that describe a resident path (`control/resident-execution-request.d/deepseek-intr-runtime-001.json`, `scripts/dispatch_resident_execution_requests.py`), and it asserts `second_machine_required: false` and `another_physical_machine_required: false` from a pinned StegIndex snapshot that needs no network at validation time. Its framework dependency is pytest from PyPI.
+
+## Applied (#3039 H6b)
+
+Applied 2026-10-09. Branch protection was read back before applying: `repos/StegVerse-Labs/.github/branches/main` reports `protected: false`, `required_status_checks.contexts: []`, `enforcement_level: off`; `/rulesets` and `/rules/branches/main` return `[]`; the classic `/protection` endpoint returns 403 to the integration. No workflow job is a required context, and branch protection is unchanged.
+
+Two findings changed the proposal:
+
+- `org-control-plane-validate.yml` and `heartbeat-worker-project.yml` run on `workflow_dispatch` only. Moving a pull-request gate into either would have removed the gate. The non-`tests/` validators therefore moved into a new `consolidated-source-validators` job of `test-suite-ratchet.yml` (now `KEEP_STABLE_DISPATCHER`), which runs on every pull request and, newly, every push to `main`, with no path filter.
+- Some workflows proposed for `ELIMINATE` also ran a `py_compile` or a JSON parse. Those steps moved too, so those workflows are recorded as `CONSOLIDATE_INTO_STABLE_DISPATCHER`.
+
+Result: 10 `ELIMINATE`, 16 `CONSOLIDATE_INTO_STABLE_DISPATCHER` (26 files removed), 1 `KEEP_STABLE_DISPATCHER` (`test-suite-ratchet.yml`), 1 `KEEP_STANDALONE_EXCEPTION` (`repository-hygiene-ecosystem-bulk-census.yml`, reduced to its census job because it clones other repositories). The SDK fetch in `validate-purpose-bound-worker-derived-lifetime.yml` is gone: its Experiment 3 wire test runs in `org-runtime-boundary.yml`, which already installs the same pinned SDK. Per-file coverage is recorded in `control/workflow-surface-registry.json` under `retired_in_h6b_3039`, and the hygiene validator fails if a retired file reappears.

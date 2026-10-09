@@ -165,7 +165,7 @@ Repository trace found no existing dedicated MasterRecordsCheckpoint/v1 construc
 
 ## PR validation integration
 
-PR #2924 opened against current `main` from exact pre-PR head `4e998cd8e313215685874f8558abbf2601188fea`. Immediate exact-head workflow enumeration returned no runs, so existing CI did not provide evidence that `scripts/verify_master_records_checkpoint.py` executes. Added the bounded `.github/workflows/validate-master-records-checkpoint.yml` pull-request workflow, filtered only to the checkpoint schema/vectors/verifier/workflow paths. It executes the committed verifier and separately asserts the synthetic/non-authorizing and no-external-claim boundary. This changes validation wiring only, not checkpoint or protocol semantics.
+PR #2924 opened against current `main` from exact pre-PR head `4e998cd8e313215685874f8558abbf2601188fea`. Immediate exact-head workflow enumeration returned no runs, so existing CI did not provide evidence that `scripts/verify_master_records_checkpoint.py` executes. Added the bounded `.github/workflows/validate-master-records-checkpoint.yml` pull-request workflow, filtered only to the checkpoint schema/vectors/verifier/workflow paths. It executes the committed verifier and separately asserts the synthetic/non-authorizing and no-external-claim boundary. This changes validation wiring only, not checkpoint or protocol semantics. Under #3039 H6b that workflow was consolidated into the `consolidated-source-validators` job of `.github/workflows/test-suite-ratchet.yml`, which runs the same verifier and assertions on every pull request and push to main with no path filter.
 
 ## Next action
 

@@ -1,19 +1,16 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github" / "workflows" / "canonical-work-exact-ephemeral-invocation.yml"
+WORKFLOWS = ROOT / ".github" / "workflows"
+# Retired under StegVerse-Labs/.github#3039 (H6b): GitHub Actions holds no
+# runtime authority, so no workflow may be the execution surface for this path.
+RETIRED = WORKFLOWS / "canonical-work-exact-ephemeral-invocation.yml"
 
 
-def test_exact_ephemeral_invocation_surface_is_compute_only():
-    text = WORKFLOW.read_text(encoding="utf-8")
-    assert '"invoke/canonical-work-coordination-*"' in text
-    assert "permissions:\n  contents: read" in text
-    assert "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001" in text
-    assert "--task-id STEGVERSE-CANONICAL-WORK-COORDINATION-001" in text
-    assert "--cosv-task-vector 10100000100000" in text
-    assert '"only_consumer\\":\\"canonical_work_coordination' in text
-    assert '"goal_task_id\\":\\"STEGVERSE-CANONICAL-WORK-COORDINATION-001' in text
-    assert "secrets." not in text
-    assert "GITHUB_TOKEN:" not in text
-    assert "write-all" not in text
-    assert "contents: write" not in text
+def test_no_workflow_is_the_canonical_work_execution_surface():
+    assert not RETIRED.exists()
+    for path in sorted(WORKFLOWS.glob("*.y*ml")):
+        text = path.read_text(encoding="utf-8")
+        assert "invoke/canonical-work-coordination-" not in text, path.name
+        assert "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001" not in text, path.name
+        assert "trigger_reusable_task.py" not in text, path.name
