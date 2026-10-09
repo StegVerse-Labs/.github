@@ -351,6 +351,7 @@ def record_non_allow_functional_memory(
         "generation_bound_cosv_id": transition.get("generation_bound_cosv_id"),
         "receipt_sha256": result.get("receipt_sha256"),
         "organization_receipt_sha256": gate["organization_receipt_sha256"],
+        "organization_readback_custody_basis": gate["organization_readback_custody_basis"],
         "master_record_ref": result.get("master_record_ref"),
         "reconstruction_status": result.get("reconstruction_status"),
         "required_evidence_validation_status": result.get("required_evidence_validation_status"),

@@ -189,6 +189,23 @@
       "f71_02_ungoverned_relocation": "The generation-0 exemption is not portable by copying. The location check is anomaly detection only, never custody authority: a matching location proves neither identity nor authority. A consequential write (any append but ASSUMED, a packet release, a batch closure, a release) requires the supplied root to be the location HEAD.json's absolute receipt_path records (require_no_relocation_anomaly, resident-runtime/aggregate_repo_transition.py:347); otherwise, with no RELEASED/ASSUMED handover having moved it, it is UNGOVERNED_RELOCATION_ANOMALY_DETECTED FAIL_CLOSED with retry entrypoint resident-runtime/aggregate_repo_transition.py::release_custody. Reads and verification compare only the root-relative locator, so #3057's readback portability is kept. Relocation is only RELEASED/ASSUMED plus the F69-01 verifier. Limit: a byte copy at the identical absolute path on another kernel cannot be distinguished; it is covered only by fork and superseded-generation detection (DETECTED_NOT_PREVENTED_ACROSS_KERNELS). On a GitLedgerStore (#3060) the recorded location is the ref locator, never a host path: a copy of a remote-backed ledger is the same ref and its appends are serialized by the store's ref compare-and-swap; a remote-less Git ledger copied to another git_dir with the same ref is not distinguished by this check.",
       "custody_authority_basis": "Every generation-0 receipt records custody_authority_basis = \"PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY\" (resident-runtime/aggregate_repo_transition.py:120,894): the materialization that writes generation 0 is not authenticated by anything in source.",
       "cross_kernel_prevention_tested": "NONE: no test establishes cross-kernel prevention; tests establish detection and fail-closed refusal only."
+    },
+    "q74_01_bounded_a": {
+      "finding_id": "Q74-01",
+      "approval_ref": "StegVerse-org/.github#98 comment 6083264686 Q74-01 CORRECT_BOUNDED_A",
+      "verdict": "CORRECT_BOUNDED_A",
+      "evidence_class": "SOURCE_IMPLEMENTED",
+      "design": "resident-runtime/organization_batch_custody.py::readback_custody_basis reports a verified readback's custody basis: a generation-0 receipt's own custody_authority_basis (PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY), a fail-closed value when a generation-0 row lacks it, and DETECTED_NOT_PREVENTED_ACROSS_KERNELS; NO_CUSTODY_AUTHORITY_CLAIMED for a handover generation. Every non-legacy consumer that reports a verified Organization readback carries organization_readback_custody_basis beside it (claim allocator, custody readback, KV publisher return, canonical organization_receipt_gate, manifest InTr ingress, SDK diagnostic consumer, orphan recovery, functional memory).",
+      "unchanged": "Receipt bodies and hashes, accept/refuse behavior and historical readback are unchanged; no new authority and no new dependency.",
+      "tests": [
+        "tests/test_organization_ledger_custody_transfer.py",
+        "tests/test_organization_record_gates_not_master_records.py",
+        "tests/test_org_claim_custody.py",
+        "tests/test_organization_custody_readback.py",
+        "tests/test_manifest_state_transition_intr_ingress.py"
+      ],
+      "authority_effect": "NONE_REPORTING_ONLY",
+      "consequence_committed": false
     }
   },
   "worker_claim": {

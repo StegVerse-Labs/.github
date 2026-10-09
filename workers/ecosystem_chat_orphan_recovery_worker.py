@@ -210,6 +210,8 @@ def main() -> int:
         "master_records_role": "EVIDENCE_ONLY_NOT_A_GATE",
         "released_claim_organization_receipt_sha256": organization_row["receipt_sha256"] if organization_row else None,
         "released_claim_organization_receipt_verified": custody_valid,
+        "released_claim_organization_readback_custody_basis": (
+            _organization_custody().readback_custody_basis(organization_row) if organization_row else None),
         "released_claim_organization_receipt_refusal": organization_refusal,
         "old_authority_reused": False,
         "successor_authority_granted": False,

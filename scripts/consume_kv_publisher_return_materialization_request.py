@@ -114,6 +114,10 @@ class KVOrganizationReceiptRefused(KVPublisherReturnError):
         self.refusal=dict(refusal)
 
 
+# Basis of each verified readback, keyed by the receipt digest it is a function of.
+READBACK_CUSTODY_BASES:dict[str,str]={}
+
+
 def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, record_refusal:bool=False)->str:
     """Verified Organization receipt digest for this exact state receipt, else a typed refusal.
 
@@ -138,6 +142,8 @@ def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, re
                 refusal,gated_transition_id=transition_id,
                 state_receipt_sha256=result.get("receipt_sha256") if isinstance(result,Mapping) else None)
         raise KVOrganizationReceiptRefused(message,refusal) from exc
+    # The readback is never custody authority; its basis is kept for the report.
+    READBACK_CUSTODY_BASES[row["receipt_sha256"]]=custody.readback_custody_basis(row)
     return row["receipt_sha256"]
 
 
@@ -324,6 +330,7 @@ def _record_sdk_return_binding_custody(
     return {
       "state":mr.get("state"),
       "organization_receipt_sha256":organization_receipt_sha256,
+      "organization_readback_custody_basis":READBACK_CUSTODY_BASES.get(organization_receipt_sha256),
       "reconstruction_status":mr.get("reconstruction_status"),
       "required_evidence_validation_status":mr.get("required_evidence_validation_status"),
       "receipt_sha256":mr.get("receipt_sha256"),
@@ -540,6 +547,7 @@ def _prepare_rtc007_continuation(
       "rtc007_master_records":{
         "state":mr.get("state"),
         "organization_receipt_sha256":organization_receipt_sha256,
+        "organization_readback_custody_basis":READBACK_CUSTODY_BASES.get(organization_receipt_sha256),
         "reconstruction_status":mr.get("reconstruction_status"),
         "required_evidence_validation_status":mr.get("required_evidence_validation_status"),
         "receipt_sha256":mr.get("receipt_sha256"),

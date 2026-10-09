@@ -594,3 +594,65 @@ def test_generation_zero_original_location_unchanged(predecessor):
     # The same root supplied by a different spelling of the same location is the same location.
     fourth = org.aggregate_transition(receipt("FOURTH"), ledger=root / ".." / root.name)
     assert fourth["previous_receipt_sha256"] == third["receipt_sha256"]
+
+
+# --- Q74-01 (CORRECT_BOUNDED_A): a readback reports its custody basis ----------
+
+AUTHENTIC_CUSTODY_CLAIMS = ("AUTHENTIC", "USER_VERIFIED", "INTR_ADMITTED", "ALLOW")
+
+
+def test_generation_zero_readback_carries_unauthenticated_basis(predecessor):
+    root, second = predecessor
+    row = readback(root, second)
+    basis = batch.readback_custody_basis(row)
+    assert basis == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0
+    assert basis.startswith("PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED")
+    # The receipt body and hash are untouched by reporting its basis.
+    assert row == readback(root, second) and row["receipt_sha256"] == second["receipt_sha256"]
+
+
+def test_generation_zero_row_without_basis_reports_fail_closed(predecessor):
+    root, _ = predecessor
+    legacy = _legacy(root)
+    for row in legacy:
+        unbased = {key: value for key, value in row.items() if key != "custody_authority_basis"}
+        assert batch.readback_custody_basis(unbased) == batch.READBACK_CUSTODY_BASIS_ABSENT
+    assert batch.readback_custody_basis(dict(legacy[-1], custody_authority_basis="AUTHENTIC_CUSTODY")) == (
+        batch.READBACK_CUSTODY_BASIS_ABSENT)
+    assert batch.readback_custody_basis(dict(legacy[-1], custody_generation=-1)) == batch.READBACK_CUSTODY_BASIS_ABSENT
+    assert batch.readback_custody_basis(None) == batch.READBACK_CUSTODY_BASIS_ABSENT
+    assert batch.READBACK_CUSTODY_BASIS_ABSENT.startswith("FAIL_CLOSED")
+
+
+def test_handover_generation_readback_claims_no_custody_authority(tmp_path, predecessor):
+    root, second = predecessor
+    governing, released, moved, assumed = handover(tmp_path, root, second["receipt_sha256"])
+    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1))
+    for row in (assumed, third):
+        basis = batch.readback_custody_basis(readback(moved, row))
+        assert basis == "DETECTED_NOT_PREVENTED_ACROSS_KERNELS; NO_CUSTODY_AUTHORITY_CLAIMED"
+    # The release itself was written in generation 0 and says so.
+    assert batch.readback_custody_basis(readback(moved, released)) == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0
+
+
+def test_readback_basis_never_claims_authentic_custody(tmp_path, predecessor):
+    root, second = predecessor
+    bases = {batch.readback_custody_basis(readback(root, second)),
+             batch.READBACK_CUSTODY_BASIS_ABSENT, batch.READBACK_CUSTODY_BASIS_HANDOVER}
+    for basis in bases:
+        unauthenticated = ("UNAUTHENTICATED" in basis or "NO_CUSTODY_AUTHORITY_CLAIMED" in basis)
+        assert unauthenticated, basis
+        claims = [token for token in basis.replace(";", " ").split() if token in AUTHENTIC_CUSTODY_CLAIMS]
+        assert claims == [], basis
+
+
+def test_historical_readback_unchanged_with_basis(tmp_path, predecessor):
+    root, second = predecessor
+    first = json.loads((root / "receipts" / (second["previous_receipt_sha256"][7:] + ".json")).read_text())
+    moved = tmp_path / "node-b" / "mounted" / "org-ledger"
+    moved.parent.mkdir(parents=True)
+    shutil.move(str(root), str(moved))
+    for row in (first, second):
+        read = readback(moved, row)
+        assert read == row
+        assert batch.readback_custody_basis(read) == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0

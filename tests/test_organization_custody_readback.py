@@ -332,6 +332,9 @@ def test_governed_allow_executes_without_host_inventory_gate(monkeypatch, tmp_pa
     assert result["predecessor_master_records_receipt_sha256"] == predecessor["receipt_sha256"]
     assert result["intr_organization_receipt_sha256"] == intr["organization_receipt"]["receipt_sha256"]
     assert result["predecessor_organization_receipt_sha256"] == predecessor["organization_receipt"]["receipt_sha256"]
+    # Q74-01: the verified readbacks report their unauthenticated generation-0 basis.
+    for key in ("intr_organization_readback_custody_basis", "predecessor_organization_readback_custody_basis"):
+        assert result[key] == "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY"
 
 def test_governed_attempt_master_records_pass_without_organization_receipt_fails_closed(monkeypatch, tmp_path):
     # Master Records reconstruction PASS does not substitute for the verified Organization receipt.

@@ -703,6 +703,9 @@ def consume(
     # The verified Organization receipt of this exact state receipt closes the
     # transition; Master Records reconstruction fields are evidence only.
     organization_receipt = _verified_organization_closure(closure)
+    # A verified readback is never custody authority; its basis is reported beside it.
+    readback_custody_basis = _resident_modules(Path(__file__).resolve().parents[1])[1].readback_custody_basis(
+        organization_receipt)
     if source_test_doubles:
         return {
             "schema": "stegverse.sdk.manifest-state-transition-source-simulation/v1",
@@ -742,6 +745,7 @@ def consume(
         "diagnostic_master_records_receipt_sha256": closure["receipt_sha256"],
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_previous_receipt_sha256": organization_receipt["previous_receipt_sha256"],
+        "organization_readback_custody_basis": readback_custody_basis,
         "publisher_required": True,
         "publisher_executed": False,
         "far_side_transition_observed": False,

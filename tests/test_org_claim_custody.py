@@ -52,6 +52,7 @@ LEDGER_FILES = (
     "control/queue.json",
 )
 PROTECTED = [f"TASK-2026-00{n:02d}" for n in range(7, 13)]
+GENERATION_0_BASIS = "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY"
 
 
 def sha_file(path: Path) -> str:
@@ -820,6 +821,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertTrue(result["repository_receipt_sha256"])
         self.assertFalse(result["organization_disposition_retained"])
         self.assertEqual(result["organization_readback"], "NOT_PERFORMED")
+        self.assertIsNone(result["organization_readback_custody_basis"])
         self.assertIsNone(result["organization_receipt_sha256"])
         self.assertIsNone(result["evidence_refs"]["organization_receipt_sha256"])
         self.assertEqual(result["retry_entrypoint"], consumer.RETRY_ENTRYPOINT)
@@ -828,6 +830,8 @@ class OrgClaimCustodyTests(unittest.TestCase):
         recorded = Env(self.base / "recorded", generation=3).consume()
         self.assertTrue(recorded["organization_disposition_retained"])
         self.assertEqual(recorded["organization_readback"], "VERIFIED")
+        # Q74-01: a verified readback is never reported without its unauthenticated basis.
+        self.assertEqual(recorded["organization_readback_custody_basis"], GENERATION_0_BASIS)
 
     # R27-02 -----------------------------------------------------------------
     def _retain(self, env, name, value):
@@ -967,6 +971,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(replay["fencing_token"], 8)
         self.assertEqual(replay["repository_receipt_sha256"], unpropagated)
         self.assertEqual(replay["organization_readback"], "VERIFIED")
+        self.assertEqual(replay["organization_readback_custody_basis"], GENERATION_0_BASIS)
         grants = env.grants()
         self.assertEqual([g["boundary_evidence"]["fencing_token"] for g in grants], [8])
         self.assertEqual(grants[0]["source_transition_sha256"], unpropagated)
@@ -1007,9 +1012,10 @@ class OrgClaimCustodyTests(unittest.TestCase):
         recorded = env.seed_grant("TASK-2026-9999", 9)
         row, repository = recorded["organization_receipt"], recorded["repository_receipt"]
         transition_id = row["source_transition_id"]
-        self.assertIsNone(consumer.organization_readback(
+        # The readback returns its custody basis, never custody authority.
+        self.assertEqual(consumer.organization_readback(
             custody, row["receipt_sha256"], repository_receipt_sha256=repository["receipt_sha256"],
-            transition_id=transition_id))
+            transition_id=transition_id), GENERATION_0_BASIS)
         forged = {
             "wrong_owner": {"organization": "StegVerse-org"},
             "unbound_source": {"repo_receipt_sha256": "sha256:" + "e" * 64},
