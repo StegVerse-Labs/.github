@@ -44,10 +44,19 @@ def test_reusable_binding_targets_active_remediation_without_reopening_historica
     assert 'OPERATION_LINEAGE_TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"' in runner
     assert "stage_runtime_ingress_projection" in runner
     assert 'projected_record["coordination_state"] = "PROPOSED"' in runner
-    assert "AUTHENTIC_INTR_INGRESS_OBSERVED" in runner
+    assert 'result.get("state") != INGRESS_APPEND_PREDICATE' in runner
     assert "workercoordinator_claim_fence_observed" in runner
     assert "node_interlock_lease_runtime_correlation_verified" in runner
     assert "GITHUB_TOKEN" not in runner
+
+
+def test_runner_accepts_only_the_ingress_append_predicate():
+    """#3012 K2: the ingress state is the A4 append predicate, not a passive observation."""
+    runner = RUNNER.read_text()
+    assert 'INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"' in runner
+    assert 'result.get("state") != INGRESS_APPEND_PREDICATE' in runner
+    assert 'mod.fail("organization_local_intr_ingress_not_observed")' in runner
+    assert "AUTHENTIC_INTR_INGRESS_OBSERVED" not in runner
 
 
 def test_reusable_contract_records_implemented_node_interlock_binding_pending_validation():

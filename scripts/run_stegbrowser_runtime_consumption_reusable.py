@@ -9,6 +9,9 @@ LEGACY = HERE / "run_stegbrowser_runtime_consumption_reusable.legacy.py"
 INGRESS_WORKER_REL = Path("workers/stegbrowser_manifest_intr_ingress.py")
 TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
+# The ingress worker's success state: the A4 append predicate, not a passive
+# observation (StegVerse-Labs/.github#3012 K2).
+INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"
 
 spec = importlib.util.spec_from_file_location("stegbrowser_runtime_legacy", LEGACY)
 if spec is None or spec.loader is None:
@@ -41,7 +44,7 @@ def stage_after_claim(source: Path, runtime_root: Path, record: dict):
         if isinstance(value, dict):
             result = value
             break
-    if completed.returncode != 0 or not isinstance(result, dict) or result.get("state") != "AUTHENTIC_INTR_INGRESS_OBSERVED":
+    if completed.returncode != 0 or not isinstance(result, dict) or result.get("state") != INGRESS_APPEND_PREDICATE:
         mod.fail("organization_local_intr_ingress_not_observed")
     if result.get("invocation_request_nonce") != NONCE:
         mod.fail("workercoordinator_claim_fence_invocation_nonce_mismatch")

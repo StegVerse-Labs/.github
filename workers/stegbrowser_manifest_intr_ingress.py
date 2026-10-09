@@ -17,6 +17,11 @@ OUTPUT_REL = Path("receipts/sovereign-host/stegbrowser-manifest-intr-ingress.lat
 MANIFEST_REL = Path("control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json")
 BINDING_REL = Path("receipts/sovereign-host/stegbrowser-node-interlock-runtime-binding.latest.json")
 TARGETED = Path("scripts/refresh_and_execute_resident_task.py")
+# The A4 ingress predicate in its append form (StegVerse-Labs/.github#3012 K2):
+# the verified Organization receipt of the ingress append, not a passive
+# observation. It replaces AUTHENTIC_INTR_INGRESS_OBSERVED, matching the
+# goal chart of STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.
+INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"
 
 def canonical_json(v: Any) -> bytes:
     return json.dumps(v, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
@@ -81,7 +86,7 @@ def packet(source: Path, runtime: Path) -> dict[str, Any]:
         "outbound_interlock_intr_endpoint": (manifest.get("outbound") or {}).get("interlock_intr_endpoint"),
         "far_end_receiver": (manifest.get("outbound") or {}).get("receiver"),
         "round_trip_1_return_target": (manifest.get("round_trip_1") or {}).get("return_target"),
-        "expected_runtime_predicate": "AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "expected_runtime_predicate": INGRESS_APPEND_PREDICATE,
     }
     return {
         "schema": "stegverse.organization-local-boundary.packet/v1",
@@ -141,7 +146,7 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     payload = expected["payload"]
     result = {
         "schema":"stegverse.stegbrowser-manifest-intr-ingress/v1",
-        "state":"AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "state":INGRESS_APPEND_PREDICATE,
         "subject_task_id":SUBJECT_TASK,
         "cosv_task_vector":COSV,
         "invocation_request_nonce":NONCE,
@@ -171,7 +176,7 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
 
 def main() -> int:
     p=argparse.ArgumentParser(); p.add_argument("--source-root",type=Path,default=ROOT); p.add_argument("--runtime-root",type=Path,required=True); a=p.parse_args()
-    result=execute(a.source_root,a.runtime_root); print(json.dumps(result,sort_keys=True)); return 0 if result.get("state")=="AUTHENTIC_INTR_INGRESS_OBSERVED" else 2
+    result=execute(a.source_root,a.runtime_root); print(json.dumps(result,sort_keys=True)); return 0 if result.get("state")==INGRESS_APPEND_PREDICATE else 2
 
 if __name__ == "__main__":
     raise SystemExit(main())

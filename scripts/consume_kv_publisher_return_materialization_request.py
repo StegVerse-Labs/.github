@@ -30,6 +30,30 @@ POST_SDK_FALSE_FLAGS=("final_stegverse_side_egress_transition_observed","interlo
 MIR_RTC008_INGRESS_ENV="STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"
 MIR_RTC008_AUTH_ENV="STEGVERSE_TVC_RELAY_AUTHORIZATION_ID"
 MIR_RTC008_RECEIPT_SCHEMA="stegverse.mir-southbound-intr-materialization-ingress/v1"
+# A failed consumption is a typed FAIL_CLOSED on the append of its own diagnostic,
+# not a passive "unknown" first failed transition (StegVerse-Labs/.github#3012
+# K2), matching CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001
+# publisher_return_failure_observation.actual_first_failed_transition. The
+# upstream *_observed fields stay UNKNOWN as typed evidence of what this
+# diagnostic cannot reconstruct; they assert no RTC006-RTC009 outcome.
+FAILURE_APPEND_TRANSITION="PUBLISHER_RETURN_CONSUMPTION_FAILURE_OBSERVATION"
+FAILURE_APPEND_PREDICATE="ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:"+FAILURE_APPEND_TRANSITION
+FAILURE_RETRY_ENTRYPOINT="scripts/consume_kv_publisher_return_materialization_request.py"
+
+def _failure_disposition(materialization_id:str)->dict[str,Any]:
+    return {
+        "disposition":"FAIL_CLOSED",
+        "consequence_committed":False,
+        "failure_code":"ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate":FAILURE_APPEND_PREDICATE,
+        "satisfying_edge":"the owning lane's manifest-directed append of "+FAILURE_APPEND_TRANSITION+" to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair":"Repair the recorded failure_class/reason_code and re-invoke the same materialization; the verified Organization receipt of the diagnostic append satisfies "+FAILURE_APPEND_PREDICATE+".",
+        "retry_entrypoint":FAILURE_RETRY_ENTRYPOINT,
+        "owning_existing_goal":"CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+        "next_attempt":"NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_"+FAILURE_APPEND_TRANSITION,
+        "evidence_refs":[f"MATERIALIZATION_REQUEST:{REQUEST_DIR.as_posix()}/{materialization_id}.json"],
+        "first_failed_governed_transition":FAILURE_APPEND_PREDICATE,
+    }
 
 class _PublisherReturnOwnerMatcher:
     """Compatibility matcher used by the existing universal-ingress discriminator.
@@ -686,7 +710,7 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
         "downstream_owner_ref":owner,
         "failure_class":type(exc).__name__,
         "reason_code":reason[:256],
-        "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+        **_failure_disposition(materialization_id),
         "rtc008_admission_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
         "rtc009_far_side_transition_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
         "caller_consequence_observed":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
@@ -726,7 +750,7 @@ def main()->int:
               "failure_class":type(exc).__name__,
               "diagnostic_retention":"FAILED",
               "diagnostic_retention_failure_class":type(diagnostic_exc).__name__,
-              "first_failed_governed_transition":"UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED",
+              **_failure_disposition(materialization_id),
               "authority_effect":"NONE_DIAGNOSTIC_ONLY",
             }
     print(json.dumps(result,sort_keys=True)); return 0
