@@ -119,7 +119,7 @@ None of these is claimed conforming. Under `ALL_ACTIONABLE_SURFACES_CLASSIFIED_C
 
 Bounded extension `SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/N2` (registry generation 298). Design authority: StegVerse-Labs/TVC#488 comments 6071531441 (I-7/I-8) and 6071544608 (W5 rule). Input: the TVC review records merged in StegVerse-Labs/TVC#489, `coordination/credential-model-socket-module-review.v1.json` at TVC `dcf1a90` (blob `660b7ff`). The TVC checker `scripts/check_credential_model_socket_module_review.py` reports `PASS` there (26 non-ALLOW records). Evidence class: `SOURCE_IMPLEMENTED` (source review). No runtime attempt was made, and none is claimed.
 
-`data/organization-role-exemption-register.json` gains 26 entries, all in the live 12-key shape: `current_disposition` `FAIL_CLOSED`, `consequence_committed` false, `authority_effect` `NONE_REGISTER_ONLY`. Each surface is repo-qualified (`StegVerse-Labs/TVC:<path>`). Each `retry_entrypoint` names its TVC record id. The I-8 entry (`workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry`) is unchanged and was not duplicated.
+`data/organization-role-exemption-register.json` gains 26 entries (the register held none after #3026 removed the repaired I-8 entry), all in the live 12-key shape: `current_disposition` `FAIL_CLOSED`, `consequence_committed` false, `authority_effect` `NONE_REGISTER_ONLY`. Each surface is repo-qualified (`StegVerse-Labs/TVC:<path>`). Each `retry_entrypoint` names its TVC record id. The I-8 surface (`workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry`) is excluded. Its exemption was removed on main by `20e2f44` (#3026) after the repair, and W5 does not re-add it.
 
 | TVC record | Register entries | Owner |
 | --- | --- | --- |

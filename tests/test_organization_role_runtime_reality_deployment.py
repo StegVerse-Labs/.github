@@ -346,11 +346,11 @@ def test_tvc_exemptions_are_fail_closed_register_only_under_admitted_owners():
         assert "no runtime attempt was made or is claimed" in entry["why_manifest_bound_state_transition_is_not_yet_possible"]
 
 
-def test_inherited_callers_are_consolidated_and_the_i8_surface_is_not_duplicated():
+def test_inherited_callers_are_consolidated_and_the_i8_surface_is_not_reregistered():
     register = load_json(REGISTER)
     surfaces = [e["surface"] for e in register["exemptions"]]
-    assert surfaces.count(I8_SURFACE) == 1
-    assert not any(s.endswith(I8_SURFACE) and s != I8_SURFACE for s in surfaces)
+    # I-8 was repaired and its exemption removed by #3026 (20e2f44); W5 must not re-add it.
+    assert not any(s.endswith(I8_SURFACE) for s in surfaces)
     by_surface = {e["surface"]: e for e in register["exemptions"]}
     core = by_surface["StegVerse-Labs/TVC:tvc_provider_operation_broker.py::forward_to_local_vault_broker"]
     assert "Inherited by these 16 callers" in core["required_evidence_or_repair"]

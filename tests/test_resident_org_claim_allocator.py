@@ -21,6 +21,7 @@ def load_module(name: str, rel: str):
 
 allocator = load_module("resident_org_allocator_test", "scripts/allocate_claims.py")
 consumer = load_module("resident_org_allocator_consumer_test", "scripts/consume_org_claim_allocator_request.py")
+LEDGER_EMITTER = ".stegverse/transition-ledger/emit.py"
 
 
 class ResidentOrgClaimAllocatorTests(unittest.TestCase):
@@ -76,12 +77,22 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         "org-kernel/node_store.py",
         "resident-runtime/ledger_store.py",
         "resident-runtime/aggregate_repo_transition.py",
+        "resident-runtime/organization_batch_custody.py",
         "tasks/TASK-2026-0012.json",
     )
 
     def _consume(self, source: Path, runtime: Path, **kwargs):
         ledgers = runtime.parent / "ledgers"
         (ledgers / "org" / "receipts").mkdir(parents=True, exist_ok=True)
+        if not (ledgers / "org" / "HEAD.json").exists() and (source / LEDGER_EMITTER).is_file():
+            # An empty chain never mints a fence: root it with a prior recorded
+            # refusal through the existing emitters; no genesis is synthesized.
+            consumer.record_transition(
+                consumer.ledger_custody(source, ledgers / "seed-repo", ledgers / "org"), consumer.REFUSED,
+                "ORGANIZATION-WORKER-CLAIM-REFUSED-prior-attempt", "sha256:" + "0" * 64,
+                {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
+                 "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "consequence_committed": False},
+                organization=True, identity=("task_id", "request_sha256", "failed_predicate"))
         return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
                                 org_ledger_root=ledgers / "org", **kwargs)
 

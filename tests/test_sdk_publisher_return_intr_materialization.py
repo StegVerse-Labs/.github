@@ -211,6 +211,11 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
         fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
+        recorded=[]
+        def record_refusal(refusal, *, gated_transition_id, state_receipt_sha256=None, root=None):
+            recorded.append((dict(refusal),gated_transition_id))
+            return {**refusal,"refusal_recorded":True,"refusal_organization_receipt_sha256":"sha256:"+"5"*64}
+        fake.record_organization_receipt_refusal=record_refusal
         fake.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (
             "sha256:"+"9"*64,
             [{
@@ -247,10 +252,17 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 }
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 req["predecessor_master_records_receipt_sha256"]="9"*64
-                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"SDK return binding Organization record not recorded"):
+                with self.assertRaisesRegex(consumer.KVPublisherReturnError,"SDK return binding Organization record not recorded") as caught:
                     consumer._record_sdk_return_binding_custody(
                         runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
                     )
+                # Inside the attempted transition: the typed refusal, with the
+                # producer's reason, is appended as its non-ALLOW record.
+                self.assertEqual(len(recorded),1)
+                self.assertEqual(recorded[0][0]["failed_predicate"],"ORGANIZATION_RECORD_NOT_RECORDED")
+                self.assertEqual(recorded[0][0]["detail"],"not recorded")
+                self.assertFalse(caught.exception.refusal["consequence_committed"])
+                self.assertTrue(caught.exception.refusal["refusal_recorded"])
         finally:
             if previous is None:
                 sys.modules.pop("canonical_state_transition_custody",None)

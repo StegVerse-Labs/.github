@@ -6,6 +6,9 @@ on:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/organization_role_conformance.py'
+      - 'org-boundary/registry/services.json'
+      - 'tests/test_organization_role_conformance_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
       - 'tests/test_organization_manifest_ingress_append_owner.py'
       - 'tests/test_manifest_governance_universal_intr_binding.py'
@@ -22,6 +25,9 @@ on:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/organization_role_conformance.py'
+      - 'org-boundary/registry/services.json'
+      - 'tests/test_organization_role_conformance_ingress.py'
       - 'tests/test_organization_manifest_ingress_rule_ref.py'
       - 'tests/test_organization_manifest_ingress_append_owner.py'
       - 'tests/test_manifest_governance_universal_intr_binding.py'
@@ -85,3 +91,10 @@ jobs:
         run: python -m unittest -v tests/test_manifest_ingress_idempotent.py
       - name: Validate the repository chain fails closed on a break and an exact retry matches in full
         run: python -m unittest -v tests/test_repo_ledger_exact_retry.py
+
+      # A StegDB role-conformance request is admitted by this ingress: the
+      # terminal ALLOW, DENY or FAIL_CLOSED is committed in the organization
+      # receipt; exact retry is idempotent; an empty outbox is NO_EVENT.
+      # Temporary source and ledger roots only.
+      - name: Validate organization-role conformance admission on the manifest ingress
+        run: python -m unittest -v tests/test_organization_role_conformance_ingress.py

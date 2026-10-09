@@ -581,7 +581,7 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
     result = submit_state_receipt(state_receipt)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=transition_id)
+    gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True)
     closed = gate["verified"]
     return {
         "transition_id": transition_id,
