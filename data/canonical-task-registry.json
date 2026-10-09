@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 299,
+  "generation": 300,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",

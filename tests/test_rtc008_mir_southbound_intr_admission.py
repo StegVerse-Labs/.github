@@ -85,6 +85,16 @@ def _load_return_consumer():
     return module
 
 
+def _non_allow_missing(record):
+    """The shared NON_ALLOW_REQUIRED check the disposition validators apply."""
+    path = Path(__file__).resolve().parents[1] / "scripts" / "validate_transition_disposition.py"
+    spec = importlib.util.spec_from_file_location("rtc008_transition_disposition", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.non_allow_missing(record)
+
+
 class _Response:
     def __init__(self, value):
         self.raw = json.dumps(value, sort_keys=True).encode("utf-8")
@@ -202,7 +212,18 @@ def test_sdk_return_consumer_retains_exact_failed_invocation_diagnostic(tmp_path
     assert retained["state"] == "BLOCKED"
     assert retained["request_hash"] == "sha256:" + "f" * 64
     assert retained["downstream_owner_ref"] == consumer.SDK_DOWNSTREAM_OWNER
-    assert retained["first_failed_governed_transition"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    # #3012 K2: the failure is a typed FAIL_CLOSED on the append of its own
+    # diagnostic; upstream outcomes stay unreconstructed typed evidence.
+    append = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PUBLISHER_RETURN_CONSUMPTION_FAILURE_OBSERVATION"
+    assert retained["disposition"] == "FAIL_CLOSED"
+    assert retained["consequence_committed"] is False
+    assert retained["failure_code"] == "ORGANIZATION_RECEIPT_NOT_APPENDED"
+    assert retained["failed_predicate"] == append
+    assert retained["first_failed_governed_transition"] == append
+    assert "PUBLISHER_RETURN_CONSUMPTION_FAILURE_OBSERVATION" in retained["satisfying_edge"]
+    assert retained["retry_entrypoint"] == "scripts/consume_kv_publisher_return_materialization_request.py"
+    assert retained["evidence_refs"] == [f"MATERIALIZATION_REQUEST:intr-materialization/{mid}.json"]
+    assert _non_allow_missing(retained) == []
     assert retained["rtc008_admission_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
     assert retained["master_records_organization_record_claimed"] is False
     assert retained["authority_effect"] == "NONE_DIAGNOSTIC_ONLY"
@@ -222,4 +243,10 @@ def test_sdk_return_consumer_retains_missing_request_failure_without_inventing_t
     assert result["downstream_owner_ref"] is None
     assert result["reason_code"] == "RuntimeError"
     assert result["caller_consequence_observed"] == "UNKNOWN_NOT_AUTHENTICALLY_RECONSTRUCTED"
+    assert result["disposition"] == "FAIL_CLOSED"
+    assert result["consequence_committed"] is False
+    assert result["failed_predicate"] == result["first_failed_governed_transition"] == (
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PUBLISHER_RETURN_CONSUMPTION_FAILURE_OBSERVATION"
+    )
+    assert _non_allow_missing(result) == []
     assert (tmp_path / consumer.RECEIPT_DIR / "latest.blocked.json").exists()

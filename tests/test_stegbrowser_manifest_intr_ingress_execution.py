@@ -64,10 +64,15 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
             components["A3_WORKERCOORDINATOR"]["required_authentic_fields"],
             ["claim_id", "fencing_token"],
         )
-        self.assertIn(
-            "AUTHENTIC_INTR_INGRESS_OBSERVED",
+        # #3012 K2: A4 requires the append predicate, not a passive observation.
+        self.assertEqual(
             components["A4_AUTHENTIC_INTR_INGRESS"]["required_predicates"],
+            [
+                "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+                "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS",
+            ],
         )
+        self.assertNotIn("AUTHENTIC_INTR_INGRESS_OBSERVED", json.dumps(reusable))
         contract = reusable["canonical_node_binding_contract"]
         self.assertTrue(contract["a4_exact_correlation_required"])
         self.assertTrue(contract["fail_closed_on_missing_or_mismatch"])
@@ -96,6 +101,14 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         for key in ("manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "lease_id", "runtime_id", "state_root_binding"):
             self.assertIn(f'"{key}"', source)
         self.assertIn('"external_runtime_required":False', source)
+        # #3012 K2: success is the A4 append predicate, emitted only after the
+        # exact receipt verification above; the passive observer name is gone.
+        self.assertIn('INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"', source)
+        self.assertIn('"state":INGRESS_APPEND_PREDICATE', source)
+        self.assertIn('"expected_runtime_predicate": INGRESS_APPEND_PREDICATE', source)
+        self.assertIn('return 0 if result.get("state")==INGRESS_APPEND_PREDICATE else 2', source)
+        self.assertLess(source.index("if not verified(receipt, expected):"), source.index('"state":INGRESS_APPEND_PREDICATE'))
+        self.assertNotIn("AUTHENTIC_INTR_INGRESS_OBSERVED", source.split("INGRESS_APPEND_PREDICATE =", 1)[1])
 
     def test_runner_orders_claim_fence_before_a4_projection(self):
         source = RUNNER.read_text()
