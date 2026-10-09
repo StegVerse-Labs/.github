@@ -143,15 +143,32 @@
       "item_ids": [
         "R-1"
       ],
-      "goal": "First authentic, manifest-directed StegDB -> StegVerse-Labs Organization-role conformance transition through the existing resident dispatch path. Wire the organization-role-conformance intr-outbox route into the existing resident dispatcher (scripts/dispatch_resident_execution_requests.py CONSUMERS, selected through RT-CANONICAL-WORK-PORTABLE-DISPATCH-001) so the existing receiver resident-runtime/organization_manifest_ingress.py::consume_outbox runs with both ledger roots forwarded only from the materializer's environment; deliver the StegDB-emitted stegverse.intr-outbox-manifest-event/v1 (tools/evaluate_organization_role_conformance.py --durable-root) into the materializer-supplied durable root; then make the actual attempt and read back the Organization receipt. Until an actual admission invocation, the disposition stays NOT_ATTEMPTED.",
+      "goal": "First authentic, manifest-directed StegDB -> StegVerse-Labs Organization-role conformance transition. The Organization manifest declares the ledger locus; the stegverse.intr-outbox-manifest-event/v1 emitted by StegDB (tools/evaluate_organization_role_conformance.py) is consumed event-ephemerally by the existing receiver resident-runtime/organization_manifest_ingress.py::consume_outbox and appended MANIFEST_DIRECTED_APPEND under the Organization ledger lock; the first attempt terminates ALLOW, DENY or actionable FAIL_CLOSED with the Organization receipt read back. Resident runtimes are interchangeable transport only and never a predicate. Uninvoked, the disposition is NOT_ATTEMPTED.",
+      "superseded_goal": {
+        "value": "First authentic, manifest-directed StegDB -> StegVerse-Labs Organization-role conformance transition through the existing resident dispatch path. Wire the organization-role-conformance intr-outbox route into the existing resident dispatcher (scripts/dispatch_resident_execution_requests.py CONSUMERS, selected through RT-CANONICAL-WORK-PORTABLE-DISPATCH-001) so the existing receiver resident-runtime/organization_manifest_ingress.py::consume_outbox runs with both ledger roots forwarded only from the materializer's environment; deliver the StegDB-emitted stegverse.intr-outbox-manifest-event/v1 (tools/evaluate_organization_role_conformance.py --durable-root) into the materializer-supplied durable root; then make the actual attempt and read back the Organization receipt. Until an actual admission invocation, the disposition stays NOT_ATTEMPTED.",
+        "superseded_at_generation": 304,
+        "superseded_by": "goal",
+        "reason": "NONCONFORMING: R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER, R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER, R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX made a resident machine (the resident dispatcher/materializer and its durable outbox) a gate on Organization runtime reality, violating external_machine_awaiting_allowed=false and manifest_determines_destination (NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE; NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE). Replaced under the existing owners: the Organization manifest declares the ledger locus, the event is appended event-ephemerally MANIFEST_DIRECTED_APPEND under the Organization ledger lock, and resident runtimes are interchangeable transport only, never a predicate. Refs: StegVerse-Labs/.github#3055 (merge d0925d4, generation 303); StegVerse-Labs/TVC#488 (comment 6074865199) proposal; StegVerse-Labs/TVC#488 (comment 6082537168) Q-OL3 APPROVE_SUPERSESSION_UNDER_EXISTING_OWNERS.",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "repositories": [
         "StegVerse-Labs/.github"
       ],
       "source_paths": [
-        "scripts/dispatch_resident_execution_requests.py",
         "resident-runtime/organization_manifest_ingress.py",
         "tests/test_organization_role_conformance_ingress.py"
       ],
+      "superseded_source_paths": {
+        "value": [
+          "scripts/dispatch_resident_execution_requests.py",
+          "resident-runtime/organization_manifest_ingress.py",
+          "tests/test_organization_role_conformance_ingress.py"
+        ],
+        "superseded_at_generation": 304,
+        "superseded_by": "source_paths",
+        "reason": "NONCONFORMING: R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER, R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER, R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX made a resident machine (the resident dispatcher/materializer and its durable outbox) a gate on Organization runtime reality, violating external_machine_awaiting_allowed=false and manifest_determines_destination (NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE; NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE). Replaced under the existing owners: the Organization manifest declares the ledger locus, the event is appended event-ephemerally MANIFEST_DIRECTED_APPEND under the Organization ledger lock, and resident runtimes are interchangeable transport only, never a predicate. Refs: StegVerse-Labs/.github#3055 (merge d0925d4, generation 303); StegVerse-Labs/TVC#488 (comment 6074865199) proposal; StegVerse-Labs/TVC#488 (comment 6082537168) Q-OL3 APPROVE_SUPERSESSION_UNDER_EXISTING_OWNERS.",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "owner_resolution": {
         "owner_task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
         "reason": "The registry shows this task owns the StegDB -> Labs role-conformance route (O1-REG, I11); no Organization transition ledger materializer task owns an organization-role-conformance consumer. Extended as a bounded extension; no new task.",
@@ -161,6 +178,17 @@
           "only_ledger_root_supplier": "scripts/dispatch_resident_execution_requests.py:67 forwards STEGVERSE_ORG_LEDGER_ROOT from the resident materializer's environment (also scripts/refresh_and_execute_resident_task.py:84); STEGVERSE_REPO_LEDGER_ROOT is not in NONSECRET_ENV and is passed only as flags to org_claim_allocator (:683-688).",
           "no_admitted_consumer": "scripts/dispatch_resident_execution_requests.py:105-162 CONSUMERS has no row for the organization-role-conformance route; no .github/workflows file supplies a ledger root or invokes --outbox-root; .github/workflows/canonical-work-exact-ephemeral-invocation.yml runs RT-CANONICAL-WORK-PORTABLE-DISPATCH-001 without ledger roots.",
           "no_admitted_delivery": "StegVerse-Labs/StegDB@26d396f tools/evaluate_organization_role_conformance.py:257 materialize writes <durable-root>/intr-outbox/<route>/ only when --durable-root is supplied (:276); no StegDB workflow or Labs resident consumer invokes it with the materializer's durable root."
+        },
+        "owner_assignment": {
+          "approval_ref": "StegVerse-Labs/TVC#488 (comment 6082537168)",
+          "bounded_r1_owner_task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+          "organization_ledger_owner_task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+          "organization_ledger_owner_governs": [
+            "resident-runtime/aggregate_repo_transition.py",
+            ".stegverse/transition-ledger/org-contract.json"
+          ],
+          "resolution": "Resolved from the registry: ORGANIZATION-BATCH-CUSTODY-REPLAY-001 lists resident-runtime/aggregate_repo_transition.py and .stegverse/transition-ledger/org-contract.json in its source_refs and names aggregate_transition as the retry_entrypoint of its Organization ledger predicates; no ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 or transition-ledger task exists. STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002 governs bounded R1 only and does not mutate the Organization ledger writer.",
+          "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
         }
       },
       "sequencing": {
@@ -169,25 +197,58 @@
         "reason": "StegVerse-Labs/TVC#488 comment 6074752434 condition 1: extend the existing owner through the canonical registry with exact-head CI before any source mutation."
       },
       "bounded_conditions": [
-        "The destination ledger roots are supplied by the existing authorized materializer; no unauthenticated root is invented or derived.",
-        "No blocking on receiver presence or an external machine: the event is persisted durably and NOT_ATTEMPTED is reported until an actual admission invocation.",
-        "No hardcoded ALLOW or forced success; the first target version is the manifest-selected reference with exact provenance; a parity failure on an actual attempt returns actionable FAIL_CLOSED REFERENCE_ADOPTION_PARITY_WITH_RECORDED_FILE_DIGESTS with the Organization receipt appended and read back; no receipt without an invocation.",
+        "The manifest determines the destination: the Organization manifest declares the ledger locus; no root is invented, derived from a host, or made conditional on a particular resident materializer.",
+        "Resident runtimes (including the resident materializer and dispatcher) are interchangeable transport only, never a predicate; no external machine, destination liveness or always-on receiver is awaited.",
+        "Uninvoked, the disposition is NOT_ATTEMPTED; an invoked action yields ALLOW, DENY or actionable FAIL_CLOSED. No hardcoded ALLOW or forced success; the first target version is the manifest-selected reference with exact provenance; a parity failure on an actual attempt returns actionable FAIL_CLOSED REFERENCE_ADOPTION_PARITY_WITH_RECORDED_FILE_DIGESTS with the Organization receipt appended and read back; no receipt without an invocation.",
         "Event identity, exact replay, the atomic ledger lock, independent receipt readback and Task Registry/COSV evidence references are preserved.",
         "No new dependency, substrate, runtime listener, scheduler, service, framework or hosted execution."
       ],
+      "superseded_bounded_conditions": {
+        "value": [
+          "The destination ledger roots are supplied by the existing authorized materializer; no unauthenticated root is invented or derived.",
+          "No blocking on receiver presence or an external machine: the event is persisted durably and NOT_ATTEMPTED is reported until an actual admission invocation.",
+          "No hardcoded ALLOW or forced success; the first target version is the manifest-selected reference with exact provenance; a parity failure on an actual attempt returns actionable FAIL_CLOSED REFERENCE_ADOPTION_PARITY_WITH_RECORDED_FILE_DIGESTS with the Organization receipt appended and read back; no receipt without an invocation.",
+          "Event identity, exact replay, the atomic ledger lock, independent receipt readback and Task Registry/COSV evidence references are preserved.",
+          "No new dependency, substrate, runtime listener, scheduler, service, framework or hosted execution."
+        ],
+        "superseded_at_generation": 304,
+        "superseded_by": "bounded_conditions",
+        "reason": "NONCONFORMING: R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER, R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER, R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX made a resident machine (the resident dispatcher/materializer and its durable outbox) a gate on Organization runtime reality, violating external_machine_awaiting_allowed=false and manifest_determines_destination (NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE; NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE). Replaced under the existing owners: the Organization manifest declares the ledger locus, the event is appended event-ephemerally MANIFEST_DIRECTED_APPEND under the Organization ledger lock, and resident runtimes are interchangeable transport only, never a predicate. Refs: StegVerse-Labs/.github#3055 (merge d0925d4, generation 303); StegVerse-Labs/TVC#488 (comment 6074865199) proposal; StegVerse-Labs/TVC#488 (comment 6082537168) Q-OL3 APPROVE_SUPERSESSION_UNDER_EXISTING_OWNERS.",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "remaining_predicates": [
-        "R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER",
-        "R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER",
-        "R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX",
-        "R1_ACTUAL_ATTEMPT_TERMINAL_DISPOSITION_WITH_ORGANIZATION_RECEIPT_READBACK",
+        "R1_LEDGER_LOCUS_DECLARED_BY_ORGANIZATION_MANIFEST",
+        "R1_EVENT_EPHEMERAL_MANIFEST_DIRECTED_APPEND_WITH_LOCK",
+        "R1_FIRST_ATTEMPT_TERMINAL_DISPOSITION_WITH_RECEIPT_READBACK",
         "R1_EXACT_HEAD_REQUIRED_CI_GREEN"
       ],
+      "superseded_remaining_predicates": {
+        "value": [
+          "R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER",
+          "R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER",
+          "R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX",
+          "R1_ACTUAL_ATTEMPT_TERMINAL_DISPOSITION_WITH_ORGANIZATION_RECEIPT_READBACK",
+          "R1_EXACT_HEAD_REQUIRED_CI_GREEN"
+        ],
+        "superseded_at_generation": 304,
+        "superseded_by": "remaining_predicates",
+        "reason": "NONCONFORMING: R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER, R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER, R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX made a resident machine (the resident dispatcher/materializer and its durable outbox) a gate on Organization runtime reality, violating external_machine_awaiting_allowed=false and manifest_determines_destination (NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE; NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE). Replaced under the existing owners: the Organization manifest declares the ledger locus, the event is appended event-ephemerally MANIFEST_DIRECTED_APPEND under the Organization ledger lock, and resident runtimes are interchangeable transport only, never a predicate. Refs: StegVerse-Labs/.github#3055 (merge d0925d4, generation 303); StegVerse-Labs/TVC#488 (comment 6074865199) proposal; StegVerse-Labs/TVC#488 (comment 6082537168) Q-OL3 APPROVE_SUPERSESSION_UNDER_EXISTING_OWNERS.",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "current_disposition": "NOT_ATTEMPTED",
-      "missing_invocation": "The resident materializer (scripts/refresh_and_dispatch_resident_requests.py -> scripts/dispatch_resident_execution_requests.py) has no consumer for the organization-role-conformance route and does not forward STEGVERSE_REPO_LEDGER_ROOT; nothing has invoked consume_outbox with materializer-supplied ledger roots.",
+      "superseded_missing_invocation": {
+        "value": "The resident materializer (scripts/refresh_and_dispatch_resident_requests.py -> scripts/dispatch_resident_execution_requests.py) has no consumer for the organization-role-conformance route and does not forward STEGVERSE_REPO_LEDGER_ROOT; nothing has invoked consume_outbox with materializer-supplied ledger roots.",
+        "superseded_at_generation": 304,
+        "superseded_by": "bounded_conditions",
+        "reason": "NONCONFORMING: R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER, R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER, R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX made a resident machine (the resident dispatcher/materializer and its durable outbox) a gate on Organization runtime reality, violating external_machine_awaiting_allowed=false and manifest_determines_destination (NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE; NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE). Replaced under the existing owners: the Organization manifest declares the ledger locus, the event is appended event-ephemerally MANIFEST_DIRECTED_APPEND under the Organization ledger lock, and resident runtimes are interchangeable transport only, never a predicate. Refs: StegVerse-Labs/.github#3055 (merge d0925d4, generation 303); StegVerse-Labs/TVC#488 (comment 6074865199) proposal; StegVerse-Labs/TVC#488 (comment 6082537168) Q-OL3 APPROVE_SUPERSESSION_UNDER_EXISTING_OWNERS.",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "issue_ref": "StegVerse-Labs/TVC#488",
       "approval_refs": [
         "StegVerse-Labs/TVC#488 (comment 6074631028)",
-        "StegVerse-Labs/TVC#488 (comment 6074752434)"
+        "StegVerse-Labs/TVC#488 (comment 6074752434)",
+        "StegVerse-Labs/TVC#488 (comment 6074865199)",
+        "StegVerse-Labs/TVC#488 (comment 6082537168)"
       ],
       "admitted_on": "2026-10-09",
       "admission_evidence_class": "SOURCE_IMPLEMENTED",
