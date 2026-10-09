@@ -18,14 +18,13 @@ import organization_batch_custody as batch
 SHA = re.compile(r"sha256:[0-9a-f]{64}\Z")
 
 
-def _source_for(root: Path, row: dict[str, Any]) -> dict[str, Any]:
+def _source_for(store, row: dict[str, Any]) -> dict[str, Any]:
     digest = row["source_transition_sha256"]
     if not isinstance(digest, str) or not SHA.fullmatch(digest):
         raise ValueError("SOURCE_DIGEST_INVALID")
-    path = root / "source-receipts" / (digest[7:] + ".json")
-    if not path.is_file():
+    source = batch._get(store, org.ledger_store.source_key(digest))
+    if source is None:
         raise ValueError("SOURCE_RECEIPT_MISSING:" + digest)
-    source = batch._read(path)
     checked = org.verify_source(source)  # also verifies inline required evidence
     if (
         checked["source_transition_sha256"] != digest
@@ -36,9 +35,10 @@ def _source_for(root: Path, row: dict[str, Any]) -> dict[str, Any]:
     return source
 
 
-def _verified_batches(root: Path, receipt_hashes: list[str]) -> list[dict[str, Any]]:
-    if not (root / "BATCH_HEAD.json").is_file():
-        if (root / "batches").is_dir() and any((root / "batches").glob("*.json")):
+def _verified_batches(root, receipt_hashes: list[str]) -> list[dict[str, Any]]:
+    root = batch._ledger(root)
+    if not root.exists(batch.BATCH_HEAD_KEY):
+        if root.list_prefix(batch.BATCH_PREFIX):
             raise ValueError("BATCH_HEAD_MISSING_WITH_BATCHES")
         return []
     head_digest, _ = batch._batch_head(root)
@@ -50,7 +50,7 @@ def _verified_batches(root: Path, receipt_hashes: list[str]) -> list[dict[str, A
             raise ValueError("ORGANIZATION_BATCH_CYCLE")
         seen.add(cursor)
         item = batch._verified_batch(root, cursor)
-        verified = batch.verify_batch(root, cursor)
+        verified = batch._verify_batch(root, cursor)
         if verified["organization_chain"] != "PASS":
             raise ValueError("ORGANIZATION_BATCH_VERIFICATION_FAILED")
         rows.append(item)
@@ -60,30 +60,37 @@ def _verified_batches(root: Path, receipt_hashes: list[str]) -> list[dict[str, A
     flat = [digest for item in rows for digest in item["ordered_receipt_hashes"]]
     if flat != receipt_hashes[:len(flat)]:
         raise ValueError("ORGANIZATION_BATCH_PREFIX_MISMATCH")
-    inventory = {p.stem for p in (root / "batches").glob("*.json")}
+    inventory = {key[len(batch.BATCH_PREFIX):-len(".json")] for key in root.list_prefix(batch.BATCH_PREFIX)}
     if inventory != {digest[7:] for digest in seen}:
         raise ValueError("ORGANIZATION_BATCH_ORPHAN_DETECTED")
     return rows
 
 
 def readback(
-    root: Path,
+    root,
     *,
     correlation_ids: tuple[str, ...],
     include_exact: bool = True,
 ) -> dict[str, Any]:
     """Verify the entire resident HEAD chain, even when matches are historical.
 
+    `root` is the POSIX ledger root or the ledger store the append used; a
+    Git ledger store is read from one committed tip of its durable ref.
     Exact bytes are returned only to the resident-local caller. That caller must
     keep them inside the existing private runtime and authorized return path.
     """
-    root = Path(root).expanduser().resolve()
-    head_path = root / "HEAD.json"
-    if not head_path.is_file():
-        if (root / "receipts").is_dir() and any((root / "receipts").glob("*.json")):
+    if not org._is_store(root):
+        root = Path(root).expanduser().resolve()
+    with batch._pinned(root) as store:
+        return _readback(store, correlation_ids=correlation_ids, include_exact=include_exact)
+
+
+def _readback(root, *, correlation_ids: tuple[str, ...], include_exact: bool) -> dict[str, Any]:
+    head = batch._get(root, org.ledger_store.HEAD_KEY)
+    if head is None:
+        if root.list_prefix(org.ledger_store.RECEIPT_PREFIX):
             raise ValueError("ORGANIZATION_HEAD_MISSING_WITH_RECEIPTS")
         raise ValueError("ORGANIZATION_HEAD_NOT_MATERIALIZED")
-    head = batch._read(head_path)
     tip = head.get("receipt_sha256")
     if head.get("organization") != org.C["organization"] or not isinstance(tip, str) or not SHA.fullmatch(tip):
         raise ValueError("ORGANIZATION_HEAD_IDENTITY_INVALID")
@@ -94,7 +101,7 @@ def readback(
     sources = [_source_for(root, row) for row in ordered]
     batches = _verified_batches(root, all_hashes)
     # Do not call the candidate stable if another resident append raced readback.
-    if batch._read(head_path) != head:
+    if batch._get(root, org.ledger_store.HEAD_KEY) != head:
         raise ValueError("ORGANIZATION_HEAD_CHANGED_DURING_READBACK")
     ids = set(correlation_ids)
     matches = []

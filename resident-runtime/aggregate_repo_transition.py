@@ -266,88 +266,115 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     receipt whatever epoch it arrives at.
     """
     store = organization_store(ledger)
-    root = store.root if _is_posix(store) else None
-    if root is not None:
-        root.mkdir(mode=0o700, parents=True, exist_ok=True)
-    elif parent_manifest is not None:
-        # Packet release and batch custody still read and write a POSIX root.
-        # Until they are carried by the store seam, a manifested packet on any
-        # other store is refused rather than half-committed.
-        raise ledger_store.LedgerStoreRefused(
-            "ORGANIZATION_BATCH_CUSTODY_NOT_CARRIED_BY_LEDGER_STORE",
-            "route organization_batch_custody packet release through the ledger store seam, "
-            "or supply a POSIX Organization ledger root for a manifested packet",
-            detail=getattr(store, "kind", ""),
-        )
+    if _is_posix(store):
+        store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        with store.exclusive():
+            return _aggregate_transition_held(
+                receipt, store, org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+                parent_manifest=parent_manifest, establishes_packet=establishes_packet,
+                now_ns=now_ns, hb_epoch=hb_epoch)
+    if parent_manifest is not None:
+        # A manifested packet may carry a released batch to custody before its
+        # receipt is published; refuse a surface that is not private custody
+        # first, so nothing leaves before the refusal.
+        store.require_private_custody()
+    # A store without a local lock stages every write of this transition --
+    # released batch, BATCH_HEAD, establishment receipt, work receipt, HEAD --
+    # over one pinned snapshot and publishes them as one compare-and-swap
+    # commit. A lost race or any refusal publishes none of them.
     with store.exclusive():
-        released = None
-        effective_boundary_evidence = dict(boundary_evidence or {})
-        if parent_manifest is not None:
-            # The governing parent manifest owns packet release, authorized
-            # once at establishment. A satisfied or expired prior packet is
-            # released and carried through the existing canonical custody
-            # client as a manifest-directed consequence. That custody result
-            # is execution evidence only; it must never mint or replace the
-            # parent manifest's governance disposition.
-            import organization_batch_custody as batches
-            # Establishment is declared by the manifest. A manifest without
-            # one stays count-governed and unchanged, so manifests written
-            # before packets had a t(0) remain valid.
-            manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
-            if establishes_packet and not manifest_establishes:
-                raise ValueError("t(0) establishment requires a manifest establishment declaration")
-            if establishes_packet:
-                effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
-                    parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
-                )
-            released = batches.release_satisfied_packet_before_next_transition(
-                parent_manifest, root=root, now_ns=now_ns
-            )
-            if released is not None:
-                if establishes_packet:
-                    raise ValueError("t(0) establishment cannot also release a prior packet")
-                release_execution_result = batches.submit_released_batch(root, released["batch_id"])
-                if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
-                    raise ValueError("released organization batch execution result invalid")
-                if release_execution_result.get("governance_disposition") is not None:
-                    raise ValueError("released organization batch attempted governance escalation")
-                carried = {
-                    "batch_id": released["batch_id"],
-                    "execution_result": release_execution_result["state"],
-                    "reason": release_execution_result.get("reason"),
-                    "authority_effect": release_execution_result.get("authority_effect"),
-                }
-                if manifest_establishes:
-                    # Release and successor establishment are one transition
-                    # and one receipt. It is member #1 of the packet it
-                    # opens, so the release has its own identity rather than
-                    # riding as an attribute of an unrelated work transition.
-                    _aggregate_transition_locked(
-                        _packet_establishment_source(released), root=root, store=store,
-                        org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
-                        boundary_evidence={
-                            batches.ESTABLISHMENT_KEY: batches.establishment_record(
-                                parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
-                            ),
-                            "parent_manifest_released_batch": carried,
-                        },
-                        authority_effect="NONE",
-                        hb_epoch=hb_epoch,
-                    )
-                else:
-                    effective_boundary_evidence["parent_manifest_released_batch"] = carried
-        record = _aggregate_transition_locked(
-            receipt, root=root, store=store, org_transition_class=org_transition_class,
+        staged = ledger_store.StagedLedgerTransaction(store)
+        record = _aggregate_transition_held(
+            receipt, staged, org_transition_class=org_transition_class,
             predecessor_org_state_sha256=predecessor_org_state_sha256,
             successor_org_state_sha256=successor_org_state_sha256,
-            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
-            hb_epoch=hb_epoch,
+            boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+            parent_manifest=parent_manifest, establishes_packet=establishes_packet,
+            now_ns=now_ns, hb_epoch=hb_epoch)
+        staged.commit()
+        return record
+
+
+def _aggregate_transition_held(receipt, store, *, org_transition_class, predecessor_org_state_sha256,
+                               successor_org_state_sha256, boundary_evidence, authority_effect,
+                               parent_manifest, establishes_packet, now_ns, hb_epoch):
+    """aggregate_transition() for a caller holding `store` exclusively.
+
+    `store` is the POSIX store under its append lock, or a staged transaction
+    the caller publishes. Packet release and batch custody read and write
+    through the same store as the receipts they batch.
+    """
+    released = None
+    effective_boundary_evidence = dict(boundary_evidence or {})
+    if parent_manifest is not None:
+        # The governing parent manifest owns packet release, authorized
+        # once at establishment. A satisfied or expired prior packet is
+        # released and carried through the existing canonical custody
+        # client as a manifest-directed consequence. That custody result
+        # is execution evidence only; it must never mint or replace the
+        # parent manifest's governance disposition.
+        import organization_batch_custody as batches
+        # Establishment is declared by the manifest. A manifest without
+        # one stays count-governed and unchanged, so manifests written
+        # before packets had a t(0) remain valid.
+        manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
+        if establishes_packet and not manifest_establishes:
+            raise ValueError("t(0) establishment requires a manifest establishment declaration")
+        if establishes_packet:
+            effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
+                parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
+            )
+        released = batches.release_satisfied_packet_before_next_transition(
+            parent_manifest, root=store, now_ns=now_ns
         )
         if released is not None:
-            state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
-            if state["receipt_count"] != (2 if manifest_establishes else 1):
-                raise ValueError("successor organization receipt packet did not initialize correctly")
-        return record
+            if establishes_packet:
+                raise ValueError("t(0) establishment cannot also release a prior packet")
+            release_execution_result = batches.submit_released_batch(store, released["batch_id"])
+            if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
+                raise ValueError("released organization batch execution result invalid")
+            if release_execution_result.get("governance_disposition") is not None:
+                raise ValueError("released organization batch attempted governance escalation")
+            carried = {
+                "batch_id": released["batch_id"],
+                "execution_result": release_execution_result["state"],
+                "reason": release_execution_result.get("reason"),
+                "authority_effect": release_execution_result.get("authority_effect"),
+            }
+            if manifest_establishes:
+                # Release and successor establishment are one transition
+                # and one receipt. It is member #1 of the packet it
+                # opens, so the release has its own identity rather than
+                # riding as an attribute of an unrelated work transition.
+                _aggregate_transition_locked(
+                    _packet_establishment_source(released), store=store,
+                    org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
+                    boundary_evidence={
+                        batches.ESTABLISHMENT_KEY: batches.establishment_record(
+                            parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
+                        ),
+                        "parent_manifest_released_batch": carried,
+                    },
+                    authority_effect="NONE",
+                    hb_epoch=hb_epoch,
+                )
+            else:
+                effective_boundary_evidence["parent_manifest_released_batch"] = carried
+    record = _aggregate_transition_locked(
+        receipt, store=store, org_transition_class=org_transition_class,
+        predecessor_org_state_sha256=predecessor_org_state_sha256,
+        successor_org_state_sha256=successor_org_state_sha256,
+        boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+        hb_epoch=hb_epoch,
+    )
+    if released is not None:
+        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns)
+        if state["receipt_count"] != (2 if manifest_establishes else 1):
+            raise ValueError("successor organization receipt packet did not initialize correctly")
+    return record
 
 
 def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
