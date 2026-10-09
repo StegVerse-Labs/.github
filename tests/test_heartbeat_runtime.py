@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from heartbeat_runtime import HeartbeatRuntime, WorkerResponse
 
@@ -105,8 +107,35 @@ class RuntimeFixture:
             "records": []
         })
 
+        self._ledger_env = None
+
     def close(self):
+        if self._ledger_env is not None:
+            self._ledger_env.stop()
         self.tmp.cleanup()
+
+    def predecessor_receipt(self, parent_task_id: str) -> dict:
+        """Real producer: the predecessor's state receipt appended to a tmp Organization ledger root."""
+        from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+
+        if self._ledger_env is None:
+            # Ledger roots are supplied, never derived from the host.
+            self._ledger_env = patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(self.root / "org-ledger")})
+            self._ledger_env.start()
+        result = submit_state_receipt(build_state_receipt(
+            transition_id="PREDECESSOR_TASK_CHECKPOINTED",
+            transition_sequence=1,
+            subject_or_correlation_id=parent_task_id,
+            transition_outcome="OBSERVED",
+            prior_state_ref_or_hash=None,
+            resulting_state_ref_or_hash=None,
+            governance_decision_ref_where_applicable=None,
+            transition_evidence={"parent_task_id": parent_task_id},
+        ))
+        return {
+            "predecessor_state_receipt_sha256": result["receipt_sha256"],
+            "predecessor_organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"],
+        }
 
     def cost_basis(self, name: str, beats: int = 4):
         path = self.root / "cost-basis" / f"{name}.json"
@@ -125,9 +154,13 @@ class RuntimeFixture:
         })
         return str(path.relative_to(self.root))
 
-    def reconstruction_proof(self, task_id: str, parent_task_id: str, checkpoint_ref: str, last_fence: int = 4):
+    def reconstruction_proof(self, task_id: str, parent_task_id: str, checkpoint_ref: str, last_fence: int = 4,
+                             predecessor: dict | None = None):
         ref = f"reconstruction/{task_id}.json"
+        if predecessor is None:
+            predecessor = self.predecessor_receipt(parent_task_id)
         write(self.root / ref, {
+            **predecessor,
             "schema": "stegverse.worker-reconstruction-proof/v0.1",
             "reconstruction_id": f"R-{task_id}",
             "task_id": task_id,
@@ -331,6 +364,78 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             self.assertEqual(successor["heartbeat_timing"]["fencing_token"], 6)
             self.assertGreater(successor["heartbeat_timing"]["fencing_token"], accepted["last_valid_fencing_token"])
             self.assertIsNotNone(successor["claim_id"])
+        finally:
+            fx.close()
+
+    def test_successor_proof_requires_predecessor_organization_receipt(self):
+        fx = RuntimeFixture()
+        try:
+            basis = fx.cost_basis("fixture")
+            checkpoint = "master-records/orchestration:checkpoint-parent"
+            proof_ref = fx.reconstruction_proof("TASK-SUCCESSOR", "TASK-PARENT", checkpoint, last_fence=4, predecessor={})
+            task = fx.task("TASK-SUCCESSOR", cost_basis_ref=basis, parent_task_id="TASK-PARENT",
+                           reconstruction_ref=proof_ref, checkpoint_ref=checkpoint)
+            fx.registry([task], generation=5)
+            runtime = HeartbeatRuntime(fx.root, adapters={"fixture": lambda *_: None})
+            handoff_value = json.loads((fx.root / "handoffs/TASK-SUCCESSOR.json").read_text())
+            registry = json.loads((fx.root / "control/worker-registry.json").read_text())
+            ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
+            self.assertFalse(ok)
+            self.assertEqual(reason, "SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:STATE_RECEIPT_SHA256_ABSENT")
+        finally:
+            fx.close()
+
+    def test_successor_proof_bound_to_another_tasks_organization_receipt_is_denied(self):
+        fx = RuntimeFixture()
+        try:
+            basis = fx.cost_basis("fixture")
+            checkpoint = "master-records/orchestration:checkpoint-parent"
+            other = fx.predecessor_receipt("TASK-UNRELATED")
+            proof_ref = fx.reconstruction_proof("TASK-SUCCESSOR", "TASK-PARENT", checkpoint, last_fence=4, predecessor=other)
+            task = fx.task("TASK-SUCCESSOR", cost_basis_ref=basis, parent_task_id="TASK-PARENT",
+                           reconstruction_ref=proof_ref, checkpoint_ref=checkpoint)
+            fx.registry([task], generation=5)
+            runtime = HeartbeatRuntime(fx.root, adapters={"fixture": lambda *_: None})
+            handoff_value = json.loads((fx.root / "handoffs/TASK-SUCCESSOR.json").read_text())
+            registry = json.loads((fx.root / "control/worker-registry.json").read_text())
+            ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
+            self.assertFalse(ok)
+            self.assertEqual(reason, "SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:DENY:ORGANIZATION_RECEIPT_PREDECESSOR_SUBJECT_MISMATCH")
+            # A receipt bound to a different state receipt is denied as well.
+            parent = fx.predecessor_receipt("TASK-PARENT")
+            forged = dict(parent, predecessor_state_receipt_sha256=other["predecessor_state_receipt_sha256"])
+            fx.reconstruction_proof("TASK-SUCCESSOR", "TASK-PARENT", checkpoint, last_fence=4, predecessor=forged)
+            ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
+            self.assertFalse(ok)
+            self.assertEqual(reason, "SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:DENY:ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT")
+        finally:
+            fx.close()
+
+    def test_successor_proof_without_ledger_root_fails_closed(self):
+        fx = RuntimeFixture()
+        try:
+            basis = fx.cost_basis("fixture")
+            checkpoint = "master-records/orchestration:checkpoint-parent"
+            proof_ref = fx.reconstruction_proof("TASK-SUCCESSOR", "TASK-PARENT", checkpoint, last_fence=4)
+            task = fx.task("TASK-SUCCESSOR", cost_basis_ref=basis, parent_task_id="TASK-PARENT",
+                           reconstruction_ref=proof_ref, checkpoint_ref=checkpoint)
+            fx.registry([task], generation=5)
+            runtime = HeartbeatRuntime(fx.root, adapters={"fixture": lambda *_: None})
+            handoff_value = json.loads((fx.root / "handoffs/TASK-SUCCESSOR.json").read_text())
+            registry = json.loads((fx.root / "control/worker-registry.json").read_text())
+            with patch.dict(os.environ, {}):
+                os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
+                ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
+            self.assertFalse(ok)
+            self.assertEqual(reason, "SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+            # Master Records refs and reconstruction status are evidence only: absent, the bound proof still passes.
+            proof = json.loads((fx.root / proof_ref).read_text())
+            proof.pop("master_records_refs")
+            proof.pop("reconstruction_status")
+            proof["evidence_lineage_refs"].append(checkpoint)
+            write(fx.root / proof_ref, proof)
+            ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
+            self.assertTrue(ok, reason)
         finally:
             fx.close()
 

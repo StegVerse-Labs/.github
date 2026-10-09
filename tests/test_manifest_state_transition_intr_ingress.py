@@ -339,9 +339,40 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
             self.assertTrue((immutable_root / f"{first['request_sha256']}.json").is_file())
             self.assertTrue((immutable_root / f"{second['request_sha256']}.json").is_file())
 
-    def test_return_assembly_refuses_to_invent_missing_replay(self):
-        with self.assertRaisesRegex(ValueError, "MASTER_RECORDS_REPLAY_NOT_OBSERVED"):
-            mod._assemble_purpose_result(request(), purpose_receipt(replay=False))
+    def test_return_assembly_does_not_gate_on_master_records_replay(self):
+        # #3012 RESPONSE-022 K3-R1: Master Records replay is evidence, never a closure gate.
+        receipt = purpose_receipt(replay=False)
+        receipt["result"].pop("master_records_reconstruction")
+        result = mod._assemble_purpose_result(request(), receipt)
+        self.assertEqual(result["state"], "COMPLETE")
+        self.assertEqual(result["closure_gate"], "VERIFIED_ORGANIZATION_RECEIPT")
+        self.assertIsNone(result["replay_status"])
+        self.assertIsNone(result["reconstruction_status"])
+        self.assertEqual(result["master_records_role"], "EVIDENCE_ONLY_NOT_A_CLOSURE_GATE")
+
+    def test_return_assembly_refuses_without_organization_receipt_even_without_replay(self):
+        receipt = purpose_receipt(replay=False)
+        lifecycle = receipt["result"]["purpose_bound_worker_result"]["canonical_master_records_transitions"]
+        lifecycle[-1] = dict(lifecycle[-1], organization_receipt_sha256="sha256:" + "0" * 64)
+        lifecycle[-1].pop("organization_source_transition_sha256")
+        with self.assertRaisesRegex(ValueError, "organization_receipt_refused:FAIL_CLOSED:ORGANIZATION_RECEIPT_READBACK_MISSING"):
+            mod._assemble_purpose_result(request(), receipt)
+
+    def test_return_assembly_refuses_receipt_bound_to_another_state_receipt(self):
+        receipt = purpose_receipt(replay=True)
+        rows = receipt["result"]["purpose_bound_worker_result"]["canonical_master_records_transitions"]
+        rows[0] = dict(rows[0], organization_receipt_sha256=rows[1]["organization_receipt_sha256"])
+        rows[0].pop("organization_source_transition_sha256")
+        with self.assertRaisesRegex(ValueError, "organization_receipt_refused:DENY:ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT"):
+            mod._assemble_purpose_result(request(), receipt)
+
+    def test_return_assembly_master_records_replay_pass_is_carried_as_evidence(self):
+        result = mod._assemble_purpose_result(request(), purpose_receipt(replay=True))
+        self.assertEqual(result["replay_status"], "PASS")
+        self.assertEqual(result["reconstruction_status"], "SUPPLIED")
+        self.assertEqual(len(result["verified_organization_receipt_sha256s"]), 7)
+        for row, digest in zip(result["transition_closures"], result["verified_organization_receipt_sha256s"]):
+            self.assertEqual(digest, row["organization_receipt_sha256"])
 
     def test_return_assembly_refuses_master_records_pass_without_organization_receipt(self):
         receipt = purpose_receipt(replay=True)

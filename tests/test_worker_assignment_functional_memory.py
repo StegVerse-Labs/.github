@@ -12,7 +12,7 @@ from heartbeat_runtime.worker_assignment_functional_memory import (
     record_non_allow_functional_memory,
     reconstruct_prior_functional_memory,
 )
-from workers.canonical_state_transition_custody import sha256_uri, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
 
 
 class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
@@ -46,6 +46,34 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             },
             "packet_sha256": "prebind",
         }
+
+    def record(self, sequence: int, prior: str | None, *, task_id: str = "TASK-1",
+               transition_id: str = "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW") -> dict:
+        """Real producer: one functional-memory state receipt appended to the tmp Organization ledger."""
+        memory = {"schema": SCHEMA, "sequence": sequence, "task_id": task_id,
+                  "admissibility_resolution": "DENY" if sequence % 2 else "DEFER"}
+        pack_sha = sha256_uri(memory).split(":", 1)[1]
+        result = submit_state_receipt(build_state_receipt(
+            transition_id=transition_id,
+            transition_sequence=sequence,
+            subject_or_correlation_id=task_id,
+            transition_outcome="DENY",
+            prior_state_ref_or_hash=None if prior is None else f"sha256:{prior}",
+            resulting_state_ref_or_hash=f"sha256:{pack_sha}",
+            governance_decision_ref_where_applicable=None,
+            transition_evidence={"functional_memory": memory},
+            required_evidence_manifest=[{
+                "evidence_id": f"fm:{task_id}:{sequence}",
+                "evidence_type": "WORKERCOORDINATOR_NON_ALLOW_ASSIGNMENT_FUNCTIONAL_MEMORY",
+                "origin_transition_id": transition_id,
+                "encoding": "canonical-json",
+                "sha256": pack_sha,
+                "content": memory,
+            }],
+        ))
+        self.assertEqual(result["state"], "RECORDED")
+        return {"memory": memory, "receipt_sha256": result["receipt_sha256"],
+                "organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"]}
 
     def root(self, tmp: str) -> Path:
         root = Path(tmp)
@@ -127,35 +155,63 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertFalse(receipt["transition_evidence"]["worker_materialized"])
         self.assertEqual(receipt["transition_evidence"]["functional_memory"]["task_registry_generation"], 84)
 
-    def test_prior_memory_is_reconstructed_from_master_records_before_reuse(self):
-        memory = {
-            "schema": SCHEMA,
+    def test_prior_memory_is_resolved_from_verified_organization_receipt_before_reuse(self):
+        first = self.record(1, None)
+        task = {"task_id": "TASK-1", "functional_memory": {
+            "receipt_sha256": first["receipt_sha256"],
+            "organization_receipt_sha256": first["organization_receipt_sha256"],
             "sequence": 1,
-            "task_id": "TASK-1",
-            "admissibility_resolution": "DEFER",
-        }
-        reconstruction = {
-            "state": "PASS",
-            "receipt_sha256": "b" * 64,
-            "reconstructed_receipt_sha256": "b" * 64,
-            "required_evidence_validation_status": "PASS",
-            "receipt": {
-                "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
-                "transition_sequence": 1,
-                "subject_or_correlation_id": "TASK-1",
-                "prior_state_ref_or_hash": None,
-                "transition_evidence": {"functional_memory": memory},
-            },
-        }
-        task = {"task_id": "TASK-1", "functional_memory": {"receipt_sha256": "b" * 64}}
-        with patch(
-            "heartbeat_runtime.worker_assignment_functional_memory.reconstruct_state_receipt",
-            return_value=reconstruction,
-        ):
+        }}
+        with patch("workers.canonical_state_transition_custody.reconstruct_state_receipt") as master_records:
             rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
         self.assertTrue(valid)
         self.assertIsNone(reason)
-        self.assertEqual(rebuilt, memory)
+        self.assertEqual(rebuilt, first["memory"])
+        master_records.assert_not_called()
+
+    def test_prior_memory_without_organization_receipt_fails_closed(self):
+        first = self.record(1, None)
+        task = {"task_id": "TASK-1", "functional_memory": {"receipt_sha256": first["receipt_sha256"]}}
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertIsNone(rebuilt)
+        self.assertFalse(valid)
+        self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:ORGANIZATION_RECEIPT_SHA256_ABSENT")
+
+    def test_prior_memory_receipt_bound_to_another_state_receipt_is_denied(self):
+        first = self.record(1, None)
+        second = self.record(2, first["receipt_sha256"])
+        task = {"task_id": "TASK-1", "functional_memory": {
+            "receipt_sha256": first["receipt_sha256"],
+            "organization_receipt_sha256": second["organization_receipt_sha256"],
+        }}
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertIsNone(rebuilt)
+        self.assertFalse(valid)
+        self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:DENY:ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT")
+
+    def test_prior_memory_with_missing_retained_source_receipt_fails_closed(self):
+        first = self.record(1, None)
+        ledger = Path(os.environ["STEGVERSE_ORG_LEDGER_ROOT"])
+        (ledger / "source-receipts" / (first["receipt_sha256"] + ".json")).unlink()
+        task = {"task_id": "TASK-1", "functional_memory": {
+            "receipt_sha256": first["receipt_sha256"],
+            "organization_receipt_sha256": first["organization_receipt_sha256"],
+        }}
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertFalse(valid)
+        self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING")
+
+    def test_prior_memory_without_ledger_root_fails_closed(self):
+        first = self.record(1, None)
+        task = {"task_id": "TASK-1", "functional_memory": {
+            "receipt_sha256": first["receipt_sha256"],
+            "organization_receipt_sha256": first["organization_receipt_sha256"],
+        }}
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
+            rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertFalse(valid)
+        self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
 
     def test_unreconstructable_prior_memory_forces_non_allow_review(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -204,99 +260,64 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertNotIn("sequence", memory)
         submit.assert_not_called()
 
-    def test_missing_pointer_recovers_latest_ordered_functional_memory_from_master_records(self):
-        memory1 = {
-            "schema": SCHEMA,
-            "sequence": 1,
-            "task_id": "TASK-1",
-            "admissibility_resolution": "DENY",
-        }
-        memory2 = {
-            "schema": SCHEMA,
-            "sequence": 2,
-            "task_id": "TASK-1",
-            "admissibility_resolution": "DEFER",
-        }
-        hash1 = "d" * 64
-        hash2 = "e" * 64
-        records = [
-            {
-                "state": "PASS",
-                "receipt_sha256": hash1,
-                "reconstructed_receipt_sha256": hash1,
-                "required_evidence_validation_status": "PASS",
-                "master_record_ref": "master-record:1",
-                "receipt": {
-                    "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
-                    "transition_sequence": 1,
-                    "subject_or_correlation_id": "TASK-1",
-                    "prior_state_ref_or_hash": None,
-                    "transition_evidence": {"functional_memory": memory1},
-                },
-            },
-            {
-                "state": "PASS",
-                "receipt_sha256": hash2,
-                "reconstructed_receipt_sha256": hash2,
-                "required_evidence_validation_status": "PASS",
-                "master_record_ref": "master-record:2",
-                "receipt": {
-                    "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
-                    "transition_sequence": 2,
-                    "subject_or_correlation_id": "TASK-1",
-                    "prior_state_ref_or_hash": f"sha256:{hash1}",
-                    "transition_evidence": {"functional_memory": memory2},
-                },
-            },
-        ]
+    def test_missing_pointer_recovers_latest_ordered_functional_memory_from_organization_ledger(self):
+        first = self.record(1, None)
+        self.record(1, None, task_id="TASK-OTHER")
+        second = self.record(2, first["receipt_sha256"])
         task = {"task_id": "TASK-1"}
-        with patch(
-            "heartbeat_runtime.worker_assignment_functional_memory.query_state_receipts",
-            return_value={"state": "PASS", "records": records},
-        ):
+        with patch("workers.canonical_state_transition_custody.query_state_receipts") as master_records:
             rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
         self.assertTrue(valid)
         self.assertIsNone(reason)
-        self.assertEqual(rebuilt, memory2)
+        self.assertEqual(rebuilt, second["memory"])
         self.assertEqual(task["functional_memory"]["sequence"], 2)
-        self.assertEqual(task["functional_memory"]["receipt_sha256"], hash2)
-        self.assertTrue(task["functional_memory"]["pointer_recovered_from_master_records"])
+        self.assertEqual(task["functional_memory"]["receipt_sha256"], second["receipt_sha256"])
+        self.assertEqual(task["functional_memory"]["organization_receipt_sha256"], second["organization_receipt_sha256"])
+        self.assertTrue(task["functional_memory"]["pointer_recovered_from_organization_ledger"])
+        master_records.assert_not_called()
+
+    def test_missing_pointer_with_empty_organization_ledger_has_no_prior_memory(self):
+        task = {"task_id": "TASK-1"}
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertEqual((rebuilt, valid, reason), (None, True, None))
+        self.assertNotIn("functional_memory", task)
 
     def test_pointer_recovery_fails_closed_on_predecessor_chain_gap(self):
-        memory2 = {
-            "schema": SCHEMA,
-            "sequence": 2,
-            "task_id": "TASK-1",
-            "admissibility_resolution": "DENY",
-        }
-        hash2 = "f" * 64
+        self.record(2, None)
         task = {"task_id": "TASK-1"}
-        with patch(
-            "heartbeat_runtime.worker_assignment_functional_memory.query_state_receipts",
-            return_value={
-                "state": "PASS",
-                "records": [{
-                    "state": "PASS",
-                    "receipt_sha256": hash2,
-                    "reconstructed_receipt_sha256": hash2,
-                    "required_evidence_validation_status": "PASS",
-                    "master_record_ref": "master-record:2",
-                    "receipt": {
-                        "transition_id": "WORKERCOORDINATOR_ASSIGNMENT_NON_ALLOW",
-                        "transition_sequence": 2,
-                        "subject_or_correlation_id": "TASK-1",
-                        "prior_state_ref_or_hash": None,
-                        "transition_evidence": {"functional_memory": memory2},
-                    },
-                }],
-            },
-        ):
-            rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
         self.assertIsNone(rebuilt)
         self.assertFalse(valid)
         self.assertEqual(reason, "FUNCTIONAL_MEMORY_SEQUENCE_GAP_OR_REORDER")
         self.assertNotIn("functional_memory", task)
 
+    def test_pointer_recovery_fails_closed_on_broken_predecessor_link(self):
+        first = self.record(1, None)
+        self.record(2, "a" * 64)
+        self.assertIsNotNone(first)
+        task = {"task_id": "TASK-1"}
+        rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
+        self.assertFalse(valid)
+        self.assertEqual(reason, "FUNCTIONAL_MEMORY_PREDECESSOR_CHAIN_INVALID")
+        self.assertNotIn("functional_memory", task)
+
+    def test_recorded_pointer_carries_verified_organization_receipt_and_resolves(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bound = bind_assignment_review(
+                root=self.root(tmp), task={"task_id": "TASK-1"}, packet=self.packet("BLOCK"),
+                prior_memory=None, prior_memory_valid=True, prior_memory_reason=None,
+            )
+        pointer = record_non_allow_functional_memory(
+            task={"task_id": "TASK-1"},
+            trigger={"packet_id": "P5", "source": "INDEPENDENT_TASK_CONTROL"},
+            packet=bound,
+        )
+        self.assertEqual(pointer["state"], "RECORDED")
+        self.assertRegex(pointer["organization_receipt_sha256"], r"^sha256:[0-9a-f]{64}$")
+        rebuilt, valid, reason = reconstruct_prior_functional_memory({"task_id": "TASK-1", "functional_memory": pointer})
+        self.assertTrue(valid, reason)
+        self.assertEqual(rebuilt["sequence"], 1)
+        self.assertEqual(rebuilt["admissibility_resolution"], "DENY")
 
     def test_successor_functional_memory_reconstructs_predecessor_at_emit_boundary(self):
         previous_hash = "9" * 64

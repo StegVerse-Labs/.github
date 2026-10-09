@@ -1,10 +1,11 @@
 """Functional Memory bridge for WorkerCoordinator assignment transitions.
 
 This module adds no scheduler, runtime, authority plane, or custody store. It binds
-WorkerCoordinator assignment review to the existing canonical Master Records
-state-transition custody path. Every non-ALLOW assignment becomes reconstructable
-functional memory, and any retained prior assignment memory must reconstruct
-before a later assignment review may consume it.
+WorkerCoordinator assignment review to the existing canonical state-transition
+custody path. Every non-ALLOW assignment becomes functional memory recorded in
+the Organization ledger, and any retained prior assignment memory must resolve
+from its verified Organization receipt and retained source receipt before a
+later assignment review may consume it. Master Records is evidence only.
 """
 from __future__ import annotations
 
@@ -15,9 +16,8 @@ import json
 
 from workers.canonical_state_transition_custody import (
     build_state_receipt,
-    query_state_receipts,
-    reconstruct_state_receipt,
     require_predecessor_master_records_organization_record,
+    organization_receipt_custody,
     organization_receipt_gate,
     sha256_uri,
     submit_state_receipt,
@@ -72,46 +72,69 @@ def canonical_task_context(root: Path, task: dict[str, Any], packet: dict[str, A
     }
 
 
-def _memory_from_reconstruction(
+def _memory_from_source_receipt(
     task_id: str,
-    result: dict[str, Any],
-    *,
-    expected_receipt_sha256: str | None = None,
+    receipt: Any,
 ) -> tuple[dict[str, Any] | None, str | None]:
-    receipt_sha256 = result.get("receipt_sha256")
-    if (
-        result.get("state") != "PASS"
-        or not isinstance(receipt_sha256, str)
-        or (expected_receipt_sha256 is not None and receipt_sha256 != expected_receipt_sha256)
-        or result.get("reconstructed_receipt_sha256") != receipt_sha256
-        or result.get("required_evidence_validation_status") != "PASS"
-    ):
-        return None, str(result.get("reason") or "FUNCTIONAL_MEMORY_RECONSTRUCTION_FAILED")
-    receipt = result.get("receipt")
+    """Functional memory content of one verified Organization ledger source receipt."""
     if not isinstance(receipt, dict):
-        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_RECEIPT_INVALID"
+        return None, "FUNCTIONAL_MEMORY_SOURCE_RECEIPT_INVALID"
     if receipt.get("transition_id") != TRANSITION_ID or receipt.get("subject_or_correlation_id") != task_id:
-        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_IDENTITY_INVALID"
+        return None, "FUNCTIONAL_MEMORY_SOURCE_IDENTITY_INVALID"
     evidence = receipt.get("transition_evidence")
     memory = evidence.get("functional_memory") if isinstance(evidence, dict) else None
     if not isinstance(memory, dict) or memory.get("schema") != SCHEMA or memory.get("task_id") != task_id:
-        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_CONTENT_INVALID"
+        return None, "FUNCTIONAL_MEMORY_SOURCE_CONTENT_INVALID"
     sequence = receipt.get("transition_sequence")
     if not isinstance(sequence, int) or sequence < 1 or memory.get("sequence") != sequence:
-        return None, "FUNCTIONAL_MEMORY_RECONSTRUCTED_SEQUENCE_INVALID"
+        return None, "FUNCTIONAL_MEMORY_SOURCE_SEQUENCE_INVALID"
     return dict(memory), None
 
 
-def _recover_pointer_from_master_records(task: dict[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None, bool, str | None]:
+def _refusal_reason(refusal: dict[str, Any]) -> str:
+    return f"ORGANIZATION_RECEIPT_REFUSED:{refusal['disposition']}:{refusal['failed_predicate']}"
+
+
+def _ledger(custody: Any, root: Path | None) -> Path:
+    """The Organization ledger root: caller-supplied, else STEGVERSE_ORG_LEDGER_ROOT; never a host path."""
+    try:
+        return Path(root).expanduser().resolve() if root is not None else custody.org.ledger_root()
+    except custody.org.LedgerLocationRequired as exc:
+        raise custody.OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
+
+
+def _recover_pointer_from_organization_ledger(
+    task: dict[str, Any], root: Path | None = None,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, bool, str | None]:
+    """Discover the task's functional memory chain by replaying the Organization ledger.
+
+    The ledger is replayed with the existing verifier from HEAD; every receipt
+    of this transition for this task is read back with its retained source
+    receipt. Master Records plays no part.
+    """
     task_id = str(task.get("task_id") or "")
     if not task_id:
         return None, None, False, "FUNCTIONAL_MEMORY_TASK_ID_INVALID"
-    query = query_state_receipts(task_id, TRANSITION_ID)
-    if query.get("state") != "PASS":
-        return None, None, False, str(query.get("reason") or "FUNCTIONAL_MEMORY_DISCOVERY_FAILED")
-    records = query.get("records")
-    if not isinstance(records, list):
-        return None, None, False, "FUNCTIONAL_MEMORY_DISCOVERY_RESULT_INVALID"
+    custody = organization_receipt_custody()
+    try:
+        ledger = _ledger(custody, root)
+        head_path = ledger / "HEAD.json"
+        if not head_path.is_file():
+            return None, None, True, None
+        try:
+            chain = custody._segment(ledger, custody.org.load(head_path).get("receipt_sha256"), None)
+        except (KeyError, ValueError) as exc:
+            raise custody.OrganizationReceiptRefused("ORGANIZATION_LEDGER_REPLAY_FAILED", deterministic=True,
+                                                     detail=str(exc)) from exc
+        records = []
+        for row in chain:
+            if row.get("source_transition_id") != TRANSITION_ID or row.get("subject_or_correlation_id") != task_id:
+                continue
+            records.append(custody.verified_organization_source_receipt(
+                ledger, row["receipt_sha256"], state_receipt_sha256=row["source_transition_sha256"],
+                expected_transition_id=TRANSITION_ID))
+    except custody.OrganizationReceiptRefused as exc:
+        return None, None, False, _refusal_reason(exc.refusal())
     if not records:
         return None, None, True, None
 
@@ -119,20 +142,17 @@ def _recover_pointer_from_master_records(task: dict[str, Any]) -> tuple[dict[str
     expected_sequence = 1
     latest_memory = None
     latest_pointer = None
-    for result in records:
-        if not isinstance(result, dict):
-            return None, None, False, "FUNCTIONAL_MEMORY_DISCOVERY_RECORD_INVALID"
-        memory, reason = _memory_from_reconstruction(task_id, result)
+    for organization, receipt in records:
+        memory, reason = _memory_from_source_receipt(task_id, receipt)
         if memory is None:
             return None, None, False, reason
-        receipt = result.get("receipt")
-        sequence = receipt.get("transition_sequence") if isinstance(receipt, dict) else None
+        sequence = receipt.get("transition_sequence")
         if sequence != expected_sequence:
             return None, None, False, "FUNCTIONAL_MEMORY_SEQUENCE_GAP_OR_REORDER"
         expected_prior = None if previous_receipt_sha256 is None else f"sha256:{previous_receipt_sha256}"
         if receipt.get("prior_state_ref_or_hash") != expected_prior:
             return None, None, False, "FUNCTIONAL_MEMORY_PREDECESSOR_CHAIN_INVALID"
-        receipt_sha256 = result.get("receipt_sha256")
+        receipt_sha256 = organization["source_transition_sha256"].split(":", 1)[1]
         latest_memory = memory
         latest_pointer = {
             "schema": SCHEMA,
@@ -142,10 +162,8 @@ def _recover_pointer_from_master_records(task: dict[str, Any]) -> tuple[dict[str
             "task_registry_generation": memory.get("task_registry_generation"),
             "generation_bound_cosv_id": memory.get("generation_bound_cosv_id"),
             "receipt_sha256": receipt_sha256,
-            "master_record_ref": result.get("master_record_ref"),
-            "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "pointer_recovered_from_master_records": True,
+            "organization_receipt_sha256": organization["receipt_sha256"],
+            "pointer_recovered_from_organization_ledger": True,
             "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
         }
         previous_receipt_sha256 = receipt_sha256
@@ -153,10 +171,19 @@ def _recover_pointer_from_master_records(task: dict[str, Any]) -> tuple[dict[str
     return latest_memory, latest_pointer, True, None
 
 
-def reconstruct_prior_functional_memory(task: dict[str, Any]) -> tuple[dict[str, Any] | None, bool, str | None]:
+def reconstruct_prior_functional_memory(
+    task: dict[str, Any], *, root: Path | None = None,
+) -> tuple[dict[str, Any] | None, bool, str | None]:
+    """Resolve retained prior functional memory from the verified Organization receipt.
+
+    Content is read from the Organization ledger's retained source receipt
+    under the same ledger root (`root`, else STEGVERSE_ORG_LEDGER_ROOT). Master
+    Records reconstruction is not consulted. A refusal is typed DENY or
+    FAIL_CLOSED in the returned reason and nothing is consumed.
+    """
     pointer = task.get("functional_memory")
     if not isinstance(pointer, dict):
-        memory, recovered_pointer, valid, reason = _recover_pointer_from_master_records(task)
+        memory, recovered_pointer, valid, reason = _recover_pointer_from_organization_ledger(task, root)
         if not valid:
             return None, False, reason
         if recovered_pointer is not None:
@@ -166,10 +193,18 @@ def reconstruct_prior_functional_memory(task: dict[str, Any]) -> tuple[dict[str,
     receipt_sha256 = pointer.get("receipt_sha256")
     if not isinstance(receipt_sha256, str) or not receipt_sha256:
         return None, False, "FUNCTIONAL_MEMORY_RECEIPT_POINTER_INVALID"
-    result = reconstruct_state_receipt(receipt_sha256)
-    memory, reason = _memory_from_reconstruction(str(task.get("task_id") or ""), result, expected_receipt_sha256=receipt_sha256)
+    custody = organization_receipt_custody()
+    try:
+        _, receipt = custody.verified_organization_source_receipt(
+            _ledger(custody, root), pointer.get("organization_receipt_sha256"),
+            state_receipt_sha256=receipt_sha256, expected_transition_id=TRANSITION_ID)
+    except custody.OrganizationReceiptRefused as exc:
+        return None, False, _refusal_reason(exc.refusal())
+    memory, reason = _memory_from_source_receipt(str(task.get("task_id") or ""), receipt)
     if memory is None:
         return None, False, reason
+    if pointer.get("sequence") is not None and pointer.get("sequence") != memory.get("sequence"):
+        return None, False, "FUNCTIONAL_MEMORY_SOURCE_SEQUENCE_INVALID"
     return memory, True, None
 
 
@@ -315,6 +350,7 @@ def record_non_allow_functional_memory(
         "task_registry_generation": transition.get("task_registry_generation"),
         "generation_bound_cosv_id": transition.get("generation_bound_cosv_id"),
         "receipt_sha256": result.get("receipt_sha256"),
+        "organization_receipt_sha256": gate["organization_receipt_sha256"],
         "master_record_ref": result.get("master_record_ref"),
         "reconstruction_status": result.get("reconstruction_status"),
         "required_evidence_validation_status": result.get("required_evidence_validation_status"),

@@ -40,6 +40,9 @@ class HeartbeatRuntime:
     WORKER_OWNED = {"CLAIMED", "ACTIVE", "EXPIRING", "HANDOFF_WRITING"}
     RESPONSE_STATES = {"ACTIVE", "BLOCKED", "HANDOFF_READY", "COMPLETED", "FAILED_RETRYABLE", "FAILED_TERMINAL"}
     PRIORITY = {"security": 0, "release": 1, "critical": 2, "elevated": 3, "normal": 4}
+    #: Organization ledger root the predecessor's append used; None reads
+    #: STEGVERSE_ORG_LEDGER_ROOT. Absent both, successor proof is FAIL_CLOSED.
+    organization_ledger_root: str | Path | None = None
 
     def __init__(self, root: str | Path, adapters: dict[str, Adapter] | None = None):
         self.root = Path(root)
@@ -141,7 +144,7 @@ class HeartbeatRuntime:
         authority = handoff.get("authority", {})
         goal_id = handoff.get("goal", {}).get("goal_id")
         checkpoint_ref = continuity.get("checkpoint_ref")
-        master_refs = proof.get("master_records_refs", [])
+        master_refs = proof.get("master_records_refs")
         lineage_refs = proof.get("evidence_lineage_refs", [])
         next_generation = int(registry.get("generation", 0)) + 1
 
@@ -152,22 +155,50 @@ class HeartbeatRuntime:
             proof.get("parent_task_id") == parent_task_id,
             proof.get("authority_source") == authority.get("authority_source"),
             proof.get("policy_version") == authority.get("policy_version"),
-            proof.get("reconstruction_status") == "PASS",
             proof.get("execution_authority") is False,
             isinstance(proof.get("last_valid_fencing_token"), int),
             next_generation > int(proof.get("last_valid_fencing_token", next_generation)),
             isinstance(checkpoint_ref, str) and bool(checkpoint_ref),
             proof.get("checkpoint_ref") == checkpoint_ref,
             isinstance(proof.get("checkpoint_sha256"), str) and len(proof.get("checkpoint_sha256", "")) == 64,
-            isinstance(master_refs, list) and bool(master_refs) and all(str(item).startswith("master-records/") for item in master_refs),
+            # Master Records refs and reconstruction status are evidence only, never a gate.
+            master_refs is None or (isinstance(master_refs, list) and all(str(item).startswith("master-records/") for item in master_refs)),
             isinstance(lineage_refs, list) and bool(lineage_refs),
             isinstance(proof.get("unresolved_work"), list) and bool(proof.get("unresolved_work")),
         ]
         if str(checkpoint_ref).startswith("master-records/"):
-            checks.append(checkpoint_ref in master_refs or checkpoint_ref in lineage_refs)
+            checks.append(checkpoint_ref in (master_refs or []) or checkpoint_ref in lineage_refs)
         if not all(checks):
             return False, "SUCCESSOR_RECONSTRUCTION_PROOF_INVALID", proof
+        refusal = self._predecessor_organization_receipt_refusal(proof, parent_task_id)
+        if refusal is not None:
+            return False, ("SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:"
+                           f"{refusal['disposition']}:{refusal['failed_predicate']}"), proof
         return True, None, proof
+
+    def _predecessor_organization_receipt_refusal(self, proof: dict[str, Any], parent_task_id: str) -> dict[str, Any] | None:
+        """None when the proof is bound to the predecessor's verified Organization receipt.
+
+        The receipt is read back from the Organization ledger, bound to the
+        predecessor's exact state receipt, and its retained source receipt must
+        name the parent task. Master Records plays no part. Otherwise the typed
+        DENY or FAIL_CLOSED refusal is returned and nothing is committed.
+        """
+        from workers.canonical_state_transition_custody import organization_receipt_custody
+
+        custody = organization_receipt_custody()
+        try:
+            _, source = custody.verified_organization_source_receipt(
+                self.organization_ledger_root,
+                proof.get("predecessor_organization_receipt_sha256"),
+                state_receipt_sha256=proof.get("predecessor_state_receipt_sha256"),
+            )
+        except custody.OrganizationReceiptRefused as exc:
+            return exc.refusal()
+        if source.get("subject_or_correlation_id") != parent_task_id:
+            return custody.OrganizationReceiptRefused(
+                "ORGANIZATION_RECEIPT_PREDECESSOR_SUBJECT_MISMATCH", deterministic=True, detail=str(parent_task_id)).refusal()
+        return None
 
     def _dependencies_complete(self, task: dict[str, Any], tasks: dict[str, dict[str, Any]]) -> bool:
         deps = self._handoff(task).get("task", {}).get("dependencies", [])
