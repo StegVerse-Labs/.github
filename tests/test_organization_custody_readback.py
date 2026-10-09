@@ -280,10 +280,16 @@ def test_existing_master_records_batch_reconstruction_exact_identity(monkeypatch
     assert proof["state"] == "PASS"
     assert proof["batch_results"][0]["state"] == "MATCHING_INDEPENDENT_BATCH_RECONSTRUCTION_PASS"
 
-def _mr(receipt="a" * 64):
-    return {"state": "RECORDED", "reconstruction_status": "PASS",
-            "required_evidence_validation_status": "PASS",
-            "receipt_sha256": receipt, "reconstructed_receipt_sha256": receipt}
+def _organization_record(name):
+    """A submit_state_receipt()-shaped result whose Organization receipt was really appended.
+
+    The ledger root is the tmp STEGVERSE_ORG_LEDGER_ROOT the caller set; Master
+    Records reconstruction was not requested, as submit_state_receipt() reports.
+    """
+    row = org.aggregate_transition(source(name))
+    return {"state": "RECORDED", "receipt_sha256": row["source_transition_sha256"][7:],
+            "organization_receipt": row, "reconstruction_status": "NOT_REQUESTED",
+            "required_evidence_validation_status": "ORGANIZATION_RECORD_ONLY"}
 
 def governed_attempt(runtime, disposition="ALLOW", request_id="governed-1"):
     req_path = request(runtime, request_id=request_id)
@@ -295,14 +301,15 @@ def governed_attempt(runtime, disposition="ALLOW", request_id="governed-1"):
              "cosv_task_vector": consumer.COSV, "request_id": request_id,
              "presented_to_intr": True, "intr_disposition": disposition,
              "authentic_intr_disposition_observed": True,
-             "intr_master_records_organization_record": _mr("b" * 64),
-             "predecessor_master_records_organization_record": _mr("c" * 64),
+             "intr_master_records_organization_record": _organization_record("GOVERNED_INTR_DISPOSITION"),
+             "predecessor_master_records_organization_record": _organization_record("GOVERNED_PREDECESSOR"),
              "readback_request": req}
     path.write_text(json.dumps(value))
     return path
 
-def test_governed_intr_deny_is_preserved_without_readback(tmp_path):
+def test_governed_intr_deny_is_preserved_without_readback(monkeypatch, tmp_path):
     runtime = tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "ledger"))
     governed_attempt(runtime, disposition="DENY")
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "DENY"
@@ -315,15 +322,49 @@ def test_governed_allow_executes_without_host_inventory_gate(monkeypatch, tmp_pa
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     org.aggregate_transition(source("GOVERNED_ALLOW"))
-    governed_attempt(runtime, disposition="ALLOW")
+    attempt = json.loads(governed_attempt(runtime, disposition="ALLOW").read_text())
+    intr = attempt["intr_master_records_organization_record"]
+    predecessor = attempt["predecessor_master_records_organization_record"]
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "RECORDED_LOCAL_READBACK"
     assert result["governed_intr_disposition"] == "ALLOW"
-    assert result["intr_master_records_receipt_sha256"] == "b" * 64
-    assert result["predecessor_master_records_receipt_sha256"] == "c" * 64
+    assert result["intr_master_records_receipt_sha256"] == intr["receipt_sha256"]
+    assert result["predecessor_master_records_receipt_sha256"] == predecessor["receipt_sha256"]
+    assert result["intr_organization_receipt_sha256"] == intr["organization_receipt"]["receipt_sha256"]
+    assert result["predecessor_organization_receipt_sha256"] == predecessor["organization_receipt"]["receipt_sha256"]
 
-def test_governed_attempt_missing_master_records_organization_record_fails_closed(tmp_path):
+def test_governed_attempt_master_records_pass_without_organization_receipt_fails_closed(monkeypatch, tmp_path):
+    # Master Records reconstruction PASS does not substitute for the verified Organization receipt.
     runtime = tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "ledger"))
+    path = governed_attempt(runtime, disposition="ALLOW")
+    attempt = json.loads(path.read_text())
+    record = attempt["intr_master_records_organization_record"]
+    record.pop("organization_receipt")
+    record.update(reconstruction_status="PASS", required_evidence_validation_status="PASS",
+                  reconstructed_receipt_sha256=record["receipt_sha256"])
+    path.write_text(json.dumps(attempt))
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "FAIL_CLOSED"
+    assert result["failed_predicate"] == "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY"
+    assert "ORGANIZATION_RECEIPT_SHA256_ABSENT" in result["reason"]
+    assert not (runtime / consumer.REQUEST_REL).exists()
+
+def test_governed_attempt_forged_organization_receipt_fails_closed(monkeypatch, tmp_path):
+    runtime = tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "ledger"))
+    path = governed_attempt(runtime, disposition="DENY")
+    attempt = json.loads(path.read_text())
+    attempt["predecessor_master_records_organization_record"]["organization_receipt"]["receipt_sha256"] = (
+        "sha256:" + "d" * 64)
+    path.write_text(json.dumps(attempt))
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "FAIL_CLOSED"
+    assert "ORGANIZATION_RECEIPT_READBACK_MISSING" in result["reason"]
+
+def test_governed_attempt_missing_master_records_organization_record_fails_closed(monkeypatch, tmp_path):
+    runtime = tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "ledger"))
     path = governed_attempt(runtime, disposition="ALLOW")
     attempt = json.loads(path.read_text())
     del attempt["intr_master_records_organization_record"]
