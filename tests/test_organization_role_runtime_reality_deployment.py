@@ -278,21 +278,15 @@ def test_declaration_doc_states_the_change_and_the_exemption_path():
 
 # W5 (StegVerse-Labs/TVC#488 6071544608): every confirmed nonconforming TVC surface from the
 # socket-module review at StegVerse-Labs/TVC@dcf1a90 (#489), mapped TVC record -> register surface.
-# Inherited-only callers are consolidated under their root (O2B1-NA-09 under O2B1-NA-08, the
-# W4-N1-01 and W4-N2-04 inherited_by links under their own roots). W4-N1-01 holds two entries,
-# because the gmail forwarder repeats the synchronous connect itself.
+# Inherited-only callers are consolidated under their root (the W4-N2-04 inherited_by links under
+# their own root). ER-1 reconciles the register with the review at StegVerse-Labs/TVC@bd0fe27:
+# the records W7 (#491), W8a (#493) and W8b (#494) retired leave the register (RETIRED_TVC_RECORD_SURFACES).
 TVC_RECORD_SURFACES = {
     "O2B1-NA-01": ["scripts/tvc_execute_bea_readonly.py (broker request construction)"],
     "O2B1-NA-02": ["scripts/tvc_run_provider_measurement.py (broker request construction)"],
     "O2B1-NA-03": ["scripts/tvc_run_test_lane_external_candidate.py (broker request construction)"],
     "O2B1-NA-04": ["tvc_external_collab_google_drive_probe_runtime.py (broker request construction)"],
     "O2B1-NA-05": ["tvc_external_collab_google_drive_content_integrity_runtime.py (broker request construction)"],
-    "O2B1-NA-07": ["tvc_workspace_google_drive_probe_runtime.py (broker request construction)"],
-    "O2B1-NA-08": ["tvc_primary_runtime_binder.py (discover_primary_runtime)"],
-    "W4-N1-01": [
-        "tvc_provider_operation_broker.py::forward_to_local_vault_broker",
-        "tvc_gmail_provider_operation_broker.py::forward_to_local_vault_broker",
-    ],
     "W4-N2-01": ["scripts/tvc_mail_provider_operation.py::execute (ARCHIVE_IDS, TRASH_IDS)"],
     "W4-N2-02": ["scripts/tvc_recipient_admission_resident_signer.py::issue_from_resident_signer"],
     "W4-N2-03": ["tvc_google_drive_vault_session_consumer.py::consume_broker_session"],
@@ -302,13 +296,24 @@ TVC_RECORD_SURFACES = {
     "W4-N2-07": ["tvc_primary_runtime_activation_task.py::task_activate"],
     "W4-N3-01": ["deploy/systemd/stegtvc-primary-runtime.service"],
     "W4-N3-02": ["deploy/systemd-user/stegtvc-primary-runtime.service"],
-    "W4-N3-03": ["deploy/systemd/stegtvc-private-source-read.timer"],
-    "W4-N3-04": ["deploy/systemd/stegtvc-sv-dn1-repository-authority.timer"],
     "W4-N3-05": ["deploy/systemd/stegtvc-external-collab-google-drive-consent.service"],
     "W4-N3-06": ["deploy/systemd/stegtvc-app-store-connect-skap-intr-tunnel.service"],
     "W4-N3-07": ["deploy/systemd/stegtvc-post-return-release-skap-intr-tunnel.service"],
     "W4-N3-08": ["deploy/systemd/stegtvc-skap-browser-ingress.service"],
     "W4-N3-09": ["deploy/systemd/stegtvc-skap-browser-intr-tunnel.service"],
+}
+# Retired in the TVC review at StegVerse-Labs/TVC@bd0fe27: the surface no longer holds the recorded
+# predicate, so its entry is removed and must not be re-registered. O2B1-NA-09 and W7-N1-02 were
+# consolidated into the O2B1-NA-08 and W4-N1-01 entries and retired with them.
+RETIRED_TVC_RECORD_SURFACES = {
+    "O2B1-NA-07": ["tvc_workspace_google_drive_probe_runtime.py (broker request construction)"],
+    "O2B1-NA-08": ["tvc_primary_runtime_binder.py (discover_primary_runtime)"],
+    "W4-N1-01": [
+        "tvc_provider_operation_broker.py::forward_to_local_vault_broker",
+        "tvc_gmail_provider_operation_broker.py::forward_to_local_vault_broker",
+    ],
+    "W4-N3-03": ["deploy/systemd/stegtvc-private-source-read.timer"],
+    "W4-N3-04": ["deploy/systemd/stegtvc-sv-dn1-repository-authority.timer"],
     "W4-N3-10": ["deploy/systemd/stegtvc-tv-resident-operational-proof.service"],
 }
 I8_SURFACE = "workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry"
@@ -325,7 +330,7 @@ def test_register_holds_one_entry_per_confirmed_tvc_surface():
         for surface in surfaces
     }
     entries = tvc_exemptions()
-    assert len(entries) == len(expected) == 26
+    assert len(entries) == len(expected) == 19
     actual = {}
     for entry in entries:
         refs = re.findall(r"TVC record (O2B1-NA-\d{2}|W4-N[123]-\d{2})", entry["retry_entrypoint"])
@@ -351,12 +356,24 @@ def test_inherited_callers_are_consolidated_and_the_i8_surface_is_not_reregister
     surfaces = [e["surface"] for e in register["exemptions"]]
     # I-8 was repaired and its exemption removed by #3026 (20e2f44); W5 must not re-add it.
     assert not any(s.endswith(I8_SURFACE) for s in surfaces)
-    by_surface = {e["surface"]: e for e in register["exemptions"]}
-    core = by_surface["StegVerse-Labs/TVC:tvc_provider_operation_broker.py::forward_to_local_vault_broker"]
-    assert "Inherited by these 16 callers" in core["required_evidence_or_repair"]
-    binder = by_surface["StegVerse-Labs/TVC:tvc_primary_runtime_binder.py (discover_primary_runtime)"]
-    assert "O2B1-NA-09" in binder["required_evidence_or_repair"]
     assert not any("tvc_primary_runtime_activation_task.py (task_preflight)" in s for s in surfaces)
+
+
+def test_retired_tvc_records_are_not_registered_and_the_primary_runtime_units_are_narrowed():
+    surfaces = {e["surface"]: e for e in tvc_exemptions()}
+    retired = {"StegVerse-Labs/TVC:" + s for group in RETIRED_TVC_RECORD_SURFACES.values() for s in group}
+    assert len(retired) == 7 and not retired & set(surfaces)
+    assert not any(re.search(r"TVC record (O2B1-NA-0[789]|W4-N1-01|W4-N3-(03|04|10))\b", e["retry_entrypoint"])
+                   for e in surfaces.values())
+    for unit in ("deploy/systemd/stegtvc-primary-runtime.service", "deploy/systemd-user/stegtvc-primary-runtime.service"):
+        entry = surfaces["StegVerse-Labs/TVC:" + unit]
+        # W8b removed the socket-presence gate; the remaining predicate is the always-on listener.
+        assert entry["failure_code"] == "UNIT_ALWAYS_ON_RECEIVER_PREDICATE"
+        assert entry["failed_predicate"] == "PROVIDER_OPERATION_INGRESS_REQUIRES_ALWAYS_ON_LISTENER"
+        assert "W4-N2-07" in entry["required_evidence_or_repair"]
+    activate = surfaces["StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate"]
+    assert activate["failure_code"] == "MANIFEST_LESS_STATE_EFFECT"
+    assert "task_preflight verifies a manifest-bound activation request" in activate["required_evidence_or_repair"]
 
 
 def run_validator_with_register(register: dict) -> subprocess.CompletedProcess:
