@@ -71,7 +71,9 @@ def organization_store(ledger=None):
     STEGVERSE_ORG_LEDGER_GIT_DIR, STEGVERSE_ORG_LEDGER_GIT_REF and optional
     STEGVERSE_ORG_LEDGER_GIT_REMOTE and STEGVERSE_ORG_LEDGER_GIT_CUSTODY names
     the durable Git ledger; absent, the POSIX root from ledger_root(), exactly
-    as before. Nothing is derived from the host.
+    as before. Nothing is derived from the host. The ledger is the local
+    git dir; the remote is only the target of the store's explicit
+    materialize/propagate steps and is never awaited by a transition (F75-01).
     """
     if _is_store(ledger): return ledger
     if ledger is not None: return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
