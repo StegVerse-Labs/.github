@@ -108,8 +108,10 @@ jobs:
       - name: A refused crossing is recorded as DENY or FAIL_CLOSED, not thrown
         run: python -m unittest tests.test_refused_crossings_recorded -v
       # A4: an origin is attested by TV/TVC, never asserted by the sender. The
-      # TVC conformance cases skip here, loudly, as unproven: StegVerse-Labs/tvc
-      # is private and this workflow holds no credential to check it out.
+      # TVC conformance cases skip here and a skip is UNPROVEN, never a pass:
+      # StegVerse-Labs/tvc is private and this workflow holds no credential to
+      # check it out. Where a TVC checkout is present those cases use TVC's
+      # test key only and establish nothing about production TVC.
       - name: Origin is attested by TV/TVC; no signing or verification algorithm lives here
         run: python -m unittest tests.test_origin_attestation tests.test_origin_attestation_tvc_conformance -v
       - name: CanonicalWork TVC_RELAY_EGRESS is admitted only on TV/TVC's receipt for the exact request

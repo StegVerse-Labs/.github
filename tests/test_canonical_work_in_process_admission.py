@@ -42,6 +42,35 @@ attestation = ingress.origin_attestation
 # TVC checkout (STEGVERSE_TVC_ROOT) those cases skip as unproven, never passed.
 conformance = load_module("origin_attestation_tvc_conformance_fixture", ROOT / "tests" / "test_origin_attestation_tvc_conformance.py")
 RELAY_ORIGIN = "StegVerse-org"
+# The bilateral match reuses the existing reader of an organization's own chain.
+egress = load_module("organization_egress_boundary_relay", ROOT / "resident-runtime" / "organization_egress_boundary.py")
+
+
+class _ClaimedOriginChain:
+    """The claimed origin's own ledger, materialized for the test as a peer is.
+
+    Its emission receipt is appended through the repository ledger owner and read
+    back only through organization_egress_boundary.recorded_emission, the
+    existing bilateral reader; nothing here is a second verifier.
+    """
+
+    def __init__(self, root: Path):
+        self.root = root
+
+    def emit(self, packet_id: str, *, origin_organization: str = RELAY_ORIGIN,
+             destination_organization: str = "StegVerse-Labs") -> None:
+        record = {"origin_organization": origin_organization, "destination_organization": destination_organization,
+                  "packet_id": packet_id, "disposition": "ALLOW", "authority_effect": "NONE_EGRESS_RECORD_ONLY"}
+        with patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(self.root)}):
+            egress.repository_ledger.append(egress.EMITTED_CLASS + ":" + packet_id, egress.EMITTED_CLASS,
+                                            boundary._sha256_uri({"before": packet_id}), boundary._sha256_uri({"after": packet_id}),
+                                            record, "NONE")
+
+    def verifier(self):
+        def recorded_emission(packet_id: str):
+            with patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(self.root)}):
+                return egress.recorded_emission(packet_id)
+        return recorded_emission
 
 
 class _NoProcess:
@@ -124,10 +153,11 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
         return ingress.admit(runtime_root=runtime, body=body, headers=_headers(body, boundary.ORIGIN_NODE))
 
     def _assert_refused_without_effect(self, runtime: Path, body: bytes, headers: dict, reason: str | None = None,
-                                       *, origin_verifier=None) -> ValueError:
+                                       *, origin_verifier=None, emission_verifier=None) -> ValueError:
         with patch.object(ingress.subprocess, "Popen", return_value=_NoProcess()) as popen:
             with self.assertRaises(ValueError) as ctx:
-                ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=origin_verifier)
+                ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=origin_verifier,
+                              emission_verifier=emission_verifier)
         if reason is not None:
             self.assertEqual(str(ctx.exception), reason)
         self.assertFalse((runtime / ingress.REQUEST_DIR_REL).exists())
@@ -135,8 +165,10 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
         popen.assert_not_called()
         return ctx.exception
 
-    def _assert_relay_fail_closed(self, runtime: Path, body: bytes, headers: dict, predicate: str, *, origin_verifier=None) -> dict:
-        refused = self._assert_refused_without_effect(runtime, body, headers, predicate, origin_verifier=origin_verifier)
+    def _assert_relay_fail_closed(self, runtime: Path, body: bytes, headers: dict, predicate: str, *, origin_verifier=None,
+                                  emission_verifier=None) -> dict:
+        refused = self._assert_refused_without_effect(runtime, body, headers, predicate, origin_verifier=origin_verifier,
+                                                      emission_verifier=emission_verifier)
         self.assertIsInstance(refused, ingress.OriginAttestationFailClosed)
         record = refused.record
         self.assertEqual(record["state"], "FAIL_CLOSED")
@@ -296,9 +328,11 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
             request = self._request(runtime / "build")
             request_path.write_bytes(json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n")
             body = request_path.read_bytes()
+            chain = _ClaimedOriginChain(Path(td) / "claimed-origin-ledger")
+            chain.emit(request["materialization_id"])
             provenance = {"state": "BOUND", "transport_origin": boundary.ORIGIN_RELAY, "authorization_id": "RELAY-EGRESS-AUTH-1",
                           "origin_organization": RELAY_ORIGIN, "origin_attestation": authority.sign(request, body),
-                          "origin_verifier": authority.verify}
+                          "origin_verifier": authority.verify, "emission_verifier": chain.verifier()}
             with patch.object(ingress.subprocess, "Popen", return_value=_NoProcess()):
                 receipt = bootstrap.post_one(runtime=runtime, request_path=request_path, provenance=provenance, admit=ingress.admit)
             self.assertEqual(receipt["state"], "INGRESS_ADMITTED")
@@ -307,8 +341,11 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
             self.assertEqual(receipt["transport_authorization_id"], "RELAY-EGRESS-AUTH-1")
             self.assertEqual(receipt["transport_payload_sha256"], hashlib.sha256(body).hexdigest())
             record = receipt["origin_attestation"]
-            self.assertEqual(record["origin_attestation_state"], attestation.PROVEN)
+            # A verified signature is recorded as such, never as an authenticated sender.
+            self.assertEqual(record["origin_attestation_state"], "SIGNATURE_VERIFIED")
+            self.assertIs(record["signature_verified_is_sender_authentication"], False)
             self.assertIs(record["proves_the_authority_authenticated_the_asker"], False)
+            self.assertIs(record["bilateral_origin_emission_receipt_verified"], True)
             self.assertEqual(record["attested_statement"], {
                 "schema": attestation.STATEMENT_SCHEMA, "origin_organization": RELAY_ORIGIN,
                 "destination_organization": "StegVerse-Labs", "destination_service": "CanonicalWork:Ingress",
@@ -341,6 +378,48 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
                                            origin_verifier=authority.verify)
 
     @unittest.skipUnless(conformance.TVC, conformance.REASON)
+    def test_relay_signature_valid_without_bilateral_emission_receipt_fails_closed(self):
+        authority = _ConformanceAuthority()
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td).resolve()
+            request = self._request(runtime)
+            body = _encoded(request)
+            headers = _headers(body, boundary.ORIGIN_RELAY, "RELAY-EGRESS-AUTH-1", origin_organization=RELAY_ORIGIN,
+                               signature=authority.sign(request, body))
+            # The signature verifies, yet with no bilateral verifier nothing is admitted.
+            record = self._assert_relay_fail_closed(runtime, body, headers, "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED",
+                                                    origin_verifier=authority.verify)
+            self.assertIn("not sender authentication", record["detail"])
+            chain = _ClaimedOriginChain(Path(td) / "claimed-origin-ledger")
+            # The claimed origin's chain holds no emission receipt for this packet.
+            self._assert_relay_fail_closed(runtime, body, headers, "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED",
+                                           origin_verifier=authority.verify, emission_verifier=chain.verifier())
+            # It holds one for another packet only.
+            chain.emit("INTR-MAT-" + "e" * 24)
+            self._assert_relay_fail_closed(runtime, body, headers, "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED",
+                                           origin_verifier=authority.verify, emission_verifier=chain.verifier())
+            # A receipt for this packet emitted toward another organization.
+            elsewhere = _ClaimedOriginChain(Path(td) / "elsewhere-ledger")
+            elsewhere.emit(request["materialization_id"], destination_organization="StegGhost")
+            self._assert_relay_fail_closed(runtime, body, headers, "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED",
+                                           origin_verifier=authority.verify, emission_verifier=elsewhere.verifier())
+
+    def test_relay_bootstrap_without_bilateral_verifier_fails_closed_before_effect(self):
+        with tempfile.TemporaryDirectory() as td:
+            evidence = Path(td) / "tvc-relay-authorization.json"
+            evidence.write_text(json.dumps({"authorization_id": "RELAY-EGRESS-AUTH-1", "origin_organization": RELAY_ORIGIN,
+                                            "origin_attestation": {"algo": "hmac-sha256", "value": "0" * 64, "sha256": "0" * 64}}),
+                                encoding="utf-8")
+            # A signature verifier alone binds no relay origin.
+            resolved = bootstrap.resolve_transport_provenance(node_outbox_envelope=None, tvc_relay_authorization=evidence,
+                                                              origin_verifier=lambda **_: {})
+            self.assertEqual(resolved["state"], "FAIL_CLOSED")
+            self.assertEqual(resolved["failed_predicate"], "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED")
+            self.assertEqual(resolved["retry_entrypoint"], "scripts/run_canonical_work_event_bootstrap.py::main")
+            self.assertFalse(resolved["admission_attempted"] or resolved["queue_written"] or resolved["receipt_written"])
+            self.assertIn("organization_egress_boundary.py::recorded_emission", resolved["detail"])
+
+    @unittest.skipUnless(conformance.TVC, conformance.REASON)
     def test_relay_attested_statement_admits_only_exact_request(self):
         authority = _ConformanceAuthority()
         with tempfile.TemporaryDirectory() as td:
@@ -368,10 +447,14 @@ class CanonicalWorkInProcessAdmissionTests(unittest.TestCase):
                 runtime, body, _headers(body, boundary.ORIGIN_RELAY, "RELAY-EGRESS-AUTH-1", origin_organization=RELAY_ORIGIN),
                 "SIGNATURE_IS_AN_OBJECT_OF_THE_AUTHORITYS_SHAPE", origin_verifier=authority.verify)
             # Only the exact attested request is admitted, once, write-once.
+            chain = _ClaimedOriginChain(Path(td) / "claimed-origin-ledger")
+            chain.emit(request["materialization_id"])
             headers = _headers(body, boundary.ORIGIN_RELAY, "RELAY-EGRESS-AUTH-1", origin_organization=RELAY_ORIGIN, signature=signature)
             with patch.object(ingress.subprocess, "Popen", return_value=_NoProcess()) as popen:
-                first = ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=authority.verify)
-                second = ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=authority.verify)
+                first = ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=authority.verify,
+                                      emission_verifier=chain.verifier())
+                second = ingress.admit(runtime_root=runtime, body=body, headers=headers, origin_verifier=authority.verify,
+                                       emission_verifier=chain.verifier())
             self.assertEqual(first["request_hash"], request["request_hash"])
             self.assertEqual(first["origin_attestation"]["attested_statement"]["payload_sha256"], hashlib.sha256(body).hexdigest())
             self.assertEqual(second["admitted_at"], first["admitted_at"])

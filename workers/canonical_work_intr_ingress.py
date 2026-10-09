@@ -50,6 +50,14 @@ LATEST_REL = Path("receipts/sovereign-network/canonical-work-intr-ingress.latest
 REQUEST_DIR_REL = Path("intr-materialization")
 # TVC_RELAY_EGRESS is admitted only on a TV/TVC receipt for this statement.
 A4_VERIFIER_PREDICATE = "A4_TV_TVC_ORIGIN_VERIFIER_PRESENT_AT_CUSTODY_OWNER"
+# A verified signature is not sender authentication (origin_attestation.py: the
+# asker binding needs the bilateral match). Admission also requires the claimed
+# origin's own emission receipt for this exact packet id, read through the
+# existing resident-runtime/organization_egress_boundary.py::recorded_emission
+# over that organization's chain, injected by the materializer.
+BILATERAL_PREDICATE = "BILATERAL_ORIGIN_EMISSION_RECEIPT_VERIFIED"
+BILATERAL_SOURCE = "resident-runtime/organization_egress_boundary.py::recorded_emission"
+SIGNATURE_VERIFIED = "SIGNATURE_VERIFIED"
 RETRY_ENTRYPOINT = "workers/canonical_work_intr_ingress.py::admit"
 FAIL_CLOSED_SCHEMA = "stegverse.canonical-work-intr-ingress-fail-closed/v1"
 DESTINATION_ORGANIZATION = "StegVerse-Labs"
@@ -158,17 +166,57 @@ def require_relay_origin_attestation(request: Mapping[str, Any], transport: Mapp
         receipt = origin_attestation.verify(declared, _carried_signature(transport.get("origin_attestation")), origin_verifier)
     except origin_attestation.AttestationRefused as refused:
         raise OriginAttestationFailClosed(refused.failed_predicate, refused.reason) from None
-    return origin_attestation.record(declared, _carried_signature(transport.get("origin_attestation")), receipt)
+    attested = origin_attestation.record(declared, _carried_signature(transport.get("origin_attestation")), receipt)
+    # The authority signed this statement; that identifies no sender yet.
+    return {**attested,
+            "origin_attestation_state": SIGNATURE_VERIFIED,
+            "credential_authority_signature_state": attested["origin_attestation_state"],
+            "signature_verified_is_sender_authentication": False}
+
+
+def require_bilateral_emission_receipt(attested: Mapping[str, Any],
+                                       emission_verifier: Callable[[str], Mapping[str, Any] | None] | None) -> dict[str, Any]:
+    """Hold a verified signature to the claimed origin's own emission receipt.
+
+    `emission_verifier(packet_id)` is the existing recorded_emission over the
+    claimed origin organization's chain, supplied by the materializer; this
+    ingress has no reach into another organization's ledger and no default. No
+    verifier, no receipt, or a receipt for another origin, destination or packet
+    is FAIL_CLOSED, even though the signature verified.
+    """
+    declared = attested["attested_statement"]
+    if emission_verifier is None:
+        raise OriginAttestationFailClosed(
+            BILATERAL_PREDICATE,
+            "no bilateral verifier (" + BILATERAL_SOURCE + " over the claimed origin's chain) was supplied; "
+            "a verified signature alone is not sender authentication")
+    emission = emission_verifier(declared["packet_id"])
+    if not isinstance(emission, Mapping):
+        raise OriginAttestationFailClosed(
+            BILATERAL_PREDICATE,
+            declared["origin_organization"] + "'s chain holds no emission receipt for packet " + declared["packet_id"])
+    for field, expected in (("origin_organization", declared["origin_organization"]),
+                            ("destination_organization", declared["destination_organization"]),
+                            ("packet_id", declared["packet_id"])):
+        if emission.get(field) != expected:
+            raise OriginAttestationFailClosed(
+                BILATERAL_PREDICATE, f"emission receipt {field} is {emission.get(field)!r}, not {expected!r}")
+    return {**attested,
+            "bilateral_origin_emission_receipt_verified": True,
+            "bilateral_verifier_source": BILATERAL_SOURCE,
+            "bilateral_emission_record_sha256": transport_boundary._sha256_uri(dict(emission))}
 
 
 def bound_request(payload: Any, transport: Mapping[str, str | None], *,
-                  origin_verifier: Callable[..., Mapping[str, Any]] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+                  origin_verifier: Callable[..., Mapping[str, Any]] | None = None,
+                  emission_verifier: Callable[[str], Mapping[str, Any] | None] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     """Apply the origin-specific checks that must hold before ALLOW.
 
     Node origin: the payload must be a node-trigger/outbox envelope that passes the
     HIL ingress's own envelope validator. Relay origin: the exact request, its
-    digest, and TV/TVC's verification receipt for the A4 statement binding both.
-    A carrier binding is never origin.
+    digest, TV/TVC's verification receipt for the A4 statement binding both, and
+    the claimed origin's own emission receipt for the packet (the bilateral
+    match). A carrier binding is never origin.
     """
     origin = transport.get("origin")
     if origin == transport_boundary.ORIGIN_NODE:
@@ -180,12 +228,14 @@ def bound_request(payload: Any, transport: Mapping[str, str | None], *,
     validate_request(payload)
     require(len(str(transport.get("payload_sha256") or "")) == 64, "relay_exact_request_digest_invalid")
     attested = require_relay_origin_attestation(payload, transport, origin_verifier)
+    attested = require_bilateral_emission_receipt(attested, emission_verifier)
     request, source = transport_boundary.extract_materialization(payload, transport, request_validator=validate_request)
     return request, {**source, "origin_attestation": attested}
 
 
 def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
-          origin_verifier: Callable[..., Mapping[str, Any]] | None = None) -> dict[str, Any]:
+          origin_verifier: Callable[..., Mapping[str, Any]] | None = None,
+          emission_verifier: Callable[[str], Mapping[str, Any] | None] | None = None) -> dict[str, Any]:
     transport = transport_boundary.validate_transport_headers(headers, body)
     if transport.get("origin") == transport_boundary.ORIGIN_RELAY:
         transport = {**transport,
@@ -195,7 +245,8 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
         payload = json.loads(body.decode("utf-8"))
     except Exception as exc:
         raise ValueError("request_json_invalid") from exc
-    request, source = bound_request(payload, transport, origin_verifier=origin_verifier)
+    request, source = bound_request(payload, transport, origin_verifier=origin_verifier,
+                                    emission_verifier=emission_verifier)
 
     materialization_id = str(request["materialization_id"])
     request_path = runtime_root / REQUEST_DIR_REL / f"{materialization_id}.json"
@@ -275,4 +326,4 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str],
     }
 
 
-__all__ = ["A4_VERIFIER_PREDICATE", "DESTINATION", "DOWNSTREAM_OWNER", "INGRESS_SCHEMA", "OriginAttestationFailClosed", "is_canonical_work", "bound_request", "relay_statement", "admit"]
+__all__ = ["A4_VERIFIER_PREDICATE", "BILATERAL_PREDICATE", "DESTINATION", "DOWNSTREAM_OWNER", "INGRESS_SCHEMA", "OriginAttestationFailClosed", "is_canonical_work", "bound_request", "relay_statement", "admit"]
