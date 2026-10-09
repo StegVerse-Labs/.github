@@ -127,7 +127,7 @@
     "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
     "DIRECT_INTERNAL_BYPASS_REJECTED",
     "COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN",
-    "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED"
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE"
   ],
   "runtime_evidence_state": {
     "resident_execution": "NOT_PROVEN",
@@ -178,5 +178,27 @@
     "session_admission_authentic_observed": false,
     "execution_authority_effect": "NONE"
   },
-  "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
+  "source_state_vector_ref": "control/task-vectors/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
+  "superseded_remaining_predicates": {
+    "value": [
+      "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
+      "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
+      "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
+      "UNGOVERNED_AI_DEFENSIVE_ENVELOPE_RUNTIME_ENFORCED",
+      "CAPABILITY_SCOPED_FILESYSTEM_NETWORK_TOOL_BOUNDARIES_RUNTIME_PROVEN",
+      "AMBIENT_CREDENTIAL_AND_PROTECTED_AUTHORITY_UNREACHABILITY_RUNTIME_PROVEN",
+      "DENIED_CONSEQUENCE_UNREACHABILITY_PROVEN_FOR_REPRESENTATIVE_BOUNDARY",
+      "GOVERNED_EGRESS_SEPARATION_RUNTIME_PROVEN",
+      "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
+      "LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS",
+      "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
+      "DIRECT_INTERNAL_BYPASS_REJECTED",
+      "COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN",
+      "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }

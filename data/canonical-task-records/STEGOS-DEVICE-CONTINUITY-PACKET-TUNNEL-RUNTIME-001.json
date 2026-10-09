@@ -71,7 +71,7 @@
   ],
   "expected_evidence_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED", "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
   "satisfied_evidence_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED"],
-  "remaining_evidence_predicates": ["AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
+  "remaining_evidence_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PACKET_TUNNEL_ACTIVATION", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CROSS_APP_PERSISTENCE", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:LOOPBACK_8766_REACHABILITY"],
   "runtime_requirements": {
     "capabilities": ["ios_packet_tunnel_provider", "bounded_loopback_transport", "runtime_observation"],
     "environment": "STEGOS_NODE",
@@ -141,5 +141,16 @@
     "heartbeat_execution_authority": false,
     "github_runtime_authority": "NONE",
     "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "superseded_remaining_evidence_predicates": {
+    "value": [
+      "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED",
+      "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
+      "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_evidence_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

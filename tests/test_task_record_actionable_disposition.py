@@ -7,7 +7,10 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from validate_task_record_actionable_disposition import validate_record  # noqa: E402
+from validate_task_record_actionable_disposition import (  # noqa: E402
+    validate_progression_predicates,
+    validate_record,
+)
 
 RECORDS = ROOT / "data" / "canonical-task-records"
 
@@ -256,3 +259,108 @@ def test_gadi_runtime_closure_carries_typed_append_disposition():
     assert record["coordination_state"] == "ACTIVE"
     assert record["checkout_state"] == "CLAIMED_INTEGRATION"
     assert record["cosv_task_vector"] == "10100000100000"
+
+
+APPEND = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
+
+
+def test_affirmative_observer_in_progression_predicate_fields_is_flagged():
+    """#3012: a progression gate naming an observer is a post-closure observer gate."""
+    record = {
+        "coordination_state": "ACTIVE",
+        "runtime_resolution": {"first_unresolved_runtime_predicate": "CURRENT_GATEWAY_RUNTIME_OBSERVED"},
+        "remaining_predicates": ["SOURCE_MERGED", "AUTHENTIC_LEASE_CLOSURE_OBSERVED"],
+        "goal_specific_completion_predicates": ["REQUIRED_RECONSTRUCTION_OBSERVED"],
+        "state_transition_graph": {"transitions": [
+            {"from": "A", "to": "B_OBSERVED", "predicate": "NEUTRAL_INVOCATION_RECEIPT_OBSERVED"},
+        ]},
+        "goal_chart": {"A4": {"predicates": ["RECEIPT_VERIFIED AND AUTHENTIC_INGRESS_OBSERVED"]}},
+        "dependencies": [{"dependency_id": "DEP-1", "kind": "RUNTIME_PREDICATE",
+                          "ref": "AUTHENTIC_RETAINED_RUNTIME_OBSERVED"}],
+        "latest_runtime_reconciliation": {"next_required_predicate": "CLAIM_FENCE_OBSERVED"},
+        "gates": ["PROVIDER_CALLBACK_OBSERVED"],
+    }
+    errors = validate_record(record, "TEST-001")
+    assert len(errors) == 8, errors
+    assert all("STOP_AFFIRMATIVE_OBSERVER_PREDICATE" in error for error in errors)
+    for path in (
+        "runtime_resolution.first_unresolved_runtime_predicate=",
+        "remaining_predicates[1]=",
+        "goal_specific_completion_predicates[0]=",
+        "state_transition_graph.transitions[0].predicate=",
+        "goal_chart.A4.predicates[0]=",
+        "dependencies[0].ref=",
+        "latest_runtime_reconciliation.next_required_predicate=",
+        "gates[0]=",
+    ):
+        assert any(path in error for error in errors), path
+
+
+def test_append_predicate_and_evidence_labels_are_not_flagged():
+    record = {
+        "coordination_state": "ACTIVE",
+        "runtime_resolution": {"first_unresolved_runtime_predicate": f"{APPEND}:GATEWAY_RUNTIME"},
+        "remaining_predicates": [f"{APPEND}:LEASE_CLOSURE"],
+        # Evidence labels the Master Records reconciliation matches, and state
+        # names, are not progression predicates.
+        "expected_evidence_predicates": ["AUTHENTIC_INGRESS_OBSERVED"],
+        "allowed_next_transitions": ["REUSABLE_INVOCATION_OBSERVED"],
+        "state_transition_graph": {"transitions": [
+            {"from": "A_OBSERVED", "to": "B_OBSERVED", "predicate": f"{APPEND}:B"},
+        ]},
+        "verification_evidence": ["FIRST_EXIT_TRANSITION_OBSERVED"],
+        # A plain `ref` outside a dependency entry is a reference, not a gate.
+        "source": {"ref": "SOURCE_AUDIT_OBSERVED"},
+    }
+    assert validate_record(record, "TEST-001") == []
+
+
+def test_affirmative_rule_keeps_historical_and_typed_exclusions():
+    typed = actionable("ORGANIZATION_RECEIPT_NOT_APPENDED")
+    typed["failed_predicate"] = "CURRENT_CLAIM_FENCE_OBSERVED"
+    record = {
+        "coordination_state": "ACTIVE",
+        "goal_chart": {"A3": {"predicate": f"{APPEND}:CLAIM_FENCE", "state": typed,
+                              "superseded_predicate": {"value": "CURRENT_CLAIM_FENCE_OBSERVED",
+                                                       "authority_effect": "NONE_HISTORY_ONLY"}}},
+        "superseded_remaining_predicates": {"value": ["AUTHENTIC_LEASE_CLOSURE_OBSERVED"]},
+        "predicate_history": ["AUTHENTIC_LEASE_CLOSURE_OBSERVED"],
+        "review_20261009": {"remaining_predicates": ["AUTHENTIC_LEASE_CLOSURE_OBSERVED"]},
+    }
+    assert validate_record(record, "TEST-001") == []
+    # The exclusion does not hide a standing sibling beside the history.
+    record["goal_chart"]["A3"]["predicate"] = "CURRENT_CLAIM_FENCE_OBSERVED"
+    errors = validate_record(record, "TEST-001")
+    assert len(errors) == 1 and "goal_chart.A3.predicate=" in errors[0]
+
+
+def test_retired_record_gates_nothing():
+    record = {"coordination_state": "RETIRED",
+              "decomposition": {"first_unresolved_successor_predicate": "AUTHENTIC_RUNTIME_OBSERVED"}}
+    assert validate_progression_predicates(record, "TEST-001") == []
+    record["coordination_state"] = "ACTIVE"
+    assert len(validate_progression_predicates(record, "TEST-001")) == 1
+
+
+def test_gadi_first_unresolved_runtime_predicate_is_the_append_predicate():
+    record = json.loads((RECORDS / "GADI-RUNTIME-CLOSURE-001.json").read_text(encoding="utf-8"))
+    resolution = record["runtime_resolution"]
+    assert resolution["first_unresolved_runtime_predicate"] == (
+        f"{APPEND}:DURABLE_SERVICE_GATEWAY_RESIDENT_RENDEZVOUS_RUNTIME"
+    )
+    prior = resolution["superseded_first_unresolved_runtime_predicate"]
+    assert prior["value"] == "CURRENT_DURABLE_SERVICE_GATEWAY_RESIDENT_RENDEZVOUS_RUNTIME_OBSERVED"
+    assert prior["superseded_at_generation"] == 301
+    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
+    # The evidence label of the same name is kept for Master Records matching.
+    assert prior["value"] in record["expected_evidence_predicates"]
+    assert record["coordination_state"] == "ACTIVE"
+    assert record["checkout_state"] == "CLAIMED_INTEGRATION"
+    assert record["cosv_task_vector"] == "10100000100000"
+
+
+def test_aggregate_registry_carries_no_affirmative_observer_gate():
+    registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+    assert registry["generation"] >= 301
+    for task in registry["tasks"]:
+        assert validate_progression_predicates(task, task.get("task_id")) == [], task.get("task_id")

@@ -69,8 +69,74 @@ OBSERVATION_SUFFIX = re.compile(
 )
 
 
+# A field whose value is the predicate that gates progression: the predicate a
+# transition or goal-chart step requires, a failed/unresolved/required/next/
+# first predicate, a remaining or completion predicate list, a required
+# sequence, or a gate. `expected_evidence_predicates` and other evidence lists
+# are labels Master Records reconciliation matches, so they are not reached.
+PROGRESSION_PREDICATE_KEY = re.compile(
+    r"^(predicate|predicates|failed_predicate|ref"
+    r"|[a-z_]*(unresolved|required|next|first|remaining|completion)[a-z_]*predicates?"
+    r"|required_reusable_sequence|gates?|[a-z_]+_gates?)$"
+)
+# An affirmative observer predicate: progression waits for something to be
+# observed. Runtime reality is the Organization receipt appended under lock, and
+# a post-closure observer gate is prohibited (task-registry-global-invariants
+# `post_closure_authentic_observer_gate_allowed: false`), so the gate names
+# ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> instead
+# (StegVerse-Labs/.github#3012). The negative spellings are OBSERVATION_SUFFIX.
+AFFIRMATIVE_OBSERVER = re.compile(r"_OBSERVED$")
+APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
+
+
 def _is_bare_finding(value: str) -> bool:
     return bool(BARE_FINDING.match(value) or OBSERVATION_SUFFIX.search(value))
+
+
+def _names_affirmative_observer(value: str) -> bool:
+    """True when any predicate token in `value` (`A AND B` too) is an observer."""
+    return any(
+        AFFIRMATIVE_OBSERVER.search(token) and not OBSERVATION_SUFFIX.search(token)
+        for token in value.split()
+    )
+
+
+def validate_progression_predicates(record: dict, task_id: str) -> list[str]:
+    """Return one error per progression-predicate field naming an observer.
+
+    The whole record is walked, because progression predicates sit in
+    transition graphs, dependency lists and reconciliation blocks as well as in
+    FINDING_BLOCKS. A RETIRED record gates nothing, a dependency `ref` counts
+    only on a RUNTIME_PREDICATE or state dependency, and the HISTORICAL_KEY and
+    typed non-ALLOW exclusions are the same as validate_record's.
+    """
+    if record.get("coordination_state") == "RETIRED":
+        return []
+    errors: list[str] = []
+
+    def walk(node: object, path: str, gating: bool) -> None:
+        if isinstance(node, dict):
+            if node.get("disposition") in NON_ALLOW:
+                return
+            ref_gates = "kind" in node and "dependency_id" in node
+            for key, value in sorted(node.items()):
+                if HISTORICAL_KEY.search(key):
+                    continue
+                child_gating = bool(PROGRESSION_PREDICATE_KEY.match(key)) and (
+                    key != "ref" or ref_gates)
+                walk(value, f"{path}.{key}" if path else key, child_gating)
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                walk(value, f"{path}[{index}]", gating)
+        elif gating and isinstance(node, str) and _names_affirmative_observer(node):
+            errors.append(
+                f"{task_id}: STOP_AFFIRMATIVE_OBSERVER_PREDICATE {path}={node} "
+                f"- gate on {APPEND_PREDICATE}:<transition> naming the same "
+                "transition, keeping the prior value as superseded_* history"
+            )
+
+    walk(record, "", False)
+    return errors
 
 
 def validate_record(record: dict, task_id: str) -> list[str]:
@@ -114,7 +180,7 @@ def validate_record(record: dict, task_id: str) -> list[str]:
     for block in FINDING_BLOCKS:
         if block in record:
             walk(record[block], block)
-    return errors
+    return errors + validate_progression_predicates(record, task_id)
 
 
 def main() -> int:

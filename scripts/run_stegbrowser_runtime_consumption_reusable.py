@@ -12,6 +12,11 @@ NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
 # The ingress worker's success state: the A4 append predicate, not a passive
 # observation (StegVerse-Labs/.github#3012 K2).
 INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"
+PRE_VERIFICATION_DISPOSITION_KEYS = (
+    "disposition", "evidence_class", "consequence_committed", "failure_code",
+    "failed_predicate", "satisfying_edge", "required_evidence_or_repair",
+    "retry_entrypoint", "owning_existing_goal", "next_attempt", "evidence_refs",
+)
 
 spec = importlib.util.spec_from_file_location("stegbrowser_runtime_legacy", LEGACY)
 if spec is None or spec.loader is None:
@@ -119,6 +124,14 @@ def main() -> int:
                 boundary["node_interlock_lease_runtime_correlation_verified"] = projection.get("node_interlock_lease_runtime_correlation_verified")
                 for key in ("manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "lease_id", "runtime_id", "state_root_binding", "node_interlock_runtime_binding_sha256"):
                     boundary[key] = projection.get(key)
+                # The legacy boundary's pre-verification FAIL_CLOSED named the
+                # ingress append predicate; the worker's readback above now
+                # satisfies it, so it is kept as history only (#3012).
+                if boundary.get("failed_predicate") == INGRESS_APPEND_PREDICATE:
+                    boundary["superseded_pre_verification_disposition"] = {
+                        key: boundary.pop(key) for key in PRE_VERIFICATION_DISPOSITION_KEYS if key in boundary
+                    } | {"authority_effect": "NONE_HISTORY_ONLY"}
+                    boundary["state"] = INGRESS_APPEND_PREDICATE
                 boundary["next_required_predicate"] = "ROUND_TRIP_1_DECLARED_MIRROR_REFLECTION"
                 mod.atomic_json(boundary_path, boundary)
                 print(json.dumps(boundary, sort_keys=True))

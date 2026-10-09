@@ -125,8 +125,15 @@
     "provider_operation_required": false,
     "github_ci_runtime_authority": "NONE",
     "completion_claimed": false,
-    "first_unresolved_requested_chain_predicate": "AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED",
-    "underlying_first_concrete_defect": "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED"
+    "first_unresolved_requested_chain_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TARGETED_RESIDENT_REQUEST_CONSUMPTION",
+    "underlying_first_concrete_defect": "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED",
+    "superseded_first_unresolved_requested_chain_predicate": {
+      "value": "AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED",
+      "superseded_at_generation": 301,
+      "superseded_by": "latest_runtime_reconciliation.first_unresolved_requested_chain_predicate",
+      "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }
   },
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},

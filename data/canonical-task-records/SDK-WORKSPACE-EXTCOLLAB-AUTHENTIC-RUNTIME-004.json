@@ -190,7 +190,7 @@
     "utc_hour_slot_satisfaction_observed": false
   },
   "source_state": {"portable_exact_dispatch_merged": true, "service_gateway_three_route_source_merged": true, "resolver_repair_merged_validated": true, "retained_rendezvous_node_subject_projection_merged_validated": true, "kv_skap_user_verifier_global_invariant_merged": true, "interchangeable_stegos_node_global_invariant_merged": true, "reusable_task_component_model_source_validated": true, "reusable_lifecycle_source_complete": true, "healer_scheduler_terminal_compatibility_merged": true, "established_node_model_reconciled": true, "physical_device_identity_gate": "NONE_PROHIBITED", "specific_iphone_requirement": false, "remote_device_connector_applicable": false, "resident_reseal_consumption_receipt_observed": false, "resident_consent_listener_consumption_receipt_observed": false, "retained_drive_receipts_observed": false, "sovereign_callback_reachability_proven": false, "github_runtime_authority": "NONE", "hosted_execution_fallback": false},
-  "remaining_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN", "ESTABLISHED_NODE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
+  "remaining_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RESIDENT_RESEAL_CONSUMPTION_RECEIPT", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN", "ESTABLISHED_NODE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
   "authority_model": {"task_registry_mints_execution_authority": false, "worker_claim_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "interlock_intr_required_for_governed_ingress_egress": true, "master_records_reality_authority": false, "gateway_owner": "StegVerse-org/LLM-adapter#72", "github_runtime_authority": "NONE", "hosted_execution_fallback": false, "second_user_operated_device_required": false},
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
   "activation_condition_status": "SATISFIED",
@@ -295,6 +295,29 @@
     "superseded_at_generation": 299,
     "superseded_by": "remaining_predicates",
     "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  },
+  "superseded_remaining_predicates_g301": {
+    "value": [
+      "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION",
+      "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN",
+      "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN",
+      "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
+      "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
+      "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
+      "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
+      "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
+      "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
+      "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
+      "MIR_TRANSITION_REPORTING_PROVEN",
+      "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN",
+      "ESTABLISHED_NODE_END_TO_END_PROVEN",
+      "DOWNSTREAM_PROPAGATION_COMPLETE",
+      "PUBLIC_DISTRIBUTIONS_COMPLETE"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
     "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

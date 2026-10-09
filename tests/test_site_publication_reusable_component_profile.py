@@ -29,7 +29,22 @@ def test_site_publication_profile_preserves_identity_and_runtime_predicates():
     assert profile["goal_identity_preserved"] is True
     assert profile["new_goal_task_required"] is False
     assert task["component_model_projection"]["goal_runtime_predicates_changed"] is False
-    assert task["remaining_predicates"] == profile["goal_specific_completion_predicates_preserved"]
+    # #3012: the profile's predicates are the record's prior names, retained as
+    # history; the record now gates each same transition on its Organization append.
+    prior = task["superseded_remaining_predicates"]
+    assert prior["value"] == profile["goal_specific_completion_predicates_preserved"]
+    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
+    assert task["remaining_predicates"] == [
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SOVEREIGN_SOURCE_REFRESH",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_WORKER_EXECUTION",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:BOUNDED_EVENT_EPHEMERAL_LEASE_EXECUTION",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PUBLIC_HTTPS_INTR_PROFILE",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:EXACT_HTTP_BYTE_PATH_EQUIVALENCE",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:LEASE_CLOSURE",
+        "FINAL_PUBLICATION_TRANSITION_ADMITTED",
+        "DNS_TLS_RECOVERY_PROVEN",
+    ]
 
 
 def test_site_publication_selects_only_needed_transport_components():

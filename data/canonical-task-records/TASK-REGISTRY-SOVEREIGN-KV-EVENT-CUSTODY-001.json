@@ -74,7 +74,7 @@
     "AUTHENTIC_PROVIDER_WRITE_ADMITTED_AND_EXECUTED_BY_EXISTING_OWNER",
     "EXACT_STORED_EVENT_HASH_READBACK_MATCHES_CANONICAL_EVENT_HASH",
     "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
-    "REQUIRED_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION_OBSERVED"
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION"
   ],
   "runtime_owner_transition_observation": {
     "canonical_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
@@ -98,5 +98,19 @@
     "master_records": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION",
     "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
+  },
+  "superseded_goal_specific_completion_predicates": {
+    "value": [
+      "LIVE_CANONICAL_TASK_REGISTRY_EVENT_WITH_EXACT_HASH_LINEAGE",
+      "CURRENT_APPLICABLE_KV_SKAP_VERIFICATION_RECORD_SELECTED_WHEN_REQUIRED",
+      "AUTHENTIC_PROVIDER_WRITE_ADMITTED_AND_EXECUTED_BY_EXISTING_OWNER",
+      "EXACT_STORED_EVENT_HASH_READBACK_MATCHES_CANONICAL_EVENT_HASH",
+      "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
+      "REQUIRED_MASTER_RECORDS_ORGANIZATION_RECORD_AND_RECONSTRUCTION_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "goal_specific_completion_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }
