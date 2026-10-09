@@ -139,6 +139,87 @@
       "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
       "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
       "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    },
+    {
+      "extension_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/I12",
+      "item_ids": [
+        "I-12a",
+        "I-12b",
+        "I-12c"
+      ],
+      "goal": "Make organization-role conformance requests pass authentic SDK manifest validation. I-12a publishes stegverse.route.organization-role-conformance.v1 (processor_capability organization_role_conformance) in the SDK's existing route registry and carries the request through the SDK's existing extension contract (extensions.stegverse_route), with real SDK tests; no ad hoc top-level manifest field, alternative runtime or dependency. I-12b aligns the Labs ingress and the StegDB emitter to that SDK-admitted shape, preserving the exact issuer, destination, binding, version and file digest contracts. I-12c moves the Labs workflow SDK pin to one published SDK commit the ingress imports against and replaces the route-specific stubs with real pinned-SDK import, validation, derivation and publication tests, without regressing the unrelated SDK baseline.",
+      "repositories": [
+        "StegVerse-org/StegVerse-SDK",
+        "StegVerse-Labs/.github",
+        "StegVerse-Labs/StegDB"
+      ],
+      "repository_order": "SDK_I12A_FIRST_THEN_LABS_AND_STEGDB_I12B_I12C",
+      "source_paths": [
+        "StegVerse-org/StegVerse-SDK:stegverse/route_resolution.py",
+        "StegVerse-org/StegVerse-SDK:stegverse/manifest_contract.py",
+        "StegVerse-org/StegVerse-SDK:stegverse/manifest_state_transition_runtime.py",
+        "StegVerse-Labs/.github:resident-runtime/organization_manifest_ingress.py",
+        "StegVerse-Labs/.github:resident-runtime/organization_role_conformance.py",
+        "StegVerse-Labs/.github:tests/test_organization_role_conformance_ingress.py",
+        "StegVerse-Labs/.github:.github/workflows/org-runtime-boundary.yml",
+        "StegVerse-Labs/.github:.github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
+        "StegVerse-Labs/StegDB:tools/evaluate_organization_role_conformance.py",
+        "StegVerse-Labs/StegDB:tests/test_organization_role_labs_ingress_contract.py"
+      ],
+      "items": {
+        "I-12a": "StegVerse-org/StegVerse-SDK: publish PUBLISHED_ROUTES['stegverse.route.organization-role-conformance.v1'] with processor_capability organization_role_conformance in stegverse/route_resolution.py (verified at blob 2eca0c6720ce1efdee00ad1e0d31cfcbae5b674e) and admit the request through the existing extensions.stegverse_route contract, with real SDK tests.",
+        "I-12b": "StegVerse-Labs/.github and StegVerse-Labs/StegDB: align the Labs ingress and the I-9 StegDB emitter, under its Labs ingress contract test, to the SDK-admitted manifest shape; route publication and ingress use the same shape.",
+        "I-12c": "StegVerse-Labs/.github: update the existing Labs SDK pin (currently f8140f2aa2a3209b8be47d91b5659b1b4ae21335) only after the I-12a SDK commit is published, and replace the route-specific ingress stubs with real pinned-SDK tests. A pin update is not a new dependency."
+      },
+      "sequencing": {
+        "admission_before_sdk_source_mutation": true,
+        "order": [
+          "W9a registry admission",
+          "W9b I-12a",
+          "W9c I-12b and I-12c",
+          "W9d I-11"
+        ],
+        "i12b_i12c_start_after": "I-12a merged"
+      },
+      "owner_resolution": {
+        "source": "data/canonical-task-registry.json generation 298 on StegVerse-Labs/.github main",
+        "method": "All tasks scanned for a StegVerse-org/StegVerse-SDK target, route_resolution or PUBLISHED_ROUTES.",
+        "predicate_owner": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+        "basis": "The only ACTIVE task whose admitted targets.repositories include StegVerse-org/StegVerse-SDK; its goal (actions exercised as manifest-bound transitions with terminal dispositions) requires the route to be published. It already owns N2 through a bounded extension, so no new task is created.",
+        "retired_sdk_tasks_not_reopened": [
+          "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+          "SDK-PUBLIC-DEVELOPER-WIKI-001",
+          "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
+        ],
+        "other_active_sdk_manifest_tasks_considered": [
+          "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001 (collaboration ingress only)",
+          "SDK-MANIFEST-IDENTITY-ROUTING-REGRESSION-GATE-001 (regression coverage, not route publication)"
+        ],
+        "sdk_authority_conferred_on": "NONE; STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002 gains no SDK authority",
+        "approval_condition": "StegVerse-Labs/TVC#488 (comment 6072675486): resolve and admit the existing canonical SDK owner before SDK source mutation; no new task or dependency.",
+        "resolution_ref": "StegVerse-Labs/TVC#488 (comment 6072705082)"
+      },
+      "remaining_predicates": [
+        "I12A_ROLE_CONFORMANCE_ROUTE_PUBLISHED_VIA_EXISTING_EXTENSION_CONTRACT_WITH_REAL_SDK_TESTS",
+        "I12B_LABS_INGRESS_AND_STEGDB_EMITTER_ALIGNED_TO_SDK_ADMITTED_SHAPE",
+        "I12C_LABS_SDK_PIN_UPDATED_AND_ROUTE_STUBS_REPLACED_BY_REAL_SDK_TESTS_WITHOUT_BASELINE_REGRESSION",
+        "I12_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6072508153)",
+        "StegVerse-Labs/TVC#488 (comment 6072675486)",
+        "StegVerse-Labs/TVC#488 (comment 6072705082)"
+      ],
+      "admitted_on": "2026-10-09",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
     }
   ],
   "evidence_gaps": [
