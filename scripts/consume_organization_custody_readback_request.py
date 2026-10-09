@@ -239,8 +239,8 @@ def consume(source_root: Path, runtime_root: Path, *, _from_governed_attempt: bo
                 "authority_effect": "NONE_READBACK_ONLY",
             }
         module = _load_readback(source, runtime)
-        # Reuse existing resident ledger-root configuration, not a request path.
-        result = module.readback(module.org.ledger_root(),
+        # The manifest-declared store the append uses (OL-2), not a request path.
+        result = module.readback(module.org.organization_store(),
                                  correlation_ids=correlations, include_exact=True)
         if request.get("reconcile_master_records") is True:
             from urllib.parse import urlencode

@@ -58,6 +58,21 @@ class LedgerLocusMismatch(LedgerLocationRequired):
         self.declared=declared
         self.repair="unset "+variable+" or make it equal the declared organization_ledger value "+json.dumps(declared)
 
+class LedgerStoreKindMismatch(LedgerLocationRequired):
+    """A raw POSIX ledger read was asked for while the manifest declares another store (OL-2).
+
+    The read path and the append path are always the one declared store, so a
+    POSIX root is never read silently while appends go to the Git ref.
+    """
+
+    failed_predicate="ORGANIZATION_LEDGER_STORE_KIND_MISMATCH"
+
+    def __init__(self, declared):
+        ValueError.__init__(self,"organization_ledger_store_kind_mismatch: declared "+str(declared))
+        self.variable=LEDGER_LOCUS_KEY+".store"
+        self.declared=declared
+        self.repair="read the Organization ledger through organization_store() and the store read API"
+
 def location_refusal(exc):
     """The append attempt's own disposition when no ledger root was supplied."""
     return {
@@ -79,7 +94,13 @@ def ledger_root():
     It is never derived from the host: a home directory belongs to whichever
     machine happens to run this, and a chain written there is discarded with
     an ephemeral execution while appearing to have been appended.
+
+    The root exists only for a declared {store: posix} locus (OL-2). Under any
+    other declaration it is FAIL_CLOSED ORGANIZATION_LEDGER_STORE_KIND_MISMATCH:
+    readers use organization_store() and the store's own read API instead.
     """
+    store=declared_ledger_locus()["store"]
+    if store!="posix": raise LedgerStoreKindMismatch(store)
     o=os.getenv("STEGVERSE_ORG_LEDGER_ROOT")
     if o: return Path(o).expanduser().resolve()
     raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
