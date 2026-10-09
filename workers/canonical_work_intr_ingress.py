@@ -14,7 +14,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, NoReturn
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -33,6 +33,7 @@ INGRESS_SCHEMA = "stegverse.canonical-work-intr-materialization-ingress/v1"
 RECEIPT_DIR_REL = Path("receipts/sovereign-network/canonical-work-intr-ingress")
 LATEST_REL = Path("receipts/sovereign-network/canonical-work-intr-ingress.latest.json")
 REQUEST_DIR_REL = Path("intr-materialization")
+RELAY_AUTHORIZATION_UNVERIFIABLE = "relay_tvc_authorization_unverifiable:a4_tv_tvc_verifier_absent"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -44,8 +45,18 @@ def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def _is_canonical_work_request(value: Any) -> bool:
+    return isinstance(value, dict) and value.get("destination") == DESTINATION and value.get("downstream_owner_ref") == DOWNSTREAM_OWNER
+
+
+def _envelope_request(payload: Any) -> Any:
+    entry = payload.get("node_outbox_entry") if isinstance(payload, dict) else None
+    return entry.get("materialization_request") if isinstance(entry, dict) else None
+
+
 def is_canonical_work(payload: Any) -> bool:
-    return isinstance(payload, dict) and payload.get("destination") == DESTINATION and payload.get("downstream_owner_ref") == DOWNSTREAM_OWNER
+    """Route predicate: an exact CanonicalWork request or a node envelope carrying one."""
+    return _is_canonical_work_request(payload) or _is_canonical_work_request(_envelope_request(payload))
 
 
 def scrubbed_env() -> dict[str, str]:
@@ -58,15 +69,44 @@ def scrubbed_env() -> dict[str, str]:
     return child
 
 
+def require_relay_authorization_binding(*, authorization_id: str | None, request_sha256: str) -> NoReturn:
+    """Bind a TVC relay authorization id to the exact request digest, or fail closed.
+
+    Binding requires the A4/TV-TVC verification surface. This repository has none
+    (org-boundary/runtime/origin_attestation.py is absent; TV_EXPORT_HMAC_VERIFY is
+    owned by StegVerse-Labs/tvc), so a supplied id is never self-certified here and
+    the relay origin stays unreachable rather than admitted on an unverified claim.
+    """
+    require(bool(authorization_id), "authorization_id_header_required_for_relay")
+    require(len(request_sha256) == 64, "relay_exact_request_digest_invalid")
+    raise ValueError(RELAY_AUTHORIZATION_UNVERIFIABLE)
+
+
+def bound_request(payload: Any, transport: Mapping[str, str | None]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Apply the origin-specific checks that must hold before ALLOW.
+
+    Node origin: the payload must be a node-trigger/outbox envelope that passes the
+    HIL ingress's own envelope validator. Relay origin: the exact request digest
+    plus a verified TVC authorization id binding. A carrier binding is never origin.
+    """
+    origin = transport.get("origin")
+    if origin == transport_boundary.ORIGIN_NODE:
+        require(_is_canonical_work_request(_envelope_request(payload)), "node_outbox_canonical_work_envelope_required")
+        return transport_boundary.extract_materialization(payload, transport, request_validator=validate_request)
+    require(origin == transport_boundary.ORIGIN_RELAY, "transport_origin_header_invalid")
+    require(isinstance(payload, dict), "request_object_required")
+    require(_is_canonical_work_request(payload), "canonical_work_destination_mismatch")
+    validate_request(payload)
+    require_relay_authorization_binding(authorization_id=transport.get("authorization_id"), request_sha256=str(transport.get("payload_sha256") or ""))
+
+
 def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
     transport = transport_boundary.validate_transport_headers(headers, body)
     try:
-        request = json.loads(body.decode("utf-8"))
+        payload = json.loads(body.decode("utf-8"))
     except Exception as exc:
         raise ValueError("request_json_invalid") from exc
-    require(isinstance(request, dict), "request_object_required")
-    require(is_canonical_work(request), "canonical_work_destination_mismatch")
-    validate_request(request)
+    request, source = bound_request(payload, transport)
 
     materialization_id = str(request["materialization_id"])
     request_path = runtime_root / REQUEST_DIR_REL / f"{materialization_id}.json"
@@ -76,7 +116,8 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
     receipt_path = runtime_root / RECEIPT_DIR_REL / f"{materialization_id}.json"
     if receipt_path.exists():
         existing = json.loads(receipt_path.read_text(encoding="utf-8"))
-        require(existing.get("request_hash") == request.get("request_hash") and existing.get("state") == "INGRESS_ADMITTED", "write_once_collision")
+        require(existing.get("request_hash") == request.get("request_hash") and existing.get("state") == "INGRESS_ADMITTED"
+                and existing.get("transport_origin") == source["transport_origin"] and existing.get("outbox_entry_hash") == source["outbox_entry_hash"], "write_once_collision")
         return existing
 
     receipt = {
@@ -90,8 +131,11 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
         "payload_hash": request["payload_hash"],
         "operation_id": request["operation_id"],
         "packet_id": request["packet_id"],
-        "transport_origin": transport.get("origin"),
-        "transport_authorization_id": transport.get("authorization_id"),
+        "transport_origin": source["transport_origin"],
+        "transport_authorization_id": source["transport_authorization_id"],
+        "node_id": source["node_id"],
+        "interlock_id": source["interlock_id"],
+        "outbox_entry_hash": source["outbox_entry_hash"],
         "transport_payload_sha256": transport.get("payload_sha256"),
         "queue_ref": str(request_path),
         "exact_request_validated": True,
@@ -140,4 +184,4 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
     }
 
 
-__all__ = ["DESTINATION", "DOWNSTREAM_OWNER", "INGRESS_SCHEMA", "is_canonical_work", "admit"]
+__all__ = ["DESTINATION", "DOWNSTREAM_OWNER", "INGRESS_SCHEMA", "RELAY_AUTHORIZATION_UNVERIFIABLE", "is_canonical_work", "bound_request", "admit"]

@@ -20,7 +20,7 @@ import ssl
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 from consume_hil_intr_materialization_request import validate_request
 from heartbeat_runtime.intr_carrier_profile import validate_carrier_binding
@@ -122,7 +122,7 @@ def validate_transport_headers(headers: Mapping[str, str], body: bytes) -> dict[
     return {"transport": transport, "origin": origin, "authorization_id": authorization_id, "payload_sha256": supplied_hash}
 
 
-def _validate_node_outbox_entry(entry: Mapping[str, Any]) -> dict[str, Any]:
+def _validate_node_outbox_entry(entry: Mapping[str, Any], *, request_validator: Callable[[Mapping[str, Any]], Any] = validate_request) -> dict[str, Any]:
     _require(entry.get("schema") == NODE_OUTBOX_SCHEMA, "node_outbox_schema_invalid")
     _require(entry.get("state") == "LOCAL_OUTBOX_PENDING_NETWORK_DELIVERY", "node_outbox_state_invalid")
     _require(re.fullmatch(r"SV-NODE-[a-f0-9]{24}", str(entry.get("node_id", ""))) is not None, "node_id_invalid")
@@ -141,7 +141,7 @@ def _validate_node_outbox_entry(entry: Mapping[str, Any]) -> dict[str, Any]:
     _require(claimed == _sha256_uri(body), "node_outbox_entry_hash_mismatch")
     request = entry.get("materialization_request")
     _require(isinstance(request, dict), "node_outbox_materialization_request_required")
-    validate_request(request)
+    request_validator(request)
     _require(entry.get("materialization_id") == request.get("materialization_id"), "node_outbox_materialization_id_mismatch")
     _require(entry.get("request_hash") == request.get("request_hash"), "node_outbox_request_hash_mismatch")
     _require(entry.get("transport_intent_hash") == request.get("transport_intent_hash"), "node_outbox_transport_intent_hash_mismatch")
@@ -151,11 +151,11 @@ def _validate_node_outbox_entry(entry: Mapping[str, Any]) -> dict[str, Any]:
     return request
 
 
-def extract_materialization(payload: Any, transport: Mapping[str, str | None]) -> tuple[dict[str, Any], dict[str, Any]]:
+def extract_materialization(payload: Any, transport: Mapping[str, str | None], *, request_validator: Callable[[Mapping[str, Any]], Any] = validate_request) -> tuple[dict[str, Any], dict[str, Any]]:
     origin = transport["origin"]
     if origin == ORIGIN_RELAY:
         _require(isinstance(payload, dict), "request_object_required")
-        validate_request(payload)
+        request_validator(payload)
         return payload, {"transport_origin": ORIGIN_RELAY, "transport_authorization_id": transport["authorization_id"], "node_id": None, "interlock_id": None, "outbox_entry_hash": None}
     _require(isinstance(payload, dict) and payload.get("schema") == NODE_TRIGGER_SCHEMA, "node_trigger_schema_invalid")
     _require(payload.get("transport_origin") == ORIGIN_NODE, "node_trigger_origin_invalid")
@@ -164,7 +164,7 @@ def extract_materialization(payload: Any, transport: Mapping[str, str | None]) -
     _require(payload.get("claim_or_fence_minted") is False, "node_trigger_claim_or_fence_forbidden")
     entry = payload.get("node_outbox_entry")
     _require(isinstance(entry, dict), "node_outbox_entry_required")
-    request = _validate_node_outbox_entry(entry)
+    request = _validate_node_outbox_entry(entry, request_validator=request_validator)
     _require(payload.get("node_id") == entry.get("node_id"), "node_trigger_node_id_mismatch")
     _require(payload.get("interlock_id") == entry.get("interlock_id"), "node_trigger_interlock_id_mismatch")
     _require(payload.get("outbox_entry_hash") == entry.get("outbox_entry_hash"), "node_trigger_outbox_hash_mismatch")
