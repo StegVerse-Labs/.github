@@ -1,8 +1,9 @@
 """F63-02: Organization ledger custody is not bound to the host that wrote it.
 
 The root and its lock come only from what the materializer supplies. A root
-supplied at another path -- the same ledger on another node -- stays the same
-ledger: its chain closes, releases and appends there under its own lock.
+supplied at another path -- the same ledger on another node -- still reads back
+and verifies there. It appends there only once custody has moved to it by
+RELEASED/ASSUMED (F66-01, F71-02).
 """
 from __future__ import annotations
 
@@ -58,7 +59,7 @@ def test_supplied_root_is_the_ledger_and_holds_its_lock(monkeypatch, tmp_path):
     assert not (tmp_path / "home").exists()
 
 
-def test_root_supplied_at_another_path_keeps_custody(monkeypatch, tmp_path):
+def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypatch, tmp_path):
     written = tmp_path / "node-a" / "org-ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(written))
     parent_manifest = {
@@ -73,19 +74,41 @@ def test_root_supplied_at_another_path_keeps_custody(monkeypatch, tmp_path):
     moved.parent.mkdir(parents=True)
     shutil.move(str(written), str(moved))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(moved))
-    monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
+    submitted = []
+    monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: submitted.append(batch_id) or {
         "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id,
         "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY",
     })
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
+    # Reads stay portable (F63-02): the chain verifies wherever it is supplied.
+    assert [row["receipt_sha256"] for row in batch._segment(moved, second["receipt_sha256"], None)] == [
+        first["receipt_sha256"], second["receipt_sha256"]]
+    # Writes do not (F71-02): moved without a handover, it cannot prove it is the original.
+    with pytest.raises(org.CustodyRefused, match="UNGOVERNED_RELOCATION_ORIGINAL_IDENTITY_UNPROVEN"):
+        org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
+    assert submitted == [] and not (moved / "BATCH_HEAD.json").exists()
 
-    released = batch._verified_batch(moved, json.loads((moved / "BATCH_HEAD.json").read_text())["batch_id"])
-    assert released["ordered_receipt_hashes"] == [first["receipt_sha256"], second["receipt_sha256"]]
-    assert third["previous_receipt_sha256"] == second["receipt_sha256"]
+    # Moved by RELEASED/ASSUMED from its recorded location, it advances there.
+    shutil.move(str(moved), str(written))
+    governing = {"schema": "test.parent-manifest/v1", org.CUSTODY_TRANSFER_KEY: {
+        "successor_materialization_id": "node-b", "predecessor_head_sha256": second["receipt_sha256"],
+        "next_custody_generation": 1}}
+    released = org.release_custody(governing, ledger=written)
+    shutil.copytree(written, moved)
+    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved)
+
+    def attested(*, successor_materialization_id, custody_generation, predecessor_head_sha256):
+        return {"successor_materialization_id": successor_materialization_id, "custody_generation": custody_generation,
+                "predecessor_head_sha256": predecessor_head_sha256, "unique_custody": True}
+
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest,
+                                     custody_exclusivity_verifier=attested)
+    released_batch = batch._verified_batch(moved, json.loads((moved / "BATCH_HEAD.json").read_text())["batch_id"])
+    assert released_batch["ordered_receipt_hashes"] == [first["receipt_sha256"], second["receipt_sha256"],
+                                                       released["receipt_sha256"], assumed["receipt_sha256"]]
+    assert third["previous_receipt_sha256"] == assumed["receipt_sha256"]
     head = json.loads((moved / "HEAD.json").read_text())
     assert head["receipt_sha256"] == third["receipt_sha256"]
     assert Path(head["receipt_path"]).parent == (moved / "receipts").resolve()
-    assert not written.exists()
 
 
 def test_head_naming_another_receipt_is_still_refused(monkeypatch, tmp_path):

@@ -260,21 +260,59 @@ def require_custody_exclusivity(rows, tip, org_transition_class, verifier):
                              detail="generation "+str(generation)+" has no single assumption")
     successor=custody_record(assumed[0]).get("successor_materialization_id")
     repair=("inject custody_exclusivity_verifier from an existing authority that attests unique custody of "
-            "this successor_materialization_id and custody_generation; none exists in this repository")
-    detail=str(successor)+"@"+str(generation)
+            "this successor_materialization_id and custody_generation at this predecessor HEAD; none exists in this repository")
+    detail=str(successor)+"@"+str(generation)+"@"+tip
     if verifier is None:
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
                              detail=detail,repair=repair)
-    try: attestation=verifier(successor_materialization_id=successor,custody_generation=generation)
+    try: attestation=verifier(successor_materialization_id=successor,custody_generation=generation,
+                              predecessor_head_sha256=tip)
     except Exception as exc:
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
-                             detail=detail+": "+type(exc).__name__,repair=repair) from exc
+                             detail=detail+": verifier unavailable: "+type(exc).__name__,repair=repair) from exc
+    # The attestation binds this exact write: successor, generation and the
+    # HEAD it extends. One bound to another HEAD, or already bound in a
+    # receipt, is a replay.
     if (not isinstance(attestation,dict) or attestation.get("unique_custody") is not True
             or attestation.get("successor_materialization_id")!=successor
-            or attestation.get("custody_generation")!=generation):
+            or attestation.get("custody_generation")!=generation
+            or attestation.get("predecessor_head_sha256")!=tip):
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
                              detail=detail,repair=repair)
+    if any(row.get("custody_exclusivity_attestation_sha256")==sha(attestation) for row in rows.values()):
+        raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
+                             detail=detail+": attestation replayed",repair=repair)
     return attestation
+
+def require_original_location(root, rows, tip, org_transition_class):
+    """A consequential write happens only where this root's own HEAD says it was written.
+
+    HEAD.json records the absolute receipt_path of its tip. Reads and
+    verification compare only the root-relative locator (#3057), so a root
+    supplied elsewhere still reads back. A write is different: a root supplied
+    at a location other than the one its HEAD records, with no RELEASED/
+    ASSUMED handover having moved it, was relocated or copied without
+    governance and cannot prove it is the original materialization. The
+    ASSUMED record is the one write a moved root may make, and it rewrites
+    HEAD at its new location. Limit: a byte copy at the identical absolute
+    path on another kernel is indistinguishable here; only fork detection
+    (DETECTED_NOT_PREVENTED_ACROSS_KERNELS) covers it.
+    """
+    if org_transition_class==CUSTODY_ASSUMED_CLASS or tip is None: return
+    tip_row=rows.get(tip)
+    if tip_row is not None and tip_row.get("org_transition_class")==CUSTODY_RELEASED_CLASS: return
+    recorded=load(Path(root)/"HEAD.json").get("receipt_path")
+    here=Path(root).resolve()
+    if not isinstance(recorded,str) or not recorded or Path(recorded).resolve().parent.parent!=here:
+        raise CustodyRefused("UNGOVERNED_RELOCATION_ORIGINAL_IDENTITY_UNPROVEN",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                             detail="HEAD records "+str(recorded)+"; supplied root is "+str(here),
+                             repair="supply the root at the location its HEAD records, or move custody by release_custody "
+                                    "there and assume_custody here")
+
+def require_consequential_custody(root, rows, tip, org_transition_class, verifier):
+    """Original location, then exclusivity: the attestation for a write, or FAIL_CLOSED."""
+    require_original_location(root,rows,tip,org_transition_class)
+    return require_custody_exclusivity(rows,tip,org_transition_class,verifier)
 
 def _read_tip(root):
     h=Path(root)/"HEAD.json"
@@ -331,7 +369,7 @@ def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence, veri
         if record.get("custody_generation")!=generation or record.get("next_custody_generation")!=generation+1:
             raise CustodyRefused("CUSTODY_GENERATION_MISMATCH",retry_entrypoint=CUSTODY_RELEASE_RETRY,
                                  detail="current generation is "+str(generation))
-    return generation,require_custody_exclusivity(rows,tip,org_transition_class,verifier)
+    return generation,require_consequential_custody(root,rows,tip,org_transition_class,verifier)
 
 def verify_required_evidence(receipt):
     """Require exact inline canonical evidence bytes for organization-local replay."""
@@ -536,8 +574,8 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     with _ledger_lock(root):
             # Before any packet release: at a successor without an attestation
             # nothing is closed, submitted or appended.
-            require_custody_exclusivity(verify_custody_lineage(root), _read_tip(root),
-                                        org_transition_class, custody_exclusivity_verifier)
+            require_consequential_custody(root, verify_custody_lineage(root), _read_tip(root),
+                                          org_transition_class, custody_exclusivity_verifier)
             released = None
             effective_boundary_evidence = dict(boundary_evidence or {})
             if parent_manifest is not None:
