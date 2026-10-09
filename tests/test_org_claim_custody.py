@@ -361,13 +361,17 @@ class OrgClaimCustodyTests(unittest.TestCase):
     def test_no_host_clock_or_host_path_affects_governed_claim_or_answer(self):
         answers = []
         template = None
+        org = None
         for name, stamp in (("one", "1999-01-01"), ("two", "2041-06-30")):
-            env = Env(self.base / name, seed=template is None)
+            env = Env(self.base / name, seed=template is None, org_ledger=org)
             if template is None:
                 template = self.base / "seeded-org-ledger"
                 shutil.copytree(env.org, template)
+                org = env.org
             else:
-                # The same rooted chain, so the organization head is the same input.
+                # The same rooted chain at the location its HEAD records, so the
+                # organization head is the same input; a copy elsewhere is an
+                # ungoverned relocation and makes no consequential append (F71-02).
                 shutil.rmtree(env.org)
                 shutil.copytree(template, env.org)
             home = self.base / name / "home"
