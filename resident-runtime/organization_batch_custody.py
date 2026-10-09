@@ -796,8 +796,9 @@ def close_batch(reason: str, *, root: Path | None = None, custody_exclusivity_ve
         # Batch closure writes the root; a released root takes no writer.
         raise org.CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", retry_entrypoint=org.CUSTODY_ASSUME_RETRY,
                                  detail=tip, repair="close the packet at the successor after it assumes custody")
-    # Batch closure is a consequential write: original location, and at a successor an attestation.
-    org.require_consequential_custody(root, rows, tip, "ORGANIZATION_BATCH_CLOSURE", custody_exclusivity_verifier)
+    # Batch closure is a consequential write: no relocation anomaly, and at a successor an attestation.
+    org.require_consequential_custody(root, rows, tip, "ORGANIZATION_BATCH_CLOSURE", custody_exclusivity_verifier,
+                                      org.custody_action_sha256("ORGANIZATION_BATCH_CLOSURE", reason))
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:
         if prior["closure_reason"] != reason:

@@ -113,6 +113,15 @@ CUSTODY_RELEASE_RETRY="resident-runtime/aggregate_repo_transition.py::release_cu
 CUSTODY_ASSUME_RETRY="resident-runtime/aggregate_repo_transition.py::assume_custody"
 CUSTODY_VERIFY_RETRY="resident-runtime/aggregate_repo_transition.py::verify_custody_lineage"
 CUSTODY_APPEND_RETRY="resident-runtime/aggregate_repo_transition.py::aggregate_transition"
+# A generation-0 receipt is written by a materialization nothing authenticates:
+# it predates any custody transition, and the location check is only anomaly
+# detection. Recorded on every generation-0 receipt so no reader takes a path
+# match for custody authority.
+CUSTODY_AUTHORITY_BASIS_GENERATION_0="PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY"
+
+def custody_action_sha256(org_transition_class, subject):
+    """The exact action a custody exclusivity attestation covers."""
+    return sha({"org_transition_class":org_transition_class,"subject":subject})
 
 class CustodyRefused(ValueError):
     """A custody predicate failed; nothing is appended. Always FAIL_CLOSED.
@@ -279,7 +288,7 @@ def _custody_source(kind, record):
         }],
     }
 
-def require_custody_exclusivity(rows, tip, org_transition_class, verifier):
+def require_custody_exclusivity(rows, tip, org_transition_class, verifier, action_sha256):
     """Attestation of unique custody for a consequential write at a successor, else FAIL_CLOSED.
 
     Detection is not exclusivity. Once a root's custody has moved (its HEAD is
@@ -290,7 +299,9 @@ def require_custody_exclusivity(rows, tip, org_transition_class, verifier):
     fallback, and this repository holds no such authority, so without one the
     successor makes no consequential write. A root never released
     (generation 0) is unaffected. custody_exclusivity records the limitation;
-    it is never a passing predicate.
+    it is never a passing predicate. `action_sha256` names the exact action
+    (custody_action_sha256), or is a callable returning it, resolved only when
+    an attestation is required.
     """
     if org_transition_class==CUSTODY_ASSUMED_CLASS or tip is None: return None
     tip_row=rows.get(tip)
@@ -309,18 +320,23 @@ def require_custody_exclusivity(rows, tip, org_transition_class, verifier):
     if verifier is None:
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
                              detail=detail,repair=repair)
+    action=action_sha256() if callable(action_sha256) else action_sha256
+    if action is None:
+        raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
+                             detail=detail,repair=repair)
     try: attestation=verifier(successor_materialization_id=successor,custody_generation=generation,
-                              predecessor_head_sha256=tip)
+                              predecessor_head_sha256=tip,action_sha256=action)
     except Exception as exc:
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
                              detail=detail+": verifier unavailable: "+type(exc).__name__,repair=repair) from exc
-    # The attestation binds this exact write: successor, generation and the
-    # HEAD it extends. One bound to another HEAD, or already bound in a
-    # receipt, is a replay.
+    # The attestation binds this exact write: successor, generation, the HEAD
+    # it extends and the action. One bound to another HEAD or action, or
+    # already bound in a receipt, is a replay.
     if (not isinstance(attestation,dict) or attestation.get("unique_custody") is not True
             or attestation.get("successor_materialization_id")!=successor
             or attestation.get("custody_generation")!=generation
-            or attestation.get("predecessor_head_sha256")!=tip):
+            or attestation.get("predecessor_head_sha256")!=tip
+            or attestation.get("action_sha256")!=action):
         raise CustodyRefused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED",retry_entrypoint=CUSTODY_APPEND_RETRY,
                              detail=detail,repair=repair)
     if any(row.get("custody_exclusivity_attestation_sha256")==sha(attestation) for row in rows.values()):
@@ -328,20 +344,22 @@ def require_custody_exclusivity(rows, tip, org_transition_class, verifier):
                              detail=detail+": attestation replayed",repair=repair)
     return attestation
 
-def require_original_location(root, rows, tip, org_transition_class):
-    """A consequential write happens only where this root's own HEAD says it was written.
+def require_no_relocation_anomaly(root, rows, tip, org_transition_class):
+    """Refuse a consequential write where HEAD's recorded location is not the supplied one.
 
-    HEAD.json records the absolute receipt_path of its tip. Reads and
-    verification compare only the root-relative locator (#3057), so a root
-    supplied elsewhere still reads back. A write is different: a root supplied
-    at a location other than the one its HEAD records, with no RELEASED/
-    ASSUMED handover having moved it, was relocated or copied without
-    governance and cannot prove it is the original materialization. The
-    ASSUMED record is the one write a moved root may make, and it rewrites
-    HEAD at its new location. On a POSIX root the location is the absolute
-    receipt path; on a Git ledger it is the ref locator. Limit: a byte copy at
-    the identical absolute path on another kernel is indistinguishable here;
-    only fork detection (DETECTED_NOT_PREVENTED_ACROSS_KERNELS) covers it.
+    Anomaly detection only, never custody authority: a matching location
+    proves neither identity nor authority, and nothing here authenticates the
+    materialization that writes (see CUSTODY_AUTHORITY_BASIS_GENERATION_0).
+    HEAD.json records the locator of its tip. Reads and verification compare
+    only the root-relative locator (#3057), so a root supplied elsewhere still
+    reads back. A write where the recorded locator differs from the supplied
+    one, with no RELEASED/ASSUMED handover having moved the root, is an
+    ungoverned relocation or copy and is refused. The ASSUMED record is the
+    one write a moved root may make, and it rewrites HEAD at its new location.
+    On a POSIX root the locator is the absolute receipt path; on a Git ledger
+    it is the ref locator. A byte copy at the identical location on another
+    kernel passes this check; only fork detection
+    (DETECTED_NOT_PREVENTED_ACROSS_KERNELS) covers it.
     """
     if org_transition_class==CUSTODY_ASSUMED_CLASS or tip is None: return
     tip_row=rows.get(tip)
@@ -354,21 +372,21 @@ def require_original_location(root, rows, tip, org_transition_class):
     else:
         same=recorded==here
     if not same:
-        raise CustodyRefused("UNGOVERNED_RELOCATION_ORIGINAL_IDENTITY_UNPROVEN",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+        raise CustodyRefused("UNGOVERNED_RELOCATION_ANOMALY_DETECTED",retry_entrypoint=CUSTODY_RELEASE_RETRY,
                              detail="HEAD records "+str(recorded)+"; supplied ledger locates it at "+str(here),
                              repair="supply the root at the location its HEAD records, or move custody by release_custody "
                                     "there and assume_custody here")
 
-def require_consequential_custody(root, rows, tip, org_transition_class, verifier):
-    """Original location, then exclusivity: the attestation for a write, or FAIL_CLOSED."""
-    require_original_location(root,rows,tip,org_transition_class)
-    return require_custody_exclusivity(rows,tip,org_transition_class,verifier)
+def require_consequential_custody(root, rows, tip, org_transition_class, verifier, action_sha256):
+    """Relocation anomaly check, then exclusivity: the attestation for a write, or FAIL_CLOSED."""
+    require_no_relocation_anomaly(root,rows,tip,org_transition_class)
+    return require_custody_exclusivity(rows,tip,org_transition_class,verifier,action_sha256)
 
 def _read_tip(root):
     head=_custody_store(root).get(ledger_store.HEAD_KEY)
     return head.get("receipt_sha256") if head is not None else None
 
-def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence, verifier=None):
+def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence, verifier=None, action_sha256=None):
     """(custody generation of the next receipt, exclusivity attestation), or a FAIL_CLOSED refusal."""
     tip_row=rows.get(tip) if tip is not None else None
     if tip is not None and tip_row is None:
@@ -419,7 +437,7 @@ def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence, veri
         if record.get("custody_generation")!=generation or record.get("next_custody_generation")!=generation+1:
             raise CustodyRefused("CUSTODY_GENERATION_MISMATCH",retry_entrypoint=CUSTODY_RELEASE_RETRY,
                                  detail="current generation is "+str(generation))
-    return generation,require_consequential_custody(root,rows,tip,org_transition_class,verifier)
+    return generation,require_consequential_custody(root,rows,tip,org_transition_class,verifier,action_sha256)
 
 def verify_required_evidence(receipt):
     """Require exact inline canonical evidence bytes for organization-local replay."""
@@ -620,7 +638,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
         # at a root relocated without a handover, nothing is closed, submitted
         # or appended.
         require_consequential_custody(store, verify_custody_lineage(store), _read_tip(store),
-                                      org_transition_class, custody_exclusivity_verifier)
+                                      org_transition_class, custody_exclusivity_verifier,
+                                      lambda: custody_action_sha256(org_transition_class,
+                                                                    verify_source(receipt)["source_transition_sha256"]))
         released = None
         effective_boundary_evidence = dict(boundary_evidence or {})
         if parent_manifest is not None:
@@ -845,7 +865,8 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         return existing
     head=store.get(ledger_store.HEAD_KEY)
     generation,attestation=_custody_gate(store,rows,head.get("receipt_sha256") if head is not None else None,
-                                         org_transition_class,boundary_evidence,custody_exclusivity_verifier)
+                                         org_transition_class,boundary_evidence,custody_exclusivity_verifier,
+                                         custody_action_sha256(org_transition_class,source["source_transition_sha256"]))
     # POSIX keeps the source receipt beside the ledger before the append, as
     # it always has; any other store commits it in the append's own boundary.
     immutable={}
@@ -870,6 +891,7 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "custody_generation":generation,
     }
     if attestation is not None: body["custody_exclusivity_attestation_sha256"]=sha(attestation)
+    if generation==0: body["custody_authority_basis"]=CUSTODY_AUTHORITY_BASIS_GENERATION_0
     digest=sha(body); record={**body,"receipt_sha256":digest}; key=ledger_store.receipt_key(digest)
     stored=store.get(key)
     if stored is not None and stored!=record: raise ValueError("org receipt collision")

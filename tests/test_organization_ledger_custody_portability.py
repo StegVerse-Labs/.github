@@ -82,8 +82,8 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
     # Reads stay portable (F63-02): the chain verifies wherever it is supplied.
     assert [row["receipt_sha256"] for row in batch._segment(moved, second["receipt_sha256"], None)] == [
         first["receipt_sha256"], second["receipt_sha256"]]
-    # Writes do not (F71-02): moved without a handover, it cannot prove it is the original.
-    with pytest.raises(org.CustodyRefused, match="UNGOVERNED_RELOCATION_ORIGINAL_IDENTITY_UNPROVEN"):
+    # Writes do not (F71-02): moved without a handover is an anomaly, refused.
+    with pytest.raises(org.CustodyRefused, match="UNGOVERNED_RELOCATION_ANOMALY_DETECTED"):
         org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
     assert submitted == [] and not (moved / "BATCH_HEAD.json").exists()
 
@@ -96,9 +96,10 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
     shutil.copytree(written, moved)
     assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved)
 
-    def attested(*, successor_materialization_id, custody_generation, predecessor_head_sha256):
+    def attested(*, successor_materialization_id, custody_generation, predecessor_head_sha256, action_sha256):
         return {"successor_materialization_id": successor_materialization_id, "custody_generation": custody_generation,
-                "predecessor_head_sha256": predecessor_head_sha256, "unique_custody": True}
+                "predecessor_head_sha256": predecessor_head_sha256, "action_sha256": action_sha256,
+                "unique_custody": True}
 
     third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest,
                                      custody_exclusivity_verifier=attested)
