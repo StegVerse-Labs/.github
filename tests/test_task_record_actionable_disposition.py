@@ -108,3 +108,68 @@ def test_this_tasks_record_carries_no_bare_finding():
         (RECORDS / "ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json").read_text(encoding="utf-8")
     )
     assert validate_record(record, record["task_id"]) == []
+
+
+def test_runtime_resolution_standing_status_is_flagged():
+    """#3012 O2: runtime_resolution states standing status like current_truth."""
+    errors = validate_record(
+        {"runtime_resolution": {"current_observation_state": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"}},
+        "TEST-001",
+    )
+    assert len(errors) == 1
+    assert "STOP_BARE_UNACTIONABLE_FINDING" in errors[0]
+    assert "runtime_resolution.current_observation_state" in errors[0]
+
+
+def test_bare_status_reason_is_flagged():
+    errors = validate_record({"status_reason": "TASK_BOUND_EXECUTION_EVIDENCE_NOT_OBSERVED"}, "TEST-001")
+    assert len(errors) == 1
+    assert "status_reason=" in errors[0]
+
+
+def test_token_inside_typed_fail_closed_record_is_not_flagged():
+    typed = actionable("ORGANIZATION_RECEIPT_NOT_APPENDED")
+    typed["replaces_passive_predicate"] = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+    assert validate_record(
+        {"runtime_resolution": {"current_observation_state": typed}}, "TEST-001"
+    ) == []
+
+
+def test_typed_fail_closed_in_runtime_resolution_still_needs_repair_fields():
+    incomplete = actionable()
+    del incomplete["failed_predicate"]
+    errors = validate_record(
+        {"runtime_resolution": {"current_observation_state": incomplete}}, "TEST-001"
+    )
+    assert len(errors) == 1
+    assert "NON_ALLOW_REPAIR_REQUIRED" in errors[0]
+    assert "failed_predicate" in errors[0]
+
+
+def test_historical_quotation_is_not_flagged():
+    """A retained prior value, history list or dated snapshot quotes history."""
+    record = {
+        "runtime_resolution": {
+            "current_observation_state": actionable(),
+            "superseded_current_observation_state": {
+                "value": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+                "authority_effect": "NONE_HISTORY_ONLY",
+            },
+            "observation_history": ["UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"],
+            "reconstruction_review_20260921": {"interpretation": "UNKNOWN_NOT_FALSE"},
+        },
+        "status_reason": "SOURCE_CORRELATION_REPAIR_COMPLETE",
+    }
+    assert validate_record(record, "TEST-001") == []
+
+
+def test_historical_exclusion_does_not_hide_a_standing_sibling():
+    errors = validate_record(
+        {"runtime_resolution": {
+            "superseded_unresolved_classification": {"value": "X_NOT_OBSERVED"},
+            "unresolved_classification": "X_NOT_OBSERVED",
+        }},
+        "TEST-001",
+    )
+    assert len(errors) == 1
+    assert "runtime_resolution.unresolved_classification=" in errors[0]

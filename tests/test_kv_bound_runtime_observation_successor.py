@@ -32,7 +32,18 @@ def test_successor_reuses_existing_owner_and_does_not_authorize_attempt():
     assert successor["existing_execution_owner"]["second_request_allowed"] is False
     assert successor["runtime_resolution"]["attempt_cardinality"] == "EXACTLY_ONE_FUTURE_INDEPENDENTLY_AUTHORIZED_ATTEMPT"
     assert successor["runtime_resolution"]["invocation_authorized_by_this_record"] is False
-    assert successor["runtime_resolution"]["unresolved_predicate"] == "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED"
+    # #3012 O1/O2: the observer predicate is the Organization append predicate;
+    # the prior value is retained as history and the standing state is typed.
+    resolution = successor["runtime_resolution"]
+    assert resolution["unresolved_predicate"] == (
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RETAINED_STEGOS_STEGBROWSER_RUNTIME"
+    )
+    assert resolution["superseded_unresolved_predicate"]["value"] == (
+        "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED"
+    )
+    assert resolution["current_observation_state"]["disposition"] == "FAIL_CLOSED"
+    assert resolution["current_observation_state"]["failed_predicate"] == resolution["unresolved_predicate"]
+    assert resolution["current_observation_state"]["consequence_committed"] is False
     assert successor["authority_model"]["task_registry_mints_execution_authority"] is False
     assert successor["device_invariants"]["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert successor["device_invariants"]["second_user_operated_device_allowed"] is False

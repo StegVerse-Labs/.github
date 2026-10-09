@@ -43,7 +43,17 @@ def test_sdk_extcollab_binds_to_established_node_not_physical_device():
     assert requirements["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert requirements["user_verification_source"] == "KV/SKAP Vault"
 
-    assert record["runtime_resolution"] == "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED"
+    # #3012 O1/O2: the passive status is a typed FAIL_CLOSED on the append predicate;
+    # the prior value is retained as history.
+    resolution = record["runtime_resolution"]
+    assert resolution["disposition"] == "FAIL_CLOSED"
+    assert resolution["consequence_committed"] is False
+    assert resolution["failed_predicate"] == (
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION"
+    )
+    assert record["superseded_runtime_resolution"]["value"] == (
+        "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED"
+    )
     assert "ONE_CURRENT_DEVICE_END_TO_END_PROVEN" not in record["remaining_predicates"]
     assert "ESTABLISHED_NODE_END_TO_END_PROVEN" in record["remaining_predicates"]
 

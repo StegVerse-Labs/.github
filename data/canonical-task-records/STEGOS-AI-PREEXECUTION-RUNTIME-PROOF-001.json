@@ -57,7 +57,28 @@
     "second_user_operated_device_allowed":false,
     "authority_effect":"NONE"
   },
-  "runtime_resolution": {"current_executor":"standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test","unresolved_classification":"HEALER_CARRIER_BOUND_AUTHENTIC_ADMITTED_STEGOS_EXECUTION_NOT_OBSERVED","reachability_source_binding":"RESOLVED_HEALER_85","shared_runtime_evidence_owner_task_id":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001","current_first_unresolved_reachability_predicate":"AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK","next_admissible_transition":"INGRESS_ADMITTED","proposal_evidence_ref":"evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json","proposal_sha256":"cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb"},
+  "runtime_resolution": {"current_executor":"standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test","unresolved_classification":{
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "SOURCE_VALIDATION",
+    "consequence_committed": false,
+    "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+    "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:HEALER_CARRIER_BOUND_ADMITTED_STEGOS_EXECUTION",
+    "satisfying_edge": "the owning lane's manifest-directed append of HEALER_CARRIER_BOUND_ADMITTED_STEGOS_EXECUTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+    "required_evidence_or_repair": "Attempt HEALER_CARRIER_BOUND_ADMITTED_STEGOS_EXECUTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:HEALER_CARRIER_BOUND_ADMITTED_STEGOS_EXECUTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+    "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+    "owning_existing_goal": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+    "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_HEALER_CARRIER_BOUND_ADMITTED_STEGOS_EXECUTION",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json"
+    ]
+  },"reachability_source_binding":"RESOLVED_HEALER_85","shared_runtime_evidence_owner_task_id":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001","current_first_unresolved_reachability_predicate":"AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK","next_admissible_transition":"INGRESS_ADMITTED","proposal_evidence_ref":"evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json","proposal_sha256":"cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb",
+    "superseded_unresolved_classification": {
+      "value": "HEALER_CARRIER_BOUND_AUTHENTIC_ADMITTED_STEGOS_EXECUTION_NOT_OBSERVED",
+      "superseded_at_generation": 299,
+      "superseded_by": "runtime_resolution.unresolved_classification",
+      "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }},
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":false},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false,"carrier_binding_repaired_source_only":true,"reconciliation_ref":"docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md"},

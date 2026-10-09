@@ -49,13 +49,111 @@
     "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
   ],
   "blockers": [
-    "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_NOT_YET_OBSERVED",
-    "AUTHENTIC_TVC_CHALLENGE_EXCHANGE_NOT_YET_OBSERVED",
-    "AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED",
-    "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED",
-    "AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
-    "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
-    "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_RECIPIENT_ACTIVATION",
+      "satisfying_edge": "the owning lane's manifest-directed append of TVC_RECIPIENT_ACTIVATION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt TVC_RECIPIENT_ACTIVATION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_RECIPIENT_ACTIVATION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TVC_RECIPIENT_ACTIVATION",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_CHALLENGE_EXCHANGE",
+      "satisfying_edge": "the owning lane's manifest-directed append of TVC_CHALLENGE_EXCHANGE to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt TVC_CHALLENGE_EXCHANGE through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_CHALLENGE_EXCHANGE; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TVC_CHALLENGE_EXCHANGE",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CURRENT_DEVICE_GATEWAY_SIDECAR",
+      "satisfying_edge": "the owning lane's manifest-directed append of CURRENT_DEVICE_GATEWAY_SIDECAR to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt CURRENT_DEVICE_GATEWAY_SIDECAR through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CURRENT_DEVICE_GATEWAY_SIDECAR; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_CURRENT_DEVICE_GATEWAY_SIDECAR",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT",
+      "satisfying_edge": "the owning lane's manifest-directed append of TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:FOUR_LEG_INTR_ROUNDTRIP",
+      "satisfying_edge": "the owning lane's manifest-directed append of FOUR_LEG_INTR_ROUNDTRIP to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt FOUR_LEG_INTR_ROUNDTRIP through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:FOUR_LEG_INTR_ROUNDTRIP; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_FOUR_LEG_INTR_ROUNDTRIP",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SKAP_KV_RETURN_RECEIPT",
+      "satisfying_edge": "the owning lane's manifest-directed append of SKAP_KV_RETURN_RECEIPT to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt SKAP_KV_RETURN_RECEIPT through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SKAP_KV_RETURN_RECEIPT; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_SKAP_KV_RETURN_RECEIPT",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:KV_SKAP_TERMINAL_EXACT_READBACK",
+      "satisfying_edge": "the owning lane's manifest-directed append of KV_SKAP_TERMINAL_EXACT_READBACK to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt KV_SKAP_TERMINAL_EXACT_READBACK through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:KV_SKAP_TERMINAL_EXACT_READBACK; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_KV_SKAP_TERMINAL_EXACT_READBACK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    }
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
@@ -261,5 +359,20 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
+  },
+  "superseded_blockers": {
+    "value": [
+      "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_NOT_YET_OBSERVED",
+      "AUTHENTIC_TVC_CHALLENGE_EXCHANGE_NOT_YET_OBSERVED",
+      "AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED",
+      "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED",
+      "AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
+      "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
+      "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
+    ],
+    "superseded_at_generation": 299,
+    "superseded_by": "blockers",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

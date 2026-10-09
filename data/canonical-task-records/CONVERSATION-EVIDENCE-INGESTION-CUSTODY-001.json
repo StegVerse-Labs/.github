@@ -197,7 +197,7 @@
   },
   "allowed_next_transitions": [
     "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
-    "MASTER_RECORDS_AUTHENTIC_RUNTIME_ORGANIZATION_RECORD_OBSERVED",
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CONVERSATION_EVIDENCE_INGESTION_CUSTODY",
     "COMPLETION_CLAIMED"
   ],
   "handoff_projection_refs": [
@@ -275,5 +275,16 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "checkout_state": "CHECKED_OUT"
+  "checkout_state": "CHECKED_OUT",
+  "superseded_allowed_next_transitions": {
+    "value": [
+      "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+      "MASTER_RECORDS_AUTHENTIC_RUNTIME_ORGANIZATION_RECORD_OBSERVED",
+      "COMPLETION_CLAIMED"
+    ],
+    "superseded_at_generation": 299,
+    "superseded_by": "allowed_next_transitions",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }

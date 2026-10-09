@@ -47,8 +47,16 @@ RECORD_ROOT = Path("data/canonical-task-records")
 # Blocks that assert the record's own standing findings. Other blocks carry
 # their own vocabularies - a substrate review's PENDING_EVIDENCE and a
 # dependency's PENDING are defined dispositions there, not bare unknowns - so
-# this rule deliberately does not reach them.
-FINDING_BLOCKS = ("current_truth", "runtime_observation", "goal_chart")
+# this rule deliberately does not reach them. `runtime_resolution` and
+# `status_reason` state the same standing runtime status under another name
+# (StegVerse-Labs/.github#3012 O2).
+FINDING_BLOCKS = ("current_truth", "runtime_observation", "goal_chart",
+                  "runtime_resolution", "status_reason")
+# A key that quotes history rather than asserting standing state: a retained
+# prior value (`superseded_*`), a history list, a dated review snapshot
+# (`*_YYYYMMDD`) or an evidence reference list. A token quoted there is
+# evidence of what was once recorded, not a passive status.
+HISTORICAL_KEY = re.compile(r"(^superseded_|history|_\d{8}$|evidence_refs$)")
 # A standing status that asserts absence without naming what would resolve it.
 BARE_FINDING = re.compile(r"^(UNKNOWN|BLOCKED|UNOBSERVED|NOT_OBSERVED)(_[A-Z0-9_]*)?$")
 OBSERVATION_SUFFIX = re.compile(
@@ -66,7 +74,8 @@ def validate_record(record: dict, task_id: str) -> list[str]:
     A bare finding is flagged wherever it appears in those blocks: a
     `runtime_observation` entry or a goal-chart state reading
     NOT_AUTHENTICALLY_OBSERVED is the same passive observation request in a
-    different field.
+    different field. Not flagged: a token inside a typed non-ALLOW record
+    (judged by its own required fields instead) or under a HISTORICAL_KEY.
     """
     errors: list[str] = []
 
@@ -81,6 +90,8 @@ def validate_record(record: dict, task_id: str) -> list[str]:
                     )
                 return
             for key, value in sorted(node.items()):
+                if HISTORICAL_KEY.search(key):
+                    continue
                 walk(value, f"{path}.{key}" if path else key)
         elif isinstance(node, list):
             for index, value in enumerate(node):

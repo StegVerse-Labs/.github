@@ -79,8 +79,16 @@ class ERLCurrentIPhoneRuntimeSurfaceTests(unittest.TestCase):
         self.assertFalse(self.record["completion"]["claimed"])
         self.assertFalse(self.record["completion"]["validated"])
         self.assertFalse(self.record["completion"]["activation_proof_complete"])
+        # #3012 O1/O2: typed FAIL_CLOSED on the append predicate; prior value retained.
+        unresolved = self.record["runtime_resolution"]["unresolved_classification"]
+        self.assertEqual(unresolved["disposition"], "FAIL_CLOSED")
+        self.assertFalse(unresolved["consequence_committed"])
         self.assertEqual(
-            self.record["runtime_resolution"]["unresolved_classification"],
+            unresolved["failed_predicate"],
+            "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_PORTABLE_EXECUTION",
+        )
+        self.assertEqual(
+            self.record["runtime_resolution"]["superseded_unresolved_classification"]["value"],
             "TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED",
         )
         self.assertIn("TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED", self.handoff)

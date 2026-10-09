@@ -51,30 +51,118 @@
     {
       "dependency_id": "DEP-CANONICAL-WORK-RESIDENT-CONSUMPTION-RECEIPT",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "UNOBSERVED",
+      "state": "UNRESOLVED",
       "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
-      "disposition": "REQUIRE AUTHENTIC RECEIPT PRODUCED BY THE EXISTING STEGVERSE RESIDENT CYCLE; EXTERNAL DEVICE CONNECTOR INVENTORY IS NOT AN INPUT"
+      "disposition": "REQUIRE AUTHENTIC RECEIPT PRODUCED BY THE EXISTING STEGVERSE RESIDENT CYCLE; EXTERNAL DEVICE CONNECTOR INVENTORY IS NOT AN INPUT",
+      "superseded_state": {
+        "value": "UNOBSERVED",
+        "superseded_at_generation": 299,
+        "superseded_by": "dependencies[2].state",
+        "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
+      "resolution_disposition": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CANONICAL_WORK_RESIDENT_CONSUMPTION",
+        "satisfying_edge": "the owning lane's manifest-directed append of CANONICAL_WORK_RESIDENT_CONSUMPTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair": "Attempt CANONICAL_WORK_RESIDENT_CONSUMPTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CANONICAL_WORK_RESIDENT_CONSUMPTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+        "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "owning_existing_goal": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_CANONICAL_WORK_RESIDENT_CONSUMPTION",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json"
+        ]
+      }
     },
     {
       "dependency_id": "DEP-EVIDENCE-CUSTODY-SIDECAR",
       "kind": "RUNTIME_EVIDENCE_TRANSPORT",
-      "state": "UNOBSERVED",
+      "state": "UNRESOLVED",
       "ref": "receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json",
-      "disposition": "REQUIRE SHA256 PROVENANCE FOR EXACT BYTE CUSTODY THROUGH THE EXISTING STEGVERSE NATIVE RESIDENT EVIDENCE PATH"
+      "disposition": "REQUIRE SHA256 PROVENANCE FOR EXACT BYTE CUSTODY THROUGH THE EXISTING STEGVERSE NATIVE RESIDENT EVIDENCE PATH",
+      "superseded_state": {
+        "value": "UNOBSERVED",
+        "superseded_at_generation": 299,
+        "superseded_by": "dependencies[3].state",
+        "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
+      "resolution_disposition": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_CONSUMPTION_EVIDENCE_CUSTODY",
+        "satisfying_edge": "the owning lane's manifest-directed append of RUNTIME_CONSUMPTION_EVIDENCE_CUSTODY to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair": "Attempt RUNTIME_CONSUMPTION_EVIDENCE_CUSTODY through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_CONSUMPTION_EVIDENCE_CUSTODY; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+        "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "owning_existing_goal": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_RUNTIME_CONSUMPTION_EVIDENCE_CUSTODY",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json"
+        ]
+      }
     },
     {
       "dependency_id": "DEP-TVC-SOURCE-PROMOTION-RECEIPT",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "UNOBSERVED",
+      "state": "UNRESOLVED",
       "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json",
-      "disposition": "REQUIRE CURRENT DISPATCH BOUND STAGED CONSUMPTION FOR PINNED TVC SHA AEF6B6F5"
+      "disposition": "REQUIRE CURRENT DISPATCH BOUND STAGED CONSUMPTION FOR PINNED TVC SHA AEF6B6F5",
+      "superseded_state": {
+        "value": "UNOBSERVED",
+        "superseded_at_generation": 299,
+        "superseded_by": "dependencies[4].state",
+        "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
+      "resolution_disposition": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_SOURCE_PROMOTION_CONSUMPTION",
+        "satisfying_edge": "the owning lane's manifest-directed append of TVC_SOURCE_PROMOTION_CONSUMPTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair": "Attempt TVC_SOURCE_PROMOTION_CONSUMPTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_SOURCE_PROMOTION_CONSUMPTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+        "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "owning_existing_goal": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TVC_SOURCE_PROMOTION_CONSUMPTION",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json"
+        ]
+      }
     },
     {
       "dependency_id": "DEP-OWNER-INGRESS-OBSERVATION",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "UNOBSERVED",
+      "state": "UNRESOLVED",
       "ref": "/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json",
-      "disposition": "REQUIRE OWNER_INGRESS_READY_OBSERVED FROM IMMUTABLE OBSERVER PATH WHERE THIS PROVIDER LANE IS APPLICABLE"
+      "disposition": "REQUIRE OWNER_INGRESS_READY_OBSERVED FROM IMMUTABLE OBSERVER PATH WHERE THIS PROVIDER LANE IS APPLICABLE",
+      "superseded_state": {
+        "value": "UNOBSERVED",
+        "superseded_at_generation": 299,
+        "superseded_by": "dependencies[5].state",
+        "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
+      "resolution_disposition": {
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "SOURCE_VALIDATION",
+        "consequence_committed": false,
+        "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:OWNER_INGRESS_READY",
+        "satisfying_edge": "the owning lane's manifest-directed append of OWNER_INGRESS_READY to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair": "Attempt OWNER_INGRESS_READY through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:OWNER_INGRESS_READY; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+        "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "owning_existing_goal": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_OWNER_INGRESS_READY",
+        "evidence_refs": [
+          "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json"
+        ]
+      }
     }
   ],
   "blockers": [],
@@ -167,7 +255,14 @@
     "observer_chain": "retained resident custody -> merged non-authorizing receipt verifier -> exact SHA/path/outcome binding -> Master Records where required",
     "external_connector_role": "NONE_NOT_APPLICABLE",
     "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
-    "current_first_unresolved_predicate": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED"
+    "current_first_unresolved_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE",
+    "superseded_current_first_unresolved_predicate": {
+      "value": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED",
+      "superseded_at_generation": 299,
+      "superseded_by": "runtime_resolution.current_first_unresolved_predicate",
+      "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }
   },
   "completion": {
     "claimed": false,
