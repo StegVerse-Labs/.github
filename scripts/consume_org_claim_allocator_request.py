@@ -569,6 +569,18 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     repository receipt; a retry reuses that exact receipt.
     """
     successor = "sha256:" + stable_hash({"transition_id": transition_id, "evidence": evidence})
+    # The repository ledger compares the successor on every exact retry, and a
+    # retry's evidence carries fields outside its identity (the Organization
+    # head it observed moves once the first attempt is recorded). A retry of
+    # the transition already recorded under the same identity names the
+    # successor that attempt recorded; a different identity keeps its own
+    # successor and collides.
+    emitter, store = custody["emitter"], custody["repository_store"]
+    prior = emitter.recorded(store, store.get(emitter.ledger_store.HEAD_KEY),
+                             transition_id, transition_class)
+    if prior is not None and all(
+            (prior.get("evidence") or {}).get(key) == evidence.get(key) for key in identity):
+        successor = prior["successor_state_sha256"]
     repository_receipt = custody["emitter"].append(
         transition_id, transition_class, predecessor, successor, evidence, "NONE",
         store=custody["repository_store"], idempotent_on=identity)

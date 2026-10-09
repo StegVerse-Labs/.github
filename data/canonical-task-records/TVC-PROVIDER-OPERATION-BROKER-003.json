@@ -1,0 +1,140 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TVC-PROVIDER-OPERATION-BROKER-003",
+  "correlation_id": "TVC-PROVIDER-OPERATION-BROKER-003",
+  "root_correlation_id": "TVC-PROVIDER-OPERATION-BROKER-003",
+  "parent_task_id": null,
+  "goal": "Operate the single canonical TV/TVC provider-operation broker so provider operations are manifest-directed state transitions whose delivery never depends on synchronous receiver liveness, while TV/TVC keeps credential custody and no second route policy, broker, primary runtime or credential mechanism is created.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10000000100000",
+  "repository": "StegVerse-Labs/TVC",
+  "issue_ref": "StegVerse-Labs/TVC#488",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/TVC:docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/TVC"
+    ],
+    "components": [
+      "provider-operation-broker",
+      "provider-operation-delivery",
+      "primary-runtime-binder",
+      "sdk-manifest-binding-pass-through"
+    ]
+  },
+  "source_reconciliation": {
+    "kind": "TVC_LOCAL_OWNER_RECONCILED_INTO_CANONICAL_REGISTRY",
+    "source_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+    "source_commit": "0f01bcd8690513962c5cb6646197e286dbf2bed8",
+    "source_blob": "6de45496ba5d3099fac66a75b63b8292f21729c1",
+    "source_local_state": "EXACT_PROVIDER_BINDER_DISPATCH_AND_HOST_START_DELIVERY_VALIDATED_LIVE_RUNTIME_OBSERVATION_PENDING",
+    "task_store_of_record_for_local_detail": "StegVerse-Labs/TVC:tasks/",
+    "duplicate_owner_created": false,
+    "cross_organization_visibility": true,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "admitted_scope": [
+    {
+      "extension_id": "TVC-PROVIDER-OPERATION-BROKER-003/N1",
+      "item_ids": [
+        "N1"
+      ],
+      "goal": "Convert provider-operation delivery to the existing durable intr-outbox and Interlock event-ephemeral pattern after proving provider-specific custody, authorization, atomicity and readback; remove the mandatory synchronous receiver dependency. Receiver unavailability is DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION, never a wait.",
+      "source_paths": [
+        "tvc_provider_operation_broker.py",
+        "scripts/tvc_provider_operation_broker.py",
+        "app/main.py"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    },
+    {
+      "extension_id": "TVC-PROVIDER-OPERATION-BROKER-003/A1-A4",
+      "item_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "goal": "Carry the exact admitted sdk_manifest_binding through each request builder or retire the module with per-module security and capability equivalence proof; verify canonical provider routes; decide the primary runtime binder's retirement or manifest-bound identity only after N1 no longer depends on the always-on socket.",
+      "source_paths": [
+        "tvc_workspace_google_drive_probe_runtime.py",
+        "scripts/tvc_execute_bea_readonly.py",
+        "scripts/tvc_run_provider_measurement.py",
+        "scripts/tvc_run_test_lane_external_candidate.py",
+        "config/provider_operation_profiles.json",
+        "tvc_primary_runtime_binder.py",
+        "tvc_primary_runtime_activation_task.py"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ],
+  "remaining_predicates": [
+    "N1_PROVIDER_OPERATION_DELIVERY_ON_EXISTING_DURABLE_OUTBOX_WITH_CUSTODY_AUTHORIZATION_ATOMICITY_AND_READBACK_PROVEN",
+    "N1_SYNCHRONOUS_RECEIVER_DEPENDENCY_REMOVED",
+    "A1_A3_BINDING_PASS_THROUGH_OR_PER_MODULE_RETIREMENT_EQUIVALENCE_PROVEN",
+    "A4_BINDER_RETIREMENT_OR_MANIFEST_BOUND_IDENTITY_DECIDED_AFTER_N1",
+    "BROKER_CHANGES_EXACT_HEAD_REQUIRED_CI_GREEN"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "runtime_reality_authority": "Organization",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+    "manifest_selects_processing_semantics": true,
+    "external_machine_wait_allowed": false,
+    "github_runtime_authority": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "related_canonical_task_refs": [
+    {
+      "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "relation": "CANONICAL_CONSUMER_OF_THIS_BROKER_NOT_DUPLICATED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001",
+      "relation": "RETIRED_SOURCE_CONFORMANCE_PREDECESSOR_FOR_SDK_MANIFEST_BINDING",
+      "authority_effect": "NONE"
+    }
+  ]
+}

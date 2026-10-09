@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+  "correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+  "root_correlation_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+  "parent_task_id": null,
+  "predecessor_task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+  "goal": "Bounded Organization Role version propagation: compare the exact canonical reference coordinates with StegDB and SV-LLM source identity and manifest contract, then carry each stale adopter to the current Organization Role version through manifest-bound Interlock/InTr conformance transitions, each terminating ALLOW, DENY or actionable FAIL_CLOSED.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10000000100000",
+  "repository": "StegVerse-Labs/StegDB",
+  "issue_ref": "StegVerse-Labs/TVC#488",
+  "handoff_projection_refs": [
+    "docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_002_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "SV-LLM"
+    ],
+    "repositories": [
+      "StegVerse-Labs/StegDB",
+      "SV-LLM/.github"
+    ],
+    "components": [
+      "organization-role-version-adoption-binding"
+    ]
+  },
+  "admitted_scope": [
+    {
+      "extension_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002/O1-REG",
+      "item_ids": [
+        "O1-REG"
+      ],
+      "goal": "Role-version propagation only. The predecessor's registry, comparison and conformance-work semantics are reused unchanged; this successor does not reopen the RETIRED predecessor and does not block unrelated O1 work.",
+      "reported_drift": {
+        "source": "StegVerse-Labs/TVC#488 issue body, item O1-REG",
+        "stegdb_bound_organization_role_commit": "702f896",
+        "sv_llm_adopted_organization_role_commit": "60ddd13",
+        "evidence_class": "REPORTED_IN_REVIEW_NOT_REVERIFIED_BY_THIS_ADMISSION"
+      },
+      "excluded": [
+        "reopening STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+        "a new registry, store or authority plane",
+        "runtime migration claims inferred from source or CI"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ],
+  "remaining_predicates": [
+    "O1_REG_EXACT_CANONICAL_REFERENCE_STEGDB_AND_SV_LLM_SOURCE_IDENTITY_COMPARED",
+    "O1_REG_STALE_ADOPTER_SET_DERIVED_FROM_CANONICAL_STATE",
+    "O1_REG_STEGDB_ROLE_VERSION_BINDING_ADVANCED_BY_MANIFEST_BOUND_TRANSITION",
+    "O1_REG_EACH_ATTEMPTED_CONFORMANCE_TRANSITION_TERMINAL_ALLOW_DENY_OR_ACTIONABLE_FAIL_CLOSED",
+    "O1_REG_EXACT_HEAD_REQUIRED_CI_GREEN"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "runtime_reality_authority": "Organization",
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "stegdb_authority": "VERSION_ADOPTION_MIGRATION_CONFORMANCE_STATE_ONLY",
+    "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+    "manifest_determines_destination": true,
+    "direct_repository_install_authority": false,
+    "external_machine_wait_allowed": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  }
+}

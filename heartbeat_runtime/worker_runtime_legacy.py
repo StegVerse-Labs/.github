@@ -209,7 +209,8 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_ORGANIZATION_RECORD_ONLY",
         )
         result = submit_state_receipt(receipt)
-        gate = organization_receipt_gate(result, expected_transition_id=transition_id)
+        # Inside the attempted assignment transition: a refusal is appended as its non-ALLOW record.
+        gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True)
         return {
             "state": result.get("state"),
             "reason": result.get("reason"),

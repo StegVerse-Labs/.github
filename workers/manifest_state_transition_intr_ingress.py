@@ -73,14 +73,16 @@ def organization_record_status(governance: Mapping[str, Any]) -> Any:
     return governance.get(LEGACY_ORGANIZATION_RECORD_STATUS_FIELD)
 
 
-def _require_organization_receipt(row: Mapping[str, Any], label: str, transition_id: str | None = None) -> None:
+def _require_organization_receipt(row: Mapping[str, Any], label: str, transition_id: str | None = None,
+                                  *, record_refusal: bool = False) -> None:
     """The verified Organization receipt of this exact state receipt closes a transition.
 
     Master Records reconstruction fields are evidence only and never gate it.
     A refusal raises with its typed DENY or FAIL_CLOSED disposition and
-    failed predicate; nothing is committed.
+    failed predicate; nothing is committed. `record_refusal` is set where the
+    gate sits inside the transition this worker just attempted.
     """
-    gate = organization_receipt_gate(row, expected_transition_id=transition_id)
+    gate = organization_receipt_gate(row, expected_transition_id=transition_id, record_refusal=record_refusal)
     refusal = gate["refusal"]
     require(gate["verified"], f"{label}_organization_receipt_refused:"
             f"{(refusal or {}).get('disposition')}:{(refusal or {}).get('failed_predicate')}")
@@ -263,12 +265,16 @@ def _nonworker_diagnostic_deny(
     runtime_root: Path, validated: Mapping[str, Any],
     *, reason_code: str = "ECOSYSTEM_DIAGNOSTIC_NONWORKER_DISPATCH_UNWIRED",
     terminal: bool = False,
+    organization_receipt_refusal: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Retain the evaluating profile's correctable DENY, not a forged InTr verdict.
 
     The current installed worker-only consumer cannot execute a diagnostic graph
     with no task claim. Source/profile evidence is explicitly not sovereign
     organization custody, EVENT_EPHEMERAL materialization or Master Records proof.
+    When the consumer's Organization receipt gate refused, its typed refusal
+    (failed predicate, retry entrypoint, recorded refusal receipt) is carried
+    as evidence and no consequence is committed.
     """
     request_hash = str(validated["request_sha256"])
     graph_id = str(validated["graph_id"])
@@ -314,6 +320,10 @@ def _nonworker_diagnostic_deny(
         "repair_owner": "EXISTING_SDK_ECOSYSTEM_DIAGNOSTIC_AND_STEGBROWSER_INTR_OWNERS",
         "authority_effect": "NONE_SOURCE_PROFILE_DISPOSITION_ONLY",
     }
+    if organization_receipt_refusal is not None:
+        record["organization_receipt_refusal"] = dict(organization_receipt_refusal)
+        record["retry_entrypoint"] = organization_receipt_refusal.get("retry_entrypoint")
+        record["consequence_committed"] = False
     root = runtime_root / REQUEST_DIR / "dispositions" / graph_id
     root.mkdir(parents=True, exist_ok=True)
     suffix = hashlib.sha256((record["disposition"] + ":" + reason_code).encode("utf-8")).hexdigest()[:16]
@@ -425,10 +435,12 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
         proof_ceiling="ORGANIZATION_FIRST_THEN_MASTER_RECORDS_RECONSTRUCTION",
     )
     custody = submit_state_receipt(receipt)
+    # Gate first so that any refusal of this attempted transition, including an
+    # append that did not record, is appended as its non-ALLOW record.
+    _require_organization_receipt(custody, transition_id, transition_id, record_refusal=True)
     require(custody.get("state") == "RECORDED", f"{transition_id}_organization_not_recorded")
     org = custody.get("organization_receipt")
     require(isinstance(org, Mapping) and org.get("receipt_sha256"), f"{transition_id}_organization_receipt_missing")
-    _require_organization_receipt(custody, transition_id, transition_id)
     return {"receipt": receipt, "custody": custody}
 
 
@@ -933,7 +945,8 @@ def execute(
             return _nonworker_diagnostic_deny(runtime_root, validated, reason_code=exc.predicate)
         except DiagnosticExecutionFailClosed as exc:
             return _nonworker_diagnostic_deny(
-                runtime_root, validated, reason_code=exc.predicate, terminal=True)
+                runtime_root, validated, reason_code=exc.predicate, terminal=True,
+                organization_receipt_refusal=exc.refusal)
     if validated.get("processing_capability") == "governance":
         return _execute_governance(runtime_root, validated, transport)
     require(isinstance(task_id, str) and task_id, "canonical_task_id_required")

@@ -222,7 +222,7 @@ def custody_ingestion(
     result = submit_state_receipt(receipt)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=receipt["transition_id"])
+    gate = organization_receipt_gate(result, expected_transition_id=receipt["transition_id"], record_refusal=True)
     if not gate["verified"]:
         return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED","refusal":gate["refusal"],"master_records":result,"authority_effect":"NONE"}
     return {"state":"RECORDED","receipt":receipt,"master_records":result,"authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}
