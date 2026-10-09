@@ -24,7 +24,7 @@
   "external_host_prerequisite": false,
   "github_actions_runtime_authority": "NONE",
   "heartbeat": "OBSERVABILITY_ONLY",
-  "high_water_epoch": 0,
+  "high_water_epoch": 1791520033,
   "incidents": {
     "INC-EMAIL-0042e28d96528769341f85b1": {
       "correlation_complete": true,
@@ -25584,8 +25584,8 @@
   },
   "last_completed_page_index": 31,
   "page_limit": 100,
-  "phase": "RECONCILING",
-  "prior_state_sha256": "eba0773c0f71c2a2b89379f351be4d58476770e6761ef1e3fcc62fff42037d8e",
+  "phase": "IDLE",
+  "prior_state_sha256": "d2abba3c79b5cdae25bbd323379650805634b2de3c2ccbd6456946ae2398164b",
   "processed_message_ids": [
     "1a0bf5e7411c00b9",
     "1a0bf5eb1fbdb917",
@@ -27227,8 +27227,8 @@
   "scheduler_prerequisite": false,
   "schema": "stegverse.native-email-continuation-state/v1",
   "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
-  "transition": "RECORD_RESOLUTION",
-  "transition_seq": 42,
+  "transition": "CLOSE_CYCLE",
+  "transition_seq": 43,
   "window_after_epoch": 0,
   "window_before_epoch": 1791520033,
   "worker_claim": {
