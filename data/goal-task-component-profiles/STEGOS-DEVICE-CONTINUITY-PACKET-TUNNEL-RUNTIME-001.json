@@ -62,7 +62,18 @@
   "not_selected": ["RTC-INTERLOCK-INTR-TRANSPORT-008 for carrier start/status observation", "RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004 as a separate mandatory chain stage", "RTC-PUBLISHER-005", "RTC-SDK-RETURN-006", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009", "credential_session component", "provider publication/release component", "terminal cleanup/entropy recovery component"],
   "goal_specific_completion_predicates_preserved": ["HOST_ACTIVATION_SOURCE_VALIDATED", "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
   "satisfied_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED"],
-  "remaining_predicates": ["AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
+  "remaining_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PACKET_TUNNEL_ACTIVATION", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CROSS_APP_PERSISTENCE", "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:LOOPBACK_8766_REACHABILITY"],
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED",
+      "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
+      "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 F1 non-Registry mirror follow-up to PR #3053: this field gates progression or must match the canonical record, whose affirmative observer predicate (*_OBSERVED) PR #3053 replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "worker_claim_fence": "WorkerCoordinator",

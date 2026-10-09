@@ -21,16 +21,23 @@ def test_goal_identity_and_runtime_predicates_are_preserved():
     assert profile["goal_identity_preserved"] is True
     assert profile["new_goal_task_required"] is False
     assert task["expected_evidence_predicates"] == profile["goal_specific_completion_predicates_preserved"]
-    # #3012: the profile's predicates are the record's prior names, retained as
-    # history; the record now gates each same transition on its Organization append.
-    prior = task["superseded_remaining_evidence_predicates"]
-    assert prior["value"] == profile["remaining_predicates"]
-    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
-    assert task["remaining_evidence_predicates"] == [
+    # #3012: record and profile both gate each transition on its Organization
+    # append; the prior observer names are retained only as history.
+    appended = [
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PACKET_TUNNEL_ACTIVATION",
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CROSS_APP_PERSISTENCE",
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:LOOPBACK_8766_REACHABILITY",
     ]
+    assert task["remaining_evidence_predicates"] == appended
+    assert profile["remaining_predicates"] == appended
+    prior = [
+        "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED",
+        "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
+        "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED",
+    ]
+    for history in (task["superseded_remaining_evidence_predicates"], profile["superseded_remaining_predicates"]):
+        assert history["value"] == prior
+        assert history["authority_effect"] == "NONE_HISTORY_ONLY"
 
 
 def test_host_activation_source_is_resolved_but_runtime_is_not_upgraded():

@@ -29,12 +29,9 @@ def test_site_publication_profile_preserves_identity_and_runtime_predicates():
     assert profile["goal_identity_preserved"] is True
     assert profile["new_goal_task_required"] is False
     assert task["component_model_projection"]["goal_runtime_predicates_changed"] is False
-    # #3012: the profile's predicates are the record's prior names, retained as
-    # history; the record now gates each same transition on its Organization append.
-    prior = task["superseded_remaining_predicates"]
-    assert prior["value"] == profile["goal_specific_completion_predicates_preserved"]
-    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
-    assert task["remaining_predicates"] == [
+    # #3012: record and profile both gate each transition on its Organization
+    # append; the prior observer names are retained only as history.
+    appended = [
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SOVEREIGN_SOURCE_REFRESH",
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:FRESH_WORKERCOORDINATOR_CLAIM_FENCE",
         "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_WORKER_EXECUTION",
@@ -45,6 +42,13 @@ def test_site_publication_profile_preserves_identity_and_runtime_predicates():
         "FINAL_PUBLICATION_TRANSITION_ADMITTED",
         "DNS_TLS_RECOVERY_PROVEN",
     ]
+    assert task["remaining_predicates"] == appended
+    assert profile["goal_specific_completion_predicates_preserved"] == appended
+    task_prior = task["superseded_remaining_predicates"]
+    profile_prior = profile["superseded_goal_specific_completion_predicates_preserved"]
+    assert profile_prior["value"] == task_prior["value"]
+    assert profile_prior["value"][0] == "SOVEREIGN_SOURCE_REFRESH_OBSERVED"
+    assert task_prior["authority_effect"] == profile_prior["authority_effect"] == "NONE_HISTORY_ONLY"
 
 
 def test_site_publication_selects_only_needed_transport_components():

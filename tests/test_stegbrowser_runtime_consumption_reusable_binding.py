@@ -60,6 +60,23 @@ def test_runner_accepts_only_the_ingress_append_predicate():
     assert "AUTHENTIC_INTR_INGRESS_OBSERVED" not in runner
 
 
+def test_shard_sequence_matches_record_organization_append_predicates():
+    # #3012: the shard gates the WorkerCoordinator claim/fence on its
+    # Organization append exactly as the canonical record does.
+    shard = json.loads(REUSABLE_TASK.read_text())
+    record = json.loads((ROOT / "data/canonical-task-records/STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001.json").read_text())
+    fence = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:WORKERCOORDINATOR_CLAIM_FENCE"
+    assert shard["required_reusable_sequence"] == record["required_reusable_sequence"]
+    assert shard["required_reusable_sequence"][7] == fence
+    assert shard["completion_predicates"][7] == fence
+    for key in ("required_reusable_sequence", "completion_predicates"):
+        assert "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED" not in shard[key]
+        prior = shard[f"superseded_{key}"]
+        assert prior["value"][7] == "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"
+        assert prior["value"][:7] == shard[key][:7] and prior["value"][8:] == shard[key][8:]
+        assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
+
+
 def test_reusable_contract_records_implemented_node_interlock_binding_pending_validation():
     shard = json.loads(REUSABLE_TASK.read_text())
     trace = shard["implementation_trace"]

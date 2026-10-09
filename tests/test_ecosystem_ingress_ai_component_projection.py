@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / "data" / "goal-task-component-profiles" / "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
 CONTRACT = ROOT / "data" / "reusable-ai-ingress-component-contract.json"
 HANDOFF = ROOT / "docs" / "ECOSYSTEM_INGRESS_AI_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+TASK = ROOT / "data" / "canonical-task-records" / "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
 
 
 def test_profile_reuses_existing_external_adapter_capability():
@@ -58,3 +59,18 @@ def test_component_011_preserves_existing_authority_owners():
     for protected_owner in ("Task Registry", "TV/TVC", "Interlock/InTr", "Master Records", "Publisher"):
         assert protected_owner in joined
     assert component["authority_effect"] == "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY"
+
+
+def test_profile_completion_predicate_matches_record_organization_append():
+    # #3012: the representative runtime boundary gates on its Organization
+    # append in both the record and the profile; the observer name is history.
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    task = json.loads(TASK.read_text(encoding="utf-8"))
+    appended = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE"
+    assert task["remaining_predicates"][-1] == appended
+    assert profile["goal_specific_completion_predicates_preserved"][-1] == appended
+    assert "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED" not in profile["goal_specific_completion_predicates_preserved"]
+    prior = profile["superseded_goal_specific_completion_predicates_preserved"]
+    assert prior["value"][-1] == "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED"
+    assert prior["value"][:-1] == profile["goal_specific_completion_predicates_preserved"][:-1]
+    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
