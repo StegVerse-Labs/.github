@@ -139,7 +139,21 @@
         "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
       ]
     },
-    "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+      "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:KV_SKAP_TERMINAL_EXACT_READBACK",
+      "satisfying_edge": "the owning lane's manifest-directed append of KV_SKAP_TERMINAL_EXACT_READBACK to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+      "required_evidence_or_repair": "Attempt KV_SKAP_TERMINAL_EXACT_READBACK through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:KV_SKAP_TERMINAL_EXACT_READBACK; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+      "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "owning_existing_goal": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_KV_SKAP_TERMINAL_EXACT_READBACK",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+      ]
+    }
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
