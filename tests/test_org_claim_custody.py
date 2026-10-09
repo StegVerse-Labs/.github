@@ -1209,8 +1209,8 @@ class OrgClaimCustodyTests(unittest.TestCase):
             self.assertNotIn(route, text, route)
 
     def test_exact_head_required_checks_green_no_bypass(self):
-        # The ratchet runs on every pull request with no path filter, and the control-plane
-        # workflow runs these modules: no change here reaches main without them.
+        # The ratchet runs these modules on every pull request with no path filter; the
+        # control-plane workflow (workflow_dispatch) runs them by name. Neither tolerates failure.
         ratchet = (ROOT / ".github/workflows/test-suite-ratchet.yml").read_text(encoding="utf-8")
         trigger = ratchet.split("\non:", 1)[1].split("\njobs:", 1)[0]
         self.assertIn("pull_request:", trigger)
