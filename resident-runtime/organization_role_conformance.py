@@ -33,6 +33,15 @@ The disposition is computed, never supplied by the request:
 
 No predicate here is about a reachable surface, a live lane or a receiver: the
 request has arrived, and what is evaluated is the organization's own source.
+
+Standing for the crossing is declared by this destination, never by the issuer
+or the consumer. The registry row that admits this route names its
+`authorized_issuer` and carries the `standing` this organization declares for
+it, in the contract's own form (`mode`, `node_ref`, the `predecessor` key).
+`declared_standing` hands that declaration on only when the manifest's issuer is
+the row's authorized issuer and the declaration is for that issuer; otherwise
+there is no declared standing, and the crossing refuses
+`CROSSING_REQUIRES_DECLARED_STANDING` as it always has.
 """
 from __future__ import annotations
 
@@ -278,6 +287,33 @@ def manifest_request(manifest: Any) -> Any:
     """The request the manifest carries in its SDK-admitted extension, or None."""
     extensions = manifest.get("extensions") if isinstance(manifest, Mapping) else None
     return extensions.get(REQUEST_EXTENSION) if isinstance(extensions, Mapping) else None
+
+
+def declared_standing(manifest: Any, registry: Any) -> tuple[dict[str, Any] | None, str]:
+    """The standing this destination declares for the manifest's issuer, or None and why.
+
+    Read from the one registry row that admits this capability on this route.
+    The issuer is the one the manifest's request names; the row says which
+    issuer it authorizes and declares standing for that issuer alone. Nothing is
+    defaulted: a row with no declaration, or a declaration for anyone but its
+    authorized issuer, declares no standing for this crossing.
+    """
+    services = registry.get("services") if isinstance(registry, Mapping) else None
+    rows = [row for row in services or [] if isinstance(row, Mapping)
+            and {"capability": CAPABILITY, "route_id": ROUTE_ID} in (row.get("admits_processing") or [])]
+    if len(rows) != 1 or rows[0].get("service_id") != SERVICE_ID:
+        return None, f"the registry has no single {SERVICE_ID} row admitting {ROUTE_ID}"
+    row = rows[0]
+    request = manifest_request(manifest)
+    issuer = request.get("issuer") if isinstance(request, Mapping) else None
+    issuer = issuer if isinstance(issuer, Mapping) else {}
+    declared_issuer = f"{issuer.get('repository')}:{issuer.get('owner_task_id')}"
+    if row.get("authorized_issuer") != declared_issuer:
+        return None, f"{SERVICE_ID} declares no standing for issuer {declared_issuer} on {ROUTE_ID}"
+    standing = row.get("standing")
+    if not isinstance(standing, Mapping) or standing.get("node_ref") != declared_issuer:
+        return None, f"{SERVICE_ID} declares no standing for its authorized issuer {declared_issuer}"
+    return dict(standing), ""
 
 
 def respond(packet: Mapping[str, Any], *, root: Path = ROOT) -> dict[str, Any]:

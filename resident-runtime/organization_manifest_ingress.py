@@ -1002,6 +1002,20 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         inadmissible = admit_role_conformance_shape(manifest)
         if inadmissible is not None:
             return refused(*inadmissible)
+        # Standing on this route is the destination's declaration for its
+        # authorized issuer, read from the registry row that admits the route.
+        # Neither the issuer nor the consumer supplies it: none declared is the
+        # crossing's own refusal, and a supplied standing is admitted only when
+        # it is exactly the declaration.
+        declared, gap = role_conformance.declared_standing(manifest, registry)
+        if declared is None:
+            return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED",
+                           "CROSSING_REQUIRES_DECLARED_STANDING:" + gap)
+        if standing is not None and dict(standing) != declared:
+            return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED",
+                           "CROSSING_REQUIRES_DECLARED_STANDING:the submission supplied standing "
+                           "other than the destination's declaration for its issuer")
+        standing = declared
     try:
         request = derive_execution_request(manifest, boundary())
     except ValueError as exc:
