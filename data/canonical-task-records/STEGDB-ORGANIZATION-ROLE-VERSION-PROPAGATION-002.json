@@ -111,10 +111,16 @@
         "starts_after": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/I12 (I-12a, I-12b and I-12c merged)",
         "reason": "Standing is tested at an authentic boundary admission only once the SDK manifest contract is fixed."
       },
-      "remaining_predicates": [
+      "satisfied_predicates": [
         "I11_DESTINATION_DECLARED_STANDING_FOR_AUTHORIZED_ISSUER",
         "I11_AUTHENTIC_BOUNDARY_ADMISSION_TEST",
         "I11_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "remaining_predicates": [],
+      "evidence_class": "CI_VALIDATED",
+      "evidence_refs": [
+        "StegVerse-Labs/.github#3051",
+        "StegVerse-Labs/.github@e682b286ac23d4cf99967c2be668a71800eb90b6"
       ],
       "issue_ref": "StegVerse-Labs/TVC#488",
       "approval_refs": [
