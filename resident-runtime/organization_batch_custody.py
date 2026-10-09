@@ -744,7 +744,10 @@ def close_batch(reason: str, *, root: Path | None = None) -> dict:
         raise ValueError("organization ledger HEAD identity mismatch")
     tip = head.get("receipt_sha256")
     _verified_receipt(root, tip)
-    if Path(str(head.get("receipt_path") or "")).resolve() != (root / "receipts" / (tip[7:] + ".json")).resolve():
+    # HEAD must name its own tip under this root's receipts/. The absolute prefix
+    # is wherever a materializer last supplied the root, so it is not compared:
+    # the same root supplied at another node's path is the same ledger.
+    if Path(str(head.get("receipt_path") or "")).parts[-2:] != ("receipts", tip[7:] + ".json"):
         raise ValueError("organization ledger HEAD receipt path mismatch")
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:
