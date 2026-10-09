@@ -287,8 +287,7 @@ class DispositionTests(ConformanceIngressCase):
 
 class RetryAndLedgerRootTests(ConformanceIngressCase):
     def test_exact_retry_returns_the_recorded_receipts(self):
-        # E1: the same delivery again. (A redelivery under another packet id is
-        # not an exact retry: the organization receipt binds the packet ids.)
+        # E1: the same delivery again.
         first = self.receive(packet_id="delivery-1")
         second = self.receive(packet_id="delivery-1")
         self.assertEqual(first["disposition"], "ALLOW")
@@ -299,6 +298,57 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         self.assertEqual(first["repository_receipt_sha256"], second["repository_receipt_sha256"])
         self.assertEqual(len(self.receipts(self.org_root)), 1)
         self.assertEqual(len(self.receipts(self.repo_root)), 1)
+
+    def receipt_bytes(self, root):
+        return {p.name: p.read_bytes() for p in sorted((root / "receipts").glob("*.json"))}
+
+    def test_redelivery_under_another_packet_id_reuses_the_recorded_receipts(self):
+        """I-10: the packet is the carrier, so a redelivery is the recorded transition."""
+        first = self.receive(packet_id="delivery-1")
+        repository_bytes, organization_bytes = (self.receipt_bytes(self.repo_root),
+                                                self.receipt_bytes(self.org_root))
+        second = self.receive(packet_id="delivery-2")
+        self.assertEqual((first["disposition"], second["disposition"]), ("ALLOW", "ALLOW"))
+        self.assertIs(second["transition_replayed"], True)
+        self.assertEqual(first["organization_receipt_sha256"], second["organization_receipt_sha256"])
+        self.assertEqual(self.receipt_bytes(self.repo_root), repository_bytes)
+        self.assertEqual(self.receipt_bytes(self.org_root), organization_bytes)
+        self.assertEqual(self.committed(second)["ingress_packet_id"], "delivery-1")
+        self.assertEqual(second["delivery_attempt"]["ingress_packet_id"], "delivery-2")
+        self.assertEqual(second["delivery_attempt"]["transition_identity_role"],
+                         "NON_IDENTITY_DELIVERY_EVIDENCE")
+
+    def assert_collides_under_one_transition_id(self, manifest):
+        """Redelivered under the recorded transition id, a changed request fails closed."""
+        first = self.receive(packet_id="delivery-1")
+        self.assertEqual(first["disposition"], "ALLOW")
+        repository_bytes, organization_bytes = (self.receipt_bytes(self.repo_root),
+                                                self.receipt_bytes(self.org_root))
+        with mock.patch.object(ingress, "ingress_transition_id",
+                               lambda request, evaluation=None: first["organization_transition_id"]):
+            refused = self.receive(manifest, packet_id="delivery-2")
+        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
+        after = self.receipt_bytes(self.repo_root)
+        self.assertTrue(set(repository_bytes.items()) <= set(after.items()))
+        self.assertTrue(set(organization_bytes.items()) <= set(self.receipt_bytes(self.org_root).items()))
+        self.assertEqual(sum(1 for r in self.receipts(self.repo_root)
+                             if r["transition_class"] == ingress.OPERATION_ID), 1)
+
+    def test_changed_issuer_under_one_transition_id_collides(self):
+        self.assert_collides_under_one_transition_id(self.manifest(
+            issuer={"repository": "StegVerse-Labs/Elsewhere",
+                    "owner_task_id": conformance.AUTHORIZED_ISSUER_TASK_ID}))
+
+    def test_changed_destination_under_one_transition_id_collides(self):
+        self.assert_collides_under_one_transition_id(self.manifest(destination_organization="StegVerse-org"))
+
+    def test_changed_binding_under_one_transition_id_collides(self):
+        self.assert_collides_under_one_transition_id(self.manifest(manifest_binding=self.binding(commit="0" * 40)))
+
+    def test_changed_target_version_under_one_transition_id_collides(self):
+        self.assert_collides_under_one_transition_id(self.manifest(
+            target_role_version=target_version(self.source, version_id="org-role-other")))
 
     def test_exact_retry_of_a_fail_closed_is_idempotent(self):
         (self.source / DIFFERING[0]).write_text("changed\n")
