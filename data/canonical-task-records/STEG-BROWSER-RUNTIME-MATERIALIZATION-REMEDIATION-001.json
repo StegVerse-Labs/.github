@@ -9,7 +9,21 @@
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
+  "current_exact_defect": {
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "SOURCE_VALIDATION",
+    "consequence_committed": false,
+    "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+    "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS",
+    "satisfying_edge": "the owning lane's manifest-directed append of RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+    "required_evidence_or_repair": "Attempt RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+    "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "owning_existing_goal": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+    ]
+  },
   "source_validation": {
     "previous_binding_repair_pull_request": 1907,
     "previous_binding_repair_merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
@@ -150,5 +164,12 @@
     "heartbeat_role": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE",
     "second_user_operated_device_required": false
+  },
+  "superseded_current_exact_defect": {
+    "value": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
+    "superseded_at_generation": 299,
+    "superseded_by": "current_exact_defect",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

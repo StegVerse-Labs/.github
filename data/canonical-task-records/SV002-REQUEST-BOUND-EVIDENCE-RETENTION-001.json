@@ -293,8 +293,15 @@
       {
         "from": "QUANTUM_AWARENESS_OBSERVED",
         "to": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
-        "predicate": "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
-        "state": "BLOCKED_ON_PREDECESSOR"
+        "predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",
+        "state": "BLOCKED_ON_PREDECESSOR",
+        "superseded_predicate": {
+          "value": "AUTHENTIC_SV002_ORG_RUNTIME_ACTIVATION_CONSUMPTION_OBSERVED",
+          "superseded_at_generation": 299,
+          "superseded_by": "state_transition_graph.transitions[7].predicate",
+          "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
       },
       {
         "from": "SV002_ORG_RUNTIME_ACTIVATION_CONSUMED",

@@ -167,7 +167,14 @@
     "observer_chain": "retained resident custody -> merged non-authorizing receipt verifier -> exact SHA/path/outcome binding -> Master Records where required",
     "external_connector_role": "NONE_NOT_APPLICABLE",
     "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
-    "current_first_unresolved_predicate": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED"
+    "current_first_unresolved_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE",
+    "superseded_current_first_unresolved_predicate": {
+      "value": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED",
+      "superseded_at_generation": 299,
+      "superseded_by": "runtime_resolution.current_first_unresolved_predicate",
+      "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }
   },
   "completion": {
     "claimed": false,

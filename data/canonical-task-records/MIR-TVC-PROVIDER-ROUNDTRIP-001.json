@@ -108,7 +108,7 @@
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
   ],
   "remaining_predicates": [
-    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_MIR_PROVIDER_SESSION"
   ],
   "completion": {
     "claimed": false,
@@ -128,5 +128,14 @@
     "StegVerse-Labs/StegOS/docs/MIR_NODE_MIRROR_RUN2_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md"
-  ]
+  ],
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
+    ],
+    "superseded_at_generation": 299,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }

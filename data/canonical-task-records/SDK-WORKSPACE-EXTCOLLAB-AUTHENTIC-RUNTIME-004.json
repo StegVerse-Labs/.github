@@ -115,7 +115,49 @@
   },
   "resolver_repair": {"pull_request": 1460, "exact_head": "a926d04e563fa6f89920bd608a2ff359b272ca13", "merge_commit": "3bc8898655d344ba12f47bb4120e38f2ac1ded6e", "validation_runs": [34615578871, 34615578937, 34615578890], "standalone_task_record_fallback": true, "duplicate_identity_fail_closed": true, "standalone_id_mismatch_fail_closed": true, "discovery_mutation_required": false, "merged_validated": true},
   "global_identity_invariant_alignment": {"source": "data/task-registry-global-invariants.json", "merge_evidence": "StegVerse-Labs/.github@b27114d812c8ee9c9584ebe9a99cef4fa2297cfb", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_verification_policy": "NONE_PROHIBITED", "physical_device_identity_gate": "NONE_PROHIBITED", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "transport_user_verifier_authority": "NONE", "runtime_subject_binding_is_user_verification": false, "resident_node_id_is_user_identity": false, "resident_node_id_is_authority_source": false, "resident_node_id_use": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY"},
-  "runtime_source_compatibility": {"profile_id": "canonical-resident-substrate-v1", "capability": "resident_request_dispatch", "capability_satisfied": true, "environment_satisfied": true, "direction_satisfied": true, "mutation_constraint_satisfied": true, "deployment_constraint_satisfied": true, "current_observation_state": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED", "remaining_rejection_reason": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED", "source_side_mismatch_remaining": false, "candidate_count_until_authentic_observation": 0, "authority_effect": "NONE_DISCOVERY_ONLY"},
+  "runtime_source_compatibility": {"profile_id": "canonical-resident-substrate-v1", "capability": "resident_request_dispatch", "capability_satisfied": true, "environment_satisfied": true, "direction_satisfied": true, "mutation_constraint_satisfied": true, "deployment_constraint_satisfied": true, "current_observation_state": {
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "SOURCE_VALIDATION",
+    "consequence_committed": false,
+    "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+    "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "satisfying_edge": "the owning lane's manifest-directed append of TASK_BOUND_ESTABLISHED_NODE_EXECUTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+    "required_evidence_or_repair": "Attempt TASK_BOUND_ESTABLISHED_NODE_EXECUTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+    "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "owning_existing_goal": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json"
+    ]
+  }, "remaining_rejection_reason": {
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "SOURCE_VALIDATION",
+    "consequence_committed": false,
+    "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+    "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "satisfying_edge": "the owning lane's manifest-directed append of TASK_BOUND_ESTABLISHED_NODE_EXECUTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+    "required_evidence_or_repair": "Attempt TASK_BOUND_ESTABLISHED_NODE_EXECUTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+    "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "owning_existing_goal": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json"
+    ]
+  }, "source_side_mismatch_remaining": false, "candidate_count_until_authentic_observation": 0, "authority_effect": "NONE_DISCOVERY_ONLY",
+    "superseded_current_observation_state": {
+      "value": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+      "superseded_at_generation": 299,
+      "superseded_by": "runtime_source_compatibility.current_observation_state",
+      "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    },
+    "superseded_remaining_rejection_reason": {
+      "value": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+      "superseded_at_generation": 299,
+      "superseded_by": "runtime_source_compatibility.remaining_rejection_reason",
+      "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }},
   "runtime_surface_binding": {
     "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE",
     "established_node_required": true,
@@ -148,13 +190,27 @@
     "utc_hour_slot_satisfaction_observed": false
   },
   "source_state": {"portable_exact_dispatch_merged": true, "service_gateway_three_route_source_merged": true, "resolver_repair_merged_validated": true, "retained_rendezvous_node_subject_projection_merged_validated": true, "kv_skap_user_verifier_global_invariant_merged": true, "interchangeable_stegos_node_global_invariant_merged": true, "reusable_task_component_model_source_validated": true, "reusable_lifecycle_source_complete": true, "healer_scheduler_terminal_compatibility_merged": true, "established_node_model_reconciled": true, "physical_device_identity_gate": "NONE_PROHIBITED", "specific_iphone_requirement": false, "remote_device_connector_applicable": false, "resident_reseal_consumption_receipt_observed": false, "resident_consent_listener_consumption_receipt_observed": false, "retained_drive_receipts_observed": false, "sovereign_callback_reachability_proven": false, "github_runtime_authority": "NONE", "hosted_execution_fallback": false},
-  "remaining_predicates": ["AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN", "ESTABLISHED_NODE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
+  "remaining_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN", "ESTABLISHED_NODE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
   "authority_model": {"task_registry_mints_execution_authority": false, "worker_claim_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "interlock_intr_required_for_governed_ingress_egress": true, "master_records_reality_authority": false, "gateway_owner": "StegVerse-org/LLM-adapter#72", "github_runtime_authority": "NONE", "hosted_execution_fallback": false, "second_user_operated_device_required": false},
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
   "activation_condition_status": "SATISFIED",
   "activation_evidence": {"parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003", "parent_goal_prompt_count": 20, "activation_basis": "PARENT_GOAL_PROMPT_COUNT_REACHES_20"},
   "runtime_requirements": {"capabilities": ["resident_request_dispatch"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": false, "deployment_required": false, "current_observation_required": true, "already_local_source_required": true, "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE", "established_node_required": true, "specific_physical_device_required": false, "specific_iphone_required": false, "physical_device_identity_gate": "NONE_PROHIBITED", "remote_device_connector_required": false, "connected_resident_device_required": false, "second_user_operated_device_required": false, "always_on_external_host_required": false, "user_verification_source": "KV/SKAP Vault", "kv_skap_continuity_binding_required_when_applicable": true, "device_local_user_verifier_allowed": false},
-  "runtime_resolution": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+  "runtime_resolution": {
+    "disposition": "FAIL_CLOSED",
+    "evidence_class": "SOURCE_VALIDATION",
+    "consequence_committed": false,
+    "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+    "failed_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "satisfying_edge": "the owning lane's manifest-directed append of TASK_BOUND_ESTABLISHED_NODE_EXECUTION to the Organization ledger root under ORGANIZATION_LEDGER_LOCK, read back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+    "required_evidence_or_repair": "Attempt TASK_BOUND_ESTABLISHED_NODE_EXECUTION through its manifest. The verified Organization receipt of that append satisfies ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TASK_BOUND_ESTABLISHED_NODE_EXECUTION; a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+    "retry_entrypoint": "scripts/run_task_registry_canonical_work_cycle.py --goal-task-id SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "owning_existing_goal": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "next_attempt": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_TASK_BOUND_ESTABLISHED_NODE_EXECUTION",
+    "evidence_refs": [
+      "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json"
+    ]
+  },
   "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
   "latest_runtime_observation": {"observed_at": "2026-09-13T15:21:00Z", "evidence_ref": "receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-NODE-KV-CONTINUITY-CORRECTION-20260913.json", "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE", "established_node_required": true, "specific_physical_device_required": false, "task_bound_established_node_execution_observed": false, "applicable_kv_skap_continuity_binding_observed": false, "retained_drive_reseal_receipt_matches": 0, "retained_drive_listener_receipt_matches": 0, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_AND_APPLICABLE_KV_SKAP_CONTINUITY", "authority_effect": "NONE_OBSERVATION_ONLY"},
   "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Task-specific projection is being brought into alignment with existing global invariants that already define device interchangeability, Node non-authority semantics, and KV/SKAP user-verification exclusivity.", "evidence_refs": ["README.md", "data/task-registry-global-invariants.json", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]},
@@ -210,5 +266,35 @@
         "evidence_refs": []
       }
     ]
+  },
+  "superseded_runtime_resolution": {
+    "value": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+    "superseded_at_generation": 299,
+    "superseded_by": "runtime_resolution",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  },
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED",
+      "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN",
+      "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN",
+      "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
+      "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
+      "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
+      "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
+      "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
+      "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
+      "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
+      "MIR_TRANSITION_REPORTING_PROVEN",
+      "MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_PROVEN",
+      "ESTABLISHED_NODE_END_TO_END_PROVEN",
+      "DOWNSTREAM_PROPAGATION_COMPLETE",
+      "PUBLIC_DISTRIBUTIONS_COMPLETE"
+    ],
+    "superseded_at_generation": 299,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 O1/O2: a standing passive observer status or post-closure observer gate is replaced by the exact Organization append/readback predicate (ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK) or a typed actionable FAIL_CLOSED naming it (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; NO_EXTERNAL_MACHINE_AWAITING_AS_TRANSITION_PREDICATE).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }
