@@ -6,6 +6,8 @@ name: Test suite ratchet
 # how a cross-repository seam break shipped with both repositories green.
 on:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -39,3 +41,181 @@ jobs:
           name: test-suite-ratchet
           path: /tmp/test-suite-ratchet.json
           if-no-files-found: warn
+
+  # Source validators that are not tests under tests/, consolidated here from
+  # the per-feature workflows retired under StegVerse-Labs/.github#3039 (H6b).
+  # They run on every pull request and every push to main, with no path filter,
+  # so no assertion is narrowed to the file list its old workflow named. Tests
+  # under tests/ are not repeated: the ratchet job above runs every one of them.
+  # Validation only: nothing here executes work or confers authority.
+  consolidated-source-validators:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+
+      # from governance-endpoint-validation.yml
+      - name: The kernel's mesh and node state are supplied, never derived from the host
+        if: ${{ !cancelled() }}
+        run: python org-kernel/tests/test_kernel.py
+
+      # from component010-checkout-audit.yml
+      - name: Assert actionable non-ALLOW Component-010 source projection
+        if: ${{ !cancelled() }}
+        run: |
+          set +e
+          python scripts/audit_component010_checkout.py > /tmp/component010-audit.json
+          status=$?
+          set -e
+          test "$status" -eq 2
+          python -c 'import json; x=json.load(open("/tmp/component010-audit.json")); assert x["source_projection_disposition"] == "FAIL_CLOSED_STALE_CHECKOUT_EVIDENCE"; assert x["runtime_transition_observed"] is False'
+
+      # from task-work-correlation-validation.yml
+      - name: Resolve canonical work identity without runtime authority
+        if: ${{ !cancelled() }}
+        run: python scripts/resolve_task_work_correlation.py --task-id MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001
+
+      # from test3-richard-seam-acceptance.yml
+      - name: Run and assert Test 3 Richard seam acceptance
+        if: ${{ !cancelled() }}
+        run: |
+          python scripts/run_sdk_tt_richard_seam_test3.py --json-out /tmp/test3-result.json
+          python -c "import json; p=json.load(open('/tmp/test3-result.json')); assert p['state']=='PASS'; assert p['constitutive_transition']=='ACTIVATE_TASK_AND_CREATE_BIND_WORKER'; print('TEST3_RICHARD_SEAM_ACCEPTANCE_PASS')"
+
+      # from validate-interlock-intr-protocol-vectors.yml
+      - name: Verify deterministic synthetic Interlock InTr protocol vectors
+        if: ${{ !cancelled() }}
+        run: |
+          python scripts/verify_interlock_intr_runtime_independent_protocol.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          doc=json.loads(Path('test-vectors/interlock-intr-runtime-independent-protocol-v1.json').read_text())
+          assert doc['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert doc['fixtures']['master_records_checkpoint_profile']['external_conformance_claimed'] is False
+          print('INTERLOCK_INTR_VECTOR_VALIDATION_NON_AUTHORIZING_PASS')
+          PY
+
+      # from validate-master-records-checkpoint.yml
+      - name: Verify deterministic synthetic Master Records checkpoint vectors
+        if: ${{ !cancelled() }}
+        run: |
+          python scripts/verify_master_records_checkpoint.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('test-vectors/master-records-checkpoint-construction-v1.json').read_text())
+          b=json.loads(Path('test-vectors/master-records-checkpoint-interoperability-v1.json').read_text())
+          assert a['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert b['status']=='SYNTHETIC_NON_AUTHORIZING'
+          assert b['runtime_observation']['required_for_documentary_validation'] is False
+          assert b['claims']['external_adoption'] is False
+          assert b['claims']['external_conformance'] is False
+          assert b['claims']['authentic_runtime_execution'] is False
+          assert b['claims']['deployment'] is False
+          print('MASTER_RECORDS_CHECKPOINT_VALIDATION_NON_AUTHORIZING_PASS')
+          PY
+
+      # from validate-organization-role-deployment-packet.yml
+      - name: The reference organization passes its own role deployment verifier
+        if: ${{ !cancelled() }}
+        run: python scripts/verify_organization_role_deployment.py --org-root .
+
+      # from validate-organization-role-runtime-reality.yml
+      - name: Validate global invariant block and the deployment declaration
+        if: ${{ !cancelled() }}
+        run: python scripts/validate_task_registry_global_invariants.py
+
+      # from validate-stegbrowser-intr-retention.yml (this checkout replaces its
+      # second anonymous fetch of the same source)
+      - name: Validate exact StegBrowser sovereign ingress retention path
+        if: ${{ !cancelled() }}
+        run: |
+          python - <<'PY'
+          import tests.test_stegbrowser_universal_intr_materialization as t
+          tests = [
+              t.test_installer_reuses_shared_listener_and_is_idempotent,
+              t.test_node_trigger_is_admitted_write_once_without_authority,
+              t.test_tampered_node_trigger_fails_closed,
+              t.test_consumer_dispatches_existing_manifest_runner_only_after_exact_binding,
+              t.test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_server,
+              t.test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref,
+              t.test_consumer_maps_opaque_binding_ref_to_ingress_retained_binding_path,
+          ]
+          for test in tests:
+              test()
+              print(f"{test.__name__}=PASS")
+          PY
+
+      # from validate-purpose-bound-worker-derived-lifetime.yml (its Experiment 3
+      # wire test moved to org-runtime-boundary.yml, which already installs the
+      # same pinned SDK)
+      - name: Validate derived lifetime invariants
+        if: ${{ !cancelled() }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          h=json.loads(Path('handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json').read_text())
+          c=h['purpose_bound_worker_request']['transition_cell']['candidate']
+          p=c['lifetime_policy']
+          assert p['mode']=='DERIVED_COST_TASK_DELAY_BUDGET'
+          assert p['production_recompute_required'] is True
+          assert h['execution']['lifetime_semantics']['demo_value_is_production_default'] is False
+          assert sum(p['time_budget_seconds'].values())==p['derived_max_lifetime_seconds']==c['max_lifetime_seconds']==30
+          assert p['decomposition_target']=='RECORDS_ENABLED_PACKET'
+          assert h['execution']['lifetime_semantics']['extension_requires_new_governed_recalculation'] is True
+          reg=json.loads(Path('data/canonical-task-registry.json').read_text())
+          assert reg['generation']>=56  # feature registration floor; canonical generation is monotonic
+          task=next(x for x in reg['tasks'] if x['task_id']=='SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001')
+          assert task['lifetime_model']['demonstration']['production_default'] is False
+          assert task['lifetime_model']['production']['recompute_per_task'] is True
+          print('DERIVED_LIFETIME_CONTRACT_PASS')
+          PY
+
+      # from aex-stcm-chf-native-capability-audit.yml and
+      # validate-conversation-evidence-ingestion.yml
+      - name: Parse canonical JSON artifacts
+        if: ${{ !cancelled() }}
+        run: |
+          python -m json.tool data/aex-stcm-chf-native-math-capability-review.json >/dev/null
+          python -m json.tool data/aex-native-math-processing-census.json >/dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in (
+              "contracts/conversation-evidence-service-performance-publication-contract.v1.json",
+              "schemas/conversation-evidence-ingestion-package.schema.json",
+              "data/canonical-task-records/CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001.json",
+          ):
+              json.loads(Path(path).read_text(encoding="utf-8"))
+          print("CONVERSATION_EVIDENCE_INGESTION_JSON_PARSE_PASS")
+          PY
+
+      # py_compile of the scripts and workers the retired workflows compiled:
+      # validate-master-records-source-proof.yml, validate-sdk-review-publisher-intr-forward.yml,
+      # generic-sdk-manifest-resident.yml, validate-conversation-evidence-ingestion.yml,
+      # validate-task-registry-kv-event-projection.yml and the verify job of
+      # repository-hygiene-ecosystem-bulk-census.yml
+      - name: Compile retired-workflow scripts and workers
+        if: ${{ !cancelled() }}
+        run: |
+          python -m py_compile \
+            workers/bootstrap_v1_source_package_production_worker.py \
+            scripts/install_sovereign_worker_source_refresh_service.py \
+            scripts/consume_publisher_intr_materialization_request.py \
+            scripts/consume_sdk_generic_manifest_execution_request.py \
+            scripts/dispatch_resident_execution_requests.py \
+            scripts/refresh_sovereign_worker_runtime_source.py \
+            workers/conversation_evidence_ingestion.py \
+            workers/conversation_evidence_ingestion_runtime_worker.py \
+            scripts/project_task_registry_event_to_sovereign_kv.py \
+            scripts/task_registry_checkin_event_history.py \
+            scripts/repository_hygiene_retire_merged_refs.py

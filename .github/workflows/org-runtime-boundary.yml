@@ -18,6 +18,45 @@ on:
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
       - 'workers/manifest_state_transition_intr_ingress.py'
+      # Experiment 3 wire binding against the pinned SDK, from the retired
+      # validate-purpose-bound-worker-derived-lifetime.yml (#3039 H6b); its path list
+      # is kept whole so the wire test runs on every change it ran on before.
+      - 'handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
+      - 'tests/test_sdk_tt_purpose_bound_worker_runtime_path.py'
+      - 'tests/test_generic_manifest_worker_profile_binding.py'
+      - 'tests/test_manifest_state_transition_intr_ingress.py'
+      - 'tests/test_shwp_manifest_parent_consumer.py'
+      - 'tests/test_shwp_manifest_invocation.py'
+      - 'workers/shwp_manifest_parent_consumer.py'
+      - 'scripts/consume_shwp_manifest_invocation.py'
+      - 'tests/test_sdk_manifest_diagnostic_admitted_consumer.py'
+      - 'tests/test_mir_exp3_original_resident_request.py'
+      - 'scripts/consume_mir_exp3_original_request.py'
+      - 'scripts/dispatch_resident_execution_requests.py'
+      - 'tests/test_mir_sv_exp3_cross_owner_wire_binding.py'
+      - 'workers/sdk_manifest_diagnostic_admitted_consumer.py'
+      - 'workers/universal_intr_profiled_ingress.py'
+      - 'data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
+      - 'data/canonical-task-registry.json'
+      - 'tests/test_sdk_tt_richard_atomic_activation_seam.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_carriage.py'
+      - 'tests/test_sdk_tt_richard_seam_resident_materialization.py'
+      - 'tests/test_sdk_tt_richard_seam_control_plane_package.py'
+      - 'scripts/build_control_plane_source_package_reusable.py'
+      - 'tests/test_reusable_control_plane_source_package.py'
+      - 'heartbeat_runtime/worker_runtime_legacy.py'
+      - 'scripts/consume_kv_publisher_return_materialization_request.py'
+      - 'tests/test_organization_record_gates_not_master_records.py'
+      - 'workers/canonical_state_transition_custody.py'
+      - 'heartbeat_runtime/process_adapter.py'
+      - 'workers/stegagents_governed_runtime_worker.py'
+      - 'handoffs/SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001.json'
+      - 'control/worker-registry.d/sdk-tt-richard-seam-authentic-runtime-001.json'
+      - 'control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json'
+      - 'scripts/consume_sdk_tt_richard_seam_authentic_runtime_request.py'
+      - 'scripts/consume_stegagents_governed_runtime_targeted_request.py'
+      - 'tests/test_stegagents_governed_runtime_targeted_resident_bridge.py'
+      - 'docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md'
       - '.github/workflows/org-runtime-boundary.yml'
   push:
     branches: [main]
@@ -64,6 +103,15 @@ jobs:
           tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
           python -m pip install --quiet /tmp/stegverse-sdk
           python -c 'import stegverse.organization_role_conformance_processor'
+      # From the retired validate-purpose-bound-worker-derived-lifetime.yml (#3039 H6b),
+      # which fetched and installed this same pinned SDK on its own. The wire
+      # test now reuses the install above, so the SDK is fetched once, not twice.
+      - name: Validate exact frozen Experiment 3 wire against merged SDK owner
+        run: |
+          set -eu
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          STEGVERSE_SDK_SOURCE_ROOT=/tmp/stegverse-sdk python -m unittest -v tests.test_mir_sv_exp3_cross_owner_wire_binding
       - name: Validate organization boundary
         run: |
           python org-runtime/runtime_boundary.py validate | tee /tmp/org-boundary.json

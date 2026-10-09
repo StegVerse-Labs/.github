@@ -27,4 +27,4 @@ The decision is a transition that occurs in this organization, so it is recorded
 
 ## Validation
 
-`tests/test_governance_endpoint.py`, run by `.github/workflows/governance-endpoint-validation.yml`.
+`tests/test_governance_endpoint.py`, run by the whole-suite ratchet in `.github/workflows/test-suite-ratchet.yml` (`org-kernel/tests/test_kernel.py` runs in its `consolidated-source-validators` job; the former `governance-endpoint-validation.yml` was consolidated there under #3039 H6b).
