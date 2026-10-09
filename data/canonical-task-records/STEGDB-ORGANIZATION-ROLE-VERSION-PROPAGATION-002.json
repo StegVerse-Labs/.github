@@ -90,5 +90,47 @@
     "claimed": false,
     "validated": false,
     "runtime_observed": false
-  }
+  },
+  "bounded_extensions": [
+    {
+      "extension_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002/I11",
+      "item_ids": [
+        "I-11"
+      ],
+      "goal": "The destination declares standing for the authorized issuer (StegVerse-Labs/StegDB, this task) through the existing Organization route and standing registration for stegverse.route.organization-role-conformance.v1, so the Labs crossing no longer refuses with CROSSING_REQUIRES_DECLARED_STANDING; then an authentic boundary-admission test. Neither the issuer nor the consumer invents standing, and standing is never fabricated.",
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "source_paths": [
+        "org-boundary/registry/services.json",
+        "resident-runtime/sdk_manifest_crossing.py",
+        "resident-runtime/organization_role_conformance.py",
+        "tests/test_organization_role_conformance_ingress.py"
+      ],
+      "sequencing": {
+        "starts_after": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/I12 (I-12a, I-12b and I-12c merged)",
+        "reason": "Standing is tested at an authentic boundary admission only once the SDK manifest contract is fixed."
+      },
+      "remaining_predicates": [
+        "I11_DESTINATION_DECLARED_STANDING_FOR_AUTHORIZED_ISSUER",
+        "I11_AUTHENTIC_BOUNDARY_ADMISSION_TEST",
+        "I11_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6072462536)",
+        "StegVerse-Labs/TVC#488 (comment 6072675486)",
+        "StegVerse-Labs/TVC#488 (comment 6072705082)"
+      ],
+      "admitted_on": "2026-10-09",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ]
 }
