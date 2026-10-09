@@ -283,7 +283,10 @@ def test_declaration_doc_states_the_change_and_the_exemption_path():
 # the records W7 (#491), W8a (#493) and W8b (#494) retired leave the register (RETIRED_TVC_RECORD_SURFACES).
 # ER-2 reconciles it with the review at StegVerse-Labs/TVC@5d0b3f0: W10a (#498) retired W4-N3-01/02, whose
 # units stay registered only for the activation residual they inherit (W4-N2-07), and W10b (#497)
-# retired W4-N3-06..09. The keys below are exactly the TVC review's live non_allow_records.
+# retired W4-N3-06..09. ER-3 reconciles it with the review at StegVerse-Labs/TVC@bf6a61f: W11 (#500, #501)
+# retired W4-N2-07 (activation is manifest-selected), so its task_activate entry and the two primary-runtime
+# unit residuals that inherited it leave the register. The keys below are exactly the TVC review's live
+# non_allow_records.
 TVC_RECORD_SURFACES = {
     "O2B1-NA-01": ["scripts/tvc_execute_bea_readonly.py (broker request construction)"],
     "O2B1-NA-02": ["scripts/tvc_run_provider_measurement.py (broker request construction)"],
@@ -296,18 +299,12 @@ TVC_RECORD_SURFACES = {
     "W4-N2-04": ["tvc_google_drive_external_collaboration_vault_session_consumer.py::consume_broker_session"],
     "W4-N2-05": ["scripts/tvc_ara_graph_operations.py::execute"],
     "W4-N2-06": ["scripts/tvc_ara_graph_resident_intake.py::process"],
-    "W4-N2-07": [
-        "tvc_primary_runtime_activation_task.py::task_activate",
-        # Inherited by both MANUAL primary-runtime units (systemd_unit_review inherited_non_allow_record_ids).
-        "deploy/systemd/stegtvc-primary-runtime.service",
-        "deploy/systemd-user/stegtvc-primary-runtime.service",
-    ],
     "W4-N3-05": ["deploy/systemd/stegtvc-external-collab-google-drive-consent.service"],
 }
 # Retired in the TVC review at StegVerse-Labs/TVC@bd0fe27 (ER-1) and @5d0b3f0 (ER-2): the surface no
 # longer holds the recorded predicate, so its entry is removed and must not be re-registered.
 # O2B1-NA-09 and W7-N1-02 were consolidated into the O2B1-NA-08 and W4-N1-01 entries and retired with
-# them. W4-N3-01/02 are retired too, but their units stay registered under W4-N2-07 (above).
+# them. W4-N3-01/02 and W4-N2-07 (W11) are retired; the primary-runtime units no longer inherit any record.
 RETIRED_TVC_RECORD_SURFACES = {
     "O2B1-NA-07": ["tvc_workspace_google_drive_probe_runtime.py (broker request construction)"],
     "O2B1-NA-08": ["tvc_primary_runtime_binder.py (discover_primary_runtime)"],
@@ -322,9 +319,15 @@ RETIRED_TVC_RECORD_SURFACES = {
     "W4-N3-07": ["deploy/systemd/stegtvc-post-return-release-skap-intr-tunnel.service"],
     "W4-N3-08": ["deploy/systemd/stegtvc-skap-browser-ingress.service"],
     "W4-N3-09": ["deploy/systemd/stegtvc-skap-browser-intr-tunnel.service"],
+    "W4-N2-07": [
+        "tvc_primary_runtime_activation_task.py::task_activate",
+        "deploy/systemd/stegtvc-primary-runtime.service",
+        "deploy/systemd-user/stegtvc-primary-runtime.service",
+    ],
 }
 RETIRED_TVC_RECORD_IDS = {"O2B1-NA-07", "O2B1-NA-08", "O2B1-NA-09", "W7-N1-02", "W4-N1-01", "W4-N3-01", "W4-N3-02",
-                          "W4-N3-03", "W4-N3-04", "W4-N3-06", "W4-N3-07", "W4-N3-08", "W4-N3-09", "W4-N3-10"}
+                          "W4-N3-03", "W4-N3-04", "W4-N3-06", "W4-N3-07", "W4-N3-08", "W4-N3-09", "W4-N3-10",
+                          "W4-N2-07"}
 I8_SURFACE = "workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry"
 
 
@@ -339,14 +342,14 @@ def test_register_holds_one_entry_per_confirmed_tvc_surface():
         for surface in surfaces
     }
     entries = tvc_exemptions()
-    assert len(entries) == len(expected) == 15
+    assert len(entries) == len(expected) == 12
     actual = {}
     for entry in entries:
         refs = re.findall(r"TVC record (O2B1-NA-\d{2}|W4-N[123]-\d{2})", entry["retry_entrypoint"])
         assert len(refs) == 1, entry["surface"]
         actual[entry["surface"]] = refs[0]
     assert actual == expected
-    assert len(TVC_RECORD_SURFACES) == 13 and not set(TVC_RECORD_SURFACES) & RETIRED_TVC_RECORD_IDS
+    assert len(TVC_RECORD_SURFACES) == 12 and not set(TVC_RECORD_SURFACES) & RETIRED_TVC_RECORD_IDS
 
 
 def test_tvc_exemptions_are_fail_closed_register_only_under_admitted_owners():
@@ -369,27 +372,19 @@ def test_inherited_callers_are_consolidated_and_the_i8_surface_is_not_reregister
     assert not any("tvc_primary_runtime_activation_task.py (task_preflight)" in s for s in surfaces)
 
 
-def test_retired_tvc_records_are_not_registered_and_the_primary_runtime_units_are_narrowed():
+def test_retired_tvc_records_are_not_registered_and_activation_is_no_longer_exempt():
     surfaces = {e["surface"]: e for e in tvc_exemptions()}
     retired = {"StegVerse-Labs/TVC:" + s for group in RETIRED_TVC_RECORD_SURFACES.values() for s in group}
-    assert len(retired) == 11 and not retired & set(surfaces)
+    assert len(retired) == 14 and not retired & set(surfaces)
     for entry in surfaces.values():
         named = set(re.findall(r"TVC record ([A-Z0-9]+-[A-Z0-9]+-\d{2})", entry["retry_entrypoint"]))
         assert not named & RETIRED_TVC_RECORD_IDS, entry["surface"]
         # A retired receiver predicate is never re-registered under another surface.
         assert entry["failure_code"] not in {"UNIT_ALWAYS_ON_RECEIVER_PREDICATE", "UNIT_RECEIVER_LIVENESS_POLLING"} or \
             entry["surface"].endswith(TVC_RECORD_SURFACES["W4-N3-05"][0])
-    for unit in ("deploy/systemd/stegtvc-primary-runtime.service", "deploy/systemd-user/stegtvc-primary-runtime.service"):
-        entry = surfaces["StegVerse-Labs/TVC:" + unit]
-        # W10a made the listener event-ephemeral (Restart=no, no [Install]); only the inherited
-        # activation residual W4-N2-07 remains.
-        assert entry["failure_code"] == "MANIFEST_LESS_STATE_EFFECT"
-        assert entry["failed_predicate"] == "RUNTIME_ACTIVATION_WITHOUT_MANIFEST_SELECTION"
-        assert "TVC record W4-N2-07" in entry["retry_entrypoint"]
-        assert "always-on" not in entry["required_evidence_or_repair"]
-    activate = surfaces["StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate"]
-    assert activate["failure_code"] == "MANIFEST_LESS_STATE_EFFECT"
-    assert "task_preflight verifies a manifest-bound activation request" in activate["required_evidence_or_repair"]
+        # W11 made primary-runtime activation manifest-selected; no entry re-registers that predicate.
+        assert entry["failed_predicate"] != "RUNTIME_ACTIVATION_WITHOUT_MANIFEST_SELECTION", entry["surface"]
+        assert "starts the self-heal supervisor" not in entry["why_manifest_bound_state_transition_is_not_yet_possible"]
 
 
 def run_validator_with_register(register: dict) -> subprocess.CompletedProcess:
