@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 302,
+  "generation": 303,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -20595,6 +20595,67 @@
             "StegVerse-Labs/TVC#488 (comment 6072462536)",
             "StegVerse-Labs/TVC#488 (comment 6072675486)",
             "StegVerse-Labs/TVC#488 (comment 6072705082)"
+          ],
+          "admitted_on": "2026-10-09",
+          "admission_evidence_class": "SOURCE_IMPLEMENTED",
+          "completion_claimed": false,
+          "runtime_disposition_claimed": false,
+          "new_dependencies_allowed": false,
+          "external_machine_wait_allowed": false,
+          "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+          "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+          "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+        },
+        {
+          "extension_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002/R1",
+          "item_ids": [
+            "R-1"
+          ],
+          "goal": "First authentic, manifest-directed StegDB -> StegVerse-Labs Organization-role conformance transition through the existing resident dispatch path. Wire the organization-role-conformance intr-outbox route into the existing resident dispatcher (scripts/dispatch_resident_execution_requests.py CONSUMERS, selected through RT-CANONICAL-WORK-PORTABLE-DISPATCH-001) so the existing receiver resident-runtime/organization_manifest_ingress.py::consume_outbox runs with both ledger roots forwarded only from the materializer's environment; deliver the StegDB-emitted stegverse.intr-outbox-manifest-event/v1 (tools/evaluate_organization_role_conformance.py --durable-root) into the materializer-supplied durable root; then make the actual attempt and read back the Organization receipt. Until an actual admission invocation, the disposition stays NOT_ATTEMPTED.",
+          "repositories": [
+            "StegVerse-Labs/.github"
+          ],
+          "source_paths": [
+            "scripts/dispatch_resident_execution_requests.py",
+            "resident-runtime/organization_manifest_ingress.py",
+            "tests/test_organization_role_conformance_ingress.py"
+          ],
+          "owner_resolution": {
+            "owner_task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+            "reason": "The registry shows this task owns the StegDB -> Labs role-conformance route (O1-REG, I11); no Organization transition ledger materializer task owns an organization-role-conformance consumer. Extended as a bounded extension; no new task.",
+            "findings": {
+              "receiver_exists": "resident-runtime/organization_manifest_ingress.py:1263 consume_outbox reads <durable root>/intr-outbox/organization-role-conformance/*.json and fails closed ledger_location_required_from_materializer unless STEGVERSE_REPO_LEDGER_ROOT and STEGVERSE_ORG_LEDGER_ROOT are supplied (:1260, :1281-1287); CLI --outbox-root at :1320.",
+              "ledger_root_rule": "resident-runtime/aggregate_repo_transition.py:40-51 ledger_root() takes only the supplied STEGVERSE_ORG_LEDGER_ROOT; never derived.",
+              "only_ledger_root_supplier": "scripts/dispatch_resident_execution_requests.py:67 forwards STEGVERSE_ORG_LEDGER_ROOT from the resident materializer's environment (also scripts/refresh_and_execute_resident_task.py:84); STEGVERSE_REPO_LEDGER_ROOT is not in NONSECRET_ENV and is passed only as flags to org_claim_allocator (:683-688).",
+              "no_admitted_consumer": "scripts/dispatch_resident_execution_requests.py:105-162 CONSUMERS has no row for the organization-role-conformance route; no .github/workflows file supplies a ledger root or invokes --outbox-root; .github/workflows/canonical-work-exact-ephemeral-invocation.yml runs RT-CANONICAL-WORK-PORTABLE-DISPATCH-001 without ledger roots.",
+              "no_admitted_delivery": "StegVerse-Labs/StegDB@26d396f tools/evaluate_organization_role_conformance.py:257 materialize writes <durable-root>/intr-outbox/<route>/ only when --durable-root is supplied (:276); no StegDB workflow or Labs resident consumer invokes it with the materializer's durable root."
+            }
+          },
+          "sequencing": {
+            "starts_after": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002/I11",
+            "admission_before_source_mutation": true,
+            "reason": "StegVerse-Labs/TVC#488 comment 6074752434 condition 1: extend the existing owner through the canonical registry with exact-head CI before any source mutation."
+          },
+          "bounded_conditions": [
+            "The destination ledger roots are supplied by the existing authorized materializer; no unauthenticated root is invented or derived.",
+            "No blocking on receiver presence or an external machine: the event is persisted durably and NOT_ATTEMPTED is reported until an actual admission invocation.",
+            "No hardcoded ALLOW or forced success; the first target version is the manifest-selected reference with exact provenance; a parity failure on an actual attempt returns actionable FAIL_CLOSED REFERENCE_ADOPTION_PARITY_WITH_RECORDED_FILE_DIGESTS with the Organization receipt appended and read back; no receipt without an invocation.",
+            "Event identity, exact replay, the atomic ledger lock, independent receipt readback and Task Registry/COSV evidence references are preserved.",
+            "No new dependency, substrate, runtime listener, scheduler, service, framework or hosted execution."
+          ],
+          "remaining_predicates": [
+            "R1_ROLE_CONFORMANCE_OUTBOX_CONSUMED_BY_EXISTING_RESIDENT_DISPATCHER",
+            "R1_REPO_AND_ORG_LEDGER_ROOTS_SUPPLIED_ONLY_BY_MATERIALIZER",
+            "R1_STEGDB_EVENT_PERSISTED_IN_MATERIALIZER_DURABLE_OUTBOX",
+            "R1_ACTUAL_ATTEMPT_TERMINAL_DISPOSITION_WITH_ORGANIZATION_RECEIPT_READBACK",
+            "R1_EXACT_HEAD_REQUIRED_CI_GREEN"
+          ],
+          "current_disposition": "NOT_ATTEMPTED",
+          "missing_invocation": "The resident materializer (scripts/refresh_and_dispatch_resident_requests.py -> scripts/dispatch_resident_execution_requests.py) has no consumer for the organization-role-conformance route and does not forward STEGVERSE_REPO_LEDGER_ROOT; nothing has invoked consume_outbox with materializer-supplied ledger roots.",
+          "issue_ref": "StegVerse-Labs/TVC#488",
+          "approval_refs": [
+            "StegVerse-Labs/TVC#488 (comment 6074631028)",
+            "StegVerse-Labs/TVC#488 (comment 6074752434)"
           ],
           "admitted_on": "2026-10-09",
           "admission_evidence_class": "SOURCE_IMPLEMENTED",
