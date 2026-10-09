@@ -16,10 +16,27 @@ from __future__ import annotations
 import importlib.machinery
 import sys
 import types
+import weakref
 
 import pytest
 
 POSIX_LEDGER_LOCUS = {"store": "posix"}
+
+# Every aggregator copy loaded by file location during the run, wherever it is
+# then held: a module-level cache (org-kernel's _crossing_emitters) keeps one
+# outside sys.modules and outside any module attribute. Weakly held, so copies
+# nothing references any more drop out.
+_AGGREGATORS: "weakref.WeakSet[types.ModuleType]" = weakref.WeakSet()
+_exec_module_untracked = importlib.machinery.SourceFileLoader.exec_module
+
+
+def _exec_and_track(self, module):
+    _exec_module_untracked(self, module)
+    if callable(getattr(module, "declared_ledger_locus", None)):
+        _AGGREGATORS.add(module)
+
+
+importlib.machinery.SourceFileLoader.exec_module = _exec_and_track
 
 
 def pytest_configure(config):
@@ -45,12 +62,8 @@ def declared_posix_ledger_locus(request, monkeypatch):
         for held in list(vars(module).values()) if module is not None else ():
             if isinstance(held, types.ModuleType):
                 _declare_posix(held, monkeypatch)
-                # Or in that module's own cache (org-kernel's _crossing_emitters).
-                for cache in list(vars(held).values()):
-                    if isinstance(cache, dict):
-                        for cached in list(cache.values()):
-                            if isinstance(cached, types.ModuleType):
-                                _declare_posix(cached, monkeypatch)
+    for module in list(_AGGREGATORS):
+        _declare_posix(module, monkeypatch)
     loader = importlib.machinery.SourceFileLoader
     exec_module = loader.exec_module
 
