@@ -91,6 +91,174 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "HYGIENE-CAUSAL-ROOTS-001 / .github#165",
       "reason": "organization-reusable, non-authorizing branch inventory/classification surface; caller source checkout is read-only with persist-credentials=false so private repositories are supported; no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
+    },
+    {
+      "path": ".github/workflows/aex-stcm-chf-native-capability-audit.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/canonical-work-exact-ephemeral-invocation.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/component010-checkout-audit.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/generic-sdk-manifest-resident.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/governance-endpoint-validation.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/organization-control-plane-parity.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/repository-hygiene-ecosystem-bulk-census.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/stcm-chf-witness-registration-validation.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/task-work-correlation-validation.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/test-suite-ratchet.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/test3-richard-seam-acceptance.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/transition-disposition-source-validation.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-conversation-evidence-ingestion.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-ecosystem-receipt-hb-successor.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-healer-first-consumption.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-immutable-resident-dispatch-receipt.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-interlock-intr-protocol-vectors.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-master-records-checkpoint.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-master-records-source-proof.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-organization-role-deployment-packet.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-organization-role-runtime-reality.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-organization-transition-ledger.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-rtc008-carriage.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-rtc008-custody.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-sdk-review-publisher-intr-forward.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-stegbrowser-intr-retention.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
+    },
+    {
+      "path": ".github/workflows/validate-task-registry-kv-event-projection.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "StegVerse-Labs/.github",
+      "reason": "Registered 2026-10-09 (StegVerse-Labs/.github#3039) to restore the workflow-surface hygiene gate. Disposition pending reduction review: prefer CONSOLIDATE_INTO_STABLE_DISPATCHER or ELIMINATE; GitHub Actions holds no runtime authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
