@@ -59,6 +59,22 @@
     "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
     "date": "2026-10-07"
   },
+  "evidence_history": [
+    {
+      "ref": "StegVerse-Labs/.github#3023",
+      "merge_commit": "3bb146d",
+      "head": "4ec41d7",
+      "evidence_class": "SOURCE_MERGED_WITH_KNOWN_DEFECTS",
+      "known_defects": [
+        "R27-01 empty-chain acceptance",
+        "R27-02 post-floor grant evidence without organization_receipt_sha256"
+      ],
+      "repaired_by": "StegVerse-Labs/.github#3027",
+      "repair_verified": false,
+      "repair_verified_note": "verified only after merge at a validated head; set by a later evidence transition, not by this PR",
+      "authentic_claim_attempts_through_defective_source": 0
+    }
+  ],
   "bounded_extensions": [
     {
       "extension_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/N2",
