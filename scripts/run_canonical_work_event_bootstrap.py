@@ -24,15 +24,22 @@ if str(ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(ROOT / "scripts"))
 
 from build_canonical_work_intr_request import resolve_task  # noqa: E402
+import serve_hil_intr_materialization_ingress as transport_boundary  # noqa: E402
 from workers import universal_intr_profiled_ingress as shared_ingress  # noqa: E402
 
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 INGRESS_SCHEMA = "stegverse.canonical-work-intr-materialization-ingress/v1"
 CONSUMPTION_SCHEMA = "stegverse.canonical-work-intr-materialization-consumption/v1"
-# The shared transport validator admits STEGOS_NODE_OUTBOX or TVC_RELAY_EGRESS only;
-# this declared origin is refused there (typed transport_origin_header_invalid),
-# exactly as the listener refused it before admission moved in-process.
-TRANSPORT_ORIGIN = "SOVEREIGN_NODE"
+# No transport origin is declared here. An origin exists only when authentic
+# provenance for it is supplied as explicit evidence (F50-01, F52-01, F52-02).
+ORIGIN_PROVENANCE_PREDICATE = "CANONICAL_WORK_TRANSPORT_ORIGIN_AUTHENTICALLY_BOUND"
+RETRY_ENTRYPOINT = "scripts/run_canonical_work_event_bootstrap.py::main"
+FAIL_CLOSED_SCHEMA = "stegverse.canonical-work-event-bootstrap-fail-closed/v1"
+A4_VERIFIER_ABSENT = (
+    "no A4/TV-TVC authorization verification surface exists in this repository "
+    "(org-boundary/runtime/origin_attestation.py is referenced by org-runtime/interlock-intr.json "
+    "but absent; TV_EXPORT_HMAC_VERIFY is owned by StegVerse-Labs/tvc:scripts/tv_credential_verify_export_resident.py)"
+)
 
 
 def require(ok: bool, reason: str) -> None:
@@ -100,15 +107,59 @@ def run_builder(*, task_id: str, runtime: Path, registry: Path, registry_shards:
     return outbound
 
 
-def post_one(*, runtime: Path, request_path: Path, admit: Any = None) -> dict[str, Any]:
-    """Admit the exact request through the shared router's CanonicalWork route, in-process."""
-    raw = request_path.read_bytes()
+def origin_fail_closed(detail: str) -> dict[str, Any]:
+    return {
+        "schema": FAIL_CLOSED_SCHEMA,
+        "state": "FAIL_CLOSED",
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": ORIGIN_PROVENANCE_PREDICATE,
+        "detail": detail,
+        "retry_entrypoint": RETRY_ENTRYPOINT,
+        "admission_attempted": False,
+        "queue_written": False,
+        "receipt_written": False,
+        "transport_origin": None,
+        "carrier_binding_selects_origin": False,
+        "authority_effect": "NONE_NO_EFFECT",
+    }
+
+
+def resolve_transport_provenance(*, node_outbox_envelope: Path | None, tvc_relay_authorization: Path | None) -> dict[str, Any]:
+    """Resolve the transport origin from supplied authentic provenance only.
+
+    STEGOS_NODE_OUTBOX would need a validated node-trigger/outbox envelope and
+    TVC_RELAY_EGRESS a TVC authorization id verified through the A4/TV-TVC
+    surface. That surface is absent here, so no credential verifier is written and
+    both admitted paths stay unreachable: every resolution is a no-effect
+    FAIL_CLOSED naming what is missing. An HB carrier binding never selects an origin.
+    """
+    missing = []
+    for flag, path in (("--node-outbox-envelope", node_outbox_envelope), ("--tvc-relay-authorization", tvc_relay_authorization)):
+        if path is None:
+            missing.append(f"{flag} not supplied")
+        elif not path.is_file():
+            missing.append(f"{flag} evidence file absent: {path}")
+        elif flag == "--tvc-relay-authorization":
+            missing.append(f"{flag} supplied but its authorization id is unverifiable: {A4_VERIFIER_ABSENT}")
+        else:
+            missing.append(f"{flag} supplied but the admitted origin paths are held unreachable until the A4/TV-TVC surface exists")
+    return origin_fail_closed("; ".join(missing))
+
+
+def post_one(*, runtime: Path, request_path: Path, provenance: dict[str, Any], admit: Any = None) -> dict[str, Any]:
+    """Admit the bound transport body through the shared router's CanonicalWork route, in-process."""
+    require(provenance.get("state") == "BOUND", "transport_origin_provenance_unbound")
+    origin = provenance.get("transport_origin")
+    require(origin in {transport_boundary.ORIGIN_NODE, transport_boundary.ORIGIN_RELAY}, "transport_origin_provenance_invalid")
+    raw = provenance["transport_body"] if origin == transport_boundary.ORIGIN_NODE else request_path.read_bytes()
     headers = {
         "Content-Type": "application/json",
         "X-StegVerse-Transport": "InTr",
-        "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
+        "X-StegVerse-Transport-Origin": origin,
         "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
     }
+    if origin == transport_boundary.ORIGIN_RELAY:
+        headers["X-StegVerse-Authorization-Id"] = str(provenance["authorization_id"])
     admit = admit or getattr(shared_ingress, "admit_canonical_work", None)
     require(callable(admit), "canonical_work_admit_binding_missing")
     try:
@@ -233,7 +284,14 @@ def main() -> int:
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--consumer-timeout-seconds", type=float, default=5.0)
     parser.add_argument("--without-carrier-binding", action="store_true")
+    parser.add_argument("--node-outbox-envelope", type=Path, help="existing validated node-trigger/outbox envelope evidence file")
+    parser.add_argument("--tvc-relay-authorization", type=Path, help="existing TVC relay authorization evidence file")
     args = parser.parse_args()
+
+    provenance = resolve_transport_provenance(node_outbox_envelope=args.node_outbox_envelope, tvc_relay_authorization=args.tvc_relay_authorization)
+    if provenance.get("state") != "BOUND":
+        print(json.dumps(provenance, indent=2, sort_keys=True))
+        return 2
 
     require_shared_route()
     runtime = Path(args.runtime_root).expanduser().resolve()
@@ -250,7 +308,7 @@ def main() -> int:
         without_carrier_binding=args.without_carrier_binding,
     )
     request = load(request_path)
-    ingress = post_one(runtime=runtime, request_path=request_path)
+    ingress = post_one(runtime=runtime, request_path=request_path, provenance=provenance)
     materialization_id = str(ingress["materialization_id"])
     ingress_path = runtime / "receipts" / "sovereign-network" / "canonical-work-intr-ingress" / f"{materialization_id}.json"
     require(ingress_path.is_file(), "write_once_ingress_receipt_missing")
