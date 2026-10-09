@@ -75,6 +75,11 @@
         }
       ],
       "authorized_issuer": "StegVerse-Labs/StegDB:STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+      "standing": {
+        "mode": "ESTABLISH_GENESIS",
+        "node_ref": "StegVerse-Labs/StegDB:STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+        "predecessor": null
+      },
       "source_mutation": false
     }
   ],

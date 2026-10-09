@@ -61,6 +61,9 @@ except ImportError as exc:
     raise unittest.SkipTest(f"requires the pinned StegVerse SDK: {exc}") from exc
 
 ROOT = Path(__file__).resolve().parents[1]
+#: The registry the boundary materializes: the row admitting the route declares
+#: standing for its authorized issuer, so no case here supplies standing.
+REGISTRY = json.loads((ROOT / "org-boundary/registry/services.json").read_text())
 REVISION = "0123456789abcdef0123456789abcdef01234567"
 CREATED_AT = "2026-10-09T00:00:00Z"
 
@@ -177,12 +180,26 @@ class ConformanceIngressCase(unittest.TestCase):
                 "application_result": conformance.respond(packet, root=self.source)}
 
     def receive(self, manifest=None, **options):
-        return ingress.receive(manifest or self.manifest(), registry={}, **options)
+        return ingress.receive(manifest or self.manifest(), registry=REGISTRY, **options)
 
     def receipts(self, root):
         directory = root / "receipts"
         return [json.loads(p.read_text()) for p in sorted(directory.glob("*.json"))] \
             if directory.is_dir() else []
+
+    def assertStandingRefused(self, result):
+        """Refused for want of the destination's declared standing: recorded as DENY, never crossed."""
+        self.assertEqual(result["failed_predicate"], "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED",
+                         result.get("detail"))
+        self.assertTrue(result["detail"].startswith("CROSSING_REQUIRES_DECLARED_STANDING:"), result["detail"])
+        self.assertIs(result["received"], False)
+        self.assertIs(result["refusal_recorded"], True)
+        refusal = [r for r in self.receipts(self.repo_root)
+                   if r["evidence"].get("detail") == result["detail"]]
+        self.assertEqual(len(refusal), 1)
+        self.assertEqual(refusal[0]["transition_class"], ingress.REFUSED_CLASS)
+        self.assertEqual(refusal[0]["evidence"]["disposition"], "DENY")
+        return result
 
     def committed(self, result):
         """The organization receipt this result names, read back from the ledger."""
@@ -243,11 +260,16 @@ class DispositionTests(ConformanceIngressCase):
         self.assertEqual(self.committed(result)["role_conformance_failed_predicate"], predicate)
         return result
 
-    def test_unauthorized_issuer_is_deny(self):
+    def test_unauthorized_issuer_has_no_declared_standing_and_is_denied_by_the_adapter(self):
         for issuer in ({"repository": "StegVerse-Labs/Other", "owner_task_id": conformance.AUTHORIZED_ISSUER_TASK_ID},
                        {"repository": conformance.AUTHORIZED_ISSUER_REPOSITORY, "owner_task_id": "OTHER-TASK-001"}):
             with self.subTest(issuer=issuer):
-                self.assertDenied(self.manifest(issuer=issuer), conformance.ISSUER_PREDICATE)
+                manifest = self.manifest(issuer=issuer)
+                self.assertStandingRefused(self.receive(manifest))
+                # The adapter's own issuer predicate still holds behind standing.
+                evaluated = conformance.evaluate(conformance.manifest_request(manifest), root=self.source)
+                self.assertEqual((evaluated["disposition"], evaluated["failed_predicate"]),
+                                 ("DENY", conformance.ISSUER_PREDICATE))
 
     def test_wrong_destination_is_deny(self):
         self.assertDenied(self.manifest(destination_organization="SV-LLM"),
@@ -456,17 +478,198 @@ class RealCrossingTests(unittest.TestCase):
                                  "sha256": sha256_uri(record)},
             "target_role_version": target_version(ROOT)})
         registry = json.loads((ROOT / "org-boundary/registry/services.json").read_text())
-        standing = {"mode": "ESTABLISH_GENESIS", "node_ref": "StegDB", "predecessor": None}
-        result = ingress.receive(manifest, registry=registry, standing=standing,
+        # No standing is supplied: the destination's registry row declares it.
+        result = ingress.receive(manifest, registry=registry,
                                  packet_id="role-conformance-real-crossing")
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
         self.assertEqual(result["resolved_service_id"], conformance.SERVICE_ID)
         self.assertIs(result["boundary_receipt_chain_reconstructed_independently"], True)
         self.assertIs(result["disposition_committed_in_organization_ledger"], True)
-        replay = ingress.receive(manifest, registry=registry, standing=standing,
+        replay = ingress.receive(manifest, registry=registry,
                                  packet_id="role-conformance-real-crossing")
         self.assertIs(replay["transition_replayed"], True)
         self.assertEqual(replay["organization_receipt_sha256"], result["organization_receipt_sha256"])
+
+
+class AuthenticBoundaryAdmissionTests(unittest.TestCase):
+    """I-11: the destination declares standing for its authorized issuer; nothing else does.
+
+    A StegDB-shaped request (`StegVerse-Labs/StegDB@43fbc47`
+    `tools/evaluate_organization_role_conformance.py::labs_event`: the pinned
+    SDK's manifest envelope, `source_framework` StegVerse-Labs/StegDB, the
+    request in its extension, wrapped in the outbox event with no standing) is
+    written once to the durable queue and consumed by the real ingress over the
+    real crossing subprocess, real boundary and real adapter, with the
+    registry as materialized. Nothing is mocked. The ledgers are temporary
+    roots: every append and readback here is CI-validated test evidence only.
+    """
+
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name)
+        self.org_root, self.repo_root = self.base / "org", self.base / "repo"
+        patch = mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
+                                             "STEGVERSE_ORG_LEDGER_ROOT": str(self.org_root),
+                                             "STEGVERSE_REPO_LEDGER_ROOT": str(self.repo_root)})
+        patch.start()
+        self.addCleanup(patch.stop)
+        head = git(ROOT, "rev-parse", "HEAD")
+        record = subprocess.run(["git", "-C", str(ROOT), "cat-file", "blob",
+                                 f"{head}:{conformance.BINDING_PATH}"],
+                                capture_output=True, check=True).stdout
+        self.binding = {"repository": conformance.BINDING_REPOSITORY, "path": conformance.BINDING_PATH,
+                        "commit": head, "sha256": sha256_uri(record)}
+        self.target = target_version(ROOT)
+
+    def stegdb_manifest(self, **issuer) -> dict:
+        """The manifest StegDB emits for this organization, built by the pinned SDK."""
+        issuer = {"repository": conformance.AUTHORIZED_ISSUER_REPOSITORY,
+                  "owner_task_id": conformance.AUTHORIZED_ISSUER_TASK_ID, **issuer}
+        request = {"schema": conformance.REQUEST_SCHEMA, "issuer": issuer,
+                   "destination_organization": "StegVerse-Labs",
+                   "manifest_binding": self.binding, "target_role_version": self.target}
+        manifest = build_manifest(
+            data={"schema": "stegdb.organization-role.conformance-source/v1",
+                  "destination_organization": "StegVerse-Labs",
+                  "target_role_version_id": self.target["version_id"]},
+            processor_request=request, source_framework="StegVerse-Labs/StegDB",
+            source_output_id=f"{issuer['owner_task_id']}:StegVerse-Labs:{self.target['version_id']}",
+            process=SDK_CAPABILITY, egress_surface="sdk-manifest-ingress", created_at=CREATED_AT)
+        manifest["declared_intent"] = (
+            "Evaluate StegVerse-Labs's own source against Organization role version "
+            f"{self.target['version_id']} on its existing manifest ingress.")
+        manifest["requested_consequence"] = (
+            "The destination Organization's ingress appends ALLOW, DENY or actionable FAIL_CLOSED "
+            "under its ledger lock; the issuer writes no disposition.")
+        return manifest
+
+    def enqueue(self, manifest, name, **extra) -> Path:
+        """Write the event once into its own durable queue, as StegDB's materialize does."""
+        durable = self.base / ("durable-" + name)
+        outbox = durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE
+        outbox.mkdir(parents=True)
+        event = {"schema": ingress.OUTBOX_EVENT_SCHEMA, "route": ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE,
+                 "manifest": manifest, "packet_id": "INTR-" + ingress.sha(manifest)[:24], **extra}
+        path = outbox / (event["packet_id"] + ".json")
+        with open(path, "x", encoding="utf-8") as handle:
+            handle.write(json.dumps(event, sort_keys=True) + "\n")
+        return durable
+
+    def consume(self, durable, registry=REGISTRY):
+        consumed = ingress.consume_outbox(durable, registry=registry)
+        self.assertEqual((consumed["state"], consumed["event_count"]), ("CONSUMED", 1))
+        return consumed["results"][0]
+
+    def read_back(self, root, digest):
+        return json.loads((root / "receipts" / (digest.split(":", 1)[-1] + ".json")).read_text())
+
+    def assertDeniedForStanding(self, result):
+        self.assertEqual(result["failed_predicate"], "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED")
+        self.assertIs(result["received"], False)
+        organization = self.read_back(self.org_root, result["refusal_organization_receipt_sha256"])
+        self.assertEqual(organization["boundary_evidence"]["disposition"], "DENY")
+        repository = self.read_back(self.repo_root, organization["repo_receipt_sha256"])
+        self.assertEqual(repository["transition_class"], ingress.REFUSED_CLASS)
+        self.assertTrue(repository["evidence"]["detail"].startswith("CROSSING_REQUIRES_DECLARED_STANDING:"),
+                        repository["evidence"]["detail"])
+        return repository["evidence"]["detail"]
+
+    def test_the_destination_declares_standing_for_exactly_its_authorized_issuer(self):
+        row = next(r for r in REGISTRY["services"] if r["service_id"] == conformance.SERVICE_ID)
+        self.assertEqual(row["authorized_issuer"], f"{conformance.AUTHORIZED_ISSUER_REPOSITORY}:"
+                                                   f"{conformance.AUTHORIZED_ISSUER_TASK_ID}")
+        self.assertEqual(row["standing"], {"mode": "ESTABLISH_GENESIS", "node_ref": row["authorized_issuer"],
+                                           "predecessor": None})
+        self.assertEqual(sum(1 for r in REGISTRY["services"] if "standing" in r), 1)
+        # The contract's own standing resolver admits the declaration as it stands.
+        spec = importlib.util.spec_from_file_location(
+            "node_standing_i11", ROOT / "org-boundary/runtime/node_standing.py")
+        node_standing = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(node_standing)
+        resolved = node_standing.require(node_standing.load_contract(ROOT), {"standing": row["standing"]})
+        self.assertEqual(resolved["node_standing_disposition"], "ALLOW")
+        self.assertEqual(resolved["standing_node_ref"], row["authorized_issuer"])
+
+    def test_declared_issuer_is_admitted_from_the_durable_queue_and_committed_allow(self):
+        manifest = self.stegdb_manifest()
+        durable = self.enqueue(manifest, "declared")
+        event = next((durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE).glob("*.json"))
+        self.assertNotIn("standing", json.loads(event.read_text()))
+        first = self.consume(durable)
+        self.assertEqual(first["disposition"], "ALLOW", first)
+        self.assertIs(first["received"], True)
+        self.assertIs(first["transition_replayed"], False)
+        # Readback within the temporary organization ledger root.
+        organization = self.read_back(self.org_root, first["organization_receipt_sha256"])
+        self.assertEqual(organization["receipt_sha256"].split(":", 1)[-1],
+                         first["organization_receipt_sha256"].split(":", 1)[-1])
+        evidence = organization["boundary_evidence"]
+        self.assertEqual(evidence["role_conformance_disposition"], "ALLOW")
+        self.assertEqual(evidence["resolved_service_id"], conformance.SERVICE_ID)
+        self.assertEqual(organization["repo_receipt_sha256"], first["repository_receipt_sha256"])
+        # The queue is write-once: consuming does not rewrite or remove the event.
+        self.assertTrue(event.is_file())
+        # Exact replay returns the existing receipt and appends nothing.
+        replay = self.consume(durable)
+        self.assertIs(replay["transition_replayed"], True)
+        self.assertEqual(replay["organization_receipt_sha256"], first["organization_receipt_sha256"])
+        self.assertEqual(len(list((self.org_root / "receipts").glob("*.json"))), 1)
+        self.assertEqual(len(list((self.repo_root / "receipts").glob("*.json"))), 1)
+
+    def test_the_terminal_disposition_awaits_no_receiver(self):
+        result = ingress.receive(self.stegdb_manifest(), registry=REGISTRY, packet_id="i11-direct")
+        self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
+        self.assertIs(result["disposition_committed_in_organization_ledger"], True)
+        self.assertIs(result["master_records_organization_record_observed"], False)
+
+        def awaiting(value):
+            if isinstance(value, dict):
+                return any((("await" in key or "receiver" in key) and item not in (False, None))
+                           or awaiting(item) for key, item in value.items())
+            return isinstance(value, list) and any(awaiting(item) for item in value)
+        self.assertFalse(awaiting(result))
+
+    def test_an_undeclared_issuer_or_owner_task_is_denied_for_standing(self):
+        cases = {"undeclared issuer": {"repository": "StegVerse-Labs/Other"},
+                 "wrong owner task": {"owner_task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001"}}
+        for name, issuer in cases.items():
+            with self.subTest(case=name):
+                detail = self.assertDeniedForStanding(
+                    self.consume(self.enqueue(self.stegdb_manifest(**issuer), name.replace(" ", "-"))))
+                self.assertIn("declares no standing for issuer", detail)
+        self.assertFalse(any(json.loads(p.read_text())["transition_class"] == ingress.OPERATION_ID
+                             for p in (self.repo_root / "receipts").glob("*.json")))
+
+    def test_standing_supplied_by_the_issuer_or_consumer_is_denied(self):
+        invented = {"mode": "ESTABLISH_GENESIS", "node_ref": "StegVerse-Labs/StegDB", "predecessor": None}
+        detail = self.assertDeniedForStanding(
+            self.consume(self.enqueue(self.stegdb_manifest(), "invented", standing=invented)))
+        self.assertIn("other than the destination's declaration", detail)
+        # Even its authorized issuer has no standing the destination did not declare.
+        undeclared = json.loads(json.dumps(REGISTRY))
+        next(r for r in undeclared["services"] if r["service_id"] == conformance.SERVICE_ID).pop("standing")
+        detail = self.assertDeniedForStanding(
+            self.consume(self.enqueue(self.stegdb_manifest(), "row-without-standing"), registry=undeclared))
+        self.assertIn("declares no standing for its authorized issuer", detail)
+
+    def test_a_wrong_route_is_denied_on_the_existing_route_predicate(self):
+        manifest = self.stegdb_manifest()
+        manifest["extensions"][SDK_ROUTE_EXTENSION] = {
+            field: PUBLISHED_ROUTES[ECOSYSTEM_DIAGNOSTIC_ROUTE_ID][field] for field in _ROUTE_FIELDS}
+        manifest["processing"]["route_id"] = ECOSYSTEM_DIAGNOSTIC_ROUTE_ID
+        result = self.consume(self.enqueue(manifest, "wrong-route"))
+        self.assertEqual(result["failed_predicate"], ingress.ROLE_CONFORMANCE_ROUTE_PREDICATE)
+        organization = self.read_back(self.org_root, result["refusal_organization_receipt_sha256"])
+        self.assertEqual(organization["boundary_evidence"]["disposition"], "DENY")
+
+    def test_an_exact_replay_of_a_standing_refusal_returns_the_recorded_receipt(self):
+        durable = self.enqueue(self.stegdb_manifest(repository="StegVerse-Labs/Other"), "replayed-refusal")
+        first, second = self.consume(durable), self.consume(durable)
+        self.assertDeniedForStanding(first)
+        self.assertEqual(first["refusal_organization_receipt_sha256"],
+                         second["refusal_organization_receipt_sha256"])
+        self.assertEqual(len(list((self.org_root / "receipts").glob("*.json"))), 1)
 
 
 class RetryAndLedgerRootTests(ConformanceIngressCase):
@@ -519,10 +722,21 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         self.assertEqual(sum(1 for r in self.receipts(self.repo_root)
                              if r["transition_class"] == ingress.OPERATION_ID), 1)
 
-    def test_changed_issuer_under_one_transition_id_collides(self):
-        self.assert_collides_under_one_transition_id(self.manifest(
-            issuer={"repository": "StegVerse-Labs/Elsewhere",
-                    "owner_task_id": conformance.AUTHORIZED_ISSUER_TASK_ID}))
+    def test_changed_issuer_under_one_transition_id_is_refused_before_it_can_collide(self):
+        first = self.receive(packet_id="delivery-1")
+        self.assertEqual(first["disposition"], "ALLOW")
+        repository_bytes, organization_bytes = (self.receipt_bytes(self.repo_root),
+                                                self.receipt_bytes(self.org_root))
+        with mock.patch.object(ingress, "ingress_transition_id",
+                               lambda request, evaluation=None: first["organization_transition_id"]):
+            refused = self.receive(self.manifest(issuer={
+                "repository": "StegVerse-Labs/Elsewhere",
+                "owner_task_id": conformance.AUTHORIZED_ISSUER_TASK_ID}), packet_id="delivery-2")
+        self.assertStandingRefused(refused)
+        self.assertTrue(set(repository_bytes.items()) <= set(self.receipt_bytes(self.repo_root).items()))
+        self.assertTrue(set(organization_bytes.items()) <= set(self.receipt_bytes(self.org_root).items()))
+        self.assertEqual(sum(1 for r in self.receipts(self.repo_root)
+                             if r["transition_class"] == ingress.OPERATION_ID), 1)
 
     def test_changed_destination_under_one_transition_id_collides(self):
         self.assert_collides_under_one_transition_id(self.manifest(destination_organization="StegVerse-org"))
@@ -581,19 +795,19 @@ class OutboxTests(ConformanceIngressCase):
         return outbox / (name + ".json")
 
     def test_an_absent_or_empty_outbox_is_no_event(self):
-        self.assertEqual(ingress.consume_outbox(self.durable, registry={})["state"], "NO_EVENT")
+        self.assertEqual(ingress.consume_outbox(self.durable, registry=REGISTRY)["state"], "NO_EVENT")
         (self.durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE).mkdir(parents=True)
-        consumed = ingress.consume_outbox(self.durable, registry={})
+        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertEqual((consumed["state"], consumed["event_count"]), ("NO_EVENT", 0))
         self.assertFalse(self.org_root.exists())
 
     def test_each_event_is_received_and_redelivery_is_the_exact_retry(self):
         self.put()
-        first = ingress.consume_outbox(self.durable, registry={})
+        first = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertEqual(first["state"], "CONSUMED")
         self.assertEqual(first["results"][0]["disposition"], "ALLOW")
         self.assertIs(first["results"][0]["transition_replayed"], False)
-        second = ingress.consume_outbox(self.durable, registry={})
+        second = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertIs(second["results"][0]["transition_replayed"], True)
         self.assertEqual(first["results"][0]["organization_receipt_sha256"],
                          second["results"][0]["organization_receipt_sha256"])
@@ -601,7 +815,7 @@ class OutboxTests(ConformanceIngressCase):
 
     def test_events_are_not_received_until_the_ledger_roots_are_supplied(self):
         event = self.put()
-        consumed = ingress.consume_outbox(self.durable, registry={}, environ={})
+        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY, environ={})
         self.assertEqual(consumed["state"], "FAIL_CLOSED")
         self.assertEqual(consumed["missing_ledger_roots"], list(ingress.LEDGER_ROOT_VARIABLES))
         self.assertIs(consumed["appended"], False)
@@ -611,7 +825,7 @@ class OutboxTests(ConformanceIngressCase):
 
     def test_an_event_without_a_manifest_on_this_route_appends_nothing(self):
         self.put(route="another-route")
-        consumed = ingress.consume_outbox(self.durable, registry={})
+        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertEqual(consumed["results"][0]["failed_predicate"],
                          "OUTBOX_EVENT_CARRIES_A_MANIFEST_ON_THIS_ROUTE")
         self.assertFalse(self.org_root.exists())
