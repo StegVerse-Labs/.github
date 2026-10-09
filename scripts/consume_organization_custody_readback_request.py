@@ -105,18 +105,24 @@ LEGACY_PREDECESSOR_ORGANIZATION_RECORD_FIELD = "predecessor_master_records_closu
 
 
 def _recorded_master_records(value: Any, label: str) -> dict[str, Any]:
+    """The submit_state_receipt() result, admitted on its verified Organization receipt.
+
+    The Organization ledger append is the transition's runtime reality. The
+    receipt is read back with organization_batch_custody.verified_organization_record();
+    Master Records reconstruction fields on the result are evidence only and
+    never consulted (master_records_may_gate_organization_runtime_reality=false).
+    A refusal is an OrganizationReceiptRefused (a ValueError), which the caller
+    turns into a FAIL_CLOSED result with nothing committed.
+    """
     if not isinstance(value, dict):
         raise ValueError(label + "_MISSING")
-    if value.get("state") != "RECORDED":
-        raise ValueError(label + "_NOT_RECORDED")
-    if value.get("reconstruction_status") != "PASS":
-        raise ValueError(label + "_RECONSTRUCTION_NOT_PASS")
-    if value.get("required_evidence_validation_status") != "PASS":
-        raise ValueError(label + "_REQUIRED_EVIDENCE_NOT_PASS")
-    receipt = value.get("receipt_sha256")
-    if not isinstance(receipt, str) or receipt != value.get("reconstructed_receipt_sha256"):
-        raise ValueError(label + "_DIGEST_MISMATCH")
-    return value
+    resident = str(ROOT / "resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0, resident)
+    from importlib import import_module
+    custody = import_module("organization_batch_custody")
+    row = custody.verified_organization_record(None, value)
+    return {**value, "verified_organization_receipt_sha256": row["receipt_sha256"]}
 
 
 def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> dict[str, Any]:
@@ -151,6 +157,8 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
             "failed_predicate": attempt.get("failed_predicate"),
             "intr_master_records_receipt_sha256": intr_closure["receipt_sha256"],
             "predecessor_master_records_receipt_sha256": predecessor["receipt_sha256"],
+            "intr_organization_receipt_sha256": intr_closure["verified_organization_receipt_sha256"],
+            "predecessor_organization_receipt_sha256": predecessor["verified_organization_receipt_sha256"],
             "readback_executed": False,
             "authority_effect": "NONE_GOVERNED_DISPOSITION_PRESERVED",
         }
@@ -164,6 +172,8 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
     result["governed_intr_disposition"] = "ALLOW"
     result["intr_master_records_receipt_sha256"] = intr_closure["receipt_sha256"]
     result["predecessor_master_records_receipt_sha256"] = predecessor["receipt_sha256"]
+    result["intr_organization_receipt_sha256"] = intr_closure["verified_organization_receipt_sha256"]
+    result["predecessor_organization_receipt_sha256"] = predecessor["verified_organization_receipt_sha256"]
     return result
 
 
