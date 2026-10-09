@@ -73,25 +73,41 @@ def _resident_modules(control_root: Path):
     return import_module("aggregate_repo_transition"), import_module("organization_batch_custody")
 
 
+def _organization_store(org):
+    """The Organization ledger store the producer's append uses (OL-2).
+
+    organization_store() is the manifest-declared locus; no raw ledger root is
+    read, so this reader and the append always address the same store.
+    """
+    try:
+        return org.organization_store()
+    except (org.LedgerLocationRequired, org.ledger_store.LedgerStoreRefused) as exc:
+        raise DiagnosticAdmissionError(exc.failed_predicate) from None
+
+
+def _retained_source(org, ledger, digest: str) -> dict[str, Any]:
+    """The retained source-receipts/HEX.json, read through the ledger store."""
+    retained = ledger.get(org.ledger_store.source_key("sha256:" + digest))
+    if retained is None:
+        raise FileNotFoundError(org.ledger_store.source_key("sha256:" + digest))
+    return retained
+
+
 def _organization_source_receipts(control_root: Path):
     """Reader of retained original state receipts from the Organization ledger.
 
-    The ledger is ledger_root(), the same root the producer's append used
-    (submit_state_receipt appends through aggregate_transition with no ledger
-    argument). The whole chain is replayed once with the existing verifier.
+    The ledger is organization_store(), the same store the producer's append
+    used (submit_state_receipt appends through aggregate_transition with no
+    ledger argument). The whole chain is replayed once with the existing verifier.
     Each read returns the retained source-receipts/HEX.json only after
     verified_organization_receipt binds its Organization receipt to that exact
     state receipt, its transition id and its retained predecessor.
     """
     org, batch = _resident_modules(control_root)
+    ledger = _organization_store(org)
     try:
-        ledger = org.ledger_root()
-    except org.LedgerLocationRequired as exc:
-        raise DiagnosticAdmissionError(exc.failed_predicate) from None
-    head_path = ledger / "HEAD.json"
-    require(head_path.is_file(), "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
-    try:
-        head = org.load(head_path)
+        head = ledger.get(org.ledger_store.HEAD_KEY)
+        require(head is not None, "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
         require(head.get("organization") == "StegVerse-Labs", "ORGANIZATION_HEAD_OWNER_MISMATCH")
         rows = batch._segment(ledger, head["receipt_sha256"], None)
     except DiagnosticAdmissionError:
@@ -106,7 +122,7 @@ def _organization_source_receipts(control_root: Path):
         organization_digest = index.get(source_uri)
         require(organization_digest is not None, "ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED")
         try:
-            retained = org.load(ledger / "source-receipts" / (digest + ".json"))
+            retained = _retained_source(org, ledger, digest)
             verified = org.verify_source(retained)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             raise DiagnosticAdmissionError(
@@ -237,14 +253,13 @@ def _read_existing_authenticated_locator(
     org = import_module("aggregate_repo_transition")
     batch = import_module("organization_batch_custody")
     try:
-        ledger = org.ledger_root()
-    except org.LedgerLocationRequired:
-        return None  # No materializer-supplied ledger: unreadable, never derived.
-    head_path = ledger / "HEAD.json"
-    if not head_path.is_file():
-        return None  # No invented runtime transition from inaccessible readback.
+        ledger = org.organization_store()
+    except (org.LedgerLocationRequired, org.ledger_store.LedgerStoreRefused):
+        return None  # No declared, materialized ledger store: unreadable, never derived.
     try:
-        head = org.load(head_path)
+        head = ledger.get(org.ledger_store.HEAD_KEY)
+        if head is None:
+            return None  # No invented runtime transition from inaccessible readback.
         require(head.get("organization") == "StegVerse-Labs",
                 "ORGANIZATION_HEAD_OWNER_MISMATCH")
         tip = head.get("receipt_sha256")
@@ -272,9 +287,8 @@ def _read_existing_authenticated_locator(
         source_uri = org_row.get("source_transition_sha256")
         require(isinstance(source_uri, str) and source_uri.startswith("sha256:"),
                 "ORGANIZATION_SOURCE_RECEIPT_DIGEST_REQUIRED")
-        source_path = ledger / "source-receipts" / (source_uri[7:] + ".json")
         try:
-            source = org.load(source_path)
+            source = _retained_source(org, ledger, source_uri[7:])
             verified = org.verify_source(source)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             raise DiagnosticAdmissionError(
@@ -359,15 +373,10 @@ def _require_current_organization_lease_status(
         sys.path.insert(0, str(root))
     org = import_module("aggregate_repo_transition")
     batch = import_module("organization_batch_custody")
+    ledger = _organization_store(org)
     try:
-        ledger = org.ledger_root()
-    except org.LedgerLocationRequired as exc:
-        raise DiagnosticAdmissionError(exc.failed_predicate) from None
-    head_path = ledger / "HEAD.json"
-    require(head_path.is_file(), "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
-    try:
-        original_head = head_path.read_bytes()
-        head = json.loads(original_head)
+        head = ledger.get(org.ledger_store.HEAD_KEY)
+        require(head is not None, "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
         require(head.get("organization") == "StegVerse-Labs",
                 "CURRENT_ORGANIZATION_LEDGER_OWNER_MISMATCH")
         rows = batch._segment(ledger, head["receipt_sha256"], None)
@@ -385,10 +394,9 @@ def _require_current_organization_lease_status(
             continue
         if not matched:
             continue
-        source_path = ledger / "source-receipts" / (
-            str(row.get("source_transition_sha256") or "").removeprefix("sha256:") + ".json")
         try:
-            source = org.load(source_path)
+            source = _retained_source(
+                org, ledger, str(row.get("source_transition_sha256") or "").removeprefix("sha256:"))
             verified = org.verify_source(source)
         except (OSError, ValueError, TypeError, KeyError) as exc:
             raise DiagnosticAdmissionError(
@@ -413,7 +421,7 @@ def _require_current_organization_lease_status(
         ):
             raise DiagnosticAdmissionError("CURRENT_EVENT_EPHEMERAL_LEASE_REVOKED_OR_ALREADY_CONSUMED")
     require(matched, "CURRENT_EVENT_EPHEMERAL_BINDING_NOT_IN_ORGANIZATION_HEAD")
-    require(head_path.read_bytes() == original_head,
+    require(ledger.get(org.ledger_store.HEAD_KEY) == head,
             "CURRENT_ORGANIZATION_HEAD_MOVED_REQUIRE_REVALIDATION")
 
 

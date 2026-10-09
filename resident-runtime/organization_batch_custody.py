@@ -439,6 +439,28 @@ def _segment(root, tip: str, predecessor: str | None) -> list[dict]:
     return rows
 
 
+def current_chain(root=None) -> tuple[dict | None, list[dict]]:
+    """HEAD and its whole verified chain, read from the store the append uses (OL-2).
+
+    `root` is a store or POSIX root the caller holds; absent, it is the store
+    organization_store() selects, so a production reader and the append it
+    checks address one declared store. One committed snapshot is read: HEAD
+    through the store's own get, the chain through _segment. An empty store
+    is (None, []); receipts without HEAD or a HEAD naming another
+    organization raise. Receipt formats and hashes are unchanged.
+    """
+    with _pinned(root) as store:
+        head = _get(store, org.ledger_store.HEAD_KEY)
+        if head is None:
+            if store.list_prefix(org.ledger_store.RECEIPT_PREFIX):
+                raise ValueError("organization receipts exist without HEAD")
+            return None, []
+        tip = head.get("receipt_sha256")
+        if head.get("organization") != org.C["organization"] or not isinstance(tip, str):
+            raise ValueError("organization HEAD identity invalid")
+        return head, _segment(store, tip, None)
+
+
 def verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | None = None) -> dict:
     """Verify immutable batch and local org chain; source proof is separate."""
     with _pinned(root) as store:

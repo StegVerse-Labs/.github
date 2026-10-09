@@ -304,28 +304,28 @@ def _repository_receipt_read_back(receipt: Mapping[str, Any]) -> str | None:
 def _organization_receipt_read_back(source_sha256: Any) -> tuple[Any, str | None]:
     """Whether the organization ledger holds a receipt consuming `source_sha256`.
 
-    Read from the ledger's own HEAD and receipts directory. Every receipt read
-    must verify against its own digest; a ledger that cannot be read or does
-    not verify is unobserved, not uncommitted.
+    Read from the ledger's own HEAD and receipts through the store the append
+    used: organization_store(), the manifest-declared locus (OL-2), never a raw
+    root. Every receipt read must verify against its own digest; a ledger that
+    cannot be read or does not verify is unobserved, not uncommitted.
     """
     try:
-        root = organization_ledger.ledger_root()
-        head_path = root / "HEAD.json"
-        head = organization_ledger.load(head_path) if head_path.exists() else None
+        store = organization_ledger.organization_store()
+        keys = organization_ledger.ledger_store
+        head = store.get(keys.HEAD_KEY)
         if head is not None and not isinstance(head.get("receipt_sha256"), str):
             return UNOBSERVED, None
         found = None
-        receipts = root / "receipts"
-        for path in sorted(receipts.glob("*.json")) if receipts.is_dir() else []:
-            row = organization_ledger.load(path)
+        for key in sorted(store.list_prefix(keys.RECEIPT_PREFIX)):
+            row = store.get(key)
             body = dict(row)
             claimed = body.pop("receipt_sha256", None)
             if not isinstance(claimed, str) or claimed != organization_ledger.sha(body) \
-                    or path.stem != claimed.split(":", 1)[-1]:
+                    or key != keys.receipt_key(claimed):
                 return UNOBSERVED, None
             if row.get("source_transition_sha256") == source_sha256:
                 found = claimed
-        if head is not None and not (receipts / (head["receipt_sha256"].split(":", 1)[-1] + ".json")).is_file():
+        if head is not None and not store.exists(keys.receipt_key(head["receipt_sha256"])):
             return UNOBSERVED, None
         return (True, found) if found else (False, None)
     except Exception:  # noqa: BLE001 -- any failure to read is "not observed"

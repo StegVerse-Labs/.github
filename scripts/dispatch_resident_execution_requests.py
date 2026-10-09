@@ -64,7 +64,7 @@ NONSECRET_ENV = (
     "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "STEGVERSE_MASTER_RECORDS_ENDPOINT",
     "STEGVERSE_MASTER_RECORDS_TOKEN", "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
-    "STEGVERSE_ORG_LEDGER_ROOT",
+    "STEGVERSE_ORG_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_GIT_DIR",
     "MASTER_RECORDS_DB", "MASTER_RECORDS_RECEIPT_KEY", "MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS",
     "STEGVERSE_ORG_FEDERATION_GATEWAY_URL", "STEGVERSE_ORG_FEDERATION_ROOT",
     "STEGVERSE_HIL_STATE_ROOT", "STEGVERSE_HIL_RECEIVER_PORT",
@@ -396,17 +396,11 @@ def retain_component011_dispatch_in_organization(
         runtime_modules = source / "resident-runtime"
         if str(runtime_modules) not in sys.path:
             sys.path.insert(0, str(runtime_modules))
-        from organization_batch_custody import _segment
-        ledger_root = org.ledger_root()
-        head_path = ledger_root / "HEAD.json"
-        if head_path.is_file():
-            head = org.load(head_path)
-            tip = head.get("receipt_sha256")
-            if head.get("organization") != org.C["organization"] or not isinstance(tip, str):
-                raise ValueError("organization HEAD identity invalid")
-            _segment(ledger_root, tip, None)
-        elif (ledger_root / "receipts").is_dir() and any((ledger_root / "receipts").glob("*.json")):
-            raise ValueError("organization receipts exist without HEAD")
+        from organization_batch_custody import _segment, _verified_receipt, current_chain
+        # OL-2: the pre-check, the append and the readback all address the one
+        # store the Organization manifest declares; no raw ledger root is read.
+        store = org.organization_store()
+        current_chain(store)
 
         # A fresh actual visit receives its own non-authorizing identity.
         visit_id = uuid.uuid4().hex
@@ -466,11 +460,12 @@ def retain_component011_dispatch_in_organization(
                 "source_transition_sha256": sha256_uri(receipt),
             },
             authority_effect="NONE",
+            ledger=store,
         )
         digest = recorded["receipt_sha256"]
-        root = org.ledger_root()
-        stored_path = root / "receipts" / (digest[7:] + ".json")
-        stored = org.load(stored_path)
+        stored = store.get(org.ledger_store.receipt_key(digest))
+        if not isinstance(stored, dict):
+            raise ValueError("organization dispatch receipt readback missing")
         body = dict(stored)
         if body.pop("receipt_sha256", None) != digest or org.sha(body) != digest or stored != recorded:
             raise ValueError("organization dispatch receipt readback mismatch")
@@ -479,13 +474,13 @@ def retain_component011_dispatch_in_organization(
         # The same established verifier rejects forks, omitted receipts and
         # predecessor breaks after this append. This is a readback assertion,
         # not independent concurrent-writer serialization.
-        _segment(root, digest, stored.get("previous_receipt_sha256"))
+        _segment(store, digest, stored.get("previous_receipt_sha256"))
         predecessor = stored.get("previous_receipt_sha256")
         if predecessor is not None:
-            prior = org.load(root / "receipts" / (predecessor[7:] + ".json"))
-            prior_body = dict(prior)
-            if prior_body.pop("receipt_sha256", None) != predecessor or org.sha(prior_body) != predecessor:
-                raise ValueError("organization dispatch immediate predecessor invalid")
+            try:
+                _verified_receipt(store, predecessor)
+            except ValueError as exc:
+                raise ValueError("organization dispatch immediate predecessor invalid") from exc
         return {
             "state": "RECORDED",
             "classification": "RESIDENT_REQUEST_DISPATCH_OBSERVATION_ONLY",

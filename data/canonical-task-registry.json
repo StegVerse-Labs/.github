@@ -10796,6 +10796,22 @@
           "runtime_allow_claimed": false,
           "consequence_committed": false,
           "authority_effect": "NONE_SOURCE_RECORD_ONLY"
+        },
+        "ol2_same_store_readback": {
+          "finding_id": "OL-2",
+          "approval_ref": "StegVerse-Labs/TVC#488 comment 6085830885 (ChatGPT FINAL 488-chatgpt-final-r2, APPROVE_OL2_SOURCE_REPAIR_IN_EXISTING_OWNER_LANE) approving Claude finding and proposal comment 6085720210 (Q-OL9; Q-OL10 owner ORGANIZATION-BATCH-CUSTODY-REPLAY-001)",
+          "verdict": "REPAIRED_SAME_STORE_LEDGER_READBACK",
+          "evidence_class": "SOURCE_VALIDATION",
+          "defect": "After OL-1b declared the Git store, appends went through organization_store() to the declared Git ref while production readers still read the POSIX ledger_root(): scripts/dispatch_resident_execution_requests.py (pre-check HEAD.json/receipts and post-append readback), resident-runtime/organization_manifest_ingress.py::_organization_receipt_read_back, workers/sdk_manifest_diagnostic_admitted_consumer.py (three readers), workers/canonical_state_transition_custody.py::record_organization_receipt_refusal and scripts/consume_organization_custody_readback_request.py. The dispatchers forwarded STEGVERSE_ORG_LEDGER_ROOT but not STEGVERSE_ORG_LEDGER_GIT_DIR.",
+          "design": "Every production Organization ledger read goes through organization_store() and the store's own read API (get, exists, list_prefix), and the append that read checks addresses that same store (the dispatcher passes it as ledger=). organization_batch_custody.current_chain(root=None) reads HEAD through the store and walks the chain with the existing _segment over one pinned snapshot. ledger_root() is valid only under a declared {store: posix}; under any other declaration it raises LedgerStoreKindMismatch, FAIL_CLOSED ORGANIZATION_LEDGER_STORE_KIND_MISMATCH (a LedgerLocationRequired, so location_refusal types it), and with no declaration ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED. The resident dispatcher, refresh_and_execute_resident_task and the Richard seam consumer forward STEGVERSE_ORG_LEDGER_GIT_DIR beside STEGVERSE_ORG_LEDGER_ROOT; no new variable family.",
+          "unchanged": "ledger_store.py, receipt/batch formats and hashes, POSIX-declared behaviour, and callers that pass their own root or store explicitly (consume_org_claim_allocator_request.py --org-ledger-root, federation_cycle.py org_ledger_root), which read and append that one root.",
+          "tests": "tests/test_organization_ledger_same_store_readback.py (12): git-declared append then production readback on temporary bare Git repositories with a decoy POSIX root never read or written (dispatcher, ingress, diagnostic consumer, refusal recorder, current_chain); ledger_root() under the git declaration fails closed; posix-declared behaviour unchanged; dispatchers forward GIT_DIR; AST scan finds no production ledger_root() call outside organization_store()'s POSIX selection. Fixtures: tests/conftest.py, tests/__init__.py, tests/posix_ledger_locus/.",
+          "real_ledger_ref_created": false,
+          "new_dependencies": 0,
+          "runtime_evidence": "NONE",
+          "runtime_allow_claimed": false,
+          "consequence_committed": false,
+          "authority_effect": "NONE_SOURCE_RECORD_ONLY"
         }
       },
       "worker_claim": {

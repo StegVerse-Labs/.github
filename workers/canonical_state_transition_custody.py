@@ -54,8 +54,8 @@ def sha256_uri(value: Any) -> str:
 def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any = None) -> dict[str, Any]:
     """Record the exact governed transition in the existing organization ledger.
 
-    `ledger` is the root the caller holds; otherwise aggregate_transition uses
-    the one supplied to this execution (ledger_root()).
+    `ledger` is the root or store the caller holds; otherwise aggregate_transition
+    uses the store organization_store() selects for this execution.
     """
     module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "aggregate_repo_transition.py"
     if not module_path.is_file():
@@ -801,21 +801,23 @@ def organization_receipt_custody() -> Any:
 ORGANIZATION_RECEIPT_REFUSAL_TRANSITION = "ORGANIZATION_RECEIPT_GATE_REFUSED"
 
 
-def _existing_refusal_receipt(custody: Any, ledger: Path, evidence: Mapping[str, Any]) -> str | None:
+def _existing_refusal_receipt(custody: Any, ledger: Any, evidence: Mapping[str, Any]) -> str | None:
     """The Organization receipt already holding this exact refusal, if any.
 
     A retried attempt that is refused the same way is recorded once, as
-    org-kernel/kernel.py record_refusal does. The ledger is replayed with the
-    existing verifier first; a ledger that does not verify is not extended.
+    org-kernel/kernel.py record_refusal does. The ledger store the append uses
+    is replayed with the existing verifier first; a ledger that does not
+    verify is not extended.
     """
-    head_path = ledger / "HEAD.json"
-    if not head_path.is_file():
+    head = ledger.get(custody.org.ledger_store.HEAD_KEY)
+    if head is None:
         return None
-    head = custody.org.load(head_path)
     for row in custody._segment(ledger, head["receipt_sha256"], None):
         if row.get("source_transition_id") != ORGANIZATION_RECEIPT_REFUSAL_TRANSITION:
             continue
-        source = custody.org.load(ledger / "source-receipts" / (row["source_transition_sha256"][7:] + ".json"))
+        source = ledger.get(custody.org.ledger_store.source_key(row["source_transition_sha256"]))
+        if source is None:
+            raise ValueError("organization refusal source receipt missing")
         if source.get("transition_evidence") == dict(evidence):
             return row["receipt_sha256"]
     return None
@@ -833,7 +835,8 @@ def record_organization_receipt_refusal(
     For a refusal inside an attempted transition: the attempt's non-ALLOW
     disposition is itself a transition of this organization, appended through
     the existing aggregate_transition path to `root` (the gate's ledger root;
-    ledger_root() when none is held). The record is an ordinary canonical state
+    the store organization_store() selects when none is held, read and
+    appended through that one store). The record is an ordinary canonical state
     receipt whose outcome is the refusal's DENY or FAIL_CLOSED; it commits no
     consequence. Recorded once per (transition, state receipt, refusal). When
     it cannot be appended, the refusal is returned unrecorded with the reason;
@@ -853,8 +856,8 @@ def record_organization_receipt_refusal(
     }
     unrecorded = {**refusal, "refusal_recorded": False, "refusal_organization_receipt_sha256": None}
     try:
-        ledger = Path(root).expanduser().resolve() if root is not None else custody.org.ledger_root()
-    except custody.org.LedgerLocationRequired as exc:
+        ledger = custody.org.organization_store(root)
+    except (custody.org.LedgerLocationRequired, custody.org.ledger_store.LedgerStoreRefused) as exc:
         return {**unrecorded, "refusal_recording_reason": exc.failed_predicate}
     try:
         existing = _existing_refusal_receipt(custody, ledger, evidence)
@@ -893,8 +896,8 @@ def organization_receipt_gate(
 
     The Organization ledger append is the transition's runtime reality.
     organization_batch_custody.verified_organization_receipt reads the receipt
-    back from `root` (the ledger root the append used; ledger_root() when the
-    caller holds none) and binds it to the result's own state receipt digest.
+    back from `root` (the ledger root the append used; organization_store() when
+    the caller holds none) and binds it to the result's own state receipt digest.
     Master Records reconstruction fields are evidence only and never gate it.
     A refusal carries the typed DENY or FAIL_CLOSED disposition and commits
     nothing. `record_refusal` is for a gate inside an attempted transition:
