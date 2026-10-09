@@ -10,6 +10,7 @@ from types import SimpleNamespace
 
 from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator as _ImportOrder
 from scripts import dispatch_resident_execution_requests as dispatch
+from tests.organization_ledger_standin import publish_tampering
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST = ROOT / dispatch.COMPONENT011_REQUEST_REL
@@ -109,6 +110,7 @@ def test_corrupted_org_predecessor_fails_before_appending(tmp_path, monkeypatch)
     row = json.loads(path.read_text())
     row["source_transition_id"] = "FORGED_RECORDED_TRANSITION"
     path.write_text(json.dumps(row))
+    publish_tampering(ledger)
     result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
@@ -173,6 +175,7 @@ def test_orphaned_existing_org_receipt_prevents_new_observation(tmp_path, monkey
     assert first["state"] == "RECORDED", first
     orphan = ledger / "receipts" / ("f" * 64 + ".json")
     orphan.write_text(json.dumps({"schema": "forged-orphan"}))
+    publish_tampering(ledger)
     result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"

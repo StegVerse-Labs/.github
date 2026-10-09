@@ -14,6 +14,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from workers import sdk_manifest_diagnostic_admitted_consumer as mod
+from tests.organization_ledger_standin import bind, publish_tampering
 
 
 def request() -> dict:
@@ -229,7 +230,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     mod.Path(__file__).resolve().parents[1], Path(td), source))
             self.assertFalse((Path(td) / mod.ADMITTED_REL / (source["request_sha256"] + ".json")).exists())
 
-    def test_no_materializer_supplied_ledger_location_is_unreadable_never_derived(self):
+    def test_no_supplied_cache_reads_the_declared_locus_never_a_derived_one(self):
         control = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as td:
             source = request()
@@ -241,8 +242,9 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     mod._require_current_organization_lease_status(
                         control, "b" * 64,
                         {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+                # OL-1b: the declared locus (an empty stand-in) is read.
                 self.assertEqual(ctx.exception.predicate,
-                                 "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+                                 "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
             self.assertFalse((Path(td) / mod.ADMITTED_REL / (source["request_sha256"] + ".json")).exists())
 
     def test_supplied_ledger_location_without_head_keeps_existing_refusals(self):
@@ -264,12 +266,12 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
         control = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as td:
             source = request()
-            ledger = Path(td) / "supplied-ledger"
-            ledger.mkdir()
+            ledger = bind(Path(td) / "supplied-ledger")
             (ledger / "HEAD.json").write_text(json.dumps({
                 "organization": "StegVerse-org",
                 "receipt_sha256": "sha256:" + "f" * 64,
             }))
+            publish_tampering(ledger)  # a foreign HEAD is real only at the declared locus
             with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(ledger)}):
                 with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
                                             "ORGANIZATION_HEAD_OWNER_MISMATCH"):
@@ -302,8 +304,9 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     mod._require_current_organization_lease_status(
                         control, "b" * 64,
                         {"request_sha256": source["request_sha256"], "lease_id": "fixture-lease"})
+                # Host ledgers have no effect: the declared locus (empty) is read.
                 self.assertEqual(ctx.exception.predicate,
-                                 "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+                                 "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
 
     def test_original_ledger_and_retained_source_readback_only_with_source_test_double(self):
         import importlib
@@ -389,6 +392,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 head = json.loads(head_path.read_text())
                 head["receipt_sha256"] = "sha256:" + "f" * 64
                 head_path.write_text(json.dumps(head))
+                publish_tampering(ledger)  # a tamper is real only at the declared locus
                 with self.assertRaisesRegex(mod.DiagnosticAdmissionError, "ORGANIZATION_HEAD_EXACT_PREDECESSOR_READBACK_FAILED"):
                     mod._read_existing_authenticated_locator(
                         Path(__file__).resolve().parents[1], root, source,

@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "resident-runtime"))
 import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as batch  # noqa: E402
+from tests.organization_ledger_standin import publish_tampering  # noqa: E402
 
 
 def receipt(name: str) -> dict:
@@ -62,6 +63,7 @@ def test_missing_or_tampered_individual_receipt_fails_closed(monkeypatch, tmp_pa
     path.write_text(saved.replace("CLAIM", "ALTERED"))
     with pytest.raises(ValueError, match="hash mismatch"):
         batch.verify_batch(tmp_path, closed["batch_id"])
+    publish_tampering(tmp_path)  # a tamper is real only at the declared locus
     with pytest.raises(ValueError, match="hash mismatch"):
         batch.close_batch("TASK_CLOSURE", root=tmp_path)
     path.unlink()
@@ -88,6 +90,7 @@ def test_broken_predecessor_chain_cannot_close(monkeypatch, tmp_path):
     head["receipt_sha256"] = altered["receipt_sha256"]
     head["receipt_path"] = str(forged)
     head_path.write_text(json.dumps(head))
+    publish_tampering(tmp_path)  # a forgery is real only at the declared locus
     with pytest.raises(ValueError, match="orphaned or omitted"):
         batch.close_batch("TASK_CLOSURE", root=tmp_path)
 
@@ -120,6 +123,7 @@ def test_batch_commitment_tamper_and_head_tamper_fail_closed(monkeypatch, tmp_pa
     head = json.loads(head_path.read_text())
     head["last_org_receipt_sha256"] = "sha256:" + "0" * 64
     head_path.write_text(json.dumps(head))
+    publish_tampering(tmp_path)  # a tamper is real only at the declared locus
     with pytest.raises(ValueError, match="organization batch HEAD mismatch"):
         batch.close_batch("TASK_CLOSURE", root=tmp_path)
 

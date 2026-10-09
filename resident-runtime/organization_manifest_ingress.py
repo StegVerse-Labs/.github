@@ -368,6 +368,8 @@ def organization_append_not_committed(transition_id: str, repository_receipt: Ma
         "organization_runtime_transition_committed": False,
         "organization_receipt_observed": False,
         "required_evidence_or_repair": (
+            # A refusal from the declared ledger locus names its own repair.
+            getattr(exc, "required_evidence_or_repair", None) or
             "supply the organization ledger root as " + variable if variable else
             "repair the organization append's failure (" + type(exc).__name__
             + ") and resubmit the same manifest"),
@@ -1257,7 +1259,10 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 ROLE_CONFORMANCE_OUTBOX_ROUTE = "organization-role-conformance"
 OUTBOX_EVENT_SCHEMA = "stegverse.intr-outbox-manifest-event/v1"
 OUTBOX_CONSUMPTION_SCHEMA = "stegverse.organization-manifest-ingress-outbox-consumption/v1"
-LEDGER_ROOT_VARIABLES = ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT")
+#: The repository ledger root is still supplied by the materializer. The
+#: Organization ledger's locus is declared by the Organization manifest
+#: (org-contract.json `organization_ledger_locus`), so no execution supplies it.
+LEDGER_ROOT_VARIABLES = ("STEGVERSE_REPO_LEDGER_ROOT",)
 
 
 def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
@@ -1269,8 +1274,8 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
     never itself a disposition. Each event is one `receive`, so each commits
     its own terminal disposition, and redelivering an event is the exact retry
     the ledgers already make idempotent. Nothing is received until the
-    materializer has supplied both ledger roots; until then the events stay
-    where they are and nothing is appended.
+    materializer has supplied the repository ledger root; until then the
+    events stay where they are and nothing is appended.
     """
     environ = os.environ if environ is None else environ
     base = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "route": route, "authority_effect": "NONE"}

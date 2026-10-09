@@ -411,7 +411,7 @@ class HeartbeatRuntimeTests(unittest.TestCase):
         finally:
             fx.close()
 
-    def test_successor_proof_without_ledger_root_fails_closed(self):
+    def test_successor_proof_without_a_supplied_cache_reads_the_declared_locus(self):
         fx = RuntimeFixture()
         try:
             basis = fx.cost_basis("fixture")
@@ -423,11 +423,13 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             runtime = HeartbeatRuntime(fx.root, adapters={"fixture": lambda *_: None})
             handoff_value = json.loads((fx.root / "handoffs/TASK-SUCCESSOR.json").read_text())
             registry = json.loads((fx.root / "control/worker-registry.json").read_text())
+            # The Organization ledger's locus is declared by the Organization
+            # manifest (OL-1b): with no cache supplied, the predecessor receipt
+            # is read back from that locus, never from a host path.
             with patch.dict(os.environ, {}):
                 os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
                 ok, reason, _ = runtime._successor_reconstruction(registry, handoff_value)
-            self.assertFalse(ok)
-            self.assertEqual(reason, "SUCCESSOR_PREDECESSOR_ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+            self.assertTrue(ok, reason)
             # Master Records refs and reconstruction status are evidence only: absent, the bound proof still passes.
             proof = json.loads((fx.root / proof_ref).read_text())
             proof.pop("master_records_refs")

@@ -13,6 +13,7 @@ from heartbeat_runtime.worker_assignment_functional_memory import (
     reconstruct_prior_functional_memory,
 )
 from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+from tests.organization_ledger_standin import publish_tampering
 
 
 class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
@@ -193,6 +194,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         first = self.record(1, None)
         ledger = Path(os.environ["STEGVERSE_ORG_LEDGER_ROOT"])
         (ledger / "source-receipts" / (first["receipt_sha256"] + ".json")).unlink()
+        publish_tampering(ledger)  # a loss is real only at the declared locus
         task = {"task_id": "TASK-1", "functional_memory": {
             "receipt_sha256": first["receipt_sha256"],
             "organization_receipt_sha256": first["organization_receipt_sha256"],
@@ -201,17 +203,19 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         self.assertFalse(valid)
         self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING")
 
-    def test_prior_memory_without_ledger_root_fails_closed(self):
+    def test_prior_memory_without_ledger_root_reads_the_declared_locus(self):
         first = self.record(1, None)
         task = {"task_id": "TASK-1", "functional_memory": {
             "receipt_sha256": first["receipt_sha256"],
             "organization_receipt_sha256": first["organization_receipt_sha256"],
         }}
+        # OL-1b: with no cache supplied, the prior memory is reconstructed from
+        # the locus the Organization manifest declares, never a host path.
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
             rebuilt, valid, reason = reconstruct_prior_functional_memory(task)
-        self.assertFalse(valid)
-        self.assertEqual(reason, "ORGANIZATION_RECEIPT_REFUSED:FAIL_CLOSED:LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+        self.assertTrue(valid, reason)
+        self.assertIsNotNone(rebuilt)
 
     def test_unreconstructable_prior_memory_forces_non_allow_review(self):
         with tempfile.TemporaryDirectory() as tmp:

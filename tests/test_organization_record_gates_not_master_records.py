@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.organization_ledger_standin import publish_tampering
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "workers"), str(ROOT / "resident-runtime")]
 
@@ -60,6 +62,7 @@ def _forge(tmp_path, row, **changes):
     digest = custody.org.sha(body)
     path = tmp_path / "org" / "receipts" / (digest[7:] + ".json")
     path.write_text(json.dumps({**body, "receipt_sha256": digest}), encoding="utf-8")
+    publish_tampering(tmp_path / "org")  # a forgery is real only at the declared locus
     return digest
 
 
@@ -110,6 +113,7 @@ def test_forged_digest_is_refused(monkeypatch, tmp_path):
     org = result["organization_receipt"]
     path = tmp_path / "org" / "receipts" / (org["receipt_sha256"][7:] + ".json")
     path.write_text(json.dumps(dict(org, boundary_evidence={"forged": True})), encoding="utf-8")
+    publish_tampering(tmp_path / "org")
     _refused(lambda: custody.verified_organization_receipt(None, org["receipt_sha256"], state_receipt_sha256=state),
              disposition="DENY", predicate="ORGANIZATION_RECEIPT_VERIFICATION_FAILED")
 
@@ -189,9 +193,11 @@ def test_root_different_from_the_append_root_is_refused(monkeypatch, tmp_path):
     other.mkdir()
     _refused(lambda: _custody().verified_organization_record(other, result),
              disposition="FAIL_CLOSED", predicate="ORGANIZATION_RECEIPT_READBACK_MISSING")
+    # With no cache supplied, the receipt is read back from the locus the
+    # Organization manifest declares (OL-1b) -- the append's own ledger.
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT")
-    _refused(lambda: _custody().verified_organization_record(None, result),
-             disposition="FAIL_CLOSED", predicate="LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+    assert _custody().verified_organization_record(None, result)["receipt_sha256"] == \
+        result["organization_receipt"]["receipt_sha256"]
 
 
 def test_refusal_has_no_effect_on_the_ledger(monkeypatch, tmp_path):
@@ -380,7 +386,7 @@ def test_refusal_inside_attempted_transition_is_appended_once(monkeypatch, tmp_p
     assert _head(tmp_path) == head
 
 
-def test_refusal_without_supplied_ledger_is_unrecorded_not_host_derived(monkeypatch, tmp_path):
+def test_refusal_without_supplied_ledger_is_recorded_at_the_declared_locus_not_host_derived(monkeypatch, tmp_path):
     from workers.canonical_state_transition_custody import record_organization_receipt_refusal
 
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
@@ -388,8 +394,8 @@ def test_refusal_without_supplied_ledger_is_unrecorded_not_host_derived(monkeypa
     recorded = record_organization_receipt_refusal(
         {"disposition": "FAIL_CLOSED", "failed_predicate": "X", "retry_entrypoint": "r", "consequence_committed": False},
         gated_transition_id=TRANSITION_ID, state_receipt_sha256="e" * 64)
-    assert recorded["refusal_recorded"] is False
-    assert recorded["refusal_recording_reason"] == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
+    assert recorded["refusal_recorded"] is True
+    assert recorded["refusal_organization_receipt_sha256"]
     assert not (tmp_path / "home").exists()
 
 
@@ -460,12 +466,14 @@ def test_diagnostic_ancestry_reads_organization_retained_sources_not_master_reco
     tampered = json.loads(retained.read_text(encoding="utf-8"))
     tampered["prior_state_ref_or_hash"] = "sha256:" + "a" * 64
     retained.write_text(json.dumps(tampered), encoding="utf-8")
+    publish_tampering(tmp_path / "org")  # a tamper is real only at the declared locus
+    read = consumer._organization_source_receipts(ROOT)
     with pytest.raises(consumer.DiagnosticAdmissionError, match="ORGANIZATION_SOURCE_TRANSITION_BINDING_MISMATCH"):
         consumer._prove_ancestry(read, binding_hash, ingress_hash)
-    # No supplied ledger root: typed refusal, never a host path.
+    # No supplied cache: the declared locus is read, never a host path.
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT")
-    with pytest.raises(consumer.DiagnosticAdmissionError, match="LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"):
-        consumer._organization_source_receipts(ROOT)
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="ORGANIZATION_SOURCE_TRANSITION_BINDING_MISMATCH"):
+        consumer._prove_ancestry(consumer._organization_source_receipts(ROOT), binding_hash, ingress_hash)
 
 
 def test_diagnostic_ancestry_rejects_broken_or_replayed_ingress_binding_chain(monkeypatch, tmp_path):

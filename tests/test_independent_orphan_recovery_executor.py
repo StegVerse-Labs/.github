@@ -122,14 +122,14 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
             row, refusal = worker_mod.verify_released_claim_organization_receipt(crossed, root=ledger)
             self.assertEqual((refusal["disposition"], refusal["failed_predicate"]),
                              ("DENY", "ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT"))
+            # With no cache supplied, the receipt is read back from the locus the
+            # Organization manifest declares (OL-1b), never from a host path.
             bound = dict(historical, organization_receipt=good)
             with patch.dict(os.environ, {}):
                 os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
                 row, refusal = worker_mod.verify_released_claim_organization_receipt(bound)
-            self.assertIsNone(row)
-            self.assertEqual((refusal["disposition"], refusal["failed_predicate"]),
-                             ("FAIL_CLOSED", "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"))
-            self.assertEqual(refusal["retry_entrypoint"], worker_mod.VERIFY_ENTRYPOINT)
+            self.assertIsNone(refusal)
+            self.assertEqual(row["receipt_sha256"], good["organization_receipt_sha256"])
 
     def test_missing_carrier_snapshot_is_not_an_execution_prerequisite(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

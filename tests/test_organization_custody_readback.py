@@ -151,9 +151,10 @@ def test_missing_head_returns_precise_local_boundary_not_intr_deny(monkeypatch, 
     assert result["runtime_execution_proven"] is False
 
 
-def test_unsupplied_ledger_root_is_its_own_boundary_and_nothing_is_derived(monkeypatch, tmp_path):
-    # The ledger root is supplied by the materializer, never derived from the
-    # host, so an unsupplied one is named as such rather than read from HOME.
+def test_unsupplied_ledger_root_reads_the_declared_locus_and_nothing_is_derived(monkeypatch, tmp_path):
+    # The ledger's locus is declared by the Organization manifest (OL-1b), never
+    # derived from the host: with no cache supplied the declared locus (an empty
+    # stand-in here) is read, and HOME is never touched.
     runtime, home = tmp_path / "runtime", tmp_path / "home"
     home.mkdir()
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
@@ -162,7 +163,7 @@ def test_unsupplied_ledger_root_is_its_own_boundary_and_nothing_is_derived(monke
     request(runtime)
     result = consumer.consume(ROOT, runtime)
     assert result["state"] == "BOUNDARY", result
-    assert result["reason"] == "ledger_location_required_from_materializer: STEGVERSE_ORG_LEDGER_ROOT"
+    assert result["reason"] == "ORGANIZATION_HEAD_NOT_MATERIALIZED"
     assert result["runtime_execution_proven"] is False
     assert list(home.iterdir()) == []
 

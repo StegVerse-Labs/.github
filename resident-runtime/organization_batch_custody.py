@@ -732,13 +732,22 @@ def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, ro
     reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (
         state["expired"] and state["receipt_count"] < state["release_count"]
     ) else "MANIFEST_RELEASE_CONDITION"
-    return close_batch(reason, root=root)
+    # Already inside the append that publishes this transition.
+    return close_batch(reason, root=root, publish=False)
 
 
-def close_batch(reason: str, *, root: Path | None = None) -> dict:
+def close_batch(reason: str, *, root: Path | None = None, publish: bool = True) -> dict:
+    """Close the open batch; through a cache of the declared locus, publish it under the ledger lock.
+
+    `publish=False` is for a closure already inside an append that publishes it.
+    """
     if reason not in CLOSURE_REASONS:
         raise ValueError("unsupported organization batch closure reason")
     root = Path(root) if root else org.ledger_root()
+    if publish:
+        return org.publish_ledger_mutation(
+            root, lambda: close_batch(reason, root=root, publish=False),
+            published=lambda batch: ("batches/" + batch["batch_id"][7:] + ".json", batch))
     head = _read(root / "HEAD.json")
     if head.get("organization") != org.C["organization"]:
         raise ValueError("organization ledger HEAD identity mismatch")

@@ -1,8 +1,10 @@
 """F63-02: Organization ledger custody is not bound to the host that wrote it.
 
-The root and its lock come only from what the materializer supplies. A root
-supplied at another path -- the same ledger on another node -- stays the same
-ledger: its chain closes, releases and appends there under its own lock.
+The root is a cache of the locus the Organization manifest declares (OL-1b),
+supplied by the materializer or made fresh, never derived from the host. A
+root supplied at another path -- the same ledger on another node -- stays the
+same ledger: its chain closes, releases and appends there under its own lock
+and the declared ref's compare-and-swap (a stand-in here; CI evidence only).
 """
 from __future__ import annotations
 
@@ -17,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "resident-runtime"))
 import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as batch  # noqa: E402
+from tests.organization_ledger_standin import publish_tampering  # noqa: E402
 
 
 def receipt(name: str) -> dict:
@@ -30,19 +33,22 @@ def receipt(name: str) -> dict:
     }
 
 
-def test_host_derived_location_is_refused(monkeypatch, tmp_path):
+def test_no_location_is_host_derived_an_unsupplied_cache_resolves_the_declared_locus(monkeypatch, tmp_path):
+    # OL-1b: the locus is declared by the Organization manifest. With no cache
+    # supplied, a fresh cache of that locus is made -- never a HOME or XDG path --
+    # and appends and closures land on the declared ref (a stand-in here).
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
     monkeypatch.setenv("HOME", str(tmp_path / "home"))
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "xdg"))
-    with pytest.raises(org.LedgerLocationRequired) as refused:
-        org.ledger_root()
-    assert refused.value.failed_predicate == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
-    assert str(refused.value) == "ledger_location_required_from_materializer: STEGVERSE_ORG_LEDGER_ROOT"
-    assert org.location_refusal(refused.value)["disposition"] == "FAIL_CLOSED"
-    with pytest.raises(org.LedgerLocationRequired):
-        org.aggregate_transition(receipt("CLAIM"))
-    with pytest.raises(org.LedgerLocationRequired):
-        batch.close_batch("TASK_CLOSURE")
+    root = org.ledger_root()
+    assert org.bound_locus(root) == org.declared_locus()
+    first = org.aggregate_transition(receipt("CLAIM"))
+    closed = batch.close_batch("TASK_CLOSURE")
+    assert closed["last_org_receipt_sha256"] == first["receipt_sha256"]
+    fresh = org.ledger_root()
+    assert fresh != root
+    assert json.loads((fresh / "HEAD.json").read_text())["receipt_sha256"] == first["receipt_sha256"]
+    assert json.loads((fresh / "BATCH_HEAD.json").read_text())["batch_id"] == closed["batch_id"]
     assert not any(tmp_path.rglob("HEAD.json"))
     assert not any(tmp_path.rglob(".append.lock"))
 
@@ -84,7 +90,8 @@ def test_root_supplied_at_another_path_keeps_custody(monkeypatch, tmp_path):
     assert third["previous_receipt_sha256"] == second["receipt_sha256"]
     head = json.loads((moved / "HEAD.json").read_text())
     assert head["receipt_sha256"] == third["receipt_sha256"]
-    assert Path(head["receipt_path"]).parent == (moved / "receipts").resolve()
+    # HEAD names the receipt where it lives in the declared locus, not a host path.
+    assert head["receipt_path"] == org.declared_locus()["path"] + "/receipts/" + third["receipt_sha256"][7:] + ".json"
     assert not written.exists()
 
 
@@ -97,6 +104,7 @@ def test_head_naming_another_receipt_is_still_refused(monkeypatch, tmp_path):
                   str(tmp_path / "elsewhere" / (first["receipt_sha256"][7:] + ".json")),
                   ""):
         head_path.write_text(json.dumps(dict(head, receipt_path=wrong)))
+        publish_tampering(tmp_path)  # a tamper is real only at the declared locus
         with pytest.raises(ValueError, match="organization ledger HEAD receipt path mismatch"):
             batch.close_batch("TASK_CLOSURE", root=tmp_path)
     assert not (tmp_path / "BATCH_HEAD.json").exists()

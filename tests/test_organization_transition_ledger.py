@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 import tempfile
 
+from tests.organization_ledger_standin import publish_tampering
+
 # Initialize the existing WorkerCoordinator import graph before importing its custody client.
 # Importing the custody client first triggers the pre-existing package circular import.
 from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator as _WorkerCoordinatorImportOrder
@@ -151,6 +153,7 @@ def test_exact_source_retry_rejects_tampered_existing_receipt():
             tampered = json.loads(path.read_text())
             tampered["boundary_evidence"] = {"tampered": True}
             path.write_text(json.dumps(tampered))
+            publish_tampering(Path(tmp))  # a tamper is real only at the declared locus
             try:
                 module.aggregate_transition(source)
             except ValueError as exc:

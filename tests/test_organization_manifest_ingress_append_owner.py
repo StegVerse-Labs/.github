@@ -32,6 +32,7 @@ from tests.test_manifest_governance_universal_intr_binding import (  # noqa: E40
     organization_batch_governance_request,
 )
 from workers import manifest_state_transition_intr_ingress as worker  # noqa: E402
+from tests.organization_ledger_standin import LOCUS, _routed_standin, publish_tampering, standin_locus  # noqa: E402
 
 batch_custody = ingress.batch_custody
 organization_ledger = ingress.organization_ledger
@@ -309,7 +310,8 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
         transport = {"origin": "TVC_RELAY_EGRESS", "authorization_id": "TVC-AUTH-EXACT",
                      "payload_sha256": "c" * 64}
         released, results = [], []
-        with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(root)}), \
+        # Each path appends to its own stand-in for the declared locus.
+        with standin_locus(), mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(root)}), \
              _released_by_owner(), \
              mock.patch.object(worker, "_run_governance_owner", return_value=governance), \
              mock.patch.object(worker, "_load_organization_append_owner",
@@ -324,7 +326,8 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 results.append(result)
         return {**self._observe(root), "released": released}, calls, states, results
 
-    def _ingress_path(self, root: Path, repo: Path, requests: list[dict]) -> tuple[dict, list, list]:
+    def _ingress_path(self, root: Path, repo: Path, requests: list[dict], *,
+                      seeded: bool = False) -> tuple[dict, list, list]:
         calls, states = [], []
         real = organization_ledger.aggregate_transition
 
@@ -334,12 +337,15 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             return real(*args, **kwargs)
 
         released = []
-        with mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
-                                          "STEGVERSE_ORG_LEDGER_ROOT": str(root),
-                                          "STEGVERSE_REPO_LEDGER_ROOT": str(repo)}), \
+        with standin_locus(), mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
+                                                           "STEGVERSE_ORG_LEDGER_ROOT": str(root),
+                                                           "STEGVERSE_REPO_LEDGER_ROOT": str(repo)}), \
              _released_by_owner(), \
              mock.patch.object(organization_ledger, "aggregate_transition", recording), \
              mock.patch.object(ingress, "admit_runtime_result", return_value={"admitted": True}):
+            if seeded:
+                # The copied pre-append state is the stand-in locus's own state.
+                publish_tampering(root)
             for index, request in enumerate(requests):
                 with mock.patch.object(ingress, "derive_execution_request",
                                        return_value=_ingress_request(request)), \
@@ -444,7 +450,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                                   and str(temp / "worker-org") in path.read_text(errors="replace")],
                                  "replay root still names the worker root")
                 replayed, replay_calls, replay_states = self._ingress_path(
-                    replay_root, temp / "ingress-replay-repo" / str(index), [request])
+                    replay_root, temp / "ingress-replay-repo" / str(index), [request], seeded=True)
                 self.assertEqual(replay_calls, [worker_calls[index]])
                 self.assertEqual(len(replay_states), 1)
                 self.assertEqual(replay_states[0], state,
@@ -534,6 +540,7 @@ class HeartbeatReferenceTest(LedgerRoots):
         (self.org_root / "HEAD.json").write_text(json.dumps({
             "organization": organization_ledger.C["organization"],
             "receipt_sha256": historical["receipt_sha256"], "receipt_path": str(path)}))
+        publish_tampering(self.org_root)  # the historical ledger as it stands at the locus
         return historical
 
     def test_historical_receipts_verify_replay_and_pass_the_schema_consumers(self):
@@ -567,6 +574,7 @@ class HeartbeatReferenceTest(LedgerRoots):
         (self.org_root / "receipts" / (row["receipt_sha256"][7:] + ".json")).unlink()
         (self.org_root / "receipts" / (legacy["receipt_sha256"][7:] + ".json")).write_text(
             json.dumps(legacy, indent=2, sort_keys=True) + "\n")
+        publish_tampering(self.org_root)
         again = custody._record_organization_transition(self._canonical_source("CUSTODY"))
         self.assertEqual(again["state"], "RECORDED", again)
         self.assertEqual(again["organization_receipt"], legacy)
@@ -646,15 +654,28 @@ class PartialCommitTest(LedgerRoots):
         self.assertEqual(result["repository_receipt_committed"], "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
         self.assertNotIn("repository_receipt_sha256", result)
 
-    def test_unsupplied_organization_root_names_its_repair(self):
+    def test_unsupplied_organization_root_appends_to_the_declared_locus(self):
+        # OL-1b: the Organization ledger's locus is declared by the Organization
+        # manifest, so no supplied root is needed; the append lands there.
         with mock.patch.dict(os.environ):
             del os.environ["STEGVERSE_ORG_LEDGER_ROOT"]
             result, _ = self.receive(_plain_request(), hb_epoch=7003)
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        self.assertEqual(json.loads(subprocess.run(
+            ["git", "cat-file", "blob", LOCUS["ref"] + ":" + LOCUS["path"] + "/HEAD.json"],
+            env={**os.environ, "GIT_DIR": str(_routed_standin())}, capture_output=True, check=True).stdout
+        )["receipt_sha256"], result["organization_receipt_sha256"])
+
+    def test_refused_locus_write_names_its_repair(self):
+        hook = _routed_standin() / "hooks" / "pre-receive"
+        hook.write_text("#!/bin/sh\nexit 1\n")
+        hook.chmod(0o755)
+        result, _ = self.receive(_plain_request(), hb_epoch=7003)
         self._assert_typed(result)
         self.assertIs(result["repository_receipt_committed"], True)
-        self.assertEqual(result["organization_receipt_committed"], "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
-        self.assertEqual(result["required_evidence_or_repair"],
-                         "supply the organization ledger root as STEGVERSE_ORG_LEDGER_ROOT")
+        # The declared ref still names its expected head: nothing was committed.
+        self.assertIs(result["organization_receipt_committed"], False)
+        self.assertIn("contents write", result["required_evidence_or_repair"])
 
     def test_refusal_path_partial_commit_keeps_its_own_predicate(self):
         with mock.patch.object(organization_ledger, "aggregate_transition",

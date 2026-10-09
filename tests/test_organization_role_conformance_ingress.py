@@ -766,13 +766,15 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         self.assertNotEqual(first["organization_transition_id"], second["organization_transition_id"])
         self.assertEqual(len(self.receipts(self.org_root)), 2)
 
-    def test_nothing_is_appended_to_the_organization_ledger_without_its_supplied_root(self):
+    def test_without_a_supplied_cache_the_organization_append_lands_at_the_declared_locus(self):
+        # OL-1b: the Organization ledger's locus is declared by the Organization
+        # manifest, so no root is supplied for it and no host path is used.
         with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ""}):
             os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
             result = self.receive()
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failure_code"], ingress.APPEND_NOT_COMMITTED)
-        self.assertIn("STEGVERSE_ORG_LEDGER_ROOT", result["required_evidence_or_repair"])
+            head = json.loads((ingress.organization_ledger.ledger_root() / "HEAD.json").read_text())
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        self.assertEqual(head["receipt_sha256"], result["organization_receipt_sha256"])
         self.assertFalse(self.org_root.exists())
 
     def test_nothing_is_appended_at_all_without_either_supplied_root(self):

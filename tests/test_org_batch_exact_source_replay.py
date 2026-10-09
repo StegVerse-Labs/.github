@@ -11,6 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"resident-runtime"))
 import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as batches  # noqa: E402
+from tests.organization_ledger_standin import publish_tampering  # noqa: E402
 
 
 def source(name: str, *, evidence: bool = True) -> dict:
@@ -80,6 +81,7 @@ def test_source_tamper_and_changed_context_fail_closed(monkeypatch,tmp_path):
     sidecar.write_text(json.dumps(modified))
     with pytest.raises(ValueError,match="required evidence digest mismatch"):
         batches.export_batch(tmp_path,batch["batch_id"])
+    publish_tampering(tmp_path)  # a tamper is real only at the declared locus
     with pytest.raises(ValueError,match="retained organization source receipt conflict"):
         org.aggregate_transition(value)
 
