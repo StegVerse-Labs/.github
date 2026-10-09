@@ -203,12 +203,92 @@ def test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_s
     assert executor.NONCE in source
     assert "build_transport_intent" in source
     assert "build_materialization_request" in source
-    assert "shared.Server" in source
-    assert "shared.INGRESS_PATH" in source
+    # The exact profile admit the shared listener routes StegBrowser triggers to,
+    # invoked in-process: no second listener, socket, timeout or liveness wait.
+    assert "workers/stegbrowser_intr_materialization_ingress.py" in source
+    assert "is_stegbrowser(payload)" in installer.transform((ROOT / "workers/universal_intr_profiled_ingress.py").read_text(encoding="utf-8"))
+    for forbidden in ("shared.Server", "urlopen", "urllib.request", "threading", "import socket", "timeout=", "handle_request"):
+        assert forbidden not in source
     assert "resident_request_sweep_required\": False" in source
     assert "control_plane_source_package_required\": False" in source
     assert "dispatch_resident_execution_requests" not in source
     assert "control_plane_source_package" not in source.lower().replace('control_plane_source_package_required', '')
+
+
+def _no_network(*_args, **_kwargs):
+    raise AssertionError("in-process admission must not open a socket or listener")
+
+
+def _executor_trigger(runtime: Path) -> tuple[dict, dict]:
+    binding = {"fixture": True}
+    binding_path = runtime / "binding.json"
+    binding_path.write_text(json.dumps(binding), encoding="utf-8")
+    req = request(str(binding_path), consumer.digest_uri(binding))
+    return req, trigger(req)
+
+
+def test_executor_admission_does_not_block_on_absent_listener():
+    with tempfile.TemporaryDirectory() as td, patch("urllib.request.urlopen", _no_network), \
+            patch("socket.socket", _no_network), patch("socket.create_connection", _no_network), \
+            patch.object(ingress, "_dispatch") as dispatch:
+        dispatch.return_value = {"consumer_dispatch_attempted": True, "authority_effect": "NONE_DISPATCH_ONLY"}
+        runtime = Path(td)
+        req, packet = _executor_trigger(runtime)
+        receipt = executor.admit_trigger(packet, runtime_root=runtime, admit=ingress.admit)
+        assert receipt["state"] == "INGRESS_ADMITTED"
+        assert receipt["request_hash"] == req["request_hash"]
+        assert receipt["write_once_persisted"] is True
+        assert Path(receipt["queue_ref"]).is_file()
+        assert json.loads(Path(receipt["queue_ref"]).read_text(encoding="utf-8"))["request_hash"] == req["request_hash"]
+
+
+def test_executor_same_trigger_admitted_twice_is_idempotent():
+    with tempfile.TemporaryDirectory() as td, patch.object(ingress, "_dispatch") as dispatch:
+        dispatch.return_value = {"consumer_dispatch_attempted": True, "authority_effect": "NONE_DISPATCH_ONLY"}
+        runtime = Path(td)
+        _req, packet = _executor_trigger(runtime)
+        first = executor.admit_trigger(packet, runtime_root=runtime, admit=ingress.admit)
+        queued = Path(first["queue_ref"]).read_bytes()
+        second = executor.admit_trigger(packet, runtime_root=runtime, admit=ingress.admit)
+        assert second["request_hash"] == first["request_hash"]
+        assert second["state"] == "INGRESS_ADMITTED"
+        assert Path(first["queue_ref"]).read_bytes() == queued
+        # The replay returns the existing write-once receipt; no second dispatch.
+        assert dispatch.call_count == 1
+
+
+def test_executor_malformed_trigger_is_refused_typed_without_effect():
+    with tempfile.TemporaryDirectory() as td, patch.object(ingress, "_dispatch") as dispatch:
+        runtime = Path(td)
+        _req, packet = _executor_trigger(runtime)
+        packet["node_outbox_entry"]["interlock_id"] = "SV-IL-" + "f" * 24
+        try:
+            executor.admit_trigger(packet, runtime_root=runtime, admit=ingress.admit)
+            assert False, "tampered trigger should be refused"
+        except RuntimeError as exc:
+            assert str(exc).startswith("stegbrowser_intr_admission_refused:")
+            assert "node_outbox_entry_hash_mismatch" in str(exc)
+        assert not (runtime / consumer.REQUEST_DIR_REL).exists()
+        assert not (runtime / consumer.INGRESS_RECEIPT_DIR_REL).exists()
+        dispatch.assert_not_called()
+
+
+def test_executor_submission_projects_ingress_admitted_without_downstream_claim():
+    with tempfile.TemporaryDirectory() as td, patch.object(ingress, "_dispatch") as dispatch:
+        dispatch.return_value = {"consumer_dispatch_attempted": True, "authority_effect": "NONE_DISPATCH_ONLY"}
+        runtime = Path(td)
+        req, packet = _executor_trigger(runtime)
+        with patch.object(executor, "build_binding", return_value=({}, req, packet)):
+            result = executor.submit_once(source_root=ROOT, runtime_root=runtime, stegos_root=runtime, node_receipt_path=runtime / "node.json", admit=ingress.admit)
+        assert result["state"] == "INGRESS_ADMITTED"
+        assert result["request_hash"] == req["request_hash"]
+        assert result["ingress_write_once_persisted"] is True
+        assert result["in_process_write_once_admission"] is True
+        assert result["receiver_liveness_predicate"] is False
+        assert result["downstream_execution_observed"] is False
+        assert result["runtime_predicates_promoted"] is False
+        assert result["round_trip_1_started"] is False
+        assert result["ingress_receipt"]["runtime_execution_attempted"] is False
 
 
 def test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref():

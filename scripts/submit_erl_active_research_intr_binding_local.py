@@ -4,6 +4,15 @@
 This is the active resident path for ERL. It reuses the already-validated binding
 and admission validators but uses the profile-specific STEGOS_RESIDENT_LOCAL
 transport origin. No TVC relay authorization header is accepted or emitted.
+
+The exact binding is admitted in-process through the shared listener's existing
+ERL route (workers/erl_active_research_transport.py validate_headers then
+workers/erl_active_research_intr_profile.py admit), which persists the profile
+admission write-once. No listener, socket, timeout or receiver liveness is a
+predicate of the transition (DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION);
+the input's loopback ingress_url is validated as destination identity only and
+never contacted. The result projects the ingress admission with the terminal
+materialization still pending; it never claims terminal or provider execution.
 """
 from __future__ import annotations
 
@@ -15,9 +24,9 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
 
 SCRIPTS = Path(__file__).resolve().parent
+ROOT = SCRIPTS.parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
@@ -101,22 +110,46 @@ def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, 
     return binding, ingress_url
 
 
-def post_exact(binding: Mapping[str, Any], ingress_url: str, *, opener=urlopen) -> dict[str, Any]:
+def _admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    """The shared listener's ERL route, invoked in-process.
+
+    A replay of the same exact binding returns the write-once profile admission
+    already recorded for it instead of re-admitting.
+    """
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from workers import erl_active_research_intr_profile as profile
+    from workers import erl_active_research_transport as transport
+
+    validated = transport.validate_headers(headers, body)
+    payload = json.loads(body.decode("utf-8"))
+    request = payload.get("materialization_request") if isinstance(payload, dict) else None
+    if profile.is_erl_active_research(payload) and isinstance(request, dict) and isinstance(request.get("materialization_id"), str):
+        existing_path = runtime_root / profile.ERL_RECEIPT_DIR / f"{request['materialization_id']}.json"
+        if existing_path.is_file():
+            existing = json.loads(existing_path.read_text(encoding="utf-8"))
+            if (
+                existing.get("state") == "PROFILE_ADMITTED_TERMINAL_MATERIALIZATION_PENDING"
+                and existing.get("transport_payload_sha256") == validated["payload_sha256_uri"]
+                and existing.get("payload_hash") == request.get("payload_hash")
+            ):
+                return existing
+    return profile.admit(runtime_root=runtime_root, payload=payload, transport_payload_sha256=validated["payload_sha256_uri"])
+
+
+def admit_exact(binding: Mapping[str, Any], runtime_root: Path, *, admit=_admit) -> dict[str, Any]:
+    """Admit the exact binding write-once in-process; a refusal is typed and commits nothing."""
     raw = canonical(binding)
-    req = Request(
-        ingress_url,
-        data=raw,
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-StegVerse-Transport": "InTr",
-            "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
-            "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
-        },
-    )
-    with opener(req, timeout=10.0) as response:
-        body = response.read()
-    value = json.loads(body.decode("utf-8"))
+    headers = {
+        "Content-Type": "application/json",
+        "X-StegVerse-Transport": "InTr",
+        "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
+        "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
+    }
+    try:
+        value = admit(runtime_root=runtime_root, body=raw, headers=headers)
+    except ValueError as exc:
+        raise RuntimeError("intr_admission_refused:" + str(exc)) from exc
     require(isinstance(value, dict), "ingress_response_object_required")
     return value
 
@@ -188,7 +221,7 @@ def verify_admission_proof(response: Mapping[str, Any], request: Mapping[str, An
     }
 
 
-def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def consume(runtime_root: Path, input_path: Path, *, admit=_admit, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     require(not any(truthy(values.get(name)) for name in HOSTED), "hosted_environment_forbidden")
     runtime = runtime_root.expanduser().resolve()
@@ -203,10 +236,10 @@ def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mappin
             "authority_effect": "NONE_WAITING_FOR_AUTHENTIC_INPUT",
         }
     input_value = load_json(pointer)
-    binding_path, ingress_url = validate_input(input_value, runtime)
+    binding_path, _destination_url = validate_input(input_value, runtime)
     binding = load_json(binding_path)
     request = legacy.validate_binding(binding)
-    response = post_exact(binding, ingress_url, opener=opener)
+    response = admit_exact(binding, runtime, admit=admit)
     legacy.validate_admission(response, request, binding)
     proof_summary = verify_admission_proof(response, request)
     result = {
@@ -224,7 +257,9 @@ def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mappin
         "transport_origin": TRANSPORT_ORIGIN,
         "transport_credential_required": False,
         "transport_submission_attempted": True,
-        "authentic_shared_ingress_response_observed": True,
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
+        "ingress_receipt_ref": str(runtime / "receipts/sovereign-network/erl-active-research-intr" / f"{request['materialization_id']}.json"),
         "proof_verification": proof_summary["proof_verification"],
         "ingress_response_hash": proof_summary["ingress_response_hash"],
         "upstream_hop_receipt_hashes": proof_summary["upstream_receipt_hashes"],
