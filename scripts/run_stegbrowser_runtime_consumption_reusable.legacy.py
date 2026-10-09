@@ -20,6 +20,13 @@ BOOTSTRAP_RUNTIME_REL = Path("runtime/canonical-work-stegbrowser-runtime-consump
 BOOTSTRAP_RECEIPT_REL = BOOTSTRAP_RUNTIME_REL / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
 CUSTODY_RECEIPT = Path("receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json")
 NODE_RUNTIME_BINDING_RECEIPT = Path("receipts/sovereign-host/stegbrowser-node-interlock-runtime-binding.latest.json")
+# The A4 append predicate this boundary has not yet verified. The boundary is
+# written before the ingress worker's receipt readback, so it states a typed
+# FAIL_CLOSED naming that predicate rather than claiming ingress occurred
+# (StegVerse-Labs/.github#3012).
+INGRESS_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"
+CLAIM_FENCE_APPEND_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:WORKERCOORDINATOR_CLAIM_FENCE"
+INGRESS_WORKER_REL = Path("workers/stegbrowser_manifest_intr_ingress.py")
 
 
 def fail(reason: str) -> None:
@@ -166,6 +173,46 @@ def retain_bootstrap_evidence(ephemeral_root: Path, resident_root: Path, bootstr
     return custody
 
 
+def remediation_boundary(resident_root: Path, node_runtime_binding: dict[str, Any], ingress_projection: dict[str, Any], custody: dict[str, Any]) -> dict[str, Any]:
+    """Boundary written before the ingress worker's receipt readback.
+
+    It must not claim ingress: it is a typed FAIL_CLOSED naming the A4 append
+    predicate, the edge that satisfies it and where to retry.
+    """
+    return {
+        "schema": "stegverse.stegbrowser-runtime-remediation-boundary/v1",
+        "state": "FAIL_CLOSED",
+        "disposition": "FAIL_CLOSED",
+        "evidence_class": "ATTEMPTED_INGRESS",
+        "consequence_committed": False,
+        "failure_code": "ORGANIZATION_RECEIPT_NOT_APPENDED",
+        "failed_predicate": INGRESS_APPEND_PREDICATE,
+        "satisfying_edge": f"{INGRESS_WORKER_REL} appends the Interlock/InTr ingress receipt to the Organization ledger root under ORGANIZATION_LEDGER_LOCK and reads it back by resident-runtime/organization_batch_custody.py::verified_organization_receipt",
+        "required_evidence_or_repair": f"Run {INGRESS_WORKER_REL} through the manifest; its verified Organization receipt satisfies {INGRESS_APPEND_PREDICATE}, and a refusal is recorded as DENY or FAIL_CLOSED with its own failure_code.",
+        "retry_entrypoint": "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+        "owning_existing_goal": TASK_ID,
+        "next_attempt": "NEXT_MANIFEST_DIRECTED_INTERLOCK_INTR_INGRESS_ATTEMPT",
+        "evidence_refs": [str(resident_root / BOOTSTRAP_RECEIPT_REL), str(resident_root / CUSTODY_RECEIPT)],
+        "task_id": TASK_ID,
+        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
+        "cosv_task_vector": COSV,
+        "node_interlock_runtime_binding": node_runtime_binding,
+        "runtime_ingress_projection": ingress_projection,
+        "canonical_work_intr_bootstrap_receipt": str(resident_root / BOOTSTRAP_RECEIPT_REL),
+        "evidence_custody": custody,
+        "workercoordinator_claim_fence_observed": False,
+        "governed_return_packet_received": False,
+        "return_record_durably_recorded": False,
+        "final_allowed_transport_exit_transition_observed": False,
+        "successful_data_transport_round_trip_identified": False,
+        "next_required_predicate": CLAIM_FENCE_APPEND_PREDICATE,
+        "runtime_observed": True,
+        "completion_evidence_observed": False,
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_BOUNDARY_EVIDENCE_ONLY"
+    }
+
+
 def main() -> int:
     p = params()
     source = resolve_path(p.get("sovereign_source_root") or p.get("source_root"), "STEGVERSE_HEARTBEAT_SOURCE_ROOT", ROOT)
@@ -304,27 +351,7 @@ def main() -> int:
         fail("canonical_work_intr_admission_not_observed")
     custody = retain_bootstrap_evidence(runtime_root, resident_root, bootstrap)
 
-    boundary = {
-        "schema": "stegverse.stegbrowser-runtime-remediation-boundary/v1",
-        "state": "AUTHENTIC_INTR_INGRESS_OBSERVED",
-        "task_id": TASK_ID,
-        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
-        "cosv_task_vector": COSV,
-        "node_interlock_runtime_binding": node_runtime_binding,
-        "runtime_ingress_projection": ingress_projection,
-        "canonical_work_intr_bootstrap_receipt": str(resident_root / BOOTSTRAP_RECEIPT_REL),
-        "evidence_custody": custody,
-        "workercoordinator_claim_fence_observed": False,
-        "governed_return_packet_received": False,
-        "return_record_durably_recorded": False,
-        "final_allowed_transport_exit_transition_observed": False,
-        "successful_data_transport_round_trip_identified": False,
-        "next_required_predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-        "runtime_observed": True,
-        "completion_evidence_observed": False,
-        "github_token_runtime_authority": "NONE",
-        "authority_effect": "NONE_BOUNDARY_EVIDENCE_ONLY"
-    }
+    boundary = remediation_boundary(resident_root, node_runtime_binding, ingress_projection, custody)
     boundary_path = resident_root / "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json"
     atomic_json(boundary_path, boundary)
     print(json.dumps(boundary, sort_keys=True))

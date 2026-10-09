@@ -153,7 +153,7 @@
     "README_AND_HANDOFF_CURRENT"
   ],
   "remaining_predicates": [
-    "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE"
   ],
   "completion": {
     "claimed": false,
@@ -220,5 +220,14 @@
       "missing_configuration": false,
       "missing_transport_binding_implementation": false
     }
+  },
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
   }
 }

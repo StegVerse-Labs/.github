@@ -61,8 +61,15 @@
       "dependency_id": "DEP-GLOBAL-RUNTIME-AUTHENTIC-RESIDENT-CYCLE",
       "kind": "RUNTIME_PREDICATE",
       "state": "PENDING_AUTHENTIC_ADMITTED_STEGOS_RUNTIME",
-      "ref": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
-      "disposition": "The next runtime evidence may come from any eligible StegOS execution/transport surface after KV/SKAP continuity, exact WorkerCoordinator claim/fence lineage, and Interlock/InTr admission are bound. No named physical device or current-iPhone TestFlight event is a global prerequisite."
+      "ref": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RETAINED_STEGOS_STEGBROWSER_RUNTIME",
+      "disposition": "The next runtime evidence may come from any eligible StegOS execution/transport surface after KV/SKAP continuity, exact WorkerCoordinator claim/fence lineage, and Interlock/InTr admission are bound. No named physical device or current-iPhone TestFlight event is a global prerequisite.",
+      "superseded_ref": {
+        "value": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+        "superseded_at_generation": 301,
+        "superseded_by": "dependencies[1].ref",
+        "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      }
     },
     {
       "dependency_id": "DEP-GLOBAL-RUNTIME-MEASUREMENT",
@@ -156,12 +163,19 @@
     "profiled_convergence_runner": "scripts/run_global_runtime_node_profile_convergence.py",
     "profiled_receipt": "receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json",
     "authentic_root_state": "TASK_2026_0011_G7_FENCE7_ALLOCATION_OBSERVED",
-    "current_first_unresolved_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+    "current_first_unresolved_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RETAINED_STEGOS_STEGBROWSER_RUNTIME",
     "physical_device_gate": "NONE_PROHIBITED",
     "global_measurement_loop_entered": false,
     "source_profile_binding_proves_runtime": false,
     "source_refresh_proves_runtime": false,
-    "next_runtime_action": "Use the first reachable eligible StegOS execution surface in canonical substrate order; bind KV/SKAP continuity, TASK-2026-0011 G7/fence7 lineage, and Interlock/InTr admission; observe authentic retained runtime evidence; then perform Master Records reconstruction and exactly one frozen measurement-only convergence pass."
+    "next_runtime_action": "Use the first reachable eligible StegOS execution surface in canonical substrate order; bind KV/SKAP continuity, TASK-2026-0011 G7/fence7 lineage, and Interlock/InTr admission; observe authentic retained runtime evidence; then perform Master Records reconstruction and exactly one frozen measurement-only convergence pass.",
+    "superseded_current_first_unresolved_predicate": {
+      "value": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+      "superseded_at_generation": 301,
+      "superseded_by": "runtime_resolution.current_first_unresolved_predicate",
+      "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+      "authority_effect": "NONE_HISTORY_ONLY"
+    }
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":"TASK-2026-0011:FENCE7","projection_only":true},
   "human_action_ref": null,

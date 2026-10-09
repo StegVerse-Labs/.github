@@ -163,26 +163,54 @@
       {
         "from": "CALLABLE_TVC_PATH_SOURCE_COMPLETE",
         "to": "REUSABLE_TVC_INVOCATION_OBSERVED",
-        "predicate": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
-        "state": "PENDING"
+        "predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT",
+        "state": "PENDING",
+        "superseded_predicate": {
+          "value": "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+          "superseded_at_generation": 301,
+          "superseded_by": "state_transition_graph.transitions[0].predicate",
+          "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
       },
       {
         "from": "REUSABLE_TVC_INVOCATION_OBSERVED",
         "to": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
-        "predicate": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
-        "state": "BLOCKED_ON_PREDECESSOR"
+        "predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_PRIMARY_RUNTIME_RESTART",
+        "state": "BLOCKED_ON_PREDECESSOR",
+        "superseded_predicate": {
+          "value": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
+          "superseded_at_generation": 301,
+          "superseded_by": "state_transition_graph.transitions[1].predicate",
+          "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
       },
       {
         "from": "TVC_PRIMARY_RUNTIME_RESTART_OBSERVED",
         "to": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
-        "predicate": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
-        "state": "BLOCKED_ON_PREDECESSOR"
+        "predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_CURRENT_SOURCE_LOADED_ON_HOST",
+        "state": "BLOCKED_ON_PREDECESSOR",
+        "superseded_predicate": {
+          "value": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
+          "superseded_at_generation": 301,
+          "superseded_by": "state_transition_graph.transitions[2].predicate",
+          "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
       },
       {
         "from": "TVC_CURRENT_SOURCE_LOADED_ON_HOST_OBSERVED",
         "to": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
-        "predicate": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
-        "state": "BLOCKED_ON_PREDECESSOR"
+        "predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TVC_PRIVATE_SOURCE_RESIDENT_STATE",
+        "state": "BLOCKED_ON_PREDECESSOR",
+        "superseded_predicate": {
+          "value": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+          "superseded_at_generation": 301,
+          "superseded_by": "state_transition_graph.transitions[3].predicate",
+          "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
       },
       {
         "from": "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",

@@ -70,8 +70,18 @@
     "diagnostic_mutation_allowed_v1": false
   },
   "remaining_predicates": [
-    "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED",
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SDK_DIAGNOSTIC_REQUEST_RESULT",
     "AUTHENTIC_SDK_DIAGNOSTIC_RESULT_EXACT_BYTES_BOUND_IN_ECE_CUSTODY_CHAIN"
   ],
-  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED",
+      "AUTHENTIC_SDK_DIAGNOSTIC_RESULT_EXACT_BYTES_BOUND_IN_ECE_CUSTODY_CHAIN"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }

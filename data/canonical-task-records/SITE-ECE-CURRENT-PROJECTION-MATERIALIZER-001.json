@@ -119,7 +119,17 @@
   },
   "remaining_predicates": [
     "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
-    "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED"
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SITE_LIVE_CONTINUITY_PROJECTION"
   ],
-  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
+      "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }

@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -170,3 +171,40 @@ def test_bootstrap_evidence_retention_is_exact_and_non_authorizing(tmp_path):
     assert custody["operation_lineage_task_id"] == HISTORICAL_TASK
     assert custody["claim_or_fence_minted"] is False
     assert custody["github_token_runtime_authority"] == "NONE"
+
+
+def test_pre_verification_boundary_is_typed_fail_closed_not_an_ingress_claim(tmp_path):
+    """#3012: the boundary is written before ingress readback, so it must not claim ingress."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from validate_transition_disposition import non_allow_missing
+
+    module = load_legacy_runner()
+    boundary = module.remediation_boundary(tmp_path, {"node_id": "SV-NODE-test"}, {"source_mutated": False}, {"claim_or_fence_minted": False})
+
+    assert boundary["disposition"] == "FAIL_CLOSED"
+    assert boundary["state"] == "FAIL_CLOSED"
+    assert boundary["failed_predicate"] == "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS"
+    assert boundary["consequence_committed"] is False
+    assert "verified_organization_receipt" in boundary["satisfying_edge"]
+    assert "ORGANIZATION_LEDGER_LOCK" in boundary["satisfying_edge"]
+    assert boundary["retry_entrypoint"] == "scripts/run_stegbrowser_runtime_consumption_reusable.py"
+    assert non_allow_missing(boundary) == []
+    assert boundary["workercoordinator_claim_fence_observed"] is False
+    assert boundary["completion_evidence_observed"] is False
+    assert boundary["next_required_predicate"] == "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:WORKERCOORDINATOR_CLAIM_FENCE"
+    assert boundary["authority_effect"] == "NONE_BOUNDARY_EVIDENCE_ONLY"
+    text = json.dumps(boundary)
+    assert "AUTHENTIC_INTR_INGRESS_OBSERVED" not in text
+    assert "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED" not in text
+    assert "AUTHENTIC_INTR_INGRESS_OBSERVED" not in LEGACY_RUNNER.read_text()
+
+
+def test_runner_retires_pre_verification_disposition_only_after_ingress_readback():
+    runner = RUNNER.read_text()
+    guard = 'projection.get("workercoordinator_claim_fence_observed") is True and projection.get("authentic_intr_ingress_observed") is True'
+    assert guard in runner
+    assert 'if boundary.get("failed_predicate") == INGRESS_APPEND_PREDICATE:' in runner
+    assert '"authority_effect": "NONE_HISTORY_ONLY"' in runner
+    assert runner.index(guard) < runner.index('boundary["state"] = INGRESS_APPEND_PREDICATE')
+    # The readback that sets the projection flags rejects any other worker state.
+    assert runner.index('result.get("state") != INGRESS_APPEND_PREDICATE') < runner.index('"authentic_intr_ingress_observed":True')

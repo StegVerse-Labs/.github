@@ -21,7 +21,16 @@ def test_goal_identity_and_runtime_predicates_are_preserved():
     assert profile["goal_identity_preserved"] is True
     assert profile["new_goal_task_required"] is False
     assert task["expected_evidence_predicates"] == profile["goal_specific_completion_predicates_preserved"]
-    assert task["remaining_evidence_predicates"] == profile["remaining_predicates"]
+    # #3012: the profile's predicates are the record's prior names, retained as
+    # history; the record now gates each same transition on its Organization append.
+    prior = task["superseded_remaining_evidence_predicates"]
+    assert prior["value"] == profile["remaining_predicates"]
+    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
+    assert task["remaining_evidence_predicates"] == [
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:PACKET_TUNNEL_ACTIVATION",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:CROSS_APP_PERSISTENCE",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:LOOPBACK_8766_REACHABILITY",
+    ]
 
 
 def test_host_activation_source_is_resolved_but_runtime_is_not_upgraded():

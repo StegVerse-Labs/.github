@@ -42,7 +42,7 @@
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
   ],
   "remaining_predicates": [
-    "REAL_FRAGMENTATION_AND_REFORMATION_OBSERVED",
+    "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:REAL_FRAGMENTATION_AND_REFORMATION",
     "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
   ],
   "worker_claim": {
@@ -66,5 +66,15 @@
     "hosted_execution_fallback": false
   },
   "cosv_task_vector": "40000100100000",
-  "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json"
+  "source_state_vector_ref": "control/task-vectors/STEGOS-NODE-MANIFOLD-001.json",
+  "superseded_remaining_predicates": {
+    "value": [
+      "REAL_FRAGMENTATION_AND_REFORMATION_OBSERVED",
+      "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  }
 }
