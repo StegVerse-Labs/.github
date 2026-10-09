@@ -74,7 +74,7 @@ def organization_record_status(governance: Mapping[str, Any]) -> Any:
 
 
 def _require_organization_receipt(row: Mapping[str, Any], label: str, transition_id: str | None = None,
-                                  *, record_refusal: bool = False) -> None:
+                                  *, record_refusal: bool = False) -> str:
     """The verified Organization receipt of this exact state receipt closes a transition.
 
     Master Records reconstruction fields are evidence only and never gate it.
@@ -86,6 +86,7 @@ def _require_organization_receipt(row: Mapping[str, Any], label: str, transition
     refusal = gate["refusal"]
     require(gate["verified"], f"{label}_organization_receipt_refused:"
             f"{(refusal or {}).get('disposition')}:{(refusal or {}).get('failed_predicate')}")
+    return gate["organization_receipt_sha256"]
 
 
 def require(ok: bool, reason: str) -> None:
@@ -210,7 +211,8 @@ def _closed(row: Any, transition_id: str | None = None) -> dict[str, Any]:
         require(value.get("transition_id") == transition_id, f"transition_id_mismatch:{transition_id}")
     require(value.get("state") == "RECORDED", f"master_records_state_not_recorded:{value.get('transition_id')}")
     require(isinstance(value.get("receipt_sha256"), str) and value.get("receipt_sha256"), f"receipt_sha256_required:{value.get('transition_id')}")
-    _require_organization_receipt(value, f"closure:{value.get('transition_id')}", value.get("transition_id"))
+    value["verified_organization_receipt_sha256"] = _require_organization_receipt(
+        value, f"closure:{value.get('transition_id')}", value.get("transition_id"))
     return value
 
 def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, Any]) -> dict[str, Any]:
@@ -237,10 +239,10 @@ def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, A
     require(isinstance(governance, Mapping), "governance_result_missing")
     manifest_receipt_id = governance.get("manifest_receipt_id")
     require(isinstance(manifest_receipt_id, str) and manifest_receipt_id, "manifest_receipt_id_missing")
+    # Each closure above is gated on its verified Organization receipt. Master
+    # Records replay and reconstruction are evidence only and never gate it.
     replay = result.get("master_records_replay")
-    require(isinstance(replay, Mapping) and replay.get("status") == "PASS", "MASTER_RECORDS_REPLAY_NOT_OBSERVED")
     reconstruction = result.get("master_records_reconstruction")
-    require(isinstance(reconstruction, Mapping), "MASTER_RECORDS_RECONSTRUCTION_NOT_OBSERVED")
     return {
         "schema": RESULT_SCHEMA,
         "state": "COMPLETE",
@@ -250,8 +252,11 @@ def _assemble_purpose_result(request: Mapping[str, Any], receipt: Mapping[str, A
         "processing_capability": request["processing_capability"],
         "route_id": request["route_id"],
         "transition_closures": closures,
-        "replay_status": "PASS",
-        "reconstruction_status": "PASS",
+        "closure_gate": "VERIFIED_ORGANIZATION_RECEIPT",
+        "verified_organization_receipt_sha256s": [row["verified_organization_receipt_sha256"] for row in closures],
+        "replay_status": replay.get("status") if isinstance(replay, Mapping) else None,
+        "reconstruction_status": "SUPPLIED" if isinstance(reconstruction, Mapping) else None,
+        "master_records_role": "EVIDENCE_ONLY_NOT_A_CLOSURE_GATE",
         "terminal_state": {
             "records_only": result.get("records_only"),
             "continued_authority": result.get("continued_authority_after_retirement"),

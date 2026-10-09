@@ -165,6 +165,35 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
     return row
 
 
+def verified_organization_source_receipt(root, digest, *, state_receipt_sha256,
+                                         expected_transition_id=None) -> tuple[dict, dict]:
+    """verified_organization_receipt() plus the exact source receipt retained under the same ledger root.
+
+    The content of a transition is resolved from source-receipts/HEX.json, the
+    bytes retain_source() kept when the Organization append verified them. The
+    retained receipt must verify and hash to the Organization receipt's own
+    source transition digest. Returns (organization receipt row, source receipt).
+    """
+    row = verified_organization_receipt(root, digest, state_receipt_sha256=state_receipt_sha256,
+                                        expected_transition_id=expected_transition_id)
+    try:
+        ledger = Path(root).expanduser().resolve() if root is not None else org.ledger_root()
+    except org.LedgerLocationRequired as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
+    source = row["source_transition_sha256"]
+    path = ledger / "source-receipts" / (source[7:] + ".json")
+    if not path.is_file():
+        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
+    retained = _read(path)
+    try:
+        verified = org.verify_source(retained)
+    except (KeyError, ValueError) as exc:
+        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=str(exc)) from exc
+    if verified["source_transition_sha256"] != source or verified["source_transition_id"] != row.get("source_transition_id"):
+        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=source)
+    return row, retained
+
+
 def verified_organization_record(root, result, *, expected_transition_id=None, expected_predecessor=None) -> dict:
     """verified_organization_receipt() for a submit_state_receipt() result or a projection of one.
 

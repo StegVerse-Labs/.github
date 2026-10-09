@@ -137,6 +137,7 @@ class CheckpointPolicyTests(unittest.TestCase):
                 "last_valid_fencing_token": checkpoint["fencing_token"],
                 "checkpoint_ref": checkpoint_ref,
                 "checkpoint_sha256": checkpoint["checkpoint_sha256"],
+                **fx.predecessor_receipt("PARENT"),
                 "master_records_refs": ["master-records/orchestration:fixture-lineage"],
                 "evidence_lineage_refs": ["master-records/orchestration:fixture-lineage"],
                 "unresolved_work": ["continue child work"],

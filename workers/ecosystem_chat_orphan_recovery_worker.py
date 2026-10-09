@@ -4,10 +4,13 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
 import tempfile
 from pathlib import Path
 
 ROOT = Path.cwd().resolve()
+RESIDENT_RUNTIME = Path(__file__).resolve().parents[1] / "resident-runtime"
+VERIFY_ENTRYPOINT = "workers/ecosystem_chat_orphan_recovery_worker.py::verify_released_claim_organization_receipt"
 EXPECTED_TASK = "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28"
 PARENT_TASK = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 OLD_CLAIM = "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20"
@@ -83,12 +86,67 @@ def find_lifecycle_custody() -> tuple[Path | None, dict | None]:
                 and claim.get("claim_id") == OLD_CLAIM
                 and claim.get("fencing_token") == OLD_FENCE
                 and claim.get("released") is True
-                and custody.get("status") == "ACCEPTED_FOR_CUSTODY"
-                and custody.get("reconstruction_status") == "PASS"
                 and custody.get("authority_effect") == "NONE"
             ):
+                # Master Records acceptance and reconstruction status are evidence only.
                 return path, record
     return None, None
+
+
+def _organization_custody():
+    """The existing Organization ledger verifier, imported the way its callers import it."""
+    if str(RESIDENT_RUNTIME) not in sys.path:
+        sys.path.insert(0, str(RESIDENT_RUNTIME))
+    import organization_batch_custody
+    return organization_batch_custody
+
+
+SATISFYING_EDGE = (
+    "The G20 claim release (claim " + OLD_CLAIM + ", fencing token 20, released) is appended to the "
+    "Organization ledger under its lock as a canonical state receipt whose subject is " + PARENT_TASK + ", "
+    "and the lifecycle custody record carries organization_receipt.organization_receipt_sha256 and "
+    "organization_receipt.state_receipt_sha256 for that append; the ledger root is supplied as "
+    "STEGVERSE_ORG_LEDGER_ROOT or invocation organization_ledger_root."
+)
+
+
+def verify_released_claim_organization_receipt(record: dict | None, *, root=None) -> tuple[dict | None, dict | None]:
+    """Verify the released G20 claim against its Organization receipt, never Master Records PASS.
+
+    Returns (verified Organization receipt row, None) or (None, typed refusal).
+    The receipt is read back from the Organization ledger (`root`, else
+    STEGVERSE_ORG_LEDGER_ROOT; never a host path), bound to the release's exact
+    state receipt, and the retained source receipt must name the parent task
+    and the released claim and fence. A refusal is DENY or FAIL_CLOSED with its
+    failed predicate, satisfying edge and retry entrypoint; nothing is committed.
+    """
+    custody = _organization_custody()
+
+    def refused(exc) -> tuple[None, dict]:
+        refusal = exc.refusal()
+        refusal["satisfying_edge"] = SATISFYING_EDGE
+        if refusal["disposition"] == "FAIL_CLOSED":
+            refusal["retry_entrypoint"] = VERIFY_ENTRYPOINT
+        return None, refusal
+
+    binding = (record or {}).get("organization_receipt")
+    if not isinstance(binding, dict):
+        # The historical v2 lifecycle custody record carries no Organization receipt.
+        return refused(custody.OrganizationReceiptRefused("RELEASED_CLAIM_ORGANIZATION_RECEIPT_ABSENT", deterministic=False))
+    try:
+        row, source = custody.verified_organization_source_receipt(
+            root, binding.get("organization_receipt_sha256"),
+            state_receipt_sha256=binding.get("state_receipt_sha256"))
+        evidence = source.get("transition_evidence") if isinstance(source.get("transition_evidence"), dict) else {}
+        if not (source.get("subject_or_correlation_id") == PARENT_TASK
+                and evidence.get("claim_id") == OLD_CLAIM
+                and evidence.get("fencing_token") == OLD_FENCE
+                and evidence.get("released") is True):
+            raise custody.OrganizationReceiptRefused("RELEASED_CLAIM_ORGANIZATION_RECEIPT_CLAIM_MISMATCH",
+                                                     deterministic=True, detail=OLD_CLAIM)
+    except custody.OrganizationReceiptRefused as exc:
+        return refused(exc)
+    return row, None
 
 def main() -> int:
     invocation = json.load(__import__("sys").stdin)
@@ -127,7 +185,10 @@ def main() -> int:
     )
     custody_path, custody = find_lifecycle_custody()
     custody_ref = canonical_master_records_ref(custody_path)
-    custody_valid = custody is not None and custody_ref is not None
+    custody_present = custody is not None and custody_ref is not None
+    organization_row, organization_refusal = verify_released_claim_organization_receipt(
+        custody, root=invocation.get("organization_ledger_root"))
+    custody_valid = organization_row is not None
 
     passed = checkpoint_valid and old_authority_ended and custody_valid
     receipt = {
@@ -145,38 +206,41 @@ def main() -> int:
         "old_authority_ended": old_authority_ended,
         "master_records_organization_record_ref": custody_ref,
         "master_records_organization_record_record_hash": custody.get("record_hash") if custody else None,
-        "master_records_organization_record_valid": custody_valid,
+        "master_records_organization_record_valid": custody_present,
+        "master_records_role": "EVIDENCE_ONLY_NOT_A_GATE",
+        "released_claim_organization_receipt_sha256": organization_row["receipt_sha256"] if organization_row else None,
+        "released_claim_organization_receipt_verified": custody_valid,
+        "released_claim_organization_receipt_refusal": organization_refusal,
         "old_authority_reused": False,
         "successor_authority_granted": False,
         "github_token_required": False,
         "third_party_execution_platform_required": False,
         "authority_effect": "NONE",
         "state": "PASS" if passed else "BLOCKED",
-        "next_transition": "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION" if passed else "MASTER_RECORDS_G20_LIFECYCLE_ORGANIZATION_RECORD_REQUIRED",
+        "next_transition": "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION" if passed else "G20_RELEASE_ORGANIZATION_RECEIPT_REQUIRED",
     }
     receipt["receipt_hash"] = stable_hash(receipt)
     atomic_write(RECEIPT, receipt)
 
     blocker = None
     if not passed:
-        next_action = "Materialize canonical master-records/orchestration lifecycle custody for the ended G20 worker and re-run the recovery-only heartbeat worker."
+        next_action = SATISFYING_EDGE + " Then re-run the recovery-only heartbeat worker."
         blocker = {
             "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "Canonical Master Records G20 worker-lifecycle organization record/reconstruction PASS is not locally materialized." if not custody_valid else "Orphan lifecycle checkpoint or ended-authority predicates did not validate.",
+            "problem_statement": "The released G20 claim is not verified against its Organization receipt." if not custody_valid else "Orphan lifecycle checkpoint or ended-authority predicates did not validate.",
+            "refusal": organization_refusal,
             "solution_required": True,
             "may_remain_blocked": False,
-            "workaround_candidates": [
-                "Materialize master-records/orchestration with custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json on this sovereign carrier and retry the same recovery task."
-            ],
+            "workaround_candidates": [SATISFYING_EDGE],
             "next_solution_action": next_action,
-            "machine_observable_release_condition": "orphan-recovery-HB28.json reaches state PASS with master_records_organization_record_valid=true and old_authority_ended=true",
+            "machine_observable_release_condition": "orphan-recovery-HB28.json reaches state PASS with released_claim_organization_receipt_verified=true and old_authority_ended=true",
             "github_token_required": False,
             "third_party_blocker": False,
         }
     response = {
         "schema": "stegverse.worker-response/v0.1",
         "state": "COMPLETED" if passed else "BLOCKED",
-        "transition_id": "ORPHAN_LIFECYCLE_RECONSTRUCTED" if passed else "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_PROVEN",
+        "transition_id": "ORPHAN_LIFECYCLE_RECONSTRUCTED" if passed else "RELEASED_CLAIM_ORGANIZATION_RECEIPT_REFUSED",
         "transition_sequence": 1,
         "expected_next_transition": None if passed else "ORPHAN_LIFECYCLE_RECONSTRUCTED",
         "expected_next_earliest_epoch": None if passed else epoch + 1,

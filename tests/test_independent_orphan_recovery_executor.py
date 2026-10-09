@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_independent_orphan_recovery.py"
@@ -65,6 +67,69 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
         self.assertEqual(custody["custody"]["authority_effect"], "NONE")
         self.assertFalse(custody["github_token_required"])
         self.assertEqual(worker_mod.canonical_master_records_ref(path), "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json")
+
+    def _release_receipt(self, ledger: str, **evidence) -> dict:
+        """Real producer: the G20 claim release appended to a tmp Organization ledger root."""
+        from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt
+
+        with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ledger}):
+            result = submit_state_receipt(build_state_receipt(
+                transition_id="WORKER_ORPHANED",
+                transition_sequence=1,
+                subject_or_correlation_id=worker_mod.PARENT_TASK,
+                transition_outcome="OBSERVED",
+                prior_state_ref_or_hash=None,
+                resulting_state_ref_or_hash=None,
+                governance_decision_ref_where_applicable=None,
+                transition_evidence={"claim_id": worker_mod.OLD_CLAIM, "fencing_token": worker_mod.OLD_FENCE,
+                                     "released": True, **evidence},
+            ))
+        return {"organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"],
+                "state_receipt_sha256": result["receipt_sha256"]}
+
+    def test_historical_custody_without_organization_receipt_is_typed_fail_closed(self) -> None:
+        _, custody = worker_mod.find_lifecycle_custody()
+        self.assertNotIn("organization_receipt", custody)
+        row, refusal = worker_mod.verify_released_claim_organization_receipt(custody)
+        self.assertIsNone(row)
+        self.assertEqual(refusal["disposition"], "FAIL_CLOSED")
+        self.assertEqual(refusal["failed_predicate"], "RELEASED_CLAIM_ORGANIZATION_RECEIPT_ABSENT")
+        self.assertEqual(refusal["retry_entrypoint"], worker_mod.VERIFY_ENTRYPOINT)
+        self.assertEqual(refusal["satisfying_edge"], worker_mod.SATISFYING_EDGE)
+        self.assertFalse(refusal["consequence_committed"])
+
+    def test_released_claim_verifies_against_organization_receipt_not_master_records_pass(self) -> None:
+        _, historical = worker_mod.find_lifecycle_custody()
+        with tempfile.TemporaryDirectory() as ledger:
+            record = dict(historical, organization_receipt=self._release_receipt(ledger))
+            record["custody"] = {"authority_effect": "NONE"}  # no Master Records PASS at all
+            row, refusal = worker_mod.verify_released_claim_organization_receipt(record, root=ledger)
+            self.assertIsNone(refusal)
+            self.assertEqual(row["receipt_sha256"], record["organization_receipt"]["organization_receipt_sha256"])
+
+    def test_released_claim_refusals_are_typed(self) -> None:
+        _, historical = worker_mod.find_lifecycle_custody()
+        with tempfile.TemporaryDirectory() as ledger:
+            wrong = dict(historical, organization_receipt=self._release_receipt(ledger, fencing_token=21))
+            row, refusal = worker_mod.verify_released_claim_organization_receipt(wrong, root=ledger)
+            self.assertIsNone(row)
+            self.assertEqual((refusal["disposition"], refusal["failed_predicate"]),
+                             ("DENY", "RELEASED_CLAIM_ORGANIZATION_RECEIPT_CLAIM_MISMATCH"))
+            self.assertIsNone(refusal["retry_entrypoint"])
+            good = self._release_receipt(ledger)
+            crossed = dict(historical, organization_receipt=dict(
+                good, state_receipt_sha256=wrong["organization_receipt"]["state_receipt_sha256"]))
+            row, refusal = worker_mod.verify_released_claim_organization_receipt(crossed, root=ledger)
+            self.assertEqual((refusal["disposition"], refusal["failed_predicate"]),
+                             ("DENY", "ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT"))
+            bound = dict(historical, organization_receipt=good)
+            with patch.dict(os.environ, {}):
+                os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
+                row, refusal = worker_mod.verify_released_claim_organization_receipt(bound)
+            self.assertIsNone(row)
+            self.assertEqual((refusal["disposition"], refusal["failed_predicate"]),
+                             ("FAIL_CLOSED", "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"))
+            self.assertEqual(refusal["retry_entrypoint"], worker_mod.VERIFY_ENTRYPOINT)
 
     def test_missing_carrier_snapshot_is_not_an_execution_prerequisite(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
