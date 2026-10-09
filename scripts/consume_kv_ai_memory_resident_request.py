@@ -5,9 +5,11 @@ The consumer never reads private packet/prompt bytes itself. When the packet and
 provider-request input are absent, it may invoke the resident-native Personal-KV
 private stager against real user-custodied files. When the packet and
 provider-request input exist but the admission is absent, it may invoke the
-resident-local shared-InTr submitter as a separate process. Only an authentic
-returned ingress receipt may create the admission file; otherwise the consumer
-remains in a wait state. Once all inputs exist it delegates to the existing
+resident-local shared-InTr submitter as a separate process, which admits the
+exact packet in-process through the existing write-once ingress admission; no
+listener endpoint, socket, timeout or receiver liveness gates that attempt.
+Only an authentic write-once ingress receipt may create the admission file;
+otherwise the consumer remains in a wait state. Once all inputs exist it delegates to the existing
 WorkerCoordinator path. Device discovery, connected-device presence, Remote
 Desktop Commander availability, and second-machine presence are not runtime
 prerequisites or evidence predicates.
@@ -192,16 +194,8 @@ def attempt_personal_kv_private_staging(source: Path, runtime: Path, *, runner=s
     return result
 
 
-def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def attempt_memory_packet_admission(source: Path, runtime: Path | None = None, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
-    ingress_url = str(values.get("STEGVERSE_UNIVERSAL_INTR_INGRESS_URL") or "").strip()
-    if not ingress_url:
-        return {
-            "state": "INGRESS_NOT_READY",
-            "admission_attempted": False,
-            "private_input_bytes_read_by_consumer": False,
-            "authority_effect": "NONE_WAIT_STATE",
-        }
     preparer = source / "scripts/prepare_kv_ai_memory_intr_runtime_source.py"
     router = source / "workers/universal_intr_profiled_ingress.py"
     submitter = source / "scripts/submit_kv_ai_memory_packet_local.py"
@@ -228,7 +222,10 @@ def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env:
             "authority_effect": "NONE_FAIL_CLOSED",
         }
     stage = bound_state_root(values)
-    submitted = runner([sys.executable, str(submitter), "--stage-root", str(stage)], cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=30)
+    command = [sys.executable, str(submitter), "--stage-root", str(stage)]
+    if runtime is not None:
+        command += ["--runtime-root", str(runtime)]
+    submitted = runner(command, cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=30)
     result = last_json(submitted.stdout)
     return {
         "state": result.get("state") if isinstance(result, dict) else "SUBMISSION_RESULT_UNREADABLE",
@@ -260,7 +257,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
 
     admission_attempt = None
     if admission_inputs_ready(env):
-        admission_attempt = attempt_memory_packet_admission(source, runner=runner, env=env)
+        admission_attempt = attempt_memory_packet_admission(source, runtime, runner=runner, env=env)
 
     ready, missing = input_readiness(env)
     if not ready:

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Run one event-triggered CanonicalWork ingress cycle on the existing shared InTr listener."""
+"""Run one event-triggered CanonicalWork ingress cycle on the existing shared InTr admission.
+
+The exact request is admitted in-process through the shared router's installed
+CanonicalWork route (admit_canonical_work), which persists it write-once into
+the durable queue. No listener, socket, timeout or receiver liveness is a
+predicate of the ingress transition (DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION).
+"""
 from __future__ import annotations
 
 import argparse
@@ -7,9 +13,7 @@ import hashlib
 import json
 import subprocess
 import sys
-import threading
 import time
-import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +29,10 @@ from workers import universal_intr_profiled_ingress as shared_ingress  # noqa: E
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 INGRESS_SCHEMA = "stegverse.canonical-work-intr-materialization-ingress/v1"
 CONSUMPTION_SCHEMA = "stegverse.canonical-work-intr-materialization-consumption/v1"
+# The shared transport validator admits STEGOS_NODE_OUTBOX or TVC_RELAY_EGRESS only;
+# this declared origin is refused there (typed transport_origin_header_invalid),
+# exactly as the listener refused it before admission moved in-process.
+TRANSPORT_ORIGIN = "SOVEREIGN_NODE"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -92,31 +100,21 @@ def run_builder(*, task_id: str, runtime: Path, registry: Path, registry_shards:
     return outbound
 
 
-def post_one(*, runtime: Path, request_path: Path) -> dict[str, Any]:
-    server = shared_ingress.Server(("127.0.0.1", 0), runtime, 1)
-    host, port = server.server_address
-    thread = threading.Thread(target=server.handle_request, daemon=True)
-    thread.start()
+def post_one(*, runtime: Path, request_path: Path, admit: Any = None) -> dict[str, Any]:
+    """Admit the exact request through the shared router's CanonicalWork route, in-process."""
     raw = request_path.read_bytes()
-    request = urllib.request.Request(
-        f"http://{host}:{port}{shared_ingress.INGRESS_PATH}",
-        data=raw,
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-StegVerse-Transport": "InTr",
-            "X-StegVerse-Transport-Origin": "SOVEREIGN_NODE",
-            "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
-        },
-    )
+    headers = {
+        "Content-Type": "application/json",
+        "X-StegVerse-Transport": "InTr",
+        "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
+        "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
+    }
+    admit = admit or getattr(shared_ingress, "admit_canonical_work", None)
+    require(callable(admit), "canonical_work_admit_binding_missing")
     try:
-        with urllib.request.urlopen(request, timeout=10) as response:
-            status = int(response.status)
-            body = json.loads(response.read().decode("utf-8"))
-    finally:
-        thread.join(timeout=10)
-        server.server_close()
-    require(status == 202, f"unexpected_ingress_http_status:{status}")
+        body = admit(runtime_root=runtime, body=raw, headers=headers)
+    except ValueError as exc:
+        raise SystemExit("FAIL_CLOSED: canonical_work_intr_admission_refused:" + str(exc)) from exc
     require(isinstance(body, dict), "ingress_response_object_required")
     require(body.get("schema") == INGRESS_SCHEMA and body.get("state") == "INGRESS_ADMITTED", "canonical_work_ingress_not_admitted")
     require(body.get("claim_or_fence_minted") is False, "ingress_minted_claim_or_fence")
@@ -287,7 +285,9 @@ def main() -> int:
         "heartbeat_carrier_present": request.get("carrier_binding") is not None,
         "heartbeat_carrier_grants_authority": False,
         "oscillator_advanced_by_bootstrap": False,
-        "shared_listener_implementation": "workers.universal_intr_profiled_ingress.Server",
+        "shared_ingress_admission_implementation": "workers.universal_intr_profiled_ingress.admit_canonical_work",
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
         "second_listener_implementation_created": False,
         "immediate_successor_evaluation": immediate_successor,
         "workercoordinator_claim_or_fence_observed": bool(

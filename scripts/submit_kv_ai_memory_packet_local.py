@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Submit one exact private KV AI memory packet to the shared loopback InTr ingress.
+"""Submit one exact private KV AI memory packet through the shared InTr ingress admission.
 
-This helper reads the packet only from private resident bound state, submits it to
-an explicitly configured loopback Universal InTr endpoint, validates the returned
-admission against the exact packet, and writes only the compatible admission
-artifact back into private bound state. It does not create an ALLOW result when
-the ingress is unavailable or rejects the packet.
+This helper reads the packet only from private resident bound state, admits it
+in-process through the existing KV AI memory profile admission that the shared
+Universal InTr listener routes to (kv_ai_memory_intr_transport.validate_headers
+then kv_ai_memory_intr_profile.admit), validates the returned write-once
+admission receipt against the exact packet, and writes only the compatible
+admission artifact back into private bound state. No listener, socket, timeout
+or receiver liveness is a predicate of the transition
+(DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION); a configured loopback
+endpoint is validated as destination identity only and never contacted. It
+does not create an ALLOW result when the ingress admission refuses the packet,
+and it projects INGRESS_ADMITTED only, never provider execution or KV writeback.
 """
 from __future__ import annotations
 
@@ -13,10 +19,12 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+
+ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "SV-KV-AI-PERSISTENCE-001"
 PACKET_REL = Path("inputs/context-packet.json")
@@ -25,6 +33,8 @@ SUBMISSION_SCHEMA = "stegverse.kv.ai-memory-intr-submission/v1"
 RECEIPT_SCHEMA = "stegverse.kv.ai-memory-intr-admission/v1"
 INGRESS_URL_ENV = "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"
 TRANSPORT_ORIGIN = "STEGOS_RESIDENT_LOCAL"
+# The write-once receipt location of workers/kv_ai_memory_intr_profile.py (RECEIPT_DIR).
+INGRESS_RECEIPT_DIR = Path("receipts/sovereign-network/kv-ai-memory-intr")
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 
 
@@ -63,9 +73,30 @@ def validate_loopback(url: str) -> None:
     require(parsed.username is None and parsed.password is None, "ingress_url_credentials_forbidden")
 
 
-def _open(request: Request, *, timeout: float) -> tuple[int, bytes]:
-    with urlopen(request, timeout=timeout) as response:  # noqa: S310 - loopback URL is validated
-        return int(response.status), response.read()
+def _admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    """The shared listener's KV AI memory route, invoked in-process.
+
+    A replay of the same exact packet returns the write-once receipt already
+    admitted for it instead of re-admitting.
+    """
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from workers import kv_ai_memory_intr_profile as profile
+    from workers import kv_ai_memory_intr_transport as transport
+
+    validated = transport.validate_headers(headers, body)
+    payload = json.loads(body.decode("utf-8"))
+    if profile.is_kv_ai_memory_submission(payload) and isinstance(payload.get("packet_id"), str):
+        existing_path = runtime_root / profile.RECEIPT_DIR / f"{payload['packet_id']}.json"
+        if existing_path.is_file():
+            existing = json.loads(existing_path.read_text(encoding="utf-8"))
+            if (
+                existing.get("state") == "INGRESS_ADMITTED"
+                and existing.get("packet_sha256") == payload.get("packet_sha256")
+                and existing.get("transport_payload_sha256") == validated["payload_sha256_uri"]
+            ):
+                return existing
+    return profile.admit(runtime_root=runtime_root, payload=payload, transport_payload_sha256=validated["payload_sha256_uri"])
 
 
 def validate_receipt(packet: Mapping[str, Any], receipt: Mapping[str, Any]) -> str:
@@ -94,7 +125,7 @@ def validate_receipt(packet: Mapping[str, Any], receipt: Mapping[str, Any]) -> s
     return claimed
 
 
-def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_open, timeout: float = 10.0) -> dict[str, Any]:
+def submit(stage_root: Path, *, runtime_root: Path | None = None, env: Mapping[str, str] | None = None, admit=_admit) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     require(not any(truthy(values.get(name)) for name in HOSTED), "hosted_environment_forbidden")
     root = stage_root.expanduser().resolve()
@@ -108,15 +139,10 @@ def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_op
             "authority_effect": "NONE_WAIT_STATE",
         }
     ingress_url = str(values.get(INGRESS_URL_ENV) or "").strip()
-    if not ingress_url:
-        return {
-            "schema": "stegverse.kv.ai-memory-intr-submission-result/v1",
-            "state": "INGRESS_NOT_READY",
-            "missing_inputs": [INGRESS_URL_ENV],
-            "admission_written": False,
-            "authority_effect": "NONE_WAIT_STATE",
-        }
-    validate_loopback(ingress_url)
+    if ingress_url:
+        # Destination identity only: validated, never contacted.
+        validate_loopback(ingress_url)
+    runtime = (runtime_root or root).expanduser().resolve()
     packet = load_object(packet_path)
     packet_hash = packet_sha256(packet)
     payload = {
@@ -133,20 +159,16 @@ def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_op
     }
     body = canonical(payload)
     payload_hash = hashlib.sha256(body).hexdigest()
-    request = Request(
-        ingress_url,
-        data=body,
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-StegVerse-Transport": "InTr",
-            "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
-            "X-StegVerse-Payload-SHA256": payload_hash,
-        },
-    )
-    status, raw = opener(request, timeout=timeout)
-    require(status == 202, f"ingress_status_invalid:{status}")
-    receipt = json.loads(raw.decode("utf-8"))
+    headers = {
+        "Content-Type": "application/json",
+        "X-StegVerse-Transport": "InTr",
+        "X-StegVerse-Transport-Origin": TRANSPORT_ORIGIN,
+        "X-StegVerse-Payload-SHA256": payload_hash,
+    }
+    try:
+        receipt = admit(runtime_root=runtime, body=body, headers=headers)
+    except ValueError as exc:
+        raise RuntimeError("intr_admission_refused:" + str(exc)) from exc
     require(isinstance(receipt, dict), "ingress_receipt_object_required")
     receipt_hash = validate_receipt(packet, receipt)
 
@@ -174,6 +196,10 @@ def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_op
         "receipt_hash": receipt_hash,
         "admission_ref": ADMISSION_REL.as_posix(),
         "admission_written": True,
+        "ingress_state": receipt["state"],
+        "ingress_receipt_ref": str(runtime / INGRESS_RECEIPT_DIR / f"{packet['packet_id']}.json"),
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
         "provider_request_materialized": False,
         "provider_execution_observed": False,
         "kv_writeback_observed": False,
@@ -184,11 +210,11 @@ def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_op
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage-root", type=Path, required=True)
-    parser.add_argument("--timeout", type=float, default=10.0)
+    parser.add_argument("--runtime-root", type=Path)
     args = parser.parse_args()
-    result = submit(args.stage_root, timeout=args.timeout)
+    result = submit(args.stage_root, runtime_root=args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result["state"] in {"PACKET_NOT_READY", "INGRESS_NOT_READY", "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"} else 1
+    return 0 if result["state"] in {"PACKET_NOT_READY", "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"} else 1
 
 
 if __name__ == "__main__":
