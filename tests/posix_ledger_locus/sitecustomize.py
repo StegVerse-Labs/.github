@@ -1,9 +1,10 @@
-"""OL-1b test fixture for subprocesses: declare the POSIX Organization ledger locus.
+"""OL-1b test fixture: declare the POSIX Organization ledger locus.
 
 A test that runs repository code in a child interpreter and supplies a POSIX
-ledger root puts this directory on that child's PYTHONPATH. Every aggregator
-loaded there then carries organization_ledger {"store": "posix"}, exactly as
-tests/conftest.py declares it in process. Test-only: nothing outside tests/
+ledger root puts this directory on that child's PYTHONPATH; tests/__init__.py
+imports it for a plain `python -m unittest` run. Every aggregator loaded after
+that carries organization_ledger {"store": "posix"}, exactly as
+tests/conftest.py declares it per test under pytest. Test-only: nothing outside tests/
 reads it, and production selection stays org-contract.json's declaration.
 """
 import importlib.machinery
