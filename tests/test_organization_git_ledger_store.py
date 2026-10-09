@@ -241,10 +241,9 @@ def test_unreachable_remote_fails_closed_without_waiting(tmp_path):
     assert readback.value.disposition == "FAIL_CLOSED"
 
 
-def test_manifested_packet_on_git_store_is_refused_not_half_committed(tmp_path, origin):
-    with pytest.raises(store_module.LedgerStoreRefused) as refused:
+def test_invalid_manifested_packet_on_git_store_commits_nothing(tmp_path, origin):
+    with pytest.raises(ValueError, match="receipt_batch policy required"):
         org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "node.git", origin), parent_manifest={})
-    assert refused.value.failed_predicate == "ORGANIZATION_BATCH_CUSTODY_NOT_CARRIED_BY_LEDGER_STORE"
     assert remote_tip(origin) is None
 
 
@@ -284,3 +283,241 @@ def test_posix_selection_is_unchanged(tmp_path, monkeypatch):
     with pytest.raises(org.LedgerLocationRequired) as missing:
         org.organization_store()
     assert missing.value.variable == "STEGVERSE_ORG_LEDGER_GIT_DIR"
+
+
+# --- G1-R2: packet release and batch custody carried by the Git ledger store ---
+
+sys.path.insert(0, str(ROOT))
+from heartbeat_runtime import independent_oscillator as osc  # noqa: E402
+import organization_custody_readback as readback_module  # noqa: E402
+
+T0_EPOCH = osc.PROTOCOL_ANCHOR_EPOCH + 1_000
+
+
+def hb_now_ns(epoch: int) -> int:
+    return osc.PROTOCOL_ANCHOR_UNIX_NS + (epoch - osc.PROTOCOL_ANCHOR_EPOCH) * osc.OSCILLATOR_PERIOD_NS
+
+
+def manifest(count: int = 2) -> dict:
+    return {
+        "schema": "test.parent-manifest/v1",
+        "receipt_batch": {
+            "release_condition": {"type": "COUNT", "count": count},
+            "establishment": {"heartbeat_id": osc.encode_heartbeat_id(T0_EPOCH), "expiry_delta_heartbeats": 500},
+        },
+    }
+
+
+@pytest.fixture
+def carried(monkeypatch):
+    """The released batch's custody carriage, recorded rather than transported."""
+    calls = []
+
+    def submit(root, batch_id):
+        calls.append(batch_id)
+        return {"state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id,
+                "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY"}
+
+    monkeypatch.setattr(custody, "submit_released_batch", submit)
+    return calls
+
+
+def open_packet(writer, parent, count=2):
+    """Establish a packet at t(0) and fill it to its COUNT, one commit per append."""
+    t0 = org.aggregate_transition(receipt("FOUR-PART-ASSIGNMENT"), ledger=writer, parent_manifest=parent,
+                                  establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH))
+    work = [org.aggregate_transition(receipt("WORK-1" + "b" * index), ledger=writer, parent_manifest=parent,
+                                     now_ns=hb_now_ns(T0_EPOCH + 1)) for index in range(count - 1)]
+    return (t0, *work)
+
+
+def tamper(tmp_path, origin, key, value):
+    blob = git(origin, "hash-object", "-w", "--stdin", data=json.dumps(value, indent=2, sort_keys=True).encode() + b"\n")
+    index = {"GIT_INDEX_FILE": str(tmp_path / ("tamper-index-" + key.replace("/", "-")))}
+    git(origin, "read-tree", REF, env=index)
+    git(origin, "update-index", "--add", "--cacheinfo", "100644," + blob + "," + key, env=index)
+    commit = git(origin, "commit-tree", git(origin, "write-tree", env=index), "-p", REF, "-m", "tamper", env=IDENTITY)
+    git(origin, "update-ref", REF, commit)
+
+
+def test_manifested_release_and_establishment_publish_as_one_commit_and_read_back(tmp_path, origin, carried):
+    parent = manifest()
+    writer = node(tmp_path, "writer.git", origin)
+    t0, work1 = open_packet(writer, parent)
+    assert t0["boundary_evidence"][custody.ESTABLISHMENT_KEY]["establishment_kind"] == "MANIFEST_ASSIGNMENT_T0"
+    before = remote_tip(origin)
+
+    # The next transition releases the satisfied packet, from a node sharing no filesystem.
+    work2 = org.aggregate_transition(receipt("WORK-2"), ledger=node(tmp_path, "next.git", origin),
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+    assert len(carried) == 1
+    tip = remote_tip(origin)
+    assert git(origin, "rev-parse", tip + "^") == before, "the release is exactly one commit on the prior tip"
+    reader = node(tmp_path, "reader.git", origin, custody_class=None)
+    batch_head = reader.get(custody.BATCH_HEAD_KEY)
+    released = custody._verified_batch(reader, batch_head["batch_id"])
+    assert released["batch_id"] == carried[0]
+    assert released["ordered_receipt_hashes"] == [t0["receipt_sha256"], work1["receipt_sha256"]]
+    assert released["closure_reason"] == "MANIFEST_RELEASE_CONDITION"
+    establishment = reader.get(store_module.receipt_key(work2["previous_receipt_sha256"]))
+    assert establishment["org_transition_class"] == "ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT"
+    record = establishment["boundary_evidence"][custody.ESTABLISHMENT_KEY]
+    assert record["establishment_kind"] == "PRIOR_PACKET_RELEASE"
+    assert record["released_batch"]["batch_id"] == released["batch_id"]
+    changed = set(git(origin, "diff-tree", "--no-commit-id", "--name-only", "-r", tip).splitlines())
+    assert changed == {
+        "HEAD.json", custody.BATCH_HEAD_KEY, custody._batch_key(released["batch_id"]),
+        store_module.receipt_key(establishment["receipt_sha256"]),
+        store_module.source_key(establishment["source_transition_sha256"]),
+        store_module.receipt_key(work2["receipt_sha256"]),
+        store_module.source_key(work2["source_transition_sha256"]),
+    }
+
+    # Every read comes back from the committed ref.
+    assert custody.verify_batch(reader, released["batch_id"])["organization_chain"] == "PASS"
+    exported = custody.export_batch_record(reader, released["batch_id"])
+    assert exported["local_verification"]["source_reconstruction"] == "SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS"
+    state = custody.open_packet_state(parent, root=reader, now_ns=hb_now_ns(T0_EPOCH + 2))
+    assert state["receipt_count"] == 2 and state["release_condition_satisfied"] is True
+    snapshot = readback_module.readback(reader, correlation_ids=("WORK-2",))
+    assert snapshot["state"] == "VERIFIED_LOCAL_READBACK"
+    assert snapshot["receipt_count"] == 4 and snapshot["batch_count"] == 1
+    assert snapshot["last_batch_id"] == released["batch_id"]
+    assert snapshot["head_receipt_sha256"] == work2["receipt_sha256"]
+    assert [m["source_transition_id"] for m in snapshot["matching_transitions"]] == ["WORK-2"]
+    assert custody.verified_organization_receipt(
+        reader, work2["receipt_sha256"], state_receipt_sha256=work2["source_transition_sha256"],
+        expected_transition_id="WORK-2") == work2
+
+
+def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, origin, carried, monkeypatch):
+    parent = manifest(count=3)
+    open_packet(node(tmp_path, "writer.git", origin), parent, count=3)
+    slow = node(tmp_path, "slow.git", origin)
+    fast = node(tmp_path, "fast.git", origin)
+    raced = {}
+    submit = custody.submit_released_batch
+
+    def race(root, batch_id):
+        # The slow node has pinned its tip and staged its release; the fast node
+        # releases the same packet and publishes first.
+        if not raced:
+            raced["started"] = True
+            raced["won"] = org.aggregate_transition(receipt("FAST"), ledger=fast, parent_manifest=parent,
+                                                    now_ns=hb_now_ns(T0_EPOCH + 2))
+            raced["files"] = remote_files(origin)
+            raced["tip"] = remote_tip(origin)
+        return submit(root, batch_id)
+
+    monkeypatch.setattr(custody, "submit_released_batch", race)
+    with pytest.raises(store_module.LedgerStoreRefused) as lost:
+        org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+    refusal = org.store_refusal(lost.value)
+    assert refusal["disposition"] == "FAIL_CLOSED"
+    assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
+    assert refusal["consequence_committed"] is False
+    # Nothing of the losing transition reached the ref: no second batch, no
+    # BATCH_HEAD move, no establishment or work receipt.
+    assert remote_tip(origin) == raced["tip"]
+    assert remote_files(origin) == raced["files"]
+    assert len([name for name in raced["files"] if name.startswith(custody.BATCH_PREFIX)]) == 1
+    slow_source = store_module.source_key(org.verify_source(receipt("SLOW"))["source_transition_sha256"])
+    assert slow_source not in raced["files"]
+    # The retry re-reads the ref: the packet is already released, so it appends on the winner.
+    retried = org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent,
+                                       now_ns=hb_now_ns(T0_EPOCH + 2))
+    assert retried["previous_receipt_sha256"] == raced["won"]["receipt_sha256"]
+    assert "parent_manifest_released_batch" not in retried["boundary_evidence"]
+
+
+def test_release_replay_is_idempotent_on_the_git_store(tmp_path, origin, carried):
+    # COUNT 3, so the successor packet (establishment + WORK-2) is still open at the replay.
+    parent = manifest(count=3)
+    writer = node(tmp_path, "writer.git", origin)
+    open_packet(writer, parent, count=3)
+    work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
+                                     now_ns=hb_now_ns(T0_EPOCH + 2))
+    tip = remote_tip(origin)
+    again = org.aggregate_transition(receipt("WORK-2"), ledger=node(tmp_path, "two.git", origin),
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=999)
+    assert again == work2
+    assert remote_tip(origin) == tip
+    assert len(carried) == 1, "an exact replay does not release or carry the batch again"
+    # Closing the already-closed batch for the same reason is the same batch, not a second one.
+    batch_id = writer.get(custody.BATCH_HEAD_KEY)["batch_id"]
+    released = custody._verified_batch(writer, batch_id)
+    head = writer.get(store_module.HEAD_KEY)
+    assert head["receipt_sha256"] == work2["receipt_sha256"]
+    assert released["last_org_receipt_sha256"] != head["receipt_sha256"]
+
+
+def test_close_batch_on_the_git_store_is_one_commit_and_needs_private_custody(tmp_path, origin):
+    writer = node(tmp_path, "writer.git", origin)
+    first = org.aggregate_transition(receipt("CLAIM"), ledger=writer)
+    tip = remote_tip(origin)
+    with pytest.raises(store_module.LedgerStoreRefused) as refused:
+        custody.close_batch("TASK_CLOSURE", root=node(tmp_path, "public.git", origin, "PUBLIC"))
+    assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
+    assert remote_tip(origin) == tip
+
+    closed = custody.close_batch("TASK_CLOSURE", root=writer)
+    assert git(origin, "rev-parse", remote_tip(origin) + "^") == tip
+    changed = set(git(origin, "diff-tree", "--no-commit-id", "--name-only", "-r", remote_tip(origin)).splitlines())
+    assert changed == {custody.BATCH_HEAD_KEY, custody._batch_key(closed["batch_id"])}
+    assert closed["ordered_receipt_hashes"] == [first["receipt_sha256"]]
+    after = remote_tip(origin)
+    assert custody.close_batch("TASK_CLOSURE", root=node(tmp_path, "again.git", origin)) == closed
+    assert remote_tip(origin) == after, "an idempotent close publishes nothing"
+    with pytest.raises(ValueError, match="conflicting batch closure"):
+        custody.close_batch("WORKER_EXPIRY", root=writer)
+
+
+def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, carried):
+    parent = manifest()
+    writer = node(tmp_path, "writer.git", origin)
+    open_packet(writer, parent)
+    org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+    reader = node(tmp_path, "reader.git", origin, custody_class=None)
+    batch_id = reader.get(custody.BATCH_HEAD_KEY)["batch_id"]
+    released = custody._verified_batch(reader, batch_id)
+
+    tamper(tmp_path, origin, custody._batch_key(batch_id), dict(released, acknowledgement_state="ACCEPTED"))
+    with pytest.raises(ValueError, match="organization batch hash mismatch"):
+        custody.verify_batch(reader, batch_id)
+    with pytest.raises(ValueError, match="organization batch hash mismatch"):
+        custody.open_packet_state(parent, root=reader, now_ns=hb_now_ns(T0_EPOCH + 3))
+    with pytest.raises(ValueError):
+        readback_module.readback(reader, correlation_ids=("WORK-2",))
+    tip = remote_tip(origin)
+    with pytest.raises(ValueError):
+        org.aggregate_transition(receipt("WORK-3"), ledger=node(tmp_path, "next.git", origin),
+                                 parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3))
+    assert remote_tip(origin) == tip
+
+    tamper(tmp_path, origin, custody._batch_key(batch_id), released)
+    tamper(tmp_path, origin, custody.BATCH_HEAD_KEY,
+           {"organization": org.C["organization"], "batch_id": batch_id,
+            "last_org_receipt_sha256": "sha256:" + "0" * 64})
+    with pytest.raises(ValueError, match="organization batch HEAD mismatch"):
+        custody.open_packet_state(parent, root=reader, now_ns=hb_now_ns(T0_EPOCH + 3))
+
+    # An unindexed batch on the ref is an orphan, not history.
+    tamper(tmp_path, origin, custody.BATCH_HEAD_KEY,
+           {"organization": org.C["organization"], "batch_id": batch_id,
+            "last_org_receipt_sha256": released["last_org_receipt_sha256"]})
+    tamper(tmp_path, origin, custody._batch_key("sha256:" + "1" * 64), released)
+    with pytest.raises(ValueError, match="ORGANIZATION_BATCH_ORPHAN_DETECTED"):
+        readback_module.readback(reader, correlation_ids=("WORK-2",))
+
+
+def test_manifested_packet_on_a_non_private_surface_is_refused_before_carriage(tmp_path, origin, carried):
+    parent = manifest()
+    open_packet(node(tmp_path, "writer.git", origin), parent)
+    tip = remote_tip(origin)
+    for declared in (None, "PUBLIC"):
+        with pytest.raises(store_module.LedgerStoreRefused) as refused:
+            org.aggregate_transition(receipt("WORK-2"), ledger=node(tmp_path, f"n{declared}.git", origin, declared),
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+        assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
+    assert carried == [], "the released batch is not carried from a surface not declared private"
+    assert remote_tip(origin) == tip

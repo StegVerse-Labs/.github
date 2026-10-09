@@ -11,11 +11,10 @@ import argparse
 import hashlib
 import importlib.util
 import json
-import os
 import re
 import time
+from contextlib import contextmanager
 from pathlib import Path
-import tempfile
 from typing import Mapping
 
 import aggregate_repo_transition as org
@@ -35,6 +34,75 @@ CLOSURE_REASONS = {
 # member #1 with no external lookup.
 ESTABLISHMENT_KEY = "receipt_packet_establishment"
 ESTABLISHMENT_KINDS = {"MANIFEST_ASSIGNMENT_T0", "PRIOR_PACKET_RELEASE"}
+# Batch custody lives beside the receipts on the same ledger store: a POSIX
+# root keeps these exact files; the Git ledger ref keeps them in its tree.
+BATCH_HEAD_KEY = "BATCH_HEAD.json"
+BATCH_PREFIX = "batches/"
+
+
+def _batch_key(digest: str) -> str:
+    return BATCH_PREFIX + digest[7:] + ".json"
+
+
+def _ledger(root):
+    """The ledger store `root` names: a store as is, a POSIX root as its store.
+
+    Absent, it is the store organization_store() selects for this execution,
+    exactly as the append does; nothing is derived from the host.
+    """
+    if root is None:
+        return org.organization_store()
+    if org._is_store(root):
+        return root
+    return org.ledger_store.PosixLedgerStore(Path(root))
+
+
+@contextmanager
+def _pinned(root):
+    """Read one committed snapshot of a store without a local lock.
+
+    POSIX reads are unchanged and take no lock. A Git ledger store pins its
+    durable ref's tip, so every read of one verification sees one commit.
+    """
+    store = _ledger(root)
+    if org._is_posix(store):
+        yield store
+        return
+    with store.exclusive():
+        yield store
+
+
+@contextmanager
+def _custody_writes(root):
+    """The store batch custody writes through, and the boundary that publishes it.
+
+    POSIX writes each file in place, in today's order. A store without a local
+    lock gets a staged transaction over one pinned snapshot, published as one
+    compare-and-swap commit when the block completes and not at all otherwise.
+    A caller already staging (the append owner) passes its transaction in.
+    """
+    store = _ledger(root)
+    if org._is_posix(store) or isinstance(store, org.ledger_store.StagedLedgerTransaction):
+        yield store
+        return
+    with store.exclusive():
+        staged = org.ledger_store.StagedLedgerTransaction(store)
+        yield staged
+        staged.commit()
+
+
+def _get(store, key: str) -> dict | None:
+    row = store.get(key)
+    if row is not None and not isinstance(row, dict):
+        raise ValueError("organization batch JSON object required")
+    return row
+
+
+def _put_immutable(store, key: str, value: dict) -> None:
+    if hasattr(store, "put_immutable"):
+        store.put_immutable(key, value)
+    else:
+        store.put(key, value)
 
 
 def _read(path: Path) -> dict:
@@ -45,20 +113,12 @@ def _read(path: Path) -> dict:
 
 
 def _verified_receipt(root, digest: str) -> dict:
-    """Verify one receipt under a POSIX root, or read through a ledger store."""
+    """Verify one receipt read through the ledger store `root` names."""
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise ValueError("organization receipt digest invalid")
-    if org._is_store(root):
-        row = root.get(org.ledger_store.receipt_key(digest))
-        if row is None:
-            raise ValueError("organization receipt missing: " + digest)
-        if not isinstance(row, dict):
-            raise ValueError("organization batch JSON object required")
-    else:
-        path = root / "receipts" / (digest[7:] + ".json")
-        if not path.is_file():
-            raise ValueError("organization receipt missing: " + digest)
-        row = _read(path)
+    row = _get(_ledger(root), org.ledger_store.receipt_key(digest))
+    if row is None:
+        raise ValueError("organization receipt missing: " + digest)
     body = dict(row)
     claimed = body.pop("receipt_sha256", None)
     if claimed != digest or org.sha(body) != digest:
@@ -312,13 +372,12 @@ def _boundary_commitment(rows: list[dict]) -> str:
     ])
 
 
-def _verified_batch(root: Path, digest: str) -> dict:
+def _verified_batch(root, digest: str) -> dict:
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise ValueError("organization batch digest invalid")
-    path = root / "batches" / (digest[7:] + ".json")
-    if not path.is_file():
+    batch = _get(_ledger(root), _batch_key(digest))
+    if batch is None:
         raise ValueError("organization batch missing: " + digest)
-    batch = _read(path)
     body = dict(batch)
     if body.pop("batch_id", None) != digest or org.sha(body) != digest:
         raise ValueError("organization batch hash mismatch")
@@ -327,13 +386,13 @@ def _verified_batch(root: Path, digest: str) -> dict:
     return batch
 
 
-def _batch_head(root: Path) -> tuple[str | None, dict | None]:
-    path = root / "BATCH_HEAD.json"
-    if not path.exists():
-        if (root / "batches").is_dir() and any((root / "batches").glob("*.json")):
+def _batch_head(root) -> tuple[str | None, dict | None]:
+    store = _ledger(root)
+    head = _get(store, BATCH_HEAD_KEY)
+    if head is None:
+        if store.list_prefix(BATCH_PREFIX):
             raise ValueError("unindexed organization batch exists; recover custody before appending")
         return None, None
-    head = _read(path)
     digest = head.get("batch_id")
     batch = _verified_batch(root, digest)
     if head.get("organization") != org.C["organization"] or head.get("last_org_receipt_sha256") != batch["last_org_receipt_sha256"]:
@@ -341,7 +400,8 @@ def _batch_head(root: Path) -> tuple[str | None, dict | None]:
     return digest, batch
 
 
-def _segment(root: Path, tip: str, predecessor: str | None) -> list[dict]:
+def _segment(root, tip: str, predecessor: str | None) -> list[dict]:
+    root = _ledger(root)
     org.verify_custody_lineage(root)
     rows: list[dict] = []
     seen: set[str] = set()
@@ -368,7 +428,8 @@ def _segment(root: Path, tip: str, predecessor: str | None) -> list[dict]:
             raise ValueError("organization ledger ancestor cycle")
         reachable.add(ancestor[7:])
         ancestor = _verified_receipt(root, ancestor).get("previous_receipt_sha256")
-    inventory = {path.stem for path in (root / "receipts").glob("*.json")}
+    prefix = org.ledger_store.RECEIPT_PREFIX
+    inventory = {key[len(prefix):-len(".json")] for key in root.list_prefix(prefix)}
     if inventory != reachable:
         raise ValueError("organization ledger orphaned or omitted receipt detected")
     for i, row in enumerate(rows):
@@ -378,8 +439,13 @@ def _segment(root: Path, tip: str, predecessor: str | None) -> list[dict]:
     return rows
 
 
-def verify_batch(root: Path, batch_id: str, *, source_receipts: dict[str, dict] | None = None) -> dict:
+def verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | None = None) -> dict:
     """Verify immutable batch and local org chain; source proof is separate."""
+    with _pinned(root) as store:
+        return _verify_batch(store, batch_id, source_receipts=source_receipts)
+
+
+def _verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | None = None) -> dict:
     org.verify_custody_lineage(root)
     batch = _verified_batch(root, batch_id)
     predecessor_id = batch.get("previous_batch_commitment")
@@ -435,14 +501,18 @@ def verify_batch(root: Path, batch_id: str, *, source_receipts: dict[str, dict] 
     }
 
 
-def export_batch(root: Path, batch_id: str) -> dict:
+def export_batch(root, batch_id: str) -> dict:
     """Prepare exact locally retained source bytes for the existing MR ingress.
 
     No network delivery or Master Records acknowledgement occurs here. This
     deterministic envelope can be carried by the already-authorized TV/TVC
     transport; only Master Records independently accepts it.
     """
-    root=Path(root)
+    with _pinned(root) as store:
+        return _export_batch(store, batch_id)
+
+
+def _export_batch(root, batch_id: str) -> dict:
     batch=_verified_batch(root,batch_id)
     hashes=batch.get("ordered_receipt_hashes")
     if not isinstance(hashes,list) or not hashes:
@@ -452,16 +522,15 @@ def export_batch(root: Path, batch_id: str) -> dict:
     source_map={}
     for row in receipts:
         source_hash=row["source_transition_sha256"]
-        source_path=root/"source-receipts"/(source_hash[7:]+".json")
-        if not source_path.is_file():
+        source=_get(root,org.ledger_store.source_key(source_hash))
+        if source is None:
             raise ValueError("exact organization source receipt unavailable: "+source_hash)
-        source=_read(source_path)
         verified=org.verify_source(source)
         if verified["source_transition_sha256"]!=source_hash or verified["source_transition_id"]!=row["source_transition_id"]:
             raise ValueError("exact organization source receipt binding invalid")
         source_map[source_hash]=source
         sources.append(source)
-    result=verify_batch(root,batch_id,source_receipts=source_map)
+    result=_verify_batch(root,batch_id,source_receipts=source_map)
     if result.get("source_reconstruction")!="SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS":
         raise ValueError("organization-local required evidence reconstruction incomplete")
     return {
@@ -476,7 +545,7 @@ def export_batch(root: Path, batch_id: str) -> dict:
 
 
 
-def export_batch_record(root: Path, batch_id: str) -> dict:
+def export_batch_record(root, batch_id: str) -> dict:
     """Prepare the batch COMMITMENT for Master Records organization record. Contents stay local.
 
     The organization reports the batched record, not the individual receipts that
@@ -491,13 +560,13 @@ def export_batch_record(root: Path, batch_id: str) -> dict:
     bytes - which may carry health PII on the VACC path - never leave the
     organization's private ledger root by construction rather than by policy.
     """
-    root = Path(root)
-    batch = _verified_batch(root, batch_id)
-    local = export_batch(root, batch_id)
-    verification = verify_batch(root, batch_id, source_receipts={
-        row["source_transition_sha256"]: source
-        for row, source in zip(local["organization_receipts"], local["source_receipts"])
-    })
+    with _pinned(root) as store:
+        batch = _verified_batch(store, batch_id)
+        local = _export_batch(store, batch_id)
+        verification = _verify_batch(store, batch_id, source_receipts={
+            row["source_transition_sha256"]: source
+            for row, source in zip(local["organization_receipts"], local["source_receipts"])
+        })
     return {
         "schema": "stegverse.master-records.organization-batch-record-submission/v1",
         "batch": batch,
@@ -513,7 +582,7 @@ def export_batch_record(root: Path, batch_id: str) -> dict:
     }
 
 
-def submit_released_batch(root: Path, batch_id: str) -> dict:
+def submit_released_batch(root, batch_id: str) -> dict:
     """Submit an immutable released batch through the existing canonical custody transport."""
     envelope = export_batch_record(root, batch_id)
     module_path = Path(__file__).resolve().parents[1] / "workers" / "canonical_state_transition_custody.py"
@@ -547,21 +616,6 @@ def submit_released_batch(root: Path, batch_id: str) -> dict:
         }
     return result
 
-
-
-def _atomic_json(path: Path, row: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(prefix=".org-batch-", dir=str(path.parent))
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as stream:
-            json.dump(row, stream, sort_keys=True, indent=2)
-            stream.write("\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(name, path)
-    finally:
-        if os.path.exists(name):
-            os.unlink(name)
 
 
 ORGANIZATION_BATCH_TASK_ID = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
@@ -751,20 +805,19 @@ def _packet_establishment(rows: list[dict]) -> dict | None:
     return record
 
 
-def open_packet_state(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None) -> dict:
+def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = None) -> dict:
     """Return open-packet accounting: count, declared establishment and expiry."""
-    root = Path(root) if root else org.ledger_root()
     release_count = _manifest_release_count(parent_manifest)
     declared = _manifest_establishment(parent_manifest)
-    head_path = root / "HEAD.json"
-    if not head_path.exists():
-        rows: list[dict] = []
-    else:
-        head = _read(head_path)
-        tip = head.get("receipt_sha256")
-        _verified_receipt(root, tip)
-        _, prior = _batch_head(root)
-        rows = _segment(root, tip, prior["last_org_receipt_sha256"] if prior else None)
+    with _pinned(root) as store:
+        head = _get(store, org.ledger_store.HEAD_KEY)
+        if head is None:
+            rows: list[dict] = []
+        else:
+            tip = head.get("receipt_sha256")
+            _verified_receipt(store, tip)
+            _, prior = _batch_head(store)
+            rows = _segment(store, tip, prior["last_org_receipt_sha256"] if prior else None)
     established = _packet_establishment(rows)
     if declared is not None and rows and established is None:
         raise ValueError("manifested receipt packet has no t(0) establishment record")
@@ -785,14 +838,14 @@ def open_packet_state(parent_manifest: dict, *, root: Path | None = None, now_ns
     }
 
 
-def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None,
+def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root=None, now_ns: int | None = None,
                                                    custody_exclusivity_verifier=None) -> dict | None:
     """Release the satisfied packet immediately before the next receipt append.
 
     Release is authorized once, at establishment, by the governing manifest.
     Nothing decides anything here: the condition fires, it is not adjudicated.
     """
-    root = Path(root) if root else org.ledger_root()
+    root = _ledger(root)
     state = open_packet_state(parent_manifest, root=root, now_ns=now_ns)
     if not state["release_condition_satisfied"]:
         return None
@@ -802,25 +855,36 @@ def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, ro
     return close_batch(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
 
-def _verified_head(root: Path) -> tuple[dict, str]:
-    """HEAD.json of this root, naming a verified receipt under this root's receipts/."""
-    head = _read(root / "HEAD.json")
+def _verified_head(root) -> tuple[dict, str]:
+    """HEAD of this ledger, naming a verified receipt under this ledger's receipts/."""
+    root = _ledger(root)
+    head = _get(root, org.ledger_store.HEAD_KEY)
+    if head is None:
+        raise ValueError("organization ledger HEAD missing")
     if head.get("organization") != org.C["organization"]:
         raise ValueError("organization ledger HEAD identity mismatch")
     tip = head.get("receipt_sha256")
     _verified_receipt(root, tip)
-    # HEAD must name its own tip under this root's receipts/. The absolute prefix
-    # is wherever a materializer last supplied the root, so it is not compared:
-    # the same root supplied at another node's path is the same ledger.
-    if Path(str(head.get("receipt_path") or "")).parts[-2:] != ("receipts", tip[7:] + ".json"):
+    if org._is_posix(root):
+        # HEAD must name its own tip under this root's receipts/. The absolute prefix
+        # is wherever a materializer last supplied the root, so it is not compared:
+        # the same root supplied at another node's path is the same ledger.
+        if Path(str(head.get("receipt_path") or "")).parts[-2:] != ("receipts", tip[7:] + ".json"):
+            raise ValueError("organization ledger HEAD receipt path mismatch")
+    elif head.get("receipt_path") != root.locator(org.ledger_store.receipt_key(tip)):
+        # Any other store names the key on its own ledger exactly.
         raise ValueError("organization ledger HEAD receipt path mismatch")
     return head, tip
 
 
-def close_batch(reason: str, *, root: Path | None = None, custody_exclusivity_verifier=None) -> dict:
+def close_batch(reason: str, *, root=None, custody_exclusivity_verifier=None) -> dict:
     if reason not in CLOSURE_REASONS:
         raise ValueError("unsupported organization batch closure reason")
-    root = Path(root) if root else org.ledger_root()
+    with _custody_writes(root) as store:
+        return _close_batch(reason, store, custody_exclusivity_verifier)
+
+
+def _close_batch(reason: str, root, custody_exclusivity_verifier) -> dict:
     head, tip = _verified_head(root)
     rows = org.verify_custody_lineage(root)
     if _verified_receipt(root, tip).get("org_transition_class") == org.CUSTODY_RELEASED_CLASS:
@@ -859,15 +923,16 @@ def close_batch(reason: str, *, root: Path | None = None, custody_exclusivity_ve
     }
     digest = org.sha(body)
     batch = dict(body, batch_id=digest)
-    destination = root / "batches" / (digest[7:] + ".json")
-    if destination.exists() and _read(destination) != batch:
+    destination = _batch_key(digest)
+    existing = _get(root, destination)
+    if existing is not None and existing != batch:
         raise ValueError("organization batch identity collision")
-    if not destination.exists():
-        _atomic_json(destination, batch)
-    verify_batch(root, digest)
-    if _read(root / "HEAD.json") != head:
+    if existing is None:
+        _put_immutable(root, destination, batch)
+    _verify_batch(root, digest)
+    if _get(root, org.ledger_store.HEAD_KEY) != head:
         raise ValueError("organization ledger advanced during batch closure; retry under existing ledger lock")
-    _atomic_json(root / "BATCH_HEAD.json", {
+    root.put(BATCH_HEAD_KEY, {
         "organization": org.C["organization"],
         "batch_id": digest,
         "last_org_receipt_sha256": tip,
@@ -884,7 +949,7 @@ def main() -> None:
     parser.add_argument("--submit-released-batch")
     parser.add_argument("--root")
     args = parser.parse_args()
-    root = Path(args.root) if args.root else org.ledger_root()
+    root = Path(args.root) if args.root else org.organization_store()
     if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,args.submit_released_batch)) != 1:
         parser.error("provide exactly one batch operation")
     if args.closure_reason:

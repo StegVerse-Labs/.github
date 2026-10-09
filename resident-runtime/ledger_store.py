@@ -21,6 +21,12 @@ grants authority.
 are files on one dedicated ledger ref, and an append is one commit published
 by ref compare-and-swap. Git is transport and custody only, never admission or
 authority.
+
+Packet release and batch custody add `BATCH_HEAD.json` and `batches/<hex>`.
+On a store without a local lock, one Organization transition -- a released
+batch, its BATCH_HEAD, any establishment receipt, the work receipt and HEAD --
+is staged by `StagedLedgerTransaction` over one pinned snapshot and published
+as one commit, so a lost race publishes none of it.
 """
 from __future__ import annotations
 
@@ -421,6 +427,16 @@ class GitLedgerStore:
         receipt is committed. A key already holding different content raises
         `ledger_receipt_collision` before anything is built.
         """
+        self.require_private_custody()
+        documents = dict(immutable or {})
+        documents[receipt_key_name] = receipt
+        with self.exclusive():
+            if self._read(self._snapshot(), HEAD_KEY) != expected_head:
+                raise lost_race("HEAD no longer equals the expected head")
+            return self.publish(documents, {HEAD_KEY: new_head}, receipt_key_name)
+
+    def require_private_custody(self):
+        """Refuse before anything is built unless the surface is declared private custody."""
         if self.custody != PRIVATE_CUSTODY:
             raise LedgerStoreRefused(
                 "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED",
@@ -429,21 +445,29 @@ class GitLedgerStore:
                 + PAYLOAD_CLASSIFICATION + " and is not published elsewhere",
                 detail=str(self.custody),
             )
-        documents = dict(immutable or {})
-        documents[receipt_key_name] = receipt
+
+    def publish(self, immutable, mutable, subject):
+        """Publish documents as one commit on the pinned tip by ref compare-and-swap.
+
+        `immutable` keys are content addressed: a key already holding different
+        content raises `ledger_receipt_collision` before anything is built, and
+        one holding the same content is not rewritten. `mutable` keys (HEAD,
+        BATCH_HEAD) are replaced. The commit's parent is the snapshot every read
+        inside `exclusive` saw, so a ref that moved since raises the typed lost
+        race and nothing reaches it.
+        """
+        self.require_private_custody()
         with self.exclusive():
             parent = self._snapshot()
-            if self._read(parent, HEAD_KEY) != expected_head:
-                raise lost_race("HEAD no longer equals the expected head")
             missing = []
-            for key, value in documents.items():
+            for key, value in immutable.items():
                 existing = self._read(parent, key)
                 if existing is not None and existing != value:
                     raise ValueError("ledger_receipt_collision")
                 if existing is None:
                     missing.append(key)
-            commit = self._commit(parent, [(key, documents[key]) for key in missing] + [(HEAD_KEY, new_head)],
-                                  receipt_key_name)
+            entries = [(key, immutable[key]) for key in missing] + list(mutable.items())
+            commit = self._commit(parent, entries, subject)
             self._publish(commit, parent)
             self._pinned = (commit,)
             return True
@@ -492,3 +516,92 @@ class GitLedgerStore:
                 detail=output.strip(),
             )
         self._git("update-ref", self.ref, commit)
+
+
+class StagedLedgerTransaction:
+    """Every write of one Organization transition, staged over one pinned snapshot.
+
+    Packet release and batch custody write a batch, BATCH_HEAD, possibly an
+    establishment receipt, then the work receipt and HEAD. A store with a local
+    lock writes them in order under that lock. A store without one (the Git
+    ref) cannot hold a lock across them, so they are staged here: reads see the
+    staged documents over the store's pinned snapshot, and `commit` publishes
+    them all as one compare-and-swap from that snapshot. A lost race publishes
+    none of them; a refusal or error before `commit` publishes nothing.
+
+    Use only inside the store's own `exclusive`, which pins the snapshot.
+    """
+
+    def __init__(self, store):
+        self.store = store
+        self.kind = store.kind
+        self._immutable = {}
+        self._mutable = {}
+        self._subjects = []
+
+    def initialize(self):
+        self.store.initialize()
+
+    def locator(self, key):
+        return self.store.locator(key)
+
+    def get(self, key):
+        if key in self._mutable:
+            return self._mutable[key]
+        if key in self._immutable:
+            return self._immutable[key]
+        return self.store.get(key)
+
+    def exists(self, key):
+        return self.get(key) is not None
+
+    def list_prefix(self, prefix):
+        staged = {key for key in [*self._immutable, *self._mutable]
+                  if key.startswith(prefix) and key.endswith(".json") and "/" not in key[len(prefix):]}
+        return self.store.list_prefix(prefix) | staged
+
+    @contextmanager
+    def exclusive(self):
+        yield self
+
+    assume_exclusive = exclusive
+
+    def put(self, key, value):
+        """Stage a replaceable document (HEAD, BATCH_HEAD)."""
+        self._mutable[key] = value
+
+    def put_immutable(self, key, value):
+        """Stage a content-addressed document; different content at its key is a collision."""
+        existing = self.get(key)
+        if existing is not None and existing != value:
+            raise ValueError("ledger_receipt_collision")
+        if existing is None:
+            self._immutable[key] = value
+
+    def compare_and_swap(self, key, expected, value):
+        if self.get(key) != expected:
+            return False
+        self.put(key, value)
+        return True
+
+    def append_transaction(self, receipt_key_name, receipt, expected_head, new_head, immutable=None):
+        documents = dict(immutable or {})
+        documents[receipt_key_name] = receipt
+        if self.get(HEAD_KEY) != expected_head:
+            return False
+        for key, value in documents.items():
+            existing = self.get(key)
+            if existing is not None and existing != value:
+                raise ValueError("ledger_receipt_collision")
+        for key, value in documents.items():
+            self.put_immutable(key, value)
+        self.put(HEAD_KEY, new_head)
+        self._subjects.append(receipt_key_name)
+        return True
+
+    def commit(self):
+        """Publish everything staged as one commit; nothing staged publishes nothing."""
+        if not self._immutable and not self._mutable:
+            return False
+        subject = " ".join(self._subjects) or " ".join(sorted(self._mutable))
+        return self.store.publish(self._immutable, self._mutable, subject)
