@@ -165,25 +165,27 @@
         "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
       ]
     },
-      "f66_01_ledger_custody_transfer": {
-        "finding_id": "F66-01",
-        "approval_ref": "StegVerse-org/.github#98 RESPONSE-067 (6082533976)",
-        "question": "Can a relocated Organization ledger root be told apart from a copied one, so two copies cannot each advance and fork Organization reality?",
-        "verdict": "REPAIRED_DETECTION_ONLY",
-        "evidence_class": "SOURCE_VALIDATION",
-        "design": "Every Organization receipt carries custody_generation (resident-runtime/aggregate_repo_transition.py:704); a receipt without the field predates custody transfer and is generation 0 (resident-runtime/aggregate_repo_transition.py:105), so existing chains verify unchanged and no history is rewritten. ORGANIZATION_LEDGER_CUSTODY_RELEASED (release_custody, resident-runtime/aggregate_repo_transition.py:580) is a manifest-bound Organization transition appended under ORGANIZATION_LEDGER_LOCK by the existing emitter _aggregate_transition_locked; the governing manifest's ledger_custody_transfer declares successor_materialization_id, predecessor_head_sha256 and next_custody_generation, and the receipt binds them with the manifest digest. Once it is HEAD every further append and batch closure on that root is CUSTODY_RELEASED_ROOT_IS_READ_ONLY FAIL_CLOSED (resident-runtime/aggregate_repo_transition.py:241; resident-runtime/organization_batch_custody.py:769). ORGANIZATION_LEDGER_CUSTODY_ASSUMED (assume_custody, resident-runtime/aggregate_repo_transition.py:609) is the first append permitted at the successor; it reads the release back through the existing HEAD check, chain walk and verified_organization_receipt and requires the release to name this successor_materialization_id, the manifest's predecessor HEAD (equal to the release's own predecessor) and next generation, and the same manifest. A missing release, a wrong successor, a mismatched HEAD or generation, and an interrupted handover (release receipt durable, HEAD not advanced) are typed FAIL_CLOSED refusals naming a retry entrypoint; the exact release retried completes an interrupted HEAD without a second receipt.",
-        "exclusivity": "DETECTED_NOT_PREVENTED_ACROSS_KERNELS",
-        "exclusivity_limit": "A5 limit, open: the .append.lock fcntl lock serializes writers within one kernel only, and no shared serializer, CAS, lock service or store is added. A copy of a root taken before its release can still be written on another node; source cannot prevent that. It is detected and refused FAIL_CLOSED wherever its receipts meet the release or each other: verify_custody_lineage (resident-runtime/aggregate_repo_transition.py:138), run by every append, verified_organization_receipt, the HEAD/chain walk (_segment), verify_batch and close_batch (resident-runtime/organization_batch_custody.py:145,287,325,766), refuses CUSTODY_GENERATION_SUPERSEDED for a receipt in a generation a recorded release or assumption closed that is not an ancestor of it, and ORGANIZATION_CUSTODY_FORK_DETECTED for two receipts naming one predecessor. A stale copy that never meets the release verifies on its own. Nothing reports a safe transfer.",
-        "tests": "tests/test_organization_ledger_custody_transfer.py",
-        "kept_open": "EXISTING_PRIVATE_ORGANIZATION_LEDGER_ROOT_REACHABLE_AT_MANIFEST_DIRECTED_INVOCATION (current_truth.local_batch_runtime_proof): source conformance does not prove the root is reachable at runtime; cross-kernel prevention of a pre-release copy writing remains an open A5 limit.",
-        "new_dependencies": 0,
-        "runtime_evidence": "NONE",
-        "consequence_committed": false,
-        "authority_effect": "NONE_SOURCE_RECORD_ONLY",
-        "evidence_refs": [
-          "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
-        ]
-      }
+    "f66_01_ledger_custody_transfer": {
+      "finding_id": "F66-01",
+      "approval_ref": "StegVerse-org/.github#98 RESPONSE-067 (6082533976) F66-01; RESPONSE-069 (6082671705) F69-01",
+      "question": "Can a relocated Organization ledger root be told apart from a copied one, so two copies cannot each advance and fork Organization reality?",
+      "verdict": "REPAIRED_DETECTION_ONLY",
+      "evidence_class": "SOURCE_VALIDATION",
+      "design": "Every Organization receipt carries custody_generation (resident-runtime/aggregate_repo_transition.py:758); a receipt without the field predates custody transfer and is generation 0 (resident-runtime/aggregate_repo_transition.py:106), so existing chains verify unchanged and no history is rewritten. ORGANIZATION_LEDGER_CUSTODY_RELEASED (release_custody, resident-runtime/aggregate_repo_transition.py:633) is a manifest-bound Organization transition appended under ORGANIZATION_LEDGER_LOCK by the existing emitter _aggregate_transition_locked; the governing manifest's ledger_custody_transfer declares successor_materialization_id, predecessor_head_sha256 and next_custody_generation, and the receipt binds them with the manifest digest. Once it is HEAD every further append and batch closure on that root is CUSTODY_RELEASED_ROOT_IS_READ_ONLY FAIL_CLOSED (resident-runtime/aggregate_repo_transition.py:283; resident-runtime/organization_batch_custody.py:770). ORGANIZATION_LEDGER_CUSTODY_ASSUMED (assume_custody, resident-runtime/aggregate_repo_transition.py:663) is the first append permitted at the successor; it reads the release back through the existing HEAD check, chain walk and verified_organization_receipt and requires the release to name this successor_materialization_id, the manifest's predecessor HEAD (equal to the release's own predecessor) and next generation, and the same manifest. A missing release, a wrong successor, a mismatched HEAD or generation, and an interrupted handover (release receipt durable, HEAD not advanced) are typed FAIL_CLOSED refusals naming a retry entrypoint; the exact release retried completes an interrupted HEAD without a second receipt.",
+      "exclusivity": "DETECTED_NOT_PREVENTED_ACROSS_KERNELS",
+      "exclusivity_limit": "A5 limit, open: the .append.lock fcntl lock serializes writers within one kernel only, and no shared serializer, CAS, lock service or store is added. A copy of a root taken before its release can still be written on another node; source cannot prevent that. It is detected and refused FAIL_CLOSED wherever its receipts meet the release or each other: verify_custody_lineage (resident-runtime/aggregate_repo_transition.py:139), run by every append, verified_organization_receipt, the HEAD/chain walk (_segment), verify_batch and close_batch (resident-runtime/organization_batch_custody.py:145,287,325,767), refuses CUSTODY_GENERATION_SUPERSEDED for a receipt in a generation a recorded release or assumption closed that is not an ancestor of it, and ORGANIZATION_CUSTODY_FORK_DETECTED for two receipts naming one predecessor. A stale copy that never meets the release verifies on its own. Nothing reports a safe transfer.",
+      "tests": "tests/test_organization_ledger_custody_transfer.py",
+      "kept_open": "EXISTING_PRIVATE_ORGANIZATION_LEDGER_ROOT_REACHABLE_AT_MANIFEST_DIRECTED_INVOCATION (current_truth.local_batch_runtime_proof): source conformance does not prove the root is reachable at runtime; cross-kernel prevention of a pre-release copy writing remains an open A5 limit.",
+      "new_dependencies": 0,
+      "runtime_evidence": "NONE",
+      "consequence_committed": false,
+      "authority_effect": "NONE_SOURCE_RECORD_ONLY",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+      ],
+      "f69_01_successor_exclusivity_gate": "Detection is not exclusivity. Once a root's HEAD is in custody_generation >= 1, every consequential write other than the ORGANIZATION_LEDGER_CUSTODY_ASSUMED record itself (an append, a manifest-directed packet release, a batch closure, a further release) is CUSTODY_EXCLUSIVITY_UNAUTHENTICATED FAIL_CLOSED with retry entrypoint resident-runtime/aggregate_repo_transition.py::aggregate_transition (require_custody_exclusivity, resident-runtime/aggregate_repo_transition.py:238, checked before any packet release at :539 and at resident-runtime/organization_batch_custody.py:773), unless the injected custody_exclusivity_verifier returns an attestation of unique custody for that successor_materialization_id and custody_generation; its digest is then bound in the receipt. There is no default and no environment fallback. A root never released (generation 0) appends exactly as before. custody_exclusivity is a limitation field, never a passing predicate.",
+      "existing_exclusivity_authority": "NONE: no existing authority in this repository attests unique custody across kernels. resident-runtime/ledger_store.py PosixLedgerStore serializes by the same kernel-local .append.lock; the compare_and_swap it names for a networked store has no implementation here. None was written, so a successor makes no consequential append."
+    }
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",

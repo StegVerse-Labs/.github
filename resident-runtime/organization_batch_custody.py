@@ -727,7 +727,8 @@ def open_packet_state(parent_manifest: dict, *, root: Path | None = None, now_ns
     }
 
 
-def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None) -> dict | None:
+def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root: Path | None = None, now_ns: int | None = None,
+                                                   custody_exclusivity_verifier=None) -> dict | None:
     """Release the satisfied packet immediately before the next receipt append.
 
     Release is authorized once, at establishment, by the governing manifest.
@@ -740,7 +741,7 @@ def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, ro
     reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (
         state["expired"] and state["receipt_count"] < state["release_count"]
     ) else "MANIFEST_RELEASE_CONDITION"
-    return close_batch(reason, root=root)
+    return close_batch(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
 
 def _verified_head(root: Path) -> tuple[dict, str]:
@@ -758,16 +759,18 @@ def _verified_head(root: Path) -> tuple[dict, str]:
     return head, tip
 
 
-def close_batch(reason: str, *, root: Path | None = None) -> dict:
+def close_batch(reason: str, *, root: Path | None = None, custody_exclusivity_verifier=None) -> dict:
     if reason not in CLOSURE_REASONS:
         raise ValueError("unsupported organization batch closure reason")
     root = Path(root) if root else org.ledger_root()
     head, tip = _verified_head(root)
-    org.verify_custody_lineage(root)
+    rows = org.verify_custody_lineage(root)
     if _verified_receipt(root, tip).get("org_transition_class") == org.CUSTODY_RELEASED_CLASS:
         # Batch closure writes the root; a released root takes no writer.
         raise org.CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", retry_entrypoint=org.CUSTODY_ASSUME_RETRY,
                                  detail=tip, repair="close the packet at the successor after it assumes custody")
+    # Batch closure is a consequential write; a successor needs an attestation.
+    org.require_custody_exclusivity(rows, tip, "ORGANIZATION_BATCH_CLOSURE", custody_exclusivity_verifier)
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:
         if prior["closure_reason"] != reason:
