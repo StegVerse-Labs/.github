@@ -202,6 +202,8 @@ crossing_module = _module("sdk_manifest_crossing", "resident-runtime/sdk_manifes
 repository_ledger = _module("repo_transition_emit", ".stegverse/transition-ledger/emit.py")
 organization_ledger = _module("aggregate_repo_transition",
                               "resident-runtime/aggregate_repo_transition.py")
+role_conformance = _module("organization_role_conformance",
+                           "resident-runtime/organization_role_conformance.py")
 # The batch parent manifest is validated by its owner, the same module the
 # organization append imports by name when it releases a packet.
 if str(ROOT / "resident-runtime") not in sys.path:
@@ -795,6 +797,69 @@ def request_governance_decision(request: Mapping[str, Any], crossing: Mapping[st
             "authority_effect": "NONE_RECEIVING_OPERATION_ONLY"}
 
 
+def role_conformance_disposition(crossing: Mapping[str, Any]) -> dict[str, Any]:
+    """The conformance evaluation the crossing returned, bound to the manifest it carried.
+
+    The evaluation is the organization's own adapter reading its own source.
+    A result that is not that adapter's schema, not bound to the manifest
+    digest this crossing carried, or carries no terminal disposition is not
+    used: the transition is then FAIL_CLOSED, naming that.
+    """
+    result = crossing.get("application_result")
+    if (not isinstance(result, Mapping) or result.get("schema") != role_conformance.RESULT_SCHEMA
+            or result.get("manifest_sha256") != crossing.get("manifest_sha256")
+            or result.get("disposition") not in {"ALLOW", "DENY", "FAIL_CLOSED"}):
+        return {"disposition": "FAIL_CLOSED",
+                "failed_predicate": "ROLE_CONFORMANCE_EVALUATION_IS_BOUND_TO_THE_SUBMITTED_MANIFEST",
+                "detail": "the conformance processor returned no evaluation bound to this manifest",
+                "retry_entrypoint": RETRY_ENTRYPOINT}
+    return {key: result[key] for key in (
+        "disposition", "failed_predicate", "detail", "issuer", "destination_organization",
+        "manifest_binding", "target_role_version_id", "target_contract_digest", "target_reference",
+        "compared_files", "differing_files", "required_evidence_or_repair", "retry_entrypoint",
+        "next_attempt", "source_mutated") if key in result}
+
+
+def role_conformance_result(request: Mapping[str, Any], crossing: Mapping[str, Any],
+                            conformance: Mapping[str, Any], *, transition_id: str,
+                            repository_receipt: Mapping[str, Any],
+                            organization_receipt: Mapping[str, Any],
+                            rule_ref: str, replayed: bool) -> dict[str, Any]:
+    """The terminal disposition the organization ledger now holds for this request.
+
+    The append is the transition: ALLOW, DENY and FAIL_CLOSED are each
+    committed, and nothing further is observed or awaited.
+    """
+    return {
+        "schema": RESULT_SCHEMA_ORG,
+        "organization": "StegVerse-Labs",
+        "receiving_operation": OPERATION_ID,
+        "received": True,
+        **dict(conformance),
+        "processing_capability": request["processing_capability"],
+        "route_id": request["route_id"],
+        "request_sha256": request["request_sha256"],
+        "canonical_manifest_sha256": request["canonical_manifest_sha256"],
+        "resolved_service_id": crossing["resolved_service_id"],
+        "intr_admission_observed": True,
+        "far_side_transition_observed": True,
+        "boundary_receipt_chain_reconstructed_independently": True,
+        "organization_receipt_observed": True,
+        "organization_receipt_sha256": organization_receipt["receipt_sha256"],
+        "organization_transition_id": transition_id,
+        "transition_replayed": replayed,
+        "recomputation_rule_ref": rule_ref,
+        "repository_receipt_observed": True,
+        "repository_receipt_sha256": repository_receipt["receipt_sha256"],
+        "organization_receipt_preserves_repository_receipt":
+            organization_receipt["repo_receipt_sha256"] == repository_receipt["receipt_sha256"],
+        "disposition_committed_in_organization_ledger": True,
+        "owning_existing_goals": [role_conformance.AUTHORIZED_ISSUER_TASK_ID, APPEND_OWNING_GOAL],
+        "master_records_organization_record_observed": False,
+        "authority_effect": "NONE_RECEIVING_OPERATION_ONLY",
+    }
+
+
 def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standing: Mapping[str, Any] | None = None,
             packet_id: str = "organization-sdk-manifest-ingress",
             hb_epoch: int | None = None, mesh_root: Path | None = None) -> dict[str, Any]:
@@ -862,6 +927,25 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # replay resting on a receipt the same call had just minted, when the
     # replay rule asks for verified repo receipts beneath the organization ones.
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-" + request["request_sha256"][:16]
+    # A role-conformance request's disposition is the organization's own source
+    # evaluated against the target digests, so it is committed in the
+    # organization receipt itself. The evaluation is part of the transition's
+    # identity: an exact retry against the same source is the same transition,
+    # and a resubmission after the source changed is a new one rather than a
+    # collision with the first.
+    conformance = None
+    ingress_evidence = dict(organization_evidence)
+    if request.get("processing_capability") == role_conformance.CAPABILITY:
+        conformance = role_conformance_disposition(crossing)
+        transition_id += "-" + sha(conformance)[:16]
+        ingress_evidence.update({
+            "role_conformance_disposition": conformance["disposition"],
+            "role_conformance_failed_predicate": conformance.get("failed_predicate"),
+            "role_conformance_target_role_version_id": conformance.get("target_role_version_id"),
+            "role_conformance_target_contract_digest": conformance.get("target_contract_digest"),
+            "role_conformance_differing_files": [
+                row["path"] for row in conformance.get("differing_files") or []],
+            "role_conformance_evaluation_sha256": "sha256:" + sha(conformance)})
     predecessor_state = "sha256:" + request["canonical_manifest_sha256"]
     successor_state = "sha256:" + closures[-1]["receipt_sha256"]
     #
@@ -899,7 +983,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
                  "ingress_packet_id": crossing["ingress_packet_id"],
                  "egress_packet_id": crossing["egress_packet_id"],
                  "recomputation_rule_ref": rule_ref,
-                 **organization_evidence},
+                 **ingress_evidence},
                 hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
                 idempotent_on=("request_sha256",))
             break
@@ -921,6 +1005,12 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # so a replay rebuilds the same organization receipt and the same outbound
     # frame rather than ones stamped with whatever epoch this attempt carried.
     hb_epoch = repository_receipt["hb_reference"]["epoch"]
+
+    if conformance is not None:
+        return role_conformance_result(
+            request, crossing, conformance, transition_id=transition_id,
+            repository_receipt=repository_receipt, organization_receipt=organization_receipt,
+            rule_ref=rule_ref, replayed=replayed)
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
@@ -1003,10 +1093,75 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     }
 
 
+#: The durable intr-outbox route a role-conformance request is held on until
+#: this organization consumes it: `<durable root>/intr-outbox/<route>/*.json`,
+#: the same layout as every other intr-outbox route.
+ROLE_CONFORMANCE_OUTBOX_ROUTE = "organization-role-conformance"
+OUTBOX_EVENT_SCHEMA = "stegverse.intr-outbox-manifest-event/v1"
+OUTBOX_CONSUMPTION_SCHEMA = "stegverse.organization-manifest-ingress-outbox-consumption/v1"
+LEDGER_ROOT_VARIABLES = ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT")
+
+
+def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
+                   route: str = ROLE_CONFORMANCE_OUTBOX_ROUTE, mesh_root: Path | None = None,
+                   environ: Mapping[str, str] | None = None) -> dict[str, Any]:
+    """Receive every manifest event held on one intr-outbox route.
+
+    Consumed by event: an empty or absent route is NO_EVENT, and holding is
+    never itself a disposition. Each event is one `receive`, so each commits
+    its own terminal disposition, and redelivering an event is the exact retry
+    the ledgers already make idempotent. Nothing is received until the
+    materializer has supplied both ledger roots; until then the events stay
+    where they are and nothing is appended.
+    """
+    environ = os.environ if environ is None else environ
+    base = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "route": route, "authority_effect": "NONE"}
+    outbox = Path(durable_root) / "intr-outbox" / route
+    events = sorted(outbox.glob("*.json")) if outbox.is_dir() else []
+    if not events:
+        return {**base, "state": "NO_EVENT", "event_count": 0}
+    missing = [name for name in LEDGER_ROOT_VARIABLES if not (environ.get(name) or "").strip()]
+    if missing:
+        return {**base, "state": "FAIL_CLOSED", "event_count": len(events),
+                "failed_predicate": "ledger_location_required_from_materializer",
+                "missing_ledger_roots": missing, "appended": False,
+                "required_evidence_or_repair": "supply " + " and ".join(missing),
+                "events_retained": True}
+    results = []
+    for path in events:
+        row: dict[str, Any] = {"event": path.name}
+        try:
+            raw = path.read_bytes()
+            event = json.loads(raw)
+            row["event_sha256"] = "sha256:" + hashlib.sha256(raw).hexdigest()
+        except (OSError, ValueError):
+            event = None
+        if (not isinstance(event, Mapping) or event.get("schema") != OUTBOX_EVENT_SCHEMA
+                or event.get("route") != route or not isinstance(event.get("manifest"), Mapping)):
+            # No manifest, so nothing is attempted and nothing is appended.
+            results.append({**row, "disposition": "FAIL_CLOSED",
+                            "failed_predicate": "OUTBOX_EVENT_CARRIES_A_MANIFEST_ON_THIS_ROUTE",
+                            "appended": False})
+            continue
+        result = receive(event["manifest"], registry=registry, standing=event.get("standing"),
+                         packet_id=str(event.get("packet_id") or f"{route}:{path.stem}"),
+                         hb_epoch=event.get("hb_epoch"), mesh_root=mesh_root)
+        results.append({**row, **{key: result.get(key) for key in (
+            "disposition", "failed_predicate", "received", "organization_receipt_sha256",
+            "repository_receipt_sha256", "organization_transition_id", "transition_replayed",
+            "refusal_organization_receipt_sha256", "refusal_transition_id", "differing_files")
+            if key in result}})
+    return {**base, "state": "CONSUMED", "event_count": len(events), "results": results}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Receive a submitted SDK manifest on this organization's ingress operation.")
-    parser.add_argument("--manifest", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--manifest", type=Path)
+    source.add_argument("--outbox-root", type=Path,
+                        help="durable state root whose intr-outbox/"
+                             + ROLE_CONFORMANCE_OUTBOX_ROUTE + " events are received")
     parser.add_argument("--registry", type=Path, required=True,
                         help="materialized capability map supplied by the organization boundary")
     parser.add_argument("--standing", type=Path, default=None,
@@ -1022,6 +1177,20 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
+    if args.outbox_root is not None:
+        try:
+            consumed = consume_outbox(args.outbox_root,
+                                      registry=json.loads(args.registry.read_text(encoding="utf-8")),
+                                      mesh_root=args.mesh_root)
+        except RuntimeError as exc:
+            consumed = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "state": "FAIL_CLOSED",
+                        "failed_predicate": str(exc), "receipt_written": False}
+        rendered = json.dumps(consumed, indent=2, sort_keys=True) + "\n"
+        if args.out:
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(rendered)
+        print(json.dumps(consumed, sort_keys=True))
+        return 0 if consumed["state"] in {"NO_EVENT", "CONSUMED"} else 1
     try:
         result = receive(
             json.loads(args.manifest.read_text(encoding="utf-8")),
