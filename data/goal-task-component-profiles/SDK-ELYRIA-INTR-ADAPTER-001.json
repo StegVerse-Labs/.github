@@ -22,9 +22,35 @@
   ],
   "task_specific_configuration": ["Elyria Admission Runtime public HTTP/JSON movement-assessment endpoint","Elyria ADMIT/HOLD/REFUSE/NO_PROVABLE_ADMISSION verdict normalization","foreign receipt/replay/no-bind evidence preservation","transition/run/source identity mapping"],
   "not_selected": ["RTC-PUBLISHER-005 because this Goal Task does not require publication","RTC-FARSIDE-FINAL-009 because Elyria assessment is an external framework observation, not a StegVerse-owned far-side final state transition","credential_session component unless the public endpoint later proves to require TV/TVC-governed credentials","KV/SKAP user-verification flow because this task does not require user verification and device identity must not be substituted","RT-EXTERNAL-ENDPOINT-MONITOR-001 because completion requires one authentic bounded round trip, not recurring endpoint monitoring","terminal cleanup/entropy recovery because no ephemeral secret-bearing construct is introduced by this adapter task"],
-  "goal_specific_completion_predicates_preserved": ["ELYRIA_REQUEST_TRANSLATION_BOUND","ELYRIA_RESPONSE_TRANSLATION_BOUND","TRANSITION_AND_RUN_IDENTITY_PRESERVED","ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING","ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED","ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION","FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS","README_AND_HANDOFF_CURRENT","AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"],
+  "goal_specific_completion_predicates_preserved": ["ELYRIA_REQUEST_TRANSLATION_BOUND","ELYRIA_RESPONSE_TRANSLATION_BOUND","TRANSITION_AND_RUN_IDENTITY_PRESERVED","ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING","ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED","ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION","FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS","README_AND_HANDOFF_CURRENT","ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE"],
+  "superseded_goal_specific_completion_predicates_preserved": {
+    "value": [
+      "ELYRIA_REQUEST_TRANSLATION_BOUND",
+      "ELYRIA_RESPONSE_TRANSLATION_BOUND",
+      "TRANSITION_AND_RUN_IDENTITY_PRESERVED",
+      "ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING",
+      "ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED",
+      "ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION",
+      "FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS",
+      "README_AND_HANDOFF_CURRENT",
+      "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "goal_specific_completion_predicates_preserved",
+    "reason": "StegVerse-Labs/.github#3012 F1 non-Registry mirror follow-up to PR #3053: this field gates progression or must match the canonical record, whose affirmative observer predicate (*_OBSERVED) PR #3053 replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  },
   "satisfied_predicates": ["ELYRIA_REQUEST_TRANSLATION_BOUND","ELYRIA_RESPONSE_TRANSLATION_BOUND","TRANSITION_AND_RUN_IDENTITY_PRESERVED","ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING","ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED","ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION","FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS","README_AND_HANDOFF_CURRENT"],
-  "remaining_predicates": ["AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"],
+  "remaining_predicates": ["ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE"],
+  "superseded_remaining_predicates": {
+    "value": [
+      "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+    ],
+    "superseded_at_generation": 301,
+    "superseded_by": "remaining_predicates",
+    "reason": "StegVerse-Labs/.github#3012 F1 non-Registry mirror follow-up to PR #3053: this field gates progression or must match the canonical record, whose affirmative observer predicate (*_OBSERVED) PR #3053 replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+    "authority_effect": "NONE_HISTORY_ONLY"
+  },
   "authority_invariants": {"task_registry":"COORDINATION_ONLY","worker_claim_fence":"WorkerCoordinator","user_verification":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER","credential_provider_release":"TV/TVC","governed_transition":"Interlock/InTr","observed_reality_custody":"Organization","organization_records_reconstruction":"Master Records","heartbeat":"TIMING_FRESHNESS_CORRELATION_OBSERVABILITY_ONLY","github_runtime_authority":"NONE"},
   "goal_identity_preserved": true,
   "new_goal_task_required": false,

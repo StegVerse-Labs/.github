@@ -61,7 +61,14 @@
       "authority_effect": "NONE_GATE_ONLY"
     },
     {
-      "predicate_id": "AUTHENTIC_INTR_INGRESS_OBSERVED",
+      "predicate_id": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS",
+      "superseded_predicate_id": {
+        "value": "AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "superseded_at_generation": 301,
+        "superseded_by": "required_predicates[5].predicate_id",
+        "reason": "StegVerse-Labs/.github#3012 F1 non-Registry mirror follow-up to PR #3053: this field gates progression or must match the canonical record, whose affirmative observer predicate (*_OBSERVED) PR #3053 replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "kind": "RUNTIME_EVIDENCE_GATE",
       "required_state": "PENDING_RUNTIME_OBSERVATION",
       "observed_state": "NOT_OBSERVED",
@@ -69,7 +76,14 @@
       "authority_effect": "NONE_GATE_ONLY"
     },
     {
-      "predicate_id": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+      "predicate_id": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:WORKERCOORDINATOR_CLAIM_FENCE",
+      "superseded_predicate_id": {
+        "value": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "superseded_at_generation": 301,
+        "superseded_by": "required_predicates[6].predicate_id",
+        "reason": "StegVerse-Labs/.github#3012 F1 non-Registry mirror follow-up to PR #3053: this field gates progression or must match the canonical record, whose affirmative observer predicate (*_OBSERVED) PR #3053 replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      },
       "kind": "RUNTIME_EVIDENCE_GATE",
       "required_state": "PENDING_RUNTIME_OBSERVATION",
       "observed_state": "NOT_OBSERVED",

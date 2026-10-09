@@ -124,6 +124,23 @@ def test_existing_elyria_profile_fits_rollout_without_new_transport_plane():
     assert any("second Interlock/InTr protocol" in item for item in elyria["duplicate_orchestration_to_retire"])
 
 
+def test_elyria_profile_remaining_predicate_matches_record_organization_append():
+    # #3012: the two-way transport gates on its Organization append in both the
+    # record and the profile; the observer name is retained only as history.
+    elyria = json.loads(ELYRIA_PROFILE.read_text(encoding="utf-8"))
+    task = json.loads((ROOT / "data/canonical-task-records/SDK-ELYRIA-INTR-ADAPTER-001.json").read_text(encoding="utf-8"))
+    appended = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE"
+    assert task["remaining_predicates"] == [appended]
+    assert elyria["remaining_predicates"] == task["remaining_predicates"]
+    assert elyria["goal_specific_completion_predicates_preserved"][-1] == appended
+    assert elyria["satisfied_predicates"] + [appended] == elyria["goal_specific_completion_predicates_preserved"]
+    observer = "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+    assert elyria["superseded_remaining_predicates"]["value"] == task["superseded_remaining_predicates"]["value"] == [observer]
+    assert elyria["superseded_goal_specific_completion_predicates_preserved"]["value"][-1] == observer
+    for key in ("superseded_remaining_predicates", "superseded_goal_specific_completion_predicates_preserved"):
+        assert elyria[key]["authority_effect"] == "NONE_HISTORY_ONLY"
+
+
 def test_source_blocked_registry_entry_stops_as_source_only():
     module = load_resolver()
     result = build(
