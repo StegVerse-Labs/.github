@@ -33,6 +33,31 @@ class LedgerStoreSelectionInvalid(LedgerLocationRequired):
 
     failed_predicate="ORGANIZATION_LEDGER_STORE_SELECTION_INVALID"
 
+class LedgerLocusNotDeclared(LedgerLocationRequired):
+    """The Organization manifest declares no ledger locus (OL-1b).
+
+    The destination of every Organization append is the manifest's to choose,
+    so there is no environment-only fallback: nothing is appended.
+    """
+
+    failed_predicate="ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED"
+    repair="declare organization_ledger in .stegverse/transition-ledger/org-contract.json"
+
+    def __init__(self, field):
+        ValueError.__init__(self,"organization_ledger_locus_not_declared: "+field)
+        self.variable=field
+
+class LedgerLocusMismatch(LedgerLocationRequired):
+    """A materializer value disagrees with the manifest-declared locus (OL-1b)."""
+
+    failed_predicate="ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+
+    def __init__(self, variable, declared):
+        ValueError.__init__(self,"organization_ledger_locus_mismatch: "+variable)
+        self.variable=variable
+        self.declared=declared
+        self.repair="unset "+variable+" or make it equal the declared organization_ledger value "+json.dumps(declared)
+
 def location_refusal(exc):
     """The append attempt's own disposition when no ledger root was supplied."""
     return {
@@ -40,7 +65,7 @@ def location_refusal(exc):
         "organization":C["organization"],
         "disposition":"FAIL_CLOSED",
         "failed_predicate":exc.failed_predicate,
-        "required_evidence_or_repair":"supply the organization ledger root as "+exc.variable,
+        "required_evidence_or_repair":getattr(exc,"repair",None) or "supply the organization ledger root as "+exc.variable,
         "retry_entrypoint":"resident-runtime/aggregate_repo_transition.py::aggregate_transition",
         "consequence_committed":False,
         "authority_effect":"NONE_REFUSAL_ONLY",
@@ -63,29 +88,65 @@ def load(p): return json.loads(Path(p).read_text())
 def _is_store(value): return value is not None and hasattr(value,"append_transaction")
 def _is_posix(store): return getattr(store,"kind",None)=="POSIX_FILESYSTEM"
 
-def organization_store(ledger=None):
-    """The Organization ledger store, as supplied to this execution.
+LEDGER_LOCUS_KEY="organization_ledger"
+LEDGER_STORES=("git","posix")
 
-    A store or a root the caller holds is used as is. Otherwise the
-    materializer selects the store: STEGVERSE_ORG_LEDGER_STORE=git with
-    STEGVERSE_ORG_LEDGER_GIT_DIR, STEGVERSE_ORG_LEDGER_GIT_REF and optional
-    STEGVERSE_ORG_LEDGER_GIT_REMOTE and STEGVERSE_ORG_LEDGER_GIT_CUSTODY names
-    the durable Git ledger; absent, the POSIX root from ledger_root(), exactly
-    as before. Nothing is derived from the host. The ledger is the local
-    git dir; the remote is only the target of the store's explicit
-    materialize/propagate steps and is never awaited by a transition (F75-01).
+def declared_ledger_locus():
+    """The Organization ledger locus the manifest declares (OL-1b).
+
+    Absent or malformed, nothing is selected: FAIL_CLOSED
+    ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED, never an environment fallback.
+    """
+    locus=C.get(LEDGER_LOCUS_KEY)
+    if not isinstance(locus,dict) or not locus.get("store"): raise LedgerLocusNotDeclared(LEDGER_LOCUS_KEY)
+    if locus["store"] not in LEDGER_STORES: raise LedgerStoreSelectionInvalid(LEDGER_LOCUS_KEY+".store")
+    if locus["store"]=="git" and not locus.get("ref"): raise LedgerLocusNotDeclared(LEDGER_LOCUS_KEY+".ref")
+    return locus
+
+def propagation_remote(locus):
+    """The declared propagate_target remote, only when it is declared PRIVATE.
+
+    A null or non-private target yields no remote, so propagate returns its
+    existing typed non-gating refusal; no transition waits on it.
+    """
+    target=locus.get("propagate_target")
+    if not isinstance(target,dict) or target.get("custody")!=ledger_store.PRIVATE_CUSTODY: return None
+    return target.get("remote") or None
+
+def _require_equal(variable, declared):
+    """A materializer value is non-authoritative: present, it must equal the declaration."""
+    supplied=os.getenv(variable)
+    if supplied and supplied!=declared: raise LedgerLocusMismatch(variable,declared)
+
+def organization_store(ledger=None):
+    """The Organization ledger store, as the Organization manifest declares it.
+
+    A store or a root the caller holds is used as is. Otherwise the locus is
+    org-contract.json's organization_ledger (OL-1b): store "git" with its ref,
+    custody and propagate_target, or store "posix" at the materialized
+    ledger_root(). STEGVERSE_ORG_LEDGER_STORE / _GIT_REF / _GIT_REMOTE /
+    _GIT_CUSTODY are non-authoritative: each one present must equal the
+    declared value, else FAIL_CLOSED ORGANIZATION_LEDGER_LOCUS_MISMATCH. A
+    missing declaration is FAIL_CLOSED ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED.
+    Only STEGVERSE_ORG_LEDGER_GIT_DIR (and the POSIX root) stays host
+    supplied: it is the local materialization path, not the destination.
+    The ledger is the local git dir; the remote is only the target of the
+    store's explicit materialize/propagate steps and is never awaited by a
+    transition (F75-01).
     """
     if _is_store(ledger): return ledger
     if ledger is not None: return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
-    selected=os.getenv("STEGVERSE_ORG_LEDGER_STORE") or "posix"
-    if selected=="posix": return ledger_store.PosixLedgerStore(ledger_root())
-    if selected!="git": raise LedgerStoreSelectionInvalid("STEGVERSE_ORG_LEDGER_STORE")
-    for variable in ("STEGVERSE_ORG_LEDGER_GIT_DIR","STEGVERSE_ORG_LEDGER_GIT_REF"):
-        if not os.getenv(variable): raise LedgerLocationRequired(variable)
+    locus=declared_ledger_locus()
+    _require_equal("STEGVERSE_ORG_LEDGER_STORE",locus["store"])
+    git=locus["store"]=="git"
+    remote=propagation_remote(locus) if git else None
+    _require_equal("STEGVERSE_ORG_LEDGER_GIT_REF",locus.get("ref") if git else None)
+    _require_equal("STEGVERSE_ORG_LEDGER_GIT_REMOTE",remote)
+    _require_equal("STEGVERSE_ORG_LEDGER_GIT_CUSTODY",locus.get("custody") if git else None)
+    if not git: return ledger_store.PosixLedgerStore(ledger_root())
+    if not os.getenv("STEGVERSE_ORG_LEDGER_GIT_DIR"): raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_GIT_DIR")
     return ledger_store.GitLedgerStore(
-        os.environ["STEGVERSE_ORG_LEDGER_GIT_DIR"],os.environ["STEGVERSE_ORG_LEDGER_GIT_REF"],
-        remote=os.getenv("STEGVERSE_ORG_LEDGER_GIT_REMOTE") or None,
-        custody=os.getenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY") or None,
+        os.environ["STEGVERSE_ORG_LEDGER_GIT_DIR"],locus["ref"],remote=remote,custody=locus.get("custody"),
     )
 
 def store_refusal(exc):

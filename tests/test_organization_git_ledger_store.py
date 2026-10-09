@@ -120,15 +120,25 @@ def test_append_then_readback_verifies_from_the_durable_ref(tmp_path, origin):
     assert custody.verified_organization_record(reader, result) == second
 
 
-def test_materializer_selects_the_git_store_and_readback_uses_it(tmp_path, origin, monkeypatch):
+def declare(monkeypatch, **locus):
+    """The Organization manifest's own ledger locus for this test (OL-1b)."""
+    monkeypatch.setitem(org.C, "organization_ledger", locus)
+
+
+def test_manifest_declared_locus_selects_the_git_store_and_readback_uses_it(tmp_path, origin, monkeypatch):
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT", raising=False)
-    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "git")
+    declare(monkeypatch, store="git", ref=REF, custody="PRIVATE",
+            propagate_target={"remote": str(origin), "custody": "PRIVATE"})
+    # Only the local materialization path is host supplied; the destination is declared.
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
+    # Materializer values are non-authoritative; present, they equal the declaration.
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "git")
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_REF", REF)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_REMOTE", str(origin))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY", "PRIVATE")
     record = org.aggregate_transition(receipt("CLAIM"))
-    assert org.organization_store().kind == "GIT_REF"
+    store = org.organization_store()
+    assert (store.kind, store.ref, store.custody, store.remote) == ("GIT_REF", REF, "PRIVATE", str(origin))
     assert remote_tip(origin) is None, "the remote is never awaited or written by the transition"
     row = custody.verified_organization_receipt(
         None, record["receipt_sha256"], state_receipt_sha256=record["source_transition_sha256"])
@@ -136,6 +146,100 @@ def test_materializer_selects_the_git_store_and_readback_uses_it(tmp_path, origi
     assert not any(tmp_path.rglob("HEAD.json"))
     propagated(org.organization_store())
     assert remote_tip(origin) == remote_tip(tmp_path / "node.git")
+
+
+@pytest.mark.repository_ledger_locus
+def test_repository_manifest_declares_the_private_git_locus_with_null_propagate_target():
+    contract = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())
+    assert contract["organization_ledger"] == {
+        "store": "git", "ref": REF, "custody": "PRIVATE", "propagate_target": None}
+    assert org.declared_ledger_locus() == contract["organization_ledger"]
+
+
+@pytest.mark.repository_ledger_locus
+def test_null_propagate_target_is_a_non_gating_refusal_after_the_local_append(tmp_path, origin, monkeypatch):
+    for variable in ("STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
+                     "STEGVERSE_ORG_LEDGER_GIT_REMOTE", "STEGVERSE_ORG_LEDGER_GIT_CUSTODY"):
+        monkeypatch.delenv(variable, raising=False)
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
+    record = org.aggregate_transition(receipt("CLAIM"))
+    store = org.organization_store()
+    assert (store.kind, store.ref, store.custody, store.remote) == ("GIT_REF", REF, "PRIVATE", None)
+    local = remote_tip(tmp_path / "node.git")
+    assert local is not None, "the local append completed without any propagation"
+    assert custody.verified_organization_receipt(
+        None, record["receipt_sha256"], state_receipt_sha256=record["source_transition_sha256"]) == record
+    refused = store.propagate()
+    assert refused["disposition"] == "FAIL_CLOSED"
+    assert refused["failed_predicate"] == "ORGANIZATION_LEDGER_REMOTE_NOT_SUPPLIED"
+    assert refused["retry_entrypoint"] == store_module.PROPAGATION_RETRY_ENTRYPOINT
+    assert remote_tip(origin) is None
+    # Propagation never gates the chain: the next transition appends locally regardless.
+    second = org.aggregate_transition(receipt("WORK"))
+    assert second["previous_receipt_sha256"] == record["receipt_sha256"]
+
+
+def test_non_private_propagate_target_is_never_pushed(tmp_path, origin, monkeypatch):
+    for target in ({"remote": str(origin), "custody": "PUBLIC"}, {"remote": str(origin)}, str(origin)):
+        declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=target)
+        monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
+        org.aggregate_transition(receipt("CLAIM"))
+        store = org.organization_store()
+        assert store.remote is None
+        assert store.propagate()["failed_predicate"] == "ORGANIZATION_LEDGER_REMOTE_NOT_SUPPLIED"
+        assert remote_tip(origin) is None
+
+
+@pytest.mark.parametrize("variable,value", [
+    ("STEGVERSE_ORG_LEDGER_STORE", "posix"),
+    ("STEGVERSE_ORG_LEDGER_GIT_REF", "refs/heads/organization-ledger/elsewhere"),
+    ("STEGVERSE_ORG_LEDGER_GIT_REMOTE", "https://example.invalid/public-ledger.git"),
+    ("STEGVERSE_ORG_LEDGER_GIT_CUSTODY", "PUBLIC"),
+])
+def test_materializer_value_differing_from_the_declaration_fails_closed_with_no_append(
+        tmp_path, monkeypatch, variable, value):
+    declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=None)
+    git_dir = bare(tmp_path / "node.git")
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(git_dir))
+    monkeypatch.setenv(variable, value)
+    with pytest.raises(org.LedgerLocusMismatch) as mismatch:
+        org.organization_store()
+    refusal = org.location_refusal(mismatch.value)
+    assert refusal["disposition"] == "FAIL_CLOSED"
+    assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+    assert refusal["consequence_committed"] is False
+    assert mismatch.value.variable == variable
+    with pytest.raises(org.LedgerLocusMismatch):
+        org.aggregate_transition(receipt("CLAIM"))
+    assert remote_tip(git_dir) is None, "nothing is appended under a mismatched locus"
+
+
+def test_missing_declaration_fails_closed_with_no_environment_fallback(tmp_path, monkeypatch):
+    git_dir = bare(tmp_path / "node.git")
+    # Every materializer variable a pre-OL-1b selection needed, and a POSIX root too.
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "git")
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(git_dir))
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_REF", REF)
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY", "PRIVATE")
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "root"))
+    for declared in (None, {}, {"store": ""}, "git"):
+        if declared is None:
+            monkeypatch.delitem(org.C, "organization_ledger", raising=False)
+        else:
+            monkeypatch.setitem(org.C, "organization_ledger", declared)
+        with pytest.raises(org.LedgerLocusNotDeclared) as missing:
+            org.organization_store()
+        refusal = org.location_refusal(missing.value)
+        assert refusal["disposition"] == "FAIL_CLOSED"
+        assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED"
+        with pytest.raises(org.LedgerLocusNotDeclared):
+            org.aggregate_transition(receipt("CLAIM"))
+    assert remote_tip(git_dir) is None
+    assert not (tmp_path / "root").exists()
+    declare(monkeypatch, store="git", custody="PRIVATE", propagate_target=None)
+    with pytest.raises(org.LedgerLocusNotDeclared) as no_ref:
+        org.organization_store()
+    assert no_ref.value.variable == "organization_ledger.ref"
 
 
 def test_concurrent_append_lost_race_is_typed_fail_closed_with_no_partial_write(tmp_path, origin):
@@ -351,9 +455,11 @@ def test_prior_posix_receipts_are_not_git_ledger_history(tmp_path, origin):
     assert first["previous_receipt_sha256"] is None
 
 
-def test_posix_selection_is_unchanged(tmp_path, monkeypatch):
+def test_posix_selection_is_unchanged_when_declared(tmp_path, monkeypatch):
     for variable in ("STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_ROOT"):
         monkeypatch.delenv(variable, raising=False)
+    # The POSIX store is selected only by an explicit declaration, never by default.
+    declare(monkeypatch, store="posix")
     with pytest.raises(org.LedgerLocationRequired) as refused:
         org.organization_store()
     assert refused.value.failed_predicate == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
@@ -367,11 +473,20 @@ def test_posix_selection_is_unchanged(tmp_path, monkeypatch):
     assert custody.verified_organization_receipt(
         None, record["receipt_sha256"], state_receipt_sha256=record["source_transition_sha256"]) == record
 
-    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "kv")
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "posix")
+    assert org.organization_store().kind == "POSIX_FILESYSTEM"
+    for variable, value in (("STEGVERSE_ORG_LEDGER_STORE", "kv"), ("STEGVERSE_ORG_LEDGER_STORE", "git"),
+                            ("STEGVERSE_ORG_LEDGER_GIT_REF", REF)):
+        monkeypatch.setenv(variable, value)
+        with pytest.raises(org.LedgerLocusMismatch) as mismatch:
+            org.organization_store()
+        assert org.location_refusal(mismatch.value)["failed_predicate"] == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+        monkeypatch.delenv(variable)
+    declare(monkeypatch, store="kv")
     with pytest.raises(org.LedgerStoreSelectionInvalid) as invalid:
         org.organization_store()
     assert org.location_refusal(invalid.value)["failed_predicate"] == "ORGANIZATION_LEDGER_STORE_SELECTION_INVALID"
-    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_STORE", "git")
+    declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=None)
     with pytest.raises(org.LedgerLocationRequired) as missing:
         org.organization_store()
     assert missing.value.variable == "STEGVERSE_ORG_LEDGER_GIT_DIR"

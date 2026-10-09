@@ -220,6 +220,31 @@
       "runtime_evidence": "NONE",
       "consequence_committed": false,
       "authority_effect": "NONE_SOURCE_RECORD_ONLY"
+    },
+    "ol1b_manifest_declared_locus": {
+      "finding_id": "OL-1b",
+      "approval_ref": "StegVerse-Labs/TVC#488 comment 6084480922 (ChatGPT FINAL) approving Claude proposal comment 6084332899 (revised OL-1b; Q-OL6 owner ORGANIZATION-BATCH-CUSTODY-REPLAY-001; Q-OL8 propagate_target null)",
+      "verdict": "REPAIRED_LEDGER_LOCUS_MANIFEST_DECLARED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "declaration": {
+        "path": ".stegverse/transition-ledger/org-contract.json",
+        "key": "organization_ledger",
+        "value": {
+          "store": "git",
+          "ref": "refs/heads/organization-ledger/StegVerse-Labs",
+          "custody": "PRIVATE",
+          "propagate_target": null
+        }
+      },
+      "design": "resident-runtime/aggregate_repo_transition.py::organization_store() selects the store from the manifest declaration first. STEGVERSE_ORG_LEDGER_STORE/_GIT_REF/_GIT_REMOTE/_GIT_CUSTODY are non-authoritative and, when present, must equal the declared value, otherwise FAIL_CLOSED ORGANIZATION_LEDGER_LOCUS_MISMATCH before any store is built (no append). A missing or malformed declaration is FAIL_CLOSED ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED with no environment-only fallback; POSIX is selected only by an explicit {\"store\":\"posix\"} declaration. STEGVERSE_ORG_LEDGER_GIT_DIR (and STEGVERSE_ORG_LEDGER_ROOT for a declared POSIX store) stays host-supplied as the local materialization path. The store's remote is the declared propagate_target only when it is declared custody PRIVATE; with null, GitLedgerStore.propagate returns its existing typed non-gating FAIL_CLOSED ORGANIZATION_LEDGER_REMOTE_NOT_SUPPLIED and the local CAS append still completes.",
+      "unchanged": "ledger_store.py semantics, receipt/batch formats and hashes, every existing refusal, and caller-held stores or roots passed directly.",
+      "tests": "tests/test_organization_git_ledger_store.py; tests/conftest.py and tests/posix_ledger_locus/ declare the POSIX locus for tests that supply a POSIX root",
+      "real_ledger_ref_created": false,
+      "new_dependencies": 0,
+      "runtime_evidence": "NONE",
+      "runtime_allow_claimed": false,
+      "consequence_committed": false,
+      "authority_effect": "NONE_SOURCE_RECORD_ONLY"
     }
   },
   "worker_claim": {
