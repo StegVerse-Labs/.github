@@ -205,6 +205,37 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
     return row
 
 
+# Q74-01 (CORRECT_BOUNDED_A). A verified readback proves the receipt is on the
+# chain and bound to its state receipt; it never proves authentic custody, user
+# verification, InTr admission or an authorized ALLOW. Every report of a
+# verified readback carries readback_custody_basis(row) beside it.
+READBACK_CUSTODY_BASIS_KEY = "organization_readback_custody_basis"
+READBACK_CUSTODY_BASIS_ABSENT = ("FAIL_CLOSED_GENERATION_0_CUSTODY_AUTHORITY_BASIS_ABSENT; "
+                                 "NO_CUSTODY_AUTHORITY_CLAIMED")
+READBACK_CUSTODY_BASIS_HANDOVER = org.CUSTODY_EXCLUSIVITY + "; NO_CUSTODY_AUTHORITY_CLAIMED"
+
+
+def readback_custody_basis(row) -> str:
+    """The custody basis a verified readback of `row` may report, never custody authority.
+
+    Generation 0 reports the receipt's own custody_authority_basis
+    (PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED); a generation-0 row without
+    it, or with any other value, reports the fail-closed value. A handover
+    generation reports DETECTED_NOT_PREVENTED_ACROSS_KERNELS with no custody
+    authority claimed. Receipt bodies and hashes are not touched.
+    """
+    if not isinstance(row, Mapping):
+        return READBACK_CUSTODY_BASIS_ABSENT
+    try:
+        generation = org.custody_generation(row)
+    except org.CustodyRefused:
+        return READBACK_CUSTODY_BASIS_ABSENT
+    if generation == 0:
+        basis = row.get("custody_authority_basis")
+        return basis if basis == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0 else READBACK_CUSTODY_BASIS_ABSENT
+    return READBACK_CUSTODY_BASIS_HANDOVER
+
+
 def verified_organization_source_receipt(root, digest, *, state_receipt_sha256,
                                          expected_transition_id=None) -> tuple[dict, dict]:
     """verified_organization_receipt() plus the exact source receipt retained under the same ledger root.

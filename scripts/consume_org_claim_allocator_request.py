@@ -662,20 +662,22 @@ def retained_repository_receipt_sha256(custody: Mapping[str, Any], row: Mapping[
 
 
 def organization_readback(custody: Mapping[str, Any], digest: str | None, *,
-                          repository_receipt_sha256: str | None, transition_id: str) -> None:
+                          repository_receipt_sha256: str | None, transition_id: str) -> str:
     """Read the Organization receipt back through organization_batch_custody.verified_organization_receipt.
 
     Bound to the exact ledger root the append used, the exact repository receipt
     it consumes and the deterministic transition id. A refusal raises
     OrganizationReadbackRefused carrying the verifier's own DENY or FAIL_CLOSED.
+    Returns the readback's custody basis, which is never custody authority.
     """
     verifier = custody["organization_receipt_custody"]
     try:
-        verifier.verified_organization_receipt(
+        row = verifier.verified_organization_receipt(
             custody["organization_root"], digest,
             state_receipt_sha256=repository_receipt_sha256, expected_transition_id=transition_id)
     except verifier.OrganizationReceiptRefused as exc:
         raise OrganizationReadbackRefused(exc.refusal()) from exc
+    return verifier.readback_custody_basis(row)
 
 
 def readback_state(refusal: Mapping[str, Any] | None) -> str:
@@ -857,10 +859,10 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             lock_held=lock_held)
         organization_receipt = receipts["organization_receipt"]
         organization_sha = organization_receipt and organization_receipt["receipt_sha256"]
-        own_refusal = None
+        own_refusal = readback_basis = None
         if organization_receipt is not None:
             try:
-                organization_readback(custody, organization_sha,
+                readback_basis = organization_readback(custody, organization_sha,
                                       repository_receipt_sha256=receipts["repository_receipt"]["receipt_sha256"],
                                       transition_id=transition_id)
             except OrganizationReadbackRefused as exc:
@@ -895,6 +897,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                                       else "NOT_PERFORMED" if organization_receipt is None
                                       else readback_state(own_refusal)),
             "organization_readback_refusal": readback_refusal or own_refusal,
+            "organization_readback_custody_basis": readback_basis,
             "unpropagated_repository_receipt_sha256": unpropagated and unpropagated["receipt_sha256"],
             "evidence_refs": {
                 "consumption_record": record_rel.as_posix(),
@@ -913,7 +916,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         fence = evidence["fencing_token"]
         transition_id = grant_row["source_transition_id"]
         # Nothing is projected and claims-active never advances unless the grant reads back.
-        organization_readback(
+        readback_basis = organization_readback(
             custody, grant_row["receipt_sha256"],
             repository_receipt_sha256=(receipts["repository_receipt"]["receipt_sha256"] if receipts
                                        else retained_repository_receipt_sha256(custody, grant_row)),
@@ -958,6 +961,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "repository_disposition_retained": receipts is not None,
             "organization_disposition_retained": True,
             "organization_readback": "VERIFIED",
+            "organization_readback_custody_basis": readback_basis,
             "custody_authentication": CUSTODY_AUTHENTICATION,
             "authority_effect": "CANONICAL_ALLOCATOR_ONLY_IF_SELECTED",
         }

@@ -538,3 +538,16 @@ def test_diagnostic_closure_refusal_emits_outer_fail_closed_record(monkeypatch, 
     head = _head(tmp_path)
     assert ingress_worker.execute(runtime, request)["source_disposition_ref"] == record["source_disposition_ref"]
     assert _head(tmp_path) == head
+
+
+def test_verified_gate_reports_generation_zero_basis_not_custody(monkeypatch, tmp_path):
+    # Q74-01: a verified readback is reported with its unauthenticated basis.
+    _, _, result = _recorded(monkeypatch, tmp_path)
+    from workers.canonical_state_transition_custody import organization_receipt_gate
+
+    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID)
+    assert gate["verified"] is True
+    assert gate["organization_readback_custody_basis"] == (
+        "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY")
+    assert gate["organization_readback_custody_basis"] == _custody().readback_custody_basis(
+        _custody().verified_organization_record(None, result))
