@@ -1,11 +1,38 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, sys
+import json, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "data" / "task-registry-global-invariants.json"
 RECORDS = ROOT / "data" / "canonical-task-records"
+# Every exemption carries the nine required fields plus exactly these state fields.
+EXEMPTION_STATE_FIELDS = {
+    "current_disposition": "FAIL_CLOSED",
+    "consequence_committed": False,
+    "authority_effect": "NONE_REGISTER_ONLY",
+}
+# Wording equivalent to a prohibited justification, matched in the lower-cased "why" field.
+PROHIBITED_JUSTIFICATION_PHRASES = (
+    "external machine must be running",
+    "external machine is not running",
+    "waiting for an external machine",
+    "second user-operated device",
+    "second device is required",
+    "remote computer is unavailable",
+    "remote computer is offline",
+    "evidence reachability",
+    "evidence is not yet reachable",
+    "receiver is not always on",
+    "receiver is not always-on",
+    "receiver is offline",
+    "observer has not yet looked",
+    "has not yet been observed by an authentic observer",
+)
+# Surfaces in StegVerse-Labs/TVC are registered from its socket-module review records.
+TVC_SURFACE_PREFIX = "StegVerse-Labs/TVC:"
+TVC_RECORD_REF = re.compile(r"\bTVC record (?:O2B1-NA-\d{2}|W4-N[123]-\d{2})\b")
+TVC_EXEMPTION_EXTENSION = "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/N2"
 
 EXPECTED = {
     "user_verification_authority": "KV/SKAP Vault",
@@ -223,13 +250,59 @@ def validate_organization_role_deployment(invariants: dict) -> None:
     declared_fields = set((declaration.get("exemption_path") or {}).get("required_fields") or [])
     if not declared_fields or not declared_fields <= required_fields:
         fail("organization role exemption register omits a declared required field")
+    prohibited = set(register.get("prohibited_justifications") or [])
+    if not prohibited:
+        fail("organization role exemption register lists no prohibited justifications")
+    tvc_owners = tvc_exemption_owners()
+    surfaces: set[str] = set()
     for exemption in register.get("exemptions") or []:
+        surface = exemption.get("surface", "<unnamed>")
         missing_fields = sorted(required_fields - set(exemption))
         if missing_fields:
             fail(
-                f"organization role exemption {exemption.get('surface', '<unnamed>')} "
+                f"organization role exemption {surface} "
                 "missing required fields: " + ", ".join(missing_fields)
             )
+        unexpected = sorted(set(exemption) - required_fields - set(EXEMPTION_STATE_FIELDS))
+        if unexpected:
+            fail(f"organization role exemption {surface} has unexpected fields: " + ", ".join(unexpected))
+        for key, expected in EXEMPTION_STATE_FIELDS.items():
+            if exemption.get(key) != expected:
+                fail(f"organization role exemption {surface} {key} must be {expected!r}")
+        if surface in surfaces:
+            fail(f"organization role exemption {surface} is registered more than once")
+        surfaces.add(surface)
+        for field in sorted(required_fields):
+            value = exemption.get(field)
+            if not isinstance(value, str) or not value.strip():
+                fail(f"organization role exemption {surface} {field} must be a non-empty string")
+            if any(code in value for code in prohibited):
+                fail(f"organization role exemption {surface} {field} uses a prohibited justification")
+        why = exemption["why_manifest_bound_state_transition_is_not_yet_possible"].lower()
+        for phrase in PROHIBITED_JUSTIFICATION_PHRASES:
+            if phrase in why:
+                fail(f"organization role exemption {surface} justification is equivalent to a prohibited one: {phrase!r}")
+        if surface.startswith(TVC_SURFACE_PREFIX):
+            if exemption["owning_existing_goal"] not in tvc_owners:
+                fail(f"organization role exemption {surface} owner is not admitted for TVC surfaces")
+            if not TVC_RECORD_REF.search(exemption["retry_entrypoint"]):
+                fail(f"organization role exemption {surface} names no TVC review record")
+        elif not (RECORDS / f"{exemption['owning_existing_goal']}.json").is_file():
+            fail(f"organization role exemption {surface} owner has no canonical task record")
+
+
+def tvc_exemption_owners() -> set[str]:
+    """Owners admitted for TVC surfaces by the N2 bounded extension of the predicate owner."""
+    record = json.loads((RECORDS / f"{TVC_EXEMPTION_EXTENSION.split('/')[0]}.json").read_text(encoding="utf-8"))
+    for extension in record.get("bounded_extensions") or []:
+        if extension.get("extension_id") == TVC_EXEMPTION_EXTENSION:
+            owners = set(extension.get("input_owners") or [])
+            missing = sorted(owner for owner in owners if not (RECORDS / f"{owner}.json").is_file())
+            if missing:
+                fail("TVC exemption owners have no canonical task record: " + ", ".join(missing))
+            return owners
+    fail(f"bounded extension {TVC_EXEMPTION_EXTENSION} missing")
+    return set()
 
 
 def main() -> None:
