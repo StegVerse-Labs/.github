@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,36 +43,105 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "loopback"):
                 mod.validate_input(value, root)
 
-    def test_post_exact_uses_resident_local_headers_without_tvc_authorization(self):
+    def test_admit_exact_uses_resident_local_headers_without_tvc_authorization(self):
         mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_headers")
         captured = {}
 
-        class Response:
-            def __enter__(self):
-                return self
+        def admit(*, runtime_root, body, headers):
+            captured["runtime_root"] = runtime_root
+            captured["headers"] = {k.lower(): v for k, v in headers.items()}
+            captured["body"] = body
+            return {}
 
-            def __exit__(self, *args):
-                return False
-
-            def read(self):
-                return b"{}"
-
-        def opener(req, timeout):
-            captured["url"] = req.full_url
-            captured["headers"] = {k.lower(): v for k, v in req.header_items()}
-            captured["body"] = req.data
-            captured["timeout"] = timeout
-            return Response()
-
-        mod.post_exact(
-            {"schema": "x"},
-            "http://127.0.0.1:7777/intr/materialization",
-            opener=opener,
-        )
+        with tempfile.TemporaryDirectory() as td:
+            mod.admit_exact({"schema": "x"}, Path(td), admit=admit)
         self.assertEqual(captured["headers"]["x-stegverse-transport"], "InTr")
         self.assertEqual(captured["headers"]["x-stegverse-transport-origin"], mod.TRANSPORT_ORIGIN)
         self.assertNotIn("x-stegverse-authorization-id", captured["headers"])
         self.assertEqual(len(captured["headers"]["x-stegverse-payload-sha256"]), 64)
+        self.assertEqual(captured["body"], mod.canonical({"schema": "x"}))
+
+    def _ready_input(self, mod, runtime: Path, binding: dict) -> Path:
+        binding_path = runtime / "runtime-state/erl-active-research/binding.json"
+        binding_path.parent.mkdir(parents=True, exist_ok=True)
+        binding_path.write_text(json.dumps(binding), encoding="utf-8")
+        body = {
+            "schema": mod.INPUT_SCHEMA,
+            "state": "READY",
+            "task_id": mod.TASK_ID,
+            "binding_ref": str(binding_path.relative_to(runtime)),
+            "ingress_url": "http://127.0.0.1:7777/intr/materialization",
+            "transport_origin": mod.TRANSPORT_ORIGIN,
+            "transport_credential_required": False,
+            "credential_authority": "TV/TVC",
+            "request_grants_execution_authority": False,
+            "provider_operation_authorized": False,
+            "authority_effect": "NONE_INPUT_ONLY",
+        }
+        pointer = runtime / mod.DEFAULT_INPUT_REL
+        pointer.parent.mkdir(parents=True, exist_ok=True)
+        pointer.write_text(json.dumps({**body, "input_hash": mod.sha_uri(body)}), encoding="utf-8")
+        return pointer
+
+    def test_absent_listener_does_not_block_in_process_admission(self):
+        from tests.test_erl_active_research_intr_profile import binding
+
+        mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_in_process")
+
+        def no_network(*_args, **_kwargs):
+            raise AssertionError("in-process admission must not open a socket or listener")
+
+        value = binding()
+        with tempfile.TemporaryDirectory() as td, patch("urllib.request.urlopen", no_network), \
+                patch("socket.socket", no_network), patch("socket.create_connection", no_network):
+            runtime = Path(td).resolve()
+            self._ready_input(mod, runtime, value)
+            result = mod.consume(runtime, mod.DEFAULT_INPUT_REL, env={})
+            self.assertEqual(result["state"], "PROFILE_ADMITTED_TERMINAL_MATERIALIZATION_PENDING")
+            self.assertEqual(result["request_hash"], value["materialization_request"]["request_hash"])
+            self.assertTrue(result["in_process_write_once_admission"])
+            self.assertFalse(result["receiver_liveness_predicate"])
+            self.assertEqual(result["proof_verification"], "VERIFIED")
+            queued = json.loads(Path(result["ingress_receipt_ref"]).read_text(encoding="utf-8"))
+            self.assertEqual(queued["terminal_materialization_request"]["request_hash"], result["terminal_request_hash"])
+            # INGRESS admission only: terminal and provider execution stay unclaimed.
+            self.assertFalse(result["terminal_runtime_receipt_present"])
+            self.assertFalse(result["provider_operation_attempted"])
+            self.assertFalse(queued["terminal_runtime_receipt_present"])
+
+    def test_same_binding_admitted_twice_is_idempotent(self):
+        from tests.test_erl_active_research_intr_profile import binding
+
+        mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_replay")
+        value = binding()
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td).resolve()
+            self._ready_input(mod, runtime, value)
+            first = mod.consume(runtime, mod.DEFAULT_INPUT_REL, env={})
+            queued = Path(first["ingress_receipt_ref"]).read_bytes()
+            second = mod.consume(runtime, mod.DEFAULT_INPUT_REL, env={})
+            self.assertEqual(second["ingress_response_hash"], first["ingress_response_hash"])
+            self.assertEqual(second["upstream_hop_receipt_hashes"], first["upstream_hop_receipt_hashes"])
+            self.assertEqual(Path(first["ingress_receipt_ref"]).read_bytes(), queued)
+
+    def test_malformed_binding_is_refused_typed_without_effect(self):
+        from tests.test_erl_active_research_intr_profile import binding
+
+        mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_malformed")
+        value = binding()
+        value["transport_intent"]["boundary_path"] = ["EXTERNAL_SYSTEM", "KV"]
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td).resolve()
+            with self.assertRaisesRegex(RuntimeError, "^intr_admission_refused:erl_boundary_path_invalid"):
+                mod.admit_exact(value, runtime)
+            self.assertFalse((runtime / "receipts/sovereign-network/erl-active-research-intr").exists())
+
+    def test_resident_local_submitter_opens_no_loopback_connection(self):
+        source = (ROOT / "scripts/submit_erl_active_research_intr_binding_local.py").read_text(encoding="utf-8")
+        for forbidden in ("urlopen", "urllib.request", "http.client", "import socket", "socket.", "timeout=", "Request("):
+            self.assertNotIn(forbidden, source)
+        self.assertIn("profile.admit(", source)
+        self.assertIn("transport.validate_headers(", source)
 
     def test_profile_admission_requires_two_verified_upstream_hops(self):
         mod = load("scripts/submit_erl_active_research_intr_binding.py", "erl_submit_admission")

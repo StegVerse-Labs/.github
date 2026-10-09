@@ -130,23 +130,35 @@ def test_consumer_staging_wait_state_does_not_attempt_worker_until_inputs_exist(
     assert calls and all("refresh_and_execute_resident_task.py" not in str(call) for call in calls)
 
 
-def test_consumer_waits_without_explicit_intr_ingress_when_packet_is_staged(tmp_path):
+def test_consumer_attempts_in_process_admission_without_configured_intr_ingress(tmp_path):
     runtime = tmp_path / "runtime"
     request_target = runtime / consumer.REQUEST_REL
     request_target.parent.mkdir(parents=True)
     request_target.write_text((ROOT / consumer.REQUEST_REL).read_text(encoding="utf-8"), encoding="utf-8")
     home = tmp_path / "home"
     stage_consumer_inputs(home)
+    calls = []
 
-    def forbidden_runner(*args, **kwargs):
-        raise AssertionError("runner must not be called without explicit shared ingress")
+    def runner(command, **kwargs):
+        calls.append(command)
+        if "prepare_kv_ai_memory_intr_runtime_source.py" in command[1]:
+            out = {"state": "ROUTE_ALREADY_INSTALLED", "authority_effect": "NONE_SOURCE_PREPARATION_ONLY"}
+            return SimpleNamespace(returncode=0, stdout=json.dumps(out) + "\n", stderr="")
+        if "submit_kv_ai_memory_packet_local.py" in command[1]:
+            # An admission refusal writes nothing; the consumer keeps its wait state.
+            return SimpleNamespace(returncode=1, stdout="", stderr="intr_admission_refused:fixture")
+        raise AssertionError("worker must not run before an authentic admission exists")
 
-    result = consumer.consume(ROOT, runtime, runner=forbidden_runner, env={"HOME": str(home), "PATH": "/usr/bin"})
+    result = consumer.consume(ROOT, runtime, runner=runner, env={"HOME": str(home), "PATH": "/usr/bin"})
     assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
     assert result["missing_input_refs"] == ["inputs/memory-packet-admission.json"]
-    assert result["admission_attempt"]["state"] == "INGRESS_NOT_READY"
-    assert result["admission_attempt"]["admission_attempted"] is False
+    # No configured ingress endpoint, socket or listener gates the attempt.
+    assert result["admission_attempt"]["state"] != "INGRESS_NOT_READY"
+    assert result["admission_attempt"]["admission_attempted"] is True
+    assert result["admission_attempt"]["admission_written"] is False
     assert result["private_input_bytes_read"] is False
+    submit = [c for c in calls if "submit_kv_ai_memory_packet_local.py" in c[1]]
+    assert submit and submit[0][-2:] == ["--runtime-root", str(runtime.resolve())]
 
 
 def test_admission_attempt_uses_canonical_source_preparer_and_accepts_only_submitter_evidence(tmp_path):

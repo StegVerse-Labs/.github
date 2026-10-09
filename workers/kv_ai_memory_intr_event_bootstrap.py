@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Resident-native one-cycle KV AI memory bootstrap on the shared Universal InTr listener.
+"""Resident-native one-cycle KV AI memory bootstrap on the shared Universal InTr admission.
+
+The consumer's submitter admits the exact packet in-process through the shared
+listener's existing KV AI memory route (write-once, durable queue). This
+bootstrap therefore starts no listener and passes no ingress endpoint: no
+socket, timeout or receiver liveness is a predicate of the cycle.
 
 When fenced inputs are absent, this bootstrap may resolve an already-local Personal-KV
 root through the existing secret-free provider-root resolver and invoke the existing
@@ -8,12 +13,10 @@ creates default memory, provider/model settings, or an admission artifact.
 """
 from __future__ import annotations
 
-import importlib
 import json
 import os
 import subprocess
 import sys
-import threading
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -218,30 +221,15 @@ def run_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, e
             }
 
     preparation = prepare_source(source, runner=runner, env=safe)
-    if str(source) not in sys.path:
-        sys.path.insert(0, str(source))
-    importlib.invalidate_caches()
-    shared = importlib.import_module("workers.universal_intr_profiled_ingress")
-
-    server = shared.Server(("127.0.0.1", 0), runtime, 1)
-    host, port = server.server_address
-    thread = threading.Thread(target=server.handle_request, daemon=True)
-    thread.start()
 
     child_env = dict(safe)
-    child_env["STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"] = f"http://{host}:{port}{shared.INGRESS_PATH}"
     consumer = source / "scripts/consume_kv_ai_memory_resident_request.py"
     if not consumer.is_file():
-        server.server_close()
         raise RuntimeError("KV AI memory resident consumer missing")
-    try:
-        completed = runner(
-            [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(runtime)],
-            cwd=runtime, capture_output=True, text=True, check=False, env=child_env, timeout=1800,
-        )
-        thread.join(timeout=30)
-    finally:
-        server.server_close()
+    completed = runner(
+        [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(runtime)],
+        cwd=runtime, capture_output=True, text=True, check=False, env=child_env, timeout=1800,
+    )
 
     result = last_json(completed.stdout)
     admission_observed = (bound_state_root(safe) / ADMISSION_INPUT).is_file()
@@ -250,11 +238,10 @@ def run_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, e
         "state": "EVENT_CYCLE_COMPLETED" if completed.returncode == 0 else "EVENT_CYCLE_FAIL_CLOSED",
         "private_staging_result": staging_result,
         "route_preparation_state": preparation.get("state"),
-        "shared_listener_implementation": "workers.universal_intr_profiled_ingress.Server",
-        "shared_listener_started": True,
-        "listener_loopback_only": str(host) in {"127.0.0.1", "::1", "localhost"},
-        "listener_ephemeral_port": int(port),
-        "listener_max_requests": 1,
+        "shared_ingress_admission_implementation": "workers.kv_ai_memory_intr_profile.admit",
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
+        "shared_listener_started": False,
         "second_listener_implementation_created": False,
         "consumer_returncode": completed.returncode,
         "consumer_result": result,

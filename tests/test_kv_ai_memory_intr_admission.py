@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from urllib.request import Request
 
 import pytest
 
@@ -106,91 +105,119 @@ def test_transport_is_resident_local_and_credential_free():
         transport.validate_headers(bad, body)
 
 
-def test_submitter_writes_only_returned_exact_admission(tmp_path):
+def _no_network(*_args, **_kwargs):
+    raise AssertionError("in-process admission must not open a socket or listener")
+
+
+def _staged(tmp_path, value=None):
     root = tmp_path / "state"
     (root / "inputs").mkdir(parents=True)
-    value = packet()
+    value = packet() if value is None else value
     (root / submitter.PACKET_REL).write_text(json.dumps(value), encoding="utf-8")
+    return root, value
 
-    def opener(request: Request, *, timeout: float):
-        raw = request.data
-        payload = json.loads(raw.decode())
-        headers = {key: val for key, val in request.header_items()}
-        normalized = {
-            "Content-Type": headers.get("Content-type", headers.get("Content-Type", "")),
-            "X-StegVerse-Transport": headers.get("X-stegverse-transport", headers.get("X-StegVerse-Transport", "")),
-            "X-StegVerse-Transport-Origin": headers.get("X-stegverse-transport-origin", headers.get("X-StegVerse-Transport-Origin", "")),
-            "X-StegVerse-Payload-SHA256": headers.get("X-stegverse-payload-sha256", headers.get("X-StegVerse-Payload-SHA256", "")),
-        }
-        tr = transport.validate_headers(normalized, raw)
-        receipt = profile.admit(runtime_root=tmp_path / "ingress", payload=payload, transport_payload_sha256=tr["payload_sha256_uri"])
-        return 202, json.dumps(receipt).encode()
 
-    result = submitter.submit(
-        root,
-        env={"HOME": str(tmp_path), "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"},
-        opener=opener,
-    )
+def _admit_then(mutate):
+    def admit(*, runtime_root, body, headers):
+        receipt = submitter._admit(runtime_root=runtime_root, body=body, headers=headers)
+        return mutate(dict(receipt))
+    return admit
+
+
+def test_submitter_writes_only_returned_exact_admission(tmp_path, monkeypatch):
+    monkeypatch.setattr("urllib.request.urlopen", _no_network)
+    monkeypatch.setattr("socket.socket", _no_network)
+    monkeypatch.setattr("socket.create_connection", _no_network)
+    root, value = _staged(tmp_path)
+    result = submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
     assert result["state"] == "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"
+    assert result["ingress_state"] == "INGRESS_ADMITTED"
+    assert result["in_process_write_once_admission"] is True
+    assert result["receiver_liveness_predicate"] is False
     admission = json.loads((root / submitter.ADMISSION_REL).read_text())
     assert admission["disposition"] == "ALLOW"
     assert admission["packet_sha256"] == profile.packet_sha256(value)
     assert admission["receipt_hash"].startswith("sha256:")
     assert admission["ingress_receipt"]["exact_packet_validated"] is True
     assert admission["ingress_receipt"]["authority_effect"] == "NONE_INGRESS_ADMISSION_ONLY"
+    queued = Path(result["ingress_receipt_ref"])
+    assert queued.parent == tmp_path / "ingress" / profile.RECEIPT_DIR
+    assert json.loads(queued.read_text())["receipt_hash"] == admission["receipt_hash"]
+
+
+def test_submitter_absent_listener_does_not_block_without_configured_endpoint(tmp_path, monkeypatch):
+    monkeypatch.setattr("urllib.request.urlopen", _no_network)
+    monkeypatch.setattr("socket.socket", _no_network)
+    root, _value = _staged(tmp_path)
+    result = submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
+    assert result["state"] == "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"
+    assert result["state"] != "INGRESS_NOT_READY"
+    assert result["admission_written"] is True
+
+
+def test_submitter_same_packet_admitted_twice_is_idempotent(tmp_path):
+    root, _value = _staged(tmp_path)
+    first = submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
+    admission = (root / submitter.ADMISSION_REL).read_bytes()
+    queued = Path(first["ingress_receipt_ref"]).read_bytes()
+    second = submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
+    assert second["receipt_hash"] == first["receipt_hash"]
+    assert (root / submitter.ADMISSION_REL).read_bytes() == admission
+    assert Path(first["ingress_receipt_ref"]).read_bytes() == queued
+
+
+def test_submitter_malformed_packet_is_refused_typed_without_effect(tmp_path):
+    value = packet()
+    value["entries_sha256"] = "0" * 64
+    root, _value = _staged(tmp_path, value)
+    with pytest.raises(RuntimeError, match="^intr_admission_refused:"):
+        submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
+    assert not (root / submitter.ADMISSION_REL).exists()
+    assert not (tmp_path / "ingress" / profile.RECEIPT_DIR).exists()
+
+
+def test_submitter_ingress_admitted_never_claims_downstream_completion(tmp_path):
+    root, _value = _staged(tmp_path)
+    result = submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)})
+    assert result["provider_request_materialized"] is False
+    assert result["provider_execution_observed"] is False
+    assert result["kv_writeback_observed"] is False
+    receipt = json.loads((root / submitter.ADMISSION_REL).read_text())["ingress_receipt"]
+    assert receipt["provider_execution_observed"] is False
+    assert receipt["kv_writeback_observed"] is False
 
 
 def test_submitter_rejects_tampered_receipt_hash(tmp_path):
-    root = tmp_path / "state"
-    (root / "inputs").mkdir(parents=True)
-    value = packet()
-    (root / submitter.PACKET_REL).write_text(json.dumps(value), encoding="utf-8")
+    root, _value = _staged(tmp_path)
 
-    def opener(request: Request, *, timeout: float):
-        payload = json.loads(request.data.decode())
-        receipt = profile.admit(runtime_root=tmp_path / "ingress", payload=payload, transport_payload_sha256="sha256:" + "a" * 64)
+    def tamper(receipt):
         receipt["receipt_hash"] = "sha256:" + "0" * 64
-        return 202, json.dumps(receipt).encode()
+        return receipt
 
     with pytest.raises(RuntimeError, match="receipt_hash_mismatch"):
-        submitter.submit(
-            root,
-            env={"HOME": str(tmp_path), "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"},
-            opener=opener,
-        )
+        submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)}, admit=_admit_then(tamper))
     assert not (root / submitter.ADMISSION_REL).exists()
 
 
 def test_submitter_rejects_promoted_provider_execution_claim(tmp_path):
-    root = tmp_path / "state"
-    (root / "inputs").mkdir(parents=True)
-    value = packet()
-    (root / submitter.PACKET_REL).write_text(json.dumps(value), encoding="utf-8")
+    root, _value = _staged(tmp_path)
 
-    def opener(request: Request, *, timeout: float):
-        payload = json.loads(request.data.decode())
-        receipt = profile.admit(runtime_root=tmp_path / "ingress", payload=payload, transport_payload_sha256="sha256:" + "a" * 64)
+    def promote(receipt):
         receipt["provider_execution_observed"] = True
         body = dict(receipt)
         body.pop("receipt_hash")
         receipt["receipt_hash"] = submitter.receipt_sha256(body)
-        return 202, json.dumps(receipt).encode()
+        return receipt
 
     with pytest.raises(RuntimeError, match="provider_execution_claim_forbidden"):
-        submitter.submit(
-            root,
-            env={"HOME": str(tmp_path), "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"},
-            opener=opener,
-        )
+        submitter.submit(root, runtime_root=tmp_path / "ingress", env={"HOME": str(tmp_path)}, admit=_admit_then(promote))
 
 
-def test_submitter_waits_without_explicit_ingress(tmp_path):
-    root = tmp_path / "state"
-    (root / "inputs").mkdir(parents=True)
-    (root / submitter.PACKET_REL).write_text(json.dumps(packet()), encoding="utf-8")
-    result = submitter.submit(root, env={"HOME": str(tmp_path)})
-    assert result["state"] == "INGRESS_NOT_READY"
-    assert result["admission_written"] is False
+def test_submitter_opens_no_loopback_connection():
+    source = (ROOT / "scripts/submit_kv_ai_memory_packet_local.py").read_text(encoding="utf-8")
+    for forbidden in ("urlopen", "urllib.request", "http.client", "import socket", "socket.", "timeout=", "Request("):
+        assert forbidden not in source
+    assert "profile.admit(" in source and "transport.validate_headers(" in source
 
 
 def test_submitter_rejects_non_loopback_and_hosted(tmp_path):
@@ -198,7 +225,7 @@ def test_submitter_rejects_non_loopback_and_hosted(tmp_path):
     (root / "inputs").mkdir(parents=True)
     (root / submitter.PACKET_REL).write_text(json.dumps(packet()), encoding="utf-8")
     with pytest.raises(RuntimeError, match="loopback"):
-        submitter.submit(root, env={"STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "https://example.com/intr/materialization"})
+        submitter.submit(root, runtime_root=tmp_path / "ingress", env={"STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "https://example.com/intr/materialization"})
     with pytest.raises(RuntimeError, match="hosted_environment_forbidden"):
         submitter.submit(root, env={"CI": "true", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"})
 

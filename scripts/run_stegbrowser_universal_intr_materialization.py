@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """Submit the unchanged StegBrowser one-shot invocation through shared Universal InTr.
 
-This composes existing StegOS Universal InTr builders, the existing shared
-/intr/materialization listener, and the existing StegBrowser manifest-bound
-runner. It creates no additional listener implementation, runtime, scheduler,
-WorkerCoordinator, transport, endpoint, credential path, or authority surface.
+This composes existing StegOS Universal InTr builders, the existing
+StegBrowser profile ingress admission that the shared /intr/materialization
+listener routes to (workers/stegbrowser_intr_materialization_ingress.py admit),
+and the existing StegBrowser manifest-bound runner. The exact node trigger is
+admitted in-process and persisted write-once into the durable queue: no
+listener, socket, timeout or receiver liveness is a predicate of the transition
+(DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION). The submission projects
+INGRESS_ADMITTED only and never claims downstream execution. It creates no
+additional listener implementation, runtime, scheduler, WorkerCoordinator,
+transport, endpoint, credential path, or authority surface.
 """
 from __future__ import annotations
 
@@ -15,8 +21,6 @@ import json
 import os
 import subprocess
 import sys
-import threading
-import urllib.request
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -81,17 +85,40 @@ def validate_unchanged_request(value: Mapping[str, Any]) -> None:
             raise RuntimeError(f"unchanged_one_shot_request_{key}_mismatch")
 
 
-def load_shared_ingress() -> Any:
+def load_profile_admission() -> Any:
+    """The existing StegBrowser profile admit the shared listener routes to.
+
+    The route installer still runs and its --check must pass, so the shared
+    listener and this in-process path admit through the same profile function.
+    """
     installer = ROOT / "scripts/install_stegbrowser_universal_intr_route.py"
     subprocess.run([sys.executable, str(installer)], cwd=str(ROOT), check=True)
     subprocess.run([sys.executable, str(installer), "--check"], cwd=str(ROOT), check=True)
-    path = ROOT / "workers/universal_intr_profiled_ingress.py"
-    spec = importlib.util.spec_from_file_location("stegbrowser_shared_intr", path)
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    path = ROOT / "workers/stegbrowser_intr_materialization_ingress.py"
+    spec = importlib.util.spec_from_file_location("stegbrowser_intr_materialization_ingress", path)
     if spec is None or spec.loader is None:
-        raise RuntimeError("shared_intr_import_spec_missing")
+        raise RuntimeError("stegbrowser_profile_admission_import_spec_missing")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module
+    return module.admit
+
+
+def admit_trigger(trigger: Mapping[str, Any], *, runtime_root: Path, admit: Any) -> dict[str, Any]:
+    """Admit the exact node trigger write-once in-process; a refusal is typed and commits nothing."""
+    raw = canonical_bytes(trigger)
+    headers = {
+        "Content-Type": "application/json",
+        "X-StegVerse-Transport": "InTr",
+        "X-StegVerse-Transport-Origin": "STEGOS_NODE_OUTBOX",
+        "X-StegVerse-Payload-SHA256": sha256_hex(raw),
+    }
+    try:
+        receipt = admit(runtime_root=runtime_root.resolve(), body=raw, headers=headers)
+    except ValueError as exc:
+        raise RuntimeError("stegbrowser_intr_admission_refused:" + str(exc)) from exc
+    return receipt
 
 
 def build_binding(*, source_root: Path, runtime_root: Path, stegos_root: Path, node_receipt_path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -195,37 +222,15 @@ def build_binding(*, source_root: Path, runtime_root: Path, stegos_root: Path, n
     return binding, request, trigger
 
 
-def submit_once(*, source_root: Path, runtime_root: Path, stegos_root: Path, node_receipt_path: Path) -> dict[str, Any]:
+def submit_once(*, source_root: Path, runtime_root: Path, stegos_root: Path, node_receipt_path: Path, admit: Any = None) -> dict[str, Any]:
     _binding, request, trigger = build_binding(source_root=source_root, runtime_root=runtime_root, stegos_root=stegos_root, node_receipt_path=node_receipt_path)
-    shared = load_shared_ingress()
-    server = shared.Server(("127.0.0.1", 0), runtime_root.resolve(), 1)
-    host, port = server.server_address
-    thread = threading.Thread(target=server.handle_request, daemon=True)
-    thread.start()
-    raw = canonical_bytes(trigger)
-    req = urllib.request.Request(
-        f"http://{host}:{port}{shared.INGRESS_PATH}",
-        data=raw,
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-StegVerse-Transport": "InTr",
-            "X-StegVerse-Transport-Origin": "STEGOS_NODE_OUTBOX",
-            "X-StegVerse-Payload-SHA256": sha256_hex(raw),
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=10) as response:
-            receipt = json.loads(response.read().decode("utf-8"))
-            if int(response.status) != 202:
-                raise RuntimeError("stegbrowser_intr_ingress_http_status_invalid")
-    finally:
-        thread.join(timeout=10)
-        server.server_close()
+    receipt = admit_trigger(trigger, runtime_root=runtime_root, admit=admit or load_profile_admission())
     if not isinstance(receipt, dict) or receipt.get("schema") != "stegverse.stegbrowser-intr-materialization-ingress/v1" or receipt.get("state") != "INGRESS_ADMITTED":
         raise RuntimeError("stegbrowser_intr_ingress_not_admitted")
     if receipt.get("materialization_id") != request.get("materialization_id") or receipt.get("request_hash") != request.get("request_hash"):
         raise RuntimeError("stegbrowser_intr_ingress_request_binding_mismatch")
+    if receipt.get("write_once_persisted") is not True or not receipt.get("queue_ref"):
+        raise RuntimeError("stegbrowser_intr_ingress_write_once_receipt_missing")
     return {
         "schema": "stegverse.stegbrowser-universal-intr-submission/v1",
         "state": "INGRESS_ADMITTED",
@@ -235,6 +240,11 @@ def submit_once(*, source_root: Path, runtime_root: Path, stegos_root: Path, nod
         "materialization_id": request["materialization_id"],
         "request_hash": request["request_hash"],
         "ingress_receipt": receipt,
+        "ingress_queue_ref": receipt["queue_ref"],
+        "ingress_write_once_persisted": True,
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
+        "downstream_execution_observed": False,
         "consumer_dispatch_attempted": bool((receipt.get("dispatch") or {}).get("consumer_dispatch_attempted") is True),
         "runtime_predicates_promoted": False,
         "round_trip_1_started": False,

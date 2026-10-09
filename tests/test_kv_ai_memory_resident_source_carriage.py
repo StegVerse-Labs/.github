@@ -193,10 +193,41 @@ def test_event_bootstrap_rejects_hosted_execution(tmp_path):
 
 
 def test_event_bootstrap_reuses_shared_listener_implementation():
+    # The shared listener's KV AI memory route is reused in-process by the
+    # submitter; the bootstrap starts no listener of its own and passes no
+    # ingress endpoint, so no receiver liveness gates the cycle.
     source = (ROOT / "workers/kv_ai_memory_intr_event_bootstrap.py").read_text(encoding="utf-8")
-    assert 'importlib.import_module("workers.universal_intr_profiled_ingress")' in source
-    assert 'shared.Server(("127.0.0.1", 0), runtime, 1)' in source
+    assert '"shared_ingress_admission_implementation": "workers.kv_ai_memory_intr_profile.admit"' in source
     assert '"second_listener_implementation_created": False' in source
+    assert '"shared_listener_started": False' in source
+    for forbidden in ("Server(", "handle_request", "threading", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL", "server_close"):
+        assert forbidden not in source
+
+
+def test_event_bootstrap_cycle_does_not_block_on_absent_listener(tmp_path, monkeypatch):
+    def no_network(*_args, **_kwargs):
+        raise AssertionError("bootstrap must not open a socket or listener")
+
+    monkeypatch.setattr("socket.socket", no_network)
+    home = tmp_path / "home"
+    stage = home / event_bootstrap.BOUND_STATE_REL
+    (stage / "inputs").mkdir(parents=True)
+    (stage / event_bootstrap.PACKET_INPUT).write_text("{}", encoding="utf-8")
+    (stage / event_bootstrap.PROVIDER_INPUT).write_text("{}", encoding="utf-8")
+    seen = {}
+
+    def runner(command, **kwargs):
+        if "prepare_kv_ai_memory_intr_runtime_source.py" in str(command):
+            return SimpleNamespace(returncode=0, stdout=json.dumps({"state": "ROUTE_ALREADY_INSTALLED"}) + "\n", stderr="")
+        seen["env"] = kwargs["env"]
+        return SimpleNamespace(returncode=0, stdout=json.dumps({"state": "BOUND_STATE_INPUT_NOT_READY", "runtime_execution_attempted": False}) + "\n", stderr="")
+
+    result = event_bootstrap.run_cycle(ROOT, tmp_path / "runtime", runner=runner, env={"HOME": str(home), "PATH": "/usr/bin"})
+    assert result["shared_listener_started"] is False
+    assert result["in_process_write_once_admission"] is True
+    assert result["receiver_liveness_predicate"] is False
+    assert "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL" not in seen["env"]
+    assert result["runtime_execution_attempted"] is False
 
 
 def test_script_is_thin_wrapper_over_resident_native_bootstrap():

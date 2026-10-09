@@ -6,6 +6,16 @@ admission, TV/TVC authorization, SKAP/session authority, provider authority,
 publication evidence, or KV evidence. If its hash-bound runtime input pointer is
 absent, it may invoke the resident non-authorizing input materializer, which can
 only bind already-materialized authentic relay artifacts.
+
+The exact request is admitted in-process through the existing StegSocials
+profile ingress (workers/stegsocials_bounded_intr_ingress.py admit, with the
+shared HIL transport-header validator the listener uses for this profile),
+which persists it write-once into the durable queue. No listener, socket,
+timeout or receiver liveness is a predicate of this transition
+(DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION). The input's loopback
+ingress_url is validated as the manifested destination identity only; it is
+never contacted. The receipt projects INGRESS_ADMITTED and never claims
+downstream execution.
 """
 from __future__ import annotations
 
@@ -13,10 +23,10 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
 
 TASK_ID = "SS-KV-SKAP-SOCIAL-RELEASE-001"
 INPUT_SCHEMA = "stegverse.stegsocials-bounded-intr-admission-input/v1"
@@ -81,6 +91,30 @@ def load_input_materializer(source_root: Path):
     )
 
 
+def load_admission(source_root: Path):
+    """The existing in-process StegSocials profile admission, bound to the listener's validator."""
+    for path in (source_root, source_root / "scripts"):
+        if str(path) not in sys.path:
+            sys.path.insert(0, str(path))
+    ingress = load_module(
+        source_root,
+        "workers/stegsocials_bounded_intr_ingress.py",
+        "stegsocials_bounded_intr_ingress",
+        "stegsocials_bounded_intr_ingress_missing",
+    )
+    hil = load_module(
+        source_root,
+        "scripts/serve_hil_intr_materialization_ingress.py",
+        "serve_hil_intr_materialization_ingress",
+        "shared_intr_transport_validator_missing",
+    )
+
+    def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+        return ingress.admit(runtime_root=runtime_root, body=body, headers=headers, transport_validator=hil.validate_transport_headers)
+
+    return admit
+
+
 def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, str, str]:
     expected = {
         "schema": INPUT_SCHEMA,
@@ -129,23 +163,20 @@ def materialize_request(builder, received: Path, runtime_root: Path) -> tuple[di
     return payload, request, payload_path
 
 
-def post_exact(request_value: Mapping[str, Any], ingress_url: str, authorization_id: str, *, opener=urlopen) -> dict[str, Any]:
+def admit_exact(request_value: Mapping[str, Any], runtime_root: Path, authorization_id: str, *, admit) -> dict[str, Any]:
+    """Admit the exact request write-once in-process; a refusal is typed and commits nothing."""
     raw = canonical(request_value)
-    req = Request(
-        ingress_url,
-        data=raw,
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-StegVerse-Transport": "InTr",
-            "X-StegVerse-Transport-Origin": "TVC_RELAY_EGRESS",
-            "X-StegVerse-Authorization-Id": authorization_id,
-            "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
-        },
-    )
-    with opener(req, timeout=10.0) as response:
-        body = response.read()
-    value = json.loads(body.decode("utf-8"))
+    headers = {
+        "Content-Type": "application/json",
+        "X-StegVerse-Transport": "InTr",
+        "X-StegVerse-Transport-Origin": "TVC_RELAY_EGRESS",
+        "X-StegVerse-Authorization-Id": authorization_id,
+        "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
+    }
+    try:
+        value = admit(runtime_root=runtime_root, body=raw, headers=headers)
+    except ValueError as exc:
+        raise RuntimeError("intr_admission_refused:" + str(exc)) from exc
     require(isinstance(value, dict), "ingress_response_object_required")
     return value
 
@@ -177,7 +208,7 @@ def validate_admission(response: Mapping[str, Any], request_value: Mapping[str, 
     require(response.get("credential_material_present") is False, "admission_credential_material_forbidden")
 
 
-def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=urlopen) -> dict[str, Any]:
+def consume(source_root: Path, runtime_root: Path, input_path: Path, *, admit=None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     pointer = input_path if input_path.is_absolute() else runtime / input_path
@@ -196,20 +227,23 @@ def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=u
                 "authority_effect": "NONE_WAITING_FOR_AUTHENTIC_INPUT",
             }
     input_value = load_json(pointer)
-    received, ingress_url, authorization_id = validate_input(input_value, runtime)
+    received, _destination_url, authorization_id = validate_input(input_value, runtime)
     input_hash = str(input_value["input_hash"])
     receipt_path = runtime / DEFAULT_RECEIPT_REL
     if receipt_path.is_file():
         previous = load_json(receipt_path)
-        if previous.get("state") == "COMPLETED" and previous.get("input_hash") == input_hash:
+        if previous.get("state") in {"INGRESS_ADMITTED", "COMPLETED"} and previous.get("input_hash") == input_hash:
             return {**previous, "state": "ALREADY_CONSUMED"}
     builder = load_builder(source)
     payload, request_value, payload_path = materialize_request(builder, received, runtime)
-    response = post_exact(request_value, ingress_url, authorization_id, opener=opener)
+    if admit is None:
+        admit = load_admission(source)
+    response = admit_exact(request_value, runtime, authorization_id, admit=admit)
     validate_admission(response, request_value, payload, authorization_id)
+    require(response.get("write_once_persisted") is True, "admission_write_once_receipt_missing")
     result = {
         "schema": RECEIPT_SCHEMA,
-        "state": "COMPLETED",
+        "state": "INGRESS_ADMITTED",
         "task_id": TASK_ID,
         "input_hash": input_hash,
         "input_ref": str(pointer),
@@ -222,12 +256,16 @@ def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=u
         "payload_ref": str(payload_path),
         "ingress_receipt_hash": response.get("receipt_hash"),
         "ingress_receipt_ref": str(runtime / "receipts/sovereign-network/stegsocials-bounded-intr-ingress" / f"{request_value['materialization_id']}.json"),
+        "ingress_queue_ref": response.get("queue_ref"),
+        "ingress_write_once_persisted": True,
         "work_id": payload["work_id"],
         "correlation_id": payload["correlation_id"],
         "group_id": payload["group_id"],
         "use_index": payload["use_index"],
-        "runtime_execution_attempted": True,
-        "authentic_shared_ingress_response_observed": True,
+        "runtime_execution_attempted": False,
+        "in_process_write_once_admission": True,
+        "receiver_liveness_predicate": False,
+        "downstream_execution_observed": False,
         "publication_authority_granted": False,
         "provider_execution_attempted": False,
         "credential_material_present": False,
