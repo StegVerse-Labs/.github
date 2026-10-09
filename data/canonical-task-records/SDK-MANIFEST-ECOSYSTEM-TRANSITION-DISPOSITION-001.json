@@ -58,5 +58,51 @@
     "decomposed_from": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
     "reason": "PARENT_GOAL_PROMPT_CEILING_20_OF_20_GENUINELY_SEPARABLE_REMAINING_WORK",
     "date": "2026-10-07"
-  }
+  },
+  "bounded_extensions": [
+    {
+      "extension_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/N2",
+      "item_ids": [
+        "N2"
+      ],
+      "goal": "Register each confirmed nonconforming state-effect surface found by the TVC N1/N2/N3 review records in the canonical Labs exemption register with all nine required fields, an admitted owning_existing_goal and an actionable retry. An exemption grants no authority and satisfies no terminal predicate.",
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "source_paths": [
+        "data/organization-role-exemption-register.json"
+      ],
+      "owner_resolution": {
+        "register_referenced_by": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+        "referencing_task_state": "RETIRED",
+        "predicate_owner": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+        "predicate": "ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION",
+        "basis": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json successor_task_ids and runtime_predicates_transferred_to name this task; a RETIRED task is not reopened."
+      },
+      "input_owners": [
+        "TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826",
+        "TVC-PROVIDER-OPERATION-BROKER-003"
+      ],
+      "remaining_predicates": [
+        "N2_TVC_REVIEW_RECORDS_WITH_NINE_CANONICAL_EXEMPTION_FIELDS_MERGED",
+        "N2_EACH_CONFIRMED_NONCONFORMING_SURFACE_REGISTERED_WITH_ADMITTED_OWNER_AND_ACTIONABLE_RETRY",
+        "N2_NO_EXEMPTION_USES_A_PROHIBITED_JUSTIFICATION",
+        "N2_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "issue_ref": "StegVerse-Labs/TVC#488",
+      "approval_refs": [
+        "StegVerse-Labs/TVC#488 (comment 6070675863)",
+        "StegVerse-Labs/TVC#488 (comment 6070722044)"
+      ],
+      "admitted_on": "2026-10-08",
+      "admission_evidence_class": "SOURCE_IMPLEMENTED",
+      "completion_claimed": false,
+      "runtime_disposition_claimed": false,
+      "new_dependencies_allowed": false,
+      "external_machine_wait_allowed": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "invariants_ref": "data/task-registry-global-invariants.json@208177e09d7b515d19e073dd962832742e6da6a5",
+      "authority_effect": "NONE_TASK_REGISTRATION_ONLY"
+    }
+  ]
 }
