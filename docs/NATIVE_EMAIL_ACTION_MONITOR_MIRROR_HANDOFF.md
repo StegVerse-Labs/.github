@@ -405,3 +405,22 @@ CLOSE_CYCLE                     -> high_water = window end
 - The committed state is a projection (`authority_effect: NONE`, `projection_only: true`, `custody_authority: NONE_PROJECTION_PENDING_ORGANIZATION_CUSTODY`). It does not replace Organization custody or the KV-before-archive and governed archive-consequence path; `archive_proposed` is a proposal to that path.
 
 Fixtures (`tests/test_native_email_continuation_transition.py`) cover a gap of hours with no lost or duplicated IDs (AC1), two chained consecutive cycles (AC2), pagination beyond 100, interruption resume, shifted-page dedup, grouping, exact-head resolution and non-archival of unresolved failures (AC3). Evidence class: `SOURCE_IMPLEMENTED`. No runtime cycle, repair, archive or inbox-zero observation is claimed.
+
+### Cycle 1 (read-only, 2026-10-09)
+
+The first chained cycle was run read-only by a Claude session through the session's Gmail connector. No message was archived, labelled or otherwise changed. The committed state is `data/native-email-action-monitor/continuation.json`.
+
+- Transitions: `GENESIS -> SET_PUBLIC_REPOSITORIES -> BEGIN_CYCLE (window [0, 1791520033)) -> APPLY_PAGE x15`. `COMPLETE_PAGINATION` returned `DENY PAGINATION_INCOMPLETE_NO_ZERO_REMAINING_CLAIM` because Gmail still reported a next page, so the state stays `PAGINATING` with `resume_page_index = 15`.
+- Pages 0-14 applied: 784 INBOX messages, 0 duplicates, grouped into 714 open incidents (707 `FAILURE`, 6 `POLICY`, 1 `INFORMATIONAL`). Nothing is resolved or proposed for archive, and no inbox-zero is claimed.
+- Disclosure: repository and workflow names are kept only for repositories verified public on 2026-10-09 (`public_repositories`, 17 entries). The other 55 incidents are stored with `redacted: true` and a `repository_sha256`.
+- Known gaps for the next executor:
+  - Gmail thread previews return at most 5 messages per thread. Threads `1a0fec2270d87a0a`, `1a0f774e4d14d122`, `1a0acda1b54b1437` and `1a0d2e9098099a6d` had more and need `get_thread`.
+  - Resume continues the same window from page index 15. Re-read Gmail from its first page with the same query: the processed-ID ledger suppresses the 784 already applied, so shifted pages are safe.
+
+Resume (any executor, read-only until a resolution is verified):
+
+```text
+python3 scripts/native_email_continuation_transition.py --state data/native-email-action-monitor/continuation.json \
+  --op page-from-gmail --input <{"page_index": N, "search": <Gmail search_threads page JSON>}>
+... until the Gmail search returns no nextPageToken, then --op complete --input <{"has_more": false}>
+```

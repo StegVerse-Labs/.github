@@ -34,6 +34,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -96,6 +97,10 @@ def genesis() -> dict[str, Any]:
         "last_completed_page_index": -1,
         "processed_message_ids": [],
         "processed_message_ids_digest": ids_digest([]),
+        # Repository names not listed here are redacted from committed state:
+        # this file lives in a public repository and incidents may concern
+        # private ones. Correlation still works through repository_sha256.
+        "public_repositories": [],
         "incidents": {},
         "archive_proposed": [],
         "archived_message_ids": [],
@@ -173,7 +178,7 @@ def notification_class(row: Mapping[str, Any]) -> str:
         ("BILLING", ("billing", "payment", "invoice")),
         ("QUOTA", ("quota", "rate limit", "usage limit", "spending limit")),
         ("CAPACITY", ("storage", "capacity", "minutes used")),
-        ("POLICY", ("policy", "ruleset", "branch protection")),
+        ("POLICY", ("policy", "ruleset", "branch protection", "permissions")),
         ("FAILURE", ("fail", "error", "cancelled", "blocked", "requires handoff", "needs attention")),
         ("SUCCESS", ("succeeded", "success", "passed", "completed successfully")),
     ):
@@ -182,8 +187,29 @@ def notification_class(row: Mapping[str, Any]) -> str:
     return "INFORMATIONAL"
 
 
+# "[owner/repo] Run failed: <workflow> - <branch or PR title> (<sha>)"
+RUN_SUBJECT = re.compile(
+    r"^\[(?P<repo>[^\]/\s]+/[^\]\s]+)\] (?:PR )?[Rr]un failed: (?P<rest>.+) \((?P<sha>[0-9a-f]{7,40})\)$")
+
+
+def parse_subject(subject: str) -> dict[str, str]:
+    """Recover repository, workflow and head from a GitHub Actions subject."""
+    m = RUN_SUBJECT.match(subject.strip()) if isinstance(subject, str) else None
+    if not m:
+        return {}
+    workflow = m.group("rest").rsplit(" - ", 1)[0]
+    workflow = re.sub(r", Attempt #\d+$", "", workflow)
+    return {"repository": m.group("repo"), "workflow": workflow, "head_sha": m.group("sha")}
+
+
+def repository_sha256(repo: str) -> str:
+    return hashlib.sha256(repo.lower().encode("utf-8")).hexdigest()
+
+
 def correlate(row: Mapping[str, Any]) -> dict[str, Any]:
     """Bind one notification to repository, workflow and exact head."""
+    parsed = parse_subject(str(row.get("subject") or ""))
+    row = {**parsed, **{k: v for k, v in row.items() if v}}
     repo = _field(row, "repository", "repo", "X-GitHub-Repository")
     if not repo:
         list_id = _field(row, "list_id", "List-ID")
@@ -202,12 +228,44 @@ def correlate(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "incident_id": "INC-EMAIL-" + hashlib.sha256(key.encode("utf-8")).hexdigest()[:24],
         "repository": repo or None,
+        "repository_sha256": repository_sha256(repo) if repo else None,
         "workflow": workflow or None,
         "head_sha": head_sha or None,
         "run_id": run_id or None,
         "notification_class": klass,
         "correlation_complete": complete,
     }
+
+
+def set_public_repositories(prior: Mapping[str, Any], repositories: list[str]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Declare which repository names may appear unredacted in committed state."""
+    name = "SET_PUBLIC_REPOSITORIES"
+    bad = _check(prior)
+    if bad:
+        return dict(prior), _disposition(FAIL_CLOSED, name, bad)
+    if prior["phase"] != PHASE_IDLE:
+        return dict(prior), _disposition(DENY, name, "DISCLOSURE_CHANGE_ONLY_BETWEEN_CYCLES")
+    if not isinstance(repositories, list) or not all(isinstance(r, str) and "/" in r for r in repositories):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "PUBLIC_REPOSITORY_LIST_INVALID")
+    nxt = _advance(prior, name)
+    nxt["public_repositories"] = sorted(set(repositories))
+    return nxt, _disposition(ALLOW, name, count=len(nxt["public_repositories"]))
+
+
+def rows_from_gmail_search(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Adapt one Gmail thread-search page to transition rows (INBOX messages only)."""
+    rows: list[dict[str, Any]] = []
+    for thread in payload.get("threads") or []:
+        for msg in thread.get("messages") or []:
+            if "INBOX" not in (msg.get("labelIds") or []):
+                continue
+            rows.append({
+                "message_id": msg.get("id"),
+                "internal_epoch": int(msg["internalDate"]) // 1000 if msg.get("internalDate") else None,
+                "subject": msg.get("subject") or "",
+                "snippet": msg.get("snippet") or "",
+            })
+    return rows
 
 
 def begin_cycle(prior: Mapping[str, Any], now_epoch: int) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -271,6 +329,8 @@ def apply_page(prior: Mapping[str, Any], page_index: int, messages: list[Mapping
         seen.add(mid)
         new += 1
         corr = correlate(row)
+        if corr["repository"] and corr["repository"] not in set(nxt.get("public_repositories") or ()):
+            corr.update(repository=None, workflow=None, redacted=True)
         inc = nxt["incidents"].setdefault(corr["incident_id"], {
             **corr,
             "state": INCIDENT_SUCCESS_STATE if corr["notification_class"] == "SUCCESS" else INCIDENT_OPEN,
@@ -337,14 +397,16 @@ def record_resolution(prior: Mapping[str, Any], incident_id: str, evidence: Mapp
             return dict(prior), _disposition(FAIL_CLOSED, name, "EXACT_HEAD_MISMATCH")
         if evidence.get("ci_conclusion") != "success":
             return dict(prior), _disposition(FAIL_CLOSED, name, "CI_NOT_GREEN_AT_EXACT_HEAD")
-        if inc.get("repository") and evidence.get("repository") != inc["repository"]:
+        repo = evidence.get("repository")
+        if inc.get("repository_sha256") and not (
+                isinstance(repo, str) and repository_sha256(repo) == inc["repository_sha256"]):
             return dict(prior), _disposition(FAIL_CLOSED, name, "REPOSITORY_MISMATCH")
         state = INCIDENT_RESOLVED
     elif kind == "SUPERSEDED_BY_CURRENT_EVIDENCE":
         # Staleness only from independent current evidence: a newer head on the
         # same workflow observed green.
         newer = str(evidence.get("current_head_sha") or "").lower()
-        if not (len(newer) == 40 and newer != (inc.get("head_sha") or "")):
+        if not (len(newer) == 40 and not newer.startswith(inc.get("head_sha") or "\0")):
             return dict(prior), _disposition(FAIL_CLOSED, name, "SUPERSEDING_HEAD_NOT_INDEPENDENT")
         if evidence.get("ci_conclusion") != "success":
             return dict(prior), _disposition(FAIL_CLOSED, name, "SUPERSEDING_HEAD_NOT_GREEN")
@@ -433,6 +495,8 @@ TRANSITIONS = {
     "resolve": lambda s, a: record_resolution(s, a["incident_id"], a["evidence"]),
     "archive-receipt": lambda s, a: record_archive_receipt(s, a["confirmed_ids"]),
     "close": lambda s, a: close_cycle(s),
+    "set-public-repositories": lambda s, a: set_public_repositories(s, a["repositories"]),
+    "page-from-gmail": lambda s, a: apply_page(s, int(a["page_index"]), rows_from_gmail_search(a["search"])),
 }
 
 
