@@ -7,11 +7,25 @@ def test_canonical_custody_client_and_reusable_task_are_primary() -> None:
     client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
     reusable = (ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text()
     assert "stegverse.canonical-state-transition-receipt/v1" in client
-    assert "CANONICAL_MASTER_RECORDS_ORGANIZATION_RECORD_SURFACE_UNAVAILABLE" in client
+    # Registry R1 (StegVerse-Labs/.github#3012): the Organization ledger is the
+    # transition's runtime reality and its verified receipt gates the successor;
+    # an unavailable Master Records surface no longer fails a transition closed.
+    assert "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE" in client
+    assert "def organization_receipt_gate(" in client
+    assert "Master Records reconstruction fields are evidence only and never gate it." in client
+    assert '"master_records_submission_performed": False' in client
+    assert '"transition_gate": False' in client
     assert "reconstruction_status" in client
     assert "RT-INTR-GOVERNED-TRANSITION-001" in reusable
     assert "RT-INTR-EVIDENCE-CUSTODY-001" in reusable
-    assert "Task-specific probes may compare conformance but must not replace this path" in reusable
+    # The sentence demoting task-specific probes left the reusable task; its
+    # primacy is now carried by its single runner template and its use clause
+    # (the probe itself is pinned disabled below).
+    import json
+    reusable_task = json.loads(reusable)
+    assert reusable_task["runner_templates"] == ["workers/canonical_state_transition_custody.py"]
+    assert reusable_task["reuse_instructions"].startswith(
+        "Use this for the canonical per-state-transition custody consequence.")
 
 
 def test_mir_event_creation_does_not_require_workercoordinator_claim() -> None:
@@ -52,7 +66,8 @@ def test_required_transition_evidence_is_part_of_canonical_source_contract() -> 
     assert "every_required_transition_evidence_item_is_submitted_to_master_records" in contract
     assert "transition_custody_pass_requires_all_required_evidence_pass" in contract
     assert "ALL_REQUIRED_TRANSITION_EVIDENCE_MASTER_RECORDS_VALIDATED" in reusable
-    assert "Specialized lane validators may produce semantic validation artifacts" in reusable
+    assert ("Any validation required by the transition executes on the existing transition path "
+            "before evidence closure and its output enters the manifest") in reusable
 
 
 def test_canonical_custody_goal_is_projected_into_monolithic_registry() -> None:
@@ -93,6 +108,7 @@ def test_required_evidence_contract_is_non_deferrable() -> None:
     contract = json.loads((ROOT / "control/canonical-master-records-state-transition-custody-contract.json").read_text())
     reusable = json.loads((ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text())
     semantics = contract["required_evidence_semantics"]
-    assert "WAIT_OR_DEFER_CONDITION" in semantics["validation_execution_semantics"]
+    assert "VALIDATOR_OUTPUTS_ARE_REQUIRED_EVIDENCE" in semantics["validation_execution_semantics"]
+    assert "A_VALIDATOR_DEPENDENCY_IS_NEVER_A_WAIT_CONDITION" in semantics["validation_execution_semantics"]
     assert "FIRST_DETERMINISTIC_SOURCE_OR_RUNTIME_BOUNDARY" in semantics["no_wait_on_missing_runtime_receipt"]
     assert "never a wait/defer condition" in reusable["reuse_instructions"]

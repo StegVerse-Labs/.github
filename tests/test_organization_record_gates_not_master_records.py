@@ -393,6 +393,27 @@ def test_refusal_without_supplied_ledger_is_unrecorded_not_host_derived(monkeypa
     assert not (tmp_path / "home").exists()
 
 
+def test_refusal_recording_never_extends_an_unverified_ledger(monkeypatch, tmp_path):
+    from workers.canonical_state_transition_custody import organization_receipt_gate
+
+    _, _, result = _recorded(monkeypatch, tmp_path)
+    forged = dict(result, organization_receipt=None, organization_receipt_sha256="sha256:" + "d" * 64)
+    # An append the real producer never made: the ledger no longer replays.
+    _forge(tmp_path, result["organization_receipt"], source_transition_id="ORPHAN")
+    head = _head(tmp_path)
+    receipts = sorted(p.name for p in (tmp_path / "org" / "receipts").iterdir())
+    gate = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    assert gate["verified"] is False
+    refusal = gate["refusal"]
+    assert refusal["disposition"] == "FAIL_CLOSED"
+    assert refusal["consequence_committed"] is False
+    assert refusal["refusal_recorded"] is False
+    assert refusal["refusal_organization_receipt_sha256"] is None
+    assert refusal["refusal_recording_reason"].startswith("ORGANIZATION_REFUSAL_RECORDING_FAILED:")
+    assert _head(tmp_path) == head
+    assert sorted(p.name for p in (tmp_path / "org" / "receipts").iterdir()) == receipts
+
+
 def _diagnostic_chain(monkeypatch, tmp_path):
     """Real producer appends: ingress ALLOW, then the runtime binding that names it."""
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
@@ -445,6 +466,36 @@ def test_diagnostic_ancestry_reads_organization_retained_sources_not_master_reco
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_ROOT")
     with pytest.raises(consumer.DiagnosticAdmissionError, match="LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"):
         consumer._organization_source_receipts(ROOT)
+
+
+def test_diagnostic_ancestry_rejects_broken_or_replayed_ingress_binding_chain(monkeypatch, tmp_path):
+    from workers.canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+
+    consumer, ingress, ingress_hash, binding, binding_hash = _diagnostic_chain(monkeypatch, tmp_path)
+
+    def appended(transition_id, sequence, outcome, prior, evidence):
+        receipt = build_state_receipt(
+            transition_id=transition_id, transition_sequence=sequence, subject_or_correlation_id=consumer.GOAL,
+            transition_outcome=outcome, prior_state_ref_or_hash=prior, resulting_state_ref_or_hash=None,
+            governance_decision_ref_where_applicable=None, transition_evidence=evidence)
+        assert submit_state_receipt(receipt)["state"] == "RECORDED"
+        return sha256_uri(dict(receipt))[7:]
+
+    # Replayed: a later ingress ALLOW for the same request. The recorded binding
+    # names the first one, so it never proves admission by the replay.
+    replayed = appended("SDK_MANIFEST_INTR_ADMITTED", 1, "ALLOW", None,
+                        {"request_sha256": "8" * 64, "wire_manifest_sha256": "7" * 64, "replay": 1})
+    read = consumer._organization_source_receipts(ROOT)
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="CANONICAL_IMMEDIATE_PREDECESSOR_REQUIRED"):
+        consumer._prove_ancestry(read, binding_hash, replayed)
+    # Broken: a binding whose predecessor the Organization ledger never recorded.
+    broken = appended(consumer.BINDING_TRANSITION, 2, "OBSERVED", "sha256:" + "e" * 64,
+                      {"runtime_binding": {"request_sha256": "8" * 64, "lease_state": "LEASE_OPEN"}})
+    read = consumer._organization_source_receipts(ROOT)
+    with pytest.raises(consumer.DiagnosticAdmissionError, match="ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED"):
+        consumer._prove_ancestry(read, broken, ingress_hash)
+    # The recorded chain itself still proves its own ingress ALLOW.
+    assert consumer._prove_ancestry(read, binding_hash, ingress_hash) == (binding, ingress)
 
 
 def test_diagnostic_closure_refusal_emits_outer_fail_closed_record(monkeypatch, tmp_path):
