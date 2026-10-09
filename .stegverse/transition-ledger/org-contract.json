@@ -22,5 +22,11 @@
   "propagation_gates_organization_runtime_reality": false,
   "propagation_receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
   "always_on_receiver_required": false,
-  "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
+  "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
+  "organization_ledger": {
+    "store": "git",
+    "ref": "refs/heads/organization-ledger/StegVerse-Labs",
+    "custody": "PRIVATE",
+    "propagate_target": null
+  }
 }

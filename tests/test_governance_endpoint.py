@@ -24,6 +24,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# The child interpreter that runs the endpoint adapter declares the POSIX ledger
+# locus these tests supply (OL-1b), as tests/conftest.py does in process.
+POSIX_LEDGER_LOCUS = str(ROOT / "tests" / "posix_ledger_locus")
 SERVICE = "stegverse-labs.governance"
 STANDING = {"mode": "ESTABLISH_GENESIS", "node_ref": "StegVerse-org-test-node", "predecessor": None}
 STUB = '''
@@ -112,12 +115,12 @@ class GovernanceEndpointTests(unittest.TestCase):
         self.stub_path = str(self.work / "stub")
 
     def with_stegcore(self):
-        os.environ["PYTHONPATH"] = self.stub_path
+        os.environ["PYTHONPATH"] = os.pathsep.join((self.stub_path, POSIX_LEDGER_LOCUS))
 
     def without_stegcore(self):
         empty = self.work / "no-stegcore"
         empty.mkdir(exist_ok=True)
-        os.environ["PYTHONPATH"] = str(empty)
+        os.environ["PYTHONPATH"] = os.pathsep.join((str(empty), POSIX_LEDGER_LOCUS))
 
     def ledger(self, variable):
         return [json.loads(path.read_text())
