@@ -169,7 +169,7 @@
       "items": {
         "I-12a": "StegVerse-org/StegVerse-SDK: publish PUBLISHED_ROUTES['stegverse.route.organization-role-conformance.v1'] with processor_capability organization_role_conformance in stegverse/route_resolution.py (verified at blob 2eca0c6720ce1efdee00ad1e0d31cfcbae5b674e) and admit the request through the existing extensions.stegverse_route contract, with real SDK tests.",
         "I-12b": "StegVerse-Labs/.github and StegVerse-Labs/StegDB: align the Labs ingress and the I-9 StegDB emitter, under its Labs ingress contract test, to the SDK-admitted manifest shape; route publication and ingress use the same shape.",
-        "I-12c": "StegVerse-Labs/.github: update the existing Labs SDK pin (currently f8140f2aa2a3209b8be47d91b5659b1b4ae21335) only after the I-12a SDK commit is published, and replace the route-specific ingress stubs with real pinned-SDK tests. A pin update is not a new dependency."
+        "I-12c": "StegVerse-Labs/.github: update the existing Labs SDK pin (formerly f8140f2aa2a3209b8be47d91b5659b1b4ae21335; currently c30dc3421f10f8855d85e8347c59884d8af792eb per StegVerse-Labs/.github#3048) only after the I-12a SDK commit is published, and replace the route-specific ingress stubs with real pinned-SDK tests. A pin update is not a new dependency."
       },
       "sequencing": {
         "admission_before_sdk_source_mutation": true,
@@ -199,11 +199,23 @@
         "approval_condition": "StegVerse-Labs/TVC#488 (comment 6072675486): resolve and admit the existing canonical SDK owner before SDK source mutation; no new task or dependency.",
         "resolution_ref": "StegVerse-Labs/TVC#488 (comment 6072705082)"
       },
-      "remaining_predicates": [
+      "satisfied_predicates": [
         "I12A_ROLE_CONFORMANCE_ROUTE_PUBLISHED_VIA_EXISTING_EXTENSION_CONTRACT_WITH_REAL_SDK_TESTS",
         "I12B_LABS_INGRESS_AND_STEGDB_EMITTER_ALIGNED_TO_SDK_ADMITTED_SHAPE",
         "I12C_LABS_SDK_PIN_UPDATED_AND_ROUTE_STUBS_REPLACED_BY_REAL_SDK_TESTS_WITHOUT_BASELINE_REGRESSION",
         "I12_EXACT_HEAD_REQUIRED_CI_GREEN"
+      ],
+      "remaining_predicates": [],
+      "evidence_class": "CI_VALIDATED",
+      "evidence_refs": [
+        "StegVerse-org/StegVerse-SDK#443",
+        "StegVerse-org/StegVerse-SDK@c30dc3421f10f8855d85e8347c59884d8af792eb",
+        "StegVerse-Labs/.github#3048",
+        "StegVerse-Labs/.github@8ccdc77f6c272a2d1ec44c9e5e76d777505a9c0f",
+        "StegVerse-Labs/StegDB#50",
+        "StegVerse-Labs/StegDB@43fbc47",
+        "StegVerse-Labs/StegDB#51",
+        "StegVerse-Labs/StegDB@26d396f"
       ],
       "issue_ref": "StegVerse-Labs/TVC#488",
       "approval_refs": [
