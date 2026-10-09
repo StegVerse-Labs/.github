@@ -44,13 +44,21 @@ def _read(path: Path) -> dict:
     return row
 
 
-def _verified_receipt(root: Path, digest: str) -> dict:
+def _verified_receipt(root, digest: str) -> dict:
+    """Verify one receipt under a POSIX root, or read through a ledger store."""
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise ValueError("organization receipt digest invalid")
-    path = root / "receipts" / (digest[7:] + ".json")
-    if not path.is_file():
-        raise ValueError("organization receipt missing: " + digest)
-    row = _read(path)
+    if org._is_store(root):
+        row = root.get(org.ledger_store.receipt_key(digest))
+        if row is None:
+            raise ValueError("organization receipt missing: " + digest)
+        if not isinstance(row, dict):
+            raise ValueError("organization batch JSON object required")
+    else:
+        path = root / "receipts" / (digest[7:] + ".json")
+        if not path.is_file():
+            raise ValueError("organization receipt missing: " + digest)
+        row = _read(path)
     body = dict(row)
     claimed = body.pop("receipt_sha256", None)
     if claimed != digest or org.sha(body) != digest:
@@ -111,13 +119,42 @@ def _state_digest(value, predicate: str) -> str:
     return "sha256:" + match.group(1)
 
 
+def _readback_store(root):
+    """The store the readback reads through: the one the append used.
+
+    `root` is a POSIX root or a ledger store the caller holds; absent, it is
+    the store organization_store() selects for this execution.
+    """
+    try:
+        return org.organization_store(root)
+    except org.LedgerLocationRequired as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
+    except org.ledger_store.LedgerStoreRefused as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=exc.detail) from exc
+
+
+def _read_retained(store, source: str) -> dict:
+    """The exact source receipt retained beside the Organization receipt, or a refusal."""
+    try:
+        retained = store.get(org.ledger_store.source_key(source))
+    except org.ledger_store.LedgerStoreRefused as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=exc.detail) from exc
+    if retained is None:
+        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
+    if not isinstance(retained, dict):
+        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=source)
+    return retained
+
+
 def verified_organization_receipt(root, digest, *, state_receipt_sha256,
                                   expected_transition_id=None, expected_predecessor=None) -> dict:
     """Read back one Organization receipt and bind it to the exact state receipt.
 
-    `root` is the Organization ledger root the append used, supplied by the
-    caller (aggregate_transition(..., ledger=root)); ledger_root() is only the
-    existing fallback when the caller holds none. The receipt must verify under
+    `root` is the Organization ledger root or store the append used, supplied
+    by the caller (aggregate_transition(..., ledger=root)); the store
+    organization_store() selects is only the fallback when the caller holds
+    none. Readback is from that store's committed state, so a receipt appended
+    to the Git ledger ref is verified from the ref. The receipt must verify under
     _verified_receipt and name `state_receipt_sha256` as its source transition.
     When supplied, the source transition id must equal `expected_transition_id`
     and the retained source receipt's prior_state_ref_or_hash must equal
@@ -129,16 +166,16 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_ABSENT", deterministic=False)
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_SHA256_INVALID", deterministic=True)
+    ledger = _readback_store(root)
     try:
-        ledger = Path(root).expanduser().resolve() if root is not None else org.ledger_root()
-    except org.LedgerLocationRequired as exc:
-        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
-    if not (ledger / "receipts" / (digest[7:] + ".json")).is_file():
-        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_MISSING", deterministic=False, detail=digest)
-    try:
-        row = _verified_receipt(ledger, digest)
+        present = ledger.exists(org.ledger_store.receipt_key(digest))
+        row = _verified_receipt(ledger, digest) if present else None
+    except org.ledger_store.LedgerStoreRefused as exc:
+        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=exc.detail) from exc
     except ValueError as exc:
         raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_VERIFICATION_FAILED", deterministic=True, detail=str(exc)) from exc
+    if row is None:
+        raise OrganizationReceiptRefused("ORGANIZATION_RECEIPT_READBACK_MISSING", deterministic=False, detail=digest)
     try:
         # A receipt is Organization reality only on a root that is one reality:
         # no superseded custody generation and no fork.
@@ -154,10 +191,7 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
                                          detail=str(expected_transition_id))
     if expected_predecessor is not None:
         expected = _state_digest(expected_predecessor, "EXPECTED_PREDECESSOR")
-        path = ledger / "source-receipts" / (source[7:] + ".json")
-        if not path.is_file():
-            raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
-        retained = _read(path)
+        retained = _read_retained(ledger, source)
         try:
             retained_digest = org.verify_source(retained)["source_transition_sha256"]
         except (KeyError, ValueError) as exc:
@@ -182,15 +216,8 @@ def verified_organization_source_receipt(root, digest, *, state_receipt_sha256,
     """
     row = verified_organization_receipt(root, digest, state_receipt_sha256=state_receipt_sha256,
                                         expected_transition_id=expected_transition_id)
-    try:
-        ledger = Path(root).expanduser().resolve() if root is not None else org.ledger_root()
-    except org.LedgerLocationRequired as exc:
-        raise OrganizationReceiptRefused(exc.failed_predicate, deterministic=False, detail=str(exc)) from exc
     source = row["source_transition_sha256"]
-    path = ledger / "source-receipts" / (source[7:] + ".json")
-    if not path.is_file():
-        raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_READBACK_MISSING", deterministic=False, detail=source)
-    retained = _read(path)
+    retained = _read_retained(_readback_store(root), source)
     try:
         verified = org.verify_source(retained)
     except (KeyError, ValueError) as exc:
@@ -769,7 +796,7 @@ def close_batch(reason: str, *, root: Path | None = None, custody_exclusivity_ve
         # Batch closure writes the root; a released root takes no writer.
         raise org.CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", retry_entrypoint=org.CUSTODY_ASSUME_RETRY,
                                  detail=tip, repair="close the packet at the successor after it assumes custody")
-    # Batch closure is a consequential write; a successor needs an attestation.
+    # Batch closure is a consequential write: original location, and at a successor an attestation.
     org.require_consequential_custody(root, rows, tip, "ORGANIZATION_BATCH_CLOSURE", custody_exclusivity_verifier)
     prior_id, prior = _batch_head(root)
     if prior is not None and prior.get("last_org_receipt_sha256") == tip:

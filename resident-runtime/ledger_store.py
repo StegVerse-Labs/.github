@@ -16,12 +16,18 @@ a legacy path, and a key-value store is a sibling rather than a rewrite.
 
 Keys are `HEAD`, `receipts/<hex>` and `source-receipts/<hex>`. Nothing here
 grants authority.
+
+`GitLedgerStore` is the durable sibling on the canonical Git substrate: keys
+are files on one dedicated ledger ref, and an append is one commit published
+by ref compare-and-swap. Git is transport and custody only, never admission or
+authority.
 """
 from __future__ import annotations
 
 import fcntl
 import json
 import os
+import subprocess
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
@@ -129,6 +135,19 @@ class PosixLedgerStore:
             finally:
                 self._held = 0
 
+    @contextmanager
+    def assume_exclusive(self):
+        """Enter `exclusive` for a caller that already holds this root's append lock.
+
+        A second `flock` from a new open file description would block on the
+        caller's own lock, so the held lock is counted rather than re-taken.
+        """
+        self._held += 1
+        try:
+            yield self
+        finally:
+            self._held -= 1
+
     def compare_and_swap(self, key, expected, value):
         """Publish `value` at `key` only if it still holds `expected`.
 
@@ -182,3 +201,294 @@ class PosixLedgerStore:
             os.fsync(fd)
         finally:
             os.close(fd)
+
+
+LEDGER_REF_PREFIX = "refs/heads/organization-ledger/"
+PRIVATE_CUSTODY = "PRIVATE"
+PAYLOAD_CLASSIFICATION = "ORGANIZATION_LEDGER_PRIVATE_EVIDENCE"
+CAS_PREDICATE = "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
+APPEND_RETRY_ENTRYPOINT = "resident-runtime/aggregate_repo_transition.py::aggregate_transition"
+
+
+class LedgerStoreRefused(ValueError):
+    """A typed FAIL_CLOSED from the store: nothing was published, nothing was decided.
+
+    A store refusal is never DENY: it says the substrate did not carry the
+    transaction, not that the transition was wrong. It names its retry
+    entrypoint and never waits or loops.
+    """
+
+    def __init__(self, failed_predicate, required_evidence_or_repair, *, detail=""):
+        super().__init__(failed_predicate + (": " + detail if detail else ""))
+        self.failed_predicate = failed_predicate
+        self.required_evidence_or_repair = required_evidence_or_repair
+        self.detail = detail
+        self.retry_entrypoint = APPEND_RETRY_ENTRYPOINT
+
+    def refusal(self):
+        refusal = {
+            "schema": "stegverse.organization-ledger-append-refusal/v1",
+            "disposition": "FAIL_CLOSED",
+            "failed_predicate": self.failed_predicate,
+            "required_evidence_or_repair": self.required_evidence_or_repair,
+            "retry_entrypoint": self.retry_entrypoint,
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+        if self.detail:
+            refusal["detail"] = self.detail
+        return refusal
+
+
+def lost_race(detail=""):
+    """The refusal an appender gets when the ledger ref moved under it."""
+    return LedgerStoreRefused(
+        CAS_PREDICATE,
+        "re-read the Organization ledger ref and attempt the append again from its current HEAD",
+        detail=detail,
+    )
+
+
+class GitLedgerStore:
+    """A ledger store on one dedicated ref of a Git repository.
+
+    Keys are files in the tree of `ref`. Reads come from the committed ref
+    only, never a working tree: with a `remote` the remote's ref is the durable
+    ledger and is fetched before it is read; without one, `git_dir` is itself
+    the durable repository. An append is one commit holding the receipt, any
+    immutable documents and HEAD, built on the expected parent and published by
+    ref compare-and-swap -- `git update-ref` with the old value locally, `git
+    push --force-with-lease=<ref>:<parent>` to a remote. The lease names the
+    exact parent, so the push is a fast-forward of the commit it read or it is
+    refused; it never rewrites the ref. A lost race publishes nothing and is a
+    typed FAIL_CLOSED; the store never waits or retries.
+
+    Every ledger payload is classified ORGANIZATION_LEDGER_PRIVATE_EVIDENCE: a
+    retained source receipt carries its inline evidence bytes. An append is
+    refused unless the materializer declares the repository an authorized
+    private custody surface (`custody="PRIVATE"`); nothing is redacted and
+    nothing is published to a surface not declared private. Git hosting and
+    credentials are transport and custody only, never admission or authority.
+    """
+
+    kind = "GIT_REF"
+
+    def __init__(self, git_dir, ref, *, remote=None, custody=None):
+        if not isinstance(ref, str) or not ref.startswith(LEDGER_REF_PREFIX) or ref == LEDGER_REF_PREFIX:
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_REF_INVALID",
+                "supply a dedicated Organization ledger ref under " + LEDGER_REF_PREFIX,
+                detail=str(ref),
+            )
+        self.git_dir = Path(git_dir).expanduser().resolve()
+        self.ref = ref
+        self.remote = remote or None
+        self.custody = custody
+        self._held = 0
+        self._pinned = None
+        if self._git("check-ref-format", ref, check=False).returncode != 0:
+            raise LedgerStoreRefused("ORGANIZATION_LEDGER_REF_INVALID",
+                                     "supply a well-formed Git ref name", detail=ref)
+
+    def _git(self, *args, data=None, env=None, check=True):
+        environment = dict(os.environ)
+        # A missing credential is a refusal, not a prompt to wait on.
+        environment["GIT_TERMINAL_PROMPT"] = "0"
+        environment.update(env or {})
+        result = subprocess.run(
+            ["git", "--git-dir", str(self.git_dir), *args],
+            input=data, capture_output=True, env=environment,
+        )
+        if check and result.returncode != 0:
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_GIT_OPERATION_FAILED",
+                "supply a readable Organization ledger repository and ref",
+                detail=" ".join(args[:1]) + ": " + result.stderr.decode(errors="replace").strip(),
+            )
+        return result
+
+    def initialize(self):
+        if not self.git_dir.is_dir() or self._git("rev-parse", "--git-dir", check=False).returncode != 0:
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_GIT_REPOSITORY_UNAVAILABLE",
+                "supply the Organization ledger Git repository as materialized for this execution",
+                detail=str(self.git_dir),
+            )
+
+    def locator(self, key):
+        """The key on the ledger ref; never a host path or a credentialed URL."""
+        return self.ref + ":" + key
+
+    def _tip(self):
+        """The committed tip of the durable ledger ref, or None before genesis."""
+        self.initialize()
+        if self.remote is None:
+            found = self._git("rev-parse", "--verify", "-q", self.ref + "^{commit}", check=False)
+            return found.stdout.decode().strip() if found.returncode == 0 else None
+        listed = self._git("ls-remote", "--refs", self.remote, self.ref, check=False)
+        if listed.returncode != 0:
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_REMOTE_UNREACHABLE",
+                "supply a reachable Organization ledger remote and its transport credential",
+                detail=listed.stderr.decode(errors="replace").strip(),
+            )
+        rows = [line.split("\t") for line in listed.stdout.decode().splitlines() if line.strip()]
+        tip = next((oid for oid, name in rows if name == self.ref), None)
+        if tip is None:
+            return None
+        if self._git("cat-file", "-e", tip + "^{commit}", check=False).returncode != 0:
+            self._git("fetch", "--no-tags", "--quiet", self.remote, self.ref)
+            if self._git("cat-file", "-e", tip + "^{commit}", check=False).returncode != 0:
+                raise LedgerStoreRefused(
+                    "ORGANIZATION_LEDGER_REMOTE_UNREACHABLE",
+                    "fetch the Organization ledger ref from its remote",
+                    detail=tip,
+                )
+        # The local ref mirrors the remote's committed tip so a reader of this
+        # repository sees the durable ledger, not an unpublished commit.
+        self._git("update-ref", self.ref, tip)
+        return tip
+
+    def _snapshot(self):
+        return self._pinned[0] if self._pinned is not None else self._tip()
+
+    def _read(self, tip, key):
+        if tip is None:
+            return None
+        found = self._git("rev-parse", "--verify", "-q", tip + ":" + key, check=False)
+        if found.returncode != 0:
+            return None
+        blob = found.stdout.decode().strip()
+        return json.loads(self._git("cat-file", "blob", blob).stdout)
+
+    def exists(self, key):
+        return self.get(key) is not None
+
+    def get(self, key):
+        return self._read(self._snapshot(), key)
+
+    def list_prefix(self, prefix):
+        tip = self._snapshot()
+        if tip is None:
+            return set()
+        listed = self._git("ls-tree", "--name-only", tip, "--", prefix.rstrip("/") + "/")
+        return {name for name in listed.stdout.decode().splitlines()
+                if name.startswith(prefix) and name.endswith(".json") and "/" not in name[len(prefix):]}
+
+    @contextmanager
+    def exclusive(self):
+        """Pin one committed snapshot; the compare-and-swap at publish is the lock.
+
+        Nothing is held against other appenders. Reads inside see one tip, and
+        `append_transaction` publishes only if the ref is still that tip.
+        """
+        if self._held:
+            self._held += 1
+            try:
+                yield self
+            finally:
+                self._held -= 1
+            return
+        self._pinned = (self._tip(),)
+        self._held = 1
+        try:
+            yield self
+        finally:
+            self._held = 0
+            self._pinned = None
+
+    assume_exclusive = exclusive
+
+    def compare_and_swap(self, key, expected, value):
+        raise LedgerStoreRefused(
+            "ORGANIZATION_LEDGER_SINGLE_KEY_WRITE_REFUSED",
+            "publish through append_transaction, the only write this store performs",
+        )
+
+    def put(self, key, value):
+        self.compare_and_swap(key, None, value)
+
+    @staticmethod
+    def _encode(value):
+        return json.dumps(value, indent=2, sort_keys=True).encode() + b"\n"
+
+    def append_transaction(self, receipt_key_name, receipt, expected_head, new_head, immutable=None):
+        """Publish receipt, immutable documents and HEAD as one commit by ref CAS.
+
+        Returns True when published. A HEAD that no longer equals
+        `expected_head`, or a ref that moved before publication, raises the
+        typed lost-race FAIL_CLOSED; nothing reaches the ref, so no orphan
+        receipt is committed. A key already holding different content raises
+        `ledger_receipt_collision` before anything is built.
+        """
+        if self.custody != PRIVATE_CUSTODY:
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED",
+                "supply an Organization ledger repository the materializer declares an authorized "
+                "private custody surface (custody PRIVATE); ledger payload is classified "
+                + PAYLOAD_CLASSIFICATION + " and is not published elsewhere",
+                detail=str(self.custody),
+            )
+        documents = dict(immutable or {})
+        documents[receipt_key_name] = receipt
+        with self.exclusive():
+            parent = self._snapshot()
+            if self._read(parent, HEAD_KEY) != expected_head:
+                raise lost_race("HEAD no longer equals the expected head")
+            missing = []
+            for key, value in documents.items():
+                existing = self._read(parent, key)
+                if existing is not None and existing != value:
+                    raise ValueError("ledger_receipt_collision")
+                if existing is None:
+                    missing.append(key)
+            commit = self._commit(parent, [(key, documents[key]) for key in missing] + [(HEAD_KEY, new_head)],
+                                  receipt_key_name)
+            self._publish(commit, parent)
+            self._pinned = (commit,)
+            return True
+
+    def _commit(self, parent, entries, subject):
+        with tempfile.TemporaryDirectory(prefix="org-ledger-index-") as scratch:
+            index = {"GIT_INDEX_FILE": os.path.join(scratch, "index")}
+            if parent is None:
+                self._git("read-tree", "--empty", env=index)
+            else:
+                self._git("read-tree", parent, env=index)
+            for key, value in entries:
+                blob = self._git("hash-object", "-w", "--stdin", data=self._encode(value)).stdout.decode().strip()
+                self._git("update-index", "--add", "--cacheinfo", "100644," + blob + "," + key, env=index)
+            tree = self._git("write-tree", env=index).stdout.decode().strip()
+        identity = {
+            "GIT_AUTHOR_NAME": "stegverse-organization-ledger",
+            "GIT_AUTHOR_EMAIL": "organization-ledger@stegverse.invalid",
+            "GIT_COMMITTER_NAME": "stegverse-organization-ledger",
+            "GIT_COMMITTER_EMAIL": "organization-ledger@stegverse.invalid",
+        }
+        args = ["commit-tree", tree, "-m", "organization ledger append " + subject]
+        if parent is not None:
+            args[2:2] = ["-p", parent]
+        return self._git(*args, env=identity).stdout.decode().strip()
+
+    def _publish(self, commit, parent):
+        """Move the ref from exactly `parent` to `commit`, or raise the lost race."""
+        if self.remote is None:
+            moved = self._git("update-ref", self.ref, commit, parent or "", check=False)
+            if moved.returncode != 0:
+                raise lost_race(moved.stderr.decode(errors="replace").strip())
+            return
+        pushed = self._git(
+            "push", "--porcelain", "--no-verify",
+            "--force-with-lease=" + self.ref + ":" + (parent or ""),
+            self.remote, commit + ":" + self.ref, check=False,
+        )
+        if pushed.returncode != 0:
+            output = (pushed.stdout + pushed.stderr).decode(errors="replace")
+            if "stale info" in output or "rejected" in output or "fetch first" in output:
+                raise lost_race(output.strip())
+            raise LedgerStoreRefused(
+                "ORGANIZATION_LEDGER_REMOTE_PUBLISH_UNCONFIRMED",
+                "re-read the Organization ledger ref; an exact retry replays idempotently if the append landed",
+                detail=output.strip(),
+            )
+        self._git("update-ref", self.ref, commit)

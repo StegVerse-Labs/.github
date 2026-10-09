@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,base64,fcntl,hashlib,importlib.util,json,os,tempfile
+import argparse,base64,hashlib,importlib.util,json,os,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -12,6 +12,10 @@ C=json.loads((ROOT/".stegverse/transition-ledger/org-contract.json").read_text()
 # provenance; ordering is the chain plus the heartbeat reference.
 _kspec=importlib.util.spec_from_file_location("kernel",ROOT/"org-kernel/kernel.py")
 kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
+# The ledger is addressed through the store seam, loaded exactly as the
+# repository ledger (.stegverse/transition-ledger/emit.py) loads it.
+_sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
+ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
 
 def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
@@ -23,6 +27,11 @@ class LedgerLocationRequired(ValueError):
     def __init__(self, variable):
         super().__init__("ledger_location_required_from_materializer: "+variable)
         self.variable=variable
+
+class LedgerStoreSelectionInvalid(LedgerLocationRequired):
+    """The materializer named a ledger store this execution does not have."""
+
+    failed_predicate="ORGANIZATION_LEDGER_STORE_SELECTION_INVALID"
 
 def location_refusal(exc):
     """The append attempt's own disposition when no ledger root was supplied."""
@@ -50,6 +59,36 @@ def ledger_root():
     if o: return Path(o).expanduser().resolve()
     raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
 def load(p): return json.loads(Path(p).read_text())
+
+def _is_store(value): return value is not None and hasattr(value,"append_transaction")
+def _is_posix(store): return getattr(store,"kind",None)=="POSIX_FILESYSTEM"
+
+def organization_store(ledger=None):
+    """The Organization ledger store, as supplied to this execution.
+
+    A store or a root the caller holds is used as is. Otherwise the
+    materializer selects the store: STEGVERSE_ORG_LEDGER_STORE=git with
+    STEGVERSE_ORG_LEDGER_GIT_DIR, STEGVERSE_ORG_LEDGER_GIT_REF and optional
+    STEGVERSE_ORG_LEDGER_GIT_REMOTE and STEGVERSE_ORG_LEDGER_GIT_CUSTODY names
+    the durable Git ledger; absent, the POSIX root from ledger_root(), exactly
+    as before. Nothing is derived from the host.
+    """
+    if _is_store(ledger): return ledger
+    if ledger is not None: return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
+    selected=os.getenv("STEGVERSE_ORG_LEDGER_STORE") or "posix"
+    if selected=="posix": return ledger_store.PosixLedgerStore(ledger_root())
+    if selected!="git": raise LedgerStoreSelectionInvalid("STEGVERSE_ORG_LEDGER_STORE")
+    for variable in ("STEGVERSE_ORG_LEDGER_GIT_DIR","STEGVERSE_ORG_LEDGER_GIT_REF"):
+        if not os.getenv(variable): raise LedgerLocationRequired(variable)
+    return ledger_store.GitLedgerStore(
+        os.environ["STEGVERSE_ORG_LEDGER_GIT_DIR"],os.environ["STEGVERSE_ORG_LEDGER_GIT_REF"],
+        remote=os.getenv("STEGVERSE_ORG_LEDGER_GIT_REMOTE") or None,
+        custody=os.getenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY") or None,
+    )
+
+def store_refusal(exc):
+    """The append attempt's own disposition when the store did not carry it."""
+    return {**exc.refusal(),"organization":C["organization"]}
 
 # Ledger custody transfer (F66-01). A root's custody passes to another
 # materialization only by two Organization transitions on its own chain:
@@ -120,19 +159,24 @@ def custody_record(row):
                              detail="custody evidence absent: "+str(row.get("receipt_sha256")))
     return record
 
-def _custody_rows(root):
-    """Every self-verifying receipt under root/receipts, by digest.
+def _custody_store(root):
+    """The ledger store for a POSIX root or a store the caller holds."""
+    return organization_store(root)
 
-    A file that does not verify is left to the existing chain checks, which
+def _custody_rows(store):
+    """Every self-verifying receipt in the store, by digest.
+
+    A receipt that does not verify is left to the existing chain checks, which
     refuse it with their own reason.
     """
     rows={}
-    for path in sorted((Path(root)/"receipts").glob("*.json")):
-        try: row=load(path)
+    prefix=ledger_store.RECEIPT_PREFIX
+    for key in sorted(store.list_prefix(prefix)):
+        try: row=store.get(key)
         except (OSError,ValueError): continue
         if not isinstance(row,dict): continue
         body=dict(row); claimed=body.pop("receipt_sha256",None)
-        if not isinstance(claimed,str) or claimed!=sha(body) or path.stem!=claimed[7:]: continue
+        if not isinstance(claimed,str) or claimed!=sha(body) or key[len(prefix):-len(".json")]!=claimed[7:]: continue
         rows[claimed]=row
     return rows
 
@@ -147,7 +191,7 @@ def verify_custody_lineage(root, rows=None):
     are two writers of one root (ORGANIZATION_CUSTODY_FORK_DETECTED). Returns
     the rows scanned.
     """
-    rows=_custody_rows(root) if rows is None else rows
+    rows=_custody_rows(_custody_store(root)) if rows is None else rows
     repair=("a copy of this root was written after custody moved, or two copies were written; its receipts are "
             "not Organization reality. Restore the one authoritative materialization and retry.")
     closed=None
@@ -294,18 +338,24 @@ def require_original_location(root, rows, tip, org_transition_class):
     ASSUMED handover having moved it, was relocated or copied without
     governance and cannot prove it is the original materialization. The
     ASSUMED record is the one write a moved root may make, and it rewrites
-    HEAD at its new location. Limit: a byte copy at the identical absolute
-    path on another kernel is indistinguishable here; only fork detection
-    (DETECTED_NOT_PREVENTED_ACROSS_KERNELS) covers it.
+    HEAD at its new location. On a POSIX root the location is the absolute
+    receipt path; on a Git ledger it is the ref locator. Limit: a byte copy at
+    the identical absolute path on another kernel is indistinguishable here;
+    only fork detection (DETECTED_NOT_PREVENTED_ACROSS_KERNELS) covers it.
     """
     if org_transition_class==CUSTODY_ASSUMED_CLASS or tip is None: return
     tip_row=rows.get(tip)
     if tip_row is not None and tip_row.get("org_transition_class")==CUSTODY_RELEASED_CLASS: return
-    recorded=load(Path(root)/"HEAD.json").get("receipt_path")
-    here=Path(root).resolve()
-    if not isinstance(recorded,str) or not recorded or Path(recorded).resolve().parent.parent!=here:
+    store=_custody_store(root)
+    recorded=(store.get(ledger_store.HEAD_KEY) or {}).get("receipt_path")
+    here=store.locator(ledger_store.receipt_key(tip))
+    if _is_posix(store):
+        same=isinstance(recorded,str) and bool(recorded) and Path(recorded).resolve()==Path(here).resolve()
+    else:
+        same=recorded==here
+    if not same:
         raise CustodyRefused("UNGOVERNED_RELOCATION_ORIGINAL_IDENTITY_UNPROVEN",retry_entrypoint=CUSTODY_RELEASE_RETRY,
-                             detail="HEAD records "+str(recorded)+"; supplied root is "+str(here),
+                             detail="HEAD records "+str(recorded)+"; supplied ledger locates it at "+str(here),
                              repair="supply the root at the location its HEAD records, or move custody by release_custody "
                                     "there and assume_custody here")
 
@@ -315,8 +365,8 @@ def require_consequential_custody(root, rows, tip, org_transition_class, verifie
     return require_custody_exclusivity(rows,tip,org_transition_class,verifier)
 
 def _read_tip(root):
-    h=Path(root)/"HEAD.json"
-    return load(h).get("receipt_sha256") if h.exists() else None
+    head=_custody_store(root).get(ledger_store.HEAD_KEY)
+    return head.get("receipt_sha256") if head is not None else None
 
 def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence, verifier=None):
     """(custody generation of the next receipt, exclusivity attestation), or a FAIL_CLOSED refusal."""
@@ -460,7 +510,7 @@ def verify_source(receipt):
         "subject_or_correlation_id":receipt.get("subject_or_correlation_id"),
     }
 
-def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
+def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
     """Reuse an immutable organization receipt for an exact already-recorded transition.
 
     The existing receipt directory is the only index; no new store or authority
@@ -469,15 +519,15 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
     `hb_reference` and `observed_at` are deliberately not compared: a retry
     arrives at a later heartbeat, and that is not a different transition.
     """
-    for path in sorted(d.glob("*.json")):
-        row=load(path)
+    for key in sorted(store.list_prefix(ledger_store.RECEIPT_PREFIX)):
+        row=store.get(key)
         if row.get("source_transition_sha256") != source["source_transition_sha256"]:
             continue
         if row.get("source_receipt_schema") != source["source_receipt_schema"]:
             raise ValueError("organization source digest/schema collision")
         body=dict(row)
         claimed=body.pop("receipt_sha256",None)
-        if claimed != sha(body) or path.stem != claimed.split(":",1)[-1]:
+        if claimed != sha(body) or key[len(ledger_store.RECEIPT_PREFIX):-len(".json")] != claimed.split(":",1)[-1]:
             raise ValueError("existing organization receipt integrity invalid")
         if (
             row.get("source_transition_id") != source["source_transition_id"]
@@ -490,26 +540,6 @@ def _existing_exact_source(d, source, *, org_transition_class, predecessor_org_s
             raise ValueError("existing organization source transition context conflict")
         return row
     return None
-
-def _atomic_json(path, value):
-    """Durably replace a JSON record while holding the organization append lock."""
-    path = Path(path)
-    fd, name = tempfile.mkstemp(prefix=".append-", dir=str(path.parent))
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as stream:
-            stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(name, path)
-        directory_fd = os.open(str(path.parent), os.O_RDONLY)
-        try:
-            os.fsync(directory_fd)
-        finally:
-            os.close(directory_fd)
-    finally:
-        if os.path.exists(name):
-            os.unlink(name)
-
 
 def _packet_establishment_source(released_batch):
     """Deterministic source transition for a release-born packet establishment.
@@ -558,8 +588,9 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     single transition that releases their predecessor.
 
     `ledger` is the organization ledger root when the caller holds it as
-    supplied by its materializer (the kernel does); otherwise it is the one
-    supplied to this execution. Either way it is supplied, never derived.
+    supplied by its materializer (the kernel does), or a ledger store it
+    holds; otherwise it is the store organization_store() selects for this
+    execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
     call writes carries that exact reference; absent, the reference is derived
@@ -570,102 +601,96 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     attestation of unique custody reaches a successor's consequential append
     (require_custody_exclusivity); a root never released does not need it.
     """
-    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
-    with _ledger_lock(root):
-            # Before any packet release: at a successor without an attestation
-            # nothing is closed, submitted or appended.
-            require_consequential_custody(root, verify_custody_lineage(root), _read_tip(root),
-                                          org_transition_class, custody_exclusivity_verifier)
-            released = None
-            effective_boundary_evidence = dict(boundary_evidence or {})
-            if parent_manifest is not None:
-                # The governing parent manifest owns packet release, authorized
-                # once at establishment. A satisfied or expired prior packet is
-                # released and carried through the existing canonical custody
-                # client as a manifest-directed consequence. That custody result
-                # is execution evidence only; it must never mint or replace the
-                # parent manifest's governance disposition.
-                import organization_batch_custody as batches
-                # Establishment is declared by the manifest. A manifest without
-                # one stays count-governed and unchanged, so manifests written
-                # before packets had a t(0) remain valid.
-                manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
-                if establishes_packet and not manifest_establishes:
-                    raise ValueError("t(0) establishment requires a manifest establishment declaration")
-                if establishes_packet:
-                    effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
-                        parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
-                    )
-                released = batches.release_satisfied_packet_before_next_transition(
-                    parent_manifest, root=root, now_ns=now_ns,
-                    custody_exclusivity_verifier=custody_exclusivity_verifier,
+    store = organization_store(ledger)
+    root = store.root if _is_posix(store) else None
+    if root is not None:
+        root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    elif parent_manifest is not None:
+        # Packet release and batch custody still read and write a POSIX root.
+        # Until they are carried by the store seam, a manifested packet on any
+        # other store is refused rather than half-committed.
+        raise ledger_store.LedgerStoreRefused(
+            "ORGANIZATION_BATCH_CUSTODY_NOT_CARRIED_BY_LEDGER_STORE",
+            "route organization_batch_custody packet release through the ledger store seam, "
+            "or supply a POSIX Organization ledger root for a manifested packet",
+            detail=getattr(store, "kind", ""),
+        )
+    with store.exclusive():
+        # Before any packet release: at a successor without an attestation, or
+        # at a root relocated without a handover, nothing is closed, submitted
+        # or appended.
+        require_consequential_custody(store, verify_custody_lineage(store), _read_tip(store),
+                                      org_transition_class, custody_exclusivity_verifier)
+        released = None
+        effective_boundary_evidence = dict(boundary_evidence or {})
+        if parent_manifest is not None:
+            # The governing parent manifest owns packet release, authorized
+            # once at establishment. A satisfied or expired prior packet is
+            # released and carried through the existing canonical custody
+            # client as a manifest-directed consequence. That custody result
+            # is execution evidence only; it must never mint or replace the
+            # parent manifest's governance disposition.
+            import organization_batch_custody as batches
+            # Establishment is declared by the manifest. A manifest without
+            # one stays count-governed and unchanged, so manifests written
+            # before packets had a t(0) remain valid.
+            manifest_establishes = batches.manifest_declares_establishment(parent_manifest)
+            if establishes_packet and not manifest_establishes:
+                raise ValueError("t(0) establishment requires a manifest establishment declaration")
+            if establishes_packet:
+                effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
+                    parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
                 )
-                if released is not None:
-                    if establishes_packet:
-                        raise ValueError("t(0) establishment cannot also release a prior packet")
-                    release_execution_result = batches.submit_released_batch(root, released["batch_id"])
-                    if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
-                        raise ValueError("released organization batch execution result invalid")
-                    if release_execution_result.get("governance_disposition") is not None:
-                        raise ValueError("released organization batch attempted governance escalation")
-                    carried = {
-                        "batch_id": released["batch_id"],
-                        "execution_result": release_execution_result["state"],
-                        "reason": release_execution_result.get("reason"),
-                        "authority_effect": release_execution_result.get("authority_effect"),
-                    }
-                    if manifest_establishes:
-                        # Release and successor establishment are one transition
-                        # and one receipt. It is member #1 of the packet it
-                        # opens, so the release has its own identity rather than
-                        # riding as an attribute of an unrelated work transition.
-                        _aggregate_transition_locked(
-                            _packet_establishment_source(released), root=root,
-                            org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
-                            boundary_evidence={
-                                batches.ESTABLISHMENT_KEY: batches.establishment_record(
-                                    parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
-                                ),
-                                "parent_manifest_released_batch": carried,
-                            },
-                            authority_effect="NONE",
-                            hb_epoch=hb_epoch,
-                            custody_exclusivity_verifier=custody_exclusivity_verifier,
-                        )
-                    else:
-                        effective_boundary_evidence["parent_manifest_released_batch"] = carried
-            record = _aggregate_transition_locked(
-                receipt, root=root, org_transition_class=org_transition_class,
-                predecessor_org_state_sha256=predecessor_org_state_sha256,
-                successor_org_state_sha256=successor_org_state_sha256,
-                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
-                hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
+            released = batches.release_satisfied_packet_before_next_transition(
+                parent_manifest, root=root, now_ns=now_ns,
+                custody_exclusivity_verifier=custody_exclusivity_verifier,
             )
             if released is not None:
-                state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
-                if state["receipt_count"] != (2 if manifest_establishes else 1):
-                    raise ValueError("successor organization receipt packet did not initialize correctly")
-            return record
-
-
-class _ledger_lock:
-    """ORGANIZATION_LEDGER_LOCK: the fcntl lock on <root>/.append.lock (one kernel only)."""
-
-    def __init__(self, root):
-        self.root = Path(root)
-
-    def __enter__(self):
-        self.root.mkdir(mode=0o700, parents=True, exist_ok=True)
-        self.lock = (self.root / ".append.lock").open("a+b")
-        fcntl.flock(self.lock.fileno(), fcntl.LOCK_EX)
-        return self.root
-
-    def __exit__(self, *exc):
-        try:
-            fcntl.flock(self.lock.fileno(), fcntl.LOCK_UN)
-        finally:
-            self.lock.close()
-        return False
+                if establishes_packet:
+                    raise ValueError("t(0) establishment cannot also release a prior packet")
+                release_execution_result = batches.submit_released_batch(root, released["batch_id"])
+                if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
+                    raise ValueError("released organization batch execution result invalid")
+                if release_execution_result.get("governance_disposition") is not None:
+                    raise ValueError("released organization batch attempted governance escalation")
+                carried = {
+                    "batch_id": released["batch_id"],
+                    "execution_result": release_execution_result["state"],
+                    "reason": release_execution_result.get("reason"),
+                    "authority_effect": release_execution_result.get("authority_effect"),
+                }
+                if manifest_establishes:
+                    # Release and successor establishment are one transition
+                    # and one receipt. It is member #1 of the packet it
+                    # opens, so the release has its own identity rather than
+                    # riding as an attribute of an unrelated work transition.
+                    _aggregate_transition_locked(
+                        _packet_establishment_source(released), root=root, store=store,
+                        org_transition_class="ORGANIZATION_RECEIPT_PACKET_ESTABLISHMENT",
+                        boundary_evidence={
+                            batches.ESTABLISHMENT_KEY: batches.establishment_record(
+                                parent_manifest, kind="PRIOR_PACKET_RELEASE", released_batch=carried
+                            ),
+                            "parent_manifest_released_batch": carried,
+                        },
+                        authority_effect="NONE",
+                        hb_epoch=hb_epoch,
+                        custody_exclusivity_verifier=custody_exclusivity_verifier,
+                    )
+                else:
+                    effective_boundary_evidence["parent_manifest_released_batch"] = carried
+        record = _aggregate_transition_locked(
+            receipt, root=root, store=store, org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+            hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
+        )
+        if released is not None:
+            state = batches.open_packet_state(parent_manifest, root=root, now_ns=now_ns)
+            if state["receipt_count"] != (2 if manifest_establishes else 1):
+                raise ValueError("successor organization receipt packet did not initialize correctly")
+        return record
 
 
 def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_exclusivity_verifier=None):
@@ -678,7 +703,7 @@ def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_excl
     detected where its receipts meet this release, not prevented.
     """
     transfer = custody_transfer(parent_manifest)
-    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
+    store = organization_store(ledger)
     record = {
         "custody_transition": "RELEASED",
         "successor_materialization_id": transfer["successor_materialization_id"],
@@ -689,9 +714,9 @@ def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_excl
         "custody_exclusivity": CUSTODY_EXCLUSIVITY,
         "disposition": "ALLOW",
     }
-    with _ledger_lock(root):
+    with store.exclusive():
         return _aggregate_transition_locked(
-            _custody_source("RELEASED", record), root=root, org_transition_class=CUSTODY_RELEASED_CLASS,
+            _custody_source("RELEASED", record), store=store, org_transition_class=CUSTODY_RELEASED_CLASS,
             predecessor_org_state_sha256=record["predecessor_head_sha256"],
             boundary_evidence={CUSTODY_KEY: record}, authority_effect="NONE", hb_epoch=hb_epoch,
             custody_exclusivity_verifier=custody_exclusivity_verifier,
@@ -708,10 +733,12 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
     """
     import organization_batch_custody as batches
     transfer = custody_transfer(parent_manifest)
-    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
-    with _ledger_lock(root):
-        tip = _read_tip(root)
-        rows = verify_custody_lineage(root)
+    store = organization_store(ledger)
+    root = store.root if _is_posix(store) else None
+    with store.exclusive():
+        store.initialize()
+        tip = _read_tip(store)
+        rows = verify_custody_lineage(store)
         release = None
         for row in rows.values():
             record = custody_record(row)
@@ -721,14 +748,22 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
                 return row  # The exact assumption retried is the receipt already recorded.
         if tip is None or (rows.get(tip) or {}).get("org_transition_class") != CUSTODY_RELEASED_CLASS:
             # No release at HEAD: the gate names whether it is missing or interrupted.
-            _custody_gate(root, rows, tip, CUSTODY_ASSUMED_CLASS, None)
+            _custody_gate(store, rows, tip, CUSTODY_ASSUMED_CLASS, None)
         else:
             try:
-                batches._verified_head(root)
-                batches._segment(root, tip, None)
-                row = batches._verified_receipt(root, tip)
+                if root is not None:
+                    batches._verified_head(root)
+                    batches._segment(root, tip, None)
+                else:
+                    cursor, seen = tip, set()
+                    while cursor is not None:
+                        if cursor in seen:
+                            raise ValueError("organization ledger cycle")
+                        seen.add(cursor)
+                        cursor = batches._verified_receipt(store, cursor).get("previous_receipt_sha256")
+                row = batches._verified_receipt(store, tip)
                 row = batches.verified_organization_receipt(
-                    root, tip, state_receipt_sha256=row.get("source_transition_sha256"))
+                    store, tip, state_receipt_sha256=row.get("source_transition_sha256"))
             except batches.OrganizationReceiptRefused as exc:
                 raise CustodyRefused(exc.failed_predicate, retry_entrypoint=CUSTODY_ASSUME_RETRY, detail=exc.detail) from exc
             except CustodyRefused:
@@ -752,33 +787,72 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
             "disposition": "ALLOW",
         }
         return _aggregate_transition_locked(
-            _custody_source("ASSUMED", record), root=root, org_transition_class=CUSTODY_ASSUMED_CLASS,
+            _custody_source("ASSUMED", record), store=store, org_transition_class=CUSTODY_ASSUMED_CLASS,
             predecessor_org_state_sha256=tip, boundary_evidence={CUSTODY_KEY: record},
             authority_effect="NONE", hb_epoch=hb_epoch,
         )
 
 
-def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None):
+def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None):
+    """The append itself, for a caller already holding the organization append lock.
+
+    The receipt and HEAD are published by the store's append_transaction on
+    the HEAD read here. On POSIX that is the advisory lock the caller holds; on
+    a networked store it is the store's own compare-and-swap, and a lost race
+    is a typed FAIL_CLOSED with nothing published.
+    """
     source=verify_source(receipt)
-    root=root if root is not None else ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
-    rows=verify_custody_lineage(root)
+    if store is None:
+        store=organization_store(root)
+        held=store.assume_exclusive()
+    else:
+        held=store.exclusive()
+    with held:
+        return _append_locked(receipt,source,store,org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch,
+            custody_exclusivity_verifier=custody_exclusivity_verifier)
+
+def _retained_in_store(store, receipt, source):
+    """The exact source receipt an earlier append committed beside its receipt."""
+    stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
+    if stored is None: raise ValueError("retained organization source receipt missing")
+    if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
+        raise ValueError("retained organization source receipt conflict")
+
+def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
+    posix=_is_posix(store)
+    store.initialize()
+    rows=verify_custody_lineage(store)
     existing=_existing_exact_source(
-        d,source,org_transition_class=org_transition_class,
+        store,source,org_transition_class=org_transition_class,
         predecessor_org_state_sha256=predecessor_org_state_sha256,
         successor_org_state_sha256=successor_org_state_sha256,
         boundary_evidence=boundary_evidence,authority_effect=authority_effect,
     )
     if existing is not None:
-        retain_source(root,receipt,source)
-        if org_transition_class in CUSTODY_CLASSES and _read_tip(root)==existing.get("previous_receipt_sha256"):
+        if posix: retain_source(store.root,receipt,source)
+        else: _retained_in_store(store,receipt,source)
+        head=store.get(ledger_store.HEAD_KEY)
+        if org_transition_class in CUSTODY_CLASSES and (head or {}).get("receipt_sha256")==existing.get("previous_receipt_sha256"):
             # An interrupted custody append wrote its receipt but not HEAD; the
             # exact retry completes it rather than appending a second one.
-            _atomic_json(h,{"organization":C["organization"],"receipt_sha256":existing["receipt_sha256"],
-                            "receipt_path":str(d/(existing["receipt_sha256"][7:]+".json"))})
+            key=ledger_store.receipt_key(existing["receipt_sha256"])
+            if not store.compare_and_swap(ledger_store.HEAD_KEY,head,{"organization":C["organization"],
+                    "receipt_sha256":existing["receipt_sha256"],"receipt_path":store.locator(key)}):
+                raise ledger_store.lost_race("HEAD no longer equals the expected head")
         return existing
-    prev=_read_tip(root)
-    generation,attestation=_custody_gate(root,rows,prev,org_transition_class,boundary_evidence,custody_exclusivity_verifier)
-    retain_source(root,receipt,source)
+    head=store.get(ledger_store.HEAD_KEY)
+    generation,attestation=_custody_gate(store,rows,head.get("receipt_sha256") if head is not None else None,
+                                         org_transition_class,boundary_evidence,custody_exclusivity_verifier)
+    # POSIX keeps the source receipt beside the ledger before the append, as
+    # it always has; any other store commits it in the append's own boundary.
+    immutable={}
+    if posix: retain_source(store.root,receipt,source)
+    else: immutable[ledger_store.source_key(source["source_transition_sha256"])]=receipt
+    head=store.get(ledger_store.HEAD_KEY)
+    prev=head.get("receipt_sha256") if head is not None else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]
     body={
@@ -796,10 +870,12 @@ def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="OR
         "custody_generation":generation,
     }
     if attestation is not None: body["custody_exclusivity_attestation_sha256"]=sha(attestation)
-    digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
-    if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
-    if not fp.exists(): _atomic_json(fp,record)
-    _atomic_json(h,{"organization":C["organization"],"receipt_sha256":digest,"receipt_path":str(fp)})
+    digest=sha(body); record={**body,"receipt_sha256":digest}; key=ledger_store.receipt_key(digest)
+    stored=store.get(key)
+    if stored is not None and stored!=record: raise ValueError("org receipt collision")
+    new_head={"organization":C["organization"],"receipt_sha256":digest,"receipt_path":store.locator(key)}
+    if not store.append_transaction(key,record,head,new_head,immutable=immutable):
+        raise ledger_store.lost_race("HEAD no longer equals the expected head")
     return record
 
 def main():
@@ -822,6 +898,8 @@ def main():
             else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
+        except ledger_store.LedgerStoreRefused as exc:
+            print(json.dumps(store_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except CustodyRefused as exc:
             print(json.dumps(exc.refusal(),sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
@@ -841,6 +919,9 @@ def main():
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
+        raise SystemExit(1)
+    except ledger_store.LedgerStoreRefused as exc:
+        print(json.dumps(store_refusal(exc),sort_keys=True))
         raise SystemExit(1)
     except CustodyRefused as exc:
         print(json.dumps(exc.refusal(),sort_keys=True))
