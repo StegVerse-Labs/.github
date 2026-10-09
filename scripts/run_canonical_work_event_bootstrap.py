@@ -15,7 +15,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -25,6 +25,7 @@ if str(ROOT / "scripts") not in sys.path:
 
 from build_canonical_work_intr_request import resolve_task  # noqa: E402
 import serve_hil_intr_materialization_ingress as transport_boundary  # noqa: E402
+from workers import canonical_work_intr_ingress as relay_ingress  # noqa: E402
 from workers import universal_intr_profiled_ingress as shared_ingress  # noqa: E402
 
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
@@ -35,11 +36,10 @@ CONSUMPTION_SCHEMA = "stegverse.canonical-work-intr-materialization-consumption/
 ORIGIN_PROVENANCE_PREDICATE = "CANONICAL_WORK_TRANSPORT_ORIGIN_AUTHENTICALLY_BOUND"
 RETRY_ENTRYPOINT = "scripts/run_canonical_work_event_bootstrap.py::main"
 FAIL_CLOSED_SCHEMA = "stegverse.canonical-work-event-bootstrap-fail-closed/v1"
-A4_VERIFIER_ABSENT = (
-    "no A4/TV-TVC authorization verification surface exists in this repository "
-    "(org-boundary/runtime/origin_attestation.py is referenced by org-runtime/interlock-intr.json "
-    "but absent; TV_EXPORT_HMAC_VERIFY is owned by StegVerse-Labs/tvc:scripts/tv_credential_verify_export_resident.py)"
-)
+# TVC_RELAY_EGRESS binds only through org-boundary/runtime/origin_attestation.py
+# and a TV_EXPORT_HMAC_VERIFY surface the caller or materializer injects.
+A4_VERIFIER_PREDICATE = relay_ingress.A4_VERIFIER_PREDICATE
+RELAY_EVIDENCE_FIELDS = ("authorization_id", "origin_organization", "origin_attestation")
 
 
 def require(ok: bool, reason: str) -> None:
@@ -107,32 +107,67 @@ def run_builder(*, task_id: str, runtime: Path, registry: Path, registry_shards:
     return outbound
 
 
-def origin_fail_closed(detail: str) -> dict[str, Any]:
+def origin_fail_closed(detail: str, *, failed_predicate: str = ORIGIN_PROVENANCE_PREDICATE,
+                       transport_origin: str | None = None) -> dict[str, Any]:
     return {
         "schema": FAIL_CLOSED_SCHEMA,
         "state": "FAIL_CLOSED",
         "disposition": "FAIL_CLOSED",
-        "failed_predicate": ORIGIN_PROVENANCE_PREDICATE,
+        "failed_predicate": failed_predicate,
         "detail": detail,
         "retry_entrypoint": RETRY_ENTRYPOINT,
         "admission_attempted": False,
         "queue_written": False,
         "receipt_written": False,
-        "transport_origin": None,
+        "transport_origin": transport_origin,
         "carrier_binding_selects_origin": False,
         "authority_effect": "NONE_NO_EFFECT",
     }
 
 
-def resolve_transport_provenance(*, node_outbox_envelope: Path | None, tvc_relay_authorization: Path | None) -> dict[str, Any]:
+def resolve_relay_provenance(evidence_path: Path, origin_verifier: Callable[..., Mapping[str, Any]] | None) -> dict[str, Any]:
+    """Bind TVC_RELAY_EGRESS from its evidence file and an injected TV/TVC verifier.
+
+    The evidence carries the relay authorization id, the declared origin and the
+    TV/TVC signature artifact. It is not proof: the ingress rebuilds the A4
+    statement over the exact request and admits only on the authority's own
+    receipt. Without a verifier nothing is built, queued or receipted.
+    """
+    if origin_verifier is None:
+        return origin_fail_closed(
+            "--tvc-relay-authorization supplied but no TV_EXPORT_HMAC_VERIFY surface was injected; "
+            "the relay origin is verified only through org-boundary/runtime/origin_attestation.py::verify",
+            failed_predicate=A4_VERIFIER_PREDICATE, transport_origin=transport_boundary.ORIGIN_RELAY)
+    try:
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        evidence = None
+    missing = [field for field in RELAY_EVIDENCE_FIELDS if not isinstance(evidence, dict) or not evidence.get(field)]
+    if missing:
+        return origin_fail_closed(f"--tvc-relay-authorization evidence lacks: {','.join(missing)}")
+    return {
+        "state": "BOUND",
+        "transport_origin": transport_boundary.ORIGIN_RELAY,
+        "authorization_id": str(evidence["authorization_id"]),
+        "origin_organization": str(evidence["origin_organization"]),
+        "origin_attestation": evidence["origin_attestation"],
+        "origin_verifier": origin_verifier,
+        "carrier_binding_selects_origin": False,
+    }
+
+
+def resolve_transport_provenance(*, node_outbox_envelope: Path | None, tvc_relay_authorization: Path | None,
+                                 origin_verifier: Callable[..., Mapping[str, Any]] | None = None) -> dict[str, Any]:
     """Resolve the transport origin from supplied authentic provenance only.
 
-    STEGOS_NODE_OUTBOX would need a validated node-trigger/outbox envelope and
-    TVC_RELAY_EGRESS a TVC authorization id verified through the A4/TV-TVC
-    surface. That surface is absent here, so no credential verifier is written and
-    both admitted paths stay unreachable: every resolution is a no-effect
-    FAIL_CLOSED naming what is missing. An HB carrier binding never selects an origin.
+    TVC_RELAY_EGRESS binds through resolve_relay_provenance: relay evidence plus
+    an injected TV/TVC verifier, with no default and no environment fallback.
+    STEGOS_NODE_OUTBOX is unchanged and stays held unreachable here. Every other
+    resolution is a no-effect FAIL_CLOSED naming what is missing. An HB carrier
+    binding never selects an origin.
     """
+    if node_outbox_envelope is None and tvc_relay_authorization is not None and tvc_relay_authorization.is_file():
+        return resolve_relay_provenance(tvc_relay_authorization, origin_verifier)
     missing = []
     for flag, path in (("--node-outbox-envelope", node_outbox_envelope), ("--tvc-relay-authorization", tvc_relay_authorization)):
         if path is None:
@@ -140,10 +175,18 @@ def resolve_transport_provenance(*, node_outbox_envelope: Path | None, tvc_relay
         elif not path.is_file():
             missing.append(f"{flag} evidence file absent: {path}")
         elif flag == "--tvc-relay-authorization":
-            missing.append(f"{flag} supplied but its authorization id is unverifiable: {A4_VERIFIER_ABSENT}")
+            missing.append(f"{flag} supplied together with --node-outbox-envelope; exactly one origin is bound")
         else:
             missing.append(f"{flag} supplied but the admitted origin paths are held unreachable until the A4/TV-TVC surface exists")
     return origin_fail_closed("; ".join(missing))
+
+
+def _origin_fail_closed_record(exc: BaseException) -> dict[str, Any] | None:
+    """The ingress's no-effect FAIL_CLOSED record for a refused relay origin, if this is one."""
+    record = getattr(exc, "record", None)
+    if isinstance(record, dict) and record.get("state") == "FAIL_CLOSED" and record.get("failed_predicate"):
+        return record
+    return None
 
 
 def post_one(*, runtime: Path, request_path: Path, provenance: dict[str, Any], admit: Any = None) -> dict[str, Any]:
@@ -158,13 +201,19 @@ def post_one(*, runtime: Path, request_path: Path, provenance: dict[str, Any], a
         "X-StegVerse-Transport-Origin": origin,
         "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
     }
+    kwargs: dict[str, Any] = {}
     if origin == transport_boundary.ORIGIN_RELAY:
         headers["X-StegVerse-Authorization-Id"] = str(provenance["authorization_id"])
+        headers[relay_ingress.ORIGIN_ORGANIZATION_HEADER] = str(provenance["origin_organization"])
+        headers[relay_ingress.ORIGIN_ATTESTATION_HEADER] = json.dumps(provenance["origin_attestation"], sort_keys=True)
+        kwargs["origin_verifier"] = provenance["origin_verifier"]
     admit = admit or getattr(shared_ingress, "admit_canonical_work", None)
     require(callable(admit), "canonical_work_admit_binding_missing")
     try:
-        body = admit(runtime_root=runtime, body=raw, headers=headers)
+        body = admit(runtime_root=runtime, body=raw, headers=headers, **kwargs)
     except ValueError as exc:
+        if _origin_fail_closed_record(exc) is not None:
+            raise
         raise SystemExit("FAIL_CLOSED: canonical_work_intr_admission_refused:" + str(exc)) from exc
     require(isinstance(body, dict), "ingress_response_object_required")
     require(body.get("schema") == INGRESS_SCHEMA and body.get("state") == "INGRESS_ADMITTED", "canonical_work_ingress_not_admitted")
@@ -277,6 +326,14 @@ def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ing
 
 
 def main() -> int:
+    """The command line injects no TV/TVC verifier, so a relay run from it fails
+    closed on A4_TV_TVC_ORIGIN_VERIFIER_PRESENT_AT_CUSTODY_OWNER."""
+    return run(origin_verifier=None)
+
+
+def run(*, origin_verifier: Callable[..., Mapping[str, Any]] | None) -> int:
+    """One cycle. `origin_verifier` is the custody owner's TV/TVC surface,
+    injected by the materializer; there is no default and no environment fallback."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--task-id", default=DEFAULT_TASK_ID)
     parser.add_argument("--registry", default=str(ROOT / "data" / "canonical-task-registry.json"))
@@ -288,7 +345,8 @@ def main() -> int:
     parser.add_argument("--tvc-relay-authorization", type=Path, help="existing TVC relay authorization evidence file")
     args = parser.parse_args()
 
-    provenance = resolve_transport_provenance(node_outbox_envelope=args.node_outbox_envelope, tvc_relay_authorization=args.tvc_relay_authorization)
+    provenance = resolve_transport_provenance(node_outbox_envelope=args.node_outbox_envelope, tvc_relay_authorization=args.tvc_relay_authorization,
+                                              origin_verifier=origin_verifier)
     if provenance.get("state") != "BOUND":
         print(json.dumps(provenance, indent=2, sort_keys=True))
         return 2
@@ -308,7 +366,14 @@ def main() -> int:
         without_carrier_binding=args.without_carrier_binding,
     )
     request = load(request_path)
-    ingress = post_one(runtime=runtime, request_path=request_path, provenance=provenance)
+    try:
+        ingress = post_one(runtime=runtime, request_path=request_path, provenance=provenance)
+    except ValueError as exc:
+        refused = _origin_fail_closed_record(exc)
+        if refused is None:
+            raise
+        print(json.dumps({**refused, "retry_entrypoint": RETRY_ENTRYPOINT}, indent=2, sort_keys=True))
+        return 2
     materialization_id = str(ingress["materialization_id"])
     ingress_path = runtime / "receipts" / "sovereign-network" / "canonical-work-intr-ingress" / f"{materialization_id}.json"
     require(ingress_path.is_file(), "write_once_ingress_receipt_missing")
