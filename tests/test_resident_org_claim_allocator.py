@@ -77,6 +77,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         "org-kernel/node_store.py",
         "resident-runtime/ledger_store.py",
         "resident-runtime/aggregate_repo_transition.py",
+        "resident-runtime/organization_batch_custody.py",
         "tasks/TASK-2026-0012.json",
     )
 

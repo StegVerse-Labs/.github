@@ -32,6 +32,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import threading
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping
@@ -287,6 +288,19 @@ class ClaimFailClosed(Exception):
         self.repair = repair
 
 
+class OrganizationReadbackRefused(ClaimFailClosed):
+    """The existing verifier refused an Organization receipt; its refusal passes through unchanged."""
+
+    def __init__(self, refusal: Mapping[str, Any]):
+        super().__init__(refusal["failed_predicate"], str(refusal.get("detail") or ""),
+                         "supply an organization ledger root whose receipt verifies, bound to its repository receipt")
+        self.refusal = dict(refusal)
+
+
+# Serializes the by-name binding below; concurrent materializations share one process.
+_RECEIPT_CUSTODY_LOAD = threading.Lock()
+
+
 def _load_module(name: str, path: Path):
     if not path.is_file():
         raise ClaimFailClosed("ORGANIZATION_EMITTER_MISSING", str(path), "materialize the canonical ledger emitters")
@@ -300,9 +314,23 @@ def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path) 
     """The existing emitters, at the ledger roots this execution was supplied."""
     emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
     organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
+    # The EXISTING Organization receipt verifier, bound to the ledger module just
+    # loaded: it imports that module by name, so the name resolves to it while it loads.
+    with _RECEIPT_CUSTODY_LOAD:
+        previous = sys.modules.get("aggregate_repo_transition")
+        sys.modules["aggregate_repo_transition"] = organization
+        try:
+            receipt_custody = _load_module("org_claim_organization_receipt_custody",
+                                           source / "resident-runtime/organization_batch_custody.py")
+        finally:
+            if previous is None:
+                sys.modules.pop("aggregate_repo_transition", None)
+            else:
+                sys.modules["aggregate_repo_transition"] = previous
     return {
         "emitter": emitter,
         "organization_ledger": organization,
+        "organization_receipt_custody": receipt_custody,
         "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
         "organization_root": Path(org_ledger_root).expanduser().resolve(),
     }
@@ -484,14 +512,16 @@ def predecessor_scope_sha256(source: Path, allocator_task: str) -> str | None:
 
 
 def verify_fence_history(runtime: Path, grants: list[dict[str, Any]], floor: Mapping[str, Any],
-                         source: Path | None = None) -> None:
+                         source: Path | None = None, custody: Mapping[str, Any] | None = None) -> None:
     """Refuse unless chain grants, the floor and retained grant evidence agree.
 
     Retained evidence above the floor must cite the chain receipt that granted
     it, with the same task, fence and claim scope. Evidence at or below the
     floor is PREDECESSOR_PROVENANCE_IMMUTABLE: accepted only when bound to the
     exact predecessor provenance record, its allocator task and, where the
-    evidence carries one, that task's scope. There is no other bypass.
+    evidence carries one, that task's scope. There is no other bypass. With
+    `custody`, every cited Organization receipt is read back through the
+    existing verifier, bound to the repository receipt it consumes.
     """
     def conflict(detail: str) -> ClaimFailClosed:
         return ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, detail,
@@ -531,6 +561,11 @@ def verify_fence_history(runtime: Path, grants: list[dict[str, Any]], floor: Map
             if fence > floor["fence"]:
                 if cited is None:
                     raise conflict(f"retained evidence {path.name} holds fence {fence} without its organization receipt")
+                if custody is not None:
+                    organization_readback(
+                        custody, cited,
+                        repository_receipt_sha256=retained_repository_receipt_sha256(custody, chain_receipts[cited]),
+                        transition_id=chain_receipts[cited]["source_transition_id"])
                 granted = chain_receipts[cited]["boundary_evidence"]
                 for key, observed in (("task_id", task), ("fencing_token", fence),
                                       ("claim_scope_sha256", value.get("claim_scope_sha256"))):
@@ -609,17 +644,42 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
 
 
-def organization_readback(custody: Mapping[str, Any], digest: str | None) -> bool:
-    """Read the organization receipt back from the ledger root and recompute it."""
+def retained_repository_receipt_sha256(custody: Mapping[str, Any], row: Mapping[str, Any]) -> str | None:
+    """The repository receipt the Organization ledger retained as this receipt's source, recomputed.
+
+    aggregate_transition retains the exact source bytes under the ledger root it
+    appended to, so a grant recorded by another runtime binds to the same bytes.
+    """
+    digest = row.get("source_transition_sha256")
     if not isinstance(digest, str) or not digest.startswith("sha256:"):
-        return False
+        return None
     org = custody["organization_ledger"]
     try:
-        row = org.load(custody["organization_root"] / "receipts" / (digest.split(":", 1)[1] + ".json"))
+        retained = org.load(custody["organization_root"] / "source-receipts" / (digest.split(":", 1)[1] + ".json"))
+        return org.verify_source(retained)["repo_receipt_sha256"]
     except Exception:
-        return False
-    body = dict(row)
-    return body.pop("receipt_sha256", None) == digest and org.sha(body) == digest
+        return None
+
+
+def organization_readback(custody: Mapping[str, Any], digest: str | None, *,
+                          repository_receipt_sha256: str | None, transition_id: str) -> None:
+    """Read the Organization receipt back through organization_batch_custody.verified_organization_receipt.
+
+    Bound to the exact ledger root the append used, the exact repository receipt
+    it consumes and the deterministic transition id. A refusal raises
+    OrganizationReadbackRefused carrying the verifier's own DENY or FAIL_CLOSED.
+    """
+    verifier = custody["organization_receipt_custody"]
+    try:
+        verifier.verified_organization_receipt(
+            custody["organization_root"], digest,
+            state_receipt_sha256=repository_receipt_sha256, expected_transition_id=transition_id)
+    except verifier.OrganizationReceiptRefused as exc:
+        raise OrganizationReadbackRefused(exc.refusal()) from exc
+
+
+def readback_state(refusal: Mapping[str, Any] | None) -> str:
+    return "VERIFIED" if refusal is None else "REFUSED:" + refusal["failed_predicate"]
 
 
 def run_allocator(runner, runtime: Path, env: Mapping[str, str], *args: str) -> dict[str, Any]:
@@ -764,7 +824,8 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
 
     def non_allow(transition_class: str, claim_task: str, predicate: str, detail: str, repair: str | None,
                   *, organization: bool, head: str | None, lock_held: bool = False,
-                  unpropagated: Mapping[str, Any] | None = None) -> dict[str, Any]:
+                  unpropagated: Mapping[str, Any] | None = None,
+                  readback_refusal: Mapping[str, Any] | None = None) -> dict[str, Any]:
         identity = {"task_id": claim_task, "request_sha256": request_hash, "failed_predicate": predicate}
         if unpropagated is not None:
             # One record per repository receipt the organization did not consume.
@@ -785,6 +846,9 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "retry_entrypoint": RETRY_ENTRYPOINT if transition_class == FAIL_CLOSED else None,
             "consequence_committed": False,
         }
+        if readback_refusal is not None:
+            # The verifier's own disposition, predicate and retry entrypoint pass through.
+            evidence["retry_entrypoint"] = readback_refusal.get("retry_entrypoint")
         if unpropagated is not None:
             evidence["unpropagated_repository_receipt_sha256"] = unpropagated["receipt_sha256"]
         receipts = record_transition(
@@ -793,7 +857,15 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             lock_held=lock_held)
         organization_receipt = receipts["organization_receipt"]
         organization_sha = organization_receipt and organization_receipt["receipt_sha256"]
-        read_back = organization_receipt is not None and organization_readback(custody, organization_sha)
+        own_refusal = None
+        if organization_receipt is not None:
+            try:
+                organization_readback(custody, organization_sha,
+                                      repository_receipt_sha256=receipts["repository_receipt"]["receipt_sha256"],
+                                      transition_id=transition_id)
+            except OrganizationReadbackRefused as exc:
+                own_refusal = exc.refusal
+        read_back = organization_receipt is not None and own_refusal is None
         record_rel = CONSUMPTION_DIR / f"{transition_id}.json"
         body = {
             **base,
@@ -814,12 +886,15 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "repository_receipt_sha256": receipts["repository_receipt"]["receipt_sha256"],
             "organization_receipt_sha256": organization_sha,
             "organization_receipt_appended": organization_receipt is not None,
-            # Only an organization receipt read back from the ledger root counts
-            # as an organization disposition; a repository-only record never does.
+            # The disposition is retained where it was appended; a repository-only
+            # record never counts as an organization disposition. Whether it read
+            # back is reported separately, as the verifier decided.
             "repository_disposition_retained": True,
-            "organization_disposition_retained": read_back,
-            "organization_readback": ("NOT_PERFORMED" if organization_receipt is None
-                                      else "VERIFIED" if read_back else "FAILED"),
+            "organization_disposition_retained": organization_receipt is not None,
+            "organization_readback": (readback_state(readback_refusal) if readback_refusal is not None
+                                      else "NOT_PERFORMED" if organization_receipt is None
+                                      else readback_state(own_refusal)),
+            "organization_readback_refusal": readback_refusal or own_refusal,
             "unpropagated_repository_receipt_sha256": unpropagated and unpropagated["receipt_sha256"],
             "evidence_refs": {
                 "consumption_record": record_rel.as_posix(),
@@ -837,9 +912,12 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         evidence = grant_row["boundary_evidence"]
         fence = evidence["fencing_token"]
         transition_id = grant_row["source_transition_id"]
-        if not organization_readback(custody, grant_row["receipt_sha256"]):
-            raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "organization grant receipt did not read back",
-                                  "supply an organization ledger root whose HEAD and chain verify")
+        # Nothing is projected and claims-active never advances unless the grant reads back.
+        organization_readback(
+            custody, grant_row["receipt_sha256"],
+            repository_receipt_sha256=(receipts["repository_receipt"]["receipt_sha256"] if receipts
+                                       else retained_repository_receipt_sha256(custody, grant_row)),
+            transition_id=transition_id)
         generation, claims, status = runtime_claim_projection(runtime, claim_task)
         projected = any((c.get("lease") or {}).get("fencing_token") == fence for c in claims)
         if not projected and status == "queued":
@@ -905,7 +983,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 grants = chain_grants(chain)
                 # Every check completes before any fence is computed.
                 floor = provenance_floor(source)
-                verify_fence_history(runtime, grants, floor, source)
+                verify_fence_history(runtime, grants, floor, source, custody)
                 prior = prior_grant(grants, target) if target else None
                 if prior is not None:
                     return allow(target, prior, None, replayed=True)
@@ -967,6 +1045,10 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"),
                     lock_held=True)
                 return allow(selected, receipts["organization_receipt"], receipts, replayed=False)
+        except OrganizationReadbackRefused as exc:
+            transition_class = REFUSED if exc.refusal["disposition"] == "DENY" else FAIL_CLOSED
+            return non_allow(transition_class, claim_task, exc.predicate, exc.detail, exc.repair,
+                             organization=chain_verified, head=head, readback_refusal=exc.refusal)
         except ClaimFailClosed as exc:
             # Recorded at the organization only on a chain that verified; an
             # unverified chain is never extended.
