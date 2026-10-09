@@ -51,6 +51,246 @@ def ledger_root():
     raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
 def load(p): return json.loads(Path(p).read_text())
 
+# Ledger custody transfer (F66-01). A root's custody passes to another
+# materialization only by two Organization transitions on its own chain:
+# RELEASED, appended at the predecessor, after which that root is read-only for
+# writers, and ASSUMED, the first append permitted at the successor. Every
+# receipt carries the custody_generation it was written in; a receipt without
+# the field predates custody transfer and is generation 0, so existing chains
+# verify unchanged and nothing is rewritten.
+#
+# The append lock serializes writers within one kernel only. A copy of the root
+# taken before the release can still be written on another node, and source
+# cannot prevent that without a shared serializer, which is not added. Such a
+# copy is DETECTED wherever its receipts meet the release -- a superseded
+# generation or a fork -- and refused FAIL_CLOSED; it is not prevented.
+CUSTODY_RELEASED_CLASS="ORGANIZATION_LEDGER_CUSTODY_RELEASED"
+CUSTODY_ASSUMED_CLASS="ORGANIZATION_LEDGER_CUSTODY_ASSUMED"
+CUSTODY_CLASSES=(CUSTODY_RELEASED_CLASS,CUSTODY_ASSUMED_CLASS)
+CUSTODY_KEY="organization_ledger_custody"
+CUSTODY_TRANSFER_KEY="ledger_custody_transfer"
+CUSTODY_EXCLUSIVITY="DETECTED_NOT_PREVENTED_ACROSS_KERNELS"
+CUSTODY_RELEASE_RETRY="resident-runtime/aggregate_repo_transition.py::release_custody"
+CUSTODY_ASSUME_RETRY="resident-runtime/aggregate_repo_transition.py::assume_custody"
+CUSTODY_VERIFY_RETRY="resident-runtime/aggregate_repo_transition.py::verify_custody_lineage"
+
+class CustodyRefused(ValueError):
+    """A custody predicate failed; nothing is appended. Always FAIL_CLOSED.
+
+    The refusal is returned, not appended: a released root is read-only and a
+    forked or superseded root is not one reality, so neither may take a receipt.
+    """
+
+    def __init__(self, failed_predicate, *, retry_entrypoint, detail="", repair=""):
+        super().__init__(failed_predicate+(": "+detail if detail else ""))
+        self.failed_predicate=failed_predicate
+        self.retry_entrypoint=retry_entrypoint
+        self.detail=detail
+        self.repair=repair
+
+    def refusal(self):
+        return {
+            "schema":"stegverse.organization-ledger-custody-refusal/v1",
+            "organization":C["organization"],
+            "disposition":"FAIL_CLOSED",
+            "failed_predicate":self.failed_predicate,
+            "detail":self.detail,
+            "required_evidence_or_repair":self.repair,
+            "retry_entrypoint":self.retry_entrypoint,
+            "custody_exclusivity":CUSTODY_EXCLUSIVITY,
+            "consequence_committed":False,
+            "authority_effect":"NONE_REFUSAL_ONLY",
+        }
+
+def custody_generation(row):
+    """The custody generation a receipt was written in; absent means 0."""
+    value=row.get("custody_generation",0)
+    if type(value) is not int or value<0:
+        raise CustodyRefused("CUSTODY_GENERATION_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                             detail=str(row.get("receipt_sha256")))
+    return value
+
+def custody_record(row):
+    """The custody evidence a RELEASED or ASSUMED receipt carries, else None."""
+    if row.get("org_transition_class") not in CUSTODY_CLASSES: return None
+    record=(row.get("boundary_evidence") or {}).get(CUSTODY_KEY)
+    if not isinstance(record,dict):
+        raise CustodyRefused("CUSTODY_GENERATION_CHAIN_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                             detail="custody evidence absent: "+str(row.get("receipt_sha256")))
+    return record
+
+def _custody_rows(root):
+    """Every self-verifying receipt under root/receipts, by digest.
+
+    A file that does not verify is left to the existing chain checks, which
+    refuse it with their own reason.
+    """
+    rows={}
+    for path in sorted((Path(root)/"receipts").glob("*.json")):
+        try: row=load(path)
+        except (OSError,ValueError): continue
+        if not isinstance(row,dict): continue
+        body=dict(row); claimed=body.pop("receipt_sha256",None)
+        if not isinstance(claimed,str) or claimed!=sha(body) or path.stem!=claimed[7:]: continue
+        rows[claimed]=row
+    return rows
+
+def verify_custody_lineage(root, rows=None):
+    """Refuse a root holding a superseded custody generation or a fork.
+
+    Readback, the HEAD/chain walk, batch closure and every append run this. A
+    RELEASED receipt closes its generation and an ASSUMED receipt closes every
+    generation below its own; a receipt in a closed generation that is not an
+    ancestor of the custody receipt that closed it was written by a superseded
+    copy (CUSTODY_GENERATION_SUPERSEDED). Two receipts naming one predecessor
+    are two writers of one root (ORGANIZATION_CUSTODY_FORK_DETECTED). Returns
+    the rows scanned.
+    """
+    rows=_custody_rows(root) if rows is None else rows
+    repair=("a copy of this root was written after custody moved, or two copies were written; its receipts are "
+            "not Organization reality. Restore the one authoritative materialization and retry.")
+    closed=None
+    for digest,row in rows.items():
+        record=custody_record(row)
+        if record is None: continue
+        level=custody_generation(row) if row["org_transition_class"]==CUSTODY_RELEASED_CLASS else custody_generation(row)-1
+        rank=1 if row["org_transition_class"]==CUSTODY_ASSUMED_CLASS else 0
+        if closed is None or (level,rank)>closed[0]: closed=((level,rank),[digest])
+        elif (level,rank)==closed[0]: closed[1].append(digest)
+    if closed is not None:
+        if len(closed[1])>1:
+            raise CustodyRefused("ORGANIZATION_CUSTODY_FORK_DETECTED",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                 detail="custody transitions "+",".join(sorted(closed[1])),repair=repair)
+        level=closed[0][0]; ancestors=set(); cursor=closed[1][0]
+        while cursor in rows and cursor not in ancestors:
+            ancestors.add(cursor); cursor=rows[cursor].get("previous_receipt_sha256")
+        superseded=sorted(d for d,row in rows.items() if custody_generation(row)<=level and d not in ancestors)
+        if superseded:
+            raise CustodyRefused("CUSTODY_GENERATION_SUPERSEDED",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                 detail=",".join(superseded),repair=repair)
+    children={}
+    for digest,row in rows.items():
+        parent=row.get("previous_receipt_sha256")
+        if parent is not None: children.setdefault(parent,[]).append(digest)
+    for parent,named in sorted(children.items()):
+        if len(named)>1:
+            raise CustodyRefused("ORGANIZATION_CUSTODY_FORK_DETECTED",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                 detail=parent+" <- "+",".join(sorted(named)),repair=repair)
+    for digest,row in rows.items():
+        parent=rows.get(row.get("previous_receipt_sha256"))
+        generation=custody_generation(row)
+        cls=row.get("org_transition_class")
+        if parent is None:
+            if row.get("previous_receipt_sha256") is None and generation!=0:
+                raise CustodyRefused("CUSTODY_GENERATION_CHAIN_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                     detail="genesis generation must be 0: "+digest)
+            continue
+        if parent.get("org_transition_class")==CUSTODY_RELEASED_CLASS:
+            if cls!=CUSTODY_ASSUMED_CLASS:
+                raise CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                     detail="receipt appended after release: "+digest,repair=repair)
+            if generation!=custody_record(parent).get("next_custody_generation"):
+                raise CustodyRefused("CUSTODY_GENERATION_CHAIN_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,detail=digest)
+        elif cls==CUSTODY_ASSUMED_CLASS:
+            raise CustodyRefused("CUSTODY_GENERATION_CHAIN_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,
+                                 detail="assumption without release: "+digest)
+        elif generation<custody_generation(parent):
+            raise CustodyRefused("CUSTODY_GENERATION_SUPERSEDED",retry_entrypoint=CUSTODY_VERIFY_RETRY,detail=digest,repair=repair)
+        elif generation!=custody_generation(parent):
+            raise CustodyRefused("CUSTODY_GENERATION_CHAIN_INVALID",retry_entrypoint=CUSTODY_VERIFY_RETRY,detail=digest)
+    return rows
+
+def custody_transfer(parent_manifest):
+    """The custody transfer the governing manifest declares."""
+    transfer=parent_manifest.get(CUSTODY_TRANSFER_KEY) if isinstance(parent_manifest,dict) else None
+    if not isinstance(transfer,dict):
+        raise CustodyRefused("CUSTODY_TRANSFER_MANIFEST_DECLARATION_REQUIRED",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                             repair="supply a governing manifest declaring "+CUSTODY_TRANSFER_KEY)
+    successor=transfer.get("successor_materialization_id")
+    head=transfer.get("predecessor_head_sha256")
+    generation=transfer.get("next_custody_generation")
+    if (not isinstance(successor,str) or not successor or not isinstance(head,str) or len(head)!=71
+            or not head.startswith("sha256:") or type(generation) is not int or generation<1):
+        raise CustodyRefused("CUSTODY_TRANSFER_MANIFEST_DECLARATION_INVALID",retry_entrypoint=CUSTODY_RELEASE_RETRY)
+    return {"successor_materialization_id":successor,"predecessor_head_sha256":head,"next_custody_generation":generation}
+
+def _custody_source(kind, record):
+    """Deterministic source transition for a custody transition, so a retry is idempotent."""
+    transition_id="ORG-LEDGER-CUSTODY-"+kind+":"+record["predecessor_head_sha256"]+":"+record["successor_materialization_id"]
+    return {
+        "schema":"stegverse.canonical-state-transition-receipt/v1",
+        "transition_id":transition_id,
+        "transition_sequence":1,
+        "subject_or_correlation_id":record["successor_materialization_id"],
+        "transition_outcome":"OBSERVED",
+        "prior_state_ref_or_hash":record["predecessor_head_sha256"],
+        "required_evidence_manifest":[{
+            "evidence_id":"organization_ledger_custody",
+            "evidence_type":"ORGANIZATION_LEDGER_CUSTODY_"+kind,
+            "origin_transition_id":transition_id,
+            "encoding":"canonical-json",
+            "content":record,
+            "sha256":hashlib.sha256(canon(record)).hexdigest(),
+        }],
+    }
+
+def _read_tip(root):
+    h=Path(root)/"HEAD.json"
+    return load(h).get("receipt_sha256") if h.exists() else None
+
+def _custody_gate(root, rows, tip, org_transition_class, boundary_evidence):
+    """The custody generation of the next receipt, or a FAIL_CLOSED refusal."""
+    tip_row=rows.get(tip) if tip is not None else None
+    if tip is not None and tip_row is None:
+        raise CustodyRefused("ORGANIZATION_LEDGER_HEAD_UNVERIFIED",retry_entrypoint=CUSTODY_VERIFY_RETRY,detail=str(tip))
+    record=(boundary_evidence or {}).get(CUSTODY_KEY)
+    if org_transition_class==CUSTODY_ASSUMED_CLASS:
+        if tip_row is None or tip_row.get("org_transition_class")!=CUSTODY_RELEASED_CLASS:
+            pending=sorted(d for d,row in rows.items()
+                           if row.get("org_transition_class")==CUSTODY_RELEASED_CLASS and row.get("previous_receipt_sha256")==tip)
+            if pending:
+                raise CustodyRefused("ORGANIZATION_LEDGER_CUSTODY_HANDOVER_INTERRUPTED",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                                     detail="release "+pending[0]+" is not HEAD",
+                                     repair="retry the release at the predecessor materialization to complete its HEAD, then supply that root here")
+            raise CustodyRefused("ORGANIZATION_LEDGER_CUSTODY_RELEASE_MISSING",retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                 detail="HEAD "+str(tip)+" is not a custody release",
+                                 repair="supply the released predecessor root; assumption never starts a chain")
+        release=custody_record(tip_row)
+        if not isinstance(record,dict) or record.get("release_receipt_sha256")!=tip:
+            raise CustodyRefused("ORGANIZATION_LEDGER_CUSTODY_RELEASE_MISSING",retry_entrypoint=CUSTODY_ASSUME_RETRY,detail=str(tip))
+        if record.get("successor_materialization_id")!=release.get("successor_materialization_id"):
+            raise CustodyRefused("CUSTODY_RELEASE_SUCCESSOR_MISMATCH",retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                 detail=str(record.get("successor_materialization_id")))
+        if not (record.get("predecessor_head_sha256")==release.get("predecessor_head_sha256")==tip_row.get("previous_receipt_sha256")):
+            raise CustodyRefused("CUSTODY_RELEASE_PREDECESSOR_HEAD_MISMATCH",retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                 detail=str(record.get("predecessor_head_sha256")))
+        if not (record.get("custody_generation")==release.get("next_custody_generation")==custody_generation(tip_row)+1):
+            raise CustodyRefused("CUSTODY_GENERATION_MISMATCH",retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                 detail=str(record.get("custody_generation")))
+        if record.get("governing_manifest_sha256")!=release.get("governing_manifest_sha256"):
+            raise CustodyRefused("CUSTODY_TRANSFER_MANIFEST_MISMATCH",retry_entrypoint=CUSTODY_ASSUME_RETRY)
+        return record["custody_generation"]
+    if tip_row is not None and tip_row.get("org_transition_class")==CUSTODY_RELEASED_CLASS:
+        raise CustodyRefused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY",retry_entrypoint=CUSTODY_ASSUME_RETRY,detail=tip,
+                             repair="custody of this root was released; append at the successor after it assumes custody")
+    pending=sorted(d for d,row in rows.items()
+                   if row.get("org_transition_class")==CUSTODY_RELEASED_CLASS and row.get("previous_receipt_sha256")==tip)
+    if pending:
+        raise CustodyRefused("ORGANIZATION_LEDGER_CUSTODY_HANDOVER_INTERRUPTED",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                             detail="release "+pending[0]+" is not HEAD",repair="retry the release to complete its HEAD")
+    generation=custody_generation(tip_row) if tip_row is not None else 0
+    if org_transition_class==CUSTODY_RELEASED_CLASS:
+        if tip_row is None:
+            raise CustodyRefused("CUSTODY_RELEASE_REQUIRES_EXISTING_HEAD",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                                 repair="custody of an empty root cannot be released; a genesis is never fabricated")
+        if not isinstance(record,dict) or record.get("predecessor_head_sha256")!=tip:
+            raise CustodyRefused("CUSTODY_RELEASE_PREDECESSOR_HEAD_MISMATCH",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                                 detail="HEAD is "+tip,repair="the manifest names a HEAD this root no longer holds")
+        if record.get("custody_generation")!=generation or record.get("next_custody_generation")!=generation+1:
+            raise CustodyRefused("CUSTODY_GENERATION_MISMATCH",retry_entrypoint=CUSTODY_RELEASE_RETRY,
+                                 detail="current generation is "+str(generation))
+    return generation
+
 def verify_required_evidence(receipt):
     """Require exact inline canonical evidence bytes for organization-local replay."""
     manifest=receipt.get("required_evidence_manifest")
@@ -246,10 +486,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     receipt whatever epoch it arrives at.
     """
     root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
-    root.mkdir(mode=0o700, parents=True, exist_ok=True)
-    with (root / ".append.lock").open("a+b") as lock:
-        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-        try:
+    with _ledger_lock(root):
             released = None
             effective_boundary_evidence = dict(boundary_evidence or {})
             if parent_manifest is not None:
@@ -318,13 +555,121 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                 if state["receipt_count"] != (2 if manifest_establishes else 1):
                     raise ValueError("successor organization receipt packet did not initialize correctly")
             return record
+
+
+class _ledger_lock:
+    """ORGANIZATION_LEDGER_LOCK: the fcntl lock on <root>/.append.lock (one kernel only)."""
+
+    def __init__(self, root):
+        self.root = Path(root)
+
+    def __enter__(self):
+        self.root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        self.lock = (self.root / ".append.lock").open("a+b")
+        fcntl.flock(self.lock.fileno(), fcntl.LOCK_EX)
+        return self.root
+
+    def __exit__(self, *exc):
+        try:
+            fcntl.flock(self.lock.fileno(), fcntl.LOCK_UN)
         finally:
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+            self.lock.close()
+        return False
+
+
+def release_custody(parent_manifest, *, ledger=None, hb_epoch=None):
+    """Append ORGANIZATION_LEDGER_CUSTODY_RELEASED; this root is then read-only for writers.
+
+    The governing manifest declares the successor materialization, the exact
+    HEAD being released and the next custody generation. Appended under the
+    existing lock by the existing emitter. Nothing here stops a copy of this
+    root taken before the release from being written elsewhere: that copy is
+    detected where its receipts meet this release, not prevented.
+    """
+    transfer = custody_transfer(parent_manifest)
+    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
+    record = {
+        "custody_transition": "RELEASED",
+        "successor_materialization_id": transfer["successor_materialization_id"],
+        "predecessor_head_sha256": transfer["predecessor_head_sha256"],
+        "custody_generation": transfer["next_custody_generation"] - 1,
+        "next_custody_generation": transfer["next_custody_generation"],
+        "governing_manifest_sha256": sha(parent_manifest),
+        "custody_exclusivity": CUSTODY_EXCLUSIVITY,
+        "disposition": "ALLOW",
+    }
+    with _ledger_lock(root):
+        return _aggregate_transition_locked(
+            _custody_source("RELEASED", record), root=root, org_transition_class=CUSTODY_RELEASED_CLASS,
+            predecessor_org_state_sha256=record["predecessor_head_sha256"],
+            boundary_evidence={CUSTODY_KEY: record}, authority_effect="NONE", hb_epoch=hb_epoch,
+        )
+
+
+def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch=None):
+    """Append ORGANIZATION_LEDGER_CUSTODY_ASSUMED, the first append at the successor.
+
+    `materialization_id` is this location's identity as its materializer
+    supplies it. HEAD must be the release, read back through the existing HEAD
+    and chain walk and verified_organization_receipt; the release must name this
+    materialization, the manifest's HEAD and generation, and this manifest.
+    """
+    import organization_batch_custody as batches
+    transfer = custody_transfer(parent_manifest)
+    root = Path(ledger).expanduser().resolve() if ledger is not None else ledger_root()
+    with _ledger_lock(root):
+        tip = _read_tip(root)
+        rows = verify_custody_lineage(root)
+        release = None
+        for row in rows.values():
+            record = custody_record(row)
+            if (record and record["custody_transition"] == "ASSUMED"
+                    and record.get("successor_materialization_id") == materialization_id
+                    and record.get("governing_manifest_sha256") == sha(parent_manifest)):
+                return row  # The exact assumption retried is the receipt already recorded.
+        if tip is None or (rows.get(tip) or {}).get("org_transition_class") != CUSTODY_RELEASED_CLASS:
+            # No release at HEAD: the gate names whether it is missing or interrupted.
+            _custody_gate(root, rows, tip, CUSTODY_ASSUMED_CLASS, None)
+        else:
+            try:
+                batches._verified_head(root)
+                batches._segment(root, tip, None)
+                row = batches._verified_receipt(root, tip)
+                row = batches.verified_organization_receipt(
+                    root, tip, state_receipt_sha256=row.get("source_transition_sha256"))
+            except batches.OrganizationReceiptRefused as exc:
+                raise CustodyRefused(exc.failed_predicate, retry_entrypoint=CUSTODY_ASSUME_RETRY, detail=exc.detail) from exc
+            except CustodyRefused:
+                raise
+            except ValueError as exc:
+                raise CustodyRefused("ORGANIZATION_LEDGER_CHAIN_UNVERIFIED", retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                     detail=str(exc)) from exc
+            if row.get("org_transition_class") == CUSTODY_RELEASED_CLASS:
+                release = custody_record(row)
+        if release is not None and release.get("successor_materialization_id") != materialization_id:
+            raise CustodyRefused("CUSTODY_RELEASE_SUCCESSOR_MISMATCH", retry_entrypoint=CUSTODY_ASSUME_RETRY,
+                                 detail=str(materialization_id))
+        record = {
+            "custody_transition": "ASSUMED",
+            "release_receipt_sha256": tip,
+            "successor_materialization_id": materialization_id,
+            "predecessor_head_sha256": transfer["predecessor_head_sha256"],
+            "custody_generation": transfer["next_custody_generation"],
+            "governing_manifest_sha256": sha(parent_manifest),
+            "custody_exclusivity": CUSTODY_EXCLUSIVITY,
+            "disposition": "ALLOW",
+        }
+        return _aggregate_transition_locked(
+            _custody_source("ASSUMED", record), root=root, org_transition_class=CUSTODY_ASSUMED_CLASS,
+            predecessor_org_state_sha256=tip, boundary_evidence={CUSTODY_KEY: record},
+            authority_effect="NONE", hb_epoch=hb_epoch,
+        )
 
 
 def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None):
     source=verify_source(receipt)
     root=root if root is not None else ledger_root(); d=root/"receipts"; d.mkdir(parents=True,exist_ok=True); h=root/"HEAD.json"
+    rows=verify_custody_lineage(root)
     existing=_existing_exact_source(
         d,source,org_transition_class=org_transition_class,
         predecessor_org_state_sha256=predecessor_org_state_sha256,
@@ -333,9 +678,15 @@ def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="OR
     )
     if existing is not None:
         retain_source(root,receipt,source)
+        if org_transition_class in CUSTODY_CLASSES and _read_tip(root)==existing.get("previous_receipt_sha256"):
+            # An interrupted custody append wrote its receipt but not HEAD; the
+            # exact retry completes it rather than appending a second one.
+            _atomic_json(h,{"organization":C["organization"],"receipt_sha256":existing["receipt_sha256"],
+                            "receipt_path":str(d/(existing["receipt_sha256"][7:]+".json"))})
         return existing
+    prev=_read_tip(root)
+    generation=_custody_gate(root,rows,prev,org_transition_class,boundary_evidence)
     retain_source(root,receipt,source)
-    prev=load(h).get("receipt_sha256") if h.exists() else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]
     body={
@@ -350,6 +701,7 @@ def _aggregate_transition_locked(receipt, *, root=None, org_transition_class="OR
         "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
         "observed_at":datetime.now(timezone.utc).isoformat(),
         "previous_receipt_sha256":prev,
+        "custody_generation":generation,
     }
     digest=sha(body); record={**body,"receipt_sha256":digest}; fp=d/(digest.split(":",1)[1]+".json")
     if fp.exists() and load(fp)!=record: raise ValueError("org receipt collision")
@@ -367,7 +719,19 @@ def main():
     p.add_argument("--boundary-evidence-json",default="{}")
     p.add_argument("--authority-effect",default="NONE")
     p.add_argument("--parent-manifest")
+    p.add_argument("--release-custody",action="store_true")
+    p.add_argument("--assume-custody-as")
     a=p.parse_args()
+    if a.release_custody or a.assume_custody_as:
+        if not a.parent_manifest: raise SystemExit("governing parent manifest required")
+        try:
+            if a.release_custody: record=release_custody(load(a.parent_manifest))
+            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
+        except LedgerLocationRequired as exc:
+            print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
+        except CustodyRefused as exc:
+            print(json.dumps(exc.refusal(),sort_keys=True)); raise SystemExit(1)
+        print(json.dumps(record,sort_keys=True)); return
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
     receipt=load(source_path)
@@ -384,6 +748,9 @@ def main():
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
+        raise SystemExit(1)
+    except CustodyRefused as exc:
+        print(json.dumps(exc.refusal(),sort_keys=True))
         raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))
