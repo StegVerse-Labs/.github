@@ -172,5 +172,39 @@
         "progression_basis_unchanged": "EXACT_EVALUATOR_MANIFEST_MATERIALIZED_ON_ADMITTED_CANONICAL_RUNTIME_SUBSTRATE"
       }
     }
+  },
+  "current_truth": {
+    "o77_01_unrun_failing_test_surface": {
+      "item_id": "O77-01",
+      "approval_ref": "StegVerse-org/.github#98 comment 6083717164 O77-01",
+      "surface_status": "UNPROVEN",
+      "disposition": "FAIL_CLOSED",
+      "workflow_coverage": "No workflow names this test. It runs only inside the full-suite ratchet (.github/workflows/test-suite-ratchet.yml -> scripts/check_test_suite_ratchet.py), where data/test-suite-baseline.json known_failing lists it, so CI stays green while it fails.",
+      "evidence_class": "SYNTHETIC_TEST",
+      "test_expectations_changed": false,
+      "test_skipped": false,
+      "runtime_evidence": "NONE",
+      "consequence_committed": false,
+      "authority_effect": "NONE_SOURCE_RECORD_ONLY",
+      "surface": "tests/test_sdk_evaluator_dispatch_master_records_custody.py::test_sdk_evaluator_dispatch_visit_enters_existing_master_records_organization_record",
+      "source_under_test": "scripts/dispatch_resident_execution_requests.py::dispatch",
+      "owner_basis": "This record's runtime_resolution.master_records_dispatch_visit names scripts/dispatch_resident_execution_requests.py as dispatcher_ref and selector sdk_evaluator_governance_posture, the exact visit this test asserts.",
+      "failure_code": "SELECTED_CONSUMER_STATE_NOT_ACCEPTED_WAIT_STATE",
+      "failed_predicate": "SDK_EVALUATOR_DISPATCH_CUSTODY_TEST_PASSES_ON_MAIN",
+      "failing_assertion": "assert receipt[\"state\"] == \"DISPATCH_COMPLETE\" (actual: DISPATCH_INCOMPLETE)",
+      "failing_assertion_ref": "tests/test_sdk_evaluator_dispatch_master_records_custody.py:82",
+      "source_behavior_ref": "scripts/dispatch_resident_execution_requests.py:711 (consumer state MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED is not in accepted_wait_states, so request_failures is non-empty) and :715 (with only_consumers set this makes exact_selector_failure true, so :749 yields DISPATCH_INCOMPLETE). The custody visit itself is RECORDED with reconstruction_status PASS in the same run.",
+      "required_evidence_or_repair": "Decide whether a selected sdk_evaluator_governance_posture consumer returning MASTER_RECORDS_VALIDATION_PENDING_OR_FAILED is an accepted wait state or an exact-selector failure, then repair source or the test binding. Test expectations are not changed and the test is not skipped by this record.",
+      "retry_entrypoint": "python -m pytest -q tests/test_sdk_evaluator_dispatch_master_records_custody.py",
+      "owning_existing_goal": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+      "next_attempt": "After an approved source or test-binding repair, run the retry entrypoint on the exact head and remove the test from data/test-suite-baseline.json known_failing only when it passes.",
+      "evidence_refs": [
+        "tests/test_sdk_evaluator_dispatch_master_records_custody.py:82",
+        "scripts/dispatch_resident_execution_requests.py:711",
+        "scripts/dispatch_resident_execution_requests.py:715",
+        "scripts/dispatch_resident_execution_requests.py:749",
+        "data/test-suite-baseline.json"
+      ]
+    }
   }
 }
