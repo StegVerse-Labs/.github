@@ -27,21 +27,6 @@
     "A_RECEIVER_IS_NOT_ALWAYS_ON",
     "AN_AUTHENTIC_OBSERVER_HAS_NOT_YET_LOOKED"
   ],
-  "exemptions": [
-    {
-      "surface": "workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry",
-      "owning_existing_goal": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
-      "failure_code": "MASTER_RECORDS_RECONSTRUCTION_STILL_GATES_PREDECESSOR_ANCESTRY",
-      "failed_predicate": "MASTER_RECORDS_EXACT_RECEIPT_RECONSTRUCTION_REQUIRED",
-      "why_manifest_bound_state_transition_is_not_yet_possible": "The admitted SDK diagnostic consumer recovers each predecessor's original canonical state receipt (binding back to the exact ingress ALLOW) through Master Records reconstruction. Moving that readback to the Organization ledger's retained source receipts changes how the ingress and binding receipts are located, which is outside StegVerse-Labs/.github#3012 phase 1; only this file's diagnostic closure gate was moved to verified_organization_receipt.",
-      "required_evidence_or_repair": "Read each predecessor's retained source receipt from the Organization ledger root the append used (resident-runtime/organization_batch_custody.py verified_organization_receipt with expected_predecessor) instead of reconstruct_state_receipt, then remove this exemption.",
-      "retry_entrypoint": "workers/sdk_manifest_diagnostic_admitted_consumer.py::consume",
-      "next_attempt": "The next change to CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001 that touches workers/sdk_manifest_diagnostic_admitted_consumer.py.",
-      "expires_or_review_on": "Review with the PR that closes StegVerse-Labs/.github#3012 phase 1.",
-      "current_disposition": "FAIL_CLOSED",
-      "consequence_committed": false,
-      "authority_effect": "NONE_REGISTER_ONLY"
-    }
-  ],
+  "exemptions": [],
   "authority_effect": "NONE_REGISTER_ONLY"
 }

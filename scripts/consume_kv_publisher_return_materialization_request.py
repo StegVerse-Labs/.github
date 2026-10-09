@@ -90,11 +90,13 @@ class KVOrganizationReceiptRefused(KVPublisherReturnError):
         self.refusal=dict(refusal)
 
 
-def _organization_receipt_gate(result:Any, *, transition_id:str, message:str)->str:
+def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, record_refusal:bool=False)->str:
     """Verified Organization receipt digest for this exact state receipt, else a typed refusal.
 
     The Organization ledger append is the transition's runtime reality.
     Master Records reconstruction fields are evidence only and never consulted.
+    `record_refusal` is set where the gate sits inside the transition this
+    consumer just attempted: the refusal is appended as its non-ALLOW record.
     """
     from importlib import import_module
     resident=str(ROOT/"resident-runtime")
@@ -105,7 +107,13 @@ def _organization_receipt_gate(result:Any, *, transition_id:str, message:str)->s
         row=custody.verified_organization_record(
             None,dict(result) if isinstance(result,Mapping) else result,expected_transition_id=transition_id)
     except custody.OrganizationReceiptRefused as exc:
-        raise KVOrganizationReceiptRefused(message,exc.refusal()) from exc
+        refusal=exc.refusal()
+        if record_refusal:
+            from canonical_state_transition_custody import record_organization_receipt_refusal
+            refusal=record_organization_receipt_refusal(
+                refusal,gated_transition_id=transition_id,
+                state_receipt_sha256=result.get("receipt_sha256") if isinstance(result,Mapping) else None)
+        raise KVOrganizationReceiptRefused(message,refusal) from exc
     return row["receipt_sha256"]
 
 
@@ -287,7 +295,8 @@ def _record_sdk_return_binding_custody(
     # Organization ledger record is the transition's reality; Master Records
     # reconstruction fields are evidence only and never gate it.
     organization_receipt_sha256=_organization_receipt_gate(
-        mr,transition_id=transition_id,message="SDK return binding Organization record not recorded")
+        mr,transition_id=transition_id,message="SDK return binding Organization record not recorded",
+        record_refusal=True)
     return {
       "state":mr.get("state"),
       "organization_receipt_sha256":organization_receipt_sha256,
@@ -462,7 +471,8 @@ def _prepare_rtc007_continuation(
     # Organization ledger record is the transition's reality; Master Records
     # reconstruction fields are evidence only and never gate it.
     organization_receipt_sha256=_organization_receipt_gate(
-        mr,transition_id="RTC-STEGVERSE-EGRESS-007",message="RTC-STEGVERSE-EGRESS-007 Organization record not recorded")
+        mr,transition_id="RTC-STEGVERSE-EGRESS-007",message="RTC-STEGVERSE-EGRESS-007 Organization record not recorded",
+        record_refusal=True)
 
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/mir_southbound_intr_consumer.py")
     if stegos is None:

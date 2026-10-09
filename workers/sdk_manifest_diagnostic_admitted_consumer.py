@@ -2,8 +2,10 @@
 
 This is a non-authorizing component of the installed generic Universal InTr
 profile. A locator or TVC authorization-id string is never admission proof:
-both ingress ALLOW and runtime materialization must independently reconstruct
-through existing canonical Master Records before any processor is invoked.
+both ingress ALLOW and runtime materialization must be read back from the
+existing Organization ledger (each retained source receipt bound to its
+verified Organization receipt) before any processor is invoked. Master Records
+reconstruction is evidence only and never gates this consumer.
 No listener, host, scheduler, credential mechanism, ledger or device is added.
 """
 from __future__ import annotations
@@ -31,11 +33,17 @@ class DiagnosticAdmissionError(ValueError):
         self.predicate = predicate
 
 class DiagnosticExecutionFailClosed(RuntimeError):
-    """The admitted execution has begun; this attempt is terminal."""
+    """The admitted execution has begun; this attempt is terminal.
 
-    def __init__(self, predicate: str):
+    `refusal` is the typed Organization receipt refusal when one caused it
+    (disposition, failed_predicate, retry_entrypoint, consequence_committed),
+    carried to the caller's disposition record.
+    """
+
+    def __init__(self, predicate: str, *, refusal: Mapping[str, Any] | None = None):
         super().__init__(predicate)
         self.predicate = predicate
+        self.refusal = dict(refusal) if refusal is not None else None
 
 
 def require(ok: bool, predicate: str) -> None:
@@ -54,29 +62,88 @@ def _read(path: Path) -> dict[str, Any]:
     return value
 
 
-def _reconstruct(reconstruct, digest: str) -> dict[str, Any]:
+def _resident_modules(control_root: Path):
+    from importlib import import_module
+    root = control_root.resolve() / "resident-runtime"
+    require((root / "aggregate_repo_transition.py").is_file()
+            and (root / "organization_batch_custody.py").is_file(),
+            "CURRENT_ORGANIZATION_LEDGER_VERIFIER_REQUIRED")
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    return import_module("aggregate_repo_transition"), import_module("organization_batch_custody")
+
+
+def _organization_source_receipts(control_root: Path):
+    """Reader of retained original state receipts from the Organization ledger.
+
+    The ledger is ledger_root(), the same root the producer's append used
+    (submit_state_receipt appends through aggregate_transition with no ledger
+    argument). The whole chain is replayed once with the existing verifier.
+    Each read returns the retained source-receipts/HEX.json only after
+    verified_organization_receipt binds its Organization receipt to that exact
+    state receipt, its transition id and its retained predecessor.
+    """
+    org, batch = _resident_modules(control_root)
+    try:
+        ledger = org.ledger_root()
+    except org.LedgerLocationRequired as exc:
+        raise DiagnosticAdmissionError(exc.failed_predicate) from None
+    head_path = ledger / "HEAD.json"
+    require(head_path.is_file(), "CURRENT_ORGANIZATION_LEDGER_HEAD_REQUIRED")
+    try:
+        head = org.load(head_path)
+        require(head.get("organization") == "StegVerse-Labs", "ORGANIZATION_HEAD_OWNER_MISMATCH")
+        rows = batch._segment(ledger, head["receipt_sha256"], None)
+    except DiagnosticAdmissionError:
+        raise
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise DiagnosticAdmissionError(
+            "ORGANIZATION_HEAD_EXACT_PREDECESSOR_READBACK_FAILED:" + type(exc).__name__) from exc
+    index = {row.get("source_transition_sha256"): row["receipt_sha256"] for row in rows}
+
+    def read(digest: str) -> dict[str, Any]:
+        source_uri = "sha256:" + digest
+        organization_digest = index.get(source_uri)
+        require(organization_digest is not None, "ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED")
+        try:
+            retained = org.load(ledger / "source-receipts" / (digest + ".json"))
+            verified = org.verify_source(retained)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise DiagnosticAdmissionError(
+                "ORGANIZATION_ORIGINAL_SOURCE_READBACK_FAILED:" + type(exc).__name__) from exc
+        require(verified["source_transition_sha256"] == source_uri,
+                "ORGANIZATION_SOURCE_TRANSITION_BINDING_MISMATCH")
+        prior = retained.get("prior_state_ref_or_hash")
+        try:
+            batch.verified_organization_receipt(
+                ledger, organization_digest, state_receipt_sha256=source_uri,
+                expected_transition_id=verified["source_transition_id"],
+                expected_predecessor=prior)
+        except batch.OrganizationReceiptRefused as exc:
+            raise DiagnosticAdmissionError(
+                "ORGANIZATION_PREDECESSOR_RECEIPT_REFUSED:" + exc.disposition + ":" + exc.failed_predicate) from exc
+        return dict(retained)
+
+    return read
+
+
+def _source_receipt(read_source, digest: str) -> dict[str, Any]:
     require(isinstance(digest, str) and len(digest) == 64 and all(x in "0123456789abcdef" for x in digest),
             "CANONICAL_PREDECESSOR_RECEIPT_DIGEST_REQUIRED")
-    response = reconstruct(digest)
-    require(response.get("state") == "PASS"
-            and response.get("required_evidence_validation_status") == "PASS"
-            and response.get("receipt_sha256") == digest
-            and response.get("reconstructed_receipt_sha256") == digest,
-            "MASTER_RECORDS_EXACT_RECEIPT_RECONSTRUCTION_REQUIRED")
-    receipt = response.get("receipt")
-    require(isinstance(receipt, Mapping), "MASTER_RECORDS_ORIGINAL_RECEIPT_REQUIRED")
+    receipt = read_source(digest)
+    require(isinstance(receipt, Mapping), "ORGANIZATION_ORIGINAL_RECEIPT_REQUIRED")
     return dict(receipt)
 
 
-def _prove_ancestry(reconstruct, leaf: str, ancestor: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Every immediate predecessor must reconstruct, ending at exact ingress ALLOW."""
+def _prove_ancestry(read_source, leaf: str, ancestor: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Every immediate predecessor must read back from the Organization ledger, ending at exact ingress ALLOW."""
     seen: set[str] = set()
     current = leaf
     binding = None
     for _ in range(32):
         require(current not in seen, "CANONICAL_PREDECESSOR_CYCLE")
         seen.add(current)
-        receipt = _reconstruct(reconstruct, current)
+        receipt = _source_receipt(read_source, current)
         if binding is None:
             binding = receipt
         if current == ancestor:
@@ -88,27 +155,43 @@ def _prove_ancestry(reconstruct, leaf: str, ancestor: str) -> tuple[dict[str, An
     raise DiagnosticAdmissionError("CANONICAL_PREDECESSOR_DEPTH_EXCEEDED")
 
 
+def _closure_refused(closure: Any, refusal: Mapping[str, Any]) -> DiagnosticExecutionFailClosed:
+    """The typed refusal of this attempted transition, appended to the Organization ledger.
+
+    The gate sits inside the diagnostic execution transition this consumer
+    attempted, so its non-ALLOW disposition is recorded through the existing
+    append path (once per retry) and carried to the caller's record.
+    """
+    from workers.canonical_state_transition_custody import record_organization_receipt_refusal
+    recorded = record_organization_receipt_refusal(
+        refusal, gated_transition_id=EXECUTION_TRANSITION,
+        state_receipt_sha256=closure.get("receipt_sha256") if isinstance(closure, Mapping) else None)
+    return DiagnosticExecutionFailClosed(
+        "ORGANIZATION_EXACT_CLOSURE_REQUIRED:" + recorded["disposition"] + ":" + recorded["failed_predicate"],
+        refusal=recorded)
+
+
 def _verified_organization_closure(closure: Any) -> dict[str, Any]:
     """Read back the Organization receipt that closes the diagnostic execution.
 
     Uses the existing Organization ledger verifier; a refusal is terminal for
     this already-begun execution and carries its typed disposition.
     """
-    from importlib import import_module
-    resident = str(Path(__file__).resolve().parents[1] / "resident-runtime")
-    if resident not in sys.path:
-        sys.path.insert(0, resident)
-    custody = import_module("organization_batch_custody")
+    custody = _resident_modules(Path(__file__).resolve().parents[1])[1]
     try:
         row = custody.verified_organization_record(
             None, dict(closure) if isinstance(closure, Mapping) else closure,
             expected_transition_id=EXECUTION_TRANSITION)
     except custody.OrganizationReceiptRefused as exc:
-        refusal = exc.refusal()
-        raise DiagnosticExecutionFailClosed(
-            "ORGANIZATION_EXACT_CLOSURE_REQUIRED:" + refusal["disposition"] + ":" + refusal["failed_predicate"]) from exc
+        raise _closure_refused(closure, exc.refusal()) from exc
     if row.get("previous_receipt_sha256") is None:
-        raise DiagnosticExecutionFailClosed("ORGANIZATION_EXACT_CLOSURE_REQUIRED:DENY:ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED")
+        raise _closure_refused(closure, {
+            "disposition": "DENY",
+            "failed_predicate": "ORGANIZATION_PREDECESSOR_RECEIPT_REQUIRED",
+            "retry_entrypoint": None,
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        })
     return row
 
 
@@ -132,19 +215,18 @@ def _read_existing_authenticated_locator(
     resident_root: Path,
     request: Mapping[str, Any],
     *,
-    reconstruct=None,
+    read_source=None,
 ) -> dict[str, Any] | None:
-    """Read existing organization HEAD; index ONLY its original MR-closed receipts.
+    """Read existing organization HEAD; index ONLY its original retained receipts.
 
     No source/CI fixture, synthetic receipt, authorization-id string, or unverified
     file can create an admitted runtime. The normal production path uses only
-    existing organization-batch verification and canonical Master Records.
-    An injected reconstruct callback is source-test-only and CANNOT write a
+    existing Organization ledger verification of the retained source receipts.
+    An injected read_source callback is source-test-only and CANNOT write a
     consumer-accepted locator. An absent resident ledger remains unreadable, not
     evidence of a failed InTr transition.
     """
     from importlib import import_module
-    from workers.canonical_state_transition_custody import reconstruct_state_receipt
 
     root = control_root.resolve() / "resident-runtime"
     if not ((root / "aggregate_repo_transition.py").is_file()
@@ -183,7 +265,6 @@ def _read_existing_authenticated_locator(
     candidates: dict[str, list[tuple[str, dict[str, Any]]]] = {
         "admission": [], "binding": [],
     }
-    reconstruct_receipt = reconstruct or reconstruct_state_receipt
     for org_row in chain:
         transition = org_row.get("source_transition_id")
         if transition not in ALLOWED_INGRESS_TRANSITIONS | {BINDING_TRANSITION}:
@@ -210,8 +291,6 @@ def _read_existing_authenticated_locator(
         if scoped.get("request_sha256") != request_hash or scoped.get("wire_manifest_sha256") != wire_hash:
             continue
         digest = source_uri[7:]
-        reconstructed = _reconstruct(reconstruct_receipt, digest)
-        require(reconstructed == source, "MASTER_RECORDS_ORGANIZATION_ORIGINAL_SOURCE_MISMATCH")
         if transition == BINDING_TRANSITION:
             candidates["binding"].append((digest, source))
         else:
@@ -226,7 +305,7 @@ def _read_existing_authenticated_locator(
     admission_hash, admission = candidates["admission"][0]
     binding_hash, runtime = candidates["binding"][0]
     actual_binding, actual_admission = _prove_ancestry(
-        reconstruct_receipt, binding_hash, admission_hash)
+        read_source or _organization_source_receipts(control_root), binding_hash, admission_hash)
     require(actual_binding == runtime and actual_admission == admission,
             "AUTHENTIC_ADMISSION_RUNTIME_PREDECESSOR_MISMATCH")
     require(admission.get("transition_outcome") == "ALLOW",
@@ -245,7 +324,7 @@ def _read_existing_authenticated_locator(
         "intr_admission_receipt_sha256": admission_hash,
         "runtime_binding_receipt_sha256": binding_hash,
     }
-    if reconstruct is not None:
+    if read_source is not None:
         # Test doubles may exercise parsing, never produce a production locator.
         return {**locator, "source_simulation_only": True}
     target = resident_root.resolve() / ADMITTED_REL / (str(request_hash) + ".json")
@@ -448,21 +527,20 @@ def consume(
     resident_root: Path,
     request: Mapping[str, Any],
     *,
-    reconstruct=None,
+    read_source=None,
     runner=None,
     submit=None,
 ) -> dict[str, Any]:
     """Execute only inside the existing, authentically bound ephemeral lease.
 
     Injected callbacks in unit tests are SOURCE TEST DOUBLES, never runtime proof.
-    Production reconstruct/submit use existing organization-first Master Records.
+    Production read_source/submit use the existing Organization ledger.
     """
     from workers.canonical_state_transition_custody import (
-        build_state_receipt, reconstruct_state_receipt, require_predecessor_master_records_organization_record,
+        build_state_receipt, require_predecessor_master_records_organization_record,
         submit_state_receipt, sha256_uri,
     )
-    source_test_doubles = any(x is not None for x in (reconstruct, runner, submit))
-    reconstruct = reconstruct or reconstruct_state_receipt
+    source_test_doubles = any(x is not None for x in (read_source, runner, submit))
     submit = submit or submit_state_receipt
     runner = runner or subprocess.run
     require(request.get("processing_capability") == "ecosystem_diagnostic"
@@ -496,7 +574,10 @@ def consume(
     ingress_digest = locator.get("intr_admission_receipt_sha256")
     require(isinstance(binding_digest, str) and isinstance(ingress_digest, str),
             "AUTHENTIC_INTR_AND_RUNTIME_MASTER_RECORDS_RECEIPTS_REQUIRED")
-    binding_receipt, admission_receipt = _prove_ancestry(reconstruct, binding_digest, ingress_digest)
+    # Each predecessor's original state receipt is read from the Organization
+    # ledger's retained source receipts, never from Master Records.
+    binding_receipt, admission_receipt = _prove_ancestry(
+        read_source or _organization_source_receipts(control_root), binding_digest, ingress_digest)
     require(admission_receipt.get("transition_id") in ALLOWED_INGRESS_TRANSITIONS
             and admission_receipt.get("transition_outcome") == "ALLOW",
             "CANONICAL_INTR_ADMISSION_ALLOW_REQUIRED")
