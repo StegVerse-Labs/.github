@@ -1019,7 +1019,10 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual((entry["merge_commit"], entry["head"]), ("3bb146d", "4ec41d7"))
         self.assertEqual(len(entry["known_defects"]), 2)
         self.assertEqual(entry["authentic_claim_attempts_through_defective_source"], 0)
-        self.assertTrue(entry["repaired_by"])
+        self.assertEqual(entry["repaired_by"], "StegVerse-Labs/.github#3027")
+        # The repair is not presented as completed by the PR that makes it.
+        self.assertIs(entry["repair_verified"], False)
+        self.assertIn("set by a later evidence transition", entry["repair_verified_note"])
         self.assertEqual(len(record["remaining_predicates"]), 6)
         self.assertEqual(record["completion"], {"claimed": False, "validated": False, "runtime_observed": False})
         # Provenance only: nothing in the history marks a runtime DENY.

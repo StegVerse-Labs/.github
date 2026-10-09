@@ -70,6 +70,8 @@
         "R27-02 post-floor grant evidence without organization_receipt_sha256"
       ],
       "repaired_by": "StegVerse-Labs/.github#3027",
+      "repair_verified": false,
+      "repair_verified_note": "verified only after merge at a validated head; set by a later evidence transition, not by this PR",
       "authentic_claim_attempts_through_defective_source": 0
     }
   ]
