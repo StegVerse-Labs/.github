@@ -142,3 +142,27 @@ After this handoff reconciliation passes exact-head validation and merges, retir
 - Completion semantics are `GOAL_ACCEPTANCE_COMPLETE_RUNTIME_MIGRATION_NOT_CLAIMED`.
 - Runtime materialization remains successor work, not completion evidence: StegVerse-Labs, StegGhost, GCAT-BCAT-Engine and SV-LLM each remain `FAIL_CLOSED / UNOBSERVED` in StegDB conformance-attempt evidence, with `MANIFEST_BOUND_CONFORMANCE_RETRY` and organization-specific repair/next-attempt instructions.
 - No runtime migration is claimed or inferred by retirement.
+
+## W6b-2 route: SDK derivation and publication — NOT VERIFIED, non-ALLOW (2026-10-09)
+Design authority: StegVerse-Labs/TVC#488 comments 6071926678, 6072271696 and 6072292607. Route: `stegverse.route.organization-role-conformance.v1`, capability `organization_role_conformance`, Labs service `stegverse-labs.organization-role-conformance` (added in StegVerse-Labs/.github#3032).
+
+The route was checked against the real StegVerse SDK, installed from source with `pip install`, not stubbed:
+- **Pinned SDK `StegVerse-org/StegVerse-SDK@f8140f2aa2a3209b8be47d91b5659b1b4ae21335`** (the only SDK pin installed by this repository's workflows, in `validate-purpose-bound-worker-derived-lifetime.yml`):
+  - `stegverse.route_resolution.PUBLISHED_ROUTES` has no `stegverse.route.organization-role-conformance.v1` entry. It publishes only `atomic-task-worker`, `canonical-governed`, `ecosystem-diagnostic` and `purpose-bound-worker`.
+  - `stegverse.manifest_contract.validate_ingress_manifest` refuses the route's manifest with `ValueError: unknown top-level manifest fields: organization_role_conformance`.
+  - `stegverse.route_resolution.route_from_manifest` refuses the declared pair with `manifest requires extensions.stegverse_route declaring a published route`.
+  - `stegverse.manifest_state_transition_runtime.admit_runtime_result` is absent, and `derive_execution_request` takes only `(manifest)`. `resident-runtime/organization_manifest_ingress.py` therefore cannot be imported against this pin: `ImportError: cannot import name 'admit_runtime_result'`.
+- **SDK `main` at `d6e04e290f22f3b468032c6341a5e1eb7949f5ba`** (observation only, not a pin): `admit_runtime_result` and `derive_execution_request(manifest, organization_boundary)` exist and the ingress imports. However, `PUBLISHED_ROUTES` still has no `stegverse.route.organization-role-conformance.v1`, and `validate_ingress_manifest` gives the same refusal for `organization_role_conformance`.
+
+Disposition: **NOT_VERIFIED, NON_ALLOW.** The missing SDK symbols are:
+- `stegverse.route_resolution.PUBLISHED_ROUTES["stegverse.route.organization-role-conformance.v1"]`, with `processor_capability: organization_role_conformance`.
+- An `organization_role_conformance` top-level field admitted by `stegverse.manifest_contract.validate_ingress_manifest`.
+
+The SDK neither derives nor publishes this route. The Labs ingress tests for the route stub `derive_execution_request` and claim nothing beyond what `receive` records. No real-SDK test step was added, because there is no route to test. No end-to-end conformance, no SDK derivation and no runtime migration is claimed. Repair belongs to the SDK owner: publish the route and admit its request field, then add a real-SDK step to `org-runtime-boundary.yml` at the new pin.
+
+## I-10: delivery identity on the manifest ingress (2026-10-09)
+`organization_manifest_ingress.receive()` now separates the transition's identity from its carrier:
+- Identity: the transition id (`ingress_transition_id`, made from the request digest and, for role conformance, the evaluation), the canonical manifest predecessor, the recorded successor, and the organization receipt's boundary evidence. That evidence covers receiving operation, resolved service, rule, disposition and target version, plus the authority effect.
+- Delivery: the ingress and egress packet ids.
+
+On a redelivery of a recorded request, the organization receipt names the packets of the delivery that committed it. Those packets are re-derived from the recorded repository receipt's own boundary receipt chain and are not taken on its word. The redelivery's own packets are returned as `delivery_attempt` with `transition_identity_role: NON_IDENTITY_DELIVERY_EVIDENCE`, so they are never dropped and never forged into the receipt. The original receipt bytes are preserved. A changed binding, request, issuer, destination, target version, service, successor or authority under one transition id fails closed as a collision (`ONE_TRANSITION_ID_BINDS_ONE_MANIFEST`, or the organization append's context conflict). Exact retries (E1) are unchanged.

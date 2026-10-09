@@ -587,6 +587,68 @@ def reconstruct_closures(crossing: Mapping[str, Any]) -> list[dict[str, Any]]:
     return closures
 
 
+#: The fields of a crossing that name the packets carrying one delivery. They are
+#: transport: a redelivery of the same manifest is carried by other packets, and
+#: that does not make it another transition.
+DELIVERY_FIELDS = ("ingress_packet_id", "egress_packet_id")
+
+
+def delivery_evidence(crossing: Mapping[str, Any]) -> dict[str, Any]:
+    """The packets that carried this delivery, as the crossing names them."""
+    return {field: crossing[field] for field in DELIVERY_FIELDS}
+
+
+def recorded_delivery_evidence(prior: Mapping[str, Any]) -> dict[str, Any]:
+    """The delivery a recorded transition was committed under, re-derived from its receipt.
+
+    The repository receipt carries that delivery's crossing inline. Its boundary
+    receipt chain is reconstructed again here and must close on the receipt's
+    own closures and recorded successor, so the packet ids returned are the ones
+    the recorded transition was actually carried by, not ones taken on the
+    record's word.
+    """
+    evidence = prior.get("evidence") if isinstance(prior.get("evidence"), Mapping) else {}
+    crossing = evidence.get("crossing")
+    if not isinstance(crossing, Mapping) or any(field not in crossing for field in DELIVERY_FIELDS):
+        raise ValueError("RECORDED_DELIVERY_EVIDENCE_ABSENT")
+    closures = reconstruct_closures(crossing)
+    if (evidence.get("transition_closures") != closures
+            or prior.get("successor_state_sha256") != "sha256:" + closures[-1]["receipt_sha256"]):
+        raise ValueError("RECORDED_DELIVERY_EVIDENCE_DOES_NOT_RECONSTRUCT")
+    return delivery_evidence(crossing)
+
+
+def delivery_attempt(crossing: Mapping[str, Any], recorded: Mapping[str, Any]) -> dict[str, Any]:
+    """This delivery's packets, reported beside the transition and never part of its identity.
+
+    Its boundary receipt chain was reconstructed from its own packet before
+    anything was appended, so the ids are independently verifiable. When the
+    transition was already recorded under another delivery, the receipt keeps
+    the packets that committed it and this delivery is reported here only.
+    """
+    this_delivery = delivery_evidence(crossing)
+    return {**this_delivery,
+            "boundary_receipt_chain_reconstructed_independently": True,
+            "transition_identity_role": "NON_IDENTITY_DELIVERY_EVIDENCE",
+            "recorded_delivery": dict(recorded),
+            "is_the_recorded_delivery": this_delivery == dict(recorded)}
+
+
+def ingress_transition_id(request: Mapping[str, Any],
+                          conformance: Mapping[str, Any] | None = None) -> str:
+    """The transition id: the request, and for role conformance its evaluation.
+
+    Nothing the carrier chose enters it. A role-conformance evaluation is part
+    of the transition's identity: an exact retry against the same source is the
+    same transition, and a resubmission after the source changed is a new one
+    rather than a collision with the first.
+    """
+    transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-" + request["request_sha256"][:16]
+    if conformance is not None:
+        transition_id += "-" + sha(conformance)[:16]
+    return transition_id
+
+
 def transition_evidence(request: Mapping[str, Any], crossing: Mapping[str, Any],
                         closures: list[dict[str, Any]]) -> dict[str, Any]:
     """What this ingress transition is evidenced by, inline.
@@ -926,18 +988,13 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # `preserves_repo_receipt` with nothing to preserve, and left organization
     # replay resting on a receipt the same call had just minted, when the
     # replay rule asks for verified repo receipts beneath the organization ones.
-    transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-" + request["request_sha256"][:16]
     # A role-conformance request's disposition is the organization's own source
     # evaluated against the target digests, so it is committed in the
-    # organization receipt itself. The evaluation is part of the transition's
-    # identity: an exact retry against the same source is the same transition,
-    # and a resubmission after the source changed is a new one rather than a
-    # collision with the first.
+    # organization receipt itself.
     conformance = None
     ingress_evidence = dict(organization_evidence)
     if request.get("processing_capability") == role_conformance.CAPABILITY:
         conformance = role_conformance_disposition(crossing)
-        transition_id += "-" + sha(conformance)[:16]
         ingress_evidence.update({
             "role_conformance_disposition": conformance["disposition"],
             "role_conformance_failed_predicate": conformance.get("failed_predicate"),
@@ -946,6 +1003,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             "role_conformance_differing_files": [
                 row["path"] for row in conformance.get("differing_files") or []],
             "role_conformance_evaluation_sha256": "sha256:" + sha(conformance)})
+    transition_id = ingress_transition_id(request, conformance)
     predecessor_state = "sha256:" + request["canonical_manifest_sha256"]
     successor_state = "sha256:" + closures[-1]["receipt_sha256"]
     #
@@ -966,22 +1024,36 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # different request under this id keeps its own successor and collides.
     # The lookup is read again after a collision once, because a concurrent
     # delivery of the same request may have recorded it in between.
+    #
+    # The packet ids are the same kind of carrier fact. The organization
+    # receipt names the packets that committed the transition, and an exact
+    # retry there compares its whole boundary evidence, so a redelivery names
+    # the recorded delivery's packets -- re-derived from the recorded
+    # repository receipt, not taken from it -- and reports its own packets
+    # beside the result as non-identity delivery evidence. Everything else the
+    # organization receipt binds (receiving operation, resolved service, rule,
+    # disposition, authority effect, successor) is still compared in full.
     evidence = transition_evidence(request, crossing, closures)
     for resolution in range(2):
         prior = repository_ledger.recorded(
             chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
             transition_id, OPERATION_ID)
         replayed = prior is not None
+        recorded_delivery = delivery_evidence(crossing)
         if replayed and (prior.get("evidence") or {}).get("request_sha256") == request["request_sha256"]:
             successor_state = prior["successor_state_sha256"]
+            try:
+                recorded_delivery = recorded_delivery_evidence(prior)
+            except ValueError as exc:
+                return refused("RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY", str(exc),
+                               request_sha256=request["request_sha256"])
         try:
             appended = _append_both_levels(
                 transition_id, OPERATION_ID,
                 predecessor_state, successor_state, evidence,
                 {"receiving_operation": OPERATION_ID,
                  "resolved_service_id": crossing["resolved_service_id"],
-                 "ingress_packet_id": crossing["ingress_packet_id"],
-                 "egress_packet_id": crossing["egress_packet_id"],
+                 **recorded_delivery,
                  "recomputation_rule_ref": rule_ref,
                  **ingress_evidence},
                 hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
@@ -993,12 +1065,14 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             if resolution:
                 return refused("ONE_TRANSITION_ID_BINDS_ONE_MANIFEST", str(exc),
                                request_sha256=request["request_sha256"])
+    delivery = delivery_attempt(crossing, recorded_delivery)
     if appended["not_committed"] is not None:
         return {**appended["not_committed"],
                 "request_sha256": request["request_sha256"],
                 "intr_admission_observed": True,
                 "far_side_transition_observed": True,
-                "transition_replayed": replayed}
+                "transition_replayed": replayed,
+                "delivery_attempt": delivery}
     repository_receipt = appended["repository_receipt"]
     organization_receipt = appended["organization_receipt"]
     # Everything after the repository receipt takes its epoch from that receipt,
@@ -1007,21 +1081,22 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     hb_epoch = repository_receipt["hb_reference"]["epoch"]
 
     if conformance is not None:
-        return role_conformance_result(
+        return {**role_conformance_result(
             request, crossing, conformance, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
-            rule_ref=rule_ref, replayed=replayed)
+            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery}
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
     # through this organization's egress, and the SDK is handed the decision
     # when it returns, not before.
     if request.get("processing_capability") == "governance":
-        return request_governance_decision(
+        return {**request_governance_decision(
             request, crossing, receiving, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
-            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed)
+            mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed),
+            "delivery_attempt": delivery}
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -1047,6 +1122,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             "recomputation_rule_ref": rule_ref,
             "repository_receipt_sha256": repository_receipt["receipt_sha256"],
             "request_sha256": request["request_sha256"],
+            "delivery_attempt": delivery,
             "authority_effect": "NONE_REFUSAL_ONLY",
         }
 
@@ -1069,6 +1145,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "far_side_transition_observed": True,
         "boundary_receipt_chain_reconstructed_independently": True,
         "transition_closures": closures,
+        "delivery_attempt": delivery,
         "organization_receipt_observed": True,
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
