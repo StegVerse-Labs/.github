@@ -9,6 +9,12 @@ The admitted manifest declares `processing.capability` =
 `organization_role_conformance` on its route, so the boundary selects this
 adapter for it, never by who addressed the packet.
 
+The manifest shape is the one the SDK admits: the route is declared in
+`extensions.stegverse_route` (`stegverse.route.organization-role-conformance.v1`)
+and the request rides in
+`extensions.stegverse_organization_role_conformance_request`. The SDK refuses
+the request as a top-level manifest field, so it is never read from one here.
+
 This adapter only evaluates. It reads this organization's own source and
 compares it with the target version's recorded file digests; the ingress then
 appends the disposition, under the organization ledger lock, as the transition.
@@ -43,7 +49,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SERVICE_ID = "stegverse-labs.organization-role-conformance"
 CAPABILITY = "organization_role_conformance"
 ROUTE_ID = "stegverse.route.organization-role-conformance.v1"
-REQUEST_FIELD = "organization_role_conformance"
+#: The SDK's route declaration extension, and the extension the request rides in
+#: beside it (`stegverse.organization_role_conformance_processor.REQUEST_EXTENSION`).
+ROUTE_DECLARATION_EXTENSION = "stegverse_route"
+REQUEST_EXTENSION = "stegverse_organization_role_conformance_request"
 REQUEST_SCHEMA = "stegverse.organization-role-conformance-request/v1"
 RESULT_SCHEMA = "stegverse.organization-role-conformance-evaluation/v1"
 
@@ -265,11 +274,17 @@ def evaluate(request: Any, *, root: Path = ROOT) -> dict[str, Any]:
                          "awaits_an_external_machine": False}}
 
 
+def manifest_request(manifest: Any) -> Any:
+    """The request the manifest carries in its SDK-admitted extension, or None."""
+    extensions = manifest.get("extensions") if isinstance(manifest, Mapping) else None
+    return extensions.get(REQUEST_EXTENSION) if isinstance(extensions, Mapping) else None
+
+
 def respond(packet: Mapping[str, Any], *, root: Path = ROOT) -> dict[str, Any]:
     """Evaluate the request a crossing packet carries, bound to the manifest it came in."""
     payload = packet.get("payload") if isinstance(packet.get("payload"), Mapping) else {}
     manifest = payload.get("manifest") if isinstance(payload.get("manifest"), Mapping) else {}
-    result = evaluate(manifest.get(REQUEST_FIELD), root=root)
+    result = evaluate(manifest_request(manifest), root=root)
     return {**result, "manifest_sha256": payload.get("manifest_sha256"),
             "request_packet_id": packet.get("packet_id")}
 

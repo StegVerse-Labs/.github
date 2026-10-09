@@ -40,10 +40,19 @@ def _sdk_stub() -> dict[str, types.ModuleType]:
     def admit_runtime_result(*args, **kwargs):
         raise AssertionError("not reached on the refusal path")
 
+    def refuses_every_manifest(*args, **kwargs):
+        raise ValueError("STUB_SDK_REFUSES_EVERY_MANIFEST")
+
     runtime.derive_execution_request = derive_execution_request
     runtime.admit_runtime_result = admit_runtime_result
     package.manifest_state_transition_runtime = runtime
-    return {"stegverse": package, "stegverse.manifest_state_transition_runtime": runtime}
+    contract = types.ModuleType("stegverse.manifest_contract")
+    contract.validate_ingress_manifest = refuses_every_manifest
+    routes = types.ModuleType("stegverse.route_resolution")
+    routes.route_from_manifest = refuses_every_manifest
+    package.manifest_contract, package.route_resolution = contract, routes
+    return {"stegverse": package, "stegverse.manifest_state_transition_runtime": runtime,
+            "stegverse.manifest_contract": contract, "stegverse.route_resolution": routes}
 
 
 def _load():

@@ -48,6 +48,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # The ingress admits an organization-role conformance manifest with the
+      # pinned SDK's own validation, route resolution and derivation, so the
+      # SDK that publishes stegverse.route.organization-role-conformance.v1 is
+      # installed rather than stubbed.
+      - name: Install the pinned StegVerse SDK
+        run: |
+          set -eu
+          SDK_SHA=c30dc3421f10f8855d85e8347c59884d8af792eb
+          curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/stegverse-sdk.tgz
+          mkdir /tmp/stegverse-sdk
+          tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
+          python -m pip install --quiet /tmp/stegverse-sdk
+          python -c 'import stegverse.organization_role_conformance_processor'
       - name: Validate organization boundary
         run: |
           python org-runtime/runtime_boundary.py validate | tee /tmp/org-boundary.json
@@ -92,9 +108,14 @@ jobs:
       - name: Validate the repository chain fails closed on a break and an exact retry matches in full
         run: python -m unittest -v tests/test_repo_ledger_exact_retry.py
 
-      # A StegDB role-conformance request is admitted by this ingress: the
+      # A StegDB role-conformance request is admitted by this ingress on the
+      # pinned SDK's published route, the request riding
+      # extensions.stegverse_organization_role_conformance_request: the
       # terminal ALLOW, DENY or FAIL_CLOSED is committed in the organization
-      # receipt; exact retry is idempotent; an empty outbox is NO_EVENT.
-      # Temporary source and ledger roots only.
+      # receipt; a shape the SDK refuses is recorded with its predicate; exact
+      # retry is idempotent; an empty outbox is NO_EVENT. Temporary source and
+      # ledger roots only.
       - name: Validate organization-role conformance admission on the manifest ingress
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
         run: python -m unittest -v tests/test_organization_role_conformance_ingress.py
