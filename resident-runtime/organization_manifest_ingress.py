@@ -79,11 +79,13 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+from stegverse.manifest_contract import validate_ingress_manifest
 from stegverse.manifest_state_transition_runtime import (
     RESULT_SCHEMA,
     admit_runtime_result,
     derive_execution_request,
 )
+from stegverse.route_resolution import route_from_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 BOUNDARY = ROOT / "org-runtime/interlock-intr.json"
@@ -922,6 +924,64 @@ def role_conformance_result(request: Mapping[str, Any], crossing: Mapping[str, A
     }
 
 
+#: The predicates an organization-role conformance manifest is admitted on by
+#: the pinned SDK, in the order they are checked, before the organization's own
+#: issuer, destination, binding, version and file-digest predicates.
+ROLE_CONFORMANCE_SHAPE_PREDICATE = "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE"
+ROLE_CONFORMANCE_ROUTE_PREDICATE = "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE"
+ROLE_CONFORMANCE_DERIVATION_PREDICATE = "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION"
+
+
+def declares_role_conformance(manifest: Any) -> bool:
+    """Whether the submission asks, in any shape, for organization-role conformance."""
+    if not isinstance(manifest, Mapping):
+        return False
+    processing = manifest.get("processing") if isinstance(manifest.get("processing"), Mapping) else {}
+    extensions = manifest.get("extensions") if isinstance(manifest.get("extensions"), Mapping) else {}
+    route = extensions.get(role_conformance.ROUTE_DECLARATION_EXTENSION)
+    return (processing.get("capability") == role_conformance.CAPABILITY
+            or processing.get("route_id") == role_conformance.ROUTE_ID
+            or (isinstance(route, Mapping) and route.get("route_id") == role_conformance.ROUTE_ID)
+            or role_conformance.REQUEST_EXTENSION in extensions
+            or role_conformance.CAPABILITY in manifest)
+
+
+def admit_role_conformance_shape(manifest: Mapping[str, Any]) -> tuple[str, str] | None:
+    """None when the pinned SDK admits this as a role-conformance manifest; else (predicate, detail).
+
+    The SDK is the authority on the shape: `validate_ingress_manifest` admits
+    the wire manifest (and refuses the request as a top-level field),
+    `route_from_manifest` resolves `extensions.stegverse_route` to the published
+    route, and `derive_execution_request` derives the request from
+    `extensions.stegverse_organization_role_conformance_request`. Only then are
+    the organization's own predicates evaluated.
+    """
+    try:
+        canonical = validate_ingress_manifest(manifest)
+    except ValueError as exc:
+        return ROLE_CONFORMANCE_SHAPE_PREDICATE, str(exc)
+    try:
+        route = route_from_manifest(canonical)
+    except ValueError as exc:
+        return ROLE_CONFORMANCE_ROUTE_PREDICATE, str(exc)
+    declared = (route.get("route_id"), route.get("processor_capability"))
+    if declared != (role_conformance.ROUTE_ID, role_conformance.CAPABILITY):
+        return ROLE_CONFORMANCE_ROUTE_PREDICATE, (
+            f"declared route {declared[0]} ({declared[1]}) is not "
+            f"{role_conformance.ROUTE_ID} ({role_conformance.CAPABILITY})")
+    try:
+        request = derive_execution_request(manifest)
+    except ValueError as exc:
+        return ROLE_CONFORMANCE_DERIVATION_PREDICATE, str(exc)
+    graph = request.get("state_graph") if isinstance(request.get("state_graph"), Mapping) else {}
+    if ((request.get("route_id"), request.get("processing_capability"))
+            != (role_conformance.ROUTE_ID, role_conformance.CAPABILITY)
+            or graph.get("request") != role_conformance.manifest_request(manifest)):
+        return ROLE_CONFORMANCE_DERIVATION_PREDICATE, (
+            "the derived request is not the role-conformance request the manifest carries")
+    return None
+
+
 def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standing: Mapping[str, Any] | None = None,
             packet_id: str = "organization-sdk-manifest-ingress",
             hb_epoch: int | None = None, mesh_root: Path | None = None) -> dict[str, Any]:
@@ -935,6 +995,13 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     rule_ref = recomputation_rule_ref()
     refused = functools.partial(_refused, manifest=manifest, hb_epoch=hb_epoch,
                                 rule_ref=rule_ref)
+    # A role-conformance manifest is admitted by the pinned SDK on its published
+    # route before anything else: a shape the SDK does not admit is refused and
+    # recorded with the SDK's own reason, never reinterpreted here.
+    if declares_role_conformance(manifest):
+        inadmissible = admit_role_conformance_shape(manifest)
+        if inadmissible is not None:
+            return refused(*inadmissible)
     try:
         request = derive_execution_request(manifest, boundary())
     except ValueError as exc:

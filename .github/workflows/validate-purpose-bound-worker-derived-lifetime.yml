@@ -64,7 +64,7 @@ jobs:
           set -eu
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
-          SDK_SHA=f8140f2aa2a3209b8be47d91b5659b1b4ae21335
+          SDK_SHA=c30dc3421f10f8855d85e8347c59884d8af792eb
           curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/exp3-sdk.tgz
           mkdir /tmp/exp3-sdk
           tar -xzf /tmp/exp3-sdk.tgz -C /tmp/exp3-sdk --strip-components=1
