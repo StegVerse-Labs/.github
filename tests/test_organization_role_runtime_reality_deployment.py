@@ -274,3 +274,136 @@ def test_declaration_doc_states_the_change_and_the_exemption_path():
     assert "data/organization-role-exemption-register.json" in text
     assert "SOURCE_IMPLEMENTED" in text
     assert "MASTER_RECORDS_RECONSTRUCTED" in text
+
+
+# W5 (StegVerse-Labs/TVC#488 6071544608): every confirmed nonconforming TVC surface from the
+# socket-module review at StegVerse-Labs/TVC@dcf1a90 (#489), mapped TVC record -> register surface.
+# Inherited-only callers are consolidated under their root (O2B1-NA-09 under O2B1-NA-08, the
+# W4-N1-01 and W4-N2-04 inherited_by links under their own roots). W4-N1-01 holds two entries,
+# because the gmail forwarder repeats the synchronous connect itself.
+TVC_RECORD_SURFACES = {
+    "O2B1-NA-01": ["scripts/tvc_execute_bea_readonly.py (broker request construction)"],
+    "O2B1-NA-02": ["scripts/tvc_run_provider_measurement.py (broker request construction)"],
+    "O2B1-NA-03": ["scripts/tvc_run_test_lane_external_candidate.py (broker request construction)"],
+    "O2B1-NA-04": ["tvc_external_collab_google_drive_probe_runtime.py (broker request construction)"],
+    "O2B1-NA-05": ["tvc_external_collab_google_drive_content_integrity_runtime.py (broker request construction)"],
+    "O2B1-NA-07": ["tvc_workspace_google_drive_probe_runtime.py (broker request construction)"],
+    "O2B1-NA-08": ["tvc_primary_runtime_binder.py (discover_primary_runtime)"],
+    "W4-N1-01": [
+        "tvc_provider_operation_broker.py::forward_to_local_vault_broker",
+        "tvc_gmail_provider_operation_broker.py::forward_to_local_vault_broker",
+    ],
+    "W4-N2-01": ["scripts/tvc_mail_provider_operation.py::execute (ARCHIVE_IDS, TRASH_IDS)"],
+    "W4-N2-02": ["scripts/tvc_recipient_admission_resident_signer.py::issue_from_resident_signer"],
+    "W4-N2-03": ["tvc_google_drive_vault_session_consumer.py::consume_broker_session"],
+    "W4-N2-04": ["tvc_google_drive_external_collaboration_vault_session_consumer.py::consume_broker_session"],
+    "W4-N2-05": ["scripts/tvc_ara_graph_operations.py::execute"],
+    "W4-N2-06": ["scripts/tvc_ara_graph_resident_intake.py::process"],
+    "W4-N2-07": ["tvc_primary_runtime_activation_task.py::task_activate"],
+    "W4-N3-01": ["deploy/systemd/stegtvc-primary-runtime.service"],
+    "W4-N3-02": ["deploy/systemd-user/stegtvc-primary-runtime.service"],
+    "W4-N3-03": ["deploy/systemd/stegtvc-private-source-read.timer"],
+    "W4-N3-04": ["deploy/systemd/stegtvc-sv-dn1-repository-authority.timer"],
+    "W4-N3-05": ["deploy/systemd/stegtvc-external-collab-google-drive-consent.service"],
+    "W4-N3-06": ["deploy/systemd/stegtvc-app-store-connect-skap-intr-tunnel.service"],
+    "W4-N3-07": ["deploy/systemd/stegtvc-post-return-release-skap-intr-tunnel.service"],
+    "W4-N3-08": ["deploy/systemd/stegtvc-skap-browser-ingress.service"],
+    "W4-N3-09": ["deploy/systemd/stegtvc-skap-browser-intr-tunnel.service"],
+    "W4-N3-10": ["deploy/systemd/stegtvc-tv-resident-operational-proof.service"],
+}
+I8_SURFACE = "workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry"
+
+
+def tvc_exemptions() -> list[dict]:
+    return [e for e in load_json(REGISTER)["exemptions"] if e["surface"].startswith("StegVerse-Labs/TVC:")]
+
+
+def test_register_holds_one_entry_per_confirmed_tvc_surface():
+    expected = {
+        "StegVerse-Labs/TVC:" + surface: record_id
+        for record_id, surfaces in TVC_RECORD_SURFACES.items()
+        for surface in surfaces
+    }
+    entries = tvc_exemptions()
+    assert len(entries) == len(expected) == 26
+    actual = {}
+    for entry in entries:
+        refs = re.findall(r"TVC record (O2B1-NA-\d{2}|W4-N[123]-\d{2})", entry["retry_entrypoint"])
+        assert len(refs) == 1, entry["surface"]
+        actual[entry["surface"]] = refs[0]
+    assert actual == expected
+
+
+def test_tvc_exemptions_are_fail_closed_register_only_under_admitted_owners():
+    owners = {"TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826", "TVC-PROVIDER-OPERATION-BROKER-003"}
+    for entry in tvc_exemptions():
+        assert len(entry) == 12
+        assert entry["owning_existing_goal"] in owners
+        assert entry["current_disposition"] == "FAIL_CLOSED"
+        assert entry["consequence_committed"] is False
+        assert entry["authority_effect"] == "NONE_REGISTER_ONLY"
+        # Source review is never presented as an observed runtime attempt.
+        assert "no runtime attempt was made or is claimed" in entry["why_manifest_bound_state_transition_is_not_yet_possible"]
+
+
+def test_inherited_callers_are_consolidated_and_the_i8_surface_is_not_duplicated():
+    register = load_json(REGISTER)
+    surfaces = [e["surface"] for e in register["exemptions"]]
+    assert surfaces.count(I8_SURFACE) == 1
+    assert not any(s.endswith(I8_SURFACE) and s != I8_SURFACE for s in surfaces)
+    by_surface = {e["surface"]: e for e in register["exemptions"]}
+    core = by_surface["StegVerse-Labs/TVC:tvc_provider_operation_broker.py::forward_to_local_vault_broker"]
+    assert "Inherited by these 16 callers" in core["required_evidence_or_repair"]
+    binder = by_surface["StegVerse-Labs/TVC:tvc_primary_runtime_binder.py (discover_primary_runtime)"]
+    assert "O2B1-NA-09" in binder["required_evidence_or_repair"]
+    assert not any("tvc_primary_runtime_activation_task.py (task_preflight)" in s for s in surfaces)
+
+
+def run_validator_with_register(register: dict) -> subprocess.CompletedProcess:
+    original = REGISTER.read_text(encoding="utf-8")
+    REGISTER.write_text(json.dumps(register, indent=2) + "\n", encoding="utf-8")
+    try:
+        return subprocess.run([sys.executable, str(VALIDATOR)], cwd=ROOT, text=True, capture_output=True)
+    finally:
+        REGISTER.write_text(original, encoding="utf-8")
+
+
+def mutated_tvc_register(**changes) -> dict:
+    register = load_json(REGISTER)
+    index = next(i for i, e in enumerate(register["exemptions"]) if e["surface"].startswith("StegVerse-Labs/TVC:"))
+    register["exemptions"][index].update(changes)
+    return register
+
+
+def test_validator_rejects_an_allow_or_committed_exemption():
+    proc = run_validator_with_register(mutated_tvc_register(current_disposition="ALLOW"))
+    assert proc.returncode != 0 and "current_disposition" in proc.stderr
+    proc = run_validator_with_register(mutated_tvc_register(consequence_committed=True))
+    assert proc.returncode != 0 and "consequence_committed" in proc.stderr
+
+
+def test_validator_rejects_a_prohibited_or_equivalent_justification():
+    proc = run_validator_with_register(
+        mutated_tvc_register(why_manifest_bound_state_transition_is_not_yet_possible="A_RECEIVER_IS_NOT_ALWAYS_ON")
+    )
+    assert proc.returncode != 0 and "prohibited justification" in proc.stderr
+    proc = run_validator_with_register(
+        mutated_tvc_register(why_manifest_bound_state_transition_is_not_yet_possible="The receiver is not always on.")
+    )
+    assert proc.returncode != 0 and "equivalent to a prohibited one" in proc.stderr
+
+
+def test_validator_rejects_an_unadmitted_owner_a_missing_record_ref_or_a_duplicate():
+    proc = run_validator_with_register(mutated_tvc_register(owning_existing_goal="UNADMITTED-OWNER-001"))
+    assert proc.returncode != 0 and "owner is not admitted" in proc.stderr
+    proc = run_validator_with_register(mutated_tvc_register(retry_entrypoint="StegVerse-Labs/TVC:somewhere"))
+    assert proc.returncode != 0 and "names no TVC review record" in proc.stderr
+    register = load_json(REGISTER)
+    register["exemptions"].append(dict(register["exemptions"][0]))
+    proc = run_validator_with_register(register)
+    assert proc.returncode != 0 and "registered more than once" in proc.stderr
+
+
+def test_validator_rejects_an_unexpected_exemption_field():
+    proc = run_validator_with_register(mutated_tvc_register(grants="ALLOW"))
+    assert proc.returncode != 0 and "unexpected fields" in proc.stderr

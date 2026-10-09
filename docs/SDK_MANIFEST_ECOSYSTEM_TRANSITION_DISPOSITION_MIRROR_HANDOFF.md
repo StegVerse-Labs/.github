@@ -1,6 +1,6 @@
 # SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001 — Mirror Handoff
 
-Updated: 2026-10-08
+Updated: 2026-10-09
 Goal Task ID: `SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001`
 Parent Task ID: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`
 COSV ID: `71000000100126`
@@ -114,6 +114,35 @@ The following nonconformance was observed on surfaces this work did not change. 
 - **`scripts/dispatch_resident_execution_requests.py`.** It still forwards `STEGVERSE_ORG_FEDERATION_GATEWAY_URL` to the StegVerse-002 child.
 
 None of these is claimed conforming. Under `ALL_ACTIONABLE_SURFACES_CLASSIFIED_CONFORMING_OR_REGISTERED_EXEMPTION`, each still needs either a repair or a registered exemption. No `owning_existing_goal` was chosen for any of them, because none was mapped from `data/canonical-task-records` in this work.
+
+## 2026-10-09 N2 canonical exemption registration (W5)
+
+Bounded extension `SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001/N2` (registry generation 298). Design authority: StegVerse-Labs/TVC#488 comments 6071531441 (I-7/I-8) and 6071544608 (W5 rule). Input: the TVC review records merged in StegVerse-Labs/TVC#489, `coordination/credential-model-socket-module-review.v1.json` at TVC `dcf1a90` (blob `660b7ff`). The TVC checker `scripts/check_credential_model_socket_module_review.py` reports `PASS` there (26 non-ALLOW records). Evidence class: `SOURCE_IMPLEMENTED` (source review). No runtime attempt was made, and none is claimed.
+
+`data/organization-role-exemption-register.json` gains 26 entries, all in the live 12-key shape: `current_disposition` `FAIL_CLOSED`, `consequence_committed` false, `authority_effect` `NONE_REGISTER_ONLY`. Each surface is repo-qualified (`StegVerse-Labs/TVC:<path>`). Each `retry_entrypoint` names its TVC record id. The I-8 entry (`workers/sdk_manifest_diagnostic_admitted_consumer.py::_prove_ancestry`) is unchanged and was not duplicated.
+
+| TVC record | Register entries | Owner |
+| --- | --- | --- |
+| O2B1-NA-01..05, O2B1-NA-07 | one each, broker request construction | `TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826` |
+| O2B1-NA-08 | `tvc_primary_runtime_binder.py (discover_primary_runtime)`; O2B1-NA-09 (`task_preflight`, inherited only) consolidated here | `TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826` |
+| W4-N1-01 | two: the core forwarder, with its 16 `inherited_by` callers consolidated, and the gmail forwarder, which has its own synchronous connect (`tvc_gmail_provider_operation_broker.py:43-47`) | `TVC-PROVIDER-OPERATION-BROKER-003` |
+| W4-N2-01..06 | one each; W4-N2-04's 3 `inherited_by` callers consolidated | `TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826` |
+| W4-N2-07 | `tvc_primary_runtime_activation_task.py::task_activate` | `TVC-PROVIDER-OPERATION-BROKER-003` |
+| W4-N3-01, W4-N3-02 | one each (socket-presence unit gate) | `TVC-PROVIDER-OPERATION-BROKER-003` |
+| W4-N3-03..10 | one each | `TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826` |
+
+`scripts/validate_task_registry_global_invariants.py` now enforces the following for every exemption:
+
+- the exact 12-key shape;
+- `FAIL_CLOSED`, with `consequence_committed` false and `authority_effect` `NONE_REGISTER_ONLY`;
+- unique surfaces;
+- no prohibited justification code in any field, and no equivalent wording in the justification;
+- for TVC surfaces, an owner admitted by the N2 extension's `input_owners` and a named TVC record;
+- for other surfaces, an owner with a canonical task record.
+
+`tests/test_organization_role_runtime_reality_deployment.py` pins the TVC record-to-surface mapping. The TVC records still read `TVC_LOCAL_PENDING_CANONICAL_REGISTRATION`. Updating that status is TVC's own change.
+
+An exemption grants no authority and satisfies no terminal predicate. This registration addresses the N2 predicates `N2_EACH_CONFIRMED_NONCONFORMING_SURFACE_REGISTERED_WITH_ADMITTED_OWNER_AND_ACTIONABLE_RETRY` and `N2_NO_EXEMPTION_USES_A_PROHIBITED_JUSTIFICATION` in source only. `N2_EXACT_HEAD_REQUIRED_CI_GREEN` is open until CI is green at the exact head. The task record's predicates are not changed here. The 2026-10-08 unclassified surfaces above (heartbeat units, `default_runtime_root`, StegFin installer, egress boundary, gateway URL forwarding) are outside N2's TVC input and remain unregistered and unclassified.
 
 ### Remaining predicates (all six open)
 
