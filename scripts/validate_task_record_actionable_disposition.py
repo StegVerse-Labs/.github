@@ -59,8 +59,13 @@ FINDING_BLOCKS = ("current_truth", "runtime_observation", "goal_chart",
 HISTORICAL_KEY = re.compile(r"(^superseded_|history|_\d{8}$|evidence_refs$)")
 # A standing status that asserts absence without naming what would resolve it.
 BARE_FINDING = re.compile(r"^(UNKNOWN|BLOCKED|UNOBSERVED|NOT_OBSERVED)(_[A-Z0-9_]*)?$")
+# The suffix forms of the same passive findings, including their YET and
+# UN-prefixed spellings (`*_NOT_YET_OBSERVED`, `*_STILL_UNOBSERVED`,
+# `*_NOT_YET_PROVEN`, `*_UNPROVEN`): each reads as the same passive
+# observation request (StegVerse-Labs/.github#3012 K1).
 OBSERVATION_SUFFIX = re.compile(
-    r"(NOT_AUTHENTICALLY_OBSERVED|NOT_OBSERVED|NOT_PROVEN|_UNKNOWN)$"
+    r"(NOT_(YET_)?(AUTHENTICALLY_)?OBSERVED|_UNOBSERVED|NOT_(YET_)?PROVEN"
+    r"|_UNPROVEN|_UNKNOWN)$"
 )
 
 

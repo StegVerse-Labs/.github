@@ -173,3 +173,86 @@ def test_historical_exclusion_does_not_hide_a_standing_sibling():
     )
     assert len(errors) == 1
     assert "runtime_resolution.unresolved_classification=" in errors[0]
+
+
+def test_yet_and_un_prefixed_suffix_spellings_are_flagged():
+    """#3012 K1: the YET and UN-prefixed spellings carry the same passive meaning."""
+    for value in (
+        "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED",
+        "TERMINAL_RECEIPT_NOT_YET_AUTHENTICALLY_OBSERVED",
+        "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001_REQUESTED_TERMINAL_RECEIPT_UNOBSERVED",
+        "DURABLE_RUNTIME_ENDPOINT_STILL_UNOBSERVED",
+        "CUSTODY_CHAIN_NOT_YET_PROVEN",
+        "CUSTODY_CHAIN_UNPROVEN",
+    ):
+        errors = validate_record({"runtime_resolution": {"current_evidence": value}}, "TEST-001")
+        assert len(errors) == 1, value
+        assert "STOP_BARE_UNACTIONABLE_FINDING" in errors[0]
+        assert f"runtime_resolution.current_evidence={value}" in errors[0]
+
+
+def test_widened_suffix_does_not_reach_affirmative_or_inner_tokens():
+    """Only the suffix is matched: an affirmative state or an inner token is not."""
+    for value in (
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:INTERLOCK_INTR_INGRESS",
+        "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+        "RECEIPT_UNOBSERVED_LABEL_RETAINED",
+        "RUNTIME_OBSERVED",
+        "PROVEN",
+    ):
+        assert validate_record({"runtime_resolution": {"state": value}}, "TEST-001") == [], value
+
+
+def test_widened_suffix_keeps_historical_and_typed_exclusions():
+    typed = actionable("ORGANIZATION_RECEIPT_NOT_APPENDED")
+    typed["replaces_passive_predicate"] = "TERMINAL_RECEIPT_UNOBSERVED"
+    record = {
+        "runtime_resolution": {
+            "current_evidence": typed,
+            "superseded_current_evidence": {
+                "value": "TERMINAL_RECEIPT_UNOBSERVED",
+                "authority_effect": "NONE_HISTORY_ONLY",
+            },
+            "observation_history": ["READBACK_NOT_YET_OBSERVED"],
+            "reconstruction_review_20261009": {"state": "CHAIN_NOT_YET_PROVEN"},
+            "evidence_refs": ["LABEL_STILL_UNOBSERVED"],
+        },
+    }
+    assert validate_record(record, "TEST-001") == []
+
+
+def test_widened_suffix_does_not_hide_a_standing_sibling_beside_history():
+    errors = validate_record(
+        {"runtime_resolution": {
+            "superseded_current_evidence": {"value": "TERMINAL_RECEIPT_UNOBSERVED"},
+            "current_evidence": "TERMINAL_RECEIPT_UNOBSERVED",
+        }},
+        "TEST-001",
+    )
+    assert len(errors) == 1
+    assert "runtime_resolution.current_evidence=" in errors[0]
+
+
+def test_gadi_runtime_closure_carries_typed_append_disposition():
+    """The record the widened rule flagged on main is repaired, prior value kept."""
+    record = json.loads(
+        (RECORDS / "GADI-RUNTIME-CLOSURE-001.json").read_text(encoding="utf-8")
+    )
+    assert validate_record(record, record["task_id"]) == []
+    resolution = record["runtime_resolution"]
+    current = resolution["canonical_carrier_current_evidence"]
+    assert current["disposition"] == "FAIL_CLOSED"
+    assert current["consequence_committed"] is False
+    assert current["failure_code"] == "ORGANIZATION_RECEIPT_NOT_APPENDED"
+    assert current["failed_predicate"] == (
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:SHWP_SV002_ORG_RUNTIME_ACTIVATION_TERMINAL_RECEIPT"
+    )
+    assert current["satisfying_edge"] and current["retry_entrypoint"]
+    prior = resolution["superseded_canonical_carrier_current_evidence"]
+    assert prior["value"] == (
+        "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001_REQUESTED_TERMINAL_RECEIPT_UNOBSERVED"
+    )
+    assert prior["authority_effect"] == "NONE_HISTORY_ONLY"
+    assert record["coordination_state"] == "ACTIVE"
+    assert record["checkout_state"] == "CLAIMED_INTEGRATION"
+    assert record["cosv_task_vector"] == "10100000100000"
