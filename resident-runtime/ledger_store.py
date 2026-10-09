@@ -19,8 +19,10 @@ grants authority.
 
 `GitLedgerStore` is the durable sibling on the canonical Git substrate: keys
 are files on one dedicated ledger ref, and an append is one commit published
-by ref compare-and-swap. Git is transport and custody only, never admission or
-authority.
+by a kernel-local ref compare-and-swap. A remote is never read or written
+inside a transition; it is reached only by the explicit `materialize` (before
+invocation) and `propagate` (after a completed local append) steps. Git is
+transport and custody only, never admission or authority.
 
 Packet release and batch custody add `BATCH_HEAD.json` and `batches/<hex>`.
 On a store without a local lock, one Organization transition -- a released
@@ -214,6 +216,9 @@ PRIVATE_CUSTODY = "PRIVATE"
 PAYLOAD_CLASSIFICATION = "ORGANIZATION_LEDGER_PRIVATE_EVIDENCE"
 CAS_PREDICATE = "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
 APPEND_RETRY_ENTRYPOINT = "resident-runtime/aggregate_repo_transition.py::aggregate_transition"
+PROPAGATION_RETRY_ENTRYPOINT = "resident-runtime/ledger_store.py::GitLedgerStore.propagate"
+MATERIALIZATION_RETRY_ENTRYPOINT = "resident-runtime/ledger_store.py::GitLedgerStore.materialize"
+FORK_PREDICATE = "ORGANIZATION_LEDGER_FORK_DETECTED"
 
 
 class LedgerStoreRefused(ValueError):
@@ -258,16 +263,20 @@ def lost_race(detail=""):
 class GitLedgerStore:
     """A ledger store on one dedicated ref of a Git repository.
 
-    Keys are files in the tree of `ref`. Reads come from the committed ref
-    only, never a working tree: with a `remote` the remote's ref is the durable
-    ledger and is fetched before it is read; without one, `git_dir` is itself
-    the durable repository. An append is one commit holding the receipt, any
+    Keys are files in the tree of `ref` in `git_dir`, the authoritative local
+    ledger. Reads come from the committed local ref only, never a working tree
+    and never a remote. An append is one commit holding the receipt, any
     immutable documents and HEAD, built on the expected parent and published by
-    ref compare-and-swap -- `git update-ref` with the old value locally, `git
-    push --force-with-lease=<ref>:<parent>` to a remote. The lease names the
-    exact parent, so the push is a fast-forward of the commit it read or it is
-    refused; it never rewrites the ref. A lost race publishes nothing and is a
-    typed FAIL_CLOSED; the store never waits or retries.
+    the kernel-local compare-and-swap `git update-ref <ref> <new> <old>`. A
+    lost race publishes nothing and is a typed FAIL_CLOSED; the store never
+    waits or retries.
+
+    A `remote` is custody transport only and never a transition predicate (F75-01):
+    no remote CAS gates an append, so completion never awaits another
+    machine. `materialize` seeds the local ref from the remote before
+    invocation; `propagate` pushes a completed local append afterwards, fast
+    forward only, and returns a typed non-gating disposition. Neither is
+    invoked by a transition; if propagation is not admitted it is not invoked.
 
     Every ledger payload is classified ORGANIZATION_LEDGER_PRIVATE_EVIDENCE: a
     retained source receipt carries its inline evidence bytes. An append is
@@ -326,34 +335,144 @@ class GitLedgerStore:
         return self.ref + ":" + key
 
     def _tip(self):
-        """The committed tip of the durable ledger ref, or None before genesis."""
+        """The committed tip of the local ledger ref, or None before genesis."""
         self.initialize()
-        if self.remote is None:
-            found = self._git("rev-parse", "--verify", "-q", self.ref + "^{commit}", check=False)
-            return found.stdout.decode().strip() if found.returncode == 0 else None
+        found = self._git("rev-parse", "--verify", "-q", self.ref + "^{commit}", check=False)
+        return found.stdout.decode().strip() if found.returncode == 0 else None
+
+    # --- Custody transport: explicit steps outside every transition (F75-01) ---
+
+    def _disposition(self, disposition, step, *, local_tip, remote_tip, failed_predicate=None,
+                     required=None, retry=None, detail=""):
+        result = {
+            "schema": "stegverse.organization-ledger-" + step + "/v1",
+            "disposition": disposition,
+            "ref": self.ref,
+            "local_tip": local_tip,
+            "remote_tip": remote_tip,
+            "authority_effect": "NONE_CUSTODY_TRANSPORT_ONLY",
+        }
+        if failed_predicate is not None:
+            result.update(failed_predicate=failed_predicate, required_evidence_or_repair=required,
+                          retry_entrypoint=retry)
+        if detail:
+            result["detail"] = detail
+        return result
+
+    def _remote_tip(self):
+        """(True, tip-or-None) from the remote's ref, or (False, stderr) if unreachable."""
         listed = self._git("ls-remote", "--refs", self.remote, self.ref, check=False)
         if listed.returncode != 0:
-            raise LedgerStoreRefused(
-                "ORGANIZATION_LEDGER_REMOTE_UNREACHABLE",
-                "supply a reachable Organization ledger remote and its transport credential",
-                detail=listed.stderr.decode(errors="replace").strip(),
-            )
+            return False, listed.stderr.decode(errors="replace").strip()
         rows = [line.split("\t") for line in listed.stdout.decode().splitlines() if line.strip()]
-        tip = next((oid for oid, name in rows if name == self.ref), None)
-        if tip is None:
-            return None
-        if self._git("cat-file", "-e", tip + "^{commit}", check=False).returncode != 0:
-            self._git("fetch", "--no-tags", "--quiet", self.remote, self.ref)
-            if self._git("cat-file", "-e", tip + "^{commit}", check=False).returncode != 0:
-                raise LedgerStoreRefused(
-                    "ORGANIZATION_LEDGER_REMOTE_UNREACHABLE",
-                    "fetch the Organization ledger ref from its remote",
-                    detail=tip,
-                )
-        # The local ref mirrors the remote's committed tip so a reader of this
-        # repository sees the durable ledger, not an unpublished commit.
-        self._git("update-ref", self.ref, tip)
-        return tip
+        return True, next((oid for oid, name in rows if name == self.ref), None)
+
+    def _has_commit(self, oid):
+        return self._git("cat-file", "-e", oid + "^{commit}", check=False).returncode == 0
+
+    def _is_ancestor(self, older, newer):
+        return self._git("merge-base", "--is-ancestor", older, newer, check=False).returncode == 0
+
+    def _fetch_objects(self, tip):
+        """Bring the remote tip's objects in without moving any ref; True if present after."""
+        if not self._has_commit(tip):
+            self._git("fetch", "--no-tags", "--quiet", self.remote, self.ref, check=False)
+        return self._has_commit(tip)
+
+    def _unreachable(self, step, retry, local_tip, detail):
+        return self._disposition(
+            "FAIL_CLOSED", step, local_tip=local_tip, remote_tip=None,
+            failed_predicate="ORGANIZATION_LEDGER_REMOTE_UNREACHABLE",
+            required="supply a reachable Organization ledger remote and its transport credential, then "
+                     "invoke the retry entrypoint", retry=retry, detail=detail)
+
+    def _fork(self, step, retry, local_tip, remote_tip):
+        return self._disposition(
+            "FAIL_CLOSED", step, local_tip=local_tip, remote_tip=remote_tip,
+            failed_predicate=FORK_PREDICATE,
+            required="the local and remote Organization ledger refs diverged: two writers appended to "
+                     "one ledger; neither is rewritten, resolve custody before retrying",
+            retry=retry)
+
+    def materialize(self):
+        """Seed the local ledger ref from the remote, before any invocation.
+
+        Never called by a transition. The local ref is created or fast-forwarded
+        to the remote tip by the local compare-and-swap; a local ref ahead of the
+        remote is left as is (awaiting `propagate`). A divergence is reported as
+        a fork, an unreachable remote as FAIL_CLOSED; the local ref is unchanged
+        in both and nothing waits or retries.
+        """
+        step, retry = "materialization", MATERIALIZATION_RETRY_ENTRYPOINT
+        local = self._tip()
+        if self.remote is None:
+            return self._disposition("MATERIALIZED", step, local_tip=local, remote_tip=None)
+        reached, remote = self._remote_tip()
+        if not reached:
+            return self._unreachable(step, retry, local, remote)
+        if remote is None or remote == local:
+            return self._disposition("MATERIALIZED", step, local_tip=local, remote_tip=remote)
+        if not self._fetch_objects(remote):
+            return self._unreachable(step, retry, local, "remote tip objects not fetched: " + remote)
+        if local is not None and self._is_ancestor(remote, local):
+            return self._disposition("MATERIALIZED", step, local_tip=local, remote_tip=remote)
+        if local is not None and not self._is_ancestor(local, remote):
+            return self._fork(step, retry, local, remote)
+        moved = self._git("update-ref", self.ref, remote, local or "", check=False)
+        if moved.returncode != 0:
+            raise lost_race(moved.stderr.decode(errors="replace").strip())
+        return self._disposition("MATERIALIZED", step, local_tip=remote, remote_tip=remote)
+
+    def propagate(self):
+        """Push the completed local ledger to the remote, fast-forward only.
+
+        Invoked only after a completed local append, never inside one; the
+        local append is authoritative and is neither undone nor blocked by any
+        outcome here. The lease names the remote tip just observed, which must
+        be an ancestor of the local tip, so the push never rewrites the remote.
+        Returns PROPAGATED (also for an exact retry once the remote holds the
+        local tip), FAIL_CLOSED with the propagate retry entrypoint for an
+        unreachable or unconfirmed remote, or FAIL_CLOSED
+        ORGANIZATION_LEDGER_FORK_DETECTED for a divergence -- detected, not
+        prevented. It never waits or retries.
+        """
+        self.require_private_custody()
+        step, retry = "propagation", PROPAGATION_RETRY_ENTRYPOINT
+        local = self._tip()
+        if self.remote is None:
+            return self._disposition(
+                "FAIL_CLOSED", step, local_tip=local, remote_tip=None,
+                failed_predicate="ORGANIZATION_LEDGER_REMOTE_NOT_SUPPLIED",
+                required="supply the Organization ledger remote this materialization propagates to",
+                retry=retry)
+        reached, remote = self._remote_tip()
+        if not reached:
+            return self._unreachable(step, retry, local, remote)
+        if remote == local:
+            return self._disposition("PROPAGATED", step, local_tip=local, remote_tip=remote)
+        if remote is not None:
+            if not self._fetch_objects(remote):
+                return self._unreachable(step, retry, local, "remote tip objects not fetched: " + remote)
+            if local is not None and self._is_ancestor(local, remote):
+                # The remote already holds every local commit; nothing to carry.
+                return self._disposition("PROPAGATED", step, local_tip=local, remote_tip=remote)
+            if local is None or not self._is_ancestor(remote, local):
+                return self._fork(step, retry, local, remote)
+        if local is None:
+            return self._disposition("PROPAGATED", step, local_tip=None, remote_tip=None)
+        pushed = self._git(
+            "push", "--porcelain", "--no-verify",
+            "--force-with-lease=" + self.ref + ":" + (remote or ""),
+            self.remote, local + ":" + self.ref, check=False,
+        )
+        if pushed.returncode != 0:
+            return self._disposition(
+                "FAIL_CLOSED", step, local_tip=local, remote_tip=remote,
+                failed_predicate="ORGANIZATION_LEDGER_REMOTE_PUBLISH_UNCONFIRMED",
+                required="invoke the retry entrypoint; it re-reads the remote ref and reports "
+                         "PROPAGATED, a fork, or this refusal again",
+                retry=retry, detail=(pushed.stdout + pushed.stderr).decode(errors="replace").strip())
+        return self._disposition("PROPAGATED", step, local_tip=local, remote_tip=local)
 
     def _snapshot(self):
         return self._pinned[0] if self._pinned is not None else self._tip()
@@ -495,27 +614,13 @@ class GitLedgerStore:
         return self._git(*args, env=identity).stdout.decode().strip()
 
     def _publish(self, commit, parent):
-        """Move the ref from exactly `parent` to `commit`, or raise the lost race."""
-        if self.remote is None:
-            moved = self._git("update-ref", self.ref, commit, parent or "", check=False)
-            if moved.returncode != 0:
-                raise lost_race(moved.stderr.decode(errors="replace").strip())
-            return
-        pushed = self._git(
-            "push", "--porcelain", "--no-verify",
-            "--force-with-lease=" + self.ref + ":" + (parent or ""),
-            self.remote, commit + ":" + self.ref, check=False,
-        )
-        if pushed.returncode != 0:
-            output = (pushed.stdout + pushed.stderr).decode(errors="replace")
-            if "stale info" in output or "rejected" in output or "fetch first" in output:
-                raise lost_race(output.strip())
-            raise LedgerStoreRefused(
-                "ORGANIZATION_LEDGER_REMOTE_PUBLISH_UNCONFIRMED",
-                "re-read the Organization ledger ref; an exact retry replays idempotently if the append landed",
-                detail=output.strip(),
-            )
-        self._git("update-ref", self.ref, commit)
+        """Move the local ref from exactly `parent` to `commit`, or raise the lost race.
+
+        Kernel-local only: the remote is never consulted here (see `propagate`).
+        """
+        moved = self._git("update-ref", self.ref, commit, parent or "", check=False)
+        if moved.returncode != 0:
+            raise lost_race(moved.stderr.decode(errors="replace").strip())
 
 
 class StagedLedgerTransaction:
