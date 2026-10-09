@@ -71,7 +71,10 @@ class ContinuationTransitionTests(unittest.TestCase):
         public = set(committed["public_repositories"])
         for inc in committed["incidents"].values():
             self.assertTrue(inc["repository"] is None or inc["repository"] in public, inc["incident_id"])
-        self.assertEqual(committed["archive_proposed"], [])
+        # Only messages of verified incidents may be proposed; nothing is archived.
+        verified = {mid for inc in committed["incidents"].values() if inc["state"] in t.ARCHIVABLE
+                    for mid in inc["message_ids"]}
+        self.assertEqual(set(committed["archive_proposed"]), verified)
         self.assertEqual(committed["archived_message_ids"], [])
 
     def test_pagination_beyond_100_with_grouping(self):
