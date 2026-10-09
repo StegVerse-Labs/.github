@@ -246,7 +246,15 @@ class ParentManifestApplicabilityTest(LedgerRoots):
 
 
 class PacketReleaseEquivalenceTest(unittest.TestCase):
-    """One batch-bound request releases its packet the same way on either path."""
+    """One batch-bound request releases its packet the same way on either path.
+
+    "The same way" is the append owner's rule, not an equal receipt count: the
+    worker path retains its INGRESS_ADMITTED, GOVERNANCE_DISPOSITION and
+    DISPATCHED custody transitions on the Organization ledger before its
+    manifest-directed append, the ingress path only its append. Both ledgers
+    are runtime reality, so each path's packets are the ones the shared rule
+    yields over that path's own chain.
+    """
 
     def _observe(self, root: Path) -> dict:
         batches = [json.loads(path.read_text()) for path in sorted((root / "batches").glob("*.json"))]
@@ -257,13 +265,41 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             "receipt_count": len(list((root / "receipts").glob("*.json"))),
         }
 
+    @staticmethod
+    def _chain(root: Path) -> list[str]:
+        """The Organization ledger's receipt digests, oldest first."""
+        chain, tip = [], json.loads((root / "HEAD.json").read_text())["receipt_sha256"]
+        while tip:
+            chain.append(tip)
+            tip = json.loads((root / "receipts" / (tip[7:] + ".json")).read_text())["previous_receipt_sha256"]
+        return chain[::-1]
+
+    @staticmethod
+    def _rule(chain: list[str], appended: list[str], count: int) -> dict:
+        """Packets the manifest's COUNT rule releases over one ledger chain.
+
+        The open packet is released immediately before a manifest-directed
+        append once it holds `count` receipts; nothing else releases it.
+        """
+        ranges, released, opened = [], [], 1
+        for digest in appended:
+            position = chain.index(digest) + 1
+            fires = position - opened >= count
+            if fires:
+                ranges.append([opened, position - 1])
+                opened = position
+            released.append(fires)
+        return {"ranges": ranges, "released": released}
+
     def _worker_path(self, root: Path, requests: list[dict]) -> tuple[dict, list]:
-        calls = []
+        calls, appended = [], []
         owner = worker._load_organization_append_owner()
 
         def recording(*args, **kwargs):
             calls.append(kwargs["parent_manifest"])
-            return owner.aggregate_transition(*args, **kwargs)
+            record = owner.aggregate_transition(*args, **kwargs)
+            appended.append(record["receipt_sha256"])
+            return record
 
         governance = {"governance_state": "ALLOW", "manifest_receipt_id": "MR-EQ",
                       "transaction_id": "TX-EQ", "result_binding_hash": "sha256:" + "f" * 64,
@@ -284,15 +320,18 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 action = result["manifest_directed_action"]
                 self.assertEqual(action["execution_result"], "COMPLETED", action)
                 released.append(action["released_batch"])
-        return {**self._observe(root), "released": released}, calls
+        return {**self._observe(root), "released": released,
+                "rule": self._rule(self._chain(root), appended, 1)}, calls
 
     def _ingress_path(self, root: Path, repo: Path, requests: list[dict]) -> tuple[dict, list]:
-        calls = []
+        calls, appended = [], []
         real = organization_ledger.aggregate_transition
 
         def recording(*args, **kwargs):
             calls.append(kwargs["parent_manifest"])
-            return real(*args, **kwargs)
+            record = real(*args, **kwargs)
+            appended.append(record["receipt_sha256"])
+            return record
 
         released = []
         with mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
@@ -311,7 +350,8 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
                 released.append(row["boundary_evidence"].get("parent_manifest_released_batch"))
-        return {**self._observe(root), "released": released}, calls
+        return {**self._observe(root), "released": released,
+                "rule": self._rule(self._chain(root), appended, 1)}, calls
 
     def test_same_request_same_release_behaviour(self):
         base = organization_batch_governance_request()
@@ -323,17 +363,25 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
         self.assertEqual(worker_calls, ingress_calls)
         self.assertEqual(worker_calls[0], {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}})
 
-        def shape(observed):
-            return {**observed, "released": [
-                None if r is None else {k: r[k] for k in ("execution_result", "reason", "authority_effect")}
-                for r in observed["released"]]}
+        for observed in (via_worker, via_ingress):
+            # Each path's packets are exactly what the shared rule yields over its own chain.
+            self.assertEqual(observed["ranges"], observed["rule"]["ranges"])
+            self.assertEqual([r is not None for r in observed["released"]], observed["rule"]["released"])
+            self.assertEqual(observed["closure_reasons"], ["MANIFEST_RELEASE_CONDITION"] * observed["batch_count"])
+            for released in filter(None, observed["released"]):
+                self.assertEqual({k: released[k] for k in ("execution_result", "reason", "authority_effect")},
+                                 {"execution_result": "COMPLETED", "reason": None,
+                                  "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY"})
 
-        self.assertEqual(shape(via_worker), shape(via_ingress))
         self.assertEqual(via_ingress["batch_count"], 2)
         self.assertEqual(via_ingress["ranges"], [[1, 1], [2, 2]])
-        self.assertEqual(via_ingress["closure_reasons"], ["MANIFEST_RELEASE_CONDITION"] * 2)
+        self.assertEqual(via_ingress["receipt_count"], 3)
         self.assertIsNone(via_ingress["released"][0])
         self.assertEqual(via_ingress["released"][1]["execution_result"], "COMPLETED")
+        # Three retained custody transitions precede each worker append, so the
+        # first append already finds a satisfied packet.
+        self.assertEqual(via_worker["ranges"], [[1, 3], [4, 7], [8, 11]])
+        self.assertEqual(via_worker["receipt_count"], 12)
 
 
 class HeartbeatReferenceTest(LedgerRoots):
