@@ -21,6 +21,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# OL-3: the child supplies a POSIX Organization ledger root, so it declares the
+# POSIX locus exactly as tests/posix_ledger_locus documents.
+POSIX_LEDGER_LOCUS = str(ROOT / "tests" / "posix_ledger_locus")
 CONTRACT = "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
 STANDING = {"mode": "ESTABLISH_GENESIS", "node_ref": "node-state-test-node", "predecessor": None}
 
@@ -121,7 +124,7 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
                                "--mesh-root", str(self.mesh), "--node-state-root", str(state),
                                "--repo-ledger-root", str(ledgers / "repo"),
                                "--org-ledger-root", str(ledgers / "org")],
-                              capture_output=True, text=True, env=env, cwd=self.scratch, timeout=120)
+                              capture_output=True, text=True, env={**env, "PYTHONPATH": os.pathsep.join(filter(None, (POSIX_LEDGER_LOCUS, env.get("PYTHONPATH"))))}, cwd=self.scratch, timeout=120)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertEqual(json.loads(done.stdout)["frames_consumed"], 1)
         self.assertEqual(snapshot(ROOT / "resident-runtime"), before)

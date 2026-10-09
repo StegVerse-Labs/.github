@@ -288,6 +288,10 @@ class ClaimFailClosed(Exception):
         self.repair = repair
 
 
+class OrganizationLedgerNotAdmitted(ClaimFailClosed):
+    """The Organization ledger the manifest declares was not admitted; nothing is read or appended (OL-3)."""
+
+
 class OrganizationReadbackRefused(ClaimFailClosed):
     """The existing verifier refused an Organization receipt; its refusal passes through unchanged."""
 
@@ -310,10 +314,44 @@ def _load_module(name: str, path: Path):
     return module
 
 
-def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path) -> dict[str, Any]:
-    """The existing emitters, at the ledger roots this execution was supplied."""
+def organization_ledger_locus(organization: Any, org_ledger_root: Path | None) -> tuple[Path | None, Any]:
+    """The Organization ledger this execution appends to: (POSIX root, None) or (None, declared store).
+
+    An explicit root is a POSIX root, admitted only under a declared
+    {store: posix}; under any other declaration it is FAIL_CLOSED
+    ORGANIZATION_LEDGER_STORE_KIND_MISMATCH before anything is read or
+    appended (OL-3), so a second chain is never forked beside the declared
+    store. Without one, a declared {store: posix} still needs the root
+    supplied, as before; any other declaration is the store
+    organization_store() selects.
+    """
+    if org_ledger_root is not None:
+        try:
+            organization.refuse_explicit_posix_root()
+        except organization.LedgerStoreKindMismatch as exc:
+            raise OrganizationLedgerNotAdmitted(exc.failed_predicate, str(exc), exc.repair) from exc
+        return Path(org_ledger_root).expanduser().resolve(), None
+    locus = organization.C.get(organization.LEDGER_LOCUS_KEY)
+    if not isinstance(locus, dict) or locus.get("store") in (None, "posix"):
+        raise OrganizationLedgerNotAdmitted("LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER", "ledger roots not supplied",
+                                            "supply --repo-ledger-root and --org-ledger-root")
+    try:
+        return None, organization.organization_store()
+    except organization.LedgerLocationRequired as exc:
+        raise OrganizationLedgerNotAdmitted(
+            exc.failed_predicate, str(exc),
+            getattr(exc, "repair", None) or "materialize this execution with " + exc.variable) from exc
+
+
+def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path | None) -> dict[str, Any]:
+    """The existing emitters, at the ledger roots this execution was supplied.
+
+    The Organization ledger is the supplied POSIX root only under a declared
+    {store: posix}; otherwise it is the declared store (organization_ledger_locus).
+    """
     emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
     organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
+    organization_root, organization_store = organization_ledger_locus(organization, org_ledger_root)
     # The EXISTING Organization receipt verifier, bound to the ledger module just
     # loaded: it imports that module by name, so the name resolves to it while it loads.
     with _RECEIPT_CUSTODY_LOAD:
@@ -332,8 +370,14 @@ def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path) 
         "organization_ledger": organization,
         "organization_receipt_custody": receipt_custody,
         "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
-        "organization_root": Path(org_ledger_root).expanduser().resolve(),
+        "organization_root": organization_root,
+        "organization_store": organization_store,
     }
+
+
+def organization_target(custody: Mapping[str, Any]) -> Any:
+    """The POSIX root, or the declared store, every Organization append and readback addresses."""
+    return custody["organization_root"] if custody["organization_root"] is not None else custody["organization_store"]
 
 
 def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
@@ -352,6 +396,8 @@ def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
         return ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, detail,
                                "supply an organization ledger root whose HEAD and chain verify")
 
+    if root is None:
+        return _verify_store_chain(custody, unverified)
     if not root.is_dir():
         raise unverified("organization ledger root absent")
     receipts = root / "receipts"
@@ -390,6 +436,55 @@ def verify_organization_chain(custody: Mapping[str, Any]) -> dict[str, Any]:
         cursor = row.get("previous_receipt_sha256")
     chain.reverse()
     # Non-empty, rooted at a receipt without predecessor, continuous to HEAD.
+    if not chain or chain[0].get("previous_receipt_sha256") is not None:
+        raise unverified("organization chain not rooted")
+    for earlier, later in zip(chain, chain[1:]):
+        if later.get("previous_receipt_sha256") != earlier["receipt_sha256"]:
+            raise unverified("organization chain discontinuous at " + later["receipt_sha256"])
+    if chain[-1]["receipt_sha256"] != head["receipt_sha256"]:
+        raise unverified("organization HEAD is not the chain tip")
+    return {"head_sha256": head["receipt_sha256"], "receipts": chain,
+            "custody_authentication": CUSTODY_AUTHENTICATION}
+
+
+def _verify_store_chain(custody: Mapping[str, Any], unverified) -> dict[str, Any]:
+    """verify_organization_chain on the declared store, through the store's own read API (OL-3).
+
+    The same predicates as the POSIX walk: HEAD and every receipt read by key
+    from one store, each digest recomputed, rooted and continuous to HEAD.
+    """
+    org = custody["organization_ledger"]
+    store = custody["organization_store"]
+    keys = org.ledger_store
+    try:
+        head = store.get(keys.HEAD_KEY)
+    except Exception as exc:
+        raise unverified("HEAD unreadable: " + type(exc).__name__) from exc
+    if head is None:
+        if store.list_prefix(keys.RECEIPT_PREFIX):
+            raise unverified("organization receipts present without HEAD")
+        raise unverified("organization chain empty: no authenticated genesis")
+    if head.get("organization") != org.C["organization"]:
+        raise unverified("HEAD organization mismatch")
+    chain: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    cursor = head.get("receipt_sha256")
+    if not isinstance(cursor, str) or not cursor.startswith("sha256:"):
+        raise unverified("HEAD receipt digest invalid")
+    while cursor:
+        if cursor in seen:
+            raise unverified("organization chain cycle")
+        seen.add(cursor)
+        row = store.get(keys.receipt_key(cursor))
+        if row is None:
+            raise unverified("organization chain receipt missing: " + cursor)
+        body = dict(row)
+        claimed = body.pop("receipt_sha256", None)
+        if claimed != cursor or org.sha(body) != claimed or row.get("organization") != org.C["organization"]:
+            raise unverified("organization chain receipt does not recompute: " + cursor)
+        chain.append(row)
+        cursor = row.get("previous_receipt_sha256")
+    chain.reverse()
     if not chain or chain[0].get("previous_receipt_sha256") is not None:
         raise unverified("organization chain not rooted")
     for earlier, later in zip(chain, chain[1:]):
@@ -501,6 +596,22 @@ def organization_append_lock(org: Any, root: Path):
             yield
         finally:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+@contextmanager
+def organization_lock(custody: Mapping[str, Any]):
+    """The existing POSIX append lock, or the declared store's own exclusive section.
+
+    On the Git store, exclusive pins one committed snapshot and the append's
+    compare-and-swap on that tip is the lock (ledger_store.GitLedgerStore), so
+    a concurrent materialization that moved the ref loses the race FAIL_CLOSED.
+    """
+    if custody["organization_root"] is not None:
+        with organization_append_lock(custody["organization_ledger"], custody["organization_root"]):
+            yield
+        return
+    with custody["organization_store"].exclusive():
+        yield
 
 
 def predecessor_scope_sha256(source: Path, allocator_task: str) -> str | None:
@@ -634,11 +745,13 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             if lock_held:
                 # Already inside the existing append lock: the same locked append
                 # aggregate_transition performs, without re-taking the lock.
+                held = ({"root": custody["organization_root"]} if custody["organization_root"] is not None
+                        else {"store": custody["organization_store"]})
                 organization_receipt = organization._aggregate_transition_locked(
-                    repository_receipt, root=custody["organization_root"], **context)
+                    repository_receipt, **held, **context)
             else:
                 organization_receipt = organization.aggregate_transition(
-                    repository_receipt, ledger=custody["organization_root"], **context)
+                    repository_receipt, ledger=organization_target(custody), **context)
         except Exception as exc:
             raise OrganizationAppendFailed(repository_receipt, exc) from exc
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
@@ -655,7 +768,10 @@ def retained_repository_receipt_sha256(custody: Mapping[str, Any], row: Mapping[
         return None
     org = custody["organization_ledger"]
     try:
-        retained = org.load(custody["organization_root"] / "source-receipts" / (digest.split(":", 1)[1] + ".json"))
+        if custody["organization_root"] is None:
+            retained = custody["organization_store"].get(org.ledger_store.source_key(digest))
+        else:
+            retained = org.load(custody["organization_root"] / "source-receipts" / (digest.split(":", 1)[1] + ".json"))
         return org.verify_source(retained)["repo_receipt_sha256"]
     except Exception:
         return None
@@ -673,7 +789,7 @@ def organization_readback(custody: Mapping[str, Any], digest: str | None, *,
     verifier = custody["organization_receipt_custody"]
     try:
         row = verifier.verified_organization_receipt(
-            custody["organization_root"], digest,
+            organization_target(custody), digest,
             state_receipt_sha256=repository_receipt_sha256, expected_transition_id=transition_id)
     except verifier.OrganizationReceiptRefused as exc:
         raise OrganizationReadbackRefused(exc.refusal()) from exc
@@ -761,16 +877,18 @@ def retain_claim_grant_evidence(runtime: Path, task_id: str, fence: int, organiz
     }
 
 
-def _ledger_refusal(request: Mapping[str, Any] | None, detail: str) -> dict[str, Any]:
+def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
+                    predicate: str = "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER",
+                    repair: str = "supply --repo-ledger-root and --org-ledger-root") -> dict[str, Any]:
     return {
         "schema": "stegverse.resident-execution-request-consumption/v1",
         "state": "FAIL_CLOSED",
         "request_id": (request or {}).get("request_id"),
         "task_id": TASK_ID,
         "disposition": "FAIL_CLOSED",
-        "failed_predicate": "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER",
+        "failed_predicate": predicate,
         "detail": detail,
-        "required_evidence_or_repair": "supply --repo-ledger-root and --org-ledger-root",
+        "required_evidence_or_repair": repair,
         "retry_entrypoint": RETRY_ENTRYPOINT,
         "runtime_execution_attempted": False,
         "fence_issued": False,
@@ -977,10 +1095,10 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
     claim_task = target or "NONE"
     try:
         try:
-            if not org_root.is_dir():
+            if org_root is not None and not org_root.is_dir():
                 raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "organization ledger root absent",
                                       "supply an organization ledger root whose HEAD and chain verify")
-            with organization_append_lock(custody["organization_ledger"], org_root):
+            with organization_lock(custody):
                 chain = verify_organization_chain(custody)
                 head = chain["head_sha256"]
                 chain_verified = True
@@ -1087,12 +1205,17 @@ def consume(
             "runtime_execution_attempted": False,
             "authority_effect": "NONE",
         }
-    if repo_ledger_root is None or org_ledger_root is None:
-        # Supplied, never derived: nothing is materialized or allocated without both.
+    if repo_ledger_root is None:
+        # Supplied, never derived: nothing is materialized or allocated without it.
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
     safe_env = clean_env(env)
     try:
+        # The Organization ledger is the supplied root only under a declared
+        # {store: posix}; otherwise the declared store, and an explicit root is
+        # FAIL_CLOSED before anything is read or appended (OL-3).
         custody = ledger_custody(source, repo_ledger_root, org_ledger_root)
+    except OrganizationLedgerNotAdmitted as exc:
+        return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.predicate + ": " + exc.detail)
     attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env)

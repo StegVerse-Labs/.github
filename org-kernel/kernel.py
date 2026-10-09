@@ -637,6 +637,11 @@ def crossing_custody(repo_root:Path, *, repo_ledger_root:Path|None, org_ledger_r
     caller's root cannot bring its own; the dispatch root must be this
     kernel's organization; and both ledger locations are supplied, never
     derived. Any of those missing is a refusal before mutation.
+
+    `org_ledger_root` is a POSIX root, admitted only under a declared
+    {store: posix} (OL-3: otherwise LedgerStoreKindMismatch, FAIL_CLOSED
+    ORGANIZATION_LEDGER_STORE_KIND_MISMATCH, before anything is consumed), or
+    the store organization_store() selected, used as is.
     """
     if repo_ledger_root is None or org_ledger_root is None:
         raise ValueError("ledger_location_required_from_materializer")
@@ -646,9 +651,14 @@ def crossing_custody(repo_root:Path, *, repo_ledger_root:Path|None, org_ledger_r
     organization=load_registry(repo_root)["organization"]
     if Path(repo_root).resolve()!=own or organization!=organization_ledger.C["organization"]:
         raise ValueError("dispatch_root_is_not_this_kernels_organization")
+    if organization_ledger._is_store(org_ledger_root):
+        organization_root=org_ledger_root
+    else:
+        organization_ledger.refuse_explicit_posix_root()
+        organization_root=Path(org_ledger_root).expanduser().resolve()
     return {"emitter":emitter,"organization_ledger":organization_ledger,
             "repository_store":emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
-            "organization_root":Path(org_ledger_root).expanduser().resolve()}
+            "organization_root":organization_root}
 
 def _record_both(custody:dict[str,Any], name:str, transition_class:str, predecessor:str, successor:str,
                  evidence:dict[str,Any], carried:tuple[str,...], epoch:int|None)->dict[str,Any]:

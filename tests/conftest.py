@@ -45,6 +45,12 @@ def declared_posix_ledger_locus(request, monkeypatch):
         for held in list(vars(module).values()) if module is not None else ():
             if isinstance(held, types.ModuleType):
                 _declare_posix(held, monkeypatch)
+                # Or in that module's own cache (org-kernel's _crossing_emitters).
+                for cache in list(vars(held).values()):
+                    if isinstance(cache, dict):
+                        for cached in list(cache.values()):
+                            if isinstance(cached, types.ModuleType):
+                                _declare_posix(cached, monkeypatch)
     loader = importlib.machinery.SourceFileLoader
     exec_module = loader.exec_module
 

@@ -54,6 +54,8 @@ def _ledger(root):
         return org.organization_store()
     if org._is_store(root):
         return root
+    # An explicit POSIX root only under a declared {store: posix} (OL-3).
+    org.refuse_explicit_posix_root()
     return org.ledger_store.PosixLedgerStore(Path(root))
 
 

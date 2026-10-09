@@ -25,6 +25,9 @@ from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+# OL-3: the child supplies a POSIX Organization ledger root, so it declares the
+# POSIX locus exactly as tests/posix_ledger_locus documents.
+POSIX_LEDGER_LOCUS = str(ROOT / "tests" / "posix_ledger_locus")
 CONTRACT = "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
 STANDING = {"mode": "ESTABLISH_GENESIS", "node_ref": "supplied-mesh-test-node", "predecessor": None}
 HOST_VARIABLES = ("HOME", "XDG_STATE_HOME", "STEGVERSE_ORG_FEDERATION_ROOT",
@@ -237,7 +240,7 @@ class CallersTakeASuppliedMeshTests(HostIsolated):
 
     def run_cli(self, *argv):
         return subprocess.run([sys.executable, "-B", *map(str, argv)], capture_output=True, text=True,
-                              env=self.env, cwd=self.scratch, timeout=120)
+                              env={**self.env, "PYTHONPATH": os.pathsep.join(filter(None, (POSIX_LEDGER_LOCUS, self.env.get("PYTHONPATH"))))}, cwd=self.scratch, timeout=120)
 
     def assertRefused(self, completed, predicate):
         self.assertEqual(completed.returncode, 1, completed.stderr)
