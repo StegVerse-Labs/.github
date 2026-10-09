@@ -410,17 +410,22 @@ Fixtures (`tests/test_native_email_continuation_transition.py`) cover a gap of h
 
 The first chained cycle was run read-only by a Claude session through the session's Gmail connector. No message was archived, labelled or otherwise changed. The committed state is `data/native-email-action-monitor/continuation.json`.
 
-- Transitions: `GENESIS -> SET_PUBLIC_REPOSITORIES -> BEGIN_CYCLE (window [0, 1791520033)) -> APPLY_PAGE x15`. `COMPLETE_PAGINATION` returned `DENY PAGINATION_INCOMPLETE_NO_ZERO_REMAINING_CLAIM` because Gmail still reported a next page, so the state stays `PAGINATING` with `resume_page_index = 15`.
-- Pages 0-14 applied: 784 INBOX messages, 0 duplicates, grouped into 714 open incidents (707 `FAILURE`, 6 `POLICY`, 1 `INFORMATIONAL`). Nothing is resolved or proposed for archive, and no inbox-zero is claimed.
-- Disclosure: repository and workflow names are kept only for repositories verified public on 2026-10-09 (`public_repositories`, 17 entries). The other 55 incidents are stored with `redacted: true` and a `repository_sha256`.
-- Known gaps for the next executor:
-  - Gmail thread previews return at most 5 messages per thread. Threads `1a0fec2270d87a0a`, `1a0f774e4d14d122`, `1a0acda1b54b1437` and `1a0d2e9098099a6d` had more and need `get_thread`.
-  - Resume continues the same window from page index 15. Re-read Gmail from its first page with the same query: the processed-ID ledger suppresses the 784 already applied, so shifted pages are safe.
+- Transitions: `GENESIS -> SET_PUBLIC_REPOSITORIES -> BEGIN_CYCLE (window [0, 1791520033)) -> APPLY_PAGE x32 (pages 0-31) -> COMPLETE_PAGINATION -> RECORD_RESOLUTION x7`. The state is `RECONCILING`.
+- Pages 0-30 are the full Gmail search, read until it returned no `nextPageToken`. Page 31 holds the remaining INBOX messages of the four threads whose search previews were truncated at 5 messages (`1a0fec2270d87a0a`, `1a0f774e4d14d122`, `1a0acda1b54b1437`, `1a0d2e9098099a6d`), read with `get_thread`. These are PR and issue conversation mail, not run failures. They carry the thread subject for classification, and messages no longer in INBOX were skipped.
+- Totals: 1614 INBOX messages, 0 duplicates, 0 deferred after the window, grouped into 1391 incidents (1364 `FAILURE`, 25 `POLICY`, 1 `SECURITY`, 1 `INFORMATIONAL`).
+- Resolutions: 7 incidents are `SUPERSEDED_VERIFIED`. Each is a failure on `StegVerse-Labs/.github` `main` whose workflow later completed `success` on a newer `main` head. The evidence URL is that run.
+  - `Validate Organization Resident Runtime and Interlock-InTr Boundary` at `0db31fd`, superseded by run 37884728708 at `8ccdc77`.
+  - `Cross-Task Coordination Validation - Non-Authorizing` at `3da3084`, `b46ffff`, `28029bd` and `cfa1d99`, superseded by run 37884528940 at `1145ff3`.
+  - `Ecosystem repository hygiene bulk census` at `40e8704`, superseded by run 36042731692 at `992ac46`.
+  - `Validate KV AI Memory Resident Binding` at `62b3a61`, superseded by run 37883108197 at `7f0d97b`.
+- Still open: `Validate organization control plane - No GitHub Token Authority` at `4482726` (`INC-EMAIL-0ca9815ec2bf2f7739fc458a`). Its latest `main` run (37865736140) is still `failure`. Every other incident remains `OPEN_UNRESOLVED`. This session's GitHub access covers only this repository, so failures in other repositories were not checked against current CI.
+- Archive: the 7 resolved incidents' message IDs are in `archive_proposed`. Nothing was archived (H4 is gated), so `RECORD_ARCHIVE_RECEIPT` and `CLOSE_CYCLE` have not run, and no inbox-zero is claimed.
+- Disclosure: repository and workflow names are kept only for repositories verified public on 2026-10-09 (`public_repositories`, 17 entries). The other 252 incidents are stored with `redacted: true` and a `repository_sha256`. Repositories first seen after the list was set are redacted too, because the list changes only between cycles.
 
-Resume (any executor, read-only until a resolution is verified):
+Next transitions (any executor):
 
 ```text
 python3 scripts/native_email_continuation_transition.py --state data/native-email-action-monitor/continuation.json \
-  --op page-from-gmail --input <{"page_index": N, "search": <Gmail search_threads page JSON>}>
-... until the Gmail search returns no nextPageToken, then --op complete --input <{"has_more": false}>
+  --op resolve --input <{"incident_id": ..., "evidence": {"kind": "REPAIRED_AT_EXACT_HEAD" | "SUPERSEDED_BY_CURRENT_EVIDENCE", ...}}>
+... then, only once archive is authorized: --op archive-receipt, then --op close
 ```
