@@ -183,48 +183,6 @@
       "authority_effect": "NONE_REGISTER_ONLY"
     },
     {
-      "surface": "StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate",
-      "owning_existing_goal": "TVC-PROVIDER-OPERATION-BROKER-003",
-      "failure_code": "MANIFEST_LESS_STATE_EFFECT",
-      "failed_predicate": "RUNTIME_ACTIVATION_WITHOUT_MANIFEST_SELECTION",
-      "why_manifest_bound_state_transition_is_not_yet_possible": "Activation retains a startup receipt, starts the self-heal supervisor, bootstraps App Store Connect SKAP and serves the provider-operation app after preflight; it is dispatched by the task catalog from a systemd unit and no manifest selects it. Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/TVC@bd0fe27); no runtime attempt was made or is claimed.",
-      "required_evidence_or_repair": "Exact change: task_preflight verifies a manifest-bound activation request before any side effect - e.g. the existing primary-runtime source-promotion receipt (scripts/promote_verified_tvc_source_to_primary_runtime.py: PRIMARY_RUNTIME_RESTART_REQUEST_ACCEPTED bound to expected_sha) whose expected_sha equals the served checkout HEAD - and returns a typed FAIL_CLOSED without one; boot start alone then performs no activation side effect. Owner decision needed: whether the promotion receipt (root, private-source path) is the canonical activation manifest for both the system and the rootless user unit, since the user unit has no promotion path today.",
-      "retry_entrypoint": "StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate; re-evaluated by StegVerse-Labs/TVC:scripts/check_credential_model_socket_module_review.py against TVC record W4-N2-07 in StegVerse-Labs/TVC:coordination/credential-model-socket-module-review.v1.json (StegVerse-Labs/TVC@bd0fe27), which fails with 'retire the record' or 'update' once the repair lands.",
-      "next_attempt": "The next change under TVC-PROVIDER-OPERATION-BROKER-003 that routes this surface through a manifest-selected binding (TVC#488 6070722044; the TVC record names the repair as a manifest-selected route under the owning goal).",
-      "expires_or_review_on": "2026-11-08",
-      "current_disposition": "FAIL_CLOSED",
-      "consequence_committed": false,
-      "authority_effect": "NONE_REGISTER_ONLY"
-    },
-    {
-      "surface": "StegVerse-Labs/TVC:deploy/systemd/stegtvc-primary-runtime.service",
-      "owning_existing_goal": "TVC-PROVIDER-OPERATION-BROKER-003",
-      "failure_code": "MANIFEST_LESS_STATE_EFFECT",
-      "failed_predicate": "RUNTIME_ACTIVATION_WITHOUT_MANIFEST_SELECTION",
-      "why_manifest_bound_state_transition_is_not_yet_possible": "Residual only. W10a (TVC#498, 7c65997) retired TVC record W4-N3-01: the unit has Restart=no (deploy/systemd/stegtvc-primary-runtime.service:13) and no [Install] section, both installers refuse a restart loop or a boot start (scripts/install_tvc_primary_runtime_service.py:91,93), and the listener is event-ephemeral (one claimed write-once admission, exits after the transition or the bounded window), so the always-on receiver predicate no longer holds. The unit is now MANUAL / MANDATORY_HOST_DEPENDENCY and is started by tvc_primary_runtime_binder.py:368 (admit --invoke system) or scripts/install_tvc_primary_runtime_service.py:121 (--activate); it still dispatches tvc_primary_runtime_activation_task.task_activate, whose activation side effects run with no manifest selection, so it inherits TVC record W4-N2-07 (still active; systemd_unit_review inherited_non_allow_record_ids). Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/TVC@5d0b3f0); no runtime attempt was made or is claimed.",
-      "required_evidence_or_repair": "Exact change: the W4-N2-07 repair on StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate (its own register entry) - task_preflight verifies a manifest-bound activation request before any side effect and returns a typed FAIL_CLOSED without one. This entry is removed when the TVC review no longer lists W4-N2-07 among the system-scope unit's inherited_non_allow_record_ids; no change to the unit itself is required.",
-      "retry_entrypoint": "StegVerse-Labs/TVC:deploy/systemd/stegtvc-primary-runtime.service; re-evaluated by StegVerse-Labs/TVC:scripts/check_credential_model_socket_module_review.py against TVC record W4-N2-07 (inherited by this unit; its own record W4-N3-01 was retired by W10a) in StegVerse-Labs/TVC:coordination/credential-model-socket-module-review.v1.json (StegVerse-Labs/TVC@5d0b3f0), which fails with 'retire the record' or 'update' once the repair lands.",
-      "next_attempt": "The next change under TVC-PROVIDER-OPERATION-BROKER-003 that routes task_activate through a manifest-selected binding (W4-N2-07; TVC#488 6070722044).",
-      "expires_or_review_on": "2026-11-08",
-      "current_disposition": "FAIL_CLOSED",
-      "consequence_committed": false,
-      "authority_effect": "NONE_REGISTER_ONLY"
-    },
-    {
-      "surface": "StegVerse-Labs/TVC:deploy/systemd-user/stegtvc-primary-runtime.service",
-      "owning_existing_goal": "TVC-PROVIDER-OPERATION-BROKER-003",
-      "failure_code": "MANIFEST_LESS_STATE_EFFECT",
-      "failed_predicate": "RUNTIME_ACTIVATION_WITHOUT_MANIFEST_SELECTION",
-      "why_manifest_bound_state_transition_is_not_yet_possible": "Residual only. W10a (TVC#498, 7c65997) retired TVC record W4-N3-02: the unit has Restart=no (deploy/systemd-user/stegtvc-primary-runtime.service:13) and no [Install] section, both installers refuse a restart loop or a boot start (scripts/install_tvc_primary_runtime_user_service.py:52,54), and the listener is event-ephemeral (one claimed write-once admission, exits after the transition or the bounded window), so the always-on receiver predicate no longer holds. The unit is now MANUAL / MANDATORY_HOST_DEPENDENCY and is started by tvc_primary_runtime_binder.py:368 (admit --invoke user); it still dispatches tvc_primary_runtime_activation_task.task_activate, whose activation side effects run with no manifest selection, so it inherits TVC record W4-N2-07 (still active; systemd_unit_review inherited_non_allow_record_ids). Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/TVC@5d0b3f0); no runtime attempt was made or is claimed.",
-      "required_evidence_or_repair": "Exact change: the W4-N2-07 repair on StegVerse-Labs/TVC:tvc_primary_runtime_activation_task.py::task_activate (its own register entry) - task_preflight verifies a manifest-bound activation request before any side effect and returns a typed FAIL_CLOSED without one. This entry is removed when the TVC review no longer lists W4-N2-07 among the user-scope unit's inherited_non_allow_record_ids; no change to the unit itself is required.",
-      "retry_entrypoint": "StegVerse-Labs/TVC:deploy/systemd-user/stegtvc-primary-runtime.service; re-evaluated by StegVerse-Labs/TVC:scripts/check_credential_model_socket_module_review.py against TVC record W4-N2-07 (inherited by this unit; its own record W4-N3-02 was retired by W10a) in StegVerse-Labs/TVC:coordination/credential-model-socket-module-review.v1.json (StegVerse-Labs/TVC@5d0b3f0), which fails with 'retire the record' or 'update' once the repair lands.",
-      "next_attempt": "The next change under TVC-PROVIDER-OPERATION-BROKER-003 that routes task_activate through a manifest-selected binding (W4-N2-07; TVC#488 6070722044).",
-      "expires_or_review_on": "2026-11-08",
-      "current_disposition": "FAIL_CLOSED",
-      "consequence_committed": false,
-      "authority_effect": "NONE_REGISTER_ONLY"
-    },
-    {
       "surface": "StegVerse-Labs/TVC:deploy/systemd/stegtvc-external-collab-google-drive-consent.service",
       "owning_existing_goal": "TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826",
       "failure_code": "UNIT_ALWAYS_ON_RECEIVER_PREDICATE",
