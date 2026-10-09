@@ -46,6 +46,7 @@ LEDGER_FILES = (
     "org-kernel/node_store.py",
     "resident-runtime/ledger_store.py",
     "resident-runtime/aggregate_repo_transition.py",
+    "resident-runtime/organization_batch_custody.py",
     "data/canonical-task-records/SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001.json",
     "control/claims-active.json",
     "control/queue.json",
@@ -974,6 +975,126 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.consume(), replay)
         self.assertEqual([g["boundary_evidence"]["fencing_token"] for g in env.grants()], [8])
 
+    # F38-01 -------------------------------------------------------------------
+    def _forge(self, env, row, **changes):
+        """Write a receipt with a valid self-hash on top of the chain; it verifies only as a chain link."""
+        org = env.custody()["organization_ledger"]
+        head = json.loads((env.org / "HEAD.json").read_text())
+        body = {key: value for key, value in row.items() if key != "receipt_sha256"}
+        body.update(previous_receipt_sha256=head["receipt_sha256"], **changes)
+        digest = org.sha(body)
+        path = env.org / "receipts" / (digest.split(":", 1)[1] + ".json")
+        path.write_text(json.dumps({**body, "receipt_sha256": digest}), encoding="utf-8")
+        (env.org / "HEAD.json").write_text(json.dumps({**head, "receipt_sha256": digest, "receipt_path": str(path)}),
+                                           encoding="utf-8")
+        return digest
+
+    def _assert_nothing_projected(self, env, result, name=""):
+        self.assertFalse(result["fence_issued"], name)
+        self.assertIsNone(result["fencing_token"], name)
+        self.assertFalse(result["claim_grant_occurred"], name)
+        self.assertEqual(env.task("TASK-2026-0013")["status"], "queued", name)
+        self.assertEqual(env.claims(), {"schema": "stegverse.org-claims/v1", "generation": 7, "claims": []}, name)
+        self.assertFalse((env.runtime / consumer.GRANT_DIR).exists(), name)
+
+    def test_organization_readback_uses_verified_organization_receipt(self):
+        env = Env(self.base)
+        custody = env.custody()
+        recorded = env.seed_grant("TASK-2026-9999", 9)
+        row, repository = recorded["organization_receipt"], recorded["repository_receipt"]
+        transition_id = row["source_transition_id"]
+        self.assertIsNone(consumer.organization_readback(
+            custody, row["receipt_sha256"], repository_receipt_sha256=repository["receipt_sha256"],
+            transition_id=transition_id))
+        forged = {
+            "wrong_owner": {"organization": "StegVerse-org"},
+            "unbound_source": {"repo_receipt_sha256": "sha256:" + "e" * 64},
+            "wrong_schema": {"schema": "stegverse.organization-transition-receipt/v0"},
+            "wrong_source_schema": {"source_receipt_schema": "stegverse.unknown/v1"},
+        }
+        for name, change in forged.items():
+            digest = self._forge(env, row, **change)
+            with self.assertRaises(consumer.OrganizationReadbackRefused, msg=name) as caught:
+                consumer.organization_readback(custody, digest, repository_receipt_sha256=repository["receipt_sha256"],
+                                               transition_id=transition_id)
+            self.assertEqual(caught.exception.refusal["failed_predicate"],
+                             "ORGANIZATION_RECEIPT_VERIFICATION_FAILED", name)
+            self.assertEqual(caught.exception.refusal["disposition"], "DENY", name)
+        # A self-consistent receipt is still bound to the exact repository receipt and transition.
+        for name, kwargs, predicate in (
+                ("other_repository_receipt", {"repository_receipt_sha256": "sha256:" + "d" * 64,
+                                              "transition_id": transition_id},
+                 "ORGANIZATION_RECEIPT_NOT_BOUND_TO_STATE_RECEIPT"),
+                ("other_transition", {"repository_receipt_sha256": repository["receipt_sha256"],
+                                      "transition_id": "ORGANIZATION-WORKER-CLAIM-GRANTED-OTHER-G9"},
+                 "ORGANIZATION_RECEIPT_TRANSITION_MISMATCH")):
+            with self.assertRaises(consumer.OrganizationReadbackRefused, msg=name) as caught:
+                consumer.organization_readback(custody, row["receipt_sha256"], **kwargs)
+            self.assertEqual(caught.exception.refusal["failed_predicate"], predicate, name)
+        # One verifier: the existing one. The parallel hash-only recomputation is gone.
+        text = (ROOT / "scripts/consume_org_claim_allocator_request.py").read_text(encoding="utf-8")
+        self.assertIn("verified_organization_receipt(", text)
+        self.assertNotIn("org.sha(body) == digest", text)
+
+    def test_readback_refusal_blocks_active_projection(self):
+        env = Env(self.base)
+        seed = env.grants() or env.chain()["receipts"]
+        # A grant for the target whose receipt hashes and chains, but whose source binding is forged.
+        row = dict(seed[-1], source_transition_id="ORGANIZATION-WORKER-CLAIM-GRANTED-TASK-2026-0013-G8",
+                   boundary_evidence={"operation": consumer.GRANTED, "task_id": "TASK-2026-0013", "fencing_token": 8,
+                                      "claim_scope_sha256": "0" * 64,
+                                      "custody_authentication": consumer.CUSTODY_AUTHENTICATION})
+        self._forge(env, row, repo_receipt_sha256="sha256:" + "e" * 64)
+        self.assertEqual([g["boundary_evidence"]["fencing_token"] for g in env.grants()], [8])
+        result = env.consume()
+        self.assertEqual(result["disposition"], "DENY")
+        self.assertEqual(result["transition_class"], consumer.REFUSED)
+        self.assertEqual(result["failed_predicate"], "ORGANIZATION_RECEIPT_VERIFICATION_FAILED")
+        self.assertEqual(result["organization_readback"], "REFUSED:ORGANIZATION_RECEIPT_VERIFICATION_FAILED")
+        self._assert_nothing_projected(env, result)
+
+    def test_readback_refusal_carries_retry_entrypoint_or_deny(self):
+        verifier = "resident-runtime/organization_batch_custody.py::verified_organization_receipt"
+        # FAIL_CLOSED: a real grant whose retained repository receipt cannot be read back.
+        env = Env(self.base / "fail_closed")
+        recorded = env.seed_grant("TASK-2026-0013", 8)
+        source = recorded["organization_receipt"]["source_transition_sha256"]
+        (env.org / "source-receipts" / (source.split(":", 1)[1] + ".json")).unlink()
+        result = env.consume()
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failed_predicate"], "STATE_RECEIPT_SHA256_ABSENT")
+        self.assertEqual(result["retry_entrypoint"], verifier)
+        self.assertEqual(result["organization_readback"], "REFUSED:STATE_RECEIPT_SHA256_ABSENT")
+        self.assertEqual(result["organization_readback_refusal"]["retry_entrypoint"], verifier)
+        # The refusal itself was appended and is retained where it was appended.
+        self.assertTrue(result["organization_disposition_retained"])
+        self._assert_nothing_projected(env, result)
+        # The same refusal inside fence-history verification: cited evidence above the floor.
+        history = Env(self.base / "history", generation=9)
+        cited = history.seed_grant("TASK-2026-9999", 9)["organization_receipt"]
+        (history.org / "source-receipts" / (cited["source_transition_sha256"].split(":", 1)[1] + ".json")).unlink()
+        self._retain(history, "TASK-2026-9999-G9.json",
+                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64,
+                      "organization_receipt_sha256": cited["receipt_sha256"]})
+        refused = history.consume()
+        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        self.assertEqual(refused["failed_predicate"], "STATE_RECEIPT_SHA256_ABSENT")
+        self.assertEqual(refused["retry_entrypoint"], verifier)
+        self.assertFalse(refused["fence_issued"])
+        self.assertEqual(history.claims()["generation"], 9)
+        # DENY: a deterministic refusal names no retry.
+        deny = Env(self.base / "deny")
+        row = dict(deny.chain()["receipts"][-1],
+                   source_transition_id="ORGANIZATION-WORKER-CLAIM-GRANTED-TASK-2026-0013-G8",
+                   boundary_evidence={"operation": consumer.GRANTED, "task_id": "TASK-2026-0013", "fencing_token": 8,
+                                      "claim_scope_sha256": "0" * 64})
+        self._forge(deny, row, repo_receipt_sha256="sha256:" + "e" * 64)
+        denied = deny.consume()
+        self.assertEqual(denied["disposition"], "DENY")
+        self.assertIsNone(denied["retry_entrypoint"])
+        self.assertEqual(denied["organization_readback_refusal"]["disposition"], "DENY")
+        self._assert_nothing_projected(deny, denied)
+
     # RESPONSE-032 names -------------------------------------------------------
     def test_empty_chain_refuses_fence(self):
         self.test_empty_chain_claim_refused_without_dummy_genesis()
@@ -1006,6 +1127,8 @@ class OrgClaimCustodyTests(unittest.TestCase):
             "empty_chain_refuses_fence", "post_floor_missing_org_receipt_sha_fails_closed",
             "predecessor_provenance_scope_bound", "repo_append_org_failure_replay_idempotent",
             "repository_only_disposition_not_org_readback",
+            "organization_readback_uses_verified_organization_receipt",
+            "readback_refusal_blocks_active_projection", "readback_refusal_carries_retry_entrypoint_or_deny",
         )
         for name in required:
             self.assertTrue(callable(getattr(self, "test_" + name, None)), name)
