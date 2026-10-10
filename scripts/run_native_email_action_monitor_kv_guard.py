@@ -74,7 +74,7 @@ def persist_replay_incidents(receipt: dict[str, Any], kv_root: Path) -> list[dic
 
 def run_guarded(broker_command: list[str], *, kv_root: Path, batch_limit: int, replay_checkpoint_path: Path | None) -> dict[str, Any]:
     guarded = KVGuardedBroker(monitor.Broker(broker_command), kv_root)
-    receipt = monitor.run(guarded, batch_limit, replay_checkpoint_path)
+    receipt = monitor.run(guarded, batch_limit, replay_checkpoint_path, monitor.DEFAULT_CONTINUATION)
     replay_receipts: list[dict[str, Any]] = []
     if receipt.get("state") == "ARCHIVED_REPLAY_PENDING":
         replay_receipts = persist_replay_incidents(receipt, kv_root)
