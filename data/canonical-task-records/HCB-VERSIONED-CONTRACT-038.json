@@ -73,5 +73,21 @@
     "NO_SANDBOX_ACTIVATION",
     "NO_EXTERNAL_MACHINE_REQUIRED",
     "NO_DUPLICATE_ORGANIZATION_LEDGER"
-  ]
+  ],
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE"
+    ],
+    "reviews": [],
+    "scope": "SOURCE_ONLY_NO_RUNTIME_SUBSTRATE_SELECTED"
+  }
 }
