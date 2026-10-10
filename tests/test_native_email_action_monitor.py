@@ -1,5 +1,6 @@
 from __future__ import annotations
 import importlib.util
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +31,13 @@ def response(operation, **kwargs):
     }
 
 
-def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound():
+def write_continuation(tmp_path, proposed):
+    path = tmp_path / "continuation.json"
+    path.write_text(json.dumps({"archive_proposed": sorted(proposed)}), encoding="utf-8")
+    return path
+
+
+def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound(tmp_path):
     messages = [{
         "id": "m1", "from": "notifications@github.com", "subject": "CI failed",
         "repository": "StegVerse-Labs/Site", "workflow": "Site Task Runner", "snippet": "failed abcdef1"
@@ -43,11 +50,12 @@ def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound():
         response("SEARCH_IDS", provider="GMAIL", message_ids=[f"a{i}" for i in range(100)], next_page_token="more"),
         response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 123, "messagesUnread": 120}}),
     ])
-    receipt = M.run(broker)
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ids))
     assert [name for name, _ in broker.calls][:3] == ["SEARCH_MESSAGES", "SEARCH_IDS", "ARCHIVE_IDS"]
     assert broker.calls[2][1]["message_ids"] == ids
     assert receipt["processed_exact_count"] == 100
     assert receipt["archived_count"] == 100
+    assert receipt["retained_unverified_count"] == 0
     assert receipt["actionable_more_than_returned"] is True
     assert receipt["actionable_minimum"] == 101
     assert receipt["email_observation_is_runtime_evidence"] is False
@@ -68,7 +76,47 @@ def test_incident_clustering_reuses_non_authorizing_email_signature_semantics():
     assert incidents[0]["incident_proposal_mints_execution_authority"] is False
 
 
-def test_partial_archive_fails_monitor_receipt_without_dropping_identity():
+def test_unverified_mail_is_retained_and_archive_is_not_called(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m2"]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m2"]),
+        response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 2, "messagesUnread": 2}}),
+    ])
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
+    assert receipt["archived_count"] == 0
+    assert receipt["retained_unverified_count"] == 2
+    assert receipt["state"] == "PASS"
+
+
+def test_missing_continuation_authorizes_no_archive(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 1, "messagesUnread": 1}}),
+    ])
+    receipt = M.run(broker, continuation_path=tmp_path / "absent.json")
+    assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
+    assert receipt["retained_unverified_count"] == 1
+
+
+def test_only_verified_subset_is_archived(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m2", "m3"]),
+        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=["m2"], failed_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 2, "messagesUnread": 2}}),
+    ])
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m2", "z9"]))
+    assert broker.calls[2] == ("ARCHIVE_IDS", {"message_ids": ["m2"]})
+    assert receipt["archived_count"] == 1
+    assert receipt["retained_unverified_count"] == 2
+
+
+def test_partial_archive_fails_monitor_receipt_without_dropping_identity(tmp_path):
     broker = FakeBroker([
         response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
         response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m2"]),
@@ -76,7 +124,7 @@ def test_partial_archive_fails_monitor_receipt_without_dropping_identity():
         response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
         response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 2, "messagesUnread": 2}}),
     ])
-    receipt = M.run(broker)
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m1", "m2"]))
     assert receipt["state"] == "PARTIAL_ARCHIVE_FAILURE"
     assert receipt["archive_failed_ids"] == ["m2"]
 
