@@ -1208,6 +1208,15 @@
       "vector": "71000000100100",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-MR-A-VALIDATION-CUSTODY-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {

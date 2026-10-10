@@ -2137,3 +2137,12 @@ The existing `HCB-VERSIONED-CONTRACT-038` is registered in
 Its CI_VALIDATED source scope is closed with COSV `71000000100100`; provider or
 Sandbox activation, release and propagation are not claimed. See
 [the registration handoff](docs/HCB_VERSIONED_CONTRACT_REGISTRATION_MIRROR_HANDOFF.md).
+
+## SDK-MR-A validation custody Registry reconciliation
+
+`SDK-MR-A-VALIDATION-CUSTODY-001` (StegVerse-org/StegVerse-SDK#452) is registered
+in `data/canonical-task-registry.json` with its matching record projection. It
+is ACTIVE with CI_VALIDATED source evidence only (COSV `10100000100000`): no
+runtime transition was attempted, no organization ledger receipt exists, and
+runtime activation is not claimed. Master Records never gates. See
+[the registration handoff](docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md).

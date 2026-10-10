@@ -1,0 +1,177 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
+  "correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
+  "root_correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
+  "parent_task_id": null,
+  "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation only; no runtime transition attempted, no organization ledger receipt, runtime activation not claimed.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "cosv_task_vector": "10100000100000",
+  "cosv_exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "source_refs": [
+    "https://github.com/StegVerse-org/StegVerse-SDK/issues/452",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/453",
+    "StegVerse-org/StegVerse-SDK@1923a513da77cfed573e2f6594704b8508a508d2",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/455",
+    "StegVerse-org/StegVerse-SDK@aa25095396e9d1e88a3c21c8a380c272b5c5312d",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/456",
+    "StegVerse-org/StegVerse-SDK@3259843d23c85dfa21fae024f2fce9beb7ea2b77",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/457",
+    "StegVerse-org/StegVerse-SDK@8c4d373451e9c3c5f6fa927b03b145584308f157",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/458",
+    "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
+    "https://github.com/StegVerse-Labs/.github/pull/3082",
+    "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218"
+  ],
+  "handoff_projection_refs": [
+    "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "sdk-organization-ledger-evidence",
+      "sdk-local-run-record",
+      "sdk-production-release-set"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SDK-MR-A-RECEIVER-ORGANIZATION-LEDGER-COMPATIBILITY",
+      "kind": "SOURCE_COMPOSITION_PREDICATE",
+      "state": "SATISFIED_MERGED_VALIDATED",
+      "ref": "https://github.com/StegVerse-Labs/.github/pull/3082",
+      "merge_commit": "adf312bb4f9c2f071e8f65653fb80405e8b75218",
+      "scope": "receivers accept ORGANIZATION_LEDGER as canonical; MASTER_RECORDS accepted as legacy-compat with grants_authority false"
+    },
+    {
+      "dependency_id": "DEP-SDK-MR-A-ORGANIZATION-LEDGER-RUNTIME-TRANSITION-RECEIPT",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "stegverse/organization_ledger_evidence.py::verify_organization_ledger_readback",
+      "scope": "no runtime transition attempted; no organization ledger receipt exists; satisfied only by an authentic organization-ledger transition receipt read back as ALLOW"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [],
+  "expected_evidence_predicates": [
+    "ORGANIZATION_LEDGER_READBACK_ALLOW_OR_SIX_FIELD_FAIL_CLOSED_MERGED",
+    "STEGVERSE_MASTER_RECORDS_DEPENDENCY_REMOVED",
+    "LOCAL_RUN_RECORD_NON_AUTHORITATIVE_AUTHORITY_EFFECT_NONE",
+    "RELEASE_SET_V2_DOWNSTREAM_RUN_EVIDENCE_V1_FROZEN_VERIFIABLE",
+    "MASTER_RECORDS_ROLE_AUDIT_44_OF_44_REMEDIATED_0_BLOCKED",
+    "RECEIVER_ORGANIZATION_LEDGER_COMPATIBILITY_MERGED",
+    "EXACT_HEAD_CI_VALIDATED",
+    "ORGANIZATION_LEDGER_RUNTIME_TRANSITION_RECEIPT"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md",
+    "evidence_contract_version": "v1",
+    "evidence_class": "CI_VALIDATED",
+    "terminal_evidence_class": null,
+    "scope": "SOURCE_CI_VALIDATION_ONLY",
+    "source_merges": [
+      {
+        "pr": 453,
+        "validated_head": "daf78200a8b9b9a5daea05cdbd1046b58f85e9bb",
+        "merge": "1923a513da77cfed573e2f6594704b8508a508d2",
+        "change": "organization_ledger_evidence.verify_organization_ledger_readback returns ALLOW or a six-field FAIL_CLOSED"
+      },
+      {
+        "pr": 455,
+        "validated_head": "199a53af476c435d1ad620cba0673931ec21bde0",
+        "merge": "aa25095396e9d1e88a3c21c8a380c272b5c5312d"
+      },
+      {
+        "pr": 456,
+        "validated_head": "b86e04fc2a9ea15a7d5fe662972d715ea3cbfb04",
+        "merge": "3259843d23c85dfa21fae024f2fce9beb7ea2b77"
+      },
+      {
+        "pr": 457,
+        "validated_head": "bd28589204902ed4fc7a7719ebfb2835801138b8",
+        "merge": "8c4d373451e9c3c5f6fa927b03b145584308f157",
+        "change": "stegverse-master-records dependency removed; stegverse/local_run_record.py (stdlib, non-authoritative, authority_effect NONE) replaces services.manifest_receipt_custody; production release-set schema v2 uses role downstream_run_evidence; v1 frozen and still verifiable"
+      },
+      {
+        "pr": 458,
+        "validated_head": "636136ab8b7dfdfb61d47b568dd7a531eb801224",
+        "merge": "8559c4700a076a733de048910344f99bedaae4ca",
+        "change": "docs sweep"
+      }
+    ],
+    "merge_protection": "expected-head; all checks green at each validated head",
+    "master_records_role_audit": {
+      "ref": "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
+      "remediated": 44,
+      "total": 44,
+      "blocked": 0
+    },
+    "runtime_transition_attempted": false,
+    "organization_ledger_receipt_ref": null,
+    "evidence_refs": [
+      "https://github.com/StegVerse-org/StegVerse-SDK/issues/452",
+      "https://github.com/StegVerse-org/StegVerse-SDK/pull/453",
+      "StegVerse-org/StegVerse-SDK@1923a513da77cfed573e2f6594704b8508a508d2",
+      "https://github.com/StegVerse-org/StegVerse-SDK/pull/455",
+      "StegVerse-org/StegVerse-SDK@aa25095396e9d1e88a3c21c8a380c272b5c5312d",
+      "https://github.com/StegVerse-org/StegVerse-SDK/pull/456",
+      "StegVerse-org/StegVerse-SDK@3259843d23c85dfa21fae024f2fce9beb7ea2b77",
+      "https://github.com/StegVerse-org/StegVerse-SDK/pull/457",
+      "StegVerse-org/StegVerse-SDK@8c4d373451e9c3c5f6fa927b03b145584308f157",
+      "https://github.com/StegVerse-org/StegVerse-SDK/pull/458",
+      "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
+      "https://github.com/StegVerse-Labs/.github/pull/3082",
+      "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218"
+    ],
+    "end_to_end_complete": false
+  },
+  "allowed_next_transitions": [
+    "RUNTIME_TRANSITION_WITH_ORGANIZATION_LEDGER_RECEIPT",
+    "REOPENED_DUE_TO_NEW_EVIDENCE"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": false,
+    "master_records_gates": false,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "registration_basis": "Owner request 2026-10-10 to register the existing goal SDK-MR-A-VALIDATION-CUSTODY-001 for StegVerse-org/StegVerse-SDK#452 in the existing canonical Registry, not a competing registry. Master Records is downstream evidence preservation and never gates.",
+  "release_authorized": false,
+  "runtime_activation_claimed": false,
+  "propagation_claimed": false,
+  "goal_prompt_count": null,
+  "session_qualifying_prompts_observed": 1,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
