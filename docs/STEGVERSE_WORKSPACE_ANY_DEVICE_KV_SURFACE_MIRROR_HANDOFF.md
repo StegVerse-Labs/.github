@@ -1,11 +1,11 @@
 # StegVerse WorkSpace Any-Device KV Surface Mirror Handoff
 
-Updated: 2026-09-28
+Updated: 2026-10-10
 
 Goal Task ID: `STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001`  
 Handoff: `docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md`  
 Repository: `StegVerse-Labs/.github`  
-COSV: `10500000113000`  
+COSV candidate (canonical record; validation pending): `10500000114000`  
 Coordination state: `PROPOSED`  
 Checkout state: `UNCLAIMED`  
 Authority effect: `NONE_COORDINATION_REGISTRATION_ONLY`
@@ -27,15 +27,26 @@ The canonical browser model is composition, not replacement:
 
 This resolves `BLK1-CANONICAL-WORKSPACE-SURFACE-OWNER`.
 
-## Still unresolved
+## Registry-owner decisions recorded (2026-10-10)
 
-The following owner decisions are not resolved by PR #2819 and must not be inferred from it:
+Owner-approved decisions: [Registry #2796 comment 6094254732](https://github.com/StegVerse-Labs/.github/issues/2796#issuecomment-6094254732).
+
+- **COSV:** canonical task candidate `10500000114000`; uniqueness and Registry generation checks remain pending. The former mirror value `10500000113000` was inconsistent and is not authority to allocate a new COSV.
+- **BLK2:** retain existing governed SKAP ingress paths; WorkSpace is a unified non-authoritative UI.
+- **BLK3:** retain existing authorized KnowledgeVault writer; do not create another authoritative writer.
+- **BLK4:** distinguish StegVerse WorkSpace and Google Workspace by canonical task identity and non-overlapping write ownership.
+
+These are **owner decisions**, not a successful governed task admission, WorkerCoordinator claim/fence, or runtime observation. Task remains `PROPOSED / UNCLAIMED` until canonical predicates pass.
+
+## Previously unresolved decisions
+
+PR #2819 did not resolve the following decisions; the owner subsequently approved all three in Registry #2796:
 
 1. `BLK2-SKAP-INGRESS-CONSOLIDATION` — whether all sensitive ingress consolidates behind WorkSpace while preserving any required independent SKAP ingress.
 2. `BLK3-WORKSPACE-KV-STORE-WRITER` — whether the WorkSpace KV store retains the current Google Drive writer path or gains a StegVerse-native writer.
 3. `BLK4-WORKSPACE-NAME-COLLISION` — how the StegVerse WorkSpace surface is namespaced against Google Workspace external-collaboration work.
 
-The goal remains `PROPOSED / UNCLAIMED` until the remaining decision predicates and WorkerCoordinator ownership requirements are satisfied.
+The goal remains `PROPOSED / UNCLAIMED` until Registry COSV/generation validation, authenticated admission and WorkerCoordinator ownership requirements are satisfied.
 
 ## Current-work reconciliation
 
