@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "identity": "SDK-MR-A-VALIDATION-CUSTODY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "evidence_refs": [
+    "https://github.com/StegVerse-org/StegVerse-SDK/issues/452",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/453",
+    "StegVerse-org/StegVerse-SDK@1923a513da77cfed573e2f6594704b8508a508d2",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/455",
+    "StegVerse-org/StegVerse-SDK@aa25095396e9d1e88a3c21c8a380c272b5c5312d",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/456",
+    "StegVerse-org/StegVerse-SDK@3259843d23c85dfa21fae024f2fce9beb7ea2b77",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/457",
+    "StegVerse-org/StegVerse-SDK@8c4d373451e9c3c5f6fa927b03b145584308f157",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/458",
+    "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
+    "https://github.com/StegVerse-Labs/.github/pull/3082",
+    "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218"
+  ],
+  "observed_at": "2026-10-10",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "canonical_encoder_ref": "scripts/cosv.py"
+}
