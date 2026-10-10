@@ -2129,3 +2129,11 @@ Canonical task `ORGANIZATION-CONTROL-PLANE-PARITY-001` / COSV `71000000100127` m
 ## Native email monitor continuation transitions — 2026-10-09
 
 Issue #3039: the native email action monitor no longer waits on any external resident host, dispatcher, scheduler or watchdog. Each cycle is a chain of manifest-bound state transitions (`BEGIN_CYCLE`, `APPLY_PAGE`, `COMPLETE_PAGINATION`, `RECORD_RESOLUTION`, `RECORD_ARCHIVE_RECEIPT`, `CLOSE_CYCLE`) in `scripts/native_email_continuation_transition.py` over `data/native-email-action-monitor/continuation.json`, each returning `ALLOW`/`DENY`/`FAIL_CLOSED` and chained by `prior_state_sha256`. Continuation is a time window plus a processed Gmail message-ID ledger, so a missed hour loses nothing and an interrupted pagination resumes rather than restarts. Archive is proposed only for incidents verified green at the exact new head; unresolved failure, security, billing and quota mail is retained. The state is a non-authorizing projection; no runtime cycle, repair or inbox zero is claimed. Standard library only, no new dependencies. See `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`.
+
+## HCB source-task Registry reconciliation
+
+The existing `HCB-VERSIONED-CONTRACT-038` is registered in
+`data/canonical-task-registry.json` with its matching record projection.
+Its CI_VALIDATED source scope is closed with COSV `71000000100100`; provider or
+Sandbox activation, release and propagation are not claimed. See
+[the registration handoff](docs/HCB_VERSIONED_CONTRACT_REGISTRATION_MIRROR_HANDOFF.md).
