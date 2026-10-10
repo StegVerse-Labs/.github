@@ -5,8 +5,9 @@ Resident behavior has two ordered phases:
 1. replay monitor-era archived GitHub/[Task Update] failure mail one bounded page at
    a time without restoring, deleting, or re-archiving it; each page must be
    acknowledged after StegHealth failure-task reconciliation before pagination advances;
-2. after archived replay completes, inspect/archive only the bounded operational
-   GitHub/[Task Update] INBOX slice and continue until that inbox slice is empty.
+2. after archived replay completes, inspect the bounded operational GitHub/[Task Update]
+   INBOX slice and archive only messages whose incidents carry verified resolution in
+   the native continuation state (``archive_proposed``); unresolved mail stays in INBOX.
 
 The handler never receives provider credentials and never treats email, GitHub, CI,
 archive success, incident clustering, or replay acknowledgement as execution authority.
@@ -42,6 +43,7 @@ ARCHIVED_REPLAY_QUERY = (
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
 BATCH_LIMIT = 100
+DEFAULT_CONTINUATION = SCRIPT_DIR.parent / "data/native-email-action-monitor/continuation.json"
 REPLAY_CHECKPOINT_SCHEMA = "stegverse.native-email-archived-failure-replay-checkpoint/v1"
 REPLAY_ACK_SCHEMA = "stegverse.native-email-archived-failure-replay-ack/v1"
 
@@ -274,7 +276,27 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
     }
 
 
-def live_inbox_run(broker: Broker, batch_limit: int) -> dict[str, Any]:
+def load_archive_authorization(continuation_path: Path | None) -> frozenset[str]:
+    """Message IDs whose incidents carry verified resolution evidence.
+
+    Only ``archive_proposed`` in the native continuation state qualifies: an ID
+    enters it solely through ``record_resolution`` (exact-head green repair or a
+    newer independent green head). A missing or unreadable state authorizes
+    nothing, so unresolved mail is always retained.
+    """
+    if continuation_path is None or not continuation_path.is_file():
+        return frozenset()
+    try:
+        state = json.loads(continuation_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return frozenset()
+    proposed = state.get("archive_proposed") if isinstance(state, dict) else None
+    if not isinstance(proposed, list):
+        return frozenset()
+    return frozenset(v for v in proposed if isinstance(v, str) and v)
+
+
+def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: frozenset[str] = frozenset()) -> dict[str, Any]:
     inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     messages = stable_rows(inspected, "messages")
     exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
@@ -282,13 +304,19 @@ def live_inbox_run(broker: Broker, batch_limit: int) -> dict[str, Any]:
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
     require(len(ids) <= batch_limit, "broker exceeded bounded batch")
     incidents = cluster_incidents(messages)
-    archive = broker.call("ARCHIVE_IDS", message_ids=ids)
-    archived = archive.get("archived_ids")
-    failed = archive.get("failed_ids", [])
-    require(isinstance(archived, list), "broker archived_ids invalid")
-    require(isinstance(failed, list), "broker failed_ids invalid")
-    require(set(archived).isdisjoint(set(failed)), "archive result overlap")
-    require(set(archived) | set(failed) == set(ids), "archive result does not cover exact bounded batch")
+    # Archive only IDs bound to verified resolution; everything else stays in INBOX.
+    to_archive = [v for v in ids if v in authorized_archive_ids]
+    retained = [v for v in ids if v not in authorized_archive_ids]
+    archived: list[str] = []
+    failed: list[str] = []
+    if to_archive:
+        archive = broker.call("ARCHIVE_IDS", message_ids=to_archive)
+        archived = archive.get("archived_ids")
+        failed = archive.get("failed_ids", [])
+        require(isinstance(archived, list), "broker archived_ids invalid")
+        require(isinstance(failed, list), "broker failed_ids invalid")
+        require(set(archived).isdisjoint(set(failed)), "archive result overlap")
+        require(set(archived) | set(failed) == set(to_archive), "archive result does not cover exact authorized batch")
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
     require(isinstance(actionable_ids, list), "actionable message_ids invalid")
@@ -306,6 +334,8 @@ def live_inbox_run(broker: Broker, batch_limit: int) -> dict[str, Any]:
         "archived_count": len(archived),
         "archive_failed_count": len(failed),
         "archive_failed_ids": failed,
+        "retained_unverified_count": len(retained),
+        "archive_authorization": "VERIFIED_RESOLUTION_ONLY",
         "incidents": incidents,
         "actionable_returned_count": len(actionable_ids),
         "actionable_more_than_returned": actionable_more,
@@ -314,7 +344,8 @@ def live_inbox_run(broker: Broker, batch_limit: int) -> dict[str, Any]:
     }
 
 
-def run(broker: Broker, batch_limit: int = BATCH_LIMIT, replay_checkpoint_path: Path | None = None) -> dict[str, Any]:
+def run(broker: Broker, batch_limit: int = BATCH_LIMIT, replay_checkpoint_path: Path | None = None,
+        continuation_path: Path | None = None) -> dict[str, Any]:
     require(1 <= batch_limit <= 100, "batch limit must be 1..100")
 
     archived_replay = None
@@ -363,7 +394,7 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT, replay_checkpoint_path: 
                 "authority_effect": "NONE_ARCHIVED_FAILURE_REPLAY_ONLY",
             }
 
-    live = live_inbox_run(broker, batch_limit)
+    live = live_inbox_run(broker, batch_limit, load_archive_authorization(continuation_path))
     incidents = list(live.pop("incidents"))
     return {
         "schema": "stegverse.native-email-action-monitor-receipt/v1",
@@ -403,12 +434,14 @@ def main() -> int:
     group.add_argument("--broker-json", help="Exact JSON array for nested broker command and options")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--batch-limit", type=int, default=BATCH_LIMIT)
+    parser.add_argument("--continuation", type=Path, default=DEFAULT_CONTINUATION,
+                        help="Native continuation state; only its verified archive_proposed IDs may be archived")
     args = parser.parse_args()
 
     replay_checkpoint_path = None
     if args.output and args.output.name == "native-email-action-monitor.latest.json":
         replay_checkpoint_path = args.output.with_name("native-email-archived-failure-replay.checkpoint.json")
-    receipt = run(Broker(parse_broker_command(args)), args.batch_limit, replay_checkpoint_path)
+    receipt = run(Broker(parse_broker_command(args)), args.batch_limit, replay_checkpoint_path, args.continuation)
     text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

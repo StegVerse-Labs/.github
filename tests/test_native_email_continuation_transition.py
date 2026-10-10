@@ -71,11 +71,16 @@ class ContinuationTransitionTests(unittest.TestCase):
         public = set(committed["public_repositories"])
         for inc in committed["incidents"].values():
             self.assertTrue(inc["repository"] is None or inc["repository"] in public, inc["incident_id"])
-        # Only messages of verified incidents may be proposed; nothing is archived.
+        # Only messages of verified incidents may be proposed or archived (owner
+        # authorized remediated-only archiving, #3039 2026-10-10); every verified
+        # message is either still proposed or confirmed archived, never both.
         verified = {mid for inc in committed["incidents"].values() if inc["state"] in t.ARCHIVABLE
                     for mid in inc["message_ids"]}
-        self.assertEqual(set(committed["archive_proposed"]), verified)
-        self.assertEqual(committed["archived_message_ids"], [])
+        proposed = set(committed["archive_proposed"])
+        archived = set(committed["archived_message_ids"])
+        self.assertTrue(proposed.isdisjoint(archived))
+        self.assertEqual(proposed | archived, verified)
+        self.assertEqual(committed["counters"]["archived_confirmed"], len(archived))
 
     def test_pagination_beyond_100_with_grouping(self):
         mailbox = [msg(i, sha=SHA_A if i % 2 else SHA_B) for i in range(250)]
