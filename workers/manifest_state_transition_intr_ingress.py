@@ -53,7 +53,7 @@ REQUIRED_AUTHORITIES = {
     "credential_authority": "TV/TVC",
     "claim_fence_authority": "WORKERCOORDINATOR",
     "transition_authority": "INTERLOCK_INTR",
-    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER",
     "request_grants_authority": False,
     "sdk_executes_lifecycle": False,
     "authority_effect": "NONE_MANIFEST_RUNTIME_REQUEST_ONLY",
@@ -129,6 +129,13 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(isinstance(claimed_request_hash, str) and len(claimed_request_hash) == 64, "request_sha256_required")
     require(sha256(body) == claimed_request_hash, "request_sha256_mismatch")
     for key, expected in REQUIRED_AUTHORITIES.items():
+        if key == "custody_replay_reconstruction_authority":
+            # Compatibility for SDK manifests pinned to the previous wire value.
+            # This input never grants Master Records sovereign authority: the
+            # canonical runtime reality locus remains the Organization Ledger.
+            require(request.get(key) in ("ORGANIZATION_LEDGER", "MASTER_RECORDS"),
+                    "custody_replay_reconstruction_authority_mismatch")
+            continue
         require(request.get(key) == expected, f"{key}_mismatch")
     manifest = request.get("canonical_manifest")
     require(isinstance(manifest, Mapping), "canonical_manifest_required")
