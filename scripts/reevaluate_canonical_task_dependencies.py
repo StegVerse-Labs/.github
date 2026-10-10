@@ -71,7 +71,7 @@ def main() -> int:
         cosv = task.get("cosv_task_vector")
         if isinstance(cosv, str) and len(cosv) == 14 and cosv.isdigit():
             require(len(task.get("blockers", [])) <= 9, "COSV task.v1 blocker count overflow")
-            task["cosv_task_vector"] = cosv[:9] + str(len(task.get("blockers", []))) + cosv[10:]
+            task["cosv_task_vector"] = cosv[:10] + str(len(task.get("blockers", []))) + cosv[11:]
         next_candidates = list(task.get("allowed_next_transitions", [])) if not unresolved and not task.get("blockers") else []
         affected.append({
             "task_id": task.get("task_id"),
