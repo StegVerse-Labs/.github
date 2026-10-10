@@ -1,0 +1,29 @@
+{
+  "identity": "StegVerse-Labs/.github:task:HCB-VERSIONED-CONTRACT-038",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/HCB-VERSIONED-CONTRACT-038.json",
+    "StegVerse-Labs/hybrid-collab-bridge#38",
+    "StegVerse-Labs/hybrid-collab-bridge/HYBRID_COLLAB_BRIDGE_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-10-10",
+  "exact_metrics": {
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE_SOURCE_COORDINATION_ONLY"
+}
