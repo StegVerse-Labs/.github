@@ -1257,7 +1257,30 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 ROLE_CONFORMANCE_OUTBOX_ROUTE = "organization-role-conformance"
 OUTBOX_EVENT_SCHEMA = "stegverse.intr-outbox-manifest-event/v1"
 OUTBOX_CONSUMPTION_SCHEMA = "stegverse.organization-manifest-ingress-outbox-consumption/v1"
-LEDGER_ROOT_VARIABLES = ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT")
+REPOSITORY_LEDGER_ROOT_VARIABLE = "STEGVERSE_REPO_LEDGER_ROOT"
+LEDGER_LOCATION_REQUIRED = "ledger_location_required_from_materializer"
+
+
+def missing_ledger_locations(environ: Mapping[str, str] | None = None) -> list[tuple[str, str]]:
+    """What the materializer still has to supply before anything is appended.
+
+    Each row is `(variable, repair)`. The repository ledger root is read from
+    `environ`. The organization ledger is whatever store the Organization
+    manifest declares (OL-1b), so that store is probed for its own location
+    -- STEGVERSE_ORG_LEDGER_GIT_DIR under `{store: git}`, the posix root under
+    `{store: posix}` -- rather than a fixed list of root variables that the
+    declared store may neither read nor need (#3012). The probe reads the
+    process environment, as the store does.
+    """
+    environ = os.environ if environ is None else environ
+    missing = []
+    if not (environ.get(REPOSITORY_LEDGER_ROOT_VARIABLE) or "").strip():
+        missing.append((REPOSITORY_LEDGER_ROOT_VARIABLE, "supply " + REPOSITORY_LEDGER_ROOT_VARIABLE))
+    try:
+        organization_ledger.organization_store()
+    except organization_ledger.LedgerLocationRequired as exc:
+        missing.append((exc.variable, getattr(exc, "repair", None) or "supply " + exc.variable))
+    return missing
 
 
 def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
@@ -1269,21 +1292,21 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
     never itself a disposition. Each event is one `receive`, so each commits
     its own terminal disposition, and redelivering an event is the exact retry
     the ledgers already make idempotent. Nothing is received until the
-    materializer has supplied both ledger roots; until then the events stay
-    where they are and nothing is appended.
+    materializer has supplied the repository ledger root and the location the
+    declared organization store needs; until then the events stay where they
+    are and nothing is appended at either level.
     """
-    environ = os.environ if environ is None else environ
     base = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "route": route, "authority_effect": "NONE"}
     outbox = Path(durable_root) / "intr-outbox" / route
     events = sorted(outbox.glob("*.json")) if outbox.is_dir() else []
     if not events:
         return {**base, "state": "NO_EVENT", "event_count": 0}
-    missing = [name for name in LEDGER_ROOT_VARIABLES if not (environ.get(name) or "").strip()]
+    missing = missing_ledger_locations(environ)
     if missing:
         return {**base, "state": "FAIL_CLOSED", "event_count": len(events),
-                "failed_predicate": "ledger_location_required_from_materializer",
-                "missing_ledger_roots": missing, "appended": False,
-                "required_evidence_or_repair": "supply " + " and ".join(missing),
+                "failed_predicate": LEDGER_LOCATION_REQUIRED,
+                "missing_ledger_roots": [variable for variable, _ in missing], "appended": False,
+                "required_evidence_or_repair": " and ".join(repair for _, repair in missing),
                 "events_retained": True}
     results = []
     for path in events:
@@ -1359,6 +1382,18 @@ def main() -> int:
     except RuntimeError as exc:
         # Nothing was appended: the receipt could not name its own rule.
         print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
+                          "receipt_written": False}, sort_keys=True))
+        return 1
+    except ValueError as exc:
+        # Nothing was appended: a ledger location was not supplied (the
+        # repository ledger raises this before its first write). Any other
+        # ValueError is a defect and still escapes as one.
+        if not str(exc).startswith(LEDGER_LOCATION_REQUIRED):
+            raise
+        variable = str(exc).partition(":")[2].strip()
+        print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": LEDGER_LOCATION_REQUIRED,
+                          "missing_ledger_roots": [variable] if variable else [],
+                          "required_evidence_or_repair": "supply " + (variable or "the ledger location"),
                           "receipt_written": False}, sort_keys=True))
         return 1
     # The full result stays in --out; the run summary carries only digests,

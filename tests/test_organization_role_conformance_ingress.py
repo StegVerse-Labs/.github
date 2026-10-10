@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import io
 import json
 import os
 import re
@@ -815,12 +816,27 @@ class OutboxTests(ConformanceIngressCase):
 
     def test_events_are_not_received_until_the_ledger_roots_are_supplied(self):
         event = self.put()
-        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY, environ={})
+        with mock.patch.dict(os.environ):
+            os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
+            os.environ.pop("STEGVERSE_REPO_LEDGER_ROOT")
+            consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertEqual(consumed["state"], "FAIL_CLOSED")
-        self.assertEqual(consumed["missing_ledger_roots"], list(ingress.LEDGER_ROOT_VARIABLES))
+        self.assertEqual(consumed["failed_predicate"], "ledger_location_required_from_materializer")
+        # The repository root, then whatever the declared organization store
+        # itself asked for: under this module's posix declaration, its root.
+        self.assertEqual(consumed["missing_ledger_roots"],
+                         ["STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT"])
         self.assertIs(consumed["appended"], False)
         self.assertTrue(event.is_file())
         self.assertFalse(self.org_root.exists())
+        self.assertFalse(self.repo_root.exists())
+
+    def test_the_supplied_environ_covers_the_repository_root(self):
+        event = self.put()
+        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY, environ={})
+        self.assertEqual(consumed["state"], "FAIL_CLOSED")
+        self.assertEqual(consumed["missing_ledger_roots"], ["STEGVERSE_REPO_LEDGER_ROOT"])
+        self.assertTrue(event.is_file())
         self.assertFalse(self.repo_root.exists())
 
     def test_an_event_without_a_manifest_on_this_route_appends_nothing(self):
@@ -829,6 +845,101 @@ class OutboxTests(ConformanceIngressCase):
         self.assertEqual(consumed["results"][0]["failed_predicate"],
                          "OUTBOX_EVENT_CARRIES_A_MANIFEST_ON_THIS_ROUTE")
         self.assertFalse(self.org_root.exists())
+
+
+class GitDeclaredOutboxTests(OutboxTests):
+    """The outbox gate probes the store the Organization manifest declares (#3012).
+
+    The repository declares `{store: git}`, which reads
+    STEGVERSE_ORG_LEDGER_GIT_DIR and never STEGVERSE_ORG_LEDGER_ROOT. A gate
+    that pre-checked a fixed list of root variables let every event through
+    with the git dir unset -- each one leaving a repository receipt and an
+    ORGANIZATION_APPEND_NOT_COMMITTED partial -- and refused, for the wrong
+    variable, when only the posix root was unset.
+    """
+
+    GIT_LOCUS = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())[
+        organization_ledger.LEDGER_LOCUS_KEY]
+
+    def setUp(self):
+        super().setUp()
+        self.assertEqual(self.GIT_LOCUS["store"], "git")
+        self.node = Path(self._temp.name) / "node.git"
+        subprocess.run(["git", "init", "--bare", "-q", str(self.node)], check=True)
+        for patch in (mock.patch.dict(organization_ledger.C,
+                                      {organization_ledger.LEDGER_LOCUS_KEY: dict(self.GIT_LOCUS)}),
+                      mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_GIT_DIR": str(self.node)})):
+            patch.start()
+            self.addCleanup(patch.stop)
+        os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
+        self.assertEqual(organization_ledger.organization_store().kind, "GIT_REF")
+
+    def receipts(self, root):
+        if root != self.org_root:
+            return super().receipts(root)
+        store = organization_ledger.organization_store()
+        head = store.get(organization_ledger.ledger_store.HEAD_KEY)
+        rows = []
+        cursor = head.get("receipt_sha256") if head else None
+        while cursor:
+            row = store.get(organization_ledger.ledger_store.receipt_key(cursor))
+            rows.append(row)
+            cursor = row.get("previous_receipt_sha256")
+        return rows
+
+    def test_events_are_not_received_until_the_ledger_roots_are_supplied(self):
+        event = self.put()
+        # A posix root is present but irrelevant: the declared git store does
+        # not read it, and its presence must not admit the event.
+        with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(self.org_root)}):
+            os.environ.pop("STEGVERSE_ORG_LEDGER_GIT_DIR")
+            consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
+        self.assertEqual(consumed["state"], "FAIL_CLOSED", consumed)
+        self.assertEqual(consumed["failed_predicate"], "ledger_location_required_from_materializer")
+        self.assertEqual(consumed["missing_ledger_roots"], ["STEGVERSE_ORG_LEDGER_GIT_DIR"])
+        self.assertIn("STEGVERSE_ORG_LEDGER_GIT_DIR", consumed["required_evidence_or_repair"])
+        self.assertIs(consumed["appended"], False)
+        self.assertIs(consumed["events_retained"], True)
+        self.assertTrue(event.is_file())
+        # Nothing at either level: no repository receipt, no partial commit.
+        self.assertFalse(self.repo_root.exists())
+        self.assertFalse(self.org_root.exists())
+
+    def test_the_posix_root_is_not_required_by_the_declared_git_store(self):
+        self.assertNotIn("STEGVERSE_ORG_LEDGER_ROOT", os.environ)
+        self.put()
+        consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
+        self.assertEqual(consumed["state"], "CONSUMED", consumed)
+        self.assertEqual(consumed["results"][0]["disposition"], "ALLOW", consumed["results"][0])
+        self.assertEqual(len(self.receipts(self.org_root)), 1)
+        self.assertFalse(self.org_root.exists())
+
+
+class MainTests(ConformanceIngressCase):
+    """The CLI never escapes with a traceback for a missing ledger location (#3012)."""
+
+    def main(self, *argv):
+        out = io.StringIO()
+        with mock.patch.object(sys, "argv", ["organization_manifest_ingress.py", *argv]), \
+                mock.patch.object(sys, "stdout", out):
+            code = ingress.main()
+        return code, json.loads(out.getvalue().strip().splitlines()[-1])
+
+    def test_a_missing_repository_ledger_root_is_a_typed_fail_closed(self):
+        base = Path(self._temp.name)
+        manifest, registry = base / "manifest.json", base / "registry.json"
+        manifest.write_text(json.dumps(self.manifest()))
+        registry.write_text(json.dumps(REGISTRY))
+        with mock.patch.dict(os.environ):
+            os.environ.pop("STEGVERSE_REPO_LEDGER_ROOT")
+            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry))
+        self.assertEqual(code, 1)
+        self.assertEqual(printed["disposition"], "FAIL_CLOSED")
+        self.assertEqual(printed["failed_predicate"], "ledger_location_required_from_materializer")
+        self.assertEqual(printed["missing_ledger_roots"], ["STEGVERSE_REPO_LEDGER_ROOT"])
+        self.assertIs(printed["receipt_written"], False)
+        self.assertFalse(self.org_root.exists())
+        self.assertFalse(self.repo_root.exists())
 
 
 class RouteRegistrationTests(unittest.TestCase):

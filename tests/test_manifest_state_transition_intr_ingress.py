@@ -450,6 +450,49 @@ class CustodyAuthorityCompatibilityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "transition_authority_mismatch"):
             mod.validate_request(value)
 
+    def test_the_classification_is_retained_beside_the_unaltered_request(self):
+        # #3012: validate_request discarded the classification. It now rides on
+        # the validated request without entering its hash-bound bytes.
+        legacy = mod.validate_request(request("legacy"))
+        self.assertEqual(legacy.custody_authority_compatibility["compatibility"], "LEGACY_COMPAT")
+        self.assertEqual(mod.sha256({k: v for k, v in legacy.items() if k != "request_sha256"}),
+                         legacy["request_sha256"])
+        self.assertNotIn("custody_authority_compatibility", legacy)
+        canonical = mod.validate_request(
+            _rehash({**request("canonical"), "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER"}))
+        self.assertEqual(canonical.custody_authority_compatibility["compatibility"], "CANONICAL")
+
+    def test_admit_emits_the_six_field_fail_closed_record_instead_of_raising(self):
+        # #3012: admit() re-raised CustodyAuthorityRefusal, so the six refusal
+        # fields it carries were never emitted.
+        value = _rehash({**request("admit-unknown"), "custody_replay_reconstruction_authority": "CALLER_CONTROLLED"})
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            record = mod.admit(
+                runtime_root=root,
+                body=mod.canonical(value),
+                headers={},
+                transport_validator=lambda _h, _b: {"origin": "TVC_RELAY_EGRESS"},
+            )
+            self.assertEqual(sorted(p.name for p in root.rglob("*") if p.is_file()), [])
+        self.assertEqual((record["state"], record["disposition"]), ("FAIL_CLOSED", "FAIL_CLOSED"))
+        self.assertTrue(record["terminal"])
+        self.assertIs(record["receipt_written"], False)
+        self.assertIs(record["authentic_intr_admission_observed"], False)
+        for field in self.REFUSAL_FIELDS:
+            self.assertTrue(record.get(field), field)
+        self.assertEqual(record["failure_code"], "custody_replay_reconstruction_authority_mismatch")
+        self.assertEqual(record["reason_code"], record["failure_code"])
+        self.assertEqual(record["observed_value"], "CALLER_CONTROLLED")
+        self.assertEqual(record["authority_effect"], "NONE_REFUSAL_ONLY")
+        self.assertEqual(record["claimed_request_sha256"], value["request_sha256"])
+        # Other authority mismatches are unchanged: still a raised ValueError.
+        other = _rehash({**request("admit-intr"), "transition_authority": "CALLER_CONTROLLED"})
+        with tempfile.TemporaryDirectory() as td, \
+                self.assertRaisesRegex(ValueError, "transition_authority_mismatch"):
+            mod.admit(runtime_root=Path(td), body=mod.canonical(other), headers={},
+                      transport_validator=lambda _h, _b: {"origin": "TVC_RELAY_EGRESS"})
+
 
 if __name__ == "__main__":
     unittest.main()

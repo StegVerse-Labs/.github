@@ -3,6 +3,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_master_records_timeout_is_capped_inside_the_organization_append(monkeypatch) -> None:
+    # #3012: the synchronous Master Records call runs inside the organization
+    # append's exclusive section, so the environment may shorten its timeout
+    # but never lengthen it past the fixed ceiling.
+    from workers.canonical_state_transition_custody import (
+        MASTER_RECORDS_TIMEOUT_CEILING_SECONDS, _configuration,
+    )
+    assert MASTER_RECORDS_TIMEOUT_CEILING_SECONDS <= 10.0
+    for supplied, expected in (("600", MASTER_RECORDS_TIMEOUT_CEILING_SECONDS),
+                               ("nan", MASTER_RECORDS_TIMEOUT_CEILING_SECONDS),
+                               ("2.5", 2.5)):
+        monkeypatch.setenv("STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS", supplied)
+        assert _configuration()[2] == expected, supplied
+    monkeypatch.delenv("STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS")
+    assert _configuration()[2] == MASTER_RECORDS_TIMEOUT_CEILING_SECONDS
+
+
 def test_canonical_custody_client_and_reusable_task_are_primary() -> None:
     client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
     reusable = (ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text()
