@@ -1,0 +1,77 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "HCB-VERSIONED-CONTRACT-038",
+  "correlation_id": "HCB-VERSIONED-CONTRACT-038",
+  "root_correlation_id": "HCB-VERSIONED-CONTRACT-038",
+  "parent_task_id": null,
+  "goal": "Reconcile the already merged optional, non-authoritative HCB versioned contract and remote-CGE removal without requiring a second device, remote receiver, or new runtime transition.",
+  "coordination_state": "SOURCE_IMPLEMENTED_REVIEW_PENDING",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/hybrid-collab-bridge",
+  "cosv_task_vector": "50000000100000",
+  "native_owner_issue": 38,
+  "authority_effect": "NONE_SOURCE_COORDINATION_ONLY",
+  "authority_model": {
+    "work_intent_and_coordination": "TASK_REGISTRY",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "governed_transition": "INTERLOCK_INTR",
+    "observed_reality_and_reconstruction": "ORGANIZATION_LEDGER_PRIMARY_MASTER_RECORDS_DOWNSTREAM"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/hybrid-collab-bridge"
+    ],
+    "components": [
+      "hcb_contract",
+      "remote-CGE removal"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "VERSIONED_STDLIB_CONTRACT_MERGED",
+    "REMOTE_CGE_REMOVED",
+    "HCB_OPTIONAL_NON_AUTHORITATIVE",
+    "MASTER_RECORDS_DOWNSTREAM_NON_GATING"
+  ],
+  "runtime_requirements": {
+    "capabilities": [],
+    "environment": "NONE_REQUIRED_FOR_SOURCE_RECONCILIATION",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "allowed_next_transitions": [
+    "OWNER_TERMINAL_COSV_REVIEW",
+    "SUPERSEDED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "evidence_complete": false,
+    "scope": "SOURCE_ONLY; historical merged implementation evidence requires exact-head terminal validation"
+  },
+  "source_refs": [
+    "StegVerse-Labs/hybrid-collab-bridge#38",
+    "StegVerse-Labs/hybrid-collab-bridge/HYBRID_COLLAB_BRIDGE_MIRROR_HANDOFF.md",
+    "StegVerse-org/.github/data/llma-hcb-terminal-review.json"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/hybrid-collab-bridge/HYBRID_COLLAB_BRIDGE_MIRROR_HANDOFF.md"
+  ],
+  "nonclaims": [
+    "NO_HCB_RUNTIME_TRANSITION_CLAIM",
+    "NO_SANDBOX_ACTIVATION",
+    "NO_EXTERNAL_MACHINE_REQUIRED",
+    "NO_DUPLICATE_ORGANIZATION_LEDGER"
+  ]
+}
