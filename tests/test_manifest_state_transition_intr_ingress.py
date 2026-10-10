@@ -397,5 +397,59 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         self.assertEqual(len(result["transition_closures"]), 7)
 
 
+def _rehash(value: dict) -> dict:
+    value["request_sha256"] = mod.sha256({k: v for k, v in value.items() if k != "request_sha256"})
+    return value
+
+
+class CustodyAuthorityCompatibilityTests(unittest.TestCase):
+    REFUSAL_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+    def test_canonical_organization_ledger_value_is_accepted(self):
+        value = _rehash({**request("canonical"), "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER"})
+        self.assertEqual(mod.validate_request(value), value)
+        compat = mod.custody_authority_compatibility(value)
+        self.assertEqual(compat["compatibility"], "CANONICAL")
+        self.assertFalse(compat["legacy_custody_authority_value"])
+        self.assertFalse(compat["grants_authority"])
+        self.assertEqual(mod.REQUIRED_AUTHORITIES["custody_replay_reconstruction_authority"], "ORGANIZATION_LEDGER")
+
+    def test_pinned_legacy_master_records_value_is_compatibility_only(self):
+        value = request("legacy")
+        self.assertEqual(value["custody_replay_reconstruction_authority"], "MASTER_RECORDS")
+        # Accepted unchanged: the request bytes and their hash are not rewritten.
+        self.assertEqual(mod.validate_request(value), value)
+        compat = mod.custody_authority_compatibility(value)
+        self.assertEqual(compat["compatibility"], "LEGACY_COMPAT")
+        self.assertTrue(compat["legacy_custody_authority_value"])
+        self.assertFalse(compat["grants_authority"])
+        self.assertEqual(compat["canonical_authority"], "ORGANIZATION_LEDGER")
+
+    def test_unknown_value_is_refused_with_six_fields(self):
+        for observed in ("CALLER_CONTROLLED", "master_records", None, ""):
+            value = _rehash({**request("unknown"), "custody_replay_reconstruction_authority": observed})
+            with self.assertRaises(mod.CustodyAuthorityRefusal) as caught:
+                mod.validate_request(value)
+            self.assertIsInstance(caught.exception, ValueError)
+            self.assertEqual(str(caught.exception), "custody_replay_reconstruction_authority_mismatch")
+            refusal = caught.exception.refusal
+            for field in self.REFUSAL_FIELDS:
+                self.assertTrue(refusal.get(field), field)
+            self.assertEqual(refusal["owning_existing_goal"], "SDK-MR-B-RECEIVER-AUTHORITY-COMPAT-001")
+            self.assertEqual(refusal["authority_effect"], "NONE_REFUSAL_ONLY")
+
+    def test_missing_value_is_refused(self):
+        value = request("missing")
+        value.pop("custody_replay_reconstruction_authority")
+        with self.assertRaises(mod.CustodyAuthorityRefusal):
+            mod.validate_request(_rehash(value))
+
+    def test_caller_cannot_replace_other_authorities(self):
+        value = _rehash({**request("intr"), "transition_authority": "CALLER_CONTROLLED"})
+        with self.assertRaisesRegex(ValueError, "transition_authority_mismatch"):
+            mod.validate_request(value)
+
+
 if __name__ == "__main__":
     unittest.main()

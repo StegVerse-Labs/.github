@@ -53,11 +53,55 @@ REQUIRED_AUTHORITIES = {
     "credential_authority": "TV/TVC",
     "claim_fence_authority": "WORKERCOORDINATOR",
     "transition_authority": "INTERLOCK_INTR",
-    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER",
     "request_grants_authority": False,
     "sdk_executes_lifecycle": False,
     "authority_effect": "NONE_MANIFEST_RUNTIME_REQUEST_ONLY",
 }
+
+CUSTODY_AUTHORITY_KEY = "custody_replay_reconstruction_authority"
+CANONICAL_CUSTODY_AUTHORITY = "ORGANIZATION_LEDGER"
+#: Bounded compatibility for SDK callers pinned before the Organization Ledger
+#: migration. Master Records is a downstream evidence recorder only; this wire
+#: value is accepted as legacy_compat and never grants sovereign authority.
+LEGACY_CUSTODY_AUTHORITY = "MASTER_RECORDS"
+
+
+class CustodyAuthorityRefusal(ValueError):
+    """Refusal of an unrecognized custody authority, carrying the six refusal fields."""
+
+    def __init__(self, observed: Any) -> None:
+        super().__init__(f"{CUSTODY_AUTHORITY_KEY}_mismatch")
+        self.refusal = {
+            "failure_code": f"{CUSTODY_AUTHORITY_KEY}_mismatch",
+            "failed_predicate": f"{CUSTODY_AUTHORITY_KEY}_IN_{CANONICAL_CUSTODY_AUTHORITY}_OR_LEGACY_{LEGACY_CUSTODY_AUTHORITY}",
+            "required_evidence_or_repair": f"Emit {CUSTODY_AUTHORITY_KEY}={CANONICAL_CUSTODY_AUTHORITY} from the existing SDK manifest builder",
+            "retry_entrypoint": "StegVerse-org/StegVerse-SDK:stegverse/manifest_builder.py",
+            "owning_existing_goal": "SDK-MR-B-RECEIVER-AUTHORITY-COMPAT-001",
+            "next_attempt": "NEW_GOVERNED_ATTEMPT_AFTER_EXISTING_OWNER_REPAIR",
+            "observed_value": observed if isinstance(observed, str) else None,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+
+
+def custody_authority_compatibility(request: Mapping[str, Any]) -> dict[str, Any]:
+    """Classify the request's custody authority; refuse any unrecognized value.
+
+    Only the Organization Ledger is canonical. The legacy Master Records value is
+    marked legacy_compat and grants nothing; the request bytes are not altered.
+    """
+    observed = request.get(CUSTODY_AUTHORITY_KEY)
+    if observed not in (CANONICAL_CUSTODY_AUTHORITY, LEGACY_CUSTODY_AUTHORITY):
+        raise CustodyAuthorityRefusal(observed)
+    legacy = observed == LEGACY_CUSTODY_AUTHORITY
+    return {
+        "observed_value": observed,
+        "canonical_authority": CANONICAL_CUSTODY_AUTHORITY,
+        "compatibility": "LEGACY_COMPAT" if legacy else "CANONICAL",
+        "legacy_custody_authority_value": legacy,
+        "grants_authority": False,
+    }
+
 
 def canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
@@ -129,6 +173,9 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(isinstance(claimed_request_hash, str) and len(claimed_request_hash) == 64, "request_sha256_required")
     require(sha256(body) == claimed_request_hash, "request_sha256_mismatch")
     for key, expected in REQUIRED_AUTHORITIES.items():
+        if key == CUSTODY_AUTHORITY_KEY:
+            custody_authority_compatibility(request)
+            continue
         require(request.get(key) == expected, f"{key}_mismatch")
     manifest = request.get("canonical_manifest")
     require(isinstance(manifest, Mapping), "canonical_manifest_required")
@@ -1100,4 +1147,4 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
             raise
         return _manifest_binding_deny(runtime_root, payload, reason_code=reason_code)
 
-__all__ = ["PROFILE", "REQUEST_SCHEMA", "RESULT_SCHEMA", "admit", "bind_tvc_provider_request", "execute", "is_manifest_state_transition", "sdk_manifest_binding", "validate_request"]
+__all__ = ["PROFILE", "REQUEST_SCHEMA", "RESULT_SCHEMA", "CustodyAuthorityRefusal", "admit", "bind_tvc_provider_request", "custody_authority_compatibility", "execute", "is_manifest_state_transition", "sdk_manifest_binding", "validate_request"]

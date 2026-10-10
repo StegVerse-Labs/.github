@@ -617,7 +617,8 @@ def _manifest_state_transition_request(task_id: str) -> dict[str, Any] | None:
     require(value.get("claim_fence_authority") == "WORKERCOORDINATOR", "manifest state-transition claim authority drift")
     require(value.get("transition_authority") == "INTERLOCK_INTR", "manifest state-transition transition authority drift")
     require(value.get("credential_authority") == "TV/TVC", "manifest state-transition credential authority drift")
-    require(value.get("custody_replay_reconstruction_authority") == "MASTER_RECORDS", "manifest state-transition custody authority drift")
+    # ORGANIZATION_LEDGER is canonical; pinned SDK callers' MASTER_RECORDS is legacy compatibility only.
+    require(value.get("custody_replay_reconstruction_authority") in {"ORGANIZATION_LEDGER", "MASTER_RECORDS"}, "manifest state-transition custody authority drift")
     graph = value.get("state_graph")
     require(isinstance(graph, Mapping), "manifest state-transition graph missing")
     require(graph.get("canonical_task_id") == task_id, "manifest state-transition graph task mismatch")
