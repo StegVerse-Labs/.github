@@ -453,3 +453,29 @@ class CustodyAuthorityCompatibilityTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReceiverCustodyAuthorityCompatibilityTests(unittest.TestCase):
+    def test_canonical_organization_ledger_authority_is_accepted(self):
+        value = request("canonical-ledger")
+        value["custody_replay_reconstruction_authority"] = "ORGANIZATION_LEDGER"
+        value["request_sha256"] = mod.sha256({k: v for k, v in value.items() if k != "request_sha256"})
+        self.assertEqual(mod.validate_request(value)["custody_replay_reconstruction_authority"], "ORGANIZATION_LEDGER")
+
+    def test_pinned_legacy_master_records_wire_value_is_accepted(self):
+        value = request("legacy-ledger")
+        self.assertEqual(mod.validate_request(value)["custody_replay_reconstruction_authority"], "MASTER_RECORDS")
+
+    def test_unrecognized_authority_is_rejected(self):
+        value = request("invalid-ledger")
+        value["custody_replay_reconstruction_authority"] = "CALLER_CONTROLLED"
+        value["request_sha256"] = mod.sha256({k: v for k, v in value.items() if k != "request_sha256"})
+        with self.assertRaises(Exception):
+            mod.validate_request(value)
+
+    def test_caller_cannot_replace_intr_transition_authority(self):
+        value = request("invalid-intr")
+        value["transition_authority"] = "CALLER_CONTROLLED"
+        value["request_sha256"] = mod.sha256({k: v for k, v in value.items() if k != "request_sha256"})
+        with self.assertRaises(Exception):
+            mod.validate_request(value)
