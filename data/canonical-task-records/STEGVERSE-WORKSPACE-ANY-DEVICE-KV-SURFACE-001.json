@@ -87,19 +87,28 @@
       "dependency_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
       "blocker_id": "BLK2-SKAP-INGRESS-CONSOLIDATION",
       "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
-      "decision_owner": "REGISTRY_OWNER"
+      "decision_owner": "REGISTRY_OWNER",
+      "owner_decision_recorded": true,
+      "owner_decision_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732",
+      "owner_decision": "RETAIN_EXISTING_GOVERNED_INGRESS"
     },
     {
       "dependency_id": "BLK3-WORKSPACE-KV-STORE-WRITER",
       "blocker_id": "BLK3-WORKSPACE-KV-STORE-WRITER",
       "statement": "Does the WorkSpace KV store keep a Google Drive writer? Today the only module permitted to write KnowledgeVault/_System/Workspace/** is continuity-vault-kit/runtime/personal_provider_binding.py, fed by a read-only GOOGLE_DRIVE broker result. A StegVerse-native writer does not exist, so KV_WORKSPACE_EMPTY is the structural default.",
-      "decision_owner": "REGISTRY_OWNER"
+      "decision_owner": "REGISTRY_OWNER",
+      "owner_decision_recorded": true,
+      "owner_decision_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732",
+      "owner_decision": "RETAIN_EXISTING_AUTHORIZED_WRITER_NO_SECOND_WRITER"
     },
     {
       "dependency_id": "BLK4-WORKSPACE-NAME-COLLISION",
       "blocker_id": "BLK4-WORKSPACE-NAME-COLLISION",
       "statement": "Is the name collision with SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004 resolved by renaming? That task's WORKSPACE is Google Workspace, and it already writes the same KV path, so the collision is functional and not only nominal.",
-      "decision_owner": "REGISTRY_OWNER"
+      "decision_owner": "REGISTRY_OWNER",
+      "owner_decision_recorded": true,
+      "owner_decision_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732",
+      "owner_decision": "SEPARATE_STEGVERSE_WORKSPACE_FROM_GOOGLE_WORKSPACE_BY_TASK_ID_AND_WRITE_OWNERSHIP"
     }
   ],
   "dependencies": [
@@ -115,21 +124,24 @@
       "dependency_kind": "HUMAN_DECISION",
       "decision_owner": "REGISTRY_OWNER",
       "statement": "Does sensitive ingress consolidate behind WorkSpace? At least four Site surfaces already accept it — my-kv.html, stegos-apple-credential.html, stegfin-trade.html and generic-login-test.html — each with its own ingress validation. Consolidation is security-relevant and cannot be assumed.",
-      "resolved": false
+      "resolved": true,
+      "resolution_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732"
     },
     {
       "dependency_id": "BLK3-WORKSPACE-KV-STORE-WRITER",
       "dependency_kind": "HUMAN_DECISION",
       "decision_owner": "REGISTRY_OWNER",
       "statement": "Does the WorkSpace KV store keep a Google Drive writer? Today the only module permitted to write KnowledgeVault/_System/Workspace/** is continuity-vault-kit/runtime/personal_provider_binding.py, fed by a read-only GOOGLE_DRIVE broker result. A StegVerse-native writer does not exist, so KV_WORKSPACE_EMPTY is the structural default.",
-      "resolved": false
+      "resolved": true,
+      "resolution_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732"
     },
     {
       "dependency_id": "BLK4-WORKSPACE-NAME-COLLISION",
       "dependency_kind": "HUMAN_DECISION",
       "decision_owner": "REGISTRY_OWNER",
       "statement": "Is the name collision with SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004 resolved by renaming? That task's WORKSPACE is Google Workspace, and it already writes the same KV path, so the collision is functional and not only nominal.",
-      "resolved": false
+      "resolved": true,
+      "resolution_ref": "StegVerse-Labs/.github#2796#issuecomment-6094254732"
     },
     {
       "dependency_id": "TASK-STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
@@ -318,5 +330,13 @@
   },
   "handoff_projection_refs": [
     "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
-  ]
+  ],
+  "owner_decisions": {
+    "source": "StegVerse-Labs/.github#2796#issuecomment-6094254732",
+    "cosv_candidate": "10500000114000",
+    "cosv_uniqueness_validation": "PENDING",
+    "registry_generation_validation": "PENDING",
+    "authority_effect": "NONE",
+    "admission": "NOT_INVOKED"
+  }
 }
