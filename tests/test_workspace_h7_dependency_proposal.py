@@ -49,6 +49,40 @@ class DependencyProposalTests(unittest.TestCase):
         self.assertEqual(result["authority_effect"], "NONE_PROPOSAL_ONLY")
         self.assertEqual(row["coordination_state"], "PROPOSED")
 
+    def test_string_dependency_refs_in_other_rows_do_not_crash_the_producer(self):
+        # Real aggregate rows (e.g. STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001) carry bare string dependency refs.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry = {
+                "generation": 306,
+                "tasks": [
+                    {"task_id": "OTHER-001", "dependencies": ["SOME-TASK-001", "Org/Repo/tasks/X.json"],
+                     "blockers": [], "cosv_task_vector": "10500000110000"},
+                    {"task_id": "TARGET-001", "cosv_task_vector": "10500000112000",
+                     "dependencies": ["UPSTREAM-TASK-001", {"dependency_id": "BLK1", "resolved": False}],
+                     "blockers": [{"dependency_id": "BLK1", "blocker_id": "BLOCK-BLK1"}],
+                     "allowed_next_transitions": ["ACTIVE"]},
+                ],
+            }
+            original = root / "registry.json"
+            output = root / "proposal.json"
+            original.write_text(json.dumps(registry))
+            completed = subprocess.run(
+                [sys.executable, str(SCRIPT), "BLK1", "--state", "RESOLVED",
+                 "--registry", str(original), "--output", str(output)],
+                capture_output=True, text=True, check=False
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            result = json.loads(output.read_text())
+            self.assertEqual([a["task_id"] for a in result["affected"]], ["TARGET-001"])
+            row = result["proposed_registry"]["tasks"][1]
+            self.assertEqual(row["dependencies"], ["UPSTREAM-TASK-001", {"dependency_id": "BLK1", "resolved": True}])
+            self.assertEqual(row["cosv_task_vector"], "10500000110000")
+            # A bare string ref stays unresolved, so no next transition is proposed.
+            self.assertEqual(result["affected"][0]["remaining_unresolved_dependencies"], ["UPSTREAM-TASK-001"])
+            self.assertEqual(result["affected"][0]["next_transition_candidates"], [])
+            self.assertEqual(result["proposed_registry"]["tasks"][0], registry["tasks"][0])
+
     def test_unresolved_bool_does_not_create_state_field(self):
         result = self.run_proposal("UNRESOLVED")
         row = result["proposed_registry"]["tasks"][0]
