@@ -1199,6 +1199,15 @@
       "vector": "10100000110000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "HCB-VERSIONED-CONTRACT-038",
+      "repository": "StegVerse-Labs/hybrid-collab-bridge",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/HCB-VERSIONED-CONTRACT-038.json",
+      "vector": "71000000100100",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {

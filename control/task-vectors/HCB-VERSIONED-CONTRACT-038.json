@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "identity": "HCB-VERSIONED-CONTRACT-038",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100100",
+  "exact_metrics": {
+    "lifecycle": "COMPLETE",
+    "archive_ready": true,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": true,
+    "activated": false,
+    "propagated": false
+  },
+  "evidence_refs": [
+    "https://github.com/StegVerse-Labs/hybrid-collab-bridge/issues/38",
+    "StegVerse-Labs/hybrid-collab-bridge:HYBRID_COLLAB_BRIDGE_MIRROR_HANDOFF.md",
+    "https://github.com/StegVerse-Labs/hybrid-collab-bridge/pull/46",
+    "https://github.com/StegVerse-Labs/hybrid-collab-bridge/actions/runs/38029178254",
+    "StegVerse-Labs/hybrid-collab-bridge@0fd716a14bcf7dc04012926bac3d65022b23dcd6:hcb_contract/VENDOR_MANIFEST.json"
+  ],
+  "observed_at": "2026-10-10",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "canonical_encoder_ref": "scripts/cosv.py"
+}
