@@ -46,8 +46,11 @@ def main() -> int:
             continue
         require(len(matches) == 1, f"duplicate dependency identity in {task.get('task_id')}")
         dep = matches[0]
-        previous = dep.get("state")
-        dep["state"] = args.state
+        previous = dep.get("resolved") if "resolved" in dep else dep.get("state")
+        if "resolved" in dep:
+            dep["resolved"] = args.state == "RESOLVED"
+        else:
+            dep["state"] = args.state
 
         blockers = task.get("blockers", [])
         before_blockers = len(blockers)
@@ -62,7 +65,13 @@ def main() -> int:
                 "reason": "DEPENDENCY_NOT_RESOLVED",
             })
 
-        unresolved = [d for d in task.get("dependencies", []) if d.get("state") != "RESOLVED"]
+        unresolved = [d for d in task.get("dependencies", []) if not (d.get("resolved") is True if "resolved" in d else d.get("state") == "RESOLVED")]
+        # COSV task.v1 position 10 (B) is the current blocker count, not an identity.
+        # Only recompute an already present well-formed task.v1 vector.
+        cosv = task.get("cosv_task_vector")
+        if isinstance(cosv, str) and len(cosv) == 14 and cosv.isdigit():
+            require(len(task.get("blockers", [])) <= 9, "COSV task.v1 blocker count overflow")
+            task["cosv_task_vector"] = cosv[:9] + str(len(task.get("blockers", []))) + cosv[10:]
         next_candidates = list(task.get("allowed_next_transitions", [])) if not unresolved and not task.get("blockers") else []
         affected.append({
             "task_id": task.get("task_id"),
@@ -75,7 +84,7 @@ def main() -> int:
 
     require(bool(affected), "dependency_id not referenced by any canonical task")
     proposed["generation"] = int(registry.get("generation", 0)) + 1
-    proposed["status"] = "PROPOSED_DEPENDENCY_REEVALUATION_NOT_ADMITTED"
+    # Preserve the aggregate status; a proposal cannot rewrite authoritative state.
     proposed.setdefault("nonclaims", [])
     for value in [
         "DEPENDENCY_REEVALUATION_DOES_NOT_ADMIT_TASK_TRANSITION",
