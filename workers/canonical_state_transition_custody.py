@@ -172,12 +172,25 @@ def build_state_receipt(
     }
 
 
+#: The most a synchronous Master Records call may wait. A released batch is
+#: submitted from inside the organization append's exclusive section
+#: (aggregate_repo_transition.aggregate_transition -> organization_batch_custody
+#: .submit_released_batch -> submit_organization_batch), so an uncapped
+#: environment timeout would hold the ledger lock for that long (#3012).
+MASTER_RECORDS_TIMEOUT_CEILING_SECONDS = 10.0
+
+
+def _bounded_timeout(requested: float) -> float:
+    # `not <=` rather than `>` so a NaN also lands on the ceiling.
+    return requested if requested <= MASTER_RECORDS_TIMEOUT_CEILING_SECONDS else MASTER_RECORDS_TIMEOUT_CEILING_SECONDS
+
+
 def _configuration() -> tuple[str, str, float]:
     endpoint = (os.getenv("STEGVERSE_MASTER_RECORDS_ENDPOINT") or "").strip().rstrip("/")
     if endpoint and not endpoint.endswith("/api/master-records/state-transitions"):
         endpoint += "/api/master-records/state-transitions"
     token = (os.getenv("STEGVERSE_MASTER_RECORDS_TOKEN") or "").strip()
-    timeout = float(os.getenv("STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS", "10"))
+    timeout = _bounded_timeout(float(os.getenv("STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS", "10")))
     return endpoint, token, timeout
 
 

@@ -166,15 +166,27 @@ def _validate_manifest_hash(manifest: Mapping[str, Any], claimed: str, request: 
     require(isinstance(embedded, str) and embedded == claimed, "canonical_manifest_sha256_binding_mismatch")
     require(sha256(body) == claimed, "canonical_manifest_sha256_recompute_mismatch")
 
+class ValidatedRequest(dict):
+    """The validated request: the submitted bytes, unaltered, with the custody
+    authority classification retained beside them.
+
+    The request is hash-bound and persisted as submitted, so the classification
+    rides as an attribute and never as a key.
+    """
+
+    custody_authority_compatibility: dict[str, Any] = {}
+
+
 def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     require(request.get("schema") == REQUEST_SCHEMA, "manifest_state_transition_request_schema_mismatch")
     body = dict(request)
     claimed_request_hash = body.pop("request_sha256", None)
     require(isinstance(claimed_request_hash, str) and len(claimed_request_hash) == 64, "request_sha256_required")
     require(sha256(body) == claimed_request_hash, "request_sha256_mismatch")
+    compatibility: dict[str, Any] = {}
     for key, expected in REQUIRED_AUTHORITIES.items():
         if key == CUSTODY_AUTHORITY_KEY:
-            custody_authority_compatibility(request)
+            compatibility = custody_authority_compatibility(request)
             continue
         require(request.get(key) == expected, f"{key}_mismatch")
     manifest = request.get("canonical_manifest")
@@ -196,7 +208,9 @@ def validate_request(request: Mapping[str, Any]) -> dict[str, Any]:
     elif task_id is not None:
         require(isinstance(task_id, str) and task_id, "canonical_task_id_invalid")
     require(request.get("predecessor_closure_required") is True, "predecessor_closure_required")
-    return dict(request)
+    validated = ValidatedRequest(request)
+    validated.custody_authority_compatibility = compatibility
+    return validated
 
 def sdk_manifest_binding(validated: Mapping[str, Any]) -> dict[str, str]:
     """Project only authenticated manifest lineage for downstream boundary validation."""
@@ -1146,6 +1160,34 @@ def _manifest_binding_deny(
     return {**record, "source_disposition_ref": str(exact)}
 
 
+def _custody_authority_fail_closed(request: Mapping[str, Any], refusal: Mapping[str, Any]) -> dict[str, Any]:
+    """The typed refusal of an unrecognized custody authority, as a record (#3012).
+
+    Nothing is written: the request was never admitted, so there is no
+    disposition to retain. The six refusal fields `CustodyAuthorityRefusal`
+    carries are emitted here rather than lost in a re-raised exception.
+    """
+    return {
+        "schema": "stegverse.sdk.manifest-profile-disposition/v1",
+        "state": "FAIL_CLOSED",
+        "disposition": "FAIL_CLOSED",
+        "terminal": True,
+        "automatic_retry_permitted": False,
+        "evaluation_boundary": "SDK_MANIFEST_PROFILE",
+        "transport_validated": True,
+        "authentic_intr_admission_observed": False,
+        "organization_master_records_organization_record_observed": False,
+        "transition_id": "SDK_CUSTODY_AUTHORITY",
+        "reason_code": refusal["failure_code"],
+        **refusal,
+        "receipt_written": False,
+        "claimed_request_sha256": request.get("request_sha256"),
+        "canonical_task_id": request.get("canonical_task_id"),
+        "graph_id": request.get("graph_id"),
+        "processing_capability": request.get("processing_capability"),
+    }
+
+
 def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transport_validator) -> dict[str, Any]:
     transport = transport_validator(headers, body)
     require(transport.get("origin") in {"STEGOS_NODE_OUTBOX", "TVC_RELAY_EGRESS"}, "manifest_state_transition_transport_origin_invalid")
@@ -1156,6 +1198,9 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
     require(isinstance(payload, dict), "manifest_state_transition_request_object_required")
     try:
         return execute(runtime_root, payload, transport=transport)
+    except CustodyAuthorityRefusal as exc:
+        # Typed and fail closed: the refusal's own fields are the record.
+        return _custody_authority_fail_closed(payload, exc.refusal)
     except ValueError as exc:
         reason_code = str(exc)
         # Only a concrete, correctable manifest-binding mismatch returns DENY.
