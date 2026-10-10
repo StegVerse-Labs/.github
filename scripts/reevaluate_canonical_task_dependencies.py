@@ -41,7 +41,9 @@ def main() -> int:
 
     for task in proposed.get("tasks", []):
         dependencies = task.get("dependencies", [])
-        matches = [dep for dep in dependencies if dep.get("dependency_id") == args.dependency_id]
+        # Some registry rows carry bare string dependency refs (a task id or a cross-repository path).
+        # They are never the reevaluated dependency and stay unresolved; the producer must not crash on them.
+        matches = [dep for dep in dependencies if isinstance(dep, dict) and dep.get("dependency_id") == args.dependency_id]
         if not matches:
             continue
         require(len(matches) == 1, f"duplicate dependency identity in {task.get('task_id')}")
@@ -65,7 +67,7 @@ def main() -> int:
                 "reason": "DEPENDENCY_NOT_RESOLVED",
             })
 
-        unresolved = [d for d in task.get("dependencies", []) if not (d.get("resolved") is True if "resolved" in d else d.get("state") == "RESOLVED")]
+        unresolved = [d for d in task.get("dependencies", []) if not isinstance(d, dict) or not (d.get("resolved") is True if "resolved" in d else d.get("state") == "RESOLVED")]
         # COSV task.v1 position 10 (B) is the current blocker count, not an identity.
         # Only recompute an already present well-formed task.v1 vector.
         cosv = task.get("cosv_task_vector")
@@ -78,7 +80,7 @@ def main() -> int:
             "previous_dependency_state": previous,
             "proposed_dependency_state": args.state,
             "blockers_removed": before_blockers - after_blockers,
-            "remaining_unresolved_dependencies": [d.get("dependency_id") for d in unresolved],
+            "remaining_unresolved_dependencies": [d.get("dependency_id") if isinstance(d, dict) else d for d in unresolved],
             "next_transition_candidates": next_candidates,
         })
 
