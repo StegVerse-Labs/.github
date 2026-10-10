@@ -31,7 +31,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "transition_authority": "INTERLOCK_INTR",
     "organization_records_first": true,
-    "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+    "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER",
     "second_user_operated_device_required": false
   },
   "receipt_before_claim": true,
