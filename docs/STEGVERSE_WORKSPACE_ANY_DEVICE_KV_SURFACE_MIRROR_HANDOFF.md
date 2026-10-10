@@ -5,7 +5,7 @@ Updated: 2026-10-10
 Goal Task ID: `STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001`  
 Handoff: `docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md`  
 Repository: `StegVerse-Labs/.github`  
-COSV candidate (canonical record; validation pending): `10500000114000`  
+Computed COSV (task.v1, B=0; exact-head validation pending): `10500000110000`  
 Coordination state: `PROPOSED`  
 Checkout state: `UNCLAIMED`  
 Authority effect: `NONE_COORDINATION_REGISTRATION_ONLY`
@@ -31,7 +31,7 @@ This resolves `BLK1-CANONICAL-WORKSPACE-SURFACE-OWNER`.
 
 Owner-approved decisions: [Registry #2796 comment 6094254732](https://github.com/StegVerse-Labs/.github/issues/2796#issuecomment-6094254732).
 
-- **COSV:** canonical task candidate `10500000114000`; uniqueness and Registry generation checks remain pending. The former mirror value `10500000113000` was inconsistent and is not authority to allocate a new COSV.
+- **COSV:** canonical task candidate `10500000110000`; computed-vector consistency and exact-head validation remain pending. The former values `10500000113000` (B=3) and `10500000114000` (B=4) were stale state vectors; the current value has B=0. COSV is not a unique identity.
 - **BLK2:** retain existing governed SKAP ingress paths; WorkSpace is a unified non-authoritative UI.
 - **BLK3:** retain existing authorized KnowledgeVault writer; do not create another authoritative writer.
 - **BLK4:** distinguish StegVerse WorkSpace and Google Workspace by canonical task identity and non-overlapping write ownership.
@@ -70,7 +70,7 @@ The following remain useful source findings, but are not themselves runtime proo
 
 ## Canonical next actions
 
-1. Resolve BLK2–BLK4 through the Registry owner without creating duplicate goals.
+1. Preserve the recorded BLK2–BLK4 decisions and recompute the task.v1 vector when source metrics change.
 2. Reconcile the WorkSpace canonical record and task vector after each owner decision.
 3. Keep `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` and `SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001` as explicit adjacent/dependency references where required.
 4. After all owner decisions are resolved, obtain the canonical WorkerCoordinator claim/fence before implementation.

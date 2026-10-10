@@ -8,7 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
-  "cosv_task_vector": "10500000114000",
+  "cosv_task_vector": "10500000110000",
   "authority_model": {
     "work_intent_and_coordination": "TASK_REGISTRY",
     "execution_claim_and_fence": "WORKERCOORDINATOR",
@@ -333,10 +333,11 @@
   ],
   "owner_decisions": {
     "source": "StegVerse-Labs/.github#2796#issuecomment-6094254732",
-    "cosv_candidate": "10500000114000",
-    "cosv_uniqueness_validation": "PENDING",
-    "registry_generation_validation": "PENDING",
+    "cosv_candidate": "10500000110000",
+    "cosv_uniqueness_validation": "NOT_APPLICABLE_COMPUTED_STATE_VECTOR",
+    "registry_generation_validation": "SOURCE_VECTOR_RECOMPUTED_PENDING_EXACT_HEAD_CHECKS",
     "authority_effect": "NONE",
-    "admission": "NOT_INVOKED"
+    "admission": "NOT_INVOKED",
+    "cosv_recompute_evidence": "COSV_PROFILE_V1 task.v1 B=blocker_count; Site#1509 comment 6097865299; .github#2796 comment 6097866080"
   }
 }
