@@ -444,6 +444,15 @@ def _capability_dispatch_fail_closed(runtime_root: Path, validated: Mapping[str,
             "MASTER_RECORDS_RECONSTRUCTION_AFTER_ORGANIZATION_RECORDS",
         ],
         "repair_owner": "EXISTING_MANIFEST_SELECTED_CAPABILITY_OWNER",
+        # Six-field non-ALLOW: the owner of the repair is the existing goal the
+        # manifest runs under; the retry is the relocated owner when one exists.
+        "failure_code": "MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_NOT_BOUND",
+        "required_evidence_or_repair": (
+            "Bind the existing manifest-selected execution owner for processing_capability "
+            f"'{capability}' then submit a new governed attempt with the same manifest"),
+        "retry_entrypoint": RELOCATED_CAPABILITY_OWNERS.get(capability, "EXISTING_SDK_MANIFEST_UNIVERSAL_INTR_INGRESS"),
+        "owning_existing_goal": validated.get("canonical_task_id"),
+        "next_attempt": "NEW_GOVERNED_ATTEMPT_AFTER_CAPABILITY_OWNER_BOUND",
         "consequence_committed": False,
         "authority_effect": "NONE_INTR_PROFILE_DISPOSITION_ONLY",
     }
@@ -1054,6 +1063,14 @@ def execute(
             ],
             "repair_owner": "EXISTING_MANIFEST_WORKERCOORDINATOR_INTR_AND_CUSTODY_OWNERS",
             "retry_entrypoint": "EXISTING_SDK_MANIFEST_UNIVERSAL_INTR_INGRESS",
+            # Six-field non-ALLOW, completing the fields above.
+            "failure_code": "AUTHENTIC_PURPOSE_RUNTIME_RECEIPT_NOT_OBSERVED",
+            "required_evidence_or_repair": (
+                "An exact-request-bound purpose runtime receipt at "
+                "receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json "
+                "from the existing WorkerCoordinator cycle"),
+            "owning_existing_goal": task_id,
+            "next_attempt": "NEW_GOVERNED_ATTEMPT_AFTER_PURPOSE_RECEIPT_OBSERVED",
             "automatic_retry_permitted": False,
             "authority_effect": "NONE_PROFILE_BOUNDARY_DISPOSITION_ONLY",
         }

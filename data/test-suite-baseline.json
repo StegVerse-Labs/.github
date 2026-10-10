@@ -48,7 +48,6 @@
     "tests/test_kv_revalidation_proof_intake_cosv.py::KVRevalidationProofIntakeCOSVTests::test_index_and_global_coverage_bind_exactly_once",
     "tests/test_kv_revalidation_reusable_tvc_runtime_binding.py::test_registry_uses_local_admitted_runner",
     "tests/test_local_source_generation_cosv.py::LocalSourceGenerationCOSVTests::test_bindings_and_global_coverage_are_structurally_consistent",
-    "tests/test_manifest_runtime_receipt_boundary.py::test_missing_purpose_receipt_returns_immutable_nonallow",
     "tests/test_mir_live_transition_probe_worker.py::test_mir_process_adapter_uses_transition_probe_wrapper",
     "tests/test_mir_live_transition_probe_worker.py::test_probe_does_not_add_runtime_or_dispatch_plane",
     "tests/test_mir_roundtrip_egress_authenticity_runtime_contract.py::test_standing_request_is_attached_to_existing_canonical_work_cadence",
