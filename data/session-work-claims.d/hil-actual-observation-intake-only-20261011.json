@@ -28,5 +28,6 @@
   "github_runtime_authority": "NONE",
   "merged_pr": "StegVerse-Labs/.github#3134",
   "merged_commit": "a3c9d80c727177ceea21e5ab72b2677beaf01abe",
-  "claim_released_at": "2026-10-11T21:19:56Z"
+  "claim_released_at": "2026-10-11T21:24:51Z",
+  "release_timestamp_correction": "corrected from 2026-10-11T21:19:56Z (release commit time) to the actual #3135 merge time"
 }

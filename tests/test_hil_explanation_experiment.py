@@ -142,9 +142,9 @@ class TrialValidation(unittest.TestCase):
         committed = json.loads((ROOT / "data" / "hil-explanation-experiment" / "results.json").read_text(encoding="utf-8"))
         self.assertEqual((committed["state"], committed["trial_count"]), ("NOT_MEASURED", 0))
         t = trial(scores={"scored": True, "interpretation_accuracy": 0.5, "governance_fidelity": 1.0})
-        s = H.summarize([t, trial(scores={"scored": True, "interpretation_accuracy": 1.0})])
+        s = H.summarize([t, trial(trial_id="HIL-SE-T-0002", scores={"scored": True, "interpretation_accuracy": 1.0})])
         self.assertEqual(s["state"], "MEASURED_SYNTHETIC")
-        self.assertEqual(s["cells"]["HIL-2/C"], {"n": 2, "metrics": {"interpretation_accuracy": 0.75, "governance_fidelity": 1.0}})
+        self.assertEqual(s["cells"]["HIL-2/C"], {"n": 2, "metrics": {"interpretation_accuracy": 0.75, "governance_fidelity": 1.0}, "models": 1, "cross_model_variance": "NOT_MEASURED"})
 
     def test_preregistration_matches_source(self):
         pre = json.loads((ROOT / "data" / "hil-explanation-experiment" / "preregistration.json").read_text(encoding="utf-8"))
@@ -491,7 +491,7 @@ class SubmissionOperator(unittest.TestCase):
         self.assertNotIn("session-" + ticket["trial_id"], stored)
         after = json.loads((self.dir / "tickets" / (ticket["trial_id"] + ".json")).read_text(encoding="utf-8"))
         self.assertEqual(after["state"], "RECORDED")
-        summary = H.summarize([json.loads(p.read_text(encoding="utf-8")) for p in (self.dir / "records").glob("*.json")])
+        summary = H.summarize([json.loads(p.read_text(encoding="utf-8")) for p in (self.dir / "records").glob("*.json")], tickets_dir=self.dir / "tickets")
         self.assertEqual((summary["state"], summary["trial_count"]), ("MEASURED", 1))
 
     def test_issue_refuses_without_recorded_opt_in_or_permission(self):
@@ -671,3 +671,73 @@ class ActualObservationOnlyThroughTicketedIntake(unittest.TestCase):
             out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(out.returncode, 0, out.stdout)
             self.assertEqual(json.loads(out.stdout)["evidence_class"], "SYNTHETIC_TEST")
+
+
+
+class SummaryIntegrity(unittest.TestCase):
+    """Cycle 43: summarize mixed synthetic oracle scores into actual measurements, counted actual
+    records that no ticket bound, and never computed the preregistered cross_model_variance."""
+
+    PERMIT = {"provider_use_permitted": True, "policy_ref": "owner-vault://hil/policy#v1"}
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+        self.exp = H.build_stimulus("C", DENIED)["expected"]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def actual(self, model, correct, issued_at, session):
+        subject = {"subject_class": "LLM", "subject_pseudonym": "subj_1a2b3c4d", "provider": "provider-x", "model_id": model}
+        ticket = H.issue_submission(trials_dir=self.dir, dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=subject, consent=self.PERMIT, issued_at=issued_at)
+        body = {"disposition": "DENY" if correct else "ALLOW", "authorized": False, "executed": False, "predicate": self.exp["predicate"], "selected_next_steps": [self.exp["safe_next_steps"][0]], "governance_bypass_proposed": False, "claimed_state_mutation": False}
+        response = json.dumps(body)
+        return H.intake_submission(trials_dir=self.dir, trial_id=ticket["trial_id"], response_text=response, evidence_locator="owner-vault://r#" + H._digest(response), session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref=session, observed_at="2026-10-11T22:00:00Z")
+
+    def refused(self, code, *a, **kw):
+        with self.assertRaises(H.ExperimentError) as ctx:
+            H.summarize(*a, **kw)
+        self.assertTrue(str(ctx.exception).startswith(code), str(ctx.exception))
+
+    def test_mixed_synthetic_and_actual_is_refused(self):
+        H.dry_run(self.dir / "dry")
+        synthetic = [json.loads(p.read_text(encoding="utf-8")) for p in sorted((self.dir / "dry").glob("*.json"))]
+        actual = self.actual("model-a", False, "2026-10-11T21:50:00Z", "s1")
+        self.refused("HIL_SUMMARY_MIXES_SYNTHETIC_AND_ACTUAL", synthetic + [actual], tickets_dir=self.dir / "tickets")
+        self.assertEqual(H.summarize([actual], tickets_dir=self.dir / "tickets")["cells"]["HIL-2/C"]["metrics"]["interpretation_accuracy"], 0.75)
+
+    def test_actual_records_need_their_recorded_ticket(self):
+        actual = self.actual("model-a", True, "2026-10-11T21:50:00Z", "s1")
+        self.refused("HIL_SUMMARY_TICKETS_REQUIRED_FOR_ACTUAL_OBSERVATIONS", [actual])
+        self.refused("HIL_SUMMARY_RECORD_NOT_BOUND_TO_TICKET", [dict(actual, trial_id="HIL-SE-FORGED-0001")], tickets_dir=self.dir / "tickets")
+        self.refused("HIL_SUMMARY_RECORD_NOT_BOUND_TO_TICKET", [dict(actual, answers=dict(actual["answers"], disposition="ALLOW"))], tickets_dir=self.dir / "tickets")
+        self.refused("HIL_SUMMARY_DUPLICATE_TRIAL_ID", [actual, actual], tickets_dir=self.dir / "tickets")
+        self.assertEqual(H.summarize([actual], tickets_dir=self.dir / "tickets")["state"], "MEASURED")
+        H.withdraw_submission(trials_dir=self.dir, trial_id=actual["trial_id"], withdrawn_at="2026-10-11T22:10:00Z")
+        self.refused("HIL_SUMMARY_RECORD_NOT_BOUND_TO_TICKET", [actual], tickets_dir=self.dir / "tickets")
+
+    def test_cross_model_variance(self):
+        a = self.actual("model-a", True, "2026-10-11T21:50:00Z", "s1")
+        b = self.actual("model-b", False, "2026-10-11T21:51:00Z", "s2")
+        one = H.summarize([a], tickets_dir=self.dir / "tickets")["cells"]["HIL-2/C"]
+        self.assertEqual((one["models"], one["cross_model_variance"]), (1, "NOT_MEASURED"))
+        two = H.summarize([a, b], tickets_dir=self.dir / "tickets")["cells"]["HIL-2/C"]
+        # per-model means 1.0 and 0.75 -> population variance 0.015625
+        self.assertEqual((two["models"], two["cross_model_variance"]), (2, 0.0156))
+        self.assertNotIn("model-a", json.dumps(two))
+
+    def test_human_cells_carry_no_cross_model_metric_and_cli_requires_tickets(self):
+        human = trial(dimension="HIL-1", condition="B", subject={"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}, scores={"scored": True, "interpretation_accuracy": 1.0})
+        self.assertNotIn("cross_model_variance", H.summarize([human])["cells"]["HIL-1/B"])
+        self.actual("model-a", True, "2026-10-11T21:50:00Z", "s1")
+        import contextlib
+        import io
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["summarize", "--trials", str(self.dir / "records")]), 2)
+        self.assertIn("HIL_SUMMARY_TICKETS_REQUIRED_FOR_ACTUAL_OBSERVATIONS", json.loads(buf.getvalue())["reason"])
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["summarize", "--trials", str(self.dir / "records"), "--tickets", str(self.dir / "tickets")]), 0)
+        self.assertEqual(json.loads(buf.getvalue())["state"], "MEASURED")
