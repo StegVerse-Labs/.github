@@ -466,6 +466,13 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
             "ORGANIZATION_GOVERNANCE_DECISION_MISSING",
             "addressed_frames_without_decision:" + ",".join(pending)[:500],
             "repair receiver dispatch or decision publication and rerun with authenticated evidence")
+    # A local decision is not an authenticated return. Require the independently
+    # fetched own-ref answer evidence before reporting a completed decision run.
+    if failure is None and decisions and (readback or {}).get("verified") is not True:
+        failure = binding.fail_closed(
+            "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED",
+            "decision_exists_without_verified_fresh_ref_readback",
+            "publish the decision answer on the authorized own mesh ref and verify by fresh fetch")
     if failure is None and crossing_fail_closed:
         failure = binding.fail_closed(
             "ORGANIZATION_CROSSING_FAIL_CLOSED",
