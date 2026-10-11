@@ -1324,9 +1324,17 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
                             "failed_predicate": "OUTBOX_EVENT_CARRIES_A_MANIFEST_ON_THIS_ROUTE",
                             "appended": False})
             continue
-        result = receive(event["manifest"], registry=registry, standing=event.get("standing"),
-                         packet_id=str(event.get("packet_id") or f"{route}:{path.stem}"),
-                         hb_epoch=event.get("hb_epoch"), mesh_root=mesh_root)
+        try:
+            result = receive(event["manifest"], registry=registry, standing=event.get("standing"),
+                             packet_id=str(event.get("packet_id") or f"{route}:{path.stem}"),
+                             hb_epoch=event.get("hb_epoch"), mesh_root=mesh_root)
+        except (RuntimeError, ValueError) as exc:
+            # A malformed or unavailable event must not prevent subsequent
+            # independently admitted events from receiving a disposition.
+            results.append({**row, "disposition": "FAIL_CLOSED",
+                            "failed_predicate": "OUTBOX_EVENT_RECEIVE_FAILED",
+                            "error_type": type(exc).__name__, "appended": False})
+            continue
         results.append({**row, **{key: result.get(key) for key in (
             "disposition", "failed_predicate", "received", "organization_receipt_sha256",
             "repository_receipt_sha256", "organization_transition_id", "transition_replayed",
