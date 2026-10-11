@@ -97,7 +97,7 @@ jobs:
       - name: Install the pinned StegVerse SDK
         run: |
           set -eu
-          SDK_SHA=c30dc3421f10f8855d85e8347c59884d8af792eb
+          SDK_SHA=d6873d84dddc91ef6b26774336b05c8e1f4042c0
           curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/stegverse-sdk.tgz
           mkdir /tmp/stegverse-sdk
           tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
@@ -167,3 +167,10 @@ jobs:
         env:
           STEGVERSE_SDK_REQUIRED: '1'
         run: python -m unittest -v tests/test_organization_role_conformance_ingress.py
+      # The admitted diagnostic consumer reads the file the pinned SDK's own
+      # ecosystem_diagnostic CLI writes, not a hand-built result, so a change
+      # to that output's shape (SDK #460 enclosed it) fails here first.
+      - name: Validate admitted diagnostic consumer against the pinned SDK's diagnostic output
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
+        run: python -m unittest -v tests/test_sdk_manifest_diagnostic_admitted_consumer.py

@@ -292,7 +292,7 @@
     {
       "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
       "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
-      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK c30dc3421f10f8855d85e8347c59884d8af792eb, with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
+      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now d6873d84dddc91ef6b26774336b05c8e1f4042c0), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
     }
   ]
 }
