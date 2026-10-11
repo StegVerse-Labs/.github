@@ -8,6 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "50000000100000",
+  "source_state_vector_ref": "control/task-vectors/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",
   "source_refs": [
     "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
     "handoffs/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",

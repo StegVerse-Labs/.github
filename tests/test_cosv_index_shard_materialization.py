@@ -136,6 +136,123 @@ class RepositoryCheckTests(unittest.TestCase):
             "closable SOURCE_REF_ABSENT items: bind source_state_vector_ref to the conventional source on every listed surface and re-run scripts/materialize_cosv_index_shards.py",
         )
 
+    @staticmethod
+    def indexed_source_predicate(task_id: str, row: dict) -> str | None:
+        """The materializer's derivation predicate applied to an effective index row's own source.
+
+        Returns None when the row's ``source_state_vector_ref`` resolves to a
+        task.v1 task-level record identified as ``:task:<task_id>`` whose vector
+        equals the row vector (verify_task_pointer parity) and which is a
+        complete COSV record (what the index completeness test requires of
+        every registry-bound source), otherwise the fail-closed predicate.
+        """
+        ref = row.get("source_state_vector_ref")
+        if not isinstance(ref, str) or not ref:
+            return "SOURCE_REF_ABSENT"
+        vector = row.get("vector") if isinstance(row.get("vector"), str) else row.get("cosv_task_vector")
+        predicate, _ = mod.inspect_source(ROOT, task_id, ref, vector)
+        if predicate is None:
+            predicate, _ = mod.inspect_record_completeness(ROOT, ref)
+        return predicate
+
+    @staticmethod
+    def vector_declaring_surfaces(rows: list[tuple[str, dict]], vector: str) -> list[tuple[str, dict]] | None:
+        """Registry surfaces that declare a COSV vector for the task.
+
+        Returns None when any surface declares a vector other than ``vector``:
+        such a task is a registry/index VECTOR_VALUE_MISMATCH owner item and
+        binding a source on it would deepen the disagreement, not close it.
+        """
+        surfaces: list[tuple[str, dict]] = []
+        for ref, row in rows:
+            declared = {row.get("cosv_task_vector"), mod.embedded_vector(row)} - {None, ""}
+            if not declared:
+                continue
+            if declared != {vector}:
+                return None
+            surfaces.append((ref, row))
+        return surfaces
+
+    def test_indexed_tasks_with_verified_sources_are_bound_on_every_vectorized_registry_surface(self) -> None:
+        """Issue #3012: an indexed task whose source verifies must name it on every registry surface.
+
+        A task with an effective index row whose ``source_state_vector_ref``
+        passes the derivation predicate has a deterministic binding: the index
+        already resolves it. Every registry surface that declares the task's
+        COSV vector (aggregate row and canonical shard alike, as #3110 requires
+        key-for-key agreement) must therefore carry that identical ref, so no
+        surface silently depends on the index for a source it could name.
+        Surfaces that declare no vector are not vectorized and out of scope
+        (a bare ref without a vector is the materializer's
+        REGISTRY_VECTOR_ABSENT shape); a task whose surfaces disagree with the
+        index vector is excluded as a VECTOR_VALUE_MISMATCH owner item.
+        """
+        effective = mod.load_effective_index(ROOT)
+        declarations = mod.collect_declarations(ROOT)
+        unbound: dict[str, list[str]] = {}
+        for task_id, (_, row) in sorted(effective.items()):
+            rows = declarations.get(task_id)
+            if not rows or self.indexed_source_predicate(task_id, row) is not None:
+                continue
+            surfaces = self.vector_declaring_surfaces(rows, row["vector"])
+            if surfaces is None:
+                continue
+            missing = [ref for ref, r in surfaces if r.get("source_state_vector_ref") != row["source_state_vector_ref"]]
+            if missing:
+                unbound[task_id] = missing
+        self.assertEqual(
+            unbound,
+            {},
+            "indexed tasks whose source verifies: bind the index row's source_state_vector_ref on every listed surface, identical value, directly after cosv_task_vector",
+        )
+
+    def test_issue_3012_indexed_tasks_bound_on_every_vectorized_surface_are_pinned(self) -> None:
+        bound = {
+            "GADI-001",
+            "GADI-RESIDENT-EXECUTION-001",
+            "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+            "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+            "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+            "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
+            "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+            "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+            "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+            "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+            "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+            "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+            "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+            "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+            "SS-ERL-KV-PROPAGATION-VERIFICATION-001",
+            "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+            "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+            "STEGAGENTS-GOVERNED-RUNTIME-001",
+            "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+            "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+            "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+            "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+            "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001",
+            "STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001",
+            "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+            "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+        }
+        declarations = mod.collect_declarations(ROOT)
+        effective = mod.load_effective_index(ROOT)
+        for task_id in sorted(bound):
+            origin, row = effective[task_id]
+            self.assertIsNone(self.indexed_source_predicate(task_id, row), task_id)
+            self.assertEqual(row["source_state_vector_ref"], f"control/task-vectors/{task_id}.json", task_id)
+            surfaces = self.vector_declaring_surfaces(declarations[task_id], row["vector"])
+            self.assertTrue(surfaces, task_id)
+            for ref, surface in surfaces:
+                self.assertEqual(surface.get("source_state_vector_ref"), row["source_state_vector_ref"], f"{task_id} unbound on {ref}")
+                keys = list(surface)
+                if "cosv_task_vector" in keys:
+                    self.assertEqual(keys.index("source_state_vector_ref"), keys.index("cosv_task_vector") + 1, f"{task_id} ref not directly after cosv_task_vector on {ref}")
+            if origin == "aggregate" and any(ref == "data/canonical-task-registry.json" for ref, _ in surfaces):
+                # The canonical registry now binds the task, so the aggregate row
+                # must name it as the registry surface it resolves from.
+                self.assertEqual(row["registry_ref"], "data/canonical-task-registry.json", task_id)
+
     def test_issue_3012_bound_tasks_carry_the_conventional_ref_on_every_surface(self) -> None:
         bound = {
             "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
@@ -381,6 +498,110 @@ class TempTreeTests(unittest.TestCase):
         code, receipt = self.run_mod("--normalize-shards")
         self.assertEqual(receipt["normalized"], [])
         self.assertEqual([x["predicate"] for x in receipt["existing_row_defects"]], ["INDEX_ROW_VECTOR_ABSENT"])
+        self.assertEqual(aggregate.read_text(encoding="utf-8"), before)
+
+    def test_live_worker_coverage_counters_are_checked_and_rewritten_from_the_effective_index(self) -> None:
+        write(self.root / "control" / "worker-registry.json", {"tasks": [{"task_id": TASK}, {"task_id": "UNIT-TERMINAL-001"}]})
+        write(self.root / "control" / "worker-registry.d" / "unit.json", {"tasks": [{"task_id": "UNIT-ACTIVE-UNVECTORIZED-001"}, {"task_id": TASK}]})
+        write(
+            self.root / "control" / "task-vector-index.d" / f"{TASK}.json",
+            {
+                "schema": "stegverse.cosv-task-vector-index-entry/v1",
+                "task_id": TASK,
+                "registry_ref": f"data/canonical-task-records/{TASK}.json",
+                "source_state_vector_ref": f"control/task-vectors/{TASK}.json",
+                "vector": VECTOR,
+                "vector_state": "EMITTED",
+                "authority_effect": "NONE",
+            },
+        )
+        write(self.root / "control" / "task-vectors" / f"{TASK}.json", vector_record())
+        coverage_path = self.root / "control" / "cosv-live-worker-coverage.json"
+        stale = {
+            "schema": "stegverse.cosv-live-worker-coverage/v1",
+            "unique_task_ids_global_plus_fragments": 1,
+            "canonically_indexed_task_ids": 1,
+            "completed_only_historical_unvectorized_task_count": 1,
+            "superseded_historical_unvectorized_task_count": 0,
+            "active_unvectorized_unique_task_ids": 0,
+            "active_worker_task_ids_missing_canonical_cosv": [],
+            "terminal_historical_unvectorized_task_ids": ["UNIT-TERMINAL-001"],
+            "superseded_historical_unvectorized_task_ids": [],
+            "organization_active_unvectorized_task_ids": 2,
+            "total_active_unvectorized_unique_task_ids": 2,
+            "authority_effect": "NONE",
+        }
+        write(coverage_path, stale)
+
+        code, receipt = self.run_mod("--check")
+        self.assertEqual((code, receipt["status"]), (1, "DRIFT"))
+        self.assertEqual(receipt["existing_row_defects"], [])
+        self.assertEqual(
+            {(x["surface"], x["field"]) for x in receipt["coverage_drift"]},
+            {
+                ("control/cosv-live-worker-coverage.json", "unique_task_ids_global_plus_fragments"),
+                ("control/cosv-live-worker-coverage.json", "active_unvectorized_unique_task_ids"),
+                ("control/cosv-live-worker-coverage.json", "active_worker_task_ids_missing_canonical_cosv"),
+                ("control/cosv-live-worker-coverage.json", "total_active_unvectorized_unique_task_ids"),
+            },
+        )
+        self.assertEqual(receipt["coverage"]["live_worker"]["active_worker_task_ids_missing_canonical_cosv"], ["UNIT-ACTIVE-UNVECTORIZED-001"])
+        self.assertEqual(receipt["coverage"]["live_worker"]["total_active_unvectorized_unique_task_ids"], 3)
+        self.assertEqual(json.loads(coverage_path.read_text(encoding="utf-8")), stale)
+
+        # Write mode without --coverage reports the drift but leaves the file alone.
+        code, receipt = self.run_mod()
+        self.assertEqual((code, receipt["status"], receipt["coverage"]["written"]), (0, "DRIFT", []))
+        self.assertEqual(json.loads(coverage_path.read_text(encoding="utf-8")), stale)
+
+        code, receipt = self.run_mod("--coverage")
+        self.assertEqual((code, receipt["status"], receipt["coverage"]["written"]), (0, "OK", ["control/cosv-live-worker-coverage.json"]))
+        rewritten = json.loads(coverage_path.read_text(encoding="utf-8"))
+        self.assertEqual(list(rewritten), list(stale), "key order preserved")
+        self.assertEqual(rewritten["unique_task_ids_global_plus_fragments"], 3)
+        self.assertEqual(rewritten["canonically_indexed_task_ids"], 1)
+        self.assertEqual(rewritten["completed_only_historical_unvectorized_task_count"], 1)
+        self.assertEqual(rewritten["active_unvectorized_unique_task_ids"], 1)
+        self.assertEqual(rewritten["active_worker_task_ids_missing_canonical_cosv"], ["UNIT-ACTIVE-UNVECTORIZED-001"])
+        self.assertEqual(rewritten["total_active_unvectorized_unique_task_ids"], 3)
+        self.assertEqual(rewritten["terminal_historical_unvectorized_task_ids"], ["UNIT-TERMINAL-001"], "owner facts are never derived")
+        self.assertEqual(rewritten["organization_active_unvectorized_task_ids"], 2)
+
+        code, receipt = self.run_mod("--check")
+        self.assertEqual((code, receipt["status"], receipt["coverage_drift"]), (0, "OK", []))
+
+        # A historical id that is no longer an unindexed worker task breaks the partition.
+        rewritten["terminal_historical_unvectorized_task_ids"] = [TASK]
+        write(coverage_path, rewritten)
+        code, receipt = self.run_mod("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("historical_unvectorized_task_ids", {x["field"] for x in receipt["coverage_drift"]})
+
+    def test_aggregate_index_coverage_block_is_checked_but_never_written(self) -> None:
+        aggregate = self.root / "control" / "task-vector-index.json"
+        write(
+            aggregate,
+            {
+                "profile": "task.v1",
+                "authority_effect": "NONE",
+                "coverage": {"indexed_vectorized_tasks": 1, "local_cosv_record_tasks": 1, "external_owner_projection_tasks": 0},
+                "tasks": [
+                    {"task_id": TASK, "registry_ref": "x", "source_state_vector_ref": f"control/task-vectors/{TASK}.json", "vector": VECTOR, "vector_state": "EMITTED", "authority_effect": "NONE"},
+                    {"task_id": "UNIT-EXTERNAL-001", "registry_ref": "x", "source_state_vector_ref": "external/UNIT-EXTERNAL-001.json", "vector": VECTOR, "vector_state": "EMITTED", "authority_effect": "NONE"},
+                ],
+            },
+        )
+        write(self.root / "control" / "task-vectors" / f"{TASK}.json", vector_record())
+        write(self.root / "external" / "UNIT-EXTERNAL-001.json", vector_record(task_id="UNIT-EXTERNAL-001"))
+        before = aggregate.read_text(encoding="utf-8")
+        code, receipt = self.run_mod("--check", "--coverage")
+        self.assertEqual((code, receipt["status"]), (1, "DRIFT"))
+        self.assertEqual(
+            [(x["field"], x["stored"], x["derived"]) for x in receipt["coverage_drift"]],
+            [("indexed_vectorized_tasks", 1, 2), ("external_owner_projection_tasks", 0, 1)],
+        )
+        code, receipt = self.run_mod("--coverage")
+        self.assertEqual((code, receipt["status"], receipt["coverage"]["written"]), (0, "DRIFT", []))
         self.assertEqual(aggregate.read_text(encoding="utf-8"), before)
 
     def test_owner_items_defer_acknowledged_predicates_and_flag_stale_entries(self) -> None:

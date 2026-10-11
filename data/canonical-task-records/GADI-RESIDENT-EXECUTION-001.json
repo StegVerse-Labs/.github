@@ -8,6 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "10100000100000",
+  "source_state_vector_ref": "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
   "source_refs": [
     "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "handoffs/GADI-RESIDENT-EXECUTION-001.json",

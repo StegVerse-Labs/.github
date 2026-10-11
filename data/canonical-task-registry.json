@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 311,
+  "generation": 312,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1583,6 +1583,7 @@
       },
       "checkout_state": "RETIRED",
       "cosv_task_vector": "71000000100101",
+      "source_state_vector_ref": "control/task-vectors/SS-ERL-KV-PROPAGATION-VERIFICATION-001.json",
       "readme_impact": {
         "material_function_change": false,
         "readme_updated_in_change_set": true,
@@ -4987,6 +4988,7 @@
         "vector": "71000000111111"
       },
       "cosv_task_vector": "71000000111111",
+      "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
       "source_refs": [
         "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
         "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",
@@ -7376,6 +7378,7 @@
         "vector": "60000000111000"
       },
       "cosv_task_vector": "60000000111000",
+      "source_state_vector_ref": "control/task-vectors/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
       "source_refs": [
         "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
         "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",
@@ -9353,6 +9356,7 @@
         "vector": "10100000100000"
       },
       "cosv_task_vector": "10100000100000",
+      "source_state_vector_ref": "control/task-vectors/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
       "source_refs": [
         "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
         "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md",
@@ -11673,6 +11677,7 @@
       "coordination_state": "PROPOSED",
       "checkout_state": "UNCLAIMED",
       "cosv_task_vector": "10100000100000",
+      "source_state_vector_ref": "control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json",
       "source_refs": [
         "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
         "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
@@ -14278,6 +14283,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "30001000100000",
+      "source_state_vector_ref": "control/task-vectors/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json",
       "canonical_issue": "StegVerse-Labs/.github#2073",
       "goal_prompt_count": "14/20",
       "source_refs": [
@@ -14448,6 +14454,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "50000000100000",
+      "source_state_vector_ref": "control/task-vectors/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
       "canonical_issue": "StegVerse-Labs/.github#1891",
       "canonical_handoff": "StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
       "canonical_route_duplication_binding": "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json",
@@ -14579,6 +14586,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "50000000100000",
+      "source_state_vector_ref": "control/task-vectors/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
       "owners": {
         "credential_and_provider_broker_owner": "StegVerse-Labs/TVC",
         "governance_and_delta_owner": "StegVerse-org/StegVerse-SDK",
@@ -14720,6 +14728,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "40000010100000",
+      "source_state_vector_ref": "control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
       "handoff": "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
       "canonical_issue": "StegVerse-Labs/.github#1974",
       "implementation_issue": "StegVerse-Labs/TVC#437",
@@ -16569,6 +16578,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "50000000102000",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
       "source_refs": [
         "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
         "workers/run_device_kv_skap_roundtrip_worker.py",
@@ -17670,6 +17680,7 @@
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/StegOS",
       "cosv_task_vector": "10100000102000",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
       "source_refs": [
         "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CHATGPT_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegOS:data/canonical-task-registration-proposals/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
@@ -17854,6 +17865,7 @@
       "checkout_state": "UNCLAIMED",
       "repository": "StegVerse-Labs/StegOS",
       "cosv_task_vector": "10100000103000",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
       "source_refs": [
         "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegOS:data/canonical-task-registration-proposals/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
@@ -19206,6 +19218,7 @@
       "coordination_state": "RETIRED",
       "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
       "cosv_task_vector": "50000010100000",
+      "source_state_vector_ref": "control/task-vectors/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
       "global_invariant_ref": "data/task-registry-global-invariants.json",
       "device_interchangeability_enforced": true,
       "physical_device_identity_gate": "NONE_PROHIBITED",

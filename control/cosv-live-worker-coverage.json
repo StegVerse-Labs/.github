@@ -2,12 +2,14 @@
   "schema": "stegverse.cosv-live-worker-coverage/v1",
   "repository": "StegVerse-Labs/.github",
   "projection_basis": "effective aggregate-plus-shard COSV index intersected with current global-plus-fragment worker registry",
-  "unique_task_ids_global_plus_fragments": 98,
-  "canonically_indexed_task_ids": 91,
+  "unique_task_ids_global_plus_fragments": 103,
+  "canonically_indexed_task_ids": 95,
   "completed_only_historical_unvectorized_task_count": 6,
   "superseded_historical_unvectorized_task_count": 1,
-  "active_unvectorized_unique_task_ids": 0,
-  "active_worker_task_ids_missing_canonical_cosv": [],
+  "active_unvectorized_unique_task_ids": 1,
+  "active_worker_task_ids_missing_canonical_cosv": [
+    "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001"
+  ],
   "terminal_historical_unvectorized_task_ids": [
     "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
     "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
@@ -16,10 +18,12 @@
     "STEGGATE-AUDITKIT-001",
     "STEGGATE-FIRST-BOUNDARY-001"
   ],
-  "superseded_historical_unvectorized_task_ids": ["STEGFIN-CONTINUITY-CARRIER-007"],
+  "superseded_historical_unvectorized_task_ids": [
+    "STEGFIN-CONTINUITY-CARRIER-007"
+  ],
   "organization_active_task_ids": 14,
   "organization_active_unvectorized_task_ids": 0,
-  "total_active_unvectorized_unique_task_ids": 0,
+  "total_active_unvectorized_unique_task_ids": 1,
   "source_projection_complete": true,
   "runtime_activation_claimed": false,
   "credential_authority": "TV/TVC",

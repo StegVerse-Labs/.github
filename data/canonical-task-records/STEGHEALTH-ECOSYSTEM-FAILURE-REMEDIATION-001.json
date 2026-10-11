@@ -15,6 +15,7 @@
     "vector": "10100000100000"
   },
   "cosv_task_vector": "10100000100000",
+  "source_state_vector_ref": "control/task-vectors/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
   "source_refs": [
     "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
     "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md",

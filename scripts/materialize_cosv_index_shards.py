@@ -44,13 +44,24 @@ predicate; defects are reported, and ``--normalize-shards`` rewrites a shard
 that carries only ``cosv_task_vector`` into the full shape when its source
 passes.
 
+Coverage counters are a projection of the same data. The live worker coverage
+file ``control/cosv-live-worker-coverage.json`` partitions the unique
+global-plus-fragment worker task ids into canonically indexed, historical
+unvectorized (the stored terminal and superseded id lists, which are owner
+facts and never derived here) and active unvectorized; the aggregate index's
+own ``coverage`` block counts its rows and how many bind a local
+``control/task-vectors/`` record. Both are recomputed from the effective index
+and the registries on every run and reported as ``coverage_drift`` when the
+stored counters differ. ``--coverage`` rewrites the live worker coverage
+counters in write mode; the aggregate index is still never written.
+
 Default mode writes derivable shards and prints a JSON receipt. ``--check``
 writes nothing and exits 1 when any shard would be added or normalized, any
-task fails closed, or any existing row is defective, unless the item is listed
-in an ``--owner-items`` file (a ratchet of acknowledged owner items that may
-only shrink). The aggregate index is never modified. ``authority_effect`` is
-``NONE`` throughout: this emits non-authorizing projections and claims no
-runtime transition.
+coverage counter is stale, any task fails closed, or any existing row is
+defective, unless the item is listed in an ``--owner-items`` file (a ratchet of
+acknowledged owner items that may only shrink). The aggregate index is never
+modified. ``authority_effect`` is ``NONE`` throughout: this emits
+non-authorizing projections and claims no runtime transition.
 """
 
 from __future__ import annotations
@@ -82,6 +93,10 @@ VECTOR_RE = re.compile(r"^[0-9]{14}$")
 
 AGGREGATE_INDEX = "control/task-vector-index.json"
 INDEX_SHARDS = "control/task-vector-index.d"
+LIVE_WORKER_COVERAGE = "control/cosv-live-worker-coverage.json"
+WORKER_REGISTRY = "control/worker-registry.json"
+WORKER_REGISTRY_SHARDS = "control/worker-registry.d"
+LOCAL_COSV_RECORD_PREFIX = "control/task-vectors/"
 REGISTRY_SURFACES = (
     "control/worker-registry.json",
     "control/organization-task-registry.json",
@@ -353,6 +368,95 @@ def normalized_shard(row: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+# --------------------------------------------------------------------------- coverage
+
+
+def worker_task_ids(root: Path) -> set[str]:
+    """Unique task ids across the global worker registry and its fragments (the live denominator)."""
+    ids: set[str] = set()
+    paths = [root / WORKER_REGISTRY]
+    shard_root = root / WORKER_REGISTRY_SHARDS
+    if shard_root.is_dir():
+        paths.extend(sorted(shard_root.glob("*.json")))
+    for path in paths:
+        if not path.is_file():
+            continue
+        payload = load_json(path)
+        if not isinstance(payload, dict):
+            continue
+        for task in payload.get("tasks", []) or []:
+            if isinstance(task, dict) and isinstance(task.get("task_id"), str) and task["task_id"]:
+                ids.add(task["task_id"])
+    return ids
+
+
+def _drift(stored: dict[str, Any], derived: dict[str, Any]) -> list[dict[str, Any]]:
+    return [{"field": key, "stored": stored.get(key), "derived": value} for key, value in derived.items() if stored.get(key) != value]
+
+
+def derive_live_worker_coverage(root: Path, effective: dict[str, tuple[str, dict[str, Any]]]) -> dict[str, Any] | None:
+    """Recompute the live worker coverage partition; None when the file is absent.
+
+    The terminal and superseded historical id lists are owner facts and are
+    read as stored; every count is derived from them, the worker registries
+    and the effective index. A historical id that is not an unindexed worker
+    task is reported as drift because the partition no longer sums.
+    """
+    path = root / LIVE_WORKER_COVERAGE
+    if not path.is_file():
+        return None
+    stored = load_json(path)
+    if not isinstance(stored, dict):
+        raise SystemExit(f"FAIL_CLOSED: live worker coverage shape is invalid: {path}")
+    worker = worker_task_ids(root)
+    unindexed = worker - set(effective)
+    terminal = [t for t in stored.get("terminal_historical_unvectorized_task_ids") or [] if isinstance(t, str)]
+    superseded = [t for t in stored.get("superseded_historical_unvectorized_task_ids") or [] if isinstance(t, str)]
+    historical = set(terminal) | set(superseded)
+    active_missing = sorted(unindexed - historical)
+    organization_active_unvectorized = stored.get("organization_active_unvectorized_task_ids")
+    if not isinstance(organization_active_unvectorized, int):
+        organization_active_unvectorized = 0
+    derived = {
+        "unique_task_ids_global_plus_fragments": len(worker),
+        "canonically_indexed_task_ids": len(worker & set(effective)),
+        "completed_only_historical_unvectorized_task_count": len(terminal),
+        "superseded_historical_unvectorized_task_count": len(superseded),
+        "active_unvectorized_unique_task_ids": len(active_missing),
+        "active_worker_task_ids_missing_canonical_cosv": active_missing,
+        "total_active_unvectorized_unique_task_ids": len(active_missing) + organization_active_unvectorized,
+    }
+    drift = _drift(stored, derived)
+    stale_historical = sorted(historical - unindexed)
+    if stale_historical or len(historical) != len(terminal) + len(superseded):
+        drift.append({"field": "historical_unvectorized_task_ids", "stored": sorted(terminal) + sorted(superseded), "derived": sorted(historical & unindexed), "detail": "historical ids must be distinct unindexed worker tasks"})
+    return {"path": LIVE_WORKER_COVERAGE, "derived": derived, "drift": drift}
+
+
+def derive_aggregate_index_coverage(root: Path) -> dict[str, Any] | None:
+    """Recompute the aggregate index's own coverage block; None when it carries none."""
+    aggregate = load_json(root / AGGREGATE_INDEX)
+    stored = aggregate.get("coverage")
+    if not isinstance(stored, dict):
+        return None
+    rows = [r for r in aggregate.get("tasks", []) if isinstance(r, dict)]
+    local = sum(1 for r in rows if str(r.get("source_state_vector_ref") or "").startswith(LOCAL_COSV_RECORD_PREFIX))
+    derived = {
+        "indexed_vectorized_tasks": len(rows),
+        "local_cosv_record_tasks": local,
+        "external_owner_projection_tasks": len(rows) - local,
+    }
+    return {"path": AGGREGATE_INDEX, "derived": derived, "drift": _drift(stored, derived)}
+
+
+def write_live_worker_coverage(root: Path, derived: dict[str, Any]) -> None:
+    path = root / LIVE_WORKER_COVERAGE
+    stored = load_json(path)
+    for key, value in derived.items():
+        stored[key] = value
+    path.write_text(dump_json(stored), encoding="utf-8")
+
+
 # --------------------------------------------------------------------------- main
 
 
@@ -370,7 +474,7 @@ def load_owner_items(path: Path | None) -> set[tuple[str, str]]:
     return items
 
 
-def materialize(root: Path, *, check: bool, normalize: bool, owner_items: set[tuple[str, str]]) -> dict[str, Any]:
+def materialize(root: Path, *, check: bool, normalize: bool, owner_items: set[tuple[str, str]], coverage: bool = False) -> dict[str, Any]:
     effective = load_effective_index(root)
     declarations = collect_declarations(root)
     excluded_ids = {task_id for task_id in declarations if task_id in effective}
@@ -405,6 +509,19 @@ def materialize(root: Path, *, check: bool, normalize: bool, owner_items: set[tu
     defects = [x for x in defects if (x["task_id"], x["predicate"]) not in owner_items]
     stale = sorted(f"{t}:{p}" for t, p in owner_items - live)
 
+    # Coverage counters are projected from the index as it stands before this
+    # run writes anything: a shard added below changes the effective index, so
+    # the counters are re-derived (and rewritten) on the next run.
+    live_coverage = derive_live_worker_coverage(root, effective)
+    aggregate_coverage = derive_aggregate_index_coverage(root)
+    coverage_drift = [
+        {"surface": block["path"], **item}
+        for block in (live_coverage, aggregate_coverage)
+        if block
+        for item in block["drift"]
+    ]
+    coverage_written = False
+
     if not check:
         shard_root = root / INDEX_SHARDS
         shard_root.mkdir(parents=True, exist_ok=True)
@@ -412,8 +529,12 @@ def materialize(root: Path, *, check: bool, normalize: bool, owner_items: set[tu
             (shard_root / f"{shard['task_id']}.json").write_text(dump_json(shard), encoding="utf-8")
         for item in normalized:
             (root / item["origin"]).write_text(dump_json(item["row"]), encoding="utf-8")
+        if coverage and live_coverage and live_coverage["drift"]:
+            write_live_worker_coverage(root, live_coverage["derived"])
+            coverage_written = True
+            coverage_drift = [x for x in coverage_drift if x["surface"] != LIVE_WORKER_COVERAGE]
 
-    drift = bool(added or normalized)
+    drift = bool(added or normalized or coverage_drift)
     blocked = bool(fail_closed or defects or stale)
     receipt = {
         "schema": RECEIPT_SCHEMA,
@@ -432,7 +553,13 @@ def materialize(root: Path, *, check: bool, normalize: bool, owner_items: set[tu
         "existing_row_defects": defects,
         "deferred_owner_items": [{"task_id": x["task_id"], "predicate": x["predicate"]} for x in deferred],
         "stale_owner_items": stale,
-        "status": "FAIL_CLOSED" if blocked else ("DRIFT" if (check and drift) else "OK"),
+        "coverage": {
+            "live_worker": live_coverage and live_coverage["derived"],
+            "aggregate_index": aggregate_coverage and aggregate_coverage["derived"],
+            "written": [LIVE_WORKER_COVERAGE] if coverage_written else [],
+        },
+        "coverage_drift": coverage_drift,
+        "status": "FAIL_CLOSED" if blocked else ("DRIFT" if (check and drift) or coverage_drift else "OK"),
     }
     return receipt
 
@@ -443,11 +570,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true", help="write nothing; exit 1 on drift or fail-closed items")
     parser.add_argument("--normalize-shards", action="store_true", help="rewrite cosv_task_vector-only shards whose source passes into the full shape")
     parser.add_argument("--owner-items", help="acknowledged owner-items ratchet file (task_id + predicate)")
+    parser.add_argument("--coverage", action="store_true", help="in write mode, rewrite the stale live worker coverage counters (control/cosv-live-worker-coverage.json) from the effective index")
     args = parser.parse_args(argv)
 
     root = Path(args.root).resolve()
     owner_items = load_owner_items(Path(args.owner_items).resolve() if args.owner_items else None)
-    receipt = materialize(root, check=args.check, normalize=args.normalize_shards, owner_items=owner_items)
+    receipt = materialize(root, check=args.check, normalize=args.normalize_shards, owner_items=owner_items, coverage=args.coverage)
     print(json.dumps(receipt, indent=2, ensure_ascii=False))
     # Write mode always exits 0: the receipt carries fail-closed owner items.
     # Check mode is a gate: anything but a clean OK is a failure.

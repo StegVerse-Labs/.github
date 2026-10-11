@@ -10,6 +10,7 @@
   "coordination_state": "SUPERSEDED",
   "checkout_state": "SUPERSEDED",
   "cosv_task_vector": "40000100100000",
+  "source_state_vector_ref": "control/task-vectors/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
   "source_refs": [
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",

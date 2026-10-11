@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000100000",
+  "source_state_vector_ref": "control/task-vectors/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
   "owners": {
     "credential_and_provider_broker_owner": "StegVerse-Labs/TVC",
     "governance_and_delta_owner": "StegVerse-org/StegVerse-SDK",

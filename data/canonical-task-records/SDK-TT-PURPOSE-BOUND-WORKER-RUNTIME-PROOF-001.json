@@ -14,6 +14,7 @@
     "vector": "71000000111111"
   },
   "cosv_task_vector": "71000000111111",
+  "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
   "source_refs": [
     "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",

@@ -9,6 +9,7 @@
   "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_FULL_COMPLETION_EVIDENCE_ABSENT; CONTINUATION_TRANSFERRED_TO_STEG_BROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_001",
   "cosv_task_vector": "40000100100000",
+  "source_state_vector_ref": "control/task-vectors/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
   "prompt_budget": {
     "goal_prompt_count": "20/20",
     "terminal_prompt_processed": true,

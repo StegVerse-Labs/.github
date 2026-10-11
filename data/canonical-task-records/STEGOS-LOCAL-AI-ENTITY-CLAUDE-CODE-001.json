@@ -9,6 +9,7 @@
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/StegOS",
   "cosv_task_vector": "10100000103000",
+  "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",
   "source_refs": [
     "StegVerse-Labs/StegOS:docs/STEGOS_LOCAL_AI_ENTITY_CLAUDE_CODE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS:data/canonical-task-registration-proposals/STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001.json",

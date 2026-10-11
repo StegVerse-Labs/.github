@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "30001000100000",
+  "source_state_vector_ref": "control/task-vectors/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json",
   "canonical_issue": "StegVerse-Labs/.github#2073",
   "goal_prompt_count": "14/20",
   "source_refs": [
