@@ -73,7 +73,9 @@ jobs:
       # into the ratchet's baseline.
       - name: Organization governance decision run, against temporary repositories
         if: ${{ !cancelled() }}
-        run: python -m pytest -q -p no:cacheprovider tests/test_organization_governance_decision.py
+        run: >-
+          python -m pytest -q -p no:cacheprovider tests/test_organization_governance_decision.py
+          tests/test_organization_governance_decision_authority.py
 
       # from component010-checkout-audit.yml
       - name: Assert actionable non-ALLOW Component-010 source projection
