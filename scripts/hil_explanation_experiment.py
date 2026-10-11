@@ -218,9 +218,44 @@ def validate_trial(trial: dict[str, Any], schema_path: Path = TRIAL_SCHEMA_PATH)
     return trial
 
 
-def summarize(trials: list[dict[str, Any]]) -> dict[str, Any]:
-    """Aggregate per dimension and condition. An empty set is NOT_MEASURED, never zero."""
-    summary: dict[str, Any] = {"experiment_id": EXPERIMENT_ID, "trial_count": len(trials), "state": "NOT_MEASURED" if not trials else "MEASURED_SYNTHETIC" if all(t["evidence_class"] == "SYNTHETIC_TEST" for t in trials) else "MEASURED", "cells": {}}
+def _model_key(trial: dict[str, Any]) -> str | None:
+    subject = trial.get("subject", {})
+    if subject.get("subject_class") != "LLM":
+        return None
+    return str(subject.get("provider", "")) + "/" + str(subject.get("model_id", ""))
+
+
+def _require_ticket_binding(trial: dict[str, Any], tickets_dir: Path | None) -> None:
+    """An ACTUAL_OBSERVATION counts only when its ticket exists, is RECORDED (not withdrawn) and
+    names this exact record by digest. A copied or hand-made record has no such ticket."""
+    if tickets_dir is None:
+        raise _refuse("HIL_SUMMARY_TICKETS_REQUIRED_FOR_ACTUAL_OBSERVATIONS")
+    path = Path(tickets_dir) / (trial["trial_id"] + ".json")
+    ticket = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    if ticket.get("schema") != SUBMISSION_TICKET_SCHEMA or ticket.get("trial_id") != trial["trial_id"] or ticket.get("state") != "RECORDED" or ticket.get("record_digest") != _digest(json.dumps(trial, sort_keys=True)):
+        raise _refuse("HIL_SUMMARY_RECORD_NOT_BOUND_TO_TICKET", trial["trial_id"])
+
+
+def summarize(trials: list[dict[str, Any]], *, tickets_dir: Path | None = None) -> dict[str, Any]:
+    """Aggregate per dimension and condition. An empty set is NOT_MEASURED, never zero.
+
+    Fails closed when synthetic and actual records are mixed (synthetic oracle scores would
+    inflate measurements), when a trial id repeats, or when an ACTUAL_OBSERVATION is not bound to
+    its RECORDED ticket in ``tickets_dir``. For LLM cells, ``cross_model_variance`` is the
+    population variance across models (provider/model id) of each model's mean
+    interpretation_accuracy, and NOT_MEASURED with fewer than two models."""
+    classes = {t["evidence_class"] for t in trials}
+    if len(classes) > 1:
+        raise _refuse("HIL_SUMMARY_MIXES_SYNTHETIC_AND_ACTUAL")
+    seen: set[str] = set()
+    for trial in trials:
+        if trial["trial_id"] in seen:
+            raise _refuse("HIL_SUMMARY_DUPLICATE_TRIAL_ID", trial["trial_id"])
+        seen.add(trial["trial_id"])
+        if trial["evidence_class"] == "ACTUAL_OBSERVATION":
+            _require_ticket_binding(trial, tickets_dir)
+    summary: dict[str, Any] = {"experiment_id": EXPERIMENT_ID, "trial_count": len(trials), "state": "NOT_MEASURED" if not trials else "MEASURED_SYNTHETIC" if classes == {"SYNTHETIC_TEST"} else "MEASURED", "cells": {}}
+    per_model: dict[str, dict[str, list[float]]] = {}
     for trial in trials:
         key = trial["dimension"] + "/" + (trial.get("probe_kind") if trial["condition"] == "PROBE" else trial["condition"])
         cell = summary["cells"].setdefault(key, {"n": 0, "metrics": {}})
@@ -230,10 +265,19 @@ def summarize(trials: list[dict[str, Any]]) -> dict[str, Any]:
                 m = cell["metrics"].setdefault(metric, {"sum": 0.0, "n": 0})
                 m["sum"] += float(value)
                 m["n"] += 1
-    for cell in summary["cells"].values():
+        model = _model_key(trial)
+        accuracy = trial.get("scores", {}).get("interpretation_accuracy")
+        if model is not None and isinstance(accuracy, (int, float)) and not isinstance(accuracy, bool):
+            per_model.setdefault(key, {}).setdefault(model, []).append(float(accuracy))
+    for key, cell in summary["cells"].items():
         cell["metrics"] = {k: round(v["sum"] / v["n"], 4) for k, v in cell["metrics"].items()}
+        models = per_model.get(key, {})
+        if models:
+            means = [sum(v) / len(v) for v in models.values()]
+            mean = sum(means) / len(means)
+            cell["models"] = len(means)
+            cell["cross_model_variance"] = round(sum((m - mean) ** 2 for m in means) / len(means), 4) if len(means) >= 2 else "NOT_MEASURED"
     return summary
-
 
 ANSWER_FORM_CONDITION = {
     "disposition": "one of ALLOW, DENY, FAIL_CLOSED, UNKNOWN",
@@ -628,7 +672,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("stimulus"); s.add_argument("--condition", required=True, choices=sorted(CONDITIONS)); s.add_argument("--fixture", required=True)
     p = sub.add_parser("probe"); p.add_argument("--kind", required=True, choices=PROBE_KINDS); p.add_argument("--fixture")
-    m = sub.add_parser("summarize"); m.add_argument("--trials", required=True, help="directory of trial records")
+    m = sub.add_parser("summarize"); m.add_argument("--trials", required=True, help="directory of trial records"); m.add_argument("--tickets", help="tickets directory; required when the records are ACTUAL_OBSERVATION")
     r = sub.add_parser("record", help="SYNTHETIC_TEST record only (rubric checks, oracle runs); actual observations go through issue then intake")
     r.add_argument("--spec", required=True, help="JSON file: trial_id, dimension, condition, [probe_kind], fixture_id, subject, session_condition, account_exposure, session_ref, prompt_file, response_file, [stimulus_file], answers, evidence_locator, observed_at, [evidence_class], [knowledge_inference]")
     d = sub.add_parser("dry-run", help="write SYNTHETIC_TEST oracle trials for every fixture and condition; proves the pipeline, measures nothing")
@@ -667,7 +711,7 @@ def main(argv: list[str] | None = None) -> int:
             out = dry_run(Path(args.out))
         else:
             trials = [validate_trial(json.loads(p.read_text(encoding="utf-8"))) for p in sorted(Path(args.trials).glob("*.json"))]
-            out = summarize(trials)
+            out = summarize(trials, tickets_dir=Path(args.tickets) if args.tickets else None)
     except (ExperimentError, ExplanationError, OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         print(json.dumps({"experiment_id": EXPERIMENT_ID, "disposition": "FAIL_CLOSED", "reason": str(exc)}))
         return 2
