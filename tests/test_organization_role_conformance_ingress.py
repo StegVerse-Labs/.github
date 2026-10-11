@@ -804,11 +804,14 @@ class OutboxTests(ConformanceIngressCase):
         ]) as receive:
             consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
         self.assertEqual(receive.call_count, 2)
-        self.assertEqual(consumed["state"], "CONSUMED")
+        self.assertEqual(consumed["state"], "CONSUMED_READBACK_REQUIRED")
+        self.assertEqual(consumed["events_requiring_readback"], 1)
+        self.assertTrue(consumed["readback_required"])
         first, second = consumed["results"]
         self.assertEqual(first["disposition"], "FAIL_CLOSED")
         self.assertEqual(first["failed_predicate"], "OUTBOX_EVENT_RECEIVE_FAILED")
         self.assertEqual(first["appended"], "UNKNOWN")
+        self.assertIn("boundary failed after unknown commit point", first["error_detail"])
         self.assertTrue(first["requires_ledger_readback"])
         self.assertEqual(second["disposition"], "DENY")
         self.assertEqual(second["failed_predicate"], "TEST_DENIAL")
