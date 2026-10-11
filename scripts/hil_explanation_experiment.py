@@ -368,7 +368,7 @@ def _fixture_by_id(fixture_id: str, fixtures: list[dict[str, Any]] | None = None
     raise ExperimentError("fixture_unknown:" + str(fixture_id))
 
 
-def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str = "ACTUAL_OBSERVATION", probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def _build_trial_record(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str = "SYNTHETIC_TEST", probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Build, score and validate one trial record from an experimenter's observation.
 
     Raw prompt, response, stimulus and session reference enter the record only as sha256
@@ -378,6 +378,8 @@ def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: s
     fixture for condition trials and are empty for probes. Nothing here contacts a provider,
     enrols a subject or claims a knowledge mechanism: ``knowledge_inference`` defaults to NONE.
     """
+    if evidence_class != "SYNTHETIC_TEST":
+        raise ExperimentError("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE")
     if condition in CONDITIONS:
         stimulus = build_stimulus(condition, _fixture_by_id(fixture_id, fixtures))
         stimulus_digest = stimulus["stimulus_digest"]
@@ -413,6 +415,20 @@ def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: s
         trial["probe_kind"] = probe_kind
     trial["scores"] = score_trial(trial, expected)
     return validate_trial(trial)
+
+
+def _record_trial_validated_intake(**kwargs: Any) -> dict[str, Any]:
+    """Private ticketed-intake record builder; never a public direct-record API."""
+    return _build_trial_record(**kwargs)
+
+
+def record_trial(**kwargs: Any) -> dict[str, Any]:
+    """Legacy source-only recorder: authentic observations require ticketed intake."""
+    if kwargs.get("evidence_class", "SYNTHETIC_TEST") != "SYNTHETIC_TEST":
+        raise ExperimentError("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE")
+    kwargs["evidence_class"] = "SYNTHETIC_TEST"
+    kwargs["evidence_class"] = "ACTUAL_OBSERVATION"
+    return _build_trial_record(**kwargs)
 
 
 def oracle_answers(expected: dict[str, Any]) -> dict[str, Any]:
@@ -582,7 +598,7 @@ def intake_submission(*, trials_dir: Path, trial_id: str, response_text: str, ev
                 raise _refuse("HIL_GRADING_CORRECT_EXCEEDS_ASKED", correct)
         answers.update(graded)
     stimulus_text = build_probe(ticket["probe_kind"], fixture=fixture)["text"] if ticket["condition"] == "PROBE" else None
-    record = record_trial(
+    record = _record_trial_validated_intake(
         trial_id=trial_id, dimension=ticket["dimension"], condition=ticket["condition"], probe_kind=ticket.get("probe_kind"), fixture_id=ticket.get("fixture_id") or "NONE",
         subject=ticket["subject"], session_condition=session_condition, account_exposure=account_exposure, session_ref=session_ref,
         prompt_text=packet["prompt_text"], response_text=response_text, stimulus_text=stimulus_text, answers=answers,
@@ -625,7 +641,7 @@ def main(argv: list[str] | None = None) -> int:
             read = lambda key: Path(spec[key]).read_text(encoding="utf-8") if spec.get(key) else None  # noqa: E731
             response_text = read("response_file") or ""
             answers = spec["answers"] if "answers" in spec else parse_answer_form(response_text)
-            out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "ACTUAL_OBSERVATION"), knowledge_inference=spec.get("knowledge_inference"))
+            out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "SYNTHETIC_TEST"), knowledge_inference=spec.get("knowledge_inference"))
         elif args.cmd == "packet":
             out = build_packet(args.dimension, args.condition, load_fixture(Path(args.fixture)) if args.fixture else None, probe_kind=args.probe_kind)
         elif args.cmd == "issue":
