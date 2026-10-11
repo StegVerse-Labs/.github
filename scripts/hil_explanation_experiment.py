@@ -244,6 +244,10 @@ def summarize(trials: list[dict[str, Any]], *, tickets_dir: Path | None = None) 
     its RECORDED ticket in ``tickets_dir``. For LLM cells, ``cross_model_variance`` is the
     population variance across models (provider/model id) of each model's mean
     interpretation_accuracy, and NOT_MEASURED with fewer than two models."""
+    # Public Python callers must receive the same schema and privacy checks as the CLI.
+    # A hand-made synthetic record must not be able to inject arbitrary scores or fields.
+    for trial in trials:
+        validate_trial(trial)
     classes = {t["evidence_class"] for t in trials}
     if len(classes) > 1:
         raise _refuse("HIL_SUMMARY_MIXES_SYNTHETIC_AND_ACTUAL")

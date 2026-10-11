@@ -700,6 +700,11 @@ class SummaryIntegrity(unittest.TestCase):
             H.summarize(*a, **kw)
         self.assertTrue(str(ctx.exception).startswith(code), str(ctx.exception))
 
+    def test_direct_summary_rejects_invalid_schema_before_aggregation(self):
+        forged = trial(schema="stegverse.invalid-trial/v0")
+        with self.assertRaises(H.ExperimentError):
+            H.summarize([forged])
+
     def test_mixed_synthetic_and_actual_is_refused(self):
         H.dry_run(self.dir / "dry")
         synthetic = [json.loads(p.read_text(encoding="utf-8")) for p in sorted((self.dir / "dry").glob("*.json"))]
