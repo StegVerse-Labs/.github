@@ -12,12 +12,19 @@
     "uvicorn==0.35.0"
   ],
   "read_credential": {
-    "secret": "STEGCORE_READ_TOKEN",
-    "permission": "Contents: read on StegVerse-Labs/StegCore",
-    "owner_decision": true
+    "authority": "TV/TVC",
+    "capability_id": "tvc.private-source-read.v1",
+    "policy": "StegVerse-Labs/TV policies/private_source_read_capability_policy.json",
+    "request": "StegVerse-Labs/TVC requests/private-source-read/SDK-MR-A-STEGCORE-DECISION-AUTHORITY-9882851b.json",
+    "materialization_id": "sdk-mr-a-stegcore-decision-authority-9882851b",
+    "caller_repository": "StegVerse-Labs/.github",
+    "consumer_task": "SDK-MR-A-VALIDATION-CUSTODY-001",
+    "repository_secret_allowed": false,
+    "github_generated_token_allowed": false,
+    "owner_decision": "TV/TVC capabilities (owner direction relayed on StegVerse-org/StegVerse-SDK#465 for StegVerse-Labs/.github#3099)"
   },
   "nonclaims": [
     "the pin is not an installation",
-    "an absent read credential leaves every decision FAIL_CLOSED GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE"
+    "without a verified TV/TVC private-source-read materialization of the pinned commit every decision is FAIL_CLOSED GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE"
   ]
 }
