@@ -500,6 +500,28 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
                   "crossing_record": item.get("organization_record"),
                   "answer": item.get("response_publication")}
                  for item in items if item.get("application_result")]
+    # A successful workflow is not a governance decision. If addressed requests
+    # produced neither a decision nor an authenticated already-published answer,
+    # fail closed instead of reporting COMPLETED with zero decision evidence.
+    addressed = set((materialized or {}).get("addressed_to_organization") or [])
+    answered_keys = {row.get("request", {}).get("key")
+                     for row in (materialized or {}).get("already_answered") or []}
+    decided_keys = {item.get("frame_key") for item in items
+                    if (item.get("application_result") or {}).get("disposition")
+                    in {"ALLOW", "DENY", "FAIL_CLOSED"}}
+    pending = sorted(addressed - answered_keys - decided_keys)
+    if failure is None and pending:
+        failure = binding.fail_closed(
+            "ORGANIZATION_GOVERNANCE_DECISION_MISSING",
+            "addressed_frames_without_decision:" + ",".join(pending)[:500],
+            "repair receiver dispatch or decision publication and rerun with authenticated evidence")
+    # A local decision is not an authenticated return. Require the independently
+    # fetched own-ref answer evidence before reporting a completed decision run.
+    if failure is None and decisions and (readback or {}).get("verified") is not True:
+        failure = binding.fail_closed(
+            "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED",
+            "decision_exists_without_verified_fresh_ref_readback",
+            "publish the decision answer on the authorized own mesh ref and verify by fresh fetch")
     if failure is None and crossing_fail_closed:
         failure = binding.fail_closed(
             "ORGANIZATION_CROSSING_FAIL_CLOSED",

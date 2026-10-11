@@ -291,3 +291,45 @@ def test_lost_race_is_refused_not_forced(tmp_path, monkeypatch):
                          work=run / "work", own_ref=MESH_REF, remote=str(origin))
     assert refused.value.document["failure_code"] == "ORGANIZATION_MESH_PUBLISH_RACE"
 
+
+
+def test_report_fails_closed_when_addressed_frame_has_no_decision(tmp_path):
+    """A workflow must not report completion for an unhandled addressed request."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    request_key = REQUEST_KEY
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [request_key],
+        "already_answered": [],
+        "source": {"tip": "a" * 40},
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": []}))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 1
+    assert report["workflow_disposition"] == "FAIL_CLOSED"
+    failure = report["fail_closed"]
+    assert failure["failure_code"] == "ORGANIZATION_GOVERNANCE_DECISION_MISSING"
+    assert request_key in failure["failed_predicate"]
+    for field in ("disposition", "failure_code", "failed_predicate",
+                  "required_evidence_or_repair", "retry_entrypoint",
+                  "owning_existing_goal", "next_attempt"):
+        assert failure[field]
+    assert report["decisions"] == []
+
+
+def test_report_refuses_local_decision_without_fresh_ref_readback(tmp_path):
+    """A local ALLOW is not proof of an authenticated receiver return."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": [{
+        "frame_key": REQUEST_KEY, "request_packet_id": REQUEST_PACKET_ID,
+        "application_result": {"disposition": "ALLOW"},
+    }]}))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 1
+    assert report["workflow_disposition"] == "FAIL_CLOSED"
+    assert report["fail_closed"]["failure_code"] == "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED"
+    assert report["decisions"][0]["disposition"] == "ALLOW"
