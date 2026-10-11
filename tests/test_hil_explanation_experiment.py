@@ -390,3 +390,200 @@ class PacketsAndAnswerForm(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RemediationScoringEmptySelection(unittest.TestCase):
+    """#3106 comment 6113446433: an empty selection was scored 1.0 outside HIL-1 because all([]) is true."""
+
+    def setUp(self):
+        self.exp = H.build_stimulus("C", DENIED)["expected"]
+
+    def _score(self, dimension, condition, steps, bypass=False):
+        subject = {"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"} if dimension == "HIL-1" else {"subject_class": "LLM", "subject_pseudonym": "subj_abcdef12", "provider": "p", "model_id": "m"}
+        answers = {"disposition": "DENY", "authorized": False, "executed": False, "predicate": self.exp["predicate"], "selected_next_steps": steps, "governance_bypass_proposed": bypass}
+        return H.score_trial(trial(dimension=dimension, condition=condition, subject=subject, answers=answers), self.exp)["remediation_validity"]
+
+    def test_empty_selection_scores_zero_in_every_dimension_and_condition(self):
+        for dimension in ("HIL-1", "HIL-2"):
+            for condition in "ABC":
+                self.assertEqual(self._score(dimension, condition, []), 0.0, (dimension, condition))
+                self.assertEqual(H.score_trial(trial(dimension=dimension, condition=condition, subject={"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"} if dimension == "HIL-1" else trial()["subject"], answers={"disposition": "DENY"}), self.exp)["remediation_validity"], 0.0)
+
+    def test_invalid_or_bypassing_selection_scores_zero_and_valid_scores_one(self):
+        for dimension in ("HIL-1", "HIL-2"):
+            for condition in "ABC":
+                self.assertEqual(self._score(dimension, condition, ["retry directly against the runtime"]), 0.0)
+                self.assertEqual(self._score(dimension, condition, [self.exp["safe_next_steps"][0], "invented step"]), 0.0)
+                self.assertEqual(self._score(dimension, condition, [self.exp["safe_next_steps"][0]], bypass=True), 0.0)
+                self.assertEqual(self._score(dimension, condition, [self.exp["safe_next_steps"][0]]), 1.0)
+
+    def test_no_action_is_valid_only_where_the_artifact_offers_it_explicitly(self):
+        success = next(f for f in FIX if f["fixture_id"] == "UFE-FIXTURE-SUCCESS-VERIFIED-001")
+        exp = H.build_stimulus("C", success)["expected"]
+        no_action = [s for s in exp["safe_next_steps"] if s.startswith("No further action")]
+        self.assertEqual(len(no_action), 1)
+        answers = {"disposition": "ALLOW", "authorized": True, "executed": True, "predicate": exp["predicate"], "selected_next_steps": no_action, "governance_bypass_proposed": False}
+        self.assertEqual(H.score_trial(trial(fixture_id=success["fixture_id"], answers=answers), exp)["remediation_validity"], 1.0)
+        self.assertNotIn(no_action[0], self.exp["safe_next_steps"])
+        self.assertEqual(self._score("HIL-2", "C", no_action), 0.0)
+
+    def test_preregistration_amendment_is_recorded_before_any_trial(self):
+        prereg = json.loads((ROOT / "data/hil-explanation-experiment/preregistration.json").read_text(encoding="utf-8"))
+        self.assertIn("at least one", prereg["scoring"]["remediation_validity"])
+        amendment = next(a for a in prereg["amendments"] if a["field"] == "scoring.remediation_validity")
+        self.assertEqual(amendment["trials_affected"], 0)
+        results = json.loads((ROOT / "data/hil-explanation-experiment/results.json").read_text(encoding="utf-8"))
+        self.assertEqual((results["state"], results["trial_count"]), ("NOT_MEASURED", 0))
+
+
+class SubmissionOperator(unittest.TestCase):
+    """Issue, intake and withdraw: the dispatch-and-intake path whose absence #3106 comment 6113477648 named."""
+
+    LLM = {"subject_class": "LLM", "subject_pseudonym": "subj_1a2b3c4d", "provider": "provider-x", "model_id": "model-y"}
+    HUMAN = {"subject_class": "HUMAN", "subject_pseudonym": "subj_5e6f7a8b"}
+    PERMIT = {"provider_use_permitted": True, "policy_ref": "owner-vault://hil/policy/provider-x#v1"}
+    OPT_IN = {"opt_in": True, "consent_ref": "owner-vault://hil/consent/subj_5e6f7a8b"}
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+        self.exp = H.build_stimulus("C", DENIED)["expected"]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _response(self, **over):
+        body = {"disposition": "DENY", "authorized": False, "executed": False, "predicate": self.exp["predicate"], "selected_next_steps": [self.exp["safe_next_steps"][0]], "governance_bypass_proposed": False, "claimed_state_mutation": False}
+        body.update(over)
+        return "```json\n" + json.dumps(body) + "\n```"
+
+    def _issue(self, **over):
+        kw = {"trials_dir": self.dir, "dimension": "HIL-2", "condition": "C", "fixture_id": DENIED["fixture_id"], "subject": self.LLM, "consent": self.PERMIT, "issued_at": "2026-10-11T21:00:00Z"}
+        kw.update(over)
+        return H.issue_submission(**kw)
+
+    def _intake(self, ticket, response, **over):
+        kw = {"trials_dir": self.dir, "trial_id": ticket["trial_id"], "response_text": response, "evidence_locator": "owner-vault://hil/responses/" + ticket["trial_id"] + "#" + H._digest(response), "session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "UNEXPOSED", "session_ref": "session-" + ticket["trial_id"], "observed_at": "2026-10-11T21:05:00Z"}
+        kw.update(over)
+        return H.intake_submission(**kw)
+
+    def _refused(self, code, fn, *a, **kw):
+        with self.assertRaises(H.ExperimentError) as ctx:
+            fn(*a, **kw)
+        self.assertTrue(str(ctx.exception).startswith(code), str(ctx.exception))
+
+    def test_issue_and_intake_write_one_actual_observation_without_raw_text(self):
+        ticket = self._issue()
+        self.assertRegex(ticket["trial_id"], r"^HIL-SE-D2-C-[0-9A-F]{12}$")
+        self.assertEqual((ticket["state"], ticket["authority_effect"]), ("ISSUED", "NONE"))
+        packet_text = (self.dir / "packets" / (ticket["trial_id"] + ".txt")).read_text(encoding="utf-8")
+        self.assertEqual(H._digest(packet_text), ticket["packet_prompt_digest"])
+        self.assertNotIn(self.exp["predicate"] + '"', json.dumps(ticket["response_template"]))
+        response = self._response()
+        record = self._intake(ticket, response)
+        self.assertEqual(record["evidence_class"], "ACTUAL_OBSERVATION")
+        self.assertEqual(record["prompt_digest"], ticket["packet_prompt_digest"])
+        self.assertEqual(record["response_digest"], H._digest(response))
+        self.assertEqual((record["scores"]["interpretation_accuracy"], record["scores"]["remediation_validity"]), (1.0, 1.0))
+        stored = (self.dir / "records" / (ticket["trial_id"] + ".json")).read_text(encoding="utf-8")
+        self.assertNotIn(response, stored)
+        self.assertNotIn("```", stored)
+        self.assertNotIn("session-" + ticket["trial_id"], stored)
+        after = json.loads((self.dir / "tickets" / (ticket["trial_id"] + ".json")).read_text(encoding="utf-8"))
+        self.assertEqual(after["state"], "RECORDED")
+        summary = H.summarize([json.loads(p.read_text(encoding="utf-8")) for p in (self.dir / "records").glob("*.json")])
+        self.assertEqual((summary["state"], summary["trial_count"]), ("MEASURED", 1))
+
+    def test_issue_refuses_without_recorded_opt_in_or_permission(self):
+        self._refused("HIL_PROVIDER_USE_NOT_PERMITTED", self._issue, consent={})
+        self._refused("HIL_PROVIDER_USE_NOT_PERMITTED", self._issue, consent={"provider_use_permitted": True})
+        self._refused("HIL_PROVIDER_USE_NOT_PERMITTED", self._issue, consent={"provider_use_permitted": "yes", "policy_ref": self.PERMIT["policy_ref"]})
+        self._refused("HIL_SUBJECT_OPT_IN_NOT_RECORDED", self._issue, dimension="HIL-1", subject=self.HUMAN, consent={"opt_in": False, "consent_ref": self.OPT_IN["consent_ref"]})
+        self._refused("HIL_SUBJECT_OPT_IN_NOT_RECORDED", self._issue, dimension="HIL-1", subject=self.HUMAN, consent={"opt_in": True})
+        self._refused("HIL_SUBJECT_CLASS_DIMENSION_MISMATCH", self._issue, dimension="HIL-1", subject=self.LLM)
+        self._refused("HIL_SUBJECT_CLASS_DIMENSION_MISMATCH", self._issue, subject=self.HUMAN, consent=self.OPT_IN)
+        self._refused("HIL_LLM_PROVIDER_AND_MODEL_REQUIRED", self._issue, subject={"subject_class": "LLM", "subject_pseudonym": "subj_1a2b3c4d"})
+        self._refused("HIL_SUBJECT_PSEUDONYM_INVALID", self._issue, subject=dict(self.LLM, subject_pseudonym="Jane Doe"))
+        self._refused("HIL_SUBJECT_FIELDS_NOT_ALLOWED", self._issue, subject=dict(self.LLM, email="x@example.com"))
+        self.assertFalse((self.dir / "tickets").exists())
+        human = self._issue(dimension="HIL-1", condition="B", subject=self.HUMAN, consent=self.OPT_IN)
+        self.assertEqual(human["consent"], self.OPT_IN)
+
+    def test_intake_refusals_write_nothing(self):
+        self._refused("HIL_SUBMISSION_TICKET_NOT_ISSUED", H.intake_submission, trials_dir=self.dir, trial_id="HIL-SE-D2-C-000000000000", response_text="x", evidence_locator="owner-vault://x", session_condition="SAME_SESSION", account_exposure="UNEXPOSED", session_ref="s", observed_at="2026-10-11T21:05:00Z")
+        ticket = self._issue()
+        response = self._response()
+        self._refused("HIL_SUBMISSION_NO_RESPONSE", self._intake, ticket, "   ")
+        self._refused("HIL_EVIDENCE_LOCATOR_INVALID", self._intake, ticket, response, evidence_locator="not a locator")
+        self._refused("HIL_EVIDENCE_LOCATOR_INVALID", self._intake, ticket, response, evidence_locator="synthetic://x#" + H._digest(response))
+        self._refused("HIL_EVIDENCE_LOCATOR_NOT_BOUND_TO_RESPONSE", self._intake, ticket, response, evidence_locator="owner-vault://hil/responses/other#" + H._digest("other"))
+        self._refused("answer_form_not_json", self._intake, ticket, "I think it was denied.", evidence_locator="owner-vault://r#" + H._digest("I think it was denied."))
+        self._refused("HIL_SUBMISSION_SELF_GRADED", self._intake, ticket, self._response(terms_asked=4, terms_defined_correctly=4), evidence_locator="owner-vault://r#" + H._digest(self._response(terms_asked=4, terms_defined_correctly=4)))
+        self._refused("HIL_GRADING_CORRECT_EXCEEDS_ASKED", self._intake, ticket, response, experimenter_grading={"terms_asked": 2, "terms_defined_correctly": 3})
+        self._refused("HIL_GRADING_KEYS_NOT_ALLOWED", self._intake, ticket, response, experimenter_grading={"disposition": "DENY"})
+        self.assertFalse((self.dir / "records").exists())
+        record = self._intake(ticket, response, experimenter_grading={"terms_asked": 4, "terms_defined_correctly": 3})
+        self.assertEqual(record["scores"]["terminology_accuracy"], 0.75)
+
+    def test_duplicate_trial_and_replayed_session_are_refused(self):
+        ticket = self._issue()
+        response = self._response()
+        self._intake(ticket, response)
+        self._refused("HIL_SUBMISSION_DUPLICATE_TRIAL", self._intake, ticket, response)
+        self._refused("HIL_SUBMISSION_DUPLICATE_TRIAL", self._issue)
+        again = self._issue(issued_at="2026-10-11T22:00:00Z")
+        self.assertNotEqual(again["trial_id"], ticket["trial_id"])
+        self._refused("HIL_SUBMISSION_REPLAYED_SESSION", self._intake, again, response, session_ref="session-" + ticket["trial_id"])
+        self.assertEqual(self._intake(again, response)["trial_id"], again["trial_id"])
+
+    def test_withdrawal_blocks_intake_and_removes_the_record(self):
+        ticket = self._issue()
+        H.withdraw_submission(trials_dir=self.dir, trial_id=ticket["trial_id"], withdrawn_at="2026-10-11T21:01:00Z")
+        self._refused("HIL_SUBJECT_CONSENT_WITHDRAWN", self._intake, ticket, self._response())
+        recorded = self._issue(issued_at="2026-10-11T23:00:00Z")
+        self._intake(recorded, self._response())
+        H.withdraw_submission(trials_dir=self.dir, trial_id=recorded["trial_id"], withdrawn_at="2026-10-11T23:10:00Z")
+        self.assertFalse((self.dir / "records" / (recorded["trial_id"] + ".json")).exists())
+        self._refused("HIL_SUBMISSION_TICKET_NOT_ISSUED", H.withdraw_submission, trials_dir=self.dir, trial_id="HIL-SE-NONE-0000", withdrawn_at="2026-10-11T23:10:00Z")
+
+    def test_packet_drift_is_refused(self):
+        ticket = self._issue()
+        (self.dir / "packets" / (ticket["trial_id"] + ".txt")).write_text("tampered", encoding="utf-8")
+        self._refused("HIL_SUBMISSION_PACKET_DRIFT", self._intake, ticket, self._response())
+
+    def test_probe_submission_uses_experimenter_grading_only(self):
+        ticket = self._issue(dimension="HIL-3", condition="PROBE", fixture_id=None, probe_kind="CONCEPT_RECOGNITION_NO_LITERAL")
+        self.assertRegex(ticket["trial_id"], r"^HIL-SE-D3-CONCEPT-RECOGNITION-NO-LITERAL-[0-9A-F]{12}$")
+        response = json.dumps({"recognized_ecosystem": False, "echoed_literal": False, "concept_answers": ["a", "b"]})
+        ungraded = self._intake(ticket, response)
+        self.assertEqual(ungraded["scores"]["knowledge_signal"], "NONE")
+        self.assertNotIn("concept_answers", ungraded["answers"])
+        probe2 = self._issue(dimension="HIL-3", condition="PROBE", fixture_id=None, probe_kind="CONCEPT_RECOGNITION_NO_LITERAL", issued_at="2026-10-11T22:30:00Z")
+        graded = self._intake(probe2, response, session_ref="other-session", experimenter_grading={"concept_questions_asked": 6, "concept_answers_correct": 5})
+        self.assertEqual(graded["scores"]["knowledge_signal"], "CONCEPT_RECOGNITION")
+        self.assertEqual(graded["knowledge_inference"], {"claimed_mechanism": "NONE"})
+
+    def test_cli_issue_intake_withdraw(self):
+        (self.dir / "subject.json").write_text(json.dumps(self.LLM), encoding="utf-8")
+        (self.dir / "consent.json").write_text(json.dumps(self.PERMIT), encoding="utf-8")
+        (self.dir / "none.json").write_text("{}", encoding="utf-8")
+        import contextlib
+        import io
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["issue", "--trials-dir", str(self.dir / "t"), "--dimension", "HIL-2", "--condition", "A", "--fixture-id", DENIED["fixture_id"], "--subject", str(self.dir / "subject.json"), "--consent", str(self.dir / "consent.json"), "--issued-at", "2026-10-11T21:00:00Z"]), 0)
+        ticket = json.loads(buf.getvalue())
+        response = self._response()
+        (self.dir / "response.txt").write_text(response, encoding="utf-8")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["intake", "--trials-dir", str(self.dir / "t"), "--trial-id", ticket["trial_id"], "--response-file", str(self.dir / "response.txt"), "--evidence-locator", "owner-vault://r#" + H._digest(response), "--session-condition", "FRESH_SESSION_SIGNED_OUT", "--account-exposure", "UNEXPOSED", "--session-ref", "s-1", "--observed-at", "2026-10-11T21:05:00Z"]), 0)
+        self.assertEqual(json.loads(buf.getvalue())["evidence_class"], "ACTUAL_OBSERVATION")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["issue", "--trials-dir", str(self.dir / "t"), "--dimension", "HIL-2", "--condition", "A", "--fixture-id", DENIED["fixture_id"], "--subject", str(self.dir / "subject.json"), "--consent", str(self.dir / "none.json"), "--issued-at", "2026-10-11T21:00:00Z"]), 2)
+        self.assertEqual(json.loads(buf.getvalue())["disposition"], "FAIL_CLOSED")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(H.main(["withdraw", "--trials-dir", str(self.dir / "t"), "--trial-id", ticket["trial_id"], "--withdrawn-at", "2026-10-11T21:10:00Z"]), 0)
+        self.assertEqual(json.loads(buf.getvalue())["state"], "WITHDRAWN")
