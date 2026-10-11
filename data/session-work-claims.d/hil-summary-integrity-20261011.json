@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-summary-integrity-20261011",
+  "branch": "claude/release-hil-summary-integrity-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "HIL-SCALED-EXPLANATION-001: summarize refuses mixed synthetic/actual sets, repeated trial ids and actual records not bound to their RECORDED ticket; implements the preregistered cross_model_variance; tests; preregistration and protocol notes; correct the hil-actual-observation-intake-only claim release timestamp. No provider contact, no participant, no measurement.",
   "claimed_paths": [
@@ -22,5 +22,9 @@
     "No task admission, no COSV mutation, no trial execution"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3137",
+  "merged_commit": "e6d4baabc66a1769424d1362c973c8433cd9d1b5",
+  "claim_released_at": "2026-10-11T22:06:38Z",
+  "claim_released_at_basis": "merge time of the implementation PR #3137"
 }
