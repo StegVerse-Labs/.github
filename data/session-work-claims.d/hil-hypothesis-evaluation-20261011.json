@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-hypothesis-evaluation-20261011",
+  "branch": "claude/release-hil-hypothesis-evaluation-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "HIL-SCALED-EXPLANATION-001: descriptive H1-H3 evaluation (C vs A per preregistered metric, direction only, no significance test, minimum trials per cell proposed at 10) over the same validated, ticket-bound trials summarize accepts; tests; preregistration analysis section and amendment; protocol section. No provider contact, no participant, no measurement.",
   "claimed_paths": [
@@ -21,5 +21,9 @@
     "No task admission, no COSV mutation, no trial execution"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3144",
+  "merged_commit": "6e61b3e11178b57d089fdbce6bc0a885558b2070",
+  "claim_released_at": "2026-10-11T23:23:04Z",
+  "claim_released_at_basis": "merge time of the implementation PR #3144"
 }
