@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-task-vector-index-entry/v1",
   "task_id": "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
   "repository": "StegVerse-Labs/.github",
-  "registry_ref": "data/canonical-task-records/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
+  "registry_ref": "data/canonical-task-registry.json",
   "source_state_vector_ref": "control/task-vectors/STEGOS-LOCAL-AI-ENTITY-CHATGPT-001.json",
   "vector": "10100000102000",
   "vector_state": "EMITTED",
