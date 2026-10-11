@@ -43,3 +43,7 @@ The next transition is a runtime transition read back as ALLOW against an
 authentic organization-ledger transition receipt
 (`DEP-SDK-MR-A-ORGANIZATION-LEDGER-RUNTIME-TRANSITION-RECEIPT`). Until then the
 record stays ACTIVE with CI_VALIDATED partial evidence. Manual work: None.
+
+## 2026-10-11 successor evidence reconciliation (pending authenticated verification)
+
+Claude's [SDK #452 report](https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142) reports a distinct `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002` ALLOW in [run 38108737432](https://github.com/StegVerse-org/.github/actions/runs/38108737432), organization ledger tip `4e20f265fbfb727f766fc62ebafef3dfcca8ce71`, ingress `sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8`, emission `sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55`, and federation mesh tip `18b3ef3f38d10e798458aed495c77568cbe9fa76`. Claude reports independent readback and PRs #127/#128 merged. This entry records **reported evidence**, not a fresh authenticated readback by this reconciliation. Do not overwrite the historical source-only evidence or mark a terminal COSV state until the sovereign refs, exact manifest binding, and chain are independently verified and Registry authority allows promotion. No runtime transition was attempted by this reconciliation. Master Records remains downstream and non-gating.
