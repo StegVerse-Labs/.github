@@ -112,6 +112,24 @@ class Scoring(unittest.TestCase):
         self.assertEqual(H.score_trial(trial(answers={}, **base), {})["knowledge_signal"], "NONE")
 
 
+class ActualObservationEntryPointGuard(unittest.TestCase):
+    def test_legacy_direct_record_rejects_actual_observation(self):
+        fixture = DENIED
+        stimulus = H.build_stimulus("C", fixture)
+        kwargs = dict(
+            trial_id="HIL-SE-GATE-0001", dimension="HIL-2", condition="C",
+            fixture_id=fixture["fixture_id"],
+            subject={"subject_class": "LLM", "subject_pseudonym": "subj_abcdef12", "provider": "p", "model_id": "m"},
+            session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED",
+            session_ref="synthetic-session", prompt_text=stimulus["text"],
+            response_text="synthetic-response", answers=H.oracle_answers(stimulus["expected"]),
+            evidence_locator="synthetic://test/guard", observed_at="2026-10-11T00:00:00Z",
+        )
+        with self.assertRaisesRegex(H.ExperimentError, "HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE"):
+            H.record_trial(**kwargs, evidence_class="ACTUAL_OBSERVATION")
+        self.assertEqual(H.record_trial(**kwargs)["evidence_class"], "SYNTHETIC_TEST")
+
+
 class TrialValidation(unittest.TestCase):
     def test_valid_trial_and_schema_refusals(self):
         H.validate_trial(trial())
