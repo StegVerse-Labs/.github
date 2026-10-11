@@ -6,139 +6,1002 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema", "ecosystem_identifier", "explanation_type", "explanation_version", "surface",
-    "outcome", "authorization", "execution", "prose", "terminology", "evidence",
-    "llm_interpretation", "authority", "sanitization", "recognition_probe"
+    "schema",
+    "ecosystem_identifier",
+    "explanation_type",
+    "explanation_version",
+    "surface",
+    "outcome",
+    "authorization",
+    "execution",
+    "prose",
+    "terminology",
+    "evidence",
+    "llm_interpretation",
+    "authority",
+    "sanitization",
+    "recognition_probe"
   ],
   "properties": {
-    "schema": {"const": "stegverse.user-facing-explanation/v1"},
-    "ecosystem_identifier": {"const": "STEGVERSE"},
-    "explanation_type": {"enum": ["OUTCOME_EXPLANATION"]},
-    "explanation_version": {"const": "1.0.0"},
-    "produced_at": {"type": "string", "format": "date-time", "description": "Optional; omitted when the producer has no trustworthy clock. Never an evidence timestamp."},
+    "schema": {
+      "const": "stegverse.user-facing-explanation/v1"
+    },
+    "ecosystem_identifier": {
+      "const": "STEGVERSE"
+    },
+    "explanation_type": {
+      "enum": [
+        "OUTCOME_EXPLANATION"
+      ]
+    },
+    "explanation_version": {
+      "const": "1.0.0"
+    },
+    "produced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional; omitted when the producer has no trustworthy clock. Never an evidence timestamp."
+    },
     "surface": {
-      "type": "object", "additionalProperties": false,
-      "required": ["repository", "surface_id"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "surface_id"
+      ],
       "properties": {
-        "repository": {"type": "string", "minLength": 1},
-        "surface_id": {"type": "string", "minLength": 1},
-        "surface_version": {"type": "string"}
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surface_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surface_version": {
+          "type": "string"
+        }
       }
     },
     "outcome": {
-      "type": "object", "additionalProperties": false,
-      "required": ["disposition", "observation_state", "predicate", "predicates", "outcome_class"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "disposition",
+        "observation_state",
+        "predicate",
+        "predicates",
+        "outcome_class"
+      ],
       "properties": {
-        "disposition": {"enum": ["ALLOW", "DENY", "FAIL_CLOSED", "UNKNOWN"]},
-        "observation_state": {"enum": ["OBSERVED", "NOT_AUTHENTICALLY_OBSERVED", "UNKNOWN"]},
-        "outcome_class": {"enum": ["SUCCESS_VERIFIED", "AUTHORIZED_NOT_VERIFIED", "DENIED", "FAILED_CLOSED", "UNOBSERVED"]},
-        "predicate": {"type": "string", "pattern": "^[A-Za-z0-9_:.-]{1,160}$", "description": "The governing predicate name exactly as the canonical record carries it (case preserved); sanitized but never renamed."},
-        "predicates": {"type": "array", "items": {"type": "string", "pattern": "^[A-Za-z0-9_:.-]{1,160}$"}, "uniqueItems": true},
-        "canonical_record_ref": {"type": ["string", "null"], "description": "Locator of the canonical receipt/record this explains (never its contents)."}
+        "disposition": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "FAIL_CLOSED",
+            "UNKNOWN"
+          ]
+        },
+        "observation_state": {
+          "enum": [
+            "OBSERVED",
+            "NOT_AUTHENTICALLY_OBSERVED",
+            "UNKNOWN"
+          ]
+        },
+        "outcome_class": {
+          "enum": [
+            "SUCCESS_VERIFIED",
+            "AUTHORIZED_NOT_VERIFIED",
+            "DENIED",
+            "FAILED_CLOSED",
+            "UNOBSERVED"
+          ]
+        },
+        "predicate": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_:.-]{1,160}$",
+          "description": "The governing predicate name exactly as the canonical record carries it (case preserved); sanitized but never renamed."
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_:.-]{1,160}$"
+          },
+          "uniqueItems": true
+        },
+        "canonical_record_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Locator of the canonical receipt/record this explains (never its contents)."
+        }
       }
     },
     "authorization": {
-      "type": "object", "additionalProperties": false,
-      "required": ["authorized", "requested_action", "authority_source"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized",
+        "requested_action",
+        "authority_source"
+      ],
       "properties": {
-        "authorized": {"type": "boolean"},
-        "requested_action": {"type": "string", "minLength": 1},
-        "authority_source": {"enum": ["TASK_REGISTRY", "WORKERCOORDINATOR", "INTERLOCK_INTR", "MANIFEST", "TV_TVC", "KV_SKAP_VAULT", "NONE"]}
+        "authorized": {
+          "type": "boolean"
+        },
+        "requested_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_source": {
+          "enum": [
+            "TASK_REGISTRY",
+            "WORKERCOORDINATOR",
+            "INTERLOCK_INTR",
+            "MANIFEST",
+            "TV_TVC",
+            "KV_SKAP_VAULT",
+            "NONE"
+          ]
+        }
       }
     },
     "execution": {
-      "type": "object", "additionalProperties": false,
-      "required": ["executed", "execution_state", "consequence_observation"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executed",
+        "execution_state",
+        "consequence_observation"
+      ],
       "properties": {
-        "executed": {"type": "boolean"},
-        "execution_state": {"enum": ["VERIFIED", "NOT_EXECUTED", "NOT_VERIFIED"]},
-        "consequence_observation": {"enum": ["OBSERVED", "NOT_AUTHENTICALLY_OBSERVED", "UNKNOWN"]}
+        "executed": {
+          "type": "boolean"
+        },
+        "execution_state": {
+          "enum": [
+            "VERIFIED",
+            "NOT_EXECUTED",
+            "NOT_VERIFIED"
+          ]
+        },
+        "consequence_observation": {
+          "enum": [
+            "OBSERVED",
+            "NOT_AUTHENTICALLY_OBSERVED",
+            "UNKNOWN"
+          ]
+        }
       }
     },
     "prose": {
-      "type": "object", "additionalProperties": false,
-      "required": ["what_happened", "why", "outcome_summary", "what_was_authorized", "what_was_executed", "what_evidence_exists", "what_you_can_safely_do_next", "limitations"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "what_happened",
+        "why",
+        "outcome_summary",
+        "what_was_authorized",
+        "what_was_executed",
+        "what_evidence_exists",
+        "what_you_can_safely_do_next",
+        "limitations"
+      ],
       "properties": {
-        "what_happened": {"type": "string", "minLength": 1},
-        "why": {"type": "string", "minLength": 1},
-        "outcome_summary": {"type": "string", "minLength": 1},
-        "what_was_authorized": {"type": "string", "minLength": 1},
-        "what_was_executed": {"type": "string", "minLength": 1},
-        "what_evidence_exists": {"type": "string", "minLength": 1},
-        "what_you_can_safely_do_next": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        "what_happened": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "what_was_authorized": {
+          "type": "string",
+          "minLength": 1
+        },
+        "what_was_executed": {
+          "type": "string",
+          "minLength": 1
+        },
+        "what_evidence_exists": {
+          "type": "string",
+          "minLength": 1
+        },
+        "what_you_can_safely_do_next": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "terminology": {
       "type": "array",
-      "items": {"type": "object", "additionalProperties": false, "required": ["term", "definition"], "properties": {"term": {"type": "string", "minLength": 1}, "definition": {"type": "string", "minLength": 1}}}
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "term",
+          "definition"
+        ],
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1
+          },
+          "definition": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
     },
     "evidence": {
       "type": "array",
-      "items": {"type": "object", "additionalProperties": false, "required": ["kind", "ref", "description", "sanitized"], "properties": {
-        "kind": {"enum": ["RECEIPT_REF", "PROVENANCE_REF", "SOURCE_REF", "PUBLIC_URL", "DIGEST", "NONE"]},
-        "ref": {"type": ["string", "null"]},
-        "description": {"type": "string", "minLength": 1},
-        "sanitized": {"const": true}
-      }}
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "ref",
+          "description",
+          "sanitized"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "RECEIPT_REF",
+              "PROVENANCE_REF",
+              "SOURCE_REF",
+              "PUBLIC_URL",
+              "DIGEST",
+              "NONE"
+            ]
+          },
+          "ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sanitized": {
+            "const": true
+          }
+        }
+      }
     },
     "remediation_draft": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "description": "Optional unsubmitted, non-authorizing manifest draft the person may choose to submit through the governed path. Never an approval, receipt, or decision.",
-      "required": ["submitted", "manifest_admitted", "authority_effect", "non_authorizing", "draft"],
+      "required": [
+        "submitted",
+        "manifest_admitted",
+        "authority_effect",
+        "non_authorizing",
+        "draft"
+      ],
       "additionalProperties": false,
       "properties": {
-        "submitted": {"const": false},
-        "manifest_admitted": {"const": false},
-        "authority_effect": {"const": "NONE_REQUEST_ONLY"},
-        "non_authorizing": {"const": true},
-        "draft": {"type": "object"}
+        "submitted": {
+          "const": false
+        },
+        "manifest_admitted": {
+          "const": false
+        },
+        "authority_effect": {
+          "const": "NONE_REQUEST_ONLY"
+        },
+        "non_authorizing": {
+          "const": true
+        },
+        "draft": {
+          "type": "object"
+        }
       }
     },
     "llm_interpretation": {
-      "type": "object", "additionalProperties": false,
-      "required": ["instructions", "prohibited_assumptions", "self_contained"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instructions",
+        "prohibited_assumptions",
+        "self_contained"
+      ],
       "properties": {
-        "instructions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "prohibited_assumptions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "self_contained": {"const": true}
+        "instructions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prohibited_assumptions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "self_contained": {
+          "const": true
+        }
       }
     },
     "authority": {
-      "type": "object", "additionalProperties": false,
-      "required": ["authority_effect", "explanation_is_non_authoritative", "canonical_record_mutation", "alternate_governance_path"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_effect",
+        "explanation_is_non_authoritative",
+        "canonical_record_mutation",
+        "alternate_governance_path"
+      ],
       "properties": {
-        "authority_effect": {"const": "NONE"},
-        "explanation_is_non_authoritative": {"const": true},
-        "canonical_record_mutation": {"const": false},
-        "alternate_governance_path": {"const": false}
+        "authority_effect": {
+          "const": "NONE"
+        },
+        "explanation_is_non_authoritative": {
+          "const": true
+        },
+        "canonical_record_mutation": {
+          "const": false
+        },
+        "alternate_governance_path": {
+          "const": false
+        }
       }
     },
     "sanitization": {
-      "type": "object", "additionalProperties": false,
-      "required": ["secrets_present", "personal_data_minimized", "invented_evidence"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secrets_present",
+        "personal_data_minimized",
+        "invented_evidence"
+      ],
       "properties": {
-        "secrets_present": {"const": false},
-        "personal_data_minimized": {"const": true},
-        "invented_evidence": {"const": false}
+        "secrets_present": {
+          "const": false
+        },
+        "personal_data_minimized": {
+          "const": true
+        },
+        "invented_evidence": {
+          "const": false
+        }
       }
     },
     "recognition_probe": {
-      "type": "object", "additionalProperties": false,
-      "required": ["literal", "status"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "literal",
+        "status"
+      ],
       "properties": {
-        "literal": {"const": "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1"},
-        "status": {"const": "CANDIDATE_NOT_CANONICAL"},
-        "note": {"type": "string"}
+        "literal": {
+          "const": "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1"
+        },
+        "status": {
+          "const": "CANDIDATE_NOT_CANONICAL"
+        },
+        "note": {
+          "type": "string"
+        }
       }
     }
   },
   "allOf": [
-    {"if": {"properties": {"outcome": {"properties": {"disposition": {"const": "ALLOW"}}}}},
-     "then": {"properties": {"authorization": {"properties": {"authorized": {"const": true}}}}}},
-    {"if": {"properties": {"outcome": {"properties": {"disposition": {"enum": ["DENY", "FAIL_CLOSED", "UNKNOWN"]}}}}},
-     "then": {"properties": {"authorization": {"properties": {"authorized": {"const": false}}}, "execution": {"properties": {"executed": {"const": false}}}}}},
-    {"if": {"properties": {"execution": {"properties": {"executed": {"const": true}}}}},
-     "then": {"properties": {"execution": {"properties": {"execution_state": {"const": "VERIFIED"}, "consequence_observation": {"const": "OBSERVED"}}}}}}
-  ]
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "properties": {
+              "authorized": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "enum": [
+                  "DENY",
+                  "FAIL_CLOSED",
+                  "UNKNOWN"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "properties": {
+              "authorized": {
+                "const": false
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": false
+              },
+              "execution_state": {
+                "const": "NOT_EXECUTED"
+              },
+              "consequence_observation": {
+                "enum": [
+                  "NOT_AUTHENTICALLY_OBSERVED",
+                  "UNKNOWN"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization": {
+            "properties": {
+              "authorized": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              },
+              "observation_state": {
+                "const": "OBSERVED"
+              },
+              "outcome_class": {
+                "const": "SUCCESS_VERIFIED"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "execution_state": {
+                "const": "VERIFIED"
+              },
+              "consequence_observation": {
+                "const": "OBSERVED"
+              }
+            }
+          },
+          "evidence": {
+            "contains": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "RECEIPT_REF",
+                    "PROVENANCE_REF",
+                    "DIGEST"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "observation_state": {
+                "enum": [
+                  "NOT_AUTHENTICALLY_OBSERVED",
+                  "UNKNOWN"
+                ]
+              },
+              "outcome_class": {
+                "enum": [
+                  "AUTHORIZED_NOT_VERIFIED",
+                  "DENIED",
+                  "FAILED_CLOSED",
+                  "UNOBSERVED"
+                ]
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "execution_state": {
+                "enum": [
+                  "NOT_EXECUTED",
+                  "NOT_VERIFIED"
+                ]
+              },
+              "consequence_observation": {
+                "enum": [
+                  "NOT_AUTHENTICALLY_OBSERVED",
+                  "UNKNOWN"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "AUTHORIZED_NOT_VERIFIED"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "execution_state": {
+                "const": "NOT_VERIFIED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "DENY"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "DENIED"
+              },
+              "observation_state": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "FAIL_CLOSED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "FAILED_CLOSED"
+              },
+              "observation_state": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "UNOBSERVED"
+              },
+              "observation_state": {
+                "const": "UNKNOWN"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "execution_state": {
+                "const": "VERIFIED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "OBSERVED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "observation_state": {
+                "const": "OBSERVED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "SUCCESS_VERIFIED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "observation_state": {
+                "const": "NOT_AUTHENTICALLY_OBSERVED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "consequence_observation": {
+                "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "observation_state": {
+                "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "DENIED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "DENY"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "FAILED_CLOSED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "FAIL_CLOSED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "UNOBSERVED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "outcome_class": {
+                "const": "AUTHORIZED_NOT_VERIFIED"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Cross-field rules (allOf): disposition, authorization.authorized, execution.executed/execution_state/consequence_observation, outcome.observation_state/outcome_class and receipt-class evidence are mutually constrained so that a schema-only consumer cannot accept an artifact that reads as verified, observed or successful unless executed=true under ALLOW with receipt-class evidence, and cannot accept a non-ALLOW artifact that claims any execution. Repair for .github#3106 review finding EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY."
 }

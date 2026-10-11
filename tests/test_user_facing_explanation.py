@@ -157,5 +157,55 @@ class Refusals(unittest.TestCase):
             tmp.unlink(missing_ok=True)
 
 
+class SchemaOnlyConsumers(unittest.TestCase):
+    """Repair for .github#3106 review finding EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY: a consumer that
+    validates only against the JSON Schema (no builder) must still be unable to accept an artifact whose
+    fields contradict each other. Each mutation below is checked with the dependency-free schema_check
+    and, when the jsonschema package is importable, with Draft202012Validator as well."""
+
+    def mutations(self):
+        den = build("02-denied")
+        suc = build("01-success-verified")
+        fc = build("03-fail-closed")
+        unk = build("05-unobserved-runtime")
+        def m(base, fn):
+            x = json.loads(json.dumps(base)); fn(x); return x
+        return {
+            "deny_verified_observed": m(den, lambda x: (x["execution"].__setitem__("execution_state", "VERIFIED"), x["execution"].__setitem__("consequence_observation", "OBSERVED"))),
+            "deny_success_class": m(den, lambda x: x["outcome"].__setitem__("outcome_class", "SUCCESS_VERIFIED")),
+            "deny_observation_observed": m(den, lambda x: x["outcome"].__setitem__("observation_state", "OBSERVED")),
+            "deny_authorized_true": m(den, lambda x: x["authorization"].__setitem__("authorized", True)),
+            "deny_execution_not_verified": m(den, lambda x: x["execution"].__setitem__("execution_state", "NOT_VERIFIED")),
+            "deny_class_failed_closed": m(den, lambda x: x["outcome"].__setitem__("outcome_class", "FAILED_CLOSED")),
+            "fail_closed_observation_unknown": m(fc, lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
+            "unknown_class_denied": m(unk, lambda x: x["outcome"].__setitem__("outcome_class", "DENIED")),
+            "success_without_receipt_evidence": m(suc, lambda x: x.__setitem__("evidence", [{"kind": "SOURCE_REF", "ref": "x", "description": "d", "sanitized": True}])),
+            "success_executed_false": m(suc, lambda x: x["execution"].__setitem__("executed", False)),
+            "allow_not_executed_success_class": m(suc, lambda x: (x["execution"].__setitem__("executed", False), x["execution"].__setitem__("execution_state", "NOT_VERIFIED"), x["execution"].__setitem__("consequence_observation", "UNKNOWN"), x["outcome"].__setitem__("observation_state", "UNKNOWN"))),
+            "allow_not_executed_state_not_executed": m(build("04-missing-evidence"), lambda x: x["execution"].__setitem__("execution_state", "NOT_EXECUTED")),
+            "observation_state_mismatch": m(build("04-missing-evidence"), lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
+        }
+
+    def test_schema_check_rejects_contradictory_artifacts(self):
+        for name, inst in self.mutations().items():
+            with self.assertRaises(U.ExplanationError, msg=name):
+                U.schema_check(inst, SCHEMA)
+
+    def test_jsonschema_rejects_contradictory_artifacts(self):
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:  # pragma: no cover - CI installs pytest only
+            self.skipTest("jsonschema not installed")
+        validator = Draft202012Validator(SCHEMA)
+        for name, inst in self.mutations().items():
+            self.assertFalse(validator.is_valid(inst), name)
+        for p in FIXTURES:
+            self.assertTrue(validator.is_valid(build(p.stem)), p.stem)
+
+    def test_schema_check_and_jsonschema_agree_on_fixtures(self):
+        for p in FIXTURES:
+            U.schema_check(build(p.stem), SCHEMA)
+
+
 if __name__ == "__main__":
     unittest.main()

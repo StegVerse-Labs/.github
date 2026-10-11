@@ -324,6 +324,8 @@ def schema_check(value: Any, schema: dict[str, Any], path: str = "$") -> None:
         if "items" in schema:
             for index, item in enumerate(value):
                 schema_check(item, schema["items"], path + "[" + str(index) + "]")
+        if "contains" in schema:
+            _require(any(_matches(item, schema["contains"]) for item in value), "schema:contains:" + path)
     if isinstance(value, dict):
         for key in schema.get("required", []):
             _require(key in value, "schema:required:" + path + "." + key)
