@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "hil-actual-observation-intake-only-20261011",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "ACTIVE_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
+  "branch": "claude/hil-actual-observation-intake-only",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "HIL-SCALED-EXPLANATION-001: close HIL_LEGACY_RECORD_PATH_BYPASSES_TICKETED_INTAKE and HIL_ACTUAL_OBSERVATION_DIRECT_RECORD_ENTRYPOINT_UNGUARDED (#3106 comments 6113728583, 6113736702): ACTUAL_OBSERVATION only via ticketed intake; record --spec and record_trial synthetic-only; locator bound to evidence class in validate_trial and the trial schema; tests; protocol, preregistration and README notes; correct the hil-submission-operator claim release timestamp. No provider contact, no participant, no measurement.",
+  "claimed_paths": [
+    "scripts/hil_explanation_experiment.py",
+    "schemas/hil-explanation-trial-record.v1.schema.json",
+    "tests/test_hil_explanation_experiment.py",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "data/hil-explanation-experiment/preregistration.json",
+    "README.md",
+    "data/session-work-claims.d/hil-submission-operator-20261011.json",
+    "data/session-work-claims.d/hil-actual-observation-intake-only-20261011.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "No task admission, no COSV mutation, no trial execution",
+    "README edit limited to the HIL paragraph"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}

@@ -22,7 +22,7 @@ def trial(**over):
         "fixture_id": DENIED["fixture_id"], "subject": {"subject_class": "LLM", "subject_pseudonym": "subj_abcdef12", "provider": "p", "model_id": "m"},
         "session": {"session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "UNEXPOSED", "session_ref_digest": D64},
         "stimulus_digest": D64, "prompt_digest": D64, "response_digest": D64, "observed_at": "2026-10-11T00:00:00Z", "evidence_class": "SYNTHETIC_TEST",
-        "answers": {}, "scores": {"scored": False}, "evidence_locator": "fixture://trials/0001", "privacy": {"opt_in": True, "pii_present": False, "raw_text_stored_in_repository": False},
+        "answers": {}, "scores": {"scored": False}, "evidence_locator": "synthetic://trials/0001", "privacy": {"opt_in": True, "pii_present": False, "raw_text_stored_in_repository": False},
         "knowledge_inference": {"claimed_mechanism": "NONE"},
     }
     base.update(over)
@@ -220,7 +220,7 @@ class TrialRecorder(unittest.TestCase):
 
     def record(self, **over):
         stim = H.build_stimulus("C", DENIED)
-        kw = dict(trial_id="HIL-SE-R-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=self.SUBJECT, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="session-ref-secret", prompt_text=stim["text"], response_text="the response text", answers=H.oracle_answers(stim["expected"]), evidence_locator="owner://trials/0001", observed_at="2026-10-11T18:50:00Z")
+        kw = dict(trial_id="HIL-SE-R-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=self.SUBJECT, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="session-ref-secret", prompt_text=stim["text"], response_text="the response text", answers=H.oracle_answers(stim["expected"]), evidence_locator="synthetic://trials/0001", observed_at="2026-10-11T18:50:00Z")
         kw.update(over)
         return H.record_trial(**kw)
 
@@ -237,7 +237,7 @@ class TrialRecorder(unittest.TestCase):
             self.assertNotIn(raw, flat)
         self.assertEqual(rec["scores"]["interpretation_accuracy"], 1.0)
         self.assertEqual(rec["knowledge_inference"], {"claimed_mechanism": "NONE"})
-        self.assertEqual(rec["evidence_class"], "ACTUAL_OBSERVATION")
+        self.assertEqual(rec["evidence_class"], "SYNTHETIC_TEST")
         self.assertFalse(rec["privacy"]["raw_text_stored_in_repository"])
 
     def test_recorder_refusals(self):
@@ -292,7 +292,7 @@ class TrialRecorder(unittest.TestCase):
             d = Path(d)
             (d / "prompt.txt").write_text(stim["text"], encoding="utf-8")
             (d / "response.txt").write_text("response", encoding="utf-8")
-            spec = {"trial_id": "HIL-SE-CLI-0001", "dimension": "HIL-2", "condition": "A", "fixture_id": DENIED["fixture_id"], "subject": self.SUBJECT, "session_condition": "FRESH_SESSION_SIGNED_IN_ORDINARY", "account_exposure": "UNEXPOSED", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "answers": H.oracle_answers(stim["expected"]), "evidence_locator": "owner://x", "observed_at": "2026-10-11T18:50:00Z"}
+            spec = {"trial_id": "HIL-SE-CLI-0001", "dimension": "HIL-2", "condition": "A", "fixture_id": DENIED["fixture_id"], "subject": self.SUBJECT, "session_condition": "FRESH_SESSION_SIGNED_IN_ORDINARY", "account_exposure": "UNEXPOSED", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "answers": H.oracle_answers(stim["expected"]), "evidence_locator": "synthetic://x", "observed_at": "2026-10-11T18:50:00Z"}
             (d / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
             out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
@@ -352,7 +352,7 @@ class PacketsAndAnswerForm(unittest.TestCase):
         for text in (json.dumps(body), "Answer:\n```json\n" + json.dumps(body) + "\n```\nDone.", "```\n" + json.dumps(body) + "\n```"):
             answers = H.parse_answer_form(text)
             self.assertEqual(answers, body)
-        rec = H.record_trial(trial_id="HIL-SE-PK-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject={"subject_class": "LLM", "subject_pseudonym": "subj_00000001", "provider": "p", "model_id": "m"}, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="s", prompt_text=H.build_packet("HIL-2", "C", DENIED)["prompt_text"], response_text=json.dumps(body), answers=H.parse_answer_form(json.dumps(body)), evidence_locator="owner://x", observed_at="2026-10-11T20:00:00Z")
+        rec = H.record_trial(trial_id="HIL-SE-PK-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject={"subject_class": "LLM", "subject_pseudonym": "subj_00000001", "provider": "p", "model_id": "m"}, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="s", prompt_text=H.build_packet("HIL-2", "C", DENIED)["prompt_text"], response_text=json.dumps(body), answers=H.parse_answer_form(json.dumps(body)), evidence_locator="synthetic://x", observed_at="2026-10-11T20:00:00Z")
         self.assertEqual(rec["scores"]["interpretation_accuracy"], 1.0)
         probe = H.parse_answer_form(json.dumps({"recognized_ecosystem": False, "echoed_literal": False, "concept_answers": ["I do not know"]}))
         self.assertEqual(probe, {"recognized_ecosystem": False, "echoed_literal": False})
@@ -375,7 +375,7 @@ class PacketsAndAnswerForm(unittest.TestCase):
             d = Path(d)
             (d / "prompt.txt").write_text(packet["prompt_text"], encoding="utf-8")
             (d / "response.txt").write_text("```json\n" + json.dumps({"disposition": "DENY", "authorized": False, "executed": False, "predicate": exp["predicate"], "selected_next_steps": [exp["safe_next_steps"][1]], "governance_bypass_proposed": False, "claimed_state_mutation": False, "governed_task_completed": True, "unauthorized_action_attempted": False, "resolution_time_seconds": 75.5, "attempt_count": 1}) + "\n```", encoding="utf-8")
-            spec = {"trial_id": "HIL-SE-CLI-0002", "dimension": "HIL-1", "condition": "B", "fixture_id": DENIED["fixture_id"], "subject": {"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}, "session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "NOT_APPLICABLE", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "evidence_locator": "owner://x", "observed_at": "2026-10-11T20:00:00Z"}
+            spec = {"trial_id": "HIL-SE-CLI-0002", "dimension": "HIL-1", "condition": "B", "fixture_id": DENIED["fixture_id"], "subject": {"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}, "session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "NOT_APPLICABLE", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "evidence_locator": "synthetic://x", "observed_at": "2026-10-11T20:00:00Z"}
             (d / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
             out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
@@ -587,3 +587,87 @@ class SubmissionOperator(unittest.TestCase):
         with contextlib.redirect_stdout(buf):
             self.assertEqual(H.main(["withdraw", "--trials-dir", str(self.dir / "t"), "--trial-id", ticket["trial_id"], "--withdrawn-at", "2026-10-11T21:10:00Z"]), 0)
         self.assertEqual(json.loads(buf.getvalue())["state"], "WITHDRAWN")
+
+
+
+class ActualObservationOnlyThroughTicketedIntake(unittest.TestCase):
+    """#3106 comments 6113728583 / 6113736702: record --spec and record_trial produced ACTUAL_OBSERVATION
+    records without a ticket, recorded consent or a response-bound locator."""
+
+    SUBJECT = {"subject_class": "LLM", "subject_pseudonym": "subj_1a2b3c4d", "provider": "provider-x", "model_id": "model-y"}
+    PERMIT = {"provider_use_permitted": True, "policy_ref": "owner-vault://hil/policy/provider-x#v1"}
+
+    def kw(self, **over):
+        stim = H.build_stimulus("C", DENIED)
+        kw = dict(trial_id="HIL-SE-BYPASS-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=self.SUBJECT, session_condition="SAME_SESSION", account_exposure="UNEXPOSED", session_ref="s", prompt_text=stim["text"], response_text="r", answers=H.oracle_answers(stim["expected"]), evidence_locator="synthetic://x", observed_at="2026-10-11T21:00:00Z")
+        kw.update(over)
+        return kw
+
+    def refused(self, code, fn, **kw):
+        with self.assertRaises(H.ExperimentError) as ctx:
+            fn(**kw)
+        self.assertTrue(str(ctx.exception).startswith(code), str(ctx.exception))
+
+    def test_record_trial_defaults_to_synthetic_and_refuses_actual(self):
+        self.assertEqual(H.record_trial(**self.kw())["evidence_class"], "SYNTHETIC_TEST")
+        digest = H._digest("r")
+        self.refused("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", H.record_trial, **self.kw(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://r#" + digest))
+        self.refused("HIL_SYNTHETIC_RECORD_REQUIRES_SYNTHETIC_LOCATOR", H.record_trial, **self.kw(evidence_locator="owner-vault://r#" + digest))
+
+    def test_internal_builder_requires_a_matching_issued_ticket_with_participation(self):
+        digest = H._digest("r")
+        actual = dict(self.kw(evidence_locator="owner-vault://r#" + digest), evidence_class="ACTUAL_OBSERVATION")
+        self.refused("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", H._build_trial_record, **actual)
+        with tempfile.TemporaryDirectory() as d:
+            ticket = H.issue_submission(trials_dir=Path(d), dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=self.SUBJECT, consent=self.PERMIT, issued_at="2026-10-11T21:00:00Z")
+            packet = (Path(d) / "packets" / (ticket["trial_id"] + ".txt")).read_text(encoding="utf-8")
+            base = dict(actual, trial_id=ticket["trial_id"], prompt_text=packet)
+            self.refused("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", H._build_trial_record, **dict(base, ticket=dict(ticket, state="RECORDED")))
+            self.refused("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", H._build_trial_record, **dict(base, ticket=dict(ticket, trial_id="HIL-SE-OTHER-0001")))
+            self.refused("HIL_ACTUAL_OBSERVATION_DOES_NOT_MATCH_TICKET", H._build_trial_record, **dict(base, ticket=ticket, prompt_text="another prompt"))
+            self.refused("HIL_ACTUAL_OBSERVATION_DOES_NOT_MATCH_TICKET", H._build_trial_record, **dict(base, ticket=ticket, subject=dict(self.SUBJECT, model_id="other")))
+            self.refused("HIL_PROVIDER_USE_NOT_PERMITTED", H._build_trial_record, **dict(base, ticket=dict(ticket, consent={})))
+            self.refused("HIL_EVIDENCE_CLASS_INVALID", H._build_trial_record, **dict(self.kw(), evidence_class="SYNTHETIC_TEST", ticket=ticket))
+            self.assertEqual(H._build_trial_record(**dict(base, ticket=ticket))["evidence_class"], "ACTUAL_OBSERVATION")
+
+    def test_validation_binds_locator_to_evidence_class(self):
+        good = trial()
+        H.validate_trial(good)
+        for name, inst in {
+            "synthetic_with_owner_locator": trial(evidence_locator="owner-vault://x"),
+            "actual_with_synthetic_locator": trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="synthetic://x#" + D64),
+            "actual_without_digest": trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x"),
+            "actual_with_other_digest": trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x#sha256:" + "1" * 64),
+        }.items():
+            with self.assertRaises(H.ExperimentError, msg=name):
+                H.validate_trial(inst)
+        H.validate_trial(trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x#" + D64))
+        schema = json.loads((ROOT / "schemas" / "hil-explanation-trial-record.v1.schema.json").read_text(encoding="utf-8"))
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:  # pragma: no cover
+            return
+        v = Draft202012Validator(schema)
+        self.assertTrue(v.is_valid(good))
+        for inst in (trial(evidence_locator="owner-vault://x"), trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="synthetic://x#" + D64), trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x")):
+            self.assertFalse(v.is_valid(inst))
+
+    def test_cli_record_spec_cannot_create_actual_observation(self):
+        import subprocess, sys as _sys
+        stim = H.build_stimulus("A", DENIED)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "prompt.txt").write_text(stim["text"], encoding="utf-8")
+            (d / "response.txt").write_text("response", encoding="utf-8")
+            spec = {"trial_id": "HIL-SE-CLI-0009", "dimension": "HIL-2", "condition": "A", "fixture_id": DENIED["fixture_id"], "subject": self.SUBJECT, "session_condition": "SAME_SESSION", "account_exposure": "UNEXPOSED", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "answers": H.oracle_answers(stim["expected"]), "evidence_locator": "owner-vault://r#" + H._digest("response"), "observed_at": "2026-10-11T21:00:00Z"}
+            for extra, code in (({}, "HIL_SYNTHETIC_RECORD_REQUIRES_SYNTHETIC_LOCATOR"), ({"evidence_class": "ACTUAL_OBSERVATION"}, "HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE")):
+                (d / "spec.json").write_text(json.dumps(dict(spec, **extra)), encoding="utf-8")
+                out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+                self.assertEqual(out.returncode, 2, out.stdout)
+                result = json.loads(out.stdout)
+                self.assertEqual(result["disposition"], "FAIL_CLOSED")
+                self.assertTrue(result["reason"].startswith(code), result["reason"])
+            (d / "spec.json").write_text(json.dumps(dict(spec, evidence_locator="synthetic://x")), encoding="utf-8")
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 0, out.stdout)
+            self.assertEqual(json.loads(out.stdout)["evidence_class"], "SYNTHETIC_TEST")

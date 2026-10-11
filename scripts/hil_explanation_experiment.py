@@ -213,6 +213,8 @@ def validate_trial(trial: dict[str, Any], schema_path: Path = TRIAL_SCHEMA_PATH)
             raise ExperimentError("cross_session_training_claim_requires_holdout_recognition")
     if trial["condition"] == "PROBE" and trial.get("probe_kind") not in ("FIRST_EXPOSURE",) and trial["dimension"] != "HIL-3":
         raise ExperimentError("probe_trials_belong_to_hil_3")
+    if trial["evidence_class"] == "ACTUAL_OBSERVATION" and trial["response_digest"] not in trial["evidence_locator"]:
+        raise ExperimentError("HIL_EVIDENCE_LOCATOR_NOT_BOUND_TO_RESPONSE")
     return trial
 
 
@@ -368,16 +370,37 @@ def _fixture_by_id(fixture_id: str, fixtures: list[dict[str, Any]] | None = None
     raise ExperimentError("fixture_unknown:" + str(fixture_id))
 
 
-def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str = "ACTUAL_OBSERVATION", probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    """Build, score and validate one trial record from an experimenter's observation.
+def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str = "SYNTHETIC_TEST", probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Build, score and validate one SYNTHETIC_TEST trial record (rubric checks, oracle runs, tests).
 
-    Raw prompt, response, stimulus and session reference enter the record only as sha256
-    digests; the texts themselves are never returned or written by this function, and the
-    caller keeps them at ``evidence_locator`` under their own custody. Scoring is the
-    deterministic rubric over the structured ``answers``; expected answers come from the
-    fixture for condition trials and are empty for probes. Nothing here contacts a provider,
-    enrols a subject or claims a knowledge mechanism: ``knowledge_inference`` defaults to NONE.
+    An ACTUAL_OBSERVATION is never produced here: it exists only through ticketed intake
+    (``issue_submission`` then ``intake_submission``), which checks the issued ticket, the recorded
+    opt-in or provider-use permission, packet consistency, replay and the response-bound evidence
+    locator. Asking this function for ACTUAL_OBSERVATION fails closed. Synthetic records carry a
+    ``synthetic://`` evidence locator so they can never be mistaken for observations.
     """
+    if evidence_class != "SYNTHETIC_TEST":
+        raise _refuse("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", str(evidence_class))
+    if not isinstance(evidence_locator, str) or not evidence_locator.startswith("synthetic://"):
+        raise _refuse("HIL_SYNTHETIC_RECORD_REQUIRES_SYNTHETIC_LOCATOR")
+    return _build_trial_record(trial_id=trial_id, dimension=dimension, condition=condition, fixture_id=fixture_id, subject=subject, session_condition=session_condition, account_exposure=account_exposure, session_ref=session_ref, prompt_text=prompt_text, response_text=response_text, answers=answers, evidence_locator=evidence_locator, observed_at=observed_at, evidence_class="SYNTHETIC_TEST", probe_kind=probe_kind, knowledge_inference=knowledge_inference, stimulus_text=stimulus_text, fixtures=fixtures)
+
+
+def _build_trial_record(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str, probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None, ticket: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Shared builder. Raw prompt, response, stimulus and session reference enter the record only as
+    sha256 digests; the texts are never returned or written, and the caller keeps them at
+    ``evidence_locator`` under their own custody. Scoring is the deterministic rubric over the
+    structured ``answers``. Nothing here contacts a provider, enrols a subject or claims a
+    knowledge mechanism: ``knowledge_inference`` defaults to NONE. An ACTUAL_OBSERVATION requires
+    the issued ticket it answers, whose recorded participation is re-checked here."""
+    if evidence_class == "ACTUAL_OBSERVATION":
+        if not isinstance(ticket, dict) or ticket.get("schema") != SUBMISSION_TICKET_SCHEMA or ticket.get("state") != "ISSUED" or ticket.get("trial_id") != trial_id:
+            raise _refuse("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE", trial_id)
+        if ticket.get("subject") != subject or ticket.get("dimension") != dimension or ticket.get("condition") != condition or ticket.get("packet_prompt_digest") != _digest(prompt_text):
+            raise _refuse("HIL_ACTUAL_OBSERVATION_DOES_NOT_MATCH_TICKET", trial_id)
+        _check_participation(dimension, subject, ticket.get("consent"))
+    elif evidence_class != "SYNTHETIC_TEST" or ticket is not None:
+        raise _refuse("HIL_EVIDENCE_CLASS_INVALID", str(evidence_class))
     if condition in CONDITIONS:
         stimulus = build_stimulus(condition, _fixture_by_id(fixture_id, fixtures))
         stimulus_digest = stimulus["stimulus_digest"]
@@ -466,6 +489,23 @@ def _write_json(path: Path, value: dict[str, Any]) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _check_participation(dimension: str, subject: dict[str, Any], consent: Any) -> None:
+    """HUMAN subjects (HIL-1) need a recorded opt-in; LLM subjects (HIL-2, HIL-3) need provider and
+    model id and a recorded provider-use permission. Both reference owner-custody locators."""
+    if subject.get("subject_class") != _DIMENSION_SUBJECT.get(dimension):
+        raise _refuse("HIL_SUBJECT_CLASS_DIMENSION_MISMATCH", str(dimension) + ":" + str(subject.get("subject_class")))
+    if not isinstance(consent, dict):
+        raise _refuse("HIL_CONSENT_RECORD_MISSING")
+    if subject["subject_class"] == "HUMAN":
+        if consent.get("opt_in") is not True or not _LOCATOR_RE.match(str(consent.get("consent_ref", ""))):
+            raise _refuse("HIL_SUBJECT_OPT_IN_NOT_RECORDED")
+    else:
+        if not subject.get("provider") or not subject.get("model_id"):
+            raise _refuse("HIL_LLM_PROVIDER_AND_MODEL_REQUIRED")
+        if consent.get("provider_use_permitted") is not True or not _LOCATOR_RE.match(str(consent.get("policy_ref", ""))):
+            raise _refuse("HIL_PROVIDER_USE_NOT_PERMITTED")
+
+
 def issue_submission(*, trials_dir: Path, dimension: str, condition: str, subject: dict[str, Any], consent: dict[str, Any], issued_at: str, fixture_id: str | None = None, probe_kind: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Issue one trial: a unique trial id, the exact packet text to hand out, and a ticket binding
     the packet digest to the subject and to the owner-held consent (HUMAN) or provider-use
@@ -480,18 +520,7 @@ def issue_submission(*, trials_dir: Path, dimension: str, condition: str, subjec
         raise _refuse("HIL_SUBJECT_PSEUDONYM_INVALID")
     if set(subject) - {"subject_class", "subject_pseudonym", "provider", "model_id"}:
         raise _refuse("HIL_SUBJECT_FIELDS_NOT_ALLOWED", ",".join(sorted(set(subject) - {"subject_class", "subject_pseudonym", "provider", "model_id"})))
-    if subject.get("subject_class") != _DIMENSION_SUBJECT[dimension]:
-        raise _refuse("HIL_SUBJECT_CLASS_DIMENSION_MISMATCH", dimension + ":" + str(subject.get("subject_class")))
-    if not isinstance(consent, dict):
-        raise _refuse("HIL_CONSENT_RECORD_MISSING")
-    if subject["subject_class"] == "HUMAN":
-        if consent.get("opt_in") is not True or not _LOCATOR_RE.match(str(consent.get("consent_ref", ""))):
-            raise _refuse("HIL_SUBJECT_OPT_IN_NOT_RECORDED")
-    else:
-        if not subject.get("provider") or not subject.get("model_id"):
-            raise _refuse("HIL_LLM_PROVIDER_AND_MODEL_REQUIRED")
-        if consent.get("provider_use_permitted") is not True or not _LOCATOR_RE.match(str(consent.get("policy_ref", ""))):
-            raise _refuse("HIL_PROVIDER_USE_NOT_PERMITTED")
+    _check_participation(dimension, subject, consent)
     if not isinstance(issued_at, str) or len(issued_at) < 20:
         raise _refuse("HIL_SUBMISSION_ISSUED_AT_REQUIRED")
     fixture = _fixture_by_id(fixture_id, fixtures) if fixture_id else None
@@ -582,8 +611,8 @@ def intake_submission(*, trials_dir: Path, trial_id: str, response_text: str, ev
                 raise _refuse("HIL_GRADING_CORRECT_EXCEEDS_ASKED", correct)
         answers.update(graded)
     stimulus_text = build_probe(ticket["probe_kind"], fixture=fixture)["text"] if ticket["condition"] == "PROBE" else None
-    record = record_trial(
-        trial_id=trial_id, dimension=ticket["dimension"], condition=ticket["condition"], probe_kind=ticket.get("probe_kind"), fixture_id=ticket.get("fixture_id") or "NONE",
+    record = _build_trial_record(
+        ticket=ticket, trial_id=trial_id, dimension=ticket["dimension"], condition=ticket["condition"], probe_kind=ticket.get("probe_kind"), fixture_id=ticket.get("fixture_id") or "NONE",
         subject=ticket["subject"], session_condition=session_condition, account_exposure=account_exposure, session_ref=session_ref,
         prompt_text=packet["prompt_text"], response_text=response_text, stimulus_text=stimulus_text, answers=answers,
         evidence_locator=evidence_locator, observed_at=observed_at, evidence_class="ACTUAL_OBSERVATION", knowledge_inference=knowledge_inference, fixtures=fixtures,
@@ -600,7 +629,7 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("stimulus"); s.add_argument("--condition", required=True, choices=sorted(CONDITIONS)); s.add_argument("--fixture", required=True)
     p = sub.add_parser("probe"); p.add_argument("--kind", required=True, choices=PROBE_KINDS); p.add_argument("--fixture")
     m = sub.add_parser("summarize"); m.add_argument("--trials", required=True, help="directory of trial records")
-    r = sub.add_parser("record", help="turn one observation into a validated trial record (texts are hashed, never copied)")
+    r = sub.add_parser("record", help="SYNTHETIC_TEST record only (rubric checks, oracle runs); actual observations go through issue then intake")
     r.add_argument("--spec", required=True, help="JSON file: trial_id, dimension, condition, [probe_kind], fixture_id, subject, session_condition, account_exposure, session_ref, prompt_file, response_file, [stimulus_file], answers, evidence_locator, observed_at, [evidence_class], [knowledge_inference]")
     d = sub.add_parser("dry-run", help="write SYNTHETIC_TEST oracle trials for every fixture and condition; proves the pipeline, measures nothing")
     d.add_argument("--out", required=True)
@@ -625,7 +654,7 @@ def main(argv: list[str] | None = None) -> int:
             read = lambda key: Path(spec[key]).read_text(encoding="utf-8") if spec.get(key) else None  # noqa: E731
             response_text = read("response_file") or ""
             answers = spec["answers"] if "answers" in spec else parse_answer_form(response_text)
-            out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "ACTUAL_OBSERVATION"), knowledge_inference=spec.get("knowledge_inference"))
+            out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "SYNTHETIC_TEST"), knowledge_inference=spec.get("knowledge_inference"))
         elif args.cmd == "packet":
             out = build_packet(args.dimension, args.condition, load_fixture(Path(args.fixture)) if args.fixture else None, probe_kind=args.probe_kind)
         elif args.cmd == "issue":

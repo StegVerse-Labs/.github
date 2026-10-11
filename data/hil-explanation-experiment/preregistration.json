@@ -52,11 +52,13 @@
     "issue_requires": "HUMAN (HIL-1): opt_in true with an owner-custody consent_ref; LLM (HIL-2, HIL-3): provider_use_permitted true with an owner-custody policy_ref, plus provider and model id",
     "intake_requires": "an issued, unwithdrawn, not-yet-recorded ticket; a non-empty response; an evidence locator naming the stored response by its sha256 digest; no replay of the same session on the same packet; an unchanged packet; a parseable answer form that does not grade itself",
     "graded_counts": "terms, concept, holdout and control-marker counts come only from the experimenter's grading, never from the subject's response",
+    "single_actual_path": "ACTUAL_OBSERVATION records exist only through issue then intake; record --spec and record_trial produce SYNTHETIC_TEST records with synthetic:// locators and refuse ACTUAL_OBSERVATION",
     "authority_effect": "NONE: the operator contacts no provider and enrols no person; the experimenter delivers packets through the permitted channel"
   },
   "amendments": [
     {"date": "2026-10-11", "field": "scoring.remediation_validity", "change": "an empty selection of next steps scores 0 in every dimension (previously vacuously 1 outside HIL-1)", "source": "StegVerse-Labs/.github#3106 comment 6113446433", "trials_affected": 0},
-    {"date": "2026-10-11", "field": "submission", "change": "ticketed issue/intake/withdraw operator with recorded opt-in or provider-use permission", "source": "StegVerse-Labs/.github#3106 comment 6113477648", "trials_affected": 0}
+    {"date": "2026-10-11", "field": "submission", "change": "ticketed issue/intake/withdraw operator with recorded opt-in or provider-use permission", "source": "StegVerse-Labs/.github#3106 comment 6113477648", "trials_affected": 0},
+    {"date": "2026-10-11", "field": "submission.single_actual_path", "change": "ACTUAL_OBSERVATION only through ticketed intake; record --spec and record_trial are SYNTHETIC_TEST-only with synthetic:// locators; validate_trial and the trial schema bind the locator to the evidence class and the response digest", "source": "StegVerse-Labs/.github#3106 comments 6113728583 and 6113736702", "trials_affected": 0}
   ],
   "measured_results": "data/hil-explanation-experiment/results.json"
 }
