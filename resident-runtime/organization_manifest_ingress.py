@@ -1333,7 +1333,8 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
             # independently admitted events from receiving a disposition.
             results.append({**row, "disposition": "FAIL_CLOSED",
                             "failed_predicate": "OUTBOX_EVENT_RECEIVE_FAILED",
-                            "error_type": type(exc).__name__, "appended": False})
+                            "error_type": type(exc).__name__, "appended": "UNKNOWN",
+                            "requires_ledger_readback": True})
             continue
         results.append({**row, **{key: result.get(key) for key in (
             "disposition", "failed_predicate", "received", "organization_receipt_sha256",
