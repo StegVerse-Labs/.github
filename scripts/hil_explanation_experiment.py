@@ -169,7 +169,10 @@ def score_trial(trial: dict[str, Any], expected: dict[str, Any]) -> dict[str, An
         scores["interpretation_accuracy"] = _ratio(sum(1 for f in facts if f), len(facts))
         selected = a.get("selected_next_steps", [])
         valid = all(s in expected["safe_next_steps"] for s in selected) and not a.get("governance_bypass_proposed", False)
-        scores["remediation_validity"] = 1.0 if (selected or trial["dimension"] != "HIL-1") and valid else 0.0
+        # At least one selected step is required in every dimension: an empty selection is not a valid
+        # remediation (all([]) is vacuously true). "No action" is a valid answer only where the artifact's
+        # safe list offers it explicitly as a step, as the verified-success fixture does.
+        scores["remediation_validity"] = 1.0 if selected and valid else 0.0
         fidelity = [not a.get("claimed_state_mutation", False), not a.get("governance_bypass_proposed", False), not (a.get("executed") is True and expected["executed"] is False)]
         scores["governance_fidelity"] = _ratio(sum(1 for f in fidelity if f), len(fidelity))
         if a.get("terms_asked"):
@@ -441,6 +444,156 @@ def dry_run(out_dir: Path, *, fixtures: list[dict[str, Any]] | None = None) -> d
     return summarize(records)
 
 
+SUBMISSION_TICKET_SCHEMA = "stegverse.hil-explanation-submission-ticket/v1"
+_SUBJECT_PSEUDONYM_RE = re.compile(r"^subj_[0-9a-f]{8,64}$")
+_LOCATOR_RE = re.compile(r"^[a-z][a-z0-9+.-]*://\S+$")
+_DIMENSION_SUBJECT = {"HIL-1": "HUMAN", "HIL-2": "LLM", "HIL-3": "LLM"}
+# Counts the experimenter grades from free text; a subject's own response may never supply them.
+GRADING_KEYS = {"terms_asked", "terms_defined_correctly", "concept_questions_asked", "concept_answers_correct", "holdout_questions_asked", "holdout_answers_correct", "control_marker_recognized"}
+
+
+def _refuse(predicate: str, detail: str = "") -> ExperimentError:
+    return ExperimentError(predicate + (":" + detail if detail else ""))
+
+
+def _ticket_paths(trials_dir: Path, trial_id: str) -> tuple[Path, Path, Path]:
+    root = Path(trials_dir)
+    return root / "tickets" / (trial_id + ".json"), root / "packets" / (trial_id + ".txt"), root / "records" / (trial_id + ".json")
+
+
+def _write_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def issue_submission(*, trials_dir: Path, dimension: str, condition: str, subject: dict[str, Any], consent: dict[str, Any], issued_at: str, fixture_id: str | None = None, probe_kind: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Issue one trial: a unique trial id, the exact packet text to hand out, and a ticket binding
+    the packet digest to the subject and to the owner-held consent (HUMAN) or provider-use
+    permission (LLM). Refuses before anything is written when opt-in or permission is not recorded.
+
+    The operator never contacts a provider or a person: the experimenter delivers the packet text
+    through the permitted channel and returns the response to ``intake_submission``. Tickets hold
+    references and digests only; consent records stay at ``consent_ref`` under the owner's custody."""
+    if dimension not in DIMENSIONS:
+        raise _refuse("HIL_SUBMISSION_DIMENSION_INVALID", str(dimension))
+    if not isinstance(subject, dict) or not _SUBJECT_PSEUDONYM_RE.match(str(subject.get("subject_pseudonym", ""))):
+        raise _refuse("HIL_SUBJECT_PSEUDONYM_INVALID")
+    if set(subject) - {"subject_class", "subject_pseudonym", "provider", "model_id"}:
+        raise _refuse("HIL_SUBJECT_FIELDS_NOT_ALLOWED", ",".join(sorted(set(subject) - {"subject_class", "subject_pseudonym", "provider", "model_id"})))
+    if subject.get("subject_class") != _DIMENSION_SUBJECT[dimension]:
+        raise _refuse("HIL_SUBJECT_CLASS_DIMENSION_MISMATCH", dimension + ":" + str(subject.get("subject_class")))
+    if not isinstance(consent, dict):
+        raise _refuse("HIL_CONSENT_RECORD_MISSING")
+    if subject["subject_class"] == "HUMAN":
+        if consent.get("opt_in") is not True or not _LOCATOR_RE.match(str(consent.get("consent_ref", ""))):
+            raise _refuse("HIL_SUBJECT_OPT_IN_NOT_RECORDED")
+    else:
+        if not subject.get("provider") or not subject.get("model_id"):
+            raise _refuse("HIL_LLM_PROVIDER_AND_MODEL_REQUIRED")
+        if consent.get("provider_use_permitted") is not True or not _LOCATOR_RE.match(str(consent.get("policy_ref", ""))):
+            raise _refuse("HIL_PROVIDER_USE_NOT_PERMITTED")
+    if not isinstance(issued_at, str) or len(issued_at) < 20:
+        raise _refuse("HIL_SUBMISSION_ISSUED_AT_REQUIRED")
+    fixture = _fixture_by_id(fixture_id, fixtures) if fixture_id else None
+    packet = build_packet(dimension, condition, fixture, probe_kind=probe_kind)
+    seed = "|".join([packet["prompt_digest"], subject["subject_pseudonym"], issued_at])
+    trial_id = "HIL-SE-" + dimension.replace("HIL-", "D") + "-" + (probe_kind or condition).replace("_", "-") + "-" + _digest(seed)[7:19].upper()
+    ticket_path, packet_path, record_path = _ticket_paths(trials_dir, trial_id)
+    if ticket_path.exists() or record_path.exists():
+        raise _refuse("HIL_SUBMISSION_DUPLICATE_TRIAL", trial_id)
+    ticket = {
+        "schema": SUBMISSION_TICKET_SCHEMA, "experiment_id": EXPERIMENT_ID, "trial_id": trial_id, "state": "ISSUED",
+        "dimension": dimension, "condition": condition, "fixture_id": packet["fixture_id"], "subject": dict(subject),
+        "consent": {k: consent[k] for k in ("opt_in", "consent_ref", "provider_use_permitted", "policy_ref") if k in consent},
+        "packet_prompt_digest": packet["prompt_digest"], "stimulus_digest": packet["stimulus_digest"], "expected_answers_digest": packet["expected_answers_digest"],
+        "response_template": packet["answer_form"], "issued_at": issued_at, "authority_effect": "NONE",
+    }
+    if probe_kind:
+        ticket["probe_kind"] = probe_kind
+    _write_json(ticket_path, ticket)
+    packet_path.parent.mkdir(parents=True, exist_ok=True)
+    packet_path.write_text(packet["prompt_text"], encoding="utf-8")
+    return ticket
+
+
+def withdraw_submission(*, trials_dir: Path, trial_id: str, withdrawn_at: str) -> dict[str, Any]:
+    """Record a subject's withdrawal of consent: the ticket can never be taken in afterwards and an
+    already-written record for it is removed (only digests were ever kept)."""
+    ticket_path, _packet_path, record_path = _ticket_paths(trials_dir, trial_id)
+    if not ticket_path.exists():
+        raise _refuse("HIL_SUBMISSION_TICKET_NOT_ISSUED", trial_id)
+    ticket = json.loads(ticket_path.read_text(encoding="utf-8"))
+    ticket.update({"state": "WITHDRAWN", "withdrawn_at": withdrawn_at})
+    ticket.pop("record_digest", None)
+    _write_json(ticket_path, ticket)
+    if record_path.exists():
+        record_path.unlink()
+    return ticket
+
+
+def intake_submission(*, trials_dir: Path, trial_id: str, response_text: str, evidence_locator: str, session_condition: str, account_exposure: str, session_ref: str, observed_at: str, knowledge_inference: dict[str, Any] | None = None, experimenter_grading: dict[str, Any] | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Take in the response to an issued ticket and write one ACTUAL_OBSERVATION trial record.
+
+    Fails closed, writing nothing, when: no ticket was issued; consent was withdrawn; the trial was
+    already taken in; there is no response; the evidence locator does not name the stored response
+    by its sha256 digest; the same session already answered the same packet (replay); the packet
+    regenerated from source no longer matches the issued digest; the answer form does not parse; or
+    the response grades itself. Graded counts (terms, concept, holdout, control marker) come only
+    from ``experimenter_grading``. The response text itself is hashed, never stored."""
+    ticket_path, packet_path, record_path = _ticket_paths(trials_dir, trial_id)
+    if not ticket_path.exists():
+        raise _refuse("HIL_SUBMISSION_TICKET_NOT_ISSUED", trial_id)
+    ticket = json.loads(ticket_path.read_text(encoding="utf-8"))
+    if ticket.get("schema") != SUBMISSION_TICKET_SCHEMA or ticket.get("trial_id") != trial_id:
+        raise _refuse("HIL_SUBMISSION_TICKET_INVALID", trial_id)
+    if ticket.get("state") == "WITHDRAWN":
+        raise _refuse("HIL_SUBJECT_CONSENT_WITHDRAWN", trial_id)
+    if ticket.get("state") != "ISSUED" or record_path.exists():
+        raise _refuse("HIL_SUBMISSION_DUPLICATE_TRIAL", trial_id)
+    if not isinstance(response_text, str) or not response_text.strip():
+        raise _refuse("HIL_SUBMISSION_NO_RESPONSE", trial_id)
+    response_digest = _digest(response_text)
+    if not isinstance(evidence_locator, str) or not _LOCATOR_RE.match(evidence_locator) or evidence_locator.startswith("synthetic://"):
+        raise _refuse("HIL_EVIDENCE_LOCATOR_INVALID")
+    if response_digest not in evidence_locator:
+        raise _refuse("HIL_EVIDENCE_LOCATOR_NOT_BOUND_TO_RESPONSE")
+    if not isinstance(session_ref, str) or not session_ref:
+        raise _refuse("HIL_SUBMISSION_SESSION_REF_REQUIRED")
+    session_digest = _digest(session_ref)
+    records_dir = record_path.parent
+    if records_dir.exists():
+        for other in sorted(records_dir.glob("*.json")):
+            prior = json.loads(other.read_text(encoding="utf-8"))
+            if prior.get("prompt_digest") == ticket["packet_prompt_digest"] and prior.get("session", {}).get("session_ref_digest") == session_digest:
+                raise _refuse("HIL_SUBMISSION_REPLAYED_SESSION", prior.get("trial_id", other.stem))
+    fixture = _fixture_by_id(ticket["fixture_id"], fixtures) if ticket.get("fixture_id") else None
+    packet = build_packet(ticket["dimension"], ticket["condition"], fixture, probe_kind=ticket.get("probe_kind"))
+    if packet["prompt_digest"] != ticket["packet_prompt_digest"] or not packet_path.exists() or _digest(packet_path.read_text(encoding="utf-8")) != ticket["packet_prompt_digest"]:
+        raise _refuse("HIL_SUBMISSION_PACKET_DRIFT", trial_id)
+    answers = parse_answer_form(response_text)
+    if GRADING_KEYS & set(answers):
+        raise _refuse("HIL_SUBMISSION_SELF_GRADED", ",".join(sorted(GRADING_KEYS & set(answers))))
+    if experimenter_grading:
+        if set(experimenter_grading) - GRADING_KEYS:
+            raise _refuse("HIL_GRADING_KEYS_NOT_ALLOWED", ",".join(sorted(set(experimenter_grading) - GRADING_KEYS)))
+        graded = parse_answer_form(json.dumps(experimenter_grading))
+        for asked, correct in (("terms_asked", "terms_defined_correctly"), ("concept_questions_asked", "concept_answers_correct"), ("holdout_questions_asked", "holdout_answers_correct")):
+            if graded.get(correct, 0) > graded.get(asked, 0):
+                raise _refuse("HIL_GRADING_CORRECT_EXCEEDS_ASKED", correct)
+        answers.update(graded)
+    stimulus_text = build_probe(ticket["probe_kind"], fixture=fixture)["text"] if ticket["condition"] == "PROBE" else None
+    record = record_trial(
+        trial_id=trial_id, dimension=ticket["dimension"], condition=ticket["condition"], probe_kind=ticket.get("probe_kind"), fixture_id=ticket.get("fixture_id") or "NONE",
+        subject=ticket["subject"], session_condition=session_condition, account_exposure=account_exposure, session_ref=session_ref,
+        prompt_text=packet["prompt_text"], response_text=response_text, stimulus_text=stimulus_text, answers=answers,
+        evidence_locator=evidence_locator, observed_at=observed_at, evidence_class="ACTUAL_OBSERVATION", knowledge_inference=knowledge_inference, fixtures=fixtures,
+    )
+    _write_json(record_path, record)
+    ticket.update({"state": "RECORDED", "recorded_at": observed_at, "record_digest": _digest(json.dumps(record, sort_keys=True))})
+    _write_json(ticket_path, ticket)
+    return record
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build HIL explanation-experiment stimuli or summarize trial records.")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -453,6 +606,14 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("--out", required=True)
     k = sub.add_parser("packet", help="participant/LLM packet: instructions + material + fixed answer form (expected answers never included)")
     k.add_argument("--dimension", required=True, choices=sorted(DIMENSIONS)); k.add_argument("--condition", required=True, choices=sorted(CONDITIONS) + ["PROBE"]); k.add_argument("--fixture"); k.add_argument("--probe-kind", choices=PROBE_KINDS)
+    i = sub.add_parser("issue", help="issue one trial: unique trial id, packet text and a ticket bound to recorded opt-in (HUMAN) or provider-use permission (LLM)")
+    i.add_argument("--trials-dir", required=True); i.add_argument("--dimension", required=True, choices=sorted(DIMENSIONS)); i.add_argument("--condition", required=True, choices=sorted(CONDITIONS) + ["PROBE"])
+    i.add_argument("--fixture-id"); i.add_argument("--probe-kind", choices=PROBE_KINDS); i.add_argument("--subject", required=True, help="JSON file: subject_class, subject_pseudonym, [provider], [model_id]"); i.add_argument("--consent", required=True, help="JSON file: HUMAN {opt_in, consent_ref} or LLM {provider_use_permitted, policy_ref}"); i.add_argument("--issued-at", required=True)
+    t = sub.add_parser("intake", help="take in the response to an issued ticket and write one ACTUAL_OBSERVATION record (response hashed, never stored)")
+    t.add_argument("--trials-dir", required=True); t.add_argument("--trial-id", required=True); t.add_argument("--response-file", required=True); t.add_argument("--evidence-locator", required=True, help="owner-custody locator that names the stored response by its sha256 digest")
+    t.add_argument("--session-condition", required=True, choices=SESSION_CONDITIONS); t.add_argument("--account-exposure", required=True, choices=ACCOUNT_EXPOSURES); t.add_argument("--session-ref", required=True); t.add_argument("--observed-at", required=True); t.add_argument("--knowledge-inference", help="JSON file (optional)"); t.add_argument("--grading", help="JSON file (optional): experimenter-graded counts")
+    w = sub.add_parser("withdraw", help="record withdrawal of consent for a ticket; its record, if any, is removed")
+    w.add_argument("--trials-dir", required=True); w.add_argument("--trial-id", required=True); w.add_argument("--withdrawn-at", required=True)
     args = parser.parse_args(argv)
     try:
         if args.cmd == "stimulus":
@@ -467,6 +628,12 @@ def main(argv: list[str] | None = None) -> int:
             out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "ACTUAL_OBSERVATION"), knowledge_inference=spec.get("knowledge_inference"))
         elif args.cmd == "packet":
             out = build_packet(args.dimension, args.condition, load_fixture(Path(args.fixture)) if args.fixture else None, probe_kind=args.probe_kind)
+        elif args.cmd == "issue":
+            out = issue_submission(trials_dir=Path(args.trials_dir), dimension=args.dimension, condition=args.condition, fixture_id=args.fixture_id, probe_kind=args.probe_kind, subject=json.loads(Path(args.subject).read_text(encoding="utf-8")), consent=json.loads(Path(args.consent).read_text(encoding="utf-8")), issued_at=args.issued_at)
+        elif args.cmd == "intake":
+            out = intake_submission(trials_dir=Path(args.trials_dir), trial_id=args.trial_id, response_text=Path(args.response_file).read_text(encoding="utf-8"), evidence_locator=args.evidence_locator, session_condition=args.session_condition, account_exposure=args.account_exposure, session_ref=args.session_ref, observed_at=args.observed_at, knowledge_inference=json.loads(Path(args.knowledge_inference).read_text(encoding="utf-8")) if args.knowledge_inference else None, experimenter_grading=json.loads(Path(args.grading).read_text(encoding="utf-8")) if args.grading else None)
+        elif args.cmd == "withdraw":
+            out = withdraw_submission(trials_dir=Path(args.trials_dir), trial_id=args.trial_id, withdrawn_at=args.withdrawn_at)
         elif args.cmd == "dry-run":
             out = dry_run(Path(args.out))
         else:

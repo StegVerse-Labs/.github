@@ -51,7 +51,9 @@ Mechanism discrimination: a trial may claim NONE, PUBLIC_RETRIEVAL, ACCOUNT_MEMO
 
 Each observation is one `stegverse.hil-explanation-trial-record/v1` record: experiment and trial ids, dimension, condition or probe kind, fixture id, subject class with pseudonym (and provider / model id for LLMs), session condition and account exposure, sha256 digests of stimulus, prompt and response, timestamp, evidence class, structured answers, deterministic scores, an evidence locator the owner controls, privacy flags (opt-in true, no PII, no raw text in the repository) and the knowledge-inference claim. Raw prompts and responses live only at the evidence locator.
 
-The trial-record schema's `allOf` enforces the same discipline for schema-only consumers: a CROSS_SESSION_TRAINING claim is accepted only in a fresh, unexposed HIL-3 probe trial with HOLDOUT_RECOGNITION and discrimination evidence; probe trials carry a probe kind and no interpretation metrics; condition trials carry no probe kind and no knowledge metrics; each knowledge signal requires the answers that justify it; HIL-1 subjects are HUMAN and HIL-2/HIL-3 subjects are LLM with provider and model id (`tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers`).\n\n`summarize` aggregates validated records per dimension and condition; an empty set is NOT_MEASURED, never zero. `data/hil-explanation-experiment/results.json` is replaced only by that summary.
+The trial-record schema's `allOf` enforces the same discipline for schema-only consumers: a CROSS_SESSION_TRAINING claim is accepted only in a fresh, unexposed HIL-3 probe trial with HOLDOUT_RECOGNITION and discrimination evidence; probe trials carry a probe kind and no interpretation metrics; condition trials carry no probe kind and no knowledge metrics; each knowledge signal requires the answers that justify it; HIL-1 subjects are HUMAN and HIL-2/HIL-3 subjects are LLM with provider and model id (`tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers`).
+
+`summarize` aggregates validated records per dimension and condition; an empty set is NOT_MEASURED, never zero. `data/hil-explanation-experiment/results.json` is replaced only by that summary.
 
 ## Experimenter tooling
 
@@ -63,6 +65,20 @@ The trial-record schema's `allOf` enforces the same discipline for schema-only c
 
 `scripts/hil_explanation_experiment.py dry-run --out <dir>` writes SYNTHETIC_TEST oracle trials for every fixture under A, B and C plus one FIRST_EXPOSURE probe, then prints `summarize` over them. The oracle answers straight from the artifact's expected answers, so the dry run proves that recorder, rubric, schema and summary agree end to end (every synthetic cell scores 1.0). Its output is `MEASURED_SYNTHETIC`, is written only to the directory given, and must never replace `data/hil-explanation-experiment/results.json`.
 
+### Submission operator: issue, intake, withdraw
+
+`issue --trials-dir <dir> --dimension ... --condition ... [--fixture-id ...] [--probe-kind ...] --subject <json> --consent <json> --issued-at <ts>` refuses before writing anything unless participation is recorded. A HUMAN subject (HIL-1 only) needs `opt_in: true` and a `consent_ref` locator. An LLM subject (HIL-2 and HIL-3 only) needs provider and model id, `provider_use_permitted: true` and a `policy_ref` locator. On success it writes a unique trial id, the exact packet text under `packets/`, and a ticket under `tickets/` that binds the packet digest, subject pseudonym and consent references. The experimenter hands the packet text to the participant or the permitted LLM interface; the operator itself contacts no provider and enrols no one.
+
+`intake --trials-dir <dir> --trial-id ... --response-file ... --evidence-locator ... --session-condition ... --account-exposure ... --session-ref ... --observed-at ... [--grading <json>]` writes one ACTUAL_OBSERVATION record under `records/` and marks the ticket RECORDED. It fails closed, writing nothing, on: no issued ticket (HIL_SUBMISSION_TICKET_NOT_ISSUED); withdrawn consent (HIL_SUBJECT_CONSENT_WITHDRAWN); a trial already taken in (HIL_SUBMISSION_DUPLICATE_TRIAL); an empty response (HIL_SUBMISSION_NO_RESPONSE); a locator that is malformed, synthetic, or does not name the stored response by its sha256 digest (HIL_EVIDENCE_LOCATOR_INVALID, HIL_EVIDENCE_LOCATOR_NOT_BOUND_TO_RESPONSE); the same session answering the same packet again (HIL_SUBMISSION_REPLAYED_SESSION); a packet that no longer matches its issued digest (HIL_SUBMISSION_PACKET_DRIFT); an unparseable answer form; or a response that supplies its own graded counts (HIL_SUBMISSION_SELF_GRADED). Graded counts come only from `--grading`, and never exceed the number asked. The response text is hashed, never stored.
+
+`withdraw --trials-dir <dir> --trial-id ... --withdrawn-at <ts>` records a withdrawal: the ticket can never be taken in afterwards and an existing record for it is removed.
+
+Keep the trials directory under the owner's custody, outside this repository. `summarize --trials <dir>/records` aggregates the records; `data/hil-explanation-experiment/results.json` is replaced only by that summary, by the owner, after real trials.
+
+### Amendments before any trial
+
+Two amendments were made on 2026-10-11 with zero trials recorded, both listed in the preregistration's `amendments`. First, `remediation_validity` requires at least one selected step in every dimension; an empty selection had scored 1.0 outside HIL-1 because an empty `all()` is true (#3106 comment 6113446433). Second, the submission operator above was added (#3106 comment 6113477648).
+
 ## Current state
 
-Planned measurements: all of the above. Actual observations: none. No trial has been run, no human participant enrolled, no LLM provider queried, and no knowledge claim of any kind is made.
+Planned measurements: all of the above. Actual observations: none. No trial has been run, no human participant enrolled, no LLM provider queried, and no knowledge claim of any kind is made. The submission operator exists in source, but no ticket has been issued: the first trial still needs canonical trial admission, a recorded opt-in or provider-use permission, and an experimenter who delivers the packet.
