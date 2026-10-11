@@ -342,3 +342,25 @@ hold:
 
 Destination liveness is still not a transition predicate, and Master Records
 stays downstream and never gates.
+
+### Update: request repair done, decision run can install StegCore
+
+- 2026-10-11: the request repair is done. `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-004`
+  was received under the post-migration StegVerse-SDK `e8a34b6d`, so the custody
+  authority is ORGANIZATION_LEDGER (StegVerse-org/.github#132, merge `cdfeb65e`).
+  Dispatch run
+  [38161387492](https://github.com/StegVerse-org/.github/actions/runs/38161387492)
+  recorded ingress `sha256:ddef834bbf3bee2b94802cbdfe0c2443c6bf8ced4b6972283059673aa6ab142e`
+  (bound to canonical manifest `df97554a8eec79a2110885100082f0ab201011fda87d07e75b9ca8551428ba98`)
+  and emission `sha256:7470eaf423cb427612c702c04f5ceacf78bfb7407a0520e82d2997116befa001`.
+  Packet `pkt-c64077b3c2b188aabf176050` is durably queued on StegVerse-org
+  `refs/stegverse/federation-mesh` `91b88b5fa6bb338756d203046f38d493f9bda91c`;
+  the ledger is `refs/stegverse/organization-ledger`
+  `ff5ae361769e8f3451c425edac5ef3953fd04cca`. Both refs were read back by an
+  anonymous fetch. StegVerse-Labs/.github#3114 (merge `aeb3fad4`) makes
+  `organization-governance-decision.yml` install StegCore at the pinned `9882851b`
+  when the `STEGCORE_READ_TOKEN` secret exists. The only remaining owner action
+  for `GOVERNANCE_DECISION_IS_A_DECISION` is that secret (read-only, Contents:
+  read on StegVerse-Labs/StegCore). Step 1 of the next transition is done; the
+  decision workflow answers the queued `-004` frame. Both owner-held blockers and
+  `end_to_end_complete` false are kept. Registry generation 310; COSV unchanged.

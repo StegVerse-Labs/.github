@@ -2158,7 +2158,8 @@ StegVerse-Labs decided the request FAIL_CLOSED
 `GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE`, and StegVerse-org returned and closed
 it (closure receipt `sha256:ccefb8f8…`, ledger tip `3e16f5a8`). Two owner-held
 predicates block END_TO_END: `GOVERNANCE_DECISION_IS_A_DECISION` (StegCore read
-access for the Labs decision run, plus the request repair `-003`) and
+access for the Labs decision run; the request repair is done as `-004`, queued
+for the Labs decision, so only the `STEGCORE_READ_TOKEN` secret remains) and
 `DECIDING_ORGANIZATION_RECEIPT_READ_BACK` (an owner-designated propagate_target
 for the Labs organization ledger). END_TO_END is not claimed, and Master Records
 never gates. See

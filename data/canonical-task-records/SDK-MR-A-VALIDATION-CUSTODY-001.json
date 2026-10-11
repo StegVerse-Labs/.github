@@ -160,14 +160,17 @@
       "owner_decision_recorded": false,
       "failure_code": "END_TO_END_REQUIRES_A_VERIFIED_GOVERNANCE_DECISION_RETURN",
       "failed_predicate": "GOVERNANCE_DECISION_IS_A_DECISION",
-      "required_evidence_or_repair": "An ALLOW or DENY from stegcore.steggate.evaluate_admissibility for the SDK-MR-A governance request. Requires (1) an owner decision giving the StegVerse-Labs decision run read access to the private StegVerse-Labs/StegCore (a read-only credential for the decision workflow, or StegCore readability), and (2) the governance request repaired so StegCore can evaluate it (in progress as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003 in StegVerse-org/.github).",
+      "required_evidence_or_repair": "An ALLOW or DENY from stegcore.steggate.evaluate_admissibility for the SDK-MR-A governance request. The request repair is done: SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-004 was received under the post-migration StegVerse-SDK e8a34b6d, so the custody authority is ORGANIZATION_LEDGER (StegVerse-org/.github#132, merge cdfeb65e). Dispatch run https://github.com/StegVerse-org/.github/actions/runs/38161387492 admitted it (ingress receipt sha256:ddef834bbf3bee2b94802cbdfe0c2443c6bf8ced4b6972283059673aa6ab142e, bound to canonical manifest df97554a8eec79a2110885100082f0ab201011fda87d07e75b9ca8551428ba98) and emitted it to StegVerse-Labs (emission receipt sha256:7470eaf423cb427612c702c04f5ceacf78bfb7407a0520e82d2997116befa001); packet pkt-c64077b3c2b188aabf176050 is durably queued on StegVerse-org refs/stegverse/federation-mesh 91b88b5fa6bb338756d203046f38d493f9bda91c, organization ledger refs/stegverse/organization-ledger ff5ae361769e8f3451c425edac5ef3953fd04cca (both read back by anonymous fetch). StegVerse-Labs/.github#3114 (merge aeb3fad4) makes organization-governance-decision.yml install StegCore at the pinned 9882851b when the STEGCORE_READ_TOKEN secret exists. The remaining owner action for this predicate is only that secret: OWNER adds repository secret STEGCORE_READ_TOKEN (read-only, Contents: read on StegVerse-Labs/StegCore).",
       "retry_entrypoint": "StegVerse-Labs/.github:.github/workflows/organization-governance-decision.yml (mesh_root=git+https://github.com/StegVerse-org/.github#refs/stegverse/federation-mesh), then StegVerse-org/.github:.github/workflows/organization-governance-return.yml",
       "owning_existing_goal": "SDK-MR-A-VALIDATION-CUSTODY-001",
-      "next_attempt": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN retry once StegCore is importable by the decision run and the -003 request is emitted",
+      "next_attempt": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN retry once the owner adds STEGCORE_READ_TOKEN: dispatch the decision workflow (answers the queued -004 frame for pkt-c64077b3c2b188aabf176050)",
       "evidence_refs": [
         "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MR-A-VALIDATION-CUSTODY-001.json",
         "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
-        "https://github.com/StegVerse-org/.github/actions/runs/38155889110"
+        "https://github.com/StegVerse-org/.github/actions/runs/38155889110",
+        "https://github.com/StegVerse-org/.github/pull/132",
+        "https://github.com/StegVerse-org/.github/actions/runs/38161387492",
+        "https://github.com/StegVerse-Labs/.github/pull/3114"
       ]
     },
     {
@@ -500,9 +503,9 @@
       {
         "repair_id": "SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003",
         "repository": "StegVerse-org/.github",
-        "status": "IN_PROGRESS",
+        "status": "COMPLETED",
         "evidence_status": "NOT_EVIDENCE_LOCAL_NON_AUTHORITATIVE_REHEARSAL",
-        "summary": "A local rehearsal with StegCore 0.3.0 (StegVerse-Labs/StegCore 9882851b) found the emitted governance request fails AdmissibilityRequest validation: signal.uncertainty_state is \"known\" and StegCore accepts only bounded, material or unknown. With \"bounded\" StegCore decides DENY signal.inputs_incomplete. The request is being repaired as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003."
+        "summary": "A local rehearsal with StegCore 0.3.0 (StegVerse-Labs/StegCore 9882851b) found the emitted governance request fails AdmissibilityRequest validation: signal.uncertainty_state is \"known\" and StegCore accepts only bounded, material or unknown. With \"bounded\" StegCore decides DENY signal.inputs_incomplete. The request is being repaired as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003. Done: the repaired request was received as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-004 under the post-migration StegVerse-SDK e8a34b6d (StegVerse-org/.github#132, merge cdfeb65e); its runtime receipts are recorded on the GOVERNANCE_DECISION_IS_A_DECISION blocker."
       }
     ]
   },
