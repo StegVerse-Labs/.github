@@ -1,0 +1,8 @@
+{
+  "schema": "stegverse.hil-explanation-experiment-results/v1",
+  "experiment_id": "HIL-SCALED-EXPLANATION-001",
+  "state": "NOT_MEASURED",
+  "trial_count": 0,
+  "note": "No trial has been run. Stimuli, probes, rubric and trial-record schema exist in source; measurements are planned, not observed. This file is replaced only by scripts/hil_explanation_experiment.py summarize over validated trial records.",
+  "cells": {}
+}

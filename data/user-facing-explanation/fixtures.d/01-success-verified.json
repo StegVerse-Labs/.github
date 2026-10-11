@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.user-facing-explanation-fixture/v1",
+  "fixture_id": "UFE-FIXTURE-SUCCESS-VERIFIED-001",
+  "evidence_class": "SYNTHETIC_TEST",
+  "note": "Synthetic fixture. The receipt locator below is a fixture path, not an observed runtime receipt.",
+  "surface": {"repository": "StegVerse-Labs/Site", "surface_id": "workspace", "surface_version": "fixture"},
+  "outcome": {
+    "disposition": "ALLOW",
+    "predicate": "PERSONAL_KV_PROJECTION_ADMITTED",
+    "predicates": ["PERSONAL_KV_PROJECTION_ADMITTED", "SOVEREIGN_INTR_INGRESS_CONFORMING"],
+    "requested_action": "Read your Personal KV Workspace projection",
+    "authority_source": "INTERLOCK_INTR",
+    "consequence_observation": "OBSERVED",
+    "why": "the DEVICE_KV query was admitted through the sovereign InTr ingress and the projection reader returned its provenance-stamped result",
+    "evidence": [
+      {"kind": "PROVENANCE_REF", "ref": "kv-workspace-projection-source:sha256:fixture0000000000000000000000000000000000000000000000000000000", "description": "Projection metadata provenance stamped by the reader"},
+      {"kind": "RECEIPT_REF", "ref": "fixture://receipts/device-kv/workspace-personal-projection.json", "description": "Synthetic delivery receipt for the admitted query"}
+    ],
+    "canonical_record_ref": "fixture://receipts/device-kv/workspace-personal-projection.json"
+  }
+}

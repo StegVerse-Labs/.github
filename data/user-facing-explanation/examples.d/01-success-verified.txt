@@ -1,0 +1,13 @@
+What happened: The request 'Read your Personal KV Workspace projection' was authorized and its execution was observed.
+Why: Because the DEVICE_KV query was admitted through the sovereign InTr ingress and the projection reader returned its provenance-stamped result.
+Outcome: Succeeded and verified.
+What was authorized: The action 'Read your Personal KV Workspace projection' was authorized by INTERLOCK_INTR under the condition PERSONAL_KV_PROJECTION_ADMITTED.
+What was executed: The action was executed and its consequence was observed by the component that performed it.
+What evidence exists: Evidence is referenced by locator: Projection metadata provenance stamped by the reader (kv-workspace-projection-source:sha256:fixture0000000000000000000000000000000000000000000000000000000); Synthetic delivery receipt for the admitted query (fixture://receipts/device-kv/workspace-personal-projection.json).
+What you can safely do next:
+  - Review the evidence locators listed; they identify the receipt that shows the action was performed.
+  - No further action is required for this outcome.
+Limitations:
+  - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
+  - Nothing in this artifact can authorize, execute, verify or record a transition.
+  - Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included.

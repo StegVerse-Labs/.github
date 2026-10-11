@@ -1,0 +1,13 @@
+What happened: The request 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized, but no authentic observation of its execution exists yet.
+Why: Because the projection producer ran and its manifest was admitted, but the authorized KV writer that persists projections has not reported a readback receipt.
+Outcome: Authorized; execution not verified.
+What was authorized: The action 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized by MANIFEST under the condition PORTFOLIO_PROJECTION_PRODUCED.
+What was executed: Nothing is known to have been executed: no receipt from the performing component has been observed. Authorization is not execution.
+What evidence exists: Evidence is referenced by locator: The producer whose output would be persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).
+What you can safely do next:
+  - Wait for the component that performs the action to produce its receipt; until then treat the action as not yet done.
+  - Do not repeat the request to force a result; a duplicate request is a separate governed decision.
+Limitations:
+  - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
+  - Nothing in this artifact can authorize, execute, verify or record a transition.
+  - Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included.

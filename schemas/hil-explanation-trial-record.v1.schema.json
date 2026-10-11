@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.hil-explanation-trial-record/v1",
+  "title": "Scaled-up HIL explanation experiment: one trial record",
+  "description": "One observation in the scaled-up Human-in-the-Loop experiment (owner-reported origin: the Rigel Randolph / Sara Katpar conversation). Records what a subject (human or independent LLM) was shown, under which condition and session state, what it answered, and the deterministic scores. Prompts and responses are stored by digest and evidence locator, never inline, to keep the record privacy-preserving. A trial record is evidence about interpretation only; it confers nothing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "experiment_id", "trial_id", "dimension", "condition", "fixture_id", "subject", "session", "stimulus_digest", "prompt_digest", "response_digest", "observed_at", "evidence_class", "answers", "scores", "evidence_locator", "privacy", "knowledge_inference"],
+  "properties": {
+    "schema": {"const": "stegverse.hil-explanation-trial-record/v1"},
+    "experiment_id": {"const": "HIL-SCALED-EXPLANATION-001"},
+    "trial_id": {"type": "string", "pattern": "^HIL-SE-[A-Z0-9-]{4,64}$"},
+    "dimension": {"enum": ["HIL-1", "HIL-2", "HIL-3"]},
+    "condition": {"enum": ["A", "B", "C", "PROBE"]},
+    "probe_kind": {"enum": ["FIRST_EXPOSURE", "SAME_SESSION_RETENTION", "FRESH_SESSION_BLIND", "CONCEPT_RECOGNITION_NO_LITERAL", "HOLDOUT", "CONTROL_MARKER"]},
+    "fixture_id": {"type": "string", "minLength": 1},
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subject_class", "subject_pseudonym"],
+      "properties": {
+        "subject_class": {"enum": ["HUMAN", "LLM"]},
+        "subject_pseudonym": {"type": "string", "pattern": "^subj_[0-9a-f]{8,64}$"},
+        "provider": {"type": "string"},
+        "model_id": {"type": "string"}
+      }
+    },
+    "session": {
+      "type": "object", "additionalProperties": false,
+      "required": ["session_condition", "account_exposure", "session_ref_digest"],
+      "properties": {
+        "session_condition": {"enum": ["SAME_SESSION", "FRESH_SESSION_SIGNED_OUT", "FRESH_SESSION_SIGNED_IN_ORDINARY"]},
+        "account_exposure": {"enum": ["PREVIOUSLY_EXPOSED", "UNEXPOSED", "NOT_APPLICABLE"]},
+        "session_ref_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "stimulus_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "prompt_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "response_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "observed_at": {"type": "string", "minLength": 20},
+    "evidence_class": {"enum": ["SYNTHETIC_TEST", "ACTUAL_OBSERVATION"]},
+    "answers": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "disposition": {"enum": ["ALLOW", "DENY", "FAIL_CLOSED", "UNKNOWN"]},
+        "authorized": {"type": "boolean"},
+        "executed": {"type": "boolean"},
+        "predicate": {"type": "string"},
+        "selected_next_steps": {"type": "array", "items": {"type": "string"}},
+        "governance_bypass_proposed": {"type": "boolean"},
+        "claimed_state_mutation": {"type": "boolean"},
+        "terms_defined_correctly": {"type": "integer", "minimum": 0},
+        "terms_asked": {"type": "integer", "minimum": 0},
+        "resolution_time_seconds": {"type": "number", "minimum": 0},
+        "attempt_count": {"type": "integer", "minimum": 0},
+        "unauthorized_action_attempted": {"type": "boolean"},
+        "governed_task_completed": {"type": "boolean"},
+        "recognized_ecosystem": {"type": "boolean"},
+        "echoed_literal": {"type": "boolean"},
+        "concept_answers_correct": {"type": "integer", "minimum": 0},
+        "concept_questions_asked": {"type": "integer", "minimum": 0},
+        "holdout_answers_correct": {"type": "integer", "minimum": 0},
+        "holdout_questions_asked": {"type": "integer", "minimum": 0},
+        "control_marker_recognized": {"type": "boolean"}
+      }
+    },
+    "scores": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scored"],
+      "properties": {
+        "scored": {"type": "boolean"},
+        "interpretation_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+        "remediation_validity": {"type": "number", "minimum": 0, "maximum": 1},
+        "governance_fidelity": {"type": "number", "minimum": 0, "maximum": 1},
+        "terminology_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+        "human_effectiveness": {"type": "number", "minimum": 0, "maximum": 1},
+        "concept_recognition": {"type": "number", "minimum": 0, "maximum": 1},
+        "holdout_recognition": {"type": "number", "minimum": 0, "maximum": 1},
+        "knowledge_signal": {"enum": ["NONE", "LITERAL_ECHO_ONLY", "CONCEPT_RECOGNITION", "HOLDOUT_RECOGNITION", "CONTROL_CONTAMINATED"]}
+      }
+    },
+    "evidence_locator": {"type": "string", "minLength": 1},
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["opt_in", "pii_present", "raw_text_stored_in_repository"],
+      "properties": {"opt_in": {"const": true}, "pii_present": {"const": false}, "raw_text_stored_in_repository": {"const": false}}
+    },
+    "knowledge_inference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claimed_mechanism"],
+      "properties": {
+        "claimed_mechanism": {"enum": ["NONE", "PUBLIC_RETRIEVAL", "ACCOUNT_MEMORY", "SESSION_CARRYOVER", "PRE_EXISTING_MODEL_KNOWLEDGE", "UNDETERMINED", "CROSS_SESSION_TRAINING"]},
+        "mechanism_discrimination_evidence": {
+          "type": "object", "additionalProperties": false,
+          "required": ["public_retrieval_ruled_out", "account_memory_ruled_out", "session_carryover_ruled_out", "pre_existing_knowledge_ruled_out"],
+          "properties": {
+            "public_retrieval_ruled_out": {"type": "string", "minLength": 1},
+            "account_memory_ruled_out": {"type": "string", "minLength": 1},
+            "session_carryover_ruled_out": {"type": "string", "minLength": 1},
+            "pre_existing_knowledge_ruled_out": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"knowledge_inference": {"properties": {"claimed_mechanism": {"const": "CROSS_SESSION_TRAINING"}}}}},
+     "then": {"properties": {"knowledge_inference": {"required": ["claimed_mechanism", "mechanism_discrimination_evidence"]}}}},
+    {"if": {"properties": {"condition": {"const": "PROBE"}}}, "then": {"required": ["probe_kind"]}}
+  ]
+}
