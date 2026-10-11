@@ -37,7 +37,7 @@ def _resolved_env(req:dict[str,Any],env:dict[str,str],runtime:Path)->dict[str,st
 
 def _workspace_query_present(req:dict[str,Any])->bool:
     q=req.get("kv_request")
-    return isinstance(q,dict) and q.get("record_class")==WORKSPACE.RECORD_CLASS
+    return isinstance(q,dict) and isinstance(q.get("record_class"),str) and q.get("record_class") in WORKSPACE.RECORD_CLASSES
 
 def _validate_outer_workspace_binding(req:dict[str,Any],ing:dict[str,Any])->dict[str,Any]:
     q=req.get("kv_request")
