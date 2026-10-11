@@ -1333,7 +1333,7 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
             # independently admitted events from receiving a disposition.
             results.append({**row, "disposition": "FAIL_CLOSED",
                             "failed_predicate": "OUTBOX_EVENT_RECEIVE_FAILED",
-                            "error_type": type(exc).__name__, "appended": "UNKNOWN",
+                            "error_type": type(exc).__name__, "error_detail": str(exc), "appended": "UNKNOWN",
                             "requires_ledger_readback": True})
             continue
         results.append({**row, **{key: result.get(key) for key in (
@@ -1341,7 +1341,10 @@ def consume_outbox(durable_root: Path, *, registry: Mapping[str, Any],
             "repository_receipt_sha256", "organization_transition_id", "transition_replayed",
             "refusal_organization_receipt_sha256", "refusal_transition_id", "differing_files")
             if key in result}})
-    return {**base, "state": "CONSUMED", "event_count": len(events), "results": results}
+    needs_readback = sum(row.get("requires_ledger_readback") is True for row in results)
+    return {**base, "state": "CONSUMED_READBACK_REQUIRED" if needs_readback else "CONSUMED",
+            "event_count": len(events), "events_requiring_readback": needs_readback,
+            "readback_required": bool(needs_readback), "results": results}
 
 
 def main() -> int:
