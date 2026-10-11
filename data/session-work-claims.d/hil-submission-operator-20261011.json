@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-submission-operator-20261011",
+  "branch": "claude/release-hil-submission-operator-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "HIL-SCALED-EXPLANATION-001: repair remediation_validity empty-selection false positive (#3106 comment 6113446433) and add the ticketed issue/intake/withdraw submission operator with recorded opt-in or provider-use permission (#3106 comment 6113477648); preregistration amendments with zero trials affected; tests; protocol and README notes. No provider contact, no participant, no measurement.",
   "claimed_paths": [
@@ -23,5 +23,8 @@
     "README edit limited to the HIL paragraph"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3130",
+  "merged_commit": "46b6802e476c5e813a611e53a9c35b8a1cf5f831",
+  "claim_released_at": "2026-10-11T21:10:00Z"
 }
