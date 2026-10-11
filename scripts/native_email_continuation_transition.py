@@ -29,6 +29,10 @@ consequence; only an archive receipt naming proposed IDs moves counters.
 ``project_failure_map_receipt`` (``--op failure-map``) projects the open
 retained incidents, read-only, in the monitor-receipt shape that
 ``reconcile_email_failure_incidents.py`` maps for StegHealth.
+``project_healer_observations`` (``--op healer-observations``) projects only
+the lineages that ``correlate_email_incidents_with_github.py`` found still
+outstanding against the ACTUAL GitHub state, one StegHealer failure
+observation each, for StegHealer's existing disposition path.
 Standard library only.
 """
 from __future__ import annotations
@@ -74,6 +78,16 @@ RETAINED_CLASSES = ("FAILURE", "SECURITY", "BILLING", "QUOTA", "CAPACITY", "POLI
 # StegHealth failure-map bridge) and emitted by run_native_email_action_monitor.
 MONITOR_RECEIPT_SCHEMA = "stegverse.native-email-action-monitor-receipt/v1"
 INCIDENT_KIND = "GITHUB_FAILURE_EMAIL_CLUSTER"
+
+# StegHealer signal (issue #3039 P3): envelope, the record schema StegHealer's
+# failure_mailbox/incident_engine.ingest_observation consumes, the correlation
+# schema produced by correlate_email_incidents_with_github.py, and the only
+# correlation classes that are genuinely unresolved.
+HEALER_OBSERVATIONS_SCHEMA = "stegverse.native-email-healer-observations/v1"
+HEALER_OBSERVATION_RECORD_SCHEMA = "stegverse.healer.github-failure-observation/v0.2"
+CORRELATION_SCHEMA = "stegverse.email-incident-github-correlation/v1"
+OUTSTANDING_CLASSIFICATIONS = ("STILL_FAILING", "NO_RUN_SINCE_FAILURE")
+HEALER_DISPOSITION_PATH = "StegVerse-Labs/StegVerse-Healer:failure_mailbox/incident_engine.py#ingest_observation"
 
 
 def canonical_bytes(value: Mapping[str, Any]) -> bytes:
@@ -560,6 +574,130 @@ def project_failure_map_receipt(state: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def project_healer_observations(state: Mapping[str, Any], correlation: Mapping[str, Any]) -> dict[str, Any]:
+    """Project outstanding public lineages as StegHealer failure observations.
+
+    Pure and read-only: neither the state nor the correlation is mutated and no
+    transition is recorded. Only lineages the GitHub correlation classified
+    ``STILL_FAILING`` or ``NO_RUN_SINCE_FAILURE`` are signalled; superseded,
+    redacted, uncorrelated, workflow-not-found and errored lineages are
+    withheld and listed, never sent. One record per lineage, in the
+    ``stegverse.healer.github-failure-observation/v0.2`` shape (extra keys are
+    tolerated by StegHealer's ``normalize_observation``): the representative
+    ``message_id`` is the newest message of the still-open incidents, the
+    others ride along in ``related_message_ids``. Incidents resolved in the
+    state since the correlation ran are dropped. Nothing here claims a
+    StegHealer ``RESOLVED`` transition (``authority_effect:
+    NONE_PROJECTION_ONLY``).
+    """
+    bad = _check(state)
+    if bad:
+        raise ValueError(bad)
+    if not isinstance(correlation, Mapping) or correlation.get("schema") != CORRELATION_SCHEMA:
+        raise ValueError("CORRELATION_SCHEMA_INVALID")
+    if correlation.get("authority_effect") != "NONE_OBSERVATION_ONLY":
+        raise ValueError("CORRELATION_CLAIMS_AUTHORITY")
+    source = correlation.get("source_continuation") or {}
+    if source.get("cycle_seq") != state["cycle_seq"] or int(source.get("transition_seq", -1)) > int(state["transition_seq"]):
+        raise ValueError("CORRELATION_LINEAGE_MISMATCH")
+    public = set(state.get("public_repositories") or ())
+    rows = correlation.get("incidents") or {}
+    observations: list[dict[str, Any]] = []
+    withheld: list[dict[str, Any]] = []
+    for lin in correlation.get("lineages") or []:
+        cls = lin.get("classification")
+        entry: dict[str, Any] = {"lineage_id": lin.get("lineage_id"), "classification": cls,
+                                 "incident_count": lin.get("incident_count")}
+        if lin.get("repository") is not None:
+            entry["repository"], entry["workflow"] = lin["repository"], lin.get("workflow")
+        else:
+            entry["repository_sha256"] = lin.get("repository_sha256")
+        if cls not in OUTSTANDING_CLASSIFICATIONS:
+            withheld.append({**entry, "reason": "NOT_OUTSTANDING"})
+            continue
+        repo, workflow = lin.get("repository"), lin.get("workflow")
+        if repo not in public or not workflow:
+            # Fail closed rather than let a hidden name reach another repository.
+            raise ValueError("OUTSTANDING_LINEAGE_REPOSITORY_NOT_PUBLIC")
+        open_ids = sorted(i for i in lin.get("outstanding_incident_ids") or []
+                          if state["incidents"].get(i, {}).get("state") == INCIDENT_OPEN)
+        if not open_ids:
+            withheld.append({**entry, "reason": "NO_OPEN_OUTSTANDING_INCIDENT"})
+            continue
+        inc_rows = [rows[i] for i in open_ids if i in rows]
+        if len(inc_rows) != len(open_ids):
+            raise ValueError("CORRELATION_INCIDENT_ROW_MISSING")
+        if any(r.get("repository") != repo or not r.get("head_committed_at") for r in inc_rows):
+            raise ValueError("CORRELATION_INCIDENT_ROW_INCONSISTENT")
+        newest = max(inc_rows, key=lambda r: (str(r["head_committed_at"]), r["incident_id"]))
+        message_ids = sorted({m for i in open_ids for m in state["incidents"][i]["message_ids"]})
+        representative = max(message_ids, key=lambda m: (len(m), m))
+        latest = lin.get("latest_completed_run") or {}
+        short = str(newest.get("head_sha") or "")[:7]
+        branch = lin.get("default_branch")
+        if cls == "STILL_FAILING":
+            detail = f"latest completed {branch} run concluded {latest.get('conclusion')}"
+        else:
+            detail = f"no completed {branch} run after the failing head"
+        observations.append({
+            "message_id": representative,
+            "repository": repo,
+            "workflow": workflow,
+            "received_at": str(newest["head_committed_at"]),
+            "commit_sha": str(newest.get("head_sha_full") or newest.get("head_sha") or ""),
+            "run_id": str(latest.get("id") or "") if cls == "STILL_FAILING" else "",
+            "subject": f"[{repo}] Run failed: {workflow} ({short})",
+            "failure_message": f"Run failed: {workflow} ({short})",
+            "annotation": f"{cls}: {detail}",
+            "source": "stegverse-labs-native-email-continuation",
+            "source_semantics": "EMAIL_DISCOVERED_FAILURE_LINEAGE_CORRELATED_WITH_GITHUB_API_READ",
+            "authority_effect": False,
+            "heartbeat_effect": False,
+            "lineage_id": lin.get("lineage_id"),
+            "classification": cls,
+            "incident_ids": open_ids,
+            "related_message_ids": message_ids,
+            "notification_count": len(message_ids),
+            "latest_run_url": latest.get("html_url"),
+            "received_at_basis": "NEWEST_OUTSTANDING_FAILURE_HEAD_COMMITTER_DATE_GITHUB_API_READ",
+        })
+    observations.sort(key=lambda o: (o["repository"], o["workflow"], str(o["lineage_id"])))
+    withheld.sort(key=lambda w: (w.get("repository") or "", w.get("workflow") or "", str(w.get("lineage_id"))))
+    by_class: dict[str, int] = {}
+    for w in withheld:
+        by_class[str(w["classification"])] = by_class.get(str(w["classification"]), 0) + 1
+    digest = state_sha256(state)
+    return {
+        "schema": HEALER_OBSERVATIONS_SCHEMA,
+        "task_id": TASK_ID,
+        "cosv_task_vector": COSV_TASK_VECTOR,
+        "observation_schema": HEALER_OBSERVATION_RECORD_SCHEMA,
+        "projection_source": {"schema": SCHEMA, "phase": state["phase"], "cycle_seq": state["cycle_seq"],
+                              "transition_seq": state["transition_seq"], "state_sha256": digest},
+        "source_correlation": {
+            "schema": correlation["schema"],
+            "generated_at": correlation.get("generated_at"),
+            "state_sha256": source.get("state_sha256"),
+            "transition_seq": source.get("transition_seq"),
+            "evidence_class": correlation.get("evidence_class"),
+            "correlation_sha256": hashlib.sha256(canonical_bytes(correlation)).hexdigest(),
+        },
+        "observation_count": len(observations),
+        "observations": observations,
+        "withheld_lineage_count": len(withheld),
+        "withheld_by_classification": by_class,
+        "withheld_lineages": withheld,
+        "healer_disposition_path": HEALER_DISPOSITION_PATH,
+        "resolved_transition_claimed": False,
+        "credential_authority": "TV/TVC",
+        "credential_material_exported": False,
+        "github_token_runtime_authority": "NONE",
+        "projection_only": True,
+        "continuation_state_mutated": False,
+        "authority_effect": "NONE_PROJECTION_ONLY",
+    }
+
+
 def verify_chain(states: list[Mapping[str, Any]]) -> tuple[bool, str | None]:
     for i in range(1, len(states)):
         if states[i].get("prior_state_sha256") != state_sha256(states[i - 1]):
@@ -581,13 +719,31 @@ TRANSITIONS = {
 }
 
 
+PROJECTIONS = ("failure-map", "healer-observations")
+
+
+def _emit_projection(output: Path | None, payload: Mapping[str, Any], name: str, **detail: Any) -> int:
+    """Write a read-only projection; never writes or re-commits the state file."""
+    text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    if output is None:
+        sys.stdout.write(text)
+        return 0
+    output.parent.mkdir(parents=True, exist_ok=True)
+    tmp = output.with_name("." + output.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(output)
+    print(json.dumps(_disposition(ALLOW, name, output=str(output), continuation_state_mutated=False, **detail), sort_keys=True))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     parser.add_argument("--state", required=True, type=Path)
-    parser.add_argument("--op", required=True, choices=sorted(TRANSITIONS) + ["genesis", "summary", "failure-map"])
-    parser.add_argument("--input", type=Path, help="JSON observation for the transition")
+    parser.add_argument("--op", required=True, choices=sorted(TRANSITIONS) + ["genesis", "summary", *PROJECTIONS])
+    parser.add_argument("--input", type=Path,
+                        help="JSON observation for the transition (healer-observations: the correlation JSON)")
     parser.add_argument("--output", type=Path,
-                        help="failure-map only: write the projected receipt here instead of stdout")
+                        help="projections only: write the projected document here instead of stdout")
     args = parser.parse_args(argv)
     if args.op == "genesis":
         if args.state.exists():
@@ -600,23 +756,25 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(summary(prior), indent=2, sort_keys=True))
             return 0
         if args.op == "failure-map":
-            # Read-only projection: never writes or re-commits the state file.
             try:
                 receipt = project_failure_map_receipt(prior)
             except ValueError as exc:
                 print(json.dumps(_disposition(FAIL_CLOSED, "FAILURE_MAP", str(exc)), sort_keys=True))
                 return 1
-            text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
-            if args.output is None:
-                sys.stdout.write(text)
-                return 0
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            tmp = args.output.with_name("." + args.output.name + ".tmp")
-            tmp.write_text(text, encoding="utf-8")
-            tmp.replace(args.output)
-            print(json.dumps(_disposition(ALLOW, "FAILURE_MAP", incident_count=receipt["incident_count"],
-                                          output=str(args.output), continuation_state_mutated=False), sort_keys=True))
-            return 0
+            return _emit_projection(args.output, receipt, "FAILURE_MAP", incident_count=receipt["incident_count"])
+        if args.op == "healer-observations":
+            if args.input is None:
+                print(json.dumps(_disposition(FAIL_CLOSED, "HEALER_OBSERVATIONS", "CORRELATION_INPUT_REQUIRED"), sort_keys=True))
+                return 1
+            try:
+                correlation = json.loads(args.input.read_text(encoding="utf-8"))
+                projection = project_healer_observations(prior, correlation)
+            except (ValueError, OSError) as exc:
+                print(json.dumps(_disposition(FAIL_CLOSED, "HEALER_OBSERVATIONS", str(exc)), sort_keys=True))
+                return 1
+            return _emit_projection(args.output, projection, "HEALER_OBSERVATIONS",
+                                    observation_count=projection["observation_count"],
+                                    withheld_lineage_count=projection["withheld_lineage_count"])
         observation = json.loads(args.input.read_text(encoding="utf-8")) if args.input else {}
         state, disp = TRANSITIONS[args.op](prior, observation)
         if disp["disposition"] != ALLOW or state_sha256(state) == state_sha256(prior):
