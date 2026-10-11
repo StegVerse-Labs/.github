@@ -53,6 +53,12 @@ jobs:
           try:m.validate_workspace_query(dict(t,requested_scope=q['requested_scope']),node_id='node:1')
           except m.WorkspaceDeviceKVQueryError:pass
           else:raise AssertionError('personal scopes admitted for the tasks class')
+          for cls,scopes in (('WORKSPACE_FAMILY_PROJECTIONS',['projections']),('WORKSPACE_CONTINUITY_CHECKPOINT',['checkpoint','decision'])):
+              d=dict(q,record_class=cls,requested_scope=scopes)
+              assert m.validate_workspace_query(d,node_id='node:1') is d
+              try:m.validate_workspace_query(dict(d,requested_scope=q['requested_scope']),node_id='node:1')
+              except m.WorkspaceDeviceKVQueryError:pass
+              else:raise AssertionError('personal scopes admitted for '+cls)
           print('WORKSPACE_DEVICE_KV_VALIDATION_PASS')
           PY
       - name: Validate Personal Profile DEVICE_KV predicates
