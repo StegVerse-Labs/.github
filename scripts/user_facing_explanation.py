@@ -336,6 +336,14 @@ def schema_check(value: Any, schema: dict[str, Any], path: str = "$") -> None:
         for key, sub in props.items():
             if key in value:
                 schema_check(value[key], sub, path + "." + key)
+    if isinstance(value, dict) and "maxProperties" in schema:
+        _require(len(value) <= schema["maxProperties"], "schema:maxProperties:" + path)
+    if isinstance(value, (int, float)) and not isinstance(value, bool) and "minimum" in schema:
+        _require(value >= schema["minimum"], "schema:minimum:" + path)
+    if "not" in schema:
+        _require(not _matches(value, schema["not"]), "schema:not:" + path)
+    if "anyOf" in schema:
+        _require(any(_matches(value, sub) for sub in schema["anyOf"]), "schema:anyOf:" + path)
     for sub in schema.get("allOf", []):
         if "if" in sub:
             if _matches(value, sub["if"]):

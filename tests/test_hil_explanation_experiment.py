@@ -126,7 +126,7 @@ class TrialValidation(unittest.TestCase):
             self.assertTrue(str(ctx.exception).startswith(code), str(ctx.exception))
 
     def test_cross_session_training_claim_requires_discrimination_evidence(self):
-        probe = dict(dimension="HIL-3", condition="PROBE", probe_kind="HOLDOUT", scores={"scored": True, "holdout_recognition": 0.75, "knowledge_signal": "HOLDOUT_RECOGNITION"})
+        probe = dict(dimension="HIL-3", condition="PROBE", probe_kind="HOLDOUT", scores={"scored": True, "holdout_recognition": 0.75, "knowledge_signal": "HOLDOUT_RECOGNITION"}, answers={"holdout_questions_asked": 4, "holdout_answers_correct": 3})
         with self.assertRaises(H.ExperimentError) as ctx:
             H.validate_trial(trial(knowledge_inference={"claimed_mechanism": "CROSS_SESSION_TRAINING"}, **probe))
         self.assertIn("mechanism_discrimination_evidence", str(ctx.exception))
@@ -154,6 +154,62 @@ class TrialValidation(unittest.TestCase):
         self.assertEqual(sorted(pre["fixtures"]), sorted(f["fixture_id"] for f in FIX))
         self.assertEqual(pre["probes"]["recognition_literal"]["value"], H.RECOGNITION_PROBE_LITERAL)
         self.assertIn("Rigel Randolph and Sara Katpar", pre["research_origin"]["statement"])
+
+
+class SchemaOnlyConsumers(unittest.TestCase):
+    """Same class of repair as the explanation schema (#3106 finding EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY):
+    a consumer validating trial records only against the JSON Schema must reject contradictory records."""
+
+    SCHEMA = json.loads((ROOT / "schemas" / "hil-explanation-trial-record.v1.schema.json").read_text(encoding="utf-8"))
+    EVIDENCE = {k: "fixture://e" for k in ("public_retrieval_ruled_out", "account_memory_ruled_out", "session_carryover_ruled_out", "pre_existing_knowledge_ruled_out")}
+
+    def probe(self, **over):
+        base = trial(dimension="HIL-3", condition="PROBE", probe_kind="HOLDOUT", scores={"scored": True, "holdout_recognition": 0.75, "knowledge_signal": "HOLDOUT_RECOGNITION"}, answers={"holdout_questions_asked": 4, "holdout_answers_correct": 3})
+        base.update(over)
+        return base
+
+    def mutations(self):
+        cst = {"claimed_mechanism": "CROSS_SESSION_TRAINING", "mechanism_discrimination_evidence": self.EVIDENCE}
+        return {
+            "cross_session_in_same_session": self.probe(knowledge_inference=cst, session={"session_condition": "SAME_SESSION", "account_exposure": "NOT_APPLICABLE", "session_ref_digest": D64}),
+            "cross_session_exposed_account": self.probe(knowledge_inference=cst, session={"session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "PREVIOUSLY_EXPOSED", "session_ref_digest": D64}),
+            "cross_session_literal_echo_only": self.probe(knowledge_inference=cst, scores={"scored": True, "knowledge_signal": "LITERAL_ECHO_ONLY"}, answers={"echoed_literal": True}),
+            "cross_session_without_evidence": self.probe(knowledge_inference={"claimed_mechanism": "CROSS_SESSION_TRAINING"}),
+            "cross_session_on_condition_trial": trial(knowledge_inference=cst),
+            "blind_probe_in_hil_1": self.probe(dimension="HIL-1", subject={"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}),
+            "probe_without_probe_kind": {k: v for k, v in self.probe().items() if k != "probe_kind"},
+            "condition_trial_with_probe_kind": trial(probe_kind="HOLDOUT"),
+            "knowledge_signal_on_condition_trial": trial(scores={"scored": True, "knowledge_signal": "HOLDOUT_RECOGNITION"}),
+            "interpretation_metric_on_probe": self.probe(scores={"scored": True, "knowledge_signal": "NONE", "interpretation_accuracy": 1.0}),
+            "unscored_with_scores": trial(scores={"scored": False, "interpretation_accuracy": 1.0}),
+            "holdout_signal_without_holdout_questions": self.probe(answers={"holdout_questions_asked": 0}),
+            "concept_signal_without_concept_questions": self.probe(scores={"scored": True, "knowledge_signal": "CONCEPT_RECOGNITION"}, answers={}),
+            "contaminated_without_marker_recognised": self.probe(scores={"scored": True, "knowledge_signal": "CONTROL_CONTAMINATED"}, answers={"control_marker_recognized": False}),
+            "llm_subject_in_hil_1": trial(dimension="HIL-1", condition="B"),
+            "human_subject_in_hil_2": trial(subject={"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}),
+            "llm_without_model_id": trial(subject={"subject_class": "LLM", "subject_pseudonym": "subj_abcdef12", "provider": "p"}),
+        }
+
+    def valid_records(self):
+        return [trial(), self.probe(), self.probe(knowledge_inference={"claimed_mechanism": "CROSS_SESSION_TRAINING", "mechanism_discrimination_evidence": self.EVIDENCE}), trial(dimension="HIL-1", condition="B", subject={"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"})]
+
+    def test_schema_check_rejects_contradictory_trials(self):
+        for name, inst in self.mutations().items():
+            with self.assertRaises(H.ExperimentError, msg=name):
+                H.validate_trial(inst)
+        for inst in self.valid_records():
+            H.validate_trial(inst)
+
+    def test_jsonschema_rejects_contradictory_trials(self):
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:  # pragma: no cover
+            self.skipTest("jsonschema not installed")
+        validator = Draft202012Validator(self.SCHEMA)
+        for name, inst in self.mutations().items():
+            self.assertFalse(validator.is_valid(inst), name)
+        for inst in self.valid_records():
+            self.assertTrue(validator.is_valid(inst))
 
 
 if __name__ == "__main__":

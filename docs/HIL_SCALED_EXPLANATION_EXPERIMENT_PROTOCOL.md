@@ -51,7 +51,7 @@ Mechanism discrimination: a trial may claim NONE, PUBLIC_RETRIEVAL, ACCOUNT_MEMO
 
 Each observation is one `stegverse.hil-explanation-trial-record/v1` record: experiment and trial ids, dimension, condition or probe kind, fixture id, subject class with pseudonym (and provider / model id for LLMs), session condition and account exposure, sha256 digests of stimulus, prompt and response, timestamp, evidence class, structured answers, deterministic scores, an evidence locator the owner controls, privacy flags (opt-in true, no PII, no raw text in the repository) and the knowledge-inference claim. Raw prompts and responses live only at the evidence locator.
 
-`summarize` aggregates validated records per dimension and condition; an empty set is NOT_MEASURED, never zero. `data/hil-explanation-experiment/results.json` is replaced only by that summary.
+The trial-record schema's `allOf` enforces the same discipline for schema-only consumers: a CROSS_SESSION_TRAINING claim is accepted only in a fresh, unexposed HIL-3 probe trial with HOLDOUT_RECOGNITION and discrimination evidence; probe trials carry a probe kind and no interpretation metrics; condition trials carry no probe kind and no knowledge metrics; each knowledge signal requires the answers that justify it; HIL-1 subjects are HUMAN and HIL-2/HIL-3 subjects are LLM with provider and model id (`tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers`).\n\n`summarize` aggregates validated records per dimension and condition; an empty set is NOT_MEASURED, never zero. `data/hil-explanation-experiment/results.json` is replaced only by that summary.
 
 ## Current state
 
