@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.user-facing-explanation-fixture/v1",
+  "fixture_id": "UFE-FIXTURE-AUTHORIZED-NOT-VERIFIED-001",
+  "evidence_class": "SYNTHETIC_TEST",
+  "note": "Synthetic fixture: authorized, but the performing component has produced no receipt. Authorization is not execution.",
+  "surface": {"repository": "StegVerse-Labs/crypto-bot", "surface_id": "workspace-portfolio-projection", "surface_version": "fixture"},
+  "outcome": {
+    "disposition": "ALLOW",
+    "predicate": "PORTFOLIO_PROJECTION_PRODUCED",
+    "requested_action": "Persist the CryptoBot portfolio projection into your Personal KV",
+    "authority_source": "MANIFEST",
+    "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
+    "why": "the projection producer ran and its manifest was admitted, but the authorized KV writer that persists projections has not reported a readback receipt",
+    "evidence": [
+      {"kind": "SOURCE_REF", "ref": "StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py", "description": "The producer whose output would be persisted"}
+    ]
+  }
+}

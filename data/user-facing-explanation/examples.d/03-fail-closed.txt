@@ -1,0 +1,14 @@
+What happened: The request 'Open your Personal KV Workspace from this device' could not be evaluated because a required prerequisite is not established, so the system refused to act.
+Why: Because the sovereign InTr ingress that carries DEVICE_KV queries is not yet bound to the WorkSpace, so no authenticated path to your KV exists from any device; no KV installation on this device is required.
+Outcome: Failed closed; nothing was executed.
+What was authorized: Nothing was authorized. The governance path returned FAIL_CLOSED on AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE, which names the missing prerequisite.
+What was executed: Nothing was executed and no state changed. Failing closed is the designed behaviour when a prerequisite is missing, not a fault in the request.
+What evidence exists: Evidence is referenced by locator: The sync target that reports AWAITING_SOVEREIGN_INTR_INGRESS (StegVerse-Labs/Site:stegos-node/device-kv-intr-sync-target.json).
+What you can safely do next:
+  - Nothing happened; your data and state are unchanged.
+  - The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.
+  - You may retry after the prerequisite is established; retrying now returns the same outcome.
+Limitations:
+  - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
+  - Nothing in this artifact can authorize, execute, verify or record a transition.
+  - Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included.

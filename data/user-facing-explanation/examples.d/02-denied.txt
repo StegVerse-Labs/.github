@@ -1,0 +1,14 @@
+What happened: The request 'Query the WORKSPACE_TASKS_PROJECTION record class with scope [profile]' was refused.
+Why: Because the requested scope does not match the scope bound to that record class, and a query may only ask for the scope its class admits.
+Outcome: Denied; nothing was executed.
+What was authorized: Nothing was authorized. The governed decision returned DENY because WORKSPACE_QUERY_SCOPE_INVALID failed.
+What was executed: Nothing was executed and no state changed.
+What evidence exists: Evidence is referenced by locator: The validator that refused the query (StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query).
+What you can safely do next:
+  - Read the failing predicate: it names the exact condition that was not met.
+  - If a remediation draft is offered, you may submit it through the governed path; submission is a separate decision and may itself be denied.
+  - An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision.
+Limitations:
+  - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
+  - Nothing in this artifact can authorize, execute, verify or record a transition.
+  - Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included.

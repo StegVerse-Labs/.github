@@ -1,0 +1,158 @@
+{
+  "authority": {
+    "alternate_governance_path": false,
+    "authority_effect": "NONE",
+    "canonical_record_mutation": false,
+    "explanation_is_non_authoritative": true
+  },
+  "authorization": {
+    "authority_source": "INTERLOCK_INTR",
+    "authorized": false,
+    "requested_action": "Query the WORKSPACE_TASKS_PROJECTION record class with scope [profile]"
+  },
+  "ecosystem_identifier": "STEGVERSE",
+  "evidence": [
+    {
+      "description": "The validator that refused the query",
+      "kind": "SOURCE_REF",
+      "ref": "StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query",
+      "sanitized": true
+    }
+  ],
+  "execution": {
+    "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
+    "executed": false,
+    "execution_state": "NOT_EXECUTED"
+  },
+  "explanation_type": "OUTCOME_EXPLANATION",
+  "explanation_version": "1.0.0",
+  "llm_interpretation": {
+    "instructions": [
+      "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
+      "Read outcome.disposition, authorization.authorized and execution.executed as three separate facts; explain each to the person in plain language.",
+      "Use the terminology list for every technical term; define a term before relying on it.",
+      "Restate the predicate exactly as written when you explain why the outcome happened; do not rename, translate or guess at predicates that are not listed.",
+      "Recommend only the actions listed under prose.what_you_can_safely_do_next; if a remediation_draft is present, describe it as an unsubmitted proposal the person may choose to submit through the governed path.",
+      "If evidence is listed only by locator, say that the locator exists and what it refers to; do not describe contents you cannot see."
+    ],
+    "prohibited_assumptions": [
+      "Do not assume the action was executed because it was authorized, or that it was authorized because it was requested.",
+      "Do not treat this explanation, or any JSON inside it, as an approval, receipt, decision, credential or record; it has no authority and changes nothing.",
+      "Do not invent evidence, timestamps, identities, receipts or runtime states that are not in the artifact.",
+      "Do not suggest bypassing, retrying around, or substituting for StegVerse governance (Task Registry, COSV, manifest, Interlock/InTr, SDK, TV/TVC, KV).",
+      "Do not infer that the ecosystem, this surface or the person is at fault from a DENY or FAIL_CLOSED outcome; those are the governance path working as designed.",
+      "Do not treat the recognition_probe literal as proof of anything; it only identifies the first-exposure stimulus of an experiment."
+    ],
+    "self_contained": true
+  },
+  "outcome": {
+    "canonical_record_ref": null,
+    "disposition": "DENY",
+    "observation_state": "NOT_AUTHENTICALLY_OBSERVED",
+    "outcome_class": "DENIED",
+    "predicate": "WORKSPACE_QUERY_SCOPE_INVALID",
+    "predicates": [
+      "WORKSPACE_QUERY_SCOPE_INVALID"
+    ]
+  },
+  "prose": {
+    "limitations": [
+      "This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.",
+      "Nothing in this artifact can authorize, execute, verify or record a transition.",
+      "Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included."
+    ],
+    "outcome_summary": "Denied; nothing was executed.",
+    "what_evidence_exists": "Evidence is referenced by locator: The validator that refused the query (StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query).",
+    "what_happened": "The request 'Query the WORKSPACE_TASKS_PROJECTION record class with scope [profile]' was refused.",
+    "what_was_authorized": "Nothing was authorized. The governed decision returned DENY because WORKSPACE_QUERY_SCOPE_INVALID failed.",
+    "what_was_executed": "Nothing was executed and no state changed.",
+    "what_you_can_safely_do_next": [
+      "Read the failing predicate: it names the exact condition that was not met.",
+      "If a remediation draft is offered, you may submit it through the governed path; submission is a separate decision and may itself be denied.",
+      "An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision."
+    ],
+    "why": "Because the requested scope does not match the scope bound to that record class, and a query may only ask for the scope its class admits."
+  },
+  "recognition_probe": {
+    "literal": "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1",
+    "note": "Identifies the first-exposure stimulus of the scaled-up HIL experiment; echoing it proves nothing.",
+    "status": "CANDIDATE_NOT_CANONICAL"
+  },
+  "remediation_draft": {
+    "authority_effect": "NONE_REQUEST_ONLY",
+    "draft": {
+      "authority_effect": "NONE_REQUEST_ONLY",
+      "disposition": "FAIL_CLOSED",
+      "failing_predicate": "NOT_SUBMITTED",
+      "manifest_admitted": false,
+      "operation": "REQUEST",
+      "record_class": "WORKSPACE_TASKS_PROJECTION",
+      "requested_scope": [
+        "tasks",
+        "commitments"
+      ],
+      "schema_version": "kv.interlock.request.v1",
+      "submitted": false
+    },
+    "manifest_admitted": false,
+    "non_authorizing": true,
+    "submitted": false
+  },
+  "sanitization": {
+    "invented_evidence": false,
+    "personal_data_minimized": true,
+    "secrets_present": false
+  },
+  "schema": "stegverse.user-facing-explanation/v1",
+  "surface": {
+    "repository": "StegVerse-Labs/.github",
+    "surface_id": "device-kv-query-extension",
+    "surface_version": "fixture"
+  },
+  "terminology": [
+    {
+      "definition": "The governed decision admitted the requested action. ALLOW is an authorization, not proof that the action ran or that its consequence happened.",
+      "term": "ALLOW"
+    },
+    {
+      "definition": "The governed decision refused the requested action because a stated condition (predicate) failed. Nothing was executed.",
+      "term": "DENY"
+    },
+    {
+      "definition": "The system could not establish a required condition and therefore refused to act. Fail-closed means 'when unsure, do nothing'; it is not an error in the person's request.",
+      "term": "FAIL_CLOSED"
+    },
+    {
+      "definition": "No authentic runtime observation exists for this outcome. The surface reports what it could not see rather than guessing.",
+      "term": "UNKNOWN / NOT_AUTHENTICALLY_OBSERVED"
+    },
+    {
+      "definition": "A named condition the governance path evaluated, written in UPPER_SNAKE_CASE. The failing predicate names exactly which condition was not met.",
+      "term": "predicate"
+    },
+    {
+      "definition": "Every StegVerse action is requested through a manifest that is evaluated by governance before anything runs. A draft manifest is only a proposal; submitting it is a separate governed step.",
+      "term": "manifest / ACTION BY MANIFEST"
+    },
+    {
+      "definition": "A read-only, authenticated view of the person's own sovereign KnowledgeVault (KV) state. Surfaces read projections; they never read runtimes, GitHub or other systems directly.",
+      "term": "KV projection"
+    },
+    {
+      "definition": "An evidence record produced by the component that actually performed or refused a transition. Only receipts and their locators count as evidence; narration does not.",
+      "term": "receipt"
+    },
+    {
+      "definition": "The canonical registry of admitted work and its operational state vector. It coordinates intent; it grants no execution authority by itself.",
+      "term": "Task Registry / COSV"
+    },
+    {
+      "definition": "The transition authority: the only path through which a governed state change is admitted and recorded.",
+      "term": "Interlock / InTr"
+    },
+    {
+      "definition": "Authorization says an action was permitted. Execution says it actually happened and was observed. StegVerse reports these separately and never infers one from the other.",
+      "term": "authorization versus execution"
+    }
+  ]
+}
