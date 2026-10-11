@@ -7,9 +7,13 @@ from typing import Any
 
 RECORD_CLASS="WORKSPACE_PERSONAL_PROJECTION"
 TASKS_RECORD_CLASS="WORKSPACE_TASKS_PROJECTION"
+FAMILY_RECORD_CLASS="WORKSPACE_FAMILY_PROJECTIONS"
+CHECKPOINT_RECORD_CLASS="WORKSPACE_CONTINUITY_CHECKPOINT"
 REQUESTER={"module":"Site","component":"Workspace"}
 SCOPES=["workspace_identity","principals","relationships","organizations","memberships","feed","assistant"]
 TASKS_SCOPES=["tasks","commitments","timeline"]
+FAMILY_SCOPES=["projections"]
+CHECKPOINT_SCOPES=["checkpoint","decision"]
 SELECTOR={"workspace_type":"PERSONAL"}
 WORKSPACE_PROJECTION_REL=Path("runtime/workspace_projection.py")
 # Each admitted record class binds exactly one continuity-vault-kit producer, its entrypoint, scope list and output schema.
@@ -17,6 +21,8 @@ WORKSPACE_PROJECTION_REL=Path("runtime/workspace_projection.py")
 RECORD_CLASSES={
  RECORD_CLASS:{"scopes":SCOPES,"source":WORKSPACE_PROJECTION_REL,"entrypoint":"get_personal_workspace_projection","schema":"stegverse.kv.personal-workspace-projection/v1"},
  TASKS_RECORD_CLASS:{"scopes":TASKS_SCOPES,"source":Path("runtime/workspace_tasks_projection.py"),"entrypoint":"get_personal_tasks_projection","schema":"stegverse.kv.workspace-tasks-projection/v1"},
+ FAMILY_RECORD_CLASS:{"scopes":FAMILY_SCOPES,"source":Path("runtime/workspace_family_projections.py"),"entrypoint":"get_personal_family_projections","schema":"stegverse.kv.workspace-family-projections/v1"},
+ CHECKPOINT_RECORD_CLASS:{"scopes":CHECKPOINT_SCOPES,"source":Path("runtime/workspace_continuity_checkpoint_projection.py"),"entrypoint":"get_personal_continuity_checkpoint","schema":"stegverse.kv.workspace-continuity-checkpoint-delivery/v1"},
 }
 
 class WorkspaceDeviceKVQueryError(ValueError): pass
@@ -58,6 +64,10 @@ def execute_workspace_query(*,query:dict[str,Any],node_id:str,kv_source_root:Pat
     try: projection=getattr(_load(kv_source_root,binding),binding["entrypoint"])(kv_data_root=kv_data_root)
     except Exception as exc: raise WorkspaceDeviceKVQueryError("workspace_projection_failed:"+type(exc).__name__+":"+str(exc)) from exc
     if not isinstance(projection,dict) or projection.get("schema")!=binding["schema"]: raise WorkspaceDeviceKVQueryError("workspace_projection_invalid")
-    if query["record_class"]==TASKS_RECORD_CLASS and projection.get("action_authority")!="NONE": raise WorkspaceDeviceKVQueryError("workspace_projection_authority_invalid")
+    if query["record_class"]!=RECORD_CLASS and projection.get("action_authority")!="NONE": raise WorkspaceDeviceKVQueryError("workspace_projection_authority_invalid")
+    # A checkpoint delivery can never carry a verified decision from the KV reader (no anchor verifier there).
+    if query["record_class"]==CHECKPOINT_RECORD_CLASS:
+        decision=projection.get("decision")
+        if projection.get("anchor_verified") is not False or (decision is not None and (not isinstance(decision,dict) or decision.get("disposition")=="ALLOW")): raise WorkspaceDeviceKVQueryError("workspace_projection_authority_invalid")
     if projection.get("workspace_type")!="PERSONAL" or projection.get("credential_material_present") is not False or projection.get("provider_operation_authorized") is not False or projection.get("workspace_grants_authority") is not False or projection.get("authority_effect")!="NONE": raise WorkspaceDeviceKVQueryError("workspace_projection_authority_invalid")
     return projection
