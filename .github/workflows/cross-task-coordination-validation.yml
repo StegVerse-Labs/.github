@@ -190,6 +190,8 @@ jobs:
         run: |
           python -m unittest -v \
             tests.test_task_registry_collision_checkin \
+            tests.test_cosv_task_vector_index \
+            tests.test_cosv_index_shard_materialization \
             tests.test_pr_precreation_gate \
             tests.test_sdk_untrusted_dependency_collision_checkin \
             tests.test_task_registration_substrate_resolution \

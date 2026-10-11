@@ -5,5 +5,8 @@
   "registry_ref": "data/canonical-task-records/GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001.json",
   "source_state_vector_ref": "control/task-vectors/GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001.json",
   "cosv_task_vector": "71000000100100",
+  "vector": "71000000100100",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE",
   "handoff_ref": "docs/GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md"
 }

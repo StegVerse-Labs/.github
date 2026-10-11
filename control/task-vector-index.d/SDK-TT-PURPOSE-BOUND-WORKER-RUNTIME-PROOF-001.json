@@ -1,0 +1,13 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json",
+  "source_state_vector_ref": "control/task-vectors/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+  "cosv_task_vector": "71000000111111",
+  "vector": "71000000111111",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE",
+  "handoff_ref": "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json"
+}
