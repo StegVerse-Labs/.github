@@ -157,6 +157,42 @@ class Refusals(unittest.TestCase):
             tmp.unlink(missing_ok=True)
 
 
+class VerifiedReceiptLocatorSchema(unittest.TestCase):
+    """Schema-only consumers must not accept verified execution without a usable evidence locator."""
+
+    def mutations(self):
+        import copy
+        valid = build("01-success-verified")
+        out = {}
+        for invalid_ref in (None, "", "   "):
+            mutated = copy.deepcopy(valid)
+            for entry in mutated["evidence"]:
+                if entry["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST"):
+                    entry["ref"] = invalid_ref
+            out[repr(invalid_ref)] = mutated
+        return valid, out
+
+    def test_verified_receipt_locator_is_required_by_schema_check(self):
+        valid, mutations = self.mutations()
+        U.schema_check(valid, SCHEMA)
+        for name, mutated in mutations.items():
+            with self.assertRaises(U.ExplanationError, msg=name):
+                U.schema_check(mutated, SCHEMA)
+            with self.assertRaises(U.ExplanationError, msg=name):
+                U.validate_explanation(mutated)
+
+    def test_verified_receipt_locator_is_required_by_jsonschema(self):
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:  # pragma: no cover - CI installs pytest only
+            self.skipTest("jsonschema not installed")
+        validator = Draft202012Validator(SCHEMA)
+        valid, mutations = self.mutations()
+        self.assertTrue(validator.is_valid(valid))
+        for name, mutated in mutations.items():
+            self.assertFalse(validator.is_valid(mutated), f"schema-only consumer accepted unusable receipt locator {name}")
+
+
 class SchemaOnlyConsumers(unittest.TestCase):
     """Repair for .github#3106 review finding EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY: a consumer that
     validates only against the JSON Schema (no builder) must still be unable to accept an artifact whose
