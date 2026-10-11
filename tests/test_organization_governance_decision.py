@@ -315,3 +315,21 @@ def test_report_fails_closed_when_addressed_frame_has_no_decision(tmp_path):
                   "owning_existing_goal", "next_attempt"):
         assert failure[field]
     assert report["decisions"] == []
+
+
+def test_report_refuses_local_decision_without_fresh_ref_readback(tmp_path):
+    """A local ALLOW is not proof of an authenticated receiver return."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": [{
+        "frame_key": REQUEST_KEY, "request_packet_id": REQUEST_PACKET_ID,
+        "application_result": {"disposition": "ALLOW"},
+    }]}))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 1
+    assert report["workflow_disposition"] == "FAIL_CLOSED"
+    assert report["fail_closed"]["failure_code"] == "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED"
+    assert report["decisions"][0]["disposition"] == "ALLOW"
