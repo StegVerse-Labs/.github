@@ -333,3 +333,20 @@ def test_report_refuses_local_decision_without_fresh_ref_readback(tmp_path):
     assert report["workflow_disposition"] == "FAIL_CLOSED"
     assert report["fail_closed"]["failure_code"] == "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED"
     assert report["decisions"][0]["disposition"] == "ALLOW"
+
+
+def test_report_names_the_crossing_predicate_for_a_refused_addressed_frame(tmp_path):
+    """A crossing refused FAIL_CLOSED keeps its own predicate; it is not reported as a missing decision."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": [{
+        "frame_key": REQUEST_KEY, "status": "REFUSED", "disposition": "FAIL_CLOSED",
+        "failed_predicate": "FIXTURE_CROSSING_PRECONDITION"}]}))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 1
+    failure = report["fail_closed"]
+    assert failure["failure_code"] == "ORGANIZATION_CROSSING_FAIL_CLOSED"
+    assert "FIXTURE_CROSSING_PRECONDITION" in failure["failed_predicate"]

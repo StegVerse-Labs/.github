@@ -509,7 +509,9 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
     decided_keys = {item.get("frame_key") for item in items
                     if (item.get("application_result") or {}).get("disposition")
                     in {"ALLOW", "DENY", "FAIL_CLOSED"}}
-    pending = sorted(addressed - answered_keys - decided_keys)
+    # A crossing refused FAIL_CLOSED is reported under its own named predicate below.
+    refused_keys = {item.get("frame_key") for item in crossing_fail_closed}
+    pending = sorted(addressed - answered_keys - decided_keys - refused_keys)
     if failure is None and pending:
         failure = binding.fail_closed(
             "ORGANIZATION_GOVERNANCE_DECISION_MISSING",
