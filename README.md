@@ -2143,10 +2143,15 @@ Sandbox activation, release and propagation are not claimed. See
 `SDK-MR-A-VALIDATION-CUSTODY-001` (StegVerse-org/StegVerse-SDK#452) is registered
 in `data/canonical-task-registry.json` with its matching record projection. It
 is ACTIVE/HANDOFF_READY with EXTERNAL_PROVIDER_OBSERVED evidence (COSV
-`50000000100010`, reconciled 2026-10-11). The organization-ledger transition for
+`60000000102010`, reconciled 2026-10-11). The organization-ledger transition for
 request `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002` was recorded on the StegVerse-org
-ledger and read back as ALLOW (ingress receipt `sha256:a7f67a3e…`, ledger tip
-`4e20f265`). The remaining step is the StegVerse-Labs governance decision return
-for the emitted mesh frame. That step is not a blocker. END_TO_END is not
-claimed, and Master Records never gates. See
+ledger and read back as ALLOW. The governance decision return was attempted:
+StegVerse-Labs decided the request FAIL_CLOSED
+`GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE`, and StegVerse-org returned and closed
+it (closure receipt `sha256:ccefb8f8…`, ledger tip `3e16f5a8`). Two owner-held
+predicates block END_TO_END: `GOVERNANCE_DECISION_IS_A_DECISION` (StegCore read
+access for the Labs decision run, plus the request repair `-003`) and
+`DECIDING_ORGANIZATION_RECEIPT_READ_BACK` (an owner-designated propagate_target
+for the Labs organization ledger). END_TO_END is not claimed, and Master Records
+never gates. See
 [the registration handoff](docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md).
