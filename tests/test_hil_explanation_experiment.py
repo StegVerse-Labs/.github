@@ -746,3 +746,82 @@ class SummaryIntegrity(unittest.TestCase):
         with contextlib.redirect_stdout(buf):
             self.assertEqual(H.main(["summarize", "--trials", str(self.dir / "records"), "--tickets", str(self.dir / "tickets")]), 0)
         self.assertEqual(json.loads(buf.getvalue())["state"], "MEASURED")
+
+
+
+class HypothesisEvaluation(unittest.TestCase):
+    """Preregistered H1-H3 comparison: C against A, direction only, never a significance claim."""
+
+    def setUp(self):
+        self.exp = H.build_stimulus("C", DENIED)["expected"]
+        self.n = 0
+
+    def rec(self, dimension, condition, *, correct=True, seconds=60, attempts=1, unauthorized=False, model="m"):
+        self.n += 1
+        stim = H.build_stimulus(condition, DENIED)
+        answers = {"disposition": "DENY" if correct else "ALLOW", "authorized": False, "executed": False, "predicate": self.exp["predicate"], "selected_next_steps": [self.exp["safe_next_steps"][0] if correct else "retry directly against the runtime"], "governance_bypass_proposed": False, "claimed_state_mutation": False}
+        if dimension == "HIL-1":
+            subject = {"subject_class": "HUMAN", "subject_pseudonym": "subj_%08x" % self.n}
+            answers.update({"governed_task_completed": correct, "unauthorized_action_attempted": unauthorized, "resolution_time_seconds": seconds, "attempt_count": attempts})
+        else:
+            subject = {"subject_class": "LLM", "subject_pseudonym": "subj_%08x" % self.n, "provider": "p", "model_id": model}
+        return H.record_trial(trial_id="HIL-SE-EV-%04d" % self.n, dimension=dimension, condition=condition, fixture_id=DENIED["fixture_id"], subject=subject, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="s%d" % self.n, prompt_text=stim["text"], response_text="r%d" % self.n, answers=answers, evidence_locator="synthetic://ev/%d" % self.n, observed_at="2026-10-11T23:30:00Z")
+
+    def test_empty_and_thin_sets_are_never_verdicts(self):
+        out = H.evaluate_hypotheses([])
+        self.assertEqual((out["evidence_state"], out["inference"]), ("NOT_MEASURED", "DESCRIPTIVE_DIRECTION_ONLY_NO_SIGNIFICANCE_TEST"))
+        self.assertEqual({k: v["verdict"] for k, v in out["hypotheses"].items()}, {"H1": "NOT_MEASURED", "H2": "NOT_MEASURED", "H3": "NOT_MEASURED"})
+        thin = [self.rec("HIL-1", "A") for _ in range(3)] + [self.rec("HIL-1", "C") for _ in range(3)]
+        self.assertEqual(H.evaluate_hypotheses(thin)["hypotheses"]["H1"]["verdict"], "INSUFFICIENT_TRIALS")
+        with self.assertRaises(H.ExperimentError):
+            H.evaluate_hypotheses(thin, min_trials_per_cell=0)
+
+    def test_h1_direction_per_metric(self):
+        a = [self.rec("HIL-1", "A", correct=(i % 2 == 0), seconds=120, attempts=3, unauthorized=(i % 3 == 0)) for i in range(10)]
+        c = [self.rec("HIL-1", "C", correct=True, seconds=40, attempts=1) for _ in range(10)]
+        h1 = H.evaluate_hypotheses(a + c)["hypotheses"]["H1"]
+        self.assertEqual(h1["verdict"], "DIRECTIONALLY_CONSISTENT", h1)
+        rows = {r["metric"]: r for r in h1["comparisons"]}
+        self.assertEqual((rows["resolution_time_seconds"]["A"], rows["resolution_time_seconds"]["C"]), (120.0, 40.0))
+        self.assertEqual(rows["unauthorized_action_attempted"]["result"], "IN_PREDICTED_DIRECTION")
+        worse = [self.rec("HIL-1", "C", correct=True, seconds=500, attempts=1) for _ in range(10)]
+        self.assertEqual(H.evaluate_hypotheses(a + worse)["hypotheses"]["H1"]["verdict"], "DIRECTIONALLY_INCONSISTENT")
+
+    def test_h2_uses_cross_model_variance_and_reports_no_difference(self):
+        a = [self.rec("HIL-2", "A", correct=(i < 5), model="m%d" % (i % 2)) for i in range(10)]
+        c = [self.rec("HIL-2", "C", correct=True, model="m%d" % (i % 2)) for i in range(10)]
+        h2 = H.evaluate_hypotheses(a + c)["hypotheses"]["H2"]
+        rows = {r["metric"]: r for r in h2["comparisons"]}
+        self.assertEqual(rows["cross_model_variance"]["C"], 0.0)
+        self.assertEqual(rows["governance_fidelity"]["result"], "NO_DIFFERENCE")
+        self.assertEqual(h2["verdict"], "MIXED")
+
+    def test_synthetic_runs_are_labelled_and_actual_needs_tickets(self):
+        a = [self.rec("HIL-2", "A") for _ in range(10)]
+        self.assertEqual(H.evaluate_hypotheses(a)["evidence_state"], "MEASURED_SYNTHETIC")
+        actual = dict(a[0], evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x#" + a[0]["response_digest"])
+        with self.assertRaises(H.ExperimentError):
+            H.evaluate_hypotheses([actual])
+
+    def test_h3_holdout_recognition_in_fresh_unexposed_session_is_undetermined(self):
+        def probe(session, kind, answers, scores):
+            self.n += 1
+            return H.validate_trial(trial(trial_id="HIL-SE-EV-%04d" % self.n, dimension="HIL-3", condition="PROBE", probe_kind=kind, session={"session_condition": session, "account_exposure": "UNEXPOSED" if session != "SAME_SESSION" else "NOT_APPLICABLE", "session_ref_digest": D64}, answers=answers, scores=scores))
+        same = [probe("SAME_SESSION", "SAME_SESSION_RETENTION", {"concept_questions_asked": 6, "concept_answers_correct": 5}, {"scored": True, "concept_recognition": 0.8333, "knowledge_signal": "CONCEPT_RECOGNITION"}) for _ in range(10)]
+        fresh = [probe("FRESH_SESSION_SIGNED_OUT", "HOLDOUT", {"holdout_questions_asked": 4, "holdout_answers_correct": 0}, {"scored": True, "holdout_recognition": 0.0, "knowledge_signal": "NONE"}) for _ in range(10)]
+        self.assertEqual(H.evaluate_hypotheses(same + fresh)["hypotheses"]["H3"]["verdict"], "DIRECTIONALLY_CONSISTENT")
+        hit = probe("FRESH_SESSION_SIGNED_OUT", "HOLDOUT", {"holdout_questions_asked": 4, "holdout_answers_correct": 4}, {"scored": True, "holdout_recognition": 1.0, "knowledge_signal": "HOLDOUT_RECOGNITION"})
+        h3 = H.evaluate_hypotheses(same + fresh + [hit])["hypotheses"]["H3"]
+        self.assertEqual((h3["verdict"], h3["fresh_unexposed_holdout_recognitions"], h3["claimed_mechanisms"]), ("UNDETERMINED", 1, ["NONE"]))
+
+    def test_cli_evaluate(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as d:
+            for r in [self.rec("HIL-2", "A") for _ in range(2)]:
+                (Path(d) / (r["trial_id"] + ".json")).write_text(json.dumps(r), encoding="utf-8")
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                self.assertEqual(H.main(["evaluate", "--trials", d]), 0)
+            out = json.loads(buf.getvalue())
+            self.assertEqual((out["evidence_state"], out["hypotheses"]["H2"]["verdict"]), ("MEASURED_SYNTHETIC", "NOT_MEASURED"))
