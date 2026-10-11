@@ -25,8 +25,14 @@
   "declaration": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001",
   "organization_ledger": {
     "store": "git",
-    "ref": "refs/heads/organization-ledger/StegVerse-Labs",
+    "ref": "refs/stegverse/organization-ledger",
     "custody": "PRIVATE",
-    "propagate_target": null
-  }
+    "propagate_target": {
+      "custody": "PRIVATE",
+      "remote": "https://github.com/StegVerse-Labs/.github"
+    }
+  },
+  "organization_ledger_ref": "refs/stegverse/organization-ledger",
+  "organization_ledger_repository": "StegVerse-Labs/.github",
+  "organization_ledger_ref_designation_source": "owner decision relayed on StegVerse-org/StegVerse-SDK#465 for StegVerse-Labs/.github#3099 (2026-10-11): use StegVerse-org's ledger location structure (StegVerse-org/.github org-contract.json organization_ledger_ref refs/stegverse/organization-ledger)"
 }
