@@ -34,7 +34,6 @@ jobs:
     env:
       MESH_ROOT: ${{ inputs.mesh_root }}
       OWN_URL: https://github.com/${{ github.repository }}
-      EVIDENCE: ${{ runner.temp }}/evidence
       GIT_AUTHOR_NAME: StegVerse
       GIT_AUTHOR_EMAIL: 210078727+StegVerse@users.noreply.github.com
       GIT_COMMITTER_NAME: StegVerse
@@ -44,6 +43,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      # The runner context is not available in job-level env, so the evidence
+      # directory is exported once here for every later step.
+      - name: Locate the evidence directory
+        run: echo "EVIDENCE=$RUNNER_TEMP/evidence" >> "$GITHUB_ENV"
 
       - name: Bind the source
         run: python resident-runtime/mesh_source_binding.py --mesh-root "$MESH_ROOT" --out "$EVIDENCE/binding.json"
