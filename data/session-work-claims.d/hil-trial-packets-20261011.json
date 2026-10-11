@@ -4,13 +4,24 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-trial-packets",
+  "branch": "claude/release-hil-trial-packets-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "HIL-SCALED-EXPLANATION-001 experimenter tooling: participant/LLM trial packets with a fixed answer form (expected answers never included) and a deterministic answer-form parser feeding the recorder; tests; protocol note. No provider contact, no participant, no measurement.",
-  "claimed_paths": ["scripts/hil_explanation_experiment.py", "tests/test_hil_explanation_experiment.py", "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md", "data/session-work-claims.d/hil-trial-packets-20261011.json"],
-  "collision_boundaries": ["Do not modify .github#3012 lane files", "No task admission, no COSV mutation, no trial execution"],
+  "claimed_paths": [
+    "scripts/hil_explanation_experiment.py",
+    "tests/test_hil_explanation_experiment.py",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "data/session-work-claims.d/hil-trial-packets-20261011.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "No task admission, no COSV mutation, no trial execution"
+  ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3126",
+  "merged_commit": "4bd4354c1cc54a776f98984eb38225da42a16407",
+  "claim_released_at": "2026-10-11T20:20:00Z"
 }
