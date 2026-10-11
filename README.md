@@ -2142,7 +2142,11 @@ Sandbox activation, release and propagation are not claimed. See
 
 `SDK-MR-A-VALIDATION-CUSTODY-001` (StegVerse-org/StegVerse-SDK#452) is registered
 in `data/canonical-task-registry.json` with its matching record projection. It
-is ACTIVE with CI_VALIDATED source evidence only (COSV `10100000100000`): no
-runtime transition was attempted, no organization ledger receipt exists, and
-runtime activation is not claimed. Master Records never gates. See
+is ACTIVE/HANDOFF_READY with EXTERNAL_PROVIDER_OBSERVED evidence (COSV
+`50000000100010`, reconciled 2026-10-11). The organization-ledger transition for
+request `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002` was recorded on the StegVerse-org
+ledger and read back as ALLOW (ingress receipt `sha256:a7f67a3e…`, ledger tip
+`4e20f265`). The remaining step is the StegVerse-Labs governance decision return
+for the emitted mesh frame. That step is not a blocker. END_TO_END is not
+claimed, and Master Records never gates. See
 [the registration handoff](docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md).

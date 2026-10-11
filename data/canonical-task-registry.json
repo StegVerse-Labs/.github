@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 306,
+  "generation": 307,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -21007,15 +21007,15 @@
       "correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
       "root_correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
       "parent_task_id": null,
-      "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation only; no runtime transition attempted, no organization ledger receipt, runtime activation not claimed.",
+      "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation plus a runtime organization-ledger transition: request SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002 was admitted on the StegVerse-org organization ledger (ingress receipt sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8, ALLOW) and its governance request was emitted to StegVerse-Labs (emission receipt sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55, REQUESTED_OF_DECIDING_ORGANIZATION), both read back ALLOW from a fresh fetch. Remaining: the StegVerse-Labs governance decision return for mesh packet pkt-5efe4b0372bbffa4d2a356fe. END_TO_END is not claimed.",
       "coordination_state": "ACTIVE",
-      "checkout_state": "UNCLAIMED",
+      "checkout_state": "HANDOFF_READY",
       "repository": "StegVerse-org/StegVerse-SDK",
-      "cosv_task_vector": "10100000100000",
+      "cosv_task_vector": "50000000100010",
       "cosv_exact_metrics": {
-        "lifecycle": "UNCLAIMED",
+        "lifecycle": "MACHINE_OWNED",
         "archive_ready": false,
-        "unassigned_work": 1,
+        "unassigned_work": 0,
         "chat_owned_implementation": 0,
         "chat_owned_validation": 0,
         "chat_owned_integration": 0,
@@ -21025,7 +21025,7 @@
         "thread_required": false,
         "blocker_count": 0,
         "evidence_complete": false,
-        "activated": false,
+        "activated": true,
         "propagated": false
       },
       "source_refs": [
@@ -21041,7 +21041,29 @@
         "https://github.com/StegVerse-org/StegVerse-SDK/pull/458",
         "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
         "https://github.com/StegVerse-Labs/.github/pull/3082",
-        "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218"
+        "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:receipts/a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8.json",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:receipts/d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55.json",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:repository-ledger/StegVerse-org/.github/receipts/0bb938817895181434c8ffac68fd1bf1ab6bf31fc13f86ad357214bcfbb6623d.json",
+        "StegVerse-org/.github@refs/stegverse/federation-mesh:18b3ef3f38d10e798458aed495c77568cbe9fa76",
+        "StegVerse-org/.github@12ae5952:.stegverse/transition-requests/SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002.json",
+        "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
+        "https://github.com/StegVerse-org/.github/actions/runs/38108928361",
+        "https://github.com/StegVerse-org/.github/pull/124",
+        "https://github.com/StegVerse-org/.github/pull/125",
+        "https://github.com/StegVerse-org/.github/pull/126",
+        "https://github.com/StegVerse-org/.github/pull/127",
+        "https://github.com/StegVerse-org/.github/pull/128",
+        "StegVerse-org/.github@6a7c2e4e",
+        "StegVerse-org/.github@df4086bf",
+        "StegVerse-org/.github@ca0751ee",
+        "StegVerse-org/.github@12ae5952",
+        "StegVerse-org/.github@4a59a8b3",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/462",
+        "StegVerse-org/StegVerse-SDK@012bf2ee97e089f75fe4455d773798d258b8c55d",
+        "https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142",
+        "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837"
       ],
       "handoff_projection_refs": [
         "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md"
@@ -21071,9 +21093,19 @@
         {
           "dependency_id": "DEP-SDK-MR-A-ORGANIZATION-LEDGER-RUNTIME-TRANSITION-RECEIPT",
           "kind": "RUNTIME_EVIDENCE",
-          "state": "UNRESOLVED",
+          "state": "SATISFIED",
           "ref": "stegverse/organization_ledger_evidence.py::verify_organization_ledger_readback",
-          "scope": "no runtime transition attempted; no organization ledger receipt exists; satisfied only by an authentic organization-ledger transition receipt read back as ALLOW"
+          "scope": "authentic organization-ledger transition receipt read back as ALLOW: ingress receipt sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8 on refs/stegverse/organization-ledger of StegVerse-org/.github (tip 4e20f265fbfb727f766fc62ebafef3dfcca8ce71, organization chain length 6, repository chain length 4)",
+          "superseded_state": "UNRESOLVED",
+          "superseded_scope": "no runtime transition attempted; no organization ledger receipt exists; satisfied only by an authentic organization-ledger transition receipt read back as ALLOW",
+          "satisfied_at": "2026-10-11",
+          "organization_ledger_receipt_ref": "sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8",
+          "refs": [
+            "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:receipts/a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8.json",
+            "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+            "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
+            "https://github.com/StegVerse-org/.github/actions/runs/38108928361"
+          ]
         }
       ],
       "blockers": [],
@@ -21086,7 +21118,9 @@
         "MASTER_RECORDS_ROLE_AUDIT_44_OF_44_REMEDIATED_0_BLOCKED",
         "RECEIVER_ORGANIZATION_LEDGER_COMPATIBILITY_MERGED",
         "EXACT_HEAD_CI_VALIDATED",
-        "ORGANIZATION_LEDGER_RUNTIME_TRANSITION_RECEIPT"
+        "ORGANIZATION_LEDGER_RUNTIME_TRANSITION_RECEIPT",
+        "ORGANIZATION_LEDGER_INGRESS_AND_EMISSION_RECEIPTS_READ_BACK_ALLOW",
+        "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN_FOR_EMITTED_FRAME"
       ],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -21099,9 +21133,9 @@
         "validated": true,
         "reconciliation_ref": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md",
         "evidence_contract_version": "v1",
-        "evidence_class": "CI_VALIDATED",
+        "evidence_class": "EXTERNAL_PROVIDER_OBSERVED",
         "terminal_evidence_class": null,
-        "scope": "SOURCE_CI_VALIDATION_ONLY",
+        "scope": "SOURCE_CI_VALIDATION_PLUS_RUNTIME_ORGANIZATION_LEDGER_READBACK",
         "source_merges": [
           {
             "pr": 453,
@@ -21139,8 +21173,8 @@
           "total": 44,
           "blocked": 0
         },
-        "runtime_transition_attempted": false,
-        "organization_ledger_receipt_ref": null,
+        "runtime_transition_attempted": true,
+        "organization_ledger_receipt_ref": "sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8",
         "evidence_refs": [
           "https://github.com/StegVerse-org/StegVerse-SDK/issues/452",
           "https://github.com/StegVerse-org/StegVerse-SDK/pull/453",
@@ -21154,12 +21188,124 @@
           "https://github.com/StegVerse-org/StegVerse-SDK/pull/458",
           "StegVerse-org/StegVerse-SDK@8559c4700a076a733de048910344f99bedaae4ca:data/master-records-role-audit.json",
           "https://github.com/StegVerse-Labs/.github/pull/3082",
-          "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218"
+          "StegVerse-Labs/.github@adf312bb4f9c2f071e8f65653fb80405e8b75218",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:receipts/a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8.json",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:receipts/d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55.json",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:4e20f265fbfb727f766fc62ebafef3dfcca8ce71:repository-ledger/StegVerse-org/.github/receipts/0bb938817895181434c8ffac68fd1bf1ab6bf31fc13f86ad357214bcfbb6623d.json",
+          "StegVerse-org/.github@refs/stegverse/federation-mesh:18b3ef3f38d10e798458aed495c77568cbe9fa76",
+          "StegVerse-org/.github@12ae5952:.stegverse/transition-requests/SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002.json",
+          "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
+          "https://github.com/StegVerse-org/.github/actions/runs/38108928361",
+          "https://github.com/StegVerse-org/.github/pull/124",
+          "https://github.com/StegVerse-org/.github/pull/125",
+          "https://github.com/StegVerse-org/.github/pull/126",
+          "https://github.com/StegVerse-org/.github/pull/127",
+          "https://github.com/StegVerse-org/.github/pull/128",
+          "StegVerse-org/.github@6a7c2e4e",
+          "StegVerse-org/.github@df4086bf",
+          "StegVerse-org/.github@ca0751ee",
+          "StegVerse-org/.github@12ae5952",
+          "StegVerse-org/.github@4a59a8b3",
+          "https://github.com/StegVerse-org/StegVerse-SDK/pull/462",
+          "StegVerse-org/StegVerse-SDK@012bf2ee97e089f75fe4455d773798d258b8c55d",
+          "https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142",
+          "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837"
         ],
-        "end_to_end_complete": false
+        "end_to_end_complete": false,
+        "organization_ledger_readback": {
+          "organization": "StegVerse-org",
+          "ledger_ref": "refs/stegverse/organization-ledger",
+          "ledger_repository": "StegVerse-org/.github",
+          "ledger_tip": "4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+          "prior_ledger_tip": "c1de41e9",
+          "organization_chain_length": 6,
+          "repository_chain": "repository-ledger/StegVerse-org/.github",
+          "repository_chain_length": 4,
+          "repository_chain_head": "sha256:0bb938817895181434c8ffac68fd1bf1ab6bf31fc13f86ad357214bcfbb6623d",
+          "transition_request": ".stegverse/transition-requests/SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002.json",
+          "predecessor_request": "SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-001",
+          "candidate": {
+            "action": "decide_terminal_custody_authority",
+            "target": "SDK-MR-A-VALIDATION-CUSTODY-001"
+          },
+          "ingress_receipt": "sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8",
+          "ingress_repository_receipt": "sha256:7dc069fe05149757504e4910e66f6b85af8c566fc1b30f85660b026d295c55d6",
+          "ingress_disposition": "ALLOW",
+          "emission_receipt": "sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55",
+          "emission_disposition": "ALLOW",
+          "emission_destination": "StegVerse-Labs",
+          "emission_decision_state": "REQUESTED_OF_DECIDING_ORGANIZATION",
+          "mesh_ref": "refs/stegverse/federation-mesh",
+          "mesh_tip": "18b3ef3f38d10e798458aed495c77568cbe9fa76",
+          "mesh_packet_id": "pkt-5efe4b0372bbffa4d2a356fe",
+          "mesh_frame_sha256": "sha256:909bb21e89c7bf6d37caf19acdbf5bcdaee455f0efaec059134fef9d0b247ae1",
+          "runs": [
+            {
+              "run": "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
+              "event": "workflow_dispatch",
+              "head": "3278c76",
+              "result": "ingress ALLOW; emission ALLOW; both chains and the mesh read back from a fresh fetch"
+            },
+            {
+              "run": "https://github.com/StegVerse-org/.github/actions/runs/38108928361",
+              "event": "push",
+              "head": "4a59a8b",
+              "result": "ALREADY_RECORDED; appended nothing; readback ALLOW"
+            }
+          ],
+          "provider": "GitHub-hosted Actions against the sovereign organization-ledger ref",
+          "authority_effect": "NONE_COORDINATION_ONLY"
+        },
+        "organization_source_merges": [
+          {
+            "repository": "StegVerse-org/.github",
+            "pr": 124,
+            "merge": "6a7c2e4e"
+          },
+          {
+            "repository": "StegVerse-org/.github",
+            "pr": 125,
+            "merge": "df4086bf"
+          },
+          {
+            "repository": "StegVerse-org/.github",
+            "pr": 126,
+            "merge": "ca0751ee"
+          },
+          {
+            "repository": "StegVerse-org/.github",
+            "pr": 127,
+            "merge": "12ae5952"
+          },
+          {
+            "repository": "StegVerse-org/.github",
+            "pr": 128,
+            "merge": "4a59a8b3"
+          },
+          {
+            "repository": "StegVerse-org/StegVerse-SDK",
+            "pr": 462,
+            "merge": "012bf2ee97e089f75fe4455d773798d258b8c55d"
+          }
+        ],
+        "remaining_work": {
+          "next_transition": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN",
+          "deciding_organization": "StegVerse-Labs",
+          "deciding_service": "stegverse-labs.governance",
+          "frame": {
+            "packet_id": "pkt-5efe4b0372bbffa4d2a356fe",
+            "frame_sha256": "sha256:909bb21e89c7bf6d37caf19acdbf5bcdaee455f0efaec059134fef9d0b247ae1",
+            "mesh_tip": "18b3ef3f38d10e798458aed495c77568cbe9fa76"
+          },
+          "executor": "receiving organization machine path over the federation mesh",
+          "is_blocker": false,
+          "destination_liveness_is_transition_predicate": false,
+          "prohibition_ref": "data/task-registry-global-invariants.json#NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE"
+        }
       },
       "allowed_next_transitions": [
-        "RUNTIME_TRANSITION_WITH_ORGANIZATION_LEDGER_RECEIPT",
+        "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN",
         "REOPENED_DUE_TO_NEW_EVIDENCE"
       ],
       "authority_model": {
@@ -21172,11 +21318,29 @@
       },
       "registration_basis": "Owner request 2026-10-10 to register the existing goal SDK-MR-A-VALIDATION-CUSTODY-001 for StegVerse-org/StegVerse-SDK#452 in the existing canonical Registry, not a competing registry. Master Records is downstream evidence preservation and never gates.",
       "release_authorized": false,
-      "runtime_activation_claimed": false,
+      "runtime_activation_claimed": true,
       "propagation_claimed": false,
       "goal_prompt_count": null,
       "session_qualifying_prompts_observed": 1,
-      "authority_effect": "NONE_COORDINATION_ONLY"
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "runtime_activation_scope": "ORGANIZATION_LEDGER_TRANSITION_AND_READBACK_ONLY",
+      "reconciliation_history": [
+        {
+          "reconciled_at": "2026-10-10",
+          "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation only; no runtime transition attempted, no organization ledger receipt, runtime activation not claimed.",
+          "coordination_state": "ACTIVE",
+          "checkout_state": "UNCLAIMED",
+          "cosv_task_vector": "10100000100000",
+          "evidence_class": "CI_VALIDATED",
+          "scope": "SOURCE_CI_VALIDATION_ONLY",
+          "runtime_transition_attempted": false,
+          "allowed_next_transitions": [
+            "RUNTIME_TRANSITION_WITH_ORGANIZATION_LEDGER_RECEIPT",
+            "REOPENED_DUE_TO_NEW_EVIDENCE"
+          ],
+          "superseded_by": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md#2026-10-11-runtime-reconciliation"
+        }
+      ]
     }
   ],
   "human_actions": [],
