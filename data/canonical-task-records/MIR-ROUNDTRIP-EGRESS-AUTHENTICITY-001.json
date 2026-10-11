@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000100000",
+  "source_state_vector_ref": "control/task-vectors/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
   "canonical_issue": "StegVerse-Labs/.github#1891",
   "canonical_handoff": "StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
   "canonical_route_duplication_binding": "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json",

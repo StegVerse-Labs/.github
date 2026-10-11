@@ -8,6 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "CLAIMED_OBSERVATION",
   "cosv_task_vector": "50000010100000",
+  "source_state_vector_ref": "control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json",
   "global_invariant_ref": "data/task-registry-global-invariants.json",
   "device_interchangeability_enforced": true,
   "physical_device_identity_gate": "NONE_PROHIBITED",

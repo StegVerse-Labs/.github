@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000102000",
+  "source_state_vector_ref": "control/task-vectors/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
   "source_refs": [
     "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
     "workers/run_device_kv_skap_roundtrip_worker.py",

@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY_RUNTIME_PROOF_PENDING",
   "cosv_task_vector": "50000000101000",
+  "source_state_vector_ref": "control/task-vectors/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
   "source_refs": [
     "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "control/worker-registry.d/device-kv-intr-observation-001.json",

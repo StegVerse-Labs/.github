@@ -14,6 +14,7 @@
     "vector": "10100000110000"
   },
   "cosv_task_vector": "10100000110000",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001.json",
   "source_refs": [
     "docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBusiness-Ops:BUSINESS_OPPORTUNITY_ENGINE_MIRROR_HANDOFF.md",

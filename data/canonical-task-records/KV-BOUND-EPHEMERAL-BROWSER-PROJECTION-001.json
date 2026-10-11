@@ -8,6 +8,7 @@
   "coordination_state": "RETIRED",
   "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
   "cosv_task_vector": "50000010100000",
+  "source_state_vector_ref": "control/task-vectors/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
   "global_invariant_ref": "data/task-registry-global-invariants.json",
   "device_interchangeability_enforced": true,
   "physical_device_identity_gate": "NONE_PROHIBITED",

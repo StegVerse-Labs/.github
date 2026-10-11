@@ -11,6 +11,7 @@
   "handoff": "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
   "cosv": {"profile": "task.v1", "vector": "71000000101001"},
   "cosv_task_vector": "71000000101001",
+  "source_state_vector_ref": "control/task-vectors/STEGAGENTS-GOVERNED-RUNTIME-001.json",
   "source_refs": [
     "data/canonical-task-records/STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001.json",
     "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",

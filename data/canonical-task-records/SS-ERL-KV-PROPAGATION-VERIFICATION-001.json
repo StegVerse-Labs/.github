@@ -109,6 +109,7 @@
   },
   "checkout_state": "RETIRED",
   "cosv_task_vector": "71000000100101",
+  "source_state_vector_ref": "control/task-vectors/SS-ERL-KV-PROPAGATION-VERIFICATION-001.json",
   "readme_impact": {
     "material_function_change": false,
     "readme_updated_in_change_set": true,

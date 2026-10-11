@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "10100000100000",
+  "source_state_vector_ref": "control/task-vectors/GADI-001.json",
   "source_refs": [
     "docs/GADI_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#1170",

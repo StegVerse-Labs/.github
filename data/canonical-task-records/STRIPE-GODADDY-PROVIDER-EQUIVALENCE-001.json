@@ -7,6 +7,7 @@
   "coordination_state": "RETIRED",
   "checkout_state": "COMPLETED",
   "cosv_task_vector": "71000000100100",
+  "source_state_vector_ref": "control/task-vectors/STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001.json",
   "handoff": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
   "canonical_issue": "StegVerse-Labs/.github#1954",
   "implementation_issue": "StegVerse-Labs/TVC#431",

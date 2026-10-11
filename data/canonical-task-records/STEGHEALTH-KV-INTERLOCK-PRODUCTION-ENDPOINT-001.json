@@ -14,6 +14,7 @@
     "vector": "60000000111000"
   },
   "cosv_task_vector": "60000000111000",
+  "source_state_vector_ref": "control/task-vectors/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
   "source_refs": [
     "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001.json",
     "StegVerse-Labs/StegHealth:docs/health-interlock/STEGHEALTH_KNOWLEDGEVAULT_INTERLOCK_MIRROR_HANDOFF.md",

@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000010100000",
+  "source_state_vector_ref": "control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
   "handoff": "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
   "canonical_issue": "StegVerse-Labs/.github#1974",
   "implementation_issue": "StegVerse-Labs/TVC#437",

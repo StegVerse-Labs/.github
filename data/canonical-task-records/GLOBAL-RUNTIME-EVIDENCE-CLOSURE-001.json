@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000000100000",
+  "source_state_vector_ref": "control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
   "shared_runtime_evidence_owner_for_profiled_lanes": true,
   "global_invariant_ref": "data/task-registry-global-invariants.json",
   "device_interchangeability_enforced": true,

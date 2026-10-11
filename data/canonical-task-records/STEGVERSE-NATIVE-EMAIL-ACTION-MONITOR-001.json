@@ -8,6 +8,7 @@
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "10100000100000",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json",
   "source_refs": [
     "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
     "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
