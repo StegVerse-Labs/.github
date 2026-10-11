@@ -8,7 +8,9 @@ CLASSES=['SOURCE_IMPLEMENTED','MERGED','CI_VALIDATED','SANDBOX_RUNTIME_OBSERVED'
 RANK={v:i for i,v in enumerate(CLASSES)}
 def fail(m): print('ERROR:',m,file=sys.stderr); raise SystemExit(1)
 def classify(r):
- c=r.get('completion') or {}; active=c.get('claimed') is True or c.get('validated') is True
+ c=r.get('completion') or {}
+ if not isinstance(c,dict): return 'LEGACY_UNQUALIFIED_NON_AUTHORITATIVE' if c is True else 'NOT_CLAIMED'
+ active=c.get('claimed') is True or c.get('validated') is True
  if not active: return 'NOT_CLAIMED'
  v=c.get('evidence_contract_version') or r.get('completion_evidence_contract_version')
  e=c.get('evidence_class')
@@ -16,7 +18,12 @@ def classify(r):
  t=c.get('terminal_evidence_class')
  return 'QUALIFIED_TERMINAL_SATISFIED' if (RANK[e]>=RANK[t] if t in RANK else e=='END_TO_END') else 'QUALIFIED_PARTIAL_EVIDENCE'
 def validate(path,r):
- c=r.get('completion') or {}; active=c.get('claimed') is True or c.get('validated') is True
+ c=r.get('completion') or {}
+ if not isinstance(c,dict):
+  # legacy bare-scalar shape: classified non-authoritative, but it cannot carry a v1 claim
+  if c is True and r.get('completion_evidence_contract_version')=='v1': fail(f'{path.name}: v1 completion must be an object')
+  return
+ active=c.get('claimed') is True or c.get('validated') is True
  if not active: return
  v=c.get('evidence_contract_version') or r.get('completion_evidence_contract_version')
  engaged=v=='v1' or any(k in c for k in ('evidence_class','terminal_evidence_class','evidence_refs','end_to_end_complete'))

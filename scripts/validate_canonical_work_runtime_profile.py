@@ -49,7 +49,7 @@ def main() -> int:
 
     truth = policy.get("canonical_truth", {})
     require(truth.get("execution_claim_and_fence") == "WORKERCOORDINATOR", "WorkerCoordinator authority drift")
-    require(truth.get("observed_reality_and_reconstruction") == "MASTER_RECORDS", "Master Records authority drift")
+    require(truth.get("observed_reality_and_reconstruction") == "ORGANIZATION_LEDGER_FOR_OBSERVED_REALITY; MASTER_RECORDS_RECONSTRUCTION_ONLY", "organization-ledger reality / Master Records reconstruction-only authority drift")
     require(truth.get("governed_ingress_egress") == "INTERLOCK_INTR", "Interlock/InTr authority drift")
     require(registry.get("authoritative_roles", {}).get("execution_claim_and_fence") == "control/worker-registry.json / WorkerCoordinator", "registry claim authority drift")
     require(workers.get("schema") == "stegverse.heartbeat-worker-registry/v0.1", "worker registry schema drift")
