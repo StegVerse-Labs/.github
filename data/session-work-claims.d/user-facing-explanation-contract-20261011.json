@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT",
-  "branch": "claude/user-facing-explanation-contract",
+  "branch": "claude/release-user-facing-explanation-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "Universal user-facing explanation contract (stegverse.user-facing-explanation/v1) and the preregistered scaled-up HIL experiment HIL-SCALED-EXPLANATION-001 for .github#3106: schema, builder, fixtures, examples, HIL stimuli/probes/rubric/trial schema, tests and canonical documentation carrying the owner-reported Rigel Randolph / Sara Katpar research origin. Source only; no task admission, no measurement, no runtime claim.",
   "claimed_paths": [
@@ -32,5 +32,9 @@
     "Do not run trials, enroll participants or query LLM providers from this lane"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3108",
+  "merged_commit": "cae29b7a836a8d54861e6699b9f4d7a34e5e0be1",
+  "claim_released_at": "2026-10-11T17:50:00Z",
+  "next_task_after_release": "Owner: Task Registry / COSV admission of the explanation contract and HIL-SCALED-EXPLANATION-001; recognition-literal approval; trial execution. Site mirror: StegVerse-Labs/Site#1531."
 }
