@@ -529,8 +529,11 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
     # the fresh sovereign mesh ref, including DENY and FAIL_CLOSED responses.
     if failure is None and decisions:
         recovered = (readback or {}).get("answers") or []
+        if not isinstance(recovered, list):
+            recovered = []
         for item in decisions:
-            if not any(answer.get("request_packet_id") == item["request_packet_id"]
+            if not any(isinstance(answer, dict)
+                       and answer.get("request_packet_id") == item["request_packet_id"]
                        and answer.get("disposition") == item["disposition"]
                        and answer.get("repository_receipt_sha256") == item["repository_receipt_sha256"]
                        and answer.get("organization_receipt_sha256") == item["organization_receipt_sha256"]
