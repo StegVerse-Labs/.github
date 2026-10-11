@@ -53,6 +53,12 @@ Each observation is one `stegverse.hil-explanation-trial-record/v1` record: expe
 
 The trial-record schema's `allOf` enforces the same discipline for schema-only consumers: a CROSS_SESSION_TRAINING claim is accepted only in a fresh, unexposed HIL-3 probe trial with HOLDOUT_RECOGNITION and discrimination evidence; probe trials carry a probe kind and no interpretation metrics; condition trials carry no probe kind and no knowledge metrics; each knowledge signal requires the answers that justify it; HIL-1 subjects are HUMAN and HIL-2/HIL-3 subjects are LLM with provider and model id (`tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers`).\n\n`summarize` aggregates validated records per dimension and condition; an empty set is NOT_MEASURED, never zero. `data/hil-explanation-experiment/results.json` is replaced only by that summary.
 
+## Experimenter tooling
+
+`scripts/hil_explanation_experiment.py record --spec <json>` turns one observation into a validated trial record: the spec names the trial, dimension, condition or probe kind, fixture, subject, session condition, account exposure, the files holding the prompt and response, the structured answers and the evidence locator. Prompt, response, stimulus and session reference enter the record only as sha256 digests; the texts stay at the evidence locator under the owner's custody and are never written by the tool. For a condition trial the stimulus digest is recomputed from the fixture, so a mismatched stimulus is refused; scoring is the deterministic rubric; the record is validated against the trial schema before it is printed. The tool contacts no provider, enrols no subject and claims no knowledge mechanism (`knowledge_inference` defaults to NONE unless the spec supplies the discrimination evidence the schema demands).
+
+`scripts/hil_explanation_experiment.py dry-run --out <dir>` writes SYNTHETIC_TEST oracle trials for every fixture under A, B and C plus one FIRST_EXPOSURE probe, then prints `summarize` over them. The oracle answers straight from the artifact's expected answers, so the dry run proves that recorder, rubric, schema and summary agree end to end (every synthetic cell scores 1.0). Its output is `MEASURED_SYNTHETIC`, is written only to the directory given, and must never replace `data/hil-explanation-experiment/results.json`.
+
 ## Current state
 
 Planned measurements: all of the above. Actual observations: none. No trial has been run, no human participant enrolled, no LLM provider queried, and no knowledge claim of any kind is made.

@@ -212,5 +212,102 @@ class SchemaOnlyConsumers(unittest.TestCase):
             self.assertTrue(validator.is_valid(inst))
 
 
+class TrialRecorder(unittest.TestCase):
+    """Experimenter tooling: observations become validated, privacy-preserving records; the dry
+    run proves recorder, rubric, schema and summary agree without measuring anything real."""
+
+    SUBJECT = {"subject_class": "LLM", "subject_pseudonym": "subj_feedbeef", "provider": "p", "model_id": "m"}
+
+    def record(self, **over):
+        stim = H.build_stimulus("C", DENIED)
+        kw = dict(trial_id="HIL-SE-R-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject=self.SUBJECT, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="session-ref-secret", prompt_text=stim["text"], response_text="the response text", answers=H.oracle_answers(stim["expected"]), evidence_locator="owner://trials/0001", observed_at="2026-10-11T18:50:00Z")
+        kw.update(over)
+        return H.record_trial(**kw)
+
+    def test_record_is_valid_scored_and_free_of_raw_text(self):
+        stim = H.build_stimulus("C", DENIED)
+        rec = self.record()
+        H.validate_trial(rec)
+        self.assertEqual(rec["stimulus_digest"], stim["stimulus_digest"])
+        self.assertEqual(rec["prompt_digest"], H._digest(stim["text"]))
+        self.assertEqual(rec["response_digest"], H._digest("the response text"))
+        self.assertEqual(rec["session"]["session_ref_digest"], H._digest("session-ref-secret"))
+        flat = json.dumps(rec)
+        for raw in ("the response text", "session-ref-secret", "What happened:"):
+            self.assertNotIn(raw, flat)
+        self.assertEqual(rec["scores"]["interpretation_accuracy"], 1.0)
+        self.assertEqual(rec["knowledge_inference"], {"claimed_mechanism": "NONE"})
+        self.assertEqual(rec["evidence_class"], "ACTUAL_OBSERVATION")
+        self.assertFalse(rec["privacy"]["raw_text_stored_in_repository"])
+
+    def test_recorder_refusals(self):
+        with self.assertRaises(H.ExperimentError):
+            self.record(stimulus_text="not the condition C stimulus")
+        with self.assertRaises(H.ExperimentError):
+            self.record(condition="PROBE", dimension="HIL-3")  # no probe_kind
+        with self.assertRaises(H.ExperimentError):
+            self.record(condition="PROBE", dimension="HIL-3", probe_kind="FRESH_SESSION_BLIND")  # no stimulus text to digest
+        with self.assertRaises(H.ExperimentError):
+            self.record(session_condition="LOGGED_IN")
+        with self.assertRaises(H.ExperimentError):
+            self.record(account_exposure="MAYBE")
+        with self.assertRaises(H.ExperimentError):
+            self.record(response_text="")
+        with self.assertRaises(H.ExperimentError):
+            self.record(fixture_id="UFE-FIXTURE-DOES-NOT-EXIST")
+        with self.assertRaises(H.ExperimentError):
+            self.record(dimension="HIL-1")  # LLM subject in the human dimension
+        with self.assertRaises(H.ExperimentError):  # a cross-session claim needs the fresh-session holdout evidence
+            self.record(knowledge_inference={"claimed_mechanism": "CROSS_SESSION_TRAINING"})
+
+    def test_probe_record(self):
+        probe = H.build_probe("FRESH_SESSION_BLIND")
+        rec = self.record(dimension="HIL-3", condition="PROBE", probe_kind="FRESH_SESSION_BLIND", stimulus_text=probe["text"], prompt_text=probe["text"], answers={"echoed_literal": False, "concept_questions_asked": 0})
+        self.assertEqual(rec["scores"]["knowledge_signal"], "NONE")
+        self.assertEqual(rec["stimulus_digest"], probe["prompt_digest"])
+
+    def test_dry_run_is_synthetic_and_leaves_results_untouched(self):
+        before = (ROOT / "data" / "hil-explanation-experiment" / "results.json").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as d:
+            summary = H.dry_run(Path(d))
+            files = sorted(Path(d).glob("*.json"))
+            self.assertEqual(len(files), 3 * len(FIX) + 1)
+            for f in files:
+                rec = json.loads(f.read_text(encoding="utf-8"))
+                H.validate_trial(rec)
+                self.assertEqual(rec["evidence_class"], "SYNTHETIC_TEST")
+                self.assertNotIn("What happened:", f.read_text(encoding="utf-8"))
+        self.assertEqual(summary["state"], "MEASURED_SYNTHETIC")
+        self.assertEqual(summary["trial_count"], 3 * len(FIX) + 1)
+        for cond in "ABC":
+            self.assertEqual(summary["cells"]["HIL-2/" + cond]["metrics"]["interpretation_accuracy"], 1.0)
+        self.assertEqual(summary["cells"]["HIL-3/FIRST_EXPOSURE"]["n"], 1)
+        self.assertEqual((ROOT / "data" / "hil-explanation-experiment" / "results.json").read_text(encoding="utf-8"), before)
+        self.assertEqual(json.loads(before)["state"], "NOT_MEASURED")
+
+    def test_cli_record_and_dry_run(self):
+        import subprocess, sys as _sys
+        stim = H.build_stimulus("A", DENIED)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "prompt.txt").write_text(stim["text"], encoding="utf-8")
+            (d / "response.txt").write_text("response", encoding="utf-8")
+            spec = {"trial_id": "HIL-SE-CLI-0001", "dimension": "HIL-2", "condition": "A", "fixture_id": DENIED["fixture_id"], "subject": self.SUBJECT, "session_condition": "FRESH_SESSION_SIGNED_IN_ORDINARY", "account_exposure": "UNEXPOSED", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "answers": H.oracle_answers(stim["expected"]), "evidence_locator": "owner://x", "observed_at": "2026-10-11T18:50:00Z"}
+            (d / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            rec = json.loads(out.stdout)
+            self.assertEqual(rec["scores"]["interpretation_accuracy"], 1.0)
+            self.assertNotIn("response", rec["response_digest"])
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "dry-run", "--out", str(d / "dry")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 0, out.stderr)
+            self.assertEqual(json.loads(out.stdout)["state"], "MEASURED_SYNTHETIC")
+            spec["condition"] = "PROBE"
+            (d / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 2)
+            self.assertEqual(json.loads(out.stdout)["disposition"], "FAIL_CLOSED")
+
+
 if __name__ == "__main__":
     unittest.main()
