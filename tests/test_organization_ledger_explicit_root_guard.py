@@ -35,7 +35,7 @@ import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as batch_custody  # noqa: E402
 from tests import test_org_claim_custody as claim  # noqa: E402
 
-REF = "refs/heads/organization-ledger/StegVerse-Labs"
+REF = "refs/stegverse/organization-ledger"
 KIND_MISMATCH = "ORGANIZATION_LEDGER_STORE_KIND_MISMATCH"
 LOCUS_VARIABLES = ("STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
                    "STEGVERSE_ORG_LEDGER_GIT_REMOTE", "STEGVERSE_ORG_LEDGER_GIT_CUSTODY")
