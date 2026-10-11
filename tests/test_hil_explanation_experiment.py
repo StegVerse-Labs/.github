@@ -702,7 +702,8 @@ class SummaryIntegrity(unittest.TestCase):
 
     def test_direct_summary_rejects_invalid_schema_before_aggregation(self):
         forged = trial(schema="stegverse.invalid-trial/v0")
-        self.refused("schema", [forged])
+        with self.assertRaises(H.ExperimentError):
+            H.summarize([forged])
 
     def test_mixed_synthetic_and_actual_is_refused(self):
         H.dry_run(self.dir / "dry")
