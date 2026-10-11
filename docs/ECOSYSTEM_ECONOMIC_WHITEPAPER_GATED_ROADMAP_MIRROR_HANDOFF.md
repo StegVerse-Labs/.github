@@ -185,3 +185,17 @@ Publisher PR #90 stages a dated convergence/comparative treatment at `docs/ENTIT
 The treatment's provenance matrix separates (a) repository evidence that predates the 2026-09-29 treatment, (b) external convergence, and (c) StegVerse divergence/extension. Where exact first-documentation chronology for learning-graph language was not established by repository search, it remains unclaimed. Original Volume I/II PDFs are untouched; future incorporation uses separately versioned editions through the existing Publisher cross-reference/publication mechanism.
 
 This documentation candidate does not modify the frozen approved Private-State Economy manifest, invoke Universal InTr, resolve `AUTHENTIC_PUBLICATION_UNOBSERVED`, wire benchmark export, publish a successor edition, propagate Site, or establish economic/educational/health outcomes. The canonical task remains PROPOSED with the same runtime/publication boundaries until independently evidenced transitions occur.
+
+## 2026-10-11 WP-01 / WP-03 source integration reconciliation (no runtime authority)
+
+The opening COSV was `10100000105000` (2026-09-22); the historical Site claim cites the intermediate `10100000104000`, and the current canonical task-vector file reports `10100000102000`. Preserve this predecessor sequence as evidence, not execution authority. Do not rewrite the historical Site claim's `expected_evidence` after release.
+
+- **WP-01 source integration:** Site PR #1532 merged into `main` at `7e4d6de35fe5e1d8dda22cab198474203107efa1` from reviewed exact head `1efa14e2071130d7139cad79c0aa8ce4843f1b73`. Its 16-benchmark read-only projection, negative evidence tests and public view are source integration only.
+- **WP-03 producer:** Publisher PR #104 merged at `96bcdd56d864404f5db6760c8193dc9ea58d2f6c`; the public-safe evidence export currently contains no authenticated benchmark proof.
+- **WP-03 Site consumer:** the Publisher evidence copy and provenance-unauthenticated mirror pin were integrated by Site #1532; Site remains read-only and cannot grant a checkmark. The earlier blocker phrase `BENCHMARK_EXPORT_UNWIRED` now describes an outstanding **authenticated runtime evidence/export** requirement, not absence of source producer or consumer.
+- **Claim terminalization:** Site #1538 merged at `5286b6871cca952e878839ddf2b57437b9b40a8f`, releasing the historical implementation claim. A successor implementation lane requires a separate valid claim; this appendix grants none.
+- **Runtime:** `GOVERNED_PUBLICATION` and `BENCHMARK_PUBLIC_EXPORT` remain UNKNOWN in the canonical task record. The frozen manifest/request must be attempted through the existing authenticated governance route and proven by Organization receipt, InTr disposition, Master Records reconstruction and matching digests. Neither source merges nor this appendix attempt a transition.
+- **Registry/COSV:** canonical dependency state, blocker count and source-derived vector remain unchanged pending the owning Registry's governed reconciliation. All 16 public benchmarks remain `NOT_VERIFIED`.
+
+
+- **WP-04 parallel source repairs:** LLM-adapter PR #384 merged at `c169fd6a518b39793be6c2139c451ebd72ac1db8` to retain measured provider usage where actually observed; StegBrowser PR #51 merged at `37df56043f7bc432c6ed59d83817b8c39a705638` to distinguish declared provider labels from attested identity and unobserved usage. Neither source repair establishes a real S1 provider result, lease, governed ingress/egress or terminal destruction.
