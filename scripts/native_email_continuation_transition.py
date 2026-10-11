@@ -356,13 +356,15 @@ def apply_page(prior: Mapping[str, Any], page_index: int, messages: list[Mapping
                              window=[lo, hi])
 
 
-def complete_pagination(prior: Mapping[str, Any], has_more: bool) -> tuple[dict[str, Any], dict[str, Any]]:
+def complete_pagination(prior: Mapping[str, Any], has_more: bool | None) -> tuple[dict[str, Any], dict[str, Any]]:
     name = "COMPLETE_PAGINATION"
     bad = _check(prior)
     if bad:
         return dict(prior), _disposition(FAIL_CLOSED, name, bad)
     if prior["phase"] != PHASE_PAGINATING:
         return dict(prior), _disposition(DENY, name, "NOT_PAGINATING")
+    if type(has_more) is not bool:
+        return dict(prior), _disposition(FAIL_CLOSED, name, "PAGINATION_TERMINAL_EVIDENCE_REQUIRED")
     if has_more:
         return dict(prior), _disposition(DENY, name, "PAGINATION_INCOMPLETE_NO_ZERO_REMAINING_CLAIM",
                                          resume_page_index=int(prior["last_completed_page_index"]) + 1)
@@ -491,7 +493,7 @@ def verify_chain(states: list[Mapping[str, Any]]) -> tuple[bool, str | None]:
 TRANSITIONS = {
     "begin": lambda s, a: begin_cycle(s, int(a["now_epoch"])),
     "page": lambda s, a: apply_page(s, int(a["page_index"]), a["messages"]),
-    "complete": lambda s, a: complete_pagination(s, bool(a.get("has_more", False))),
+    "complete": lambda s, a: complete_pagination(s, a.get("has_more")),
     "resolve": lambda s, a: record_resolution(s, a["incident_id"], a["evidence"]),
     "archive-receipt": lambda s, a: record_archive_receipt(s, a["confirmed_ids"]),
     "close": lambda s, a: close_cycle(s),

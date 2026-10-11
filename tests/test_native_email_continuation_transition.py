@@ -127,6 +127,38 @@ class ContinuationTransitionTests(unittest.TestCase):
         self.assertTrue(disp["idempotent_replay"])
         self.assertEqual(t.state_sha256(again), t.state_sha256(s))
 
+    def test_missing_or_non_boolean_terminal_evidence_fails_closed(self):
+        s = ok(t.begin_cycle(gen(), 5000))
+        s = ok(t.apply_page(s, 0, [msg(1)]))
+        for observed in (None, 0, "", "false", [], {}):
+            same, disp = t.complete_pagination(s, observed)
+            self.assertEqual(disp["disposition"], t.FAIL_CLOSED)
+            self.assertEqual(disp["failed_predicate"], "PAGINATION_TERMINAL_EVIDENCE_REQUIRED")
+            self.assertEqual(t.state_sha256(same), t.state_sha256(s))
+
+    def test_cli_missing_terminal_evidence_does_not_advance(self):
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td) / "state.json"
+            obs = Path(td) / "obs.json"
+            script = str(ROOT / "scripts/native_email_continuation_transition.py")
+            def run(op):
+                return subprocess.run([sys.executable, "-I", script, "--state", str(state),
+                                       "--op", op, "--input", str(obs)],
+                                      capture_output=True, text=True, check=False)
+            obs.write_text(json.dumps({}))
+            self.assertEqual(run("genesis").returncode, 0)
+            obs.write_text(json.dumps({"now_epoch": 5000}))
+            self.assertEqual(run("begin").returncode, 0)
+            obs.write_text(json.dumps({"page_index": 0, "messages": [msg(1)]}))
+            self.assertEqual(run("page").returncode, 0)
+            before = state.read_text()
+            obs.write_text("{}")
+            result = run("complete")
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(json.loads(result.stdout)["failed_predicate"],
+                             "PAGINATION_TERMINAL_EVIDENCE_REQUIRED")
+            self.assertEqual(state.read_text(), before)
+
     def test_incomplete_pagination_never_claims_zero(self):
         s = ok(t.begin_cycle(gen(), 5000))
         s = ok(t.apply_page(s, 0, [msg(i) for i in range(100)]))
