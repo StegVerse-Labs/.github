@@ -26,6 +26,9 @@ Non-authorizing. The state is a projection: it confers no transition
 admission, WorkerCoordinator claim/fence, credential, custody or archive
 authority. ``archive_proposed`` is a proposal for the governed archive
 consequence; only an archive receipt naming proposed IDs moves counters.
+``project_failure_map_receipt`` (``--op failure-map``) projects the open
+retained incidents, read-only, in the monitor-receipt shape that
+``reconcile_email_failure_incidents.py`` maps for StegHealth.
 Standard library only.
 """
 from __future__ import annotations
@@ -66,6 +69,11 @@ ARCHIVABLE = (INCIDENT_RESOLVED, INCIDENT_SUPERSEDED)
 
 # Classes kept in INBOX until resolved regardless of anything else.
 RETAINED_CLASSES = ("FAILURE", "SECURITY", "BILLING", "QUOTA", "CAPACITY", "POLICY")
+
+# Shape consumed by scripts/reconcile_email_failure_incidents.py (the
+# StegHealth failure-map bridge) and emitted by run_native_email_action_monitor.
+MONITOR_RECEIPT_SCHEMA = "stegverse.native-email-action-monitor-receipt/v1"
+INCIDENT_KIND = "GITHUB_FAILURE_EMAIL_CLUSTER"
 
 
 def canonical_bytes(value: Mapping[str, Any]) -> bytes:
@@ -481,6 +489,77 @@ def summary(state: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def project_failure_map_receipt(state: Mapping[str, Any]) -> dict[str, Any]:
+    """Project open retained incidents as a monitor receipt for the StegHealth bridge.
+
+    Pure and read-only: the state is not mutated and no transition is recorded.
+    Each ``OPEN_UNRESOLVED`` incident whose class is in ``RETAINED_CLASSES``
+    becomes one ``GITHUB_FAILURE_EMAIL_CLUSTER`` incident in the shape that
+    ``reconcile_email_failure_incidents.build_failure_map`` consumes. Redacted
+    incidents stay redacted: ``repository_sha256`` stands in for the name and
+    the workflow is ``unknown-workflow``. The projection confers nothing
+    (``authority_effect: NONE_PROJECTION_ONLY``); corrective-task creation
+    remains StegHealth's, registry import an owner-admitted step.
+    """
+    bad = _check(state)
+    if bad:
+        raise ValueError(bad)
+    digest = state_sha256(state)
+    lineage = {"cycle_seq": state["cycle_seq"], "transition_seq": state["transition_seq"], "state_sha256": digest}
+    incidents: list[dict[str, Any]] = []
+    for inc in state["incidents"].values():
+        if inc["state"] != INCIDENT_OPEN or inc["notification_class"] not in RETAINED_CLASSES:
+            continue
+        repo, sha = inc.get("repository"), inc.get("repository_sha256")
+        workflow = inc.get("workflow") or "unknown-workflow"
+        head = inc.get("head_sha") or "unknown-head"
+        signature = f"{inc['notification_class'].lower()}:{workflow}@{head}"
+        if inc.get("run_id"):
+            signature += f"#run:{inc['run_id']}"
+        message_ids = sorted(inc.get("message_ids") or [])
+        incidents.append({
+            "incident_id": inc["incident_id"],
+            "kind": INCIDENT_KIND,
+            "normalized_repository": repo or sha or "unknown-repo",
+            "repository_sha256": sha,
+            "redacted": bool(inc.get("redacted")),
+            "normalized_workflow": workflow,
+            "normalized_error_signature": signature,
+            "head_sha": inc.get("head_sha"),
+            "run_id": inc.get("run_id"),
+            "notification_class": inc["notification_class"],
+            "correlation_complete": bool(inc.get("correlation_complete")),
+            "observation_count": len(message_ids),
+            "observation_refs": message_ids,
+            "state": "INCIDENT_PROPOSED_NOT_ADMITTED",
+            "task_ingress_required": True,
+            "email_observation_is_execution_evidence": False,
+            "incident_proposal_mints_execution_authority": False,
+            "source_continuation": dict(lineage),
+        })
+    incidents.sort(key=lambda i: i["incident_id"])
+    return {
+        "schema": MONITOR_RECEIPT_SCHEMA,
+        "state": "CONTINUATION_PROJECTION",
+        "projection_source": {"schema": SCHEMA, "phase": state["phase"], **lineage},
+        "task_id": TASK_ID,
+        "cosv_task_vector": COSV_TASK_VECTOR,
+        "incident_count": len(incidents),
+        "incidents": incidents,
+        "archived_replay": {"state": "NOT_REQUESTED", "complete": True},
+        "archived_count": 0,
+        "archive_failed_count": 0,
+        "archive_failed_ids": [],
+        "credential_authority": "TV/TVC",
+        "credential_material_exported": False,
+        "github_token_runtime_authority": "NONE",
+        "task_creation_owner": "StegVerse-Labs/StegHealth",
+        "projection_only": True,
+        "continuation_state_mutated": False,
+        "authority_effect": "NONE_PROJECTION_ONLY",
+    }
+
+
 def verify_chain(states: list[Mapping[str, Any]]) -> tuple[bool, str | None]:
     for i in range(1, len(states)):
         if states[i].get("prior_state_sha256") != state_sha256(states[i - 1]):
@@ -505,8 +584,10 @@ TRANSITIONS = {
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     parser.add_argument("--state", required=True, type=Path)
-    parser.add_argument("--op", required=True, choices=sorted(TRANSITIONS) + ["genesis", "summary"])
+    parser.add_argument("--op", required=True, choices=sorted(TRANSITIONS) + ["genesis", "summary", "failure-map"])
     parser.add_argument("--input", type=Path, help="JSON observation for the transition")
+    parser.add_argument("--output", type=Path,
+                        help="failure-map only: write the projected receipt here instead of stdout")
     args = parser.parse_args(argv)
     if args.op == "genesis":
         if args.state.exists():
@@ -517,6 +598,24 @@ def main(argv: list[str] | None = None) -> int:
         prior = json.loads(args.state.read_text(encoding="utf-8"))
         if args.op == "summary":
             print(json.dumps(summary(prior), indent=2, sort_keys=True))
+            return 0
+        if args.op == "failure-map":
+            # Read-only projection: never writes or re-commits the state file.
+            try:
+                receipt = project_failure_map_receipt(prior)
+            except ValueError as exc:
+                print(json.dumps(_disposition(FAIL_CLOSED, "FAILURE_MAP", str(exc)), sort_keys=True))
+                return 1
+            text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+            if args.output is None:
+                sys.stdout.write(text)
+                return 0
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            tmp = args.output.with_name("." + args.output.name + ".tmp")
+            tmp.write_text(text, encoding="utf-8")
+            tmp.replace(args.output)
+            print(json.dumps(_disposition(ALLOW, "FAILURE_MAP", incident_count=receipt["incident_count"],
+                                          output=str(args.output), continuation_state_mutated=False), sort_keys=True))
             return 0
         observation = json.loads(args.input.read_text(encoding="utf-8")) if args.input else {}
         state, disp = TRANSITIONS[args.op](prior, observation)

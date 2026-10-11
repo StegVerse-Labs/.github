@@ -306,6 +306,97 @@ class ContinuationTransitionTests(unittest.TestCase):
                                                 "ci_conclusion": "success"})
         self.assertEqual(disp["failed_predicate"], "SUPERSEDING_HEAD_NOT_INDEPENDENT")
 
+    def _mixed_state(self) -> dict:
+        """RECONCILING state: open public FAILURE, open redacted FAILURE, open
+        POLICY, open INFORMATIONAL, SUCCESS and one SUPERSEDED FAILURE."""
+        rows = [msg(1), msg(2),
+                msg(3, repo="Owner/private-repo", sha=SHA_B),
+                msg(4, subject="[GitHub] Claude is requesting updated permissions", sha="d" * 40),
+                msg(5, subject="Weekly digest", sha="e" * 40),
+                msg(6, subject="Run succeeded: workflow-lint", sha="f" * 40),
+                msg(7, workflow="other", sha="abc1234")]
+        s = run_cycle(gen(), 5000, rows)[-1]
+        inc7 = next(i for i in s["incidents"].values() if i["workflow"] == "other")
+        s = ok(t.record_resolution(s, inc7["incident_id"], {
+            "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE", "evidence_url": "https://x",
+            "current_head_sha": "9" * 40, "ci_conclusion": "success"}))
+        return s
+
+    def test_failure_map_projection_counts_shapes_and_redaction(self):
+        s = self._mixed_state()
+        before = t.state_sha256(s)
+        receipt = t.project_failure_map_receipt(s)
+        self.assertEqual(t.state_sha256(s), before)  # pure: input untouched
+        self.assertEqual(receipt["schema"], "stegverse.native-email-action-monitor-receipt/v1")
+        self.assertEqual(receipt["authority_effect"], "NONE_PROJECTION_ONLY")
+        self.assertEqual(receipt["archived_replay"], {"state": "NOT_REQUESTED", "complete": True})
+        self.assertEqual(receipt["projection_source"]["schema"], t.SCHEMA)
+        self.assertEqual(receipt["projection_source"]["state_sha256"], before)
+        # Open FAILURE (public), open FAILURE (redacted), open POLICY. Not the
+        # INFORMATIONAL, SUCCESS or SUPERSEDED incidents.
+        self.assertEqual(receipt["incident_count"], 3)
+        self.assertEqual(len(receipt["incidents"]), 3)
+        by_class = {i["notification_class"]: i for i in receipt["incidents"]}
+        self.assertEqual(sorted(by_class), ["FAILURE", "POLICY"])
+        for inc in receipt["incidents"]:
+            self.assertTrue(inc["incident_id"].startswith("INC-EMAIL-"))
+            self.assertEqual(inc["kind"], "GITHUB_FAILURE_EMAIL_CLUSTER")
+            self.assertEqual(inc["state"], "INCIDENT_PROPOSED_NOT_ADMITTED")
+            self.assertTrue(inc["task_ingress_required"])
+            self.assertFalse(inc["email_observation_is_execution_evidence"])
+            self.assertFalse(inc["incident_proposal_mints_execution_authority"])
+            self.assertEqual(inc["observation_count"], len(inc["observation_refs"]))
+            self.assertEqual(inc["source_continuation"],
+                             {"cycle_seq": s["cycle_seq"], "transition_seq": s["transition_seq"],
+                              "state_sha256": before})
+        public = next(i for i in receipt["incidents"] if i["normalized_repository"] == "StegVerse-Labs/StegDB")
+        self.assertFalse(public["redacted"])
+        self.assertEqual(public["normalized_workflow"], "workflow-lint")
+        self.assertEqual(public["normalized_error_signature"], f"failure:workflow-lint@{SHA_A}")
+        self.assertEqual(public["observation_refs"], ["m00001", "m00002"])
+        redacted = next(i for i in receipt["incidents"] if i["redacted"])
+        self.assertEqual(redacted["normalized_repository"], t.repository_sha256("Owner/private-repo"))
+        self.assertEqual(redacted["repository_sha256"], redacted["normalized_repository"])
+        self.assertEqual(redacted["normalized_workflow"], "unknown-workflow")
+        self.assertEqual(redacted["normalized_error_signature"], f"failure:unknown-workflow@{SHA_B}")
+        self.assertNotIn("private-repo", json.dumps(receipt))
+        # Run id, when present, is part of the signature.
+        s2 = ok(t.apply_page(ok(t.begin_cycle(gen(), 5000)), 0, [{**msg(9), "run_id": "123"}]))
+        (inc,) = t.project_failure_map_receipt(s2)["incidents"]
+        self.assertEqual(inc["normalized_error_signature"], f"failure:workflow-lint@{SHA_A}#run:123")
+        self.assertEqual(inc["run_id"], "123")
+
+    def test_failure_map_projection_fails_closed_on_invalid_state(self):
+        s = self._mixed_state()
+        s["processed_message_ids"] = []
+        with self.assertRaises(ValueError):
+            t.project_failure_map_receipt(s)
+
+    def test_cli_failure_map_is_read_only(self):
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td) / "continuation.json"
+            out = Path(td) / "projected" / "receipt.json"
+            state.write_text(json.dumps(self._mixed_state(), indent=2, sort_keys=True) + "\n")
+            before = state.read_bytes()
+            script = str(ROOT / "scripts/native_email_continuation_transition.py")
+            result = subprocess.run([sys.executable, "-I", script, "--state", str(state),
+                                     "--op", "failure-map", "--output", str(out)],
+                                    capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            disp = json.loads(result.stdout)
+            self.assertEqual(disp["disposition"], t.ALLOW)
+            self.assertEqual(disp["incident_count"], 3)
+            self.assertEqual(state.read_bytes(), before)
+            self.assertFalse(state.with_name(".continuation.json.tmp").exists())
+            written = json.loads(out.read_text())
+            self.assertEqual(written["incident_count"], 3)
+            # Without --output the projection goes to stdout.
+            result = subprocess.run([sys.executable, "-I", script, "--state", str(state),
+                                     "--op", "failure-map"], capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)["incident_count"], 3)
+            self.assertEqual(state.read_bytes(), before)
+
     def test_cli_round_trip(self):
         with tempfile.TemporaryDirectory() as td:
             state = Path(td) / "continuation.json"
