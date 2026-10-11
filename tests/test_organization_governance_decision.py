@@ -350,3 +350,56 @@ def test_report_names_the_crossing_predicate_for_a_refused_addressed_frame(tmp_p
     failure = report["fail_closed"]
     assert failure["failure_code"] == "ORGANIZATION_CROSSING_FAIL_CLOSED"
     assert "FIXTURE_CROSSING_PRECONDITION" in failure["failed_predicate"]
+
+
+def test_report_refuses_verified_but_unrelated_receiver_answer(tmp_path):
+    """A fresh verified ref cannot satisfy a different packet's decision."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": [{
+        "frame_key": REQUEST_KEY, "request_packet_id": REQUEST_PACKET_ID,
+        "application_result": {
+            "disposition": "DENY",
+            "repository_receipt_sha256": "sha256:repo",
+            "organization_receipt_sha256": "sha256:org"
+        }
+    }]}))
+    (evidence / "readback.json").write_text(json.dumps({
+        "verified": True, "answers": [{
+            "request_packet_id": "unrelated-packet", "disposition": "DENY",
+            "repository_receipt_sha256": "sha256:repo",
+            "organization_receipt_sha256": "sha256:org"
+        }]
+    }))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 1
+    assert report["fail_closed"]["failure_code"] == "ORGANIZATION_GOVERNANCE_ANSWER_BINDING_MISMATCH"
+
+
+def test_report_accepts_matching_verified_receiver_answer(tmp_path):
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "materialization.json").write_text(json.dumps({
+        "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+    }))
+    (evidence / "cycle.json").write_text(json.dumps({"items": [{
+        "frame_key": REQUEST_KEY, "request_packet_id": REQUEST_PACKET_ID,
+        "application_result": {
+            "disposition": "DENY",
+            "repository_receipt_sha256": "sha256:repo",
+            "organization_receipt_sha256": "sha256:org"
+        }
+    }]}))
+    (evidence / "readback.json").write_text(json.dumps({
+        "verified": True, "answers": [{
+            "request_packet_id": REQUEST_PACKET_ID, "disposition": "DENY",
+            "repository_receipt_sha256": "sha256:repo",
+            "organization_receipt_sha256": "sha256:org"
+        }]
+    }))
+    report, status = decision.build_report(evidence, mesh_root="fixture")
+    assert status == 0
+    assert report["workflow_disposition"] == "COMPLETED"
