@@ -20,6 +20,18 @@ class CompletionEvidenceV1Tests(unittest.TestCase):
         module.validate(Path("legacy.json"), record)
         self.assertEqual(module.classify(record), "LEGACY_UNQUALIFIED_NON_AUTHORITATIVE")
 
+    def test_bare_boolean_completion_is_legacy_not_a_crash(self):
+        module = mod()
+        record = {"completion": True}
+        module.validate(Path("legacy.json"), record)
+        self.assertEqual(module.classify(record), "LEGACY_UNQUALIFIED_NON_AUTHORITATIVE")
+
+    def test_v1_rejects_bare_boolean_completion(self):
+        module = mod()
+        record = {"completion_evidence_contract_version": "v1", "completion": True}
+        with self.assertRaises(SystemExit):
+            module.validate(Path("x.json"), record)
+
     def test_v1_requires_evidence_class(self):
         module = mod()
         record = {
