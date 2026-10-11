@@ -360,7 +360,7 @@ def validate_explanation(artifact: dict[str, Any], schema_path: Path = SCHEMA_PA
     _require(artifact["outcome"]["predicate"] in artifact["outcome"]["predicates"], "predicate_not_in_predicates")
     _require(artifact["remediation_draft"] is None or artifact["remediation_draft"]["draft"].get("submitted") is False, "remediation_draft_submitted")
     for e in artifact["evidence"]:
-        _require(e["kind"] == "NONE" or e["ref"], "evidence_ref_missing")
+        _require(e["kind"] == "NONE" or (isinstance(e["ref"], str) and e["ref"].strip() != ""), "evidence_ref_missing")
     return artifact
 
 

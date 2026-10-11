@@ -160,22 +160,37 @@ class Refusals(unittest.TestCase):
 class VerifiedReceiptLocatorSchema(unittest.TestCase):
     """Schema-only consumers must not accept verified execution without a usable evidence locator."""
 
-    def test_verified_receipt_locator_is_required(self):
+    def mutations(self):
         import copy
-        from jsonschema import Draft202012Validator
-
-        validator = Draft202012Validator(SCHEMA)
         valid = build("01-success-verified")
-        self.assertTrue(validator.is_valid(valid))
+        out = {}
         for invalid_ref in (None, "", "   "):
             mutated = copy.deepcopy(valid)
             for entry in mutated["evidence"]:
                 if entry["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST"):
                     entry["ref"] = invalid_ref
-            self.assertFalse(
-                validator.is_valid(mutated),
-                f"schema-only consumer accepted unusable receipt locator {invalid_ref!r}",
-            )
+            out[repr(invalid_ref)] = mutated
+        return valid, out
+
+    def test_verified_receipt_locator_is_required_by_schema_check(self):
+        valid, mutations = self.mutations()
+        U.schema_check(valid, SCHEMA)
+        for name, mutated in mutations.items():
+            with self.assertRaises(U.ExplanationError, msg=name):
+                U.schema_check(mutated, SCHEMA)
+            with self.assertRaises(U.ExplanationError, msg=name):
+                U.validate_explanation(mutated)
+
+    def test_verified_receipt_locator_is_required_by_jsonschema(self):
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:  # pragma: no cover - CI installs pytest only
+            self.skipTest("jsonschema not installed")
+        validator = Draft202012Validator(SCHEMA)
+        valid, mutations = self.mutations()
+        self.assertTrue(validator.is_valid(valid))
+        for name, mutated in mutations.items():
+            self.assertFalse(validator.is_valid(mutated), f"schema-only consumer accepted unusable receipt locator {name}")
 
 
 class SchemaOnlyConsumers(unittest.TestCase):
