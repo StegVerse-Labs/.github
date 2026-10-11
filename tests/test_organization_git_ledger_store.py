@@ -25,7 +25,7 @@ import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as custody  # noqa: E402
 
 store_module = org.ledger_store
-REF = "refs/heads/organization-ledger/StegVerse-Labs"
+REF = "refs/stegverse/organization-ledger"
 # A caller-held store is admitted only as the declared locus (#3012, OL-1b):
 # these tests hold Git stores on the repository's own declared ref, so they
 # run under the repository's declaration rather than the suite's POSIX one.
@@ -153,10 +153,15 @@ def test_manifest_declared_locus_selects_the_git_store_and_readback_uses_it(tmp_
 
 
 @pytest.mark.repository_ledger_locus
-def test_repository_manifest_declares_the_private_git_locus_with_null_propagate_target():
+def test_repository_manifest_declares_the_designated_private_git_locus_and_its_publication_target():
+    # StegVerse-org's location structure: the organization ledger is the
+    # designated ref of the organization's own .github, published to it.
     contract = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())
     assert contract["organization_ledger"] == {
-        "store": "git", "ref": REF, "custody": "PRIVATE", "propagate_target": None}
+        "store": "git", "ref": REF, "custody": "PRIVATE",
+        "propagate_target": {"custody": "PRIVATE", "remote": "https://github.com/StegVerse-Labs/.github"}}
+    assert (contract["organization_ledger_ref"], contract["organization_ledger_repository"]) == (
+        REF, "StegVerse-Labs/.github")
     assert org.declared_ledger_locus() == contract["organization_ledger"]
 
 
@@ -165,6 +170,7 @@ def test_null_propagate_target_is_a_non_gating_refusal_after_the_local_append(tm
     for variable in ("STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
                      "STEGVERSE_ORG_LEDGER_GIT_REMOTE", "STEGVERSE_ORG_LEDGER_GIT_CUSTODY"):
         monkeypatch.delenv(variable, raising=False)
+    declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=None)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
     record = org.aggregate_transition(receipt("CLAIM"))
     store = org.organization_store()
