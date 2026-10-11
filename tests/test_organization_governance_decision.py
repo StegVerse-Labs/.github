@@ -403,3 +403,29 @@ def test_report_accepts_matching_verified_receiver_answer(tmp_path):
     report, status = decision.build_report(evidence, mesh_root="fixture")
     assert status == 0
     assert report["workflow_disposition"] == "COMPLETED"
+
+
+def test_report_malformed_fresh_ref_answers_fail_closed(tmp_path):
+    for answers in ({"unexpected": "mapping"}, ["not-an-answer"], [None]):
+        evidence = tmp_path / "evidence"
+        evidence.mkdir(exist_ok=True)
+        (evidence / "materialization.json").write_text(json.dumps({
+            "addressed_to_organization": [REQUEST_KEY], "already_answered": []
+        }))
+        (evidence / "cycle.json").write_text(json.dumps({"items": [{
+            "frame_key": REQUEST_KEY, "request_packet_id": REQUEST_PACKET_ID,
+            "application_result": {"disposition": "DENY",
+                                   "repository_receipt_sha256": "sha256:repo",
+                                   "organization_receipt_sha256": "sha256:org"}
+        }]}))
+        (evidence / "readback.json").write_text(json.dumps({
+            "verified": True, "answers": answers
+        }))
+        report, status = decision.build_report(evidence, mesh_root="fixture")
+        assert status == 1
+        assert report["workflow_disposition"] == "FAIL_CLOSED"
+        failure = report["fail_closed"]
+        assert failure["failure_code"] == "ORGANIZATION_GOVERNANCE_ANSWER_BINDING_MISMATCH"
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            assert failure[field]
