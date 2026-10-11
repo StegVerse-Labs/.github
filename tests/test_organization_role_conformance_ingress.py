@@ -795,6 +795,28 @@ class OutboxTests(ConformanceIngressCase):
         (outbox / (name + ".json")).write_text(json.dumps(event))
         return outbox / (name + ".json")
 
+    def test_receive_failure_is_per_event_and_does_not_claim_no_append(self):
+        self.put("first")
+        self.put("second")
+        with mock.patch.object(ingress, "receive", side_effect=[
+            RuntimeError("boundary failed after unknown commit point"),
+            {"disposition": "DENY", "failed_predicate": "TEST_DENIAL"},
+        ]) as receive:
+            consumed = ingress.consume_outbox(self.durable, registry=REGISTRY)
+        self.assertEqual(receive.call_count, 2)
+        self.assertEqual(consumed["state"], "CONSUMED_READBACK_REQUIRED")
+        self.assertEqual(consumed["events_requiring_readback"], 1)
+        self.assertTrue(consumed["readback_required"])
+        first, second = consumed["results"]
+        self.assertEqual(first["disposition"], "FAIL_CLOSED")
+        self.assertEqual(first["failed_predicate"], "OUTBOX_EVENT_RECEIVE_FAILED")
+        self.assertEqual(first["appended"], "UNKNOWN")
+        self.assertIn("boundary failed after unknown commit point", first["error_detail"])
+        self.assertTrue(first["requires_ledger_readback"])
+        self.assertEqual(second["disposition"], "DENY")
+        self.assertEqual(second["failed_predicate"], "TEST_DENIAL")
+
+
     def test_an_absent_or_empty_outbox_is_no_event(self):
         self.assertEqual(ingress.consume_outbox(self.durable, registry=REGISTRY)["state"], "NO_EVENT")
         (self.durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE).mkdir(parents=True)
