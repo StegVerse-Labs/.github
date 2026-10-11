@@ -1,0 +1,444 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-owner-items/v1",
+  "authority_effect": "NONE",
+  "purpose": "Ratchet of acknowledged COSV index owner items: registry tasks that declare a COSV vector without a resolvable machine source, and effective index rows whose source state-vector fails verify_task_pointer parity. Entries may only be removed (when the owner materializes or repairs the source); scripts/materialize_cosv_index_shards.py --check fails on any item not listed here and on any listed item that no longer holds.",
+  "generated_by": "scripts/materialize_cosv_index_shards.py --check",
+  "items": [
+    {
+      "task_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "AI-GOVERNANCE-OPPORTUNITY-ENGINE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "ELAN-HOLD-INDEPENDENT-SEMANTIC-ANALYSIS-PACKET-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "ELAN-PAPER-COAUTHOR-PUBLICATION-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "ELAN-STEGVERSE-CROSS-EVALUATION-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "ENTITY-ECONOMY-SUCCESSOR-EDITIONS-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ENTITY-ECONOMY-VOLUME-I-II-GOVERNED-RELEASE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ENTITY-ECONOMY-VOLUME-I-II-SUCCESSOR-PUBLICATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ERL-AI-EMERGENCY-CLARITY-AUTHORITY-BOUNDARY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ERL-MODEL-ELECTION-FRAMING-INFLUENCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ERL-RC-OIL-FLOW-2026",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ERL-UK-JCHR-HUMAN-RIGHTS-AI-RECONCILIATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "HCB-VERSIONED-CONTRACT-038",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "HF-PUBLIC-PRECURSOR-REPLAY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "KV-ICLOUD-AUTOMATED-UPGRADE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MIR-SDK-RETURN-ASSEMBLY-CONTINUITY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "MYKV-PERSONAL-DATA-BACKUP-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "PUBLISHER-GOVERNED-OUTBOUND-COMMUNICATIONS-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "PUBLISHER-GOVERNED-OUTBOUND-EXECUTION-EVIDENCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "QUI-STEGVERSE-ARCHITECTURE-PARTNERSHIP-EVALUATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-ELYRIA-INTR-ADAPTER-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-FOUR-STAGE-EVIDENCE-REMEDIATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-FOUR-STAGE-MANIFEST-EXPERIMENT-RERUN-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-FOUR-STAGE-POST-LINEAGE-EVIDENCE-PACKAGE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MANIFEST-COLLAB-INGRESS-CONFORMANCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MANIFEST-IDENTITY-ROUTING-REGRESSION-GATE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MANIFEST-STEGCORE-ENTRY-CONFORMANCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MANIFEST-TVC-LINEAGE-CONFORMANCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MICRO-NODE-COMMIT-TIME-ADMISSIBILITY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-RUN-MANIFEST-RESULT-LINEAGE-BINDING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-TT-ATOMIC-TASK-WORKER-BINDING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-TT-RICHARD-SEAM-AUTHENTIC-RUNTIME-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SITE-COSV-REPOSITORY-WIDE-ADOPTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-DISCLOSURE-AUTHORITY-ENVELOPE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-RECLAMATION-KV-CUSTODY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-RECLAMATION-PROVIDER-EXECUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-DATA-RECLAMATION-RECURRENCE-MONITOR-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-ERL-SAME-DEVICE-PORTABLE-EXECUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-EVIDENCE-COMPARISON-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-EVIDENCE-STANDARD-IPHONE-FLOW-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-EVIDENCE-STANDARD-KV-FLOW-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+      "predicate": "VECTOR_IDENTITY_MISMATCH"
+    },
+    {
+      "task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-HEALER-ROUTING-CORRECTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SV-KV-AI-END-TO-END-RUNTIME-EVIDENCE-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TVC-PROVIDER-OPERATION-BROKER-003",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "predicate": "SOURCE_REF_ABSENT"
+    }
+  ]
+}

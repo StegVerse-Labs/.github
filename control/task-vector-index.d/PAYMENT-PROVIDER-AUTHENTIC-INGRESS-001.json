@@ -5,7 +5,9 @@
   "registry_ref": "data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
   "source_state_vector_ref": "control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
   "cosv_task_vector": "40000010100000",
+  "vector": "40000010100000",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE",
   "handoff_ref": "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
-  "canonical_issue": "StegVerse-Labs/.github#1974",
-  "authority_effect": "NONE"
+  "canonical_issue": "StegVerse-Labs/.github#1974"
 }

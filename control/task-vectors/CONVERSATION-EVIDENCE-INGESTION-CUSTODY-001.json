@@ -12,6 +12,7 @@
   ],
   "observed_at": "2026-09-19T19:11:53Z",
   "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_IMPLEMENTATION",
     "archive_ready": false,
     "unassigned_work": 0,
