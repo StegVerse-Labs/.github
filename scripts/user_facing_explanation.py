@@ -35,7 +35,7 @@ DISPOSITIONS = ("ALLOW", "DENY", "FAIL_CLOSED", "UNKNOWN")
 OBSERVATIONS = ("OBSERVED", "NOT_AUTHENTICALLY_OBSERVED", "UNKNOWN")
 AUTHORITY_SOURCES = ("TASK_REGISTRY", "WORKERCOORDINATOR", "INTERLOCK_INTR", "MANIFEST", "TV_TVC", "KV_SKAP_VAULT", "NONE")
 EVIDENCE_KINDS = ("RECEIPT_REF", "PROVENANCE_REF", "SOURCE_REF", "PUBLIC_URL", "DIGEST", "NONE")
-PREDICATE_RE = re.compile(r"^[A-Z0-9_:.-]{1,160}$")
+PREDICATE_RE = re.compile(r"^[A-Za-z0-9_:.-]{1,160}$")  # canonical predicates are copied verbatim; some producers emit lower-case names
 SECRET_KEY_RE = re.compile(r"(token|secret|credential|password|passwd|private[_-]?key|api[_-]?key|bearer|cookie|client[_-]?secret)", re.I)
 # Boolean flags that *describe* sanitization are not secret material.
 FLAG_KEYS = frozenset({"secrets_present", "credential_material_present"})

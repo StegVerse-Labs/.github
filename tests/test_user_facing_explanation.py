@@ -61,6 +61,12 @@ class FixturesBuildAndValidate(unittest.TestCase):
         self.assertIn("Authorization is not execution", U.render_prose(build("04-missing-evidence")))
         self.assertIn("not success, not failure", U.render_prose(build("05-unobserved-runtime")).lower())
 
+    def test_lower_case_producer_predicates_are_copied_verbatim(self):
+        f = fixture("03-fail-closed")
+        a = U.validate_explanation(U.build_explanation(dict(f["outcome"], predicate="snapshot_position_field_missing:value_usd", predicates=None), surface=f["surface"]))
+        self.assertEqual(a["outcome"]["predicate"], "snapshot_position_field_missing:value_usd")
+        self.assertIn("snapshot_position_field_missing:value_usd", a["prose"]["what_was_authorized"])
+
     def test_predicate_preserved_exactly(self):
         a = build("03-fail-closed")
         self.assertEqual(a["outcome"]["predicate"], "AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE")

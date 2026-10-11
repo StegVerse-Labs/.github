@@ -32,8 +32,8 @@
         "disposition": {"enum": ["ALLOW", "DENY", "FAIL_CLOSED", "UNKNOWN"]},
         "observation_state": {"enum": ["OBSERVED", "NOT_AUTHENTICALLY_OBSERVED", "UNKNOWN"]},
         "outcome_class": {"enum": ["SUCCESS_VERIFIED", "AUTHORIZED_NOT_VERIFIED", "DENIED", "FAILED_CLOSED", "UNOBSERVED"]},
-        "predicate": {"type": "string", "pattern": "^[A-Z0-9_:.-]{1,160}$", "description": "The governing predicate name exactly as the canonical record carries it; sanitized but never renamed."},
-        "predicates": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z0-9_:.-]{1,160}$"}, "uniqueItems": true},
+        "predicate": {"type": "string", "pattern": "^[A-Za-z0-9_:.-]{1,160}$", "description": "The governing predicate name exactly as the canonical record carries it (case preserved); sanitized but never renamed."},
+        "predicates": {"type": "array", "items": {"type": "string", "pattern": "^[A-Za-z0-9_:.-]{1,160}$"}, "uniqueItems": true},
         "canonical_record_ref": {"type": ["string", "null"], "description": "Locator of the canonical receipt/record this explains (never its contents)."}
       }
     },
