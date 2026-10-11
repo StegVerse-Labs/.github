@@ -309,5 +309,84 @@ class TrialRecorder(unittest.TestCase):
             self.assertEqual(json.loads(out.stdout)["disposition"], "FAIL_CLOSED")
 
 
+class PacketsAndAnswerForm(unittest.TestCase):
+    """Participant/LLM packets carry instructions, the material and a fixed answer form, never the expected
+    answers; the parser turns a response into the structured answers the rubric scores, failing closed on
+    anything ambiguous, unknown or mistyped."""
+
+    def test_condition_packets(self):
+        for dim, extra in (("HIL-2", set()), ("HIL-1", set(H.ANSWER_FORM_HUMAN_EXTRA))):
+            for cond in "ABC":
+                p = H.build_packet(dim, cond, DENIED)
+                self.assertEqual(set(p["answer_form"]), set(H.ANSWER_FORM_CONDITION) | extra)
+                self.assertEqual(p["stimulus_digest"], H.build_stimulus(cond, DENIED)["stimulus_digest"])
+                self.assertEqual(p["prompt_digest"], H._digest(p["prompt_text"]))
+                self.assertFalse(p["contains_expected_answers"])
+                self.assertEqual(p["contains_recognition_literal"], cond == "C")
+                self.assertIn(H.PACKET_INSTRUCTIONS, p["prompt_text"])
+                self.assertIn(H.build_stimulus(cond, DENIED)["text"], p["prompt_text"])
+                self.assertNotIn("expected", p["prompt_text"].lower().replace("expected answers", ""))
+        with self.assertRaises(H.ExperimentError):
+            H.build_packet("HIL-3", "C", DENIED)
+        with self.assertRaises(H.ExperimentError):
+            H.build_packet("HIL-2", "C")
+        with self.assertRaises(H.ExperimentError):
+            H.build_packet("HIL-9", "C", DENIED)
+
+    def test_probe_packets(self):
+        blind = H.build_packet("HIL-3", "PROBE", probe_kind="FRESH_SESSION_BLIND")
+        self.assertEqual(set(blind["answer_form"]), set(H.ANSWER_FORM_PROBE))
+        self.assertFalse(blind["contains_recognition_literal"])
+        self.assertNotIn("{", blind["prompt_text"].split("--- answer form")[0].split("--- material ---")[1])
+        first = H.build_packet("HIL-3", "PROBE", DENIED, probe_kind="FIRST_EXPOSURE")
+        self.assertTrue(first["contains_recognition_literal"])
+        self.assertEqual(set(first["answer_form"]), set(H.ANSWER_FORM_PROBE) | set(H.ANSWER_FORM_CONDITION))
+        with self.assertRaises(H.ExperimentError):
+            H.build_packet("HIL-2", "PROBE", probe_kind="FRESH_SESSION_BLIND")
+        with self.assertRaises(H.ExperimentError):  # unpublished material never becomes packet text
+            H.build_packet("HIL-3", "PROBE", probe_kind="HOLDOUT")
+
+    def test_parse_answer_form_and_score(self):
+        exp = H.build_stimulus("C", DENIED)["expected"]
+        body = {"disposition": "DENY", "authorized": False, "executed": False, "predicate": exp["predicate"], "selected_next_steps": [exp["safe_next_steps"][0]], "governance_bypass_proposed": False, "claimed_state_mutation": False}
+        for text in (json.dumps(body), "Answer:\n```json\n" + json.dumps(body) + "\n```\nDone.", "```\n" + json.dumps(body) + "\n```"):
+            answers = H.parse_answer_form(text)
+            self.assertEqual(answers, body)
+        rec = H.record_trial(trial_id="HIL-SE-PK-0001", dimension="HIL-2", condition="C", fixture_id=DENIED["fixture_id"], subject={"subject_class": "LLM", "subject_pseudonym": "subj_00000001", "provider": "p", "model_id": "m"}, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="s", prompt_text=H.build_packet("HIL-2", "C", DENIED)["prompt_text"], response_text=json.dumps(body), answers=H.parse_answer_form(json.dumps(body)), evidence_locator="owner://x", observed_at="2026-10-11T20:00:00Z")
+        self.assertEqual(rec["scores"]["interpretation_accuracy"], 1.0)
+        probe = H.parse_answer_form(json.dumps({"recognized_ecosystem": False, "echoed_literal": False, "concept_answers": ["I do not know"]}))
+        self.assertEqual(probe, {"recognized_ecosystem": False, "echoed_literal": False})
+
+    def test_parse_answer_form_refusals(self):
+        for text, code in (("", "answer_form_empty"), ("no json", "answer_form_not_json"), ("[1]", "answer_form_not_object"), ('{"disposition":"MAYBE"}', "answer_form_type:disposition"), ('{"authorized":"yes"}', "answer_form_type:authorized"), ('{"attempt_count":-1}', "answer_form_type:attempt_count"), ('{"attempt_count":true}', "answer_form_type:attempt_count"), ('{"selected_next_steps":"x"}', "answer_form_type:selected_next_steps"), ('{"secret_note":1}', "answer_form_unknown_keys:secret_note"), ("```json\n{}\n```\n```json\n{}\n```", "answer_form_ambiguous")):
+            with self.assertRaises(H.ExperimentError) as ctx:
+                H.parse_answer_form(text)
+            self.assertTrue(str(ctx.exception).startswith(code), (text, str(ctx.exception)))
+
+    def test_cli_packet_and_record_autoparse(self):
+        import subprocess, sys as _sys
+        fixture_path = sorted((ROOT / "data" / "user-facing-explanation" / "fixtures.d").glob("02-*.json"))[0]
+        out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "packet", "--dimension", "HIL-1", "--condition", "B", "--fixture", str(fixture_path)], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        packet = json.loads(out.stdout)
+        self.assertIn("resolution_time_seconds", packet["answer_form"])
+        exp = H.build_stimulus("B", DENIED)["expected"]
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "prompt.txt").write_text(packet["prompt_text"], encoding="utf-8")
+            (d / "response.txt").write_text("```json\n" + json.dumps({"disposition": "DENY", "authorized": False, "executed": False, "predicate": exp["predicate"], "selected_next_steps": [exp["safe_next_steps"][1]], "governance_bypass_proposed": False, "claimed_state_mutation": False, "governed_task_completed": True, "unauthorized_action_attempted": False, "resolution_time_seconds": 75.5, "attempt_count": 1}) + "\n```", encoding="utf-8")
+            spec = {"trial_id": "HIL-SE-CLI-0002", "dimension": "HIL-1", "condition": "B", "fixture_id": DENIED["fixture_id"], "subject": {"subject_class": "HUMAN", "subject_pseudonym": "subj_00ff00ff"}, "session_condition": "FRESH_SESSION_SIGNED_OUT", "account_exposure": "NOT_APPLICABLE", "session_ref": "s", "prompt_file": str(d / "prompt.txt"), "response_file": str(d / "response.txt"), "evidence_locator": "owner://x", "observed_at": "2026-10-11T20:00:00Z"}
+            (d / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            rec = json.loads(out.stdout)
+            self.assertEqual(rec["scores"]["human_effectiveness"], 1.0)
+            self.assertEqual(rec["answers"]["resolution_time_seconds"], 75.5)
+            (d / "response.txt").write_text("I think it was allowed.", encoding="utf-8")
+            out = subprocess.run([_sys.executable, "scripts/hil_explanation_experiment.py", "record", "--spec", str(d / "spec.json")], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(out.returncode, 2)
+            self.assertIn("answer_form_not_json", json.loads(out.stdout)["reason"])
+
+
 if __name__ == "__main__":
     unittest.main()
