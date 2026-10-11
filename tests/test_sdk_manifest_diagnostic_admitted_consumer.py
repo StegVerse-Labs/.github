@@ -468,5 +468,83 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
         with self.assertRaisesRegex(mod.DiagnosticAdmissionError, "CURRENT_NATIVE_ORIGINAL_ADMISSION_REQUIRED"):
             mod._require_native_original_request_lineage(native, binding, None)
 
+
+class InstalledSdkDiagnosticOutputTests(unittest.TestCase):
+    """The consumer reads what the installed SDK's own diagnostic CLI writes.
+
+    The tests above feed the consumer hand-built output, so an SDK change to
+    the output's shape went unseen (SDK #460). Here the pinned SDK builds an
+    ecosystem_diagnostic manifest and runs its CLI, and the consumer reads the
+    file. Where the SDK is not installed (the whole-suite ratchet) this is
+    skipped; `org-runtime-boundary.yml` installs the pin and sets
+    STEGVERSE_SDK_REQUIRED=1, so there an absent SDK is an error.
+    """
+
+    def setUp(self):
+        try:
+            import stegverse
+            import stegverse.ecosystem_diagnostic_cli  # noqa: F401
+            import stegverse.manifest_builder  # noqa: F401
+        except ImportError as exc:
+            if os.environ.get("STEGVERSE_SDK_REQUIRED") == "1":
+                raise
+            self.skipTest(f"requires the pinned StegVerse SDK: {exc}")
+        # The CLI runs in a child process; give it exactly the SDK imported here.
+        self.sdk_path = str(Path(stegverse.__file__).resolve().parents[1])
+
+    def test_installed_sdk_diagnostic_output_is_accepted_by_the_consumer(self):
+        import subprocess
+        import sys
+
+        created_at = "2026-10-11T00:00:00Z"
+        diagnostic_request = {
+            "schema": "stegverse.ecosystem-diagnostic-request.v1",
+            "diagnostic_request_id": "labs-installed-sdk-diagnostic-output",
+            "scope": "ecosystem",
+            "mutation_permitted": False,
+            "expected_evidence_fields": ["evidence_refs", "observed_at"],
+            "tests": [{
+                "test_id": "ece:sdk:route_installed",
+                "component_id": "sdk",
+                "predicate_id": "route_installed",
+                "authority_owner": "StegVerse-org/StegVerse-SDK",
+                "observation": None,
+            }],
+        }
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "request.json").write_text(json.dumps(diagnostic_request))
+            (root / "source.json").write_text(json.dumps({"created_at": created_at}))
+            for command in (
+                ["-m", "stegverse.manifest_builder", "build",
+                 "--input", str(root / "source.json"),
+                 "--processor-request", str(root / "request.json"),
+                 "--process", "ecosystem_diagnostic",
+                 "--source-framework", "StegVerse-Labs/.github",
+                 "--source-output-id", diagnostic_request["diagnostic_request_id"],
+                 "--return-depth", "result+evidence", "--created-at", created_at,
+                 "--output", str(root / "manifest.json")],
+                ["-m", "stegverse.ecosystem_diagnostic_cli",
+                 "--manifest", str(root / "manifest.json"),
+                 "--output", str(root / "result.json")],
+            ):
+                proc = subprocess.run([sys.executable, *command], cwd=root,
+                                      env={**os.environ, "PYTHONPATH": self.sdk_path},
+                                      capture_output=True, text=True, check=False, timeout=120)
+                self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            document = json.loads((root / "result.json").read_text())
+
+        request = {"route_id": "stegverse.route.ecosystem-diagnostic.v1",
+                   "state_graph": {"request": {
+                       "diagnostic_request_id": diagnostic_request["diagnostic_request_id"]}}}
+        diagnostic = mod._installed_diagnostic_output(document, request)
+        self.assertEqual(diagnostic["schema"], "stegverse.ecosystem-diagnostic-result.v1")
+        self.assertEqual(diagnostic["authority_effect"], "NONE_DIAGNOSTIC_ONLY")
+        other = {**request, "state_graph": {"request": {"diagnostic_request_id": "another-request"}}}
+        with self.assertRaisesRegex(mod.DiagnosticExecutionFailClosed,
+                                    "EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID"):
+            mod._installed_diagnostic_output(document, other)
+
+
 if __name__ == "__main__":
     unittest.main()

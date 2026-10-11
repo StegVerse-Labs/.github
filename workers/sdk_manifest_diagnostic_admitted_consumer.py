@@ -239,6 +239,18 @@ def _installed_diagnostic_result(document: Any) -> Mapping[str, Any]:
     return result
 
 
+def _installed_diagnostic_output(document: Any, request: Mapping[str, Any]) -> Mapping[str, Any]:
+    diagnostic = _installed_diagnostic_result(document)
+    if not (diagnostic.get("schema") == "stegverse.ecosystem-diagnostic-result.v1"
+            and diagnostic.get("processing_capability") == "ecosystem_diagnostic"
+            and diagnostic.get("route_id") == request.get("route_id")
+            and diagnostic.get("authority_effect") == "NONE_DIAGNOSTIC_ONLY"
+            and diagnostic.get("mutation_performed") is False
+            and diagnostic.get("diagnostic_request_id") == (request.get("state_graph", {}).get("request") or {}).get("diagnostic_request_id")):
+        raise DiagnosticExecutionFailClosed("EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID")
+    return diagnostic
+
+
 def _installed_sdk_root(control_root: Path) -> Path:
     try:
         roots = json.loads(os.environ.get("STEGVERSE_REPO_ROOTS_JSON", "{}"))
@@ -686,18 +698,10 @@ def consume(
             raise DiagnosticExecutionFailClosed(
                 "ADMITTED_SDK_DIAGNOSTIC_LEASE_EXPIRED_DURING_EXECUTION") from exc
     try:
-        diagnostic = _installed_diagnostic_result(_read(result_path))
-    except DiagnosticExecutionFailClosed:
-        raise
+        document = _read(result_path)
     except Exception as exc:
         raise DiagnosticExecutionFailClosed("ADMITTED_SDK_DIAGNOSTIC_RESULT_INVALID") from exc
-    if not (diagnostic.get("schema") == "stegverse.ecosystem-diagnostic-result.v1"
-            and diagnostic.get("processing_capability") == "ecosystem_diagnostic"
-            and diagnostic.get("route_id") == request.get("route_id")
-            and diagnostic.get("authority_effect") == "NONE_DIAGNOSTIC_ONLY"
-            and diagnostic.get("mutation_performed") is False
-            and diagnostic.get("diagnostic_request_id") == (request.get("state_graph", {}).get("request") or {}).get("diagnostic_request_id")):
-        raise DiagnosticExecutionFailClosed("EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID")
+    diagnostic = _installed_diagnostic_output(document, request)
     result_bytes = result_path.read_bytes()
     result_sha = hashlib.sha256(result_bytes).hexdigest()
     if submit is submit_state_receipt:
