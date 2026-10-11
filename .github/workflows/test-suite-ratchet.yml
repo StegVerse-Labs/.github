@@ -66,6 +66,15 @@ jobs:
         if: ${{ !cancelled() }}
         run: python org-kernel/tests/test_kernel.py
 
+      # The organization governance decision run: locator binding, the mesh
+      # union, consume_and_respond over a copy of a real request frame, the
+      # fast-forward publish and its read back, and replay as a no-op. Temporary
+      # repositories only. Run directly so a failure here is never absorbed
+      # into the ratchet's baseline.
+      - name: Organization governance decision run, against temporary repositories
+        if: ${{ !cancelled() }}
+        run: python -m pytest -q -p no:cacheprovider tests/test_organization_governance_decision.py
+
       # from component010-checkout-audit.yml
       - name: Assert actionable non-ALLOW Component-010 source projection
         if: ${{ !cancelled() }}

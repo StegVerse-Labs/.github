@@ -103,6 +103,12 @@
       "classification": "KEEP_STABLE_DISPATCHER",
       "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
       "reason": "Coverage backstop and pull-request dispatcher (#3039 H6b). The ratchet job runs the whole tests/ suite on every pull request and push to main with no path filter; the consolidated-source-validators job runs the non-tests/ validators retired from 16 per-feature workflows. The other stable dispatchers are workflow_dispatch only, so moving pull-request gates into them would have removed the gate. Validation only; no runtime authority."
+    },
+    {
+      "path": ".github/workflows/organization-governance-decision.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
+      "reason": "workflow_dispatch-only materialization of this organization's governance endpoint for a mesh locator the materializer supplies: reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [

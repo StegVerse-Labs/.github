@@ -1,0 +1,102 @@
+name: Organization governance decision
+
+# Decide the governance requests an emitting organization queued on its own
+# federation mesh, and publish this organization's answers on its own
+# refs/stegverse/federation-mesh. The emitting organization's mesh locator is
+# supplied by the materializer as git+https://github.com/<org>/<repo>#refs/<name>;
+# nothing about the source is inferred. The source is read anonymously. The only
+# ref this workflow writes is this repository's own refs/stegverse/federation-mesh,
+# fast-forward only.
+#
+# Both ledgers are run-scoped: the organization ledger is opened by
+# organization_store() exactly as org-contract.json declares it (git, PRIVATE,
+# propagate_target null), so its receipts are real appends that are published
+# nowhere. A FAIL_CLOSED governance decision is a decision and is answered; only
+# a FAIL_CLOSED of this run itself fails the job.
+on:
+  workflow_dispatch:
+    inputs:
+      mesh_root:
+        description: Emitting organization's mesh locator, git+https://github.com/<org>/<repo>#refs/<name>
+        required: true
+        type: string
+
+concurrency:
+  group: organization-ledger
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    env:
+      MESH_ROOT: ${{ inputs.mesh_root }}
+      OWN_URL: https://github.com/${{ github.repository }}
+      EVIDENCE: ${{ runner.temp }}/evidence
+      GIT_AUTHOR_NAME: StegVerse
+      GIT_AUTHOR_EMAIL: 210078727+StegVerse@users.noreply.github.com
+      GIT_COMMITTER_NAME: StegVerse
+      GIT_COMMITTER_EMAIL: 210078727+StegVerse@users.noreply.github.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bind the source
+        run: python resident-runtime/mesh_source_binding.py --mesh-root "$MESH_ROOT" --out "$EVIDENCE/binding.json"
+
+      - name: Materialize the durable queue
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          materialize --work "$RUNNER_TEMP/work" --mesh "$RUNNER_TEMP/mesh" --own-url "$OWN_URL"
+
+      - name: Run the cycle
+        env:
+          STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger
+          STEGVERSE_ORG_LEDGER_GIT_DIR: ${{ runner.temp }}/organization-ledger.git
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          cycle --mesh "$RUNNER_TEMP/mesh" --node-state "$RUNNER_TEMP/node-state"
+          --repo-ledger "$RUNNER_TEMP/repo-ledger"
+
+      - name: Publish answers
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          publish --mesh "$RUNNER_TEMP/mesh" --work "$RUNNER_TEMP/work"
+          --push-repo "$GITHUB_WORKSPACE" --remote origin
+
+      - name: Read back
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          readback --work "$RUNNER_TEMP/work" --own-url "$OWN_URL"
+
+      - name: Evidence
+        if: ${{ always() }}
+        run: |
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" \
+            report --mesh-root "$MESH_ROOT" > "$RUNNER_TEMP/report.out" && status=0 || status=$?
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, os
+          report = json.load(open(os.path.join(os.environ["EVIDENCE"], "report.json")))
+          print("### Organization governance decision")
+          print(f"- workflow_disposition: `{report['workflow_disposition']}`")
+          print(f"- ledger_persistence: `{report['ledger_persistence']}`")
+          print(f"- own ref tip: `{report['own_tip_after']}`")
+          for d in report["decisions"]:
+              answer = d.get("answer") or {}
+              print(f"- {d['request_packet_id']}: `{d['disposition']}` {d['reason']} -> `{answer.get('key')}`")
+          if report["fail_closed"]:
+              print(f"- FAIL_CLOSED: `{report['fail_closed']['failure_code']}` {report['fail_closed']['failed_predicate']}")
+          PY
+          exit "$status"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: organization-governance-decision-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence
+          retention-days: 90
+          if-no-files-found: warn
