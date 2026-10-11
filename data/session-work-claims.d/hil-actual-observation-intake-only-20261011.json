@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-actual-observation-intake-only",
+  "branch": "claude/release-hil-actual-observation-intake-only-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "HIL-SCALED-EXPLANATION-001: close HIL_LEGACY_RECORD_PATH_BYPASSES_TICKETED_INTAKE and HIL_ACTUAL_OBSERVATION_DIRECT_RECORD_ENTRYPOINT_UNGUARDED (#3106 comments 6113728583, 6113736702): ACTUAL_OBSERVATION only via ticketed intake; record --spec and record_trial synthetic-only; locator bound to evidence class in validate_trial and the trial schema; tests; protocol, preregistration and README notes; correct the hil-submission-operator claim release timestamp. No provider contact, no participant, no measurement.",
   "claimed_paths": [
@@ -25,5 +25,8 @@
     "README edit limited to the HIL paragraph"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3134",
+  "merged_commit": "a3c9d80c727177ceea21e5ab72b2677beaf01abe",
+  "claim_released_at": "2026-10-11T21:19:56Z"
 }
