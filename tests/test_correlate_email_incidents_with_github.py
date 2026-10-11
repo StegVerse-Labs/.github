@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import urllib.parse
 from pathlib import Path
 from unittest import mock
 
@@ -52,10 +53,21 @@ class StubFetcher:
         return handler(params or {}) if callable(handler) else handler
 
 
+LINT_PATH = ".github/workflows/lint.yml"
+
+
 def world(*, completed: list, success: list | None = None, heads: dict | None = None,
-          pulls: dict | None = None, workflows: list | None = None, workflows_status: int = 200) -> dict:
-    """heads: short -> (full, committed_at, compare_status)."""
-    rows = workflows if workflows is not None else [{"id": WF_ID, "name": WF, "path": ".github/workflows/lint.yml", "state": "active"}]
+          pulls: dict | None = None, workflows: list | None = None, workflows_status: int = 200,
+          head_runs: dict | None = None, runs_by_id: dict | None = None, workflows_by_id: dict | None = None,
+          contents_on_main: set | None = None) -> dict:
+    """heads: short -> (full, committed_at, compare_status).
+
+    head_runs: full sha -> runs listed by ``/actions/runs?head_sha=``;
+    runs_by_id: run id -> run (``/actions/runs/{id}``); workflows_by_id: id ->
+    workflow row (``/actions/workflows/{id}``, e.g. a deleted one);
+    contents_on_main: workflow file paths present on the default branch.
+    """
+    rows = workflows if workflows is not None else [{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"}]
     w = {
         f"/repos/{REPO}": (200, {"default_branch": "main"}),
         f"/repos/{REPO}/actions/workflows": (workflows_status, {"total_count": len(rows), "workflows": rows} if workflows_status == 200 else None),
@@ -68,6 +80,13 @@ def world(*, completed: list, success: list | None = None, heads: dict | None = 
             return 200, {"workflow_runs": success or []}
         return 200, {"workflow_runs": []}
     w[f"/repos/{REPO}/actions/workflows/{WF_ID}/runs"] = runs
+    w[f"/repos/{REPO}/actions/runs"] = lambda params: (200, {"workflow_runs": (head_runs or {}).get(params.get("head_sha"), [])})
+    for run_id, row in (runs_by_id or {}).items():
+        w[f"/repos/{REPO}/actions/runs/{run_id}"] = (200, row)
+    for wf_id, row in {**{r["id"]: r for r in rows}, **(workflows_by_id or {})}.items():
+        w[f"/repos/{REPO}/actions/workflows/{wf_id}"] = (200, {**row, "url": f"https://api.github.com/repos/{REPO}/actions/workflows/{wf_id}"})
+    for path in contents_on_main or set():
+        w[f"/repos/{REPO}/contents/{urllib.parse.quote(path)}"] = (200, {"path": path})
     for short, (full, ts, status) in (heads or {}).items():
         commit = {"sha": full, "commit": {"committer": {"date": ts}}}
         w[f"/repos/{REPO}/commits/{short}"] = (200, commit)
@@ -75,6 +94,11 @@ def world(*, completed: list, success: list | None = None, heads: dict | None = 
             w[f"/repos/{REPO}/compare/{short}...{green}"] = (200, {"status": status, "base_commit": commit})
         w[f"/repos/{REPO}/commits/{full}/pulls"] = (200, (pulls or {}).get(short, []))
     return w
+
+
+def identity_run(run_id: int, sha: str, name: str, path: str, workflow_id: int) -> dict:
+    return {"id": run_id, "html_url": f"https://github.com/{REPO}/actions/runs/{run_id}", "name": name, "path": path,
+            "workflow_id": workflow_id, "head_sha": sha, "head_branch": "feature", "conclusion": "failure"}
 
 
 def msg(i: int, *, repo: str = REPO, workflow: str = WF, sha: str = "aaaaaaa", epoch: int = 1000) -> dict:
@@ -263,14 +287,19 @@ class CorrelationTests(unittest.TestCase):
         (obs,) = projection["observations"]
         self.assertEqual(obs["incident_ids"], [incident_for(s2, "bbbbbbb")["incident_id"]])
         self.assertNotIn(done["message_ids"][0], obs["related_message_ids"])
-        # A stale SUPERSEDED row for it is skipped by the apply step, not re-applied.
+        # A stale SUPERSEDED row for it is skipped by the apply step, not re-applied;
+        # only the correlate transition itself advances the state.
         corr["incidents"][done["incident_id"]] = {"incident_id": done["incident_id"], "disposition": c.DISP_SUPERSEDED,
                                                   "resolution_evidence": s2["incidents"][done["incident_id"]]["resolution_evidence"]}
         final, disp = c.apply_resolutions(s2, corr)
         self.assertEqual(disp["disposition"], t.ALLOW)
         self.assertEqual(disp["skipped_not_open"], 1)
         self.assertEqual(disp["applied"], 0)
-        self.assertEqual(t.state_sha256(final), t.state_sha256(s2))
+        self.assertEqual(final["transition_seq"], s2["transition_seq"] + 1)
+        self.assertEqual(final["transition"], "RECORD_CORRELATION")
+        self.assertEqual(final["incidents"], s2["incidents"])
+        self.assertEqual(t.state_sha256(final), t.state_sha256(t.record_correlation(
+            s2, t.correlation_sha256(corr), t.correlation_summary(corr))[0]))
 
 
 class ApplyTests(unittest.TestCase):
@@ -282,19 +311,54 @@ class ApplyTests(unittest.TestCase):
         final, disp = c.apply_resolutions(s, corr)
         self.assertEqual(disp["disposition"], t.ALLOW, disp)
         self.assertEqual(disp["applied"], 2)
-        self.assertEqual(disp["transition_seq_to"], disp["transition_seq_from"] + 2)
+        # One correlate transition, then one resolve per superseded incident.
+        self.assertEqual(disp["transition_seq_to"], disp["transition_seq_from"] + 3)
+        self.assertTrue(disp["correlation_recorded"])
         self.assertEqual(final["transition"], "RECORD_RESOLUTION")
         self.assertEqual(final["counters"]["resolved_verified"], 2)
+        digest = t.correlation_sha256(corr)
+        self.assertEqual(disp["correlation_sha256"], digest)
+        (bound,) = final["correlations"]
+        self.assertEqual(bound["correlation_sha256"], digest)
+        self.assertEqual(bound["recorded_at_transition_seq"], s["transition_seq"] + 1)
+        self.assertEqual(bound["source_continuation"]["state_sha256"], t.state_sha256(s))
+        self.assertEqual(bound["lineage_counts"], corr["counts"]["lineages_by_classification"])
+        self.assertEqual(bound["incident_counts"], corr["counts"]["incidents_by_lineage_classification"])
         for short in ("aaaaaaa", "eeeeeee"):
             inc = incident_for(final, short)
             self.assertEqual(inc["state"], t.INCIDENT_SUPERSEDED)
             self.assertEqual(inc["resolution_evidence"]["superseded_head_sha"], {"aaaaaaa": HEAD_A, "eeeeeee": HEAD_E}[short])
+            # Every resolution names the correlation it came from.
+            self.assertEqual(inc["resolution_evidence"]["correlation_sha256"], digest)
         self.assertEqual(incident_for(final, "bbbbbbb")["state"], t.INCIDENT_OPEN)
         self.assertEqual(set(final["archive_proposed"]), set(incident_for(s, "aaaaaaa")["message_ids"]) | set(incident_for(s, "eeeeeee")["message_ids"]))
-        # Nothing but the resolve-op fields moved.
-        moved = {"incidents", "counters", "archive_proposed", "transition", "transition_seq", "prior_state_sha256"}
+        # Nothing but the correlate-op and resolve-op fields moved.
+        moved = {"incidents", "counters", "archive_proposed", "transition", "transition_seq", "prior_state_sha256", "correlations"}
         for key in set(s) - moved:
             self.assertEqual(final[key], s[key], key)
+        # The chain is exactly: s -> correlate -> resolve(a) -> resolve(e).
+        chain = [s, t.record_correlation(s, digest, t.correlation_summary(corr))[0]]
+        for iid in sorted(incident_for(s, short)["incident_id"] for short in ("aaaaaaa", "eeeeeee")):
+            row = corr["incidents"][iid]
+            chain.append(ok(t.record_resolution(chain[-1], iid, {**row["resolution_evidence"], "correlation_sha256": digest})))
+        self.assertEqual(t.verify_chain(chain), (True, None))
+        self.assertEqual(t.state_sha256(chain[-1]), t.state_sha256(final))
+
+    def test_apply_refuses_a_resolution_whose_correlation_is_not_bound(self):
+        s = reconciling_state([msg(1, sha="aaaaaaa")])
+        corr, _ = correlate(s, world(completed=[run(1, GREEN, T_GREEN, "success")], heads={"aaaaaaa": (HEAD_A, T_A, "ahead")}))
+        (row,) = corr["incidents"].values()
+        # Directly through the validator: the sha must already be recorded in the chain.
+        _, disp = t.record_resolution(s, row["incident_id"], {**row["resolution_evidence"], "correlation_sha256": "0" * 64})
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_SHA256_NOT_RECORDED")
+        # Through apply: a correlate transition that cannot be recorded fails the batch closed.
+        claims = json.loads(json.dumps(corr))
+        claims["evidence_class"] = "ASSERTED"
+        final, disp = c.apply_resolutions(s, claims)
+        self.assertEqual(disp["disposition"], t.FAIL_CLOSED)
+        self.assertEqual(disp["failed_predicate"], "CORRELATE_TRANSITION_REFUSED")
+        self.assertEqual(disp["refused"]["failed_predicate"], "CORRELATION_EVIDENCE_CLASS_INVALID")
+        self.assertEqual(t.state_sha256(final), t.state_sha256(s))
 
     def test_apply_fails_closed_on_state_lineage_mismatch_and_bad_evidence(self):
         s = reconciling_state([msg(1, sha="aaaaaaa")])
@@ -333,9 +397,13 @@ class ApplyTests(unittest.TestCase):
                                    "--apply-resolutions", str(corr_path)], capture_output=True, text=True, check=False)
             self.assertEqual(real.returncode, 0, real.stdout + real.stderr)
             written = json.loads(state_path.read_text(encoding="utf-8"))
-            self.assertEqual(written["prior_state_sha256"], t.state_sha256(s))
-            self.assertTrue(t.verify_chain([s, written])[0])
+            digest = t.correlation_sha256(corr)
+            bound = t.record_correlation(s, digest, t.correlation_summary(corr))[0]
+            self.assertEqual(written["prior_state_sha256"], t.state_sha256(bound))
+            self.assertTrue(t.verify_chain([s, bound, written])[0])
+            self.assertEqual(written["correlations"][0]["correlation_sha256"], digest)
             self.assertEqual(incident_for(written, "aaaaaaa")["state"], t.INCIDENT_SUPERSEDED)
+            self.assertEqual(incident_for(written, "aaaaaaa")["resolution_evidence"]["correlation_sha256"], digest)
             # Re-applying the same correlation now fails closed: the state moved on.
             again = subprocess.run([sys.executable, str(ROOT / "scripts/correlate_email_incidents_with_github.py"), "--state", str(state_path),
                                     "--apply-resolutions", str(corr_path)], capture_output=True, text=True, check=False)
@@ -423,6 +491,256 @@ class HealerObservationProjectionTests(unittest.TestCase):
                                       "--op", "healer-observations"], capture_output=True, text=True, check=False)
             self.assertEqual(missing.returncode, 1)
             self.assertEqual(state_path.read_bytes(), before)
+
+
+class WorkflowIdentityTests(unittest.TestCase):
+    """Name lookup fails -> identity by workflow FILE PATH (rename, removal, no run)."""
+
+    RENAMED = "workflow-lint-renamed"
+
+    def test_renamed_workflow_found_by_path_from_failing_head_runs(self):
+        s = reconciling_state([msg(1, sha="aaaaaaa"), msg(2, sha="bbbbbbb")])
+        w = world(completed=[run(2, RED, T_RED, "failure")], success=[run(1, GREEN, T_GREEN, "success")],
+                  heads={"aaaaaaa": (HEAD_A, T_A, "ahead"), "bbbbbbb": (HEAD_B, T_B, "diverged")},
+                  workflows=[{"id": WF_ID, "name": self.RENAMED, "path": LINT_PATH, "state": "active"}],
+                  head_runs={HEAD_A: [identity_run(41, HEAD_A, WF, LINT_PATH, WF_ID)]})
+        corr, fetcher = correlate(s, w)
+        (lin,) = corr["lineages"]
+        # Correlated normally under the current name; lineage id keyed on the mail name.
+        self.assertEqual(lin["classification"], c.STILL_FAILING)
+        self.assertEqual(lin["workflow"], self.RENAMED)
+        self.assertEqual(lin["renamed_from"], WF)
+        self.assertEqual(lin["lineage_id"], c.lineage_id(REPO, WF))
+        self.assertEqual(lin["workflow_path"], LINT_PATH)
+        self.assertEqual(lin["workflow_id"], WF_ID)
+        ident = lin["workflow_identity"]
+        self.assertEqual(ident["outcome"], "RESOLVED")
+        self.assertEqual(ident["basis"], c.IDENTITY_BY_HEAD_RUNS)
+        self.assertEqual(ident["discovered_from_run_url"], f"https://github.com/{REPO}/actions/runs/41")
+        self.assertEqual(ident["discovered_at_head_sha"], HEAD_A)
+        self.assertEqual(lin["superseded_incident_ids"], [incident_for(s, "aaaaaaa")["incident_id"]])
+        self.assertEqual(lin["outstanding_incident_ids"], [incident_for(s, "bbbbbbb")["incident_id"]])
+        evidence = corr["incidents"][incident_for(s, "aaaaaaa")["incident_id"]]["resolution_evidence"]
+        self.assertEqual(evidence["workflow"], self.RENAMED)
+        self.assertEqual(t.record_resolution(s, incident_for(s, "aaaaaaa")["incident_id"], evidence)[1]["disposition"], t.ALLOW)
+        self.assertEqual(corr["counts"]["lineages_by_classification"][c.NOT_FOUND], 0)
+        self.assertTrue(any(p == f"/repos/{REPO}/actions/runs" and q.get("head_sha") == HEAD_A for p, q in fetcher.log))
+        # Healer sees the live name.
+        (obs,) = t.project_healer_observations(s, corr)["observations"]
+        self.assertEqual(obs["workflow"], self.RENAMED)
+
+    def test_run_id_resolves_path_without_touching_head_runs(self):
+        s = reconciling_state([{**msg(1, sha="aaaaaaa"), "run_id": "555"}])
+        w = world(completed=[run(1, GREEN, T_GREEN, "success")], heads={"aaaaaaa": (HEAD_A, T_A, "ahead")},
+                  workflows=[{"id": WF_ID, "name": self.RENAMED, "path": LINT_PATH, "state": "active"}],
+                  runs_by_id={"555": identity_run(555, HEAD_A, WF, LINT_PATH, WF_ID)})
+        corr, fetcher = correlate(s, w)
+        (lin,) = corr["lineages"]
+        self.assertEqual(lin["classification"], c.SUPERSEDED)
+        self.assertEqual(lin["renamed_from"], WF)
+        self.assertEqual(lin["workflow_identity"]["basis"], c.IDENTITY_BY_RUN_ID)
+        self.assertTrue(any(p == f"/repos/{REPO}/actions/runs/555" for p, _ in fetcher.log))
+        self.assertFalse(any(p == f"/repos/{REPO}/actions/runs" for p, _ in fetcher.log))
+
+    def test_removed_workflow_is_classified_withheld_and_carries_evidence_url(self):
+        s = reconciling_state([msg(1, workflow="gone", sha="aaaaaaa"), msg(2, workflow="gone", sha="bbbbbbb")])
+        gone_path = ".github/workflows/gone.yml"
+        w = world(completed=[], heads={"aaaaaaa": (HEAD_A, T_A, "ahead"), "bbbbbbb": (HEAD_B, T_B, "diverged")},
+                  workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"}],
+                  head_runs={HEAD_A: [identity_run(77, HEAD_A, "gone", gone_path, 99)]},
+                  workflows_by_id={99: {"id": 99, "name": "gone", "path": gone_path, "state": "deleted"}},
+                  contents_on_main={LINT_PATH})
+        corr, fetcher = correlate(s, w)
+        (lin,) = corr["lineages"]
+        self.assertEqual(lin["classification"], c.REMOVED)
+        self.assertEqual(lin["workflow_path"], gone_path)
+        self.assertEqual(lin["workflow_id"], 99)
+        self.assertEqual(lin["unverifiable_incident_ids"], lin["incident_ids"])
+        self.assertEqual(lin["outstanding_incident_ids"], [])
+        ident = lin["workflow_identity"]
+        self.assertEqual(ident["outcome"], "REMOVED_ON_DEFAULT_BRANCH")
+        self.assertEqual(ident["workflow_state"], "deleted")
+        self.assertEqual(ident["evidence_url"], f"https://github.com/{REPO}/actions/runs/77")
+        self.assertIn(urllib.parse.quote(gone_path), ident["default_branch_contents_url"])
+        self.assertTrue(ident["default_branch_contents_url"].endswith("?ref=main"))
+        for row in corr["incidents"].values():
+            self.assertEqual(row["disposition"], c.DISP_UNVERIFIABLE)
+            self.assertEqual(row["unverifiable_reason"], c.REMOVED)
+        self.assertFalse(any("/workflows/99/runs" in p for p, _ in fetcher.log))
+        self.assertEqual(corr["counts"]["lineages_by_classification"][c.REMOVED], 1)
+        self.assertEqual(corr["counts"]["incidents_by_lineage_classification"][c.REMOVED], 2)
+        self.assertEqual(corr["counts"]["outstanding_lineages"], 0)
+        projection = t.project_healer_observations(s, corr)
+        self.assertEqual(projection["observations"], [])
+        self.assertEqual(projection["withheld_by_classification"], {c.REMOVED: 1})
+        # Summary counts carry the new class for the chain.
+        self.assertIn(c.REMOVED, t.correlation_summary(corr)["lineage_counts"])
+
+    def test_path_still_present_on_default_branch_stays_not_found(self):
+        # Path recovered, but the file still exists on main and GitHub does not
+        # list an active workflow for it: not a removal, not resolvable -> fail closed as NOT_FOUND.
+        s = reconciling_state([msg(1, workflow="gone", sha="aaaaaaa")])
+        gone_path = ".github/workflows/gone.yml"
+        w = world(completed=[], heads={"aaaaaaa": (HEAD_A, T_A, "ahead")},
+                  workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"}],
+                  head_runs={HEAD_A: [identity_run(77, HEAD_A, "gone", gone_path, 99)]},
+                  workflows_by_id={99: {"id": 99, "name": "gone", "path": gone_path, "state": "disabled_manually"}},
+                  contents_on_main={LINT_PATH, gone_path})
+        corr, _ = correlate(s, w)
+        (lin,) = corr["lineages"]
+        self.assertEqual(lin["classification"], c.NOT_FOUND)
+        self.assertEqual(lin["workflow_identity"]["outcome"], "NOT_FOUND")
+
+    def test_without_run_id_and_without_runs_at_head_stays_not_found(self):
+        s = reconciling_state([msg(1, workflow="gone", sha="aaaaaaa"), msg(2, workflow="gone", sha="0000000")])
+        w = world(completed=[], heads={"aaaaaaa": (HEAD_A, T_A, "ahead")},
+                  workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"}])
+        corr, fetcher = correlate(s, w)
+        (lin,) = corr["lineages"]
+        self.assertEqual(lin["classification"], c.NOT_FOUND)
+        self.assertIsNone(lin["workflow_path"])
+        self.assertEqual(lin["workflow_identity"], {"basis": None, "outcome": "NOT_FOUND", "path": None,
+                                                     "workflow_id": None, "renamed_from": None})
+        # The resolvable head was consulted; the 404 head was skipped, not an error.
+        self.assertTrue(any(p == f"/repos/{REPO}/actions/runs" and q.get("head_sha") == HEAD_A for p, q in fetcher.log))
+        self.assertTrue(any(p.endswith("/commits/0000000") for p, _ in fetcher.log))
+        self.assertIsNone(lin["error"])
+        # A run at the head under a different workflow name does not count.
+        w2 = world(completed=[], heads={"aaaaaaa": (HEAD_A, T_A, "ahead")},
+                   workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"}],
+                   head_runs={HEAD_A: [identity_run(41, HEAD_A, WF, LINT_PATH, WF_ID)]})
+        corr2, _ = correlate(s, w2)
+        self.assertEqual(corr2["lineages"][0]["classification"], c.NOT_FOUND)
+
+
+class RereadTests(unittest.TestCase):
+    """Minimal re-read: only selected lineages are read; the rest is carried."""
+
+    def _prior(self):
+        other = "other-workflow"
+        s = reconciling_state([msg(1, sha="aaaaaaa"), msg(2, sha="bbbbbbb"), msg(3, workflow="gone", sha="aaaaaaa"),
+                               msg(4, workflow=other, sha="aaaaaaa"), msg(5, repo=PRIVATE, sha="1234567")])
+        w = world(completed=[run(2, RED, T_RED, "failure")], success=[run(1, GREEN, T_GREEN, "success")],
+                  heads={"aaaaaaa": (HEAD_A, T_A, "ahead"), "bbbbbbb": (HEAD_B, T_B, "diverged")},
+                  workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"},
+                             {"id": 8, "name": other, "path": ".github/workflows/other.yml", "state": "active"}])
+        w[f"/repos/{REPO}/actions/workflows/8/runs"] = lambda params: (200, {"workflow_runs": [run(9, GREEN, T_GREEN, "success")]})
+        prior, _ = correlate(s, w)
+        self.assertEqual(prior["counts"]["lineages_by_classification"][c.NOT_FOUND], 1)
+        return s, w, prior
+
+    def test_reread_only_selected_lineages_and_carry_the_rest(self):
+        s, w, prior = self._prior()
+        gone_lid = next(l["lineage_id"] for l in prior["lineages"] if l["classification"] == c.NOT_FOUND)
+        chosen = c.select_reread_lineages(prior, None, [c.NOT_FOUND])
+        self.assertEqual(chosen, {gone_lid})
+        # The world moved on: the workflow was renamed at the same path.
+        gone_path = ".github/workflows/gone.yml"
+        w2 = dict(w)
+        rows = [{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"},
+                {"id": 8, "name": "other-workflow", "path": ".github/workflows/other.yml", "state": "active"},
+                {"id": 99, "name": "gone-renamed", "path": gone_path, "state": "active"}]
+        w2[f"/repos/{REPO}/actions/workflows"] = (200, {"total_count": 3, "workflows": rows})
+        w2[f"/repos/{REPO}/actions/runs"] = lambda params: (200, {"workflow_runs": [identity_run(5, HEAD_A, "gone", gone_path, 99)]
+                                                                   if params.get("head_sha") == HEAD_A else []})
+        w2[f"/repos/{REPO}/actions/workflows/99/runs"] = lambda params: (200, {"workflow_runs": [run(10, GREEN, T_GREEN, "success")]})
+        fetcher = StubFetcher(w2)
+        corr = c.correlate_state(s, c.GitHubReader(fetcher), fetcher_name="stub", reread={"prior": prior, "lineage_ids": chosen})
+        by_id = {l["lineage_id"]: l for l in corr["lineages"]}
+        self.assertEqual(by_id[gone_lid]["classification"], c.SUPERSEDED)
+        self.assertEqual(by_id[gone_lid]["renamed_from"], "gone")
+        prior_by_id = {l["lineage_id"]: l for l in prior["lineages"]}
+        for lid, lin in prior_by_id.items():
+            if lid != gone_lid and lin["repository"] is not None:
+                self.assertEqual(by_id[lid], lin, lid)
+                for iid in lin["incident_ids"]:
+                    self.assertEqual(corr["incidents"][iid], prior["incidents"][iid])
+        # Carried lineages cost no API read: only the re-read lineage's paths were fetched.
+        self.assertFalse(any(f"/workflows/{WF_ID}/runs" in p or "/workflows/8/runs" in p for p, _ in fetcher.log))
+        self.assertTrue(any("/workflows/99/runs" in p for p, _ in fetcher.log))
+        block = corr["reread_of"]
+        self.assertEqual(block["prior_correlation_sha256"], t.correlation_sha256(prior))
+        self.assertEqual(block["reread_lineage_ids"], [gone_lid])
+        self.assertEqual(block["reread_lineage_count"], 1)
+        self.assertEqual(block["carried_lineage_count"], 2)
+        self.assertEqual(corr["counts"]["lineages_by_classification"][c.NOT_FOUND], 0)
+        self.assertEqual(corr["counts"]["lineages_by_classification"][c.SUPERSEDED], prior["counts"]["lineages_by_classification"][c.SUPERSEDED] + 1)
+        self.assertEqual(corr["counts"]["lineages_by_classification"][c.REDACTED], 1)
+        self.assertEqual(corr["source_continuation"]["state_sha256"], t.state_sha256(s))
+        self.assertIsNone(prior["reread_of"])
+        # The merged artifact applies through the same path and binds its own digest.
+        final, disp = c.apply_resolutions(s, corr)
+        self.assertEqual(disp["disposition"], t.ALLOW, disp)
+        self.assertEqual(final["correlations"][0]["correlation_sha256"], t.correlation_sha256(corr))
+        (gone_inc,) = by_id[gone_lid]["superseded_incident_ids"]
+        self.assertEqual(final["incidents"][gone_inc]["resolution_evidence"]["correlation_sha256"], t.correlation_sha256(corr))
+        self.assertIn(gone_inc, disp["applied_incident_ids"])
+
+    def test_reread_selection_and_lineage_checks_fail_closed(self):
+        s, w, prior = self._prior()
+        with self.assertRaises(ValueError):
+            c.select_reread_lineages(prior, ["LIN-nope"], None)
+        with self.assertRaises(ValueError):
+            c.select_reread_lineages(prior, None, ["NOT_A_CLASS"])
+        with self.assertRaises(ValueError):
+            c.select_reread_lineages({"schema": "other"}, None, [c.NOT_FOUND])
+        wrong = json.loads(json.dumps(prior))
+        wrong["source_continuation"]["cycle_seq"] = 99
+        with self.assertRaises(ValueError):
+            c.correlate_state(s, c.GitHubReader(StubFetcher(w)), reread={"prior": wrong, "lineage_ids": set()})
+        # A carried lineage whose incident set changed is re-read, never carried stale.
+        s2 = reconciling_state([msg(1, sha="aaaaaaa"), msg(2, sha="bbbbbbb"), msg(6, sha="eeeeeee"),
+                                msg(3, workflow="gone", sha="aaaaaaa"), msg(4, workflow="other-workflow", sha="aaaaaaa"),
+                                msg(5, repo=PRIVATE, sha="1234567")])
+        w3 = world(completed=[run(2, RED, T_RED, "failure")], success=[run(1, GREEN, T_GREEN, "success")],
+                   heads={"aaaaaaa": (HEAD_A, T_A, "ahead"), "bbbbbbb": (HEAD_B, T_B, "diverged"), "eeeeeee": (HEAD_E, T_E, "ahead")},
+                   workflows=[{"id": WF_ID, "name": WF, "path": LINT_PATH, "state": "active"},
+                              {"id": 8, "name": "other-workflow", "path": ".github/workflows/other.yml", "state": "active"}])
+        w3[f"/repos/{REPO}/actions/workflows/8/runs"] = lambda params: (200, {"workflow_runs": [run(9, GREEN, T_GREEN, "success")]})
+        fetcher = StubFetcher(w3)
+        corr = c.correlate_state(s2, c.GitHubReader(fetcher), reread={"prior": prior, "lineage_ids": set()})
+        self.assertTrue(any(f"/workflows/{WF_ID}/runs" in p for p, _ in fetcher.log))
+        self.assertFalse(any("/workflows/8/runs" in p for p, _ in fetcher.log))
+        # "gone" and "other-workflow" unchanged -> carried; the lint lineage grew -> re-read.
+        self.assertEqual(corr["reread_of"]["carried_lineage_count"], 2)
+        self.assertEqual(corr["reread_of"]["reread_lineage_ids"], [])
+        self.assertNotIn(c.lineage_id(REPO, WF), corr["reread_of"]["carried_lineage_ids"])
+        self.assertEqual(next(l for l in corr["lineages"] if l["lineage_id"] == c.lineage_id(REPO, WF))["incident_count"], 3)
+        # A lineage that only LOST incidents to resolutions since the prior is carried verbatim
+        # (the prior row still lists them; apply skips them, the projection drops them).
+        s3, disp = c.apply_resolutions(s, prior)
+        self.assertEqual(disp["applied"], 2)  # lint/aaaaaaa (older head) and other-workflow/aaaaaaa
+        fetcher = StubFetcher(w)
+        corr3 = c.correlate_state(s3, c.GitHubReader(fetcher), reread={"prior": prior, "lineage_ids": set()})
+        self.assertEqual(fetcher.log, [])
+        # lint (lost one incident) and gone are carried; other-workflow has no open incident left.
+        self.assertEqual(corr3["reread_of"]["carried_lineage_count"], 2)
+        self.assertNotIn(c.lineage_id(REPO, "other-workflow"), {l["lineage_id"] for l in corr3["lineages"]})
+        lint = next(l for l in corr3["lineages"] if l["lineage_id"] == c.lineage_id(REPO, WF))
+        self.assertEqual(lint["incident_ids"], next(l for l in prior["lineages"] if l["lineage_id"] == lint["lineage_id"])["incident_ids"])
+        self.assertEqual(len(t.project_healer_observations(s3, corr3)["observations"]), 1)
+        # But a prior listing an incident that is still open and no longer grouped here is re-read.
+        tampered = json.loads(json.dumps(prior))
+        extra = incident_for(s, "bbbbbbb")["incident_id"]
+        other_lid = c.lineage_id(REPO, "other-workflow")
+        other = next(l for l in tampered["lineages"] if l["lineage_id"] == other_lid)
+        other["incident_ids"] = sorted(other["incident_ids"] + [extra])
+        fetcher = StubFetcher(w)
+        corr4 = c.correlate_state(s, c.GitHubReader(fetcher), reread={"prior": tampered, "lineage_ids": set()})
+        self.assertNotIn(other_lid, corr4["reread_of"]["carried_lineage_ids"])
+        self.assertTrue(any("/workflows/8/runs" in p for p, _ in fetcher.log))
+
+    def test_cli_reread_flags_require_prior(self):
+        s, w, prior = self._prior()
+        with tempfile.TemporaryDirectory() as tmp:
+            state_path = Path(tmp) / "state.json"
+            state_path.write_text(json.dumps(s, sort_keys=True), encoding="utf-8")
+            proc = subprocess.run([sys.executable, str(ROOT / "scripts/correlate_email_incidents_with_github.py"), "--state", str(state_path),
+                                   "--output", str(Path(tmp) / "out.json"), "--only-classifications", c.NOT_FOUND],
+                                  capture_output=True, text=True, check=False)
+            self.assertEqual(proc.returncode, 2)
+            self.assertIn("--prior-correlation", proc.stderr)
+            self.assertFalse((Path(tmp) / "out.json").exists())
 
 
 class FetcherTests(unittest.TestCase):

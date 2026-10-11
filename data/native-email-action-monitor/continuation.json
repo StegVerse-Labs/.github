@@ -120,12 +120,17 @@
     "1a0c6a876ffda8d3",
     "1a0c6a9fbf0902ab",
     "1a0c6aa0a9e3bb6f",
+    "1a0c6b984683bc5f",
+    "1a0c6baf2c6bfa65",
     "1a0c6bbe5aaa0af6",
+    "1a0c6bcb471a2f36",
     "1a0c6bdfc3f53216",
     "1a0c6bf16953c422",
+    "1a0c6c006eb95d1e",
     "1a0c6c00c4860d83",
     "1a0c6c0115b6b3d7",
     "1a0c6c04a77817b5",
+    "1a0c6c05157239f6",
     "1a0c6c054081ae29",
     "1a0c6c13cee24683",
     "1a0c6c1455769fc1",
@@ -661,13 +666,87 @@
     "1a0e84ca5b0f6ae6"
   ],
   "authority_effect": "NONE",
+  "correlations": [
+    {
+      "api_calls": 1067,
+      "authority_effect": "NONE_OBSERVATION_ONLY",
+      "correlation_seq": 1,
+      "correlation_sha256": "280741eb23274a700200da00003b36b98235c3c8cfb1a8edafb89f070e090ae7",
+      "evidence_class": "GITHUB_API_READ_OBSERVED",
+      "fetcher": "gh",
+      "incident_counts": {
+        "CORRELATION_ERROR": 36,
+        "NO_RUN_SINCE_FAILURE": 397,
+        "REDACTED_UNVERIFIABLE": 262,
+        "STILL_FAILING": 154,
+        "SUPERSEDED_BY_CURRENT_EVIDENCE": 360,
+        "UNCORRELATED_UNVERIFIABLE": 2,
+        "WORKFLOW_NOT_FOUND": 18,
+        "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH": 0
+      },
+      "incidents_mutated": false,
+      "lineage_counts": {
+        "CORRELATION_ERROR": 6,
+        "NO_RUN_SINCE_FAILURE": 36,
+        "REDACTED_UNVERIFIABLE": 36,
+        "STILL_FAILING": 19,
+        "SUPERSEDED_BY_CURRENT_EVIDENCE": 31,
+        "UNCORRELATED_UNVERIFIABLE": 1,
+        "WORKFLOW_NOT_FOUND": 6,
+        "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH": 0
+      },
+      "produced_at": "2026-10-11T02:31:48Z",
+      "recorded_at_transition_seq": 636,
+      "source_continuation": {
+        "cycle_seq": 3,
+        "state_sha256": "0cb9ca4293d7c801a998631d87d953440c640bf4fcc110397aa8530287fca082",
+        "transition_seq": 238
+      }
+    },
+    {
+      "api_calls": 38,
+      "authority_effect": "NONE_OBSERVATION_ONLY",
+      "correlation_seq": 2,
+      "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+      "evidence_class": "GITHUB_API_READ_OBSERVED",
+      "fetcher": "gh",
+      "incident_counts": {
+        "CORRELATION_ERROR": 36,
+        "NO_RUN_SINCE_FAILURE": 397,
+        "REDACTED_UNVERIFIABLE": 262,
+        "STILL_FAILING": 154,
+        "SUPERSEDED_BY_CURRENT_EVIDENCE": 5,
+        "UNCORRELATED_UNVERIFIABLE": 2,
+        "WORKFLOW_NOT_FOUND": 0,
+        "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH": 13
+      },
+      "incidents_mutated": false,
+      "lineage_counts": {
+        "CORRELATION_ERROR": 6,
+        "NO_RUN_SINCE_FAILURE": 36,
+        "REDACTED_UNVERIFIABLE": 36,
+        "STILL_FAILING": 19,
+        "SUPERSEDED_BY_CURRENT_EVIDENCE": 1,
+        "UNCORRELATED_UNVERIFIABLE": 1,
+        "WORKFLOW_NOT_FOUND": 0,
+        "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH": 5
+      },
+      "produced_at": "2026-10-11T16:00:44Z",
+      "recorded_at_transition_seq": 637,
+      "source_continuation": {
+        "cycle_seq": 3,
+        "state_sha256": "5d51f6e69ab1dfb25b25dcf29a5cd6301abbccfe1ec6f394f131d01d6447896a",
+        "transition_seq": 636
+      }
+    }
+  ],
   "cosv_task_vector": "10100000100000",
   "counters": {
     "archived_confirmed": 100,
     "duplicates_suppressed": 39,
     "messages_seen": 1672,
     "pages_scanned": 35,
-    "resolved_verified": 590
+    "resolved_verified": 595
   },
   "credential_authority": "TV/TVC",
   "custody_authority": "NONE_PROJECTION_PENDING_ORGANIZATION_CUSTODY",
@@ -6037,9 +6116,20 @@
       "notification_class": "FAILURE",
       "repository": "StegVerse-Labs/Site",
       "repository_sha256": "590c9cc3f3f345433e38f4b538f2a38c1ed640cda06ef9c5bac7ed6add5f1d69",
-      "resolution_evidence": null,
+      "resolution_evidence": {
+        "basis": "LATEST_SUCCESSFUL_DEFAULT_BRANCH_RUN_SAME_WORKFLOW_AFTER_FAILURE_HEAD",
+        "branch": "main",
+        "ci_conclusion": "success",
+        "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+        "current_head_sha": "290318a285089b45259a87811d11585f531b1261",
+        "evidence_url": "https://github.com/StegVerse-Labs/Site/actions/runs/35676449637",
+        "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+        "repository": "StegVerse-Labs/Site",
+        "superseded_head_sha": "673ba91ffb13240291c8b96c592f997938197c62",
+        "workflow": "Device Local KV Initialization Truth"
+      },
       "run_id": null,
-      "state": "OPEN_UNRESOLVED",
+      "state": "SUPERSEDED_VERIFIED",
       "workflow": "Device Local KV Install"
     },
     "INC-EMAIL-2911bce6bf828839bbf01fd2": {
@@ -6876,9 +6966,20 @@
       "notification_class": "FAILURE",
       "repository": "StegVerse-Labs/Site",
       "repository_sha256": "590c9cc3f3f345433e38f4b538f2a38c1ed640cda06ef9c5bac7ed6add5f1d69",
-      "resolution_evidence": null,
+      "resolution_evidence": {
+        "basis": "LATEST_SUCCESSFUL_DEFAULT_BRANCH_RUN_SAME_WORKFLOW_AFTER_FAILURE_HEAD",
+        "branch": "main",
+        "ci_conclusion": "success",
+        "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+        "current_head_sha": "290318a285089b45259a87811d11585f531b1261",
+        "evidence_url": "https://github.com/StegVerse-Labs/Site/actions/runs/35676449637",
+        "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+        "repository": "StegVerse-Labs/Site",
+        "superseded_head_sha": "391bbcf2dbe01872d41878e30d213a09efc50f4d",
+        "workflow": "Device Local KV Initialization Truth"
+      },
       "run_id": null,
-      "state": "OPEN_UNRESOLVED",
+      "state": "SUPERSEDED_VERIFIED",
       "workflow": "Device Local KV Install"
     },
     "INC-EMAIL-2e6f6767290050bbda24a471": {
@@ -10188,9 +10289,20 @@
       "notification_class": "FAILURE",
       "repository": "StegVerse-Labs/Site",
       "repository_sha256": "590c9cc3f3f345433e38f4b538f2a38c1ed640cda06ef9c5bac7ed6add5f1d69",
-      "resolution_evidence": null,
+      "resolution_evidence": {
+        "basis": "LATEST_SUCCESSFUL_DEFAULT_BRANCH_RUN_SAME_WORKFLOW_AFTER_FAILURE_HEAD",
+        "branch": "main",
+        "ci_conclusion": "success",
+        "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+        "current_head_sha": "290318a285089b45259a87811d11585f531b1261",
+        "evidence_url": "https://github.com/StegVerse-Labs/Site/actions/runs/35676449637",
+        "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+        "repository": "StegVerse-Labs/Site",
+        "superseded_head_sha": "cc8e6e1b4353dd7ea554572523af439514914e98",
+        "workflow": "Device Local KV Initialization Truth"
+      },
       "run_id": null,
-      "state": "OPEN_UNRESOLVED",
+      "state": "SUPERSEDED_VERIFIED",
       "workflow": "Device Local KV Install"
     },
     "INC-EMAIL-4a8415b8bf54b60eb52d6f6b": {
@@ -26569,9 +26681,20 @@
       "notification_class": "FAILURE",
       "repository": "StegVerse-Labs/Site",
       "repository_sha256": "590c9cc3f3f345433e38f4b538f2a38c1ed640cda06ef9c5bac7ed6add5f1d69",
-      "resolution_evidence": null,
+      "resolution_evidence": {
+        "basis": "LATEST_SUCCESSFUL_DEFAULT_BRANCH_RUN_SAME_WORKFLOW_AFTER_FAILURE_HEAD",
+        "branch": "main",
+        "ci_conclusion": "success",
+        "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+        "current_head_sha": "290318a285089b45259a87811d11585f531b1261",
+        "evidence_url": "https://github.com/StegVerse-Labs/Site/actions/runs/35676449637",
+        "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+        "repository": "StegVerse-Labs/Site",
+        "superseded_head_sha": "a25f95cf21c5f6914bc349eed46097183b959083",
+        "workflow": "Device Local KV Initialization Truth"
+      },
       "run_id": null,
-      "state": "OPEN_UNRESOLVED",
+      "state": "SUPERSEDED_VERIFIED",
       "workflow": "Device Local KV Install"
     },
     "INC-EMAIL-c717bd831c0c6fb8f1dbc42c": {
@@ -29667,9 +29790,20 @@
       "notification_class": "FAILURE",
       "repository": "StegVerse-Labs/Site",
       "repository_sha256": "590c9cc3f3f345433e38f4b538f2a38c1ed640cda06ef9c5bac7ed6add5f1d69",
-      "resolution_evidence": null,
+      "resolution_evidence": {
+        "basis": "LATEST_SUCCESSFUL_DEFAULT_BRANCH_RUN_SAME_WORKFLOW_AFTER_FAILURE_HEAD",
+        "branch": "main",
+        "ci_conclusion": "success",
+        "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
+        "current_head_sha": "290318a285089b45259a87811d11585f531b1261",
+        "evidence_url": "https://github.com/StegVerse-Labs/Site/actions/runs/35676449637",
+        "kind": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+        "repository": "StegVerse-Labs/Site",
+        "superseded_head_sha": "c67e478e4f743ee9a14451cd5dadd304669261fa",
+        "workflow": "Device Local KV Initialization Truth"
+      },
       "run_id": null,
-      "state": "OPEN_UNRESOLVED",
+      "state": "SUPERSEDED_VERIFIED",
       "workflow": "Device Local KV Install"
     },
     "INC-EMAIL-e008d763c3658480b95f8ebf": {
@@ -33523,7 +33657,7 @@
   "last_completed_page_index": 0,
   "page_limit": 100,
   "phase": "RECONCILING",
-  "prior_state_sha256": "d111c308c32ba36bb875121801d34d19562e937413fc63bee17d421a6347d47a",
+  "prior_state_sha256": "274024fe11d58ef86b2636bc99fe1bcf2760175f2243c53e4948f43bfbb2ee8a",
   "processed_message_ids": [
     "1a0bf5e7411c00b9",
     "1a0bf5eb1fbdb917",
@@ -35224,7 +35358,7 @@
   "schema": "stegverse.native-email-continuation-state/v1",
   "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
   "transition": "RECORD_RESOLUTION",
-  "transition_seq": 635,
+  "transition_seq": 642,
   "window_after_epoch": 1791566173,
   "window_before_epoch": 1791592778,
   "worker_claim": {

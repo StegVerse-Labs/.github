@@ -6,7 +6,8 @@ Issue #3039 replaces the awaited resident/scheduler path and the proposed
 chain of explicit state transitions:
 
     begin_cycle -> apply_page* -> complete_pagination
-      -> record_resolution* -> record_archive_receipt* -> close_cycle
+      -> record_correlation* -> record_resolution* -> record_archive_receipt*
+      -> close_cycle
 
 Every transition is a pure function ``(prior_state, observation) ->
 (next_state, disposition)``. The next state carries ``prior_state_sha256`` so
@@ -14,6 +15,14 @@ the committed chain can be replayed and verified by ``verify_chain``. Nothing
 waits for an executor and nothing schedules one: any executor may invoke the
 next transition, and a missed hour loses nothing because the next invocation
 resumes from committed state.
+
+``record_correlation`` (``--op correlate``) binds one GitHub correlation
+artifact (``correlate_email_incidents_with_github.py``) into the chain by its
+canonical sha256, producer, evidence class and classification counts, so a
+later cycle can prove which correlation produced which resolutions: a
+``resolve`` whose evidence names a ``correlation_sha256`` is admitted only if
+that digest is already recorded. The op is an observation (``authority_effect:
+NONE_OBSERVATION_ONLY``); it never touches an incident.
 
 Continuation is not a Gmail pageToken (short-lived). It is a fixed time window
 plus a processed-message-ID ledger and the last completed page index, so an
@@ -87,6 +96,14 @@ HEALER_OBSERVATIONS_SCHEMA = "stegverse.native-email-healer-observations/v1"
 HEALER_OBSERVATION_RECORD_SCHEMA = "stegverse.healer.github-failure-observation/v0.2"
 CORRELATION_SCHEMA = "stegverse.email-incident-github-correlation/v1"
 OUTSTANDING_CLASSIFICATIONS = ("STILL_FAILING", "NO_RUN_SINCE_FAILURE")
+# Every lineage classification the correlator can emit; a recorded correlation
+# must count each one (zero included) so the counts are comparable across cycles.
+CORRELATION_CLASSIFICATIONS = (
+    "SUPERSEDED_BY_CURRENT_EVIDENCE", "STILL_FAILING", "NO_RUN_SINCE_FAILURE", "WORKFLOW_NOT_FOUND",
+    "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH", "REDACTED_UNVERIFIABLE", "UNCORRELATED_UNVERIFIABLE", "CORRELATION_ERROR")
+CORRELATION_EVIDENCE_CLASS = "GITHUB_API_READ_OBSERVED"
+CORRELATION_AUTHORITY_EFFECT = "NONE_OBSERVATION_ONLY"
+SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
 HEALER_DISPOSITION_PATH = "StegVerse-Labs/StegVerse-Healer:failure_mailbox/incident_engine.py#ingest_observation"
 
 
@@ -124,6 +141,8 @@ def genesis() -> dict[str, Any]:
         # private ones. Correlation still works through repository_sha256.
         "public_repositories": [],
         "incidents": {},
+        # Correlation artifacts bound into the chain by record_correlation.
+        "correlations": [],
         "archive_proposed": [],
         "archived_message_ids": [],
         "counters": {
@@ -395,6 +414,113 @@ def complete_pagination(prior: Mapping[str, Any], has_more: bool | None) -> tupl
     return nxt, _disposition(ALLOW, name, **summary(nxt))
 
 
+def correlation_sha256(correlation: Mapping[str, Any]) -> str:
+    """Canonical digest of one correlation artifact (the identity the chain binds)."""
+    return hashlib.sha256(canonical_bytes(correlation)).hexdigest()
+
+
+def correlation_summary(correlation: Mapping[str, Any]) -> dict[str, Any]:
+    """The summary ``record_correlation`` binds, lifted from a correlation artifact.
+
+    Pure: the artifact is not validated here beyond field access; the
+    transition validates the result and fails closed on anything malformed.
+    """
+    counts = correlation.get("counts") if isinstance(correlation.get("counts"), Mapping) else {}
+    source = correlation.get("source_continuation") if isinstance(correlation.get("source_continuation"), Mapping) else {}
+
+    def lifted(key: str) -> dict[str, Any]:
+        # A classification introduced after the artifact was produced counts as
+        # zero, but only when the artifact carries counts at all; an unknown key
+        # is kept so the transition rejects it.
+        raw = counts.get(key)
+        if not isinstance(raw, Mapping) or not raw:
+            return {}
+        return {**{k: 0 for k in CORRELATION_CLASSIFICATIONS}, **dict(raw)}
+
+    return {
+        "produced_at": correlation.get("generated_at"),
+        "fetcher": correlation.get("fetcher"),
+        "evidence_class": correlation.get("evidence_class"),
+        "lineage_counts": lifted("lineages_by_classification"),
+        "incident_counts": lifted("incidents_by_lineage_classification"),
+        "source_continuation": {k: source.get(k) for k in ("cycle_seq", "transition_seq", "state_sha256")},
+        "api_calls": correlation.get("api_calls"),
+        "authority_effect": correlation.get("authority_effect"),
+    }
+
+
+def _counts_valid(counts: Any) -> bool:
+    return (isinstance(counts, Mapping) and set(counts) == set(CORRELATION_CLASSIFICATIONS)
+            and all(type(v) is int and v >= 0 for v in counts.values()))
+
+
+def recorded_correlation_digests(state: Mapping[str, Any]) -> set[str]:
+    return {str(c.get("correlation_sha256")) for c in (state.get("correlations") or []) if isinstance(c, Mapping)}
+
+
+def record_correlation(prior: Mapping[str, Any], artifact_digest: str, summary: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Bind one GitHub correlation artifact into the chain (observation only).
+
+    Records the artifact's canonical sha256, when and by which fetcher it was
+    produced, its evidence class, the lineage/incident counts per
+    classification and the state lineage it observed. Incidents are never
+    touched: supersessions stay separate ``resolve`` transitions that name
+    this digest in their evidence. Replaying the same digest returns the
+    stored state unchanged (idempotent); a malformed summary fails closed.
+    """
+    name = "RECORD_CORRELATION"
+    bad = _check(prior)
+    if bad:
+        return dict(prior), _disposition(FAIL_CLOSED, name, bad)
+    if prior["phase"] != PHASE_RECONCILING:
+        return dict(prior), _disposition(DENY, name, "CORRELATION_BEFORE_PAGINATION_COMPLETE")
+    if not (isinstance(artifact_digest, str) and SHA256_HEX.match(artifact_digest)):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_SHA256_INVALID")
+    if artifact_digest in recorded_correlation_digests(prior):
+        return dict(prior), _disposition(ALLOW, name, None, idempotent_replay=True, correlation_sha256=artifact_digest)
+    if not isinstance(summary, Mapping):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_SUMMARY_REQUIRED")
+    if summary.get("evidence_class") != CORRELATION_EVIDENCE_CLASS:
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_EVIDENCE_CLASS_INVALID")
+    if summary.get("authority_effect") not in (None, CORRELATION_AUTHORITY_EFFECT):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_CLAIMS_AUTHORITY")
+    produced_at, fetcher = summary.get("produced_at"), summary.get("fetcher")
+    if not (isinstance(produced_at, str) and produced_at.strip() and isinstance(fetcher, str) and fetcher.strip()):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_PRODUCER_REQUIRED")
+    if not (_counts_valid(summary.get("lineage_counts")) and _counts_valid(summary.get("incident_counts"))):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_COUNTS_INVALID")
+    source = summary.get("source_continuation")
+    if not isinstance(source, Mapping):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_SOURCE_LINEAGE_REQUIRED")
+    src_seq, src_sha = source.get("transition_seq"), source.get("state_sha256")
+    if (source.get("cycle_seq") != prior["cycle_seq"] or type(src_seq) is not int or src_seq > int(prior["transition_seq"])
+            or not (isinstance(src_sha, str) and SHA256_HEX.match(src_sha))):
+        # The artifact must have observed this cycle at or before this state.
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_LINEAGE_MISMATCH")
+    api_calls = summary.get("api_calls")
+    if api_calls is not None and not (type(api_calls) is int and api_calls >= 0):
+        return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_API_CALLS_INVALID")
+    nxt = _advance(prior, name)
+    entries = list(nxt.get("correlations") or [])
+    entries.append({
+        "correlation_seq": len(entries) + 1,
+        "correlation_sha256": artifact_digest,
+        "produced_at": produced_at.strip(),
+        "fetcher": fetcher.strip(),
+        "evidence_class": CORRELATION_EVIDENCE_CLASS,
+        "source_continuation": {"cycle_seq": prior["cycle_seq"], "transition_seq": src_seq, "state_sha256": src_sha},
+        "recorded_at_transition_seq": nxt["transition_seq"],
+        "api_calls": api_calls,
+        "lineage_counts": {k: int(summary["lineage_counts"][k]) for k in CORRELATION_CLASSIFICATIONS},
+        "incident_counts": {k: int(summary["incident_counts"][k]) for k in CORRELATION_CLASSIFICATIONS},
+        "authority_effect": CORRELATION_AUTHORITY_EFFECT,
+        "incidents_mutated": False,
+    })
+    nxt["correlations"] = entries
+    return nxt, _disposition(ALLOW, name, correlation_sha256=artifact_digest, correlation_seq=len(entries),
+                             lineage_counts=entries[-1]["lineage_counts"], incident_counts=entries[-1]["incident_counts"])
+
+
 def record_resolution(prior: Mapping[str, Any], incident_id: str, evidence: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     """Mark an incident resolved only on observed green CI at the exact new head."""
     name = "RECORD_RESOLUTION"
@@ -414,6 +540,14 @@ def record_resolution(prior: Mapping[str, Any], incident_id: str, evidence: Mapp
     url = evidence.get("evidence_url")
     if not (isinstance(url, str) and url.startswith("https://")):
         return dict(prior), _disposition(FAIL_CLOSED, name, "RESOLUTION_EVIDENCE_URL_REQUIRED")
+    if "correlation_sha256" in evidence:
+        # When the evidence names the correlation it came from, that
+        # correlation must already be bound into this chain.
+        digest = evidence.get("correlation_sha256")
+        if not (isinstance(digest, str) and SHA256_HEX.match(digest)):
+            return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_SHA256_INVALID")
+        if digest not in recorded_correlation_digests(prior):
+            return dict(prior), _disposition(FAIL_CLOSED, name, "CORRELATION_SHA256_NOT_RECORDED")
     if kind == "REPAIRED_AT_EXACT_HEAD":
         head = str(evidence.get("repaired_head_sha") or "").lower()
         observed = str(evidence.get("observed_head_sha") or "").lower()
@@ -680,7 +814,9 @@ def project_healer_observations(state: Mapping[str, Any], correlation: Mapping[s
             "state_sha256": source.get("state_sha256"),
             "transition_seq": source.get("transition_seq"),
             "evidence_class": correlation.get("evidence_class"),
-            "correlation_sha256": hashlib.sha256(canonical_bytes(correlation)).hexdigest(),
+            "correlation_sha256": correlation_sha256(correlation),
+            # True once a `correlate` transition bound this exact artifact into the chain.
+            "bound_in_continuation_chain": correlation_sha256(correlation) in recorded_correlation_digests(state),
         },
         "observation_count": len(observations),
         "observations": observations,
@@ -707,10 +843,22 @@ def verify_chain(states: list[Mapping[str, Any]]) -> tuple[bool, str | None]:
     return True, None
 
 
+def _correlate_observation(state: Mapping[str, Any], observation: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """``--op correlate``: the input is the correlation artifact itself (its
+    canonical digest and summary are derived here) or an explicit
+    ``{"correlation_sha256": ..., "summary": {...}}`` pair."""
+    if isinstance(observation, Mapping) and observation.get("schema") == CORRELATION_SCHEMA:
+        return record_correlation(state, correlation_sha256(observation), correlation_summary(observation))
+    if not isinstance(observation, Mapping):
+        return dict(state), _disposition(FAIL_CLOSED, "RECORD_CORRELATION", "CORRELATION_INPUT_REQUIRED")
+    return record_correlation(state, observation.get("correlation_sha256"), observation.get("summary"))
+
+
 TRANSITIONS = {
     "begin": lambda s, a: begin_cycle(s, int(a["now_epoch"])),
     "page": lambda s, a: apply_page(s, int(a["page_index"]), a["messages"]),
     "complete": lambda s, a: complete_pagination(s, a.get("has_more")),
+    "correlate": _correlate_observation,
     "resolve": lambda s, a: record_resolution(s, a["incident_id"], a["evidence"]),
     "archive-receipt": lambda s, a: record_archive_receipt(s, a["confirmed_ids"]),
     "close": lambda s, a: close_cycle(s),
