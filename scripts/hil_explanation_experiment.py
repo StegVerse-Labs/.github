@@ -378,8 +378,6 @@ def _build_trial_record(*, trial_id: str, dimension: str, condition: str, fixtur
     fixture for condition trials and are empty for probes. Nothing here contacts a provider,
     enrols a subject or claims a knowledge mechanism: ``knowledge_inference`` defaults to NONE.
     """
-    if evidence_class != "SYNTHETIC_TEST":
-        raise ExperimentError("HIL_ACTUAL_OBSERVATION_REQUIRES_TICKETED_INTAKE")
     if condition in CONDITIONS:
         stimulus = build_stimulus(condition, _fixture_by_id(fixture_id, fixtures))
         stimulus_digest = stimulus["stimulus_digest"]
