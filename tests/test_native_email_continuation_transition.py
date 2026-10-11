@@ -420,5 +420,245 @@ class ContinuationTransitionTests(unittest.TestCase):
             self.assertEqual(loaded["transition_seq"], 2)
 
 
+DIGEST = "ab" * 32
+COUNTS = {k: 0 for k in t.CORRELATION_CLASSIFICATIONS}
+
+
+def correlation_doc(state: dict, *, lineages: dict | None = None, generated_at: str = "2026-10-11T03:00:00Z") -> dict:
+    """A minimal artifact in the correlator's shape, observing ``state``."""
+    lineage_counts = {**COUNTS, **(lineages or {"STILL_FAILING": 1})}
+    return {
+        "schema": t.CORRELATION_SCHEMA, "generated_at": generated_at, "fetcher": "stub", "api_calls": 3,
+        "source_continuation": {"schema": t.SCHEMA, "cycle_seq": state["cycle_seq"], "transition_seq": state["transition_seq"],
+                                "phase": state["phase"], "state_sha256": t.state_sha256(state)},
+        "counts": {"lineages_by_classification": lineage_counts,
+                   "incidents_by_lineage_classification": {k: v * 2 for k, v in lineage_counts.items()}},
+        "lineages": [], "incidents": {},
+        "evidence_class": "GITHUB_API_READ_OBSERVED", "authority_effect": "NONE_OBSERVATION_ONLY",
+    }
+
+
+class RecordCorrelationTests(unittest.TestCase):
+    """The ``correlate`` transition: binds the artifact, chains, replays, fails closed, touches no incident."""
+
+    def _state(self) -> dict:
+        return run_cycle(gen(), 5000, [msg(1), msg(2, sha=SHA_B)])[-1]
+
+    def test_correlate_binds_digest_and_summary_into_the_chain(self):
+        s = self._state()
+        self.assertEqual(s["correlations"], [])
+        doc = correlation_doc(s)
+        digest = t.correlation_sha256(doc)
+        nxt, disp = t.record_correlation(s, digest, t.correlation_summary(doc))
+        self.assertEqual(disp["disposition"], t.ALLOW, disp)
+        self.assertEqual(disp["correlation_sha256"], digest)
+        self.assertEqual(disp["correlation_seq"], 1)
+        self.assertEqual(nxt["transition"], "RECORD_CORRELATION")
+        self.assertEqual(nxt["transition_seq"], s["transition_seq"] + 1)
+        self.assertEqual(nxt["prior_state_sha256"], t.state_sha256(s))
+        self.assertEqual(t.verify_chain([s, nxt]), (True, None))
+        (bound,) = nxt["correlations"]
+        self.assertEqual(bound["correlation_sha256"], digest)
+        self.assertEqual(bound["produced_at"], "2026-10-11T03:00:00Z")
+        self.assertEqual(bound["fetcher"], "stub")
+        self.assertEqual(bound["evidence_class"], "GITHUB_API_READ_OBSERVED")
+        self.assertEqual(bound["authority_effect"], "NONE_OBSERVATION_ONLY")
+        self.assertFalse(bound["incidents_mutated"])
+        self.assertEqual(bound["api_calls"], 3)
+        self.assertEqual(bound["recorded_at_transition_seq"], nxt["transition_seq"])
+        self.assertEqual(bound["source_continuation"], {"cycle_seq": s["cycle_seq"], "transition_seq": s["transition_seq"],
+                                                        "state_sha256": t.state_sha256(s)})
+        self.assertEqual(set(bound["lineage_counts"]), set(t.CORRELATION_CLASSIFICATIONS))
+        self.assertEqual(bound["lineage_counts"]["STILL_FAILING"], 1)
+        self.assertEqual(bound["incident_counts"]["STILL_FAILING"], 2)
+        self.assertIn("WORKFLOW_REMOVED_ON_DEFAULT_BRANCH", bound["lineage_counts"])
+        # Observation only: incidents, counters, ledger and proposals are untouched.
+        for key in ("incidents", "counters", "archive_proposed", "archived_message_ids", "processed_message_ids", "phase"):
+            self.assertEqual(nxt[key], s[key], key)
+        self.assertEqual(nxt["authority_effect"], "NONE")
+        # A second, different artifact chains after the first.
+        doc2 = correlation_doc(nxt, generated_at="2026-10-11T04:00:00Z")
+        third, disp2 = t.record_correlation(nxt, t.correlation_sha256(doc2), t.correlation_summary(doc2))
+        self.assertEqual(disp2["correlation_seq"], 2)
+        self.assertEqual([b["correlation_seq"] for b in third["correlations"]], [1, 2])
+        self.assertEqual(t.verify_chain([s, nxt, third]), (True, None))
+        # An artifact that observed an EARLIER state of the same cycle is still bindable.
+        late = correlation_doc(s, generated_at="2026-10-11T05:00:00Z")
+        fourth, disp3 = t.record_correlation(third, t.correlation_sha256(late), t.correlation_summary(late))
+        self.assertEqual(disp3["disposition"], t.ALLOW)
+        self.assertEqual(fourth["correlations"][-1]["source_continuation"]["transition_seq"], s["transition_seq"])
+
+    def test_summary_lifts_a_pre_existing_artifact_without_relaxing_the_transition(self):
+        s = self._state()
+        # An artifact produced before WORKFLOW_REMOVED_ON_DEFAULT_BRANCH existed (the committed #3093 one).
+        doc = correlation_doc(s)
+        for key in ("lineages_by_classification", "incidents_by_lineage_classification"):
+            del doc["counts"][key]["WORKFLOW_REMOVED_ON_DEFAULT_BRANCH"]
+        summary = t.correlation_summary(doc)
+        self.assertEqual(summary["lineage_counts"]["WORKFLOW_REMOVED_ON_DEFAULT_BRANCH"], 0)
+        self.assertEqual(summary["lineage_counts"]["STILL_FAILING"], 1)
+        self.assertEqual(t.record_correlation(s, t.correlation_sha256(doc), summary)[1]["disposition"], t.ALLOW)
+        # No counts at all, or an unknown class, still fails closed.
+        empty = correlation_doc(s)
+        empty["counts"] = {}
+        self.assertEqual(t.record_correlation(s, DIGEST, t.correlation_summary(empty))[1]["failed_predicate"], "CORRELATION_COUNTS_INVALID")
+        odd = correlation_doc(s)
+        odd["counts"]["lineages_by_classification"]["NEW_CLASS"] = 1
+        self.assertEqual(t.record_correlation(s, DIGEST, t.correlation_summary(odd))[1]["failed_predicate"], "CORRELATION_COUNTS_INVALID")
+
+    def test_replay_of_the_same_digest_is_idempotent(self):
+        s = self._state()
+        doc = correlation_doc(s)
+        digest = t.correlation_sha256(doc)
+        nxt = ok(t.record_correlation(s, digest, t.correlation_summary(doc)))
+        again, disp = t.record_correlation(nxt, digest, t.correlation_summary(doc))
+        self.assertEqual(disp["disposition"], t.ALLOW)
+        self.assertTrue(disp["idempotent_replay"])
+        self.assertEqual(t.state_sha256(again), t.state_sha256(nxt))
+        # Replay with a garbage summary still returns the stored state: the digest is the identity.
+        again2, disp2 = t.record_correlation(nxt, digest, {"nonsense": True})
+        self.assertTrue(disp2["idempotent_replay"])
+        self.assertEqual(t.state_sha256(again2), t.state_sha256(nxt))
+
+    def test_malformed_summary_or_digest_fails_closed(self):
+        s = self._state()
+        good = t.correlation_summary(correlation_doc(s))
+        cases = [
+            ("CORRELATION_SHA256_INVALID", "not-a-sha", good),
+            ("CORRELATION_SHA256_INVALID", DIGEST.upper(), good),
+            ("CORRELATION_SUMMARY_REQUIRED", DIGEST, None),
+            ("CORRELATION_SUMMARY_REQUIRED", DIGEST, "summary"),
+            ("CORRELATION_EVIDENCE_CLASS_INVALID", DIGEST, {**good, "evidence_class": "ASSERTED"}),
+            ("CORRELATION_CLAIMS_AUTHORITY", DIGEST, {**good, "authority_effect": "ALLOW"}),
+            ("CORRELATION_PRODUCER_REQUIRED", DIGEST, {**good, "produced_at": None}),
+            ("CORRELATION_PRODUCER_REQUIRED", DIGEST, {**good, "fetcher": ""}),
+            ("CORRELATION_COUNTS_INVALID", DIGEST, {**good, "lineage_counts": {k: v for k, v in good["lineage_counts"].items() if k != "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH"}}),
+            ("CORRELATION_COUNTS_INVALID", DIGEST, {**good, "lineage_counts": {**good["lineage_counts"], "EXTRA": 0}}),
+            ("CORRELATION_COUNTS_INVALID", DIGEST, {**good, "incident_counts": {**good["incident_counts"], "STILL_FAILING": -1}}),
+            ("CORRELATION_COUNTS_INVALID", DIGEST, {**good, "incident_counts": {**good["incident_counts"], "STILL_FAILING": "2"}}),
+            ("CORRELATION_COUNTS_INVALID", DIGEST, {**good, "incident_counts": {**good["incident_counts"], "STILL_FAILING": True}}),
+            ("CORRELATION_SOURCE_LINEAGE_REQUIRED", DIGEST, {**good, "source_continuation": None}),
+            ("CORRELATION_LINEAGE_MISMATCH", DIGEST, {**good, "source_continuation": {**good["source_continuation"], "cycle_seq": 2}}),
+            ("CORRELATION_LINEAGE_MISMATCH", DIGEST, {**good, "source_continuation": {**good["source_continuation"], "transition_seq": s["transition_seq"] + 1}}),
+            ("CORRELATION_LINEAGE_MISMATCH", DIGEST, {**good, "source_continuation": {**good["source_continuation"], "state_sha256": "xyz"}}),
+            ("CORRELATION_API_CALLS_INVALID", DIGEST, {**good, "api_calls": -1}),
+        ]
+        for predicate, digest, summary in cases:
+            same, disp = t.record_correlation(s, digest, summary)
+            self.assertEqual(disp["disposition"], t.FAIL_CLOSED, (predicate, disp))
+            self.assertEqual(disp["failed_predicate"], predicate, disp)
+            self.assertEqual(t.state_sha256(same), t.state_sha256(s))
+        # Before pagination completes the op is denied, never recorded.
+        paginating = ok(t.apply_page(ok(t.begin_cycle(gen(), 5000)), 0, [msg(1)]))
+        same, disp = t.record_correlation(paginating, DIGEST, good)
+        self.assertEqual(disp["disposition"], t.DENY)
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_BEFORE_PAGINATION_COMPLETE")
+        # A tampered ledger fails closed before anything else.
+        tampered = dict(s, processed_message_ids=[])
+        _, disp = t.record_correlation(tampered, DIGEST, good)
+        self.assertEqual(disp["failed_predicate"], "PROCESSED_ID_LEDGER_DIGEST_MISMATCH")
+
+    def test_resolve_evidence_may_name_only_a_bound_correlation(self):
+        s = self._state()
+        inc = next(iter(s["incidents"]))
+        evidence = {"kind": "SUPERSEDED_BY_CURRENT_EVIDENCE", "evidence_url": "https://github.com/x/actions/runs/1",
+                    "current_head_sha": SHA_FIX, "ci_conclusion": "success"}
+        doc = correlation_doc(s)
+        digest = t.correlation_sha256(doc)
+        # Not yet bound: refused. Malformed: refused. Nothing relaxed.
+        _, disp = t.record_resolution(s, inc, {**evidence, "correlation_sha256": digest})
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_SHA256_NOT_RECORDED")
+        _, disp = t.record_resolution(s, inc, {**evidence, "correlation_sha256": "nope"})
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_SHA256_INVALID")
+        _, disp = t.record_resolution(s, inc, {**evidence, "correlation_sha256": None})
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_SHA256_INVALID")
+        bound = ok(t.record_correlation(s, digest, t.correlation_summary(doc)))
+        _, disp = t.record_resolution(bound, inc, {**evidence, "correlation_sha256": digest, "ci_conclusion": "failure"})
+        self.assertEqual(disp["failed_predicate"], "SUPERSEDING_HEAD_NOT_GREEN")
+        _, disp = t.record_resolution(bound, inc, {**evidence, "correlation_sha256": "0" * 64})
+        self.assertEqual(disp["failed_predicate"], "CORRELATION_SHA256_NOT_RECORDED")
+        resolved = ok(t.record_resolution(bound, inc, {**evidence, "correlation_sha256": digest}))
+        self.assertEqual(resolved["incidents"][inc]["resolution_evidence"]["correlation_sha256"], digest)
+        self.assertEqual(resolved["incidents"][inc]["state"], t.INCIDENT_SUPERSEDED)
+        self.assertEqual(t.verify_chain([s, bound, resolved]), (True, None))
+        # Evidence without the key is still admitted exactly as before.
+        ok(t.record_resolution(bound, next(i for i in s["incidents"] if i != inc), evidence))
+        # The healer projection reports whether its source artifact is bound.
+        self.assertFalse(t.project_healer_observations(s, doc)["source_correlation"]["bound_in_continuation_chain"])
+        self.assertTrue(t.project_healer_observations(bound, doc)["source_correlation"]["bound_in_continuation_chain"])
+
+    def test_cli_correlate_op_takes_the_artifact_and_replays_idempotently(self):
+        s = self._state()
+        doc = correlation_doc(s)
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td) / "continuation.json"
+            inp = Path(td) / "corr.json"
+            state.write_text(json.dumps(s, indent=2, sort_keys=True) + "\n")
+            inp.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n")
+            script = str(ROOT / "scripts/native_email_continuation_transition.py")
+
+            def run(path):
+                return subprocess.run([sys.executable, "-I", script, "--state", str(state), "--op", "correlate",
+                                       "--input", str(path)], capture_output=True, text=True, check=False)
+
+            first = run(inp)
+            self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+            self.assertEqual(json.loads(first.stdout)["correlation_sha256"], t.correlation_sha256(doc))
+            written = json.loads(state.read_text())
+            self.assertEqual(written["transition"], "RECORD_CORRELATION")
+            self.assertEqual(written["correlations"][0]["correlation_sha256"], t.correlation_sha256(doc))
+            self.assertTrue(t.verify_chain([s, written])[0])
+            before = state.read_bytes()
+            again = run(inp)
+            self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
+            self.assertTrue(json.loads(again.stdout)["idempotent_replay"])
+            self.assertEqual(state.read_bytes(), before)
+            # Explicit {correlation_sha256, summary} form and malformed input.
+            explicit = Path(td) / "explicit.json"
+            doc2 = correlation_doc(written, generated_at="2026-10-11T06:00:00Z")
+            explicit.write_text(json.dumps({"correlation_sha256": t.correlation_sha256(doc2), "summary": t.correlation_summary(doc2)}))
+            self.assertEqual(run(explicit).returncode, 0)
+            self.assertEqual(len(json.loads(state.read_text())["correlations"]), 2)
+            before = state.read_bytes()
+            bad = Path(td) / "bad.json"
+            bad.write_text(json.dumps({"correlation_sha256": "zzz", "summary": {}}))
+            result = run(bad)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(json.loads(result.stdout)["failed_predicate"], "CORRELATION_SHA256_INVALID")
+            self.assertEqual(state.read_bytes(), before)
+            bad.write_text(json.dumps([]))
+            result = run(bad)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(json.loads(result.stdout)["failed_predicate"], "CORRELATION_INPUT_REQUIRED")
+            self.assertEqual(state.read_bytes(), before)
+
+    def test_committed_correlations_bind_the_committed_artifacts(self):
+        root = ROOT / "data/native-email-action-monitor"
+        committed = json.loads((root / "continuation.json").read_text(encoding="utf-8"))
+        artifact = json.loads((root / "github-correlation.latest.json").read_text(encoding="utf-8"))
+        healer = json.loads((root / "healer-observations.latest.json").read_text(encoding="utf-8"))
+        bound = committed.get("correlations") or []
+        self.assertTrue(bound, "committed state binds no correlation")
+        self.assertEqual([b["correlation_seq"] for b in bound], list(range(1, len(bound) + 1)))
+        for b in bound:
+            self.assertRegex(b["correlation_sha256"], r"^[0-9a-f]{64}$")
+            self.assertEqual(b["evidence_class"], "GITHUB_API_READ_OBSERVED")
+            self.assertEqual(b["authority_effect"], "NONE_OBSERVATION_ONLY")
+            self.assertEqual(set(b["lineage_counts"]), set(t.CORRELATION_CLASSIFICATIONS))
+            self.assertLessEqual(b["recorded_at_transition_seq"], committed["transition_seq"])
+        digest = t.correlation_sha256(artifact)
+        self.assertEqual(bound[-1]["correlation_sha256"], digest)
+        self.assertEqual(bound[-1]["lineage_counts"], artifact["counts"]["lineages_by_classification"])
+        self.assertEqual(healer["source_correlation"]["correlation_sha256"], digest)
+        self.assertTrue(healer["source_correlation"]["bound_in_continuation_chain"])
+        # Every resolution recorded after the first binding names a bound digest.
+        digests = {b["correlation_sha256"] for b in bound}
+        named = [i for i in committed["incidents"].values()
+                 if (i.get("resolution_evidence") or {}).get("correlation_sha256") is not None]
+        self.assertTrue(named)
+        for inc in named:
+            self.assertIn(inc["resolution_evidence"]["correlation_sha256"], digests)
+
+
 if __name__ == "__main__":
     unittest.main()

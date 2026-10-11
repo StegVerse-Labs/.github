@@ -17,19 +17,37 @@ classifies each lineage:
                                     (failure / cancelled / timed_out / ...)
     NO_RUN_SINCE_FAILURE            no completed default-branch run newer than
                                     the newest failing head
-    WORKFLOW_NOT_FOUND              the workflow name/path no longer resolves
+    WORKFLOW_NOT_FOUND              the workflow name no longer resolves and no
+                                    workflow file path could be recovered
+    WORKFLOW_REMOVED_ON_DEFAULT_BRANCH
+                                    the workflow file path was recovered from
+                                    a run at a failing head but is absent on
+                                    the default branch (withheld from Healer)
     REDACTED_UNVERIFIABLE           repository hidden (``repository_sha256``
                                     only); no API call is made
     UNCORRELATED_UNVERIFIABLE       notification never bound to a repository
     CORRELATION_ERROR               any API error (status recorded); fail closed
 
+Workflow identity is by NAME first and by FILE PATH second: when the mail's
+workflow name no longer matches, the path is recovered from the run the
+incident names (``run_id`` -> ``/actions/runs/{id}``) or, failing that, from
+the runs at the failing head (``/actions/runs?head_sha=``). A path that is
+still present and active correlates normally under the current name (the mail
+name is kept as ``renamed_from``; the lineage id stays keyed on the mail name).
+
 Within a lineage every incident whose own head predates the latest successful
 default-branch run is superseded together (repeat-notification suppression),
 and its ``resolution_evidence`` is emitted in exactly the shape that
 ``record_resolution`` admits for ``SUPERSEDED_BY_CURRENT_EVIDENCE``.
-``--apply-resolutions`` replays those through the EXISTING ``resolve``
-transition, one chained state per incident, verifying ``prior_state_sha256``
-at every step; nothing else in the state changes.
+``--apply-resolutions`` first binds the correlation artifact into the chain
+through the ``correlate`` transition (``record_correlation``: canonical
+sha256, producer, evidence class, counts), then replays every supersession
+through the EXISTING ``resolve`` transition with ``correlation_sha256`` added
+to its evidence, one chained state per incident, verifying
+``prior_state_sha256`` at every step; nothing else in the state changes.
+``--only-lineages`` / ``--only-classifications`` with ``--prior-correlation``
+re-read only the named lineages and carry every other public lineage from the
+prior artifact (minimal re-read; the artifact records ``reread_of``).
 
 Non-authorizing: ``authority_effect: NONE_OBSERVATION_ONLY``. An optional
 bearer token (``GITHUB_TOKEN``) is used only for the API rate limit and is
@@ -65,11 +83,19 @@ SUPERSEDED = "SUPERSEDED_BY_CURRENT_EVIDENCE"
 STILL_FAILING = "STILL_FAILING"
 NO_RUN = "NO_RUN_SINCE_FAILURE"
 NOT_FOUND = "WORKFLOW_NOT_FOUND"
+REMOVED = "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH"
 REDACTED = "REDACTED_UNVERIFIABLE"
 UNCORRELATED = "UNCORRELATED_UNVERIFIABLE"
 ERROR = "CORRELATION_ERROR"
-CLASSIFICATIONS = (SUPERSEDED, STILL_FAILING, NO_RUN, NOT_FOUND, REDACTED, UNCORRELATED, ERROR)
+CLASSIFICATIONS = t.CORRELATION_CLASSIFICATIONS
+assert set(CLASSIFICATIONS) == {SUPERSEDED, STILL_FAILING, NO_RUN, NOT_FOUND, REMOVED, REDACTED, UNCORRELATED, ERROR}
 OUTSTANDING_CLASSIFICATIONS = (STILL_FAILING, NO_RUN)
+
+# Workflow identity recovery (name lookup failed): how the file path was found.
+IDENTITY_BY_NAME = "NAME"
+IDENTITY_BY_RUN_ID = "RUN_ID_PATH"
+IDENTITY_BY_HEAD_RUNS = "FAILING_HEAD_RUN_PATH"
+MAX_IDENTITY_HEADS = 5
 
 DISP_SUPERSEDED = "SUPERSEDED"
 DISP_OUTSTANDING = "OUTSTANDING"
@@ -202,6 +228,30 @@ class GitHubReader:
         body = self.get(f"/repos/{repo}/actions/workflows/{workflow_id}/runs",
                         branch=branch, status=status, per_page=per_page, exclude_pull_requests="true")
         return [r for r in (body.get("workflow_runs") or []) if isinstance(r, Mapping)]
+
+    def run(self, repo: str, run_id: str) -> dict[str, Any]:
+        return self.get(f"/repos/{repo}/actions/runs/{run_id}")
+
+    def runs_at_head(self, repo: str, full_sha: str) -> list[dict[str, Any]]:
+        body = self.get(f"/repos/{repo}/actions/runs", head_sha=full_sha, per_page=100)
+        return [r for r in (body.get("workflow_runs") or []) if isinstance(r, Mapping)]
+
+    def workflow_by_id(self, repo: str, workflow_id: int) -> dict[str, Any]:
+        return self.get(f"/repos/{repo}/actions/workflows/{workflow_id}")
+
+    def workflow_by_path(self, repo: str, path: str) -> list[dict[str, Any]]:
+        return [w for w in self.workflows(repo) if w.get("path") == path]
+
+    def path_on_branch(self, repo: str, path: str, branch: str) -> tuple[bool, str]:
+        """Whether a file exists on a branch; the contents API URL is the evidence."""
+        api_path = f"/repos/{repo}/contents/{urllib.parse.quote(path)}"
+        try:
+            self.get(api_path, ref=branch)
+        except ApiError as exc:
+            if exc.status == 404:
+                return False, API_BASE + api_path + "?ref=" + urllib.parse.quote(branch)
+            raise
+        return True, API_BASE + api_path + "?ref=" + urllib.parse.quote(branch)
 
     def compare(self, repo: str, base: str, head: str) -> dict[str, Any]:
         return self.get(f"/repos/{repo}/compare/{base}...{head}")
@@ -344,6 +394,8 @@ def _lineage_base(repo: str | None, workflow: str | None, incidents: list[dict[s
         "default_branch": None,
         "workflow_id": None,
         "workflow_path": None,
+        "workflow_identity": None,
+        "renamed_from": None,
         "latest_completed_run": None,
         "latest_success_run": None,
         "superseded_incident_ids": [],
@@ -374,6 +426,119 @@ def _incident_row(inc: Mapping[str, Any], lid: str, disposition: str, **extra: A
     return row
 
 
+def _run_names_workflow(run: Mapping[str, Any], workflow: str) -> bool:
+    name = str(run.get("name") or "")
+    return name == workflow or name.lower() == workflow.lower()
+
+
+def _discover_workflow_path(gh: GitHubReader, repo: str, workflow: str,
+                            incidents: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Recover the workflow FILE PATH of a lineage whose name no longer resolves.
+
+    First from the run the incident names (``run_id``), then from the runs at
+    up to ``MAX_IDENTITY_HEADS`` distinct failing heads; the run must carry
+    the mail's workflow name. A head that no longer resolves (404/422) is
+    skipped. Returns ``{path, workflow_id, basis, run_url, head_sha}`` or
+    ``None`` when no run reveals the path.
+    """
+    seen_runs: set[str] = set()
+    for inc in sorted(incidents, key=lambda i: i["incident_id"]):
+        run_id = str(inc.get("run_id") or "").strip()
+        if not run_id.isdigit() or run_id in seen_runs:
+            continue
+        seen_runs.add(run_id)
+        try:
+            run = gh.run(repo, run_id)
+        except ApiError as exc:
+            if exc.status in HEAD_UNRESOLVABLE_STATUSES:
+                continue
+            raise
+        path = run.get("path")
+        if isinstance(path, str) and path and _run_names_workflow(run, workflow):
+            return {"path": path, "workflow_id": run.get("workflow_id"), "basis": IDENTITY_BY_RUN_ID,
+                    "run_url": run.get("html_url"), "head_sha": run.get("head_sha")}
+    heads: list[str] = []
+    for inc in sorted(incidents, key=lambda i: i["incident_id"]):
+        short = str(inc.get("head_sha") or "").lower()
+        if short and short not in heads:
+            heads.append(short)
+    for short in heads[:MAX_IDENTITY_HEADS]:
+        try:
+            commit = gh.commit(repo, short)
+        except ApiError as exc:
+            if exc.status in HEAD_UNRESOLVABLE_STATUSES:
+                continue
+            raise
+        full = commit.get("sha")
+        if not (isinstance(full, str) and len(full) == 40):
+            continue
+        for run in gh.runs_at_head(repo, full):
+            path = run.get("path")
+            if isinstance(path, str) and path and _run_names_workflow(run, workflow):
+                return {"path": path, "workflow_id": run.get("workflow_id"), "basis": IDENTITY_BY_HEAD_RUNS,
+                        "run_url": run.get("html_url"), "head_sha": full}
+    return None
+
+
+def _resolve_workflow_identity(gh: GitHubReader, repo: str, workflow: str, branch: str,
+                               incidents: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+    """Resolve the workflow by name, then by file path.
+
+    Returns ``(workflow_row_or_None, identity)``. ``identity.outcome`` is
+    ``RESOLVED`` (by name, or by path under the current name with
+    ``renamed_from``), ``REMOVED_ON_DEFAULT_BRANCH`` (path recovered, file
+    absent on the default branch; ``evidence_url`` recorded) or ``NOT_FOUND``.
+    ``WORKFLOW_NAME_AMBIGUOUS`` is raised through the caller's error path.
+    """
+    matches = gh.resolve_workflow(repo, workflow)
+    if len(matches) > 1:
+        active = [m for m in matches if m.get("state") == "active"]
+        if len(active) != 1:
+            raise AmbiguousWorkflow(sorted(str(m.get("path")) for m in matches))
+        matches = active
+    if matches:
+        return matches[0], {"basis": IDENTITY_BY_NAME, "outcome": "RESOLVED", "path": matches[0].get("path"),
+                            "workflow_id": matches[0].get("id"), "renamed_from": None}
+    found = _discover_workflow_path(gh, repo, workflow, incidents)
+    if found is None:
+        return None, {"basis": None, "outcome": "NOT_FOUND", "path": None, "workflow_id": None, "renamed_from": None}
+    identity = {"basis": found["basis"], "path": found["path"], "workflow_id": found["workflow_id"],
+                "discovered_from_run_url": found["run_url"], "discovered_at_head_sha": found["head_sha"]}
+    by_path = [w for w in gh.workflow_by_path(repo, found["path"]) if w.get("state") == "active"]
+    wf: Mapping[str, Any] | None = by_path[0] if len(by_path) == 1 else None
+    if wf is None and isinstance(found.get("workflow_id"), int):
+        try:
+            candidate = gh.workflow_by_id(repo, int(found["workflow_id"]))
+        except ApiError as exc:
+            if exc.status not in HEAD_UNRESOLVABLE_STATUSES:
+                raise
+            candidate = None
+        if candidate is not None:
+            identity["workflow_state"] = candidate.get("state")
+            identity["workflow_api_url"] = candidate.get("url")
+            if candidate.get("state") == "active" and candidate.get("path") == found["path"]:
+                wf = candidate
+    if wf is not None:
+        current = str(wf.get("name") or "")
+        identity.update(outcome="RESOLVED", workflow_id=wf.get("id"),
+                        renamed_from=workflow if current and current != workflow else None)
+        return dict(wf), identity
+    present, contents_url = gh.path_on_branch(repo, found["path"], branch)
+    identity["default_branch_contents_url"] = contents_url
+    if not present:
+        identity.update(outcome="REMOVED_ON_DEFAULT_BRANCH", renamed_from=None,
+                        evidence_url=found["run_url"] if str(found.get("run_url") or "").startswith("https://") else contents_url)
+        return None, identity
+    identity.update(outcome="NOT_FOUND", renamed_from=None)
+    return None, identity
+
+
+class AmbiguousWorkflow(Exception):
+    def __init__(self, candidates: list[str]):
+        super().__init__("WORKFLOW_NAME_AMBIGUOUS")
+        self.candidates = candidates
+
+
 def correlate_lineage(gh: GitHubReader, repo: str, workflow: str, incidents: list[dict[str, Any]],
                       pr_lookup: bool = True) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     lid = lineage_id(repo, workflow)
@@ -388,16 +553,23 @@ def correlate_lineage(gh: GitHubReader, repo: str, workflow: str, incidents: lis
     try:
         branch = gh.default_branch(repo)
         row["default_branch"] = branch
-        matches = gh.resolve_workflow(repo, workflow)
-        if not matches:
+        try:
+            wf, identity = _resolve_workflow_identity(gh, repo, workflow, branch, incidents)
+        except AmbiguousWorkflow as exc:
+            return fail_closed(ERROR, {"status": None, "error": "WORKFLOW_NAME_AMBIGUOUS",
+                                       "candidates": exc.candidates}, "WORKFLOW_NAME_AMBIGUOUS")
+        row["workflow_identity"] = identity
+        if wf is None:
+            if identity["outcome"] == "REMOVED_ON_DEFAULT_BRANCH":
+                row["workflow_path"] = identity["path"]
+                row["workflow_id"] = identity.get("workflow_id")
+                return fail_closed(REMOVED, None, REMOVED)
             return fail_closed(NOT_FOUND, None, NOT_FOUND)
-        if len(matches) > 1:
-            active = [m for m in matches if m.get("state") == "active"]
-            if len(active) != 1:
-                return fail_closed(ERROR, {"status": None, "error": "WORKFLOW_NAME_AMBIGUOUS",
-                                           "candidates": sorted(str(m.get("path")) for m in matches)}, "WORKFLOW_NAME_AMBIGUOUS")
-            matches = active
-        wf = matches[0]
+        if identity.get("renamed_from"):
+            # Same file, new name: correlate under the current name, keep the
+            # lineage keyed on the mail name so its id is stable across cycles.
+            row["renamed_from"] = workflow
+            row["workflow"] = workflow = str(wf.get("name"))
         row["workflow_id"], row["workflow_path"] = wf.get("id"), wf.get("path")
 
         completed = gh.runs(repo, int(wf["id"]), branch, "completed", 10)
@@ -482,12 +654,51 @@ def correlate_lineage(gh: GitHubReader, repo: str, workflow: str, incidents: lis
     return row, incident_rows
 
 
+def select_reread_lineages(prior: Mapping[str, Any], lineage_ids: list[str] | None,
+                          classifications: list[str] | None) -> set[str]:
+    """Lineage ids of a prior artifact to re-read: the named ones plus every
+    public lineage whose prior classification is in ``classifications``."""
+    if not isinstance(prior, Mapping) or prior.get("schema") != SCHEMA:
+        raise ValueError("PRIOR_CORRELATION_SCHEMA_INVALID")
+    unknown = [c for c in (classifications or []) if c not in CLASSIFICATIONS]
+    if unknown:
+        raise ValueError("UNKNOWN_CLASSIFICATION:" + ",".join(unknown))
+    known = {str(l.get("lineage_id")) for l in (prior.get("lineages") or []) if isinstance(l, Mapping)}
+    chosen = set(lineage_ids or [])
+    missing = sorted(chosen - known)
+    if missing:
+        raise ValueError("LINEAGE_NOT_IN_PRIOR:" + ",".join(missing))
+    for lin in prior.get("lineages") or []:
+        if isinstance(lin, Mapping) and lin.get("classification") in set(classifications or []):
+            chosen.add(str(lin.get("lineage_id")))
+    return chosen
+
+
 def correlate_state(state: Mapping[str, Any], gh: GitHubReader, *, pr_lookup: bool = True,
-                    fetcher_name: str = "stub", now: dt.datetime | None = None) -> dict[str, Any]:
+                    fetcher_name: str = "stub", now: dt.datetime | None = None,
+                    reread: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Correlate every open retained incident; see the module docstring.
+
+    ``reread`` = ``{"prior": <prior artifact>, "lineage_ids": {...}}`` reads
+    only the named PUBLIC lineages and carries every other public lineage (and
+    its incident rows) verbatim from the prior artifact, provided the prior
+    was produced in this cycle over the same incident set; a carried lineage
+    whose incident set changed is re-read instead. Redacted and uncorrelated
+    lineages cost no API call and are always recomputed from the state.
+    """
     bad = t._check(state)
     if bad:
         raise ValueError(bad)
     now = now or dt.datetime.now(dt.timezone.utc)
+    prior: Mapping[str, Any] | None = None
+    reread_ids: set[str] = set()
+    if reread is not None:
+        prior = reread.get("prior")
+        if not isinstance(prior, Mapping) or prior.get("schema") != SCHEMA:
+            raise ValueError("PRIOR_CORRELATION_SCHEMA_INVALID")
+        if (prior.get("source_continuation") or {}).get("cycle_seq") != state["cycle_seq"]:
+            raise ValueError("PRIOR_CORRELATION_CYCLE_MISMATCH")
+        reread_ids = set(reread.get("lineage_ids") or ())
     public_set = set(state.get("public_repositories") or ())
     groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     redacted: dict[str, list[dict[str, Any]]] = {}
@@ -504,8 +715,27 @@ def correlate_state(state: Mapping[str, Any], gh: GitHubReader, *, pr_lookup: bo
 
     lineages: list[dict[str, Any]] = []
     incident_rows: dict[str, dict[str, Any]] = {}
+    prior_lineages = {str(l.get("lineage_id")): l for l in ((prior or {}).get("lineages") or []) if isinstance(l, Mapping)}
+    prior_rows = (prior or {}).get("incidents") or {}
+    carried: list[str] = []
     for (repo, workflow) in sorted(groups):
-        row, rows = correlate_lineage(gh, repo, workflow, groups[(repo, workflow)], pr_lookup=pr_lookup)
+        lid = lineage_id(repo, workflow)
+        incidents = groups[(repo, workflow)]
+        old = prior_lineages.get(lid) if prior is not None and lid not in reread_ids else None
+        if old is not None:
+            # Carry only when the prior row covers exactly today's open incidents:
+            # an incident the prior listed may since have been resolved (then it
+            # is no longer open), but a lineage that gained an incident is re-read.
+            old_ids = {str(i) for i in (old.get("incident_ids") or [])}
+            cur_ids = {i["incident_id"] for i in incidents}
+            resolved_since = all(state["incidents"].get(i, {}).get("state") != t.INCIDENT_OPEN for i in old_ids - cur_ids)
+            if cur_ids <= old_ids and resolved_since and all(i in prior_rows for i in old_ids):
+                lineages.append(json.loads(json.dumps(old)))
+                for i in sorted(old_ids):
+                    incident_rows[i] = json.loads(json.dumps(prior_rows[i]))
+                carried.append(lid)
+                continue
+        row, rows = correlate_lineage(gh, repo, workflow, incidents, pr_lookup=pr_lookup)
         lineages.append(row)
         for r in rows:
             incident_rows[r["incident_id"]] = r
@@ -538,6 +768,17 @@ def correlate_state(state: Mapping[str, Any], gh: GitHubReader, *, pr_lookup: bo
     for r in incident_rows.values():
         by_disp[r["disposition"]] += 1
     public_count = sum(len(v) for v in groups.values())
+    reread_block = None
+    if prior is not None:
+        reread_block = {
+            "prior_correlation_sha256": t.correlation_sha256(prior),
+            "prior_generated_at": prior.get("generated_at"),
+            "reread_lineage_ids": sorted(reread_ids),
+            "reread_lineage_count": len([l for l in lineages if l["lineage_id"] in reread_ids]),
+            "carried_lineage_ids": sorted(carried),
+            "carried_lineage_count": len(carried),
+            "carried_observation_basis": "PRIOR_ARTIFACT_SAME_CYCLE_SAME_INCIDENT_SET",
+        }
     return {
         "schema": SCHEMA,
         "task_id": t.TASK_ID,
@@ -553,6 +794,7 @@ def correlate_state(state: Mapping[str, Any], gh: GitHubReader, *, pr_lookup: bo
         "fetcher": fetcher_name,
         "api_calls": gh.calls,
         "pr_lookup": bool(pr_lookup),
+        "reread_of": reread_block,
         "counts": {
             "open_retained_incidents": len(incident_rows),
             "public_open_incidents": public_count,
@@ -579,8 +821,12 @@ def correlate_state(state: Mapping[str, Any], gh: GitHubReader, *, pr_lookup: bo
 # --------------------------------------------------------------------------- apply through the existing state machine
 
 def apply_resolutions(state: Mapping[str, Any], correlation: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Replay every SUPERSEDED incident through ``record_resolution`` (op ``resolve``).
+    """Bind the correlation into the chain, then replay every SUPERSEDED incident.
 
+    Order is fixed: first the ``correlate`` transition (``record_correlation``
+    with the artifact's canonical sha256 and summary; idempotent if already
+    bound), then one ``resolve`` transition (``record_resolution``) per
+    superseded incident whose evidence carries that ``correlation_sha256``.
     Returns ``(final_state, disposition)``. On any non-ALLOW transition other
     than ``INCIDENT_NOT_OPEN`` (already resolved elsewhere) the whole batch
     fails closed and the prior state is returned unchanged. Each link of the
@@ -595,16 +841,22 @@ def apply_resolutions(state: Mapping[str, Any], correlation: Mapping[str, Any]) 
     if source.get("state_sha256") != t.state_sha256(state):
         return dict(state), t._disposition(t.FAIL_CLOSED, name, "CORRELATION_STATE_LINEAGE_MISMATCH",
                                            expected=source.get("state_sha256"), actual=t.state_sha256(state))
+    digest = t.correlation_sha256(correlation)
+    current, corr_disp = t.record_correlation(state, digest, t.correlation_summary(correlation))
+    if corr_disp["disposition"] != t.ALLOW:
+        return dict(state), t._disposition(t.FAIL_CLOSED, name, "CORRELATE_TRANSITION_REFUSED", refused=corr_disp)
+    ok, why = t.verify_chain([state, current])
+    if not ok:
+        return dict(state), t._disposition(t.FAIL_CLOSED, name, str(why), correlation_sha256=digest)
     rows = [r for r in (correlation.get("incidents") or {}).values() if r.get("disposition") == DISP_SUPERSEDED]
     rows.sort(key=lambda r: r["incident_id"])
-    current: dict[str, Any] = dict(state)
     first_seq = int(state["transition_seq"])
     applied, skipped = [], []
     for r in rows:
         evidence = r.get("resolution_evidence")
         if not isinstance(evidence, Mapping) or evidence.get("kind") != "SUPERSEDED_BY_CURRENT_EVIDENCE":
             return dict(state), t._disposition(t.FAIL_CLOSED, name, "SUPERSEDED_ROW_WITHOUT_EVIDENCE", incident_id=r["incident_id"])
-        nxt, disp = t.record_resolution(current, r["incident_id"], evidence)
+        nxt, disp = t.record_resolution(current, r["incident_id"], {**evidence, "correlation_sha256": digest})
         if disp["disposition"] == t.DENY and disp.get("failed_predicate") == "INCIDENT_NOT_OPEN":
             skipped.append(r["incident_id"])
             continue
@@ -616,7 +868,9 @@ def apply_resolutions(state: Mapping[str, Any], correlation: Mapping[str, Any]) 
             return dict(state), t._disposition(t.FAIL_CLOSED, name, str(why), incident_id=r["incident_id"])
         current = nxt
         applied.append(r["incident_id"])
-    return current, t._disposition(t.ALLOW, name, applied=len(applied), skipped_not_open=len(skipped),
+    return current, t._disposition(t.ALLOW, name, correlation_sha256=digest,
+                                   correlation_recorded=not corr_disp.get("idempotent_replay", False),
+                                   applied=len(applied), skipped_not_open=len(skipped),
                                    transition_seq_from=first_seq, transition_seq_to=int(current["transition_seq"]),
                                    prior_state_sha256=t.state_sha256(state), state_sha256=t.state_sha256(current),
                                    applied_incident_ids=applied, skipped_incident_ids=skipped)
@@ -646,13 +900,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--apply-resolutions", type=Path, metavar="CORRELATION",
                         help="replay SUPERSEDED incidents through the existing resolve transition and write the state")
     parser.add_argument("--dry-run", action="store_true", help="with --apply-resolutions: do not write the state")
+    parser.add_argument("--prior-correlation", type=Path, metavar="CORRELATION",
+                        help="minimal re-read: carry every public lineage not selected below from this artifact")
+    parser.add_argument("--only-lineages", default="", metavar="LIN-...,LIN-...",
+                        help="with --prior-correlation: re-read only these lineage ids (comma separated)")
+    parser.add_argument("--only-classifications", default="", metavar="CLASS,CLASS",
+                        help="with --prior-correlation: re-read only lineages the prior artifact classified so")
     args = parser.parse_args(argv)
     state = json.loads(args.state.read_text(encoding="utf-8"))
 
     if args.apply_resolutions is not None:
         correlation = json.loads(args.apply_resolutions.read_text(encoding="utf-8"))
         nxt, disp = apply_resolutions(state, correlation)
-        if disp["disposition"] == t.ALLOW and disp["applied"] > 0 and not args.dry_run:
+        changed = disp["disposition"] == t.ALLOW and t.state_sha256(nxt) != t.state_sha256(state)
+        if changed and not args.dry_run:
             _write_json(args.state, nxt)
             disp["state_written"] = str(args.state)
         else:
@@ -662,15 +923,24 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.output is None:
         parser.error("--output is required unless --apply-resolutions is given")
-    gh = GitHubReader(build_fetcher(args.fetcher))
+    only_lineages = [x.strip() for x in args.only_lineages.split(",") if x.strip()]
+    only_classes = [x.strip() for x in args.only_classifications.split(",") if x.strip()]
+    if (only_lineages or only_classes) and args.prior_correlation is None:
+        parser.error("--only-lineages / --only-classifications require --prior-correlation")
+    reread = None
     try:
-        correlation = correlate_state(state, gh, pr_lookup=not args.no_pr_lookup, fetcher_name=args.fetcher)
+        if args.prior_correlation is not None:
+            prior = json.loads(args.prior_correlation.read_text(encoding="utf-8"))
+            reread = {"prior": prior, "lineage_ids": select_reread_lineages(prior, only_lineages, only_classes)}
+        gh = GitHubReader(build_fetcher(args.fetcher))
+        correlation = correlate_state(state, gh, pr_lookup=not args.no_pr_lookup, fetcher_name=args.fetcher, reread=reread)
     except ValueError as exc:
         print(json.dumps(t._disposition(t.FAIL_CLOSED, "CORRELATE", str(exc)), sort_keys=True))
         return 1
     _write_json(args.output, correlation)
     print(json.dumps(t._disposition(t.ALLOW, "CORRELATE", output=str(args.output), api_calls=gh.calls,
-                                    counts=correlation["counts"], continuation_state_mutated=False), sort_keys=True))
+                                    counts=correlation["counts"], reread_of=correlation["reread_of"],
+                                    continuation_state_mutated=False), sort_keys=True))
     return 0
 
 

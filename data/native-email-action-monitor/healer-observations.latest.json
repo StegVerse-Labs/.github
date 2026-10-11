@@ -2379,28 +2379,29 @@
     "cycle_seq": 3,
     "phase": "RECONCILING",
     "schema": "stegverse.native-email-continuation-state/v1",
-    "state_sha256": "05e69b7abd300dd92b2b44598ec5af52b8a695ec9a640bdad2c39e8e2601b4b3",
-    "transition_seq": 635
+    "state_sha256": "7fcf0cd6da280c2bc7b265abad7a2df29b5f6c9ed0480365e7379d08f7b69bf3",
+    "transition_seq": 642
   },
   "resolved_transition_claimed": false,
   "schema": "stegverse.native-email-healer-observations/v1",
   "source_correlation": {
-    "correlation_sha256": "280741eb23274a700200da00003b36b98235c3c8cfb1a8edafb89f070e090ae7",
+    "bound_in_continuation_chain": true,
+    "correlation_sha256": "99f3646f6a235d1bf2e93ee7e5764669e9646f290ade1c6ef14692fd5f010b19",
     "evidence_class": "GITHUB_API_READ_OBSERVED",
-    "generated_at": "2026-10-11T02:31:48Z",
+    "generated_at": "2026-10-11T16:00:44Z",
     "schema": "stegverse.email-incident-github-correlation/v1",
-    "state_sha256": "0cb9ca4293d7c801a998631d87d953440c640bf4fcc110397aa8530287fca082",
-    "transition_seq": 238
+    "state_sha256": "5d51f6e69ab1dfb25b25dcf29a5cd6301abbccfe1ec6f394f131d01d6447896a",
+    "transition_seq": 636
   },
   "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
   "withheld_by_classification": {
     "CORRELATION_ERROR": 6,
     "REDACTED_UNVERIFIABLE": 36,
-    "SUPERSEDED_BY_CURRENT_EVIDENCE": 31,
+    "SUPERSEDED_BY_CURRENT_EVIDENCE": 1,
     "UNCORRELATED_UNVERIFIABLE": 1,
-    "WORKFLOW_NOT_FOUND": 6
+    "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH": 5
   },
-  "withheld_lineage_count": 80,
+  "withheld_lineage_count": 49,
   "withheld_lineages": [
     {
       "classification": "REDACTED_UNVERIFIABLE",
@@ -2710,7 +2711,7 @@
       "workflow": "Validate STCM CHF inert witness comparison \u2014 non-authorizing"
     },
     {
-      "classification": "WORKFLOW_NOT_FOUND",
+      "classification": "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH",
       "incident_count": 2,
       "lineage_id": "LIN-6a419efe3eeca8b9dce1",
       "reason": "NOT_OUTSTANDING",
@@ -2718,23 +2719,7 @@
       "workflow": "Canonical Work exact ephemeral invocation"
     },
     {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 4,
-      "lineage_id": "LIN-b4ada12c4728970119dd",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/.github",
-      "workflow": "Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 7,
-      "lineage_id": "LIN-2896a8748c3fe80ff19c",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/.github",
-      "workflow": "Cross-Task Coordination Validation - Non-Authorizing"
-    },
-    {
-      "classification": "WORKFLOW_NOT_FOUND",
+      "classification": "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH",
       "incident_count": 3,
       "lineage_id": "LIN-35e9ad11b810ae3ddc54",
       "reason": "NOT_OUTSTANDING",
@@ -2742,7 +2727,7 @@
       "workflow": "Test 3 Richard Seam Acceptance"
     },
     {
-      "classification": "WORKFLOW_NOT_FOUND",
+      "classification": "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH",
       "incident_count": 1,
       "lineage_id": "LIN-21bbc393997f5e72bc07",
       "reason": "NOT_OUTSTANDING",
@@ -2750,23 +2735,7 @@
       "workflow": "Test 5 Resident Run-Manifest Carriage"
     },
     {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 9,
-      "lineage_id": "LIN-8855fe4cf0b12d704f0c",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/.github",
-      "workflow": "Test suite ratchet"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 7,
-      "lineage_id": "LIN-fe603fa44e534a6fd647",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/.github",
-      "workflow": "Validate KV AI Memory Resident Binding"
-    },
-    {
-      "classification": "WORKFLOW_NOT_FOUND",
+      "classification": "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH",
       "incident_count": 5,
       "lineage_id": "LIN-f3d65e0ce68082f15afb",
       "reason": "NOT_OUTSTANDING",
@@ -2775,235 +2744,19 @@
     },
     {
       "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-dea178aae9261fd1cebf",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
-      "workflow": "Reconcile Producer Exports"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-8e870df5e96a099d9a5c",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
-      "workflow": "Research UAP Active Source Acquisition"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-4ff3ed2c765854a06632",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
-      "workflow": "Run Recurring Discovery"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-0dac29bf2212e8e4e617",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Governance",
-      "workflow": "Evaluate StegCore Release Policy"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 5,
-      "lineage_id": "LIN-9ae26f58b7e8eb953e59",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Conectrr Live Verification"
-    },
-    {
-      "classification": "WORKFLOW_NOT_FOUND",
       "incident_count": 5,
       "lineage_id": "LIN-163b01d88d278921fb57",
       "reason": "NOT_OUTSTANDING",
       "repository": "StegVerse-Labs/Site",
-      "workflow": "Device Local KV Install"
+      "workflow": "Device Local KV Initialization Truth"
     },
     {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 39,
-      "lineage_id": "LIN-fb4603610c203a12bbcc",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Ecosystem Heartbeat Orchestration"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 5,
-      "lineage_id": "LIN-ed97e6a14e7099b2151e",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "My KV Directory Landing"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 3,
-      "lineage_id": "LIN-078d34974ad3912ce9a0",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "No Required Third-Party Runtime"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 110,
-      "lineage_id": "LIN-97281302f6c016c96280",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Site Bootstrap Validate - No Non-TV/TVC Credential Authority"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 49,
-      "lineage_id": "LIN-ce4897c5ecbf5e888f4b",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Site Handoff Orchestrator"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 10,
-      "lineage_id": "LIN-5ffabd6b610b86e87ad6",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Site Node Continuity"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-625df19f3075a00aa394",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "VA Document Evidence Layer"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 2,
-      "lineage_id": "LIN-2afe88627d49c163f2c0",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/Site",
-      "workflow": "Validate StegOS Persistent Card UX"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 2,
-      "lineage_id": "LIN-61da57d328095bed5007",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/StegScholar",
-      "workflow": "Build and validate Research Commons"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 3,
-      "lineage_id": "LIN-16f37abcb3a66b0eb3a9",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/hybrid-collab-bridge",
-      "workflow": "Human-LLM Interoperability"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-f537da157e62188c76ff",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-Labs/hybrid-collab-bridge",
-      "workflow": "reconcile-internal-adapter"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-65448a431cf41fb26fcf",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/.github",
-      "workflow": ".github/workflows/organization-manifest-ingress-validation.yml"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 2,
-      "lineage_id": "LIN-491b54bcd0fab55f3263",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/.github",
-      "workflow": "Validate Organization Resident Runtime and Interlock-InTr Boundary"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 3,
-      "lineage_id": "LIN-14938678f1bbed3a3f18",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/LLM-adapter",
-      "workflow": "Coinbase SKAP Service Gateway Validation"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 3,
-      "lineage_id": "LIN-c212dddea7e591c80fb8",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/LLM-adapter",
-      "workflow": "Distributed LLM Executor Validate - No Credential Authority"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 8,
-      "lineage_id": "LIN-a1d2476d2965b62aa59f",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/LLM-adapter",
-      "workflow": "validate"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 13,
-      "lineage_id": "LIN-b606f43bf2e1a561eb51",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Evaluator Contract Console Validation"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 35,
-      "lineage_id": "LIN-2796b00b6fb08a9456e5",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Evaluator Manifest Source Validation (Non-Authorizing)"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-5ee8cdca79e29ef3c964",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Framework Naming Guard"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 31,
-      "lineage_id": "LIN-158370acbc8780a3a7a6",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Manifest Builder Source Validation (Non-Authorizing)"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-a735d16057efc50aef9f",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Publish SDK Developer Wiki"
-    },
-    {
-      "classification": "WORKFLOW_NOT_FOUND",
+      "classification": "WORKFLOW_REMOVED_ON_DEFAULT_BRANCH",
       "incident_count": 2,
       "lineage_id": "LIN-84bdf22b64f5719d250d",
       "reason": "NOT_OUTSTANDING",
       "repository": "StegVerse-org/StegVerse-SDK",
       "workflow": "SV independent HOLD experiment \u2014 exact source and runtime boundary"
-    },
-    {
-      "classification": "SUPERSEDED_BY_CURRENT_EVIDENCE",
-      "incident_count": 1,
-      "lineage_id": "LIN-69de64fc323b343dafcc",
-      "reason": "NOT_OUTSTANDING",
-      "repository": "StegVerse-org/StegVerse-SDK",
-      "workflow": "Served surface assertion"
     }
   ]
 }
