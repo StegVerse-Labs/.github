@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "stegverse.hil-explanation-trial-record/v1",
   "title": "Scaled-up HIL explanation experiment: one trial record",
-  "description": "One observation in the scaled-up Human-in-the-Loop experiment (owner-reported origin: the Rigel Randolph / Sara Katpar conversation). Records what a subject (human or independent LLM) was shown, under which condition and session state, what it answered, and the deterministic scores. Prompts and responses are stored by digest and evidence locator, never inline, to keep the record privacy-preserving. A trial record is evidence about interpretation only; it confers nothing.",
+  "description": "One observation in the scaled-up Human-in-the-Loop experiment (owner-reported origin: the Rigel Randolph / Sara Katpar conversation). Records what a subject (human or independent LLM) was shown, under which condition and session state, what it answered, and the deterministic scores. Prompts and responses are stored by digest and evidence locator, never inline, to keep the record privacy-preserving. A trial record is evidence about interpretation only; it confers nothing; a SYNTHETIC_TEST record carries a synthetic:// evidence locator, and an ACTUAL_OBSERVATION record carries a non-synthetic locator that names a sha256 digest (validate_trial additionally requires it to be the record's response digest), so a record produced outside ticketed intake (scripts/hil_explanation_experiment.py intake) cannot pass as an actual observation (.github#3106 finding HIL_ACTUAL_OBSERVATION_DIRECT_RECORD_ENTRYPOINT_UNGUARDED).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -694,6 +694,56 @@
               "subject_pseudonym",
               "provider",
               "model_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "evidence_class"
+        ],
+        "properties": {
+          "evidence_class": {
+            "const": "SYNTHETIC_TEST"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_locator": {
+            "pattern": "^synthetic://\\S+$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "evidence_class"
+        ],
+        "properties": {
+          "evidence_class": {
+            "const": "ACTUAL_OBSERVATION"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_locator": {
+            "allOf": [
+              {
+                "pattern": "^[a-z][a-z0-9+.-]*://\\S+$"
+              },
+              {
+                "not": {
+                  "pattern": "^synthetic://"
+                }
+              },
+              {
+                "pattern": "sha256:[0-9a-f]{64}"
+              }
             ]
           }
         }
