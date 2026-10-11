@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,10 +26,34 @@ bootstrap = load_module("canonical_work_bootstrap_native_email", ROOT / "scripts
 
 
 class NativeEmailCanonicalTaskRegistryTests(unittest.TestCase):
+    def load_shard(self) -> dict:
+        shard = json.loads((SHARDS / f"{TASK_ID}.json").read_text(encoding="utf-8"))
+        self.assertEqual(shard["task_id"], TASK_ID)
+        return shard
+
+    def test_native_email_canonical_shard_resolves_alone(self) -> None:
+        # The dedicated shard is the authoritative full record: it must resolve
+        # on its own, without any aggregate projection of the task.
+        with tempfile.TemporaryDirectory() as tmp:
+            empty_registry = Path(tmp) / "canonical-task-registry.json"
+            empty_registry.write_text(json.dumps({"schema": "stegverse.canonical-task-registry/v1", "tasks": []}), encoding="utf-8")
+            task, source = builder.resolve_task(task_id=TASK_ID, registry=empty_registry, registry_shards=SHARDS)
+        self.assertEqual(source, f"SHARDED_REGISTRY:{SHARDS / f'{TASK_ID}.json'}")
+        self.assertEqual(task, self.load_shard())
+
     def test_native_email_resolves_from_canonical_shard(self) -> None:
+        # PR #2606 (cc34b91f) deliberately re-projected this task into the
+        # aggregate registry because evaluate_task_registry_collision_checkin
+        # derives canonical identities solely from the aggregate and would
+        # otherwise reach STOP_NOT_REGISTERED. resolve_task prefers an aggregate
+        # row when one exists, so the aggregate row must carry the shard's full
+        # record: whichever surface wins, the resolved task is the shard's content.
         task, source = builder.resolve_task(task_id=TASK_ID, registry=REGISTRY, registry_shards=SHARDS)
         self.assertEqual(task["task_id"], TASK_ID)
-        self.assertTrue(source.startswith("SHARDED_REGISTRY:"), source)
+        self.assertIn(source, {"MONOLITHIC_REGISTRY", f"SHARDED_REGISTRY:{SHARDS / f'{TASK_ID}.json'}"}, source)
+        shard = self.load_shard()
+        for key, value in shard.items():
+            self.assertEqual(task.get(key), value, f"aggregate/shard drift on {key}")
         self.assertEqual(task["coordination_state"], "PROPOSED")
         self.assertEqual(task["checkout_state"], "UNCLAIMED")
         self.assertEqual(task["cosv_task_vector"], "10100000100000")
