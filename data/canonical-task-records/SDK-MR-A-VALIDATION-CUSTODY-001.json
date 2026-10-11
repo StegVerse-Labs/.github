@@ -173,5 +173,21 @@
   "propagation_claimed": false,
   "goal_prompt_count": null,
   "session_qualifying_prompts_observed": 1,
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "reported_runtime_evidence_pending_authoritative_reconciliation": {
+    "source_issue_comment": "https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142",
+    "evidence_class": "CLAUDE_REPORTED_NOT_INDEPENDENTLY_VERIFIED_BY_THIS_RECONCILIATION",
+    "successor_request": "SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002",
+    "workflow_run": "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
+    "claimed_disposition": "ALLOW",
+    "claimed_organization_ledger_ref": "refs/stegverse/organization-ledger",
+    "claimed_organization_ledger_tip": "4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+    "claimed_ingress_receipt": "sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8",
+    "claimed_emission_receipt": "sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55",
+    "claimed_mesh_tip": "18b3ef3f38d10e798458aed495c77568cbe9fa76",
+    "claimed_packet_id": "pkt-5efe4b0372bbffa4d2a356fe",
+    "terminal_registry_promotion": "NOT_PERFORMED_PENDING_AUTHENTICATED_READBACK_AND_CANONICAL_AUTHORITY",
+    "source_merges_this_reconciliation": [],
+    "runtime_attempted_this_reconciliation": false
+  }
 }
