@@ -92,6 +92,20 @@ def setup(root: Path, source: dict, *, tamper: bool = False):
     return sdk, read_source
 
 
+
+# The exact label the installed StegVerse-SDK (main, after #460) writes around
+# ecosystem_diagnostic_cli output, captured from that CLI's real output.
+SDK_LOCAL_ENCLOSED_LANE = {
+    "authority_effect": "NONE_ENCLOSED_VALIDATION_ONLY",
+    "authorizing": False,
+    "canonical": False,
+    "canonical_lifecycle_performed": False,
+    "custody_store_is_local": True,
+    "lane": "SDK_LOCAL_ENCLOSED_VALIDATION",
+    "may_be_promoted_to_canonical_closure": False,
+    "selected_by_manifest_route": False,
+}
+
 class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
     def test_no_admitted_runtime_is_exact_predicate_not_a_worker_claim(self):
         with tempfile.TemporaryDirectory() as td:
@@ -112,6 +126,38 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     mod.consume(root, root, source, read_source=read_source)
 
     def test_mocked_positive_composition_remains_simulation_not_authentic_allow(self):
+        self._positive_composition(enclosed=False)
+
+    def test_current_sdk_enclosed_diagnostic_output_is_read_through_its_local_label(self):
+        # Since StegVerse-SDK#460 the installed CLI writes
+        # {"local_operation", "sdk_execution_lane", "result"}; the admitted
+        # consumer must still reach the same simulation-only outcome.
+        self._positive_composition(enclosed=True)
+
+    def test_enclosed_output_that_is_not_this_operation_or_claims_authority_fails_closed(self):
+        inner = {"schema": "stegverse.ecosystem-diagnostic-result.v1"}
+        lane = dict(SDK_LOCAL_ENCLOSED_LANE)
+        cases = {
+            "other operation": {"local_operation": "governance", "sdk_execution_lane": lane, "result": inner},
+            "authorizing lane": {"local_operation": "ecosystem_diagnostic",
+                                 "sdk_execution_lane": {**lane, "authorizing": True}, "result": inner},
+            "canonical lane": {"local_operation": "ecosystem_diagnostic",
+                               "sdk_execution_lane": {**lane, "canonical": True}, "result": inner},
+            "other lane": {"local_operation": "ecosystem_diagnostic",
+                           "sdk_execution_lane": {**lane, "lane": "CANONICAL"}, "result": inner},
+            "no result": {"local_operation": "ecosystem_diagnostic", "sdk_execution_lane": lane},
+            "not an object": ["not", "a", "result"],
+        }
+        for name, document in cases.items():
+            with self.subTest(case=name):
+                with self.assertRaisesRegex(mod.DiagnosticExecutionFailClosed,
+                                            "EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID"):
+                    mod._installed_diagnostic_result(document)
+        self.assertEqual(mod._installed_diagnostic_result(
+            {"local_operation": "ecosystem_diagnostic", "sdk_execution_lane": lane, "result": inner}), inner)
+        self.assertEqual(mod._installed_diagnostic_result(inner), inner)
+
+    def _positive_composition(self, *, enclosed):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             source = request()
@@ -124,14 +170,18 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 self.assertEqual(kwargs["env"]["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
                 self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
                 output = Path(argv[argv.index("--output") + 1])
-                output.write_text(json.dumps({
+                result = {
                     "schema": "stegverse.ecosystem-diagnostic-result.v1",
                     "processing_capability": "ecosystem_diagnostic",
                     "route_id": source["route_id"],
                     "authority_effect": "NONE_DIAGNOSTIC_ONLY",
                     "mutation_performed": False,
                     "diagnostic_request_id": "exp3-source-only-test",
-                }))
+                }
+                if enclosed:
+                    result = {"local_operation": "ecosystem_diagnostic",
+                              "sdk_execution_lane": dict(SDK_LOCAL_ENCLOSED_LANE), "result": result}
+                output.write_text(json.dumps(result))
                 return type("SourceTestProcess", (), {"returncode": 0})()
             import heartbeat_runtime.worker_runtime_legacy  # noqa: F401  (import order)
             from workers.canonical_state_transition_custody import build_state_receipt, submit_state_receipt

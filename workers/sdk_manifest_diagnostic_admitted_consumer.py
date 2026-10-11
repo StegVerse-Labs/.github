@@ -211,6 +211,34 @@ def _verified_organization_closure(closure: Any) -> dict[str, Any]:
     return row
 
 
+# Since StegVerse-SDK#460 the installed diagnostic CLI encloses its result in a
+# local-lane label, {"local_operation", "sdk_execution_lane", "result"}, so the
+# SDK's own output can never be read as canonical closure. This consumer's
+# authority comes from its admission, lease and Organization custody, not from
+# the SDK, so it reads the enclosed result, and only when the label names this
+# exact operation and declares itself non-authorizing. A pre-#460 SDK writes the
+# result unenclosed; that shape is still read as it is.
+ENCLOSED_DIAGNOSTIC_OPERATION = "ecosystem_diagnostic"
+ENCLOSED_DIAGNOSTIC_LANE = "SDK_LOCAL_ENCLOSED_VALIDATION"
+
+
+def _installed_diagnostic_result(document: Any) -> Mapping[str, Any]:
+    if not isinstance(document, Mapping):
+        raise DiagnosticExecutionFailClosed("EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID")
+    if "local_operation" not in document:
+        return document
+    lane = document.get("sdk_execution_lane")
+    result = document.get("result")
+    if not (document.get("local_operation") == ENCLOSED_DIAGNOSTIC_OPERATION
+            and isinstance(lane, Mapping)
+            and lane.get("lane") == ENCLOSED_DIAGNOSTIC_LANE
+            and lane.get("authorizing") is False
+            and lane.get("canonical") is False
+            and isinstance(result, Mapping)):
+        raise DiagnosticExecutionFailClosed("EXACT_INSTALLED_DIAGNOSTIC_OUTPUT_INVALID")
+    return result
+
+
 def _installed_sdk_root(control_root: Path) -> Path:
     try:
         roots = json.loads(os.environ.get("STEGVERSE_REPO_ROOTS_JSON", "{}"))
@@ -658,7 +686,9 @@ def consume(
             raise DiagnosticExecutionFailClosed(
                 "ADMITTED_SDK_DIAGNOSTIC_LEASE_EXPIRED_DURING_EXECUTION") from exc
     try:
-        diagnostic = _read(result_path)
+        diagnostic = _installed_diagnostic_result(_read(result_path))
+    except DiagnosticExecutionFailClosed:
+        raise
     except Exception as exc:
         raise DiagnosticExecutionFailClosed("ADMITTED_SDK_DIAGNOSTIC_RESULT_INVALID") from exc
     if not (diagnostic.get("schema") == "stegverse.ecosystem-diagnostic-result.v1"
