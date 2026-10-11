@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "user-facing-explanation-contract-20261011",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "ACTIVE_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT",
+  "branch": "claude/user-facing-explanation-contract",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "Universal user-facing explanation contract (stegverse.user-facing-explanation/v1) and the preregistered scaled-up HIL experiment HIL-SCALED-EXPLANATION-001 for .github#3106: schema, builder, fixtures, examples, HIL stimuli/probes/rubric/trial schema, tests and canonical documentation carrying the owner-reported Rigel Randolph / Sara Katpar research origin. Source only; no task admission, no measurement, no runtime claim.",
+  "claimed_paths": [
+    "schemas/user-facing-explanation.v1.schema.json",
+    "schemas/hil-explanation-trial-record.v1.schema.json",
+    "scripts/user_facing_explanation.py",
+    "scripts/render_user_facing_explanation_examples.py",
+    "scripts/hil_explanation_experiment.py",
+    "data/user-facing-explanation/fixtures.d/",
+    "data/user-facing-explanation/examples.d/",
+    "data/hil-explanation-experiment/preregistration.json",
+    "data/hil-explanation-experiment/results.json",
+    "tests/test_user_facing_explanation.py",
+    "tests/test_hil_explanation_experiment.py",
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "README.md",
+    "data/session-work-claims.d/user-facing-explanation-contract-20261011.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Do not create a canonical task record, COSV admission or recognition-literal approval (owner-approved workflow)",
+    "Do not run trials, enroll participants or query LLM providers from this lane"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}

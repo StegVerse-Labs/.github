@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.user-facing-explanation-fixture/v1",
+  "fixture_id": "UFE-FIXTURE-FAIL-CLOSED-001",
+  "evidence_class": "SYNTHETIC_TEST",
+  "note": "Synthetic fixture modelled on the WorkSpace page's any-device ingress blocker (Site#1509 F2).",
+  "surface": {"repository": "StegVerse-Labs/Site", "surface_id": "workspace", "surface_version": "fixture"},
+  "outcome": {
+    "disposition": "FAIL_CLOSED",
+    "predicate": "AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE",
+    "predicates": ["AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE", "AWAITING_SOVEREIGN_INTR_INGRESS"],
+    "requested_action": "Open your Personal KV Workspace from this device",
+    "authority_source": "INTERLOCK_INTR",
+    "why": "the sovereign InTr ingress that carries DEVICE_KV queries is not yet bound to the WorkSpace, so no authenticated path to your KV exists from any device; no KV installation on this device is required",
+    "evidence": [
+      {"kind": "SOURCE_REF", "ref": "StegVerse-Labs/Site:stegos-node/device-kv-intr-sync-target.json", "description": "The sync target that reports AWAITING_SOVEREIGN_INTR_INGRESS"}
+    ]
+  }
+}
