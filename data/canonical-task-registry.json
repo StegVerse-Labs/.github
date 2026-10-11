@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 307,
+  "generation": 308,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -21007,13 +21007,13 @@
       "correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
       "root_correlation_id": "SDK-MR-A-VALIDATION-CUSTODY-001",
       "parent_task_id": null,
-      "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation plus a runtime organization-ledger transition: request SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002 was admitted on the StegVerse-org organization ledger (ingress receipt sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8, ALLOW) and its governance request was emitted to StegVerse-Labs (emission receipt sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55, REQUESTED_OF_DECIDING_ORGANIZATION), both read back ALLOW from a fresh fetch. Remaining: the StegVerse-Labs governance decision return for mesh packet pkt-5efe4b0372bbffa4d2a356fe. END_TO_END is not claimed.",
+      "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation plus runtime organization-ledger transitions: request SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002 was admitted on the StegVerse-org organization ledger (ingress receipt sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8, ALLOW) and emitted to StegVerse-Labs; StegVerse-Labs decided it FAIL_CLOSED GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE and returned the answer, which StegVerse-org took in and closed (ORGANIZATION_EGRESS_CLOSED, organization receipt sha256:ccefb8f885f29c22c18b4b51895ee30561199f907f22547241d4560108c202c0). The decision return was attempted and its disposition is FAIL_CLOSED, so END_TO_END is not met: two owner-held predicates remain (GOVERNANCE_DECISION_IS_A_DECISION, DECIDING_ORGANIZATION_RECEIPT_READ_BACK). END_TO_END is not claimed.",
       "coordination_state": "ACTIVE",
       "checkout_state": "HANDOFF_READY",
       "repository": "StegVerse-org/StegVerse-SDK",
-      "cosv_task_vector": "50000000100010",
+      "cosv_task_vector": "60000000102010",
       "cosv_exact_metrics": {
-        "lifecycle": "MACHINE_OWNED",
+        "lifecycle": "BLOCKED",
         "archive_ready": false,
         "unassigned_work": 0,
         "chat_owned_implementation": 0,
@@ -21023,7 +21023,7 @@
         "chat_owned_credentials": 0,
         "canonical_owner_installed": true,
         "thread_required": false,
-        "blocker_count": 0,
+        "blocker_count": 2,
         "evidence_complete": false,
         "activated": true,
         "propagated": false
@@ -21063,7 +21063,24 @@
         "https://github.com/StegVerse-org/StegVerse-SDK/pull/462",
         "StegVerse-org/StegVerse-SDK@012bf2ee97e089f75fe4455d773798d258b8c55d",
         "https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142",
-        "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837"
+        "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837",
+        "https://github.com/StegVerse-Labs/.github/issues/3099",
+        "https://github.com/StegVerse-Labs/.github/pull/3104",
+        "StegVerse-Labs/.github@f3ee504771418a0c09548db81a374714a4dd9157",
+        "https://github.com/StegVerse-Labs/.github/pull/3105",
+        "StegVerse-Labs/.github@8ca1db372abe3f9f4bc6d1c1d89b8b40763348a3",
+        "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+        "StegVerse-Labs/.github@refs/stegverse/federation-mesh:77bbe5f855d1c96417f46ff311b1b709175193ac",
+        "StegVerse-Labs/.github@refs/stegverse/federation-mesh:77bbe5f855d1c96417f46ff311b1b709175193ac:frames.d/4cafedc4844d4139f17d914036b3686e1d9f0ab1b237e42d2df8e7884e450006.json",
+        "https://github.com/StegVerse-org/.github/actions/runs/38155889110",
+        "https://github.com/StegVerse-org/.github/pull/129",
+        "StegVerse-org/.github@a1b2ebe555a5e3f8d8576781018b093494bacc4a",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b:receipts/ccefb8f885f29c22c18b4b51895ee30561199f907f22547241d4560108c202c0.json",
+        "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b:repository-ledger/StegVerse-org/.github/receipts/b97f168bd62d507a10e68816478187f2709b254a61cac71ef3e1019a447c80c7.json",
+        "StegVerse-org/.github@refs/stegverse/federation-mesh:7a093db9070ebf5b74c3654cf4a6d97d651b81a1",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/466",
+        "StegVerse-org/StegVerse-SDK@e8a34b6dc2e8de37b0b1fce9d40ad030111255ff:stegverse/governance_return_evidence.py"
       ],
       "handoff_projection_refs": [
         "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md"
@@ -21106,9 +21123,75 @@
             "https://github.com/StegVerse-org/.github/actions/runs/38108737432",
             "https://github.com/StegVerse-org/.github/actions/runs/38108928361"
           ]
+        },
+        {
+          "dependency_id": "DEP-SDK-MR-A-STEGVERSE-LABS-GOVERNANCE-DECISION-RETURN",
+          "kind": "RUNTIME_EVIDENCE",
+          "state": "ATTEMPTED_DISPOSITION_FAIL_CLOSED",
+          "ref": "stegverse/governance_return_evidence.py::verify_governance_decision_return",
+          "scope": "StegVerse-Labs decided pkt-5efe4b0372bbffa4d2a356fe and StegVerse-org returned and closed it; the decision is FAIL_CLOSED GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE, which the SDK acceptance verifier refuses at GOVERNANCE_DECISION_IS_A_DECISION",
+          "attempted_at": "2026-10-11",
+          "refs": [
+            "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+            "https://github.com/StegVerse-org/.github/actions/runs/38155889110",
+            "https://github.com/StegVerse-org/StegVerse-SDK/pull/466"
+          ]
+        },
+        {
+          "dependency_id": "DEP-SDK-MR-A-LABS-DECISION-STEGCORE-READ-ACCESS",
+          "kind": "HUMAN_ACTION",
+          "state": "UNRESOLVED_OWNER_DECISION",
+          "ref": "StegVerse-Labs/.github:.github/workflows/organization-governance-decision.yml",
+          "scope": "the StegVerse-Labs decision run can import StegCore (private StegVerse-Labs/StegCore): a read-only credential for the decision workflow, or StegCore readability; owner decision",
+          "decision_owner": "REGISTRY_OWNER"
+        },
+        {
+          "dependency_id": "DEP-SDK-MR-A-LABS-ORGANIZATION-LEDGER-PROPAGATE-TARGET",
+          "kind": "HUMAN_ACTION",
+          "state": "UNRESOLVED_OWNER_DECISION",
+          "ref": ".stegverse/transition-ledger/org-contract.json#organization_ledger.propagate_target",
+          "scope": "a private-custody propagate_target for the StegVerse-Labs organization ledger, currently null by the TVC#488 approval; designated by the owner, never invented",
+          "decision_owner": "REGISTRY_OWNER"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        {
+          "blocker_id": "BLK-SDK-MR-A-GOVERNANCE-DECISION-IS-A-DECISION",
+          "dependency_id": "DEP-SDK-MR-A-LABS-DECISION-STEGCORE-READ-ACCESS",
+          "disposition": "FAIL_CLOSED",
+          "decision_owner": "REGISTRY_OWNER",
+          "owner_decision_recorded": false,
+          "failure_code": "END_TO_END_REQUIRES_A_VERIFIED_GOVERNANCE_DECISION_RETURN",
+          "failed_predicate": "GOVERNANCE_DECISION_IS_A_DECISION",
+          "required_evidence_or_repair": "An ALLOW or DENY from stegcore.steggate.evaluate_admissibility for the SDK-MR-A governance request. Requires (1) an owner decision giving the StegVerse-Labs decision run read access to the private StegVerse-Labs/StegCore (a read-only credential for the decision workflow, or StegCore readability), and (2) the governance request repaired so StegCore can evaluate it (in progress as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003 in StegVerse-org/.github).",
+          "retry_entrypoint": "StegVerse-Labs/.github:.github/workflows/organization-governance-decision.yml (mesh_root=git+https://github.com/StegVerse-org/.github#refs/stegverse/federation-mesh), then StegVerse-org/.github:.github/workflows/organization-governance-return.yml",
+          "owning_existing_goal": "SDK-MR-A-VALIDATION-CUSTODY-001",
+          "next_attempt": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN retry once StegCore is importable by the decision run and the -003 request is emitted",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MR-A-VALIDATION-CUSTODY-001.json",
+            "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+            "https://github.com/StegVerse-org/.github/actions/runs/38155889110"
+          ]
+        },
+        {
+          "blocker_id": "BLK-SDK-MR-A-DECIDING-ORGANIZATION-RECEIPT-READ-BACK",
+          "dependency_id": "DEP-SDK-MR-A-LABS-ORGANIZATION-LEDGER-PROPAGATE-TARGET",
+          "disposition": "FAIL_CLOSED",
+          "decision_owner": "REGISTRY_OWNER",
+          "owner_decision_recorded": false,
+          "failure_code": "END_TO_END_REQUIRES_A_VERIFIED_GOVERNANCE_DECISION_RETURN",
+          "failed_predicate": "DECIDING_ORGANIZATION_RECEIPT_READ_BACK",
+          "required_evidence_or_repair": "The StegVerse-Labs organization receipt for the decision read back from an independent fresh fetch of the StegVerse-Labs organization ledger. Requires the owner to designate a private-custody propagate_target for that ledger; it is null by the TVC#488 approval, so the Labs receipts are run-scoped (EXECUTION_SCOPED_PROPAGATE_TARGET_NULL). Never invented.",
+          "retry_entrypoint": "stegverse/governance_return_evidence.py::verify_governance_decision_return",
+          "owning_existing_goal": "SDK-MR-A-VALIDATION-CUSTODY-001",
+          "next_attempt": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN retry once the owner designates the propagate_target",
+          "evidence_refs": [
+            "SOURCE_RECORD_ONLY:data/canonical-task-records/SDK-MR-A-VALIDATION-CUSTODY-001.json",
+            "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+            "https://github.com/StegVerse-org/.github/actions/runs/38155889110"
+          ]
+        }
+      ],
       "adjacent_task_refs": [],
       "expected_evidence_predicates": [
         "ORGANIZATION_LEDGER_READBACK_ALLOW_OR_SIX_FIELD_FAIL_CLOSED_MERGED",
@@ -21120,7 +21203,8 @@
         "EXACT_HEAD_CI_VALIDATED",
         "ORGANIZATION_LEDGER_RUNTIME_TRANSITION_RECEIPT",
         "ORGANIZATION_LEDGER_INGRESS_AND_EMISSION_RECEIPTS_READ_BACK_ALLOW",
-        "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN_FOR_EMITTED_FRAME"
+        "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN_FOR_EMITTED_FRAME",
+        "GOVERNANCE_DECISION_RETURN_ATTEMPTED_AND_RECORDED"
       ],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
@@ -21135,7 +21219,7 @@
         "evidence_contract_version": "v1",
         "evidence_class": "EXTERNAL_PROVIDER_OBSERVED",
         "terminal_evidence_class": null,
-        "scope": "SOURCE_CI_VALIDATION_PLUS_RUNTIME_ORGANIZATION_LEDGER_READBACK",
+        "scope": "SOURCE_CI_VALIDATION_PLUS_RUNTIME_ORGANIZATION_LEDGER_READBACK_PLUS_DECISION_RETURN_ATTEMPT",
         "source_merges": [
           {
             "pr": 453,
@@ -21210,7 +21294,24 @@
           "https://github.com/StegVerse-org/StegVerse-SDK/pull/462",
           "StegVerse-org/StegVerse-SDK@012bf2ee97e089f75fe4455d773798d258b8c55d",
           "https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6105086142",
-          "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837"
+          "https://github.com/StegVerse-org/.github/issues/118#issuecomment-6105087837",
+          "https://github.com/StegVerse-Labs/.github/issues/3099",
+          "https://github.com/StegVerse-Labs/.github/pull/3104",
+          "StegVerse-Labs/.github@f3ee504771418a0c09548db81a374714a4dd9157",
+          "https://github.com/StegVerse-Labs/.github/pull/3105",
+          "StegVerse-Labs/.github@8ca1db372abe3f9f4bc6d1c1d89b8b40763348a3",
+          "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+          "StegVerse-Labs/.github@refs/stegverse/federation-mesh:77bbe5f855d1c96417f46ff311b1b709175193ac",
+          "StegVerse-Labs/.github@refs/stegverse/federation-mesh:77bbe5f855d1c96417f46ff311b1b709175193ac:frames.d/4cafedc4844d4139f17d914036b3686e1d9f0ab1b237e42d2df8e7884e450006.json",
+          "https://github.com/StegVerse-org/.github/actions/runs/38155889110",
+          "https://github.com/StegVerse-org/.github/pull/129",
+          "StegVerse-org/.github@a1b2ebe555a5e3f8d8576781018b093494bacc4a",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b:receipts/ccefb8f885f29c22c18b4b51895ee30561199f907f22547241d4560108c202c0.json",
+          "StegVerse-org/.github@refs/stegverse/organization-ledger:3e16f5a807e33c1e91639712aaf68a0de99e5f2b:repository-ledger/StegVerse-org/.github/receipts/b97f168bd62d507a10e68816478187f2709b254a61cac71ef3e1019a447c80c7.json",
+          "StegVerse-org/.github@refs/stegverse/federation-mesh:7a093db9070ebf5b74c3654cf4a6d97d651b81a1",
+          "https://github.com/StegVerse-org/StegVerse-SDK/pull/466",
+          "StegVerse-org/StegVerse-SDK@e8a34b6dc2e8de37b0b1fce9d40ad030111255ff:stegverse/governance_return_evidence.py"
         ],
         "end_to_end_complete": false,
         "organization_ledger_readback": {
@@ -21298,11 +21399,115 @@
             "frame_sha256": "sha256:909bb21e89c7bf6d37caf19acdbf5bcdaee455f0efaec059134fef9d0b247ae1",
             "mesh_tip": "18b3ef3f38d10e798458aed495c77568cbe9fa76"
           },
-          "executor": "receiving organization machine path over the federation mesh",
-          "is_blocker": false,
+          "executor": "receiving organization machine path over the federation mesh, once the owner-held predicates hold",
+          "is_blocker": true,
           "destination_liveness_is_transition_predicate": false,
-          "prohibition_ref": "data/task-registry-global-invariants.json#NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE"
-        }
+          "prohibition_ref": "data/task-registry-global-invariants.json#NO_DESTINATION_LIVENESS_OR_ALWAYS_ON_RECEIVER_AS_TRANSITION_PREDICATE",
+          "attempt": "RETRY",
+          "previous_attempt": {
+            "disposition": "FAIL_CLOSED",
+            "runs": [
+              "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+              "https://github.com/StegVerse-org/.github/actions/runs/38155889110"
+            ]
+          },
+          "held_by": [
+            "BLK-SDK-MR-A-GOVERNANCE-DECISION-IS-A-DECISION",
+            "BLK-SDK-MR-A-DECIDING-ORGANIZATION-RECEIPT-READ-BACK"
+          ],
+          "holder": "REGISTRY_OWNER"
+        },
+        "governance_decision_return": {
+          "transition": "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN",
+          "attempted": true,
+          "attempted_at": "2026-10-11",
+          "disposition": "FAIL_CLOSED",
+          "request_packet_id": "pkt-5efe4b0372bbffa4d2a356fe",
+          "deciding_organization": {
+            "organization": "StegVerse-Labs",
+            "run": "https://github.com/StegVerse-Labs/.github/actions/runs/38155820321",
+            "workflow": ".github/workflows/organization-governance-decision.yml",
+            "source_merges": [
+              {
+                "pr": 3104,
+                "merge": "f3ee504771418a0c09548db81a374714a4dd9157"
+              },
+              {
+                "pr": 3105,
+                "merge": "8ca1db372abe3f9f4bc6d1c1d89b8b40763348a3"
+              }
+            ],
+            "governance_disposition": "FAIL_CLOSED",
+            "governance_reason": "GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE",
+            "repository_receipt_sha256": "sha256:0e654f7a4fa00377e32f8bd027ce6a6c3ae662984db70f0d4b6625f40053b526",
+            "organization_receipt_sha256": "sha256:33d13cd8e9605000613e73b2a899ad0c0523012c263a157bb3f2bece953c5ef5",
+            "ledger_persistence": "EXECUTION_SCOPED_PROPAGATE_TARGET_NULL",
+            "answer_frame": {
+              "key": "frames.d/4cafedc4844d4139f17d914036b3686e1d9f0ab1b237e42d2df8e7884e450006.json",
+              "frame_sha256": "sha256:1ee814a89a04e7dc2102c9446f62098dd3f1ffc6686b33163246b5765d5b0ee2",
+              "packet_id": "governance:0d3494183d1c8a62ff5ab3408b34302e82a92a7fb75e48587edfedbc51013763:response:stegverse-labs",
+              "message_class": "ecosystem.work.ack",
+              "destination_org": "StegVerse-org"
+            },
+            "mesh_ref": "refs/stegverse/federation-mesh",
+            "mesh_tip": "77bbe5f855d1c96417f46ff311b1b709175193ac"
+          },
+          "returning_organization": {
+            "organization": "StegVerse-org",
+            "run": "https://github.com/StegVerse-org/.github/actions/runs/38155889110",
+            "workflow": ".github/workflows/organization-governance-return.yml",
+            "source_merges": [
+              {
+                "pr": 129,
+                "merge": "a1b2ebe555a5e3f8d8576781018b093494bacc4a"
+              }
+            ],
+            "return_disposition": "ALLOW",
+            "decision_returned": true,
+            "governance_disposition": "FAIL_CLOSED",
+            "closure_transition_class": "ORGANIZATION_EGRESS_CLOSED",
+            "closure_organization_receipt_sha256": "sha256:ccefb8f885f29c22c18b4b51895ee30561199f907f22547241d4560108c202c0",
+            "closure_repository_receipt_sha256": "sha256:b97f168bd62d507a10e68816478187f2709b254a61cac71ef3e1019a447c80c7",
+            "ledger_ref": "refs/stegverse/organization-ledger",
+            "prior_ledger_tip": "4e20f265fbfb727f766fc62ebafef3dfcca8ce71",
+            "ledger_tip": "3e16f5a807e33c1e91639712aaf68a0de99e5f2b",
+            "organization_chain_length": 8,
+            "repository_chain_length": 6,
+            "mesh_ref": "refs/stegverse/federation-mesh",
+            "prior_mesh_tip": "18b3ef3f38d10e798458aed495c77568cbe9fa76",
+            "mesh_tip": "7a093db9070ebf5b74c3654cf4a6d97d651b81a1"
+          },
+          "sdk_acceptance": {
+            "verifier": "StegVerse-org/StegVerse-SDK@e8a34b6dc2e8de37b0b1fce9d40ad030111255ff:stegverse/governance_return_evidence.py",
+            "pr": "https://github.com/StegVerse-org/StegVerse-SDK/pull/466",
+            "disposition": "FAIL_CLOSED",
+            "failure_code": "END_TO_END_REQUIRES_A_VERIFIED_GOVERNANCE_DECISION_RETURN",
+            "failed_predicate": "GOVERNANCE_DECISION_IS_A_DECISION",
+            "evidence_status": "REFERENCE_FROM_PARENT_SESSION_RUN"
+          },
+          "verification": {
+            "verified_by_anonymous_fetch": [
+              "StegVerse-Labs/.github refs/stegverse/federation-mesh tip and answer frame (key, frame_sha256, packet_id, kernel recovery, destination, request_packet_id, disposition, reason, receipt digests)",
+              "StegVerse-org/.github refs/stegverse/organization-ledger tip, fast-forward from 4e20f265, organization chain 8 with the closure receipt at HEAD, repository chain 6",
+              "StegVerse-org/.github refs/stegverse/federation-mesh tip, fast-forward from 18b3ef3f, holding the request frame and a byte-identical answer frame",
+              "StegVerse-org/.github main a1b2ebe5 merging #129; StegVerse-org/StegVerse-SDK main e8a34b6d merging #466"
+            ],
+            "recorded_as_reference": [
+              "https://github.com/StegVerse-org/.github/actions/runs/38155889110 (run page and its return readback artifact: return ALLOW, decision_returned true)",
+              "the SDK acceptance verifier result on that readback"
+            ]
+          },
+          "authority_effect": "NONE_COORDINATION_ONLY"
+        },
+        "in_progress_source_repairs": [
+          {
+            "repair_id": "SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003",
+            "repository": "StegVerse-org/.github",
+            "status": "IN_PROGRESS",
+            "evidence_status": "NOT_EVIDENCE_LOCAL_NON_AUTHORITATIVE_REHEARSAL",
+            "summary": "A local rehearsal with StegCore 0.3.0 (StegVerse-Labs/StegCore 9882851b) found the emitted governance request fails AdmissibilityRequest validation: signal.uncertainty_state is \"known\" and StegCore accepts only bounded, material or unknown. With \"bounded\" StegCore decides DENY signal.inputs_incomplete. The request is being repaired as SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-003."
+          }
+        ]
       },
       "allowed_next_transitions": [
         "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN",
@@ -21323,7 +21528,7 @@
       "goal_prompt_count": null,
       "session_qualifying_prompts_observed": 1,
       "authority_effect": "NONE_COORDINATION_ONLY",
-      "runtime_activation_scope": "ORGANIZATION_LEDGER_TRANSITION_AND_READBACK_ONLY",
+      "runtime_activation_scope": "ORGANIZATION_LEDGER_TRANSITIONS_DECISION_RETURN_AND_READBACK_ONLY",
       "reconciliation_history": [
         {
           "reconciled_at": "2026-10-10",
@@ -21339,6 +21544,23 @@
             "REOPENED_DUE_TO_NEW_EVIDENCE"
           ],
           "superseded_by": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md#2026-10-11-runtime-reconciliation"
+        },
+        {
+          "reconciled_at": "2026-10-11",
+          "goal": "SDK-MR-A validation custody (StegVerse-org/StegVerse-SDK#452): POST_RETURN sovereign completion binds to the organization-ledger readback (ALLOW or six-field FAIL_CLOSED), the stegverse-master-records dependency is removed, and every Master Records role-audit row is remediated. Source/CI validation plus a runtime organization-ledger transition: request SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002 was admitted on the StegVerse-org organization ledger (ingress receipt sha256:a7f67a3ee47a017ef9df4ed6b9a50ecd44ea718bdfc4f66e4563fe1b06db5ab8, ALLOW) and its governance request was emitted to StegVerse-Labs (emission receipt sha256:d0657cacbe4cd46f8805ddd7ff565bf4edca4764cbe2c3b735741cbcbfde2b55, REQUESTED_OF_DECIDING_ORGANIZATION), both read back ALLOW from a fresh fetch. Remaining: the StegVerse-Labs governance decision return for mesh packet pkt-5efe4b0372bbffa4d2a356fe. END_TO_END is not claimed.",
+          "coordination_state": "ACTIVE",
+          "checkout_state": "HANDOFF_READY",
+          "cosv_task_vector": "50000000100010",
+          "evidence_class": "EXTERNAL_PROVIDER_OBSERVED",
+          "scope": "SOURCE_CI_VALIDATION_PLUS_RUNTIME_ORGANIZATION_LEDGER_READBACK",
+          "runtime_transition_attempted": true,
+          "blockers": [],
+          "remaining_work_is_blocker": false,
+          "allowed_next_transitions": [
+            "STEGVERSE_LABS_GOVERNANCE_DECISION_RETURN",
+            "REOPENED_DUE_TO_NEW_EVIDENCE"
+          ],
+          "superseded_by": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md#2026-10-11-decision-return-reconciliation"
         }
       ]
     }
