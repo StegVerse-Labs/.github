@@ -53,6 +53,11 @@ CANDIDATE_REF = "refs/stegverse/publish-candidate"
 FRAME_PATH = re.compile(r"^frames\.d/[0-9a-f]{64}\.json$")
 LEDGER_PERSISTENCE = "EXECUTION_SCOPED_PROPAGATE_TARGET_NULL"
 REPORT_SCHEMA = "stegverse.organization-governance-decision-run/v1"
+DECISION_AUTHORITY_PIN = "org-runtime/decision-authority.json"
+EVALUATOR_NOT_PROVIDED = {
+    "installed": False, "reason": "STEGCORE_READ_CREDENTIAL_NOT_PROVIDED",
+    "owner_decision": ("provide a read-only STEGCORE_READ_TOKEN repository secret "
+                       "(Contents: read on StegVerse-Labs/StegCore)")}
 
 
 def _module(name: str, relative: str):
@@ -430,6 +435,48 @@ def read_back(*, own_url: str, own_ref: str, publication: dict[str, Any],
     return {"tip": tip, "answers": answers, "verified": True}
 
 
+def decision_authority_pin(path: Path | None = None) -> dict[str, Any]:
+    return json.loads((path or ROOT / DECISION_AUTHORITY_PIN).read_text(encoding="utf-8"))
+
+
+def _requirement_name(spec: str) -> str:
+    return re.split(r"[\s<>=!~;\[(]", spec.strip(), maxsplit=1)[0].lower().replace("_", "-")
+
+
+def authority_requirements(source: Path, pin: dict[str, Any]) -> list[str]:
+    """The pinned requirements, refused unless the checkout is the pinned commit and
+    they pin exactly the dependencies its pyproject declares."""
+    import tomllib
+    head = subprocess.run(["git", "-C", str(source), "rev-parse", "HEAD"], capture_output=True, text=True)
+    if head.returncode != 0 or head.stdout.strip() != pin["commit"]:
+        raise Refusal("DECISION_AUTHORITY_SOURCE_NOT_PINNED",
+                      "head:" + (head.stdout.strip() or "unreadable") + "!=" + pin["commit"],
+                      "check out " + pin["repository"] + " at the commit " + DECISION_AUTHORITY_PIN + " pins")
+    project = tomllib.loads((source / "pyproject.toml").read_text(encoding="utf-8")).get("project") or {}
+    declared = sorted(_requirement_name(spec) for spec in project.get("dependencies") or [])
+    pinned = sorted(_requirement_name(spec) for spec in pin["requirements"])
+    if project.get("name") != pin["package"] or declared != pinned or \
+            not all(re.fullmatch(r"[A-Za-z0-9._-]+==[A-Za-z0-9.]+", spec) for spec in pin["requirements"]):
+        raise Refusal("DECISION_AUTHORITY_REQUIREMENTS_NOT_PINNED",
+                      "declared:" + ",".join(declared) + ";pinned:" + ",".join(pin["requirements"]),
+                      "pin each dependency " + pin["repository"] + " declares, and no other, with ==")
+    return list(pin["requirements"])
+
+
+def evaluator_record(pin: dict[str, Any], *, installed: bool) -> dict[str, Any]:
+    """Which evaluator this run's decisions were made by."""
+    if not installed:
+        return dict(EVALUATOR_NOT_PROVIDED)
+    from importlib import metadata
+    try:
+        importlib.import_module(pin["decision_authority"].rsplit(".", 1)[0])
+        version = metadata.version(pin["package"])
+    except (ImportError, metadata.PackageNotFoundError) as exc:
+        raise Refusal("DECISION_AUTHORITY_INSTALL_UNVERIFIED", pin["package"] + ":" + type(exc).__name__,
+                      "the installed " + pin["repository"] + " must import and report its version") from exc
+    return {"installed": True, "commit": pin["commit"], "version": version}
+
+
 def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int]:
     def load(name: str) -> Any:
         path = evidence / name
@@ -437,6 +484,8 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
     bound, materialized, cycle, published, readback = (
         load("binding.json"), load("materialization.json"), load("cycle.json"),
         load("publication.json"), load("readback.json"))
+    evaluator = load("evaluator.json")
+    installed = bool((evaluator or {}).get("installed"))
     failure = load("fail_closed.json")
     if failure is None and (bound or {}).get("disposition") == "FAIL_CLOSED":
         failure = bound
@@ -465,6 +514,9 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
               "refused_frames": (materialized or {}).get("refused_frames"),
               "already_answered": (materialized or {}).get("already_answered"),
               "decisions": decisions,
+              "evaluator": evaluator,
+              "decision_authority_installed": installed,
+              "decision_authority_commit": evaluator["commit"] if installed else None,
               "published": published,
               "readback": readback,
               "ledger_persistence": LEDGER_PERSISTENCE,
@@ -509,10 +561,23 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--own-url", required=True)
     s = sub.add_parser("report")
     s.add_argument("--mesh-root", required=True)
+    q = sub.add_parser("authority-requirements")
+    q.add_argument("--source", type=Path, required=True)
+    q.add_argument("--out", type=Path, required=True)
+    e = sub.add_parser("evaluator")
+    e.add_argument("--installed", action="store_true")
     args = parser.parse_args(argv)
     evidence = args.evidence
     try:
-        if args.command == "materialize":
+        if args.command == "authority-requirements":
+            requirements = authority_requirements(args.source, decision_authority_pin())
+            args.out.write_text("\n".join(requirements) + "\n", encoding="utf-8")
+            print("\n".join(requirements))
+            return 0
+        if args.command == "evaluator":
+            document = evaluator_record(decision_authority_pin(), installed=args.installed)
+            name = "evaluator.json"
+        elif args.command == "materialize":
             bound = _read(evidence / "binding.json")
             if bound.get("disposition") == "FAIL_CLOSED":
                 raise Refusal(bound["failure_code"], bound["failed_predicate"], bound["required_evidence_or_repair"])

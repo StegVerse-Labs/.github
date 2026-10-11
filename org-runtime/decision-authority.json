@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.organization-decision-authority-pin/v1",
+  "organization": "StegVerse-Labs",
+  "decision_authority": "stegcore.steggate.evaluate_admissibility",
+  "repository": "StegVerse-Labs/StegCore",
+  "package": "stegcore",
+  "commit": "9882851b2a31cb0c24aeefefebe2c674b7b02448",
+  "requirements": [
+    "fastapi==0.116.1",
+    "jsonschema==4.25.0",
+    "pydantic==2.11.7",
+    "uvicorn==0.35.0"
+  ],
+  "read_credential": {
+    "secret": "STEGCORE_READ_TOKEN",
+    "permission": "Contents: read on StegVerse-Labs/StegCore",
+    "owner_decision": true
+  },
+  "nonclaims": [
+    "the pin is not an installation",
+    "an absent read credential leaves every decision FAIL_CLOSED GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE"
+  ]
+}

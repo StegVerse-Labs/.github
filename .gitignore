@@ -24,3 +24,7 @@ _site/
 
 # pytest writes its own self-ignoring .gitignore, but be explicit.
 .pytest_cache/
+
+# The decision authority checkout of organization-governance-decision.yml,
+# fetched into the workspace at run time and never tracked.
+.decision-authority/
