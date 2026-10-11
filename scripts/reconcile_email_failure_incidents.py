@@ -174,6 +174,21 @@ def import_steghealth_candidates(registry: dict[str, Any], vector_index: dict[st
     handoffs = owner_result.get("task_handoffs")
     require(isinstance(candidates, list), "StegHealth canonical_task_candidates missing")
     require(isinstance(handoffs, list), "StegHealth task_handoffs missing")
+    # A proposed candidate is not an authenticated current unresolved failure.
+    # Require owner-issued, incident-specific reconciliation before touching the
+    # live Registry; duplicate notifications and successful reruns are not tasks.
+    for candidate in candidates:
+        require(isinstance(candidate, dict), "StegHealth canonical task candidate must be object")
+        reconciliation = candidate.get("current_failure_reconciliation")
+        require(
+            isinstance(reconciliation, dict)
+            and reconciliation.get("state") == "UNRESOLVED"
+            and reconciliation.get("github_current_state_verified") is True
+            and isinstance(reconciliation.get("evidence_refs"), list)
+            and bool(reconciliation["evidence_refs"])
+            and reconciliation.get("owner") == STEGHEALTH_OWNER,
+            "CURRENT_GITHUB_FAILURE_UNRESOLVED_AND_OWNER_VERIFIED",
+        )
     tasks = registry.get("tasks")
     rows = vector_index.get("tasks")
     require(isinstance(tasks, list), "registry tasks invalid")
