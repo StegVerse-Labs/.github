@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 
 REQUIRED = ("journey_id", "leg", "direction", "endpoint", "counterparty", "manifest_sha256")
+NOT_ALLOWED_PREDICATE = "JOURNEY_ENDPOINT_TRANSITION_NOT_ALLOWED"
+RETRY_ENTRYPOINT = "scripts/validate_transition_receipt_journey.py"
 
 
 def fail(code: str, detail: str) -> None:
@@ -21,6 +23,30 @@ def evidence(receipt: dict) -> dict:
     if missing:
         fail("JOURNEY_CORRELATION_MISSING", ",".join(missing))
     return value
+
+
+def failed_endpoints(receipts: list[dict], rows: tuple[dict, ...]) -> list[dict]:
+    """Every endpoint receipt that records an outcome other than ALLOW, with its predicate.
+
+    An endpoint transition records its own disposition, on the receipt or in its
+    evidence (a refused ingress records DENY or FAIL_CLOSED there). The journey
+    summarises those transitions, so it reads them rather than reporting ALLOW
+    over a leg that did not produce ALLOW.
+    """
+    failed = []
+    for receipt, value in zip(receipts, rows):
+        recorded = [source for source in (receipt, value) if "disposition" in source]
+        refused = next((source for source in recorded if source.get("disposition") != "ALLOW"), None)
+        if refused is not None:
+            failed.append({
+                "leg": value["leg"],
+                "direction": value["direction"],
+                "endpoint": value["endpoint"],
+                "disposition": refused.get("disposition"),
+                "failed_predicate": refused.get("failed_predicate"),
+                "retry_entrypoint": refused.get("retry_entrypoint"),
+            })
+    return failed
 
 
 def validate(receipts: list[dict]) -> dict:
@@ -68,9 +94,13 @@ def validate(receipts: list[dict]) -> dict:
     if d.get("returned_endpoint_receipts") is not True:
         fail("RETURN_EVIDENCE_MISSING", "initiating endpoint ingress must attest returned endpoint receipts")
 
+    failed = failed_endpoints(receipts, (a, b, c, d))
     return {
         "schema": "stegverse.transition-journey-validation/v1",
-        "disposition": "ALLOW",
+        "disposition": "ALLOW" if not failed else "FAIL_CLOSED",
+        "failed_predicate": None if not failed else NOT_ALLOWED_PREDICATE,
+        "failed_endpoints": failed,
+        "retry_entrypoint": None if not failed else (failed[0]["retry_entrypoint"] or RETRY_ENTRYPOINT),
         "journey_id": a["journey_id"],
         "outbound_manifest_sha256": a["manifest_sha256"],
         "return_manifest_sha256": c["manifest_sha256"],
@@ -87,7 +117,10 @@ def main() -> None:
     payload = json.loads(args.receipt_set.read_text())
     receipts = payload["receipts"] if isinstance(payload, dict) else payload
     try:
-        print(json.dumps(validate(receipts), sort_keys=True))
+        result = validate(receipts)
+        print(json.dumps(result, sort_keys=True))
+        if result["disposition"] != "ALLOW":
+            raise SystemExit(1)
     except ValueError as exc:
         print(json.dumps({
             "schema": "stegverse.transition-journey-validation/v1",
