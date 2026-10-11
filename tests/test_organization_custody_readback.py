@@ -376,3 +376,163 @@ def test_governed_attempt_missing_master_records_organization_record_fails_close
     assert result["state"] == "FAIL_CLOSED"
     assert result["disposition"] == "FAIL_CLOSED"
     assert result["failed_predicate"] == "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY"
+
+
+# --- #3012: readback surfaces the post-commit Master Records carriage of each released batch ---
+
+COUNT_ONE = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}
+
+
+def _transport(state, reason=None):
+    """A stand-in for the custody client; the readback never calls it."""
+    def submit(root, batch_id):
+        result = {"state": state, "batch_id": batch_id, "governance_disposition": None, "authority_effect": "NONE"}
+        if reason is not None:
+            result["reason"] = reason
+        return result
+    return submit
+
+
+def _released_batch(monkeypatch, ledger, name, state, reason=None, task="OTHER"):
+    """Append a manifest-directed receipt that releases the prior packet; return (receipt, batch id)."""
+    monkeypatch.setattr(batches, "submit_released_batch", _transport(state, reason))
+    row = org.aggregate_transition(source(name, task=task), parent_manifest=COUNT_ONE)
+    return row, row["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
+
+
+def _ledger_snapshot(ledger: Path) -> dict[str, str]:
+    return {str(path.relative_to(ledger)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(ledger.rglob("*")) if path.is_file()}
+
+
+def _submission_of(result, batch_id):
+    rows = [row for row in result["batch_submissions"] if row["batch_id"] == batch_id]
+    assert len(rows) == 1, result["batch_submissions"]
+    return rows[0]
+
+
+def test_readback_surfaces_recorded_submission_outcomes_without_writing_or_authorizing(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    second, completed_batch = _released_batch(monkeypatch, ledger, "SECOND", "COMPLETED")
+    third, failed_batch = _released_batch(monkeypatch, ledger, "THIRD", "FAILED",
+                                          reason="ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:URLError")
+    fourth, not_attempted_batch = _released_batch(monkeypatch, ledger, "FOURTH", "FAIL_CLOSED",
+                                                  reason="CANONICAL_CUSTODY_CLIENT_UNAVAILABLE")
+    before = _ledger_snapshot(ledger)
+    monkeypatch.setattr(batches, "submit_released_batch",
+                        lambda root, batch_id: pytest.fail("readback must never carry a batch"))
+
+    result = readback.readback(ledger, correlation_ids=("OTHER",), include_exact=False)
+
+    assert _ledger_snapshot(ledger) == before, "a readback writes nothing under the ledger"
+    assert result["state"] == "VERIFIED_LOCAL_READBACK"
+    assert result["batch_count"] == 3
+    assert [row["batch_id"] for row in result["batch_submissions"]] == [completed_batch, failed_batch, not_attempted_batch]
+    completed = _submission_of(result, completed_batch)
+    assert completed["released_by_receipt_sha256"] == second["receipt_sha256"]
+    assert completed["closure_reason"] == "MANIFEST_RELEASE_CONDITION"
+    receipt = batches.released_batch_submission(ledger, completed_batch)
+    assert completed["master_records_submission"] == {
+        "state": "COMPLETED",
+        "receipt_key": batches.submission_key(completed_batch),
+        "self_hash_verified": True,
+        "submission_receipt_sha256": receipt["receipt_sha256"],
+        "reason": None,
+        "released_by_receipt_sha256": second["receipt_sha256"],
+        "recorded_at": receipt["observed_at"],
+        "authority_effect": "NONE",
+    }
+    failed = _submission_of(result, failed_batch)["master_records_submission"]
+    assert failed["state"] == "FAILED"
+    assert failed["self_hash_verified"] is True
+    assert failed["reason"] == "ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:URLError"
+    assert failed["released_by_receipt_sha256"] == third["receipt_sha256"]
+    not_attempted = _submission_of(result, not_attempted_batch)["master_records_submission"]
+    assert not_attempted["state"] == "NOT_ATTEMPTED"
+    assert not_attempted["self_hash_verified"] is True
+    assert not_attempted["reason"] == "CANONICAL_CUSTODY_CLIENT_UNAVAILABLE"
+    assert not_attempted["released_by_receipt_sha256"] == fourth["receipt_sha256"]
+    # Non-authorizing: the readback result and every carriage row say so, and nothing is an ALLOW.
+    assert result["authority_effect"] == "NONE_READBACK_ONLY"
+    assert result["runtime_admission_inferred"] is False
+    assert result["master_records_acknowledgement"] == "NOT_QUERIED"
+    for row in result["batch_submissions"]:
+        assert row["master_records_submission"]["authority_effect"] == "NONE"
+        assert row["master_records_submission"]["state"] in {"COMPLETED", "FAILED", "NOT_ATTEMPTED"}
+    assert "ALLOW" not in json.dumps(result["batch_submissions"])
+    # The summary is present without exact bytes; with them, the immutable batch rows are untouched.
+    exact = readback.readback(ledger, correlation_ids=("OTHER",))
+    assert exact["batch_submissions"] == result["batch_submissions"]
+    assert all("master_records_submission" not in item for item in exact["exact_batches"])
+    assert _ledger_snapshot(ledger) == before
+
+
+def test_readback_reports_absent_submission_receipt_as_pending_not_error(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    second, batch_id = _released_batch(monkeypatch, ledger, "SECOND", "COMPLETED")
+    # The process died between the sovereign commit and the submission record: the outbox is the ledger.
+    (ledger / batches.submission_key(batch_id)).unlink()
+    assert batches.pending_released_batch(ledger)["batch"]["batch_id"] == batch_id
+    before = _ledger_snapshot(ledger)
+    result = readback.readback(ledger, correlation_ids=("OTHER",), include_exact=False)
+    assert _ledger_snapshot(ledger) == before
+    assert result["state"] == "VERIFIED_LOCAL_READBACK"
+    assert _submission_of(result, batch_id)["master_records_submission"] == {
+        "state": "PENDING",
+        "pending_reason": "SUBMISSION_RECEIPT_ABSENT",
+        "receipt_key": batches.submission_key(batch_id),
+        "self_hash_verified": False,
+        "authority_effect": "NONE",
+    }
+    # Still pending after the readback: it drove nothing.
+    assert batches.pending_released_batch(ledger)["batch"]["batch_id"] == batch_id
+
+
+def test_readback_fails_closed_on_tampered_submission_receipt_without_failing_the_chain(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    _, batch_id = _released_batch(monkeypatch, ledger, "SECOND", "FAILED", reason="TRANSPORT")
+    path = ledger / batches.submission_key(batch_id)
+    forged = json.loads(path.read_text())
+    forged["execution_result"] = "COMPLETED"
+    path.write_text(json.dumps(forged))
+    before = _ledger_snapshot(ledger)
+    result = readback.readback(ledger, correlation_ids=("OTHER",), include_exact=False)
+    assert _ledger_snapshot(ledger) == before
+    assert result["state"] == "VERIFIED_LOCAL_READBACK"
+    assert result["complete_organization_chain"] == "PASS"
+    assert _submission_of(result, batch_id)["master_records_submission"] == {
+        "state": "FAIL_CLOSED",
+        "failed_predicate": "SUBMISSION_RECEIPT_HASH_MISMATCH",
+        "receipt_key": batches.submission_key(batch_id),
+        "self_hash_verified": False,
+        "authority_effect": "NONE",
+    }
+    assert "COMPLETED" not in json.dumps(result["batch_submissions"]), "a forged outcome is never surfaced"
+
+
+def test_readback_reports_null_submission_for_batch_released_without_a_key(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    org.aggregate_transition(source("FIRST", task="OTHER"))
+    # Closed by the operator: its carriage is the operator's own step, no key is named.
+    closed = batches.close_batch("TASK_CLOSURE", root=ledger)
+    org.aggregate_transition(source("SECOND", task="OTHER"))
+    # Released before the post-commit step existed: the transport's result was inline, no key.
+    third, inline_batch = _released_batch(monkeypatch, ledger, "THIRD", "COMPLETED")
+    inline = {**third, "boundary_evidence": {**third["boundary_evidence"], "parent_manifest_released_batch": {
+        "batch_id": inline_batch, "execution_result": "COMPLETED", "reason": None, "authority_effect": "NONE"}}}
+    monkeypatch.setattr(batches, "_verified_receipt", lambda root, digest, _real=batches._verified_receipt: (
+        inline if digest == third["receipt_sha256"] else _real(root, digest)))
+    result = readback.readback(ledger, correlation_ids=("OTHER",), include_exact=False)
+    assert result["batch_count"] == 2
+    operator = _submission_of(result, closed["batch_id"])
+    assert operator["closure_reason"] == "TASK_CLOSURE"
+    assert operator["released_by_receipt_sha256"] is None
+    assert operator["master_records_submission"] is None
+    assert _submission_of(result, inline_batch)["master_records_submission"] is None

@@ -66,6 +66,88 @@ def _verified_batches(root, receipt_hashes: list[str]) -> list[dict[str, Any]]:
     return rows
 
 
+# A released batch's post-commit Master Records carriage (#3012) is recorded
+# beside the receipts under batch-submissions/, named by key from the sovereign
+# receipt that released the batch. Readback surfaces that record as it stands
+# on the same declared store: COMPLETED, FAILED or NOT_ATTEMPTED as the
+# immutable receipt says; PENDING while the outbox (the ledger itself) still
+# holds the release without its receipt; FAIL_CLOSED when the record named is
+# not the record found. None of these is a predicate of anything: the batch is
+# on the verified chain either way, and no state here is or mints an ALLOW.
+SUBMISSION_PENDING = "PENDING"
+SUBMISSION_FAIL_CLOSED = "FAIL_CLOSED"
+SUBMISSION_RECEIPT_ABSENT = "SUBMISSION_RECEIPT_ABSENT"
+SUBMISSION_RECEIPT_HASH_MISMATCH = "SUBMISSION_RECEIPT_HASH_MISMATCH"
+SUBMISSION_RECEIPT_INVALID = "SUBMISSION_RECEIPT_INVALID"
+SUBMISSION_RECEIPT_KEY_MISMATCH = "SUBMISSION_RECEIPT_KEY_MISMATCH"
+
+
+def _release_carrier(ordered: list[dict[str, Any]], index: dict[str, int], item: dict[str, Any]) -> dict[str, Any] | None:
+    """The receipt that released `item`: the first one appended after the batch's last member."""
+    position = index.get(item["last_org_receipt_sha256"])
+    if position is None or position + 1 >= len(ordered):
+        return None
+    return ordered[position + 1]
+
+
+def _master_records_submission(store, carried: dict[str, Any] | None, batch_id: str) -> dict[str, Any] | None:
+    """What the same store records of the batch's post-commit carriage, verified, or None.
+
+    None is a batch whose release named no submission receipt key: one closed
+    by the operator, or released before the post-commit step existed (its
+    result, if any, is inline on the carrier). Otherwise the receipt at the
+    named key is read through `store` -- the store the readback is already
+    reading, never another root -- and its self-hash checked by
+    organization_batch_custody.released_batch_submission.
+    """
+    if not isinstance(carried, dict):
+        return None
+    key = carried.get("submission_receipt_key")
+    if not isinstance(key, str) or not key:
+        return None
+    report: dict[str, Any] = {
+        "receipt_key": key,
+        "self_hash_verified": False,
+        "authority_effect": "NONE",
+    }
+    if key != batch.submission_key(batch_id):
+        # The sovereign receipt named a key that is not this batch's own.
+        return {**report, "state": SUBMISSION_FAIL_CLOSED, "failed_predicate": SUBMISSION_RECEIPT_KEY_MISMATCH}
+    try:
+        receipt = batch.released_batch_submission(store, batch_id)
+    except ValueError as exc:
+        predicate = SUBMISSION_RECEIPT_HASH_MISMATCH if "hash mismatch" in str(exc) else SUBMISSION_RECEIPT_INVALID
+        return {**report, "state": SUBMISSION_FAIL_CLOSED, "failed_predicate": predicate}
+    if receipt is None:
+        return {**report, "state": SUBMISSION_PENDING, "pending_reason": SUBMISSION_RECEIPT_ABSENT}
+    return {
+        **report,
+        "state": receipt["execution_result"],
+        "self_hash_verified": True,
+        "submission_receipt_sha256": receipt["receipt_sha256"],
+        "reason": receipt.get("reason"),
+        "released_by_receipt_sha256": receipt.get("released_by_receipt_sha256"),
+        "recorded_at": receipt.get("observed_at"),
+    }
+
+
+def _batch_submissions(store, ordered: list[dict[str, Any]], batches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per verified batch, in chain order, with its carriage as recorded."""
+    index = {row["receipt_sha256"]: position for position, row in enumerate(ordered)}
+    rows: list[dict[str, Any]] = []
+    for item in batches:
+        batch_id = item["batch_id"]
+        carrier = _release_carrier(ordered, index, item)
+        carried = batch._carriage_of(carrier, batch_id)
+        rows.append({
+            "batch_id": batch_id,
+            "closure_reason": item.get("closure_reason"),
+            "released_by_receipt_sha256": carrier["receipt_sha256"] if carried is not None else None,
+            "master_records_submission": _master_records_submission(store, carried, batch_id),
+        })
+    return rows
+
+
 def readback(
     root,
     *,
@@ -100,6 +182,7 @@ def _readback(root, *, correlation_ids: tuple[str, ...], include_exact: bool) ->
     all_hashes = [row["receipt_sha256"] for row in ordered]
     sources = [_source_for(root, row) for row in ordered]
     batches = _verified_batches(root, all_hashes)
+    submissions = _batch_submissions(root, ordered, batches)
     # Do not call the candidate stable if another resident append raced readback.
     if batch._get(root, org.ledger_store.HEAD_KEY) != head:
         raise ValueError("ORGANIZATION_HEAD_CHANGED_DURING_READBACK")
@@ -139,6 +222,10 @@ def _readback(root, *, correlation_ids: tuple[str, ...], include_exact: bool) ->
         "batch_count": len(batches),
         "batch_chain": "PASS" if batches else "NO_CLOSED_BATCH",
         "last_batch_id": batches[-1]["batch_id"] if batches else None,
+        # #3012: the post-commit Master Records carriage of each released batch,
+        # as recorded on this store. Reported, never adjudicated: no state here
+        # gates the readback or is an acknowledgement.
+        "batch_submissions": submissions,
         "match_count": len(matches),
         "matching_transitions": matches,
         "requested_correlation_ids": sorted(ids),
