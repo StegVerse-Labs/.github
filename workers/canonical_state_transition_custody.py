@@ -172,11 +172,13 @@ def build_state_receipt(
     }
 
 
-#: The most a synchronous Master Records call may wait. A released batch is
-#: submitted from inside the organization append's exclusive section
-#: (aggregate_repo_transition.aggregate_transition -> organization_batch_custody
-#: .submit_released_batch -> submit_organization_batch), so an uncapped
-#: environment timeout would hold the ledger lock for that long (#3012).
+#: The most a synchronous Master Records call may wait (#3012). A released
+#: batch is submitted after the organization append has committed and released
+#: its lock or compare-and-swap transaction (aggregate_repo_transition
+#: ._carry_released_batch_after_commit -> organization_batch_custody
+#: .submit_pending_released_batch -> submit_organization_batch), so no ledger
+#: lock is held during this wait; the ceiling still bounds the post-commit
+#: step so an uncapped environment timeout cannot stall the appender.
 MASTER_RECORDS_TIMEOUT_CEILING_SECONDS = 10.0
 
 

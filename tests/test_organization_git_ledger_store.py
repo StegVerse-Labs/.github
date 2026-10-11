@@ -26,6 +26,10 @@ import organization_batch_custody as custody  # noqa: E402
 
 store_module = org.ledger_store
 REF = "refs/heads/organization-ledger/StegVerse-Labs"
+# A caller-held store is admitted only as the declared locus (#3012, OL-1b):
+# these tests hold Git stores on the repository's own declared ref, so they
+# run under the repository's declaration rather than the suite's POSIX one.
+pytestmark = pytest.mark.repository_ledger_locus
 IDENTITY = {
     "GIT_AUTHOR_NAME": "test", "GIT_AUTHOR_EMAIL": "test@example.invalid",
     "GIT_COMMITTER_NAME": "test", "GIT_COMMITTER_EMAIL": "test@example.invalid",
@@ -443,8 +447,11 @@ def test_invalid_manifested_packet_on_git_store_commits_nothing(tmp_path, origin
     assert remote_tip(origin) is None
 
 
-def test_prior_posix_receipts_are_not_git_ledger_history(tmp_path, origin):
-    posix = org.aggregate_transition(receipt("CLAIM"), ledger=tmp_path / "posix")
+def test_prior_posix_receipts_are_not_git_ledger_history(tmp_path, origin, monkeypatch):
+    # An explicit POSIX root is admitted only under a declared {store: posix} (OL-3).
+    with monkeypatch.context() as posix_declared:
+        posix_declared.setitem(org.C, "organization_ledger", {"store": "posix"})
+        posix = org.aggregate_transition(receipt("CLAIM"), ledger=tmp_path / "posix")
     reader = node(tmp_path, "reader.git", origin, custody_class=None)
     with pytest.raises(custody.OrganizationReceiptRefused) as refused:
         custody.verified_organization_receipt(
@@ -562,7 +569,11 @@ def test_manifested_release_and_establishment_publish_as_one_commit_and_read_bac
     assert len(carried) == 1
     assert remote_tip(origin) == before, "the release completed locally without awaiting the remote"
     propagated(following)
-    tip = remote_tip(origin)
+    # #3012: the sovereign transition is exactly one commit on the prior tip;
+    # the Master Records submission receipt is one more commit after it,
+    # recorded once the transition had committed, never inside it.
+    submission_tip = remote_tip(origin)
+    tip = git(origin, "rev-parse", submission_tip + "^")
     assert git(origin, "rev-parse", tip + "^") == before, "the release is exactly one commit on the prior tip"
     reader = node(tmp_path, "reader.git", origin, custody_class=None)
     batch_head = reader.get(custody.BATCH_HEAD_KEY)
@@ -575,6 +586,8 @@ def test_manifested_release_and_establishment_publish_as_one_commit_and_read_bac
     record = establishment["boundary_evidence"][custody.ESTABLISHMENT_KEY]
     assert record["establishment_kind"] == "PRIOR_PACKET_RELEASE"
     assert record["released_batch"]["batch_id"] == released["batch_id"]
+    assert record["released_batch"]["master_records_submission"] == custody.SUBMISSION_POST_COMMIT
+    assert "execution_result" not in record["released_batch"]
     changed = set(git(origin, "diff-tree", "--no-commit-id", "--name-only", "-r", tip).splitlines())
     assert changed == {
         "HEAD.json", custody.BATCH_HEAD_KEY, custody._batch_key(released["batch_id"]),
@@ -583,6 +596,12 @@ def test_manifested_release_and_establishment_publish_as_one_commit_and_read_bac
         store_module.receipt_key(work2["receipt_sha256"]),
         store_module.source_key(work2["source_transition_sha256"]),
     }
+    submission_changed = set(git(origin, "diff-tree", "--no-commit-id", "--name-only", "-r", submission_tip).splitlines())
+    assert submission_changed == {custody.submission_key(released["batch_id"])}
+    submission = custody.released_batch_submission(reader, released["batch_id"])
+    assert submission["execution_result"] == "COMPLETED"
+    assert submission["released_by_receipt_sha256"] == establishment["receipt_sha256"]
+    assert submission["submitted_after_commit"] is True
 
     # Every read comes back from the committed ref.
     assert custody.verify_batch(reader, released["batch_id"])["organization_chain"] == "PASS"
@@ -611,20 +630,22 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
     fast = store_module.GitLedgerStore(slow.git_dir, REF, remote=str(origin), custody="PRIVATE")
     local = slow.git_dir
     raced = {}
-    submit = custody.submit_released_batch
+    close = custody.close_batch
 
-    def race(root, batch_id):
-        # The slow node has pinned its tip and staged its release; the fast node
-        # releases the same packet and publishes first.
+    def race(reason, *, root=None, custody_exclusivity_verifier=None):
+        # The slow node has pinned its tip and is staging its release; the fast
+        # node releases the same packet and publishes first. (#3012: the race
+        # is injected at the in-transaction release, since the Master Records
+        # carriage no longer runs inside the transaction.)
         if not raced:
             raced["started"] = True
             raced["won"] = org.aggregate_transition(receipt("FAST"), ledger=fast, parent_manifest=parent,
                                                     now_ns=hb_now_ns(T0_EPOCH + 2))
             raced["files"] = remote_files(local)
             raced["tip"] = remote_tip(local)
-        return submit(root, batch_id)
+        return close(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
-    monkeypatch.setattr(custody, "submit_released_batch", race)
+    monkeypatch.setattr(custody, "close_batch", race)
     with pytest.raises(store_module.LedgerStoreRefused) as lost:
         org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
     refusal = org.store_refusal(lost.value)
@@ -643,6 +664,7 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
                                        now_ns=hb_now_ns(T0_EPOCH + 2))
     assert retried["previous_receipt_sha256"] == raced["won"]["receipt_sha256"]
     assert "parent_manifest_released_batch" not in retried["boundary_evidence"]
+    assert len(carried) == 1, "the winner carried the batch once, after its commit; the loser carried nothing"
     assert remote_tip(origin) is None, "no transition awaited or wrote the remote"
 
 
@@ -753,3 +775,85 @@ def test_manifested_packet_on_a_non_private_surface_is_refused_before_carriage(t
         assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
     assert carried == [], "the released batch is not carried from a surface not declared private"
     assert remote_tip(origin) == tip
+
+
+# --- #3012: no Master Records wait inside the sovereign transition; no foreign store ---
+
+
+def test_released_batch_is_submitted_after_the_cas_commit_with_no_snapshot_pinned(tmp_path, origin, monkeypatch):
+    """(a) On the Git store: the transaction is published and unpinned before the transport runs."""
+    parent = manifest()
+    writer = node(tmp_path, "writer.git", origin)
+    open_packet(writer, parent)
+    observed = {}
+
+    def submit(root, batch_id):
+        observed["held"] = writer._held
+        observed["pinned"] = writer._pinned
+        observed["local_tip"] = remote_tip(writer.git_dir)
+        observed["head"] = json.loads(git(writer.git_dir, "cat-file", "blob", REF + ":HEAD.json"))["receipt_sha256"]
+        observed["remote_tip"] = remote_tip(origin)
+        return {"state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id,
+                "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY"}
+
+    monkeypatch.setattr(custody, "submit_released_batch", submit)
+    work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
+                                     now_ns=hb_now_ns(T0_EPOCH + 2))
+    assert observed, "the released batch was carried"
+    assert observed["held"] == 0 and observed["pinned"] is None, "no exclusive section or pinned snapshot at submission"
+    assert observed["head"] == work2["receipt_sha256"], "the ref already held the committed transition"
+    assert observed["remote_tip"] is None, "the remote was never awaited"
+    # The outcome is one further local commit; the sovereign transition is unchanged by it.
+    assert git(writer.git_dir, "rev-parse", REF + "^") == observed["local_tip"]
+    # The release and successor establishment are one receipt (member #1); it names the batch.
+    establishment = writer.get(store_module.receipt_key(work2["previous_receipt_sha256"]))
+    batch_id = establishment["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
+    assert batch_id == writer.get(custody.BATCH_HEAD_KEY)["batch_id"]
+    submission = custody.released_batch_submission(writer, batch_id)
+    assert submission["execution_result"] == "COMPLETED"
+    assert writer.get(store_module.HEAD_KEY)["receipt_sha256"] == work2["receipt_sha256"]
+    # The retained outcome rides the next manifest-directed append, read back from the ref.
+    work3 = org.aggregate_transition(receipt("WORK-3"), ledger=writer, parent_manifest=parent,
+                                     now_ns=hb_now_ns(T0_EPOCH + 3))
+    retained = work3["boundary_evidence"][custody.RELEASED_BATCH_SUBMISSION_KEY]
+    assert retained["batch_id"] == batch_id
+    assert retained["submission_receipt_sha256"] == submission["receipt_sha256"]
+    propagated(writer)
+    reader = node(tmp_path, "reader.git", origin, custody_class=None)
+    assert custody.released_batch_submission(reader, batch_id) == submission
+    assert custody.verified_organization_receipt(
+        reader, work3["receipt_sha256"], state_receipt_sha256=work3["source_transition_sha256"]) == work3
+
+
+def test_a_caller_held_store_off_the_declared_locus_is_refused_with_nothing_appended(tmp_path, origin, monkeypatch):
+    """(d) organization_store(ledger=<store>) admits only the declared kind and ref."""
+    foreign_ref = "refs/heads/organization-ledger/elsewhere"
+    foreign = store_module.GitLedgerStore(bare(tmp_path / "foreign.git"), foreign_ref, custody="PRIVATE")
+    posix = store_module.PosixLedgerStore(tmp_path / "posix")
+    assert org.declared_ledger_locus()["ref"] == REF
+    for held in (foreign, posix, store_module.StagedLedgerTransaction(foreign)):
+        with pytest.raises(org.LedgerLocusMismatch) as mismatch:
+            org.organization_store(held)
+        refusal = org.location_refusal(mismatch.value)
+        assert refusal["disposition"] == "FAIL_CLOSED"
+        assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+        assert refusal["consequence_committed"] is False
+        assert refusal["required_evidence_or_repair"] == org.STORE_LOCUS_REPAIR
+        assert mismatch.value.declared == org.declared_ledger_locus()
+        with pytest.raises(org.LedgerLocusMismatch):
+            org.aggregate_transition(receipt("CLAIM"), ledger=held)
+        with pytest.raises(custody.OrganizationReceiptRefused) as refused:
+            custody.verified_organization_receipt(held, "sha256:" + "0" * 64, state_receipt_sha256="sha256:" + "1" * 64)
+        assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+    assert remote_tip(tmp_path / "foreign.git") is None, "nothing was appended to the foreign ref"
+    assert not (tmp_path / "posix").exists(), "nothing was written to the foreign root"
+    # The declared store, held by the caller, is admitted as it always was.
+    declared = node(tmp_path, "declared.git", origin)
+    assert org.organization_store(declared) is declared
+    assert org.aggregate_transition(receipt("CLAIM"), ledger=declared)["previous_receipt_sha256"] is None
+    # Under a declared {store: posix}, a Git store is the foreign one.
+    declare(monkeypatch, store="posix")
+    with pytest.raises(org.LedgerLocusMismatch) as mismatch:
+        org.organization_store(declared)
+    assert mismatch.value.failed_predicate == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
+    assert org.organization_store(posix) is posix

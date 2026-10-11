@@ -48,15 +48,40 @@ class LedgerLocusNotDeclared(LedgerLocationRequired):
         self.variable=field
 
 class LedgerLocusMismatch(LedgerLocationRequired):
-    """A materializer value disagrees with the manifest-declared locus (OL-1b)."""
+    """A materializer value, or a caller-held store, disagrees with the manifest-declared locus (OL-1b)."""
 
     failed_predicate="ORGANIZATION_LEDGER_LOCUS_MISMATCH"
 
-    def __init__(self, variable, declared):
+    def __init__(self, variable, declared, *, repair=None):
         ValueError.__init__(self,"organization_ledger_locus_mismatch: "+variable)
         self.variable=variable
         self.declared=declared
-        self.repair="unset "+variable+" or make it equal the declared organization_ledger value "+json.dumps(declared)
+        self.repair=repair or "unset "+variable+" or make it equal the declared organization_ledger value "+json.dumps(declared)
+
+STORE_LOCUS_REPAIR=("supply the store organization_store() selects for the declared organization_ledger locus; "
+                    "a caller-held store of another kind or ref is a second chain beside the declared one")
+
+def require_declared_store(store):
+    """A caller-held store is admitted only as the declared locus (OL-1b), else FAIL_CLOSED.
+
+    Any object with append_transaction used to be taken as is, so a store on
+    a foreign ref, or of another kind than the manifest declares, could take
+    an append unchecked. A staged transaction is checked by the store it
+    stages over. A Git store must carry the declared ref; a POSIX store is
+    admitted only under a declared {store: posix} (its root is the
+    materializer's, as OL-3 admits an explicit root there).
+    """
+    inner=store.store if isinstance(store,ledger_store.StagedLedgerTransaction) else store
+    locus=declared_ledger_locus()
+    kind=getattr(inner,"kind",None)
+    if locus["store"]=="git":
+        if kind!="GIT_REF":
+            raise LedgerLocusMismatch("ledger:"+str(kind),locus,repair=STORE_LOCUS_REPAIR)
+        if getattr(inner,"ref",None)!=locus["ref"]:
+            raise LedgerLocusMismatch("ledger:"+str(kind)+":"+str(getattr(inner,"ref",None)),locus,repair=STORE_LOCUS_REPAIR)
+    elif kind!="POSIX_FILESYSTEM":
+        raise LedgerLocusMismatch("ledger:"+str(kind),locus,repair=STORE_LOCUS_REPAIR)
+    return store
 
 class LedgerStoreKindMismatch(LedgerLocationRequired):
     """A raw POSIX ledger read was asked for while the manifest declares another store (OL-2).
@@ -157,8 +182,10 @@ def _require_equal(variable, declared):
 def organization_store(ledger=None):
     """The Organization ledger store, as the Organization manifest declares it.
 
-    A store or a root the caller holds is used as is; a root only under a
-    declared {store: posix} (OL-3, refuse_explicit_posix_root). Otherwise the locus is
+    A store the caller holds is used only if it is the declared locus
+    (require_declared_store: the declared kind, and for git the declared
+    ref), else FAIL_CLOSED ORGANIZATION_LEDGER_LOCUS_MISMATCH; a root only
+    under a declared {store: posix} (OL-3, refuse_explicit_posix_root). Otherwise the locus is
     org-contract.json's organization_ledger (OL-1b): store "git" with its ref,
     custody and propagate_target, or store "posix" at the materialized
     ledger_root(). STEGVERSE_ORG_LEDGER_STORE / _GIT_REF / _GIT_REMOTE /
@@ -171,7 +198,7 @@ def organization_store(ledger=None):
     store's explicit materialize/propagate steps and is never awaited by a
     transition (F75-01).
     """
-    if _is_store(ledger): return ledger
+    if _is_store(ledger): return require_declared_store(ledger)
     if ledger is not None:
         refuse_explicit_posix_root()
         return ledger_store.PosixLedgerStore(Path(ledger).expanduser().resolve())
@@ -630,6 +657,20 @@ def verify_source(receipt):
         "subject_or_correlation_id":receipt.get("subject_or_correlation_id"),
     }
 
+RETAINED_SUBMISSION_KEY="parent_manifest_released_batch_submission"
+
+def _caller_context(boundary_evidence):
+    """Boundary evidence as the caller supplied it, without what the ledger itself derived.
+
+    The retained post-commit submission outcome (#3012) is read from the store
+    at append time, so a retry arriving after the outcome was recorded derives
+    a value the original append could not; it is ledger state, not a different
+    transition context, and is not compared.
+    """
+    evidence=dict(boundary_evidence or {})
+    evidence.pop(RETAINED_SUBMISSION_KEY,None)
+    return evidence
+
 def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
     """Reuse an immutable organization receipt for an exact already-recorded transition.
 
@@ -653,7 +694,7 @@ def _existing_exact_source(store, source, *, org_transition_class, predecessor_o
             row.get("source_transition_id") != source["source_transition_id"]
             or row.get("org_transition_class") != org_transition_class
             or row.get("authority_effect") != authority_effect
-            or row.get("boundary_evidence") != dict(boundary_evidence or {})
+            or _caller_context(row.get("boundary_evidence")) != _caller_context(boundary_evidence)
             or (predecessor_org_state_sha256 is not None and row.get("predecessor_org_state_sha256") != predecessor_org_state_sha256)
             or (successor_org_state_sha256 is not None and row.get("successor_org_state_sha256") != successor_org_state_sha256)
         ):
@@ -725,15 +766,18 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
         with store.exclusive():
-            return _aggregate_transition_held(
+            record = _aggregate_transition_held(
                 receipt, store, org_transition_class=org_transition_class,
                 predecessor_org_state_sha256=predecessor_org_state_sha256,
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=boundary_evidence, authority_effect=authority_effect,
                 parent_manifest=parent_manifest, establishes_packet=establishes_packet,
                 now_ns=now_ns, hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier)
+        # The append lock is released; the committed transition is authoritative.
+        _carry_released_batch_after_commit(store, parent_manifest, hb_epoch)
+        return record
     if parent_manifest is not None:
-        # A manifested packet may carry a released batch to custody before its
+        # A manifested packet may carry a released batch to custody after its
         # receipt is published; refuse a surface that is not private custody
         # first, so nothing leaves before the refusal.
         store.require_private_custody()
@@ -751,7 +795,27 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
             parent_manifest=parent_manifest, establishes_packet=establishes_packet,
             now_ns=now_ns, hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier)
         staged.commit()
-        return record
+    # The compare-and-swap transaction is published and its snapshot unpinned.
+    _carry_released_batch_after_commit(store, parent_manifest, hb_epoch)
+    return record
+
+
+def _carry_released_batch_after_commit(store, parent_manifest, hb_epoch):
+    """Master Records carriage of a released batch, after the sovereign commit (#3012).
+
+    The same shape as the Git ledger's `propagate` step (F75-01): invoked only
+    once the local append is committed and its lock or transaction released,
+    never inside it, so no transition waits on another machine. Master
+    Records is non-gating by design -- its outcome is recorded as an immutable
+    submission receipt beside the receipts (organization_batch_custody
+    .submit_pending_released_batch) and retained on the next manifest-directed
+    append; it is never a predicate of the committed transition and nothing
+    here raises into it.
+    """
+    if parent_manifest is None:
+        return None
+    import organization_batch_custody as batches
+    return batches.submit_pending_released_batch(store, hb_epoch=hb_epoch)
 
 
 def _aggregate_transition_held(receipt, store, *, org_transition_class, predecessor_org_state_sha256,
@@ -791,6 +855,13 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
             effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
                 parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
             )
+        # The last released batch's post-commit submission outcome, read from
+        # this store before any release moves BATCH_HEAD, is retained on this
+        # receipt once (#3012). Read-only and derived from the ledger, so an
+        # exact retry derives the same value and it is not caller context.
+        retained = batches.retained_submission_evidence(store)
+        if retained is not None:
+            effective_boundary_evidence[batches.RELEASED_BATCH_SUBMISSION_KEY] = retained
         released = batches.release_satisfied_packet_before_next_transition(
             parent_manifest, root=store, now_ns=now_ns,
             custody_exclusivity_verifier=custody_exclusivity_verifier,
@@ -798,17 +869,10 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         if released is not None:
             if establishes_packet:
                 raise ValueError("t(0) establishment cannot also release a prior packet")
-            release_execution_result = batches.submit_released_batch(store, released["batch_id"])
-            if release_execution_result.get("state") not in {"COMPLETED", "FAILED"}:
-                raise ValueError("released organization batch execution result invalid")
-            if release_execution_result.get("governance_disposition") is not None:
-                raise ValueError("released organization batch attempted governance escalation")
-            carried = {
-                "batch_id": released["batch_id"],
-                "execution_result": release_execution_result["state"],
-                "reason": release_execution_result.get("reason"),
-                "authority_effect": release_execution_result.get("authority_effect"),
-            }
+            # No transport here: the sovereign receipt names the batch and the
+            # key of its post-commit submission receipt, nothing that depended
+            # on Master Records. Carriage runs after the commit (#3012).
+            carried = batches.released_batch_carriage(released)
             if manifest_establishes:
                 # Release and successor establishment are one transition
                 # and one receipt. It is member #1 of the packet it

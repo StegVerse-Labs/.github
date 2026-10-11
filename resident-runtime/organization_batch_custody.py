@@ -38,10 +38,28 @@ ESTABLISHMENT_KINDS = {"MANIFEST_ASSIGNMENT_T0", "PRIOR_PACKET_RELEASE"}
 # root keeps these exact files; the Git ledger ref keeps them in its tree.
 BATCH_HEAD_KEY = "BATCH_HEAD.json"
 BATCH_PREFIX = "batches/"
+# Master Records carriage of a released batch is a post-commit step (#3012):
+# the sovereign append commits and releases its lock or CAS transaction
+# without waiting on another machine, then the released batch is submitted and
+# its outcome is recorded here, immutably, beside the receipts. The sovereign
+# receipt names the batch and this key; it never embeds the transport's result.
+SUBMISSION_PREFIX = "batch-submissions/"
+SUBMISSION_SCHEMA = "stegverse.organization-batch-master-records-submission-receipt/v1"
+SUBMISSION_STATES = {"COMPLETED", "FAILED", "NOT_ATTEMPTED"}
+SUBMISSION_POST_COMMIT = "POST_COMMIT"
+SUBMISSION_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::submit_pending_released_batch"
+RELEASED_BATCH_KEY = "parent_manifest_released_batch"
+# One constant: the append owner excludes this key from exact-retry context comparison.
+RELEASED_BATCH_SUBMISSION_KEY = org.RETAINED_SUBMISSION_KEY
 
 
 def _batch_key(digest: str) -> str:
     return BATCH_PREFIX + digest[7:] + ".json"
+
+
+def submission_key(batch_id: str) -> str:
+    """Address a released batch's Master Records submission receipt by the batch id."""
+    return SUBMISSION_PREFIX + batch_id[7:] + ".json"
 
 
 def _ledger(root):
@@ -641,6 +659,260 @@ def submit_released_batch(root, batch_id: str) -> dict:
     return result
 
 
+# --- Post-commit Master Records carriage (#3012) ---------------------------
+#
+# The organization append used to call submit_released_batch from inside its
+# exclusive section, so a synchronous Master Records call sat inside the
+# sovereign transition and its result was hashed into the sovereign receipt.
+# The canonical record says external_machine_wait_allowed: false and Master
+# Records is non-gating, so carriage is now the same shape as the Git ledger's
+# `propagate` step (F75-01): invoked only after a completed local append, never
+# inside one, and its outcome is a typed non-gating disposition. Here that
+# disposition is also recorded durably, as an immutable submission receipt
+# beside the receipts, and retained on the next manifest-directed append.
+
+
+def released_batch_carriage(released: dict) -> dict:
+    """What the sovereign receipt carries for a batch released inside its own transition.
+
+    Nothing here depends on the transport: the batch id, its closure reason,
+    and the key where the post-commit submission receipt will be recorded.
+    The execution result itself lives in that receipt (submission_key).
+    """
+    return {
+        "batch_id": released["batch_id"],
+        "closure_reason": released["closure_reason"],
+        "master_records_submission": SUBMISSION_POST_COMMIT,
+        "submission_receipt_key": submission_key(released["batch_id"]),
+        "authority_effect": "NONE",
+    }
+
+
+def released_batch_submission(root, batch_id: str) -> dict | None:
+    """The recorded submission receipt for a released batch, verified, or None."""
+    if not isinstance(batch_id, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", batch_id) is None:
+        raise ValueError("organization batch digest invalid")
+    row = _get(_ledger(root), submission_key(batch_id))
+    if row is None:
+        return None
+    body = dict(row)
+    claimed = body.pop("receipt_sha256", None)
+    if claimed != org.sha(body):
+        raise ValueError("organization batch submission receipt hash mismatch")
+    if (row.get("schema") != SUBMISSION_SCHEMA or row.get("batch_id") != batch_id
+            or row.get("organization") != org.C["organization"]
+            or row.get("execution_result") not in SUBMISSION_STATES):
+        raise ValueError("organization batch submission receipt invalid")
+    return row
+
+
+def _rows_after(store, tip: str | None, predecessor: str | None) -> list[dict]:
+    """Verified receipts from just after `predecessor` to `tip`, oldest first; [] when none."""
+    rows: list[dict] = []
+    seen: set[str] = set()
+    cursor = tip
+    while cursor is not None and cursor != predecessor:
+        if cursor in seen:
+            raise ValueError("organization ledger cycle")
+        seen.add(cursor)
+        row = _verified_receipt(store, cursor)
+        rows.append(row)
+        cursor = row.get("previous_receipt_sha256")
+    rows.reverse()
+    return rows
+
+
+def _head_batch_and_successors(store) -> tuple[dict | None, list[dict]]:
+    """BATCH_HEAD's batch and every receipt appended after it (the release and its packet)."""
+    _, batch = _batch_head(store)
+    if batch is None:
+        return None, []
+    head = _get(store, org.ledger_store.HEAD_KEY)
+    tip = head.get("receipt_sha256") if head is not None else None
+    return batch, _rows_after(store, tip, batch["last_org_receipt_sha256"])
+
+
+def _carriage_of(carrier: dict | None, batch_id: str) -> dict | None:
+    """The parent_manifest_released_batch record `carrier` holds for `batch_id`, if any.
+
+    The carrier of a batch's release is the first receipt appended after the
+    batch: the release transition's own first receipt, which is also the first
+    member of the packet that follows. A batch released before this step
+    existed carried the transport's result inline (`execution_result`); a
+    batch closed by the operator has no carrier record at all.
+    """
+    if carrier is None:
+        return None
+    carried = (carrier.get("boundary_evidence") or {}).get(RELEASED_BATCH_KEY)
+    if not isinstance(carried, dict) or carried.get("batch_id") != batch_id:
+        return None
+    return carried
+
+
+def _release_carriage(rows: list[dict], batch_id: str) -> dict | None:
+    """The post-commit carriage recorded for BATCH_HEAD's batch, or None."""
+    carried = _carriage_of(rows[0] if rows else None, batch_id)
+    if carried is None or carried.get("master_records_submission") != SUBMISSION_POST_COMMIT:
+        return None
+    return carried
+
+
+def pending_released_batches(root) -> list[dict]:
+    """Released batches awaiting their post-commit submission, oldest first.
+
+    The outbox is the ledger itself: a batch whose release named a post-commit
+    submission and whose submission receipt is not yet recorded. A crash
+    between the sovereign commit and the submission record leaves exactly
+    this state, and the next manifest-directed append (or the retry
+    entrypoint) drives it. Batches are walked back from BATCH_HEAD; the walk
+    stops at a batch released before this step existed, whose result is
+    inline, since nothing older can be pending. An operator-closed batch is
+    never pending here: its carriage is the operator's own step.
+    """
+    with _pinned(root) as store:
+        batch, rows = _head_batch_and_successors(store)
+        carrier = rows[0] if rows else None
+        pending: list[dict] = []
+        while batch is not None:
+            carried = _carriage_of(carrier, batch["batch_id"])
+            if carried is not None and "execution_result" in carried:
+                break
+            if (carried is not None and carried.get("master_records_submission") == SUBMISSION_POST_COMMIT
+                    and released_batch_submission(store, batch["batch_id"]) is None):
+                pending.append({"batch": batch, "released_by_receipt_sha256": carrier["receipt_sha256"]})
+            hashes = batch.get("ordered_receipt_hashes")
+            carrier = _verified_receipt(store, hashes[0]) if isinstance(hashes, list) and hashes else None
+            previous = batch.get("previous_batch_commitment")
+            batch = _verified_batch(store, previous) if previous else None
+        pending.reverse()
+        return pending
+
+
+def pending_released_batch(root) -> dict | None:
+    """The oldest released batch awaiting its post-commit submission, or None."""
+    pending = pending_released_batches(root)
+    return pending[0] if pending else None
+
+
+def retained_submission_evidence(store) -> dict | None:
+    """What a manifest-directed append retains of the last submission, or None.
+
+    Read-only, from the store the append writes through, so an exact retry
+    derives the same value. Carried once: the first manifest-directed append
+    after the submission receipt exists names it by digest and key, so the
+    sovereign chain records the outcome one step after the release without
+    any receipt having waited for it.
+    """
+    batch, rows = _head_batch_and_successors(store)
+    if batch is None:
+        return None
+    batch_id = batch["batch_id"]
+    if _release_carriage(rows, batch_id) is None:
+        return None
+    for row in rows:
+        retained = (row.get("boundary_evidence") or {}).get(RELEASED_BATCH_SUBMISSION_KEY)
+        if isinstance(retained, dict) and retained.get("batch_id") == batch_id:
+            return None
+    receipt = released_batch_submission(store, batch_id)
+    if receipt is None:
+        return None
+    return {
+        "batch_id": batch_id,
+        "execution_result": receipt["execution_result"],
+        "reason": receipt.get("reason"),
+        "submission_receipt_sha256": receipt["receipt_sha256"],
+        "submission_receipt_key": submission_key(batch_id),
+        "authority_effect": "NONE_EXECUTION_EVIDENCE_ONLY",
+    }
+
+
+def _submission_outcome(result) -> dict:
+    """COMPLETED, FAILED or NOT_ATTEMPTED from whatever the transport returned; never raises."""
+    if not isinstance(result, dict):
+        return {"execution_result": "NOT_ATTEMPTED", "reason": "ORGANIZATION_BATCH_CUSTODY_EXECUTION_RESULT_INVALID",
+                "authority_effect": "NONE", "destination_state": None}
+    if result.get("governance_disposition") is not None:
+        return {"execution_result": "FAILED", "reason": "ORGANIZATION_BATCH_CUSTODY_GOVERNANCE_ESCALATION_DETECTED",
+                "authority_effect": "NONE", "destination_state": None}
+    state = result.get("state")
+    if state not in {"COMPLETED", "FAILED"}:
+        # FAIL_CLOSED from an unavailable client, or anything else: the carriage did not run.
+        return {"execution_result": "NOT_ATTEMPTED",
+                "reason": str(result.get("reason") or "ORGANIZATION_BATCH_CUSTODY_EXECUTION_RESULT_INVALID"),
+                "authority_effect": "NONE", "destination_state": None}
+    reason = result.get("reason")
+    return {"execution_result": state, "reason": str(reason) if reason is not None else None,
+            "authority_effect": str(result.get("authority_effect") or "NONE"),
+            "destination_state": result.get("destination_state")}
+
+
+def _record_submission(store, key: str, receipt: dict) -> bool:
+    """Record one submission receipt immutably; False when one is already recorded."""
+    if org._is_posix(store):
+        with store.exclusive():
+            if store.get(key) is not None:
+                return False
+            store.put(key, receipt)
+            return True
+    with _custody_writes(store) as staged:
+        if staged.get(key) is not None:
+            return False
+        staged.put_immutable(key, receipt)
+        return True
+
+
+def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
+    """Carry the pending released batch to Master Records and record the outcome.
+
+    The post-commit step of a manifest-directed append, invoked after the
+    sovereign append committed and its lock or CAS transaction released;
+    also the retry entrypoint for an outbox left pending by a crash. No lock
+    is held during the transport. The outcome -- COMPLETED, FAILED or
+    NOT_ATTEMPTED -- is recorded as an immutable submission receipt and is
+    never a predicate of any transition: FAILED does not block, and a failure
+    to record is reported here, not raised into the committed append.
+    """
+    try:
+        pending = pending_released_batches(root)
+    except Exception as exc:  # noqa: BLE001 -- the committed append is never undone by this step
+        return {"disposition": "NOT_RECORDED", "failed_predicate": "ORGANIZATION_BATCH_OUTBOX_UNREADABLE",
+                "detail": type(exc).__name__ + ": " + str(exc), "retry_entrypoint": SUBMISSION_RETRY_ENTRYPOINT,
+                "submission_receipts": [], "submission_receipt": None, "authority_effect": "NONE"}
+    recorded: list[dict] = []
+    for item in pending:
+        batch_id = item["batch"]["batch_id"]
+        try:
+            result = submit_released_batch(root, batch_id)
+        except Exception as exc:  # noqa: BLE001 -- recorded as NOT_ATTEMPTED, never raised post-commit
+            result = {"state": "FAIL_CLOSED", "reason": "ORGANIZATION_BATCH_CUSTODY_CLIENT_RAISED:" + type(exc).__name__}
+        body = {
+            "schema": SUBMISSION_SCHEMA,
+            "organization": org.C["organization"],
+            "batch_id": batch_id,
+            "closure_reason": item["batch"]["closure_reason"],
+            "released_by_receipt_sha256": item["released_by_receipt_sha256"],
+            **_submission_outcome(result),
+            "governance_disposition": None,
+            "submitted_after_commit": True,
+            "external_machine_wait_in_transition": False,
+            "hb_reference": org.kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else org.kernel.hb_reference(),
+            "observed_at": org.datetime.now(org.timezone.utc).isoformat(),
+        }
+        receipt = {**body, "receipt_sha256": org.sha(body)}
+        try:
+            _record_submission(_ledger(root), submission_key(batch_id), receipt)
+        except Exception as exc:  # noqa: BLE001 -- the outcome is reported; the outbox stays pending
+            return {"disposition": "NOT_RECORDED", "failed_predicate": "ORGANIZATION_BATCH_SUBMISSION_RECEIPT_NOT_RECORDED",
+                    "detail": type(exc).__name__ + ": " + str(exc), "retry_entrypoint": SUBMISSION_RETRY_ENTRYPOINT,
+                    "submission_receipts": recorded, "submission_receipt": receipt, "authority_effect": "NONE"}
+        recorded.append(receipt)
+    if not recorded:
+        return {"disposition": "NOTHING_PENDING", "submission_receipts": [], "submission_receipt": None,
+                "authority_effect": "NONE"}
+    return {"disposition": "RECORDED", "submission_receipts": recorded, "submission_receipt": recorded[-1],
+            "authority_effect": "NONE"}
+
+
 
 ORGANIZATION_BATCH_TASK_ID = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 ORGANIZATION_BATCH_COSV_TASK_VECTOR = "10000000100000"
@@ -971,10 +1243,13 @@ def main() -> None:
     parser.add_argument("--export-batch")
     parser.add_argument("--export-batch-record")
     parser.add_argument("--submit-released-batch")
+    parser.add_argument("--submit-pending-released-batch", action="store_true",
+                        help="retry entrypoint: carry the released batch whose post-commit submission is not yet recorded")
     parser.add_argument("--root")
     args = parser.parse_args()
     root = Path(args.root) if args.root else org.organization_store()
-    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,args.submit_released_batch)) != 1:
+    if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,
+                                     args.submit_released_batch,args.submit_pending_released_batch)) != 1:
         parser.error("provide exactly one batch operation")
     if args.closure_reason:
         result=close_batch(args.closure_reason,root=root)
@@ -984,6 +1259,8 @@ def main() -> None:
         result=export_batch(root,args.export_batch)
     elif args.export_batch_record:
         result=export_batch_record(root,args.export_batch_record)
+    elif args.submit_pending_released_batch:
+        result=submit_pending_released_batch(root)
     else:
         result=submit_released_batch(root,args.submit_released_batch)
     print(json.dumps(result, sort_keys=True))
