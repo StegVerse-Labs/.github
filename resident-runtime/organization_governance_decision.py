@@ -524,6 +524,22 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
             "ORGANIZATION_GOVERNANCE_READBACK_NOT_VERIFIED",
             "decision_exists_without_verified_fresh_ref_readback",
             "publish the decision answer on the authorized own mesh ref and verify by fresh fetch")
+    # A verified fetch of an unrelated answer is not proof of this decision.
+    # Bind each local decision to the packet and disposition recovered from
+    # the fresh sovereign mesh ref, including DENY and FAIL_CLOSED responses.
+    if failure is None and decisions:
+        recovered = (readback or {}).get("answers") or []
+        for item in decisions:
+            if not any(answer.get("request_packet_id") == item["request_packet_id"]
+                       and answer.get("disposition") == item["disposition"]
+                       and answer.get("repository_receipt_sha256") == item["repository_receipt_sha256"]
+                       and answer.get("organization_receipt_sha256") == item["organization_receipt_sha256"]
+                       for answer in recovered):
+                failure = binding.fail_closed(
+                    "ORGANIZATION_GOVERNANCE_ANSWER_BINDING_MISMATCH",
+                    "fresh_ref_answer_not_bound_to_decision:" + str(item["request_packet_id"]),
+                    "publish and independently read back the exact decision packet, disposition and receipt binding")
+                break
     if failure is None and crossing_fail_closed:
         failure = binding.fail_closed(
             "ORGANIZATION_CROSSING_FAIL_CLOSED",
