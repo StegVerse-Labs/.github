@@ -333,7 +333,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             calls.append(kwargs["parent_manifest"])
             return real(*args, **kwargs)
 
-        released = []
+        released, submissions = [], []
         with mock.patch.dict(os.environ, {"GITHUB_SHA": REVISION,
                                           "STEGVERSE_ORG_LEDGER_ROOT": str(root),
                                           "STEGVERSE_REPO_LEDGER_ROOT": str(repo)}), \
@@ -350,7 +350,10 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
                 released.append(row["boundary_evidence"].get("parent_manifest_released_batch"))
-        return {**self._observe(root), "released": released}, calls, states
+                # #3012: the post-commit submission receipt, recorded beside the receipts.
+                submissions.append(batch_custody.released_batch_submission(root, released[-1]["batch_id"])
+                                   if released[-1] else None)
+        return {**self._observe(root), "released": released, "submissions": submissions}, calls, states
 
     def _chain(self, root: Path) -> list[dict]:
         """The Organization ledger from genesis to HEAD, every receipt digest recomputed."""
@@ -465,7 +468,17 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
         self.assertEqual(via_ingress["ranges"], [[1, 1], [2, 2]])
         self.assertEqual(via_ingress["closure_reasons"], ["MANIFEST_RELEASE_CONDITION"] * 2)
         self.assertIsNone(via_ingress["released"][0])
-        self.assertEqual(via_ingress["released"][1]["execution_result"], "COMPLETED")
+        # #3012: the sovereign receipt names the batch and its post-commit
+        # submission receipt; the execution result lives in that receipt,
+        # recorded after the append committed, never inside it.
+        released = via_ingress["released"][1]
+        self.assertEqual(released["master_records_submission"], batch_custody.SUBMISSION_POST_COMMIT)
+        self.assertNotIn("execution_result", released)
+        self.assertIsNone(via_ingress["submissions"][0])
+        submission = via_ingress["submissions"][1]
+        self.assertEqual(submission["execution_result"], "COMPLETED")
+        self.assertEqual(submission["batch_id"], released["batch_id"])
+        self.assertEqual(released["submission_receipt_key"], batch_custody.submission_key(released["batch_id"]))
 
 
 class HeartbeatReferenceTest(LedgerRoots):
