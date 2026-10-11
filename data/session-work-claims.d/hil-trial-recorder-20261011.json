@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
-  "branch": "claude/hil-trial-recorder",
+  "branch": "claude/release-hil-trial-recorder-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "Experimenter tooling for HIL-SCALED-EXPLANATION-001: record_trial (privacy-preserving, digest-only, deterministic scoring, schema-validated), oracle dry run proving the pipeline end to end on SYNTHETIC_TEST fixtures, CLI subcommands, tests, protocol note. No provider contact, no participant, no measurement.",
   "claimed_paths": [
@@ -15,7 +15,14 @@
     "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
     "data/session-work-claims.d/hil-trial-recorder-20261011.json"
   ],
-  "collision_boundaries": ["Do not modify .github#3012 lane files", "Never write data/hil-explanation-experiment/results.json from the dry run", "No task admission, no COSV mutation, no trial execution"],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Never write data/hil-explanation-experiment/results.json from the dry run",
+    "No task admission, no COSV mutation, no trial execution"
+  ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3118",
+  "merged_commit": "2d9581325e26dd515320ad833e1168687ffa0027",
+  "claim_released_at": "2026-10-11T19:05:00Z"
 }
