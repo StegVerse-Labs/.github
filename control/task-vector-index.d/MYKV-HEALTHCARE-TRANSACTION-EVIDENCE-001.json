@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+  "registry_ref": "data/canonical-task-records/MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001.json",
+  "source_state_vector_ref": "control/task-vectors/MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001.json",
+  "cosv_task_vector": "20010000100000",
+  "vector": "20010000100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}

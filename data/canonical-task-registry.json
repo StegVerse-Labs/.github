@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 310,
+  "generation": 311,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1179,6 +1179,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CLAIMED_INTEGRATION",
       "cosv_task_vector": "40000100100000",
+      "source_state_vector_ref": "control/task-vectors/SS-EVIDENCE-COMPARISON-001.json",
       "source_refs": [
         "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
@@ -14764,6 +14765,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "60000000102000",
+      "source_state_vector_ref": "control/task-vectors/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
       "source_refs": [
         "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
@@ -16317,6 +16319,7 @@
       "coordination_state": "ACTIVE",
       "checkout_state": "CHECKED_OUT",
       "cosv_task_vector": "40000100100000",
+      "source_state_vector_ref": "control/task-vectors/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
       "global_invariant_ref": "data/task-registry-global-invariants.json",
       "device_interchangeability_enforced": true,
       "physical_device_identity_gate": "NONE_PROHIBITED",

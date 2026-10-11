@@ -129,15 +129,7 @@
       "predicate": "VECTOR_IDENTITY_MISMATCH"
     },
     {
-      "task_id": "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
       "task_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
-      "task_id": "MYKV-PERSONAL-DATA-BACKUP-001",
       "predicate": "SOURCE_REF_ABSENT"
     },
     {
@@ -293,19 +285,7 @@
       "predicate": "SOURCE_REF_ABSENT"
     },
     {
-      "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
-      "task_id": "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
       "task_id": "SS-ERL-SAME-DEVICE-PORTABLE-EXECUTION-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
-      "task_id": "SS-EVIDENCE-COMPARISON-001",
       "predicate": "SOURCE_REF_ABSENT"
     },
     {
@@ -314,10 +294,6 @@
     },
     {
       "task_id": "SS-EVIDENCE-STANDARD-KV-FLOW-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
-      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
       "predicate": "SOURCE_REF_ABSENT"
     },
     {
@@ -390,10 +366,6 @@
     },
     {
       "task_id": "STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001",
-      "predicate": "SOURCE_REF_ABSENT"
-    },
-    {
-      "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
       "predicate": "SOURCE_REF_ABSENT"
     },
     {

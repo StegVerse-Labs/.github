@@ -87,6 +87,82 @@ class RepositoryCheckTests(unittest.TestCase):
         self.assertEqual(live, {(i["task_id"], i["predicate"]) for i in fixture["items"]})
         self.assertEqual(code, 1 if live else 0)
 
+    @staticmethod
+    def conventional_source_predicate(task_id: str, rows: list[tuple[str, dict]]) -> str | None:
+        """The materializer's derivation predicate applied to the conventional source path.
+
+        Returns None when ``control/task-vectors/<task_id>.json`` would bind the
+        task (identity, vector parity with the single registry vector, record
+        completeness), otherwise the fail-closed predicate or a reason to skip.
+        """
+        conventional = f"control/task-vectors/{task_id}.json"
+        if not (ROOT / conventional).is_file():
+            return "CONVENTIONAL_SOURCE_ABSENT"
+        declared = {r["cosv_task_vector"] for _, r in rows if isinstance(r.get("cosv_task_vector"), str) and r["cosv_task_vector"]}
+        embedded = {v for _, r in rows if (v := mod.embedded_vector(r))}
+        vectors = sorted(declared | embedded)
+        if len(vectors) != 1:
+            return "DECLARED_VECTOR_AMBIGUOUS" if vectors else "REGISTRY_VECTOR_ABSENT"
+        predicate, _ = mod.inspect_source(ROOT, task_id, conventional, vectors[0])
+        if predicate is None:
+            predicate, _ = mod.inspect_record_completeness(ROOT, conventional)
+        return predicate
+
+    def test_closable_conventional_sources_are_bound_on_every_registry_surface(self) -> None:
+        """Issue #3012 ratchet: no SOURCE_REF_ABSENT owner item may be deterministically closable.
+
+        A vectorized registry task without an effective index row whose
+        conventional ``control/task-vectors/<task_id>.json`` already passes the
+        derivation predicate needs no owner action: binding the ref on every
+        registry surface that carries the task closes it. Such a task must
+        therefore not exist unbound, so the owner-items fixture cannot regrow
+        with closable items. Surfaces are bound key-for-key (aggregate row and
+        canonical shard alike, as #3110 requires) with the identical ref.
+        """
+        effective = mod.load_effective_index(ROOT)
+        closable_unbound: dict[str, list[str]] = {}
+        for task_id, rows in sorted(mod.collect_declarations(ROOT).items()):
+            if task_id in effective:
+                continue
+            if self.conventional_source_predicate(task_id, rows) is not None:
+                continue
+            conventional = f"control/task-vectors/{task_id}.json"
+            unbound = [ref for ref, row in rows if row.get("source_state_vector_ref") != conventional]
+            if unbound:
+                closable_unbound[task_id] = unbound
+        self.assertEqual(
+            closable_unbound,
+            {},
+            "closable SOURCE_REF_ABSENT items: bind source_state_vector_ref to the conventional source on every listed surface and re-run scripts/materialize_cosv_index_shards.py",
+        )
+
+    def test_issue_3012_bound_tasks_carry_the_conventional_ref_on_every_surface(self) -> None:
+        bound = {
+            "MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001",
+            "MYKV-PERSONAL-DATA-BACKUP-001",
+            "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+            "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+            "SS-EVIDENCE-COMPARISON-001",
+            "SS-KV-SKAP-SOCIAL-RELEASE-001",
+            "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+        }
+        declarations = mod.collect_declarations(ROOT)
+        effective = mod.load_effective_index(ROOT)
+        fixture = json.loads(OWNER_ITEMS.read_text(encoding="utf-8"))
+        acknowledged = {item["task_id"] for item in fixture["items"]}
+        for task_id in sorted(bound):
+            conventional = f"control/task-vectors/{task_id}.json"
+            rows = declarations[task_id]
+            self.assertIsNone(self.conventional_source_predicate(task_id, rows), task_id)
+            for ref, row in rows:
+                self.assertEqual(row.get("source_state_vector_ref"), conventional, f"{task_id} unbound on {ref}")
+                self.assertEqual(row.get("cosv_task_vector"), effective[task_id][1]["vector"], f"{task_id} vector drift on {ref}")
+            origin, index_row = effective[task_id]
+            self.assertEqual(origin, f"control/task-vector-index.d/{task_id}.json", task_id)
+            self.assertEqual(index_row["source_state_vector_ref"], conventional, task_id)
+            self.assertEqual((index_row["vector_state"], index_row["authority_effect"]), ("EMITTED", "NONE"), task_id)
+            self.assertNotIn(task_id, acknowledged, f"{task_id} is bound and must not remain an owner item")
+
 
 class TempTreeTests(unittest.TestCase):
     def setUp(self) -> None:

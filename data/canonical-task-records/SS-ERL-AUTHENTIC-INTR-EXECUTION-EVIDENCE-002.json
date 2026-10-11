@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "40000100100000",
+  "source_state_vector_ref": "control/task-vectors/SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002.json",
   "source_refs": [
     "StegVerse-Labs/.github#1739@4ca1d9241b231ee021ba6c7a50e95783c556966e",
     "StegVerse-Labs/.github#1743@8dc0cb6bcad609fb2a70a51a7b5c66b3b3fab752",
