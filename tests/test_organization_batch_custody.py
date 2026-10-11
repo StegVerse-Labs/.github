@@ -423,3 +423,27 @@ def test_released_batch_carriage_submits_the_record_not_the_contents(monkeypatch
     sent = captured["envelope"]
     assert sent["schema"] == "stegverse.master-records.organization-batch-record-submission/v1"
     assert "organization_receipts" not in sent and "source_receipts" not in sent
+
+
+def test_master_records_transport_is_not_invoked_inside_sovereign_append_lock():
+    """Regression for #3080: downstream transport must not hold sovereign append hostage.
+
+    This intentionally fails until the release path is split into an immutable
+    committed outbox and post-commit delivery. A 10-second timeout is not enough.
+    """
+    import inspect
+
+    held_source = inspect.getsource(org._aggregate_transition_held)
+    assert "submit_released_batch(" not in held_source, (
+        "Master Records transport still runs within the organization append lock; "
+        "persist release evidence first and deliver outside the CAS transaction"
+    )
+
+
+def test_master_records_transport_does_not_determine_organization_receipt():
+    """The sovereign receipt cannot depend on downstream network result fields."""
+    import inspect
+
+    held_source = inspect.getsource(org._aggregate_transition_held)
+    assert 'release_execution_result = batches.submit_released_batch' not in held_source
+    assert 'release_execution_result["state"]' not in held_source
