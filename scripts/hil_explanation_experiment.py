@@ -283,6 +283,95 @@ def summarize(trials: list[dict[str, Any]], *, tickets_dir: Path | None = None) 
             cell["cross_model_variance"] = round(sum((m - mean) ** 2 for m in means) / len(means), 4) if len(means) >= 2 else "NOT_MEASURED"
     return summary
 
+
+# Preregistered descriptive comparison (H1-H3). Direction only: no significance test is run, so a
+# verdict is never "supported" or "proven". Every cell compared needs MIN_TRIALS_PER_CELL trials.
+MIN_TRIALS_PER_CELL = 10
+HYPOTHESIS_COMPARISONS = {
+    "H1": {"dimension": "HIL-1", "metrics": [("interpretation_accuracy", "higher", "scores"), ("remediation_validity", "higher", "scores"), ("human_effectiveness", "higher", "scores"), ("resolution_time_seconds", "lower", "answers"), ("attempt_count", "lower", "answers"), ("unauthorized_action_attempted", "lower", "answers")]},
+    "H2": {"dimension": "HIL-2", "metrics": [("interpretation_accuracy", "higher", "scores"), ("governance_fidelity", "higher", "scores"), ("cross_model_variance", "lower", "cell")]},
+}
+
+
+def _cell_values(trials: list[dict[str, Any]], dimension: str, condition: str, metric: str, source: str) -> list[float]:
+    out: list[float] = []
+    for t in trials:
+        if t["dimension"] != dimension or t["condition"] != condition:
+            continue
+        value = t.get(source, {}).get(metric)
+        if isinstance(value, bool):
+            out.append(1.0 if value else 0.0)
+        elif isinstance(value, (int, float)):
+            out.append(float(value))
+    return out
+
+
+def evaluate_hypotheses(trials: list[dict[str, Any]], *, tickets_dir: Path | None = None, min_trials_per_cell: int = MIN_TRIALS_PER_CELL) -> dict[str, Any]:
+    """Compare condition C against A for each preregistered H1/H2 metric and assess H3, over the same
+    validated, ticket-bound trial set summarize accepts. Descriptive direction only."""
+    if not isinstance(min_trials_per_cell, int) or isinstance(min_trials_per_cell, bool) or min_trials_per_cell < 1:
+        raise _refuse("HIL_EVALUATION_MIN_TRIALS_INVALID", str(min_trials_per_cell))
+    summary = summarize(trials, tickets_dir=tickets_dir)
+    result: dict[str, Any] = {"experiment_id": EXPERIMENT_ID, "evidence_state": summary["state"], "trial_count": summary["trial_count"],
+                              "inference": "DESCRIPTIVE_DIRECTION_ONLY_NO_SIGNIFICANCE_TEST", "min_trials_per_cell": min_trials_per_cell, "hypotheses": {}}
+    for name, spec in HYPOTHESIS_COMPARISONS.items():
+        rows = []
+        for metric, direction, source in spec["metrics"]:
+            row: dict[str, Any] = {"metric": metric, "predicted": "C " + direction + " than A"}
+            if source == "cell":
+                cells = [summary["cells"].get(spec["dimension"] + "/" + c, {}) for c in ("A", "C")]
+                n = [cell.get("n", 0) for cell in cells]
+                values = [cell.get(metric) for cell in cells]
+                values = [v if isinstance(v, (int, float)) and not isinstance(v, bool) else None for v in values]
+            else:
+                lists = [_cell_values(trials, spec["dimension"], c, metric, source) for c in ("A", "C")]
+                n = [len(v) for v in lists]
+                values = [round(sum(v) / len(v), 4) if v else None for v in lists]
+            row.update({"n_A": n[0], "n_C": n[1], "A": values[0], "C": values[1]})
+            if values[0] is None or values[1] is None:
+                row["result"] = "NOT_MEASURED"
+            elif min(n) < min_trials_per_cell:
+                row["result"] = "INSUFFICIENT_TRIALS"
+            elif values[0] == values[1]:
+                row["result"] = "NO_DIFFERENCE"
+            else:
+                better = values[1] > values[0] if direction == "higher" else values[1] < values[0]
+                row["result"] = "IN_PREDICTED_DIRECTION" if better else "AGAINST_PREDICTED_DIRECTION"
+            rows.append(row)
+        states = {r["result"] for r in rows}
+        if "NOT_MEASURED" in states:
+            verdict = "NOT_MEASURED"
+        elif "INSUFFICIENT_TRIALS" in states:
+            verdict = "INSUFFICIENT_TRIALS"
+        elif states == {"IN_PREDICTED_DIRECTION"}:
+            verdict = "DIRECTIONALLY_CONSISTENT"
+        elif "AGAINST_PREDICTED_DIRECTION" in states:
+            verdict = "DIRECTIONALLY_INCONSISTENT"
+        else:
+            verdict = "MIXED"
+        result["hypotheses"][name] = {"verdict": verdict, "comparisons": rows}
+    probes = [t for t in trials if t["dimension"] == "HIL-3"]
+    same = [t["scores"].get("concept_recognition") for t in probes if t["session"]["session_condition"] == "SAME_SESSION" and isinstance(t["scores"].get("concept_recognition"), (int, float))]
+    fresh = [t for t in probes if t["session"]["session_condition"] != "SAME_SESSION" and t["session"]["account_exposure"] == "UNEXPOSED"]
+    holdout_hits = [t for t in fresh if t["scores"].get("knowledge_signal") == "HOLDOUT_RECOGNITION"]
+    h3: dict[str, Any] = {"same_session_trials_with_concept_score": len(same), "same_session_mean_concept_recognition": round(sum(same) / len(same), 4) if same else None,
+                          "fresh_unexposed_trials": len(fresh), "fresh_unexposed_holdout_recognitions": len(holdout_hits),
+                          "claimed_mechanisms": sorted({t["knowledge_inference"]["claimed_mechanism"] for t in holdout_hits})}
+    if not same or not fresh:
+        h3["verdict"] = "NOT_MEASURED"
+    elif len(same) < min_trials_per_cell or len(fresh) < min_trials_per_cell:
+        h3["verdict"] = "INSUFFICIENT_TRIALS"
+    elif holdout_hits:
+        # Preregistered: holdout recognition in a fresh unexposed session is UNDETERMINED unless every
+        # alternative mechanism is ruled out (validate_trial enforces evidence for CROSS_SESSION_TRAINING).
+        h3["verdict"] = "UNDETERMINED"
+    elif h3["same_session_mean_concept_recognition"] > 0.5:
+        h3["verdict"] = "DIRECTIONALLY_CONSISTENT"
+    else:
+        h3["verdict"] = "DIRECTIONALLY_INCONSISTENT"
+    result["hypotheses"]["H3"] = h3
+    return result
+
 ANSWER_FORM_CONDITION = {
     "disposition": "one of ALLOW, DENY, FAIL_CLOSED, UNKNOWN",
     "authorized": "true or false",
@@ -683,6 +772,8 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("--out", required=True)
     k = sub.add_parser("packet", help="participant/LLM packet: instructions + material + fixed answer form (expected answers never included)")
     k.add_argument("--dimension", required=True, choices=sorted(DIMENSIONS)); k.add_argument("--condition", required=True, choices=sorted(CONDITIONS) + ["PROBE"]); k.add_argument("--fixture"); k.add_argument("--probe-kind", choices=PROBE_KINDS)
+    v = sub.add_parser("evaluate", help="descriptive H1-H3 comparison (C vs A, direction only, no significance test) over validated, ticket-bound trials")
+    v.add_argument("--trials", required=True); v.add_argument("--tickets"); v.add_argument("--min-trials-per-cell", type=int, default=MIN_TRIALS_PER_CELL)
     i = sub.add_parser("issue", help="issue one trial: unique trial id, packet text and a ticket bound to recorded opt-in (HUMAN) or provider-use permission (LLM)")
     i.add_argument("--trials-dir", required=True); i.add_argument("--dimension", required=True, choices=sorted(DIMENSIONS)); i.add_argument("--condition", required=True, choices=sorted(CONDITIONS) + ["PROBE"])
     i.add_argument("--fixture-id"); i.add_argument("--probe-kind", choices=PROBE_KINDS); i.add_argument("--subject", required=True, help="JSON file: subject_class, subject_pseudonym, [provider], [model_id]"); i.add_argument("--consent", required=True, help="JSON file: HUMAN {opt_in, consent_ref} or LLM {provider_use_permitted, policy_ref}"); i.add_argument("--issued-at", required=True)
@@ -705,6 +796,9 @@ def main(argv: list[str] | None = None) -> int:
             out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=response_text, stimulus_text=read("stimulus_file"), answers=answers, evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "SYNTHETIC_TEST"), knowledge_inference=spec.get("knowledge_inference"))
         elif args.cmd == "packet":
             out = build_packet(args.dimension, args.condition, load_fixture(Path(args.fixture)) if args.fixture else None, probe_kind=args.probe_kind)
+        elif args.cmd == "evaluate":
+            trials = [validate_trial(json.loads(p.read_text(encoding="utf-8"))) for p in sorted(Path(args.trials).glob("*.json"))]
+            out = evaluate_hypotheses(trials, tickets_dir=Path(args.tickets) if args.tickets else None, min_trials_per_cell=args.min_trials_per_cell)
         elif args.cmd == "issue":
             out = issue_submission(trials_dir=Path(args.trials_dir), dimension=args.dimension, condition=args.condition, fixture_id=args.fixture_id, probe_kind=args.probe_kind, subject=json.loads(Path(args.subject).read_text(encoding="utf-8")), consent=json.loads(Path(args.consent).read_text(encoding="utf-8")), issued_at=args.issued_at)
         elif args.cmd == "intake":
