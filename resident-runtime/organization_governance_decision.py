@@ -457,10 +457,10 @@ def build_report(evidence: Path, *, mesh_root: str) -> tuple[dict[str, Any], int
     addressed = set((materialized or {}).get("addressed_to_organization") or [])
     answered_keys = {row.get("request", {}).get("key")
                      for row in (materialized or {}).get("already_answered") or []}
-    decided_packet_ids = {row.get("request_packet_id") for row in decisions}
-    pending = [key for key in sorted(addressed - answered_keys)
-               if key not in {item.get("frame_key") for item in items}
-               or not decided_packet_ids]
+    decided_keys = {item.get("frame_key") for item in items
+                    if (item.get("application_result") or {}).get("disposition")
+                    in {"ALLOW", "DENY", "FAIL_CLOSED"}}
+    pending = sorted(addressed - answered_keys - decided_keys)
     if failure is None and pending:
         failure = binding.fail_closed(
             "ORGANIZATION_GOVERNANCE_DECISION_MISSING",
