@@ -37,6 +37,10 @@ Every artifact carries:
 - `sanitization`: `secrets_present: false`, `personal_data_minimized: true`, `invented_evidence: false`. The builder refuses any record or surface descriptor carrying secret-shaped keys or values and copies only whitelisted fields.
 - `recognition_probe`: `STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1`, status CANDIDATE_NOT_CANONICAL.
 
+## Cross-field rules a schema-only consumer must enforce
+
+Repair for the #3106 independent review finding `EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY` (comment 6111785063): the schema's `allOf` now makes the governance fields mutually constrained, so an artifact validated only against the JSON Schema cannot contradict itself. ALLOW ⇔ `authorized`; a non-ALLOW outcome has `executed: false`, `execution_state: NOT_EXECUTED` and no observed consequence; `executed: true` requires ALLOW, `SUCCESS_VERIFIED`, `VERIFIED`, `OBSERVED` observation states and receipt-class evidence (RECEIPT_REF, PROVENANCE_REF or DIGEST), and each of those markers in turn requires `executed: true`; ALLOW without execution is `AUTHORIZED_NOT_VERIFIED` / `NOT_VERIFIED`; DENY, FAIL_CLOSED and UNKNOWN map to DENIED, FAILED_CLOSED and UNOBSERVED with their observation states; `outcome.observation_state` mirrors `execution.consequence_observation`. `tests/test_user_facing_explanation.py::SchemaOnlyConsumers` holds the negative cases, checked with the dependency-free `schema_check` and with `jsonschema` when installed. The Site mirror exposes the same rules as `conforms()` and withholds a non-conforming artifact.
+
 ## Five distinctions every surface must keep
 
 | Layer | What it is | What it can do |
