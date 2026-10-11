@@ -229,22 +229,119 @@ def summarize(trials: list[dict[str, Any]]) -> dict[str, Any]:
     return summary
 
 
+SESSION_CONDITIONS = ("SAME_SESSION", "FRESH_SESSION_SIGNED_OUT", "FRESH_SESSION_SIGNED_IN_ORDINARY")
+ACCOUNT_EXPOSURES = ("PREVIOUSLY_EXPOSED", "UNEXPOSED", "NOT_APPLICABLE")
+
+
+def _fixture_by_id(fixture_id: str, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    for fixture in fixtures or load_fixtures():
+        if fixture["fixture_id"] == fixture_id:
+            return fixture
+    raise ExperimentError("fixture_unknown:" + str(fixture_id))
+
+
+def record_trial(*, trial_id: str, dimension: str, condition: str, fixture_id: str, subject: dict[str, Any], session_condition: str, account_exposure: str, session_ref: str, prompt_text: str, response_text: str, answers: dict[str, Any], evidence_locator: str, observed_at: str, evidence_class: str = "ACTUAL_OBSERVATION", probe_kind: str | None = None, knowledge_inference: dict[str, Any] | None = None, stimulus_text: str | None = None, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Build, score and validate one trial record from an experimenter's observation.
+
+    Raw prompt, response, stimulus and session reference enter the record only as sha256
+    digests; the texts themselves are never returned or written by this function, and the
+    caller keeps them at ``evidence_locator`` under their own custody. Scoring is the
+    deterministic rubric over the structured ``answers``; expected answers come from the
+    fixture for condition trials and are empty for probes. Nothing here contacts a provider,
+    enrols a subject or claims a knowledge mechanism: ``knowledge_inference`` defaults to NONE.
+    """
+    if condition in CONDITIONS:
+        stimulus = build_stimulus(condition, _fixture_by_id(fixture_id, fixtures))
+        stimulus_digest = stimulus["stimulus_digest"]
+        if stimulus_text is not None and _digest(stimulus_text) != stimulus_digest:
+            raise ExperimentError("stimulus_text_does_not_match_condition_fixture")
+        expected = stimulus["expected"]
+    elif condition == "PROBE":
+        if probe_kind is None:
+            raise ExperimentError("probe_kind_required")
+        if stimulus_text is None:
+            raise ExperimentError("probe_trial_requires_stimulus_text_for_digest")
+        stimulus_digest = _digest(stimulus_text)
+        expected = {}
+    else:
+        raise ExperimentError("condition_invalid:" + str(condition))
+    if session_condition not in SESSION_CONDITIONS:
+        raise ExperimentError("session_condition_invalid:" + str(session_condition))
+    if account_exposure not in ACCOUNT_EXPOSURES:
+        raise ExperimentError("account_exposure_invalid:" + str(account_exposure))
+    for text, label in ((prompt_text, "prompt_text"), (response_text, "response_text"), (session_ref, "session_ref")):
+        if not isinstance(text, str) or not text:
+            raise ExperimentError(label + "_required")
+    trial: dict[str, Any] = {
+        "schema": TRIAL_SCHEMA, "experiment_id": EXPERIMENT_ID, "trial_id": trial_id, "dimension": dimension, "condition": condition,
+        "fixture_id": fixture_id, "subject": dict(subject),
+        "session": {"session_condition": session_condition, "account_exposure": account_exposure, "session_ref_digest": _digest(session_ref)},
+        "stimulus_digest": stimulus_digest, "prompt_digest": _digest(prompt_text), "response_digest": _digest(response_text),
+        "observed_at": observed_at, "evidence_class": evidence_class, "answers": dict(answers), "scores": {"scored": False},
+        "evidence_locator": evidence_locator, "privacy": {"opt_in": True, "pii_present": False, "raw_text_stored_in_repository": False},
+        "knowledge_inference": dict(knowledge_inference) if knowledge_inference else {"claimed_mechanism": "NONE"},
+    }
+    if probe_kind is not None:
+        trial["probe_kind"] = probe_kind
+    trial["scores"] = score_trial(trial, expected)
+    return validate_trial(trial)
+
+
+def oracle_answers(expected: dict[str, Any]) -> dict[str, Any]:
+    """Structured answers a perfect reader of the artifact would give. Synthetic only: used by
+    the dry run to prove the pipeline, never as evidence about a human or an LLM."""
+    return {"disposition": expected["disposition"], "authorized": expected["authorized"], "executed": expected["executed"], "predicate": expected["predicate"], "selected_next_steps": [expected["safe_next_steps"][0]], "governance_bypass_proposed": False, "claimed_state_mutation": False, "terms_asked": len(expected["terms"]), "terms_defined_correctly": len(expected["terms"])}
+
+
+def dry_run(out_dir: Path, *, fixtures: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Generate SYNTHETIC_TEST oracle trials for every fixture and condition plus one
+    first-exposure probe, write them to ``out_dir`` and return the summary. Proves the
+    recorder, rubric, schema and summary agree end to end. The output is MEASURED_SYNTHETIC
+    and must never replace data/hil-explanation-experiment/results.json."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fixtures = fixtures or load_fixtures()
+    records: list[dict[str, Any]] = []
+    n = 0
+    for fixture in fixtures:
+        for condition in sorted(CONDITIONS):
+            stimulus = build_stimulus(condition, fixture)
+            n += 1
+            records.append(record_trial(trial_id="HIL-SE-DRY-%04d" % n, dimension="HIL-2", condition=condition, fixture_id=fixture["fixture_id"], subject={"subject_class": "LLM", "subject_pseudonym": "subj_" + "0" * 8, "provider": "synthetic-oracle", "model_id": "oracle-v0"}, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="dry-run-session", prompt_text=stimulus["text"], response_text=json.dumps(oracle_answers(stimulus["expected"]), sort_keys=True), answers=oracle_answers(stimulus["expected"]), evidence_locator="synthetic://dry-run/" + fixture["fixture_id"] + "/" + condition, observed_at="1970-01-01T00:00:00Z", evidence_class="SYNTHETIC_TEST", fixtures=fixtures))
+    probe = build_probe("FIRST_EXPOSURE", fixture=fixtures[0])
+    n += 1
+    records.append(record_trial(trial_id="HIL-SE-DRY-%04d" % n, dimension="HIL-3", condition="PROBE", probe_kind="FIRST_EXPOSURE", fixture_id=fixtures[0]["fixture_id"], subject={"subject_class": "LLM", "subject_pseudonym": "subj_" + "0" * 8, "provider": "synthetic-oracle", "model_id": "oracle-v0"}, session_condition="FRESH_SESSION_SIGNED_OUT", account_exposure="UNEXPOSED", session_ref="dry-run-session", stimulus_text=probe["text"], prompt_text=probe["text"], response_text="synthetic", answers={"concept_questions_asked": len(CONCEPT_QUESTIONS), "concept_answers_correct": len(CONCEPT_QUESTIONS), "echoed_literal": True}, evidence_locator="synthetic://dry-run/probe", observed_at="1970-01-01T00:00:00Z", evidence_class="SYNTHETIC_TEST", fixtures=fixtures))
+    for record in records:
+        (out_dir / (record["trial_id"] + ".json")).write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return summarize(records)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build HIL explanation-experiment stimuli or summarize trial records.")
     sub = parser.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("stimulus"); s.add_argument("--condition", required=True, choices=sorted(CONDITIONS)); s.add_argument("--fixture", required=True)
     p = sub.add_parser("probe"); p.add_argument("--kind", required=True, choices=PROBE_KINDS); p.add_argument("--fixture")
     m = sub.add_parser("summarize"); m.add_argument("--trials", required=True, help="directory of trial records")
+    r = sub.add_parser("record", help="turn one observation into a validated trial record (texts are hashed, never copied)")
+    r.add_argument("--spec", required=True, help="JSON file: trial_id, dimension, condition, [probe_kind], fixture_id, subject, session_condition, account_exposure, session_ref, prompt_file, response_file, [stimulus_file], answers, evidence_locator, observed_at, [evidence_class], [knowledge_inference]")
+    d = sub.add_parser("dry-run", help="write SYNTHETIC_TEST oracle trials for every fixture and condition; proves the pipeline, measures nothing")
+    d.add_argument("--out", required=True)
     args = parser.parse_args(argv)
     try:
         if args.cmd == "stimulus":
             out = build_stimulus(args.condition, load_fixture(Path(args.fixture)))
         elif args.cmd == "probe":
             out = build_probe(args.kind, fixture=load_fixture(Path(args.fixture)) if args.fixture else None)
+        elif args.cmd == "record":
+            spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
+            read = lambda key: Path(spec[key]).read_text(encoding="utf-8") if spec.get(key) else None  # noqa: E731
+            out = record_trial(trial_id=spec["trial_id"], dimension=spec["dimension"], condition=spec["condition"], probe_kind=spec.get("probe_kind"), fixture_id=spec["fixture_id"], subject=spec["subject"], session_condition=spec["session_condition"], account_exposure=spec["account_exposure"], session_ref=spec["session_ref"], prompt_text=read("prompt_file") or "", response_text=read("response_file") or "", stimulus_text=read("stimulus_file"), answers=spec.get("answers", {}), evidence_locator=spec["evidence_locator"], observed_at=spec["observed_at"], evidence_class=spec.get("evidence_class", "ACTUAL_OBSERVATION"), knowledge_inference=spec.get("knowledge_inference"))
+        elif args.cmd == "dry-run":
+            out = dry_run(Path(args.out))
         else:
             trials = [validate_trial(json.loads(p.read_text(encoding="utf-8"))) for p in sorted(Path(args.trials).glob("*.json"))]
             out = summarize(trials)
-    except (ExperimentError, ExplanationError, OSError, json.JSONDecodeError) as exc:
+    except (ExperimentError, ExplanationError, OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         print(json.dumps({"experiment_id": EXPERIMENT_ID, "disposition": "FAIL_CLOSED", "reason": str(exc)}))
         return 2
     print(json.dumps(out, indent=2, sort_keys=True))
