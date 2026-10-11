@@ -27,6 +27,44 @@ from typing import Any, Mapping
 TERMINAL_STATES = {"CLOSED", "SUPERSEDED"}
 STEGHEALTH_OWNER = "StegVerse-Labs/StegHealth"
 REPLAY_ACK_SCHEMA = "stegverse.native-email-archived-failure-replay-ack/v1"
+# The hint state StegHealth's consume_ecosystem_failure_map.py honours.
+EXISTING_HINT_STATE = "EXACT_EXISTING_CORRECTIVE_TASK_HINT"
+
+# StegHealth requires a source_task_context {task_id, lifecycle, cosv_task_vector}
+# on every failure. When no exact existing task resolves, the context defaults
+# to the monitor task itself as parent (issue #3039). The basis is recorded per
+# failure so the default is reviewable and reversible.
+MONITOR_TASK_ID = "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
+MONITOR_COSV_TASK_VECTOR = "10100000100000"
+CONTEXT_BASIS_DEFAULT = "DEFAULT_MONITOR_TASK_PARENT"
+CONTEXT_BASIS_HINT = "EXISTING_TASK_HINT"
+
+
+def valid_vector(value: Any) -> bool:
+    return isinstance(value, str) and len(value) == 14 and value.isdigit()
+
+
+def default_source_task_context(tasks: list[dict[str, Any]]) -> dict[str, Any]:
+    lifecycle = None
+    for task in tasks:
+        if isinstance(task, dict) and task.get("task_id") == MONITOR_TASK_ID:
+            lifecycle = task.get("coordination_state")
+            break
+    return {
+        "task_id": MONITOR_TASK_ID,
+        "lifecycle": lifecycle if isinstance(lifecycle, str) and lifecycle else "PROPOSED",
+        "cosv_task_vector": MONITOR_COSV_TASK_VECTOR,
+    }
+
+
+def source_task_context_for(hint: dict[str, Any] | None, default: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    if (isinstance(hint, dict) and hint.get("state") == EXISTING_HINT_STATE
+            and isinstance(hint.get("task_id"), str) and hint["task_id"]
+            and isinstance(hint.get("coordination_state"), str) and hint["coordination_state"]
+            and valid_vector(hint.get("cosv_task_vector"))):
+        return ({"task_id": hint["task_id"], "lifecycle": hint["coordination_state"],
+                 "cosv_task_vector": hint["cosv_task_vector"]}, CONTEXT_BASIS_HINT)
+    return dict(default), CONTEXT_BASIS_DEFAULT
 
 
 def require(ok: bool, reason: str) -> None:
@@ -80,7 +118,7 @@ def existing_hint(incident: dict[str, Any], tasks: list[dict[str, Any]], vector_
     vector_matches = [row for row in vector_rows if isinstance(row, dict) and row.get("task_id") == task.get("task_id")]
     vector = vector_matches[0].get("vector") if len(vector_matches) == 1 else None
     return {
-        "state": "EXACT_EXISTING_TASK_HINT",
+        "state": EXISTING_HINT_STATE,
         "task_id": task.get("task_id"),
         "coordination_state": task.get("coordination_state"),
         "cosv_task_vector": vector,
@@ -94,18 +132,25 @@ def build_failure_map(monitor: dict[str, Any], registry: dict[str, Any], vector_
     vectors = vector_index.get("tasks")
     require(isinstance(tasks, list), "canonical task registry tasks invalid")
     require(isinstance(vectors, list), "task-vector index tasks invalid")
+    default_context = default_source_task_context(tasks)
     mapped = []
     for incident in incidents:
         require(isinstance(incident, dict), "incident must be object")
+        hint = existing_hint(incident, tasks, vectors)
+        context, basis = source_task_context_for(hint, default_context)
         mapped.append({
             "incident_id": incident.get("incident_id"),
             "kind": incident.get("kind"),
             "repository": repo_from_incident(incident),
+            "repository_sha256": incident.get("repository_sha256"),
+            "redacted": bool(incident.get("redacted")),
             "workflow": incident.get("normalized_workflow"),
             "error_signature": incident.get("normalized_error_signature"),
             "observation_count": incident.get("observation_count"),
             "observation_refs": list(incident.get("observation_refs") or []),
-            "existing_canonical_task_hint": existing_hint(incident, tasks, vectors),
+            "existing_canonical_task_hint": hint,
+            "source_task_context": context,
+            "source_task_context_basis": basis,
             "source_monitor_receipt_ref": monitor_receipt_ref,
             "required_owner": STEGHEALTH_OWNER,
             "required_owner_action": "RECONCILE_AND_CREATE_OR_RESUME_CORRECTIVE_TASK",
@@ -114,6 +159,10 @@ def build_failure_map(monitor: dict[str, Any], registry: dict[str, Any], vector_
         "schema": "stegverse.email-failure-map-for-steghealth/v1",
         "failure_count": len(mapped),
         "failures": mapped,
+        "source_task_context_default": default_context,
+        "source_task_context_basis_counts": {
+            basis: sum(1 for row in mapped if row["source_task_context_basis"] == basis)
+            for basis in (CONTEXT_BASIS_HINT, CONTEXT_BASIS_DEFAULT)},
         "task_creation_owner": STEGHEALTH_OWNER,
         "mapper_creates_tasks": False,
         "mapper_assigns_new_cosv": False,
@@ -273,12 +322,14 @@ def main() -> int:
         return 0
 
     owner_output = args.output.with_name(args.output.stem + ".steghealth.json")
+    # The consumer runs with cwd=StegHealth: hand it paths that do not depend
+    # on this process's cwd.
     completed = subprocess.run([
         sys.executable,
         str(steghealth / "tools/consume_ecosystem_failure_map.py"),
-        "--failure-map", str(map_path),
+        "--failure-map", str(map_path.resolve()),
         "--state-root", str(steghealth),
-        "--output", str(owner_output),
+        "--output", str(owner_output.resolve()),
     ], cwd=str(steghealth), capture_output=True, text=True, check=False, timeout=300)
     if completed.returncode != 0 or not owner_output.is_file():
         result = {
@@ -288,6 +339,7 @@ def main() -> int:
             "failure_map_ref": str(map_path),
             "retry_required": True,
             "returncode": completed.returncode,
+            "stderr_tail": (completed.stderr or "")[-2000:],
             "task_handoffs": [],
             "registry_changed": False,
             "archived_replay_page_acknowledged": False,

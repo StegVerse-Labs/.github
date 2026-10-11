@@ -429,3 +429,24 @@ python3 scripts/native_email_continuation_transition.py --state data/native-emai
   --op resolve --input <{"incident_id": ..., "evidence": {"kind": "REPAIRED_AT_EXACT_HEAD" | "SUPERSEDED_BY_CURRENT_EVIDENCE", ...}}>
 ... then, only once archive is authorized: --op archive-receipt, then --op close
 ```
+
+### Incident -> StegHealth failure-map bridge (2026-10-11)
+
+Until this step nothing read `incidents` downstream; only `archive_proposed` was consumed. The bridge is session-executable, read-only on the continuation state, and produces proposals only:
+
+```text
+1. python3 -I scripts/native_email_continuation_transition.py --state data/native-email-action-monitor/continuation.json \
+     --op failure-map --output <tmp>/projected-receipt.json
+   -> every OPEN_UNRESOLVED incident in a retained class, in the monitor-receipt shape
+      (authority_effect: NONE_PROJECTION_ONLY; the state file is not written)
+2. STEGVERSE_STEGHEALTH_ROOT=<StegHealth checkout> python3 -I scripts/reconcile_email_failure_incidents.py \
+     --monitor-receipt <tmp>/projected-receipt.json --registry <COPY of data/canonical-task-registry.json> \
+     --vector-index <COPY of control/task-vector-index.json> --vector-dir <tmp> --output <tmp>/handoff.json
+   -> failure map for StegHealth, StegHealth's own consume_ecosystem_failure_map.py, candidates imported into the COPIES
+3. Registry / vector-index import of StegHealth candidates stays an owner-admitted PR step. Nothing here mints
+   WorkerCoordinator claim/fence, Interlock/InTr admission or credential authority.
+```
+
+Contract repairs made for this bridge: the mapper now emits the hint state StegHealth honours (`EXACT_EXISTING_CORRECTIVE_TASK_HINT`), the `source_task_context` StegHealth requires on every failure, and hands StegHealth absolute paths (it runs with `cwd=StegHealth`). When no exact existing task resolves, `source_task_context` defaults to this monitor task as parent (`STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001`, `10100000100000`, lifecycle from the registry record); each failure records `source_task_context_basis` (`DEFAULT_MONITOR_TASK_PARENT` or `EXISTING_TASK_HINT`) so the default is reviewable and reversible.
+
+Local run on the committed state (cycle 3, transition 238): 1229 incidents projected (1204 `FAILURE`, 24 `POLICY`, 1 `SECURITY`; 262 redacted), 1229 mapped failures (1:1 by `incident_id`; 1173 distinct repository/workflow/signature tuples because redacted incidents collapse to `unknown-workflow`), 0 existing-task hints, 1229 StegHealth handoffs all `NEW_STEGHEALTH_CORRECTIVE_TASK_CREATED` / `INITIATE_CANONICAL_WORK_INGRESS`, 1229 canonical candidates (parent: the monitor task, `PROPOSED`). The failure map and the handoff receipt are committed as projections in `data/native-email-action-monitor/failure-map.latest.json` and `steghealth-handoff.latest.json` (envelope `authority_effect: NONE_PROJECTION_ONLY`; redacted repositories remain redacted). The live registry, vector index and StegHealth checkout were not changed. Evidence class: `LOCAL_CHAIN_EXECUTED` (proposal outputs only).
