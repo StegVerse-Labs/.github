@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_IMPLEMENTATION",
   "cosv_task_vector": "20010000100000",
+  "source_state_vector_ref": "control/task-vectors/MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001.json",
   "source_refs": [
     "docs/MYKV_HEALTHCARE_TRANSACTION_EVIDENCE_MIRROR_HANDOFF.md",
     "control/task-vectors/MYKV-HEALTHCARE-TRANSACTION-EVIDENCE-001.json",

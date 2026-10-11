@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "40000100100000",
+  "source_state_vector_ref": "control/task-vectors/MYKV-PERSONAL-DATA-BACKUP-001.json",
   "source_refs": [
     "docs/MYKV_PERSONAL_DATA_BACKUP_MIRROR_HANDOFF.md",
     "control/task-vectors/MYKV-PERSONAL-DATA-BACKUP-001.json",

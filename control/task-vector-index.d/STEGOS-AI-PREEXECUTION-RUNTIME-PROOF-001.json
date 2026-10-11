@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "registry_ref": "data/canonical-task-registry.json",
+  "source_state_vector_ref": "control/task-vectors/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+  "cosv_task_vector": "40000100100000",
+  "vector": "40000100100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
