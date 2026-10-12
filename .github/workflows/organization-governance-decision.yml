@@ -8,11 +8,15 @@ name: Organization governance decision
 # ref this workflow writes is this repository's own refs/stegverse/federation-mesh,
 # fast-forward only.
 #
-# Both ledgers are run-scoped: the organization ledger is opened by
-# organization_store() exactly as org-contract.json declares it (git, PRIVATE,
-# propagate_target null), so its receipts are real appends that are published
-# nowhere. A FAIL_CLOSED governance decision is a decision and is answered; only
-# a FAIL_CLOSED of this run itself fails the job.
+# The organization ledger is opened by organization_store() exactly as
+# org-contract.json declares it: git, PRIVATE, on this repository's designated
+# refs/stegverse/organization-ledger (the location structure StegVerse-org/.github
+# declares). It is materialized into this checkout's git directory before the
+# cycle, published fast-forward only after the mesh, and read back from a fresh
+# fetch; a decision whose receipt is not on the read-back chain fails the run.
+# The repository ledger stays run-scoped; its receipts are retained in the
+# organization ledger as source receipts. A FAIL_CLOSED governance decision is a
+# decision and is answered; only a FAIL_CLOSED of this run itself fails the job.
 #
 # The decision authority is StegCore (private), pinned in exactly one place,
 # org-runtime/decision-authority.json. It is installed only when the owner has
@@ -106,7 +110,9 @@ jobs:
       - name: Run the cycle
         env:
           STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger
-          STEGVERSE_ORG_LEDGER_GIT_DIR: ${{ runner.temp }}/organization-ledger.git
+          # The ledger ref lives in this checkout's git directory, so publishing it
+          # uses the job's own contents: write credential for this repository only.
+          STEGVERSE_ORG_LEDGER_GIT_DIR: ${{ github.workspace }}/.git
         run: >-
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
           cycle --mesh "$RUNNER_TEMP/mesh" --node-state "$RUNNER_TEMP/node-state"
@@ -118,10 +124,22 @@ jobs:
           publish --mesh "$RUNNER_TEMP/mesh" --work "$RUNNER_TEMP/work"
           --push-repo "$GITHUB_WORKSPACE" --remote origin
 
+      - name: Publish the organization ledger (after the mesh, fast-forward only)
+        env:
+          STEGVERSE_ORG_LEDGER_GIT_DIR: ${{ github.workspace }}/.git
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          ledger-publish
+
       - name: Read back
         run: >-
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
           readback --work "$RUNNER_TEMP/work" --own-url "$OWN_URL"
+
+      - name: Read the organization ledger back from a fresh fetch
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          ledger-readback --work "$RUNNER_TEMP/work" --own-url "$OWN_URL"
 
       - name: Evidence
         if: ${{ always() }}

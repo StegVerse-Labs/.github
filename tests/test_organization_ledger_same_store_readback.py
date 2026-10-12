@@ -26,7 +26,7 @@ sys.path[:0] = [str(ROOT), str(ROOT / "workers"), str(ROOT / "resident-runtime")
 import aggregate_repo_transition as org  # noqa: E402
 import organization_batch_custody as custody  # noqa: E402
 
-REF = "refs/heads/organization-ledger/StegVerse-Labs"
+REF = "refs/stegverse/organization-ledger"
 LOCUS_VARIABLES = ("STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
                    "STEGVERSE_ORG_LEDGER_GIT_REMOTE", "STEGVERSE_ORG_LEDGER_GIT_CUSTODY")
 KIND_MISMATCH = "ORGANIZATION_LEDGER_STORE_KIND_MISMATCH"

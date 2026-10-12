@@ -212,6 +212,11 @@ class PosixLedgerStore:
 
 
 LEDGER_REF_PREFIX = "refs/heads/organization-ledger/"
+#: The designated organization ledger ref an organization keeps in its own
+#: `.github`, in the location structure StegVerse-org/.github declares
+#: (org-contract.json organization_ledger_ref). It is dedicated to the ledger
+#: exactly as a ref under LEDGER_REF_PREFIX is.
+DESIGNATED_LEDGER_REF = "refs/stegverse/organization-ledger"
 PRIVATE_CUSTODY = "PRIVATE"
 PAYLOAD_CLASSIFICATION = "ORGANIZATION_LEDGER_PRIVATE_EVIDENCE"
 CAS_PREDICATE = "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
@@ -289,10 +294,13 @@ class GitLedgerStore:
     kind = "GIT_REF"
 
     def __init__(self, git_dir, ref, *, remote=None, custody=None):
-        if not isinstance(ref, str) or not ref.startswith(LEDGER_REF_PREFIX) or ref == LEDGER_REF_PREFIX:
+        dedicated = isinstance(ref, str) and (
+            ref == DESIGNATED_LEDGER_REF or (ref.startswith(LEDGER_REF_PREFIX) and ref != LEDGER_REF_PREFIX))
+        if not dedicated:
             raise LedgerStoreRefused(
                 "ORGANIZATION_LEDGER_REF_INVALID",
-                "supply a dedicated Organization ledger ref under " + LEDGER_REF_PREFIX,
+                "supply a dedicated Organization ledger ref: " + DESIGNATED_LEDGER_REF
+                + " or one under " + LEDGER_REF_PREFIX,
                 detail=str(ref),
             )
         self.git_dir = Path(git_dir).expanduser().resolve()
