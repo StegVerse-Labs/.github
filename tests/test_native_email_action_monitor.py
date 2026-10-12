@@ -272,3 +272,17 @@ def test_invalid_actionable_cursor_fails_closed(tmp_path):
     else:
         raise AssertionError("invalid actionable cursor must fail closed")
     assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
+
+
+def test_empty_live_inbox_cursors_fail_closed(tmp_path):
+    for index, field in enumerate(("SEARCH_MESSAGES", "SEARCH_IDS")):
+        responses = [response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="" if index == 0 else None),
+                     response("SEARCH_IDS", provider="GMAIL", message_ids=[], next_page_token="" if index == 1 else None)]
+        broker = FakeBroker(responses)
+        try:
+            M.run(broker, continuation_path=write_continuation(tmp_path, []))
+        except RuntimeError as exc:
+            assert ("LIVE_INBOX_MESSAGE_CURSOR_INVALID" if index == 0 else "LIVE_INBOX_ID_CURSOR_INVALID") in str(exc)
+        else:
+            raise AssertionError(f"empty {field} cursor must fail closed")
+        assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
