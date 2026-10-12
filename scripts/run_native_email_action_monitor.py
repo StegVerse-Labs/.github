@@ -303,6 +303,33 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
     ids = exact.get("message_ids")
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
     require(len(ids) <= batch_limit, "broker exceeded bounded batch")
+    # Never archive a partial live-inbox page. Page tokens are an observation
+    # boundary, not an authorization to mutate unseen messages.
+    messages_more = inspected.get("next_page_token")
+    ids_more = exact.get("next_page_token")
+    require(messages_more is None or isinstance(messages_more, str), "live inbox message cursor invalid")
+    require(ids_more is None or isinstance(ids_more, str), "live inbox ID cursor invalid")
+    if messages_more or ids_more:
+        return {
+            "state": "PAGINATION_INCOMPLETE_FAIL_CLOSED",
+            "provider": inspected.get("provider"),
+            "bounded_batch_limit": batch_limit,
+            "operational_query": INBOX_QUERY,
+            "inspected_visible_count": len(messages),
+            "processed_exact_count": 0,
+            "archived_count": 0,
+            "archive_failed_count": 0,
+            "archive_failed_ids": [],
+            "retained_unverified_count": len(ids),
+            "archive_authorization": "DENIED_UNTIL_COMPLETE_PAGINATION",
+            "incidents": cluster_incidents(messages),
+            "actionable_returned_count": 0,
+            "actionable_more_than_returned": True,
+            "actionable_minimum": 0,
+            "inbox": {"messagesTotal": None, "messagesUnread": None},
+            "failed_predicate": "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED",
+            "continuation_required": True,
+        }
     incidents = cluster_incidents(messages)
     # Archive only IDs bound to verified resolution; everything else stays in INBOX.
     to_archive = [v for v in ids if v in authorized_archive_ids]
