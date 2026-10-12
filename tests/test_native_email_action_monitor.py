@@ -197,3 +197,20 @@ def test_archived_replay_pending_ack_never_refetches_or_overwrites_batch(tmp_pat
     persisted = json.loads(checkpoint.read_text(encoding="utf-8"))
     assert persisted["pending_batch_hash"] == "sha256-existing"
     assert persisted["next_page_token"] == "page-2"
+
+
+def test_archived_replay_nonempty_page_with_same_cursor_fails_closed(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    state = M.replay_checkpoint(checkpoint)
+    state["current_page_token"] = "same-page"
+    M.write_json(checkpoint, state)
+    broker = FakeBroker([response("SEARCH_MESSAGES", provider="GMAIL",
+                                  messages=[{"id": "m1", "from": "notifications@github.com",
+                                             "subject": "CI failed"}],
+                                  next_page_token="same-page")])
+    try:
+        M.archived_replay_page(broker, checkpoint)
+    except RuntimeError as exc:
+        assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
+    else:
+        raise AssertionError("nonempty replay page with same cursor must fail closed")
