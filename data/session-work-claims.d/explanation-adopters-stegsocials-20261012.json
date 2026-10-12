@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_DOCUMENTATION",
-  "branch": "claude/explanation-adopters-stegsocials",
+  "branch": "claude/release-explanation-adopters-stegsocials-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "Universal explanation contract: record the StegSocials post-preparation surface (Site#1546, merged fda66a4) in the handoff's adopting-surfaces table. Documentation only; no authority, no runtime change.",
   "claimed_paths": [
@@ -19,5 +19,10 @@
     "No change to the explanation schema or artifact shape"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3158",
+  "merged_commit": "1fd8d22d665f8302aad2313066771295f12ec003",
+  "claim_released_at": "2026-10-12T04:55:46Z",
+  "claim_released_at_basis": "merge time of the implementation PR #3158",
+  "next_task_after_release": "Owner: admit a Site claim and a preregistration amendment for the HIL participant submission path before it adopts the contract."
 }
