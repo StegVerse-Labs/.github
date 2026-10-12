@@ -178,3 +178,22 @@ def test_archived_replay_nonadvancing_empty_cursor_fails_closed(tmp_path):
         assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
     else:
         raise AssertionError("nonadvancing archived replay cursor must fail closed")
+
+
+def test_archived_replay_pending_ack_never_refetches_or_overwrites_batch(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    state = M.replay_checkpoint(checkpoint)
+    state.update({"state": "AWAITING_STEGHEALTH_ACK",
+                  "awaiting_ack": True, "pending_batch_hash": "sha256-existing",
+                  "pending_message_count": 2, "next_page_token": "page-2"})
+    M.write_json(checkpoint, state)
+    broker = FakeBroker([])
+    receipt = M.archived_replay_page(broker, checkpoint)
+    assert receipt["state"] == "AWAITING_STEGHEALTH_ACK"
+    assert receipt["ack_required"] is True
+    assert receipt["batch_hash"] == "sha256-existing"
+    assert receipt["archive_operation_performed"] is False
+    assert broker.calls == []
+    persisted = json.loads(checkpoint.read_text(encoding="utf-8"))
+    assert persisted["pending_batch_hash"] == "sha256-existing"
+    assert persisted["next_page_token"] == "page-2"
