@@ -11,6 +11,7 @@ import importlib.util
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -124,10 +125,10 @@ def test_install_never_installs_an_unpinned_ref():
     pip_lines = [line.strip() for line in install.splitlines() if "pip install" in line]
     assert pip_lines == ['python -m pip install -r "$RUNNER_TEMP/stegcore-requirements.txt"',
                          'python -m pip install --no-deps "$source"']
-    assert 'source="$DECISION_AUTHORITY_SOURCE"' in install
+    assert 'source="$(realpath -e -- "$DECISION_AUTHORITY_SOURCE")"' in install
     assert install.index("authority-requirements") < install.index("pip install")
     assert "git+" not in install and "@main" not in install
-    assert install.rstrip().endswith("evaluator --installed")
+    assert install.rstrip().endswith('evaluator --installed --source "$source"')
 
 
 def test_requirements_refuse_a_checkout_that_is_not_the_pin(tmp_path):
@@ -135,6 +136,22 @@ def test_requirements_refuse_a_checkout_that_is_not_the_pin(tmp_path):
     with pytest.raises(decision.Refusal) as refused:
         decision.authority_requirements(source, _pin())
     assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_SOURCE_NOT_PINNED"
+
+
+def test_requirements_refuse_a_pinned_checkout_changed_after_checkout(tmp_path):
+    source, head = _source(tmp_path, DECLARED)
+    (source / "stegcore.py").write_text("changed = True\n", encoding="utf-8")
+    with pytest.raises(decision.Refusal) as refused:
+        decision.authority_requirements(source, {**_pin(), "commit": head})
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_SOURCE_NOT_PINNED"
+    assert "working_tree_not_clean" in refused.value.document["failed_predicate"]
+
+
+def test_a_bare_package_name_would_resolve_from_an_index():
+    # Why the install step resolves the source to an absolute path first: pip
+    # reads a bare name as a requirement, and an unrelated "stegcore" is on PyPI.
+    install = _steps()[INSTALL_STEP]
+    assert install.index("realpath -e") < install.index("authority-requirements") < install.index("pip install")
 
 
 def test_requirements_are_exactly_the_declared_dependencies(tmp_path):
@@ -211,15 +228,90 @@ def test_a_missing_tv_tvc_receipt_is_refused(tmp_path):
     assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_MATERIALIZATION_RECEIPT_ABSENT"
 
 
-def test_evaluator_record_when_installed_names_commit_and_version(monkeypatch):
+class _Installed:
+    def __init__(self, direct_url):
+        self.direct_url = direct_url
+
+    def read_text(self, name):
+        return json.dumps(self.direct_url) if name == "direct_url.json" and self.direct_url is not None else None
+
+
+def _installed(monkeypatch, direct_url):
     from importlib import metadata
     imported = []
     monkeypatch.setattr(decision.importlib, "import_module", imported.append)
     monkeypatch.setattr(metadata, "version", lambda package: "0.0.0-under-test" if package == "stegcore" else None)
+    monkeypatch.setattr(metadata, "distribution", lambda package: _Installed(direct_url))
+    return imported
+
+
+def test_evaluator_record_when_installed_names_commit_and_version(monkeypatch, tmp_path):
+    imported = _installed(monkeypatch, {"url": tmp_path.resolve().as_uri(), "dir_info": {}})
     pin = _pin()
-    assert decision.evaluator_record(pin, installed=True) == {
+    assert decision.evaluator_record(pin, installed=True, source=tmp_path) == {
         "installed": True, "commit": pin["commit"], "version": "0.0.0-under-test"}
     assert imported == ["stegcore.steggate"]
+
+
+@pytest.mark.parametrize("direct_url", [
+    None,  # installed by name from an index: pip writes no direct_url.json
+    {"url": "file:///elsewhere", "dir_info": {}},
+    {"url": "https://files.pythonhosted.org/packages/stegcore-2.0.11-py3-none-any.whl", "archive_info": {}},
+])
+def test_evaluator_record_refuses_an_install_not_from_the_verified_checkout(monkeypatch, tmp_path, direct_url):
+    _installed(monkeypatch, direct_url)
+    with pytest.raises(decision.Refusal) as refused:
+        decision.evaluator_record(_pin(), installed=True, source=tmp_path)
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_INSTALL_UNVERIFIED"
+    assert "installed_from" in refused.value.document["failed_predicate"]
+
+
+def test_evaluator_record_refuses_an_install_without_its_source(monkeypatch, tmp_path):
+    _installed(monkeypatch, {"url": tmp_path.resolve().as_uri(), "dir_info": {}})
+    with pytest.raises(decision.Refusal) as refused:
+        decision.evaluator_record(_pin(), installed=True)
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_INSTALL_UNVERIFIED"
+
+
+def test_a_local_install_records_its_checkout_as_its_origin(tmp_path):
+    # The binding the evaluator relies on, from a real (offline, --no-deps) pip install.
+    source, _ = _source(tmp_path, [], name="stegverse-origin-fixture")
+    (source / "pyproject.toml").write_text(
+        '[project]\nname = "stegverse-origin-fixture"\nversion = "0"\n'
+        '[build-system]\nrequires = []\nbuild-backend = "fixture_backend"\nbackend-path = ["."]\n', encoding="utf-8")
+    (source / "fixture_backend.py").write_text(FIXTURE_BACKEND, encoding="utf-8")
+    target = tmp_path / "site"
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps", "--no-index", "--no-build-isolation",
+                    "--target", str(target), str(source)], check=True, capture_output=True, text=True)
+    direct_url = json.loads(next(target.glob("*.dist-info/direct_url.json")).read_text())
+    assert direct_url["url"] == source.resolve().as_uri()
+
+
+FIXTURE_BACKEND = '''
+import base64, hashlib, zipfile
+
+NAME = "stegverse_origin_fixture-0"
+
+
+def _record(entries):
+    rows = []
+    for path, data in entries:
+        digest = base64.urlsafe_b64encode(hashlib.sha256(data).digest()).rstrip(b"=").decode()
+        rows.append(f"{path},sha256={digest},{len(data)}")
+    rows.append(NAME + ".dist-info/RECORD,,")
+    return "\\n".join(rows) + "\\n"
+
+
+def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
+    filename = NAME + "-py3-none-any.whl"
+    entries = [(NAME + ".dist-info/METADATA", b"Metadata-Version: 2.1\\nName: stegverse-origin-fixture\\nVersion: 0\\n"),
+               (NAME + ".dist-info/WHEEL", b"Wheel-Version: 1.0\\nGenerator: fixture\\nRoot-Is-Purelib: true\\nTag: py3-none-any\\n")]
+    with zipfile.ZipFile(wheel_directory + "/" + filename, "w") as wheel:
+        for path, data in entries:
+            wheel.writestr(path, data)
+        wheel.writestr(NAME + ".dist-info/RECORD", _record(entries))
+    return filename
+'''
 
 
 def test_evaluator_record_refuses_an_install_that_does_not_import():
