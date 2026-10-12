@@ -39,7 +39,18 @@ PREDICATE_RE = re.compile(r"^[A-Za-z0-9_:.-]{1,160}$")  # canonical predicates a
 SECRET_KEY_RE = re.compile(r"(token|secret|credential|password|passwd|private[_-]?key|api[_-]?key|bearer|cookie|client[_-]?secret)", re.I)
 # Boolean flags that *describe* sanitization are not secret material.
 FLAG_KEYS = frozenset({"secrets_present", "credential_material_present"})
-SECRET_VALUE_RE = re.compile(r"(^Bearer\s+\S+|-----BEGIN [A-Z ]*PRIVATE KEY-----|^ghp_[A-Za-z0-9]{20,}|^sk-[A-Za-z0-9]{16,})")
+# Matched anywhere in a value: the artifact is meant to be copied into third-party
+# LLMs, so a credential embedded in prose or a locator must be refused too.
+SECRET_VALUE_RE = re.compile(
+    r"(^Bearer\s+\S+"
+    r"|\bBearer\s+[A-Za-z0-9._~+/-]{16,}=*"
+    r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    r"|\bgh[pousr]_[A-Za-z0-9]{20,}"
+    r"|\bgithub_pat_[A-Za-z0-9_]{20,}"
+    r"|\bsk-[A-Za-z0-9_-]{16,}"
+    r"|\bAKIA[0-9A-Z]{16}\b"
+    r"|\bxox[abposr]-[A-Za-z0-9-]{10,})"
+)
 
 OUTCOME_CLASSES = {
     ("ALLOW", "OBSERVED"): "SUCCESS_VERIFIED",

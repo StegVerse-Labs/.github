@@ -125,6 +125,14 @@ class Refusals(unittest.TestCase):
         self.refuse(dict(base, evidence=[{"kind": "RECEIPT_REF", "ref": None, "description": "d"}]), "evidence_ref_required_for_kind")
         self.refuse(base, "secret_material_present", surface={"repository": "r", "surface_id": "s", "session_cookie": "x"})
 
+    def test_ordinary_words_near_secret_prefixes_are_not_refused(self):
+        a = build("01-success-verified")
+        for text in ("No Bearer credentials are shown here.", "task-runner ask-flow risk-score",
+                     "The ghost_ ledger and akia notes", "xox is not a token"):
+            b = json.loads(json.dumps(a))
+            b["evidence"][0]["description"] = text
+            U.validate_explanation(b)
+
     def test_validate_rejects_mutated_artifacts(self):
         a = build("01-success-verified")
         for mutate, code in (
@@ -134,6 +142,12 @@ class Refusals(unittest.TestCase):
             (lambda x: x["outcome"].__setitem__("disposition", "DENY"), "schema:const:$.authorization.authorized"),
             (lambda x: x["execution"].__setitem__("executed", True) or x["execution"].__setitem__("consequence_observation", "UNKNOWN"), "schema:const:$.execution.consequence_observation"),
             (lambda x: x["evidence"].append({"kind": "RECEIPT_REF", "ref": "ghp_" + "a" * 30, "description": "d", "sanitized": True}), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "see token ghp_" + "a" * 36), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "Authorization: Bearer " + "b" * 32), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("ref", "https://example.test/?t=github_pat_" + "c" * 40), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "key AKIA" + "D" * 16 + " in log"), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "slack xoxb-" + "1" * 24), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "openai sk-" + "e" * 24), "secret_material_present"),
         ):
             b = json.loads(json.dumps(a))
             mutate(b)
