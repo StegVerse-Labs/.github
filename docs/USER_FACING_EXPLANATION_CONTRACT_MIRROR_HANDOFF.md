@@ -86,8 +86,9 @@ Counts are the predicates in each surface's exported reason catalog, recounted f
 | WorkSpace session authentication and MyKV assistant binding (producer, mirrored in Site) | StegVerse-Labs/continuity-vault-kit `runtime/workspace_decision_reasons.py` | session 12, binding 18 |
 | CryptoBot WorkSpace portfolio projection refusals | StegVerse-Labs/crypto-bot `scripts/project_portfolio_snapshot_for_workspace.py` | 24 |
 | StegSocials post preparation (`stegsocials-prepare.html`): draft refusal, ERL drafting, My KV save and exact readback, evidence export | StegVerse-Labs/Site `assets/stegsocials-decision-reasons.js` (Site#1546) | 6 |
+| HIL participant submission (`humans-as-interoperability-layer.html` upload, `hil-receipt.html` retry): receiver unreachable, packet rejected, receipt not verified, local packet unavailable, page component unavailable, unexplained outcome | StegVerse-Labs/Site `assets/hil-decision-reasons.js` (Site#1573); every failure code the two pages and the receiver Worker raise maps to one of these, enforced by `tests/hil-decision-reasons.test.cjs` | 6 |
 
-Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface), StegTalk (no governed-outcome surface identified in this lane's repositories) and the HIL participant submission path (Site `assets/hil-direct-upload-v1.js`, `api/hil/upload.js`; shows raw codes today; adoption needs an owner-admitted Site claim and a preregistration amendment, .github#3106 comment 6117639185).
+Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface) and StegTalk (no governed-outcome surface identified in this lane's repositories). The HIL participant submission path adopted the contract under the owner-admitted Site claim SITE-HIL-RECEIVER-RESTORE-OPEN-SUBMISSION-20261012, with the preregistration amendment recorded before any trial (`data/hil-explanation-experiment/preregistration.json`, trials affected 0).
 
 ## Owner work not executable from this lane
 

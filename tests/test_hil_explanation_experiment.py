@@ -435,6 +435,18 @@ class RemediationScoringEmptySelection(unittest.TestCase):
         results = json.loads((ROOT / "data/hil-explanation-experiment/results.json").read_text(encoding="utf-8"))
         self.assertEqual((results["state"], results["trial_count"]), ("NOT_MEASURED", 0))
 
+    def test_participant_path_explanation_amendment_precedes_any_trial(self):
+        """Site#1573 changed the failure text HIL participants see; the change is recorded before any trial and
+        leaves every preregistered stimulus (conditions, fixtures, probes) untouched (#3106 comment 6117639185)."""
+        prereg = json.loads((ROOT / "data/hil-explanation-experiment/preregistration.json").read_text(encoding="utf-8"))
+        amendment = next(a for a in prereg["amendments"] if a["field"].startswith("participant_submission_path"))
+        self.assertEqual(amendment["trials_affected"], 0)
+        self.assertIn("Site#1573", amendment["source"])
+        self.assertIn("not a stimulus", amendment["field"])
+        self.assertEqual(set(prereg["conditions"]) - {"equivalence"}, set(H.CONDITIONS))
+        results = json.loads((ROOT / "data/hil-explanation-experiment/results.json").read_text(encoding="utf-8"))
+        self.assertEqual((results["state"], results["trial_count"]), ("NOT_MEASURED", 0))
+
 
 class SubmissionOperator(unittest.TestCase):
     """Issue, intake and withdraw: the dispatch-and-intake path whose absence #3106 comment 6113477648 named."""

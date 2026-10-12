@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-adopters-hil-submission-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "ACTIVE_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_DOCUMENTATION",
+  "branch": "claude/explanation-adopters-hil-submission",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "Universal explanation contract: record the HIL participant submission path (Site#1573) as an adopting surface, and record in the HIL-SCALED-EXPLANATION-001 preregistration amendments that participants now see plain-language failure text, before any trial (.github#3106 comment 6117639185). Documentation and preregistration record only; no authority, no runtime change.",
+  "claimed_paths": [
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/hil-explanation-experiment/preregistration.json",
+    "tests/test_hil_explanation_experiment.py",
+    "data/session-work-claims.d/explanation-adopters-hil-submission-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Docs edit limited to the adopting-surfaces table and its not-yet-adopted line",
+    "Preregistration edit limited to one appended amendment; no change to hypotheses, conditions, fixtures, probes, scoring or analysis",
+    "No change to the explanation schema or artifact shape"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
