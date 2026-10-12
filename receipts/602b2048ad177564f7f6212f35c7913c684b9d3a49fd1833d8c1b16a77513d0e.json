@@ -1,0 +1,38 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "disposition": "ALLOW",
+    "operation": "ORGANIZATION_FEDERATION_CROSSING_CONSUMED",
+    "packet_id": "pkt-e409e211d3bbab312bee4ad8",
+    "service_id": "stegverse-labs.governance"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": true,
+    "epoch": 426070959,
+    "frequency_hz": 100,
+    "generation": 426070959,
+    "heartbeat_id": "HB:426070959",
+    "phase_offset_ns": 9418880,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "sampled_unix_ns": 1791772309279418880
+  },
+  "observed_at": "2026-10-12T02:31:49.279438+00:00",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:921bcacc02a82f82a0ea643988b656eba8ff1892ff15c828b1207e935e55e49b",
+  "previous_receipt_sha256": "sha256:118981d742082309a1d10d83d1a6faecc66231b89b06aed28e675d51d2c542cd",
+  "receipt_sha256": "sha256:602b2048ad177564f7f6212f35c7913c684b9d3a49fd1833d8c1b16a77513d0e",
+  "repo_receipt_sha256": "sha256:a543a3cc4f1cac0a14fe18d9d8fa9f9db202bbdf692c2e4e5afaae010aebe843",
+  "repo_transition_id": "ORGANIZATION-FEDERATION-CROSSING-895b5263a7b9f306",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "ORGANIZATION-FEDERATION-CROSSING-895b5263a7b9f306",
+  "source_transition_sha256": "sha256:a543a3cc4f1cac0a14fe18d9d8fa9f9db202bbdf692c2e4e5afaae010aebe843",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:7ff3d5894ffee2f86288faac9babeffc657d5e903297129da223b86c9605151a"
+}
