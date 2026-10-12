@@ -206,6 +206,22 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
                 }
             write_json(checkpoint_path, checkpoint)
 
+    if checkpoint.get("awaiting_ack") is True:
+        # An unacknowledged StegHealth page must never be fetched again or
+        # replaced by a newer provider page. Keep the persisted batch hash
+        # until the exact acknowledgement is durably observed.
+        return {
+            "state": "AWAITING_STEGHEALTH_ACK",
+            "complete": False,
+            "incidents": [],
+            "checkpoint_ref": str(checkpoint_path),
+            "ack_ref": str(ack_path),
+            "batch_hash": checkpoint.get("pending_batch_hash"),
+            "ack_required": True,
+            "mailbox_mutation_performed": False,
+            "archive_operation_performed": False,
+        }
+
     token = checkpoint.get("current_page_token")
     payload: dict[str, Any] = {
         "query": ARCHIVED_REPLAY_QUERY,
