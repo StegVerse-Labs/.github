@@ -286,3 +286,33 @@ def test_empty_live_inbox_cursors_fail_closed(tmp_path):
         else:
             raise AssertionError(f"empty {field} cursor must fail closed")
         assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
+
+
+def test_actionable_inbox_duplicate_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m1"]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS" in str(exc)
+    else:
+        raise AssertionError("duplicate actionable IDs must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
+
+
+def test_actionable_inbox_malformed_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", None]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_MESSAGE_IDS_INVALID" in str(exc)
+    else:
+        raise AssertionError("malformed actionable IDs must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
