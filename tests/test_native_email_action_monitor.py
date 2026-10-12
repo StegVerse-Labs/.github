@@ -257,3 +257,18 @@ def test_duplicate_inbox_message_ids_refused_before_archive(tmp_path):
     else:
         raise AssertionError("duplicate inbox identities must fail closed")
     assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+
+
+def test_invalid_actionable_cursor_fails_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[], next_page_token={"forged": True}),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_CURSOR_INVALID" in str(exc)
+    else:
+        raise AssertionError("invalid actionable cursor must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
