@@ -19,10 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github/workflows/organization-governance-decision.yml"
 PIN = ROOT / "org-runtime/decision-authority.json"
 INSTALL_STEP = "Install the decision authority (StegCore) when this run may read it"
-FETCH_STEP = "Fetch the decision authority (StegCore) at its pinned commit"
+VERIFY_STEP = "Verify the TV/TVC materialization of the decision authority (StegCore)"
 RECORD_ABSENT_STEP = "Record that the decision authority (StegCore) was not installed"
-PRESENT = "${{ env.STEGCORE_READ_CREDENTIAL_PROVIDED == 'true' }}"
-ABSENT = "${{ env.STEGCORE_READ_CREDENTIAL_PROVIDED != 'true' }}"
+PRESENT = "${{ inputs.decision_authority_source != '' && inputs.decision_authority_receipt != '' }}"
+ABSENT = "${{ inputs.decision_authority_source == '' || inputs.decision_authority_receipt == '' }}"
 
 
 def _load(name: str, relative: str):
@@ -80,7 +80,11 @@ def test_pin_is_one_full_commit_with_exact_requirements():
     assert all(re.fullmatch(r"[A-Za-z0-9._-]+==[A-Za-z0-9.]+", spec) for spec in pin["requirements"])
     assert sorted(decision._requirement_name(s) for s in pin["requirements"]) == \
         sorted(decision._requirement_name(s) for s in DECLARED)
-    assert pin["read_credential"]["secret"] == "STEGCORE_READ_TOKEN"
+    credential = pin["read_credential"]
+    assert (credential["authority"], credential["capability_id"]) == ("TV/TVC", "tvc.private-source-read.v1")
+    assert credential["repository_secret_allowed"] is False and credential["github_generated_token_allowed"] is False
+    assert credential["caller_repository"] == "StegVerse-Labs/.github"
+    assert credential["request"].endswith(".json") and pin["commit"][:8] in credential["materialization_id"]
 
 
 def test_workflow_takes_the_commit_from_the_pin_and_never_restates_it():
@@ -88,39 +92,31 @@ def test_workflow_takes_the_commit_from_the_pin_and_never_restates_it():
     text = WORKFLOW.read_text(encoding="utf-8")
     assert pin["commit"] not in text
     assert pin["commit"][:7] not in text
-    steps = _steps()
-    assert 'json.load(open("org-runtime/decision-authority.json"' in steps["Read the decision authority pin"]
-    fetch = steps[FETCH_STEP]
-    assert "ref: ${{ steps.authority.outputs.commit }}" in fetch
-    assert "repository: ${{ steps.authority.outputs.repository }}" in fetch
     for path in ("resident-runtime/organization_governance_decision.py", "resident-runtime/governance_endpoint.py"):
         assert pin["commit"] not in (ROOT / path).read_text(encoding="utf-8")
 
 
-def test_install_runs_only_when_the_secret_is_present_and_absence_is_recorded():
-    text = WORKFLOW.read_text(encoding="utf-8")
-    assert "STEGCORE_READ_CREDENTIAL_PROVIDED: ${{ secrets.STEGCORE_READ_TOKEN != '' }}" in text
-    # The secret itself is handed only to the checkout, never to an env or a run.
-    assert text.count("secrets.STEGCORE_READ_TOKEN") == 2
+def test_install_runs_only_from_a_verified_tv_tvc_materialization_and_absence_is_recorded():
     steps = _steps()
-    assert f"if: {PRESENT}" in steps[FETCH_STEP]
+    verify = steps[VERIFY_STEP]
+    assert f"if: {PRESENT}" in verify
+    assert 'authority-materialization --receipt "$DECISION_AUTHORITY_RECEIPT"' in verify
     assert f"if: {PRESENT}" in steps[INSTALL_STEP]
     absent = steps[RECORD_ABSENT_STEP]
     assert f"if: {ABSENT}" in absent
     assert absent.rstrip().endswith("evaluator")
     assert "pip" not in absent
     order = list(steps)
-    assert order.index(FETCH_STEP) < order.index(INSTALL_STEP) < order.index("Run the cycle")
+    assert order.index(VERIFY_STEP) < order.index(INSTALL_STEP) < order.index("Run the cycle")
     assert order.index(RECORD_ABSENT_STEP) < order.index("Run the cycle")
 
 
-def test_checkout_does_not_persist_credentials_and_lands_in_an_ignored_path():
-    fetch = _steps()[FETCH_STEP]
-    assert "uses: actions/checkout@v4" in fetch
-    assert "persist-credentials: false" in fetch
-    assert "token: ${{ secrets.STEGCORE_READ_TOKEN }}" in fetch
-    path = re.search(r"^\s+path: (\S+)$", fetch, re.M).group(1)
-    assert subprocess.run(["git", "check-ignore", "-q", path + "/pyproject.toml"], cwd=ROOT).returncode == 0
+def test_no_repository_secret_or_github_token_reaches_the_decision_authority():
+    # TV policy tv.private-source-read.v1: TV/TVC is the only credential authority.
+    text = WORKFLOW.read_text(encoding="utf-8")
+    assert "secrets." not in text
+    assert "STEGCORE_READ_TOKEN" not in text
+    assert "token:" not in "\n".join(_steps()[name] for name in (VERIFY_STEP, INSTALL_STEP))
 
 
 def test_install_never_installs_an_unpinned_ref():
@@ -128,7 +124,7 @@ def test_install_never_installs_an_unpinned_ref():
     pip_lines = [line.strip() for line in install.splitlines() if "pip install" in line]
     assert pip_lines == ['python -m pip install -r "$RUNNER_TEMP/stegcore-requirements.txt"',
                          'python -m pip install --no-deps "$source"']
-    assert 'source="$GITHUB_WORKSPACE/.decision-authority/StegCore"' in install
+    assert 'source="$DECISION_AUTHORITY_SOURCE"' in install
     assert install.index("authority-requirements") < install.index("pip install")
     assert "git+" not in install and "@main" not in install
     assert install.rstrip().endswith("evaluator --installed")
@@ -162,11 +158,57 @@ def test_requirements_refuse_any_unpinned_or_undeclared_dependency(tmp_path, dec
     assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_REQUIREMENTS_NOT_PINNED"
 
 
-def test_evaluator_record_without_the_credential():
-    assert decision.evaluator_record(_pin(), installed=False) == {
-        "installed": False, "reason": "STEGCORE_READ_CREDENTIAL_NOT_PROVIDED",
-        "owner_decision": ("provide a read-only STEGCORE_READ_TOKEN repository secret "
-                           "(Contents: read on StegVerse-Labs/StegCore)")}
+def test_evaluator_record_without_a_tv_tvc_materialization():
+    pin = _pin()
+    record = decision.evaluator_record(pin, installed=False)
+    assert (record["installed"], record["reason"]) == (False, "STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED")
+    assert record["dependency"].startswith("BLOCKED_DEPENDENCY: a TV/TVC tvc.private-source-read.v1")
+    assert pin["read_credential"]["request"] in record["dependency"]
+
+
+def _receipt(pin: dict, **overrides) -> dict:
+    credential = pin["read_credential"]
+    receipt = {"schema": "stegverse.tvc-private-source-read-result/v1", "capability_id": credential["capability_id"],
+               "credential_authority": "TV/TVC", "caller_repository": credential["caller_repository"],
+               "source_repository": pin["repository"], "consumer_task": credential["consumer_task"],
+               "reference_mode": "IMMUTABLE_COMMIT", "exact_ref": "commit:" + pin["commit"],
+               "authorized_exact_sha": pin["commit"], "observed_exact_sha": pin["commit"],
+               "operation": "PRIVATE_REPOSITORY_READ_ONLY", "credential_available": True,
+               "materialization_state": "COMPLETE", "result": "AUTHORIZED_EXECUTED_READ_ONLY",
+               "completed_at": "2026-10-11T00:00:00Z"}
+    receipt.update({name: False for name in decision.TVC_BOUNDARIES_FALSE})
+    receipt.update(overrides)
+    return receipt
+
+
+def test_a_tv_tvc_receipt_for_the_pinned_commit_is_verified(tmp_path):
+    pin = _pin()
+    path = tmp_path / "receipt.json"
+    path.write_text(json.dumps(_receipt(pin)))
+    verified = decision.authority_materialization(path, pin)
+    assert (verified["verified"], verified["commit"]) == (True, pin["commit"])
+
+
+@pytest.mark.parametrize("overrides", [
+    {"observed_exact_sha": "0" * 40}, {"authorized_exact_sha": "0" * 40}, {"credential_value_exposed": True},
+    {"github_generated_token_substituted": True}, {"non_tv_tvc_credential_used": True}, {"write_authority": True},
+    {"caller_repository": "StegVerse-Labs/elsewhere"}, {"source_repository": "StegVerse-Labs/Other"},
+    {"materialization_state": "PARTIAL"}, {"result": "BLOCKED_DEPENDENCY"}, {"credential_authority": "GitHub"},
+])
+def test_a_tv_tvc_receipt_that_does_not_match_the_pin_is_refused(tmp_path, overrides):
+    pin = _pin()
+    path = tmp_path / "receipt.json"
+    path.write_text(json.dumps(_receipt(pin, **overrides)))
+    with pytest.raises(decision.Refusal) as refused:
+        decision.authority_materialization(path, pin)
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_MATERIALIZATION_NOT_VERIFIED"
+    assert sorted(overrides)[0] in refused.value.document["failed_predicate"]
+
+
+def test_a_missing_tv_tvc_receipt_is_refused(tmp_path):
+    with pytest.raises(decision.Refusal) as refused:
+        decision.authority_materialization(tmp_path / "absent.json", _pin())
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_MATERIALIZATION_RECEIPT_ABSENT"
 
 
 def test_evaluator_record_when_installed_names_commit_and_version(monkeypatch):
@@ -195,7 +237,7 @@ def test_report_names_which_evaluator_decided(tmp_path):
     report, _ = decision.build_report(evidence, mesh_root="git+https://github.com/StegVerse-org/.github#refs/x")
     assert report["decision_authority_installed"] is False
     assert report["decision_authority_commit"] is None
-    assert report["evaluator"]["reason"] == "STEGCORE_READ_CREDENTIAL_NOT_PROVIDED"
+    assert report["evaluator"]["reason"] == "STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED"
     installed = {"installed": True, "commit": _pin()["commit"], "version": "0.0.0-under-test"}
     (evidence / "evaluator.json").write_text(json.dumps(installed))
     report, _ = decision.build_report(evidence, mesh_root="git+https://github.com/StegVerse-org/.github#refs/x")
