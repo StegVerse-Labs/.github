@@ -2150,21 +2150,18 @@ Sandbox activation, release and propagation are not claimed. See
 
 `SDK-MR-A-VALIDATION-CUSTODY-001` (StegVerse-org/StegVerse-SDK#452) is registered
 in `data/canonical-task-registry.json` with its matching record projection. It
-is ACTIVE/HANDOFF_READY with EXTERNAL_PROVIDER_OBSERVED evidence (COSV
-`60000000102010`, reconciled 2026-10-11). The organization-ledger transition for
-request `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-002` was recorded on the StegVerse-org
-ledger and read back as ALLOW. The governance decision return was attempted:
-StegVerse-Labs decided the request FAIL_CLOSED
-`GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE`, and StegVerse-org returned and closed
-it (closure receipt `sha256:ccefb8f8…`, ledger tip `3e16f5a8`). The owner has
-decided both predicates that blocked END_TO_END (relayed on
-StegVerse-org/StegVerse-SDK#465): StegCore is public, so every decision run
-fetches the pinned commit anonymously and installs it from that checkout (no
-repository secret, no token; this supersedes the TV/TVC private-source-read
-route staged in StegVerse-Labs/TVC#506), and the Labs organization ledger is
-published on `refs/stegverse/organization-ledger` in this repository, in
-StegVerse-org's location structure. What remains is runtime evidence: an actual decision of `-004`
-(`GOVERNANCE_DECISION_IS_A_DECISION`) and its receipt read back from the
-published ledger (`DECIDING_ORGANIZATION_RECEIPT_READ_BACK`). END_TO_END is not claimed, and Master Records
-never gates. See
+is RETIRED/COMPLETED_VALIDATED with `end_to_end_complete` true (COSV
+`71000000100110`, reconciled 2026-10-12). Request
+`SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-004` (`pkt-c64077b3c2b188aabf176050`) was
+admitted and emitted on the StegVerse-org organization ledger, decided by
+StegVerse-Labs with StegCore `9882851b` (DENY `signal.inputs_incomplete`;
+organization receipt `sha256:273ffa70…` on this repository's published
+`refs/stegverse/organization-ledger`, read back ALLOW from a fresh fetch), and
+returned and closed by StegVerse-org (closure `sha256:f3156e28…`).
+`verify_governance_decision_return` accepted it end to end against both
+ledgers. The governance outcome is DENY: the return is complete, the request is
+not approved. The earlier `-002` answer (FAIL_CLOSED
+`GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE`, closure `sha256:ccefb8f8…`) stays
+recorded. StegCore is public by the owner's decision and fetched anonymously at
+the pin (#3151), and Master Records never gates. See
 [the registration handoff](docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md).
