@@ -364,3 +364,53 @@ stays downstream and never gates.
   read on StegVerse-Labs/StegCore). Step 1 of the next transition is done; the
   decision workflow answers the queued `-004` frame. Both owner-held blockers and
   `end_to_end_complete` false are kept. Registry generation 310; COSV unchanged.
+
+## 2026-10-12 verified decision return
+
+`end_to_end_complete` is true. Registry generation 313; COSV `60000000102010` ->
+`71000000100110` (COMPLETE, archive-ready, 0 blockers, evidence complete,
+activated, not propagated), encoded by `scripts/cosv.py` (`encode_task`) from
+exact metrics identical in the record, the Registry entry and the task vector.
+`coordination_state` RETIRED, `checkout_state` COMPLETED_VALIDATED; the only
+next transition is `REOPENED_DUE_TO_NEW_EVIDENCE`.
+
+Both owner-held predicates were decided by the owner and implemented:
+
+- `DEP-SDK-MR-A-LABS-DECISION-STEGCORE-READ-ACCESS`: StegCore is public; the
+  decision run fetches `9882851b` anonymously and installs it only from that
+  checkout (#3150 merge `468340ba`, #3151 merge `b1a63a04`).
+- `DEP-SDK-MR-A-LABS-ORGANIZATION-LEDGER-PROPAGATE-TARGET`: this repository's
+  `refs/stegverse/organization-ledger`, in StegVerse-org's location structure
+  (#3142 merge `e3b93be4`).
+
+Runtime evidence:
+
+1. StegVerse-Labs decision run [38196127077](https://github.com/StegVerse-Labs/.github/actions/runs/38196127077) (success, 14/14 steps) on `b1a63a04`:
+   StegCore 0.3.0 at `9882851b` decided `-004` `pkt-c64077b3c2b188aabf176050`
+   and `-003` `pkt-e409e211d3bbab312bee4ad8`, both DENY
+   `signal.inputs_incomplete`. Ledger `9f0a53e5` (4 receipts; `-004` decision
+   receipt `sha256:273ffa70d766e003d7c649d4b7b5fd83c95a532f58c0c79fd13bf5617ca094da`)
+   and mesh `f1b23e5e` (2 answer frames) were published and read back ALLOW from
+   an independent fresh fetch.
+2. StegVerse-org return run
+   [38196229848](https://github.com/StegVerse-org/.github/actions/runs/38196229848)
+   (default SDK, `deciding_ledger` set): `-004` returned and closed
+   (`ORGANIZATION_EGRESS_CLOSED` `sha256:f3156e28ee4aa4fdcd4af475dbd21aaea56d5f0c1d151187583f5ca97ba85c4b`,
+   ledger `6312057c`, readback ALLOW chain 15); `acceptance.json`:
+   `end_to_end_acceptance` `["pkt-c64077b3c2b188aabf176050"]`, verifier
+   `stegverse/governance_return_evidence.py` from the pinned SDK checkout. The
+   run concludes failure only because `-003` does not reproduce under this SDK;
+   that refusal appends nothing.
+3. StegVerse-org return run
+   [38196303110](https://github.com/StegVerse-org/.github/actions/runs/38196303110)
+   (`sdk_ref` `657576e6`): `-003` returned and closed
+   (`sha256:abddfbd65d2bc434d2dd284f44aac211ae96219b4bcf053d5f8326b21161ceb7`,
+   ledger `ab3cbc14`, readback ALLOW chain 16) and accepted end to end. No
+   closure is duplicated: the ledger holds exactly one `ORGANIZATION_EGRESS_CLOSED`
+   each for `-002`, `-003` and `-004`.
+
+The governance outcome is DENY. END_TO_END means the request was decided by
+the receiving organization's authority and that decision was returned and
+verified; it does not mean the requested action was approved. `-002`'s
+write-once FAIL_CLOSED answer is kept and not reopened. Master Records stays
+downstream and never gates; destination liveness was never a predicate.
