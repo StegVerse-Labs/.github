@@ -71,6 +71,19 @@ Dimensions: HIL-1 human effectiveness; HIL-2 ecosystem interpretability across i
 4. Keep the canonical disposition visible alongside the explanation; the explanation never replaces it.
 5. Never submit, execute or record from the explanation surface; a remediation draft is a proposal the person carries into the governed path.
 6. Version: `explanation_version` 1.0.0; additive changes bump the minor version and keep every required key; a removed or renamed key is a new major schema id.
+7. Give every predicate the surface can return a plain-language reason (a reason catalog), so the prose "Why" is never only a restated predicate. A reason reads after "Because", starts lower-case, has no trailing full stop and names no predicate-shaped token; a `PREFIX:detail` predicate uses its prefix's reason. Check the catalog with `check_reason_catalog(reasons, predicates)` in `scripts/user_facing_explanation.py` (empty list = conforms), and derive `predicates` from the surface's own source in a test, so a new predicate without a reason fails CI.
+8. A producer that refuses or decides attaches an `explanation_record` to the decision itself: disposition and predicate copied from it, the requested action, `authority_source`, `consequence_observation` (`NOT_AUTHENTICALLY_OBSERVED` unless a performing component reported a receipt) and the `why` from the catalog. The record is input to the builder; it never changes the decision.
+9. Keep the technical detail: when a surface also has a technical message, show the reason first and the message after it, rather than replacing either.
+
+### Surfaces that have adopted the contract (2026-10-12)
+
+| Surface | Repository and module | Catalogued predicates |
+| --- | --- | --- |
+| WorkSpace page: intent drafts, KV ingress, capability statuses, device continuity DR1-DR5, integration conformance | StegVerse-Labs/Site `assets/workspace.js` and the WorkSpace contract modules | page 3, KV bridge 1, capabilities 28, node binding 12, device continuity 10, assistant continuity 15 |
+| WorkSpace session authentication and MyKV assistant binding (producer, mirrored in Site) | StegVerse-Labs/continuity-vault-kit `runtime/workspace_decision_reasons.py` | session 12, binding 17 |
+| CryptoBot WorkSpace portfolio projection refusals | StegVerse-Labs/crypto-bot `scripts/project_portfolio_snapshot_for_workspace.py` | 19 |
+
+Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface) and StegTalk (no governed-outcome surface identified in this lane's repositories).
 
 ## Owner work not executable from this lane
 

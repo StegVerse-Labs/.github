@@ -245,3 +245,28 @@ class SchemaOnlyConsumers(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+class ReasonCatalogStandard(unittest.TestCase):
+    """Compatibility requirement 7: one plain-language reason per returnable predicate."""
+
+    GOOD = {"SNAPSHOT_SOURCE_NOT_AUTHENTICATED": "the snapshot was not observed through an authenticated session, the only accepted source"}
+
+    def test_conforming_catalog_and_prefix_predicates(self):
+        self.assertEqual(U.check_reason_catalog(self.GOOD, {"SNAPSHOT_SOURCE_NOT_AUTHENTICATED"}), [])
+        self.assertEqual(U.check_reason_catalog({"field_missing": "a required field is missing from the record"}, ["field_missing:value_usd", "field_missing:asset"]), [])
+        self.assertEqual(U.reason_key("CHECKPOINT_MALFORMED:digest"), "CHECKPOINT_MALFORMED")
+
+    def test_violations_are_named(self):
+        bad = {"A_B": "Because the SNAPSHOT_STATE check failed.", "ORPHAN": "short", "lower_case": "the reason mentions snapshot_digest_mismatch inside it"}
+        out = U.check_reason_catalog(bad, {"A_B", "MISSING_ONE", "lower_case"})
+        for code in ("predicate_without_reason:MISSING_ONE", "reason_without_returnable_predicate:ORPHAN", "reason_too_short_or_untrimmed:ORPHAN", "reason_must_start_lower_case:A_B", "reason_must_not_end_with_full_stop:A_B", "reason_restates_a_predicate:A_B", "reason_restates_a_predicate:lower_case"):
+            self.assertIn(code, out)
+        self.assertEqual(U.check_reason_catalog([], set()), ["reasons_not_a_mapping"])
+
+    def test_reason_renders_as_the_why_of_a_conforming_artifact(self):
+        reason = self.GOOD["SNAPSHOT_SOURCE_NOT_AUTHENTICATED"]
+        record = {"disposition": "FAIL_CLOSED", "predicate": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "requested_action": "Project the snapshot", "authority_source": "NONE", "why": reason}
+        artifact = U.validate_explanation(U.build_explanation(record, surface={"repository": "StegVerse-Labs/example", "surface_id": "example"}))
+        self.assertEqual(artifact["prose"]["why"], "Because " + reason + ".")

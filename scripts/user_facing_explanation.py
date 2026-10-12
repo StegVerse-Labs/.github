@@ -364,6 +364,42 @@ def validate_explanation(artifact: dict[str, Any], schema_path: Path = SCHEMA_PA
     return artifact
 
 
+
+# Reason catalogs (surface compatibility requirement 7): a producer that refuses or decides gives each
+# predicate it can return a plain-language reason, so the "Why" a person reads is never only a restated
+# predicate. A "PREFIX:detail" predicate uses its prefix's reason.
+_PREDICATE_TOKEN_RE = re.compile(r"\b(?:[A-Z]{2,}(?:_[A-Z0-9]+)+|[a-z]+(?:_[a-z0-9]+)+)\b")
+
+
+def reason_key(predicate: str) -> str:
+    return predicate.split(":", 1)[0]
+
+
+def check_reason_catalog(reasons: dict[str, str], predicates: set[str] | list[str]) -> list[str]:
+    """Return the violations of a surface's reason catalog against the predicates its source can return
+    (empty list = conforms). Checks: every predicate (by prefix) has a reason, every reason names a
+    returnable predicate, and every reason is plain language: non-empty, starts lower-case so it reads
+    after "Because", carries no trailing full stop, and restates no predicate-shaped token."""
+    violations: list[str] = []
+    keys = {reason_key(p) for p in predicates}
+    if not isinstance(reasons, dict):
+        return ["reasons_not_a_mapping"]
+    for key in sorted(keys - set(reasons)):
+        violations.append("predicate_without_reason:" + key)
+    for key in sorted(set(reasons) - keys):
+        violations.append("reason_without_returnable_predicate:" + key)
+    for key, text in sorted(reasons.items()):
+        if not isinstance(text, str) or len(text.strip()) < 20 or text != text.strip():
+            violations.append("reason_too_short_or_untrimmed:" + str(key))
+            continue
+        if not text[0].islower():
+            violations.append("reason_must_start_lower_case:" + key)
+        if text.endswith("."):
+            violations.append("reason_must_not_end_with_full_stop:" + key)
+        if _PREDICATE_TOKEN_RE.search(text):
+            violations.append("reason_restates_a_predicate:" + key)
+    return violations
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--outcome", required=True, help="path to a canonical outcome record (JSON)")
