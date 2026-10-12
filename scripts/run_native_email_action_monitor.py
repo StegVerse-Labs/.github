@@ -381,7 +381,10 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
     require(isinstance(actionable_ids, list), "actionable message_ids invalid")
-    actionable_more = bool(actionable.get("next_page_token"))
+    actionable_cursor = actionable.get("next_page_token")
+    require(actionable_cursor is None or (isinstance(actionable_cursor, str) and actionable_cursor),
+            "ACTIONABLE_INBOX_CURSOR_INVALID")
+    actionable_more = actionable_cursor is not None
     counts = broker.call("GET_LABEL_COUNTS", label_names=["INBOX"])
     labels = counts.get("labels")
     require(isinstance(labels, dict) and isinstance(labels.get("INBOX"), dict), "INBOX counts missing")
