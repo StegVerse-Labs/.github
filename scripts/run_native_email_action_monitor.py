@@ -382,7 +382,10 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         require(set(archived) | set(failed) == set(to_archive), "archive result does not cover exact authorized batch")
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
-    require(isinstance(actionable_ids, list), "actionable message_ids invalid")
+    require(isinstance(actionable_ids, list) and all(isinstance(v, str) and v for v in actionable_ids),
+            "ACTIONABLE_INBOX_MESSAGE_IDS_INVALID")
+    require(len(actionable_ids) <= BATCH_LIMIT, "ACTIONABLE_INBOX_BATCH_LIMIT_EXCEEDED")
+    require(len(actionable_ids) == len(set(actionable_ids)), "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS")
     actionable_cursor = actionable.get("next_page_token")
     require(actionable_cursor is None or (isinstance(actionable_cursor, str) and actionable_cursor),
             "ACTIONABLE_INBOX_CURSOR_INVALID")
