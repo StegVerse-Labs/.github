@@ -162,3 +162,19 @@ def test_archived_replay_empty_page_with_cursor_remains_pending(tmp_path):
     assert saved["current_page_token"] == "next-page"
     assert saved["page_index"] == 1
     assert [op for op, _ in broker.calls] == ["SEARCH_MESSAGES"]
+
+
+def test_archived_replay_nonadvancing_empty_cursor_fails_closed(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    checkpoint.write_text(json.dumps({"schema": M.REPLAY_CHECKPOINT_SCHEMA,
+                                      "current_page_token": "same-page",
+                                      "complete": False}), encoding="utf-8")
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="same-page"),
+    ])
+    try:
+        M.archived_replay_page(broker, checkpoint)
+    except RuntimeError as exc:
+        assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
+    else:
+        raise AssertionError("nonadvancing archived replay cursor must fail closed")
