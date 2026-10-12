@@ -147,3 +147,18 @@ def test_live_inbox_multi_page_refuses_archive_until_complete(tmp_path):
     assert receipt["failed_predicate"] == "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED"
     assert receipt["archived_count"] == 0
     assert [operation for operation, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+
+
+def test_archived_replay_empty_page_with_cursor_remains_pending(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="next-page"),
+    ])
+    receipt = M.archived_replay_page(broker, checkpoint)
+    saved = json.loads(checkpoint.read_text(encoding="utf-8"))
+    assert receipt["state"] == "PENDING"
+    assert receipt["complete"] is False
+    assert saved["complete"] is False
+    assert saved["current_page_token"] == "next-page"
+    assert saved["page_index"] == 1
+    assert [op for op, _ in broker.calls] == ["SEARCH_MESSAGES"]
