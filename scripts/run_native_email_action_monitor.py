@@ -334,6 +334,7 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
     ids = exact.get("message_ids")
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
     require(len(ids) <= batch_limit, "broker exceeded bounded batch")
+    require(len(ids) == len(set(ids)), "LIVE_INBOX_DUPLICATE_MESSAGE_IDS")
     # Never archive a partial live-inbox page. Page tokens are an observation
     # boundary, not an authorization to mutate unseen messages.
     messages_more = inspected.get("next_page_token")
